@@ -1,0 +1,9 @@
+#!c:/wamp64/bin/php/php8.2.0/php.exe
+<?php
+
+include 'commonbase.php';
+
+$gitHooks = new \App\Tools\GitHooks(__FILE__);
+echo $gitHooks->execute();
+exit($gitHooks->getExitStatus());
+

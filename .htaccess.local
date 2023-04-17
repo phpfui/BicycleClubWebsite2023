@@ -1,0 +1,8 @@
+RewriteEngine On
+ErrorDocument 404 /Missing
+#RewriteCond %{HTTPS} !=on
+#RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule !\.(php|html|txt|js|ico|gif|jpg|png|css|ttf|eot|svg|woff|woff2)$ /index.php
+FileETag MTime Size
+

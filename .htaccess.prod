@@ -1,0 +1,12 @@
+RewriteEngine On
+CheckSpelling Off
+ErrorDocument 404 /Missing
+RewriteCond %{HTTPS} !=on
+RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule !\.(php|html|txt|js|ico|gif|jpg|png|css|ttf|eot|svg|woff|woff2)$ /index.php
+AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+Header set X-Content-Type-Options nosniff
+Header set X-Frame-Options SAMEORIGIN
+FileETag MTime Size
+

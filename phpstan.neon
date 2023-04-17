@@ -1,0 +1,31 @@
+parameters:
+	level: 5
+	errorFormat: raw
+	editorUrl: '%%file%% %%line%% %%column%%: %%error%%'
+	paths:
+		- App
+	scanFiles:
+		- common.php
+		- commonbase.php
+	scanDirectories:
+		- NoNameSpace
+		- RideWithGPS
+		- PHPFUI
+	ignoreErrors:
+		-
+			message: '#Call to an undefined method PHPFUI\\Page::isAuthorized\(\)#'
+			paths:
+				- App/*
+		-
+			message: '#Call to an undefined method PHPFUI\\Input::setRequired\(\)#'
+			paths:
+				- App/*
+		-
+			message: '#Access to an undefined property PHPFUI\\ORM\\DataObject::[\$a-zA-Z0-9_]+#'
+			paths:
+				- App/*
+		-
+			message: '#Call to an undefined method ZBateson[a-zA-Z0-9\\_]+::[a-zA-Z0-9_]+\(\)+#'
+			paths:
+				- App/*
+

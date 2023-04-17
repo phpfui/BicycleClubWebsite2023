@@ -1,0 +1,105 @@
+<?php
+
+namespace App\Table;
+
+class Event extends \PHPFUI\ORM\Table
+	{
+	final public const FREE_MEMBERSHIP = 2;
+
+	final public const MEMBERS_ONLY = 1;
+
+	final public const PAID_MEMBERSHIP = 3;
+
+	final public const PUBLIC = 0;
+
+	protected static string $className = '\\' . \App\Record\Event::class;
+
+	public function setEventAttendeeCountCursor() : static
+		{
+		$this->addJoin('reservation', 'eventId');
+		$this->addJoin('reservationPerson', new \PHPFUI\ORM\Condition(new \PHPFUI\ORM\Field('reservationPerson.reservationId'), new \PHPFUI\ORM\Field('reservation.reservationId')));
+		$this->addSelect('event.*');
+		$this->addSelect(new \PHPFUI\ORM\Literal('count(reservationPerson.reservationPersonId)'), 'attendees');
+		$this->addGroupBy('event.eventId')->addOrderBy('event.eventDate', 'desc');
+
+		return $this;
+		}
+
+	public static function getAvailableForMember(\App\Record\Member $member) : \PHPFUI\ORM\DataObjectCursor
+		{
+		$sql = 'select *,e.eventId from event e left join reservation r on r.eventId=e.eventId left join member m on m.memberId=r.memberId
+			where e.eventDate>=? and (e.publicDate=0 or e.publicDate<=?) and (r.memberId!=? or r.memberId is null) group by eventDate order by eventDate';
+
+		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString(), \App\Tools\Date::todayString(), $member->memberId]);
+		}
+
+	public static function getFirst(int $memberId = 0) : string
+		{
+		$parameters = [];
+		$sql = 'select eventDate from event';
+
+		if ($memberId)
+			{
+			$sql .= ' where organizer = ?';
+			$parameters[] = $memberId;
+			}
+
+		$sql .= ' order by eventDate limit 1';
+
+		return \PHPFUI\ORM::getValue($sql, $parameters);
+		}
+
+	public static function getLast(int $memberId = 0) : string
+		{
+		$parameters = [];
+		$sql = 'select eventDate from event';
+
+		if ($memberId)
+			{
+			$sql .= ' where organizer = ?';
+			$parameters[] = $memberId;
+			}
+
+		$sql .= ' order by eventDate desc limit 1';
+
+		return \PHPFUI\ORM::getValue($sql, $parameters);
+		}
+
+	public function getMostRecentRegistered(int $limit = 10) : iterable
+		{
+		$sql = 'select distinct e.* from reservation r left join event e on e.eventId=r.eventId order by e.eventDate desc';
+
+		if ($limit)
+			{
+			$sql .= ' limit ' . (int)$limit;
+			}
+
+		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql);
+		}
+
+	public static function getSignedUpForMember(\App\Record\Member $member) : \PHPFUI\ORM\DataObjectCursor
+		{
+		$sql = 'select *,e.eventId from event e left join reservation r on r.eventId=e.eventId left join member m on m.memberId=r.memberId
+			where e.eventDate>=? and r.memberId=? order by eventDate';
+
+		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString(), $member->memberId]);
+		}
+
+	public function setUpcomingCursor(bool $publicOnly = true) : static
+		{
+		$this->addOrderBy('eventDate');
+		$condition = new \PHPFUI\ORM\Condition('eventDate', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+
+		if ($publicOnly)
+			{
+			$condition->and('membersOnly', 0);
+			}
+		$condition->and('eventDate', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$publicCondition = new \PHPFUI\ORM\Condition('publicDate', null, new \PHPFUI\ORM\Operator\IsNull());
+		$publicCondition->or('publicDate', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\LessThanEqual());
+		$condition->and($publicCondition);
+		$this->setWhere($condition);
+
+		return $this;
+		}
+	}

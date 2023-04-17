@@ -1,0 +1,93 @@
+<?php
+
+namespace App\View\Email;
+
+class Settings implements \Stringable
+	{
+	private array $buttons = [];
+
+	private readonly \App\Table\Setting $settingTable;
+
+	public function __construct(private readonly \App\View\Page $page, private readonly string $settingName, private readonly \App\DB\Interface\EmailData $data)
+		{
+		$this->settingTable = new \App\Table\Setting();
+		}
+
+	public function __toString() : string
+		{
+		$submit = new \PHPFUI\Submit();
+		$form = new \PHPFUI\Form($this->page, $submit);
+		$form->setAreYouSure(false);
+
+		if ($form->isMyCallback())
+			{
+			$this->settingTable->save($this->settingName . 'Title', $_POST['title']);
+			$this->settingTable->save($this->settingName, \App\Tools\TextHelper::cleanUserHtml($_POST['value']));
+			$this->page->setResponse('Saved');
+			}
+		elseif (\App\Model\Session::checkCSRF() && isset($_POST['test']))
+			{
+			$this->settingTable->save($this->settingName, \App\Tools\TextHelper::cleanUserHtml($_POST['value']));
+			$this->settingTable->save($this->settingName . 'Title', $_POST['title']);
+			$member = \App\Model\Session::getSignedInMember();
+			$email = new \App\Model\Email($this->settingName, $this->data);
+			$email->setFromMember($member);
+			$email->addToMember($member);
+			$email->setSubject('Test: ' . $_POST['title']);
+			$email->send();
+			\App\Model\Session::setFlash('success', 'Test email sent. Check your email.');
+			$this->page->redirect();
+			}
+		else
+			{
+			$title = new \PHPFUI\Input\Text('title', 'Email Subject (leave blank to disable email)', $this->settingTable->value($this->settingName . 'Title'));
+			$form->add($title);
+			$fieldSet = new \PHPFUI\FieldSet('Email body');
+			$value = $this->settingTable->value($this->settingName);
+			$value = \str_replace("\n", '<div></div>', $value);
+			$textarea = new \PHPFUI\Input\TextArea('value', '', $value);
+			$textarea->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+			$fieldSet->add($textarea);
+			$form->add($fieldSet);
+			$buttonGroup = new \App\UI\CancelButtonGroup();
+			$buttonGroup->addButton($submit);
+			$test = new \PHPFUI\Submit('Test Email', 'test');
+			$test->addClass('warning');
+			$buttonGroup->addButton($test);
+
+			foreach ($this->buttons as $button)
+				{
+				$buttonGroup->addButton($button);
+				}
+			$form->add($buttonGroup);
+
+			$fieldSet = new \PHPFUI\FieldSet('Substitution Fields');
+			$fieldSet->add('You can substitute member specific fields in the body of text. The following may be substituted for the member\'s value. They are <strong>CASE SENSITIVE</strong>, so copy them exactly as you see them.<p>');
+			$multiColumn = new \PHPFUI\MultiColumn();
+
+			foreach ($this->data->toArray() as $field => $value)
+				{
+				if (\count($multiColumn) >= 3)
+					{
+					$fieldSet->add($multiColumn);
+					$multiColumn = new \PHPFUI\MultiColumn();
+					}
+				$multiColumn->add("~{$field}~");
+				}
+
+			while (\count($multiColumn) < 3)
+				{
+				$multiColumn->add('&nbsp;');
+				}
+			$fieldSet->add($multiColumn);
+			$form->add($fieldSet);
+			}
+
+		return (string)$form;
+		}
+
+	public function addButton(\PHPFUI\Button $button) : void
+		{
+		$this->buttons[] = $button;
+		}
+	}

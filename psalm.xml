@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<psalm
+	errorLevel="3"
+	phpVersion="8.0"
+	autoloader="commonbase.php"
+	resolveFromConfigFile="true"
+	findUnusedCode="true"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="https://getpsalm.org/schema/config"
+	xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+	<projectFiles>
+		<file name="common.php"/>
+		<file name="www/index.php"/>
+		<directory name="App"/>
+		<directory name="tests"/>
+		<ignoreFiles>
+			<directory name="vendor"/>
+		</ignoreFiles>
+	</projectFiles>
+	<issueHandlers>
+		<PropertyNotSetInConstructor errorLevel="suppress" />
+		<ImplicitToStringCast errorLevel="suppress" />
+	</issueHandlers>
+<plugins><pluginClass class="Orklah\PsalmInsaneComparison\Plugin"/></plugins></psalm>

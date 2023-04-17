@@ -1,0 +1,3184 @@
+-- mysqldump-php https://github.com/ifsnop/mysqldump-php
+--
+-- Host: db5012709532.hosting-data.io	Database: dbs10676885
+-- ------------------------------------------------------
+-- Server version 	5.7.38-log
+-- Date: Mon, 17 Apr 2023 20:50:49 -0400
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40101 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `additionalEmail`
+--
+
+DROP TABLE IF EXISTS `additionalEmail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `additionalEmail` (
+  `additionalEmailId` int(11) NOT NULL AUTO_INCREMENT,
+  `memberId` int(11) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `verified` int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`additionalEmailId`),
+  UNIQUE KEY `email` (`email`),
+  KEY `memberNumber` (`memberId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `additionalEmail`
+--
+
+LOCK TABLES `additionalEmail` WRITE;
+/*!40000 ALTER TABLE `additionalEmail` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `additionalEmail` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `additionalEmail` with 0 row(s)
+--
+
+--
+-- Table structure for table `assistantLeader`
+--
+
+DROP TABLE IF EXISTS `assistantLeader`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `assistantLeader` (
+  `rideId` int(11) NOT NULL,
+  `memberId` int(11) NOT NULL,
+  UNIQUE KEY `rideIdMemberNumber` (`rideId`,`memberId`),
+  KEY `memberNumber` (`memberId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `assistantLeader`
+--
+
+LOCK TABLES `assistantLeader` WRITE;
+/*!40000 ALTER TABLE `assistantLeader` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `assistantLeader` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `assistantLeader` with 0 row(s)
+--
+
+--
+-- Table structure for table `auditTrail`
+--
+
+DROP TABLE IF EXISTS `auditTrail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `auditTrail` (
+  `auditTrailId` int(11) NOT NULL AUTO_INCREMENT,
+  `memberId` int(11) NOT NULL,
+  `statement` text,
+  `input` text,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `additional` text,
+  PRIMARY KEY (`auditTrailId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auditTrail`
+--
+
+LOCK TABLES `auditTrail` WRITE;
+/*!40000 ALTER TABLE `auditTrail` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `auditTrail` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `auditTrail` with 0 row(s)
+--
+
+--
+-- Table structure for table `banner`
+--
+
+DROP TABLE IF EXISTS `banner`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `banner` (
+  `bannerId` int(11) NOT NULL AUTO_INCREMENT,
+  `url` varchar(200) DEFAULT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  `fileNameExt` char(10) DEFAULT NULL,
+  `pending` int(11) NOT NULL DEFAULT '1',
+  `html` text,
+  `css` text,
+  `js` text,
+  `startDate` date DEFAULT NULL,
+  `endDate` date DEFAULT NULL,
+  PRIMARY KEY (`bannerId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `banner`
+--
+
+LOCK TABLES `banner` WRITE;
+/*!40000 ALTER TABLE `banner` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `banner` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `banner` with 0 row(s)
+--
+
+--
+-- Table structure for table `bikeShop`
+--
+
+DROP TABLE IF EXISTS `bikeShop`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bikeShop` (
+  `bikeShopId` int(11) NOT NULL AUTO_INCREMENT,
+  `bikeShopAreaId` int(11) DEFAULT '0',
+  `name` varchar(255)  DEFAULT '',
+  `contact` varchar(255)  DEFAULT '',
+  `email` varchar(100)  DEFAULT '',
+  `url` varchar(255)  DEFAULT '',
+  `phone` varchar(20)  DEFAULT '',
+  `notes` varchar(255)  DEFAULT '',
+  `address` varchar(100)  DEFAULT '',
+  `town` varchar(50)  DEFAULT '',
+  `state` char(2)  DEFAULT '',
+  `zip` varchar(10)  DEFAULT '',
+  PRIMARY KEY (`bikeShopId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bikeShop`
+--
+
+LOCK TABLES `bikeShop` WRITE;
+/*!40000 ALTER TABLE `bikeShop` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `bikeShop` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `bikeShop` with 0 row(s)
+--
+
+--
+-- Table structure for table `bikeShopArea`
+--
+
+DROP TABLE IF EXISTS `bikeShopArea`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bikeShopArea` (
+  `bikeShopAreaId` int(11) NOT NULL AUTO_INCREMENT,
+  `area` varchar(255) DEFAULT NULL,
+  `state` char(2) DEFAULT NULL,
+  PRIMARY KEY (`bikeShopAreaId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bikeShopArea`
+--
+
+LOCK TABLES `bikeShopArea` WRITE;
+/*!40000 ALTER TABLE `bikeShopArea` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `bikeShopArea` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `bikeShopArea` with 0 row(s)
+--
+
+--
+-- Table structure for table `blog`
+--
+
+DROP TABLE IF EXISTS `blog`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blog` (
+  `blogId` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  PRIMARY KEY (`blogId`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blog`
+--
+
+LOCK TABLES `blog` WRITE;
+/*!40000 ALTER TABLE `blog` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `blog` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `blog` with 0 row(s)
+--
+
+--
+-- Table structure for table `blogItem`
+--
+
+DROP TABLE IF EXISTS `blogItem`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `blogItem` (
+  `blogId` int(11) NOT NULL,
+  `storyId` int(11) NOT NULL,
+  `ranking` int(11) NOT NULL,
+  UNIQUE KEY `blogIdstoryIdblogItemIndex` (`blogId`,`storyId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `blogItem`
+--
+
+LOCK TABLES `blogItem` WRITE;
+/*!40000 ALTER TABLE `blogItem` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `blogItem` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `blogItem` with 0 row(s)
+--
+
+--
+-- Table structure for table `boardMember`
+--
+
+DROP TABLE IF EXISTS `boardMember`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `boardMember` (
+  `memberId` int(11) NOT NULL,
+  `rank` int(2) DEFAULT NULL,
+  `title` varchar(50) DEFAULT NULL,
+  `description` text,
+  `extension` char(10) NOT NULL DEFAULT '',
+  PRIMARY KEY (`memberId`),
+  KEY `memberNumber` (`memberId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `boardMember`
+--
+
+LOCK TABLES `boardMember` WRITE;
+/*!40000 ALTER TABLE `boardMember` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `boardMember` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `boardMember` with 0 row(s)
+--
+
+--
+-- Table structure for table `calendar`
+--
+
+DROP TABLE IF EXISTS `calendar`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `calendar` (
+  `calendarId` int(11) NOT NULL AUTO_INCREMENT,
+  `eventType` int(1) DEFAULT NULL,
+  `eventDays` int(2) DEFAULT NULL,
+  `title` char(100) DEFAULT NULL,
+  `distances` char(20) DEFAULT NULL,
+  `webSite` char(100) DEFAULT NULL,
+  `location` varchar(100) DEFAULT NULL,
+  `privateContact` char(50) DEFAULT NULL,
+  `privateEmail` char(50) DEFAULT NULL,
+  `description` text,
+  `state` char(2) DEFAULT NULL,
+  `publicContact` char(50) DEFAULT NULL,
+  `publicEmail` char(50) DEFAULT NULL,
+  `pending` int(1) NOT NULL DEFAULT '1',
+  `price` int(5) DEFAULT NULL,
+  `eventDate` date NOT NULL,
+  `startTime` time DEFAULT NULL,
+  PRIMARY KEY (`calendarId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `calendar`
+--
+
+LOCK TABLES `calendar` WRITE;
+/*!40000 ALTER TABLE `calendar` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `calendar` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `calendar` with 0 row(s)
+--
+
+--
+-- Table structure for table `cartItem`
+--
+
+DROP TABLE IF EXISTS `cartItem`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cartItem` (
+  `storeItemId` int(6) DEFAULT NULL,
+  `storeItemDetailId` int(6) DEFAULT NULL,
+  `memberId` int(11) NOT NULL,
+  `quantity` int(3) DEFAULT NULL,
+  `type` int(5) DEFAULT NULL,
+  `discountCodeId` int(11) DEFAULT NULL,
+  `dateAdded` date NOT NULL,
+  `cartItemId` int(11) NOT NULL AUTO_INCREMENT,
+  `optionsSelected` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`cartItemId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cartItem`
+--
+
+LOCK TABLES `cartItem` WRITE;
+/*!40000 ALTER TABLE `cartItem` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `cartItem` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `cartItem` with 0 row(s)
+--
+
+--
+-- Table structure for table `category`
+--
+
+DROP TABLE IF EXISTS `category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `category` (
+  `categoryId` int(11) NOT NULL AUTO_INCREMENT,
+  `category` char(2) DEFAULT NULL,
+  `minSpeed` varchar(5) DEFAULT NULL,
+  `maxSpeed` varchar(5) DEFAULT NULL,
+  `description` varchar(100) DEFAULT NULL,
+  `coordinator` int(11) NOT NULL DEFAULT '0',
+  `memberDefault` tinyint(1) NOT NULL DEFAULT '0',
+  `ordering` int(11) NOT NULL DEFAULT '999999',
+  PRIMARY KEY (`categoryId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `category`
+--
+
+LOCK TABLES `category` WRITE;
+/*!40000 ALTER TABLE `category` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `category` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `category` with 0 row(s)
+--
+
+--
+-- Table structure for table `cueSheet`
+--
+
+DROP TABLE IF EXISTS `cueSheet`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cueSheet` (
+  `cueSheetId` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT NULL,
+  `mileage` float DEFAULT '0',
+  `startLocationId` int(11) DEFAULT NULL,
+  `destination` varchar(100) DEFAULT NULL,
+  `memberId` int(11) DEFAULT NULL,
+  `terrain` int(1) DEFAULT NULL,
+  `description` text,
+  `pending` int(1) NOT NULL DEFAULT '1',
+  `elevation` int(5) DEFAULT NULL,
+  `pointsAwarded` int(11) NOT NULL DEFAULT '0',
+  `RWGPSId` int(11) DEFAULT NULL,
+  `dateAdded` date NOT NULL,
+  `revisionDate` date DEFAULT NULL,
+  PRIMARY KEY (`cueSheetId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cueSheet`
+--
+
+LOCK TABLES `cueSheet` WRITE;
+/*!40000 ALTER TABLE `cueSheet` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `cueSheet` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `cueSheet` with 0 row(s)
+--
+
+--
+-- Table structure for table `cueSheetVersion`
+--
+
+DROP TABLE IF EXISTS `cueSheetVersion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cueSheetVersion` (
+  `cueSheetVersionId` int(11) NOT NULL AUTO_INCREMENT,
+  `cueSheetId` int(11) DEFAULT NULL,
+  `memberId` int(11) DEFAULT NULL,
+  `extension` char(10) DEFAULT NULL,
+  `link` varchar(200) DEFAULT NULL,
+  `dateAdded` date NOT NULL,
+  PRIMARY KEY (`cueSheetVersionId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cueSheetVersion`
+--
+
+LOCK TABLES `cueSheetVersion` WRITE;
+/*!40000 ALTER TABLE `cueSheetVersion` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `cueSheetVersion` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `cueSheetVersion` with 0 row(s)
+--
+
+--
+-- Table structure for table `customer`
+--
+
+DROP TABLE IF EXISTS `customer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `customer` (
+  `customerId` int(11) NOT NULL AUTO_INCREMENT,
+  `lastName` varchar(50) DEFAULT NULL,
+  `firstName` varchar(50) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `password` varchar(50) DEFAULT NULL,
+  `address` varchar(100) DEFAULT NULL,
+  `town` varchar(50) DEFAULT NULL,
+  `state` char(2) DEFAULT NULL,
+  `zip` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`customerId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `customer`
+--
+
+LOCK TABLES `customer` WRITE;
+/*!40000 ALTER TABLE `customer` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `customer` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `customer` with 0 row(s)
+--
+
+--
+-- Table structure for table `discountCode`
+--
+
+DROP TABLE IF EXISTS `discountCode`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `discountCode` (
+  `discountCodeId` int(11) NOT NULL AUTO_INCREMENT,
+  `discountCode` char(15) DEFAULT NULL,
+  `description` varchar(60) DEFAULT NULL,
+  `maximumUses` int(11) DEFAULT NULL,
+  `validItemNumbers` text,
+  `discount` float(10,2) DEFAULT NULL,
+  `repeatCount` int(11) DEFAULT NULL,
+  `expirationDate` date NOT NULL,
+  `startDate` date NOT NULL,
+  PRIMARY KEY (`discountCodeId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `discountCode`
+--
+
+LOCK TABLES `discountCode` WRITE;
+/*!40000 ALTER TABLE `discountCode` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `discountCode` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `discountCode` with 0 row(s)
+--
+
+--
+-- Table structure for table `event`
+--
+
+DROP TABLE IF EXISTS `event`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `event` (
+  `eventId` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) DEFAULT NULL,
+  `location` varchar(250) DEFAULT NULL,
+  `directionsUrl` varchar(100) DEFAULT NULL,
+  `price` decimal(6,2) NOT NULL DEFAULT '0.00',
+  `numberReservations` int(2) DEFAULT NULL,
+  `startTime` varchar(20) DEFAULT NULL,
+  `endTime` varchar(20) DEFAULT NULL,
+  `information` blob,
+  `additionalInfo` blob,
+  `membersOnly` int(1) DEFAULT NULL,
+  `organizer` int(6) DEFAULT NULL,
+  `paypal` int(1) DEFAULT NULL,
+  `door` int(1) DEFAULT NULL,
+  `checks` int(1) DEFAULT NULL,
+  `maxReservations` int(6) DEFAULT NULL,
+  `newMemberDiscount` decimal(6,2) NOT NULL DEFAULT '0.00',
+  `maxDiscounts` int(6) NOT NULL DEFAULT '0',
+  `eventDate` date NOT NULL,
+  `lastRegistrationDate` date NOT NULL,
+  `newMemberDate` date DEFAULT NULL,
+  `publicDate` date DEFAULT NULL,
+  `registrationStartDate` date DEFAULT NULL,
+  PRIMARY KEY (`eventId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `event`
+--
+
+LOCK TABLES `event` WRITE;
+/*!40000 ALTER TABLE `event` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `event` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `event` with 0 row(s)
+--
+
+--
+-- Table structure for table `file`
+--
+
+DROP TABLE IF EXISTS `file`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `file` (
+  `fileId` int(11) NOT NULL AUTO_INCREMENT,
+  `fileFolderId` int(11) NOT NULL,
+  `memberId` int(11) DEFAULT NULL,
+  `file` varchar(255) NOT NULL DEFAULT '',
+  `fileName` varchar(255) NOT NULL DEFAULT '',
+  `extension` varchar(10) NOT NULL DEFAULT '',
+  `uploaded` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `public` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`fileId`),
+  KEY `memberId` (`memberId`),
+  KEY `fileFolderId` (`fileFolderId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `file`
+--
+
+LOCK TABLES `file` WRITE;
+/*!40000 ALTER TABLE `file` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `file` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `file` with 0 row(s)
+--
+
+--
+-- Table structure for table `fileFolder`
+--
+
+DROP TABLE IF EXISTS `fileFolder`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `fileFolder` (
+  `fileFolderId` int(11) NOT NULL AUTO_INCREMENT,
+  `fileFolder` varchar(255) NOT NULL DEFAULT '',
+  `parentId` int(11) DEFAULT '0',
+  PRIMARY KEY (`fileFolderId`),
+  KEY `parentId` (`parentId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `fileFolder`
+--
+
+LOCK TABLES `fileFolder` WRITE;
+/*!40000 ALTER TABLE `fileFolder` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `fileFolder` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `fileFolder` with 0 row(s)
+--
+
+--
+-- Table structure for table `forum`
+--
+
+DROP TABLE IF EXISTS `forum`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `forum` (
+  `forumId` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `description` text,
+  `email` varchar(255) DEFAULT NULL,
+  `closed` int(1) DEFAULT NULL,
+  `attachments` int(1) DEFAULT '0',
+  `whiteList` text,
+  PRIMARY KEY (`forumId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `forum`
+--
+
+LOCK TABLES `forum` WRITE;
+/*!40000 ALTER TABLE `forum` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `forum` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `forum` with 0 row(s)
+--
+
+--
+-- Table structure for table `forumAttachment`
+--
+
+DROP TABLE IF EXISTS `forumAttachment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `forumAttachment` (
+  `forumAttachmentId` int(11) NOT NULL AUTO_INCREMENT,
+  `forumMessageId` int(11) DEFAULT NULL,
+  `forumId` int(11) DEFAULT NULL,
+  `fileName` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`forumAttachmentId`),
+  KEY `forumMessage` (`forumId`,`forumMessageId`),
+  KEY `forumIdforumAttachmentIndex` (`forumId`),
+  KEY `forumMessageIdforumAttachmentIndex` (`forumMessageId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `forumAttachment`
+--
+
+LOCK TABLES `forumAttachment` WRITE;
+/*!40000 ALTER TABLE `forumAttachment` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `forumAttachment` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `forumAttachment` with 0 row(s)
+--
+
+--
+-- Table structure for table `forumMember`
+--
+
+DROP TABLE IF EXISTS `forumMember`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `forumMember` (
+  `forumId` int(11) NOT NULL DEFAULT '0',
+  `memberId` int(11) NOT NULL,
+  `emailType` int(1) DEFAULT NULL,
+  PRIMARY KEY (`forumId`,`memberId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `forumMember`
+--
+
+LOCK TABLES `forumMember` WRITE;
+/*!40000 ALTER TABLE `forumMember` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `forumMember` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `forumMember` with 0 row(s)
+--
+
+--
+-- Table structure for table `forumMessage`
+--
+
+DROP TABLE IF EXISTS `forumMessage`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `forumMessage` (
+  `forumMessageId` int(11) NOT NULL AUTO_INCREMENT,
+  `forumId` int(11) DEFAULT NULL,
+  `textMessage` text,
+  `htmlMessage` text,
+  `title` varchar(255) DEFAULT NULL,
+  `memberId` int(11) NOT NULL,
+  `posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `lastEdited` timestamp NULL DEFAULT NULL,
+  `lastEditor` int(11) DEFAULT NULL,
+  PRIMARY KEY (`forumMessageId`),
+  KEY `forumId` (`forumId`,`posted`),
+  KEY `forumIdforumMessageIndex` (`forumId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `forumMessage`
+--
+
+LOCK TABLES `forumMessage` WRITE;
+/*!40000 ALTER TABLE `forumMessage` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `forumMessage` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `forumMessage` with 0 row(s)
+--
+
+--
+-- Table structure for table `gaAnswer`
+--
+
+DROP TABLE IF EXISTS `gaAnswer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gaAnswer` (
+  `gaAnswerId` int(11) NOT NULL AUTO_INCREMENT,
+  `gaEventId` int(11) NOT NULL,
+  `answer` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`gaAnswerId`),
+  KEY `gaEventIdgaAnswerIndex` (`gaEventId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gaAnswer`
+--
+
+LOCK TABLES `gaAnswer` WRITE;
+/*!40000 ALTER TABLE `gaAnswer` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `gaAnswer` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `gaAnswer` with 0 row(s)
+--
+
+--
+-- Table structure for table `gaEvent`
+--
+
+DROP TABLE IF EXISTS `gaEvent`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gaEvent` (
+  `gaEventId` int(11) NOT NULL AUTO_INCREMENT,
+  `location` char(100) DEFAULT NULL,
+  `title` char(100) DEFAULT NULL,
+  `registrar` char(50) DEFAULT NULL,
+  `registrarEmail` char(50) DEFAULT NULL,
+  `incentiveName` char(50) DEFAULT NULL,
+  `incentiveCount` int(5) DEFAULT NULL,
+  `otherEvent` int(1) DEFAULT NULL,
+  `dayOfRegistration` int(1) DEFAULT NULL,
+  `maxRegistrants` int(5) DEFAULT NULL,
+  `description` text,
+  `includeMembership` int(1) DEFAULT NULL,
+  `showPreregistration` int(1) DEFAULT NULL,
+  `parent` int(5) DEFAULT NULL,
+  `volunteerDiscount` int(11) DEFAULT NULL,
+  `volunteerEvent` int(11) DEFAULT NULL,
+  `signupMessage` text,
+  `live` int(11) DEFAULT NULL,
+  `question` varchar(100) DEFAULT '',
+  `eventDate` date NOT NULL,
+  `lastRegistrationDate` date NOT NULL,
+  `membershipExpires` date DEFAULT NULL,
+  PRIMARY KEY (`gaEventId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gaEvent`
+--
+
+LOCK TABLES `gaEvent` WRITE;
+/*!40000 ALTER TABLE `gaEvent` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `gaEvent` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `gaEvent` with 0 row(s)
+--
+
+--
+-- Table structure for table `gaIncentive`
+--
+
+DROP TABLE IF EXISTS `gaIncentive`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gaIncentive` (
+  `gaIncentiveId` int(11) NOT NULL AUTO_INCREMENT,
+  `gaEventId` int(11) NOT NULL,
+  `description` char(250) DEFAULT NULL,
+  PRIMARY KEY (`gaIncentiveId`),
+  KEY `gaEventIdgaIncentiveIndex` (`gaEventId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gaIncentive`
+--
+
+LOCK TABLES `gaIncentive` WRITE;
+/*!40000 ALTER TABLE `gaIncentive` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `gaIncentive` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `gaIncentive` with 0 row(s)
+--
+
+--
+-- Table structure for table `gaPriceDate`
+--
+
+DROP TABLE IF EXISTS `gaPriceDate`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gaPriceDate` (
+  `gaEventId` int(11) NOT NULL,
+  `price` decimal(5,2) DEFAULT NULL,
+  `gaPriceDateId` int(11) NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  PRIMARY KEY (`gaPriceDateId`),
+  KEY `gaEventIdgaPriceDateIndex` (`gaEventId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gaPriceDate`
+--
+
+LOCK TABLES `gaPriceDate` WRITE;
+/*!40000 ALTER TABLE `gaPriceDate` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `gaPriceDate` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `gaPriceDate` with 0 row(s)
+--
+
+--
+-- Table structure for table `gaRide`
+--
+
+DROP TABLE IF EXISTS `gaRide`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gaRide` (
+  `gaRideId` int(11) NOT NULL AUTO_INCREMENT,
+  `gaEventId` int(11) NOT NULL,
+  `distance` int(3) DEFAULT NULL,
+  `description` varchar(100) DEFAULT NULL,
+  `extraPrice` decimal(6,2) DEFAULT NULL,
+  `startTime` time DEFAULT NULL,
+  `endTime` time DEFAULT NULL,
+  PRIMARY KEY (`gaRideId`),
+  KEY `gaEventIdgaRideIndex` (`gaEventId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gaRide`
+--
+
+LOCK TABLES `gaRide` WRITE;
+/*!40000 ALTER TABLE `gaRide` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `gaRide` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `gaRide` with 0 row(s)
+--
+
+--
+-- Table structure for table `gaRider`
+--
+
+DROP TABLE IF EXISTS `gaRider`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `gaRider` (
+  `gaRiderId` int(11) NOT NULL AUTO_INCREMENT,
+  `gaEventId` int(11) NOT NULL,
+  `memberId` int(11) NOT NULL,
+  `pricePaid` decimal(5,2) DEFAULT NULL,
+  `pending` int(1) NOT NULL DEFAULT '1',
+  `gaIncentiveId` int(11) DEFAULT NULL,
+  `gaRideId` int(11) DEFAULT NULL,
+  `firstName` varchar(50) DEFAULT NULL,
+  `lastName` varchar(50) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT '',
+  `address` varchar(100) DEFAULT NULL,
+  `town` varchar(50) DEFAULT NULL,
+  `state` char(2) DEFAULT NULL,
+  `zip` varchar(10) DEFAULT NULL,
+  `comments` varchar(50) DEFAULT NULL,
+  `contact` varchar(50) DEFAULT NULL,
+  `prize` int(6) DEFAULT NULL,
+  `contactPhone` char(15) DEFAULT NULL,
+  `emailAnnouncements` int(1) DEFAULT '1',
+  `referral` int(1) DEFAULT '0',
+  `signedUpOn` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`gaRiderId`),
+  KEY `gaEventIdgaRiderIndex` (`gaEventId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gaRider`
+--
+
+LOCK TABLES `gaRider` WRITE;
+/*!40000 ALTER TABLE `gaRider` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `gaRider` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `gaRider` with 0 row(s)
+--
+
+--
+-- Table structure for table `httpRequest`
+--
+
+DROP TABLE IF EXISTS `httpRequest`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `httpRequest` (
+  `httpRequestId` int(11) NOT NULL AUTO_INCREMENT,
+  `REQUEST_METHOD` varchar(10) DEFAULT NULL,
+  `REQUEST_URI` varchar(255) DEFAULT NULL,
+  `_get` text,
+  `_post` text,
+  PRIMARY KEY (`httpRequestId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `httpRequest`
+--
+
+LOCK TABLES `httpRequest` WRITE;
+/*!40000 ALTER TABLE `httpRequest` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `httpRequest` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `httpRequest` with 0 row(s)
+--
+
+--
+-- Table structure for table `incentive`
+--
+
+DROP TABLE IF EXISTS `incentive`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `incentive` (
+  `incentiveId` int(11) NOT NULL AUTO_INCREMENT,
+  `description` varchar(100) DEFAULT NULL,
+  `points` int(2) DEFAULT NULL,
+  `notRide` int(1) DEFAULT NULL,
+  PRIMARY KEY (`incentiveId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `incentive`
+--
+
+LOCK TABLES `incentive` WRITE;
+/*!40000 ALTER TABLE `incentive` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `incentive` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `incentive` with 0 row(s)
+--
+
+--
+-- Table structure for table `invoice`
+--
+
+DROP TABLE IF EXISTS `invoice`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `invoice` (
+  `invoiceId` int(11) NOT NULL AUTO_INCREMENT,
+  `memberId` int(11) NOT NULL,
+  `totalPrice` decimal(7,2) DEFAULT NULL,
+  `totalTax` decimal(7,2) DEFAULT NULL,
+  `totalShipping` decimal(7,2) DEFAULT NULL,
+  `paypaltx` varchar(50) DEFAULT NULL,
+  `pointsUsed` int(3) DEFAULT NULL,
+  `paypalPaid` decimal(7,2) DEFAULT NULL,
+  `instructions` char(125) DEFAULT NULL,
+  `discountCodeId` int(11) DEFAULT NULL,
+  `discount` float(10,2) DEFAULT NULL,
+  `paidByCheck` int(1) DEFAULT '0',
+  `errors` text,
+  `fullfillmentDate` date DEFAULT NULL,
+  `orderDate` date NOT NULL,
+  `paymentDate` date DEFAULT NULL,
+  PRIMARY KEY (`invoiceId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `invoice`
+--
+
+LOCK TABLES `invoice` WRITE;
+/*!40000 ALTER TABLE `invoice` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `invoice` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `invoice` with 0 row(s)
+--
+
+--
+-- Table structure for table `invoiceItem`
+--
+
+DROP TABLE IF EXISTS `invoiceItem`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `invoiceItem` (
+  `invoiceId` int(6) DEFAULT NULL,
+  `storeItemId` int(6) DEFAULT NULL,
+  `storeItemDetailId` int(6) DEFAULT NULL,
+  `title` char(100) DEFAULT NULL,
+  `description` text,
+  `detailLine` char(100) DEFAULT NULL,
+  `price` decimal(5,2) DEFAULT NULL,
+  `shipping` decimal(5,2) DEFAULT NULL,
+  `quantity` int(3) DEFAULT NULL,
+  `type` int(5) DEFAULT NULL,
+  `tax` decimal(7,2) DEFAULT NULL,
+  UNIQUE KEY `invoiceId_2` (`invoiceId`,`storeItemId`,`storeItemDetailId`),
+  KEY `invoiceId` (`invoiceId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `invoiceItem`
+--
+
+LOCK TABLES `invoiceItem` WRITE;
+/*!40000 ALTER TABLE `invoiceItem` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `invoiceItem` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `invoiceItem` with 0 row(s)
+--
+
+--
+-- Table structure for table `job`
+--
+
+DROP TABLE IF EXISTS `job`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `job` (
+  `jobId` int(11) NOT NULL AUTO_INCREMENT,
+  `title` char(100) DEFAULT NULL,
+  `location` char(100) DEFAULT NULL,
+  `description` text,
+  `organizer` int(6) DEFAULT NULL,
+  `jobEventId` int(5) DEFAULT NULL,
+  `date` date NOT NULL,
+  PRIMARY KEY (`jobId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `job`
+--
+
+LOCK TABLES `job` WRITE;
+/*!40000 ALTER TABLE `job` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `job` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `job` with 0 row(s)
+--
+
+--
+-- Table structure for table `jobEvent`
+--
+
+DROP TABLE IF EXISTS `jobEvent`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `jobEvent` (
+  `jobEventId` int(11) NOT NULL AUTO_INCREMENT,
+  `name` char(100) DEFAULT NULL,
+  `email` text,
+  `organizer` int(11) DEFAULT '0',
+  `cutoffDate` date DEFAULT NULL,
+  `date` date NOT NULL,
+  PRIMARY KEY (`jobEventId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `jobEvent`
+--
+
+LOCK TABLES `jobEvent` WRITE;
+/*!40000 ALTER TABLE `jobEvent` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `jobEvent` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `jobEvent` with 0 row(s)
+--
+
+--
+-- Table structure for table `jobShift`
+--
+
+DROP TABLE IF EXISTS `jobShift`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `jobShift` (
+  `jobShiftId` int(11) NOT NULL AUTO_INCREMENT,
+  `jobId` int(6) DEFAULT NULL,
+  `needed` int(2) DEFAULT NULL,
+  `startTime` time NOT NULL,
+  `endTime` time NOT NULL,
+  PRIMARY KEY (`jobShiftId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `jobShift`
+--
+
+LOCK TABLES `jobShift` WRITE;
+/*!40000 ALTER TABLE `jobShift` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `jobShift` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `jobShift` with 0 row(s)
+--
+
+--
+-- Table structure for table `journalItem`
+--
+
+DROP TABLE IF EXISTS `journalItem`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `journalItem` (
+  `journalItemId` int(11) NOT NULL AUTO_INCREMENT,
+  `body` mediumtext,
+  `memberId` int(11) DEFAULT NULL,
+  `title` char(100) DEFAULT NULL,
+  `timeSent` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`journalItemId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `journalItem`
+--
+
+LOCK TABLES `journalItem` WRITE;
+/*!40000 ALTER TABLE `journalItem` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `journalItem` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `journalItem` with 0 row(s)
+--
+
+--
+-- Table structure for table `mailAttachment`
+--
+
+DROP TABLE IF EXISTS `mailAttachment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mailAttachment` (
+  `mailAttachmentId` int(11) NOT NULL AUTO_INCREMENT,
+  `mailItemId` int(11) NOT NULL,
+  `prettyName` varchar(255) DEFAULT '',
+  `fileName` mediumblob,
+  PRIMARY KEY (`mailAttachmentId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mailAttachment`
+--
+
+LOCK TABLES `mailAttachment` WRITE;
+/*!40000 ALTER TABLE `mailAttachment` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `mailAttachment` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `mailAttachment` with 0 row(s)
+--
+
+--
+-- Table structure for table `mailItem`
+--
+
+DROP TABLE IF EXISTS `mailItem`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mailItem` (
+  `mailItemId` int(11) NOT NULL AUTO_INCREMENT,
+  `body` mediumtext,
+  `memberId` int(11) DEFAULT NULL,
+  `title` varchar(255) DEFAULT '',
+  `html` int(11) DEFAULT '0',
+  `paused` int(11) DEFAULT '0',
+  `replyTo` varchar(100) DEFAULT '',
+  `replyToName` varchar(100) DEFAULT '',
+  `domain` varchar(30) DEFAULT '',
+  `fromName` varchar(100) DEFAULT '',
+  `fromEmail` varchar(100) DEFAULT '',
+  PRIMARY KEY (`mailItemId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mailItem`
+--
+
+LOCK TABLES `mailItem` WRITE;
+/*!40000 ALTER TABLE `mailItem` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `mailItem` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `mailItem` with 0 row(s)
+--
+
+--
+-- Table structure for table `mailPiece`
+--
+
+DROP TABLE IF EXISTS `mailPiece`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mailPiece` (
+  `mailItemId` int(11) NOT NULL,
+  `email` char(100) DEFAULT NULL,
+  `name` varchar(100) DEFAULT '',
+  `mailPieceId` int(11) NOT NULL AUTO_INCREMENT,
+  `memberId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`mailPieceId`),
+  KEY `mailId` (`mailItemId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mailPiece`
+--
+
+LOCK TABLES `mailPiece` WRITE;
+/*!40000 ALTER TABLE `mailPiece` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `mailPiece` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `mailPiece` with 0 row(s)
+--
+
+--
+-- Table structure for table `member`
+--
+
+DROP TABLE IF EXISTS `member`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `member` (
+  `memberId` int(11) NOT NULL AUTO_INCREMENT,
+  `membershipId` int(11) DEFAULT NULL,
+  `lastName` varchar(50) DEFAULT NULL,
+  `firstName` varchar(50) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `phone` varchar(20) NOT NULL DEFAULT '',
+  `password` varchar(255) DEFAULT NULL,
+  `showNothing` tinyint(4) NOT NULL DEFAULT '0',
+  `showNoStreet` tinyint(4) NOT NULL DEFAULT '0',
+  `showNoTown` tinyint(4) NOT NULL DEFAULT '0',
+  `showNoPhone` tinyint(4) NOT NULL DEFAULT '0',
+  `emailAnnouncements` tinyint(4) NOT NULL DEFAULT '0',
+  `leaderPoints` int(11) NOT NULL DEFAULT '0',
+  `emergencyContact` varchar(50) DEFAULT NULL,
+  `emergencyPhone` varchar(20) DEFAULT '',
+  `cellPhone` varchar(20) NOT NULL DEFAULT '',
+  `journal` tinyint(4) NOT NULL DEFAULT '0',
+  `pendingLeader` int(1) NOT NULL DEFAULT '0',
+  `license` char(10) DEFAULT NULL,
+  `verifiedEmail` int(1) NOT NULL DEFAULT '0',
+  `deceased` int(1) NOT NULL DEFAULT '0',
+  `emailNewsletter` int(1) NOT NULL DEFAULT '1',
+  `rideComments` int(1) DEFAULT '1',
+  `loginAttempts` varchar(255) DEFAULT NULL,
+  `extension` varchar(10) NOT NULL DEFAULT '',
+  `profileX` int(10) NOT NULL DEFAULT '0',
+  `profileY` int(10) NOT NULL DEFAULT '0',
+  `profileWidth` int(10) NOT NULL DEFAULT '0',
+  `profileHeight` int(10) NOT NULL DEFAULT '0',
+  `geoLocate` int(1) NOT NULL DEFAULT '1',
+  `discountCount` int(6) NOT NULL DEFAULT '0',
+  `allowTexting` int(1) NOT NULL DEFAULT '1',
+  `rideJournal` tinyint(4) NOT NULL DEFAULT '0',
+  `newRideEmail` tinyint(4) NOT NULL DEFAULT '0',
+  `lastLogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `acceptedWaiver` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`memberId`),
+  KEY `firstName` (`firstName`),
+  KEY `lastName` (`lastName`),
+  KEY `email` (`email`),
+  KEY `membershipIdmemberIndex` (`membershipId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `member`
+--
+
+LOCK TABLES `member` WRITE;
+/*!40000 ALTER TABLE `member` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `member` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `member` with 0 row(s)
+--
+
+--
+-- Table structure for table `memberCategory`
+--
+
+DROP TABLE IF EXISTS `memberCategory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `memberCategory` (
+  `memberId` int(11) NOT NULL,
+  `categoryId` int(2) DEFAULT NULL,
+  UNIQUE KEY `memberIdcategoryIdmemberCategoryIndex` (`memberId`,`categoryId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `memberCategory`
+--
+
+LOCK TABLES `memberCategory` WRITE;
+/*!40000 ALTER TABLE `memberCategory` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `memberCategory` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `memberCategory` with 0 row(s)
+--
+
+--
+-- Table structure for table `memberOfMonth`
+--
+
+DROP TABLE IF EXISTS `memberOfMonth`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `memberOfMonth` (
+  `memberOfMonthId` int(11) NOT NULL AUTO_INCREMENT,
+  `memberId` int(11) NOT NULL,
+  `bio` mediumtext,
+  `fileNameExt` varchar(10) DEFAULT NULL,
+  `month` date NOT NULL,
+  PRIMARY KEY (`memberOfMonthId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `memberOfMonth`
+--
+
+LOCK TABLES `memberOfMonth` WRITE;
+/*!40000 ALTER TABLE `memberOfMonth` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `memberOfMonth` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `memberOfMonth` with 0 row(s)
+--
+
+--
+-- Table structure for table `membership`
+--
+
+DROP TABLE IF EXISTS `membership`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `membership` (
+  `membershipId` int(11) NOT NULL AUTO_INCREMENT,
+  `address` varchar(100) DEFAULT NULL,
+  `town` varchar(50) DEFAULT NULL,
+  `state` char(2) DEFAULT NULL,
+  `zip` varchar(10) DEFAULT NULL,
+  `pending` int(1) NOT NULL DEFAULT '1',
+  `affiliation` varchar(200) DEFAULT NULL,
+  `allowedMembers` int(1) NOT NULL DEFAULT '0',
+  `subscriptionId` varchar(20) DEFAULT NULL,
+  `expires` date DEFAULT NULL,
+  `joined` date DEFAULT NULL,
+  `lastRenewed` date DEFAULT NULL,
+  `renews` date DEFAULT NULL,
+  PRIMARY KEY (`membershipId`),
+  KEY `town` (`town`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `membership`
+--
+
+LOCK TABLES `membership` WRITE;
+/*!40000 ALTER TABLE `membership` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `membership` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `membership` with 0 row(s)
+--
+
+--
+-- Table structure for table `migration`
+--
+
+DROP TABLE IF EXISTS `migration`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `migration` (
+  `migrationId` int(11) NOT NULL,
+  `ran` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `migrationId` (`migrationId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- Dumped table `migration` with 110 row(s)
+--
+
+--
+-- Table structure for table `newsletter`
+--
+
+DROP TABLE IF EXISTS `newsletter`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `newsletter` (
+  `newsletterId` int(11) NOT NULL AUTO_INCREMENT,
+  `size` int(10) DEFAULT NULL,
+  `html` mediumtext,
+  `dateAdded` date NOT NULL,
+  `date` date NOT NULL,
+  PRIMARY KEY (`newsletterId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `newsletter`
+--
+
+LOCK TABLES `newsletter` WRITE;
+/*!40000 ALTER TABLE `newsletter` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `newsletter` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `newsletter` with 0 row(s)
+--
+
+--
+-- Table structure for table `oauthToken`
+--
+
+DROP TABLE IF EXISTS `oauthToken`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `oauthToken` (
+  `oauthTokenId` int(11) NOT NULL AUTO_INCREMENT,
+  `oauthUserId` int(11) DEFAULT NULL,
+  `scopes` text,
+  `client` varchar(255) DEFAULT NULL,
+  `token` varchar(255) DEFAULT NULL,
+  `expires` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`oauthTokenId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `oauthToken`
+--
+
+LOCK TABLES `oauthToken` WRITE;
+/*!40000 ALTER TABLE `oauthToken` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `oauthToken` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `oauthToken` with 0 row(s)
+--
+
+--
+-- Table structure for table `oauthUser`
+--
+
+DROP TABLE IF EXISTS `oauthUser`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `oauthUser` (
+  `oauthUserId` int(11) NOT NULL AUTO_INCREMENT,
+  `memberId` int(11) NOT NULL,
+  `userName` varchar(100) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `lastLogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `permissions` text,
+  PRIMARY KEY (`oauthUserId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `oauthUser`
+--
+
+LOCK TABLES `oauthUser` WRITE;
+/*!40000 ALTER TABLE `oauthUser` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `oauthUser` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `oauthUser` with 0 row(s)
+--
+
+--
+-- Table structure for table `pace`
+--
+
+DROP TABLE IF EXISTS `pace`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pace` (
+  `paceId` int(11) NOT NULL AUTO_INCREMENT,
+  `categoryId` int(1) DEFAULT NULL,
+  `pace` varchar(20) DEFAULT NULL,
+  `minSpeed` varchar(5) DEFAULT NULL,
+  `maxSpeed` varchar(5) DEFAULT NULL,
+  `maxRiders` int(11) NOT NULL DEFAULT '0',
+  `ordering` int(11) NOT NULL DEFAULT '999999',
+  PRIMARY KEY (`paceId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pace`
+--
+
+LOCK TABLES `pace` WRITE;
+/*!40000 ALTER TABLE `pace` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `pace` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `pace` with 0 row(s)
+--
+
+--
+-- Table structure for table `payment`
+--
+
+DROP TABLE IF EXISTS `payment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `payment` (
+  `paymentId` int(11) NOT NULL AUTO_INCREMENT,
+  `paymentType` int(1) DEFAULT NULL,
+  `amount` decimal(6,2) DEFAULT NULL,
+  `membershipId` int(11) DEFAULT NULL,
+  `paymentNumber` varchar(50) DEFAULT NULL,
+  `enteringMemberNumber` int(6) DEFAULT NULL,
+  `invoiceId` int(11) DEFAULT '0',
+  `dateReceived` date NOT NULL,
+  `paymentDated` date DEFAULT NULL,
+  PRIMARY KEY (`paymentId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `payment`
+--
+
+LOCK TABLES `payment` WRITE;
+/*!40000 ALTER TABLE `payment` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `payment` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `payment` with 0 row(s)
+--
+
+--
+-- Table structure for table `paypalRefund`
+--
+
+DROP TABLE IF EXISTS `paypalRefund`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `paypalRefund` (
+  `paypalRefundId` int(11) NOT NULL AUTO_INCREMENT,
+  `invoiceId` int(10) DEFAULT NULL,
+  `paypaltx` varchar(20) DEFAULT NULL,
+  `amount` decimal(7,2) DEFAULT NULL,
+  `response` text,
+  `createdMemberNumber` int(11) DEFAULT NULL,
+  `createdDate` date NOT NULL,
+  `refundOnDate` date DEFAULT NULL,
+  `refundedDate` date DEFAULT NULL,
+  PRIMARY KEY (`paypalRefundId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `paypalRefund`
+--
+
+LOCK TABLES `paypalRefund` WRITE;
+/*!40000 ALTER TABLE `paypalRefund` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `paypalRefund` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `paypalRefund` with 0 row(s)
+--
+
+--
+-- Table structure for table `permission`
+--
+
+DROP TABLE IF EXISTS `permission`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `permission` (
+  `permissionId` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `menu` varchar(20) DEFAULT NULL,
+  `system` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`permissionId`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `permission`
+--
+
+LOCK TABLES `permission` WRITE;
+/*!40000 ALTER TABLE `permission` DISABLE KEYS */;
+SET autocommit=0;
+INSERT INTO `permission` VALUES (1,'Super User',NULL,1),(2,'Ride Leader',NULL,1),(3,'Ride Coordinator',NULL,1),(4,'Ride Chair',NULL,1),(5,'Membership Chair',NULL,1),(6,'Normal Member',NULL,1),(7,'Pending Member',NULL,1),(8,'Incentives Chair',NULL,1),(9,'Treasurer',NULL,1),(10,'Event Coordinator',NULL,1),(15,'Newsletter Editor',NULL,1),(16,'Cue Sheet Administrator',NULL,1),(18,'Board Member',NULL,1),(19,'Secretary',NULL,1),(20,'Content Editor',NULL,1),(21,'Calendar Administrator',NULL,1),(25,'Store Manager',NULL,1),(26,'Store Shipping',NULL,1),(27,'Banner Manager',NULL,1),(28,'Forum Moderator',NULL,1),(30,'Web Site Tester',NULL,1),(34,'Photo Administrator',NULL,1);
+/*!40000 ALTER TABLE `permission` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `permission` with 22 row(s)
+--
+
+--
+-- Table structure for table `permissionGroup`
+--
+
+DROP TABLE IF EXISTS `permissionGroup`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `permissionGroup` (
+  `groupId` int(6) DEFAULT NULL,
+  `permissionId` int(6) DEFAULT NULL,
+  `revoked` int(11) NOT NULL DEFAULT '0',
+  UNIQUE KEY `groupIdpermissionIdpermissionGroupIndex` (`groupId`,`permissionId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `permissionGroup`
+--
+
+LOCK TABLES `permissionGroup` WRITE;
+/*!40000 ALTER TABLE `permissionGroup` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `permissionGroup` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `permissionGroup` with 0 row(s)
+--
+
+--
+-- Table structure for table `photo`
+--
+
+DROP TABLE IF EXISTS `photo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `photo` (
+  `photoId` int(11) NOT NULL AUTO_INCREMENT,
+  `photoFolderId` int(11) NOT NULL,
+  `memberId` int(11) DEFAULT NULL,
+  `photo` varchar(255) NOT NULL DEFAULT '',
+  `extension` varchar(10) NOT NULL DEFAULT '',
+  `taken` datetime DEFAULT NULL,
+  `thumbnail` int(11) NOT NULL DEFAULT '0',
+  `uploaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `public` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`photoId`),
+  KEY `memberId` (`memberId`),
+  KEY `photoFolderId` (`photoFolderId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `photo`
+--
+
+LOCK TABLES `photo` WRITE;
+/*!40000 ALTER TABLE `photo` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `photo` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `photo` with 0 row(s)
+--
+
+--
+-- Table structure for table `photoComment`
+--
+
+DROP TABLE IF EXISTS `photoComment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `photoComment` (
+  `photoCommentId` int(11) NOT NULL AUTO_INCREMENT,
+  `photoId` int(11) NOT NULL,
+  `memberId` int(11) NOT NULL,
+  `photoComment` varchar(255) NOT NULL DEFAULT '',
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`photoCommentId`),
+  KEY `photoId` (`photoId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `photoComment`
+--
+
+LOCK TABLES `photoComment` WRITE;
+/*!40000 ALTER TABLE `photoComment` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `photoComment` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `photoComment` with 0 row(s)
+--
+
+--
+-- Table structure for table `photoFolder`
+--
+
+DROP TABLE IF EXISTS `photoFolder`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `photoFolder` (
+  `photoFolderId` int(11) NOT NULL AUTO_INCREMENT,
+  `photoFolder` varchar(255) NOT NULL DEFAULT '',
+  `parentId` int(11) DEFAULT '0',
+  PRIMARY KEY (`photoFolderId`),
+  KEY `parentId` (`parentId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `photoFolder`
+--
+
+LOCK TABLES `photoFolder` WRITE;
+/*!40000 ALTER TABLE `photoFolder` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `photoFolder` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `photoFolder` with 0 row(s)
+--
+
+--
+-- Table structure for table `photoTag`
+--
+
+DROP TABLE IF EXISTS `photoTag`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `photoTag` (
+  `photoTagId` int(11) NOT NULL AUTO_INCREMENT,
+  `photoId` int(11) NOT NULL,
+  `memberId` int(11) DEFAULT NULL,
+  `taggerId` int(11) NOT NULL,
+  `photoTag` varchar(100) NOT NULL DEFAULT '',
+  `frontToBack` int(11) NOT NULL,
+  `leftToRight` int(11) NOT NULL,
+  PRIMARY KEY (`photoTagId`),
+  KEY `memberId` (`memberId`),
+  KEY `photoId` (`photoId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `photoTag`
+--
+
+LOCK TABLES `photoTag` WRITE;
+/*!40000 ALTER TABLE `photoTag` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `photoTag` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `photoTag` with 0 row(s)
+--
+
+--
+-- Table structure for table `pointHistory`
+--
+
+DROP TABLE IF EXISTS `pointHistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pointHistory` (
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `memberId` int(11) NOT NULL,
+  `memberIdEditor` int(11) DEFAULT NULL,
+  `oldLeaderPoints` int(8) DEFAULT '0',
+  `leaderPoints` int(8) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pointHistory`
+--
+
+LOCK TABLES `pointHistory` WRITE;
+/*!40000 ALTER TABLE `pointHistory` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `pointHistory` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `pointHistory` with 0 row(s)
+--
+
+--
+-- Table structure for table `poll`
+--
+
+DROP TABLE IF EXISTS `poll`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `poll` (
+  `pollId` int(11) NOT NULL AUTO_INCREMENT,
+  `question` text,
+  `required` int(1) DEFAULT NULL,
+  `memberId` int(11) DEFAULT NULL,
+  `membershipOnly` int(1) DEFAULT NULL,
+  `emailConfirmation` int(1) DEFAULT NULL,
+  `endDate` date NOT NULL,
+  `startDate` date NOT NULL,
+  `storyId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`pollId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `poll`
+--
+
+LOCK TABLES `poll` WRITE;
+/*!40000 ALTER TABLE `poll` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `poll` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `poll` with 0 row(s)
+--
+
+--
+-- Table structure for table `pollAnswer`
+--
+
+DROP TABLE IF EXISTS `pollAnswer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pollAnswer` (
+  `pollAnswerId` int(2) DEFAULT NULL,
+  `pollId` int(6) DEFAULT NULL,
+  `answer` varchar(250) DEFAULT NULL,
+  UNIQUE KEY `pollIdpollAnswerIdpollAnswerIndex` (`pollId`,`pollAnswerId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pollAnswer`
+--
+
+LOCK TABLES `pollAnswer` WRITE;
+/*!40000 ALTER TABLE `pollAnswer` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `pollAnswer` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `pollAnswer` with 0 row(s)
+--
+
+--
+-- Table structure for table `pollResponse`
+--
+
+DROP TABLE IF EXISTS `pollResponse`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pollResponse` (
+  `pollId` int(6) DEFAULT NULL,
+  `memberId` int(11) NOT NULL,
+  `membershipId` int(11) DEFAULT NULL,
+  `answer` int(2) DEFAULT NULL,
+  UNIQUE KEY `pollIdmembershipIdmemberIdpollResponseIndex` (`pollId`,`membershipId`,`memberId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pollResponse`
+--
+
+LOCK TABLES `pollResponse` WRITE;
+/*!40000 ALTER TABLE `pollResponse` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `pollResponse` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `pollResponse` with 0 row(s)
+--
+
+--
+-- Table structure for table `publicPage`
+--
+
+DROP TABLE IF EXISTS `publicPage`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `publicPage` (
+  `publicPageId` int(11) NOT NULL AUTO_INCREMENT,
+  `sequence` int(10) DEFAULT '0',
+  `url` varchar(100) DEFAULT NULL,
+  `banner` tinyint(1) DEFAULT '0',
+  `blog` tinyint(1) DEFAULT '0',
+  `header` tinyint(1) DEFAULT '0',
+  `blogAfter` varchar(100) DEFAULT NULL,
+  `method` varchar(200) DEFAULT NULL,
+  `name` varchar(200) DEFAULT NULL,
+  `hidden` tinyint(1) DEFAULT NULL,
+  `homePageNotification` tinyint(4) NOT NULL DEFAULT '0',
+  `footerMenu` tinyint(4) NOT NULL DEFAULT '0',
+  `publicMenu` tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`publicPageId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `publicPage`
+--
+
+LOCK TABLES `publicPage` WRITE;
+/*!40000 ALTER TABLE `publicPage` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `publicPage` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `publicPage` with 0 row(s)
+--
+
+--
+-- Table structure for table `redirect`
+--
+
+DROP TABLE IF EXISTS `redirect`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `redirect` (
+  `redirectId` int(11) NOT NULL AUTO_INCREMENT,
+  `originalUrl` varchar(255) NOT NULL,
+  `redirectUrl` varchar(255) NOT NULL,
+  PRIMARY KEY (`redirectId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `redirect`
+--
+
+LOCK TABLES `redirect` WRITE;
+/*!40000 ALTER TABLE `redirect` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `redirect` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `redirect` with 0 row(s)
+--
+
+--
+-- Table structure for table `reservation`
+--
+
+DROP TABLE IF EXISTS `reservation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reservation` (
+  `reservationId` int(11) NOT NULL AUTO_INCREMENT,
+  `eventId` int(6) DEFAULT NULL,
+  `memberId` int(11) NOT NULL,
+  `pricePaid` decimal(6,2) NOT NULL DEFAULT '0.00',
+  `paymentId` int(6) DEFAULT NULL,
+  `reservationemail` varchar(50) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT '',
+  `address` varchar(100) DEFAULT NULL,
+  `town` varchar(50) DEFAULT NULL,
+  `state` char(2) DEFAULT NULL,
+  `zip` varchar(10) DEFAULT NULL,
+  `comments` varchar(50) DEFAULT NULL,
+  `invoiceId` int(11) DEFAULT '0',
+  `reservationFirstName` varchar(50) DEFAULT NULL,
+  `reservationLastName` varchar(50) DEFAULT NULL,
+  `signedUpAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`reservationId`),
+  KEY `eventIdreservationIndex` (`eventId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reservation`
+--
+
+LOCK TABLES `reservation` WRITE;
+/*!40000 ALTER TABLE `reservation` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `reservation` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `reservation` with 0 row(s)
+--
+
+--
+-- Table structure for table `reservationPerson`
+--
+
+DROP TABLE IF EXISTS `reservationPerson`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reservationPerson` (
+  `reservationId` int(10) DEFAULT NULL,
+  `eventId` int(6) DEFAULT NULL,
+  `firstName` varchar(50) DEFAULT NULL,
+  `lastName` varchar(50) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `reservationPersonId` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`reservationPersonId`),
+  KEY `reservationIdreservationPersonIndex` (`reservationId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reservationPerson`
+--
+
+LOCK TABLES `reservationPerson` WRITE;
+/*!40000 ALTER TABLE `reservationPerson` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `reservationPerson` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `reservationPerson` with 0 row(s)
+--
+
+--
+-- Table structure for table `ride`
+--
+
+DROP TABLE IF EXISTS `ride`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ride` (
+  `rideId` int(11) NOT NULL AUTO_INCREMENT,
+  `rideStatus` int(1) DEFAULT '0',
+  `mileage` varchar(8) DEFAULT NULL,
+  `startTime` varchar(8) DEFAULT NULL,
+  `title` varchar(100) DEFAULT NULL,
+  `cueSheetId` int(11) DEFAULT NULL,
+  `description` text,
+  `elevation` int(5) DEFAULT NULL,
+  `averagePace` float DEFAULT NULL,
+  `numberOfRiders` int(2) DEFAULT NULL,
+  `memberId` int(11) NOT NULL,
+  `paceId` int(11) NOT NULL DEFAULT '0',
+  `startLocationId` int(11) DEFAULT NULL,
+  `accident` int(1) DEFAULT NULL,
+  `commentsDisabled` int(1) DEFAULT '0',
+  `unaffiliated` int(1) DEFAULT '0',
+  `signupNotifications` tinyint(4) DEFAULT '1',
+  `targetPace` decimal(3,1) DEFAULT NULL,
+  `regrouping` varchar(50) DEFAULT '',
+  `pointsAwarded` int(11) NOT NULL DEFAULT '0',
+  `RWGPSId` int(11) DEFAULT NULL,
+  `maxRiders` int(11) NOT NULL DEFAULT '0',
+  `dateAdded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `rideDate` date NOT NULL,
+  `releasePrinted` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`rideId`),
+  KEY `memberNumber` (`memberId`),
+  KEY `cueSheetNumber` (`cueSheetId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ride`
+--
+
+LOCK TABLES `ride` WRITE;
+/*!40000 ALTER TABLE `ride` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `ride` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `ride` with 0 row(s)
+--
+
+--
+-- Table structure for table `rideComment`
+--
+
+DROP TABLE IF EXISTS `rideComment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rideComment` (
+  `rideCommentId` int(11) NOT NULL AUTO_INCREMENT,
+  `rideId` int(11) DEFAULT '0',
+  `memberId` int(11) NOT NULL,
+  `comment` varchar(255) DEFAULT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `latitude` decimal(18,15) DEFAULT NULL,
+  `longitude` decimal(18,15) DEFAULT NULL,
+  PRIMARY KEY (`rideCommentId`),
+  KEY `rideTime` (`rideId`,`time`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rideComment`
+--
+
+LOCK TABLES `rideComment` WRITE;
+/*!40000 ALTER TABLE `rideComment` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `rideComment` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `rideComment` with 0 row(s)
+--
+
+--
+-- Table structure for table `rideIncentive`
+--
+
+DROP TABLE IF EXISTS `rideIncentive`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rideIncentive` (
+  `rideId` int(11) NOT NULL,
+  `incentiveId` int(6) DEFAULT NULL,
+  PRIMARY KEY (`rideId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rideIncentive`
+--
+
+LOCK TABLES `rideIncentive` WRITE;
+/*!40000 ALTER TABLE `rideIncentive` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `rideIncentive` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `rideIncentive` with 0 row(s)
+--
+
+--
+-- Table structure for table `rideSignup`
+--
+
+DROP TABLE IF EXISTS `rideSignup`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rideSignup` (
+  `rideId` int(11) DEFAULT NULL,
+  `memberId` int(11) NOT NULL,
+  `status` int(2) DEFAULT NULL,
+  `comments` varchar(200) DEFAULT NULL,
+  `firstRide` int(1) DEFAULT NULL,
+  `firstRideInCategory` int(1) DEFAULT NULL,
+  `attended` int(1) DEFAULT '0',
+  `rideComments` int(1) DEFAULT '1',
+  `signedUpTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `rideIdmemberIdrideSignupIndex` (`rideId`,`memberId`),
+  KEY `memberIdrideSignupIndex` (`memberId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rideSignup`
+--
+
+LOCK TABLES `rideSignup` WRITE;
+/*!40000 ALTER TABLE `rideSignup` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `rideSignup` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `rideSignup` with 0 row(s)
+--
+
+--
+-- Table structure for table `rwgps`
+--
+
+DROP TABLE IF EXISTS `rwgps`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rwgps` (
+  `RWGPSId` int(11) NOT NULL,
+  `mileage` decimal(4,1) DEFAULT NULL,
+  `town` varchar(50) NOT NULL DEFAULT '',
+  `state` char(2) NOT NULL DEFAULT '',
+  `zip` varchar(10) NOT NULL DEFAULT '',
+  `elevation` int(10) DEFAULT NULL,
+  `description` varchar(255) NOT NULL DEFAULT '',
+  `latitude` decimal(10,6) DEFAULT NULL,
+  `longitude` decimal(10,6) DEFAULT NULL,
+  `title` varchar(255) NOT NULL DEFAULT '',
+  `startLocationId` int(11) DEFAULT NULL,
+  `csv` text,
+  `status` int(11) DEFAULT NULL,
+  `club` int(1) NOT NULL DEFAULT '0',
+  `query` varchar(255) DEFAULT NULL,
+  `feetPerMile` decimal(5,1) NOT NULL DEFAULT '0.0',
+  `lastUpdated` date DEFAULT NULL,
+  PRIMARY KEY (`RWGPSId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rwgps`
+--
+
+LOCK TABLES `rwgps` WRITE;
+/*!40000 ALTER TABLE `rwgps` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `rwgps` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `rwgps` with 0 row(s)
+--
+
+--
+-- Table structure for table `setting`
+--
+
+DROP TABLE IF EXISTS `setting`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `setting` (
+  `name` varchar(30) NOT NULL DEFAULT '',
+  `value` text,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `setting`
+--
+
+LOCK TABLES `setting` WRITE;
+/*!40000 ALTER TABLE `setting` DISABLE KEYS */;
+SET autocommit=0;
+INSERT INTO `setting` VALUES ('calendarName',''),('clubLocation',''),('homePageDaysBack','45'),('maxRidersOption','Visible'),('regroupingOption','Required'),('targetPaceOption','Required');
+/*!40000 ALTER TABLE `setting` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `setting` with 6 row(s)
+--
+
+--
+-- Table structure for table `signinSheet`
+--
+
+DROP TABLE IF EXISTS `signinSheet`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `signinSheet` (
+  `signinSheetId` int(11) NOT NULL AUTO_INCREMENT,
+  `memberId` int(11) NOT NULL,
+  `ext` char(10) DEFAULT '',
+  `pending` int(1) DEFAULT '1',
+  `pointsAwarded` int(11) NOT NULL DEFAULT '0',
+  `dateAdded` date NOT NULL,
+  PRIMARY KEY (`signinSheetId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `signinSheet`
+--
+
+LOCK TABLES `signinSheet` WRITE;
+/*!40000 ALTER TABLE `signinSheet` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `signinSheet` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `signinSheet` with 0 row(s)
+--
+
+--
+-- Table structure for table `signinSheetRide`
+--
+
+DROP TABLE IF EXISTS `signinSheetRide`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `signinSheetRide` (
+  `signinSheetId` int(11) NOT NULL,
+  `rideId` int(11) NOT NULL,
+  UNIQUE KEY `signinSheetIdrideIdsigninSheetRideIndex` (`signinSheetId`,`rideId`),
+  KEY `signinsheetId` (`signinSheetId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `signinSheetRide`
+--
+
+LOCK TABLES `signinSheetRide` WRITE;
+/*!40000 ALTER TABLE `signinSheetRide` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `signinSheetRide` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `signinSheetRide` with 0 row(s)
+--
+
+--
+-- Table structure for table `slide`
+--
+
+DROP TABLE IF EXISTS `slide`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `slide` (
+  `slideId` int(11) NOT NULL AUTO_INCREMENT,
+  `slideShowId` int(11) NOT NULL,
+  `memberId` int(10) unsigned DEFAULT NULL,
+  `photoId` int(11) DEFAULT NULL,
+  `sequence` int(11) NOT NULL DEFAULT '0',
+  `showCaption` int(11) NOT NULL DEFAULT '1',
+  `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp NULL DEFAULT NULL,
+  `extension` varchar(10) DEFAULT NULL,
+  `caption` varchar(255) DEFAULT NULL,
+  `url` varchar(255) DEFAULT '',
+  PRIMARY KEY (`slideId`),
+  KEY `slideShowId` (`slideShowId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `slide`
+--
+
+LOCK TABLES `slide` WRITE;
+/*!40000 ALTER TABLE `slide` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `slide` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `slide` with 0 row(s)
+--
+
+--
+-- Table structure for table `slideShow`
+--
+
+DROP TABLE IF EXISTS `slideShow`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `slideShow` (
+  `slideShowId` int(11) NOT NULL AUTO_INCREMENT,
+  `memberId` int(10) unsigned DEFAULT NULL,
+  `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp NULL DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `startDate` date DEFAULT NULL,
+  `endDate` date DEFAULT NULL,
+  `active` int(11) NOT NULL DEFAULT '0',
+  `width` int(11) NOT NULL DEFAULT '0',
+  `settings` text,
+  `alignment` varchar(20) NOT NULL DEFAULT '',
+  PRIMARY KEY (`slideShowId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `slideShow`
+--
+
+LOCK TABLES `slideShow` WRITE;
+/*!40000 ALTER TABLE `slideShow` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `slideShow` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `slideShow` with 0 row(s)
+--
+
+--
+-- Table structure for table `startLocation`
+--
+
+DROP TABLE IF EXISTS `startLocation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `startLocation` (
+  `startLocationId` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `directions` text,
+  `active` tinyint(4) DEFAULT '1',
+  `latitude` decimal(10,6) DEFAULT NULL,
+  `longitude` decimal(10,6) DEFAULT NULL,
+  PRIMARY KEY (`startLocationId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `startLocation`
+--
+
+LOCK TABLES `startLocation` WRITE;
+/*!40000 ALTER TABLE `startLocation` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `startLocation` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `startLocation` with 0 row(s)
+--
+
+--
+-- Table structure for table `storeItem`
+--
+
+DROP TABLE IF EXISTS `storeItem`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `storeItem` (
+  `storeItemId` int(11) NOT NULL AUTO_INCREMENT,
+  `title` char(100) DEFAULT NULL,
+  `description` text,
+  `price` decimal(5,2) DEFAULT NULL,
+  `shipping` decimal(5,2) DEFAULT NULL,
+  `parent` int(5) DEFAULT NULL,
+  `cut` char(1) DEFAULT NULL,
+  `taxable` int(1) DEFAULT NULL,
+  `payByPoints` int(1) DEFAULT NULL,
+  `clothing` int(1) DEFAULT NULL,
+  `noShipping` int(1) DEFAULT NULL,
+  `pickupZip` char(5) DEFAULT NULL,
+  `type` int(11) NOT NULL DEFAULT '0',
+  `pointsOnly` int(1) NOT NULL DEFAULT '0',
+  `active` int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`storeItemId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `storeItem`
+--
+
+LOCK TABLES `storeItem` WRITE;
+/*!40000 ALTER TABLE `storeItem` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `storeItem` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `storeItem` with 0 row(s)
+--
+
+--
+-- Table structure for table `storeItemDetail`
+--
+
+DROP TABLE IF EXISTS `storeItemDetail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `storeItemDetail` (
+  `storeItemId` int(6) DEFAULT NULL,
+  `storeItemDetailId` int(6) DEFAULT NULL,
+  `detailLine` char(100) DEFAULT NULL,
+  `quantity` int(5) DEFAULT NULL,
+  UNIQUE KEY `storeItemIdstoreItemDetailIdstoreItemDetailIndex` (`storeItemId`,`storeItemDetailId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `storeItemDetail`
+--
+
+LOCK TABLES `storeItemDetail` WRITE;
+/*!40000 ALTER TABLE `storeItemDetail` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `storeItemDetail` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `storeItemDetail` with 0 row(s)
+--
+
+--
+-- Table structure for table `storeItemOption`
+--
+
+DROP TABLE IF EXISTS `storeItemOption`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `storeItemOption` (
+  `storeItemId` int(11) NOT NULL,
+  `storeOptionId` int(11) NOT NULL,
+  `sequence` int(11) NOT NULL,
+  UNIQUE KEY `storeItemIdstoreOptionIdIndex` (`storeItemId`,`storeOptionId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `storeItemOption`
+--
+
+LOCK TABLES `storeItemOption` WRITE;
+/*!40000 ALTER TABLE `storeItemOption` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `storeItemOption` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `storeItemOption` with 0 row(s)
+--
+
+--
+-- Table structure for table `storeOption`
+--
+
+DROP TABLE IF EXISTS `storeOption`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `storeOption` (
+  `storeOptionId` int(11) NOT NULL AUTO_INCREMENT,
+  `optionName` char(100) NOT NULL DEFAULT '',
+  `optionValues` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`storeOptionId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `storeOption`
+--
+
+LOCK TABLES `storeOption` WRITE;
+/*!40000 ALTER TABLE `storeOption` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `storeOption` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `storeOption` with 0 row(s)
+--
+
+--
+-- Table structure for table `storeOrder`
+--
+
+DROP TABLE IF EXISTS `storeOrder`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `storeOrder` (
+  `storeOrderId` int(11) NOT NULL AUTO_INCREMENT,
+  `storeItemId` int(11) NOT NULL,
+  `invoiceId` int(11) NOT NULL,
+  `optionsSelected` varchar(255) NOT NULL,
+  `memberId` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `updated` timestamp NULL DEFAULT NULL,
+  `added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`storeOrderId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `storeOrder`
+--
+
+LOCK TABLES `storeOrder` WRITE;
+/*!40000 ALTER TABLE `storeOrder` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `storeOrder` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `storeOrder` with 0 row(s)
+--
+
+--
+-- Table structure for table `storePhoto`
+--
+
+DROP TABLE IF EXISTS `storePhoto`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `storePhoto` (
+  `storePhotoId` int(11) NOT NULL AUTO_INCREMENT,
+  `storeItemId` int(11) NOT NULL,
+  `filename` varchar(255) DEFAULT NULL,
+  `sequence` int(11) NOT NULL,
+  `extension` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`storePhotoId`),
+  KEY `storeItemId` (`storeItemId`)
+) ENGINE=InnoDB AUTO_INCREMENT=221 DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `storePhoto`
+--
+
+LOCK TABLES `storePhoto` WRITE;
+/*!40000 ALTER TABLE `storePhoto` DISABLE KEYS */;
+SET autocommit=0;
+INSERT INTO `storePhoto` VALUES (17,17,'17',1,'.jpg'),(27,27,'27',1,'.gif'),(28,28,'28',1,'.jpg'),(31,31,'31',1,'.jpg'),(32,32,'32',1,'.jpg'),(33,33,'33',1,'.jpg'),(35,35,'35',1,'.jpg'),(36,36,'36',1,'.jpg'),(37,37,'37',1,'.jpg'),(38,38,'38',1,'.jpg'),(39,39,'39',1,'.jpg'),(41,41,'41',1,'.jpg'),(42,42,'42',1,'.jpg'),(43,43,'43',1,'.jpg'),(44,44,'44',1,'.jpg'),(45,45,'45',1,'.jpg'),(48,48,'48',1,'.png'),(49,49,'49',1,'.jpg'),(50,50,'50',1,'.jpg'),(51,51,'51',1,'.jpg'),(52,52,'52',1,'.jpg'),(54,54,'54',1,'.png'),(55,55,'55',1,'.png'),(56,56,'56',1,'.png'),(57,57,'57',1,'.png'),(58,58,'58',1,'.png'),(59,59,'59',1,'.png'),(60,60,'60',1,'.png'),(61,61,'61',1,'.png'),(62,62,'62',1,'.png'),(63,63,'63',1,'.png'),(64,64,'64',1,'.png'),(65,65,'65',1,'.png'),(66,66,'66',1,'.png'),(67,67,'67',1,'.png'),(68,68,'68',1,'.png'),(69,69,'69',1,'.png'),(70,70,'70',1,'.png'),(71,71,'71',1,'.png'),(72,72,'72',1,'.jpg'),(73,73,'73',1,'.jpg'),(74,74,'74',1,'.png'),(75,75,'75',1,'.png'),(76,76,'76',1,'.png'),(77,77,'77',1,'.png'),(78,78,'78',1,'.png'),(79,79,'79',1,'.png'),(80,80,'80',1,'.png'),(81,81,'81',1,'.png'),(82,82,'82',1,'.png'),(83,83,'83',1,'.png'),(84,84,'84',1,'.png'),(85,85,'85',1,'.png'),(86,86,'86',1,'.png'),(87,87,'87',1,'.png'),(88,88,'88',1,'.png'),(89,89,'89',1,'.png'),(90,90,'90',1,'.png'),(91,91,'91',1,'.png'),(92,92,'92',1,'.png'),(93,93,'93',1,'.png'),(94,94,'94',1,'.png'),(95,95,'95',1,'.png'),(96,96,'96',1,'.png'),(97,97,'97',1,'.png'),(98,98,'98',1,'.png'),(99,99,'99',1,'.png'),(100,100,'100',1,'.png'),(101,101,'101',1,'.png'),(102,102,'102',1,'.png'),(103,103,'103',1,'.png'),(104,104,'104',1,'.png'),(105,105,'105',1,'.png'),(106,106,'106',1,'.png'),(107,107,'107',1,'.png'),(108,108,'108',1,'.png'),(109,109,'109',1,'.png'),(110,110,'110',1,'.png'),(111,111,'111',1,'.png'),(112,112,'112',1,'.png'),(113,113,'113',1,'.png'),(114,114,'114',1,'.png'),(115,115,'115',1,'.png'),(116,116,'116',1,'.png'),(117,117,'117',1,'.png'),(118,118,'118',1,'.png'),(119,119,'119',1,'.png'),(120,120,'120',1,'.png'),(121,121,'121',1,'.png'),(122,122,'122',1,'.png'),(123,123,'123',1,'.png'),(124,124,'124',1,'.png'),(125,125,'125',1,'.png'),(126,126,'126',1,'.png'),(127,127,'127',1,'.png'),(128,128,'128',1,'.png'),(129,129,'129',1,'.png'),(134,134,'134',1,'.png'),(135,135,'135',1,'.png'),(136,136,'136',1,'.png'),(137,137,'137',1,'.png'),(138,138,'138',1,'.png'),(139,139,'139',1,'.png'),(140,140,'140',1,'.png'),(141,141,'141',1,'.png'),(142,142,'142',1,'.png'),(143,143,'143',1,'.png'),(144,144,'144',1,'.png'),(145,145,'145',1,'.png'),(146,146,'146',1,'.png'),(147,147,'147',1,'.png'),(148,148,'148',1,'.png'),(149,149,'149',1,'.png'),(150,150,'150',1,'.png'),(151,151,'151',1,'.png'),(152,152,'152',1,'.png'),(153,153,'153',1,'.png'),(154,154,'154',1,'.png'),(155,155,'155',1,'.png'),(156,156,'156',1,'.png'),(157,157,'157',1,'.png'),(158,158,'158',1,'.png'),(159,159,'159',1,'.png'),(160,160,'160',1,'.png'),(161,161,'161',1,'.png'),(162,162,'162',1,'.png'),(163,163,'163',1,'.png'),(164,164,'164',1,'.png'),(165,165,'165',1,'.png'),(166,166,'166',1,'.png'),(167,167,'167',1,'.png'),(169,169,'169',1,'.png'),(171,171,'171',1,'.png'),(174,174,'174',1,'.png'),(175,175,'175',1,'.png'),(176,176,'176',1,'.png'),(177,177,'177',1,'.png'),(178,178,'178',1,'.png'),(179,179,'179',1,'.png'),(180,180,'180',1,'.png'),(181,181,'181',1,'.png'),(182,182,'182',1,'.png'),(183,183,'183',1,'.png'),(184,184,'184',1,'.png'),(185,185,'185',1,'.png'),(186,186,'186',1,'.png'),(187,187,'187',1,'.png'),(188,188,'188',1,'.png'),(189,189,'189',1,'.png'),(190,190,'190',1,'.png'),(191,191,'191',1,'.png'),(192,192,'192',1,'.png'),(193,193,'193',1,'.png'),(194,194,'194',1,'.png'),(195,195,'195',1,'.png'),(196,196,'196',1,'.png'),(197,197,'197',1,'.png'),(198,198,'198',1,'.png'),(199,199,'199',1,'.png'),(200,200,'200',1,'.png'),(201,201,'201',1,'.png'),(202,202,'202',1,'.png'),(203,203,'203',1,'.png'),(204,204,'204',1,'.png'),(205,205,'205',1,'.png'),(206,206,'206',1,'.png'),(207,207,'207',1,'.png'),(208,208,'208',1,'.png'),(209,209,'209',1,'.png'),(210,210,'210',1,'.png'),(211,211,'211',1,'.png'),(212,212,'212',1,'.png'),(213,213,'213',1,'.png'),(214,214,'214',1,'.png'),(215,215,'215',1,'.png'),(216,216,'216',1,'.png'),(217,217,'217',1,'.png'),(218,218,'218',1,'.png'),(219,219,'219',1,'.png'),(220,220,'220',1,'.png');
+/*!40000 ALTER TABLE `storePhoto` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `storePhoto` with 180 row(s)
+--
+
+--
+-- Table structure for table `story`
+--
+
+DROP TABLE IF EXISTS `story`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `story` (
+  `storyId` int(11) NOT NULL AUTO_INCREMENT,
+  `body` text,
+  `memberIdEditor` int(11) DEFAULT NULL,
+  `headline` varchar(200) DEFAULT NULL,
+  `subhead` varchar(200) DEFAULT NULL,
+  `showFull` int(1) DEFAULT NULL,
+  `noTitle` int(1) DEFAULT NULL,
+  `author` varchar(30) DEFAULT NULL,
+  `onTop` int(1) DEFAULT NULL,
+  `membersOnly` int(11) DEFAULT '0',
+  `javaScript` text,
+  `date` date DEFAULT NULL,
+  `endDate` date DEFAULT NULL,
+  `lastEdited` date DEFAULT NULL,
+  `startDate` date DEFAULT NULL,
+  PRIMARY KEY (`storyId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `story`
+--
+
+LOCK TABLES `story` WRITE;
+/*!40000 ALTER TABLE `story` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `story` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `story` with 0 row(s)
+--
+
+--
+-- Table structure for table `systemEmail`
+--
+
+DROP TABLE IF EXISTS `systemEmail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `systemEmail` (
+  `systemEmailId` int(11) NOT NULL AUTO_INCREMENT,
+  `mailbox` varchar(50) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `name` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`systemEmailId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `systemEmail`
+--
+
+LOCK TABLES `systemEmail` WRITE;
+/*!40000 ALTER TABLE `systemEmail` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `systemEmail` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `systemEmail` with 0 row(s)
+--
+
+--
+-- Table structure for table `userPermission`
+--
+
+DROP TABLE IF EXISTS `userPermission`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `userPermission` (
+  `memberId` int(11) NOT NULL,
+  `permissionGroup` int(11) NOT NULL,
+  `revoked` int(11) NOT NULL DEFAULT '0',
+  UNIQUE KEY `memberId` (`memberId`,`permissionGroup`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `userPermission`
+--
+
+LOCK TABLES `userPermission` WRITE;
+/*!40000 ALTER TABLE `userPermission` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `userPermission` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `userPermission` with 0 row(s)
+--
+
+--
+-- Table structure for table `video`
+--
+
+DROP TABLE IF EXISTS `video`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `video` (
+  `videoId` int(11) NOT NULL AUTO_INCREMENT,
+  `editor` int(6) DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` mediumtext,
+  `fileName` varchar(255) DEFAULT NULL,
+  `hits` int(6) DEFAULT NULL,
+  `videoTypeId` int(11) NOT NULL,
+  `public` int(11) NOT NULL DEFAULT '0',
+  `videoDate` date NOT NULL,
+  `lastEdited` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`videoId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `video`
+--
+
+LOCK TABLES `video` WRITE;
+/*!40000 ALTER TABLE `video` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `video` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `video` with 0 row(s)
+--
+
+--
+-- Table structure for table `videoType`
+--
+
+DROP TABLE IF EXISTS `videoType`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `videoType` (
+  `videoTypeId` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(70) DEFAULT '',
+  PRIMARY KEY (`videoTypeId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `videoType`
+--
+
+LOCK TABLES `videoType` WRITE;
+/*!40000 ALTER TABLE `videoType` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `videoType` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `videoType` with 0 row(s)
+--
+
+--
+-- Table structure for table `volunteerJobShift`
+--
+
+DROP TABLE IF EXISTS `volunteerJobShift`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `volunteerJobShift` (
+  `jobShiftId` int(6) DEFAULT NULL,
+  `memberId` int(11) NOT NULL,
+  `jobId` int(6) DEFAULT NULL,
+  `shiftLeader` int(1) DEFAULT NULL,
+  `volunteerJobShiftId` int(11) NOT NULL AUTO_INCREMENT,
+  `worked` tinyint(4) NOT NULL DEFAULT '0',
+  `email` text,
+  `notes` varchar(255) NOT NULL DEFAULT '',
+  `signedUpDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`volunteerJobShiftId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `volunteerJobShift`
+--
+
+LOCK TABLES `volunteerJobShift` WRITE;
+/*!40000 ALTER TABLE `volunteerJobShift` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `volunteerJobShift` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `volunteerJobShift` with 0 row(s)
+--
+
+--
+-- Table structure for table `volunteerPoint`
+--
+
+DROP TABLE IF EXISTS `volunteerPoint`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `volunteerPoint` (
+  `jobEventId` int(10) NOT NULL,
+  `memberId` int(11) NOT NULL,
+  `pointsAwarded` int(5) NOT NULL DEFAULT '0',
+  `date` date NOT NULL,
+  PRIMARY KEY (`jobEventId`,`date`,`memberId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `volunteerPoint`
+--
+
+LOCK TABLES `volunteerPoint` WRITE;
+/*!40000 ALTER TABLE `volunteerPoint` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `volunteerPoint` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `volunteerPoint` with 0 row(s)
+--
+
+--
+-- Table structure for table `volunteerPoll`
+--
+
+DROP TABLE IF EXISTS `volunteerPoll`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `volunteerPoll` (
+  `volunteerPollId` int(11) NOT NULL AUTO_INCREMENT,
+  `jobEventId` int(5) DEFAULT NULL,
+  `question` text,
+  PRIMARY KEY (`volunteerPollId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `volunteerPoll`
+--
+
+LOCK TABLES `volunteerPoll` WRITE;
+/*!40000 ALTER TABLE `volunteerPoll` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `volunteerPoll` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `volunteerPoll` with 0 row(s)
+--
+
+--
+-- Table structure for table `volunteerPollAnswer`
+--
+
+DROP TABLE IF EXISTS `volunteerPollAnswer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `volunteerPollAnswer` (
+  `volunteerPollAnswerId` int(11) NOT NULL AUTO_INCREMENT,
+  `volunteerPollId` int(6) DEFAULT NULL,
+  `answer` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`volunteerPollAnswerId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `volunteerPollAnswer`
+--
+
+LOCK TABLES `volunteerPollAnswer` WRITE;
+/*!40000 ALTER TABLE `volunteerPollAnswer` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `volunteerPollAnswer` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `volunteerPollAnswer` with 0 row(s)
+--
+
+--
+-- Table structure for table `volunteerPollResponse`
+--
+
+DROP TABLE IF EXISTS `volunteerPollResponse`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `volunteerPollResponse` (
+  `volunteerPollId` int(6) DEFAULT NULL,
+  `memberId` int(11) NOT NULL,
+  `answer` int(2) DEFAULT NULL,
+  UNIQUE KEY `volunteerPollIdmemberIdvolunteerPollResponseIndex` (`volunteerPollId`,`memberId`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `volunteerPollResponse`
+--
+
+LOCK TABLES `volunteerPollResponse` WRITE;
+/*!40000 ALTER TABLE `volunteerPollResponse` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `volunteerPollResponse` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `volunteerPollResponse` with 0 row(s)
+--
+
+--
+-- Table structure for table `ziptax`
+--
+
+DROP TABLE IF EXISTS `ziptax`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ziptax` (
+  `zip_id` int(11) NOT NULL AUTO_INCREMENT,
+  `zip_code` varchar(32) DEFAULT NULL,
+  `zip_tax_rate` decimal(7,4) DEFAULT NULL,
+  `zipcounty` varchar(32) DEFAULT NULL,
+  `zipstate` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`zip_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ziptax`
+--
+
+LOCK TABLES `ziptax` WRITE;
+/*!40000 ALTER TABLE `ziptax` DISABLE KEYS */;
+SET autocommit=0;
+/*!40000 ALTER TABLE `ziptax` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+
+-- Dumped table `ziptax` with 0 row(s)
+--
+
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+/*!40101 SET AUTOCOMMIT=@OLD_AUTOCOMMIT */;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on: Mon, 17 Apr 2023 20:50:49 -0400

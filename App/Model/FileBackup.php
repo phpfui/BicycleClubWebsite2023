@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Model;
+
+class FileBackup
+	{
+	private string $masterDir;
+
+	public function __construct()
+		{
+		$this->masterDir = PROJECT_ROOT . '/../Backup-' . $_SERVER['HTTP_HOST'];
+
+		if (! \is_dir($this->masterDir))
+			{
+			\mkdir($this->masterDir, 0755, true);
+			}
+		}
+
+	public function run(string $rootDirectory, string $subDirectory) : void
+		{
+		$dest = $this->masterDir . '/' . $subDirectory;
+
+		if (! \is_dir($dest))
+			{
+			\mkdir($dest, 0755, true);
+			}
+		$source = $rootDirectory . '/' . $subDirectory;
+		$iterator = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS),
+			\RecursiveIteratorIterator::SELF_FIRST
+		);
+
+		foreach ($iterator as $item)
+			{
+			$file = $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
+			$file = \str_replace('\\', '/', $file);
+			$file = \str_replace('//', '/', $file);
+
+			if ($item->isDir())
+				{
+				if (! \is_dir($file))
+					{
+					\mkdir($file, 0755, true);
+					}
+				}
+			else
+				{
+				$fromFile = \str_replace('\\', '/', $item);
+				$toFile = \str_replace('\\', '/', $file);
+
+				if (! \file_exists($toFile) || \filemtime($toFile) < \filemtime($fromFile))
+					{
+					\copy($fromFile, $toFile);
+					}
+				}
+			}
+		}
+	}

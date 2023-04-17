@@ -1,0 +1,15 @@
+Break out PHPFUI\DB
+	Add docs for App\Record\Definition generators
+	Add docs for validation
+
+RWGPS
+	Rate RWGPS routes
+		1-5 stars
+		Comments
+			Comment categories? (too much traffic, hilly, dirt, ??)
+
+Suggestion box
+
+BCC all web based emails to sender
+
+Attachments on club wide emails not in journal

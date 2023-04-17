@@ -1,0 +1,16 @@
+{
+  "background_color": "purple",
+  "description": "Westchester New York State Cycle Club",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "apple-touch-icon-120x120.png",
+      "sizes": "120x120",
+      "type": "image/png"
+    }
+  ],
+  "name": "Westchester Cycle Club",
+  "short_name": "MyWCC",
+  "start_url": "/"
+}
+

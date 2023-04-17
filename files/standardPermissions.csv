@@ -1,0 +1,1249 @@
+permissionGroup,permission,revoked,menu
+"Banner Manager","Active Banners",0,Banners
+"Banner Manager","Add Banner",0,Banners
+"Banner Manager","Banner Settings",0,Banners
+"Banner Manager",Banners,0,Banners
+"Banner Manager","Current Banners",0,Banners
+"Banner Manager","Edit Banner",0,Banners
+"Banner Manager","Past Banners",0,Banners
+"Banner Manager","Pending Banners",0,Banners
+"Banner Manager","Test Banner",0,Banners
+"Bike Shop Maintainer","Add New Membership",0,Membership
+"Bike Shop Maintainer","Delete Member",0,Membership
+"Bike Shop Maintainer","Edit Member",0,Membership
+"Bike Shop Maintainer","Edit Member Permissions",0,Membership
+"Bike Shop Maintainer","Edit Membership",0,Membership
+"Bike Shop Maintainer","Edit Membership Dates",0,Membership
+"Bike Shop Maintainer",Membership,0,Membership
+"Bike Shop Maintainer","Show Member",0,Membership
+"Board Member","Add Content",0,Content
+"Board Member","Add Forum",0,Forums
+"Board Member","Add Video",0,Video
+"Board Member",Administration,0,Admin
+"Board Member","Audit Trail",0,Admin
+"Board Member",Board,0,Forums
+"Board Member",Calendar,0,Calendar
+"Board Member","Club Email Addresses",0,Admin
+"Board Member",Content,0,Content
+"Board Member","Content By Category",0,Content
+"Board Member","Crop My Photo",0,Membership
+"Board Member","Delete Content",0,Content
+"Board Member","Delete Item From Blog",0,Content
+"Board Member","Delete Ride Comments",0,Rides
+"Board Member","Delete Video",0,Video
+"Board Member","Download Video CSV File",0,Video
+"Board Member","Edit Board Member",0,Admin
+"Board Member","Edit Board Members",0,Admin
+"Board Member","Edit Content",0,Content
+"Board Member","Edit Forum",0,Forums
+"Board Member","Edit Forum Message",0,Forums
+"Board Member","Edit Video",0,Video
+"Board Member","Email All Members",0,Membership
+"Board Member","Email All Volunteers",0,Volunteer
+"Board Member","Email Queue",0,Admin
+"Board Member","Email Single Newsletter",0,Membership
+"Board Member","Find Invoice",0,Store
+"Board Member","Forum Members",0,Forums
+"Board Member",Forums,0,Forums
+"Board Member","Inventory Report",0,Store
+"Board Member","Journal Queue",0,Admin
+"Board Member","Manage Files",0,Admin
+"Board Member","Manage Forums",0,Forums
+"Board Member","Member Photo",0,Membership
+"Board Member","Members In Group",0,Admin
+"Board Member","Move Blog Item",0,Content
+"Board Member","My Permissions",0,Admin
+"Board Member","New Members",0,Membership
+"Board Member","Northeast Cycling Calendar",0,Calendar
+"Board Member","Permission Name",0,Admin
+"Board Member","Purge Expired Content",0,Content
+"Board Member","Recent Content",0,Content
+"Board Member","Ride Comments",0,Rides
+"Board Member","Ride Schedule Filter",0,Rides
+"Board Member","Roster Report",0,Membership
+"Board Member","Show All Members",0,Membership
+"Board Member","Show All Permissions",0,Admin
+"Board Member","Show Members With Permission",0,Admin
+"Board Member","Show Orphan Content",0,Content
+"Board Member","Video Types",0,Video
+"Board Member","Visible Email Addresses",0,Membership
+"Board Member","Volunteer Points Report",0,Leaders
+"Calendar Administrator","Add Calendar Event",0,Calendar
+"Calendar Administrator","Approve Calendar Entries",0,Calendar
+"Calendar Administrator",Calendar,0,Calendar
+"Calendar Administrator","Calendar Configuration",0,Calendar
+"Calendar Administrator","Calendar Coordinator",0,Calendar
+"Calendar Administrator","Calendar Notes",0,Calendar
+"Calendar Administrator","Edit Accept Calendar Email",0,Calendar
+"Calendar Administrator","Edit Calendar Event",0,Calendar
+"Calendar Administrator","Edit Reject Calendar Email",0,Calendar
+"Calendar Administrator","Edit Thank You Calendar Email",0,Calendar
+"Calendar Administrator","Northeast Cycling Calendar",0,Calendar
+"Calendar Administrator","Pending Calendar Events",0,Calendar
+"Calendar Administrator","Pending Cycling Calendar Events",0,Calendar
+"Calendar Administrator","Pending Events",0,Calendar
+"Calendar Administrator","Reject Calender Event",0,Calendar
+"Calendar Administrator","Rejected Calendar Events",0,Calendar
+"Content Editor","Add Content",0,Content
+"Content Editor",Content,0,Content
+"Content Editor","Content By Category",0,Content
+"Content Editor","Delete Content",0,Content
+"Content Editor","Delete Content Category",0,Content
+"Content Editor","Delete Item From Blog",0,Content
+"Content Editor","Edit Content",0,Content
+"Content Editor","Move Blog Item",0,Content
+"Content Editor","Purge Expired Content",0,Content
+"Content Editor","Recent Content",0,Content
+"Content Editor","Show Orphan Content",0,Content
+"Cue Sheet Administrator","Add A New Cue Sheet",0,CueSheets
+"Cue Sheet Administrator","Approve Cue Sheets",0,CueSheets
+"Cue Sheet Administrator","Change Cue Sheet Author",0,CueSheets
+"Cue Sheet Administrator","Club RWGPS Library",0,CueSheets
+"Cue Sheet Administrator","Cue Sheet Configuration",0,CueSheets
+"Cue Sheet Administrator","Cue Sheet Coordinator",0,CueSheets
+"Cue Sheet Administrator","Cue Sheet Notes",0,CueSheets
+"Cue Sheet Administrator","Cue Sheet Statistics",0,CueSheets
+"Cue Sheet Administrator","Cue Sheet Templates",0,CueSheets
+"Cue Sheet Administrator","Cue Sheets",0,CueSheets
+"Cue Sheet Administrator",CueSheets,0,CueSheets
+"Cue Sheet Administrator","Delete Cue Sheet",0,CueSheets
+"Cue Sheet Administrator","Delete Cue Sheet Version",0,CueSheets
+"Cue Sheet Administrator","Edit Accept Cue Sheet Email",0,CueSheets
+"Cue Sheet Administrator","Edit Cue Sheet",0,CueSheets
+"Cue Sheet Administrator","Edit Cue Sheet Version",0,CueSheets
+"Cue Sheet Administrator","Edit Reject Cue Sheet Email",0,CueSheets
+"Cue Sheet Administrator","Find A Cue Sheet",0,CueSheets
+"Cue Sheet Administrator","Merge Cue Sheets",0,CueSheets
+"Cue Sheet Administrator","Merge Start Locations",0,CueSheets
+"Cue Sheet Administrator","My Cue Sheets",0,CueSheets
+"Cue Sheet Administrator","Recent Cue Sheets",0,CueSheets
+"Cue Sheet Administrator","Reject Cue Sheet",0,CueSheets
+"Cue Sheet Administrator","RideWithGPS Settings",0,CueSheets
+"Cue Sheet Administrator","Search Cue Sheets",0,CueSheets
+"Cue Sheet Administrator","View Cue Sheet",0,CueSheets
+"Event Coordinator","Add Event",0,Events
+"Event Coordinator","Add Payment",0,Membership
+"Event Coordinator","Add Reservation",0,Events
+"Event Coordinator","Clone Event",0,Events
+"Event Coordinator","Confirm My Reservation",0,Events
+"Event Coordinator","Currently Registered",0,Events
+"Event Coordinator","Edit Event",0,Events
+"Event Coordinator","Edit Member",0,Membership
+"Event Coordinator","Edit Reservation",0,Events
+"Event Coordinator","Email All Members",0,Membership
+"Event Coordinator","Email All Members Criteria",0,Membership
+"Event Coordinator","Email Event Participants",0,Events
+"Event Coordinator","Event Messages",0,Events
+"Event Coordinator","Event Participants",0,Events
+"Event Coordinator",Events,0,Events
+"Event Coordinator","General Event Messages",0,Events
+"Event Coordinator","Manage All Events",0,Events
+"Event Coordinator","Manage Messages",0,Events
+"Event Coordinator","Manage My Events",0,Events
+"Event Coordinator","My Events",0,Events
+"Event Coordinator","No Payment Required Messages",0,Events
+"Event Coordinator","Pay At Door",0,Events
+"Event Coordinator","Pay At Door Messages",0,Events
+"Event Coordinator","Pay By Check",0,Events
+"Event Coordinator","Pay With Check Messages",0,Events
+"Event Coordinator","Pay With PayPal Messages",0,Events
+"Event Coordinator","Print Name Tags",0,Events
+"Event Coordinator","Refund Participant",0,Events
+"Event Coordinator","Reservation Confirmed",0,Events
+"Event Coordinator","Sign Up For An Event",0,Events
+"Event Coordinator","Signup Sheets",0,Events
+"Event Coordinator","Upcoming Events",0,Events
+"Forum Moderator","Add Forum",0,Forums
+"Forum Moderator","Edit Forum",0,Forums
+"Forum Moderator","Edit Forum Message",0,Forums
+"Forum Moderator","Forum Members",0,Forums
+"Forum Moderator","Manage Forums",0,Forums
+"Golden Apple Administrator","Add A New Cue Sheet",0,CueSheets
+"Golden Apple Administrator","Add GA Event",0,GA
+"Golden Apple Administrator","Add Registration",0,GA
+"Golden Apple Administrator","Approve Cue Sheets",0,CueSheets
+"Golden Apple Administrator","Change Cue Sheet Author",0,CueSheets
+"Golden Apple Administrator","Clean Addresses",0,GA
+"Golden Apple Administrator","Club RWGPS Library",0,CueSheets
+"Golden Apple Administrator","Cue Sheet Configuration",0,CueSheets
+"Golden Apple Administrator","Cue Sheet Coordinator",0,CueSheets
+"Golden Apple Administrator","Cue Sheet Notes",0,CueSheets
+"Golden Apple Administrator","Cue Sheet Statistics",0,CueSheets
+"Golden Apple Administrator","Cue Sheet Templates",0,CueSheets
+"Golden Apple Administrator","Cue Sheets",0,CueSheets
+"Golden Apple Administrator",CueSheets,0,CueSheets
+"Golden Apple Administrator","Delete Cue Sheet",0,CueSheets
+"Golden Apple Administrator","Delete Cue Sheet Version",0,CueSheets
+"Golden Apple Administrator","Download Registrants",0,GA
+"Golden Apple Administrator","Edit Accept Cue Sheet Email",0,CueSheets
+"Golden Apple Administrator","Edit Cue Sheet",0,CueSheets
+"Golden Apple Administrator","Edit Cue Sheet Version",0,CueSheets
+"Golden Apple Administrator","Edit GA Event",0,GA
+"Golden Apple Administrator","Edit Reject Cue Sheet Email",0,CueSheets
+"Golden Apple Administrator","Edit Rider",0,GA
+"Golden Apple Administrator","Edit Route",0,GA
+"Golden Apple Administrator","Email All Members",0,Membership
+"Golden Apple Administrator","Email Queue",0,Admin
+"Golden Apple Administrator","Email Registrants",0,GA
+"Golden Apple Administrator","Find A Cue Sheet",0,CueSheets
+"Golden Apple Administrator","Find Invoice",0,Store
+"Golden Apple Administrator","Find Registrants",0,GA
+"Golden Apple Administrator","Force email to all members",0,Membership
+"Golden Apple Administrator",GA,0,GA
+"Golden Apple Administrator","GA Edit Pending",0,GA
+"Golden Apple Administrator","GA Sign Up",0,GA
+"Golden Apple Administrator","Golden Apple",0,GA
+"Golden Apple Administrator","Golden Apple Organizers",0,Forums
+"Golden Apple Administrator","Landing Page Editor",0,GA
+"Golden Apple Administrator","Landing Page Footer Editor",0,GA
+"Golden Apple Administrator","Landing Page Global Editor",0,GA
+"Golden Apple Administrator","Landing Page Header Editor",0,GA
+"Golden Apple Administrator","Landing Page Tab Editor",0,GA
+"Golden Apple Administrator","Mailing Labels",0,GA
+"Golden Apple Administrator","Manage Dates",0,GA
+"Golden Apple Administrator","Mark Invoice Paid",0,Store
+"Golden Apple Administrator","Merge Cue Sheets",0,CueSheets
+"Golden Apple Administrator","Merge Start Locations",0,CueSheets
+"Golden Apple Administrator","My Cue Sheets",0,CueSheets
+"Golden Apple Administrator","Preregistration Signs",0,GA
+"Golden Apple Administrator","Purge Registrants",0,GA
+"Golden Apple Administrator","Recent Cue Sheets",0,CueSheets
+"Golden Apple Administrator",Register,0,GA
+"Golden Apple Administrator","Registration Sheets",0,GA
+"Golden Apple Administrator","Reject Cue Sheet",0,CueSheets
+"Golden Apple Administrator","RideWithGPS Settings",0,CueSheets
+"Golden Apple Administrator","Search Cue Sheets",0,CueSheets
+"Golden Apple Administrator",Statistics,0,GA
+"Golden Apple Administrator","Unreceived Checks",0,Finance
+"Golden Apple Administrator","Verify Registrants",0,GA
+"Golden Apple Administrator","View Cue Sheet",0,CueSheets
+"Helping Hands","Add Content",0,Content
+"Helping Hands",Content,0,Content
+"Helping Hands","Content By Category",0,Content
+"Helping Hands","Delete Content",0,Content
+"Helping Hands","Delete Item From Blog",0,Content
+"Helping Hands","Edit Content",0,Content
+"Helping Hands","Email All Members",0,Membership
+"Helping Hands","Move Blog Item",0,Content
+"Helping Hands","Purge Expired Content",0,Content
+"Helping Hands","Recent Content",0,Content
+"Helping Hands","Show Orphan Content",0,Content
+"Incentives Chair","Approve Sign In Sheets",0,SignInSheets
+"Incentives Chair","Edit Accept Sign In Sheet Email",0,SignInSheets
+"Incentives Chair","Edit Member",0,Membership
+"Incentives Chair","Edit Reject Sign In Sheet Email",0,SignInSheets
+"Incentives Chair","Edit Sign In Sheet",0,SignInSheets
+"Incentives Chair","Edit Volunteer Points",0,Membership
+"Incentives Chair","Find Invoice",0,Store
+"Incentives Chair","Find Sign In Sheets",0,SignInSheets
+"Incentives Chair","My Sign In Sheets",0,SignInSheets
+"Incentives Chair","Outstanding Volunteer Points",0,Volunteer
+"Incentives Chair","Pending Sign In Sheets",0,SignInSheets
+"Incentives Chair","Point History",0,Volunteer
+"Incentives Chair","Reject Sign In Sheet",0,SignInSheets
+"Incentives Chair","Search Sign In Sheets",0,SignInSheets
+"Incentives Chair","Sign In Sheets",0,SignInSheets
+"Incentives Chair","Sign In Sheets Tips",0,SignInSheets
+"Incentives Chair","View Sign In Sheet",0,SignInSheets
+"Incentives Chair","Volunteer History Report",0,Volunteer
+"Membership Chair","Add New Membership",0,Membership
+"Membership Chair","Add Payment",0,Membership
+"Membership Chair","Change My Password",0,Membership
+"Membership Chair","Club Roster",0,Membership
+"Membership Chair","Club Statistics",0,Membership
+"Membership Chair","Combine Members",0,Membership
+"Membership Chair","Combine Memberships",0,Membership
+"Membership Chair","Delete Member",0,Membership
+"Membership Chair","Delete Payment",0,Membership
+"Membership Chair","Download CSV",0,Membership
+"Membership Chair","Edit Affiliation",0,Membership
+"Membership Chair","Edit Member",0,Membership
+"Membership Chair","Edit Member Deceased",0,Membership
+"Membership Chair","Edit Member Permissions",0,Membership
+"Membership Chair","Edit Membership",0,Membership
+"Membership Chair","Edit Membership Dates",0,Membership
+"Membership Chair","Edit My Info",0,Membership
+"Membership Chair","Edit Volunteer Points",0,Membership
+"Membership Chair","Email All Members",0,Membership
+"Membership Chair","Email All Members Criteria",0,Membership
+"Membership Chair","Email Member",0,Rides
+"Membership Chair","Email Past Members",0,Membership
+"Membership Chair","Email Single Newsletter",0,Membership
+"Membership Chair","Expiring Member Email",0,Membership
+"Membership Chair","Find Members",0,Membership
+"Membership Chair","Force email to all members",0,Membership
+"Membership Chair","Lapsed Member Email",0,Membership
+"Membership Chair","Laspsed Member Email",0,Membership
+"Membership Chair","Login As Other User",0,Membership
+"Membership Chair","Manage My Subscription",0,Membership
+"Membership Chair","Member Admin Tab",0,Membership
+"Membership Chair",Membership,0,Membership
+"Membership Chair","Membership Audit",0,Membership
+"Membership Chair","Membership Card",0,Membership
+"Membership Chair","Membership Configuration",0,Membership
+"Membership Chair","Membership Confirm",0,Membership
+"Membership Chair","Membership Emails",0,Membership
+"Membership Chair","Membership QR Codes",0,Membership
+"Membership Chair","Memberships with Bad Expirations (payment, but expiration not updated)",0,Membership
+"Membership Chair","Memberships with Missing Names",0,Membership
+"Membership Chair","Memberships with No Members",0,Membership
+"Membership Chair","Memberships with No Payments",0,Membership
+"Membership Chair","Memberships with No Permissions",0,Membership
+"Membership Chair","New Member Email",0,Membership
+"Membership Chair","New Member Followup Email",0,Membership
+"Membership Chair","New Members",0,Membership
+"Membership Chair","New Password Email",0,Membership
+"Membership Chair","Newsletter Email",0,Membership
+"Membership Chair","Pay With PayPal",0,Membership
+"Membership Chair","Print Checks Received",0,Finance
+"Membership Chair","Print Minor Release",0,Membership
+"Membership Chair","Recent Sign Ins",0,Membership
+"Membership Chair","Renew My Membership",0,Membership
+"Membership Chair","Renewed Member Email",0,Membership
+"Membership Chair","Reset Any Password",0,Membership
+"Membership Chair","Reset Password",0,Membership
+"Membership Chair","Reset Password EMail",0,Membership
+"Membership Chair","Show All Members",0,Membership
+"Membership Chair","Show Member",0,Membership
+"Membership Chair","Subscription Renewing Email",0,Membership
+"Membership Chair","Update Subscriptions",0,Membership
+"Membership Chair","Visible Email Addresses",0,Membership
+"Membership Committee","Add Member Of The Month",0,Membership
+"Membership Committee","Club Roster",0,Membership
+"Membership Committee","Club Statistics",0,Membership
+"Membership Committee","Delete Member Of The Month",0,Membership
+"Membership Committee","Download CSV",0,Membership
+"Membership Committee","Edit Affiliation",0,Membership
+"Membership Committee","Edit Member",0,Membership
+"Membership Committee","Edit Member Deceased",0,Membership
+"Membership Committee","Edit Member Of The Month",0,Membership
+"Membership Committee","Edit Membership",0,Membership
+"Membership Committee","Email All Members",0,Membership
+"Membership Committee","Email All Members Criteria",0,Membership
+"Membership Committee","Email Past Members",0,Membership
+"Membership Committee","Email Single Newsletter",0,Membership
+"Membership Committee","Expiring Member Email",0,Membership
+"Membership Committee","Find Members",0,Membership
+"Membership Committee","Future Member Of The Month",0,Membership
+"Membership Committee","Laspsed Member Email",0,Membership
+"Membership Committee","Member Of The Month",0,Membership
+"Membership Committee",Membership,0,Membership
+"Membership Committee","Membership Configuration",0,Membership
+"Membership Committee","Membership Emails",0,Membership
+"Membership Committee","Membership QR Codes",0,Membership
+"Membership Committee","New Member Followup Email",0,Membership
+"Membership Committee","Newsletter Email",0,Membership
+"Membership Committee","Renewed Member Email",0,Membership
+"Membership Committee","Show All Members",0,Membership
+"Membership Committee","Show Member",0,Membership
+"Membership Committee","Subscription Renewing Email",0,Membership
+"MOM Editor","Add Member Of The Month",0,Membership
+"MOM Editor","Delete Member Of The Month",0,Membership
+"MOM Editor","Edit Member Of The Month",0,Membership
+"MOM Editor","Future Member Of The Month",0,Membership
+"Newsletter Editor","Add A Newsletter",0,Newsletter
+"Newsletter Editor","Constant Contact Settings",0,System
+"Newsletter Editor","Download CSV",0,Membership
+"Newsletter Editor","New Members",0,Membership
+"Newsletter Editor","Newsletter Email",0,Membership
+"Newsletter Editor",Newsletters,0,Newsletter
+"Newsletter Editor","Update Subscriptions",0,Membership
+"Newsletter Only",Newsletters,0,Newsletter
+"Normal Member","Add A New Cue Sheet",0,CueSheets
+"Normal Member","Add File",0,File
+"Normal Member","Add Folder",0,Photo
+"Normal Member","Add Photo",0,Photo
+"Normal Member",Administration,0,Admin
+"Normal Member",Advocacy,0,Forums
+"Normal Member","All Videos",0,Video
+"Normal Member","Alpine Skiing",0,Forums
+"Normal Member",Attachments,0,Forums
+"Normal Member","Away Trips",0,Forums
+"Normal Member","Become A Ride Leader",0,Leaders
+"Normal Member","Board Minutes",0,News
+"Normal Member","Browse Files",0,File
+"Normal Member","Browse Photos",0,Photo
+"Normal Member",Calendar,0,Calendar
+"Normal Member","Change My Password",0,Membership
+"Normal Member",Chat,0,Forums
+"Normal Member","Check Out",0,Store
+"Normal Member","Club Roster",0,Membership
+"Normal Member","Club RWGPS Library",0,CueSheets
+"Normal Member","Club Statistics",0,Membership
+"Normal Member","Confirm Additional Email",0,Membership
+"Normal Member","Confirm My Reservation",0,Events
+"Normal Member",Content,0,Content
+"Normal Member","Crop My Photo",0,Membership
+"Normal Member","Cue Sheet Statistics",0,CueSheets
+"Normal Member","Cue Sheet Templates",0,CueSheets
+"Normal Member","Cue Sheets",0,CueSheets
+"Normal Member","Current Polls",0,Polls
+"Normal Member","Currently Registered",0,Events
+"Normal Member","Download File CSV File",0,File
+"Normal Member","Edit My Info",0,Membership
+"Normal Member","Edit Photo Title",0,Photo
+"Normal Member","Email All Signed Up Riders",0,Rides
+"Normal Member","Email Leader",0,Leaders
+"Normal Member","Email Member",0,Rides
+"Normal Member","Empire State Trail Tour 2022",0,Forums
+"Normal Member",Events,0,Events
+"Normal Member",Files,0,File
+"Normal Member","Find A Cue Sheet",0,CueSheets
+"Normal Member","Find Files",0,File
+"Normal Member","Find Members",0,Membership
+"Normal Member","Find Photos",0,Photo
+"Normal Member","Find Videos",0,Video
+"Normal Member",Forums,0,Forums
+"Normal Member",GA,0,GA
+"Normal Member","GA Sign Up",0,GA
+"Normal Member","Golden Apple",0,GA
+"Normal Member",Hiking,0,Forums
+"Normal Member","Home Page",0,Home
+"Normal Member","HP/G Ride Chat",0,Forums
+"Normal Member","In Photos",0,Photo
+"Normal Member","Latest News",0,News
+"Normal Member","Leader Stats",0,Leaders
+"Normal Member",Leaders,0,Leaders
+"Normal Member","Leaders By Name",0,Leaders
+"Normal Member","Live Music",0,Forums
+"Normal Member",Marketplace,0,Forums
+"Normal Member","Member Forums",0,Forums
+"Normal Member","Member Photo",0,Membership
+"Normal Member",Membership,0,Membership
+"Normal Member","Membership Card",0,Membership
+"Normal Member","Most Tagged",0,Photo
+"Normal Member","Move File",0,File
+"Normal Member","My Assignments",0,Volunteer
+"Normal Member","My Assistant Leads",0,Leaders
+"Normal Member","My Cart",0,Store
+"Normal Member","My Completed Orders",0,Store
+"Normal Member","My Cue Sheets",0,CueSheets
+"Normal Member","My Events",0,Events
+"Normal Member","My Files",0,File
+"Normal Member","My Forums",0,Forums
+"Normal Member","My Notifications",0,Membership
+"Normal Member","My Past Rides",0,Rides
+"Normal Member","My Permissions",0,Admin
+"Normal Member","My Photos",0,Photo
+"Normal Member","My Points",0,Volunteer
+"Normal Member","My Unpaid Invoices",0,Store
+"Normal Member","My Votes",0,Polls
+"Normal Member","New Post",0,Forums
+"Normal Member",News,0,News
+"Normal Member",Newsletters,0,Newsletter
+"Normal Member","Northeast Cycling Calendar",0,Calendar
+"Normal Member","Past Polls",0,Polls
+"Normal Member","Past Rides",0,Rides
+"Normal Member","Past Rides for Leader",0,Leaders
+"Normal Member","Pay At Door",0,Events
+"Normal Member","Pay By Check",0,Events
+"Normal Member","Pay With PayPal",0,Membership
+"Normal Member","People Who Voted",0,Polls
+"Normal Member","Photo Comments",0,Photo
+"Normal Member","Photo Tags",0,Photo
+"Normal Member",Photos,0,Photo
+"Normal Member",Polls,0,Polls
+"Normal Member","Print Minor Release",0,Membership
+"Normal Member","Recent Content",0,Content
+"Normal Member","Recent Cue Sheets",0,CueSheets
+"Normal Member","Recent Sign Ins",0,Membership
+"Normal Member",Register,0,GA
+"Normal Member","Renew My Membership",0,Membership
+"Normal Member",Reply,0,Forums
+"Normal Member","Reservation Confirmed",0,Events
+"Normal Member","Ride Attendance",0,Rides
+"Normal Member","Ride Comments",0,Rides
+"Normal Member","Ride Schedule",0,Rides
+"Normal Member","Ride Schedule Filter",0,Rides
+"Normal Member","Ride Sign Up",0,Rides
+"Normal Member","Ride Statistics",0,Rides
+"Normal Member","Ride With GPS",0,RWGPS
+"Normal Member",Rides,0,Rides
+"Normal Member","Rides for Cue Sheet",0,Rides
+"Normal Member","Rides for Leader",0,Leaders
+"Normal Member","Rides For Location",0,Rides
+"Normal Member","Rides In My Category",0,Rides
+"Normal Member",RWGPS,0,RWGPS
+"Normal Member","RWGPS Stats",0,RWGPS
+"Normal Member","Search Content",0,Content
+"Normal Member","Search Cue Sheets",0,CueSheets
+"Normal Member","Search Rides",0,Rides
+"Normal Member","Search RWGPS",0,RWGPS
+"Normal Member",Shop,0,Store
+"Normal Member","Show All Permissions",0,Admin
+"Normal Member","Show Leaders",0,Leaders
+"Normal Member","Sign Up For A Job",0,Volunteer
+"Normal Member","Sign Up For An Event",0,Events
+"Normal Member","Signed Up Riders",0,Rides
+"Normal Member",Store,0,Store
+"Normal Member","Text All Signed Up Riders",0,Rides
+"Normal Member","Text Member",0,Membership
+"Normal Member","Top Taggers",0,Photo
+"Normal Member",Triathlon,0,Forums
+"Normal Member","Upcoming Events",0,Events
+"Normal Member","Upcoming Rides for Leader",0,Leaders
+"Normal Member","Upcoming RWGPS",0,RWGPS
+"Normal Member","Verify Additional Email",0,Membership
+"Normal Member",Videos,0,Video
+"Normal Member","View Album Photo",0,Photo
+"Normal Member","View Cue Sheet",0,CueSheets
+"Normal Member","View Photo",0,Photo
+"Normal Member",Volunteer,0,Volunteer
+"Normal Member",Vote,0,Polls
+"Normal Member","XC Ski",0,Forums
+"Normal Member","XC Ski/Snowshoe Lovers",0,Forums
+"Pending Member","Change My Password",0,Membership
+"Pending Member","Edit My Info",0,Membership
+"Pending Member",Membership,0,Membership
+"Pending Member","My Assignments",0,Volunteer
+"Pending Member","Pay With PayPal",0,Membership
+"Pending Member","Print Minor Release",0,Membership
+"Pending Member","Renew My Membership",0,Membership
+"Pending Member","Sign Up For A Job",0,Volunteer
+"Pending Member",Volunteer,0,Volunteer
+"Photo Admin","Add Folder",0,Photo
+"Photo Admin","Add Photo",0,Photo
+"Photo Admin","Browse Photos",0,Photo
+"Photo Admin","Delete Photo",0,Photo
+"Photo Admin","Delete Photo Comments",0,Photo
+"Photo Admin","Edit Photo Title",0,Photo
+"Photo Admin","Find Photos",0,Photo
+"Photo Admin","In Photos",0,Photo
+"Photo Admin","Most Tagged",0,Photo
+"Photo Admin","Move Folder",0,Photo
+"Photo Admin","Move Photo",0,Photo
+"Photo Admin","My Photos",0,Photo
+"Photo Admin","Photo Comments",0,Photo
+"Photo Admin","Photo Tags",0,Photo
+"Photo Admin",Photos,0,Photo
+"Photo Admin","Rename Folder",0,Photo
+"Photo Admin","Top Taggers",0,Photo
+"Photo Admin","View Album Photo",0,Photo
+"Photo Admin","View Member Photos",0,Photo
+"Photo Admin","View Photo",0,Photo
+"Ride Chair","Add A New Cue Sheet",0,CueSheets
+"Ride Chair","Add A Ride",0,Rides
+"Ride Chair","Add Start Location",0,Leaders
+"Ride Chair",Administration,0,Admin
+"Ride Chair","All Unreported Leads",0,Leaders
+"Ride Chair","All Unreported Rides",0,Leaders
+"Ride Chair","Approve Cue Sheets",0,CueSheets
+"Ride Chair","Approve Pending Leaders",0,Leaders
+"Ride Chair","Assistant Leads",0,Leaders
+"Ride Chair","Become A Ride Leader",0,Leaders
+"Ride Chair","Can See Rider Comments",0,Rides
+"Ride Chair","Change Ride Leader",0,Rides
+"Ride Chair","Change Ride Pace",0,Rides
+"Ride Chair","Clone As Leader",0,Rides
+"Ride Chair","Club Email Addresses",0,Admin
+"Ride Chair","Confirm Riders",0,Rides
+"Ride Chair","Confirm Riders On Any Ride",0,Rides
+"Ride Chair","Crash Report",0,Leaders
+"Ride Chair","Cue Sheet Configuration",0,CueSheets
+"Ride Chair","Cue Sheet Coordinator",0,CueSheets
+"Ride Chair","Cue Sheet Notes",0,CueSheets
+"Ride Chair","Cue Sheet Statistics",0,CueSheets
+"Ride Chair","Cue Sheet Templates",0,CueSheets
+"Ride Chair","Cue Sheets",0,CueSheets
+"Ride Chair","Delete Category",0,Leaders
+"Ride Chair","Delete Cue Sheet Version",0,CueSheets
+"Ride Chair","Delete Pace",0,Leaders
+"Ride Chair","Delete Past Rides",0,Rides
+"Ride Chair","Delete Ride",0,Rides
+"Ride Chair","Delete Ride Comments",0,Rides
+"Ride Chair","Delete Start Location",0,Rides
+"Ride Chair","Download Rider Waiver",0,Rides
+"Ride Chair","Download Rides.csv",0,Rides
+"Ride Chair","Edit Accept Cue Sheet Email",0,CueSheets
+"Ride Chair","Edit All Pace",0,Leaders
+"Ride Chair","Edit Categories",0,Leaders
+"Ride Chair","Edit Cue Sheet",0,CueSheets
+"Ride Chair","Edit Cue Sheet Version",0,CueSheets
+"Ride Chair","Edit Leader Settings",0,Leaders
+"Ride Chair","Edit Member",0,Membership
+"Ride Chair","Edit Member Permissions",0,Membership
+"Ride Chair","Edit New Leader Email",0,Leaders
+"Ride Chair","Edit New Rider Email",0,Leaders
+"Ride Chair","Edit Pace",0,Leaders
+"Ride Chair","Edit Reject Cue Sheet Email",0,CueSheets
+"Ride Chair","Edit Request Ride Status Email",0,Leaders
+"Ride Chair","Edit Ride",0,Rides
+"Ride Chair","Edit Ride Settings",0,Leaders
+"Ride Chair","Edit Ride Signups",0,Rides
+"Ride Chair","Edit Rider Sign Up Email",0,Leaders
+"Ride Chair","Edit Start Location",0,Rides
+"Ride Chair","Edit Wait List Email",0,Leaders
+"Ride Chair","Email All Leaders",0,Leaders
+"Ride Chair","Email All Signed Up Riders",0,Rides
+"Ride Chair","Email All Volunteers",0,Volunteer
+"Ride Chair","Email Leader",0,Leaders
+"Ride Chair","Email Member",0,Rides
+"Ride Chair","Email Queue",0,Admin
+"Ride Chair","Find A Cue Sheet",0,CueSheets
+"Ride Chair","Journal Queue",0,Admin
+"Ride Chair","Leader Configuration",0,Leaders
+"Ride Chair","Leader Report",0,Leaders
+"Ride Chair","Leader Stats",0,Leaders
+"Ride Chair",Leaders,0,Leaders
+"Ride Chair","Leaders By Name",0,Leaders
+"Ride Chair",Locations,0,Locations
+"Ride Chair","Member Admin Tab",0,Membership
+"Ride Chair","Members In Group",0,Admin
+"Ride Chair","Merge Start Locations",0,CueSheets
+"Ride Chair","Minor Waiver",0,Leaders
+"Ride Chair","Move Pace",0,Leaders
+"Ride Chair","My Assistant Leads",0,Leaders
+"Ride Chair","My Cue Sheets",0,CueSheets
+"Ride Chair","My Past Leads",0,Leaders
+"Ride Chair","My Past Rides",0,Rides
+"Ride Chair","My Permissions",0,Admin
+"Ride Chair","My Unreported Leads",0,Leaders
+"Ride Chair","My Unreported Rides",0,Leaders
+"Ride Chair","My Upcoming Leads",0,Leaders
+"Ride Chair","My Upcoming Rides",0,Leaders
+"Ride Chair","Non Member Waiver",0,Leaders
+"Ride Chair","Past Rides",0,Rides
+"Ride Chair","Past Rides for Leader",0,Leaders
+"Ride Chair","Pending Leaders",0,Leaders
+"Ride Chair","Print Sign In Sheet",0,Rides
+"Ride Chair","Recent Cue Sheets",0,CueSheets
+"Ride Chair","Ride Attendance",0,Rides
+"Ride Chair","Ride Comments",0,Rides
+"Ride Chair","Ride Coordinators",0,Leaders
+"Ride Chair","Ride Schedule",0,Rides
+"Ride Chair","Ride Sign Up",0,Rides
+"Ride Chair","Ride Statistics",0,Rides
+"Ride Chair",Rides,0,Rides
+"Ride Chair","Rides for Cue Sheet",0,Rides
+"Ride Chair","Rides for Leader",0,Leaders
+"Ride Chair","Rides For Location",0,Rides
+"Ride Chair","Rides In My Category",0,Rides
+"Ride Chair","Search Cue Sheets",0,CueSheets
+"Ride Chair","Search Rides",0,Rides
+"Ride Chair","Show Leaders",0,Leaders
+"Ride Chair","Show Members With Permission",0,Admin
+"Ride Chair","Signed Up Riders",0,Rides
+"Ride Chair","Start Location Active Editing",0,Locations
+"Ride Chair","Start Locations",0,Rides
+"Ride Chair","Text All Signed Up Riders",0,Rides
+"Ride Chair","Unaffiliated Rides Leader",0,Rides
+"Ride Chair","Unreported Rides",0,Leaders
+"Ride Chair","Upcoming Rides for Leader",0,Leaders
+"Ride Chair","Update Ride Status",0,Rides
+"Ride Chair","Visible Email Addresses",0,Membership
+"Ride Chair","Volunteer Points Report",0,Leaders
+"Ride Chair","Volunteer Points Settings",0,Leaders
+"Ride Coordinator","Add A Ride",0,Rides
+"Ride Coordinator","Add Start Location",0,Leaders
+"Ride Coordinator","All Unreported Rides",0,Leaders
+"Ride Coordinator","Approve Pending Leaders",0,Leaders
+"Ride Coordinator","Become A Ride Leader",0,Leaders
+"Ride Coordinator","Can See Rider Comments",0,Rides
+"Ride Coordinator","Change Ride Leader",0,Rides
+"Ride Coordinator","Change Ride Pace",0,Rides
+"Ride Coordinator","Clone As Leader",0,Rides
+"Ride Coordinator","Confirm Riders",0,Rides
+"Ride Coordinator","Confirm Riders On Any Ride",0,Rides
+"Ride Coordinator","Crash Report",0,Leaders
+"Ride Coordinator","Delete Ride",0,Rides
+"Ride Coordinator","Delete Ride Comments",0,Rides
+"Ride Coordinator","Delete Start Location",0,Rides
+"Ride Coordinator","Download Rider Waiver",0,Rides
+"Ride Coordinator","Edit Ride",0,Rides
+"Ride Coordinator","Edit Ride Signups",0,Rides
+"Ride Coordinator","Edit Start Location",0,Rides
+"Ride Coordinator","Email All Leaders",0,Leaders
+"Ride Coordinator","Email All Signed Up Riders",0,Rides
+"Ride Coordinator","Email Leader",0,Leaders
+"Ride Coordinator","Email Member",0,Rides
+"Ride Coordinator","Leader Stats",0,Leaders
+"Ride Coordinator",Leaders,0,Leaders
+"Ride Coordinator","Leaders By Name",0,Leaders
+"Ride Coordinator","My Past Rides",0,Rides
+"Ride Coordinator","My Upcoming Rides",0,Leaders
+"Ride Coordinator","Past Rides",0,Rides
+"Ride Coordinator","Past Rides for Leader",0,Leaders
+"Ride Coordinator","Print Sign In Sheet",0,Rides
+"Ride Coordinator","Ride Attendance",0,Rides
+"Ride Coordinator","Ride Comments",0,Rides
+"Ride Coordinator","Ride Schedule",0,Rides
+"Ride Coordinator","Ride Statistics",0,Rides
+"Ride Coordinator",Rides,0,Rides
+"Ride Coordinator","Rides for Cue Sheet",0,Rides
+"Ride Coordinator","Rides For Location",0,Rides
+"Ride Coordinator","Rides In My Category",0,Rides
+"Ride Coordinator","Search Rides",0,Rides
+"Ride Coordinator","Show Leaders",0,Leaders
+"Ride Coordinator","Signed Up Riders",0,Rides
+"Ride Coordinator","Start Locations",0,Rides
+"Ride Coordinator","Text All Signed Up Riders",0,Rides
+"Ride Coordinator","Unaffiliated Rides Leader",0,Rides
+"Ride Coordinator","Unreported Rides",0,Leaders
+"Ride Coordinator","Upcoming Rides for Leader",0,Leaders
+"Ride Coordinator","Update Ride Status",0,Rides
+"Ride Leader","Add / Update RWGPS",0,RWGPS
+"Ride Leader","Add A Ride",0,Rides
+"Ride Leader","Add Start Location",0,Leaders
+"Ride Leader","Become A Ride Leader",1,Leaders
+"Ride Leader","Clone As Leader",0,Rides
+"Ride Leader","Confirm Riders",0,Rides
+"Ride Leader","Delete Start Location",0,Rides
+"Ride Leader","Download Rider Waiver",0,Rides
+"Ride Leader","Edit Start Location",0,Rides
+"Ride Leader","Email All Signed Up Riders",0,Rides
+"Ride Leader","Find Sign In Sheets",0,SignInSheets
+"Ride Leader","Leader Stats",0,Leaders
+"Ride Leader",Leaders,0,Leaders
+"Ride Leader","Leaders By Name",0,Leaders
+"Ride Leader",Locations,0,Locations
+"Ride Leader","Minor Waiver",0,Leaders
+"Ride Leader","My Assistant Leads",0,Leaders
+"Ride Leader","My Past Leads",0,Leaders
+"Ride Leader","My Sign In Sheets",0,SignInSheets
+"Ride Leader","My Unreported Leads",0,Leaders
+"Ride Leader","My Unreported Rides",0,Leaders
+"Ride Leader","My Upcoming Leads",0,Leaders
+"Ride Leader","My Upcoming Rides",0,Leaders
+"Ride Leader","Non Member Waiver",0,Leaders
+"Ride Leader","Past Rides",0,Rides
+"Ride Leader","Past Rides for Leader",0,Leaders
+"Ride Leader","Print Sign In Sheet",0,Rides
+"Ride Leader","Ride Leaders",0,Forums
+"Ride Leader","Ride Schedule",0,Rides
+"Ride Leader","Ride Statistics",0,Rides
+"Ride Leader",Rides,0,Rides
+"Ride Leader","Rides for Cue Sheet",0,Rides
+"Ride Leader","Rides for Leader",0,Leaders
+"Ride Leader","Rides In My Category",0,Rides
+"Ride Leader","Search Rides",0,Rides
+"Ride Leader","Search Sign In Sheets",0,SignInSheets
+"Ride Leader","Show Leaders",0,Leaders
+"Ride Leader","Sign In Sheets",0,SignInSheets
+"Ride Leader","Signed Up Riders",0,Rides
+"Ride Leader","Start Locations",0,Rides
+"Ride Leader","Unaffiliated Rides Leader",0,Rides
+"Ride Leader","Update Ride Status",0,Rides
+"Ride Leader","View Sign In Sheet",0,SignInSheets
+"Safety Chair"," Delete Message",0,Forums
+"Safety Chair"," Edit",0,Forums
+"Safety Chair","Add Content",0,Content
+"Safety Chair","Add Forum",0,Forums
+"Safety Chair",Content,0,Content
+"Safety Chair","Content By Category",0,Content
+"Safety Chair","Content Settings",0,Content
+"Safety Chair","Crash Report",0,Leaders
+"Safety Chair","Delete Content",0,Content
+"Safety Chair","Delete Forum Message",0,Forums
+"Safety Chair","Delete Image",0,Content
+"Safety Chair","Delete Item From Blog",0,Content
+"Safety Chair","Edit Content",0,Content
+"Safety Chair","Edit Forum",0,Forums
+"Safety Chair","Edit Forum Message",0,Forums
+"Safety Chair","Edit New Leader Email",0,Leaders
+"Safety Chair","Edit New Rider Email",0,Leaders
+"Safety Chair","Edit Public Pages",0,Admin
+"Safety Chair","Edit Request Ride Status Email",0,Leaders
+"Safety Chair","Email All Members",0,Membership
+"Safety Chair","Email All Members Criteria",0,Membership
+"Safety Chair","Email Queue",0,Admin
+"Safety Chair","Forum Members",0,Forums
+"Safety Chair","Journal Queue",0,Admin
+"Safety Chair","Manage Files",0,Admin
+"Safety Chair","Members In Group",0,Admin
+"Safety Chair","Move Blog Item",0,Content
+"Safety Chair","New Member Email",0,Membership
+"Safety Chair","New Member Followup Email",0,Membership
+"Safety Chair","New Members",0,Membership
+"Safety Chair","New Post",0,Forums
+"Safety Chair",Reply,0,Forums
+"Safety Chair","Search Content",0,Content
+"Safety Chair","Show Members With Permission",0,Admin
+"Safety Chair","Show Orphan Content",0,Content
+"Safety Chair","Waiver Editor",0,Admin
+Secretary,"Add Content",0,Content
+Secretary,"Add Permission Group",0,Admin
+Secretary,"Add Poll",0,Polls
+Secretary,"Board Minutes",0,News
+Secretary,"Current Polls",0,Polls
+Secretary,"Edit Content",0,Content
+Secretary,"Edit Poll After Start",0,Polls
+Secretary,"Future Polls",0,Polls
+Secretary,"My Votes",0,Polls
+Secretary,"Past Polls",0,Polls
+Secretary,"People Who Voted",0,Polls
+Secretary,Polls,0,Polls
+Secretary,Vote,0,Polls
+"Store Manager","Add Discount Code",0,Store
+"Store Manager","Add Store Item",0,Store
+"Store Manager","Add Store Option",0,Store
+"Store Manager","Cancel Order",0,Store
+"Store Manager","Check Out",0,Store
+"Store Manager","Discount Codes",0,Store
+"Store Manager","Download Invoice",0,Store
+"Store Manager","Download Invoice CSV File",0,Store
+"Store Manager","Download StoreItem CSV File",0,Store
+"Store Manager","Download StoreOption CSV File",0,Store
+"Store Manager","Download StoreOrder CSV File",0,Store
+"Store Manager","Edit Discount Code",0,Store
+"Store Manager","Edit Store Item",0,Store
+"Store Manager","Edit Store Option",0,Store
+"Store Manager","Email All Members",0,Membership
+"Store Manager","Email Buyers",0,Store
+"Store Manager","Find Invoice",0,Store
+"Store Manager","Inventory Report",0,Store
+"Store Manager","Invoice Report",0,Store
+"Store Manager","Manage Inventory",0,Store
+"Store Manager","Mark Invoice Paid",0,Store
+"Store Manager","My Cart",0,Store
+"Store Manager","My Completed Orders",0,Store
+"Store Manager","My Unpaid Invoices",0,Store
+"Store Manager","Print Mailing Label",0,Store
+"Store Manager",Shop,0,Store
+"Store Manager",Store,0,Store
+"Store Manager","Store Configuration",0,Store
+"Store Manager","Store Options",0,Store
+"Store Manager","Store Orders",0,Store
+"Store Manager","Unshipped Invoices",0,Store
+"Store Shipping","Cancel Order",0,Store
+"Store Shipping","Check Out",0,Store
+"Store Shipping","Email Buyers",0,Store
+"Store Shipping","Find Invoice",0,Store
+"Store Shipping","Inventory Report",0,Store
+"Store Shipping","Invoice Report",0,Store
+"Store Shipping",Store,0,Store
+"Store Shipping","Unshipped Invoices",0,Store
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User",,0,
+"Super User","Board Edit",0,Forums
+Treasurer,"Cancel Order",0,Store
+Treasurer,"Check Maintenance",0,Finance
+Treasurer,"Edit PayPal Terms and Conditions",0,Finance
+Treasurer,"Email Buyers",0,Store
+Treasurer,Finances,0,Finance
+Treasurer,"Import Tax Table",0,Finance
+Treasurer,"Inventory Report",0,Store
+Treasurer,"Invoice Report",0,Store
+Treasurer,"Missing Invoices",0,Finance
+Treasurer,"Outstanding Volunteer Points",0,Volunteer
+Treasurer,"PayPal Settings",0,Finance
+Treasurer,"Print Checks Received",0,Finance
+Treasurer,"Store Payment Summary",0,Finance
+Treasurer,"Taxes Collected",0,Finance
+Treasurer,"Unreceived Checks",0,Finance
+Treasurer,"Volunteer Points",0,Finance
+Treasurer,"Volunteer Points Report",0,Leaders
+"Volunteer Coordinator","Edit A Job",0,Volunteer
+"Volunteer Coordinator","Edit A Poll",0,Volunteer
+"Volunteer Coordinator","Edit Volunteer Points",0,Membership
+"Volunteer Coordinator","Edit Volunteers",0,Volunteer
+"Volunteer Coordinator","Email All Members",0,Membership
+"Volunteer Coordinator","Email All Volunteers",0,Volunteer
+"Volunteer Coordinator","Email Job Volunteers",0,Volunteer
+"Volunteer Coordinator","Email Past Members",0,Membership
+"Volunteer Coordinator","Email Volunteer Shift",0,Volunteer
+"Volunteer Coordinator","Job Shifts",0,Volunteer
+"Volunteer Coordinator","Job Volunteers",0,Volunteer
+"Volunteer Coordinator","Jobs For Event",0,Volunteer
+"Volunteer Coordinator","Member Admin Tab",0,Membership
+"Volunteer Coordinator","My Assignments",0,Volunteer
+"Volunteer Coordinator","Outstanding Volunteer Points",0,Volunteer
+"Volunteer Coordinator","Polls For Event",0,Volunteer
+"Volunteer Coordinator","Show Member",0,Membership
+"Volunteer Coordinator","Sign Up For A Job",0,Volunteer
+"Volunteer Coordinator",Volunteer,0,Volunteer
+"Volunteer Coordinator","Volunteer Event Edit",0,Volunteer
+"Volunteer Coordinator","Volunteer Events",0,Volunteer
+"Volunteer Coordinator","Volunteer Reports",0,Volunteer
+"Volunteer Coordinator","Volunteer Schedule",0,Volunteer
+"Volunteer Only","Cancel Order",0,Store
+"Volunteer Only","Change My Password",0,Membership
+"Volunteer Only","Check Out",0,Store
+"Volunteer Only","Edit My Info",0,Membership
+"Volunteer Only",Home,0,Home
+"Volunteer Only","Home Page",0,Home
+"Volunteer Only","Job Shifts",0,Volunteer
+"Volunteer Only","Job Volunteers",0,Volunteer
+"Volunteer Only","Jobs For Event",0,Volunteer
+"Volunteer Only","Latest News",0,News
+"Volunteer Only",Membership,0,Membership
+"Volunteer Only","My Assignments",0,Volunteer
+"Volunteer Only","My Cart",0,Store
+"Volunteer Only","My Completed Orders",0,Store
+"Volunteer Only","My Unpaid Invoices",0,Store
+"Volunteer Only",News,0,News
+"Volunteer Only",Newsletters,0,Newsletter
+"Volunteer Only","Pay With PayPal",0,Membership
+"Volunteer Only",Shop,0,Store
+"Volunteer Only","Sign Up For A Job",0,Volunteer
+"Volunteer Only",Store,0,Store
+"Volunteer Only","Verify Additional Email",0,Membership
+"Volunteer Only",Volunteer,0,Volunteer
+"Web Site Tester","Active Banners",0,Banners
+"Web Site Tester","Add A New Cue Sheet",0,CueSheets
+"Web Site Tester","Add A Newsletter",0,Newsletter
+"Web Site Tester","Add A Ride",0,Rides
+"Web Site Tester","Add Banner",0,Banners
+"Web Site Tester","Add Calendar Event",0,Calendar
+"Web Site Tester","Add Event",0,Events
+"Web Site Tester","Add Forum",0,Forums
+"Web Site Tester","Add GA Event",0,GA
+"Web Site Tester","Add Member Of The Month",0,Membership
+"Web Site Tester","Add New Membership",0,Membership
+"Web Site Tester","Add Payment",0,Membership
+"Web Site Tester","Add Permission Group",0,Admin
+"Web Site Tester","Add Poll",0,Polls
+"Web Site Tester","Add Registration",0,GA
+"Web Site Tester","Add Reservation",0,Events
+"Web Site Tester","Add Start Location",0,Leaders
+"Web Site Tester","Add Store Item",0,Store
+"Web Site Tester",Administration,0,Admin
+"Web Site Tester",Advocacy,0,Forums
+"Web Site Tester","Advocacy Edit",0,Forums
+"Web Site Tester","Advocacy Members",0,Forums
+"Web Site Tester","All Unreported Rides",0,Leaders
+"Web Site Tester","Alpine Skiing",0,Forums
+"Web Site Tester","Alpine Skiing Edit",0,Forums
+"Web Site Tester","Alpine Skiing Edit Message",0,Forums
+"Web Site Tester","Alpine Skiing Members",0,Forums
+"Web Site Tester","Approve Calendar Entries",0,Calendar
+"Web Site Tester","Approve Cue Sheets",0,CueSheets
+"Web Site Tester","Approve Pending Leaders",0,Leaders
+"Web Site Tester","Approve Sign In Sheets",0,SignInSheets
+"Web Site Tester",Attachments,0,Forums
+"Web Site Tester","Audit Trail",0,Admin
+"Web Site Tester","Away Trips",0,Forums
+"Web Site Tester","Away Trips Edit",0,Forums
+"Web Site Tester","Away Trips Edit Message",0,Forums
+"Web Site Tester","Away Trips Members",0,Forums
+"Web Site Tester","Banner Management",0,Admin
+"Web Site Tester","Banner Settings",0,Banners
+"Web Site Tester",Banners,0,Banners
+"Web Site Tester","Become A Ride Leader",0,Leaders
+"Web Site Tester","Bike Shop Areas",0,Admin
+"Web Site Tester",Board,0,Forums
+"Web Site Tester","Board Edit",0,Forums
+"Web Site Tester","Board Edit Message",0,Forums
+"Web Site Tester","Board Members",0,Forums
+"Web Site Tester","Board Minutes",0,News
+"Web Site Tester",Calendar,0,Calendar
+"Web Site Tester","Calendar Configuration",0,Calendar
+"Web Site Tester","Calendar Coordinator",0,Calendar
+"Web Site Tester","Calendar Notes",0,Calendar
+"Web Site Tester","Can See Rider Comments",0,Rides
+"Web Site Tester","Cancel Order",0,Store
+"Web Site Tester","Change Cue Sheet Author",0,CueSheets
+"Web Site Tester","Change My Password",0,Membership
+"Web Site Tester","Change Ride Leader",0,Rides
+"Web Site Tester","Change Ride Pace",0,Rides
+"Web Site Tester",Chat,0,Forums
+"Web Site Tester","Chat Edit",0,Forums
+"Web Site Tester","Chat Edit Message",0,Forums
+"Web Site Tester","Chat Members",0,Forums
+"Web Site Tester","Check Maintenance",0,Finance
+"Web Site Tester","Check Out",0,Store
+"Web Site Tester","Clean Addresses",0,GA
+"Web Site Tester","Club Email Addresses",0,Admin
+"Web Site Tester","Club Roster",0,Membership
+"Web Site Tester","Club Statistics",0,Membership
+"Web Site Tester","Confirm My Reservation",0,Events
+"Web Site Tester","Confirm Riders",0,Rides
+"Web Site Tester","Confirm Riders On Any Ride",0,Rides
+"Web Site Tester",Content,0,Content
+"Web Site Tester","Content By Category",0,Content
+"Web Site Tester","Crash Report",0,Leaders
+"Web Site Tester","Cue Sheet Configuration",0,CueSheets
+"Web Site Tester","Cue Sheet Coordinator",0,CueSheets
+"Web Site Tester","Cue Sheet Notes",0,CueSheets
+"Web Site Tester","Cue Sheet Statistics",0,CueSheets
+"Web Site Tester","Cue Sheet Templates",0,CueSheets
+"Web Site Tester","Cue Sheets",0,CueSheets
+"Web Site Tester",CueSheets,0,CueSheets
+"Web Site Tester","Current Banners",0,Banners
+"Web Site Tester","Current Polls",0,Polls
+"Web Site Tester","Currently Registered",0,Events
+"Web Site Tester","Discount Codes",0,Store
+"Web Site Tester","Download Invoice",0,Store
+"Web Site Tester","Edit A Job",0,Volunteer
+"Web Site Tester","Edit Accept Calendar Email",0,Calendar
+"Web Site Tester","Edit Accept Cue Sheet Email",0,CueSheets
+"Web Site Tester","Edit Accept Sign In Sheet Email",0,SignInSheets
+"Web Site Tester","Edit Affiliation",0,Membership
+"Web Site Tester","Edit Banner",0,Banners
+"Web Site Tester","Edit Board Member",0,Admin
+"Web Site Tester","Edit Board Members",0,Admin
+"Web Site Tester","Edit Calendar Event",0,Calendar
+"Web Site Tester","Edit Categories",0,Leaders
+"Web Site Tester","Edit Content",0,Content
+"Web Site Tester","Edit Cue Sheet",0,CueSheets
+"Web Site Tester","Edit Cue Sheet Version",0,CueSheets
+"Web Site Tester","Edit Discount Code",0,Store
+"Web Site Tester","Edit Event",0,Events
+"Web Site Tester","Edit Forum",0,Forums
+"Web Site Tester","Edit Forum Message",0,Forums
+"Web Site Tester","Edit GA Event",0,GA
+"Web Site Tester","Edit Leader Settings",0,Leaders
+"Web Site Tester","Edit Member",0,Membership
+"Web Site Tester","Edit Member Deceased",0,Membership
+"Web Site Tester","Edit Member Of The Month",0,Membership
+"Web Site Tester","Edit Member Permissions",0,Membership
+"Web Site Tester","Edit Membership",0,Membership
+"Web Site Tester","Edit Membership Dates",0,Membership
+"Web Site Tester","Edit My Info",0,Membership
+"Web Site Tester","Edit New Leader Email",0,Leaders
+"Web Site Tester","Edit Pace",0,Leaders
+"Web Site Tester","Edit PayPal Terms and Conditions",0,Finance
+"Web Site Tester","Edit Permission Group",0,Admin
+"Web Site Tester","Edit Poll",0,Polls
+"Web Site Tester","Edit Poll After Start",0,Polls
+"Web Site Tester","Edit Reject Calendar Email",0,Calendar
+"Web Site Tester","Edit Reject Cue Sheet Email",0,CueSheets
+"Web Site Tester","Edit Reject Sign In Sheet Email",0,SignInSheets
+"Web Site Tester","Edit Request Ride Status Email",0,Leaders
+"Web Site Tester","Edit Reservation",0,Events
+"Web Site Tester","Edit Ride",0,Rides
+"Web Site Tester","Edit Ride Signups",0,Rides
+"Web Site Tester","Edit Rider",0,GA
+"Web Site Tester","Edit Route",0,GA
+"Web Site Tester","Edit Sign In Sheet",0,SignInSheets
+"Web Site Tester","Edit Start Location",0,Rides
+"Web Site Tester","Edit Store Item",0,Store
+"Web Site Tester","Edit Volunteer Points",0,Membership
+"Web Site Tester","Edit Volunteers",0,Volunteer
+"Web Site Tester","Email All Leaders",0,Leaders
+"Web Site Tester","Email All Members",0,Membership
+"Web Site Tester","Email All Signed Up Riders",0,Rides
+"Web Site Tester","Email All Volunteers",0,Volunteer
+"Web Site Tester","Email Buyers",0,Store
+"Web Site Tester","Email Event Participants",0,Events
+"Web Site Tester","Email Leader",0,Leaders
+"Web Site Tester","Email Member",0,Rides
+"Web Site Tester","Email Processor Settings",0,Admin
+"Web Site Tester","Email Queue",0,Admin
+"Web Site Tester","Email Registrants",0,GA
+"Web Site Tester","Email Single Newsletter",0,Membership
+"Web Site Tester","Email Volunteer Shift",0,Volunteer
+"Web Site Tester","Event Messages",0,Events
+"Web Site Tester","Event Participants",0,Events
+"Web Site Tester",Events,0,Events
+"Web Site Tester","Expiring Member Email",0,Membership
+"Web Site Tester",Finances,0,Finance
+"Web Site Tester","Find A Cue Sheet",0,CueSheets
+"Web Site Tester","Find Invoice",0,Store
+"Web Site Tester","Find Members",0,Membership
+"Web Site Tester","Find Registrants",0,GA
+"Web Site Tester","Find Sign In Sheets",0,SignInSheets
+"Web Site Tester","Force email to all members",0,Membership
+"Web Site Tester","Forum Members",0,Forums
+"Web Site Tester",Forums,0,Forums
+"Web Site Tester","Future Member Of The Month",0,Membership
+"Web Site Tester","Future Polls",0,Polls
+"Web Site Tester",GA,0,GA
+"Web Site Tester","GA Edit Pending",0,GA
+"Web Site Tester","GA Sign Up",0,GA
+"Web Site Tester","General Event Messages",0,Events
+"Web Site Tester","Golden Apple",0,GA
+"Web Site Tester","Golden Apple Organizers",0,Forums
+"Web Site Tester","Golden Apple Organizers Edit",0,Forums
+"Web Site Tester","Golden Apple Organizers Edit Message",0,Forums
+"Web Site Tester","Golden Apple Organizers Members",0,Forums
+"Web Site Tester","Google ReCAPTCHA",0,Admin
+"Web Site Tester","Google ReCAPTCHA Settings",0,Admin
+"Web Site Tester",Hiking,0,Forums
+"Web Site Tester","Hiking Edit",0,Forums
+"Web Site Tester","Hiking Edit Message",0,Forums
+"Web Site Tester","Hiking Members",0,Forums
+"Web Site Tester","Home Page",0,Home
+"Web Site Tester","Import SQL",0,Admin
+"Web Site Tester","Inventory Report",0,Store
+"Web Site Tester","Invoice Report",0,Store
+"Web Site Tester","Job Shifts",0,Volunteer
+"Web Site Tester","Job Volunteers",0,Volunteer
+"Web Site Tester","Jobs For Event",0,Volunteer
+"Web Site Tester","Journal Queue",0,Admin
+"Web Site Tester","Landing Page Editor",0,GA
+"Web Site Tester","Laspsed Member Email",0,Membership
+"Web Site Tester","Latest News",0,News
+"Web Site Tester","Leader Configuration",0,Leaders
+"Web Site Tester","Leader Stats",0,Leaders
+"Web Site Tester",Leaders,0,Leaders
+"Web Site Tester","Leaders By Name",0,Leaders
+"Web Site Tester","Live Music",0,Forums
+"Web Site Tester","Live Music Edit",0,Forums
+"Web Site Tester","Live Music Edit Message",0,Forums
+"Web Site Tester","Live Music Members",0,Forums
+"Web Site Tester",Locations,0,Locations
+"Web Site Tester","Login As Other User",0,Membership
+"Web Site Tester","Mailing Labels",0,GA
+"Web Site Tester","Manage All Events",0,Events
+"Web Site Tester","Manage Dates",0,GA
+"Web Site Tester","Manage Forums",0,Forums
+"Web Site Tester","Manage Inventory",0,Store
+"Web Site Tester","Manage Messages",0,Events
+"Web Site Tester","Manage My Events",0,Events
+"Web Site Tester","Manage My Subscription",0,Membership
+"Web Site Tester","Mark Invoice Paid",0,Store
+"Web Site Tester",Marketplace,0,Forums
+"Web Site Tester","Marketplace Edit",0,Forums
+"Web Site Tester","Marketplace Edit Message",0,Forums
+"Web Site Tester","Marketplace Members",0,Forums
+"Web Site Tester","Member Forums",0,Forums
+"Web Site Tester","Member Of The Month",0,Membership
+"Web Site Tester","Members In Group",0,Admin
+"Web Site Tester",Membership,0,Membership
+"Web Site Tester","Membership Audit",0,Membership
+"Web Site Tester","Membership Card",0,Membership
+"Web Site Tester","Membership Configuration",0,Membership
+"Web Site Tester","Membership Confirm",0,Membership
+"Web Site Tester","Membership Emails",0,Membership
+"Web Site Tester","Merge Start Locations",0,CueSheets
+"Web Site Tester","Move Blog Item",0,Content
+"Web Site Tester","Move Pace",0,Leaders
+"Web Site Tester","My Assignments",0,Volunteer
+"Web Site Tester","My Cart",0,Store
+"Web Site Tester","My Completed Orders",0,Store
+"Web Site Tester","My Cue Sheets",0,CueSheets
+"Web Site Tester","My Events",0,Events
+"Web Site Tester","My Past Rides",0,Rides
+"Web Site Tester","My Permissions",0,Admin
+"Web Site Tester","My Sign In Sheets",0,SignInSheets
+"Web Site Tester","My Unpaid Invoices",0,Store
+"Web Site Tester","My Unreported Rides",0,Leaders
+"Web Site Tester","My Upcoming Rides",0,Leaders
+"Web Site Tester","My Votes",0,Polls
+"Web Site Tester","New Member Email",0,Membership
+"Web Site Tester","New Member Followup Email",0,Membership
+"Web Site Tester","New Post",0,Forums
+"Web Site Tester",News,0,News
+"Web Site Tester","Newsletter Email",0,Membership
+"Web Site Tester",Newsletters,0,Newsletter
+"Web Site Tester","No Payment Required Messages",0,Events
+"Web Site Tester","Northeast Cycling Calendar",0,Calendar
+"Web Site Tester","Past Banners",0,Banners
+"Web Site Tester","Past Polls",0,Polls
+"Web Site Tester","Past Rides",0,Rides
+"Web Site Tester","Past Rides for Leader",0,Leaders
+"Web Site Tester","Pay At Door",0,Events
+"Web Site Tester","Pay At Door Messages",0,Events
+"Web Site Tester","Pay By Check",0,Events
+"Web Site Tester","Pay With Check Messages",0,Events
+"Web Site Tester","Pay With PayPal",0,Membership
+"Web Site Tester","Pay With PayPal Messages",0,Events
+"Web Site Tester","PayPal Settings",0,Finance
+"Web Site Tester","Pending Banners",0,Banners
+"Web Site Tester","Pending Cycling Calendar Events",0,Calendar
+"Web Site Tester","Pending Events",0,Calendar
+"Web Site Tester","Pending Leaders",0,Leaders
+"Web Site Tester","Pending Sign In Sheets",0,SignInSheets
+"Web Site Tester","People Who Voted",0,Polls
+"Web Site Tester","Permission Name",0,Admin
+"Web Site Tester",Polls,0,Polls
+"Web Site Tester","Polls For Event",0,Volunteer
+"Web Site Tester","Preregistration Signs",0,GA
+"Web Site Tester","Print Checks Received",0,Finance
+"Web Site Tester","Print Minor Release",0,Membership
+"Web Site Tester","Print Name Tags",0,Events
+"Web Site Tester","Print Sign In Sheet",0,Rides
+"Web Site Tester","Purge Expired Content",0,Content
+"Web Site Tester","Purge Registrants",0,GA
+"Web Site Tester","Recent Content",0,Content
+"Web Site Tester","Recent Cue Sheets",0,CueSheets
+"Web Site Tester","Recent Sign Ins",0,Membership
+"Web Site Tester","Refund Participant",0,Events
+"Web Site Tester",Register,0,GA
+"Web Site Tester","Registration Sheets",0,GA
+"Web Site Tester","Reject Calender Event",0,Calendar
+"Web Site Tester","Reject Cue Sheet",0,CueSheets
+"Web Site Tester","Reject Sign In Sheet",0,SignInSheets
+"Web Site Tester","Renew My Membership",0,Membership
+"Web Site Tester","Renewed Member Email",0,Membership
+"Web Site Tester",Reply,0,Forums
+"Web Site Tester","Reservation Confirmed",0,Events
+"Web Site Tester","Reset Any Password",0,Membership
+"Web Site Tester","Reset Password",0,Membership
+"Web Site Tester","Reset Password EMail",0,Membership
+"Web Site Tester","Ride Comments",0,Rides
+"Web Site Tester","Ride Coordinators",0,Leaders
+"Web Site Tester","Ride Leaders",0,Forums
+"Web Site Tester","Ride Leaders Edit",0,Forums
+"Web Site Tester","Ride Leaders Edit Message",0,Forums
+"Web Site Tester","Ride Leaders Members",0,Forums
+"Web Site Tester","Ride Schedule",0,Rides
+"Web Site Tester","Ride Sign Up",0,Rides
+"Web Site Tester","Ride Statistics",0,Rides
+"Web Site Tester",Rides,0,Rides
+"Web Site Tester","Rides Delete Message",0,Forums
+"Web Site Tester","Rides Edit",0,Forums
+"Web Site Tester","Rides Edit Message",0,Forums
+"Web Site Tester","Rides for Cue Sheet",0,Rides
+"Web Site Tester","Rides for Leader",0,Leaders
+"Web Site Tester","Rides For Location",0,Rides
+"Web Site Tester","Rides In My Category",0,Rides
+"Web Site Tester","Rides Members",0,Forums
+"Web Site Tester","Search Content",0,Content
+"Web Site Tester","Search Cue Sheets",0,CueSheets
+"Web Site Tester","Search Forums",0,Forums
+"Web Site Tester","Search Rides",0,Rides
+"Web Site Tester","Search Sign In Sheets",0,SignInSheets
+"Web Site Tester","Session Info",0,Admin
+"Web Site Tester",Shop,0,Store
+"Web Site Tester","Show All Members",0,Membership
+"Web Site Tester","Show All Permissions",0,Admin
+"Web Site Tester","Show Leaders",0,Leaders
+"Web Site Tester","Show Member",0,Membership
+"Web Site Tester","Show Orphan Content",0,Content
+"Web Site Tester","Show Permission Groups",0,Admin
+"Web Site Tester","Sign In Sheets",0,SignInSheets
+"Web Site Tester","Sign Up For A Job",0,Volunteer
+"Web Site Tester","Sign Up For An Event",0,Events
+"Web Site Tester","Signed Up Riders",0,Rides
+"Web Site Tester","Signup Sheets",0,Events
+"Web Site Tester","Start Locations",0,Rides
+"Web Site Tester",Statistics,0,GA
+"Web Site Tester",Store,0,Store
+"Web Site Tester","Store Configuration",0,Store
+"Web Site Tester","Store Payment Summary",0,Finance
+"Web Site Tester","Subscription Renewing Email",0,Membership
+"Web Site Tester","Taxes Collected",0,Finance
+"Web Site Tester","Test Banner",0,Banners
+"Web Site Tester",Triathlon,0,Forums
+"Web Site Tester","Triathlon Edit",0,Forums
+"Web Site Tester","Triathlon Members",0,Forums
+"Web Site Tester","Unaffiliated Rides Leader",0,Rides
+"Web Site Tester","Unreceived Checks",0,Finance
+"Web Site Tester","Unreported Rides",0,Leaders
+"Web Site Tester","Unshipped Invoices",0,Store
+"Web Site Tester","Upcoming Events",0,Events
+"Web Site Tester","Upcoming Rides for Leader",0,Leaders
+"Web Site Tester","Update Ride Status",0,Rides
+"Web Site Tester","Verify Registrants",0,GA
+"Web Site Tester","View Cue Sheet",0,CueSheets
+"Web Site Tester","View Sign In Sheet",0,SignInSheets
+"Web Site Tester","Visible Email Addresses",0,Membership
+"Web Site Tester",Volunteer,0,Volunteer
+"Web Site Tester","Volunteer Points",0,Finance
+"Web Site Tester","Volunteer Points Report",0,Leaders
+"Web Site Tester","Volunteer Schedule",0,Volunteer
+"Web Site Tester",Vote,0,Polls
+"Web Site Tester","Waiver Editor",0,Admin
+"Web Site Tester","Waiver Exempt",0,Membership
+"Web Site Tester","XC Ski",0,Forums
+"Web Site Tester","XC Ski Delete Message",0,Forums
+"Web Site Tester","XC Ski Edit",0,Forums
+"Web Site Tester","XC Ski Edit Message",0,Forums
+"Web Site Tester","XC Ski Members",0,Forums

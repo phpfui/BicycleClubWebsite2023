@@ -28,9 +28,9 @@ class Migrate extends \PHPFUI\Container
 			return;
 			}
 
+		$migrationNeeded = false;
 		$wizardBar->nextAllowed(! $migrationNeeded);
 
-		$migrationNeeded = false;
 		if ($migrationNeeded)
 			{
 			$migrationButton = new \PHPFUI\Button('Migrate Database', $this->page->getBaseURL() . '?migrate');

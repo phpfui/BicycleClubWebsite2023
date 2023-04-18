@@ -38,7 +38,7 @@ class DB extends \App\Settings\Settings
 			$pdo = new \PHPFUI\ORM\PDOInstance($this->getConnectionString(), $this->getUser(), $this->getPassword());
 
 			// set up session to our specifications
-			$command = "SET SESSION sql_mode='NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION,ALLOW_INVALID_DATES';";
+			$command = "SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION,ALLOW_INVALID_DATES';";
 
 			if ($this->charset)
 				{

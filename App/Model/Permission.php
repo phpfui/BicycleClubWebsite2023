@@ -356,7 +356,7 @@ class Permission implements \App\Model\PermissionsInterface
 			$member['revoked'] = 0;
 			$permission = new \App\Record\UserPermission();
 			$permission->setFrom($member);
-			$permission->insert();
+			$permission->insertOrUpdate();
 			unset($permission);
 			}
 
@@ -367,7 +367,7 @@ class Permission implements \App\Model\PermissionsInterface
 			$member['revoked'] = $revoked[$permissionId] ?? 0;
 			$permission = new \App\Record\UserPermission();
 			$permission->setFrom($member);
-			$permission->insert();
+			$permission->insertOrUpdate();
 			unset($permission);
 			}
 		}

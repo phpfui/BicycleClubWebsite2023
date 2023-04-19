@@ -175,7 +175,7 @@ class Membership
 			$permission = new \App\Record\UserPermission();
 			$permission->member = $member;
 			$permission->permissionGroup = 6;
-			$permission->insert();
+			$permission->insertOrUpdate();
 
 			$lastRecord = $record;
 			++$count;

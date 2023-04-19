@@ -772,7 +772,8 @@ class Member
 
 		if (isset($member['membershipId']))
 			{
-			$membership = new \App\Record\Membership($member);
+			$membership = new \App\Record\Membership($member['membershipId']);
+			$membership->setFrom($member);
 			$membership->update();
 			}
 
@@ -781,7 +782,8 @@ class Member
 			unset($member['membershipId']);
 			}
 
-		$memberRecord = new \App\Record\Member($member);
+		$memberRecord = new \App\Record\Member($member['memberId']);
+		$memberRecord->setFrom($member);
 		$memberRecord->update();
 		}
 
@@ -793,7 +795,7 @@ class Member
 			$body = '<p>Thanks for your interest in joining the ' . $this->settingTable->value('clubName') . '</p>';
 			$body .= '<p>We need to verify your email address.</p>';
 			$home = $this->settingTable->value('homePage');
-			$body .= "<p><a href='{$home}/Membership/verify/{$member->memberId}/{$verifyCode}'>Please click here verify your email address.</a></p>";
+			$body .= "<p><a href='{$home}/Membership/verify/{$member->memberId}/{$verifyCode}'>Please click here to everify your email address.</a></p>";
 			$body .= '<p>Once you verify your email, you can proceed with joining the club.</p>';
 			$email = new \App\Tools\EMail();
 			$email->setSubject('Please verify your email address for ' . $this->settingTable->value('clubName'));

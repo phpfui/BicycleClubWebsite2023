@@ -12,7 +12,7 @@ use function strlen;
 class TokenIterator
 {
 
-	/** @var mixed[][] */
+	/** @var list<array{string, int, int}> */
 	private $tokens;
 
 	/** @var int */
@@ -21,6 +21,9 @@ class TokenIterator
 	/** @var int[] */
 	private $savePoints = [];
 
+	/**
+	 * @param list<array{string, int, int}> $tokens
+	 */
 	public function __construct(array $tokens, int $index = 0)
 	{
 		$this->tokens = $tokens;
@@ -54,6 +57,18 @@ class TokenIterator
 		}
 
 		return $offset;
+	}
+
+
+	public function currentTokenLine(): int
+	{
+		return $this->tokens[$this->index][Lexer::LINE_OFFSET];
+	}
+
+
+	public function currentTokenIndex(): int
+	{
+		return $this->index;
 	}
 
 
@@ -217,7 +232,8 @@ class TokenIterator
 			$this->currentTokenType(),
 			$this->currentTokenOffset(),
 			$expectedTokenType,
-			$expectedTokenValue
+			$expectedTokenValue,
+			$this->currentTokenLine()
 		);
 	}
 

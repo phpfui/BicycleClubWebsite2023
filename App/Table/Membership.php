@@ -84,7 +84,7 @@ class Membership extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString(-$daysBack)]);
 		}
 
-	public function getRenewingMemberships(int $date) : \PHPFUI\ORM\DataObjectCursor
+	public function getRenewingMemberships(string $date) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from membership s left join member m on m.membershipId=s.membershipId
 				where s.renews=?';

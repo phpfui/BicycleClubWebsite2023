@@ -28,7 +28,6 @@ class Migrate extends \PHPFUI\Container
 			return;
 			}
 
-		$migrationNeeded = false;
 		$wizardBar->nextAllowed(! $migrationNeeded);
 
 		if ($migrationNeeded)

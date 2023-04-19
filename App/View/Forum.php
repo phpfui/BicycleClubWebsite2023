@@ -841,7 +841,7 @@ class Forum
 						if ($this->page->isAuthorized('Delete Forum Message'))
 							{
 							$forumMesage = new \App\Record\ForumMessage();
-							$forumMesage->setFrom((int)$_POST['forumMessageId']);
+							$forumMesage->setFrom($_POST['forumMessageId']);
 							$forumMesage->delete();
 							$this->page->setResponse($_POST['deleteId']);
 							}

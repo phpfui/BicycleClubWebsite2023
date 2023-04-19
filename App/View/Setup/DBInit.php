@@ -4,91 +4,22 @@ namespace App\View\Setup;
 
 class DBInit extends \PHPFUI\Container
 	{
-	private array $officialTables = [
-		'additionalemail' => false,
-		'assistantleader' => false,
-		'audittrail' => false,
-		'banner' => false,
-		'bikeshoparea' => false,
-		'blog' => false,
-		'blogitem' => false,
-		'boardmember' => false,
-		'calendar' => false,
-		'cartitem' => false,
-		'category' => false,
-		'cuesheet' => false,
-		'cuesheetversion' => false,
-		'customer' => false,
-		'discountcode' => false,
-		'event' => false,
-		'forum' => false,
-		'forumattachment' => false,
-		'forummember' => false,
-		'forummessage' => false,
-		'gaanswer' => false,
-		'gaevent' => false,
-		'gaincentive' => false,
-		'gapricedate' => false,
-		'garide' => false,
-		'garider' => false,
-		'incentive' => false,
-		'invoice' => false,
-		'invoiceitem' => false,
-		'job' => false,
-		'jobevent' => false,
-		'jobshift' => false,
-		'journalitem' => false,
-		'mailattachment' => false,
-		'mailitem' => false,
-		'mailpiece' => false,
-		'member' => false,
-		'membercategory' => false,
-		'memberofmonth' => false,
-		'membership' => false,
-		'migration' => false,
-		'newsletter' => false,
-		'pace' => false,
-		'payment' => false,
-		'paypalrefund' => false,
-		'permissiongroup' => false,
-		'permission' => false,
-		'photo' => false,
-		'photocomment' => false,
-		'photofolder' => false,
-		'phototag' => false,
-		'pointhistory' => false,
-		'poll' => false,
-		'pollanswer' => false,
-		'pollresponse' => false,
-		'publicpage' => false,
-		'redirect' => false,
-		'reservation' => false,
-		'reservationperson' => false,
-		'ride' => false,
-		'ridecomment' => false,
-		'rideincentive' => false,
-		'ridesignup' => false,
-		'rwgps' => false,
-		'setting' => false,
-		'signinsheet' => false,
-		'signinsheetride' => false,
-		'startlocation' => false,
-		'storeitem' => false,
-		'storeitemdetail' => false,
-		'story' => false,
-		'systememail' => false,
-		'userpermission' => false,
-		'volunteerjobshift' => false,
-		'volunteerpoint' => false,
-		'volunteerpoll' => false,
-		'volunteerpollanswer' => false,
-		'volunteerpollresponse' => false,
-		'ziptax' => false,
-	];
-
 	public function __construct(private readonly \PHPFUI\Page $page, \App\View\Setup\WizardBar $wizardBar)
 		{
+		if (! \is_dir(\PHPFUI\ORM::getMigrationNamespacePath()))
+			{
+			\mkdir(\PHPFUI\ORM::getMigrationNamespacePath(), 0x777, true);
+			}
+		$migrator = new \PHPFUI\ORM\Migrator();
+
 		$this->add(new \PHPFUI\Header('Initialize the Database', 4));
+
+		$officialTables = [];
+
+		foreach (\PHPFUI\ORM\Table::getAllTables() as $table)
+			{
+			$officialTables[\strtolower($table->getTableName())] = false;
+			}
 
 		$tableCursor = \PHPFUI\ORM::getArrayCursor('show tables');
 		$currentTables = [];
@@ -103,9 +34,9 @@ class DBInit extends \PHPFUI\Container
 
 		foreach ($currentTables as $table => $inuse)
 			{
-			if (isset($this->officialTables[$table]))
+			if (isset($officialTables[$table]))
 				{
-				$this->officialTables[$table] = true;
+				$officialTables[$table] = true;
 				}
 			else
 				{
@@ -115,11 +46,11 @@ class DBInit extends \PHPFUI\Container
 
 		$missingTables = [];
 
-		foreach ($this->officialTables as $table => $inuse)
+		foreach ($officialTables as $table => $inuse)
 			{
 			if (! $inuse)
 				{
-				$missingTables[] = $table;
+				$missingTables[$table] = $table;
 				}
 			}
 
@@ -149,6 +80,36 @@ class DBInit extends \PHPFUI\Container
 				{
 				\App\Model\Session::setFlashList('alert', $restore->getErrors());
 				}
+			else
+				{
+				$migrator->migrate();
+
+				$errors = $migrator->getErrors();
+
+				if ($errors)
+					{
+					\PHPFUI\Session::setFlash('alert', \print_r($errors, true));
+					}
+
+				$permissionModel = new \App\Model\Permission();
+				$permissionModel->loadStandardPermissions();
+				}
+
+			$this->page->redirect('/Config/wizard/' . $settings->stage);
+
+			return;
+			}
+
+		if (isset($_GET['migrate']))
+			{
+			$migrator->migrate();
+
+			$errors = $migrator->getErrors();
+
+			if ($errors)
+				{
+				\PHPFUI\Session::setFlash('alert', \print_r($errors, true));
+				}
 
 			$this->page->redirect('/Config/wizard/' . $settings->stage);
 
@@ -159,13 +120,24 @@ class DBInit extends \PHPFUI\Container
 		$dropExtra = \count($extraTables) > 0;
 		$callout = '';
 
-		if (! \count($missingTables) && ! \count($extraTables))
+		if ($migrator->migrationNeeded() && ! \array_key_exists('migration', $missingTables))
+			{
+			$callout = new \PHPFUI\Callout('alert');
+			$callout->add('You need to run press the Migrate Database button.');
+			$callout->add('<br><br>OR<br><br>');
+			$callout->add('You must click on the Initialize Database button to continue.');
+			$migrateButton = new \PHPFUI\Button('Migrate Database', $this->page->getBaseURL() . '?migrate');
+			$migrateButton->addClass('info');
+			$wizardBar->addButton($migrateButton);
+			$initDB = true;
+			}
+		elseif (! \count($missingTables) && ! \count($extraTables))
 			{
 			$callout = new \PHPFUI\Callout('success');
 			$callout->add('All required tables are present and no extra tables have been found.');
 			$callout->add('<br><br>It is optional to the initialize database.');
 			}
-		elseif (\count($missingTables) == \count($this->officialTables))
+		elseif (\count($missingTables) == \count($officialTables))
 			{
 			$callout = new \PHPFUI\Callout('success');
 			$callout->add('This appears to be an empty database, which is good!<br><br>Click on the Initialize Database button to continue.');

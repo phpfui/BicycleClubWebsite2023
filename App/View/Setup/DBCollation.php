@@ -25,7 +25,7 @@ class DBCollation extends \PHPFUI\Container
 
 		$form->add(new \PHPFUI\Header('Set Database Collation for choosen Character Set ' . $settings->charset, 4));
 		$form->add($wizardBar);
-		$fieldSet = new \PHPFUI\FieldSet('Start typing to select a collation');
+		$fieldSet = new \PHPFUI\FieldSet('Start typing to select a collation (utf8mb4_general_ci is recommended)');
 		$fieldSet->add(new \App\UI\Collation($settings));
 		$form->add($fieldSet);
 		$this->add($form);

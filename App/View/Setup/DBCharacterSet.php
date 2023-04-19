@@ -25,7 +25,7 @@ class DBCharacterSet extends \PHPFUI\Container
 
 		$form->add(new \PHPFUI\Header('Set Database Character Set', 4));
 		$form->add($wizardBar);
-		$fieldSet = new \PHPFUI\FieldSet('Start typing to select a character set');
+		$fieldSet = new \PHPFUI\FieldSet('Start typing to select a character set (utf8mb4 is recommended)');
 		$fieldSet->add(new \App\UI\CharacterSet($page, $settings));
 		$form->add($fieldSet);
 		$this->add($form);

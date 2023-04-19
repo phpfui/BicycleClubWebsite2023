@@ -7,6 +7,24 @@ include __DIR__ . '/../../common.php';
 
 echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 
+function cleanEmail(string $email) : string
+	{
+	$email = \trim(\strtolower($email));
+
+	if (\str_ends_with($email, '@gmail.com'))
+		{
+		$email = \str_replace('.', '', $email);
+		$email = \str_replace('@gmailcom', '@gmail.com', $email);
+		}
+
+	if (! \filter_var($email, FILTER_VALIDATE_EMAIL))
+		{
+		$email = '';
+		}
+
+	return $email;
+	}
+
 $tables = [];
 $tables[] = new \App\Table\Payment();
 $tables[] = new \App\Table\InvoiceItem();
@@ -20,7 +38,14 @@ foreach ($tables as $table)
 	$table->delete(true);
 	}
 
-foreach (glob(__DIR__ . '/*.csv') as $file)
+$permissions = new \App\Model\Permission();
+
+$permissions->loadStandardPermissions();
+
+$addBruce = new \App\Cron\Job\AddBruce(new \App\Cron\Controller(5));
+$addBruce->run();
+
+foreach (\glob(__DIR__ . '/*.csv') as $file)
 	{
 	echo "Importing file: {$file}\n";
 	$insertedCount = \insertMembers($file);
@@ -69,13 +94,13 @@ function insertMembers(string $csvName) : int
 	//	continue;
 
 		$member = new \App\Record\Member();
-		$privacy = 'No' == $row['Product Form: Email and phone number listed on the site?'];
-		setName($row['Product Form: Name'], $member);
+		$privacy = (int)('No' == $row['Product Form: Email and phone number listed on the site?']);
+		\setName($row['Product Form: Name'], $member);
 		$member->acceptedWaiver = $row['Created at'];
 		$member->allowTexting = 1;
 		$member->cellPhone = $row['Product Form: Phone'];
 		$member->deceased = 0;
-		$member->email = $row['Product Form: Email'];
+		$member->email = \cleanEmail($row['Product Form: Email']);
 		$member->emergencyContact = $row['Product Form: Emergency Contact Name'];
 		$member->emergencyPhone = $row['Product Form: Emergency Contact Phone Number'];
 		$member->emailAnnouncements = 1;
@@ -91,7 +116,7 @@ function insertMembers(string $csvName) : int
 		$member->showNoStreet = $privacy;
 		$member->showNoTown = 0;
 		$member->showNothing = 0;
-		$member->verifiedEmail = 1;
+		$member->verifiedEmail = 9;
 		$member->membership = $membership;
 		$memberNames[$member->fullName()] = true;
 		++$insertedCount;
@@ -120,13 +145,15 @@ function insertMembers(string $csvName) : int
 			if (\array_key_exists($key, $row))
 				{
 				$memberName = $row[$key];
+
 				if (empty($memberName))
 					{
 					continue;
 					}
 				$newMember = new \App\Record\Member();
 				$newMember->setFrom($member->toArray());
-				setName($memberName, $newMember);
+				\setName($memberName, $newMember);
+
 				if (isset($memberNames[$newMember->fullName()]))
 					{
 					continue;
@@ -156,7 +183,7 @@ function insertMembers(string $csvName) : int
 
 		$total = (float)$row['Total'];
 		$invoice = new \App\Record\Invoice();
-		$invoice->discount = $row['Discount Amount'];
+		$invoice->discount = (float)$row['Discount Amount'];
 		$invoice->fullfillmentDate = $invoice->orderDate = $invoice->paymentDate = $paidAt;
 		$invoice->member = $member;
 		$invoice->paidByCheck = 0;
@@ -164,15 +191,15 @@ function insertMembers(string $csvName) : int
 		$invoice->paypalPaid = $total;
 		$invoice->paypaltx = $row['Payment Reference'];
 		$invoice->totalPrice = $total;
-		$invoice->totalShipping = $row['Shipping'];
-		$invoice->totalTax = $row['Taxes'];
+		$invoice->totalShipping = (float)$row['Shipping'];
+		$invoice->totalTax = (float)$row['Taxes'];
 
 		$invoiceItem = new \App\Record\InvoiceItem();
 		$invoiceItem->description = $row['Lineitem name'];
 		$invoiceItem->detailLine = $row['Lineitem sku'];
 		$invoiceItem->invoice = $invoice;
-		$invoiceItem->price = $row['Lineitem price'];
-		$invoiceItem->quantity = $row['Lineitem quantity'];
+		$invoiceItem->price = (float)$row['Lineitem price'];
+		$invoiceItem->quantity = (int)$row['Lineitem quantity'];
 		$invoiceItem->shipping = (float)$row['Shipping'];
 		$invoiceItem->tax = (float)$row['Taxes'];
 		$invoiceItem->title = 'Membership';
@@ -197,14 +224,17 @@ function setName(string $name, \App\Record\Member $member) : void
 	$parts = \explode(' ', $name);
 	$first = $last = [];
 	$first[] = \array_shift($parts);
+
 	foreach ($parts as $part)
 		{
-		if (strlen($part) == 1)
+		if (1 == \strlen($part))
 			{
 			$first[] = $part;
+
 			continue;
 			}
-		if (str_contains($part, '.'))
+
+		if (\str_contains($part, '.'))
 			{
 			$first[] = $part;
 			}
@@ -216,4 +246,3 @@ function setName(string $name, \App\Record\Member $member) : void
 	$member->firstName = \implode(' ', $first);
 	$member->lastName = \implode(' ', $last);
 	}
-

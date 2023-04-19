@@ -41,7 +41,7 @@ class SubscriptionEmail extends \App\Cron\MemberMailer
 	private function emailSubscriptions(int $days) : void
 		{
 		$date = $this->controller->runningAtJD() + $days;
-		$memberships = $this->membershipsTable->getRenewingMemberships($date);
+		$memberships = $this->membershipsTable->getRenewingMemberships(\App\Tools\Date::toString($date));
 
 		if (\count($memberships))
 			{

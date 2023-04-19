@@ -18,15 +18,32 @@ class TypeParser
 	/** @var bool */
 	private $quoteAwareConstExprString;
 
-	public function __construct(?ConstExprParser $constExprParser = null, bool $quoteAwareConstExprString = false)
+	/** @var bool */
+	private $useLinesAttributes;
+
+	/** @var bool */
+	private $useIndexAttributes;
+
+	/**
+	 * @param array{lines?: bool, indexes?: bool} $usedAttributes
+	 */
+	public function __construct(
+		?ConstExprParser $constExprParser = null,
+		bool $quoteAwareConstExprString = false,
+		array $usedAttributes = []
+	)
 	{
 		$this->constExprParser = $constExprParser;
 		$this->quoteAwareConstExprString = $quoteAwareConstExprString;
+		$this->useLinesAttributes = $usedAttributes['lines'] ?? false;
+		$this->useIndexAttributes = $usedAttributes['indexes'] ?? false;
 	}
 
 	/** @phpstan-impure */
 	public function parse(TokenIterator $tokens): Ast\Type\TypeNode
 	{
+		$startLine = $tokens->currentTokenLine();
+		$startIndex = $tokens->currentTokenIndex();
 		if ($tokens->isCurrentTokenType(Lexer::TOKEN_NULLABLE)) {
 			$type = $this->parseNullable($tokens);
 
@@ -41,12 +58,33 @@ class TypeParser
 			}
 		}
 
+		return $this->enrichWithAttributes($tokens, $type, $startLine, $startIndex);
+	}
+
+	private function enrichWithAttributes(TokenIterator $tokens, Ast\Type\TypeNode $type, int $startLine, int $startIndex): Ast\Type\TypeNode
+	{
+		$endLine = $tokens->currentTokenLine();
+		$endIndex = $tokens->currentTokenIndex();
+
+		if ($this->useLinesAttributes) {
+			$type->setAttribute(Ast\Attribute::START_LINE, $startLine);
+			$type->setAttribute(Ast\Attribute::END_LINE, $endLine);
+		}
+
+		if ($this->useIndexAttributes) {
+			$type->setAttribute(Ast\Attribute::START_INDEX, $startIndex);
+			$type->setAttribute(Ast\Attribute::END_INDEX, $endIndex);
+		}
+
 		return $type;
 	}
 
 	/** @phpstan-impure */
 	private function subParse(TokenIterator $tokens): Ast\Type\TypeNode
 	{
+		$startLine = $tokens->currentTokenLine();
+		$startIndex = $tokens->currentTokenIndex();
+
 		if ($tokens->isCurrentTokenType(Lexer::TOKEN_NULLABLE)) {
 			$type = $this->parseNullable($tokens);
 
@@ -70,13 +108,16 @@ class TypeParser
 			}
 		}
 
-		return $type;
+		return $this->enrichWithAttributes($tokens, $type, $startLine, $startIndex);
 	}
 
 
 	/** @phpstan-impure */
 	private function parseAtomic(TokenIterator $tokens): Ast\Type\TypeNode
 	{
+		$startLine = $tokens->currentTokenLine();
+		$startIndex = $tokens->currentTokenIndex();
+
 		if ($tokens->tryConsumeTokenType(Lexer::TOKEN_OPEN_PARENTHESES)) {
 			$tokens->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
 			$type = $this->subParse($tokens);
@@ -85,20 +126,20 @@ class TypeParser
 			$tokens->consumeTokenType(Lexer::TOKEN_CLOSE_PARENTHESES);
 
 			if ($tokens->isCurrentTokenType(Lexer::TOKEN_OPEN_SQUARE_BRACKET)) {
-				return $this->tryParseArrayOrOffsetAccess($tokens, $type);
+				$type = $this->tryParseArrayOrOffsetAccess($tokens, $type);
 			}
 
-			return $type;
+			return $this->enrichWithAttributes($tokens, $type, $startLine, $startIndex);
 		}
 
 		if ($tokens->tryConsumeTokenType(Lexer::TOKEN_THIS_VARIABLE)) {
 			$type = new Ast\Type\ThisTypeNode();
 
 			if ($tokens->isCurrentTokenType(Lexer::TOKEN_OPEN_SQUARE_BRACKET)) {
-				return $this->tryParseArrayOrOffsetAccess($tokens, $type);
+				$type = $this->tryParseArrayOrOffsetAccess($tokens, $type);
 			}
 
-			return $type;
+			return $this->enrichWithAttributes($tokens, $type, $startLine, $startIndex);
 		}
 
 		$currentTokenValue = $tokens->currentTokenValue();
@@ -114,7 +155,7 @@ class TypeParser
 					$isHtml = $this->isHtml($tokens);
 					$tokens->rollback();
 					if ($isHtml) {
-						return $type;
+						return $this->enrichWithAttributes($tokens, $type, $startLine, $startIndex);
 					}
 
 					$type = $this->parseGeneric($tokens, $type);
@@ -140,7 +181,7 @@ class TypeParser
 					}
 				}
 
-				return $type;
+				return $this->enrichWithAttributes($tokens, $type, $startLine, $startIndex);
 			} else {
 				$tokens->rollback(); // because of ConstFetchNode
 			}
@@ -152,7 +193,9 @@ class TypeParser
 			$tokens->currentTokenValue(),
 			$tokens->currentTokenType(),
 			$tokens->currentTokenOffset(),
-			Lexer::TOKEN_IDENTIFIER
+			Lexer::TOKEN_IDENTIFIER,
+			null,
+			$tokens->currentTokenLine()
 		);
 
 		if ($this->constExprParser === null) {
@@ -165,7 +208,7 @@ class TypeParser
 				throw $exception;
 			}
 
-			return new Ast\Type\ConstTypeNode($constExpr);
+			return $this->enrichWithAttributes($tokens, new Ast\Type\ConstTypeNode($constExpr), $startLine, $startIndex);
 		} catch (LogicException $e) {
 			throw $exception;
 		}

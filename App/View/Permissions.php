@@ -353,7 +353,8 @@ class Permissions
 				}
 			elseif ('deleteMember' == ($_POST['action'] ?? '') && ! empty($_POST['permissionGroup']))
 				{
-				$userPermission = new \App\Record\UserPermission((int)$_POST['memberId']);
+				$userPermission = new \App\Record\UserPermission();
+				$userPermission->setFrom($_POST);
 				$userPermission->delete();
 				$this->page->setResponse($_POST['memberId']);
 

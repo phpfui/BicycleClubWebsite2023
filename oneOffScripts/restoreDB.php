@@ -63,7 +63,7 @@ while(! \gzeof($file)) {
 \gzclose($file);
 
 $restoredFileName = "backup.{$db}.sql";
-$cleaner = new \App\Tools\CleanBackup('backup', $restoredFileName);
+$cleaner = new \PHPFUI\ORM\Tool\CleanBackup('backup', $restoredFileName);
 $cleaner->run();
 
 echo "Restoring backup\n";

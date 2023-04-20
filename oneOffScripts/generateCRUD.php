@@ -42,3 +42,20 @@ foreach ($tables as $table)
 		echo "{$table}\n";
 		}
 	}
+
+$tableObjects = \PHPFUI\ORM\Table::getAllTables();
+
+foreach ($tableObjects as $name => $table)
+	{
+	$parts = \explode('\\', $name);
+	$class = \lcfirst(\array_pop($parts));
+
+	if ($table->getTableName() != $class)
+		{
+		$phpFile = PROJECT_ROOT . '\\App\\Record\\Definition\\' . $class . '.php';
+		$contents = \file_get_contents($phpFile);
+		$class = \lcfirst($class);
+		$contents = \str_replace($table->getTableName(), $class, $contents);
+		\file_put_contents($phpFile, $contents);
+		}
+	}

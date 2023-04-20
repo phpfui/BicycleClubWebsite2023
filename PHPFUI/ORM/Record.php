@@ -13,17 +13,17 @@ namespace PHPFUI\ORM;
  */
 abstract class Record extends DataObject
 	{
-	public const ALLOWS_NULL_INDEX = 3;
-
-	public const DEFAULT_INDEX = 4;
-
-	public const KEY_INDEX = 5;
-
-	public const LENGTH_INDEX = 2;
-
 	public const MYSQL_TYPE_INDEX = 0;
 
 	public const PHP_TYPE_INDEX = 1;
+
+	public const LENGTH_INDEX = 2;
+
+	public const KEY_INDEX = 3;
+
+	public const ALLOWS_NULL_INDEX = 4;
+
+	public const DEFAULT_INDEX = 5;
 
 	protected static bool $autoIncrement = false;
 
@@ -168,6 +168,7 @@ abstract class Record extends DataObject
 			if ($value instanceof \PHPFUI\ORM\Record && $field == $haveType)
 				{
 				$this->empty = false;
+
 				if (empty($value->{$id}))
 					{
 					$this->current[$id] = $value->insert();
@@ -346,12 +347,6 @@ abstract class Record extends DataObject
 		return static::$fields[$field][self::LENGTH_INDEX];
 		}
 
-	//	ALLOWS_NULL_INDEX = 3;
-	//	DEFAULT_INDEX = 4;
-	//	KEY_INDEX = 5;
-	//	MYSQL_TYPE_INDEX = 0;
-	//	PHP_TYPE_INDEX = 1;
-
 	/**
 	 * @return array  primary keys
 	 */
@@ -516,7 +511,10 @@ abstract class Record extends DataObject
 
 		foreach (static::$fields as $field => $description)
 			{
-			$this->current[$field] = $description[self::DEFAULT_INDEX];
+			if (array_key_exists(self::DEFAULT_INDEX, $description))
+				{
+				$this->current[$field] = $description[self::DEFAULT_INDEX];
+				}
 			}
 
 		return $this;
@@ -799,7 +797,8 @@ abstract class Record extends DataObject
 			{
 			if (isset(static::$fields[$key]))
 				{
-				if ($value === static::$fields[$key][self::DEFAULT_INDEX])
+				$definition = static::$fields[$key];
+				if (array_key_exists(self::DEFAULT_INDEX, $definition) && $value === $definition[self::DEFAULT_INDEX])
 					{
 					continue;
 					}
@@ -826,8 +825,7 @@ abstract class Record extends DataObject
 				if (isset(static::$fields[$key]))
 					{
 					$definition = static::$fields[$key];
-					// MYSQL_TYPE, PHP_TYPE, LENGTH, NULL, DEFAULT, KEY
-					if ($definition[self::ALLOWS_NULL_INDEX] && empty($definition[self::DEFAULT_INDEX]) && $value === null)
+					if (array_key_exists(self::DEFAULT_INDEX, $definition) && $value === $definition[self::DEFAULT_INDEX])
 						{
 						continue;
 						}

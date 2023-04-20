@@ -30,5 +30,5 @@ if (\file_exists($targetPath))
 //	exit;
 	}
 
-$cleaner = new \App\Tools\CleanBackup($backupPath, $targetPath);
+$cleaner = new \PHPFUI\ORM\Tool\CleanBackup($backupPath, $targetPath);
 $cleaner->run();

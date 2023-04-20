@@ -54,9 +54,10 @@ class Customer
 		$customerNumber = $parameters['customerId'];
 
 		unset($parameters['customerId']);
+
 		if ($customerNumber < 0)
 			{
-			$customer = new \App\Record\Customer($customerNumber);
+			$customer = new \App\Record\Customer(0 - $customerNumber);
 			$customer->setFrom($parameters);
 			$customer->update();
 			}

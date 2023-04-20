@@ -671,8 +671,8 @@ class Content extends \App\UI\HTMLEditor
 				case 'Save Order':
 					foreach ($_POST['storyId'] as $ranking => $storyId)
 						{
-						$blogItem = new \App\Record\BlogItem();
-						$blogItem->setFrom(['ranking' => $ranking + 1, 'blogId' => $_POST['blogId'], 'storyId' => $storyId]);
+						$blogItem = new \App\Record\BlogItem(['blogId' => $_POST['blogId'], 'storyId' => $storyId]);
+						$blogItem->ranking = $ranking + 1;
 						$blogItem->update();
 						}
 					$this->page->setResponse('Saved');
@@ -692,12 +692,10 @@ class Content extends \App\UI\HTMLEditor
 
 					[$type, $storyId] = \explode('-', (string)$_POST['id']);
 					$content = $_POST['body'];
-					$fields = [];
-					$fields = ['body' => \App\Tools\TextHelper::cleanUserHtml($content)];
-					$fields['lastEdited'] = \App\Tools\Date::todayString();
-					$fields['storyId'] = $storyId;
-					$fields['memberIdEditor'] = \App\Model\Session::signedInMemberId();
-					$story = new \App\Record\Story($fields);
+					$story = new \App\Record\Story($storyId);
+					$story->body = \App\Tools\TextHelper::cleanUserHtml($content);
+					$story->lastEdited = \App\Tools\Date::todayString();
+					$story->memberIdEditor = \App\Model\Session::signedInMemberId();
 					$story->update();
 					$this->page->setResponse($storyId);
 					$this->page->done();
@@ -741,7 +739,8 @@ class Content extends \App\UI\HTMLEditor
 
 				case 'saveJavaScript':
 
-					$story = new \App\Record\Story($_POST);
+					$story = new \App\Record\Story((int)$_POST['storyId']);
+					$story->setFrom($_POST);
 					$story->update();
 					$this->page->redirect();
 					$this->page->done();
@@ -750,7 +749,8 @@ class Content extends \App\UI\HTMLEditor
 
 				case 'saveSettings':
 
-					$story = new \App\Record\Story($_POST);
+					$story = new \App\Record\Story((int)$_POST['storyId']);
+					$story->setFrom($_POST);
 					$story->update();
 					$blogs = \App\Table\Blog::getBlogsByNameForStory($storyId = $_POST['storyId']);
 					$activeBlogs = \array_flip($_POST['blog'] ?? []);

@@ -53,15 +53,15 @@ class Customer
 		{
 		$customerNumber = $parameters['customerId'];
 
+		unset($parameters['customerId']);
 		if ($customerNumber < 0)
 			{
-			$parameters['customerId'] = 0 - $parameters['customerId'];
-			$customer = new \App\Record\Customer($parameters);
+			$customer = new \App\Record\Customer($customerNumber);
+			$customer->setFrom($parameters);
 			$customer->update();
 			}
 		else  // new customer
 			{
-			unset($parameters['customerId']);
 			$customer = new \App\Record\Customer();
 			$customer->setFrom($parameters);
 			$customerNumber = 0 - $customer->insert();

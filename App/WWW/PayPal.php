@@ -15,6 +15,7 @@ class PayPal extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	public function cancelled(string $paypalType = '', \App\Record\Invoice $invoice = new \App\Record\Invoice(), string $description = '') : void
 		{
 		$json = \json_decode(\file_get_contents('php://input'), true);
+		$this->logger->debug($json, __METHOD__);
 		$container = new \PHPFUI\Container();
 
 		if ($json['orderID'] ?? 'invalid' == $_SESSION['PayPalId'])
@@ -40,6 +41,7 @@ class PayPal extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	public function completed(string $paypalType = '', \App\Record\Invoice $invoice = new \App\Record\Invoice(), string $description = '') : void
 		{
 		$json = \json_decode(\file_get_contents('php://input'), true);
+		$this->logger->debug($json, __METHOD__);
 		$container = new \PHPFUI\Container();
 
 		if (($json['orderID'] ?? 'invalid') == ($_SESSION['PayPalId'] ?? ''))
@@ -62,6 +64,7 @@ class PayPal extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	public function completedPayment(string $paypalType = '', \App\Record\Invoice $invoice = new \App\Record\Invoice(), string $description = '') : void
 		{
 		$json = \json_decode(\file_get_contents('php://input'), true);
+		$this->logger->debug($json, __METHOD__);
 
 		$request = new \PayPalCheckoutSdk\Orders\OrdersCaptureRequest($json['orderID']);
 		$request->prefer('return=representation');
@@ -99,6 +102,7 @@ class PayPal extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$model = new \App\Model\PayPal($paypalType);
 		$response = $model->createOrderRequest($invoice, $description);
+		$this->logger->debug($response, __METHOD__);
 		// @phpstan-ignore-next-line
 		$_SESSION['PayPalId'] = $response->result->id;
 		$this->page->setRawResponse(\json_encode($response->result, JSON_PRETTY_PRINT));

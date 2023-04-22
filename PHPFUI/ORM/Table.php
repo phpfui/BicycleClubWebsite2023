@@ -796,7 +796,7 @@ abstract class Table implements \Countable
 
 		$primaryKeys = $this->getPrimaryKeys();
 
-		$transation = \PHPFUI\ORM\Transaction();
+		$transation = new \PHPFUI\ORM\Transaction();
 
 		if (\count($primaryKeys))
 			{

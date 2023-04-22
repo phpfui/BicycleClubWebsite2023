@@ -194,7 +194,8 @@ PHP;
 
 		$retVal .= $this->line($field->primaryKey ? 'true' : 'false');
 		$retVal .= $this->line($allowNulls ? 'true' : 'false');
-		if ($defaultValue !== null)
+
+		if (null !== $defaultValue)
 			{
 			$retVal .= $this->line($defaultValue);
 			}

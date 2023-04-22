@@ -201,9 +201,8 @@ abstract class Record extends DataObject
 
 		if (null !== $value && $haveType != $expectedType)
 			{
-			//throw new \PHPFUI\ORM\Exception($message);
 			$message = static::class . "::{$field} is of type {$expectedType} but being assigned a type of {$haveType}";
-			\PHPFUI\ORM::log(\Psr\Log\LogLevel::ERROR, $message);
+			\PHPFUI\ORM::log(\Psr\Log\LogLevel::WARNING, $message);
 			// do the conversion
 			switch ($expectedType)
 				{
@@ -511,7 +510,7 @@ abstract class Record extends DataObject
 
 		foreach (static::$fields as $field => $description)
 			{
-			if (array_key_exists(self::DEFAULT_INDEX, $description))
+			if (\array_key_exists(self::DEFAULT_INDEX, $description))
 				{
 				$this->current[$field] = $description[self::DEFAULT_INDEX];
 				}
@@ -798,7 +797,8 @@ abstract class Record extends DataObject
 			if (isset(static::$fields[$key]))
 				{
 				$definition = static::$fields[$key];
-				if (array_key_exists(self::DEFAULT_INDEX, $definition) && $value === $definition[self::DEFAULT_INDEX])
+
+				if (\array_key_exists(self::DEFAULT_INDEX, $definition) && $value === $definition[self::DEFAULT_INDEX])
 					{
 					continue;
 					}
@@ -825,7 +825,8 @@ abstract class Record extends DataObject
 				if (isset(static::$fields[$key]))
 					{
 					$definition = static::$fields[$key];
-					if (array_key_exists(self::DEFAULT_INDEX, $definition) && $value === $definition[self::DEFAULT_INDEX])
+
+					if (\array_key_exists(self::DEFAULT_INDEX, $definition) && $value === $definition[self::DEFAULT_INDEX])
 						{
 						continue;
 						}

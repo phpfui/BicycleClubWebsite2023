@@ -567,7 +567,7 @@ class Events
 
 	public function setEvent(\App\Record\Event $event) : void
 		{
-		$this->event = $event;
+		$this->event = clone $event;
 
 		if (! isset($this->event->membersOnly) || 1 != $this->event->membersOnly)
 			{

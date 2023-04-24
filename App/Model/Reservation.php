@@ -7,7 +7,6 @@ class Reservation
 	public function checkout(\App\Record\Reservation $reservation) : int
 		{
 		$price = $this->updatePrices($reservation);
-		$reservation->signedUpAt = \date('Y-m-d H:i:s');
 		$reservation->update();
 
 		if (! $price)
@@ -121,16 +120,13 @@ class Reservation
 		$invoice->fullfillmentDate = \App\Tools\Date::todayString();
 		$invoice->update();
 		$reservation = new \App\Record\Reservation($invoiceItem->storeItemDetailId);
-		$reservation->signedUpAt = \date('Y-m-d H:i:s');
 		$reservation->invoiceId = $invoice->invoiceId;
 		$reservation->paymentId = $payment->paymentId;
 		$reservation->update();
 		$this->getEmail('paypal', $reservation)->send();
 		$this->incrementNewMemberDiscountCount($reservation);
 
-		$member = $reservation->member;
-
-		return $member->toArray();
+		return $reservation->member->toArray();
 		}
 
 	public function getChair(int $eventId) : array

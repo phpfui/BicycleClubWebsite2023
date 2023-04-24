@@ -21,7 +21,7 @@ abstract class OauthUser extends \PHPFUI\ORM\Record
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'lastLogin' => ['timestamp', 'string', 20, false, true, 'CURRENT_TIMESTAMP', ],
+		'lastLogin' => ['timestamp', 'string', 20, false, false, ],
 		'memberId' => ['int(11)', 'int', 11, false, false, ],
 		'oauthUserId' => ['int(11)', 'int', 11, true, false, ],
 		'password' => ['varchar(255)', 'string', 255, false, true, ],

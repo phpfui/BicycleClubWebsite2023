@@ -49,7 +49,7 @@ abstract class Ride extends \PHPFUI\ORM\Record
 		'averagePace' => ['float', 'float', 0, false, true, ],
 		'commentsDisabled' => ['int(1)', 'int', 1, false, true, 0, ],
 		'cueSheetId' => ['int(11)', 'int', 11, false, true, ],
-		'dateAdded' => ['timestamp', 'string', 20, false, true, 'CURRENT_TIMESTAMP', ],
+		'dateAdded' => ['timestamp', 'string', 20, false, false, ],
 		'description' => ['text', 'string', 65535, false, true, ],
 		'elevation' => ['int(5)', 'int', 5, false, true, ],
 		'maxRiders' => ['int(11)', 'int', 11, false, false, 0, ],

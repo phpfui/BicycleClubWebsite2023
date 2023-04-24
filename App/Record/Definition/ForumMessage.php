@@ -31,7 +31,7 @@ abstract class ForumMessage extends \PHPFUI\ORM\Record
 		'lastEdited' => ['timestamp', 'string', 20, false, true, ],
 		'lastEditor' => ['int(11)', 'int', 11, false, true, ],
 		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'posted' => ['timestamp', 'string', 20, false, true, 'CURRENT_TIMESTAMP', ],
+		'posted' => ['timestamp', 'string', 20, false, false, ],
 		'textMessage' => ['text', 'string', 65535, false, true, ],
 		'title' => ['varchar(255)', 'string', 255, false, true, ],
 	];

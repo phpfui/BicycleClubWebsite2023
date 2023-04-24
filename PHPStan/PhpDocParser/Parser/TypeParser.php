@@ -72,6 +72,12 @@ class TypeParser
 		}
 
 		if ($this->useIndexAttributes) {
+			$tokensArray = $tokens->getTokens();
+			$endIndex--;
+			if ($tokensArray[$endIndex][Lexer::TYPE_OFFSET] === Lexer::TOKEN_HORIZONTAL_WS) {
+				$endIndex--;
+			}
+
 			$type->setAttribute(Ast\Attribute::START_INDEX, $startIndex);
 			$type->setAttribute(Ast\Attribute::END_INDEX, $endIndex);
 		}

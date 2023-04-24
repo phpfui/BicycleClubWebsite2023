@@ -25,7 +25,7 @@ abstract class StoreOrder extends \PHPFUI\ORM\Record
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'added' => ['timestamp', 'string', 20, false, true, 'CURRENT_TIMESTAMP', ],
+		'added' => ['timestamp', 'string', 20, false, false, ],
 		'invoiceId' => ['int(11)', 'int', 11, false, false, ],
 		'memberId' => ['int(11)', 'int', 11, false, false, ],
 		'optionsSelected' => ['varchar(255)', 'string', 255, false, false, ],

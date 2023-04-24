@@ -23,7 +23,7 @@ abstract class PointHistory extends \PHPFUI\ORM\Record
 		'memberId' => ['int(11)', 'int', 11, false, false, ],
 		'memberIdEditor' => ['int(11)', 'int', 11, false, true, ],
 		'oldLeaderPoints' => ['int(8)', 'int', 8, false, true, 0, ],
-		'time' => ['timestamp', 'string', 20, false, true, 'CURRENT_TIMESTAMP', ],
+		'time' => ['timestamp', 'string', 20, false, false, ],
 	];
 
 	/** @var array<string, true> */

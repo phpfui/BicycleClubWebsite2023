@@ -46,7 +46,7 @@ abstract class Reservation extends \PHPFUI\ORM\Record
 		'reservationId' => ['int(11)', 'int', 11, true, false, ],
 		'reservationLastName' => ['varchar(50)', 'string', 50, false, true, ],
 		'reservationemail' => ['varchar(50)', 'string', 50, false, true, ],
-		'signedUpAt' => ['timestamp', 'string', 20, false, true, 'CURRENT_TIMESTAMP', ],
+		'signedUpAt' => ['timestamp', 'string', 20, false, false, ],
 		'state' => ['char(2)', 'string', 2, false, true, ],
 		'town' => ['varchar(50)', 'string', 50, false, true, ],
 		'zip' => ['varchar(10)', 'string', 10, false, true, ],

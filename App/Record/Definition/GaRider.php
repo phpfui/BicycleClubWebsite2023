@@ -58,7 +58,7 @@ abstract class GaRider extends \PHPFUI\ORM\Record
 		'pricePaid' => ['decimal(5,2)', 'float', 5, false, true, ],
 		'prize' => ['int(6)', 'int', 6, false, true, ],
 		'referral' => ['int(1)', 'int', 1, false, true, 0, ],
-		'signedUpOn' => ['timestamp', 'string', 20, false, true, 'CURRENT_TIMESTAMP', ],
+		'signedUpOn' => ['timestamp', 'string', 20, false, false, ],
 		'state' => ['char(2)', 'string', 2, false, true, ],
 		'town' => ['varchar(50)', 'string', 50, false, true, ],
 		'zip' => ['varchar(10)', 'string', 10, false, true, ],

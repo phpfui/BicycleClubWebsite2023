@@ -30,7 +30,7 @@ abstract class File extends \PHPFUI\ORM\Record
 		'fileName' => ['varchar(255)', 'string', 255, false, false, '', ],
 		'memberId' => ['int(11)', 'int', 11, false, true, ],
 		'public' => ['int(11)', 'int', 11, false, false, 0, ],
-		'uploaded' => ['timestamp', 'string', 20, false, true, 'CURRENT_TIMESTAMP', ],
+		'uploaded' => ['timestamp', 'string', 20, false, true, ],
 	];
 
 	/** @var array<string, true> */

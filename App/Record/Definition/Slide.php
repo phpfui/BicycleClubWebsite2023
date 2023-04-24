@@ -28,7 +28,7 @@ abstract class Slide extends \PHPFUI\ORM\Record
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'added' => ['timestamp', 'string', 20, false, true, 'CURRENT_TIMESTAMP', ],
+		'added' => ['timestamp', 'string', 20, false, false, ],
 		'caption' => ['varchar(255)', 'string', 255, false, true, ],
 		'extension' => ['varchar(10)', 'string', 10, false, true, ],
 		'memberId' => ['int(10) unsigned', 'int', 10, false, true, ],

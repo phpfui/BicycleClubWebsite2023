@@ -23,7 +23,7 @@ abstract class JournalItem extends \PHPFUI\ORM\Record
 		'body' => ['mediumtext', 'string', 16777215, false, true, ],
 		'journalItemId' => ['int(11)', 'int', 11, true, false, ],
 		'memberId' => ['int(11)', 'int', 11, false, true, ],
-		'timeSent' => ['timestamp', 'string', 20, false, true, 'CURRENT_TIMESTAMP', ],
+		'timeSent' => ['timestamp', 'string', 20, false, false, ],
 		'title' => ['char(100)', 'string', 100, false, true, ],
 	];
 

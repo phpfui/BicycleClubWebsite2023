@@ -190,7 +190,7 @@ class Invoice
 
 			foreach ($affectedMembers as $member)
 				{
-				if ($customer->email != $member['email'])
+				if ($customer->email != ($member['email'] ?? ''))
 					{
 					$email->addBCCMember($member);
 					}

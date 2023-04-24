@@ -31,7 +31,7 @@ abstract class RideSignup extends \PHPFUI\ORM\Record
 		'memberId' => ['int(11)', 'int', 11, false, false, ],
 		'rideComments' => ['int(1)', 'int', 1, false, true, 1, ],
 		'rideId' => ['int(11)', 'int', 11, false, true, ],
-		'signedUpTime' => ['timestamp', 'string', 20, false, true, 'CURRENT_TIMESTAMP', ],
+		'signedUpTime' => ['timestamp', 'string', 20, false, false, ],
 		'status' => ['int(2)', 'int', 2, false, true, ],
 	];
 

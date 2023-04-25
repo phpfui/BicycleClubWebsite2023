@@ -4,42 +4,46 @@ namespace App\WWW;
 
 class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
-	private readonly \App\Table\PhotoFolder $photoFolderTable;
+	private readonly \App\Table\PhotoFolder $folderTable;
 
-	private readonly \App\Table\Photo $photoTable;
+	private readonly \App\Table\Photo $table;
 
 	private readonly \App\Table\PhotoTag $photoTagTable;
 
-	private readonly \App\View\Photo $photoView;
+	private readonly \App\View\Photo $view;
 
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{
 		parent::__construct($controller);
-		$this->photoTable = new \App\Table\Photo();
+		$this->table = new \App\Table\Photo();
 		$this->photoTagTable = new \App\Table\PhotoTag();
-		$this->photoFolderTable = new \App\Table\PhotoFolder();
-		$this->photoView = new \App\View\Photo($this->page);
+		$this->folderTable = new \App\Table\PhotoFolder();
+		$this->view = new \App\View\Photo($this->page);
 		}
 
 	public function browse(\App\Record\PhotoFolder $photoFolder = new \App\Record\PhotoFolder()) : void
 		{
 		$this->page->turnOffBanner();
 
-		if ($this->page->addHeader('Browse Photos'))
+		if (! $this->view->hasPermission($photoFolder))
+			{
+			$this->page->addPageContent(new \PHPFUI\SubHeader('Folder Not Found'));
+			}
+		elseif ($this->page->addHeader('Browse Photos'))
 			{
 			$photoFolder->photoFolderId ??= 0;
 
-			$this->page->addPageContent($this->photoView->getBreadCrumbs('/Photo/browse/', $photoFolder->photoFolderId));
+			$this->page->addPageContent($this->view->getBreadCrumbs('/Photo/browse/', $photoFolder->photoFolderId));
 
-			$this->photoFolderTable->setWhere(new \PHPFUI\ORM\Condition('parentId', $photoFolder->photoFolderId))->setOrderBy('photoFolder');
-			$this->page->addPageContent($this->photoView->clipboard($photoFolder->photoFolderId));
+			$this->folderTable->setWhere(new \PHPFUI\ORM\Condition('parentFolderId', $photoFolder->photoFolderId))->setOrderBy('photoFolder');
+			$this->page->addPageContent($this->view->clipboard($photoFolder->photoFolderId));
 			$form = new \PHPFUI\Form($this->page);
 			$form->setAreYouSure(false);
 			$form->setAttribute('action', '/Photo/cut');
-			$form->add($this->photoView->listFolders($this->photoFolderTable, $photoFolder->photoFolderId));
+			$form->add($this->view->listFolders($this->folderTable, $photoFolder));
 
-			$this->photoTable->setWhere(new \PHPFUI\ORM\Condition('photoFolderId', $photoFolder->photoFolderId));
-			$form->add($this->photoView->listPhotos($this->photoTable, true, $photoFolder->photoFolderId));
+			$this->table->setWhere(new \PHPFUI\ORM\Condition('photoFolderId', $photoFolder->photoFolderId));
+			$form->add($this->view->listPhotos($this->table, true));
 			$this->page->addPageContent($form);
 			}
 		}
@@ -114,12 +118,12 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$url = '';
 
-		if (! $photoFolder->empty() && $this->page->isAuthorized('Add Folder'))
+		if (! $photoFolder->empty() && $this->page->isAuthorized('Delete Photo Folder'))
 			{
-			if (! $this->photoFolderTable->folderCount($photoFolder))
+			if (! $this->folderTable->folderCount($photoFolder))
 				{
 				\App\Model\Session::setFlash('success', "Folder {$photoFolder->photoFolder} deleted.");
-				$url = '/Photo/browse/' . $photoFolder->parentId;
+				$url = '/Photo/browse/' . $photoFolder->parentFolderId;
 				$photoFolder->delete();
 				}
 			else
@@ -159,9 +163,9 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$this->page->addPageContent($this->getMember($member));
 				}
-			$this->photoTable->addJoin('photoTag', 'photoId');
-			$this->photoTable->setWhere(new \PHPFUI\ORM\Condition('photoTag.memberId', $member->memberId));
-			$this->page->addPageContent($this->photoView->listPhotos($this->photoTable));
+			$this->table->addJoin('photoTag', 'photoId');
+			$this->table->setWhere(new \PHPFUI\ORM\Condition('photoTag.memberId', $member->memberId));
+			$this->page->addPageContent($this->view->listPhotos($this->table));
 			}
 		}
 
@@ -173,7 +177,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			{
 			$photos = $this->photoTagTable->mostTagged();
 			$url = $this->page->isAuthorized('View Member Photos') ? '/Photo/inPhotos/' : '';
-			$this->page->addPageContent($this->photoView->listMembers($photos, $url));
+			$this->page->addPageContent($this->view->listMembers($photos, $url));
 			}
 		}
 
@@ -191,8 +195,8 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$this->page->addPageContent($this->getMember($member));
 				}
-			$this->photoTable->setWhere(new \PHPFUI\ORM\Condition('memberId', $member->memberId));
-			$this->page->addPageContent($this->photoView->listPhotos($this->photoTable));
+			$this->table->setWhere(new \PHPFUI\ORM\Condition('memberId', $member->memberId));
+			$this->page->addPageContent($this->view->listPhotos($this->table));
 			}
 		}
 
@@ -232,19 +236,19 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 						{
 						$photoFolder = new \App\Record\PhotoFolder(0 - $photoId);
 						$originalPhotoFolderId = $photoFolder->photoFolderId;
-						$photoFolder->parentId = $photoFolderId;
+						$photoFolder->parentFolderId = $photoFolderId;
 						$photoFolder->update();
 
 						// loop through folders till we find root, if we find ourselves, then reset us to be parent of root.
-						while ($photoFolder->parentId)
+						while ($photoFolder->parentFolderId)
 							{
-							if ($originalPhotoFolderId == $photoFolder->parentId)
+							if ($originalPhotoFolderId == $photoFolder->parentFolderId)
 								{
 								// infinite loop, set parent to root
-								$photoFolder->parentId = 0;
+								$photoFolder->parentFolderId = 0;
 								$photoFolder->update();
 								}
-							$photoFolder = new \App\Record\PhotoFolder($photoFolder->parentId);
+							$photoFolder = new \App\Record\PhotoFolder($photoFolder->parentFolderId);
 							}
 						}
 					}
@@ -265,11 +269,11 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				}
 			else
 				{
-				$this->photoTable->search($_GET);
+				$this->table->search($_GET);
 				}
-			$this->page->addPageContent($this->photoView->getSearchButton($_GET, ! $this->photoTable->count()));
-			$this->page->addPageContent($this->photoView->listPhotos($this->photoTable));
-			$this->page->addPageContent($this->photoView->getSearchButton());
+			$this->page->addPageContent($this->view->getSearchButton($_GET, ! $this->table->count()));
+			$this->page->addPageContent($this->view->listPhotos($this->table));
+			$this->page->addPageContent($this->view->getSearchButton());
 			}
 		}
 
@@ -280,7 +284,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		if ($this->page->addHeader('Top Taggers'))
 			{
 			$photos = $this->photoTagTable->topTaggers();
-			$this->page->addPageContent($this->photoView->listMembers($photos));
+			$this->page->addPageContent($this->view->listMembers($photos));
 			}
 		}
 
@@ -295,22 +299,22 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('View Photo'))
 			{
-			$this->page->addPageContent($this->photoView->getBreadCrumbs('/Photo/browse/', $photo->photoFolderId, $photo->photoId));
-			$this->page->addPageContent($this->photoView->getImage($photo));
-			$this->page->addPageContent($this->photoView->getInfo($photo));
+			$this->page->addPageContent($this->view->getBreadCrumbs('/Photo/browse/', $photo->photoFolderId, $photo->photoId));
+			$this->page->addPageContent($this->view->getImage($photo));
+			$this->page->addPageContent($this->view->getInfo($photo));
 
 			if ($this->page->isAuthorized('Photo Tags'))
 				{
-				$this->page->addPageContent($this->photoView->getTags($photo));
+				$this->page->addPageContent($this->view->getTags($photo));
 				}
 			else
 				{
-				$this->page->addPageContent($this->photoView->listTags($photo));
+				$this->page->addPageContent($this->view->listTags($photo));
 				}
 
 			if ($this->page->isAuthorized('Photo Comments'))
 				{
-				$this->page->addPageContent($this->photoView->getComments($photo));
+				$this->page->addPageContent($this->view->getComments($photo));
 				}
 			}
 		}

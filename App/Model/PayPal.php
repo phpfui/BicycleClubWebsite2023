@@ -16,7 +16,7 @@ class PayPal
 	 */
 	public function __construct(protected string $type = '', protected ?\App\Tools\Logger $logger = null)
 		{
-		$this->logger = $logger ?: new \App\Tools\Logger(self::class);
+		$this->logger = $logger ?: new \App\Tools\Logger();
 		$this->logger->setAlwaysFlush();
 		$type = \str_replace(' ', '_', $type);
 		$this->settingTable = new \App\Table\Setting();

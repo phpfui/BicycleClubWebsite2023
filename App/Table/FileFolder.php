@@ -10,7 +10,7 @@ class FileFolder extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select count(*) from file where fileFolderId=?';
 		$files = (int)\PHPFUI\ORM::getValue($sql, [$fileFolder->fileFolderId]);
-		$sql = 'select count(*) from fileFolder where parentId=?';
+		$sql = 'select count(*) from fileFolder where parentFolderId=?';
 
 		return (int)\PHPFUI\ORM::getValue($sql, [$fileFolder->fileFolderId]) + $files;
 		}
@@ -27,7 +27,7 @@ class FileFolder extends \PHPFUI\ORM\Table
 				{
 				$folders[$fileFolderId] = $folder->fileFolder;
 				}
-			$fileFolderId = $folder->parentId;
+			$fileFolderId = $folder->parentFolderId;
 			}
 
 		return \array_reverse($folders, true);

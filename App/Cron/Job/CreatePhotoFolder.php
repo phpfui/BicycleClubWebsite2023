@@ -13,7 +13,7 @@ class CreatePhotoFolder extends \App\Cron\BaseJob
 	public function run(array $parameters = []) : void
 		{
 		$year = $this->controller->runningAtYear();
-		$key = ['photoFolder' => "{$year}", 'parentId' => 0];
+		$key = ['photoFolder' => "{$year}", 'parentFolderId' => 0];
 		$photoFolder = new \App\Record\PhotoFolder($key);
 
 		if ($photoFolder->empty())

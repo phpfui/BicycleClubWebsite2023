@@ -9,7 +9,7 @@ class PhotoFolder extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, array<string>> */
 	public static array $validators = [
-		'parentId' => ['integer'],
+		'parentFolderId' => ['integer'],
 		'photoFolder' => ['required', 'maxlength'],
 	];
 

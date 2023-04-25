@@ -226,7 +226,7 @@ class Invoice
 
 		if ($errors)
 			{
-			$logger = new \App\Tools\Logger(__METHOD__);
+			$logger = new \App\Tools\Logger();
 			$logger->debug($errors, "Database errors processing PayPal transaction {$txn}");
 			}
 		}

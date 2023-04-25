@@ -8,22 +8,15 @@ class Logger
 
 	private string $content = '<pre>';
 
-	private readonly string $identifier;
-
 	private static ?self $logger = null;
 
 	private bool $timeStamp = false;
 
 	/**
-	 * @param string $identifier used to differentiate types
 	 * @param bool $delete delete old file if true, default false
 	 */
-	public function __construct(string $identifier = '', bool $delete = false)
+	public function __construct(bool $delete = false)
 		{
-		$identifier = \basename($identifier);
-		$identifier = \str_replace('.php', '', $identifier);
-		$this->identifier = \str_replace('::', '_', $identifier);
-
 		if ($delete)
 			{
 			$filename = $this->getFileName();
@@ -196,11 +189,11 @@ class Logger
 		return $output;
 		}
 
-	public static function get(string $name = 'Logger') : Logger
+	public static function get() : Logger
 		{
 		if (! self::$logger)
 			{
-			self::$logger = new \App\Tools\Logger($name);
+			self::$logger = new \App\Tools\Logger();
 			self::$logger->setAlwaysFlush();
 			}
 

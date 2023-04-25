@@ -351,8 +351,9 @@ permissionGroup,permission,revoked,menu
 "Newsletter Only",Newsletters,0,Newsletter
 "Normal Member","Add A New Cue Sheet",0,CueSheets
 "Normal Member","Add File",0,File
-"Normal Member","Add Folder",0,Photo
+"Normal Member","Add File Folder",0,File
 "Normal Member","Add Photo",0,Photo
+"Normal Member","Add Photo Folder",0,Photo
 "Normal Member",Administration,0,Admin
 "Normal Member",Advocacy,0,Forums
 "Normal Member","All Videos",0,Video
@@ -381,7 +382,6 @@ permissionGroup,permission,revoked,menu
 "Normal Member","Currently Registered",0,Events
 "Normal Member","Download File CSV File",0,File
 "Normal Member","Edit My Info",0,Membership
-"Normal Member","Edit Photo Title",0,Photo
 "Normal Member","Email All Signed Up Riders",0,Rides
 "Normal Member","Email Leader",0,Leaders
 "Normal Member","Email Member",0,Rides
@@ -439,6 +439,7 @@ permissionGroup,permission,revoked,menu
 "Normal Member","Pay By Check",0,Events
 "Normal Member","Pay With PayPal",0,Membership
 "Normal Member","People Who Voted",0,Polls
+"Normal Member",Photo,0,Photo
 "Normal Member","Photo Comments",0,Photo
 "Normal Member","Photo Tags",0,Photo
 "Normal Member",Photos,0,Photo

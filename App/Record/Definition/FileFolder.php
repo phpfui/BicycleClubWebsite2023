@@ -7,8 +7,10 @@ namespace App\Record\Definition;
  *
  * @property string $fileFolder MySQL type varchar(255)
  * @property int $fileFolderId MySQL type int(11)
- * @property ?int $parentId MySQL type int(11)
- * @property \App\Record\Parent $parent related record
+ * @property ?int $parentFolderId MySQL type int(11)
+ * @property \App\Record\ParentFolder $parentFolder related record
+ * @property ?int $permissionId MySQL type int(11)
+ * @property \App\Record\Permission $permission related record
  */
 abstract class FileFolder extends \PHPFUI\ORM\Record
 	{
@@ -19,7 +21,8 @@ abstract class FileFolder extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
 		'fileFolder' => ['varchar(255)', 'string', 255, false, false, '', ],
 		'fileFolderId' => ['int(11)', 'int', 11, true, false, ],
-		'parentId' => ['int(11)', 'int', 11, false, true, 0, ],
+		'parentFolderId' => ['int(11)', 'int', 11, false, true, 0, ],
+		'permissionId' => ['int(11)', 'int', 11, false, true, ],
 	];
 
 	/** @var array<string, true> */

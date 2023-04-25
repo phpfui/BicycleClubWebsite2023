@@ -4,39 +4,43 @@ namespace App\WWW;
 
 class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
-	private readonly \App\Table\FileFolder $fileFolderTable;
+	private readonly \App\Table\FileFolder $folderTable;
 
-	private readonly \App\Table\File $fileTable;
+	private readonly \App\Table\File $table;
 
-	private readonly \App\View\File $fileView;
+	private readonly \App\View\File $view;
 
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{
 		parent::__construct($controller);
-		$this->fileTable = new \App\Table\File();
-		$this->fileFolderTable = new \App\Table\FileFolder();
-		$this->fileView = new \App\View\File($this->page);
+		$this->table = new \App\Table\File();
+		$this->folderTable = new \App\Table\FileFolder();
+		$this->view = new \App\View\File($this->page);
 		}
 
 	public function browse(\App\Record\FileFolder $fileFolder = new \App\Record\FileFolder()) : void
 		{
 		$this->page->turnOffBanner();
 
-		if ($this->page->addHeader('Browse Files'))
+		if (! $this->view->hasPermission($fileFolder))
+			{
+			$this->page->addPageContent(new \PHPFUI\SubHeader('Folder Not Found'));
+			}
+		elseif ($this->page->addHeader('Browse Files'))
 			{
 			$fileFolder->fileFolderId ??= 0;
 
-			$this->page->addPageContent($this->fileView->getBreadCrumbs('/File/browse/', $fileFolder->fileFolderId));
+			$this->page->addPageContent($this->view->getBreadCrumbs('/File/browse/', $fileFolder->fileFolderId));
 
-			$this->fileFolderTable->setWhere(new \PHPFUI\ORM\Condition('parentId', $fileFolder->fileFolderId))->addOrderBy('fileFolder');
-			$this->page->addPageContent($this->fileView->clipboard($fileFolder->fileFolderId));
+			$this->folderTable->setWhere(new \PHPFUI\ORM\Condition('parentFolderId', $fileFolder->fileFolderId))->addOrderBy('fileFolder');
+			$this->page->addPageContent($this->view->clipboard($fileFolder->fileFolderId));
 			$form = new \PHPFUI\Form($this->page);
 			$form->setAreYouSure(false);
 			$form->setAttribute('action', '/File/cut');
-			$form->add($this->fileView->listFolders($this->fileFolderTable, $fileFolder->fileFolderId));
+			$form->add($this->view->listFolders($this->folderTable, $fileFolder));
 
-			$this->fileTable->setWhere(new \PHPFUI\ORM\Condition('fileFolderId', $fileFolder->fileFolderId));
-			$form->add($this->fileView->listFiles($this->fileTable, true, $fileFolder->fileFolderId));
+			$this->table->setWhere(new \PHPFUI\ORM\Condition('fileFolderId', $fileFolder->fileFolderId));
+			$form->add($this->view->listFiles($this->table, true, $fileFolder->fileFolderId));
 			$this->page->addPageContent($form);
 			}
 		}
@@ -106,12 +110,12 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$url = '';
 
-		if (! $fileFolder->empty() && $this->page->isAuthorized('Add Folder'))
+		if (! $fileFolder->empty() && $this->page->isAuthorized('Delete File Folder'))
 			{
-			if (! $this->fileFolderTable->folderCount($fileFolder))
+			if (! $this->folderTable->folderCount($fileFolder))
 				{
 				\App\Model\Session::setFlash('success', "Folder {$fileFolder->fileFolder} deleted.");
-				$url = '/File/browse/' . $fileFolder->parentId;
+				$url = '/File/browse/' . $fileFolder->parentFolderId;
 				$fileFolder->delete();
 				}
 			else
@@ -128,7 +132,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function download(\App\Record\File $file = new \App\Record\File()) : void
 		{
-		if (! $file->loaded() || (! $file->public && ! \App\Model\Session::isSignedIn()))
+		if (! $file->loaded() || ! $this->view->hasPermission($file))
 			{
 			$this->page->addPageContent(new \PHPFUI\SubHeader('File not found'));
 			\http_response_code(404);
@@ -143,11 +147,11 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function edit(\App\Record\File $file = new \App\Record\File()) : void
 		{
-		if ($this->page->addHeader('Edit File', '', $file->memberId == \App\Model\Session::signedInMemberId()))
+		if ($this->page->addHeader('Edit File', '', $this->view->hasPermission($file)))
 			{
 			if ($file->loaded())
 				{
-				$this->page->addPageContent($this->fileView->edit($file));
+				$this->page->addPageContent($this->view->edit($file));
 				}
 			else
 				{
@@ -170,8 +174,8 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$this->page->addPageContent($this->getMember($member));
 				}
-			$this->fileTable->setWhere(new \PHPFUI\ORM\Condition('memberId', $member->memberId));
-			$this->page->addPageContent($this->fileView->listFiles($this->fileTable));
+			$this->table->setWhere(new \PHPFUI\ORM\Condition('memberId', $member->memberId));
+			$this->page->addPageContent($this->view->listFiles($this->table));
 			}
 		}
 
@@ -211,19 +215,19 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 						{
 						$fileFolder = new \App\Record\FileFolder(0 - $fileId);
 						$originalFileFolderId = $fileFolder->fileFolderId;
-						$fileFolder->parentId = $fileFolderId;
+						$fileFolder->parentFolderId = $fileFolderId;
 						$fileFolder->update();
 
 						// loop through folders till we find root, if we find ourselves, then reset us to be parent of root.
-						while ($fileFolder->parentId)
+						while ($fileFolder->parentFolderId)
 							{
-							if ($originalFileFolderId == $fileFolder->parentId)
+							if ($originalFileFolderId == $fileFolder->parentFolderId)
 								{
 								// infinite loop, set parent to root
-								$fileFolder->parentId = 0;
+								$fileFolder->parentFolderId = 0;
 								$fileFolder->update();
 								}
-							$fileFolder = new \App\Record\FileFolder($fileFolder->parentId);
+							$fileFolder = $fileFolder->parentFolder;
 							}
 						}
 					}
@@ -238,13 +242,14 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('Find Files'))
 			{
+			// need to check if in permissioned folder
 			if (! empty($_GET))
 				{
-				$this->fileTable->search($_GET);
+				$this->table->search($_GET);
 				}
-			$this->page->addPageContent($this->fileView->getSearchButton($_GET, ! empty($_GET)));
-			$this->page->addPageContent($this->fileView->listFiles($this->fileTable));
-			$this->page->addPageContent($this->fileView->getSearchButton());
+			$this->page->addPageContent($this->view->getSearchButton($_GET, ! empty($_GET)));
+			$this->page->addPageContent($this->view->listFiles($this->table));
+			$this->page->addPageContent($this->view->getSearchButton());
 			}
 		}
 

@@ -236,11 +236,53 @@ class File
 		return $this->searchButton;
 		}
 
-	public function listFolders(\App\Table\FileFolder $folders, int $parentFolderId) : \PHPFUI\Table
+	public function hasPermission(\App\Record\File | \App\Record\FileFolder $file) : bool
+		{
+		if ($file instanceof \App\Record\File)
+			{
+			if (! $file->loaded())
+				{
+				return false;
+				}
+
+			if ($file->public)
+				{
+				return true;
+				}
+
+			if (! \App\Model\Session::isSignedIn())
+				{
+				return false;
+				}
+
+			// user must have permissions all the way up
+			$parentFolder = $file->fileFolder;
+			}
+		else
+			{
+			$parentFolder = $file;
+			}
+
+		while ($parentFolder->loaded())
+			{
+			if ($parentFolder->permissionId)
+				{
+				if (! $this->page->getPermissions()->hasPermission($parentFolder->permissionId))
+					{
+					return false;
+					}
+				}
+			$parentFolder = $parentFolder->parentFolder;
+			}
+
+		return true;
+		}
+
+	public function listFolders(\App\Table\FileFolder $folders, \App\Record\FileFolder $parentFolder) : \PHPFUI\Table
 		{
 		$container = new \PHPFUI\Table();
 
-		if ($parentFolderId)
+		if (! $parentFolder->loaded())
 			{
 			$container->setHeaders(['Folder', 'Cut' => 'Cut/Del']);
 			$container->addColumnAttribute('Cut', ['class' => 'float-right']);
@@ -248,35 +290,39 @@ class File
 		$buttonGroup = new \PHPFUI\HTML5Element('div');
 		$buttonGroup->addClass('clearfix');
 
-		if ($this->page->isAuthorized('Add Folder'))
+		$permission = 'Add File Folder';
+
+		if ($this->page->isAuthorized($permission))
 			{
-			$addFolderButton = new \PHPFUI\Button('Add Folder');
+			$addFolderButton = new \PHPFUI\Button($permission);
 			$addFolderButton->addClass('secondary');
-			$this->addFolderModal($addFolderButton, $parentFolderId);
+			$this->addFolderModal($addFolderButton, $parentFolder);
 			$buttonGroup->add($addFolderButton);
 			}
 
-		if ($parentFolderId)
+		if ($parentFolder->loaded())
 			{
 
 			if ($this->page->isAuthorized('Add File'))
 				{
 				$addFileButton = new \PHPFUI\Button('Add File');
 				$addFileButton->addClass('success');
-				$this->addFileModal($addFileButton, $parentFolderId);
+				$this->addFileModal($addFileButton, $parentFolder);
 				$buttonGroup->add($addFileButton);
 				}
 
-			if ($this->page->isAuthorized('Rename Folder'))
+			$permission = 'Edit File Folder';
+
+			if ($this->page->isAuthorized($permission))
 				{
-				$renameFolderButton = new \PHPFUI\Button('Rename Folder');
+				$renameFolderButton = new \PHPFUI\Button($permission);
 				$renameFolderButton->addClass('warning');
-				$this->addRenameFolderModal($renameFolderButton, $parentFolderId);
+				$this->addEditFolderModal($renameFolderButton, $parentFolder);
 				$buttonGroup->add($renameFolderButton);
 				}
 			}
 
-		if ($parentFolderId && ($this->moveFile || $this->moveFolder))
+		if ($parentFolder->loaded() && ($this->moveFile || $this->moveFolder))
 			{
 			$cutButton = new \PHPFUI\Submit('Cut');
 			$cutButton->addClass('alert');
@@ -292,6 +338,10 @@ class File
 
 		foreach($folders->getRecordCursor() as $folder)
 			{
+			if (! $this->hasPermission($folder))
+				{
+				continue;
+				}
 			$row = [];
 			$row['Folder'] = new \PHPFUI\Link('/File/browse/' . $folder->fileFolderId, $folder->fileFolder, false);
 
@@ -299,7 +349,7 @@ class File
 				{
 				$row['Cut'] = new \PHPFUI\FAIcon('fas', 'trash-alt', '/File/deleteFolder/' . $folder->fileFolderId);
 				}
-			elseif ($parentFolderId && (! isset($cuts[0 - $folder->fileFolderId]) && $this->moveFolder))
+			elseif ($parentFolder->loaded() && (! isset($cuts[0 - $folder->fileFolderId]) && $this->moveFolder))
 				{
 				$cb = new \PHPFUI\Input\CheckBox('cutFolder[]', '', $folder->fileFolderId);
 				$row['Cut'] = $cb;
@@ -350,9 +400,10 @@ return $member->fullName();});
 		return '';
 		}
 
-	private function addFolderModal(\PHPFUI\HTML5Element $modalLink, int $fileFolderId) : void
+	private function addFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\FileFolder $parentFolder) : void
 		{
-		$submit = new \PHPFUI\Submit('Add Folder');
+		$permission = 'Add File Folder';
+		$submit = new \PHPFUI\Submit($permission);
 
 		if (\App\Model\Session::checkCSRF() && $submit->submitted($_POST))
 			{
@@ -367,17 +418,21 @@ return $member->fullName();});
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
 		$fieldSet = new \PHPFUI\FieldSet('New Folder Name');
-		$hidden = new \PHPFUI\Input\Hidden('parentId', (string)$fileFolderId);
+		$hidden = new \PHPFUI\Input\Hidden('parentFolderId', (string)$parentFolder->fileFolderId);
 		$fieldSet->add($hidden);
 		$folderName = new \PHPFUI\Input\Text('fileFolder', 'New Folder Name');
 		$folderName->setRequired();
 		$fieldSet->add($folderName);
+
+		$permissionGroupPicker = new \App\UI\PermissionGroupPicker($this->page, 'permissionId', 'Optional Permission Group Restriction');
+		$fieldSet->add($permissionGroupPicker->getEditControl());
+
 		$form->add($fieldSet);
 		$form->add($modal->getButtonAndCancel($submit));
 		$modal->add($form);
 		}
 
-	private function addFileModal(\PHPFUI\HTML5Element $modalLink, int $fileFolderId) : void
+	private function addFileModal(\PHPFUI\HTML5Element $modalLink, \App\Record\FileFolder $fileFolder) : void
 		{
 		$submit = new \PHPFUI\Submit('Add File');
 
@@ -385,7 +440,7 @@ return $member->fullName();});
 			{
 			$file = new \App\Record\File();
 			$file->setFrom([
-				'fileFolderId' => $fileFolderId,
+				'fileFolderId' => $fileFolder->fileFolderId,
 				'file' => $_POST['file'] ?? '',
 				'memberId' => $this->signedInMember,
 				'public' => $_POST['public'] ?? 0,
@@ -425,13 +480,14 @@ return $member->fullName();});
 		$modal->add($fieldSet);
 		}
 
-	private function addRenameFolderModal(\PHPFUI\HTML5Element $modalLink, int $fileFolderId) : void
+	private function addEditFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\FileFolder $fileFolder) : void
 		{
-		$submit = new \PHPFUI\Submit('Rename Folder');
+		$submit = new \PHPFUI\Submit();
 
 		if (\App\Model\Session::checkCSRF() && $submit->submitted($_POST))
 			{
-			$fileFolder = new \App\Record\FileFolder($_POST);
+			unset($_POST['fileFolderId']);
+			$fileFolder->setFrom($_POST);
 			$fileFolder->update();
 			$this->page->redirect();
 			}
@@ -440,13 +496,16 @@ return $member->fullName();});
 		$modal->addClass('large');
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
-		$fieldSet = new \PHPFUI\FieldSet('Rename Folder');
-		$fileFolder = new \App\Record\FileFolder($fileFolderId);
-		$hidden = new \PHPFUI\Input\Hidden('fileFolderId', (string)$fileFolderId);
+		$fieldSet = new \PHPFUI\FieldSet('Edit File Folder');
+		$hidden = new \PHPFUI\Input\Hidden('fileFolderId', (string)$fileFolder->fileFolderId);
 		$fieldSet->add($hidden);
-		$folderName = new \PHPFUI\Input\Text('fileFolder', 'New Folder Name', $fileFolder->fileFolder);
+		$folderName = new \PHPFUI\Input\Text('fileFolder', 'Folder Name', $fileFolder->fileFolder);
 		$folderName->setRequired();
 		$fieldSet->add($folderName);
+
+		$permissionGroupPicker = new \App\UI\PermissionGroupPicker($this->page, 'permissionId', 'Optional Permission Group Restriction', $fileFolder->permission);
+		$fieldSet->add($permissionGroupPicker->getEditControl());
+
 		$form->add($fieldSet);
 		$form->add($modal->getButtonAndCancel($submit));
 		$modal->add($form);

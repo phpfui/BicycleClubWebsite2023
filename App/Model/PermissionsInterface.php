@@ -35,4 +35,6 @@ interface PermissionsInterface
 	public function deleteGroup(\App\Record\Permission $permission) : static;
 
 	public function deletePermission(\App\Record\Permission $permission) : static;
+
+	public function hasPermission(int $permission) : bool;
 	}

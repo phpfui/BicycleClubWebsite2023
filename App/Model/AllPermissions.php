@@ -42,6 +42,11 @@ class AllPermissions implements \App\Model\PermissionsInterface
 		return [];
 		}
 
+	public function hasPermission(int $permission) : bool
+		{
+		return true;
+		}
+
 	public function isAuthorized(string $permission, string $menu = '') : bool
 		{
 		return true;

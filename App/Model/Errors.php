@@ -5,9 +5,7 @@ namespace App\Model;
 class Errors
 	{
 	/**
-	 * @var string[]
-	 *
-	 * @psalm-var array{0: string, 1: string}
+	 * @var array<string> $files
 	 */
 	private array $files = [];
 
@@ -20,7 +18,7 @@ class Errors
 
 	public function __construct()
 		{
-		$this->files = [\ini_get('error_log'), '../PayPal.log'];
+		$this->files = [\ini_get('error_log'), PROJECT_ROOT . '/PayPal.log'];
 		}
 
 	/**
@@ -31,10 +29,8 @@ class Errors
 		{
 		$count = 0;
 
-		foreach ($this->files as $file)
+		foreach ($this->files as $filename)
 			{
-			$filename = PUBLIC_ROOT . $file;
-
 			if (\file_exists($filename))
 				{
 				++$count;
@@ -54,10 +50,8 @@ class Errors
 		{
 		$errors = [];
 
-		foreach ($this->files as $file)
+		foreach ($this->files as $filename)
 			{
-			$filename = PUBLIC_ROOT . $file;
-
 			if (\file_exists($filename))
 				{
 				$handle = \fopen($filename, 'r');

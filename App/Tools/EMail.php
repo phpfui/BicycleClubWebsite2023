@@ -40,7 +40,7 @@ class EMail
 		{
 		if ($logErrors)
 			{
-			$this->logger = new \App\Tools\Logger(self::class);
+			$this->logger = new \App\Tools\Logger();
 			}
 		$this->settingTable = new \App\Table\Setting();
 		$this->server = \strtolower($_SERVER['SERVER_NAME'] ?? 'localhost.com');

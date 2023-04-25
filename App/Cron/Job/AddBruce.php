@@ -67,7 +67,7 @@ class AddBruce extends \App\Cron\BaseJob
 		$userPermission = new \App\Record\UserPermission();
 		$userPermission->member = $member;
 		$userPermission->permissionGroup = 1;
-		$userPermission->insertOrUpdate();
+		$userPermission->insertOrIgnore();
 		}
 
 	public function willRun() : bool

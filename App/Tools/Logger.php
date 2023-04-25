@@ -130,15 +130,7 @@ class Logger
 		{
 		if ('<pre>' != $this->content)
 			{
-			if (\str_contains($_SERVER['SERVER_ADDR'] ?? '::1', '::1'))
-				{
-				\file_put_contents($this->getFileName(), $this->content, FILE_APPEND);
-				}
-			else
-				{
-				\error_log($this->content);
-				}
-
+			\error_log($this->content);
 			$this->content = '';
 			}
 
@@ -210,7 +202,6 @@ class Logger
 			{
 			self::$logger = new \App\Tools\Logger($name);
 			self::$logger->setAlwaysFlush();
-//			@\unlink(self::$logger->getFileName());
 			}
 
 		return self::$logger;
@@ -218,7 +209,7 @@ class Logger
 
 	public function getFileName() : string
 		{
-		return '../logger-' . \date('Y-m-d') . '-' . $this->identifier . '.html';
+		return \ini_get('error_log');
 		}
 
 	public function outputNow() : static

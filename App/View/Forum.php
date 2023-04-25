@@ -96,7 +96,7 @@ class Forum
 		$forumName->setToolTip('This is the public name of the forum and will be shown to members and in emails.');
 		$forumName->setRequired();
 		$email = new \PHPFUI\Input\Text('email', 'email Address', $forum->email);
-		$email->setToolTip('This is the email address of the forum. It is the part before the @ sign.  No need to enter a domain.');
+		$email->setToolTip('This is the club email address of the forum. It will be the part before @' . $this->page->value('domain'));
 		$fieldSet->add(new \PHPFUI\MultiColumn($forumName, $email));
 		$closed = new \PHPFUI\Input\CheckBoxBoolean('closed', 'Closed for new comments', (bool)$forum->closed);
 		$closed->setToolTip('Close this forum for new comments. A forum must be closed before it can be deleted.');

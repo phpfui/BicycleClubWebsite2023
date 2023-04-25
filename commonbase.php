@@ -1,6 +1,6 @@
 <?php
+date_default_timezone_set('America/New_York');
 // allow the autoloader and db to be included from any script that needs it.
-error_reporting(E_ALL);
 
 if (! defined('PROJECT_ROOT'))
 	{
@@ -19,5 +19,8 @@ if (! defined('PROJECT_ROOT'))
 	spl_autoload_register('autoload');
 	}
 
-date_default_timezone_set('America/New_York');
+// setup error logging
+error_reporting(E_ALL);
+ini_set('error_log', PROJECT_ROOT . '/error.log');
+new \App\Tools\ErrorLogging();
 

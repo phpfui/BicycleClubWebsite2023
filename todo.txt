@@ -1,6 +1,12 @@
-Break out PHPFUI\DB
-	Add docs for App\Record\Definition generators
-	Add docs for validation
+Unique forum names and email addresses.
+
+User permissions on video, files, photos, etc.
+
+Assign permission group functionality and figure out updating groups when renamed
+
+allow custom time zone
+
+More than max people allowed on ride.
 
 RWGPS
 	Rate RWGPS routes

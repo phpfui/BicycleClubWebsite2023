@@ -9,7 +9,7 @@ class Errors
 	 *
 	 * @psalm-var array{0: string, 1: string}
 	 */
-	private array $files = ['error.log', '../PayPal.log'];
+	private array $files = [\ini_get('error_log'), '../PayPal.log'];
 
 	/**
 	 * @var string[]

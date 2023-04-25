@@ -11,6 +11,7 @@ function trans(string $text, array $parameters = []) : string
 \PHPFUI\Translation\Translator::setTranslationDirectory(PROJECT_ROOT . '/languages/installed');
 
 $dbSettings = new \App\Settings\DB();
+date_default_timezone_set($dbSettings->timeZone ?? 'America/New_York');
 $pdo = $dbSettings->getPDO();
 if ($pdo)
 	{

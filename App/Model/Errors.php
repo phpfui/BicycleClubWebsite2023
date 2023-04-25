@@ -9,7 +9,7 @@ class Errors
 	 *
 	 * @psalm-var array{0: string, 1: string}
 	 */
-	private array $files = [\ini_get('error_log'), '../PayPal.log'];
+	private array $files = [];
 
 	/**
 	 * @var string[]
@@ -17,6 +17,11 @@ class Errors
 	 * @psalm-var array{0: string, 1: string}
 	 */
 	private array $filterLines = ['IMAP', 'SSL negotiation failed', ];
+
+	public function __construct()
+		{
+		$this->files = [\ini_get('error_log'), '../PayPal.log'];
+		}
 
 	/**
 	 *

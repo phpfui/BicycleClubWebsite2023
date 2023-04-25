@@ -107,36 +107,41 @@ class Config implements \PHPFUI\Interfaces\NanoClass, \Stringable
 				break;
 
 			case 6:
+				$this->page->add(new \App\View\Setup\TimeZone($this->page, $this->settings, $wizardBar));
+
+				break;
+
+			case 7:
 				$view = new \App\View\Admin\Configuration($this->page);
 				$this->page->add(new \App\View\Setup\Generic('General Settings', $view->site(), $wizardBar));
 
 				break;
 
-			case 7:
+			case 8:
 				$membershipView = new \App\View\Membership($this->page);
 				$view = $membershipView->configure();
 				$this->page->add(new \App\View\Setup\Generic('Membership Settings', $view, $wizardBar));
 
 				break;
 
-			case 8:
+			case 9:
 				$this->page->add(new \App\View\Setup\AssignMembers($this->page, $wizardBar));
 
 				break;
 
-			case 9:
+			case 10:
 				$view = new \App\View\System\SMTPSettings($this->page);
 				$this->page->add(new \App\View\Setup\Generic('Email SMTP Settings', $view->editSettings(), $wizardBar));
 
 				break;
 
-			case 10:
+			case 11:
 				$view = new \App\View\Admin\SystemEmail($this->page);
 				$this->page->add(new \App\View\Setup\Generic('Email IMAP Settings', $view->editSettings(), $wizardBar));
 
 				break;
 
-			case 11:
+			case 12:
 				$this->page->add(new \App\View\Setup\TestEmail($this->page, $wizardBar));
 
 				break;
@@ -145,49 +150,49 @@ class Config implements \PHPFUI\Interfaces\NanoClass, \Stringable
 				// optional page to create and manage groups?
 				// set up ride categories
 
-			case 12:
+			case 13:
 				$superUserView = new \App\View\Setup\SuperUsers($this->page);
 				$this->page->add($superUserView->addUsers($wizardBar));
 
 				break;
 
-			case 13:
+			case 14:
 				$superUserView = new \App\View\Setup\SuperUsers($this->page);
 				$this->page->add($superUserView->emailPasswordResets($wizardBar));
 
 				break;
 
-			case 14:
+			case 15:
 				$view = new \App\View\System\GoogleAnalytics($this->page);
 				$this->page->add(new \App\View\Setup\Generic('Google Analytics Settings', $view->editSettings(), $wizardBar));
 
 				break;
 
-			case 15:
+			case 16:
 				$view = new \App\View\System\ReCAPTCHA($this->page);
 				$this->page->add(new \App\View\Setup\Generic('Google ReCAPTCHA Settings', $view->editSettings(), $wizardBar));
 
 				break;
 
-			case 16:
+			case 17:
 				$view = new \App\View\System\SlackSettings($this->page);
 				$this->page->add(new \App\View\Setup\Generic('Slack Settings', $view->editSettings(), $wizardBar));
 
 				break;
 
-			case 17:
+			case 18:
 				$view = new \App\View\System\TwilioSettings($this->page);
 				$this->page->add(new \App\View\Setup\Generic('Twilio SMS Settings', $view->editSettings(), $wizardBar));
 
 				break;
 
-			case 18:
+			case 19:
 				$view = new \App\View\System\TinifySettings($this->page);
 				$this->page->add(new \App\View\Setup\Generic('Tinify Settings', $view->editSettings(), $wizardBar));
 
 				break;
 
-			case 19:
+			case 20:
 				$view = new \App\View\System\FavIcon($this->page);
 				$this->page->add(new \App\View\Setup\Generic('FavIcon Settings', $view->editSettings(), $wizardBar));
 
@@ -202,6 +207,6 @@ class Config implements \PHPFUI\Interfaces\NanoClass, \Stringable
 
 	private function getWizardBar(int $stage) : \App\View\Setup\WizardBar
 		{
-		return new \App\View\Setup\WizardBar($stage, 20);
+		return new \App\View\Setup\WizardBar($stage, 21);
 		}
 	}

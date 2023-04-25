@@ -1,10 +1,8 @@
 Unique forum names and email addresses.
 
-User permissions on video, files, photos, etc.
+User permission group on video, files, and photos folders.
 
 Assign permission group functionality and figure out updating groups when renamed
-
-allow custom time zone
 
 More than max people allowed on ride.
 

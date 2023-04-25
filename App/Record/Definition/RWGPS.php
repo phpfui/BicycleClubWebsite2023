@@ -54,5 +54,5 @@ abstract class RWGPS extends \PHPFUI\ORM\Record
 	/** @var array<string, true> */
 	protected static array $primaryKeys = ['RWGPSId' => true, ];
 
-	protected static string $table = 'rWGPS';
+	protected static string $table = 'rwgps';
 	}

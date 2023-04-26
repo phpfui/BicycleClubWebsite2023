@@ -44,8 +44,38 @@ class Forum extends \App\Record\Definition\Forum
 		return parent::delete();
 		}
 
+	public function clean() : static
+		{
+		$this->email = \strtolower(\str_replace(' ', '', $this->email));
+		$this->description = \App\Tools\TextHelper::cleanUserHtml($this->description);
+
+		return $this;
+		}
+
+	public function insert() : bool
+		{
+		$errors = $this->validate();
+
+		if ($errors)
+			{
+			\App\Model\Session::setFlash('alert', $errors);
+
+			return false;
+			}
+
+		return parent::insert();
+		}
+
 	public function update() : bool
 		{
+		$errors = $this->validate();
+
+		if ($errors)
+			{
+			\App\Model\Session::setFlash('alert', $errors);
+
+			return false;
+			}
 		$forum = new \App\Record\Forum($this->forumId);
 
 		if (! $forum->empty())

@@ -35,7 +35,7 @@ class System
 		$email->setFrom($fromBox . '@' . $_SERVER['SERVER_NAME'], $fromName);
 		$email->setReplyTo($fromEmail, $fromName);
 		$text = $message->getTextContent() ?? '';
-		$html = \App\Tools\TextHelper::htmlentities($message->getHtmlContent());
+		$html = \App\Tools\TextHelper::htmlentities($message->getHtmlContent() ?? '');
 
 		if (! \strlen($text) && \strlen($html))
 			{
@@ -70,7 +70,7 @@ class System
 						}
 					}
 
-				$fileName = $parts['filename'];
+				$fileName = $parts['filename'] ?? 'unknown';
 
 				$fileName = \str_replace(' ', '_', $fileName);
 				$fileName = \preg_replace('/[^a-zA-Z0-9\.\-\_()]/', '', $fileName);
@@ -100,7 +100,7 @@ class System
 				$tempFiles[] = $fileName;
 				}
 			}
-		$subject = $message->getHeaderValue('subject');
+		$subject = $message->getHeaderValue('subject') ?? '';
 
 		if ($subject)
 			{

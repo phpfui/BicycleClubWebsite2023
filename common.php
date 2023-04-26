@@ -8,7 +8,6 @@ function trans(string $text, array $parameters = []) : string
 
 \App\Tools\SessionManager::start();
 
-\PHPFUI\Translation\Translator::setTranslationDirectory(PROJECT_ROOT . '/languages/installed');
 
 $dbSettings = new \App\Settings\DB();
 date_default_timezone_set($dbSettings->timeZone ?? 'America/New_York');
@@ -18,6 +17,6 @@ if ($pdo)
 	\PHPFUI\ORM::addConnection($pdo);
 	\PHPFUI\ORM::setLogger(new \PHPFUI\ORM\StandardErrorLogger());
 	}
-
-\PHPFUI\Translation\Translator::setTranslationDirectory(__DIR__ . '/languages');
+\PHPFUI\ORM::setTranslationCallback([\PHPFUI\Translation\Translator::class, 'trans']);
+\PHPFUI\Translation\Translator::setTranslationDirectory(PROJECT_ROOT . '/languages');
 \PHPFUI\Translation\Translator::setLocale('EnglishUS');

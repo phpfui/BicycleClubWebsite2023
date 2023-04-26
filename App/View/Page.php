@@ -433,9 +433,19 @@ class Page extends \PHPFUI\Page
 				{
 				$ul = new \PHPFUI\UnorderedList();
 
-				foreach ($message as $error)
+				foreach ($message as $field => $error)
 					{
-					$ul->addItem(new \PHPFUI\ListItem($error));
+					if (\is_array($error))
+						{
+						foreach ($error as $validationError)
+							{
+							$ul->addItem(new \PHPFUI\ListItem("Field <b>{$field}</b> has the following error: <i>{$validationError}</i>"));
+							}
+						}
+					else
+						{
+						$ul->addItem(new \PHPFUI\ListItem($error));
+						}
 					}
 				$callout->add($ul);
 				}

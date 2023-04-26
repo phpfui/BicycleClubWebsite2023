@@ -1,5 +1,3 @@
-Unique forum names and email addresses.
-
 Assign permission group functionality and figure out updating groups when renamed
 
 More than max people allowed on ride.

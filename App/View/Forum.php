@@ -55,6 +55,12 @@ class Forum
 
 	public function edit(\App\Record\Forum $forum) : \PHPFUI\Form
 		{
+		$post = \App\Model\Session::getFlash('post');
+
+		if ($post)
+			{
+			$forum->setFrom($post);
+			}
 
 		if ($forum->forumId)
 			{
@@ -63,7 +69,6 @@ class Forum
 
 			if ($form->isMyCallback())
 				{
-				$_POST['description'] = \App\Tools\TextHelper::cleanUserHtml($_POST['description']);
 				unset($_POST['forumId']);
 				$forum->setFrom($_POST);
 				$forum->update();
@@ -79,12 +84,19 @@ class Forum
 
 			if ('Add' == ($_POST['submit'] ?? '') && \App\Model\Session::checkCSRF())
 				{
-				$_POST['email'] = \strtolower(\trim((string)$_POST['email']));
 				$forum = new \App\Record\Forum();
 				$forum->setFrom($_POST);
-				$forum->insert();
 				$this->page->done();
-				$this->page->redirect('/Forums/manage');
+
+				if (! $forum->insert())
+					{
+					\App\Model\Session::setFlash('post', $_POST);
+					$this->page->redirect();
+					}
+				else
+					{
+					$this->page->redirect('/Forums/manage');
+					}
 
 				return $form;
 				}
@@ -899,19 +911,6 @@ class Forum
 							$forumMember->insert();
 							}
 						$this->page->redirect();
-
-						break;
-					}
-				}
-			elseif (isset($_POST['submit']))
-				{
-				switch ($_POST['submit'])
-					{
-					case 'Save':
-						$_POST['email'] = \strtolower(\trim((string)$_POST['email']));
-						$forum = new \App\Record\Forum($_POST);
-						$forum->update();
-						$this->page->setResponse('Saved');
 
 						break;
 					}

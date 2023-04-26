@@ -11,9 +11,9 @@ class Forum extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'attachments' => ['integer'],
 		'closed' => ['integer'],
-		'description' => ['maxlength'],
-		'email' => ['maxlength'],
-		'name' => ['maxlength'],
+		'description' => ['maxlength', 'required'],
+		'email' => ['maxlength', 'required', 'unique'],
+		'name' => ['maxlength', 'required', 'unique'],
 		'whiteList' => ['maxlength'],
 	];
 

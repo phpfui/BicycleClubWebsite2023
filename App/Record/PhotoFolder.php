@@ -12,7 +12,7 @@ class PhotoFolder extends \App\Record\Definition\PhotoFolder
 	{
 	 protected static array $virtualFields = [
 	 	'PhotoChildren' => [\PHPFUI\ORM\Children::class, \App\Table\Photo::class],
-	 	'parentFolder' => [\App\DB\ParentRecord::class, \App\Record\PhotoFolder::class],
+	 	'parentFolder' => [\PHPFUI\ORM\RelatedRecord::class, \App\Record\PhotoFolder::class],
 	 ];
 
 	 public function clean() : static

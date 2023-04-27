@@ -19,4 +19,4 @@ if ($pdo)
 	}
 \PHPFUI\ORM::setTranslationCallback([\PHPFUI\Translation\Translator::class, 'trans']);
 \PHPFUI\Translation\Translator::setTranslationDirectory(PROJECT_ROOT . '/languages');
-\PHPFUI\Translation\Translator::setLocale('EnglishUS');
+\PHPFUI\Translation\Translator::setLocale('en_US');

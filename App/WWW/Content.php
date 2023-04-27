@@ -132,8 +132,6 @@ class Content extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$story = new \App\Record\Story();
 		$member = \App\Model\Session::signedInMemberRecord();
 		$story->body = 'Enter body here...';
-		$story->lastEdited = \App\Tools\Date::todayString();
-		$story->memberIdEditor = \App\Model\Session::signedInMemberId();
 		$story->headline = 'Headline';
 		$story->author = $member->fullName();
 		$storyId = $story->insert();

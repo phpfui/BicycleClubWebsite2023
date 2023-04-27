@@ -64,3 +64,21 @@ $updater->deleteFileInNamespace('Clue\StreamFilter', 'functions.php');
 // update the public files
 exec($php . ' vendor/phpfui/instadoc/install.php www/PHPFUI');
 
+$source = __DIR__ . '/vendor/phpfui/orm/translations';
+$dest = __DIR__ . '/languages/';
+foreach ($iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS), \RecursiveIteratorIterator::SELF_FIRST) as $item)
+	{
+  if ($item->isDir())
+		{
+		$dir = $dest . $iterator->getSubPathName();
+		if (! is_dir($dir))
+			{
+			mkdir($dir, 0777, true);
+			}
+		}
+  else
+		{
+		copy($item, $dest . $iterator->getSubPathName());
+		}
+	}
+

@@ -44,14 +44,23 @@ class BikeShop
 		if (! $bikeShop->empty())
 			{
 			$submit = new \PHPFUI\Submit('Save');
-			$form = new \PHPFUI\Form($this->page, $submit);
+			$form = new \App\UI\ErrorForm($this->page, $submit);
 
 			if ($form->isMyCallback())
 				{
-				$_POST['bikeShopId'] = $bikeShop->bikeShopId;
-				$bikeShop = new \App\Record\BikeShop($_POST);
-				$bikeShop->update();
-				$this->page->setResponse('Saved');
+				unset($_POST['bikeShopId']);
+				$bikeShop->setFrom($_POST);
+				$errors = $bikeShop->validate();
+
+				if ($errors)
+					{
+					$this->page->setRawResponse($form->returnErrors($errors));
+					}
+				else
+					{
+					$bikeShop->update();
+					$this->page->setResponse('Saved');
+					}
 
 				return $form;
 				}

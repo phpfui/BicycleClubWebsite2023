@@ -122,6 +122,40 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function inputNormal() : void
+		{
+		if ($this->page->addHeader('Input Normal'))
+			{
+			$form = new \PHPFUI\Form($this->page);
+
+			if (! empty($_REQUEST))
+				{
+				$debug = new \PHPFUI\Debug($_REQUEST);
+				$callout = new \PHPFUI\Callout('info');
+				$callout->add($debug);
+				$form->add($callout);
+				}
+			$fieldSet = new \PHPFUI\FieldSet('Input Testing');
+			$multiColumn = new \PHPFUI\MultiColumn();
+			$multiColumn->add(new \PHPFUI\Input\Time($this->page, 'time', 'Time Android', $_REQUEST['time'] ?? '12:30 PM'));
+			$multiColumn->add(new \PHPFUI\Input\TimeDigital($this->page, 'timeDigital', 'Time Digital', $_REQUEST['timeDigital'] ?? '4:45 PM'));
+			$fieldSet->add($multiColumn);
+			$fieldSet->add(new \PHPFUI\Input\Date($this->page, 'date', 'Date', $_REQUEST['date'] ?? ''));
+			$fieldSet->add(new \PHPFUI\Input\DateTime($this->page, 'string', 'Date Time', $_REQUEST['datetime'] ?? ''));
+			$fieldSet->add(new \PHPFUI\Input\Number('number', 'Number', (float)($_REQUEST['number'] ?? '')));
+
+			$form->add($fieldSet);
+			$buttonGroup = new \PHPFUI\ButtonGroup();
+			$buttonGroup->addButton(new \PHPFUI\Submit('Test'));
+			$backButon = new \PHPFUI\Button('Back', '/System');
+			$backButon->addClass('hollow')->addClass('secondary');
+			$buttonGroup->addButton($backButon);
+			$form->add($buttonGroup);
+			$form->add(\PHPFUI\Link::phone('1-914-361-9059', 'Call Web Master'));
+			$this->page->addPageContent("{$form}");
+			}
+		}
+
 	public function inputTest() : void
 		{
 		if ($this->page->addHeader('Input Test'))
@@ -176,40 +210,6 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function inputNormal() : void
-		{
-		if ($this->page->addHeader('Input Normal'))
-			{
-			$form = new \PHPFUI\Form($this->page);
-
-			if (! empty($_REQUEST))
-				{
-				$debug = new \PHPFUI\Debug($_REQUEST);
-				$callout = new \PHPFUI\Callout('info');
-				$callout->add($debug);
-				$form->add($callout);
-				}
-			$fieldSet = new \PHPFUI\FieldSet('Input Testing');
-			$multiColumn = new \PHPFUI\MultiColumn();
-			$multiColumn->add(new \PHPFUI\Input\Time($this->page, 'time', 'Time Android', $_REQUEST['time'] ?? '12:30 PM'));
-			$multiColumn->add(new \PHPFUI\Input\TimeDigital($this->page, 'timeDigital', 'Time Digital', $_REQUEST['timeDigital'] ?? '4:45 PM'));
-			$fieldSet->add($multiColumn);
-			$fieldSet->add(new \PHPFUI\Input\Date($this->page, 'date', 'Date', $_REQUEST['date'] ?? ''));
-			$fieldSet->add(new \PHPFUI\Input\DateTime($this->page, 'string', 'Date Time', $_REQUEST['datetime'] ?? ''));
-			$fieldSet->add(new \PHPFUI\Input\Number('number', 'Number', (float)($_REQUEST['number'] ?? '')));
-
-			$form->add($fieldSet);
-			$buttonGroup = new \PHPFUI\ButtonGroup();
-			$buttonGroup->addButton(new \PHPFUI\Submit('Test'));
-			$backButon = new \PHPFUI\Button('Back', '/System');
-			$backButon->addClass('hollow')->addClass('secondary');
-			$buttonGroup->addButton($backButon);
-			$form->add($buttonGroup);
-			$form->add(\PHPFUI\Link::phone('1-914-361-9059', 'Call Web Master'));
-			$this->page->addPageContent("{$form}");
-			}
-		}
-
 	public function license() : void
 		{
 		if ($this->page->addHeader('License'))
@@ -230,7 +230,20 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			if ($errors)
 				{
-				\App\Model\Session::setFlash('alert', $errors);
+				$messages = [];
+
+				foreach ($errors as $fields)
+					{
+					if (\is_array($fields))
+						{
+						$messages[] = "Error: {$fields['error']}, {$fields['sql']}";
+						}
+					else
+						{
+						$messages[] = $fields;
+						}
+					}
+				\App\Model\Session::setFlash('alert', $messages);
 				}
 			else
 				{
@@ -332,6 +345,23 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function releaseNotes() : void
+		{
+		if ($this->page->addHeader('Release Notes'))
+			{
+			$releaseNotes = new \App\View\System\ReleaseNotes();
+
+			if ($releaseNotes->count())
+				{
+				$this->page->addPageContent($releaseNotes->show());
+				}
+			else
+				{
+				$this->page->addPageContent(new \PHPFUI\SubHeader('No Release Notes Found'));
+				}
+			}
+		}
+
 	public function releases() : void
 		{
 		$repo = new \Gitonomy\Git\Repository(PROJECT_ROOT);
@@ -349,23 +379,6 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			{
 			$view = new \App\View\System\Releases($this->page, $repo);
 			$this->page->addPageContent($view->list($deployer->getReleaseTags()));
-			}
-		}
-
-	public function releaseNotes() : void
-		{
-		if ($this->page->addHeader('Release Notes'))
-			{
-			$releaseNotes = new \App\View\System\ReleaseNotes();
-
-			if ($releaseNotes->count())
-				{
-				$this->page->addPageContent($releaseNotes->show());
-				}
-			else
-				{
-				$this->page->addPageContent(new \PHPFUI\SubHeader('No Release Notes Found'));
-				}
 			}
 		}
 

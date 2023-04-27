@@ -11,7 +11,7 @@ class JobEvent extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'cutoffDate' => ['date'],
 		'date' => ['required', 'date'],
-		'email' => ['maxlength'],
+		'email' => ['maxlength', 'email'],
 		'name' => ['maxlength'],
 		'organizer' => ['integer'],
 	];

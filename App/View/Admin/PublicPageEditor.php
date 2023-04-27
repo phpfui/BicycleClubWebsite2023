@@ -44,7 +44,8 @@ class PublicPageEditor
 
 			if ($publicPage->publicPageId)
 				{
-				$publicPage = new \App\Record\PublicPage($_POST);
+				unset($_POST['publicPageId']);
+				$publicPage->setFrom($_POST);
 				$publicPage->update();
 				}
 			$this->page->setResponse('Saved');

@@ -20,4 +20,12 @@ class GaEvent extends \App\Record\Definition\GaEvent
 		'GaRideChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaRide::class],
 		'GaRiderChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaRider::class],
 	];
+
+	public function clean() : static
+		{
+		$this->description = \App\Tools\TextHelper::cleanUserHtml($this->description);
+		$this->signupMessage = \App\Tools\TextHelper::cleanUserHtml($this->signupMessage);
+
+		return $this;
+		}
 	}

@@ -127,12 +127,6 @@ class Member
 		return $memberId;
 		}
 
-	public function setNormalMemberPermission(\App\Record\Member $member) : void
-		{
-		$permission = new \App\Record\Permission(['name' => 'Normal Member']);
-		\App\Table\UserPermission::addPermissionToUser($member->memberId, $permission->permissionId);
-		}
-
 	public static function addYears(string $date, int $numYears) : string
 		{
 		// are we extending, or have we lapsed, if extending, they may be renewing early, so add to the current expiration date
@@ -625,11 +619,6 @@ class Member
 		return (int)$verifyCode;
 		}
 
-	public function verifyPassword(string $passwordToVerify, \App\Record\Member $member) : bool
-		{
-		return \password_verify($passwordToVerify, $member->password);
-		}
-
 	public function hashPassword(string $password) : ?string
 		{
 		return \password_hash(\trim($password), PASSWORD_DEFAULT, $this->passwordOptions);
@@ -762,10 +751,10 @@ class Member
 
 			if ($oldMember->leaderPoints != $member['leaderPoints'])
 				{
-				$member['memberIdEditor'] = \App\Model\Session::signedInMemberId();
-				$member['oldLeaderPoints'] = $oldMember->leaderPoints;
 				$pointHistory = new \App\Record\PointHistory();
 				$pointHistory->setFrom($member);
+				$pointHistory->editorId = \App\Model\Session::signedInMemberId();
+				$pointHistory->oldLeaderPoints = $oldMember->leaderPoints;
 				$pointHistory->insert();
 				}
 			}
@@ -807,6 +796,12 @@ class Member
 			$email->setFromMember($membershipChair);
 			$email->send();
 			}
+		}
+
+	public function setNormalMemberPermission(\App\Record\Member $member) : void
+		{
+		$permission = new \App\Record\Permission(['name' => 'Normal Member']);
+		\App\Table\UserPermission::addPermissionToUser($member->memberId, $permission->permissionId);
 		}
 
 	public function signInMember(string $email, string $password) : array
@@ -957,6 +952,11 @@ class Member
 			}
 
 		return false;
+		}
+
+	public function verifyPassword(string $passwordToVerify, \App\Record\Member $member) : bool
+		{
+		return \password_verify($passwordToVerify, $member->password);
 		}
 
 	private function createInvoice(\App\Record\Member $member, int $additionalMembers, int $years, float $donation = 0.0, string $dedication = '') : \App\Record\Invoice

@@ -4,8 +4,6 @@ namespace App\View\Volunteer;
 
 class Points
 	{
-	private readonly \App\Table\Member $memberTable;
-
 	/**
 	 * @var string[]
 	 *
@@ -15,7 +13,6 @@ class Points
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
-		$this->memberTable = new \App\Table\Member();
 		}
 
 	public function display(\App\Record\Member $member, int $year) : \PHPFUI\Container
@@ -93,20 +90,24 @@ class Points
 		$total = 0;
 
 		$sortableHeaders = ['time' => 'Time', 'leaderPoints' => 'Leader Points', 'oldLeaderPoints' => 'Pre Edit Points', ];
-		$normalHeaders = ['member' => 'Member', 'memberIdEditor' => 'Editor'];
+		$normalHeaders = ['member' => 'Member', 'editorId' => 'Editor'];
 		$table->setSortableColumns(\array_keys($sortableHeaders))->setSortedColumnOrder($column, $sort)->setHeaders($normalHeaders + $sortableHeaders);
 
 		foreach ($points as $point)
 			{
 			$row = $point->toArray();
 			$total += $point->leaderPoints;
-			$row['member'] = $this->memberTable->getName((int)$point->memberId);
+			$row['member'] = $point->member->fullName();
 
-			if (null == $point->memberIdEditor)
+			if (empty($point->editorId))
 				{
 				$point->oldLeaderPoints = null;
+				$row['editorId'] = 'System';
 				}
-			$row['memberIdEditor'] = $this->memberTable->getName((int)$point->memberIdEditor);
+			else
+				{
+				$row['editorId'] = $point->editor->fullName();
+				}
 			$table->addRow($row);
 			}
 		$row = ['time' => '<b>Total</b>', 'leaderPoints' => "<b>{$total}</b>"];
@@ -167,7 +168,7 @@ class Points
 		$memberPicker = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPickerNoSave('Member Name'), 'memberId');
 		$fieldSet->add($memberPicker->getEditControl());
 
-		$memberEditorPicker = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPickerNoSave('Editor Name'), 'memberIdEditor');
+		$memberEditorPicker = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPickerNoSave('Editor Name'), 'editorId');
 		$fieldSet->add($memberEditorPicker->getEditControl());
 
 		$from = new \PHPFUI\Input\Date($this->page, 'time_min', 'From Date', $parameters['time_min'] ?? '');
@@ -205,25 +206,6 @@ class Points
 		$parameters['p'] = 0;
 		}
 
-	private function listDates(iterable $items, array $category) : \PHPFUI\Table
-		{
-		$table = new \PHPFUI\Table();
-		$headers = ['date' => 'Date', 'name' => 'Name', 'credited' => 'Credited', 'info' => 'Info'];
-		$table->setHeaders($headers);
-
-		foreach ($items as $item)
-			{
-			$row = [];
-			$row['date'] = $item[$category['date']];
-			$row['name'] = $item[$category['name']];
-			$row['credited'] = $item['pointsAwarded'] ? 'Yes' : 'No';
-			$row['info'] = $this->getInfoReveal($item, $category);
-			$table->addRow($row);
-			}
-
-		return $table;
-		}
-
 	private function getInfoReveal(\PHPFUI\ORM\DataObject $item, array $category) : \PHPFUI\HTML5Element
 		{
 		$opener = new \PHPFUI\FAIcon('far', 'question-circle');
@@ -246,5 +228,24 @@ class Points
 		$reveal->loadUrlOnOpen('/Volunteer/pointsDetail?' . \http_build_query($parameters), $div->getId());
 
 		return $opener;
+		}
+
+	private function listDates(iterable $items, array $category) : \PHPFUI\Table
+		{
+		$table = new \PHPFUI\Table();
+		$headers = ['date' => 'Date', 'name' => 'Name', 'credited' => 'Credited', 'info' => 'Info'];
+		$table->setHeaders($headers);
+
+		foreach ($items as $item)
+			{
+			$row = [];
+			$row['date'] = $item[$category['date']];
+			$row['name'] = $item[$category['name']];
+			$row['credited'] = $item['pointsAwarded'] ? 'Yes' : 'No';
+			$row['info'] = $this->getInfoReveal($item, $category);
+			$table->addRow($row);
+			}
+
+		return $table;
 		}
 	}

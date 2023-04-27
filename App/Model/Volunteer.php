@@ -4,11 +4,11 @@ namespace App\Model;
 
 class Volunteer
 	{
+	private readonly int $advanceHours;
+
 	private array $memberPoints = [];
 
 	private readonly \App\Model\SettingsSaver $settingsSaver;
-
-	private readonly int $advanceHours;
 
 	public function __construct()
 		{
@@ -82,34 +82,6 @@ class Volunteer
 			}
 
 		return $this;
-		}
-
-	public function validateRide(\App\Record\Ride $ride, iterable $assistantLeaders) : string
-		{
-		// rides must be posted $advanceHours hours in advance to be created
-		$rideTime = \strtotime($ride->rideDate . ' ' . $ride->startTime);
-		$diff = $rideTime - \strtotime($ride->dateAdded);
-
-		if ($diff < $this->advanceHours * 60 * 60)
-			{
-			return "The ride was not added {$this->advanceHours} before the posted start time";
-			}
-		$rideSignupTable = new \App\Table\RideSignup();
-		$confirmedSignups = $rideSignupTable->getRidersForAttended($ride);
-
-		if ($ride->unaffiliated)
-			{
-			return 'Unaffiliated ride.';
-			}
-
-		if (\count($confirmedSignups) <= \count($assistantLeaders) + 1)
-			{
-			$link = new \PHPFUI\Link('/Rides/confirm/' . $ride->rideId, 'Confirm here', false);
-
-			return 'No riders (non-leaders) were confirmed for the ride. ' . $link;
-			}
-
-		return '';
 		}
 
 	public function assignSignInSheetPoints(int $daysOut = 90) : static
@@ -247,7 +219,8 @@ class Volunteer
 			if ($points)
 				{
 				$pointHistory = new \App\Record\PointHistory();
-				$pointHistory->setFrom(['memberId' => $memberId, 'leaderPoints' => $points]);
+				$pointHistory->memberId = $memberId;
+				$pointHistory->leaderPoints = $points;
 				$pointHistory->insert();
 				$memberTable->updatePointDifference($memberId, $points);
 				}
@@ -266,6 +239,34 @@ class Volunteer
 			}
 
 		return $this;
+		}
+
+	public function validateRide(\App\Record\Ride $ride, iterable $assistantLeaders) : string
+		{
+		// rides must be posted $advanceHours hours in advance to be created
+		$rideTime = \strtotime($ride->rideDate . ' ' . $ride->startTime);
+		$diff = $rideTime - \strtotime($ride->dateAdded);
+
+		if ($diff < $this->advanceHours * 60 * 60)
+			{
+			return "The ride was not added {$this->advanceHours} before the posted start time";
+			}
+		$rideSignupTable = new \App\Table\RideSignup();
+		$confirmedSignups = $rideSignupTable->getRidersForAttended($ride);
+
+		if ($ride->unaffiliated)
+			{
+			return 'Unaffiliated ride.';
+			}
+
+		if (\count($confirmedSignups) <= \count($assistantLeaders) + 1)
+			{
+			$link = new \PHPFUI\Link('/Rides/confirm/' . $ride->rideId, 'Confirm here', false);
+
+			return 'No riders (non-leaders) were confirmed for the ride. ' . $link;
+			}
+
+		return '';
 		}
 
 	private function addAssistantLeaderPoints(\PHPFUI\ORM\RecordCursor $assistantLeaders, int $assistPoints) : void

@@ -9,7 +9,7 @@ class VolunteerJobShift extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, array<string>> */
 	public static array $validators = [
-		'email' => ['maxlength'],
+		'email' => ['maxlength', 'email'],
 		'jobId' => ['integer'],
 		'jobShiftId' => ['integer'],
 		'memberId' => ['required', 'integer'],

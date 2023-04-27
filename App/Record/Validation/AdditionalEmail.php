@@ -9,7 +9,7 @@ class AdditionalEmail extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, array<string>> */
 	public static array $validators = [
-		'email' => ['required', 'maxlength'],
+		'email' => ['required', 'maxlength', 'email'],
 		'memberId' => ['required', 'integer'],
 		'verified' => ['required', 'integer'],
 	];

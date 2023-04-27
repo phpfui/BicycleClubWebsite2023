@@ -9,6 +9,8 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 	{
 	private bool $android = false;
 
+	private \PHPFUI\Container $body;
+
 	private bool $chrome = false;
 
 	/** @var array<string, string> */
@@ -51,13 +53,14 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 
 	private string $resourcePath = '/';
 
+	/** @var array<string, array<string, string>> */
+	private array $scriptAttributes = [];
+
 	/** @var array<string, string> */
 	private array $styleSheets = [];
 
 	/** @var array<string, string> */
 	private array $tailScripts = [];
-
-	private \PHPFUI\Container $body;
 
 	public function __construct()
 		{
@@ -103,16 +106,6 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 		}
 
 	/**
-	 * Remove inline css
-	 */
-	public function removeCSS(string $css) : static
-		{
-		unset($this->css[\sha1($css)]);
-
-		return $this;
-		}
-
-	/**
 	 * Add dedupped JavaScript to the header
 	 */
 	public function addHeadJavaScript(string $js) : static
@@ -123,35 +116,16 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 		}
 
 	/**
-	 * Remove JavaScript from the header
-	 */
-	public function removeHeadJavaScript(string $js) : static
-		{
-		unset($this->headJavascript[\sha1($js)]);
-
-		return $this;
-		}
-
-	/**
 	 * Add a dedupped header script
 	 *
 	 * @param string $module path to script
+	 * @param array<string,string> $attributes key is attribute, value is option
 	 */
-	public function addHeadScript(string $module) : \PHPFUI\Interfaces\Page
+	public function addHeadScript(string $module, array $attributes = []) : \PHPFUI\Interfaces\Page
 		{
-		$this->headScripts[\sha1($module)] = $module;
-
-		return $this;
-		}
-
-	/**
-	 * Remove header script
-	 *
-	 * @param string $module path to script
-	 */
-	public function removeHeadScript(string $module) : \PHPFUI\Interfaces\Page
-		{
-		unset($this->headScripts[\sha1($module)]);
+		$sha1 = \sha1($module);
+		$this->headScripts[$sha1] = $module;
+		$this->scriptAttributes[$sha1] = $attributes;
 
 		return $this;
 		}
@@ -162,16 +136,6 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 	public function addHeadTag(string $tag) : \PHPFUI\Interfaces\Page
 		{
 		$this->headTags[\sha1($tag)] = $tag;
-
-		return $this;
-		}
-
-	/**
-	 * Remove a meta tag from the head section of the page
-	 */
-	public function removeHeadTag(string $tag) : \PHPFUI\Interfaces\Page
-		{
-		unset($this->headTags[\sha1($tag)]);
 
 		return $this;
 		}
@@ -191,31 +155,11 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 		}
 
 	/**
-	 * Remove IE commands.
-	 */
-	public function removeIEComments(string $comment) : \PHPFUI\Interfaces\Page
-		{
-		unset($this->ieComments[\sha1($comment)]);
-
-		return $this;
-		}
-
-	/**
 	 * Add dedupped JavaScript to the page
 	 */
 	public function addJavaScript(string $js) : \PHPFUI\Interfaces\Page
 		{
 		$this->javascript[\sha1($js)] = $js;
-
-		return $this;
-		}
-
-	/**
-	 * Remove JavaScript from the page
-	 */
-	public function removeJavaScript(string $js) : \PHPFUI\Interfaces\Page
-		{
-		unset($this->javascript[\sha1($js)]);
 
 		return $this;
 		}
@@ -231,31 +175,11 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 		}
 
 	/**
-	 * Remove JavaScript from the first JavaScript before Foundation
-	 */
-	public function removeJavaScriptFirst(string $js) : \PHPFUI\Interfaces\Page
-		{
-		unset($this->javascriptFirst[\sha1($js)]);
-
-		return $this;
-		}
-
-	/**
 	 * Add dedupped JavaScript as the last JavaScript on the page
 	 */
 	public function addJavaScriptLast(string $js) : \PHPFUI\Interfaces\Page
 		{
 		$this->javascriptLast[\sha1($js)] = $js;
-
-		return $this;
-		}
-
-	/**
-	 * Remove JavaScript from the last JavaScript on the page
-	 */
-	public function removeJavaScriptLast(string $js) : \PHPFUI\Interfaces\Page
-		{
-		unset($this->javascriptLast[\sha1($js)]);
 
 		return $this;
 		}
@@ -273,37 +197,16 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 		}
 
 	/**
-	 * Remove  a Style Sheet from the page
-	 *
-	 * @param string $module filename
-	 */
-	public function removeStyleSheet(string $module) : \PHPFUI\Interfaces\Page
-		{
-		unset($this->styleSheets[$module]);
-
-		return $this;
-		}
-
-	/**
 	 * Add a dedupped script to the end of the page
 	 *
 	 * @param string $module path to script
+	 * @param array<string,string> $attributes key is attribute, value is option
 	 */
-	public function addTailScript(string $module) : \PHPFUI\Interfaces\Page
+	public function addTailScript(string $module, array $attributes = []) : \PHPFUI\Interfaces\Page
 		{
-		$this->tailScripts[\sha1($module)] = $module;
-
-		return $this;
-		}
-
-	/**
-	 * Remove script from the end of the page
-	 *
-	 * @param string $module path to script
-	 */
-	public function removeTailScript(string $module) : \PHPFUI\Interfaces\Page
-		{
-		unset($this->tailScripts[\sha1($module)]);
+		$sha1 = \sha1($module);
+		$this->tailScripts[$sha1] = $module;
+		$this->scriptAttributes[$sha1] = $attributes;
 
 		return $this;
 		}
@@ -509,6 +412,112 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 		}
 
 	/**
+	 * Remove inline css
+	 */
+	public function removeCSS(string $css) : static
+		{
+		unset($this->css[\sha1($css)]);
+
+		return $this;
+		}
+
+	/**
+	 * Remove JavaScript from the header
+	 */
+	public function removeHeadJavaScript(string $js) : static
+		{
+		unset($this->headJavascript[\sha1($js)]);
+
+		return $this;
+		}
+
+	/**
+	 * Remove header script
+	 *
+	 * @param string $module path to script
+	 */
+	public function removeHeadScript(string $module) : \PHPFUI\Interfaces\Page
+		{
+		unset($this->headScripts[\sha1($module)]);
+
+		return $this;
+		}
+
+	/**
+	 * Remove a meta tag from the head section of the page
+	 */
+	public function removeHeadTag(string $tag) : \PHPFUI\Interfaces\Page
+		{
+		unset($this->headTags[\sha1($tag)]);
+
+		return $this;
+		}
+
+	/**
+	 * Remove IE commands.
+	 */
+	public function removeIEComments(string $comment) : \PHPFUI\Interfaces\Page
+		{
+		unset($this->ieComments[\sha1($comment)]);
+
+		return $this;
+		}
+
+	/**
+	 * Remove JavaScript from the page
+	 */
+	public function removeJavaScript(string $js) : \PHPFUI\Interfaces\Page
+		{
+		unset($this->javascript[\sha1($js)]);
+
+		return $this;
+		}
+
+	/**
+	 * Remove JavaScript from the first JavaScript before Foundation
+	 */
+	public function removeJavaScriptFirst(string $js) : \PHPFUI\Interfaces\Page
+		{
+		unset($this->javascriptFirst[\sha1($js)]);
+
+		return $this;
+		}
+
+	/**
+	 * Remove JavaScript from the last JavaScript on the page
+	 */
+	public function removeJavaScriptLast(string $js) : \PHPFUI\Interfaces\Page
+		{
+		unset($this->javascriptLast[\sha1($js)]);
+
+		return $this;
+		}
+
+	/**
+	 * Remove  a Style Sheet from the page
+	 *
+	 * @param string $module filename
+	 */
+	public function removeStyleSheet(string $module) : \PHPFUI\Interfaces\Page
+		{
+		unset($this->styleSheets[$module]);
+
+		return $this;
+		}
+
+	/**
+	 * Remove script from the end of the page
+	 *
+	 * @param string $module path to script
+	 */
+	public function removeTailScript(string $module) : \PHPFUI\Interfaces\Page
+		{
+		unset($this->tailScripts[\sha1($module)]);
+
+		return $this;
+		}
+
+	/**
 	 * Sets the Fav Icon (shown in browser tabs and elsewhere in the
 	 * browser)
 	 *
@@ -562,10 +571,11 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 		{
 		$nl = parent::getDebug() ? "\n" : '';
 
-		foreach ($this->tailScripts as $src)
+		foreach ($this->tailScripts as $sha1 => $src)
 			{
 			$src = $this->getResourcePath($src);
-			$this->body->add("<script src='{$src}'></script>{$nl}");
+			$attributes = $this->getAttributes($this->scriptAttributes[$sha1]);
+			$this->body->add("<script {$attributes} src='{$src}'></script>{$nl}");
 			}
 
 		$js = \array_merge($this->javascriptFirst, $this->javascript, $this->javascriptLast);
@@ -608,10 +618,11 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 			$output .= "<link rel='stylesheet' href='{$sheet}'>{$nl}";
 			}
 
-		foreach ($this->headScripts as $src)
+		foreach ($this->headScripts as $sha1 => $src)
 			{
 			$src = $this->getResourcePath($src);
-			$output .= "<script src='{$src}'></script>{$nl}";
+			$attributes = $this->getAttributes($this->scriptAttributes[$sha1]);
+			$output .= "<script {$attributes} src='{$src}'></script>{$nl}";
 			}
 
 		if ($this->headJavascript)
@@ -625,6 +636,28 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 			}
 
 		$output .= '</head><body>';
+
+		return $output;
+		}
+
+	/**
+	 * @param array<string, string> $attributes
+	 */
+	private function getAttributes(array $attributes) : string
+		{
+		$output = '';
+
+		foreach ($attributes as $type => $value)
+			{
+			if (! \strlen(\trim($value)))
+				{
+				$output .= ' ' . $type;
+				}
+			else
+				{
+				$output .= " {$type}='{$value}'";
+				}
+			}
 
 		return $output;
 		}

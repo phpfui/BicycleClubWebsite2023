@@ -30,7 +30,6 @@ class Board
 
 		if ($form->isMyCallback())
 			{
-			$_POST['description'] = \App\Tools\TextHelper::cleanUserHtml($_POST['description']);
 			$board->setFrom($_POST);
 			$board->update();
 			$this->page->setResponse('Saved');

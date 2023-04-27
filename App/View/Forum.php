@@ -6,11 +6,11 @@ class Forum
 	{
 	protected array $subscriptionTypes;
 
-	private string $site;
+	private readonly \App\Table\ForumMessage $forumMessageTable;
 
 	private readonly \App\Model\Forum $model;
 
-	private readonly \App\Table\ForumMessage $forumMessageTable;
+	private string $site;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
@@ -65,14 +65,23 @@ class Forum
 		if ($forum->forumId)
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \PHPFUI\Form($this->page, $submit);
+			$form = new \App\UI\ErrorForm($this->page, $submit);
 
 			if ($form->isMyCallback())
 				{
 				unset($_POST['forumId']);
 				$forum->setFrom($_POST);
-				$forum->update();
-				$this->page->setResponse('Saved');
+				$errors = $forum->validate();
+
+				if ($errors)
+					{
+					$this->page->setRawResponse($form->returnErrors($errors));
+					}
+				else
+					{
+					$forum->update();
+					$this->page->setResponse('Saved');
+					}
 
 				return $form;
 				}
@@ -139,9 +148,6 @@ class Forum
 
 		if ($form->isMyCallback())
 			{
-			$_POST['htmlMessage'] = \App\Tools\TextHelper::cleanUserHtml($_POST['htmlMessage']);
-			$_POST['lastEdited'] = \date('Y-m-d H:i:s');
-			$_POST['lastEditor'] = \App\Model\Session::signedInMemberId();
 			unset($_POST['forumMessageId']);
 			$message->setFrom($_POST);
 			$message->update();
@@ -150,11 +156,10 @@ class Forum
 		$form->add(new \PHPFUI\Input\Hidden('forumMessageId', (string)$message->forumMessageId));
 		$fieldSet = new \PHPFUI\FieldSet('Message Information');
 
-		if ($message->lastEditor)
+		if ($message->lastEditorId)
 			{
-			$member = new \App\Record\Member($message->lastEditor);
 			$fieldSet->add(new \App\UI\Display('Last Edited:', $message->lastEdited));
-			$fieldSet->add(new \App\UI\Display('Last Editor:', $member->fullName()));
+			$fieldSet->add(new \App\UI\Display('Last Editor:', $message->lastEditor->fullName()));
 			}
 
 		$topic = new \PHPFUI\Input\Text('title', 'Subject', $message->title);
@@ -446,6 +451,53 @@ class Forum
 		return $container;
 		}
 
+	public function listForums(\PHPFUI\ORM\RecordCursor $forums) : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+
+		if (\count($forums))
+			{
+			$table = new \PHPFUI\Table();
+			$table->setRecordId('forumId');
+			$delete = new \PHPFUI\AJAX('deleteForum', 'Permanently delete this forum?');
+			$delete->addFunction('success', '$("#forumId-"+data.response).css("background-color","red").hide("fast")');
+			$this->page->addJavaScript($delete->getPageJS());
+			$table->setHeaders(['name' => 'Forum Name',
+				'email' => 'email Address',
+				'subscribers' => 'Subscribers',
+				'edit' => 'Edit',
+				'del' => 'Del', ]);
+
+			foreach ($forums as $forum)
+				{
+				$row = $forum->toArray();
+				$row['forumId'] = $forum->forumId;
+				$count = (int)\App\Table\ForumMember::getCount($forum);
+				$groupIcon = new \PHPFUI\FAIcon('fas', 'users');
+				$row['subscribers'] = "<a href='{$this->site}/Forums/members/{$forum->forumId}'>{$groupIcon} {$count}</a>";
+				$editIcon = new \PHPFUI\FAIcon('far', 'edit', "{$this->site}/Forums/edit/{$forum->forumId}");
+				$row['edit'] = $editIcon;
+				$row['name'] = "<a href='{$this->site}/Forums/home/{$forum->forumId}'>{$forum->name}</a>";
+
+				if ($forum->closed)
+					{
+					$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
+					$icon->addAttribute('onclick', $delete->execute(['forumId' => $forum->forumId]));
+					$row['del'] = $icon;
+					}
+				$table->addRow($row);
+				}
+			$container->add($table);
+			}
+		else
+			{
+			$container->add(new \PHPFUI\SubHeader('No Forums Found'));
+			}
+		$container->add(new \App\UI\CancelButtonGroup(new \PHPFUI\Button('Add Forum', $this->site . '/Forums/edit/0')));
+
+		return $container;
+		}
+
 	public function listMembers(\App\Record\Forum $forum, \PHPFUI\ORM\DataObjectCursor $members) : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit('Save Settings');
@@ -639,92 +691,6 @@ class Forum
 		return $container;
 		}
 
-	public function listForums(\PHPFUI\ORM\RecordCursor $forums) : \PHPFUI\Container
-		{
-		$container = new \PHPFUI\Container();
-
-		if (\count($forums))
-			{
-			$table = new \PHPFUI\Table();
-			$table->setRecordId('forumId');
-			$delete = new \PHPFUI\AJAX('deleteForum', 'Permanently delete this forum?');
-			$delete->addFunction('success', '$("#forumId-"+data.response).css("background-color","red").hide("fast")');
-			$this->page->addJavaScript($delete->getPageJS());
-			$table->setHeaders(['name' => 'Forum Name',
-				'email' => 'email Address',
-				'subscribers' => 'Subscribers',
-				'edit' => 'Edit',
-				'del' => 'Del', ]);
-
-			foreach ($forums as $forum)
-				{
-				$row = $forum->toArray();
-				$row['forumId'] = $forum->forumId;
-				$count = (int)\App\Table\ForumMember::getCount($forum);
-				$groupIcon = new \PHPFUI\FAIcon('fas', 'users');
-				$row['subscribers'] = "<a href='{$this->site}/Forums/members/{$forum->forumId}'>{$groupIcon} {$count}</a>";
-				$editIcon = new \PHPFUI\FAIcon('far', 'edit', "{$this->site}/Forums/edit/{$forum->forumId}");
-				$row['edit'] = $editIcon;
-				$row['name'] = "<a href='{$this->site}/Forums/home/{$forum->forumId}'>{$forum->name}</a>";
-
-				if ($forum->closed)
-					{
-					$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-					$icon->addAttribute('onclick', $delete->execute(['forumId' => $forum->forumId]));
-					$row['del'] = $icon;
-					}
-				$table->addRow($row);
-				}
-			$container->add($table);
-			}
-		else
-			{
-			$container->add(new \PHPFUI\SubHeader('No Forums Found'));
-			}
-		$container->add(new \App\UI\CancelButtonGroup(new \PHPFUI\Button('Add Forum', $this->site . '/Forums/edit/0')));
-
-		return $container;
-		}
-
-	private function getReplyForm(\App\Record\Forum $forum, string $topic) : \PHPFUI\Form
-		{
-		$form = new \PHPFUI\Form($this->page);
-		$form->add(new \PHPFUI\SubHeader('Post a message to ' . $forum->name));
-		$form->add(new \PHPFUI\Input\Hidden('forumId', (string)$forum->forumId));
-		$topic = new \PHPFUI\Input\Text('title', 'Subject', $topic);
-		$topic->setToolTip('Subject will be the title of the email sent, so make it clear what your message is about.');
-		$topic->setRequired();
-		$form->add($topic);
-		$message = new \PHPFUI\Input\TextArea('textMessage', 'Message');
-		$message->setRequired();
-		$form->add($message);
-
-		return $form;
-		}
-
-	private function getReplyToPosterButton(\App\Record\ForumMessage $message) : \PHPFUI\FAIcon
-		{
-		$title = \urlencode($message->title ?? '');
-		$icon = new \PHPFUI\FAIcon('fas', 'reply', "{$this->site}/Membership/email/{$message->memberId}?title={$title}");
-		$icon->setToolTip('Reply to this poster only.');
-
-		return $icon;
-		}
-
-	private function getSubscriptionRadio(int $initialValue, string $fieldPostfix = '') : \PHPFUI\Input\RadioGroup
-		{
-		$radio = new \PHPFUI\Input\RadioGroup('emailType' . $fieldPostfix, 'Subscription Type', (string)$initialValue);
-		$radio->setToolTip('Members can always view forums on the web, but can not send email to the group unless subscribed.');
-		$radio->setSeparateRows();
-
-		foreach ($this->subscriptionTypes as $key => $name)
-			{
-			$radio->addButton($name, $key);
-			}
-
-		return $radio;
-		}
-
 	private function getAddMemberModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Forum $forum) : void
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
@@ -762,6 +728,31 @@ class Forum
 		$modal->add($form);
 
 		return $replyButton;
+		}
+
+	private function getReplyForm(\App\Record\Forum $forum, string $topic) : \PHPFUI\Form
+		{
+		$form = new \PHPFUI\Form($this->page);
+		$form->add(new \PHPFUI\SubHeader('Post a message to ' . $forum->name));
+		$form->add(new \PHPFUI\Input\Hidden('forumId', (string)$forum->forumId));
+		$topic = new \PHPFUI\Input\Text('title', 'Subject', $topic);
+		$topic->setToolTip('Subject will be the title of the email sent, so make it clear what your message is about.');
+		$topic->setRequired();
+		$form->add($topic);
+		$message = new \PHPFUI\Input\TextArea('textMessage', 'Message');
+		$message->setRequired();
+		$form->add($message);
+
+		return $form;
+		}
+
+	private function getReplyToPosterButton(\App\Record\ForumMessage $message) : \PHPFUI\FAIcon
+		{
+		$title = \urlencode($message->title ?? '');
+		$icon = new \PHPFUI\FAIcon('fas', 'reply', "{$this->site}/Membership/email/{$message->memberId}?title={$title}");
+		$icon->setToolTip('Reply to this poster only.');
+
+		return $icon;
 		}
 
 	private function getSearchModal(\PHPFUI\HTML5Element $modalLink) : \PHPFUI\Reveal
@@ -822,6 +813,20 @@ class Forum
 		$modal->add($form);
 
 		return $modal;
+		}
+
+	private function getSubscriptionRadio(int $initialValue, string $fieldPostfix = '') : \PHPFUI\Input\RadioGroup
+		{
+		$radio = new \PHPFUI\Input\RadioGroup('emailType' . $fieldPostfix, 'Subscription Type', (string)$initialValue);
+		$radio->setToolTip('Members can always view forums on the web, but can not send email to the group unless subscribed.');
+		$radio->setSeparateRows();
+
+		foreach ($this->subscriptionTypes as $key => $name)
+			{
+			$radio->addButton($name, $key);
+			}
+
+		return $radio;
 		}
 
 	private function processRequest() : void

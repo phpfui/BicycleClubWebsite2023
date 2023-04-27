@@ -9,7 +9,7 @@ class MailPiece extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, array<string>> */
 	public static array $validators = [
-		'email' => ['maxlength'],
+		'email' => ['maxlength', 'email'],
 		'mailItemId' => ['required', 'integer'],
 		'memberId' => ['integer'],
 		'name' => ['maxlength'],

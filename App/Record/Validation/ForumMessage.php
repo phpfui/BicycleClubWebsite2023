@@ -12,7 +12,7 @@ class ForumMessage extends \PHPFUI\ORM\Validator
 		'forumId' => ['integer'],
 		'htmlMessage' => ['maxlength'],
 		'lastEdited' => ['required', 'datetime'],
-		'lastEditor' => ['integer'],
+		'lastEditorId' => ['integer'],
 		'memberId' => ['required', 'integer'],
 		'posted' => ['required', 'datetime'],
 		'textMessage' => ['maxlength'],

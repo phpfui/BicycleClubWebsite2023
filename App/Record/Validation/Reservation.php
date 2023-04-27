@@ -19,7 +19,7 @@ class Reservation extends \PHPFUI\ORM\Validator
 		'pricePaid' => ['required', 'number'],
 		'reservationFirstName' => ['maxlength'],
 		'reservationLastName' => ['maxlength'],
-		'reservationemail' => ['maxlength'],
+		'reservationemail' => ['maxlength', 'email'],
 		'signedUpAt' => ['required', 'datetime'],
 		'state' => ['maxlength'],
 		'town' => ['maxlength'],

@@ -12,7 +12,7 @@ namespace App\Record\Definition;
  * @property ?string $headline MySQL type varchar(200)
  * @property ?string $javaScript MySQL type text
  * @property ?string $lastEdited MySQL type date
- * @property ?int $memberIdEditor MySQL type int(11)
+ * @property ?int $editorId MySQL type int(11)
  * @property ?int $membersOnly MySQL type int(11)
  * @property ?int $noTitle MySQL type int(1)
  * @property ?int $onTop MySQL type int(1)
@@ -36,7 +36,7 @@ abstract class Story extends \PHPFUI\ORM\Record
 		'headline' => ['varchar(200)', 'string', 200, false, true, ],
 		'javaScript' => ['text', 'string', 65535, false, true, ],
 		'lastEdited' => ['date', 'string', 10, false, true, ],
-		'memberIdEditor' => ['int(11)', 'int', 11, false, true, ],
+		'editorId' => ['int(11)', 'int', 11, false, true, ],
 		'membersOnly' => ['int(11)', 'int', 11, false, true, 0, ],
 		'noTitle' => ['int(1)', 'int', 1, false, true, ],
 		'onTop' => ['int(1)', 'int', 1, false, true, ],

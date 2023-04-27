@@ -304,6 +304,35 @@ class Content extends \App\UI\HTMLEditor
 		$this->charsToShow = $chars;
 		}
 
+	public function showPaginatedTable(\App\Table\Story $storyTable, string $title = '') : string
+		{
+		$view = new \App\UI\ContinuousScrollTable($this->page, $storyTable);
+		$record = $storyTable->getRecord();
+		$record->addDisplayTransform('startDate', $record->blankDate(...));
+		$record->addDisplayTransform('endDate', $record->blankDate(...));
+		$record->addDisplayTransform('lastEdited', $record->blankDate(...));
+		$view->addCustomColumn('headline', static fn (array $row) => new \PHPFUI\Link('/Content/view/' . $row['storyId'], $row['headline'], false));
+		$view->addCustomColumn('Editor', static function(array $row)
+			{
+			$member = new \App\Record\Member($row['editorId'] ?? 0);
+
+			return $member->fullName();
+			});
+
+		$headers = ['headline', 'author', 'startDate', 'endDate', 'lastEdited', ];
+
+		if ($this->page->isAuthorized('Delete Content'))
+			{
+			$deleter = new \App\Model\DeleteRecord($this->page, $view, $storyTable, 'Are you sure you want to permanently delete this story?');
+			$view->addCustomColumn('del', $deleter->columnCallback(...));
+			}
+		$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, ['del']))->setSortableColumns($headers);
+
+		$headline = empty($title) ? '' : "<h2>{$title}</h2>";
+
+		return $headline . $view;
+		}
+
 	public function showStoriesInTable(\App\Table\Story $storyTable, string $headline = '') : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
@@ -328,7 +357,7 @@ class Content extends \App\UI\HTMLEditor
 		$view->addCustomColumn('headline', static fn (array $row) => new \PHPFUI\Link('/Content/view/' . $row['storyId'], $row['headline'], false));
 		$view->addCustomColumn('Editor', static function(array $row)
 			{
-			$member = new \App\Record\Member($row['memberIdEditor']);
+			$member = new \App\Record\Member($row['editorId'] ?? 0);
 
 			return $member->fullName();
 			});
@@ -344,33 +373,22 @@ class Content extends \App\UI\HTMLEditor
 		return $container;
 		}
 
-	public function showPaginatedTable(\App\Table\Story $storyTable, string $title = '') : string
+	private function editJavaScript(\App\Record\Story $story, \PHPFUI\HTML5Element $modalLink) : void
 		{
-		$view = new \App\UI\ContinuousScrollTable($this->page, $storyTable);
-		$record = $storyTable->getRecord();
-		$record->addDisplayTransform('startDate', $record->blankDate(...));
-		$record->addDisplayTransform('endDate', $record->blankDate(...));
-		$record->addDisplayTransform('lastEdited', $record->blankDate(...));
-		$view->addCustomColumn('headline', static fn (array $row) => new \PHPFUI\Link('/Content/view/' . $row['storyId'], $row['headline'], false));
-		$view->addCustomColumn('Editor', static function(array $row)
-			{
-			$member = new \App\Record\Member($row['memberIdEditor']);
-
-			return $member->fullName();
-			});
-
-		$headers = ['headline', 'author', 'startDate', 'endDate', 'lastEdited', ];
-
-		if ($this->page->isAuthorized('Delete Content'))
-			{
-			$deleter = new \App\Model\DeleteRecord($this->page, $view, $storyTable, 'Are you sure you want to permanently delete this story?');
-			$view->addCustomColumn('del', $deleter->columnCallback(...));
-			}
-		$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, ['del']))->setSortableColumns($headers);
-
-		$headline = empty($title) ? '' : "<h2>{$title}</h2>";
-
-		return $headline . $view;
+		$storyId = $story->storyId;
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$modal->addClass('large');
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAreYouSure(false);
+		$form->add(new \PHPFUI\Input\Hidden('storyId', (string)$story->storyId));
+		$form->add(new \PHPFUI\Input\Hidden('action', 'saveJavaScript'));
+		$form->add(new \PHPFUI\SubHeader('JavaScript'));
+		$form->add('Enter JavaScript.  Do not include the &lt;script&gt; or &lt;/script&gt; tags.');
+		$javaScript = new \PHPFUI\Input\TextArea('javaScript', 'JavaScript', $story->javaScript);
+		$javaScript->setToolTip('Enter any JavaScript you want on the page.  DO NOT include the open or close script tags.');
+		$form->add($javaScript);
+		$form->add($modal->getButtonAndCancel(new \PHPFUI\Submit()));
+		$modal->add($form);
 		}
 
 	private function editSettings(\App\Record\Story $story, \PHPFUI\HTML5Element $modalLink) : void
@@ -444,111 +462,6 @@ class Content extends \App\UI\HTMLEditor
 			}
 		$form->add($multiSelect);
 		$form->add($modal->getButtonAndCancel(new \PHPFUI\Submit()));
-		$modal->add($form);
-		}
-
-	private function editJavaScript(\App\Record\Story $story, \PHPFUI\HTML5Element $modalLink) : void
-		{
-		$storyId = $story->storyId;
-		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
-		$modal->addClass('large');
-		$form = new \PHPFUI\Form($this->page);
-		$form->setAreYouSure(false);
-		$form->add(new \PHPFUI\Input\Hidden('storyId', (string)$story->storyId));
-		$form->add(new \PHPFUI\Input\Hidden('action', 'saveJavaScript'));
-		$form->add(new \PHPFUI\SubHeader('JavaScript'));
-		$form->add('Enter JavaScript.  Do not include the &lt;script&gt; or &lt;/script&gt; tags.');
-		$javaScript = new \PHPFUI\Input\TextArea('javaScript', 'JavaScript', $story->javaScript);
-		$javaScript->setToolTip('Enter any JavaScript you want on the page.  DO NOT include the open or close script tags.');
-		$form->add($javaScript);
-		$form->add($modal->getButtonAndCancel(new \PHPFUI\Submit()));
-		$modal->add($form);
-		}
-
-	private function showImages(\App\Record\Story $story, \PHPFUI\HTML5Element $modalLink) : void
-		{
-		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
-		$modal->addClass('large');
-		$form = new \PHPFUI\Form($this->page);
-		$form->setAreYouSure(false);
-		$callout = new \PHPFUI\HTML5Element('span');
-		$callout->add('Copied!');
-		$callout->addClass('callout success small hide');
-		$form->add(new \PHPFUI\Header('Manage Story Images', 4));
-		$form->add($callout);
-
-		$currentFiles = $this->contentFileModel->getAll('story' . $story->storyId . '-*');
-
-		if (\count($currentFiles))
-			{
-			$existingPhotoSet = new \PHPFUI\FieldSet('Existing Story Photos');
-			$table = new \PHPFUI\Table();
-			$table->setHeaders(['View', 'Copy', 'Delete']);
-			$table->setRecordId($recordIndex = 'index');
-			$delete = new \PHPFUI\AJAX('deleteStoryPhoto', 'Permanently delete this photo from this story?');
-			$delete->addFunction('success', "$('#{$recordIndex}-'+data.response).css('background-color','red').hide('fast');");
-			$this->page->addJavaScript($delete->getPageJS());
-
-			foreach ($currentFiles as $index => $file)
-				{
-				$row['index'] = $index;
-				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-				$icon->addAttribute('onclick', $delete->execute([$recordIndex => $index, 'fileName' => '"' . $file . '"']));
-				$row['Delete'] = $icon;
-				$view = new \PHPFUI\FAIcon('far', 'eye', '#');
-				$reveal = new \PHPFUI\Reveal($this->page, $view);
-				$reveal->addAttribute('data-multiple-opened', 'true');
-				$div = new \PHPFUI\HTML5Element('div');
-				$reveal->add($div);
-				$close = $reveal->getCloseButton('Close');
-				$reveal->closeOnClick($close);
-				++$index;
-				$reveal->add(new \PHPFUI\Image('/images/content/' . $file, "Photo {$index} for story"));
-				$reveal->add('<br>');
-				$reveal->add($close);
-				$row['View'] = $view;
-
-				$copyIcon = new \PHPFUI\FAIcon('far', 'clipboard');
-				$url = $this->page->getSchemeHost() . '/images/content/' . $file;
-				$this->page->addCopyToClipboard($url, $copyIcon, $callout);
-				$row['Copy'] = $copyIcon;
-				$table->addRow($row);
-				}
-			$existingPhotoSet->add($table);
-			$form->add($existingPhotoSet);
-			}
-
-		$link = new \PHPFUI\Link('/Photo/browse', 'Photo Section', false);
-		$link->addAttribute('target', '_blank');
-		$photoPicker = new \App\UI\PhotoPicker($this->page, $name = 'photoId', 'Start typing to select a photo from our ' . $link);
-		$imageDiv = new \PHPFUI\HTML5Element('div');
-		$imageDivId = $imageDiv->getId();
-
-		$editControl = $photoPicker->getEditControl();
-		$editControl->addAutoCompleteOption('minChars', 1);
-
-		$csrf = \PHPFUI\Session::csrf("'");
-		$csrfField = \PHPFUI\Session::csrfField();
-		$className = \basename(\str_replace('\\', '/', \get_class($editControl)));
-		$loading = \str_replace("\n", '', new \App\UI\Loading());
-		$addAndCopyButton = new \PHPFUI\Submit('Add and Copy', 'action');
-		$addAndCopyButton->addClass('disabled');
-		$addAndCopyButtonId = $addAndCopyButton->getId();
-		$dollar = '$';
-		$js = "function(suggestion){if(noFF){{$dollar}('#'+id).attr('placeholder',suggestion.value).attr('value','');};" .
-			"{$dollar}('#'+id+'hidden').val(suggestion.data).change();{$dollar}('#{$imageDivId}').html(`{$loading}`);" .
-			"{$dollar}.ajax({type:'POST',traditional:true,data:{{$csrfField}:{$csrf},save:true,fieldName:'{$name}',{$className}:suggestion.data}}).done(" .
-			"{$dollar}.ajax({type:'POST',traditional:true,data:{{$csrfField}:{$csrf},action:'getPhotoInfo',photoId:suggestion.data,storyId:{$story->storyId}}})" .
-			".done(function(resp){{$dollar}('#{$addAndCopyButtonId}').removeClass('disabled');{$dollar}('#{$imageDivId}').html(resp)}))}";
-
-		$editControl->addAutoCompleteOption('onSelect', $js);
-		$form->add($editControl);
-		$form->add($imageDiv);
-		$js = '$("#copyUrlId").toggleClass("hide").select();document.execCommand("copy");$("#copyUrlId").toggleClass("hide");';
-		$addAndCopyButton->addAttribute('onclick', $js);
-		$js = '$("#widthId").on("change",function(){alert("change");var height=$("#heightHiddenId").val();var width=$("#widthHiddenId").val();$("#heightId").val("fred");})';
-		$this->page->addJavaScript($js);
-		$form->add($modal->getButtonAndCancel($addAndCopyButton));
 		$modal->add($form);
 		}
 
@@ -691,11 +604,8 @@ class Content extends \App\UI\HTMLEditor
 				case 'saveContent':
 
 					[$type, $storyId] = \explode('-', (string)$_POST['id']);
-					$content = $_POST['body'];
 					$story = new \App\Record\Story($storyId);
-					$story->body = \App\Tools\TextHelper::cleanUserHtml($content);
-					$story->lastEdited = \App\Tools\Date::todayString();
-					$story->memberIdEditor = \App\Model\Session::signedInMemberId();
+					$story->body = $_POST['body'];
 					$story->update();
 					$this->page->setResponse($storyId);
 					$this->page->done();
@@ -778,5 +688,92 @@ class Content extends \App\UI\HTMLEditor
 
 				}
 			}
+		}
+
+	private function showImages(\App\Record\Story $story, \PHPFUI\HTML5Element $modalLink) : void
+		{
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$modal->addClass('large');
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAreYouSure(false);
+		$callout = new \PHPFUI\HTML5Element('span');
+		$callout->add('Copied!');
+		$callout->addClass('callout success small hide');
+		$form->add(new \PHPFUI\Header('Manage Story Images', 4));
+		$form->add($callout);
+
+		$currentFiles = $this->contentFileModel->getAll('story' . $story->storyId . '-*');
+
+		if (\count($currentFiles))
+			{
+			$existingPhotoSet = new \PHPFUI\FieldSet('Existing Story Photos');
+			$table = new \PHPFUI\Table();
+			$table->setHeaders(['View', 'Copy', 'Delete']);
+			$table->setRecordId($recordIndex = 'index');
+			$delete = new \PHPFUI\AJAX('deleteStoryPhoto', 'Permanently delete this photo from this story?');
+			$delete->addFunction('success', "$('#{$recordIndex}-'+data.response).css('background-color','red').hide('fast');");
+			$this->page->addJavaScript($delete->getPageJS());
+
+			foreach ($currentFiles as $index => $file)
+				{
+				$row['index'] = $index;
+				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
+				$icon->addAttribute('onclick', $delete->execute([$recordIndex => $index, 'fileName' => '"' . $file . '"']));
+				$row['Delete'] = $icon;
+				$view = new \PHPFUI\FAIcon('far', 'eye', '#');
+				$reveal = new \PHPFUI\Reveal($this->page, $view);
+				$reveal->addAttribute('data-multiple-opened', 'true');
+				$div = new \PHPFUI\HTML5Element('div');
+				$reveal->add($div);
+				$close = $reveal->getCloseButton('Close');
+				$reveal->closeOnClick($close);
+				++$index;
+				$reveal->add(new \PHPFUI\Image('/images/content/' . $file, "Photo {$index} for story"));
+				$reveal->add('<br>');
+				$reveal->add($close);
+				$row['View'] = $view;
+
+				$copyIcon = new \PHPFUI\FAIcon('far', 'clipboard');
+				$url = $this->page->getSchemeHost() . '/images/content/' . $file;
+				$this->page->addCopyToClipboard($url, $copyIcon, $callout);
+				$row['Copy'] = $copyIcon;
+				$table->addRow($row);
+				}
+			$existingPhotoSet->add($table);
+			$form->add($existingPhotoSet);
+			}
+
+		$link = new \PHPFUI\Link('/Photo/browse', 'Photo Section', false);
+		$link->addAttribute('target', '_blank');
+		$photoPicker = new \App\UI\PhotoPicker($this->page, $name = 'photoId', 'Start typing to select a photo from our ' . $link);
+		$imageDiv = new \PHPFUI\HTML5Element('div');
+		$imageDivId = $imageDiv->getId();
+
+		$editControl = $photoPicker->getEditControl();
+		$editControl->addAutoCompleteOption('minChars', 1);
+
+		$csrf = \PHPFUI\Session::csrf("'");
+		$csrfField = \PHPFUI\Session::csrfField();
+		$className = \basename(\str_replace('\\', '/', \get_class($editControl)));
+		$loading = \str_replace("\n", '', new \App\UI\Loading());
+		$addAndCopyButton = new \PHPFUI\Submit('Add and Copy', 'action');
+		$addAndCopyButton->addClass('disabled');
+		$addAndCopyButtonId = $addAndCopyButton->getId();
+		$dollar = '$';
+		$js = "function(suggestion){if(noFF){{$dollar}('#'+id).attr('placeholder',suggestion.value).attr('value','');};" .
+			"{$dollar}('#'+id+'hidden').val(suggestion.data).change();{$dollar}('#{$imageDivId}').html(`{$loading}`);" .
+			"{$dollar}.ajax({type:'POST',traditional:true,data:{{$csrfField}:{$csrf},save:true,fieldName:'{$name}',{$className}:suggestion.data}}).done(" .
+			"{$dollar}.ajax({type:'POST',traditional:true,data:{{$csrfField}:{$csrf},action:'getPhotoInfo',photoId:suggestion.data,storyId:{$story->storyId}}})" .
+			".done(function(resp){{$dollar}('#{$addAndCopyButtonId}').removeClass('disabled');{$dollar}('#{$imageDivId}').html(resp)}))}";
+
+		$editControl->addAutoCompleteOption('onSelect', $js);
+		$form->add($editControl);
+		$form->add($imageDiv);
+		$js = '$("#copyUrlId").toggleClass("hide").select();document.execCommand("copy");$("#copyUrlId").toggleClass("hide");';
+		$addAndCopyButton->addAttribute('onclick', $js);
+		$js = '$("#widthId").on("change",function(){alert("change");var height=$("#heightHiddenId").val();var width=$("#widthHiddenId").val();$("#heightId").val("fred");})';
+		$this->page->addJavaScript($js);
+		$form->add($modal->getButtonAndCancel($addAndCopyButton));
+		$modal->add($form);
 		}
 	}

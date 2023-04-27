@@ -60,3 +60,5 @@ foreach ($tableObjects as $name => $table)
 		\file_put_contents($phpFile, $contents);
 		}
 	}
+
+\system('codestyle');

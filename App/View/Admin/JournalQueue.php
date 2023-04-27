@@ -46,18 +46,6 @@ class JournalQueue
 		return $container;
 		}
 
-	private function getMember(int $memberId) : string
-		{
-		if (! $memberId)
-			{
-			return 'Web Master';
-			}
-
-		$member = new \App\Record\Member($memberId);
-
-		return $member->fullName();
-		}
-
 	private function getEditItemModal(array $item) : \PHPFUI\FAIcon
 		{
 		$editIcon = new \PHPFUI\FAIcon('far', 'edit', '#');
@@ -77,13 +65,26 @@ class JournalQueue
 		return $editIcon;
 		}
 
+	private function getMember(int $memberId) : string
+		{
+		if (! $memberId)
+			{
+			return 'Web Master';
+			}
+
+		$member = new \App\Record\Member($memberId);
+
+		return $member->fullName();
+		}
+
 	private function processRequest() : void
 		{
 		if (\App\Model\Session::checkCSRF())
 			{
 			if ('Save' == ($_POST['submit'] ?? ''))
 				{
-				$journalItem = new \App\Record\JournalItem($_POST);
+				$journalItem = new \App\Record\JournalItem();
+				$journalItem->setFrom($_POST);
 				$journalItem->update();
 				$this->page->redirect();
 				}

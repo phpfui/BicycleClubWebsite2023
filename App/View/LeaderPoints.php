@@ -42,7 +42,7 @@ class LeaderPoints
 		$settingsSaver = new \App\Model\SettingsSaver($prefix);
 		$form = new \PHPFUI\Form($this->page, $submit);
 		$form->add('The following settings will control volunteer points automatically credited based on member activity. If you want compute points directly, please see the <a href="/Leaders/pointsReport">Volunteer Points Report</a>');
-		$fieldSet = new \PHPFUI\FieldSet('FRED Volunteer Points Settings');
+		$fieldSet = new \PHPFUI\FieldSet('Volunteer Points Settings');
 
 		$categories = $this->getPointsCategories($prefix);
 

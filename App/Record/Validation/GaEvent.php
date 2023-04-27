@@ -23,7 +23,7 @@ class GaEvent extends \PHPFUI\ORM\Validator
 		'parent' => ['integer'],
 		'question' => ['maxlength'],
 		'registrar' => ['maxlength'],
-		'registrarEmail' => ['maxlength'],
+		'registrarEmail' => ['maxlength', 'email'],
 		'showPreregistration' => ['integer'],
 		'signupMessage' => ['maxlength'],
 		'title' => ['maxlength'],

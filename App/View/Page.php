@@ -96,7 +96,7 @@ class Page extends \PHPFUI\Page
 
 			if ($trackingCode)
 				{
-				$this->addHeadScript("https://www.googletagmanager.com/gtag/js?id={$trackingCode}");
+				$this->addHeadScript("https://www.googletagmanager.com/gtag/js?id={$trackingCode}", ['async' => '']);
 				$js = "window.dataLayer=window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','{$trackingCode}');";
 				$this->addHeadJavaScript($js);
 				}

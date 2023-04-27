@@ -9,7 +9,7 @@ class ReservationPerson extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, array<string>> */
 	public static array $validators = [
-		'email' => ['maxlength'],
+		'email' => ['maxlength', 'email'],
 		'eventId' => ['integer'],
 		'firstName' => ['maxlength'],
 		'lastName' => ['maxlength'],

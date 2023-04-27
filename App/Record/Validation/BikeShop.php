@@ -9,17 +9,17 @@ class BikeShop extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, array<string>> */
 	public static array $validators = [
-		'address' => ['maxlength'],
+		'address' => ['maxlength', 'required'],
 		'bikeShopAreaId' => ['integer'],
 		'contact' => ['maxlength'],
-		'email' => ['maxlength'],
-		'name' => ['maxlength'],
+		'email' => ['maxlength', 'email'],
+		'name' => ['maxlength', 'required'],
 		'notes' => ['maxlength'],
-		'phone' => ['maxlength'],
-		'state' => ['maxlength'],
-		'town' => ['maxlength'],
-		'url' => ['maxlength'],
-		'zip' => ['maxlength'],
+		'phone' => ['maxlength', 'required'],
+		'state' => ['maxlength', 'required'],
+		'town' => ['maxlength', 'required'],
+		'url' => ['maxlength', 'website'],
+		'zip' => ['maxlength', 'required'],
 	];
 
 	public function __construct(\App\Record\BikeShop $record)

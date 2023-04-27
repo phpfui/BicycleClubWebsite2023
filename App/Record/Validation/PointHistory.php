@@ -11,7 +11,7 @@ class PointHistory extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'leaderPoints' => ['integer'],
 		'memberId' => ['required', 'integer'],
-		'memberIdEditor' => ['integer'],
+		'editorId' => ['integer'],
 		'oldLeaderPoints' => ['integer'],
 		'time' => ['required', 'datetime'],
 	];

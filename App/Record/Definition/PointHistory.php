@@ -8,7 +8,7 @@ namespace App\Record\Definition;
  * @property ?int $leaderPoints MySQL type int(8)
  * @property int $memberId MySQL type int(11)
  * @property \App\Record\Member $member related record
- * @property ?int $memberIdEditor MySQL type int(11)
+ * @property ?int $editorId MySQL type int(11)
  * @property ?int $oldLeaderPoints MySQL type int(8)
  * @property string $time MySQL type timestamp
  */
@@ -21,7 +21,7 @@ abstract class PointHistory extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
 		'leaderPoints' => ['int(8)', 'int', 8, false, true, 0, ],
 		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'memberIdEditor' => ['int(11)', 'int', 11, false, true, ],
+		'editorId' => ['int(11)', 'int', 11, false, true, ],
 		'oldLeaderPoints' => ['int(8)', 'int', 8, false, true, 0, ],
 		'time' => ['timestamp', 'string', 20, false, false, ],
 	];

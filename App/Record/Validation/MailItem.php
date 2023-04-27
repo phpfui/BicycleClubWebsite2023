@@ -11,12 +11,12 @@ class MailItem extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'body' => ['maxlength'],
 		'domain' => ['maxlength'],
-		'fromEmail' => ['maxlength'],
+		'fromEmail' => ['maxlength', 'email'],
 		'fromName' => ['maxlength'],
 		'html' => ['integer'],
 		'memberId' => ['integer'],
 		'paused' => ['integer'],
-		'replyTo' => ['maxlength'],
+		'replyTo' => ['maxlength', 'email'],
 		'replyToName' => ['maxlength'],
 		'title' => ['maxlength'],
 	];

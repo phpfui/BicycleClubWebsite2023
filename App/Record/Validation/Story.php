@@ -16,7 +16,7 @@ class Story extends \PHPFUI\ORM\Validator
 		'headline' => ['maxlength'],
 		'javaScript' => ['maxlength'],
 		'lastEdited' => ['date'],
-		'memberIdEditor' => ['integer'],
+		'editorId' => ['integer'],
 		'membersOnly' => ['integer'],
 		'noTitle' => ['integer'],
 		'onTop' => ['integer'],

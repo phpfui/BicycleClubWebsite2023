@@ -18,13 +18,13 @@ class Calendar extends \PHPFUI\ORM\Validator
 		'pending' => ['required', 'integer'],
 		'price' => ['integer'],
 		'privateContact' => ['maxlength'],
-		'privateEmail' => ['maxlength'],
+		'privateEmail' => ['maxlength', 'email'],
 		'publicContact' => ['maxlength'],
-		'publicEmail' => ['maxlength'],
+		'publicEmail' => ['maxlength', 'email'],
 		'startTime' => ['time'],
 		'state' => ['maxlength'],
 		'title' => ['maxlength'],
-		'webSite' => ['maxlength'],
+		'webSite' => ['maxlength', 'website'],
 	];
 
 	public function __construct(\App\Record\Calendar $record)

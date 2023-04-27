@@ -11,7 +11,8 @@ namespace App\Record\Definition;
  * @property \App\Record\ForumMessage $forumMessage related record
  * @property ?string $htmlMessage MySQL type text
  * @property ?string $lastEdited MySQL type timestamp
- * @property ?int $lastEditor MySQL type int(11)
+ * @property ?int $lastEditorId MySQL type int(11)
+ * @property \App\Record\LastEditor $lastEditor related record
  * @property int $memberId MySQL type int(11)
  * @property \App\Record\Member $member related record
  * @property string $posted MySQL type timestamp
@@ -29,7 +30,7 @@ abstract class ForumMessage extends \PHPFUI\ORM\Record
 		'forumMessageId' => ['int(11)', 'int', 11, true, false, ],
 		'htmlMessage' => ['text', 'string', 65535, false, true, ],
 		'lastEdited' => ['timestamp', 'string', 20, false, true, ],
-		'lastEditor' => ['int(11)', 'int', 11, false, true, ],
+		'lastEditorId' => ['int(11)', 'int', 11, false, true, ],
 		'memberId' => ['int(11)', 'int', 11, false, false, ],
 		'posted' => ['timestamp', 'string', 20, false, false, ],
 		'textMessage' => ['text', 'string', 65535, false, true, ],

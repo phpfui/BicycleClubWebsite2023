@@ -74,27 +74,6 @@ class EmailQueue
 		return $this->mailPieceTable->count();
 		}
 
-	private function getMember(?int $memberId) : string
-		{
-		if (! $memberId)
-			{
-			return 'Web Master';
-			}
-
-		$member = new \App\Record\Member($memberId);
-
-		return $member->fullName();
-		}
-
-	private function getPauseControl(array $mailItem) : \PHPFUI\FAIcon
-		{
-		$pause = new \PHPFUI\FAIcon('fas', $mailItem['paused'] ? 'play' : 'pause', '#');
-		$iconId = $pause->getId();
-		$pause->addAttribute('onclick', $this->paused->execute(['mailItemId' => $mailItem['mailItemId'], 'iconId' => '"' . $iconId . '"']));
-
-		return $pause;
-		}
-
 	private function getEditItemModal(array $mailItem) : \PHPFUI\FAIcon
 		{
 		$editIcon = new \PHPFUI\FAIcon('far', 'edit', '#');
@@ -118,6 +97,27 @@ class EmailQueue
 		return $editIcon;
 		}
 
+	private function getMember(?int $memberId) : string
+		{
+		if (! $memberId)
+			{
+			return 'Web Master';
+			}
+
+		$member = new \App\Record\Member($memberId);
+
+		return $member->fullName();
+		}
+
+	private function getPauseControl(array $mailItem) : \PHPFUI\FAIcon
+		{
+		$pause = new \PHPFUI\FAIcon('fas', $mailItem['paused'] ? 'play' : 'pause', '#');
+		$iconId = $pause->getId();
+		$pause->addAttribute('onclick', $this->paused->execute(['mailItemId' => $mailItem['mailItemId'], 'iconId' => '"' . $iconId . '"']));
+
+		return $pause;
+		}
+
 	private function processRequest() : void
 		{
 		if (\App\Model\Session::checkCSRF())
@@ -129,14 +129,15 @@ class EmailQueue
 				switch ($_POST['action'])
 					{
 					case 'deleteItem':
-						$mailItem = new \App\Record\MailItem($mailItemId);
+						$mailItem = new \App\Record\MailItem();
+						$mailItem->mailItemId = (int)$mailItemId;
 						$mailItem->delete();
 						$this->page->setResponse($mailItemId);
 
 						break;
 
 					case 'pauseItem':
-						$mailItem = new \App\Record\MailItem($mailItemId);
+						$mailItem = new \App\Record\MailItem((int)$mailItemId);
 						$mailItem->paused = (int)! $mailItem->paused;
 						$mailItem->update();
 						$icon = new \PHPFUI\FAIcon('fas', $mailItem->paused ? 'play' : 'pause', '#');
@@ -152,7 +153,8 @@ class EmailQueue
 				{
 				if ('Save' == $_POST['submit'])
 					{
-					$mailItem = new \App\Record\MailItem($_POST);
+					$mailItem = new \App\Record\MailItem();
+					$mailItem->setFrom($_POST);
 					$mailItem->update();
 					$this->page->redirect();
 					}

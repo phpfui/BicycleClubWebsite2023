@@ -29,6 +29,7 @@ abstract class Base
 		if (! $primaryKeys) // look in indicies if no primary, could be a composite primary key
 			{
 			$indexes = \PHPFUI\ORM::getIndexes($table);
+
 			foreach ($indexes as $index)
 				{
 				if ($index->primaryKey)
@@ -39,21 +40,6 @@ abstract class Base
 			}
 
 		return $primaryKeys;
-		}
-
-	protected function quote(string $field) : string
-		{
-		return "'{$field}'";
-		}
-
-	protected function quoteLine(string $field) : string
-		{
-		return "'{$field}', ";
-		}
-
-	protected function line(float | int | string $field) : string
-		{
-		return "{$field}, ";
 		}
 
 	protected function getTypeLength(string &$type) : float
@@ -122,5 +108,20 @@ abstract class Base
 		$type = $types[$type] ?? 'string';
 
 		return (float)$precision;
+		}
+
+	protected function line(float | int | string $field) : string
+		{
+		return "{$field}, ";
+		}
+
+	protected function quote(string $field) : string
+		{
+		return "'{$field}'";
+		}
+
+	protected function quoteLine(string $field) : string
+		{
+		return "'{$field}', ";
 		}
 	}

@@ -8,6 +8,13 @@ class Coordinators
 		{
 		}
 
+	public function getEmail(string $type) : string
+		{
+		$chair = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPicker($type));
+
+		return $chair->getEditControl();
+		}
+
 	public function getRideCoordinators(?\PHPFUI\Button $backButton = null) : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit();
@@ -80,12 +87,5 @@ class Coordinators
 			}
 
 		return $form;
-		}
-
-	public function getEmail(string $type) : string
-		{
-		$chair = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPicker($type));
-
-		return $chair->getEditControl();
 		}
 	}

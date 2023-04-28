@@ -9,9 +9,9 @@ namespace App\UI;
  */
 class ProductImageGallery extends \PHPFUI\HTML5Element
 	{
-	private readonly \PHPFUI\UnorderedList $ul;
-
 	private ?\PHPFUI\Image $mainImage = null;
+
+	private readonly \PHPFUI\UnorderedList $ul;
 
 	public function __construct(private readonly \PHPFUI\Interfaces\Page $page)
 		{

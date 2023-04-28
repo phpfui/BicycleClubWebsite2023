@@ -133,18 +133,6 @@ class EventPicker implements \Stringable
 		return (string)$fieldSet;
 		}
 
-	public function setSelected($selected) : static
-		{
-		if (! \is_array($selected))
-			{
-			$selected = [(int)$selected => 1];
-			}
-
-		$this->selected = $selected;
-
-		return $this;
-		}
-
 	public function publicEvents($link = '/GA/signUp') : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
@@ -188,5 +176,17 @@ class EventPicker implements \Stringable
 			}
 
 		return $container;
+		}
+
+	public function setSelected($selected) : static
+		{
+		if (! \is_array($selected))
+			{
+			$selected = [(int)$selected => 1];
+			}
+
+		$this->selected = $selected;
+
+		return $this;
 		}
 	}

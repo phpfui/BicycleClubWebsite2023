@@ -12,23 +12,21 @@ class Cart
 
 	final public const TYPE_MEMBERSHIP = 4;
 
-	final public const TYPE_STORE = 0;
-
 	final public const TYPE_ORDER = 5;
 
-	private int $availablePoints = 0;
+	final public const TYPE_STORE = 0;
 
-	private int $volunteerPoints = 0;
+	private int $availablePoints = 0;
 
 	private bool $computed = false;
 
 	private int $count = 0;
 
+	private readonly \App\Model\Customer $customerModel;
+
 	private float $discount = 0.0;
 
 	private \App\Record\DiscountCode $discountCode;
-
-	private readonly \App\Model\Customer $customerModel;
 
 	private array $items = [];
 
@@ -43,6 +41,8 @@ class Cart
 	private float $taxRate = 0.0;
 
 	private float $total = 0.0;
+
+	private int $volunteerPoints = 0;
 
 	public function __construct()
 		{
@@ -287,11 +287,6 @@ class Cart
 		return $this->memberId;
 		}
 
-	public function getVolunteerPoints() : int
-		{
-		return $this->volunteerPoints;
-		}
-
 	public function getDiscount() : float
 		{
 		return $this->discount;
@@ -425,6 +420,11 @@ class Cart
 	public function getTotal() : float
 		{
 		return $this->total;
+		}
+
+	public function getVolunteerPoints() : int
+		{
+		return $this->volunteerPoints;
 		}
 
 	public function updateCartQuantities(array $quantities) : void

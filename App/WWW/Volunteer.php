@@ -186,6 +186,24 @@ class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 			}
 		}
 
+	public function points() : void
+		{
+		if ($this->page->addHeader('Outstanding Volunteer Points'))
+			{
+			if (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
+				{
+				$report = new \App\Report\Finance();
+				$report->downloadPoints($_POST);
+				$this->page->done();
+				}
+			else
+				{
+				$view = new \App\View\LeaderPoints($this->page);
+				$this->page->addPageContent($view->Finance());
+				}
+			}
+		}
+
 	public function pointsDetail() : void
 		{
 		$memberId = $_GET['memberId'] ?? 0;
@@ -252,24 +270,6 @@ class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 				}
 			}
 		$this->page->setRawResponse($callout, false);
-		}
-
-	public function points() : void
-		{
-		if ($this->page->addHeader('Outstanding Volunteer Points'))
-			{
-			if (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
-				{
-				$report = new \App\Report\Finance();
-				$report->downloadPoints($_POST);
-				$this->page->done();
-				}
-			else
-				{
-				$view = new \App\View\LeaderPoints($this->page);
-				$this->page->addPageContent($view->Finance());
-				}
-			}
 		}
 
 	public function pointsReport() : void

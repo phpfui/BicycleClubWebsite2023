@@ -8,6 +8,36 @@ class Roster
 		{
 		}
 
+	public function report() : string
+		{
+		$form = new \PHPFUI\Form($this->page);
+
+		if (\App\Model\Session::checkCSRF() && 'Download' == ($_POST['submit'] ?? ''))
+			{
+			$roster = new \App\Report\Roster();
+
+			$roster->download($_POST);
+
+			return $form;
+			}
+
+		$fieldSet = new \PHPFUI\FieldSet('Limit Roster By Dates');
+		$startDate = new \PHPFUI\Input\Date($this->page, 'startDate', 'Joined');
+		$startDate->setRequired();
+		$endDate = new \PHPFUI\Input\Date($this->page, 'endDate', 'Lapsed');
+		$endDate->setRequired();
+		$fieldSet->add(new \PHPFUI\MultiColumn($startDate, $endDate));
+		$form->add($fieldSet);
+		$format = new \PHPFUI\Input\RadioGroup('format', 'Download File Type', 'PDF');
+		$format->addButton('PDF');
+		$format->addButton('CSV');
+		$form->add($format);
+		$form->add('<br>');
+		$form->add(new \PHPFUI\Submit('Download'));
+
+		return $form;
+		}
+
 	public function show(string $field = '', string $select = '', int $offset = 0) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
@@ -156,35 +186,5 @@ class Roster
 			}
 
 		return $container;
-		}
-
-	public function report() : string
-		{
-		$form = new \PHPFUI\Form($this->page);
-
-		if (\App\Model\Session::checkCSRF() && 'Download' == ($_POST['submit'] ?? ''))
-			{
-			$roster = new \App\Report\Roster();
-
-			$roster->download($_POST);
-
-			return $form;
-			}
-
-		$fieldSet = new \PHPFUI\FieldSet('Limit Roster By Dates');
-		$startDate = new \PHPFUI\Input\Date($this->page, 'startDate', 'Joined');
-		$startDate->setRequired();
-		$endDate = new \PHPFUI\Input\Date($this->page, 'endDate', 'Lapsed');
-		$endDate->setRequired();
-		$fieldSet->add(new \PHPFUI\MultiColumn($startDate, $endDate));
-		$form->add($fieldSet);
-		$format = new \PHPFUI\Input\RadioGroup('format', 'Download File Type', 'PDF');
-		$format->addButton('PDF');
-		$format->addButton('CSV');
-		$form->add($format);
-		$form->add('<br>');
-		$form->add(new \PHPFUI\Submit('Download'));
-
-		return $form;
 		}
 	}

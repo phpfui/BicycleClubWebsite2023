@@ -29,6 +29,31 @@ class DB extends \App\Settings\Settings
   {
 	private string $error = '';
 
+	public function getConnectionString() : string
+		{
+		$connectionString = $this->driver . ':';
+
+		foreach ($this->getFields() as $field => $value)
+			{
+			if (\in_array($field, ['driver', 'stage', 'setup', 'password', 'user']))
+				{
+				continue;
+				}
+
+			if ($value && \ctype_lower($field))
+				{
+				$connectionString .= "{$field}={$value};";
+				}
+			}
+
+		return \rtrim($connectionString, ';');
+		}
+
+	public function getError() : string
+		{
+		return $this->error;
+		}
+
 	public function getPDO() : ?\PHPFUI\ORM\PDOInstance
 		{
 		$this->error = '';
@@ -55,30 +80,5 @@ class DB extends \App\Settings\Settings
 			}
 
 		return $pdo;
-		}
-
-	public function getError() : string
-		{
-		return $this->error;
-		}
-
-	public function getConnectionString() : string
-		{
-		$connectionString = $this->driver . ':';
-
-		foreach ($this->getFields() as $field => $value)
-			{
-			if (\in_array($field, ['driver', 'stage', 'setup', 'password', 'user']))
-				{
-				continue;
-				}
-
-			if ($value && \ctype_lower($field))
-				{
-				$connectionString .= "{$field}={$value};";
-				}
-			}
-
-		return \rtrim($connectionString, ';');
 		}
 	}

@@ -6,9 +6,9 @@ class Edit
 	{
 	private readonly \PHPFUI\Input\TextArea $description;
 
-	private readonly \App\Model\StoreImages $thumbModel;
-
 	private readonly \App\Table\StorePhoto $storePhotoTable;
+
+	private readonly \App\Model\StoreImages $thumbModel;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
@@ -218,6 +218,28 @@ class Edit
 		return $form;
 		}
 
+	private function addItemDetailModal(\PHPFUI\HTML5Element $modalLink, \App\Record\StoreItem $storeItem, int $itemDetailId) : void
+		{
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$modal->addClass('large');
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAreYouSure(false);
+		$fieldSet = new \PHPFUI\FieldSet('Add Item Detail');
+		$fieldSet->add(new \PHPFUI\Input\Hidden('storeItemId', (string)$storeItem->storeItemId));
+		$fieldSet->add(new \PHPFUI\Input\Hidden('storeItemDetailId', (string)$itemDetailId));
+		$detailLine = new \PHPFUI\Input\Text('detailLine', 'Details / Size');
+		$detailLine->setRequired()->setToolTip('The size or other details that make this version unique.');
+		$fieldSet->add($detailLine);
+		$quantity = new \PHPFUI\Input\Number('quantity', 'Quantity on Hand');
+		$quantity->addAttribute('max', (string)999);
+		$quantity->setRequired()->setToolTip('Quantity on hand at this time.');
+		$fieldSet->add($quantity);
+		$form->add($fieldSet);
+		$submit = new \PHPFUI\Submit('Add Detail', 'action');
+		$form->add($modal->getButtonAndCancel($submit));
+		$modal->add($form);
+		}
+
 	private function addItemDetails(\App\Record\StoreItem $storeItem, \PHPFUI\Form $form) : \PHPFUI\FieldSet
 		{
 		$deleteItemDetail = new \PHPFUI\AJAX('deleteItemDetail', 'Permanently delete this detail line?');
@@ -299,6 +321,20 @@ class Edit
 		return $detailSet;
 		}
 
+	private function addOptionModal(\PHPFUI\HTML5Element $modalLink, \App\Record\StoreItem $storeItem) : void
+		{
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAreYouSure(false);
+		$fieldSet = new \PHPFUI\FieldSet('Add Option');
+		$fieldSet->add(new \PHPFUI\Input\Hidden('storeItemId', (string)$storeItem->storeItemId));
+		$fieldSet->add(new \App\View\Store\OptionSelect('storeOptionId', 'Select Option to Add'));
+		$form->add($fieldSet);
+		$submit = new \PHPFUI\Submit('Add Option', 'action');
+		$form->add($modal->getButtonAndCancel($submit));
+		$modal->add($form);
+		}
+
 	private function addPhotoDialog(\App\Record\StoreItem $storeItem, \PHPFUI\Button $addPhotoButton) : ?\PHPFUI\FieldSet
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $addPhotoButton);
@@ -366,41 +402,5 @@ class Edit
 		$photoSet->add($orderableTable);
 
 		return $photoSet;
-		}
-
-	private function addItemDetailModal(\PHPFUI\HTML5Element $modalLink, \App\Record\StoreItem $storeItem, int $itemDetailId) : void
-		{
-		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
-		$modal->addClass('large');
-		$form = new \PHPFUI\Form($this->page);
-		$form->setAreYouSure(false);
-		$fieldSet = new \PHPFUI\FieldSet('Add Item Detail');
-		$fieldSet->add(new \PHPFUI\Input\Hidden('storeItemId', (string)$storeItem->storeItemId));
-		$fieldSet->add(new \PHPFUI\Input\Hidden('storeItemDetailId', (string)$itemDetailId));
-		$detailLine = new \PHPFUI\Input\Text('detailLine', 'Details / Size');
-		$detailLine->setRequired()->setToolTip('The size or other details that make this version unique.');
-		$fieldSet->add($detailLine);
-		$quantity = new \PHPFUI\Input\Number('quantity', 'Quantity on Hand');
-		$quantity->addAttribute('max', (string)999);
-		$quantity->setRequired()->setToolTip('Quantity on hand at this time.');
-		$fieldSet->add($quantity);
-		$form->add($fieldSet);
-		$submit = new \PHPFUI\Submit('Add Detail', 'action');
-		$form->add($modal->getButtonAndCancel($submit));
-		$modal->add($form);
-		}
-
-	private function addOptionModal(\PHPFUI\HTML5Element $modalLink, \App\Record\StoreItem $storeItem) : void
-		{
-		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
-		$form = new \PHPFUI\Form($this->page);
-		$form->setAreYouSure(false);
-		$fieldSet = new \PHPFUI\FieldSet('Add Option');
-		$fieldSet->add(new \PHPFUI\Input\Hidden('storeItemId', (string)$storeItem->storeItemId));
-		$fieldSet->add(new \App\View\Store\OptionSelect('storeOptionId', 'Select Option to Add'));
-		$form->add($fieldSet);
-		$submit = new \PHPFUI\Submit('Add Option', 'action');
-		$form->add($modal->getButtonAndCancel($submit));
-		$modal->add($form);
 		}
 	}

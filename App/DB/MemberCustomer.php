@@ -17,11 +17,11 @@ namespace App\DB;
  */
 class MemberCustomer
 	{
+	private \App\Record\Customer $customer;
+
 	private \App\Record\Member $member;
 
 	private \App\Record\Membership $membership;
-
-	private \App\Record\Customer $customer;
 
 	public function __construct(int $primaryKey)
 		{
@@ -54,6 +54,24 @@ class MemberCustomer
 		return $this->customer->{$field};
 		}
 
+	/**
+	 * Allows for empty($object->field) to work correctly
+	 */
+	public function __isset(string $field) : bool
+		{
+		if ($this->member->loaded())
+			{
+			if (isset($this->member->{$field}))
+				{
+				return true;
+				}
+
+			return isset($this->membership->{$field});
+			}
+
+		return isset($this->customer->{$field});
+		}
+
 	public function __set(string $field, $value)
 		{
 		if ($this->member->loaded())
@@ -75,32 +93,9 @@ class MemberCustomer
 		return $value;
 		}
 
-	/**
-	 * Allows for empty($object->field) to work correctly
-	 */
-	public function __isset(string $field) : bool
+	public function getCustomer() : \App\Record\Customer
 		{
-		if ($this->member->loaded())
-			{
-			if (isset($this->member->{$field}))
-				{
-				return true;
-				}
-
-			return isset($this->membership->{$field});
-			}
-
-		return isset($this->customer->{$field});
-		}
-
-	public function toArray() : array
-		{
-		if ($this->member->loaded())
-			{
-			return \array_merge($this->member->toArray(), $this->membership->toArray());
-			}
-
-		return $this->customer->toArray();
+		return $this->customer;
 		}
 
 	public function getMember() : \App\Record\Member
@@ -123,11 +118,6 @@ class MemberCustomer
 		return $this->membership;
 		}
 
-	public function getCustomer() : \App\Record\Customer
-		{
-		return $this->customer;
-		}
-
 	public function save(array $fields) : void
 		{
 		if ($this->member->loaded())
@@ -139,6 +129,16 @@ class MemberCustomer
 			$this->member->update();
 			$this->membership->update();
 			}
+		}
+
+	public function toArray() : array
+		{
+		if ($this->member->loaded())
+			{
+			return \array_merge($this->member->toArray(), $this->membership->toArray());
+			}
+
+		return $this->customer->toArray();
 		}
 
 	public function update() : bool

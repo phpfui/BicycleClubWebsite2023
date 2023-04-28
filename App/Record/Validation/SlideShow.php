@@ -12,11 +12,11 @@ class SlideShow extends \PHPFUI\ORM\Validator
 		'active' => ['required', 'integer'],
 		'added' => ['required', 'datetime'],
 		'alignment' => ['required', 'maxlength'],
-		'endDate' => ['date'],
+		'endDate' => ['date', 'gte_field:startDate'],
 		'memberId' => ['integer', 'minvalue:0'],
 		'name' => ['maxlength'],
 		'settings' => ['maxlength'],
-		'startDate' => ['date'],
+		'startDate' => ['date', 'lte_field:endDate'],
 		'updated' => ['required', 'datetime'],
 		'width' => ['required', 'integer'],
 	];

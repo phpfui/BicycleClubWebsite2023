@@ -6,14 +6,14 @@ class GitHooks
 	{
 	private int $exitStatus = 0;
 
+	private array $installedPackages = ['phpunit', 'phpstan', 'php-cs-fixer'];
+
 	private string $method;
 
 	private readonly \Gitonomy\Git\Repository $repo;
 
 	/** @group SyntaxTest */
 	private array $validFiles = ['App' => true, 'oneOffScripts' => true, 'NoNameSpace' => true, 'www' => true, 'conversions' => true];
-
-	private array $installedPackages = ['phpunit', 'phpstan', 'php-cs-fixer'];
 
 	public function __construct(string $hook)
 		{
@@ -60,48 +60,6 @@ class GitHooks
 		return $this->exitStatus;
 		}
 
-	private function runShellCommand(string $command) : string
-		{
-		$output = [];
-		$exitStatus = 1;
-
-		if (false === \exec($command, $output, $exitStatus))
-			{
-			return "Command {$command} failed";
-			}
-
-		return $exitStatus ? \implode("\n", $output) : '';
-		}
-
-	private function prePush() : string
-		{
-		// run phpstan
-		$command = 'vendor\\bin\\phpstan';
-
-		$errors = $this->runShellCommand($command);
-
-		if (\str_contains($errors, 'BicycleClubWebsite'))
-			{
-			return $errors;
-			}
-
-		// run syntax check
-		$command = 'vendor\\bin\\phpunits --group SyntaxTest';
-
-		return $this->runShellCommand($command);
-		}
-
-	private function preCommit() : string
-		{
-		// run php-cs-fixer
-		$files = \implode(' ', $this->getPHPFiles());
-		$command = "vendor\\bin\\php-cs-fixer fix --config=.php-cs-fixer.dist.php {$files}";
-		$this->runShellCommand($command);
-		$this->runShellCommand("git add {$files}");
-
-		return '';
-		}
-
 	/**
 	 * Get all the php files from the project we are interested in (our own, not library code)
 	 *
@@ -130,5 +88,47 @@ class GitHooks
 			}
 
 		return $phpFiles;
+		}
+
+	private function preCommit() : string
+		{
+		// run php-cs-fixer
+		$files = \implode(' ', $this->getPHPFiles());
+		$command = "vendor\\bin\\php-cs-fixer fix --config=.php-cs-fixer.dist.php {$files}";
+		$this->runShellCommand($command);
+		$this->runShellCommand("git add {$files}");
+
+		return '';
+		}
+
+	private function prePush() : string
+		{
+		// run phpstan
+		$command = 'vendor\\bin\\phpstan';
+
+		$errors = $this->runShellCommand($command);
+
+		if (\str_contains($errors, 'BicycleClubWebsite'))
+			{
+			return $errors;
+			}
+
+		// run syntax check
+		$command = 'vendor\\bin\\phpunits --group SyntaxTest';
+
+		return $this->runShellCommand($command);
+		}
+
+	private function runShellCommand(string $command) : string
+		{
+		$output = [];
+		$exitStatus = 1;
+
+		if (false === \exec($command, $output, $exitStatus))
+			{
+			return "Command {$command} failed";
+			}
+
+		return $exitStatus ? \implode("\n", $output) : '';
 		}
 	}

@@ -4,12 +4,12 @@ namespace App\View\Ride;
 
 class Settings
 	{
-	private array $optionalTypes = ['Hidden', 'Visible', 'Required'];
-
 	private array $optionalFields = [
 		'regroupingOption' => 'Regrouping Policy',
 		'targetPaceOption' => 'Target Pace',
 		'maxRidersOption' => 'Rider Limit'];
+
+	private array $optionalTypes = ['Hidden', 'Visible', 'Required'];
 
 	private readonly \App\Table\Setting $settingTable;
 
@@ -21,6 +21,11 @@ class Settings
 	public function getFieldNames() : array
 		{
 		return \array_keys($this->optionalFields);
+		}
+
+	public function getOptionalFields(\App\Record\Ride $ride) : \PHPFUI\MultiColumn
+		{
+		return $this->getFields('Visible', $ride);
 		}
 
 	public function getOptionalFieldsConfiguration() : \PHPFUI\MultiColumn
@@ -45,37 +50,6 @@ class Settings
 	public function getRequiredFields(\App\Record\Ride $ride) : \PHPFUI\MultiColumn
 		{
 		return $this->getFields('Required', $ride);
-		}
-
-	public function getOptionalFields(\App\Record\Ride $ride) : \PHPFUI\MultiColumn
-		{
-		return $this->getFields('Visible', $ride);
-		}
-
-	private function getFields(string $type, \App\Record\Ride $ride) : \PHPFUI\MultiColumn
-		{
-		$requiredColumns = new \PHPFUI\MultiColumn();
-
-		foreach ($this->optionalFields as $field => $label)
-			{
-			$value = $this->settingTable->value($field);
-
-			if ($type == $value)
-				{
-				$input = $this->getField($field, $ride);
-
-				if ($input)
-					{
-					if ('Required' == $type)
-						{
-						$input->setRequired();
-						}
-					$requiredColumns->add($input);
-					}
-				}
-			}
-
-		return $requiredColumns;
 		}
 
 	private function getField(string $field, \App\Record\Ride $ride) : ?\PHPFUI\Input
@@ -121,5 +95,31 @@ class Settings
 			}
 
 		return null;
+		}
+
+	private function getFields(string $type, \App\Record\Ride $ride) : \PHPFUI\MultiColumn
+		{
+		$requiredColumns = new \PHPFUI\MultiColumn();
+
+		foreach ($this->optionalFields as $field => $label)
+			{
+			$value = $this->settingTable->value($field);
+
+			if ($type == $value)
+				{
+				$input = $this->getField($field, $ride);
+
+				if ($input)
+					{
+					if ('Required' == $type)
+						{
+						$input->setRequired();
+						}
+					$requiredColumns->add($input);
+					}
+				}
+			}
+
+		return $requiredColumns;
 		}
 	}

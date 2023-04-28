@@ -26,21 +26,6 @@ class RideSignup extends \PHPFUI\ORM\Table
 
 	protected static string $className = '\\' . \App\Record\RideSignup::class;
 
-	public function moveWaitListToRideFromRide(\App\Record\Ride $ride, \App\Record\Ride $clonedRide) : void
-		{
-		$sql = 'select * from rideSignup where rideId=? and status=?';
-		$input = [$clonedRide->rideId, self::WAIT_LIST];
-
-		$waitlist = \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, $input);
-
-		foreach ($waitlist as $rideSignup)
-			{
-			$rideSignup->delete();
-			$rideSignup->ride = $ride;
-			$rideSignup->insert();
-			}
-		}
-
 	public function deleteOtherSignedUpRides(\App\Record\Ride $ride, \App\Record\Member $member) : static
 		{
 		$sql = 'delete from rideSignup where rideId in (select rideId from ride where rideDate=(select rideDate from ride where rideId=:rideId) and rideId!=:rideId) and memberId=:memberId and status<:status';
@@ -65,6 +50,13 @@ class RideSignup extends \PHPFUI\ORM\Table
 			'No Show',
 			'Confirmed',
 		];
+		}
+
+	public function getCommittedRiders(\App\Record\Ride $ride) : \PHPFUI\ORM\DataObjectCursor
+		{
+		$sql = 'select m.*,r.memberId as leaderId,r.title,rs.* from member m left join rideSignup rs on rs.memberId=m.memberId left join ride r on r.rideId=rs.rideId where r.rideId=? and rs.status in (1,2,3,4)';
+
+		return \PHPFUI\ORM::getDataObjectCursor($sql, [$ride->rideId]);
 		}
 
 	public function getEarliestRiderSignupTime(\App\Record\Member $rider, string $date) : string
@@ -96,18 +88,18 @@ class RideSignup extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRow($sql, [$member->memberId]);
 		}
 
-	public function getRidersForAttended(\App\Record\Ride $ride, int $attended = self::CONFIRMED) : \PHPFUI\ORM\RecordCursor
-		{
-		$sql = 'select * from rideSignup where rideId=? and attended=? order by signedUpTime';
-
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, [$ride->rideId, $attended]);
-		}
-
 	public function getRiderFrequency(int $status, int $startDate, int $endDate) : iterable
 		{
 		$sql = 'select count(*) count,rs.memberId from ridesignup rs left join ride r on r.rideId=rs.rideId where rs.attended=? and r.rideDate>=? and r.rideDate<=? group by r.memberid order by count desc';
 
 		return \PHPFUI\ORM::getArrayCursor($sql, [$status, $startDate, $endDate]);
+		}
+
+	public function getRidersForAttended(\App\Record\Ride $ride, int $attended = self::CONFIRMED) : \PHPFUI\ORM\RecordCursor
+		{
+		$sql = 'select * from rideSignup where rideId=? and attended=? order by signedUpTime';
+
+		return \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, [$ride->rideId, $attended]);
 		}
 
 	public function getRidersForStatus(\App\Record\Ride $ride, int $status) : \PHPFUI\ORM\RecordCursor
@@ -151,10 +143,18 @@ class RideSignup extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$rideId, self::WAIT_LIST]);
 		}
 
-	public function getCommittedRiders(\App\Record\Ride $ride) : \PHPFUI\ORM\DataObjectCursor
+	public function moveWaitListToRideFromRide(\App\Record\Ride $ride, \App\Record\Ride $clonedRide) : void
 		{
-		$sql = 'select m.*,r.memberId as leaderId,r.title,rs.* from member m left join rideSignup rs on rs.memberId=m.memberId left join ride r on r.rideId=rs.rideId where r.rideId=? and rs.status in (1,2,3,4)';
+		$sql = 'select * from rideSignup where rideId=? and status=?';
+		$input = [$clonedRide->rideId, self::WAIT_LIST];
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$ride->rideId]);
+		$waitlist = \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, $input);
+
+		foreach ($waitlist as $rideSignup)
+			{
+			$rideSignup->delete();
+			$rideSignup->ride = $ride;
+			$rideSignup->insert();
+			}
 		}
 	}

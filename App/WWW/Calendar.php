@@ -6,9 +6,9 @@ class Calendar extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
 	protected \PHPFUI\Button $backButton;
 
-	private readonly \App\View\Calendar $view;
-
 	private readonly string $calendarName;
+
+	private readonly \App\View\Calendar $view;
 
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{

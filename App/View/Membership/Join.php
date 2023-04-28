@@ -4,15 +4,15 @@ namespace App\View\Membership;
 
 class Join
 	{
+	private readonly \PHPFUI\ReCAPTCHA $captcha;
+
+	private string $forgotPassword = 'ForgotPassword';
+
 	private readonly \App\Model\Member $memberModel;
 
 	private readonly \App\View\Member $memberView;
 
 	private readonly \App\Table\Setting $settingTable;
-
-	private string $forgotPassword = 'ForgotPassword';
-
-	private readonly \PHPFUI\ReCAPTCHA $captcha;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
@@ -275,25 +275,6 @@ class Join
 		return $output;
 		}
 
-	private function getMembers(\App\Record\Member $member) : \PHPFUI\Container
-		{
-		$membership = $member->membership;
-		$members = \App\Table\Member::membersInMembership($member->membershipId);
-		$renewView = new \App\View\Membership\Renew($this->page, $member->membership, $this->memberView);
-		$container = $renewView->renew(true);
-		$allowedMembers = (int)$this->settingTable->value('maxMembersOnMembership');
-
-		if (! $allowedMembers || \count($members) < $allowedMembers)
-			{
-			$container->addAsFirst(new \PHPFUI\Header('Add Additional Members', 4));
-			$this->memberView->getAddMemberModalButton($member->membership);
-			}
-		$container->addAsFirst($this->page->getFlashMessages());
-		$container->addAsFirst($this->getHeader('Confirm Amount'));
-
-		return $container;
-		}
-
 	private function getButtonGroup(int $step) : \PHPFUI\ButtonGroup
 		{
 		$buttonGroup = new \PHPFUI\ButtonGroup();
@@ -325,6 +306,25 @@ class Join
 			}
 
 		return $output;
+		}
+
+	private function getMembers(\App\Record\Member $member) : \PHPFUI\Container
+		{
+		$membership = $member->membership;
+		$members = \App\Table\Member::membersInMembership($member->membershipId);
+		$renewView = new \App\View\Membership\Renew($this->page, $member->membership, $this->memberView);
+		$container = $renewView->renew(true);
+		$allowedMembers = (int)$this->settingTable->value('maxMembersOnMembership');
+
+		if (! $allowedMembers || \count($members) < $allowedMembers)
+			{
+			$container->addAsFirst(new \PHPFUI\Header('Add Additional Members', 4));
+			$this->memberView->getAddMemberModalButton($member->membership);
+			}
+		$container->addAsFirst($this->page->getFlashMessages());
+		$container->addAsFirst($this->getHeader('Confirm Amount'));
+
+		return $container;
 		}
 
 	private function getNotifications(\App\Record\Member $member) : \PHPFUI\HTML5Element

@@ -30,21 +30,21 @@ class Admin extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function bikeShopList() : void
-		{
-		if ($this->page->addHeader('Bike Shop Maintenance'))
-			{
-			$view = new \App\View\Admin\BikeShop($this->page);
-			$this->page->addPageContent($view->list());
-			}
-		}
-
 	public function bikeShopEdit(\App\Record\BikeShop $bikeShop = new \App\Record\BikeShop()) : void
 		{
 		if ($this->page->addHeader('Bike Shop Edit'))
 			{
 			$view = new \App\View\Admin\BikeShop($this->page);
 			$this->page->addPageContent($view->edit($bikeShop));
+			}
+		}
+
+	public function bikeShopList() : void
+		{
+		if ($this->page->addHeader('Bike Shop Maintenance'))
+			{
+			$view = new \App\View\Admin\BikeShop($this->page);
+			$this->page->addPageContent($view->list());
 			}
 		}
 

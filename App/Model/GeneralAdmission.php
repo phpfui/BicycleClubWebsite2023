@@ -90,11 +90,6 @@ class GeneralAdmission
 		return $rider->toArray();
 		}
 
-	public function getCurrentRegistrationRecord(\App\Record\GaEvent $event) : \App\Record\GaPriceDate
-		{
-		return $this->gaPriceDateTable->getCurrentRegistrationRecord($event);
-		}
-
 	public function getChair(int $gaEventId) : array
 		{
 		$event = new \App\Record\GaEvent($gaEventId);
@@ -103,6 +98,11 @@ class GeneralAdmission
 		$this->chair['email'] = $event->registrarEmail;
 
 		return $this->chair;
+		}
+
+	public function getCurrentRegistrationRecord(\App\Record\GaEvent $event) : \App\Record\GaPriceDate
+		{
+		return $this->gaPriceDateTable->getCurrentRegistrationRecord($event);
 		}
 
 	public function getLastRegistrationDateRecord(\App\Record\GaEvent $gaEvent) : \App\Record\GaPriceDate

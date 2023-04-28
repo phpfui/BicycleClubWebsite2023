@@ -12,20 +12,6 @@ class ChunkedUploader
 		$this->page->addStyleSheet('/style.css');
 		}
 
-	public function setOption(string $option, $value = null) : self
-		{
-		if (null === $value)
-			{
-			unset($this->options[$option]);
-			}
-		else
-			{
-			$this->options[$option] = $value;
-			}
-
-		return $this;
-		}
-
 	public function getError() : \PHPFUI\HTML5Element
 		{
 		$div = new \PHPFUI\HTML5Element('div');
@@ -175,5 +161,19 @@ function readablizeBytes(bytes) {
 		$this->page->addJavaScript($js);
 
 		return $container;
+		}
+
+	public function setOption(string $option, $value = null) : self
+		{
+		if (null === $value)
+			{
+			unset($this->options[$option]);
+			}
+		else
+			{
+			$this->options[$option] = $value;
+			}
+
+		return $this;
 		}
 	}

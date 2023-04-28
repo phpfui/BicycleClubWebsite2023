@@ -19,13 +19,13 @@ class Invoice extends \App\Record\Definition\Invoice
 		'ReservationChildren' => [\PHPFUI\ORM\Children::class, \App\Table\Reservation::class],
 	];
 
-	public function unpaidBalance() : float
-		{
-		return ($this->totalPrice + $this->totalTax + $this->totalShipping) - $this->paypalPaid - $this->pointsUsed;
-		}
-
 	public function total() : float
 		{
 		return $this->totalPrice + $this->totalTax + $this->totalShipping;
+		}
+
+	public function unpaidBalance() : float
+		{
+		return ($this->totalPrice + $this->totalTax + $this->totalShipping) - $this->paypalPaid - $this->pointsUsed;
 		}
 	}

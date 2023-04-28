@@ -122,19 +122,19 @@ class Calendar
 		return $types;
 		}
 
-	public function thankYouNote(\App\Record\Calendar $calendar) : void
-		{
-		$calendar->update();
-		$email = new \App\Model\Email('thankYouCalendar', new \App\Model\Email\Calendar($calendar));
-		$this->sendEmail($email, $calendar);
-		}
-
 	public function reject(\App\Record\Calendar $calendar, string $message) : void
 		{
 		$calendar->pending = 2;
 		$calendar->update();
 		$email = new \App\Model\Email('rejectCalendar', new \App\Model\Email\Calendar($calendar, $message));
 		$email->setFromMember(\App\Model\Session::getSignedInMember());
+		$this->sendEmail($email, $calendar);
+		}
+
+	public function thankYouNote(\App\Record\Calendar $calendar) : void
+		{
+		$calendar->update();
+		$email = new \App\Model\Email('thankYouCalendar', new \App\Model\Email\Calendar($calendar));
 		$this->sendEmail($email, $calendar);
 		}
 

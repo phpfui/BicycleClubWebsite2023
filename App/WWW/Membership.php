@@ -8,9 +8,9 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 
 	private readonly \App\Table\Member $memberTable;
 
-	private readonly \App\Table\Setting $settingTable;
-
 	private readonly \App\View\Member $memberView;
+
+	private readonly \App\Table\Setting $settingTable;
 
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{

@@ -6,14 +6,6 @@ class CueSheet extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\CueSheet::class;
 
-	public function setFromMemberCursor(int $memberId) : static
-		{
-		$this->addOrderBy('dateAdded', 'desc');
-		$this->setWhere(new \PHPFUI\ORM\Condition('memberId', $memberId));
-
-		return $this;
-		}
-
 	public static function getApprovedUnawarded(string $startDate, string $endDate = '') : \PHPFUI\ORM\RecordCursor
 		{
 		if (! $endDate)
@@ -59,6 +51,14 @@ class CueSheet extends \PHPFUI\ORM\Table
 		$sql = self::getSelectFields() . ' where c.pending!=0 and c.memberId=? and c.dateAdded>=? and c.dateAdded<=? order by c.dateAdded desc';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId, $startDate, $endDate]);
+		}
+
+	public function setFromMemberCursor(int $memberId) : static
+		{
+		$this->addOrderBy('dateAdded', 'desc');
+		$this->setWhere(new \PHPFUI\ORM\Condition('memberId', $memberId));
+
+		return $this;
 		}
 
 	public function setPendingCursor() : static

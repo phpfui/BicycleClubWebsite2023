@@ -9,6 +9,45 @@ class Video
 		$this->processRequest();
 		}
 
+	public function accordionList(iterable $videos) : \PHPFUI\Accordion
+		{
+		$accordion = new \PHPFUI\Accordion();
+
+		foreach ($videos as $video)
+			{
+			$container = new \PHPFUI\Container();
+			$container->add(\PHPFUI\TextHelper::unhtmlentities($video['description']));
+			$buttonGroup = new \PHPFUI\ButtonGroup();
+			$buttonGroup->addButton(new \PHPFUI\Button('View', '/Video/view/' . $video['videoId']));
+
+			if ($this->page->isAuthorized('Edit Video'))
+				{
+				$editButton = new \PHPFUI\Button('Edit', '/Video/edit/' . $video['videoId']);
+				$editButton->addClass('secondary');
+				$buttonGroup->addButton($editButton);
+				}
+
+			$container->add($buttonGroup);
+			$row = new \PHPFUI\GridX();
+			$title = new \PHPFUI\Cell(6);
+			$title->add($video['title']);
+			$row->add($title);
+			$type = new \PHPFUI\Cell(3);
+			$videoType = new \App\Record\VideoType($video['videoTypeId']);
+			$type->add($videoType->name);
+			$row->add($type);
+			$date = new \PHPFUI\Cell(2);
+			$date->add($video['videoDate']);
+			$row->add($date);
+			$hits = new \PHPFUI\Cell(1);
+			$hits->add("{$video['hits']} Views");
+			$row->add($hits);
+			$accordion->addTab($row, $container);
+			}
+
+		return $accordion;
+		}
+
 	public function edit(\App\Record\Video $video) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
@@ -141,43 +180,37 @@ class Video
 		return $container;
 		}
 
-	public function accordionList(iterable $videos) : \PHPFUI\Accordion
+	public function getPlayer(?string $fileName) : \PHPFUI\Container
 		{
-		$accordion = new \PHPFUI\Accordion();
+		$container = new \PHPFUI\Container();
 
-		foreach ($videos as $video)
+		if (! $fileName || ! \file_exists($_SERVER['DOCUMENT_ROOT'] . '/video/' . $fileName))
 			{
-			$container = new \PHPFUI\Container();
-			$container->add(\PHPFUI\TextHelper::unhtmlentities($video['description']));
-			$buttonGroup = new \PHPFUI\ButtonGroup();
-			$buttonGroup->addButton(new \PHPFUI\Button('View', '/Video/view/' . $video['videoId']));
+			$container->add(new \PHPFUI\SubHeader('Video was not found on the server'));
 
-			if ($this->page->isAuthorized('Edit Video'))
-				{
-				$editButton = new \PHPFUI\Button('Edit', '/Video/edit/' . $video['videoId']);
-				$editButton->addClass('secondary');
-				$buttonGroup->addButton($editButton);
-				}
-
-			$container->add($buttonGroup);
-			$row = new \PHPFUI\GridX();
-			$title = new \PHPFUI\Cell(6);
-			$title->add($video['title']);
-			$row->add($title);
-			$type = new \PHPFUI\Cell(3);
-			$videoType = new \App\Record\VideoType($video['videoTypeId']);
-			$type->add($videoType->name);
-			$row->add($type);
-			$date = new \PHPFUI\Cell(2);
-			$date->add($video['videoDate']);
-			$row->add($date);
-			$hits = new \PHPFUI\Cell(1);
-			$hits->add("{$video['hits']} Views");
-			$row->add($hits);
-			$accordion->addTab($row, $container);
+			return $container;
 			}
 
-		return $accordion;
+		if (\str_contains($fileName, '.flv'))
+			{
+			$callout = new \PHPFUI\Callout('alert');
+			$callout->add('This video is an Adobe Flash video file and can not be viewed in a browser.  You may be able to download it an view it on your computer with the proper software installed.');
+			$container->add($callout);
+			$button = new \PHPFUI\Button('Download Flash Video', '/video/' . $fileName);
+			$button->addClass('warning');
+			$container->add($button);
+			}
+		else
+			{
+			$embed = new \PHPFUI\Embed();
+			$player = new \PHPFUI\VideoJs($this->page);
+			$player->addSource('/video/' . $fileName);
+			$embed->add($player);
+			$container->add($embed);
+			$this->page->addJavaScript("videojs('player', {techOrder: ['html5','flvh265'],controlBar:{pictureInPictureToggle:false}})");
+			}
+
+		return $container;
 		}
 
 	public function list() : \App\UI\PaginatedTable
@@ -240,39 +273,6 @@ class Video
 		$p->add(\PHPFUI\TextHelper::unhtmlentities($video->description));
 		$container->add($p);
 		$videos = new \PHPFUI\Button('All Videos', '/Videos/All');
-
-		return $container;
-		}
-
-	public function getPlayer(?string $fileName) : \PHPFUI\Container
-		{
-		$container = new \PHPFUI\Container();
-
-		if (! $fileName || ! \file_exists($_SERVER['DOCUMENT_ROOT'] . '/video/' . $fileName))
-			{
-			$container->add(new \PHPFUI\SubHeader('Video was not found on the server'));
-
-			return $container;
-			}
-
-		if (\str_contains($fileName, '.flv'))
-			{
-			$callout = new \PHPFUI\Callout('alert');
-			$callout->add('This video is an Adobe Flash video file and can not be viewed in a browser.  You may be able to download it an view it on your computer with the proper software installed.');
-			$container->add($callout);
-			$button = new \PHPFUI\Button('Download Flash Video', '/video/' . $fileName);
-			$button->addClass('warning');
-			$container->add($button);
-			}
-		else
-			{
-			$embed = new \PHPFUI\Embed();
-			$player = new \PHPFUI\VideoJs($this->page);
-			$player->addSource('/video/' . $fileName);
-			$embed->add($player);
-			$container->add($embed);
-			$this->page->addJavaScript("videojs('player', {techOrder: ['html5','flvh265'],controlBar:{pictureInPictureToggle:false}})");
-			}
 
 		return $container;
 		}

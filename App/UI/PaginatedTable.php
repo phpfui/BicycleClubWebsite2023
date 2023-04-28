@@ -4,35 +4,35 @@ namespace App\UI;
 
 class PaginatedTable extends \PHPFUI\SortableTable
 	{
-	private array $searchColumns = [];
+	private bool $alwaysShowPaginator = true;
 
-	private array $parameters = [];
-
-	private int $pageNumber = 0;
-
-	private int $limitNumber = 25;
-
-	private string $sortColumn = '';
-
-	private string $sort = '';
-
-	private bool $filled = false;
+	private bool $continuousScroll = false;
 
 	private ?\PHPFUI\ORM\ArrayCursor $cursor = null;
 
-	private array $operators = [];
-
 	private array $customColumns = [];
-
-	private array $fieldTable = [];
 
 	private string $cvsDownloadName = '';
 
-	private bool $alwaysShowPaginator = true;
+	private array $fieldTable = [];
+
+	private bool $filled = false;
+
+	private int $limitNumber = 25;
+
+	private array $operators = [];
+
+	private int $pageNumber = 0;
+
+	private array $parameters = [];
+
+	private array $searchColumns = [];
 
 	private bool $showLimitSelect = true;
 
-	private bool $continuousScroll = false;
+	private string $sort = '';
+
+	private string $sortColumn = '';
 
 	public function __construct(protected ?\PHPFUI\Interfaces\Page $page, private readonly \PHPFUI\ORM\Table $dataTable)
 		{
@@ -60,25 +60,69 @@ class PaginatedTable extends \PHPFUI\SortableTable
 			}
 		}
 
-	public function setContinuousScroll(bool $continuousScroll = true) : static
+	public function addCustomColumn(string $field, callable $callback, array $additionalData = []) : static
 		{
-		$this->continuousScroll = $continuousScroll;
+		$this->customColumns[$field] = [$callback, $additionalData];
 
 		return $this;
 		}
 
-	public function setSortColumn(string $column) : static
+	public function addRow(array $row, array $colspans = []) : static
 		{
-		$this->sortColumn = $column;
+		if ($this->searchColumns)
+			{
+			parent::addRow($this->searchColumns, $colspans);
+			$this->searchColumns = [];
+			}
+
+		parent::addRow($row, $colspans);
 
 		return $this;
 		}
 
-	public function setSortDirection(string $direction) : static
+	public function alwaysShowPaginator(bool $alwaysShowPaginator = true) : static
 		{
-		$this->sort = $direction;
+		$this->alwaysShowPaginator = $alwaysShowPaginator;
 
 		return $this;
+		}
+
+	/**
+	 * @return \PHPFUI\ORM\ArrayCursor a cached cursor with limits and ordering applied
+	 */
+	public function getArrayCursor(bool $limited = true) : \PHPFUI\ORM\ArrayCursor
+		{
+		if ($this->cursor)
+			{
+			return $this->cursor;
+			}
+
+		$this->sortColumn = $this->parameters['c'] ?? $this->sortColumn;
+		$this->sort = $this->parameters['s'] ?? $this->sort;
+
+		if ($limited)
+			{
+			$this->dataTable->setLimit($this->limitNumber, $this->pageNumber);
+			}
+
+		if ($this->sortColumn)
+			{
+			$this->setSortedColumnOrder($this->sortColumn, $this->sort);
+			$this->dataTable->setOrderBy($this->sortColumn, $this->sort);
+			}
+
+		$this->cursor = $this->getRawArrayCursor();
+
+		return $this->cursor;
+		}
+
+	public function getDownloadButtonToolTip() : \PHPFUI\ToolTip
+		{
+		$this->parameters['downloadCSV'] = 1;
+		$download = new \PHPFUI\Button('CSV', $this->getUrl());
+		$download->addClass('small');
+
+		return new \PHPFUI\ToolTip($download, 'Download currently selected records in CSV format');
 		}
 
 	public function getPage() : \PHPFUI\Interfaces\Page
@@ -86,9 +130,62 @@ class PaginatedTable extends \PHPFUI\SortableTable
 		return $this->page;
 		}
 
-	public function addCustomColumn(string $field, callable $callback, array $additionalData = []) : static
+	/**
+	 * @return \PHPFUI\ORM\ArrayCursor an uncached cursor without any limits or ordering
+	 */
+	public function getRawArrayCursor() : \PHPFUI\ORM\ArrayCursor
 		{
-		$this->customColumns[$field] = [$callback, $additionalData];
+		$searchCondition = new \PHPFUI\ORM\Condition();
+
+		foreach ($_GET as $name => $value)
+			{
+			if (\strlen((string)$value) && \str_starts_with($name, 's_'))
+				{
+				$fieldName = \str_replace('_', '.', \substr($name, 2));
+
+				if (isset($this->fieldTable[$fieldName]))
+					{
+					$fieldName = "{$this->fieldTable[$fieldName]}.{$fieldName}";
+					}
+				$parts = \explode('|', (string)$value);
+
+				foreach ($parts as $part)
+					{
+					$operator = $this->getOperator($part);
+					$searchCondition->and($fieldName, $part, $operator);
+					}
+				}
+			}
+
+		if (\count($searchCondition))
+			{
+			$whereCondition = $this->dataTable->getWhereCondition();
+
+			if (\count($whereCondition))
+				{
+				$searchCondition->and($whereCondition);
+				}
+			$this->dataTable->setWhere($searchCondition);
+			}
+
+		return $this->dataTable->getArrayCursor();
+		}
+
+	public function getUrl(?array $parameters = null) : string
+		{
+		return $this->getBaseUrl() . '?' . \http_build_query($parameters ?? $this->parameters);
+		}
+
+	public function setContinuousScroll(bool $continuousScroll = true) : static
+		{
+		$this->continuousScroll = $continuousScroll;
+
+		return $this;
+		}
+
+	public function setDownloadName(string $cvsDownloadName) : static
+		{
+		$this->cvsDownloadName = $cvsDownloadName;
 
 		return $this;
 		}
@@ -150,16 +247,16 @@ class PaginatedTable extends \PHPFUI\SortableTable
 		return $this;
 		}
 
-	public function setDownloadName(string $cvsDownloadName) : static
+	public function setSortColumn(string $column) : static
 		{
-		$this->cvsDownloadName = $cvsDownloadName;
+		$this->sortColumn = $column;
 
 		return $this;
 		}
 
-	public function alwaysShowPaginator(bool $alwaysShowPaginator = true) : static
+	public function setSortDirection(string $direction) : static
 		{
-		$this->alwaysShowPaginator = $alwaysShowPaginator;
+		$this->sort = $direction;
 
 		return $this;
 		}
@@ -169,198 +266,6 @@ class PaginatedTable extends \PHPFUI\SortableTable
 		$this->showLimitSelect = $showLimitSelect;
 
 		return $this;
-		}
-
-	public function addRow(array $row, array $colspans = []) : static
-		{
-		if ($this->searchColumns)
-			{
-			parent::addRow($this->searchColumns, $colspans);
-			$this->searchColumns = [];
-			}
-
-		parent::addRow($row, $colspans);
-
-		return $this;
-		}
-
-	/**
-	 * @return \PHPFUI\ORM\ArrayCursor an uncached cursor without any limits or ordering
-	 */
-	public function getRawArrayCursor() : \PHPFUI\ORM\ArrayCursor
-		{
-		$searchCondition = new \PHPFUI\ORM\Condition();
-
-		foreach ($_GET as $name => $value)
-			{
-			if (\strlen((string)$value) && \str_starts_with($name, 's_'))
-				{
-				$fieldName = \str_replace('_', '.', \substr($name, 2));
-
-				if (isset($this->fieldTable[$fieldName]))
-					{
-					$fieldName = "{$this->fieldTable[$fieldName]}.{$fieldName}";
-					}
-				$parts = \explode('|', (string)$value);
-
-				foreach ($parts as $part)
-					{
-					$operator = $this->getOperator($part);
-					$searchCondition->and($fieldName, $part, $operator);
-					}
-				}
-			}
-
-		if (\count($searchCondition))
-			{
-			$whereCondition = $this->dataTable->getWhereCondition();
-
-			if (\count($whereCondition))
-				{
-				$searchCondition->and($whereCondition);
-				}
-			$this->dataTable->setWhere($searchCondition);
-			}
-
-		return $this->dataTable->getArrayCursor();
-		}
-
-	/**
-	 * @return \PHPFUI\ORM\ArrayCursor a cached cursor with limits and ordering applied
-	 */
-	public function getArrayCursor(bool $limited = true) : \PHPFUI\ORM\ArrayCursor
-		{
-		if ($this->cursor)
-			{
-			return $this->cursor;
-			}
-
-		$this->sortColumn = $this->parameters['c'] ?? $this->sortColumn;
-		$this->sort = $this->parameters['s'] ?? $this->sort;
-
-		if ($limited)
-			{
-			$this->dataTable->setLimit($this->limitNumber, $this->pageNumber);
-			}
-
-		if ($this->sortColumn)
-			{
-			$this->setSortedColumnOrder($this->sortColumn, $this->sort);
-			$this->dataTable->setOrderBy($this->sortColumn, $this->sort);
-			}
-
-		$this->cursor = $this->getRawArrayCursor();
-
-		return $this->cursor;
-		}
-
-	public function getUrl(?array $parameters = null) : string
-		{
-		return $this->getBaseUrl() . '?' . \http_build_query($parameters ?? $this->parameters);
-		}
-
-	public function getDownloadButtonToolTip() : \PHPFUI\ToolTip
-		{
-		$this->parameters['downloadCSV'] = 1;
-		$download = new \PHPFUI\Button('CSV', $this->getUrl());
-		$download->addClass('small');
-
-		return new \PHPFUI\ToolTip($download, 'Download currently selected records in CSV format');
-		}
-
-	protected function getStart() : string
-		{
-		if (! empty($this->parameters['downloadCSV']) && $this->allowCSVDownload())
-			{
-			unset($this->parameters['downloadCSV']);
-
-			if ($this->cvsDownloadName)
-				{
-				$fileName = $this->cvsDownloadName;
-				}
-			else
-				{
-				$parts = \explode('\\', $this->dataTable::class);
-				$fileName = \array_pop($parts) . '_' . \App\Tools\Date::todayString() . '.csv';
-				}
-
-			$csvWriter = new \App\Tools\CSVWriter($fileName);
-			$csvWriter->addHeaderRow();
-
-			$this->dataTable->setLimit(0);
-
-			foreach ($this->getArrayCursor(false) as $row)
-				{
-				unset($row['password'], $row['loginAttempts']);
-				$csvWriter->outputRow($row);
-				}
-			unset($csvWriter);
-			\header('location: ' . $this->getUrl());
-
-			exit;
-			}
-
-		if (isset($this->parameters['cs']))
-			{
-			$this->searchColumns = [];
-			}
-
-		$this->fillTable();
-
-		if ($this->continuousScroll)
-			{
-			$last = $this->dataTable->getOffset() + $this->dataTable->getLimit();
-
-			$cursor = $this->getArrayCursor();
-
-			if ($cursor->total() <= $last)
-				{
-				$query = '';
-				$footerText = 'End of Data, ' . $cursor->total() . ' Records';
-				}
-			else
-				{
-				// local copy of parameters so we can change things
-				$parameters = $this->parameters;
-				$parameters['cs'] = 1;
-				$parameters['p'] = $this->pageNumber + 1;	// we want the next page
-				$query = $this->getUrl($parameters);
-				$footerText = 'Loading ...';
-				}
-
-			$temp = new \PHPFUI\HTML5Element('div');
-			$footerId = $temp->getId();
-
-			$footerSpan = new \PHPFUI\HTML5Element('span');
-			$footerSpan->add($footerText);
-			$footerSpanId = $footerSpan->getId();
-
-			$hidden = new \PHPFUI\Input\Hidden('query', $query);
-			$hiddenId = $hidden->getId();
-			$this->page->addJavaScript('var urls=new Set();let options={root:null,threshold:0.1}');
-			$javaScript = "var intersectionObserver=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.intersectionRatio>0)){let hidden=$('#{$hiddenId}');
-if(hidden.length==0)return;let url=hidden.val();if(urls.has(url))return;if(url.length){urls.add(url);$.ajax(url,{success:(function(data,status,arg3){
-var footer=$('#{$footerId}').parent();footer.prev().append(data.rows);hidden.val(data.query);$('#{$footerSpanId}').html(data.footerText);})});}}},options);
-intersectionObserver.observe(document.querySelector('#{$footerId}'));";
-			$this->page->addJavaScript($javaScript);
-
-			$this->addFooterAttribute('id', [$footerId]);
-
-			$this->addFooter(\array_key_first($this->headers), $footerSpan . $hidden);
-
-			if ($this->allowCSVDownload())
-				{
-				$this->addFooter(\array_key_last($this->headers), $this->getDownloadButtonToolTip());
-				}
-
-			if (isset($this->parameters['cs']))
-				{
-				$jsonData = ['rows' => $this->outputBodyRows(), 'footerText' => $footerText, 'query' => $query];
-				$this->page->setRawResponse(\json_encode($jsonData));
-				}
-			}
-
-		return parent::getStart();
 		}
 
 	protected function getEnd() : string
@@ -463,6 +368,111 @@ intersectionObserver.observe(document.querySelector('#{$footerId}'));";
 		return $div;
 		}
 
+	protected function getStart() : string
+		{
+		if (! empty($this->parameters['downloadCSV']) && $this->allowCSVDownload())
+			{
+			unset($this->parameters['downloadCSV']);
+
+			if ($this->cvsDownloadName)
+				{
+				$fileName = $this->cvsDownloadName;
+				}
+			else
+				{
+				$parts = \explode('\\', $this->dataTable::class);
+				$fileName = \array_pop($parts) . '_' . \App\Tools\Date::todayString() . '.csv';
+				}
+
+			$csvWriter = new \App\Tools\CSVWriter($fileName);
+			$csvWriter->addHeaderRow();
+
+			$this->dataTable->setLimit(0);
+
+			foreach ($this->getArrayCursor(false) as $row)
+				{
+				unset($row['password'], $row['loginAttempts']);
+				$csvWriter->outputRow($row);
+				}
+			unset($csvWriter);
+			\header('location: ' . $this->getUrl());
+
+			exit;
+			}
+
+		if (isset($this->parameters['cs']))
+			{
+			$this->searchColumns = [];
+			}
+
+		$this->fillTable();
+
+		if ($this->continuousScroll)
+			{
+			$last = $this->dataTable->getOffset() + $this->dataTable->getLimit();
+
+			$cursor = $this->getArrayCursor();
+
+			if ($cursor->total() <= $last)
+				{
+				$query = '';
+				$footerText = 'End of Data, ' . $cursor->total() . ' Records';
+				}
+			else
+				{
+				// local copy of parameters so we can change things
+				$parameters = $this->parameters;
+				$parameters['cs'] = 1;
+				$parameters['p'] = $this->pageNumber + 1;	// we want the next page
+				$query = $this->getUrl($parameters);
+				$footerText = 'Loading ...';
+				}
+
+			$temp = new \PHPFUI\HTML5Element('div');
+			$footerId = $temp->getId();
+
+			$footerSpan = new \PHPFUI\HTML5Element('span');
+			$footerSpan->add($footerText);
+			$footerSpanId = $footerSpan->getId();
+
+			$hidden = new \PHPFUI\Input\Hidden('query', $query);
+			$hiddenId = $hidden->getId();
+			$this->page->addJavaScript('var urls=new Set();let options={root:null,threshold:0.1}');
+			$javaScript = "var intersectionObserver=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.intersectionRatio>0)){let hidden=$('#{$hiddenId}');
+if(hidden.length==0)return;let url=hidden.val();if(urls.has(url))return;if(url.length){urls.add(url);$.ajax(url,{success:(function(data,status,arg3){
+var footer=$('#{$footerId}').parent();footer.prev().append(data.rows);hidden.val(data.query);$('#{$footerSpanId}').html(data.footerText);})});}}},options);
+intersectionObserver.observe(document.querySelector('#{$footerId}'));";
+			$this->page->addJavaScript($javaScript);
+
+			$this->addFooterAttribute('id', [$footerId]);
+
+			$this->addFooter(\array_key_first($this->headers), $footerSpan . $hidden);
+
+			if ($this->allowCSVDownload())
+				{
+				$this->addFooter(\array_key_last($this->headers), $this->getDownloadButtonToolTip());
+				}
+
+			if (isset($this->parameters['cs']))
+				{
+				$jsonData = ['rows' => $this->outputBodyRows(), 'footerText' => $footerText, 'query' => $query];
+				$this->page->setRawResponse(\json_encode($jsonData));
+				}
+			}
+
+		return parent::getStart();
+		}
+
+	private function allowCSVDownload() : bool
+		{
+		$parts = \explode('\\', $this->dataTable::class);
+		$name = \array_pop($parts);
+		$permission = "Download {$name} CSV File";
+
+		// @phpstan-ignore-next-line
+		return $this->page->isAuthorized($permission);
+		}
+
 	private function fillTable() : void
 		{
 		if ($this->filled)
@@ -494,15 +504,5 @@ intersectionObserver.observe(document.querySelector('#{$footerId}'));";
 			{
 			$this->addRow([]);
 			}
-		}
-
-	private function allowCSVDownload() : bool
-		{
-		$parts = \explode('\\', $this->dataTable::class);
-		$name = \array_pop($parts);
-		$permission = "Download {$name} CSV File";
-
-		// @phpstan-ignore-next-line
-		return $this->page->isAuthorized($permission);
 		}
 	}

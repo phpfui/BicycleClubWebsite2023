@@ -4,11 +4,11 @@ namespace App\WWW;
 
 class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
-	private readonly \App\View\Leader $view;
+	private readonly \PHPFUI\Button $backButton;
 
 	private readonly \App\Table\Setting $settingTable;
 
-	private readonly \PHPFUI\Button $backButton;
+	private readonly \App\View\Leader $view;
 
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{
@@ -204,6 +204,43 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function minorWaiver() : void
+		{
+		if ($this->page->addHeader('Minor Waiver'))
+			{
+			$waiver = $this->settingTable->value('MinorWaiverText');
+
+			if (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
+				{
+				$email = new \App\Tools\EMail();
+				$email->setFromMember(\App\Model\Session::getSignedInMember());
+				$email->addBccMember(\App\Model\Session::getSignedInMember());
+				$email->setTo($_POST['email'], $_POST['firstName']);
+				$club = $this->settingTable->value('clubName');
+				$email->setSubject($club . ' Minor Waiver');
+				$email->setBody("Dear {$_POST['firstName']},<br><br>Thanks for attending a {$this->settingTable->value('clubAbbrev')} ride.  Please see the attached minor release waiver.");
+				$email->setHtml();
+				$_POST['lastName'] = '';
+				$_POST['acceptedWaiver'] = \date('Y-m-d H:i:s');
+				$waiverReport = new \App\Report\MemberWaiver();
+				$waiverReport->generate($_POST, 'In consideration of your being a minor, you have agreed to the following:<br><br>', $waiver);
+				$waiverReport->generateMinorRelease();
+				$waiverAttachment = $waiverReport->output('', \Mpdf\Output\Destination::STRING_RETURN);
+				$email->addAttachment($waiverAttachment, \str_replace(' ', '_', "{$club} Minor Release Waiver.pdf"));
+				$email->send();
+				$callout = new \PHPFUI\Callout('success');
+				$callout->add("Thanks for signing the {$club} minor waiver.");
+				$this->page->addPageContent($callout);
+				}
+			else
+				{
+				$view = new \App\View\Member\NonMemberWaiver($this->page);
+				$view->addField(new \PHPFUI\Input\Text('guardian', 'Full name of Legal Guardian or Responsible Adult'));
+				$this->page->addPageContent($view->sign($waiver));
+				}
+			}
+		}
+
 	public function movePace() : void
 		{
 		if ($this->page->addHeader('Move Pace'))
@@ -240,6 +277,40 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$editor = new \App\View\Email\Settings($this->page, 'newRiderEmail', new \App\Model\Email\Rider());
 			$editor->addButton($this->backButton);
 			$this->page->addPageContent($editor);
+			}
+		}
+
+	public function nonMemberWaiver() : void
+		{
+		if ($this->page->addHeader('Non Member Waiver'))
+			{
+			$waiver = $this->settingTable->value('NonMemberWaiverText');
+
+			if (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
+				{
+				$email = new \App\Tools\EMail();
+				$email->setFromMember(\App\Model\Session::getSignedInMember());
+				$email->addBccMember(\App\Model\Session::getSignedInMember());
+				$email->setTo($_POST['email'], $_POST['firstName'] . ' ' . $_POST['lastName']);
+				$club = $this->settingTable->value('clubName');
+				$email->setSubject($club . ' Non Member Waiver');
+				$email->setBody("Dear {$_POST['firstName']} {$_POST['lastName']},<br><br>Thanks for attending a {$this->settingTable->value('clubAbbrev')} ride.  Please see the attached non-member waiver.");
+				$email->setHtml();
+				$_POST['acceptedWaiver'] = \date('Y-m-d H:i:s');
+				$waiverReport = new \App\Report\MemberWaiver();
+				$waiverReport->generate($_POST, "In consideration of your not being a member of {$club}, you have agreed to the following:<br><br>", $waiver);
+				$waiverAttachment = $waiverReport->output('', \Mpdf\Output\Destination::STRING_RETURN);
+				$email->addAttachment($waiverAttachment, \str_replace(' ', '_', "{$club} Non Member Waiver.pdf"));
+				$email->send();
+				$callout = new \PHPFUI\Callout('success');
+				$callout->add("Thanks for signing the {$club} non member waiver.");
+				$this->page->addPageContent($callout);
+				}
+			else
+				{
+				$view = new \App\View\Member\NonMemberWaiver($this->page);
+				$this->page->addPageContent($view->sign($waiver));
+				}
 			}
 		}
 
@@ -387,77 +458,6 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$editor = new \App\View\Email\Settings($this->page, 'waitListEmail', new \App\Model\Email\Rider());
 			$editor->addButton($this->backButton);
 			$this->page->addPageContent($editor);
-			}
-		}
-
-	public function minorWaiver() : void
-		{
-		if ($this->page->addHeader('Minor Waiver'))
-			{
-			$waiver = $this->settingTable->value('MinorWaiverText');
-
-			if (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
-				{
-				$email = new \App\Tools\EMail();
-				$email->setFromMember(\App\Model\Session::getSignedInMember());
-				$email->addBccMember(\App\Model\Session::getSignedInMember());
-				$email->setTo($_POST['email'], $_POST['firstName']);
-				$club = $this->settingTable->value('clubName');
-				$email->setSubject($club . ' Minor Waiver');
-				$email->setBody("Dear {$_POST['firstName']},<br><br>Thanks for attending a {$this->settingTable->value('clubAbbrev')} ride.  Please see the attached minor release waiver.");
-				$email->setHtml();
-				$_POST['lastName'] = '';
-				$_POST['acceptedWaiver'] = \date('Y-m-d H:i:s');
-				$waiverReport = new \App\Report\MemberWaiver();
-				$waiverReport->generate($_POST, 'In consideration of your being a minor, you have agreed to the following:<br><br>', $waiver);
-				$waiverReport->generateMinorRelease();
-				$waiverAttachment = $waiverReport->output('', \Mpdf\Output\Destination::STRING_RETURN);
-				$email->addAttachment($waiverAttachment, \str_replace(' ', '_', "{$club} Minor Release Waiver.pdf"));
-				$email->send();
-				$callout = new \PHPFUI\Callout('success');
-				$callout->add("Thanks for signing the {$club} minor waiver.");
-				$this->page->addPageContent($callout);
-				}
-			else
-				{
-				$view = new \App\View\Member\NonMemberWaiver($this->page);
-				$view->addField(new \PHPFUI\Input\Text('guardian', 'Full name of Legal Guardian or Responsible Adult'));
-				$this->page->addPageContent($view->sign($waiver));
-				}
-			}
-		}
-
-	public function nonMemberWaiver() : void
-		{
-		if ($this->page->addHeader('Non Member Waiver'))
-			{
-			$waiver = $this->settingTable->value('NonMemberWaiverText');
-
-			if (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
-				{
-				$email = new \App\Tools\EMail();
-				$email->setFromMember(\App\Model\Session::getSignedInMember());
-				$email->addBccMember(\App\Model\Session::getSignedInMember());
-				$email->setTo($_POST['email'], $_POST['firstName'] . ' ' . $_POST['lastName']);
-				$club = $this->settingTable->value('clubName');
-				$email->setSubject($club . ' Non Member Waiver');
-				$email->setBody("Dear {$_POST['firstName']} {$_POST['lastName']},<br><br>Thanks for attending a {$this->settingTable->value('clubAbbrev')} ride.  Please see the attached non-member waiver.");
-				$email->setHtml();
-				$_POST['acceptedWaiver'] = \date('Y-m-d H:i:s');
-				$waiverReport = new \App\Report\MemberWaiver();
-				$waiverReport->generate($_POST, "In consideration of your not being a member of {$club}, you have agreed to the following:<br><br>", $waiver);
-				$waiverAttachment = $waiverReport->output('', \Mpdf\Output\Destination::STRING_RETURN);
-				$email->addAttachment($waiverAttachment, \str_replace(' ', '_', "{$club} Non Member Waiver.pdf"));
-				$email->send();
-				$callout = new \PHPFUI\Callout('success');
-				$callout->add("Thanks for signing the {$club} non member waiver.");
-				$this->page->addPageContent($callout);
-				}
-			else
-				{
-				$view = new \App\View\Member\NonMemberWaiver($this->page);
-				$this->page->addPageContent($view->sign($waiver));
-				}
 			}
 		}
 

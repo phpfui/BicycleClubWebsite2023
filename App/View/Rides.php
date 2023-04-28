@@ -6,6 +6,8 @@ class Rides
 	{
 	private readonly \App\Table\CueSheetVersion $cueSheetVersionTable;
 
+	private readonly \App\View\CueSheet $cueSheetView;
+
 	private int $deletePastDays = 0;
 
 	private readonly Leader $leader;
@@ -17,8 +19,6 @@ class Rides
 	private readonly \App\Model\SMS $smsModel;
 
 	private readonly \App\View\StartLocation $startLocationView;
-
-	private readonly \App\View\CueSheet $cueSheetView;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
@@ -53,6 +53,37 @@ class Rides
 		$member = \App\Model\Session::signedInMemberRecord();
 
 		return $ride->memberId == $member->memberId || $this->page->isAuthorized('Delete Ride');
+		}
+
+	public function categorySelector(array $categories) : \PHPFUI\HTML5Element
+		{
+		$categoryTable = new \App\Table\Category();
+
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAreYouSure(false);
+		$form->setAttribute('method', 'GET');
+
+		$checkBoxMenu = new \PHPFUI\Input\CheckBoxMenu('c');
+		$checkBoxMenu->setJavaScriptCallback('categoryMenu');
+		$js = 'function categoryMenu(name,value,active){name="cat-"+name.substring(name.indexOf("[")+1).replace("]","");if(active){$("."+name).show()}else{$("."+name).hide();}};';
+		$checkBoxMenu->addAll();
+
+		foreach ($categoryTable->getAllCategories() as $category)
+			{
+			$menuItem = $checkBoxMenu->addCheckBox($category['category'], $categories[$category['categoryId']] ?? false, $category['categoryId'], $category['categoryId']);
+
+			if (empty($categories[$category['categoryId']]))
+				{
+				$js .= '$(".cat-' . $category['categoryId'] . '").hide();';
+				}
+			}
+		$this->page->addJavaScript($js);
+
+		$form->add(new \PHPFUI\Header('Ride Schedule Category Filter', 5));
+		$form->add($checkBoxMenu);
+		$form->add('<hr>');
+
+		return $form;
 		}
 
 	public function confirmRiders(\App\Record\Ride $ride) : \PHPFUI\Container
@@ -531,9 +562,16 @@ class Rides
 			$row->add($title);
 			$leader = new \PHPFUI\Cell(3);
 
+			$status = '';
+
 			if (\App\Table\Ride::STATUS_NO_LEADER == $ride->rideStatus)
 				{
-				$leaderName = "<span class='ride-cancelled'>{$leaderless}</span>";
+				$status = $leaderName = "<span class='ride-cancelled'>{$leaderless}</span>";
+				}
+			elseif (\App\Table\Ride::STATUS_WEATHER == $ride->rideStatus)
+				{
+				$status = \App\Table\Ride::getStatusValues()[$ride->rideStatus];
+				$status = $leaderName = "<span class='ride-cancelled'>{$status}</span>";
 				}
 			else
 				{
@@ -545,9 +583,9 @@ class Rides
 			$content = new \PHPFUI\Container();
 			$content->add($this->addLinks($ride->description ?? ''));
 
-			if (\App\Table\Ride::STATUS_NO_LEADER == $ride->rideStatus)
+			if ($status)
 				{
-				$content->prepend('<span class="ride-cancelled">No Leader</span> ');
+				$content->prepend($status);
 				}
 
 			if ($this->page->isSignedIn())
@@ -583,7 +621,7 @@ class Rides
 				$bg = new \PHPFUI\ButtonGroup();
 				$bg->addClass('round');
 
-				if ($this->page->isAuthorized('Ride Sign Up') && ! $ride->unaffiliated)
+				if ($this->page->isAuthorized('Ride Sign Up') && ! $ride->unaffiliated && \App\Table\Ride::STATUS_WEATHER != $ride->rideStatus)
 					{
 					if ($ride->rideDate >= $today)
 						{
@@ -684,37 +722,6 @@ class Rides
 		$dateAccordion->addTab(\App\Tools\Date::formatString('l, F j, Y', $lastDate) . ' ' . \implode(', ', $rideCats), $dayAccordion . $unaffiliated, true);
 
 		return $dateAccordion;
-		}
-
-	public function categorySelector(array $categories) : \PHPFUI\HTML5Element
-		{
-		$categoryTable = new \App\Table\Category();
-
-		$form = new \PHPFUI\Form($this->page);
-		$form->setAreYouSure(false);
-		$form->setAttribute('method', 'GET');
-
-		$checkBoxMenu = new \PHPFUI\Input\CheckBoxMenu('c');
-		$checkBoxMenu->setJavaScriptCallback('categoryMenu');
-		$js = 'function categoryMenu(name,value,active){name="cat-"+name.substring(name.indexOf("[")+1).replace("]","");if(active){$("."+name).show()}else{$("."+name).hide();}};';
-		$checkBoxMenu->addAll();
-
-		foreach ($categoryTable->getAllCategories() as $category)
-			{
-			$menuItem = $checkBoxMenu->addCheckBox($category['category'], $categories[$category['categoryId']] ?? false, $category['categoryId'], $category['categoryId']);
-
-			if (empty($categories[$category['categoryId']]))
-				{
-				$js .= '$(".cat-' . $category['categoryId'] . '").hide();';
-				}
-			}
-		$this->page->addJavaScript($js);
-
-		$form->add(new \PHPFUI\Header('Ride Schedule Category Filter', 5));
-		$form->add($checkBoxMenu);
-		$form->add('<hr>');
-
-		return $form;
 		}
 
 	public function stats(int $year) : string
@@ -1062,25 +1069,6 @@ class Rides
 		return $output;
 		}
 
-	private function canEdit(\PHPFUI\ORM\DataObject $ride) : bool
-		{
-		$member = \App\Model\Session::signedInMemberRecord();
-
-		return $ride->memberId == $member->memberId || $this->page->isAuthorized('Edit Ride');
-		}
-
-	private function getStatsReveal(\PHPFUI\HTML5Element $opener, int $RWGPSId) : \PHPFUI\Reveal
-		{
-		$reveal = new \PHPFUI\Reveal($this->page, $opener);
-		$reveal->addClass('large');
-		$div = new \PHPFUI\HTML5Element('div');
-		$reveal->add($div);
-		$reveal->add($reveal->getCloseButton());
-		$reveal->loadUrlOnOpen('/RWGPS/stats/' . $RWGPSId, $div->getId());
-
-		return $reveal;
-		}
-
 	private function addLinks(string $content) : string
 		{
 		$removedLinks = [];
@@ -1111,6 +1099,13 @@ class Rides
 		$content = \str_replace(\array_keys($newLinks), \array_values($newLinks), $content);
 
 		return $content;
+		}
+
+	private function canEdit(\PHPFUI\ORM\DataObject $ride) : bool
+		{
+		$member = \App\Model\Session::signedInMemberRecord();
+
+		return $ride->memberId == $member->memberId || $this->page->isAuthorized('Edit Ride');
 		}
 
 	/**
@@ -1179,6 +1174,83 @@ class Rides
 		return $paceCount;
 		}
 
+	private function getRepeatRideModal(\PHPFUI\ORM\DataObject $ride, \PHPFUI\HTML5Element $modalLink) : void
+		{
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$submit = new \PHPFUI\Submit('Repeat Ride');
+		$status = new \PHPFUI\Callout('success');
+		$status->addClass('hide');
+		$id = $status->getId();
+		$statusId = '$("#' . $id . '")';
+		$this->page->addJavaScript("function updateStatus{$id}(d){{$statusId}.html(d.status).removeClass('hide');}");
+		$form = new \PHPFUI\Form($this->page, $submit, "updateStatus{$id}");
+		$form->setAreYouSure(false);
+
+		if ($form->isMyCallback() && ($_POST['rideId'] ?? 0) == $ride->rideId)
+			{
+			\PHPFUI\ORM::beginTransaction();
+			$cloning = new \App\Record\Ride((int)$_POST['rideId']);
+			$cloning->rideId = $cloning->numberOfRiders = $cloning->accident = $cloning->pointsAwarded = 0;
+			$cloning->averagePace = null;
+			$cloning->rideStatus = \App\Table\Ride::STATUS_NOT_YET;
+			$cloning->releasePrinted = '';
+			$cloning->memberId = \App\Model\Session::signedInMemberId();
+
+			$startDate = $_POST['cloneToDate'];
+			$returnValue = '<h6>Ride was repeated to the following dates:</h6>';
+			$rideModel = new \App\Model\Ride();
+
+			for ($i = 0; $i < (int)($_POST['cloneCount']); ++$i)
+				{
+				$cloning->rideDate = $startDate;
+				$id = $rideModel->add($cloning->toArray());
+				$date = \App\Tools\Date::formatString('D M j, Y', $startDate);
+				$returnValue .= "<p><a href='/Rides/edit/{$id}' target=_blank>{$date}</a>";
+				$startDate = \App\Tools\Date::increment($startDate, (int)($_POST['cloneDayInterval']));
+				}
+			\PHPFUI\ORM::commit();
+			$this->page->setRawResponse(\json_encode(['response' => 'Ride Repeated', 'color' => 'lime',
+				'status' => $returnValue, ], JSON_THROW_ON_ERROR));
+
+			return;
+			}
+		$form->add(new \PHPFUI\Input\Hidden('rideId', (string)$ride->rideId));
+		$form->add(new \PHPFUI\Panel('Repeating a ride allows you to copy the ride to another date, or series of dates'));
+		$date = new \PHPFUI\Input\Date($this->page, 'cloneToDate', 'Repeat on this date');
+		$date->setMinDate(\App\Tools\Date::todayString(1));
+		$date->setRequired();
+		$date->setToolTip('This is the date where you want to repeat it to, or the start of the series of repeated rides');
+		$form->add($date);
+		$number = new \PHPFUI\Input\Number('cloneCount', 'Number of times you want to repeat the ride.', 1);
+		$number->setToolTip('If you enter a number higher than one, your ride will be repeated based on the following day offset.');
+		$number->addAttribute('min', (string)0)->addAttribute('max', (string)99)->addAttribute('step', (string)1);
+		$div = new \PHPFUI\HTML5Element('div');
+		$divId = $div->getId();
+		$number->addAttribute('onchange', '$("#' . $divId . '").toggle(this.value>1);');
+		$form->add($number);
+		$interval = new \PHPFUI\Input\Number('cloneDayInterval', 'Day interval for repeating multiple rides.', 7);
+		$interval->setToolTip('1 would repeat the ride every day, 7 would repeat the ride each week, 14 would repeat it every other week.');
+		$interval->addAttribute('min', (string)0)->addAttribute('max', (string)99)->addAttribute('step', (string)1);
+		$div->add($interval);
+		$div->addAttribute('style', 'display:none;');
+		$form->add($div);
+		$form->add($status);
+		$form->add($modal->getButtonAndCancel($submit));
+		$modal->add($form);
+		}
+
+	private function getStatsReveal(\PHPFUI\HTML5Element $opener, int $RWGPSId) : \PHPFUI\Reveal
+		{
+		$reveal = new \PHPFUI\Reveal($this->page, $opener);
+		$reveal->addClass('large');
+		$div = new \PHPFUI\HTML5Element('div');
+		$reveal->add($div);
+		$reveal->add($reveal->getCloseButton());
+		$reveal->loadUrlOnOpen('/RWGPS/stats/' . $RWGPSId, $div->getId());
+
+		return $reveal;
+		}
+
 	private function graphDropDown(string $name, array $paceCount) : \PHPFUI\DropDown
 		{
 		$span = new \PHPFUI\HTML5Element('div');
@@ -1244,70 +1316,5 @@ class Rides
 			}
 
 		return "{$dom}";
-		}
-
-	private function getRepeatRideModal(\PHPFUI\ORM\DataObject $ride, \PHPFUI\HTML5Element $modalLink) : void
-		{
-		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
-		$submit = new \PHPFUI\Submit('Repeat Ride');
-		$status = new \PHPFUI\Callout('success');
-		$status->addClass('hide');
-		$id = $status->getId();
-		$statusId = '$("#' . $id . '")';
-		$this->page->addJavaScript("function updateStatus{$id}(d){{$statusId}.html(d.status).removeClass('hide');}");
-		$form = new \PHPFUI\Form($this->page, $submit, "updateStatus{$id}");
-		$form->setAreYouSure(false);
-
-		if ($form->isMyCallback() && ($_POST['rideId'] ?? 0) == $ride->rideId)
-			{
-			\PHPFUI\ORM::beginTransaction();
-			$cloning = new \App\Record\Ride((int)$_POST['rideId']);
-			$cloning->rideId = $cloning->numberOfRiders = $cloning->accident = $cloning->pointsAwarded = 0;
-			$cloning->averagePace = null;
-			$cloning->rideStatus = \App\Table\Ride::STATUS_NOT_YET;
-			$cloning->releasePrinted = '';
-			$cloning->memberId = \App\Model\Session::signedInMemberId();
-
-			$startDate = $_POST['cloneToDate'];
-			$returnValue = '<h6>Ride was repeated to the following dates:</h6>';
-			$rideModel = new \App\Model\Ride();
-
-			for ($i = 0; $i < (int)($_POST['cloneCount']); ++$i)
-				{
-				$cloning->rideDate = $startDate;
-				$id = $rideModel->add($cloning->toArray());
-				$date = \App\Tools\Date::formatString('D M j, Y', $startDate);
-				$returnValue .= "<p><a href='/Rides/edit/{$id}' target=_blank>{$date}</a>";
-				$startDate = \App\Tools\Date::increment($startDate, (int)($_POST['cloneDayInterval']));
-				}
-			\PHPFUI\ORM::commit();
-			$this->page->setRawResponse(\json_encode(['response' => 'Ride Repeated', 'color' => 'lime',
-				'status' => $returnValue, ], JSON_THROW_ON_ERROR));
-
-			return;
-			}
-		$form->add(new \PHPFUI\Input\Hidden('rideId', (string)$ride->rideId));
-		$form->add(new \PHPFUI\Panel('Repeating a ride allows you to copy the ride to another date, or series of dates'));
-		$date = new \PHPFUI\Input\Date($this->page, 'cloneToDate', 'Repeat on this date');
-		$date->setMinDate(\App\Tools\Date::todayString(1));
-		$date->setRequired();
-		$date->setToolTip('This is the date where you want to repeat it to, or the start of the series of repeated rides');
-		$form->add($date);
-		$number = new \PHPFUI\Input\Number('cloneCount', 'Number of times you want to repeat the ride.', 1);
-		$number->setToolTip('If you enter a number higher than one, your ride will be repeated based on the following day offset.');
-		$number->addAttribute('min', (string)0)->addAttribute('max', (string)99)->addAttribute('step', (string)1);
-		$div = new \PHPFUI\HTML5Element('div');
-		$divId = $div->getId();
-		$number->addAttribute('onchange', '$("#' . $divId . '").toggle(this.value>1);');
-		$form->add($number);
-		$interval = new \PHPFUI\Input\Number('cloneDayInterval', 'Day interval for repeating multiple rides.', 7);
-		$interval->setToolTip('1 would repeat the ride every day, 7 would repeat the ride each week, 14 would repeat it every other week.');
-		$interval->addAttribute('min', (string)0)->addAttribute('max', (string)99)->addAttribute('step', (string)1);
-		$div->add($interval);
-		$div->addAttribute('style', 'display:none;');
-		$form->add($div);
-		$form->add($status);
-		$form->add($modal->getButtonAndCancel($submit));
-		$modal->add($form);
 		}
 	}

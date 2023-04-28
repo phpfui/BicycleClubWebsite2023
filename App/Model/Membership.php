@@ -4,9 +4,9 @@ namespace App\Model;
 
 class Membership
 	{
-	private readonly \App\Table\Member $memberTable;
-
 	private readonly \App\Table\Membership $membershipTable;
+
+	private readonly \App\Table\Member $memberTable;
 
 	public function __construct()
 		{

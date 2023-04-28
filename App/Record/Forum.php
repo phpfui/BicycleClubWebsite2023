@@ -19,6 +19,14 @@ class Forum extends \App\Record\Definition\Forum
 
 	private static ?\App\Model\ForumAttachmentFiles $fileModel = null;
 
+	public function clean() : static
+		{
+		$this->email = \strtolower(\str_replace(' ', '', $this->email));
+		$this->description = \App\Tools\TextHelper::cleanUserHtml($this->description);
+
+		return $this;
+		}
+
 	public function delete() : bool
 		{
 		$condition = new \PHPFUI\ORM\Condition('forumId', $this->forumId);
@@ -42,14 +50,6 @@ class Forum extends \App\Record\Definition\Forum
 		$forumAttachmentTable->delete();
 
 		return parent::delete();
-		}
-
-	public function clean() : static
-		{
-		$this->email = \strtolower(\str_replace(' ', '', $this->email));
-		$this->description = \App\Tools\TextHelper::cleanUserHtml($this->description);
-
-		return $this;
 		}
 
 	public function insert() : bool

@@ -33,9 +33,9 @@ class Base implements \Stringable
 		return \json_encode($jsonArray, JSON_PRETTY_PRINT | JSON_PRESERVE_ZERO_FRACTION);
 		}
 
-	public function setResponse(array $response) : static
+	public function log(mixed $data, string $type = 'status') : static
 		{
-		$this->response = $response;
+		$this->meta[$type][] = $data;
 
 		return $this;
 		}
@@ -47,9 +47,9 @@ class Base implements \Stringable
 		return $this->log($error, 'errors');
 		}
 
-	public function log(mixed $data, string $type = 'status') : static
+	public function setResponse(array $response) : static
 		{
-		$this->meta[$type][] = $data;
+		$this->response = $response;
 
 		return $this;
 		}

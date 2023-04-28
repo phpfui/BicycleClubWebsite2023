@@ -14,15 +14,17 @@ class Page extends \PHPFUI\Page
 
 	private ?\DebugBar\JavascriptRenderer $debugBarRenderer = null;
 
-	private bool $done = false;
+	private bool $displayedFlash = false;
 
-	private static bool $passwordReset = false;
+	private bool $done = false;
 
 	private string $forgotPassword = 'forgotPassword';
 
 	private readonly \PHPFUI\Container $mainColumn;
 
 	private readonly \App\View\MainMenu $mainMenu;
+
+	private static bool $passwordReset = false;
 
 	private bool $publicPage = false;
 
@@ -31,8 +33,6 @@ class Page extends \PHPFUI\Page
 	private array $requiredPages = [];
 
 	private bool $shownSignIn = false;
-
-	private bool $displayedFlash = false;
 
 	public function __construct(public \App\Model\Controller $controller)
 		{
@@ -132,9 +132,75 @@ class Page extends \PHPFUI\Page
 		$this->bannerOff = true;
 		}
 
+	public function addHeader(string $header, string $permission = '', bool $override = false) : bool
+		{
+		$this->addBanners();
+		$show = true;
+
+		if (! $this->isPublic())
+			{
+			if (empty($permission))
+				{
+				$permission = $header;
+				}
+			$show = $override || $this->isAuthorized($permission);
+			}
+
+		if ($show)
+			{
+			if (! \count($this->requiredPages))
+				{
+				if (\App\Model\Session::hasExpired() && ! $this->isRenewing())
+					{
+					$this->redirect('/Membership/renew');
+					$show = false;
+					}
+				else
+					{
+					$this->mainColumn->add(new \PHPFUI\Header($header));
+					}
+				}
+			}
+		elseif ($this->isSignedIn())
+			{
+			$this->mainColumn->add(new \PHPFUI\Header($header));
+			$this->notAuthorized($this->mainMenu->getActiveMenu() . ' - ' . $permission);
+			}
+		else
+			{
+			if (! $this->shownSignIn)
+				{
+				$this->mainColumn->add($this->signInPage('You must be signed in to view this page') ?? '');
+				}
+			}
+
+		$this->mainColumn->add($this->getFlashMessages());
+
+		return $show;
+		}
+
+	public function addPageContent(mixed $item) : static
+		{
+		$show = ! \App\Model\Session::hasExpired() || $this->isRenewing();
+
+		if (! $this->getDone() && 0 == \count($this->requiredPages) && ($this->publicPage || ($this->isSignedIn() && $show)))
+			{
+			$this->mainColumn->add("{$item}");  // force convert to string so all objects execute
+			}
+
+		return $this;
+		}
+
 	public function addRequiredPage($page) : static
 		{
 		$this->requiredPages[] = $page;
+
+		return $this;
+		}
+
+	public function addSubHeader(string $header) : static
+		{
+		$this->mainColumn->add(new \PHPFUI\SubHeader($header));
 
 		return $this;
 		}
@@ -157,88 +223,63 @@ class Page extends \PHPFUI\Page
 		return $this->done;
 		}
 
+	public function getFlashMessages() : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+
+		if ($this->displayedFlash)
+			{
+			return $container;
+			}
+		// add in flash messages
+		$callouts = ['success', 'primary', 'secondary', 'warning', 'alert'];
+
+		foreach ($callouts as $calloutClass)
+			{
+			$message = \App\Model\Session::getFlash($calloutClass);
+
+			if (! $message)
+				{
+				continue;
+				}
+
+			$callout = new \PHPFUI\Callout($calloutClass);
+			$callout->addAttribute('data-closable');
+
+			if (\is_array($message))
+				{
+				$ul = new \PHPFUI\UnorderedList();
+
+				foreach ($message as $field => $error)
+					{
+					if (\is_array($error))
+						{
+						foreach ($error as $validationError)
+							{
+							$ul->addItem(new \PHPFUI\ListItem("Field <b>{$field}</b> has the following error: <i>{$validationError}</i>"));
+							}
+						}
+					else
+						{
+						$ul->addItem(new \PHPFUI\ListItem($error));
+						}
+					}
+				$callout->add($ul);
+				}
+			else
+				{
+				$callout->add($message);
+				}
+			$container->add($callout);
+			}
+		$this->displayedFlash = true;
+
+		return $container;
+		}
+
 	public function getPermissions() : \App\Model\PermissionsInterface
 		{
 		return $this->controller->getPermissions();
-		}
-
-	public function isAuthorized(string $permission, ?string $menu = null) : bool
-		{
-		return $this->controller->getPermissions()->isAuthorized($permission, $menu ?? $this->mainMenu->getActiveMenu());
-		}
-
-	public function isPublic() : bool
-		{
-		return $this->publicPage;
-		}
-
-	public function isRenewing() : bool
-		{
-		return $this->renewing;
-		}
-
-	public function isSignedIn() : bool
-		{
-		return \App\Model\Session::isSignedIn();
-		}
-
-	public function landingPage() : void
-		{
-		$menu = $this->mainMenu->getActiveMenu();
-		$html = (string)($this->mainMenu->getLandingPage($this, $menu));
-
-		if (! empty($html))
-			{
-			$this->addHeader($menu . ' Menu', $menu);
-			$this->addPageContent($html);
-			}
-		}
-
-	public function notAuthorized(string $permission = '') : void
-		{
-		$this->mainColumn->add(new \PHPFUI\SubHeader('You do not have the correct permissions to view this page.'));
-
-		if ($permission)
-			{
-			$this->mainColumn->add('You need the <b>' . $permission . '</b> permission.');
-			}
-		}
-
-	public function setDone(bool $done = true) : static
-		{
-		$this->done = $done;
-
-		return $this;
-		}
-
-	public function setPublic(bool $public = true) : static
-		{
-		$this->publicPage = $public;
-
-		return $this;
-		}
-
-	public function setRenewing(bool $renewing = true) : static
-		{
-		$this->renewing = $renewing;
-
-		return $this;
-		}
-
-	public function turnOffBanner() : static
-		{
-		if ($this->bannerOff)
-			{
-			\App\Tools\Logger::get()->backTrace('Banner was already output, make turnOffBanner call sooner');
-			}
-		$this->bannerOff = true;
-
-		return $this;
-		}
-
-	public function value(string $name) : string
-		{
-		return $this->settingTable->value($name);
 		}
 
 	public function getStart() : string
@@ -359,124 +400,83 @@ class Page extends \PHPFUI\Page
 		return parent::getStart();
 		}
 
-	public function addHeader(string $header, string $permission = '', bool $override = false) : bool
+	public function isAuthorized(string $permission, ?string $menu = null) : bool
 		{
-		$this->addBanners();
-		$show = true;
-
-		if (! $this->isPublic())
-			{
-			if (empty($permission))
-				{
-				$permission = $header;
-				}
-			$show = $override || $this->isAuthorized($permission);
-			}
-
-		if ($show)
-			{
-			if (! \count($this->requiredPages))
-				{
-				if (\App\Model\Session::hasExpired() && ! $this->isRenewing())
-					{
-					$this->redirect('/Membership/renew');
-					$show = false;
-					}
-				else
-					{
-					$this->mainColumn->add(new \PHPFUI\Header($header));
-					}
-				}
-			}
-		elseif ($this->isSignedIn())
-			{
-			$this->mainColumn->add(new \PHPFUI\Header($header));
-			$this->notAuthorized($this->mainMenu->getActiveMenu() . ' - ' . $permission);
-			}
-		else
-			{
-			if (! $this->shownSignIn)
-				{
-				$this->mainColumn->add($this->signInPage('You must be signed in to view this page') ?? '');
-				}
-			}
-
-		$this->mainColumn->add($this->getFlashMessages());
-
-		return $show;
+		return $this->controller->getPermissions()->isAuthorized($permission, $menu ?? $this->mainMenu->getActiveMenu());
 		}
 
-	public function getFlashMessages() : \PHPFUI\Container
+	public function isPublic() : bool
 		{
-		$container = new \PHPFUI\Container();
-
-		if ($this->displayedFlash)
-			{
-			return $container;
-			}
-		// add in flash messages
-		$callouts = ['success', 'primary', 'secondary', 'warning', 'alert'];
-
-		foreach ($callouts as $calloutClass)
-			{
-			$message = \App\Model\Session::getFlash($calloutClass);
-
-			if (! $message)
-				{
-				continue;
-				}
-
-			$callout = new \PHPFUI\Callout($calloutClass);
-			$callout->addAttribute('data-closable');
-
-			if (\is_array($message))
-				{
-				$ul = new \PHPFUI\UnorderedList();
-
-				foreach ($message as $field => $error)
-					{
-					if (\is_array($error))
-						{
-						foreach ($error as $validationError)
-							{
-							$ul->addItem(new \PHPFUI\ListItem("Field <b>{$field}</b> has the following error: <i>{$validationError}</i>"));
-							}
-						}
-					else
-						{
-						$ul->addItem(new \PHPFUI\ListItem($error));
-						}
-					}
-				$callout->add($ul);
-				}
-			else
-				{
-				$callout->add($message);
-				}
-			$container->add($callout);
-			}
-		$this->displayedFlash = true;
-
-		return $container;
+		return $this->publicPage;
 		}
 
-	public function addPageContent(mixed $item) : static
+	public function isRenewing() : bool
 		{
-		$show = ! \App\Model\Session::hasExpired() || $this->isRenewing();
+		return $this->renewing;
+		}
 
-		if (! $this->getDone() && 0 == \count($this->requiredPages) && ($this->publicPage || ($this->isSignedIn() && $show)))
+	public function isSignedIn() : bool
+		{
+		return \App\Model\Session::isSignedIn();
+		}
+
+	public function landingPage() : void
+		{
+		$menu = $this->mainMenu->getActiveMenu();
+		$html = (string)($this->mainMenu->getLandingPage($this, $menu));
+
+		if (! empty($html))
 			{
-			$this->mainColumn->add("{$item}");  // force convert to string so all objects execute
+			$this->addHeader($menu . ' Menu', $menu);
+			$this->addPageContent($html);
 			}
+		}
+
+	public function notAuthorized(string $permission = '') : void
+		{
+		$this->mainColumn->add(new \PHPFUI\SubHeader('You do not have the correct permissions to view this page.'));
+
+		if ($permission)
+			{
+			$this->mainColumn->add('You need the <b>' . $permission . '</b> permission.');
+			}
+		}
+
+	public function setDone(bool $done = true) : static
+		{
+		$this->done = $done;
 
 		return $this;
 		}
 
-	public function addSubHeader(string $header) : static
+	public function setPublic(bool $public = true) : static
 		{
-		$this->mainColumn->add(new \PHPFUI\SubHeader($header));
+		$this->publicPage = $public;
 
 		return $this;
+		}
+
+	public function setRenewing(bool $renewing = true) : static
+		{
+		$this->renewing = $renewing;
+
+		return $this;
+		}
+
+	public function turnOffBanner() : static
+		{
+		if ($this->bannerOff)
+			{
+			\App\Tools\Logger::get()->backTrace('Banner was already output, make turnOffBanner call sooner');
+			}
+		$this->bannerOff = true;
+
+		return $this;
+		}
+
+	public function value(string $name) : string
+		{
+		return $this->settingTable->value($name);
 		}
 
 	private function addSearchModal(\PHPFUI\HTML5Element $modalLink) : void

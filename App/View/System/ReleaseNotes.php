@@ -4,11 +4,11 @@ namespace App\View\System;
 
 class ReleaseNotes implements \Countable
 	{
+	private readonly \App\Model\ReleaseNotes $model;
+
 	private readonly \PHPFUI\InstaDoc\MarkDownParser $parser;
 
 	private array $versions;
-
-	private readonly \App\Model\ReleaseNotes $model;
 
 	public function __construct()
 		{

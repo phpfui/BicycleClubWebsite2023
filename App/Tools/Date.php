@@ -51,14 +51,11 @@ class Date
 		}
 
 	/**
-	 * Returns the first of the month.
+	 * @return int positive difference in days from $earlierDate to $laterDate
 	 */
-	public static function firstOfMonth(int $date) : int
+	public static function diff(string $earlierDate, string $laterDate) : int
 		{
-		$year = (int)self::year($date);
-		$month = (int)self::month($date);
-
-		return self::make($year, $month, 1);
+		return self::fromString($laterDate) - self::fromString($earlierDate);
 		}
 
 	/**
@@ -76,6 +73,17 @@ class Date
 			}
 
 		return self::make($year, $month, 1) - 1;
+		}
+
+	/**
+	 * Returns the first of the month.
+	 */
+	public static function firstOfMonth(int $date) : int
+		{
+		$year = (int)self::year($date);
+		$month = (int)self::month($date);
+
+		return self::make($year, $month, 1);
 		}
 
 	public static function format(string $format, ?int $date = -1) : string
@@ -171,6 +179,14 @@ class Date
 		return \jdtounix(\App\Tools\Date::fromString($date)) + \App\Tools\TimeHelper::fromString($time) * 60;
 		}
 
+	/**
+	 * Increment a date (if $diff is possitive) or decrement (if negative)
+	 */
+	public static function increment(string $baseDate, int $diff) : string
+		{
+		return self::toString(self::fromString($baseDate) + $diff);
+		}
+
 	public static function make(int | string $year, int | string $month, int | string $day) : int
 		{
 		return \gregoriantojd((int)$month, (int)$day, (int)$year);
@@ -216,21 +232,5 @@ class Date
 			}
 
 		return '';
-		}
-
-	/**
-	 * Increment a date (if $diff is possitive) or decrement (if negative)
-	 */
-	public static function increment(string $baseDate, int $diff) : string
-		{
-		return self::toString(self::fromString($baseDate) + $diff);
-		}
-
-	/**
-	 * @return int positive difference in days from $earlierDate to $laterDate
-	 */
-	public static function diff(string $earlierDate, string $laterDate) : int
-		{
-		return self::fromString($laterDate) - self::fromString($earlierDate);
 		}
 	}

@@ -30,23 +30,6 @@ class ErrorLogging
 		return false;
 		}
 
-	public function warning(string $message) : void
-		{
-		$this->sendMessage($message, 'warning');
-		}
-
-	public function sendMessage(string $message, string $type = 'error') : void
-		{
-		try
-			{
-			$link = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . ($_SERVER['SERVER_NAME'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '') . "\n";
-			$this->logger->debug($link . $message);
-			}
-		catch (\Exception $e)
-			{
-			}
-		}
-
 	/**
 	 * Error handler, passes flow over the exception logger with new ErrorException.
 	 */
@@ -73,5 +56,22 @@ class ErrorLogging
 		$message = "{$errorText};\nFile: {$file}; Line: {$e->getLine()};";
 
 		$this->sendMessage($message);
+		}
+
+	public function sendMessage(string $message, string $type = 'error') : void
+		{
+		try
+			{
+			$link = ($_SERVER['REQUEST_SCHEME'] ?? 'http') . '://' . ($_SERVER['SERVER_NAME'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '') . "\n";
+			$this->logger->debug($link . $message);
+			}
+		catch (\Exception $e)
+			{
+			}
+		}
+
+	public function warning(string $message) : void
+		{
+		$this->sendMessage($message, 'warning');
 		}
 	}

@@ -4,24 +4,17 @@ namespace App\UI;
 
 class TableEditor
 	{
+	private array $headers = ['name' => 'Name', 'shortName' => 'Short Name', 'abbrev' => 'Abbrevation', 'delete' => 'Del'];
+
 	private string $name;
 
 	private \PHPFUI\ORM\Table $table;
-
-	private array $headers = ['name' => 'Name', 'shortName' => 'Short Name', 'abbrev' => 'Abbrevation', 'delete' => 'Del'];
 
 	public function __construct(private \App\View\Page $page, string $table)
 		{
 		$class = "\\App\\Table\\{$table}";
 		$this->table = new $class();
 		$this->name = \lcfirst($table);
-		}
-
-	public function setHeaders(array $headers) : self
-		{
-		$this->headers = $headers;
-
-		return $this;
 		}
 
 	public function edit()
@@ -109,6 +102,13 @@ class TableEditor
 			}
 
 		return $form;
+		}
+
+	public function setHeaders(array $headers) : self
+		{
+		$this->headers = $headers;
+
+		return $this;
 		}
 
 	private function addModal(\PHPFUI\HTML5Element $modalLink) : void

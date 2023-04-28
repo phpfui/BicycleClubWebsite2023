@@ -4,6 +4,11 @@ namespace App\Model;
 
 class AllPermissions implements \App\Model\PermissionsInterface
 	{
+	public function addGroup() : \App\Record\Permission
+		{
+		return new \App\Record\Permission();
+		}
+
 	public function addPermission(string $permission, string $menu) : int
 		{
 		return 0;
@@ -14,9 +19,23 @@ class AllPermissions implements \App\Model\PermissionsInterface
 		return true;
 		}
 
+	public function deleteGroup(\App\Record\Permission $permission) : static
+		{
+		return $this;
+		}
+
+	public function deletePermission(\App\Record\Permission $permission) : static
+		{
+		return $this;
+		}
+
 	public function deletePermissionString(string $permission) : int
 		{
 		return 0;
+		}
+
+	public function generatePermissionLoader() : void
+		{
 		}
 
 	public function getPermissionId(string $name) : int
@@ -67,30 +86,11 @@ class AllPermissions implements \App\Model\PermissionsInterface
 		return true;
 		}
 
-	public function generatePermissionLoader() : void
-		{
-		}
-
-	public function addGroup() : \App\Record\Permission
-		{
-		return new \App\Record\Permission();
-		}
-
-	public function saveMember(array $parameters) : void
-		{
-		}
-
 	public function saveGroup(array $parameters) : void
 		{
 		}
 
-	public function deleteGroup(\App\Record\Permission $permission) : static
+	public function saveMember(array $parameters) : void
 		{
-		return $this;
-		}
-
-	public function deletePermission(\App\Record\Permission $permission) : static
-		{
-		return $this;
 		}
 	}

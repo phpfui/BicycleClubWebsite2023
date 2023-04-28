@@ -70,11 +70,6 @@ class Controller
 		$this->settingTable = new \App\Table\Setting();
 		}
 
-	public function getSettingTable() : \App\Table\Setting
-		{
-		return $this->settingTable;
-		}
-
 	/**
 	 * @return int Unix time stamp of when the cron job will end
 	 */
@@ -91,6 +86,11 @@ class Controller
 	public function getInterval() : int
 		{
 		return $this->cronInterval;
+		}
+
+	public function getSettingTable() : \App\Table\Setting
+		{
+		return $this->settingTable;
 		}
 
 	/**
@@ -228,6 +228,14 @@ class Controller
 		}
 
 	/**
+	 * Job is running on this date
+	 */
+	public function runningAtDate() : string
+		{
+		return \App\Tools\Date::makeString($this->runYear, $this->runMonth, $this->runDay);
+		}
+
+	/**
 	 * Job is running on this day of the month (1-31)
 	 */
 	public function runningAtDay() : int
@@ -261,14 +269,6 @@ class Controller
 	public function runningAtJD() : int
 		{
 		return \gregoriantojd($this->runMonth, $this->runDay, $this->runYear);
-		}
-
-	/**
-	 * Job is running on this date
-	 */
-	public function runningAtDate() : string
-		{
-		return \App\Tools\Date::makeString($this->runYear, $this->runMonth, $this->runDay);
 		}
 
 	/**

@@ -8,6 +8,8 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	protected int $customerId;
 
+	private readonly \PHPFUI\Button $backButton;
+
 	private readonly \App\Model\Customer $customerModel;
 
 	private readonly \App\Model\Invoice $invoiceModel;
@@ -15,8 +17,6 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	private readonly \App\View\Invoice $invoiceView;
 
 	private readonly \App\View\Store $storeView;
-
-	private readonly \PHPFUI\Button $backButton;
 
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{
@@ -434,6 +434,32 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->page->addPageContent($this->storeView->shop($this->getCartModel()));
 		}
 
+	public function unshipped() : void
+		{
+		if ($this->page->addHeader('Unshipped Invoices'))
+			{
+			$invoiceTable = new \App\Table\Invoice();
+			$invoiceTable->setUnshippedInvoices();
+
+			$form = new \PHPFUI\Form($this->page);
+			$form->setAreYouSure(false);
+			$form->add($this->invoiceView->show($invoiceTable, 'All invoices have been shipped'));
+
+			if (\count($invoiceTable))
+				{
+				$pullList = new \PHPFUI\Button('Print Pull List', '/Store/pullList');
+				$pullList->addAttribute('target', '_blank');
+				$buttonGroup = new \App\UI\CancelButtonGroup();
+				$buttonGroup->addButton($pullList);
+				$markAsShipped = new \PHPFUI\Submit('Mark As Shipped', 'markAsShipped');
+				$markAsShipped->addClass('secondary');
+				$buttonGroup->addButton($markAsShipped);
+				$form->add($buttonGroup);
+				}
+			$this->page->addPageContent($form);
+			}
+		}
+
 	public function upload() : void
 		{
 		if ($this->page->isAuthorized('Edit Store Item'))
@@ -488,32 +514,6 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$settings = new \App\Table\Setting();
 				$thumbModel->createThumb((int)$settings->value('thumbnailSize'));
 				}
-			}
-		}
-
-	public function unshipped() : void
-		{
-		if ($this->page->addHeader('Unshipped Invoices'))
-			{
-			$invoiceTable = new \App\Table\Invoice();
-			$invoiceTable->setUnshippedInvoices();
-
-			$form = new \PHPFUI\Form($this->page);
-			$form->setAreYouSure(false);
-			$form->add($this->invoiceView->show($invoiceTable, 'All invoices have been shipped'));
-
-			if (\count($invoiceTable))
-				{
-				$pullList = new \PHPFUI\Button('Print Pull List', '/Store/pullList');
-				$pullList->addAttribute('target', '_blank');
-				$buttonGroup = new \App\UI\CancelButtonGroup();
-				$buttonGroup->addButton($pullList);
-				$markAsShipped = new \PHPFUI\Submit('Mark As Shipped', 'markAsShipped');
-				$markAsShipped->addClass('secondary');
-				$buttonGroup->addButton($markAsShipped);
-				$form->add($buttonGroup);
-				}
-			$this->page->addPageContent($form);
 			}
 		}
 	}

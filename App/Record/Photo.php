@@ -15,9 +15,12 @@ class Photo extends \App\Record\Definition\Photo
 		'PhotoTagChildren' => [\PHPFUI\ORM\Children::class, \App\Table\PhotoTag::class],
 	];
 
-	public function getImage() : \PHPFUI\Image
+	public function delete() : bool
 		{
-		return new \PHPFUI\Image('/Photo/image/' . $this->photoId, $this->photo ?: 'photo');
+		$fileModel = new \App\Model\PhotoFiles();
+		$fileModel->delete((string)$this->photoId);
+
+		return parent::delete();
 		}
 
 	public function getFullPath() : string
@@ -27,11 +30,8 @@ class Photo extends \App\Record\Definition\Photo
 		return $fileModel->get($this->photoId . $this->extension);
 		}
 
-	public function delete() : bool
+	public function getImage() : \PHPFUI\Image
 		{
-		$fileModel = new \App\Model\PhotoFiles();
-		$fileModel->delete((string)$this->photoId);
-
-		return parent::delete();
+		return new \PHPFUI\Image('/Photo/image/' . $this->photoId, $this->photo ?: 'photo');
 		}
 	}

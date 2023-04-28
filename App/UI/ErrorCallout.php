@@ -14,6 +14,13 @@ class ErrorCallout extends \PHPFUI\Callout
 		$this->add($this->ul);
 		}
 
+	public function addError(string $error) : static
+		{
+		$this->ul->addItem(new \PHPFUI\ListItem($error));
+
+		return $this;
+		}
+
 	public function addValidationErrors(array $validationErrors) : static
 		{
 		foreach ($validationErrors as $field => $errors)
@@ -23,13 +30,6 @@ class ErrorCallout extends \PHPFUI\Callout
 				$this->addError("Field <b>{$field}</b>: {$error}");
 				}
 			}
-
-		return $this;
-		}
-
-	public function addError(string $error) : static
-		{
-		$this->ul->addItem(new \PHPFUI\ListItem($error));
 
 		return $this;
 		}

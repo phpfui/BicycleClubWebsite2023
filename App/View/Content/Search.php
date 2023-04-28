@@ -4,14 +4,14 @@ namespace App\View\Content;
 
 class Search implements \Stringable
 	{
-	private readonly \App\Table\Story $storyTable;
-
 	private array $searchFields = [
 		'headline' => 'Story Headline',
 		'subhead' => 'Story Sub Heading',
 		'body' => 'Story Body',
 		'author' => 'Author',
 	];
+
+	private readonly \App\Table\Story $storyTable;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{

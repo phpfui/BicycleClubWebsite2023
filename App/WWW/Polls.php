@@ -54,22 +54,22 @@ class Polls extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function myVotes() : void
-		{
-		if ($this->page->addHeader('My Votes'))
-			{
-			$pollResponseTable = new \App\Table\PollResponse();
-			$pollResponseTable->setMyVotesQuery();
-			$this->page->addPageContent($this->view->myVotes($pollResponseTable));
-			}
-		}
-
 	public function myMembershipVotes() : void
 		{
 		if ($this->page->addHeader('My Membership Votes'))
 			{
 			$pollResponseTable = new \App\Table\PollResponse();
 			$pollResponseTable->setMyMembershipVotesQuery();
+			$this->page->addPageContent($this->view->myVotes($pollResponseTable));
+			}
+		}
+
+	public function myVotes() : void
+		{
+		if ($this->page->addHeader('My Votes'))
+			{
+			$pollResponseTable = new \App\Table\PollResponse();
+			$pollResponseTable->setMyVotesQuery();
 			$this->page->addPageContent($this->view->myVotes($pollResponseTable));
 			}
 		}

@@ -4,7 +4,15 @@ namespace App\Model;
 
 class Ride
 	{
+	private readonly string $clubAbbrev;
+
+	private readonly string $clubName;
+
+	private readonly string $homePage;
+
 	private readonly \App\Table\Pace $paceTable;
+
+	private array $protectedFields = ['pointsAwarded', 'releasePrinted', ];
 
 	private readonly RideImages $rideImages;
 
@@ -13,14 +21,6 @@ class Ride
 	private readonly \App\Table\Ride $rideTable;
 
 	private readonly \App\Table\Setting $settingTable;
-
-	private readonly string $homePage;
-
-	private readonly string $clubAbbrev;
-
-	private readonly string $clubName;
-
-	private array $protectedFields = ['pointsAwarded', 'releasePrinted', ];
 
 	public function __construct()
 		{
@@ -366,6 +366,67 @@ class Ride
 			}
 		}
 
+	public function getCalendarObject(\App\Record\Ride $ride, \App\Record\Member $leader) : ?\ICalendarOrg\ZCiCal
+		{
+		// create the ical object
+		$icalobj = new \ICalendarOrg\ZCiCal();
+
+		// create the event within the ical object
+		$eventobj = new \ICalendarOrg\ZCiCalNode('VEVENT', $icalobj->curnode);
+
+		// add title
+		$title = $this->getPace($ride->paceId) . ' ' . $ride->mileage . ' ' . $ride->title;
+		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('SUMMARY:' . $title));
+		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('METHOD:REQUEST'));
+
+		// add start date
+		$startTime = \App\Tools\Date::getUnixTimeStamp($ride->rideDate, $ride->startTime);
+
+		if (empty($startTime))
+			{
+			return null;
+			}
+		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTSTART:TZID=' . \date_default_timezone_get() . ':' . \gmdate('Ymd\THis', $startTime)));
+
+		// add end date
+		$endTime = $startTime + $this->computeDuration($ride);
+		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTEND::TZID=' . \date_default_timezone_get() . ':' . \gmdate('Ymd\THis', $endTime)));
+
+		// UID is a required item in VEVENT, create unique string for this event
+		// Adding your domain to the end is a good way of creating uniqueness
+
+		$uid = "{$this->homePage}/Rides/signedUp/{$ride->rideId}";
+		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('UID:' . $uid));
+
+		// DTSTAMP is a required item in VEVENT
+		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTSTAMP:' . \ICalendarOrg\ZDateHelper::fromSqlDateTime()));
+
+		if ($leader->loaded())
+			{
+			$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode("ORGANIZER;CN={$leader->fullName()}:mailto:{$leader->email}"));
+			}
+
+		$startLocation = $ride->startLocation;
+
+		if ($startLocation->name)
+			{
+			$location = 'LOCATION';
+			$link = $startLocation->link ?? '';
+
+			$location .= ';ALTREP="' . $link . '"';
+
+			$location .= ":{$startLocation->name}";
+			$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode($location));
+			}
+
+		// Add description
+		$this->processDescription($ride->description) . "\nSign Up: {$uid}";
+		$description = $this->processDescription($ride->description);
+		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DESCRIPTION:' . \ICalendarOrg\ZCiCal::formatContent($description)));
+
+		return $icalobj;
+		}
+
 	public function getRideNoticeBody(\App\Record\Ride $ride, \App\Record\Member $leader = new \App\Record\Member()) : string
 		{
 		$signedUpRiders = $this->rideSignupTable->getSignedUpRiders($ride->rideId, 'r.signedUpTime');
@@ -443,67 +504,6 @@ class Ride
 		$message .= "<b>{$title}</b><p>{$description}</p>" . $rwgpsLink . '<p>Sign up for this ride now!</p><br>' . $button . $signup;
 
 		return $message;
-		}
-
-	public function getCalendarObject(\App\Record\Ride $ride, \App\Record\Member $leader) : ?\ICalendarOrg\ZCiCal
-		{
-		// create the ical object
-		$icalobj = new \ICalendarOrg\ZCiCal();
-
-		// create the event within the ical object
-		$eventobj = new \ICalendarOrg\ZCiCalNode('VEVENT', $icalobj->curnode);
-
-		// add title
-		$title = $this->getPace($ride->paceId) . ' ' . $ride->mileage . ' ' . $ride->title;
-		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('SUMMARY:' . $title));
-		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('METHOD:REQUEST'));
-
-		// add start date
-		$startTime = \App\Tools\Date::getUnixTimeStamp($ride->rideDate, $ride->startTime);
-
-		if (empty($startTime))
-			{
-			return null;
-			}
-		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTSTART:TZID=' . \date_default_timezone_get() . ':' . \gmdate('Ymd\THis', $startTime)));
-
-		// add end date
-		$endTime = $startTime + $this->computeDuration($ride);
-		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTEND::TZID=' . \date_default_timezone_get() . ':' . \gmdate('Ymd\THis', $endTime)));
-
-		// UID is a required item in VEVENT, create unique string for this event
-		// Adding your domain to the end is a good way of creating uniqueness
-
-		$uid = "{$this->homePage}/Rides/signedUp/{$ride->rideId}";
-		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('UID:' . $uid));
-
-		// DTSTAMP is a required item in VEVENT
-		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTSTAMP:' . \ICalendarOrg\ZDateHelper::fromSqlDateTime()));
-
-		if ($leader->loaded())
-			{
-			$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode("ORGANIZER;CN={$leader->fullName()}:mailto:{$leader->email}"));
-			}
-
-		$startLocation = $ride->startLocation;
-
-		if ($startLocation->name)
-			{
-			$location = 'LOCATION';
-			$link = $startLocation->link ?? '';
-
-			$location .= ';ALTREP="' . $link . '"';
-
-			$location .= ":{$startLocation->name}";
-			$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode($location));
-			}
-
-		// Add description
-		$this->processDescription($ride->description) . "\nSign Up: {$uid}";
-		$description = $this->processDescription($ride->description);
-		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DESCRIPTION:' . \ICalendarOrg\ZCiCal::formatContent($description)));
-
-		return $icalobj;
 		}
 
 	public function getRidesChair() : array
@@ -621,56 +621,6 @@ class Ride
 		$this->addLeaderSignups($ride);
 
 		return $error;
-		}
-
-	/**
-	 * Removes the RWGPS link and returns it as an array. Modifies passed in string
-	 *
-	 * @return array with RWGPS id and query string
-	 */
-	private function stripRideWithGPS(string &$description) : array
-		{
-		$RWGPSId = [];
-		$description = \str_replace('rwgps.com', 'ridewithgps.com', $description);
-
-		if (! \str_contains($description, 'ridewithgps'))
-			{
-			return $RWGPSId;
-			}
-
-		$dom = new \voku\helper\HtmlDomParser($description);
-
-		foreach ($dom->find('a') as $node)
-			{
-			if (\str_contains($node->getAttribute('href'), 'ridewithgps'))
-				{
-				$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($node->getAttribute('href'));
-				// delete the found nodes
-				$node->outertext = '';
-				}
-			}
-
-		$description = "{$dom}";
-
-		if (! \str_contains($description, 'ridewithgps'))
-			{
-			return $RWGPSId;
-			}
-
-		$words = \explode(' ', $description);
-
-
-		foreach ($words as $index => $word)
-			{
-			if (\str_contains($word, 'ridewithgps'))
-				{
-				$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($word);
-				$words[$index] = '';
-				}
-			}
-		$description = \implode(' ', $words);
-
-		return $RWGPSId;
 		}
 
 	private function cleanProtectedFields(array $parameters) : array
@@ -841,5 +791,55 @@ class Ride
 		$description = \str_replace('/' . $this->rideImages->getFileType(), $url . '/' . $this->rideImages->getFileType(), $description);
 
 		return $description;
+		}
+
+	/**
+	 * Removes the RWGPS link and returns it as an array. Modifies passed in string
+	 *
+	 * @return array with RWGPS id and query string
+	 */
+	private function stripRideWithGPS(string &$description) : array
+		{
+		$RWGPSId = [];
+		$description = \str_replace('rwgps.com', 'ridewithgps.com', $description);
+
+		if (! \str_contains($description, 'ridewithgps'))
+			{
+			return $RWGPSId;
+			}
+
+		$dom = new \voku\helper\HtmlDomParser($description);
+
+		foreach ($dom->find('a') as $node)
+			{
+			if (\str_contains($node->getAttribute('href'), 'ridewithgps'))
+				{
+				$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($node->getAttribute('href'));
+				// delete the found nodes
+				$node->outertext = '';
+				}
+			}
+
+		$description = "{$dom}";
+
+		if (! \str_contains($description, 'ridewithgps'))
+			{
+			return $RWGPSId;
+			}
+
+		$words = \explode(' ', $description);
+
+
+		foreach ($words as $index => $word)
+			{
+			if (\str_contains($word, 'ridewithgps'))
+				{
+				$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($word);
+				$words[$index] = '';
+				}
+			}
+		$description = \implode(' ', $words);
+
+		return $RWGPSId;
 		}
 	}

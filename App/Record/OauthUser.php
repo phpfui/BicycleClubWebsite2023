@@ -39,16 +39,16 @@ class OauthUser extends \App\Record\Definition\OauthUser
 		return true;
 		}
 
+	public function getPermissions() : array
+		{
+		return \json_decode($this->permissions ?: '[]', true);
+		}
+
 	public function setPassword(string $password) : static
 		{
 		$this->password = \password_hash($password, PASSWORD_DEFAULT, $this->cost);
 
 		return $this;
-		}
-
-	public function getPermissions() : array
-		{
-		return \json_decode($this->permissions ?: '[]', true);
 		}
 
 	public function setPermissions(array $permissions) : static

@@ -265,108 +265,6 @@ class Invoice
 		return $missing;
 		}
 
-	public function generatePDF(\App\Record\Invoice $invoice) : \App\Report\Invoice
-		{
-		$pdf = new \App\Report\Invoice();
-		$pdf->AddPage();
-		$pdf->SetMargins(5, 5, 5);
-		$pdf->SetAutoPageBreak(false);
-		$file = new \App\Model\ImageFiles();
-		$pdf->addVendor($this->settingTable->value('clubName'), $this->settingTable->value('memberAddr') . "\n" . $this->settingTable->value('memberTown') . "\n", $file->get($this->settingTable->value('invoiceLogo')));
-		$pdf->addInvoiceNumber($invoice->invoiceId);
-		$member = $this->customerModel->read($invoice->memberId);
-
-		if (isset($member->customerId))
-			{
-			$pdf->addClient('C-' . $member->customerId);
-			}
-		else
-			{
-			$pdf->addClient((string)$member->memberId);
-			}
-		$pdf->addClientAddress("Ship To:\n" . $member->firstName . ' ' . $member->lastName . "\n" . $member->address . "\n" . $member->town . ', ' . $member->state . ' ' . $member->zip);
-		$pdf->addTotals($invoice->totalPrice, $invoice->totalTax, $invoice->totalShipping, $invoice->paypalPaid, $invoice->pointsUsed);
-		$payment = '';
-
-		if ($invoice->paypalPaid > 0)
-			{
-			$payment = 'PayPal Transaction Id ' . $invoice->paypaltx;
-			}
-
-		if ($invoice->pointsUsed > 0)
-			{
-			if (\strlen($payment))
-				{
-				$payment .= ' / ';
-				}
-			$payment .= 'Volunteer Points';
-			}
-
-		if ($invoice->paidByCheck)
-			{
-			if (\strlen($payment))
-				{
-				$payment .= ' / ';
-				}
-
-			if ($invoice->paymentDate)
-				{
-				$payment .= 'Received Check';
-				}
-			else
-				{
-				$payment .= 'Unreceived Check';
-				}
-			}
-		$pdf->addInstructions($invoice->instructions);
-		$pdf->addPaymentInfo($payment);
-		$pdf->addDate(\App\Tools\Date::todayString());
-		$pdf->addDateOrdered($invoice->orderDate);
-		$date = '';
-
-		if (! empty($invoice->fullfillmentDate))
-			{
-			$date = $invoice->fullfillmentDate;
-			}
-		$pdf->addDateShipped($date);
-		$cols = ['Item Number' => 23,
-			'Description' => 71,
-			'Quantity' => 15,
-			'Price' => 17,
-			'Total Price' => 20,
-			'Shipping' => 16,
-			'Total with Shipping' => 33, ];
-		$pdf->addCols($cols);
-		$cols = ['Item Number' => 'C',
-			'Description' => 'L',
-			'Quantity' => 'C',
-			'Price' => 'C',
-			'Total Price' => 'C',
-			'Shipping' => 'C',
-			'Total with Shipping' => 'C', ];
-		$pdf->addLineFormat($cols);
-		$y = 109;
-
-		foreach ($invoice->InvoiceItemChildren as $invoiceItem)
-			{
-			$details = \App\Tools\TextHelper::unhtmlentities($invoiceItem->detailLine);
-			$title = \App\Tools\TextHelper::unhtmlentities($invoiceItem->title);
-			$invoiceItem->price ??= 0.0;
-			$invoiceItem->shipping ??= 0.0;
-			$line = ['Item Number' => $invoiceItem->storeItemId . '-' . $invoiceItem->storeItemDetailId,
-				'Description' => "{$title}\n{$details}",
-				'Quantity' => $invoiceItem->quantity,
-				'Price' => '$' . \number_format($invoiceItem->price ?? 0.0, 2),
-				'Total Price' => '$' . \number_format($invoiceItem->quantity * $invoiceItem->price, 2),
-				'Shipping' => '$' . \number_format($invoiceItem->shipping ?? 0, 2),
-				'Total with Shipping' => '$' . \number_format($invoiceItem->quantity * $invoiceItem->price + $invoiceItem->quantity * $invoiceItem->shipping, 2), ];
-			$size = $pdf->addLine($y, $line);
-			$y += $size + 2;
-			}
-
-		return $pdf;
-		}
-
 	/**
 	 * @return int generated invoiceId
 	 */
@@ -569,6 +467,108 @@ class Invoice
 		return $invoiceId;
 		}
 
+	public function generatePDF(\App\Record\Invoice $invoice) : \App\Report\Invoice
+		{
+		$pdf = new \App\Report\Invoice();
+		$pdf->AddPage();
+		$pdf->SetMargins(5, 5, 5);
+		$pdf->SetAutoPageBreak(false);
+		$file = new \App\Model\ImageFiles();
+		$pdf->addVendor($this->settingTable->value('clubName'), $this->settingTable->value('memberAddr') . "\n" . $this->settingTable->value('memberTown') . "\n", $file->get($this->settingTable->value('invoiceLogo')));
+		$pdf->addInvoiceNumber($invoice->invoiceId);
+		$member = $this->customerModel->read($invoice->memberId);
+
+		if (isset($member->customerId))
+			{
+			$pdf->addClient('C-' . $member->customerId);
+			}
+		else
+			{
+			$pdf->addClient((string)$member->memberId);
+			}
+		$pdf->addClientAddress("Ship To:\n" . $member->firstName . ' ' . $member->lastName . "\n" . $member->address . "\n" . $member->town . ', ' . $member->state . ' ' . $member->zip);
+		$pdf->addTotals($invoice->totalPrice, $invoice->totalTax, $invoice->totalShipping, $invoice->paypalPaid, $invoice->pointsUsed);
+		$payment = '';
+
+		if ($invoice->paypalPaid > 0)
+			{
+			$payment = 'PayPal Transaction Id ' . $invoice->paypaltx;
+			}
+
+		if ($invoice->pointsUsed > 0)
+			{
+			if (\strlen($payment))
+				{
+				$payment .= ' / ';
+				}
+			$payment .= 'Volunteer Points';
+			}
+
+		if ($invoice->paidByCheck)
+			{
+			if (\strlen($payment))
+				{
+				$payment .= ' / ';
+				}
+
+			if ($invoice->paymentDate)
+				{
+				$payment .= 'Received Check';
+				}
+			else
+				{
+				$payment .= 'Unreceived Check';
+				}
+			}
+		$pdf->addInstructions($invoice->instructions);
+		$pdf->addPaymentInfo($payment);
+		$pdf->addDate(\App\Tools\Date::todayString());
+		$pdf->addDateOrdered($invoice->orderDate);
+		$date = '';
+
+		if (! empty($invoice->fullfillmentDate))
+			{
+			$date = $invoice->fullfillmentDate;
+			}
+		$pdf->addDateShipped($date);
+		$cols = ['Item Number' => 23,
+			'Description' => 71,
+			'Quantity' => 15,
+			'Price' => 17,
+			'Total Price' => 20,
+			'Shipping' => 16,
+			'Total with Shipping' => 33, ];
+		$pdf->addCols($cols);
+		$cols = ['Item Number' => 'C',
+			'Description' => 'L',
+			'Quantity' => 'C',
+			'Price' => 'C',
+			'Total Price' => 'C',
+			'Shipping' => 'C',
+			'Total with Shipping' => 'C', ];
+		$pdf->addLineFormat($cols);
+		$y = 109;
+
+		foreach ($invoice->InvoiceItemChildren as $invoiceItem)
+			{
+			$details = \App\Tools\TextHelper::unhtmlentities($invoiceItem->detailLine);
+			$title = \App\Tools\TextHelper::unhtmlentities($invoiceItem->title);
+			$invoiceItem->price ??= 0.0;
+			$invoiceItem->shipping ??= 0.0;
+			$line = ['Item Number' => $invoiceItem->storeItemId . '-' . $invoiceItem->storeItemDetailId,
+				'Description' => "{$title}\n{$details}",
+				'Quantity' => $invoiceItem->quantity,
+				'Price' => '$' . \number_format($invoiceItem->price ?? 0.0, 2),
+				'Total Price' => '$' . \number_format($invoiceItem->quantity * $invoiceItem->price, 2),
+				'Shipping' => '$' . \number_format($invoiceItem->shipping ?? 0, 2),
+				'Total with Shipping' => '$' . \number_format($invoiceItem->quantity * $invoiceItem->price + $invoiceItem->quantity * $invoiceItem->shipping, 2), ];
+			$size = $pdf->addLine($y, $line);
+			$y += $size + 2;
+			}
+
+		return $pdf;
+		}
+
 	/**
 	 * @return string[]
 	 *
@@ -638,6 +638,79 @@ class Invoice
 	public function getFileName(\App\Record\Invoice $invoice) : string
 		{
 		return $this->settingTable->value('clubAbbrev') . "_Invoice_{$invoice->invoiceId}.pdf";
+		}
+
+	/**
+	 * Get the invoice table correctly configured for the search parameters
+	 *
+	 * @param array<string, string> $parameters
+	 */
+	public function getInvoiceTable(array $parameters) : \App\Table\Invoice
+		{
+		$invoiceTable = new \App\Table\Invoice();
+		$invoiceTable->addJoin('member');
+		$condition = new \PHPFUI\ORM\Condition();
+
+		if (! empty($parameters['invoiceId']))
+			{
+			$condition->and('invoiceId', (int)$parameters['invoiceId']);
+			}
+
+		if (! empty($parameters['name']))
+			{
+			$nameCondition = new \PHPFUI\ORM\Condition('member.firstName', '%' . $parameters['name'] . '%', new \PHPFUI\ORM\Operator\Like());
+			$nameCondition->or('member.lastName', '%' . $parameters['name'] . '%', new \PHPFUI\ORM\Operator\Like());
+			$condition->and($nameCondition);
+			}
+
+		if (! empty($parameters['status']))
+			{
+			switch ($parameters['status'])
+				{
+				case 'S':
+					$condition->and('fullfillmentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
+
+					break;
+
+				case 'N':
+					$condition->and(new \PHPFUI\ORM\Condition('fullfillmentDate', null, new \PHPFUI\ORM\Operator\IsNull()));
+
+					break;
+
+				case 'U':
+					$condition->and(new \PHPFUI\ORM\Condition('paymentDate', null, new \PHPFUI\ORM\Operator\IsNull()));
+
+					break;
+				}
+			}
+
+		if (! empty($parameters['text']))
+			{
+			$invoiceTable->addJoin('invoiceItem', 'invoiceId');
+			$invoiceTable->setDistinct();
+			$textCondition = new \PHPFUI\ORM\Condition('invoiceItem.title', '%' . $parameters['text'] . '%', new \PHPFUI\ORM\Operator\Like());
+			$textCondition->or('invoiceItem.description', '%' . $parameters['text'] . '%', new \PHPFUI\ORM\Operator\Like());
+			$textCondition->or('invoiceItem.detailLine', '%' . $parameters['text'] . '%', new \PHPFUI\ORM\Operator\Like());
+			$condition->and($textCondition);
+			}
+
+		if (! empty($parameters['orderDate_from']))
+			{
+			$condition->and('orderDate', $parameters['orderDate_from'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			}
+
+		if (! empty($parameters['orderDate_through']))
+			{
+			$condition->and('orderDate', $parameters['orderDate_through'], new \PHPFUI\ORM\Operator\LessThanEqual());
+			}
+
+		if (! empty($parameters['paypaltx']))
+			{
+			$condition->and('paypaltx', $parameters['paypaltx']);
+			}
+		$invoiceTable->setWhere($condition);
+
+		return $invoiceTable;
 		}
 
 	public function getPayPalType() : string
@@ -725,78 +798,5 @@ class Invoice
 				$email->send();
 				}
 			}
-		}
-
-	/**
-	 * Get the invoice table correctly configured for the search parameters
-	 *
-	 * @param array<string, string> $parameters
-	 */
-	public function getInvoiceTable(array $parameters) : \App\Table\Invoice
-		{
-		$invoiceTable = new \App\Table\Invoice();
-		$invoiceTable->addJoin('member');
-		$condition = new \PHPFUI\ORM\Condition();
-
-		if (! empty($parameters['invoiceId']))
-			{
-			$condition->and('invoiceId', (int)$parameters['invoiceId']);
-			}
-
-		if (! empty($parameters['name']))
-			{
-			$nameCondition = new \PHPFUI\ORM\Condition('member.firstName', '%' . $parameters['name'] . '%', new \PHPFUI\ORM\Operator\Like());
-			$nameCondition->or('member.lastName', '%' . $parameters['name'] . '%', new \PHPFUI\ORM\Operator\Like());
-			$condition->and($nameCondition);
-			}
-
-		if (! empty($parameters['status']))
-			{
-			switch ($parameters['status'])
-				{
-				case 'S':
-					$condition->and('fullfillmentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
-
-					break;
-
-				case 'N':
-					$condition->and(new \PHPFUI\ORM\Condition('fullfillmentDate', null, new \PHPFUI\ORM\Operator\IsNull()));
-
-					break;
-
-				case 'U':
-					$condition->and(new \PHPFUI\ORM\Condition('paymentDate', null, new \PHPFUI\ORM\Operator\IsNull()));
-
-					break;
-				}
-			}
-
-		if (! empty($parameters['text']))
-			{
-			$invoiceTable->addJoin('invoiceItem', 'invoiceId');
-			$invoiceTable->setDistinct();
-			$textCondition = new \PHPFUI\ORM\Condition('invoiceItem.title', '%' . $parameters['text'] . '%', new \PHPFUI\ORM\Operator\Like());
-			$textCondition->or('invoiceItem.description', '%' . $parameters['text'] . '%', new \PHPFUI\ORM\Operator\Like());
-			$textCondition->or('invoiceItem.detailLine', '%' . $parameters['text'] . '%', new \PHPFUI\ORM\Operator\Like());
-			$condition->and($textCondition);
-			}
-
-		if (! empty($parameters['orderDate_from']))
-			{
-			$condition->and('orderDate', $parameters['orderDate_from'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
-			}
-
-		if (! empty($parameters['orderDate_through']))
-			{
-			$condition->and('orderDate', $parameters['orderDate_through'], new \PHPFUI\ORM\Operator\LessThanEqual());
-			}
-
-		if (! empty($parameters['paypaltx']))
-			{
-			$condition->and('paypaltx', $parameters['paypaltx']);
-			}
-		$invoiceTable->setWhere($condition);
-
-		return $invoiceTable;
 		}
 	}

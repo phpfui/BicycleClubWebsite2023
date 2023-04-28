@@ -4,19 +4,19 @@ namespace App\Model;
 
 class API
 	{
-	private ?\PHPFUI\ORM\Table $table = null;
+	private array $allowedFields = [];
 
 	private array $children = [];
 
-	private array $related = [];
+	private array $disallowedFields = ['password', 'loginAttempts', ];
 
 	private array $errors = [];
 
 	private array $permissions = [];
 
-	private array $allowedFields = [];
+	private array $related = [];
 
-	private array $disallowedFields = ['password', 'loginAttempts', ];
+	private ?\PHPFUI\ORM\Table $table = null;
 
 	public function __construct(string $tableName, private readonly \PHPFUI\Interfaces\NanoController $controller)
 		{
@@ -80,54 +80,6 @@ class API
 				}
 			\http_response_code(418);
 			}
-		}
-
-	public function getTable() : ?\PHPFUI\ORM\Table
-		{
-		return $this->table;
-		}
-
-	/**
-	 * Call to stop processing
-	 */
-	public function nullTable() : static
-		{
-		$this->table = null;
-
-		return $this;
-		}
-
-	public function getNextLink() : string
-		{
-		$get = $this->controller->getGet();
-
-		if (null === $this->table->getOffset() || ! $this->table->getLimit())
-			{
-			return '';
-			}
-
-		$get['offset'] = $this->table->getOffset() + $this->table->getLimit();
-
-		return $this->controller->getUri() . '?' . \http_build_query($get);
-		}
-
-	public function getPrevLink() : string
-		{
-		$get = $this->controller->getGet();
-
-		if (null === $this->table->getOffset() || ! $this->table->getLimit())
-			{
-			return '';
-			}
-
-		$get['offset'] = \max(0, $this->table->getOffset() - $this->table->getLimit());
-
-		return $this->controller->getUri() . '?' . \http_build_query($get);
-		}
-
-	public function getErrors() : array
-		{
-		return $this->errors;
 		}
 
 	public function applyParameters(array $parameters) : static
@@ -279,6 +231,44 @@ class API
 		return $data;
 		}
 
+	public function getErrors() : array
+		{
+		return $this->errors;
+		}
+
+	public function getNextLink() : string
+		{
+		$get = $this->controller->getGet();
+
+		if (null === $this->table->getOffset() || ! $this->table->getLimit())
+			{
+			return '';
+			}
+
+		$get['offset'] = $this->table->getOffset() + $this->table->getLimit();
+
+		return $this->controller->getUri() . '?' . \http_build_query($get);
+		}
+
+	public function getPrevLink() : string
+		{
+		$get = $this->controller->getGet();
+
+		if (null === $this->table->getOffset() || ! $this->table->getLimit())
+			{
+			return '';
+			}
+
+		$get['offset'] = \max(0, $this->table->getOffset() - $this->table->getLimit());
+
+		return $this->controller->getUri() . '?' . \http_build_query($get);
+		}
+
+	public function getTable() : ?\PHPFUI\ORM\Table
+		{
+		return $this->table;
+		}
+
 	public function isAuthorized(string $method, string $tableName = '') : bool
 		{
 		if (! $tableName)
@@ -289,22 +279,15 @@ class API
 		return isset($this->permissions[$tableName][$method]);
 		}
 
-	private function getOperator(string $symbol) : \PHPFUI\ORM\Operator
- {
-	 return match ($symbol) {
-		 '=' => new \PHPFUI\ORM\Operator\Equal(),
-		 '!=' => new \PHPFUI\ORM\Operator\NotEqual(),
-		 '>' => new \PHPFUI\ORM\Operator\GreaterThan(),
-		 '>=' => new \PHPFUI\ORM\Operator\GreaterThanEqual(),
-		 '<' => new \PHPFUI\ORM\Operator\LessThan(),
-		 '<=' => new \PHPFUI\ORM\Operator\LessThanEqual(),
-		 'IN' => new \PHPFUI\ORM\Operator\In(),
-		 'NOT IN' => new \PHPFUI\ORM\Operator\NotIn(),
-		 'LIKE' => new \PHPFUI\ORM\Operator\Like(),
-		 'NOT LIKE' => new \PHPFUI\ORM\Operator\NotLike(),
-		 default => throw new \Exception("'{$symbol}' is not a valid operator in where clause.  Must be one of (=, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN)"),
-	 };
- }
+	/**
+	 * Call to stop processing
+	 */
+	public function nullTable() : static
+		{
+		$this->table = null;
+
+		return $this;
+		}
 
 	private function getCondition(?array $conditions) : \PHPFUI\ORM\Condition
 		{
@@ -362,4 +345,21 @@ class API
 
 		return $condition;
 		}
+
+	private function getOperator(string $symbol) : \PHPFUI\ORM\Operator
+ {
+	 return match ($symbol) {
+		 '=' => new \PHPFUI\ORM\Operator\Equal(),
+		 '!=' => new \PHPFUI\ORM\Operator\NotEqual(),
+		 '>' => new \PHPFUI\ORM\Operator\GreaterThan(),
+		 '>=' => new \PHPFUI\ORM\Operator\GreaterThanEqual(),
+		 '<' => new \PHPFUI\ORM\Operator\LessThan(),
+		 '<=' => new \PHPFUI\ORM\Operator\LessThanEqual(),
+		 'IN' => new \PHPFUI\ORM\Operator\In(),
+		 'NOT IN' => new \PHPFUI\ORM\Operator\NotIn(),
+		 'LIKE' => new \PHPFUI\ORM\Operator\Like(),
+		 'NOT LIKE' => new \PHPFUI\ORM\Operator\NotLike(),
+		 default => throw new \Exception("'{$symbol}' is not a valid operator in where clause.  Must be one of (=, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN)"),
+	 };
+ }
 	}

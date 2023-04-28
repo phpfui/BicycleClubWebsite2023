@@ -4,13 +4,13 @@ namespace App\View;
 
 class Invoice
 	{
-	private string $type = '';
+	private readonly bool $cancel;
 
 	private readonly bool $canShip;
 
-	private readonly bool $cancel;
-
 	private float $invoiceTotal = 0.0;
+
+	private string $type = '';
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
@@ -220,9 +220,14 @@ class Invoice
 		return '';
 		}
 
-	private function getPaymentDate(array $invoice) : string
+	private function getDate(?string $date, string $default = '') : string
 		{
-		return $this->getDate($invoice['paymentDate'], new \PHPFUI\Link('/Store/pay/' . $invoice['invoiceId'], 'Pay Now', false));
+		if (! $date || '1000-01-01' > $date)
+			{
+			return $default;
+			}
+
+		return $date;
 		}
 
 	private function getFullfillmentDate(array $invoice) : string
@@ -242,6 +247,11 @@ class Invoice
 		return $shipDate;
 		}
 
+	private function getPaymentDate(array $invoice) : string
+		{
+		return $this->getDate($invoice['paymentDate'], new \PHPFUI\Link('/Store/pay/' . $invoice['invoiceId'], 'Pay Now', false));
+		}
+
 	private function payments(\App\Record\Invoice $invoice) : \PHPFUI\FieldSet
 		{
 		$fieldSet = new \PHPFUI\FieldSet('Payments Received');
@@ -249,15 +259,5 @@ class Invoice
 		$fieldSet->add($view->show($invoice->PaymentChildren));
 
 		return $fieldSet;
-		}
-
-	private function getDate(?string $date, string $default = '') : string
-		{
-		if (! $date || '1000-01-01' > $date)
-			{
-			return $default;
-			}
-
-		return $date;
 		}
 	}

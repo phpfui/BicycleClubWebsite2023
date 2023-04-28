@@ -106,7 +106,8 @@ class Points
 				}
 			else
 				{
-				$row['editorId'] = $point->editor->fullName();
+				$editor = new \App\Record\Member($point->editorId);
+				$row['editorId'] = $editor->fullName();
 				}
 			$table->addRow($row);
 			}

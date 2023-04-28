@@ -10,33 +10,19 @@ class Ride extends \PHPFUI\ORM\Table
 
 	final public const COMMENTS_HIDDEN = 2;
 
+	final public const STATUS_COMPLETED = 5;
+
+	final public const STATUS_CUT_SHORT = 4;
+
+	final public const STATUS_NO_LEADER = 3;
+
+	final public const STATUS_NO_RIDERS = 2;
+
 	final public const STATUS_NOT_YET = 0;
 
 	final public const STATUS_WEATHER = 1;
 
-	final public const STATUS_NO_RIDERS = 2;
-
-	final public const STATUS_NO_LEADER = 3;
-
-	final public const STATUS_CUT_SHORT = 4;
-
-	final public const STATUS_COMPLETED = 5;
-
 	protected static string $className = '\\' . \App\Record\Ride::class;
-
-	public function getRWGPSElevation(int $RWGPSId) : int
-		{
-		$sql = 'select AVG(elevation) from ride where RWGPSId = ? and elevation > 0 and rideStatus = ?';
-
-		return (int)\round((int)\PHPFUI\ORM::getValue($sql, [$RWGPSId, self::STATUS_COMPLETED, ]));
-		}
-
-	public function getRWGPSStats(\App\Record\RWGPS $rwgps) : \PHPFUI\ORM\RecordCursor
-		{
-		$sql = 'select * from ride where RWGPSId = ? and elevation > 0 and rideStatus = ?';
-
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$rwgps->RWGPSId, self::STATUS_COMPLETED, ]);
-		}
 
 	public function allRidesWithRWGPS() : \PHPFUI\ORM\RecordCursor
 		{
@@ -158,22 +144,6 @@ class Ride extends \PHPFUI\ORM\Table
 		$sql = 'select * from ride where memberId=? and rideDate>=? order by rideDate';
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [$member->memberId, \App\Tools\Date::todayString(), ]);
-		}
-
-	public static function getRidesForLocation(int $startLocationId, string $date = '') : iterable
-		{
-		$data = [$startLocationId];
-		$sql = 'select * from ride where startLocationId=?';
-
-		if ($date)
-			{
-			$sql .= ' and rideDate=?';
-			$data[] = $date;
-			}
-
-		$sql .= ' order by rideDate desc';
-
-		return \PHPFUI\ORM::getRows($sql, $data);
 		}
 
 	public static function getAssistantLeadersRides(int $assistantLeader, array $categories, int $startDate, int $endDate) : \PHPFUI\ORM\RecordCursor
@@ -408,26 +378,20 @@ class Ride extends \PHPFUI\ORM\Table
 		return $this->getRidesByMemberForDateRange($memberId, \App\Tools\Date::makeString($year, 1, 1), \App\Tools\Date::makeString($year, 12, 31), $fields);
 		}
 
-	public function setRidesForCueSheetCursor(\App\Record\CueSheet $cuesheet) : static
+	public static function getRidesForLocation(int $startLocationId, string $date = '') : iterable
 		{
-		$this->setWhere(new \PHPFUI\ORM\Condition('cueSheetId', $cuesheet->cueSheetId));
-		$this->addOrderBy('rideDate', 'desc');
-
-		return $this;
-		}
-
-	public function setRidesForLocationCursor(\App\Record\StartLocation $startLocation, string $date = '') : static
-		{
-		$condition = new \PHPFUI\ORM\Condition('startLocationId', $startLocation->startLocationId);
+		$data = [$startLocationId];
+		$sql = 'select * from ride where startLocationId=?';
 
 		if ($date)
 			{
-			$condition->and('rideDate', $date);
+			$sql .= ' and rideDate=?';
+			$data[] = $date;
 			}
-		$this->setWhere($condition);
-		$this->addOrderBy('rideDate', 'desc');
 
-		return $this;
+		$sql .= ' order by rideDate desc';
+
+		return \PHPFUI\ORM::getRows($sql, $data);
 		}
 
 	public static function getRideStatus(string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
@@ -442,6 +406,20 @@ class Ride extends \PHPFUI\ORM\Table
 		$sql = 'select * from ride where rideDate>=? and rideDate<=? and unaffiliated=0 and ((rideStatus>0 and pointsAwarded=0) or (rideStatus=0 and pointsAwarded>0))';
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [$startDate, $endDate]);
+		}
+
+	public function getRWGPSElevation(int $RWGPSId) : int
+		{
+		$sql = 'select AVG(elevation) from ride where RWGPSId = ? and elevation > 0 and rideStatus = ?';
+
+		return (int)\round((int)\PHPFUI\ORM::getValue($sql, [$RWGPSId, self::STATUS_COMPLETED, ]));
+		}
+
+	public function getRWGPSStats(\App\Record\RWGPS $rwgps) : \PHPFUI\ORM\RecordCursor
+		{
+		$sql = 'select * from ride where RWGPSId = ? and elevation > 0 and rideStatus = ?';
+
+		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$rwgps->RWGPSId, self::STATUS_COMPLETED, ]);
 		}
 
 	public static function getStatusValues() : array
@@ -556,6 +534,28 @@ class Ride extends \PHPFUI\ORM\Table
 			}
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, $input);
+		}
+
+	public function setRidesForCueSheetCursor(\App\Record\CueSheet $cuesheet) : static
+		{
+		$this->setWhere(new \PHPFUI\ORM\Condition('cueSheetId', $cuesheet->cueSheetId));
+		$this->addOrderBy('rideDate', 'desc');
+
+		return $this;
+		}
+
+	public function setRidesForLocationCursor(\App\Record\StartLocation $startLocation, string $date = '') : static
+		{
+		$condition = new \PHPFUI\ORM\Condition('startLocationId', $startLocation->startLocationId);
+
+		if ($date)
+			{
+			$condition->and('rideDate', $date);
+			}
+		$this->setWhere($condition);
+		$this->addOrderBy('rideDate', 'desc');
+
+		return $this;
 		}
 
 	public static function unreportedRides() : \PHPFUI\ORM\RecordCursor

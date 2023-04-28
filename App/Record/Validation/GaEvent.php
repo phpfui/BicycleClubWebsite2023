@@ -11,11 +11,11 @@ class GaEvent extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'dayOfRegistration' => ['integer'],
 		'description' => ['maxlength'],
-		'eventDate' => ['required', 'date'],
+		'eventDate' => ['required', 'date', 'gte_field:lastRegistrationDate'],
 		'incentiveCount' => ['integer'],
 		'incentiveName' => ['maxlength'],
 		'includeMembership' => ['integer'],
-		'lastRegistrationDate' => ['required', 'date'],
+		'lastRegistrationDate' => ['required', 'date', 'lte_field:eventDate'],
 		'live' => ['integer'],
 		'location' => ['maxlength'],
 		'maxRegistrants' => ['integer'],

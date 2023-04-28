@@ -20,20 +20,20 @@ class DiscountCodes extends \App\View\WWWBase implements \PHPFUI\Interfaces\Nano
 			}
 		}
 
+	public function edit(\App\Record\DiscountCode $discountCode = new \App\Record\DiscountCode()) : void
+		{
+		if ($this->page->addHeader('Edit Discount Code'))
+			{
+			$this->page->addPageContent($this->view->edit($discountCode));
+			}
+		}
+
 	public function list() : void
 		{
 		if ($this->page->addHeader('Discount Codes'))
 			{
 			$this->page->addPageContent($this->view->show());
 			$this->page->addPageContent(new \App\UI\CancelButtonGroup(new \PHPFUI\Button('Add Discount Code', '/Store/DiscountCodes/add')));
-			}
-		}
-
-	public function edit(\App\Record\DiscountCode $discountCode = new \App\Record\DiscountCode()) : void
-		{
-		if ($this->page->addHeader('Edit Discount Code'))
-			{
-			$this->page->addPageContent($this->view->edit($discountCode));
 			}
 		}
 	}

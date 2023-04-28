@@ -425,6 +425,48 @@ return $member->fullName();});
 		return $container;
 		}
 
+	private function getFileInput() : \PHPFUI\Input\File
+		{
+		$file = new \PHPFUI\Input\File($this->page, 'photo', 'Upload Photo');
+		$file->setAllowedExtensions(['png', 'jpg', 'jpeg', 'webp']);
+		$file->setToolTip('Photo should be clear and high quality.  It will be sized correctly, so the higher resolution, the better.');
+
+		return $file;
+		}
+
+	private function makeField(array $settings, string $name, string | int | bool $default, string $description) : string
+		{
+		$type = \get_debug_type($default);
+
+		if (! \array_key_exists($name, $settings))
+			{
+			$value = $default;
+			}
+		else
+			{
+			$value = $settings[$name];
+			}
+		$hidden = new \PHPFUI\Input\Hidden("type[{$name}]", $type);
+		$name = "settings[{$name}]";
+
+		$inputField = 'Unrecognized type: ' . $type;
+
+		if ('bool' == $type)
+			{
+			$inputField = new \PHPFUI\Input\CheckBoxBoolean($name, $description, $value);
+			}
+		elseif ('int' == $type)
+			{
+			$inputField = new \PHPFUI\Input\Number($name, $description, $value);
+			}
+		elseif ('string' == $type)
+			{
+			$inputField = new \PHPFUI\Input\Text($name, $description, $value);
+			}
+
+		return $hidden . $inputField;
+		}
+
 	private function processRequest() : void
 		{
 		if (\App\Model\Session::checkCSRF())
@@ -520,47 +562,5 @@ return $member->fullName();});
 					}
 				}
 			}
-		}
-
-	private function getFileInput() : \PHPFUI\Input\File
-		{
-		$file = new \PHPFUI\Input\File($this->page, 'photo', 'Upload Photo');
-		$file->setAllowedExtensions(['png', 'jpg', 'jpeg', 'webp']);
-		$file->setToolTip('Photo should be clear and high quality.  It will be sized correctly, so the higher resolution, the better.');
-
-		return $file;
-		}
-
-	private function makeField(array $settings, string $name, string | int | bool $default, string $description) : string
-		{
-		$type = \get_debug_type($default);
-
-		if (! \array_key_exists($name, $settings))
-			{
-			$value = $default;
-			}
-		else
-			{
-			$value = $settings[$name];
-			}
-		$hidden = new \PHPFUI\Input\Hidden("type[{$name}]", $type);
-		$name = "settings[{$name}]";
-
-		$inputField = 'Unrecognized type: ' . $type;
-
-		if ('bool' == $type)
-			{
-			$inputField = new \PHPFUI\Input\CheckBoxBoolean($name, $description, $value);
-			}
-		elseif ('int' == $type)
-			{
-			$inputField = new \PHPFUI\Input\Number($name, $description, $value);
-			}
-		elseif ('string' == $type)
-			{
-			$inputField = new \PHPFUI\Input\Text($name, $description, $value);
-			}
-
-		return $hidden . $inputField;
 		}
 	}

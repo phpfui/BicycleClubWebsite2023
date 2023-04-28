@@ -8,14 +8,14 @@ class Strava
 		{
 		}
 
-	public function getMileage() : float
-		{
-		return (float)($this->data['mi'] ?? 0.0);
-		}
-
 	public function getElevationFeet() : int
 		{
 		return (int)($this->data['ft'] ?? 0.0);
+		}
+
+	public function getMileage() : float
+		{
+		return (float)($this->data['mi'] ?? 0.0);
 		}
 
 	public static function loadFromActivityId(string $activityId) : ?\App\Model\Strava

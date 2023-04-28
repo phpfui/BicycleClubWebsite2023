@@ -8,11 +8,11 @@ class Permission implements \App\Model\PermissionsInterface
 
 	private int $count = 0;
 
-	private bool $setup = false;
-
 	private readonly string $permissionLoaderFile;
 
 	private bool $runPermissionLoader = false;
+
+	private bool $setup = false;
 
 	public function __construct()
 		{
@@ -45,6 +45,23 @@ class Permission implements \App\Model\PermissionsInterface
 			}
 		}
 
+	public function addGroup() : \App\Record\Permission
+		{
+		$newName = 'New Permission Group Name';
+		$permission = new \App\Record\Permission(['name' => $newName]);
+
+		if (! $permission->loaded())
+			{
+			$permissionTable = new \App\Table\Permission();
+			$permission->permissionId = $permissionTable->getNextGroupId();
+			$permission->name = $newName;
+			$permission->menu = 'Permission Group';
+			$permission->insert();
+			}
+
+		return $permission;
+		}
+
 	public function addPermission(string $name, string $menu) : int
 		{
 		$this->runPermissionLoader = true;
@@ -66,6 +83,36 @@ class Permission implements \App\Model\PermissionsInterface
 		$permission = $this->getPermissionId($permissionName);
 
 		return \App\Table\UserPermission::addPermissionToUser($memberId, $permission);
+		}
+
+	public function deleteGroup(\App\Record\Permission $permission) : static
+		{
+		$userPermissionTable = new \App\Table\UserPermission();
+		$userPermissionTable->setWhere(new \PHPFUI\ORM\Condition('permissionGroup', $permission->permissionId));
+		$userPermissionTable->delete();
+
+		$permissionGroupTable = new \App\Table\PermissionGroup();
+		$permissionGroupTable->setWhere(new \PHPFUI\ORM\Condition('groupId', $permission->permissionId));
+		$permissionGroupTable->delete();
+
+		$permission->delete();
+
+		return $this;
+		}
+
+	public function deletePermission(\App\Record\Permission $permission) : static
+		{
+		$userPermissionTable = new \App\Table\UserPermission();
+		$userPermissionTable->setWhere(new \PHPFUI\ORM\Condition('permissionGroup', $permission->permissionId));
+		$userPermissionTable->delete();
+
+		$permissionGroupTable = new \App\Table\PermissionGroup();
+		$permissionGroupTable->setWhere(new \PHPFUI\ORM\Condition('permissionId', $permission->permissionId));
+		$permissionGroupTable->delete();
+
+		$permission->delete();
+
+		return $this;
 		}
 
 	public function deletePermissionString(string $permissionName) : int
@@ -116,6 +163,28 @@ class Permission implements \App\Model\PermissionsInterface
 		\fclose($handle);
 		@\unlink($this->permissionLoaderFile);
 		@\rename($newName, $this->permissionLoaderFile);
+		}
+
+	public function generateStandardPermissions() : void
+		{
+		$csvWriter = new \App\Tools\CSVWriter(PROJECT_ROOT . '/files/standardPermissions.csv', download:false);
+		$csvWriter->addHeaderRow();
+
+		$permissionGroupTable = new \App\Table\PermissionGroup();
+		$permissionGroupTable->addSelect('groupName.name', 'permissionGroup');
+		$permissionGroupTable->addSelect('permission.name', 'permission');
+		$permissionGroupTable->addSelect('revoked');
+		$permissionGroupTable->addSelect('permission.menu', 'menu');
+		$permissionGroupTable->addJoin('permission');
+		$permissionGroupTable->addJoin('permission', new \PHPFUI\ORM\Condition(new \PHPFUI\ORM\Literal('groupName.permissionId'), new \PHPFUI\ORM\Literal('permissionGroup.groupId')), as:'groupName');
+		$permissionGroupTable->setWhere(new \PHPFUI\ORM\Condition('groupName.system', 1));
+		$permissionGroupTable->addOrderBy('groupName.name');
+		$permissionGroupTable->addOrderBy('permission.name');
+
+		foreach ($permissionGroupTable->getArrayCursor() as $row)
+			{
+			$csvWriter->outputRow($row);
+			}
 		}
 
 	public function getLastQueryCount() : int
@@ -243,6 +312,59 @@ class Permission implements \App\Model\PermissionsInterface
 		return ! empty($_SESSION['userPermissions'][1]);
 		}
 
+	public function loadStandardPermissions() : void
+		{
+		$csvReader = new \App\Tools\CSVReader(PROJECT_ROOT . '/files/standardPermissions.csv');
+
+		$permission = new \App\Record\Permission();
+		$permissionGroupName = new \App\Record\Permission();
+		$permissionTable = new \App\Table\Permission();
+		$permissionGroupTable = new \App\Table\PermissionGroup();
+
+		foreach ($csvReader as $row)
+			{
+			if ($permissionGroupName->name != $row['permissionGroup'])
+				{
+				$permissionGroupName->setEmpty();
+				$permissionGroupName->read(['name' => $row['permissionGroup'], 'system' => 1]);
+
+				if (! $permissionGroupName->loaded())
+					{
+					$permissionGroupName->permissionId = $permissionTable->getNextGroupId();
+					$permissionGroupName->name = $row['permissionGroup'];
+					$permissionGroupName->system = 1;
+					$permissionGroupName->insert();
+					}
+				else
+					{
+					$permissionGroupTable->setWhere(new \PHPFUI\ORM\Condition('groupId', $permissionGroupName->permissionId));
+					$permissionGroupTable->delete();
+					}
+				}
+
+			if ($permission->name != $row['permission'])
+				{
+				$permission->setEmpty();
+				$permission->read(['name' => $row['permission']]);
+
+				if (! $permission->loaded())
+					{
+					$permission->permissionId = $permissionTable->getNextPermissionId();
+					$permission->name = $row['permission'];
+					$permission->system = 0;
+					$permission->menu = $row['menu'];
+					}
+				}
+			$permissionGroup = new \App\Record\PermissionGroup();
+			$permissionGroup->groupId = $permissionGroupName->permissionId;
+			$permissionGroup->permission = $permission;
+			$permissionGroup->revoked = (int)$row['revoked'];
+			$permissionGroup->insertOrUpdate();
+			}
+
+		$this->generatePermissionLoader();
+		}
+
 	public function removePermissionFromUser(int $memberId, string $permissionName) : bool
 		{
 		$permission = $this->getPermissionId($permissionName);
@@ -255,53 +377,6 @@ class Permission implements \App\Model\PermissionsInterface
 		$permission = $this->getPermissionId($permissionName);
 
 		return \App\Table\UserPermission::revokePermissionForUser($memberId, $permission);
-		}
-
-	public function addGroup() : \App\Record\Permission
-		{
-		$newName = 'New Permission Group Name';
-		$permission = new \App\Record\Permission(['name' => $newName]);
-
-		if (! $permission->loaded())
-			{
-			$permissionTable = new \App\Table\Permission();
-			$permission->permissionId = $permissionTable->getNextGroupId();
-			$permission->name = $newName;
-			$permission->menu = 'Permission Group';
-			$permission->insert();
-			}
-
-		return $permission;
-		}
-
-	public function deleteGroup(\App\Record\Permission $permission) : static
-		{
-		$userPermissionTable = new \App\Table\UserPermission();
-		$userPermissionTable->setWhere(new \PHPFUI\ORM\Condition('permissionGroup', $permission->permissionId));
-		$userPermissionTable->delete();
-
-		$permissionGroupTable = new \App\Table\PermissionGroup();
-		$permissionGroupTable->setWhere(new \PHPFUI\ORM\Condition('groupId', $permission->permissionId));
-		$permissionGroupTable->delete();
-
-		$permission->delete();
-
-		return $this;
-		}
-
-	public function deletePermission(\App\Record\Permission $permission) : static
-		{
-		$userPermissionTable = new \App\Table\UserPermission();
-		$userPermissionTable->setWhere(new \PHPFUI\ORM\Condition('permissionGroup', $permission->permissionId));
-		$userPermissionTable->delete();
-
-		$permissionGroupTable = new \App\Table\PermissionGroup();
-		$permissionGroupTable->setWhere(new \PHPFUI\ORM\Condition('permissionId', $permission->permissionId));
-		$permissionGroupTable->delete();
-
-		$permission->delete();
-
-		return $this;
 		}
 
 	public function saveGroup(array $parameters) : void
@@ -370,80 +445,5 @@ class Permission implements \App\Model\PermissionsInterface
 			$permission->insertOrUpdate();
 			unset($permission);
 			}
-		}
-
-	public function generateStandardPermissions() : void
-		{
-		$csvWriter = new \App\Tools\CSVWriter(PROJECT_ROOT . '/files/standardPermissions.csv', download:false);
-		$csvWriter->addHeaderRow();
-
-		$permissionGroupTable = new \App\Table\PermissionGroup();
-		$permissionGroupTable->addSelect('groupName.name', 'permissionGroup');
-		$permissionGroupTable->addSelect('permission.name', 'permission');
-		$permissionGroupTable->addSelect('revoked');
-		$permissionGroupTable->addSelect('permission.menu', 'menu');
-		$permissionGroupTable->addJoin('permission');
-		$permissionGroupTable->addJoin('permission', new \PHPFUI\ORM\Condition(new \PHPFUI\ORM\Literal('groupName.permissionId'), new \PHPFUI\ORM\Literal('permissionGroup.groupId')), as:'groupName');
-		$permissionGroupTable->setWhere(new \PHPFUI\ORM\Condition('groupName.system', 1));
-		$permissionGroupTable->addOrderBy('groupName.name');
-		$permissionGroupTable->addOrderBy('permission.name');
-
-		foreach ($permissionGroupTable->getArrayCursor() as $row)
-			{
-			$csvWriter->outputRow($row);
-			}
-		}
-
-	public function loadStandardPermissions() : void
-		{
-		$csvReader = new \App\Tools\CSVReader(PROJECT_ROOT . '/files/standardPermissions.csv');
-
-		$permission = new \App\Record\Permission();
-		$permissionGroupName = new \App\Record\Permission();
-		$permissionTable = new \App\Table\Permission();
-		$permissionGroupTable = new \App\Table\PermissionGroup();
-
-		foreach ($csvReader as $row)
-			{
-			if ($permissionGroupName->name != $row['permissionGroup'])
-				{
-				$permissionGroupName->setEmpty();
-				$permissionGroupName->read(['name' => $row['permissionGroup'], 'system' => 1]);
-
-				if (! $permissionGroupName->loaded())
-					{
-					$permissionGroupName->permissionId = $permissionTable->getNextGroupId();
-					$permissionGroupName->name = $row['permissionGroup'];
-					$permissionGroupName->system = 1;
-					$permissionGroupName->insert();
-					}
-				else
-					{
-					$permissionGroupTable->setWhere(new \PHPFUI\ORM\Condition('groupId', $permissionGroupName->permissionId));
-					$permissionGroupTable->delete();
-					}
-				}
-
-			if ($permission->name != $row['permission'])
-				{
-				$permission->setEmpty();
-				$permission->read(['name' => $row['permission']]);
-
-				if (! $permission->loaded())
-					{
-					$permission->permissionId = $permissionTable->getNextPermissionId();
-					$permission->name = $row['permission'];
-					$permission->system = 0;
-					$permission->menu = $row['menu'];
-					}
-				}
-			$permissionGroup = new \App\Record\PermissionGroup();
-			$permissionGroup->groupId = $permissionGroupName->permissionId;
-			$permissionGroup->permission = $permission;
-			$permissionGroup->revoked = (int)$row['revoked'];
-			$permissionGroup->insertOrUpdate();
-			}
-
-		$this->generatePermissionLoader();
 		}
 	}

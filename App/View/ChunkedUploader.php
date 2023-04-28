@@ -4,29 +4,15 @@ namespace App\View;
 
 class ChunkedUploader
 	{
-	private $page;
-
 	private array $options = [];
+
+	private $page;
 
 	public function __construct(\PHPFUI\Interfaces\Page $page)
 		{
 		$this->page = $page;
 		$this->page->addTailScript('/flow.min.js');
 		$this->page->addStyleSheet('/style.css');
-		}
-
-	public function setOption(string $option, $value = null) : self
-		{
-		if (null === $value)
-			{
-			unset($this->options[$option]);
-			}
-		else
-			{
-			$this->options[$option] = $value;
-			}
-
-		return $this;
 		}
 
 	public function getError() : \PHPFUI\HTML5Element
@@ -178,5 +164,19 @@ function readablizeBytes(bytes) {
 		$this->page->addJavaScript($js);
 
 		return $container;
+		}
+
+	public function setOption(string $option, $value = null) : self
+		{
+		if (null === $value)
+			{
+			unset($this->options[$option]);
+			}
+		else
+			{
+			$this->options[$option] = $value;
+			}
+
+		return $this;
 		}
 	}

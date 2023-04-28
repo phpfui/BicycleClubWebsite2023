@@ -52,18 +52,6 @@ class CSVWriter
 		}
 
 	/**
-	 * Set the row column names and order. Setting this allows for sparse array output.
-	 *
-	 * @param array<string> $columns
-	 */
-	public function setRowColumns(array $columns) : static
-		{
-		$this->rowColumns = $columns;
-
-		return $this;
-		}
-
-	/**
 	 * if set, the first row output will also add a header row.  Headers will be from keys of first row added, or headers specified by setRowColumns
 	 */
 	public function addHeaderRow(bool $headerRow = true) : static
@@ -100,6 +88,18 @@ class CSVWriter
 			}
 
 		\fputcsv($this->out, $outputRow, $this->delimiter);
+
+		return $this;
+		}
+
+	/**
+	 * Set the row column names and order. Setting this allows for sparse array output.
+	 *
+	 * @param array<string> $columns
+	 */
+	public function setRowColumns(array $columns) : static
+		{
+		$this->rowColumns = $columns;
 
 		return $this;
 		}

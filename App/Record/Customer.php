@@ -7,11 +7,6 @@ namespace App\Record;
  */
 class Customer extends \App\Record\Definition\Customer
 	{
-	public function fullName() : string
-		{
-		return \App\Tools\TextHelper::unhtmlentities(($this->current['firstName'] ?? '') . ' ' . ($this->current['lastName'] ?? ''));
-		}
-
 	public function clean() : static
 		{
 		$this->cleanEmail('email');
@@ -23,5 +18,10 @@ class Customer extends \App\Record\Definition\Customer
 		$this->cleanPhone('zip', '\\-');
 
 		return $this;
+		}
+
+	public function fullName() : string
+		{
+		return \App\Tools\TextHelper::unhtmlentities(($this->current['firstName'] ?? '') . ' ' . ($this->current['lastName'] ?? ''));
 		}
 	}

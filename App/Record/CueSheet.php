@@ -21,11 +21,6 @@ class CueSheet extends \App\Record\Definition\CueSheet
 		'Mountainous',
 		'Oh My God!', ];
 
-	public function terrain() : string
-		{
-		return self::$terrainNames[$this->terrain] ?? '';
-		}
-
 	public function allTerrains() : array
 		{
 		return self::$terrainNames;
@@ -37,5 +32,10 @@ class CueSheet extends \App\Record\Definition\CueSheet
 		$base = $settingTable->value('homePage');
 
 		return "<a href='{$base}/CueSheets/download/{$this->cueSheetId}'>#{$this->cueSheetId} {$this->name}</a>";
+		}
+
+	public function terrain() : string
+		{
+		return self::$terrainNames[$this->terrain] ?? '';
 		}
 	}

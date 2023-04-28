@@ -4,11 +4,11 @@ namespace App\View\Setup;
 
 class ImportMembers extends \PHPFUI\Container
 	{
-	private readonly \App\Table\Member $memberTable;
+	private readonly \App\Model\ImportFile $importModel;
 
 	private readonly \App\Table\Membership $membershipTable;
 
-	private readonly \App\Model\ImportFile $importModel;
+	private readonly \App\Table\Member $memberTable;
 
 	public function __construct(private readonly \PHPFUI\Page $page, \App\View\Setup\WizardBar $wizardBar)
 		{
@@ -103,38 +103,6 @@ class ImportMembers extends \PHPFUI\Container
 		$membershipModel->import($csvReader, $_POST, 'Paid' == $paidMembers);
 		}
 
-	private function importWidget(\App\View\Setup\WizardBar $wizardBar, string $separator, int $count) : string
-		{
-		$csvReader = new \App\Tools\CSVReader($this->importModel->getFileName(), true, $separator);
-		$headers = \array_keys($csvReader->current());
-		\sort($headers);
-		$container = new \PHPFUI\Container();
-		$fieldSet = new \PHPFUI\FieldSet('Match Member Fields To Import');
-		$fieldSet->add($this->getMatchFields($headers, $this->memberTable->getFields()));
-		$container->add($fieldSet);
-
-		$fieldSet = new \PHPFUI\FieldSet('Match Membership Fields To Import');
-		$fieldSet->add($this->getMatchFields($headers, $this->membershipTable->getFields()));
-		$container->add($fieldSet);
-
-		$importButton = new \PHPFUI\Submit('Import Members', 'action');
-		$importButton->addClass('success');
-		$wizardBar->addButton($importButton);
-
-		if ($count)
-			{
-			$exportButton = new \PHPFUI\Button('Export Members', $this->page->getBaseURL() . '?export');
-			$exportButton->addClass('warning');
-			$wizardBar->addButton($exportButton);
-			}
-
-		$deleteButton = new \PHPFUI\Button('Delete Members', $this->page->getBaseURL() . '?delete');
-		$deleteButton->addClass('alert');
-		$wizardBar->addButton($deleteButton);
-
-		return $container;
-		}
-
 	private function getMatchFields(array $importFields, array $dataFields) : string
 		{
 		$container = new \PHPFUI\Container();
@@ -179,6 +147,38 @@ class ImportMembers extends \PHPFUI\Container
 
 			$container->add(new \PHPFUI\MultiColumn($select, $override));
 			}
+
+		return $container;
+		}
+
+	private function importWidget(\App\View\Setup\WizardBar $wizardBar, string $separator, int $count) : string
+		{
+		$csvReader = new \App\Tools\CSVReader($this->importModel->getFileName(), true, $separator);
+		$headers = \array_keys($csvReader->current());
+		\sort($headers);
+		$container = new \PHPFUI\Container();
+		$fieldSet = new \PHPFUI\FieldSet('Match Member Fields To Import');
+		$fieldSet->add($this->getMatchFields($headers, $this->memberTable->getFields()));
+		$container->add($fieldSet);
+
+		$fieldSet = new \PHPFUI\FieldSet('Match Membership Fields To Import');
+		$fieldSet->add($this->getMatchFields($headers, $this->membershipTable->getFields()));
+		$container->add($fieldSet);
+
+		$importButton = new \PHPFUI\Submit('Import Members', 'action');
+		$importButton->addClass('success');
+		$wizardBar->addButton($importButton);
+
+		if ($count)
+			{
+			$exportButton = new \PHPFUI\Button('Export Members', $this->page->getBaseURL() . '?export');
+			$exportButton->addClass('warning');
+			$wizardBar->addButton($exportButton);
+			}
+
+		$deleteButton = new \PHPFUI\Button('Delete Members', $this->page->getBaseURL() . '?delete');
+		$deleteButton->addClass('alert');
+		$wizardBar->addButton($deleteButton);
 
 		return $container;
 		}

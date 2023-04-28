@@ -6,6 +6,16 @@ class Story extends \PHPFUI\ORM\Table
 {
 	protected static string $className = '\\' . \App\Record\Story::class;
 
+	public static function purgeStories(string $date) : bool
+		{
+		$sql = 'delete from story WHERE lastEdited<?';
+		\PHPFUI\ORM::execute($sql, [$date]);
+
+		$sql = 'delete from blogItem WHERE storyId not in (select storyId from story)';
+
+		return \PHPFUI\ORM::execute($sql);
+		}
+
 	public function setAllStoriesOnBlog(string $pageName) : static
 		{
 		$this->addJoin('blogItem', new \PHPFUI\ORM\Condition('blogItem.storyId', new \PHPFUI\ORM\Literal('story.storyId')));
@@ -22,15 +32,5 @@ class Story extends \PHPFUI\ORM\Table
 		$this->setWhere(new \PHPFUI\ORM\Condition('lastEdited', $date, new \PHPFUI\ORM\Operator\LessThan()));
 
 		return $this;
-		}
-
-	public static function purgeStories(string $date) : bool
-		{
-		$sql = 'delete from story WHERE lastEdited<?';
-		\PHPFUI\ORM::execute($sql, [$date]);
-
-		$sql = 'delete from blogItem WHERE storyId not in (select storyId from story)';
-
-		return \PHPFUI\ORM::execute($sql);
 		}
 	}

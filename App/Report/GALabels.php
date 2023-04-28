@@ -16,11 +16,6 @@ class GALabels
 		$this->parameters = \array_keys($this->parameters);
 		}
 
-	public function getEvents() : array
-		{
-		return $this->parameters;
-		}
-
 	public function generate() : void
 		{
 		$gaRiderTable = new \App\Table\GaRider();
@@ -43,5 +38,10 @@ class GALabels
 		$pdf->Add_PDF_Label("{$count} labels printed\nOn " . \gmdate('m/d/Y'));
 		$now = \date('Y-m-d');
 		$pdf->Output("GALabels-{$now}.pdf", 'I');
+		}
+
+	public function getEvents() : array
+		{
+		return $this->parameters;
 		}
 	}

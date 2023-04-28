@@ -11,12 +11,12 @@ class Banner extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'css' => ['maxlength'],
 		'description' => ['maxlength'],
-		'endDate' => ['required', 'date'],
+		'endDate' => ['required', 'date', 'gte_field:startDate'],
 		'fileNameExt' => ['maxlength'],
 		'html' => ['maxlength'],
 		'js' => ['maxlength'],
 		'pending' => ['required', 'integer'],
-		'startDate' => ['required', 'date'],
+		'startDate' => ['required', 'date', 'lte_field:endDate'],
 		'url' => ['maxlength', 'website'],
 	];
 

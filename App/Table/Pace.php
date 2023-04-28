@@ -29,6 +29,13 @@ class Pace extends \PHPFUI\ORM\Table
 		return $this->paces[$paceId]['pace'] ?? 'All';
 		}
 
+	public function getPaceOrder(int $categoryId) : iterable
+		{
+		$sql = 'select * from pace where categoryId=? order by ordering';
+
+		return \PHPFUI\ORM::getDataObjectCursor($sql, [$categoryId]);
+		}
+
 	public function getPaces() : array
 		{
 		return $this->paces;
@@ -47,13 +54,6 @@ class Pace extends \PHPFUI\ORM\Table
 			}
 
 		return $paces;
-		}
-
-	public function getPaceOrder(int $categoryId) : iterable
-		{
-		$sql = 'select * from pace where categoryId=? order by ordering';
-
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$categoryId]);
 		}
 
 	public function movePace(int $fromPace, int $toCategory) : void

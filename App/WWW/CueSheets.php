@@ -4,9 +4,9 @@ namespace App\WWW;
 
 class CueSheets extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
-	private readonly \App\View\CueSheet $view;
-
 	private readonly \PHPFUI\Button $backButton;
+
+	private readonly \App\View\CueSheet $view;
 
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{

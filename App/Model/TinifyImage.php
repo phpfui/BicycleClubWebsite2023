@@ -201,6 +201,40 @@ class TinifyImage extends \App\Model\File
 		}
 
 	/**
+	 * 	 * Default processFile that simply scales image to the right
+	 * 	 * resolution for the web.
+	 * 	 *
+	 *
+	 * @param string | int $file name to be scaled
+	 *
+	 */
+	public function processFile(string | int $file) : string
+		{
+		// if not supported format, just return, we are done
+		if (! $this->isSupportedImageType($file))
+			{
+			return '';
+			}
+
+		try
+			{
+			$toFile = $file . '.tinify';
+			@\unlink($toFile);
+			$source = \Tinify\Source::fromFile($file);
+			$source->toFile($toFile);
+			@\unlink($file);
+			\rename($toFile, $file);
+			}
+		catch (\Throwable $e)
+			{
+			$this->error = $e->getMessage();
+			// just return whatever was uploaded
+			}
+
+		return '';
+		}
+
+	/**
 	 * Resize image to maximum width and height.  Will maximize the
 	 * image while keeping the correct proportions.
 	 *
@@ -396,40 +430,6 @@ class TinifyImage extends \App\Model\File
 		@\imagedestroy($img);
 
 		return $returnValue;
-		}
-
-	/**
-	 * 	 * Default processFile that simply scales image to the right
-	 * 	 * resolution for the web.
-	 * 	 *
-	 *
-	 * @param string | int $file name to be scaled
-	 *
-	 */
-	public function processFile(string | int $file) : string
-		{
-		// if not supported format, just return, we are done
-		if (! $this->isSupportedImageType($file))
-			{
-			return '';
-			}
-
-		try
-			{
-			$toFile = $file . '.tinify';
-			@\unlink($toFile);
-			$source = \Tinify\Source::fromFile($file);
-			$source->toFile($toFile);
-			@\unlink($file);
-			\rename($toFile, $file);
-			}
-		catch (\Throwable $e)
-			{
-			$this->error = $e->getMessage();
-			// just return whatever was uploaded
-			}
-
-		return '';
 		}
 
 	/**

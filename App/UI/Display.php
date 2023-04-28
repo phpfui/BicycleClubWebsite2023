@@ -8,9 +8,9 @@ namespace App\UI;
  */
 class Display extends \PHPFUI\GridX
 	{
-	private string $text;
-
 	private ?\PHPFUI\HTML5Element $labelElement = null;
+
+	private string $text;
 
 	private ?\PHPFUI\HTML5Element $textElement = null;
 
@@ -26,17 +26,6 @@ class Display extends \PHPFUI\GridX
 		parent::__construct();
 		}
 
-	public function getTextElement() : \PHPFUI\HTML5Element
-		{
-		if ($this->textElement)
-			{
-			return $this->textElement;
-			}
-		$this->textElement = new \PHPFUI\HTML5Element('label');
-
-		return $this->textElement;
-		}
-
 	public function getLabelElement() : \PHPFUI\HTML5Element
 		{
 		if ($this->labelElement)
@@ -47,6 +36,17 @@ class Display extends \PHPFUI\GridX
 		$this->labelElement->addClass('name');
 
 		return $this->labelElement;
+		}
+
+	public function getTextElement() : \PHPFUI\HTML5Element
+		{
+		if ($this->textElement)
+			{
+			return $this->textElement;
+			}
+		$this->textElement = new \PHPFUI\HTML5Element('label');
+
+		return $this->textElement;
 		}
 
 	protected function getBody() : string

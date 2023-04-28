@@ -6,13 +6,13 @@ class Renew
 	{
 	private float $additionalMemberDues = 0;
 
+	private int $allowedFamilyMembers = 0;
+
 	private readonly \App\Model\Member $memberModel;
 
 	private readonly iterable $members;
 
 	private float $membershipPrice = 0;
-
-	private int $allowedFamilyMembers = 0;
 
 	private readonly \App\Table\Setting $settingTable;
 

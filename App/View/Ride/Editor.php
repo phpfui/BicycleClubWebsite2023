@@ -10,9 +10,9 @@ class Editor
 
 	private ?\PHPFUI\ORM\RecordCursor $leaders = null;
 
-	private readonly \App\View\Ride\Settings $rideSettingsView;
-
 	private string $mileageSelectorId;
+
+	private readonly \App\View\Ride\Settings $rideSettingsView;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{

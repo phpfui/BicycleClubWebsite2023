@@ -6,6 +6,8 @@ class Scrapper
 	{
 	protected array $badLinks = [];
 
+	protected string $currentPage = '';
+
 	/**
 	 * @var string[][]
 	 *
@@ -60,8 +62,6 @@ class Scrapper
 	protected array $validResponses = [200, 301, 302, 405, 503];
 
 	protected \WebBrowser $web;
-
-	protected string $currentPage = '';
 
 	public function __construct(protected string $base)
 		{

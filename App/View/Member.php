@@ -4,6 +4,8 @@ namespace App\View;
 
 class Member
 	{
+	private string $addMemberButtonText = 'Add Member';
+
 	private int $formCount = 0;
 
 	private readonly bool $leader;
@@ -11,8 +13,6 @@ class Member
 	private readonly \App\Model\Member $memberModel;
 
 	private readonly \App\Model\ProfileImages $profileModel;
-
-	private string $addMemberButtonText = 'Add Member';
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
@@ -116,6 +116,31 @@ class Member
 		$view = new \App\View\Payments($this->page);
 
 		return $view->show($membership->PaymentChildren);
+		}
+
+	public function getAddMemberModalButton(\App\Record\Membership $membership) : \PHPFUI\Button
+		{
+		$addMemberButton = new \PHPFUI\Button($this->addMemberButtonText);
+		$addMemberButton->addClass('success');
+		$modal = new \PHPFUI\Reveal($this->page, $addMemberButton);
+		$modal->addClass('large');
+		$modal->add(new \PHPFUI\Header($this->addMemberButtonText, 3));
+		$modalForm = new \PHPFUI\Form($this->page);
+		$modalForm->setAreYouSure(false);
+		$modalForm->add(new \PHPFUI\Input\Hidden('membershipId', (string)$membership->membershipId));
+		$member = new \App\Record\Member();
+		$modalForm->add($this->getMemberSettings($member));
+		$email = new \App\UI\UniqueEmail($this->page, $member, 'email', 'Email Address');
+		$email->setRequired();
+		$modalForm->add($email);
+		$modalForm->add($this->getNewsletterSetting($member));
+		$modalForm->add($this->getRideSettings($member));
+		$modalForm->add($this->getPrivacySettings($member));
+		$modalForm->add(new \PHPFUI\FormError());
+		$modalForm->add(new \PHPFUI\Submit($this->addMemberButtonText, 'action'));
+		$modal->add($modalForm);
+
+		return $addMemberButton;
 		}
 
 	public function getAddress(\App\Record\Membership $member, bool $requireAllAddressFields = true) : \PHPFUI\FieldSet
@@ -610,31 +635,6 @@ class Member
 		return $table;
 		}
 
-	public function getAddMemberModalButton(\App\Record\Membership $membership) : \PHPFUI\Button
-		{
-		$addMemberButton = new \PHPFUI\Button($this->addMemberButtonText);
-		$addMemberButton->addClass('success');
-		$modal = new \PHPFUI\Reveal($this->page, $addMemberButton);
-		$modal->addClass('large');
-		$modal->add(new \PHPFUI\Header($this->addMemberButtonText, 3));
-		$modalForm = new \PHPFUI\Form($this->page);
-		$modalForm->setAreYouSure(false);
-		$modalForm->add(new \PHPFUI\Input\Hidden('membershipId', (string)$membership->membershipId));
-		$member = new \App\Record\Member();
-		$modalForm->add($this->getMemberSettings($member));
-		$email = new \App\UI\UniqueEmail($this->page, $member, 'email', 'Email Address');
-		$email->setRequired();
-		$modalForm->add($email);
-		$modalForm->add($this->getNewsletterSetting($member));
-		$modalForm->add($this->getRideSettings($member));
-		$modalForm->add($this->getPrivacySettings($member));
-		$modalForm->add(new \PHPFUI\FormError());
-		$modalForm->add(new \PHPFUI\Submit($this->addMemberButtonText, 'action'));
-		$modal->add($modalForm);
-
-		return $addMemberButton;
-		}
-
 	private function addEmailModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Member $member) : void
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
@@ -828,19 +828,6 @@ class Member
 		return $cancel;
 		}
 
-	private function getGeoLocationSelect(\App\Record\Member $member) : \PHPFUI\Container
-		{
-		$container = new \PHPFUI\Container();
-		$geoLocate = new \PHPFUI\Input\Select('geoLocate', 'Default to sending your geo location when sending ride texts or comments via the web site. Disable setting will not include the location option.');
-		$geoLocate->addOption('Default Off', '0', 0 == $member->geoLocate);
-		$geoLocate->addOption('Default On', '1', 1 == $member->geoLocate);
-		$geoLocate->addOption('Disabled', '2', 2 == $member->geoLocate);
-
-		$container->add($geoLocate);
-
-		return $container;
-		}
-
 	private function getCellSettings(\App\Record\Member $member) : \PHPFUI\FieldSet
 		{
 		$fieldSet = new \PHPFUI\FieldSet('Cell Phone Settings');
@@ -890,6 +877,19 @@ class Member
 		$memberFieldSet->add($addButton);
 		$this->addEmailModal($addButton, $member);
 		$container->add($memberFieldSet);
+
+		return $container;
+		}
+
+	private function getGeoLocationSelect(\App\Record\Member $member) : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+		$geoLocate = new \PHPFUI\Input\Select('geoLocate', 'Default to sending your geo location when sending ride texts or comments via the web site. Disable setting will not include the location option.');
+		$geoLocate->addOption('Default Off', '0', 0 == $member->geoLocate);
+		$geoLocate->addOption('Default On', '1', 1 == $member->geoLocate);
+		$geoLocate->addOption('Disabled', '2', 2 == $member->geoLocate);
+
+		$container->add($geoLocate);
 
 		return $container;
 		}

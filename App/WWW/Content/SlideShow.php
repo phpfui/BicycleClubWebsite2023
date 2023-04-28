@@ -41,22 +41,6 @@ class SlideShow extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 			}
 		}
 
-	public function slide(\App\Record\SlideShow $slideShow = new \App\Record\SlideShow(), \App\Record\Slide $slide = new \App\Record\Slide()) : void
-		{
-		if (! $slideShow->loaded())
-			{
-			$this->page->redirect('/Content/SlideShow/edit/0');
-
-			return;
-			}
-		$type = $slide->loaded() ? 'Edit' : 'Add';
-
-		if ($this->page->addHeader($type . ' Slide'))
-			{
-			$this->page->addPageContent($this->view->editSlide($slideShow, $slide));
-			}
-		}
-
 	public function list() : void
 		{
 		if ($this->page->addHeader('Slide Shows'))
@@ -81,6 +65,22 @@ class SlideShow extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 		if ($this->page->addHeader('Show Slide Show'))
 			{
 			$this->page->addPageContent($this->view->show($slideShow, '' == $debug, 'debug' == $debug));
+			}
+		}
+
+	public function slide(\App\Record\SlideShow $slideShow = new \App\Record\SlideShow(), \App\Record\Slide $slide = new \App\Record\Slide()) : void
+		{
+		if (! $slideShow->loaded())
+			{
+			$this->page->redirect('/Content/SlideShow/edit/0');
+
+			return;
+			}
+		$type = $slide->loaded() ? 'Edit' : 'Add';
+
+		if ($this->page->addHeader($type . ' Slide'))
+			{
+			$this->page->addPageContent($this->view->editSlide($slideShow, $slide));
 			}
 		}
 	}

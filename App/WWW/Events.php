@@ -4,9 +4,9 @@ namespace App\WWW;
 
 class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
-	private readonly \App\View\Event\Events $view;
-
 	private readonly \App\Table\Reservation $reservationTable;
+
+	private readonly \App\View\Event\Events $view;
 
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{

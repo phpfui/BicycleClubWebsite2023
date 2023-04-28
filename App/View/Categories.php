@@ -126,19 +126,6 @@ class Categories
 		return $form;
 		}
 
-	public function getCategoryPicker(string $fieldName = 'category', string $label = '', $selected = 0) : \PHPFUI\Input\Select
-		{
-		$select = new \PHPFUI\Input\Select($fieldName, $label);
-		$select->addOption('All', (string)0, 0 == $selected);
-
-		foreach ($this->categoryTable->getRecordCursor() as $category)
-			{
-			$select->addOption(static::getCategoryLabel($category), $category->categoryId, $category->categoryId == $selected);
-			}
-
-		return $select;
-		}
-
 	public static function getCategoryLabel(\App\Record\Category $category)
 		{
 		$label = $category->category ?? 'All';
@@ -159,6 +146,34 @@ class Categories
 		return $label;
 		}
 
+	public function getCategoryPicker(string $fieldName = 'category', string $label = '', $selected = 0) : \PHPFUI\Input\Select
+		{
+		$select = new \PHPFUI\Input\Select($fieldName, $label);
+		$select->addOption('All', (string)0, 0 == $selected);
+
+		foreach ($this->categoryTable->getRecordCursor() as $category)
+			{
+			$select->addOption(static::getCategoryLabel($category), $category->categoryId, $category->categoryId == $selected);
+			}
+
+		return $select;
+		}
+
+	public function getMultiCategoryPicker(string $fieldName = 'categories', string $label = '', array $selected = []) : \PHPFUI\Input\MultiSelect
+		{
+		$select = new \PHPFUI\Input\MultiSelect($fieldName, $label);
+		$select->selectAll();
+		$select->setColumns(2);
+		$select->addOption('All', (string)0, \in_array(0, $selected));
+
+		foreach ($this->categoryTable->getRecordCursor() as $category)
+			{
+			$select->addOption(static::getCategoryLabel($category), $category->categoryId, \in_array($category->categoryId, $selected));
+			}
+
+		return $select;
+		}
+
 	public static function getPaceLabel(\App\Record\Pace $pace)
 		{
 		$label = $pace->pace;
@@ -177,21 +192,6 @@ class Categories
 			}
 
 		return $label;
-		}
-
-	public function getMultiCategoryPicker(string $fieldName = 'categories', string $label = '', array $selected = []) : \PHPFUI\Input\MultiSelect
-		{
-		$select = new \PHPFUI\Input\MultiSelect($fieldName, $label);
-		$select->selectAll();
-		$select->setColumns(2);
-		$select->addOption('All', (string)0, \in_array(0, $selected));
-
-		foreach ($this->categoryTable->getRecordCursor() as $category)
-			{
-			$select->addOption(static::getCategoryLabel($category), $category->categoryId, \in_array($category->categoryId, $selected));
-			}
-
-		return $select;
 		}
 
 	private function addCategoryModal(\PHPFUI\HTML5Element $modalLink) : void

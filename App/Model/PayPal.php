@@ -175,20 +175,6 @@ class PayPal
 		return new \PayPalCheckoutSdk\Core\PayPalHttpClient($env);
 		}
 
-	public function getUrl() : string
-		{
-		if ($this->getSandbox())
-			{
-			$env = new \PayPalCheckoutSdk\Core\SandboxEnvironment($this->getClientId(), $this->getSecret());
-			}
-		else
-			{
-			$env = new \PayPalCheckoutSdk\Core\ProductionEnvironment($this->getClientId(), $this->getSecret());
-			}
-
-		return $env->baseUrl();
-		}
-
 	/**
 	 * @return string blank for production or 'sandbox' if sandbox
 	 */
@@ -208,6 +194,20 @@ class PayPal
 	public function getType() : string
 		{
 		return $this->type;
+		}
+
+	public function getUrl() : string
+		{
+		if ($this->getSandbox())
+			{
+			$env = new \PayPalCheckoutSdk\Core\SandboxEnvironment($this->getClientId(), $this->getSecret());
+			}
+		else
+			{
+			$env = new \PayPalCheckoutSdk\Core\ProductionEnvironment($this->getClientId(), $this->getSecret());
+			}
+
+		return $env->baseUrl();
 		}
 
 	public function save(array $parameters) : void

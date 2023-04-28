@@ -6,25 +6,6 @@ class Member extends \PHPFUI\ORM\Table
 {
 	protected static string $className = '\\' . \App\Record\Member::class;
 
-	public function getAllMembers(string $expirationStart = '', string $expirationEnd = '') : \PHPFUI\ORM\ArrayCursor
-	 {
-	 $sql = 'select * from member m left join membership s on m.membershipId=s.membershipId where s.expires>=?';
-
-	 if (! $expirationStart)
-		 {
-		 $expirationStart = \App\Tools\Date::todayString();
-		 }
-	 $input = [$expirationStart];
-
-	 if ($expirationEnd)
-		 {
-		 $input[] = $expirationEnd;
-		 $sql .= ' and s.expires<=?';
-		 }
-
-	 return \PHPFUI\ORM::getArrayCursor($sql, $input);
-	 }
-
 	public function badExpirations() : iterable
 		{
 		$sql = self::getSelectFields() . ' left join payment p on p.membershipId=m.membershipId WHERE p.amount=30.00 and p.paymentType=3 and p.dateReceived>=s.expires-60 and s.expires>? order by s.expires';
@@ -108,6 +89,25 @@ class Member extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getArrayCursor($sql, $input);
 		}
 
+	public function getAllMembers(string $expirationStart = '', string $expirationEnd = '') : \PHPFUI\ORM\ArrayCursor
+	 {
+	 $sql = 'select * from member m left join membership s on m.membershipId=s.membershipId where s.expires>=?';
+
+	 if (! $expirationStart)
+		 {
+		 $expirationStart = \App\Tools\Date::todayString();
+		 }
+	 $input = [$expirationStart];
+
+	 if ($expirationEnd)
+		 {
+		 $input[] = $expirationEnd;
+		 $sql .= ' and s.expires<=?';
+		 }
+
+	 return \PHPFUI\ORM::getArrayCursor($sql, $input);
+	 }
+
 	public static function getEmailableMembers(bool $all, bool $current, int $monthsPast = 0, int $monthsNew = 0, array $categories = [], string $extra = '') : iterable
 		{
 		if (1 == \count($categories) && 0 == $categories[0])
@@ -177,6 +177,19 @@ class Member extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getArrayCursor($sql, [$expires]);
 		}
 
+	/**
+	 * Get members with ride notificatons turned on
+	 */
+	public function getJournalRideInterests() : iterable
+		{
+		$sql = 'SELECT m.firstName,m.lastName,m.email,m.memberId,c.categoryId,m.rideJournal from memberCategory c ' .
+			'left join member m on m.memberId=c.memberId ' .
+			'left join membership s on s.membershipId=m.membershipId ' .
+			'where m.rideJournal>0 and m.email like "%@%" and s.expires>=? order by memberId,c.categoryId';
+
+		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString()]);
+		}
+
 	public static function getLeaders(array $categories = [], string $type = 'Ride Leader', string $fromDate = '1000-01-01', string $toDate = '1000-01-01') : \PHPFUI\ORM\RecordCursor
 		{
 		if (1 == \count($categories) && 0 == \current($categories))
@@ -213,9 +226,11 @@ class Member extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Member(), $sql, $input);
 		}
 
-	public function getMembershipObject(int $memberId) : \PHPFUI\ORM\DataObject
+	public function getMembership(int $memberId) : array
 		{
-		return new \PHPFUI\ORM\DataObject($this->getMembership($memberId));
+		$sql = 'select * from member m left join membership s on m.membershipId=s.membershipId where m.memberId=?';
+
+		return \PHPFUI\ORM::getRow($sql, [$memberId]);
 		}
 
 	public function getMembershipCursor(int $memberId) : \PHPFUI\ORM\DataObjectCursor
@@ -225,11 +240,9 @@ class Member extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId]);
 		}
 
-	public function getMembership(int $memberId) : array
+	public function getMembershipObject(int $memberId) : \PHPFUI\ORM\DataObject
 		{
-		$sql = 'select * from member m left join membership s on m.membershipId=s.membershipId where m.memberId=?';
-
-		return \PHPFUI\ORM::getRow($sql, [$memberId]);
+		return new \PHPFUI\ORM\DataObject($this->getMembership($memberId));
 		}
 
 	public function getName(?int $memberId) : string
@@ -246,6 +259,18 @@ class Member extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$start, $start, $end, ]);
 		}
 
+	/**
+	 * Get members with new ride notificatons turned on
+	 */
+	public function getNewRideInterests(int $categoryId) : iterable
+		{
+		$sql = 'SELECT m.firstName,m.lastName,m.email,m.memberId from member m left join memberCategory c on m.memberId=c.memberId ' .
+			'left join membership s on s.membershipId=m.membershipId ' .
+			'where m.newRideEmail and c.categoryId=? and m.email like "%@%" and s.expires>=?';
+
+		return \PHPFUI\ORM::getArrayCursor($sql, [$categoryId, \App\Tools\Date::todayString()]);
+		}
+
 	public static function getNewsletterMembers(string $expires) : iterable
 		{
 		$sql = 'select * from member m left join membership s on m.membershipId=s.membershipId where m.email LIKE "%@%" and s.expires>=? and m.emailNewsletter>=1';
@@ -258,31 +283,6 @@ class Member extends \PHPFUI\ORM\Table
 		$sql = self::getSelectFields() . ' where s.pending>0 and s.joined<=?';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$date]);
-		}
-
-	/**
-	 * Get members with ride notificatons turned on
-	 */
-	public function getJournalRideInterests() : iterable
-		{
-		$sql = 'SELECT m.firstName,m.lastName,m.email,m.memberId,c.categoryId,m.rideJournal from memberCategory c ' .
-			'left join member m on m.memberId=c.memberId ' .
-			'left join membership s on s.membershipId=m.membershipId ' .
-			'where m.rideJournal>0 and m.email like "%@%" and s.expires>=? order by memberId,c.categoryId';
-
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString()]);
-		}
-
-	/**
-	 * Get members with new ride notificatons turned on
-	 */
-	public function getNewRideInterests(int $categoryId) : iterable
-		{
-		$sql = 'SELECT m.firstName,m.lastName,m.email,m.memberId from member m left join memberCategory c on m.memberId=c.memberId ' .
-			'left join membership s on s.membershipId=m.membershipId ' .
-			'where m.newRideEmail and c.categoryId=? and m.email like "%@%" and s.expires>=?';
-
-		return \PHPFUI\ORM::getArrayCursor($sql, [$categoryId, \App\Tools\Date::todayString()]);
 		}
 
 	public static function getVolunteersForEvents(array $events) : iterable

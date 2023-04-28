@@ -4,13 +4,13 @@ namespace App\Model;
 
 class DeleteRecord
 	{
-	private readonly \PHPFUI\AJAX $delete;
+	private $conditionalCallBack = null;
 
-	private readonly string $primaryKey;
+	private readonly \PHPFUI\AJAX $delete;
 
 	private $deleteCallBack = null;
 
-	private $conditionalCallBack = null;
+	private readonly string $primaryKey;
 
 	public function __construct(\PHPFUI\Interfaces\Page $page, \PHPFUI\Table $table, \PHPFUI\ORM\Table $dbTable, string $message = 'Are you sure you want to delete this row?')
 		{

@@ -4,11 +4,11 @@ namespace App\View\Volunteer;
 
 class Email
 	{
-	private string $testMessage = 'Send Test Email To You Only';
+	private string $emailJobMessage = 'Email Job Volunteers';
 
 	private string $emailMessage = 'Email All Volunteers';
 
-	private string $emailJobMessage = 'Email Job Volunteers';
+	private string $testMessage = 'Send Test Email To You Only';
 
 	public function __construct(private readonly \App\View\Page $page)
 		{

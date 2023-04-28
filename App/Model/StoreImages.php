@@ -9,6 +9,30 @@ class StoreImages extends \App\Model\ThumbnailImageFiles
 		parent::__construct('images/storePhotos', 'storePhotoId', $item);
 		}
 
+	public function getCarousel(\PHPFUI\Interfaces\Page $page, bool $full = true) : \PHPFUI\SlickSlider
+		{
+		$orbit = new \PHPFUI\SlickSlider($page);
+		$orbit->addSliderAttribute('autoplay', true)->addSliderAttribute('autoplaySpeed', 3000)->addSliderAttribute('arrows', false);
+
+		foreach ($this->getPhotos() as $photo)
+			{
+			$this->update($photo->toArray());
+
+			if ($full)
+				{
+				$image = $this->getPhotoImg();
+				}
+			else
+				{
+				$image = $this->getThumbnailImg();
+				}
+			$image->setAttribute('alt', $photo->filename);
+			$orbit->addSlide($image);
+			}
+
+		return $orbit;
+		}
+
 	public function getProductGallery(\PHPFUI\Interfaces\Page $page) : \PHPFUI\HTML5Element
 		{
 		$pig = new \App\UI\ProductImageGallery($page);
@@ -38,30 +62,6 @@ class StoreImages extends \App\Model\ThumbnailImageFiles
 			}
 
 		return $pig;
-		}
-
-	public function getCarousel(\PHPFUI\Interfaces\Page $page, bool $full = true) : \PHPFUI\SlickSlider
-		{
-		$orbit = new \PHPFUI\SlickSlider($page);
-		$orbit->addSliderAttribute('autoplay', true)->addSliderAttribute('autoplaySpeed', 3000)->addSliderAttribute('arrows', false);
-
-		foreach ($this->getPhotos() as $photo)
-			{
-			$this->update($photo->toArray());
-
-			if ($full)
-				{
-				$image = $this->getPhotoImg();
-				}
-			else
-				{
-				$image = $this->getThumbnailImg();
-				}
-			$image->setAttribute('alt', $photo->filename);
-			$orbit->addSlide($image);
-			}
-
-		return $orbit;
 		}
 
 	private function getPhotos() : \PHPFUI\ORM\RecordCursor

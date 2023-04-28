@@ -4,9 +4,9 @@ namespace App\View\Public;
 
 class Footer implements \Stringable
 	{
-	private readonly \App\Table\Setting $settingTable;
-
 	private readonly \App\View\Public\Page $publicPage;
+
+	private readonly \App\Table\Setting $settingTable;
 
 	public function __construct(\App\Model\Controller $controller)
 		{

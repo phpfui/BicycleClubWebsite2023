@@ -171,6 +171,11 @@ abstract class File
 		return \preg_replace('/[^a-zA-Z0-9\.\-\_()]/', '', \str_replace(' ', '_', $fileName));
 		}
 
+	public function processFile(string | int $path) : string
+		{
+		return '';
+		}
+
 	public function rename(string $fileName, string $newName) : void
 		{
 		\rename($this->directory . $fileName, $this->directory . $newName);
@@ -326,11 +331,6 @@ abstract class File
 	public function url(string $filename) : string
 		{
 		return "/{$this->type}/{$filename}";
-		}
-
-	public function processFile(string | int $path) : string
-		{
-		return '';
 		}
 
 	protected function getBaseName(string | int $id) : string

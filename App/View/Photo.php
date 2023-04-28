@@ -4,7 +4,13 @@ namespace App\View;
 
 class Photo
 	{
+	private array $cuts = [];
+
 	private readonly bool $deleteComments;
+
+	private bool $moveFolder = false;
+
+	private bool $movePhoto = false;
 
 	private readonly \App\Model\PhotoFiles $photoFiles;
 
@@ -15,12 +21,6 @@ class Photo
 	private ?\PHPFUI\Button $searchButton = null;
 
 	private readonly int $signedInMember;
-
-	private array $cuts = [];
-
-	private bool $movePhoto = false;
-
-	private bool $moveFolder = false;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
@@ -530,6 +530,48 @@ JS;
 		return $form;
 		}
 
+	public function hasPermission(\App\Record\Photo | \App\Record\PhotoFolder $file) : bool
+		{
+		if ($file instanceof \App\Record\Photo)
+			{
+			if (! $file->loaded())
+				{
+				return false;
+				}
+
+			if ($file->public)
+				{
+				return true;
+				}
+
+			if (! \App\Model\Session::isSignedIn())
+				{
+				return false;
+				}
+
+			// user must have permissions all the way up
+			$parentFolder = $file->photoFolder;
+			}
+		else
+			{
+			$parentFolder = $file;
+			}
+
+		while ($parentFolder->loaded())
+			{
+			if ($parentFolder->permissionId)
+				{
+				if (! $this->page->getPermissions()->hasPermission($parentFolder->permissionId))
+					{
+					return false;
+					}
+				}
+			$parentFolder = $parentFolder->parentFolder;
+			}
+
+		return true;
+		}
+
 	public function listFolders(\App\Table\PhotoFolder $folders, \App\Record\PhotoFolder $parentFolder) : \PHPFUI\Table
 		{
 		$container = new \PHPFUI\Table();
@@ -611,48 +653,6 @@ JS;
 			}
 
 		return $container;
-		}
-
-	public function hasPermission(\App\Record\Photo | \App\Record\PhotoFolder $file) : bool
-		{
-		if ($file instanceof \App\Record\Photo)
-			{
-			if (! $file->loaded())
-				{
-				return false;
-				}
-
-			if ($file->public)
-				{
-				return true;
-				}
-
-			if (! \App\Model\Session::isSignedIn())
-				{
-				return false;
-				}
-
-			// user must have permissions all the way up
-			$parentFolder = $file->photoFolder;
-			}
-		else
-			{
-			$parentFolder = $file;
-			}
-
-		while ($parentFolder->loaded())
-			{
-			if ($parentFolder->permissionId)
-				{
-				if (! $this->page->getPermissions()->hasPermission($parentFolder->permissionId))
-					{
-					return false;
-					}
-				}
-			$parentFolder = $parentFolder->parentFolder;
-			}
-
-		return true;
 		}
 
 	public function listMembers(iterable $members, string $url = '') : \PHPFUI\Table
@@ -774,14 +774,35 @@ JS;
 		return $container;
 		}
 
-	private function getCut(array $photo) : string
+	private function addEditFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\PhotoFolder $photoFolder) : void
 		{
-		if (! isset($this->cuts[$photo['photoId']]) && ($photo['memberId'] == $this->signedInMember || $this->movePhoto))
+		$submit = new \PHPFUI\Submit();
+
+		if (\App\Model\Session::checkCSRF() && $submit->submitted($_POST))
 			{
-			return new \PHPFUI\Input\CheckBox('cut[]', '', $photo['photoId']);
+			unset($_POST['photoFolderId']);
+			$photoFolder->setFrom($_POST);
+			$photoFolder->update();
+			$this->page->redirect();
 			}
 
-		return '';
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$modal->addClass('large');
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAreYouSure(false);
+		$fieldSet = new \PHPFUI\FieldSet('Edit Photo Folder');
+		$hidden = new \PHPFUI\Input\Hidden('photoFolderId', (string)$photoFolder->photoFolderId);
+		$fieldSet->add($hidden);
+		$folderName = new \PHPFUI\Input\Text('photoFolder', 'Folder Name', $photoFolder->photoFolder);
+		$folderName->setRequired();
+		$fieldSet->add($folderName);
+
+		$permissionGroupPicker = new \App\UI\PermissionGroupPicker($this->page, 'permissionId', 'Optional Permission Group Restriction', $photoFolder->permission);
+		$fieldSet->add($permissionGroupPicker->getEditControl());
+
+		$form->add($fieldSet);
+		$form->add($modal->getButtonAndCancel($submit));
+		$modal->add($form);
 		}
 
 	private function addFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\PhotoFolder $parentFolder) : void
@@ -884,37 +905,6 @@ JS;
 		$modal->add($form);
 		}
 
-	private function addEditFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\PhotoFolder $photoFolder) : void
-		{
-		$submit = new \PHPFUI\Submit();
-
-		if (\App\Model\Session::checkCSRF() && $submit->submitted($_POST))
-			{
-			unset($_POST['photoFolderId']);
-			$photoFolder->setFrom($_POST);
-			$photoFolder->update();
-			$this->page->redirect();
-			}
-
-		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
-		$modal->addClass('large');
-		$form = new \PHPFUI\Form($this->page);
-		$form->setAreYouSure(false);
-		$fieldSet = new \PHPFUI\FieldSet('Edit Photo Folder');
-		$hidden = new \PHPFUI\Input\Hidden('photoFolderId', (string)$photoFolder->photoFolderId);
-		$fieldSet->add($hidden);
-		$folderName = new \PHPFUI\Input\Text('photoFolder', 'Folder Name', $photoFolder->photoFolder);
-		$folderName->setRequired();
-		$fieldSet->add($folderName);
-
-		$permissionGroupPicker = new \App\UI\PermissionGroupPicker($this->page, 'permissionId', 'Optional Permission Group Restriction', $photoFolder->permission);
-		$fieldSet->add($permissionGroupPicker->getEditControl());
-
-		$form->add($fieldSet);
-		$form->add($modal->getButtonAndCancel($submit));
-		$modal->add($form);
-		}
-
 	private function getAddTagReveal(\PHPFUI\HTML5Element $modalLink, int $photoId) : void
 		{
 		$submit = new \PHPFUI\Submit('Add Tag');
@@ -970,5 +960,15 @@ JS;
 		$form->add($rowSelect);
 		$form->add($modal->getButtonAndCancel($submit));
 		$modal->add($form);
+		}
+
+	private function getCut(array $photo) : string
+		{
+		if (! isset($this->cuts[$photo['photoId']]) && ($photo['memberId'] == $this->signedInMember || $this->movePhoto))
+			{
+			return new \PHPFUI\Input\CheckBox('cut[]', '', $photo['photoId']);
+			}
+
+		return '';
 		}
 	}

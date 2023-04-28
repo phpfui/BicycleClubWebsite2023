@@ -4,17 +4,17 @@ namespace App\View;
 
 class File
 	{
-	private readonly \App\Model\FileFiles $fileFiles;
-
-	private ?\PHPFUI\Button $searchButton = null;
-
-	private readonly int $signedInMember;
-
 	private array $cuts = [];
+
+	private readonly \App\Model\FileFiles $fileFiles;
 
 	private bool $moveFile = false;
 
 	private bool $moveFolder = false;
+
+	private ?\PHPFUI\Button $searchButton = null;
+
+	private readonly int $signedInMember;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
@@ -67,39 +67,6 @@ class File
 		return $container;
 		}
 
-	/**
-	 * Get standard folder breadcrumbs
-	 *
-	 * @param string $url should be / terminated, folderId will be appended
-	 */
-	public function getBreadCrumbs(string $url, int $fileFolderId, int $fileId = 0) : \PHPFUI\BreadCrumbs
-		{
-		$breadCrumbs = new \PHPFUI\BreadCrumbs();
-
-		$folders = \App\Table\FileFolder::getFolders($fileFolderId);
-
-		$breadCrumbs->addCrumb('All', '/File/browse');
-
-		foreach ($folders as $folderId => $name)
-			{
-			$link = '';
-
-			if ($folderId != $fileFolderId || $fileId)
-				{
-				$link = $url . $folderId;
-				}
-			$breadCrumbs->addCrumb($name, $link);
-			}
-
-		if ($fileId)
-			{
-			$file = new \App\Record\File($fileId);
-			$breadCrumbs->addCrumb($file->file);
-			}
-
-		return $breadCrumbs;
-		}
-
 	public function edit(\App\Record\File $file) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
@@ -141,6 +108,39 @@ class File
 			}
 
 		return $container;
+		}
+
+	/**
+	 * Get standard folder breadcrumbs
+	 *
+	 * @param string $url should be / terminated, folderId will be appended
+	 */
+	public function getBreadCrumbs(string $url, int $fileFolderId, int $fileId = 0) : \PHPFUI\BreadCrumbs
+		{
+		$breadCrumbs = new \PHPFUI\BreadCrumbs();
+
+		$folders = \App\Table\FileFolder::getFolders($fileFolderId);
+
+		$breadCrumbs->addCrumb('All', '/File/browse');
+
+		foreach ($folders as $folderId => $name)
+			{
+			$link = '';
+
+			if ($folderId != $fileFolderId || $fileId)
+				{
+				$link = $url . $folderId;
+				}
+			$breadCrumbs->addCrumb($name, $link);
+			}
+
+		if ($fileId)
+			{
+			$file = new \App\Record\File($fileId);
+			$breadCrumbs->addCrumb($file->file);
+			}
+
+		return $breadCrumbs;
 		}
 
 	public function getEditForm(\App\Record\File $file) : \PHPFUI\Form
@@ -278,6 +278,35 @@ class File
 		return true;
 		}
 
+	public function listFiles(\App\Table\File $fileTable, bool $allowCut = false, int $fileFolderId = 0) : \App\UI\ContinuousScrollTable
+		{
+		$view = new \App\UI\ContinuousScrollTable($this->page, $fileTable);
+		$deleter = new \App\Model\DeleteRecord($this->page, $view, $fileTable, 'Are you sure you want to permanently delete this file?');
+		$view->addCustomColumn('del', $deleter->columnCallback(...));
+
+		$this->cuts = \App\Model\Session::getFileCuts();
+
+		$view->addCustomColumn('uploaded', static fn (array $file) => \date('Y-m-d', \strtotime((string)$file['uploaded'])));
+		$view->addCustomColumn('file', static fn (array $file) => new \PHPFUI\Link('/File/edit/' . $file['fileId'], $file['file'], false));
+		$view->addCustomColumn('fileName', static fn (array $file) => new \PHPFUI\Link('/File/download/' . $file['fileId'], $file['fileName'], false));
+		$view->addCustomColumn('member', static function(array $file) { $member = new \App\Record\Member($file['memberId']);
+
+return $member->fullName();});
+
+		$headers = ['fileName' => 'Download', 'file' => 'Description', 'uploaded' => 'Uploaded'];
+		$normalHeaders = ['member', 'del'];
+
+		if ($allowCut)
+			{
+			$normalHeaders[] = 'cut';
+			$view->addCustomColumn('cut', $this->getCut(...));
+			}
+
+		$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, $normalHeaders))->setSortableColumns(\array_keys($headers));
+
+		return $view;
+		}
+
 	public function listFolders(\App\Table\FileFolder $folders, \App\Record\FileFolder $parentFolder) : \PHPFUI\Table
 		{
 		$container = new \PHPFUI\Table();
@@ -361,55 +390,15 @@ class File
 		return $container;
 		}
 
-	public function listFiles(\App\Table\File $fileTable, bool $allowCut = false, int $fileFolderId = 0) : \App\UI\ContinuousScrollTable
+	private function addEditFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\FileFolder $fileFolder) : void
 		{
-		$view = new \App\UI\ContinuousScrollTable($this->page, $fileTable);
-		$deleter = new \App\Model\DeleteRecord($this->page, $view, $fileTable, 'Are you sure you want to permanently delete this file?');
-		$view->addCustomColumn('del', $deleter->columnCallback(...));
-
-		$this->cuts = \App\Model\Session::getFileCuts();
-
-		$view->addCustomColumn('uploaded', static fn (array $file) => \date('Y-m-d', \strtotime((string)$file['uploaded'])));
-		$view->addCustomColumn('file', static fn (array $file) => new \PHPFUI\Link('/File/edit/' . $file['fileId'], $file['file'], false));
-		$view->addCustomColumn('fileName', static fn (array $file) => new \PHPFUI\Link('/File/download/' . $file['fileId'], $file['fileName'], false));
-		$view->addCustomColumn('member', static function(array $file) { $member = new \App\Record\Member($file['memberId']);
-
-return $member->fullName();});
-
-		$headers = ['fileName' => 'Download', 'file' => 'Description', 'uploaded' => 'Uploaded'];
-		$normalHeaders = ['member', 'del'];
-
-		if ($allowCut)
-			{
-			$normalHeaders[] = 'cut';
-			$view->addCustomColumn('cut', $this->getCut(...));
-			}
-
-		$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, $normalHeaders))->setSortableColumns(\array_keys($headers));
-
-		return $view;
-		}
-
-	private function getCut(array $file) : string
-		{
-		if (! isset($this->cuts[$file['fileId']]) && ($file['memberId'] == $this->signedInMember || $this->moveFile))
-			{
-			return new \PHPFUI\Input\CheckBox('cut[]', '', $file['fileId']);
-			}
-
-		return '';
-		}
-
-	private function addFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\FileFolder $parentFolder) : void
-		{
-		$permission = 'Add File Folder';
-		$submit = new \PHPFUI\Submit($permission);
+		$submit = new \PHPFUI\Submit();
 
 		if (\App\Model\Session::checkCSRF() && $submit->submitted($_POST))
 			{
-			$fileFolder = new \App\Record\FileFolder();
+			unset($_POST['fileFolderId']);
 			$fileFolder->setFrom($_POST);
-			$fileFolder->insert();
+			$fileFolder->update();
 			$this->page->redirect();
 			}
 
@@ -417,14 +406,14 @@ return $member->fullName();});
 		$modal->addClass('large');
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
-		$fieldSet = new \PHPFUI\FieldSet('New Folder Name');
-		$hidden = new \PHPFUI\Input\Hidden('parentFolderId', (string)$parentFolder->fileFolderId);
+		$fieldSet = new \PHPFUI\FieldSet('Edit File Folder');
+		$hidden = new \PHPFUI\Input\Hidden('fileFolderId', (string)$fileFolder->fileFolderId);
 		$fieldSet->add($hidden);
-		$folderName = new \PHPFUI\Input\Text('fileFolder', 'New Folder Name');
+		$folderName = new \PHPFUI\Input\Text('fileFolder', 'Folder Name', $fileFolder->fileFolder);
 		$folderName->setRequired();
 		$fieldSet->add($folderName);
 
-		$permissionGroupPicker = new \App\UI\PermissionGroupPicker($this->page, 'permissionId', 'Optional Permission Group Restriction');
+		$permissionGroupPicker = new \App\UI\PermissionGroupPicker($this->page, 'permissionId', 'Optional Permission Group Restriction', $fileFolder->permission);
 		$fieldSet->add($permissionGroupPicker->getEditControl());
 
 		$form->add($fieldSet);
@@ -480,15 +469,16 @@ return $member->fullName();});
 		$modal->add($fieldSet);
 		}
 
-	private function addEditFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\FileFolder $fileFolder) : void
+	private function addFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\FileFolder $parentFolder) : void
 		{
-		$submit = new \PHPFUI\Submit();
+		$permission = 'Add File Folder';
+		$submit = new \PHPFUI\Submit($permission);
 
 		if (\App\Model\Session::checkCSRF() && $submit->submitted($_POST))
 			{
-			unset($_POST['fileFolderId']);
+			$fileFolder = new \App\Record\FileFolder();
 			$fileFolder->setFrom($_POST);
-			$fileFolder->update();
+			$fileFolder->insert();
 			$this->page->redirect();
 			}
 
@@ -496,18 +486,28 @@ return $member->fullName();});
 		$modal->addClass('large');
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
-		$fieldSet = new \PHPFUI\FieldSet('Edit File Folder');
-		$hidden = new \PHPFUI\Input\Hidden('fileFolderId', (string)$fileFolder->fileFolderId);
+		$fieldSet = new \PHPFUI\FieldSet('New Folder Name');
+		$hidden = new \PHPFUI\Input\Hidden('parentFolderId', (string)$parentFolder->fileFolderId);
 		$fieldSet->add($hidden);
-		$folderName = new \PHPFUI\Input\Text('fileFolder', 'Folder Name', $fileFolder->fileFolder);
+		$folderName = new \PHPFUI\Input\Text('fileFolder', 'New Folder Name');
 		$folderName->setRequired();
 		$fieldSet->add($folderName);
 
-		$permissionGroupPicker = new \App\UI\PermissionGroupPicker($this->page, 'permissionId', 'Optional Permission Group Restriction', $fileFolder->permission);
+		$permissionGroupPicker = new \App\UI\PermissionGroupPicker($this->page, 'permissionId', 'Optional Permission Group Restriction');
 		$fieldSet->add($permissionGroupPicker->getEditControl());
 
 		$form->add($fieldSet);
 		$form->add($modal->getButtonAndCancel($submit));
 		$modal->add($form);
+		}
+
+	private function getCut(array $file) : string
+		{
+		if (! isset($this->cuts[$file['fileId']]) && ($file['memberId'] == $this->signedInMember || $this->moveFile))
+			{
+			return new \PHPFUI\Input\CheckBox('cut[]', '', $file['fileId']);
+			}
+
+		return '';
 		}
 	}

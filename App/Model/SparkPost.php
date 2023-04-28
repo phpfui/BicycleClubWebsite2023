@@ -18,33 +18,9 @@ class SparkPost
 			}
 		}
 
-	public function getSuppressionList() : array
+	public function active() : bool
 		{
-		$results = [];
-
-		if (! $this->active())
-			{
-			return $results;
-			}
-
-		try
-			{
-			$parameters = [];
-			$parameters['from'] = \App\Tools\Date::todayString(-400) . 'T00:00:00Z';
-
-			$response = $this->sparkPost->request('GET', 'suppression-list', $parameters);
-
-			if (200 == $response->getStatusCode())
-				{
-				$results = $response->getBody()['results'];
-				}
-			}
-		catch (\Exception $e)
-			{
-			\App\Tools\Logger::get()->debug($e);
-			}
-
-		return $results;
+		return null !== $this->sparkPost;
 		}
 
 	public function deleteSuppressions(array $emailAddresses) : array
@@ -75,8 +51,32 @@ class SparkPost
 		return $results;
 		}
 
-	public function active() : bool
+	public function getSuppressionList() : array
 		{
-		return null !== $this->sparkPost;
+		$results = [];
+
+		if (! $this->active())
+			{
+			return $results;
+			}
+
+		try
+			{
+			$parameters = [];
+			$parameters['from'] = \App\Tools\Date::todayString(-400) . 'T00:00:00Z';
+
+			$response = $this->sparkPost->request('GET', 'suppression-list', $parameters);
+
+			if (200 == $response->getStatusCode())
+				{
+				$results = $response->getBody()['results'];
+				}
+			}
+		catch (\Exception $e)
+			{
+			\App\Tools\Logger::get()->debug($e);
+			}
+
+		return $results;
 		}
 	}

@@ -12,10 +12,10 @@ class DiscountCode extends \PHPFUI\ORM\Validator
 		'description' => ['maxlength'],
 		'discount' => ['number'],
 		'discountCode' => ['maxlength'],
-		'expirationDate' => ['required', 'date'],
+		'expirationDate' => ['required', 'date', 'gte_field:startDate'],
 		'maximumUses' => ['integer'],
 		'repeatCount' => ['integer'],
-		'startDate' => ['required', 'date'],
+		'startDate' => ['required', 'date', 'lte_field:expirationDate'],
 		'validItemNumbers' => ['maxlength'],
 	];
 

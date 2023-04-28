@@ -186,47 +186,39 @@ class EventEdit
 		return $container;
 		}
 
-	private function getSignupEmail(\App\Record\GaEvent $event) : \PHPFUI\Container
+	private function getOptions(\App\Record\GaEvent $event) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
+		$optionsSet = new \PHPFUI\FieldSet('Options');
+		$maxRegistrants = new \PHPFUI\Input\Number('maxRegistrants', 'Max Registrants', $event->maxRegistrants);
+		$maxRegistrants->addAttribute('min', (string)0)->addAttribute('max', (string)99)->addAttribute('step', (string)1);
+		$maxRegistrants->setToolTip('Set to zero for unlimited registrations');
+		$optionsSet->add($maxRegistrants);
+		$dayOfRegistration = new \PHPFUI\Input\CheckBoxBoolean('dayOfRegistration', 'Day Of Registration Allowed', (bool)$event->dayOfRegistration);
+		$showPreregistration = new \PHPFUI\Input\CheckBoxBoolean('showPreregistration', 'Show Preregistration Numbers', (bool)$event->showPreregistration);
+		$optionsSet->add(new \PHPFUI\MultiColumn($dayOfRegistration, $showPreregistration));
+		$includeMembership = new \PHPFUI\Input\CheckBoxBoolean('includeMembership', 'Include Membership with Event Purchase', (bool)$event->includeMembership);
+		$membershipExpiresDate = new \PHPFUI\Input\Date($this->page, 'membershipExpires', 'Membership Expires', $event->membershipExpires);
+		$membershipExpiresDate->setToolTip('If a membership is included, this is when it will expire. Leave blank for the end of the year.');
+		$membershipMultiColumn = new \PHPFUI\MultiColumn($includeMembership, $membershipExpiresDate);
+		$otherEvent = new \PHPFUI\Input\CheckBoxBoolean('otherEvent', 'Not Signature Event', (bool)$event->otherEvent);
+		$optionsSet->add(new \PHPFUI\MultiColumn($membershipMultiColumn, $otherEvent));
+		$container->add($optionsSet);
+		$volunteerSet = new \PHPFUI\FieldSet('Volunteer Options');
+		$volunteerDiscount = new \PHPFUI\Input\Number('volunteerDiscount', 'Volunteer Discount', $event->volunteerDiscount);
+		$volunteerDiscount->addAttribute('max', (string)99)->addAttribute('min', (string)0);
+		$volunteerDiscount->setToolTip('If someone signs up as a volunteer, then they will receive this discount when registering');
+		$volunteerEvent = new \PHPFUI\Input\Select('volunteerEvent', 'Corresponding Volunteer Event');
+		$volunteerEvent->setToolTip('This is the volunteer event a member must volunteer for to receive a discount.');
+		$jobEventTable = new \App\Table\JobEvent();
+		$jobs = $jobEventTable->getJobEvents();
 
-		$signupMessage = new \PHPFUI\Input\TextArea('signupMessage', 'Email on Sign Up', \str_replace("\n", '<br>', $event->signupMessage ?? ''));
-		$signupMessage->setToolTip('This will be sent to people who successfully register for the event.');
-		$signupMessage->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
-		$container->add($signupMessage);
-
-		return $container;
-		}
-
-	private function getRoute(\App\Record\GaEvent $event, \PHPFUI\Form $form) : \PHPFUI\Container
-		{
-		$container = new \PHPFUI\Container();
-		$this->gaRideTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId))->addOrderBy('distance');
-
-		$table = new \PHPFUI\Table();
-		$table->setRecordId($recordId = 'gaRideId');
-		$delete = new \PHPFUI\AJAX('deleteRoute', 'Permanently delete this route?');
-		$delete->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast').remove();");
-		$this->page->addJavaScript($delete->getPageJS());
-		$table->setHeaders(['distance' => 'Distance', 'startTime' => 'Start Time', 'endTime' => 'End Time',
-			'extraPrice' => 'Extra Price', 'edit' => 'Edit', 'del' => 'Del', ]);
-
-		foreach ($this->gaRideTable->getRecordCursor() as $route)
+		foreach ($jobs as $job)
 			{
-			$row = $route->toArray();
-			$id = $route->gaRideId;
-			$editIcon = new \PHPFUI\FAIcon('far', 'edit', '/GA/editRoute/' . $id);
-			$row['edit'] = $editIcon;
-			$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-			$icon->addAttribute('onclick', $delete->execute([$recordId => $id]));
-			$row['del'] = $icon;
-			$table->addRow($row);
+			$volunteerEvent->addOption($job->name, $job->jobEventId, $event->volunteerEvent == $job->jobEventId);
 			}
-		$container->add($table);
-		$addRouteButton = new \PHPFUI\Button('Add Route');
-		$form->saveOnClick($addRouteButton);
-		$this->addRouteModal($event, $addRouteButton);
-		$container->add($addRouteButton);
+		$volunteerSet->add(new \PHPFUI\MultiColumn($volunteerEvent, $volunteerDiscount));
+		$container->add($volunteerSet);
 
 		return $container;
 		}
@@ -301,43 +293,6 @@ class EventEdit
 		return $container;
 		}
 
-	private function getOptions(\App\Record\GaEvent $event) : \PHPFUI\Container
-		{
-		$container = new \PHPFUI\Container();
-		$optionsSet = new \PHPFUI\FieldSet('Options');
-		$maxRegistrants = new \PHPFUI\Input\Number('maxRegistrants', 'Max Registrants', $event->maxRegistrants);
-		$maxRegistrants->addAttribute('min', (string)0)->addAttribute('max', (string)99)->addAttribute('step', (string)1);
-		$maxRegistrants->setToolTip('Set to zero for unlimited registrations');
-		$optionsSet->add($maxRegistrants);
-		$dayOfRegistration = new \PHPFUI\Input\CheckBoxBoolean('dayOfRegistration', 'Day Of Registration Allowed', (bool)$event->dayOfRegistration);
-		$showPreregistration = new \PHPFUI\Input\CheckBoxBoolean('showPreregistration', 'Show Preregistration Numbers', (bool)$event->showPreregistration);
-		$optionsSet->add(new \PHPFUI\MultiColumn($dayOfRegistration, $showPreregistration));
-		$includeMembership = new \PHPFUI\Input\CheckBoxBoolean('includeMembership', 'Include Membership with Event Purchase', (bool)$event->includeMembership);
-		$membershipExpiresDate = new \PHPFUI\Input\Date($this->page, 'membershipExpires', 'Membership Expires', $event->membershipExpires);
-		$membershipExpiresDate->setToolTip('If a membership is included, this is when it will expire. Leave blank for the end of the year.');
-		$membershipMultiColumn = new \PHPFUI\MultiColumn($includeMembership, $membershipExpiresDate);
-		$otherEvent = new \PHPFUI\Input\CheckBoxBoolean('otherEvent', 'Not Signature Event', (bool)$event->otherEvent);
-		$optionsSet->add(new \PHPFUI\MultiColumn($membershipMultiColumn, $otherEvent));
-		$container->add($optionsSet);
-		$volunteerSet = new \PHPFUI\FieldSet('Volunteer Options');
-		$volunteerDiscount = new \PHPFUI\Input\Number('volunteerDiscount', 'Volunteer Discount', $event->volunteerDiscount);
-		$volunteerDiscount->addAttribute('max', (string)99)->addAttribute('min', (string)0);
-		$volunteerDiscount->setToolTip('If someone signs up as a volunteer, then they will receive this discount when registering');
-		$volunteerEvent = new \PHPFUI\Input\Select('volunteerEvent', 'Corresponding Volunteer Event');
-		$volunteerEvent->setToolTip('This is the volunteer event a member must volunteer for to receive a discount.');
-		$jobEventTable = new \App\Table\JobEvent();
-		$jobs = $jobEventTable->getJobEvents();
-
-		foreach ($jobs as $job)
-			{
-			$volunteerEvent->addOption($job->name, $job->jobEventId, $event->volunteerEvent == $job->jobEventId);
-			}
-		$volunteerSet->add(new \PHPFUI\MultiColumn($volunteerEvent, $volunteerDiscount));
-		$container->add($volunteerSet);
-
-		return $container;
-		}
-
 	private function getRequiredFields(\App\Record\GaEvent $event) : \PHPFUI\Container
 		{
 		$requiredFields = new \PHPFUI\Container();
@@ -372,6 +327,51 @@ class EventEdit
 		$requiredFields->add($location);
 
 		return $requiredFields;
+		}
+
+	private function getRoute(\App\Record\GaEvent $event, \PHPFUI\Form $form) : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+		$this->gaRideTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId))->addOrderBy('distance');
+
+		$table = new \PHPFUI\Table();
+		$table->setRecordId($recordId = 'gaRideId');
+		$delete = new \PHPFUI\AJAX('deleteRoute', 'Permanently delete this route?');
+		$delete->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast').remove();");
+		$this->page->addJavaScript($delete->getPageJS());
+		$table->setHeaders(['distance' => 'Distance', 'startTime' => 'Start Time', 'endTime' => 'End Time',
+			'extraPrice' => 'Extra Price', 'edit' => 'Edit', 'del' => 'Del', ]);
+
+		foreach ($this->gaRideTable->getRecordCursor() as $route)
+			{
+			$row = $route->toArray();
+			$id = $route->gaRideId;
+			$editIcon = new \PHPFUI\FAIcon('far', 'edit', '/GA/editRoute/' . $id);
+			$row['edit'] = $editIcon;
+			$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
+			$icon->addAttribute('onclick', $delete->execute([$recordId => $id]));
+			$row['del'] = $icon;
+			$table->addRow($row);
+			}
+		$container->add($table);
+		$addRouteButton = new \PHPFUI\Button('Add Route');
+		$form->saveOnClick($addRouteButton);
+		$this->addRouteModal($event, $addRouteButton);
+		$container->add($addRouteButton);
+
+		return $container;
+		}
+
+	private function getSignupEmail(\App\Record\GaEvent $event) : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+
+		$signupMessage = new \PHPFUI\Input\TextArea('signupMessage', 'Email on Sign Up', \str_replace("\n", '<br>', $event->signupMessage ?? ''));
+		$signupMessage->setToolTip('This will be sent to people who successfully register for the event.');
+		$signupMessage->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$container->add($signupMessage);
+
+		return $container;
 		}
 
 	private function processRequest() : void

@@ -46,17 +46,17 @@ class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\Na
 			}
 		}
 
+	public function addRedirect(string $originalUrl, string $redirectUrl) : void
+		{
+		$this->redirects[\strtolower($originalUrl)] = $redirectUrl;
+		}
+
 	/**
 	 * $callback must be an array of object and method so object can be returned by the controller::run() method.  It can not be a closure.
 	 */
 	public function addRoute(string $route, array $callback) : void
 		{
 		$this->routes[\strtolower($route)] = $callback;
-		}
-
-	public function addRedirect(string $originalUrl, string $redirectUrl) : void
-		{
-		$this->redirects[\strtolower($originalUrl)] = $redirectUrl;
 		}
 
 	public function getDebugBar() : ?\DebugBar\StandardDebugBar
@@ -77,6 +77,13 @@ class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\Na
 	public function getPublicMenu() : \App\View\Public\Menu
 		{
 		return $this->publicMenu;
+		}
+
+	public function initDebugBar(?\DebugBar\StandardDebugBar $debugBar) : static
+		{
+		$this->debugBar = $debugBar;
+
+		return $this;
 		}
 
 	public function run() : \PHPFUI\Interfaces\NanoClass
@@ -108,13 +115,6 @@ class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\Na
 		\PHPFUI\ORM::reportErrors();
 
 		return parent::run();
-		}
-
-	public function initDebugBar(?\DebugBar\StandardDebugBar $debugBar) : static
-		{
-		$this->debugBar = $debugBar;
-
-		return $this;
 		}
 
 	private function checkRedirects(string $url) : bool

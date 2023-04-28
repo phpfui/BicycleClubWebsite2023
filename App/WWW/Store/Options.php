@@ -20,20 +20,20 @@ class Options extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function edit(\App\Record\StoreOption $storeOption = new \App\Record\StoreOption()) : void
+		{
+		if ($this->page->addHeader('Edit Store Option'))
+			{
+			$this->page->addPageContent($this->view->edit($storeOption));
+			}
+		}
+
 	public function list() : void
 		{
 		if ($this->page->addHeader('Store Options'))
 			{
 			$this->page->addPageContent($this->view->show());
 			$this->page->addPageContent(new \App\UI\CancelButtonGroup(new \PHPFUI\Button('Add Store Option', '/Store/Options/add')));
-			}
-		}
-
-	public function edit(\App\Record\StoreOption $storeOption = new \App\Record\StoreOption()) : void
-		{
-		if ($this->page->addHeader('Edit Store Option'))
-			{
-			$this->page->addPageContent($this->view->edit($storeOption));
 			}
 		}
 	}

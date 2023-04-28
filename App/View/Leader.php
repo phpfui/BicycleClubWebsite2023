@@ -30,6 +30,13 @@ class Leader
 		return $select;
 		}
 
+	public function getName(int $memberId) : string
+		{
+		$member = new \App\Record\Member($memberId);
+
+		return $member->fullName();
+		}
+
 	public function getReportRequest() : string
 		{
 		$form = new \PHPFUI\Form($this->page);
@@ -58,13 +65,6 @@ class Leader
 		$form->add($buttonGroup);
 
 		return $form;
-		}
-
-	public function getName(int $memberId) : string
-		{
-		$member = new \App\Record\Member($memberId);
-
-		return $member->fullName();
 		}
 
 	public function getSettings(\PHPFUI\Button $backButton) : \PHPFUI\Container

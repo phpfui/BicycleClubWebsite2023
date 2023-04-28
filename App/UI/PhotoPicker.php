@@ -4,9 +4,9 @@ namespace App\UI;
 
 class PhotoPicker
 	{
-	private readonly \App\Table\Photo $photoTable;
-
 	private readonly \App\Table\PhotoFolder $photoFolderTable;
+
+	private readonly \App\Table\Photo $photoTable;
 
 	public function __construct(private readonly \PHPFUI\Page $page, private readonly string $fieldName, private readonly string $label = '', private readonly \App\Record\Photo $initial = new \App\Record\Photo())
 		{

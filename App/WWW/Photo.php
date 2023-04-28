@@ -6,9 +6,9 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
 	private readonly \App\Table\PhotoFolder $folderTable;
 
-	private readonly \App\Table\Photo $table;
-
 	private readonly \App\Table\PhotoTag $photoTagTable;
+
+	private readonly \App\Table\Photo $table;
 
 	private readonly \App\View\Photo $view;
 

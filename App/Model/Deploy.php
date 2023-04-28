@@ -85,6 +85,36 @@ class Deploy
 		return $this->sortedTags->getTags(\App\Model\ReleaseTag::VERSION_PREFIX);
 		}
 
+	public function sendUpgradeEmail(\Gitonomy\Git\Reference\Tag $tag, string $errorMessage, array $errors) : void
+		{
+		$email = new \App\Tools\EMail();
+		$email->setTo('webmaster@' . $_SERVER['SERVER_NAME']);
+
+		if ($errorMessage)
+			{
+			$email->setSubject($_SERVER['SERVER_NAME'] . ' failed to update to release ' . $tag->getName());
+			$email->setBody($errorMessage);
+			}
+		elseif ($errors)
+			{
+			$email->setSubject($_SERVER['SERVER_NAME'] . ' failed to update to release ' . $tag->getName());
+			$email->setBody(\print_r($errors, true));
+			}
+		else
+			{
+			$email->setSubject($_SERVER['SERVER_NAME'] . ' updated to release ' . $tag->getName());
+			$email->setHtml();
+			$markdown = $tag->getMessage();
+			// git considers lines in tags that start with # to be comments, so they need a space in front of them, but then markdown does not see it,
+			// so replace leading spaces followed by # with just #
+			$markdown = \str_replace(' #', '#', $markdown);
+			$parser = new \PHPFUI\InstaDoc\MarkDownParser();
+			$displayText = $parser->text($markdown);
+			$email->setBody($displayText);
+			}
+		$email->send();
+		}
+
 	public function updateToLatest() : void
 		{
 		$tags = $this->getReleaseTags();
@@ -120,35 +150,5 @@ class Deploy
 			$errors = $this->deployTarget($latestHash);
 			}
 		$this->sendUpgradeEmail($tag, $releaseTag->getError(), $errors);
-		}
-
-	public function sendUpgradeEmail(\Gitonomy\Git\Reference\Tag $tag, string $errorMessage, array $errors) : void
-		{
-		$email = new \App\Tools\EMail();
-		$email->setTo('webmaster@' . $_SERVER['SERVER_NAME']);
-
-		if ($errorMessage)
-			{
-			$email->setSubject($_SERVER['SERVER_NAME'] . ' failed to update to release ' . $tag->getName());
-			$email->setBody($errorMessage);
-			}
-		elseif ($errors)
-			{
-			$email->setSubject($_SERVER['SERVER_NAME'] . ' failed to update to release ' . $tag->getName());
-			$email->setBody(\print_r($errors, true));
-			}
-		else
-			{
-			$email->setSubject($_SERVER['SERVER_NAME'] . ' updated to release ' . $tag->getName());
-			$email->setHtml();
-			$markdown = $tag->getMessage();
-			// git considers lines in tags that start with # to be comments, so they need a space in front of them, but then markdown does not see it,
-			// so replace leading spaces followed by # with just #
-			$markdown = \str_replace(' #', '#', $markdown);
-			$parser = new \PHPFUI\InstaDoc\MarkDownParser();
-			$displayText = $parser->text($markdown);
-			$email->setBody($displayText);
-			}
-		$email->send();
 		}
 	}

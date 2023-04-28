@@ -36,6 +36,18 @@ class Session extends \PHPFUI\Session
 		return (int)$_SESSION['expires'];
 		}
 
+	public static function fileCut(int $photoId, bool $add = true) : void
+		{
+		if ($add)
+			{
+			$_SESSION['files']['cut'][$photoId] = true;
+			}
+		else
+			{
+			unset($_SESSION['files']['cut'][$photoId]);
+			}
+		}
+
 	public static function getCustomerNumber() : int
 		{
 		return $_SESSION['customerNumber'] ?? 0;
@@ -53,6 +65,11 @@ class Session extends \PHPFUI\Session
 		return $debug;
 		}
 
+	public static function getFileCuts() : array
+		{
+		return $_SESSION['files']['cut'] ?? [];
+		}
+
 	public static function getPhotoAlbum() : array
 		{
 		return $_SESSION['photos']['album'] ?? [];
@@ -63,26 +80,11 @@ class Session extends \PHPFUI\Session
 		return $_SESSION['photos']['cut'] ?? [];
 		}
 
-	public static function getFileCuts() : array
-		{
-		return $_SESSION['files']['cut'] ?? [];
-		}
-
 	public static function getSignedInMember() : array
 		{
 		$memberTable = new \App\Table\Member();
 
 		return $memberTable->getMembership(self::signedInMemberId());
-		}
-
-	public static function signedInMemberRecord() : \App\Record\Member
-		{
-		return self::$signedInMember ?: self::$signedInMember = new \App\Record\Member(self::signedInMemberId());
-		}
-
-	public static function signedInMembershipRecord() : \App\Record\Membership
-		{
-		return self::$signedInMembership ?: self::$signedInMembership = new \App\Record\Membership(self::signedInMembershipId());
 		}
 
 	public static function hasExpired() : bool
@@ -104,18 +106,6 @@ class Session extends \PHPFUI\Session
 		else
 			{
 			unset($_SESSION['photos']['cut'][$photoId]);
-			}
-		}
-
-	public static function fileCut(int $photoId, bool $add = true) : void
-		{
-		if ($add)
-			{
-			$_SESSION['files']['cut'][$photoId] = true;
-			}
-		else
-			{
-			unset($_SESSION['files']['cut'][$photoId]);
 			}
 		}
 
@@ -169,9 +159,19 @@ class Session extends \PHPFUI\Session
 		return ! empty($_SESSION['memberId']) ? $_SESSION['memberId'] : 0;
 		}
 
+	public static function signedInMemberRecord() : \App\Record\Member
+		{
+		return self::$signedInMember ?: self::$signedInMember = new \App\Record\Member(self::signedInMemberId());
+		}
+
 	public static function signedInMembershipId() : int
 		{
 		return ! empty($_SESSION['membershipId']) ? $_SESSION['membershipId'] : 0;
+		}
+
+	public static function signedInMembershipRecord() : \App\Record\Membership
+		{
+		return self::$signedInMembership ?: self::$signedInMembership = new \App\Record\Membership(self::signedInMembershipId());
 		}
 
 	public static function signedWaiver() : bool

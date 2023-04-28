@@ -16,18 +16,6 @@ class Page extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 		$this->setPublic();
 		}
 
-	public function getUniqueLink(\App\Record\PublicPage $publicPage) : string
-		{
-		$baseLink = $publicPage->url ?? '';
-
-		if ($publicPage->hidden)
-			{
-			return $baseLink . '/' . \App\Model\Session::csrf();
-			}
-
-		return $baseLink;
-		}
-
 	public function custom() : void
 		{
 		$this->setPublic();
@@ -85,5 +73,17 @@ class Page extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 			$boardMemberTable = new \App\Table\BoardMember();
 			$this->addPageContent(new \App\View\Public\ContactUs($this, $boardMemberTable->getBoardMembers()));
 			}
+		}
+
+	public function getUniqueLink(\App\Record\PublicPage $publicPage) : string
+		{
+		$baseLink = $publicPage->url ?? '';
+
+		if ($publicPage->hidden)
+			{
+			return $baseLink . '/' . \App\Model\Session::csrf();
+			}
+
+		return $baseLink;
 		}
 	}

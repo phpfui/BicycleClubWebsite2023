@@ -7,6 +7,16 @@ namespace App\Record;
  */
 class RWGPS extends \App\Record\Definition\RWGPS
 	{
+	public function computeFeetPerMile() : static
+		{
+		if (! empty($this->elevation) && ! empty($this->mileage))
+			{
+			$this->feetPerMile = $this->elevation / $this->mileage;
+			}
+
+		return $this;
+		}
+
 	public function insert() : int
 		{
 		$this->computeFeetPerMile();
@@ -26,15 +36,5 @@ class RWGPS extends \App\Record\Definition\RWGPS
 		$this->computeFeetPerMile();
 
 		return parent::update();
-		}
-
-	public function computeFeetPerMile() : static
-		{
-		if (! empty($this->elevation) && ! empty($this->mileage))
-			{
-			$this->feetPerMile = $this->elevation / $this->mileage;
-			}
-
-		return $this;
 		}
 	}

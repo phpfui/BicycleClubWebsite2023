@@ -156,24 +156,6 @@ class Invoice extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
 		}
 
-	public function setCompletedForMember(int $memberId) : static
-		{
-		$this->addJoin('member');
-		$condition = new \PHPFUI\ORM\Condition('paymentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
-		$condition->and('invoice.memberId', $memberId);
-		$this->setWhere($condition);
-		$this->setOrderBy('orderDate', 'desc');
-
-		return $this;
-		}
-
-	public static function getDiscountCodeTimesUsed(int $discountCodeId) : int
-		{
-		$sql = 'select count(*) from invoice where discountCodeId=?';
-
-		return (int)\PHPFUI\ORM::getValue($sql, [$discountCodeId]);
-		}
-
 	public static function getByDateType(string $startDate, string $endDate, array $types = []) : iterable
 		{
 		$sql = 'select * from invoice where orderDate>=? and orderDate<=? and paymentDate>"1000-01-01"';
@@ -185,6 +167,13 @@ class Invoice extends \PHPFUI\ORM\Table
 			}
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
+		}
+
+	public static function getDiscountCodeTimesUsed(int $discountCodeId) : int
+		{
+		$sql = 'select count(*) from invoice where discountCodeId=?';
+
+		return (int)\PHPFUI\ORM::getValue($sql, [$discountCodeId]);
 		}
 
 	public static function getPaidByDate(int $shipped, string $startDate = '', string $endDate = '', int $points = 0) : iterable
@@ -235,42 +224,11 @@ class Invoice extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Invoice(), $sql, [$date]);
 		}
 
-	public function setUnpaidForMember(int $memberId) : static
-		{
-		$this->addJoin('member');
-		$condition = new \PHPFUI\ORM\Condition('paymentDate', null, new \PHPFUI\ORM\Operator\IsNull());
-		$condition->and('invoice.memberId', $memberId);
-		$this->setWhere($condition);
-		$this->setOrderBy('orderDate', 'desc');
-
-		return $this;
-		}
-
 	public static function getUnpaidOn(string $date) : iterable
 		{
 		$sql = 'select * from invoice where orderDate = ? and paymentDate is null';
 
 		return \PHPFUI\ORM::getRows($sql, [$date]);
-		}
-
-	public function setUnrecordedChecks() : static
-		{
-		$condition = new \PHPFUI\ORM\Condition('paymentDate', null, new \PHPFUI\ORM\Operator\IsNull());
-		$condition->and('paidByCheck', 1);
-		$this->setWhere($condition);
-
-		return $this;
-		}
-
-	public function setUnshippedInvoices() : static
-		{
-		$this->addJoin('member');
-		$condition = new \PHPFUI\ORM\Condition('paymentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
-		$condition->and('fullfillmentDate', null, new \PHPFUI\ORM\Operator\IsNull());
-		$this->setWhere($condition);
-		$this->setOrderBy('orderDate', 'desc');
-
-		return $this;
 		}
 
 	public static function pointsUsed(string $start, string $end, string $sort) : iterable
@@ -292,6 +250,48 @@ class Invoice extends \PHPFUI\ORM\Table
 		$sql .= ' order by ' . $sort;
 
 		return \PHPFUI\ORM::getArrayCursor($sql, $input);
+		}
+
+	public function setCompletedForMember(int $memberId) : static
+		{
+		$this->addJoin('member');
+		$condition = new \PHPFUI\ORM\Condition('paymentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition->and('invoice.memberId', $memberId);
+		$this->setWhere($condition);
+		$this->setOrderBy('orderDate', 'desc');
+
+		return $this;
+		}
+
+	public function setUnpaidForMember(int $memberId) : static
+		{
+		$this->addJoin('member');
+		$condition = new \PHPFUI\ORM\Condition('paymentDate', null, new \PHPFUI\ORM\Operator\IsNull());
+		$condition->and('invoice.memberId', $memberId);
+		$this->setWhere($condition);
+		$this->setOrderBy('orderDate', 'desc');
+
+		return $this;
+		}
+
+	public function setUnrecordedChecks() : static
+		{
+		$condition = new \PHPFUI\ORM\Condition('paymentDate', null, new \PHPFUI\ORM\Operator\IsNull());
+		$condition->and('paidByCheck', 1);
+		$this->setWhere($condition);
+
+		return $this;
+		}
+
+	public function setUnshippedInvoices() : static
+		{
+		$this->addJoin('member');
+		$condition = new \PHPFUI\ORM\Condition('paymentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition->and('fullfillmentDate', null, new \PHPFUI\ORM\Operator\IsNull());
+		$this->setWhere($condition);
+		$this->setOrderBy('orderDate', 'desc');
+
+		return $this;
 		}
 
 	private static function getSelectFields() : string

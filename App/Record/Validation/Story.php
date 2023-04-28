@@ -12,7 +12,7 @@ class Story extends \PHPFUI\ORM\Validator
 		'author' => ['maxlength'],
 		'body' => ['maxlength'],
 		'date' => ['date'],
-		'endDate' => ['date'],
+		'endDate' => ['date', 'gte_field:startDate'],
 		'headline' => ['maxlength'],
 		'javaScript' => ['maxlength'],
 		'lastEdited' => ['date'],
@@ -21,7 +21,7 @@ class Story extends \PHPFUI\ORM\Validator
 		'noTitle' => ['integer'],
 		'onTop' => ['integer'],
 		'showFull' => ['integer'],
-		'startDate' => ['date'],
+		'startDate' => ['date', 'gte_field:date', 'lte_field:endDate'],
 		'subhead' => ['maxlength'],
 	];
 

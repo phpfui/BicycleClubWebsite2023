@@ -4,11 +4,11 @@ namespace App\Model;
 
 class RideSignup
 	{
-	private int $signupLimit = 0;
-
 	private readonly \App\Table\RideSignup $rideSignupTable;
 
 	private readonly \App\Table\Setting $settingTable;
+
+	private int $signupLimit = 0;
 
 	public function __construct(private readonly \App\Record\Ride $ride, private readonly \App\Record\Member $member)
 		{
@@ -29,15 +29,15 @@ class RideSignup
 			}
 		}
 
-	public function getRiderSignupLimit() : int
-		{
-		return $this->signupLimit;
-		}
-
 	public function copyWaitList(\App\Record\Ride $clonedRide) : void
 		{
 		$this->rideSignupTable->moveWaitListToRideFromRide($this->ride, $clonedRide);
 		$this->notifyWaitList();
+		}
+
+	public function getRiderSignupLimit() : int
+		{
+		return $this->signupLimit;
 		}
 
 	public function notifyWaitList() : void

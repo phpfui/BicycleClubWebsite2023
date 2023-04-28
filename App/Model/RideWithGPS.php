@@ -325,11 +325,6 @@ class RideWithGPS
 		return $rwgps;
 		}
 
-	private static function validGeoLocation(array $route) : bool
-		{
-		return isset($route['latitude']) && isset($route['longitude']) && ((float)$route['latitude'] + (float)$route['longitude']);
-		}
-
 	private function getFile(string $extension, string $url, bool $delay) : string
 		{
 		if ($delay)
@@ -365,5 +360,10 @@ class RideWithGPS
 		$fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
 
 		return "{$scheme}{$user}{$pass}{$host}{$port}{$path}{$query}{$fragment}";
+		}
+
+	private static function validGeoLocation(array $route) : bool
+		{
+		return isset($route['latitude']) && isset($route['longitude']) && ((float)$route['latitude'] + (float)$route['longitude']);
 		}
 	}

@@ -4,9 +4,9 @@ namespace App\Report;
 
 class Label
 	{
-	private readonly \App\Table\Setting $settingTable;
-
 	private string $name;
+
+	private readonly \App\Table\Setting $settingTable;
 
 	public function __construct()
 		{

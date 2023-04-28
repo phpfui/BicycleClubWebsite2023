@@ -44,16 +44,6 @@ class GaRider extends \PHPFUI\ORM\Table
 		return $retVal;
 		}
 
-	public function getPaidRiderCursor(\App\Record\GaEvent $event) : \PHPFUI\ORM\RecordCursor
-		{
-		$condition = new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId);
-		$condition->and(new \PHPFUI\ORM\Condition('pending', 0));
-		$this->setWhere($condition);
-		$this->addOrderBy('lastName')->addOrderBy('firstName');
-
-		return $this->getRecordCursor();
-		}
-
 	public function getForEvents(array $events) : \PHPFUI\ORM\RecordCursor
 		{
 		$this->addOrderBy('lastName')->addOrderBy('firstName');
@@ -63,6 +53,16 @@ class GaRider extends \PHPFUI\ORM\Table
 			$events = [0];
 			}
 		$this->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $events, new \PHPFUI\ORM\Operator\In()));
+
+		return $this->getRecordCursor();
+		}
+
+	public function getPaidRiderCursor(\App\Record\GaEvent $event) : \PHPFUI\ORM\RecordCursor
+		{
+		$condition = new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId);
+		$condition->and(new \PHPFUI\ORM\Condition('pending', 0));
+		$this->setWhere($condition);
+		$this->addOrderBy('lastName')->addOrderBy('firstName');
 
 		return $this->getRecordCursor();
 		}

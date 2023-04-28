@@ -30,12 +30,12 @@ class loadBackup extends \PHPFUI\ORM\Migration
 		$this->dropTables($this->getAllTables());
 		}
 
-	public function up() : bool
+	public function down() : bool
 		{
 		return true;
 		}
 
-	public function down() : bool
+	public function up() : bool
 		{
 		return true;
 		}

@@ -20,27 +20,6 @@ class RWGPS extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql);
 		}
 
-	public function setNonClubBetween(string $startDate = '', string $endDate = '') : static
-		{
-		if (! $startDate)
-			{
-			$startDate = \App\Tools\Date::todayString();
-			}
-
-		if (! $endDate)
-			{
-			$endDate = \App\Tools\Date::toString(\App\Tools\Date::fromString($startDate) + 30);
-			}
-
-		$this->addJoin('ride', 'RWGPSId');
-		$this->setOrderBy('rideDate');
-		$condition = new \PHPFUI\ORM\Condition('rideDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
-		$condition->and('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
-		$this->setWhere($condition);
-
-		return $this;
-		}
-
 	public function getOldest(int $limit = 10) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from rwgps where (lastUpdated < ? or lastUpdated is null) or (csv = "" and RWGPSId>0) order by lastUpdated limit ' . $limit;
@@ -63,5 +42,26 @@ class RWGPS extends \PHPFUI\ORM\Table
 			$sql = 'update rwgps set club=1 where RWGPSId in (' . \implode(',', $RWGPSIds) . ')';
 			\PHPFUI\ORM::execute($sql);
 			}
+		}
+
+	public function setNonClubBetween(string $startDate = '', string $endDate = '') : static
+		{
+		if (! $startDate)
+			{
+			$startDate = \App\Tools\Date::todayString();
+			}
+
+		if (! $endDate)
+			{
+			$endDate = \App\Tools\Date::toString(\App\Tools\Date::fromString($startDate) + 30);
+			}
+
+		$this->addJoin('ride', 'RWGPSId');
+		$this->setOrderBy('rideDate');
+		$condition = new \PHPFUI\ORM\Condition('rideDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$this->setWhere($condition);
+
+		return $this;
 		}
 	}

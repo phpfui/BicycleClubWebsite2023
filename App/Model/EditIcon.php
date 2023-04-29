@@ -6,7 +6,7 @@ class EditIcon
 	{
 	private readonly string $primaryKey;
 
-	public function __construct(\App\UI\PaginatedTable $table, \PHPFUI\ORM\Table $dbTable, private string $url)
+	public function __construct(\App\UI\ContinuousScrollTable $table, \PHPFUI\ORM\Table $dbTable, private string $url)
 		{
 		$this->url = \rtrim($this->url, '/');
 		$this->primaryKey = \key($dbTable->getPrimaryKeys());

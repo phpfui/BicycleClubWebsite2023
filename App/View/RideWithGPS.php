@@ -118,7 +118,7 @@ class RideWithGPS
 		return $fieldSet;
 		}
 
-	public function list(\App\Table\RWGPS $rwgpsTable, array $additionalHeaders = []) : \App\UI\PaginatedTable
+	public function list(\App\Table\RWGPS $rwgpsTable, array $additionalHeaders = []) : \App\UI\ContinuousScrollTable
 		{
 		$sortableHeaders = ['title' => 'Name', 'mileage' => 'Mile<wbr>age', 'elevation' => 'Elev<wbr>ation', 'feetPerMile' => 'Ft/Mi', 'town' => 'Start', 'club' => 'Club', ];
 		$normalHeaders = $additionalHeaders + ['cuesheet' => 'Cue', 'stats' => 'Stats'];

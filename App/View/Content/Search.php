@@ -39,7 +39,7 @@ class Search implements \Stringable
 			$this->storyTable->setWhere($condition);
 
 			$view = new \App\View\Content($this->page);
-			$output = $view->showPaginatedTable($this->storyTable);
+			$output = $view->showContinuousScrollTable($this->storyTable);
 
 			if ($this->storyTable->count())
 				{

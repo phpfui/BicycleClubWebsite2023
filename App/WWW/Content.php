@@ -153,7 +153,7 @@ class Content extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$table->addOrderBy('lastEdited', 'desc');
 		$ids = \PHPFUI\ORM::getValueArray('select distinct storyId from blogItem');
 		$table->setWhere(new \PHPFUI\ORM\Condition('storyId', $ids, new \PHPFUI\ORM\Operator\NotIn()));
-		$this->page->addPageContent($this->view->showPaginatedTable($table, 'Orphan Content'));
+		$this->page->addPageContent($this->view->showContinuousScrollTable($table, 'Orphan Content'));
 		}
 
 	public function purge() : void
@@ -205,7 +205,7 @@ class Content extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$table = new \App\Table\Story();
 		$table->addOrderBy('lastEdited', 'desc');
-		$this->page->addPageContent($this->view->showPaginatedTable($table, 'Most Recently Added / Edited Content'));
+		$this->page->addPageContent($this->view->showContinuousScrollTable($table, 'Most Recently Added / Edited Content'));
 		}
 
 	public function search() : void

@@ -113,7 +113,7 @@ abstract class Table implements \Countable
 		{
 		if (\strlen($field))
 			{
-			$this->groupBys[$field] = $rollup;
+			$this->groupBys[$this->cleanField($field)] = $rollup;
 			}
 
 		return $this;
@@ -173,11 +173,16 @@ abstract class Table implements \Countable
 		return $this;
 		}
 
+	public function cleanField(string $fieldName) : string
+		{
+		return \preg_replace('/[^[a-zA-Z_][a-zA-Z0-9_.$@-]{0,63}$]/', '', $fieldName);  // string invalid characters since we can't use a placeholder in order and group by
+		}
+
 	public function addOrderBy(string $field, string $ascending = 'ASC') : static
 		{
 		if (\strlen($field))
 			{
-			$this->orderBys[$field] = ! \str_contains(\strtoupper($ascending), 'D') ? 'ASC' : 'DESC';
+			$this->orderBys[$this->cleanField($field)] = ! \str_contains(\strtoupper($ascending), 'D') ? 'ASC' : 'DESC';
 			}
 
 		return $this;
@@ -708,8 +713,9 @@ abstract class Table implements \Countable
 		$tableName = $this->getTableName();
 		$sql = "insert into `{$tableName}` (";
 
-		$fields = array_keys($this->getFields());
+		$fields = \array_keys($this->getFields());
 		$comma = '';
+
 		foreach ($fields as $fieldName)
 			{
 			$sql .= "{$comma}`{$fieldName}`";
@@ -720,14 +726,17 @@ abstract class Table implements \Countable
 
 		$input = [];
 		$comma = '(';
+
 		foreach ($records as $record)
 			{
 			if ($record->getTableName() != $tableName)
 				{
-				$myType = get_debug_type($this->instance);
-				$haveType = get_debug_type($record);
+				$myType = \get_debug_type($this->instance);
+				$haveType = \get_debug_type($record);
+
 				throw new \PHPFUI\ORM\Exception(__METHOD__ . ": record should be of type {$myType} but is of type {$haveType}");
 				}
+
 			foreach ($fields as $fieldName)
 				{
 				$sql .= $comma . '?';
@@ -742,7 +751,7 @@ abstract class Table implements \Countable
 		$this->lastInput = $input;
 		\PHPFUI\ORM::execute($this->lastSql, $this->lastInput);
 
-		return \PHPFUI\ORM::getLastErrorCode() == 0;
+		return 0 == \PHPFUI\ORM::getLastErrorCode();
 		}
 
 	public function setDistinct(string $distinct = 'DISTINCT') : static

@@ -13,7 +13,10 @@ if (! defined('PROJECT_ROOT'))
 		$dir = (strpos($className, '\\') === false) ? '\\NoNameSpace\\' : '\\';
 		$path = str_replace('\\', DIRECTORY_SEPARATOR, PROJECT_ROOT . $dir . "{$className}.php");
 
-		@include_once $path;
+		if (file_exists($path))
+			{
+			include_once $path;
+			}
 		}
 
 	spl_autoload_register('autoload');

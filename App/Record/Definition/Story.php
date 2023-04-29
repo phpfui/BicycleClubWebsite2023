@@ -9,7 +9,6 @@ namespace App\Record\Definition;
  * @property ?string $body MySQL type text
  * @property ?string $date MySQL type date
  * @property ?int $editorId MySQL type int(11)
- * @property \App\Record\Editor $editor related record
  * @property ?string $endDate MySQL type date
  * @property ?string $headline MySQL type varchar(200)
  * @property ?string $javaScript MySQL type text

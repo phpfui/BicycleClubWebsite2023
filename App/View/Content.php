@@ -304,7 +304,7 @@ class Content extends \App\UI\HTMLEditor
 		$this->charsToShow = $chars;
 		}
 
-	public function showPaginatedTable(\App\Table\Story $storyTable, string $title = '') : string
+	public function showContinuousScrollTable(\App\Table\Story $storyTable, string $title = '') : string
 		{
 		$view = new \App\UI\ContinuousScrollTable($this->page, $storyTable);
 		$record = $storyTable->getRecord();

@@ -12,7 +12,6 @@ namespace App\Record\Definition;
  * @property ?string $htmlMessage MySQL type text
  * @property ?string $lastEdited MySQL type timestamp
  * @property ?int $lastEditorId MySQL type int(11)
- * @property \App\Record\LastEditor $lastEditor related record
  * @property int $memberId MySQL type int(11)
  * @property \App\Record\Member $member related record
  * @property string $posted MySQL type timestamp

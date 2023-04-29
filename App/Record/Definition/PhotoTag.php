@@ -14,7 +14,6 @@ namespace App\Record\Definition;
  * @property string $photoTag MySQL type varchar(100)
  * @property int $photoTagId MySQL type int(11)
  * @property int $taggerId MySQL type int(11)
- * @property \App\Record\Tagger $tagger related record
  */
 abstract class PhotoTag extends \PHPFUI\ORM\Record
 	{

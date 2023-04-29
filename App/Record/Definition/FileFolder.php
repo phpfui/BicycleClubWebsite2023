@@ -8,7 +8,6 @@ namespace App\Record\Definition;
  * @property string $fileFolder MySQL type varchar(255)
  * @property int $fileFolderId MySQL type int(11)
  * @property ?int $parentFolderId MySQL type int(11)
- * @property \App\Record\ParentFolder $parentFolder related record
  * @property ?int $permissionId MySQL type int(11)
  * @property \App\Record\Permission $permission related record
  */

@@ -213,7 +213,7 @@ class Video
 		return $container;
 		}
 
-	public function list() : \App\UI\PaginatedTable
+	public function list() : \App\UI\ContinuousScrollTable
 		{
 		$videoTable = new \App\Table\Video();
 		$videoTable->addJoin('videoType');
@@ -223,7 +223,7 @@ class Video
 			$videoTable->setWhere(new \PHPFUI\ORM\Condition('public', 1));
 			}
 
-		$view = new \App\UI\PaginatedTable($this->page, $videoTable);
+		$view = new \App\UI\ContinuousScrollTable($this->page, $videoTable);
 
 		$view->addCustomColumn('title', static function(array $video) {
 			$span = new \PHPFUI\HTML5Element('span');

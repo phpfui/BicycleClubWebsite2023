@@ -17,7 +17,6 @@ namespace App\Record\Definition;
  * @property ?string $renews MySQL type date
  * @property ?string $state MySQL type char(2)
  * @property ?string $subscriptionId MySQL type varchar(20)
- * @property \App\Record\Subscription $subscription related record
  * @property ?string $town MySQL type varchar(50)
  * @property ?string $zip MySQL type varchar(10)
  */

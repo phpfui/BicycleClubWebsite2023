@@ -5,6 +5,8 @@ $_SERVER['SERVER_NAME'] = $argv[1] ?? 'localhost';
 
 include __DIR__ . '/../common.php';
 
+$tableObjects = \PHPFUI\ORM\Table::getAllTables();
+
 echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 
 echo "Generate Record Models\n\n";
@@ -39,26 +41,21 @@ foreach ($tables as $table)
 	{
 	if ($generator->generate($table))
 		{
-		echo "{$table}\n";
-		}
-	}
-
-$tableObjects = \PHPFUI\ORM\Table::getAllTables();
-
-foreach ($tableObjects as $name => $table)
-	{
-	$parts = \explode('\\', $name);
-	$class = \lcfirst(\array_pop($parts));
-
-	if ($table->getTableName() != $class)
-		{
-		$phpFile = PROJECT_ROOT . '\\App\\Record\\Definition\\' . $class . '.php';
-		$contents = \file_get_contents($phpFile);
-		$class = \lcfirst($class);
-		$contents = \str_replace($table->getTableName(), $class, $contents);
-		$contents = \str_replace("'rWGPS'", "'rwgps'", $contents);
-		\file_put_contents($phpFile, $contents);
+//		echo "{$table}\n";
 		}
 	}
 
 \system('codestyle');
+
+foreach ($tableObjects as $name => $table)
+	{
+	$parts = \explode('\\', $name);
+	$class = \array_pop($parts);
+
+	$phpFile = PROJECT_ROOT . '\\App\\Record\\Definition\\' . $class . '.php';
+	$contents = \file_get_contents($phpFile);
+	$class = \lcfirst($class);
+	$contents = \str_replace(\strtolower($table->getTableName()), \lcfirst($class), $contents);
+	$contents = \str_replace("'rWGPS'", "'rwgps'", $contents);
+	\file_put_contents($phpFile, $contents);
+	}

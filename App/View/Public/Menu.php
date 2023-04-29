@@ -12,6 +12,7 @@ class Menu extends \PHPFUI\Menu implements \PHPFUI\Interfaces\NanoClass
 		$this->addClass('vertical');
 
 		$publicPageTable = new \App\Table\PublicPage();
+		$publicPageTable->addOrderBy('sequence');
 		$this->publicPage = new \App\View\Public\Page($controller);
 
 		foreach ($publicPageTable->getRecordCursor() as $page)

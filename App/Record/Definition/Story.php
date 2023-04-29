@@ -8,11 +8,12 @@ namespace App\Record\Definition;
  * @property ?string $author MySQL type varchar(30)
  * @property ?string $body MySQL type text
  * @property ?string $date MySQL type date
+ * @property ?int $editorId MySQL type int(11)
+ * @property \App\Record\Editor $editor related record
  * @property ?string $endDate MySQL type date
  * @property ?string $headline MySQL type varchar(200)
  * @property ?string $javaScript MySQL type text
  * @property ?string $lastEdited MySQL type date
- * @property ?int $editorId MySQL type int(11)
  * @property ?int $membersOnly MySQL type int(11)
  * @property ?int $noTitle MySQL type int(1)
  * @property ?int $onTop MySQL type int(1)
@@ -32,11 +33,11 @@ abstract class Story extends \PHPFUI\ORM\Record
 		'author' => ['varchar(30)', 'string', 30, false, true, ],
 		'body' => ['text', 'string', 65535, false, true, ],
 		'date' => ['date', 'string', 10, false, true, ],
+		'editorId' => ['int(11)', 'int', 11, false, true, ],
 		'endDate' => ['date', 'string', 10, false, true, ],
 		'headline' => ['varchar(200)', 'string', 200, false, true, ],
 		'javaScript' => ['text', 'string', 65535, false, true, ],
 		'lastEdited' => ['date', 'string', 10, false, true, ],
-		'editorId' => ['int(11)', 'int', 11, false, true, ],
 		'membersOnly' => ['int(11)', 'int', 11, false, true, 0, ],
 		'noTitle' => ['int(1)', 'int', 1, false, true, ],
 		'onTop' => ['int(1)', 'int', 1, false, true, ],

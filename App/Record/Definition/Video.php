@@ -29,7 +29,7 @@ abstract class Video extends \PHPFUI\ORM\Record
 		'editor' => ['int(6)', 'int', 6, false, true, ],
 		'fileName' => ['varchar(255)', 'string', 255, false, true, ],
 		'hits' => ['int(6)', 'int', 6, false, true, ],
-		'lastEdited' => ['timestamp', 'string', 20, false, false, ],
+		'lastEdited' => ['timestamp', 'string', 20, false, false, null, ],
 		'public' => ['int(11)', 'int', 11, false, false, 0, ],
 		'title' => ['varchar(255)', 'string', 255, false, false, ],
 		'videoDate' => ['date', 'string', 10, false, false, ],

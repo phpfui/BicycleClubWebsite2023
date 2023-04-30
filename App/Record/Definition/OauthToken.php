@@ -22,7 +22,7 @@ abstract class OauthToken extends \PHPFUI\ORM\Record
 	protected static array $fields = [
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
 		'client' => ['varchar(255)', 'string', 255, false, true, ],
-		'expires' => ['timestamp', 'string', 20, false, false, ],
+		'expires' => ['timestamp', 'string', 20, false, false, null, ],
 		'oauthTokenId' => ['int(11)', 'int', 11, true, false, ],
 		'oauthUserId' => ['int(11)', 'int', 11, false, true, ],
 		'scopes' => ['text', 'string', 65535, false, true, ],

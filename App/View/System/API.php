@@ -11,7 +11,7 @@ class API
 		$this->tables = \PHPFUI\ORM\Table::getAllTables();
 		}
 
-	public function edit(\App\Record\OauthUser $user) : \PHPFUI\Form
+	public function edit(\App\Record\OauthUser $user = new \App\Record\OauthUser()) : \PHPFUI\Form
 		{
 		if ($user->oauthUserId)
 			{

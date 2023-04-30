@@ -26,7 +26,7 @@ abstract class AuditTrail extends \PHPFUI\ORM\Record
 		'input' => ['text', 'string', 65535, false, true, ],
 		'memberId' => ['int(11)', 'int', 11, false, false, ],
 		'statement' => ['text', 'string', 65535, false, true, ],
-		'time' => ['timestamp', 'string', 20, false, false, ],
+		'time' => ['timestamp', 'string', 20, false, false, null, ],
 	];
 
 	/** @var array<string, true> */

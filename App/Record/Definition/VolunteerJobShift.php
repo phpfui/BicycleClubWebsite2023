@@ -32,7 +32,7 @@ abstract class VolunteerJobShift extends \PHPFUI\ORM\Record
 		'memberId' => ['int(11)', 'int', 11, false, false, ],
 		'notes' => ['varchar(255)', 'string', 255, false, false, '', ],
 		'shiftLeader' => ['int(1)', 'int', 1, false, true, ],
-		'signedUpDate' => ['timestamp', 'string', 20, false, false, ],
+		'signedUpDate' => ['timestamp', 'string', 20, false, false, null, ],
 		'volunteerJobShiftId' => ['int(11)', 'int', 11, true, false, ],
 		'worked' => ['tinyint(4)', 'int', 4, false, false, 0, ],
 	];

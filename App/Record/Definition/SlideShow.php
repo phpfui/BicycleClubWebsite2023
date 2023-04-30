@@ -27,7 +27,7 @@ abstract class SlideShow extends \PHPFUI\ORM\Record
 	protected static array $fields = [
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
 		'active' => ['int(11)', 'int', 11, false, false, 0, ],
-		'added' => ['timestamp', 'string', 20, false, false, ],
+		'added' => ['timestamp', 'string', 20, false, false, null, ],
 		'alignment' => ['varchar(20)', 'string', 20, false, false, '', ],
 		'endDate' => ['date', 'string', 10, false, true, ],
 		'memberId' => ['int(10) unsigned', 'int', 10, false, true, ],

@@ -16,13 +16,13 @@
         }
     },
     "require": {
-        "php": ">=8.1 <8.2",
+        "php": ">=8.1 <8.3",
         "zbateson/mail-mime-parser": "*",
         "phpmailer/phpmailer": ">=6.0",
         "google/recaptcha": ">=1.2",
         "tinify/tinify": "*",
         "psr/http-message": ">=1.0",
-        "maximebf/debugbar": "dev-master",
+        "maximebf/debugbar": "^v1.18",
         "intervention/image": "^2.5",
         "twilio/sdk": "^6.0",
         "phpfui/phpfui": "^6.0",

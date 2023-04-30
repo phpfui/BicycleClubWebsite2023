@@ -108,6 +108,37 @@ class ComposerUpdate
 			}
 		}
 
+	public function copyDirectory(string $source, string $dest) : void
+		{
+		if (! \is_dir($dest))
+			{
+			\mkdir($dest, 0755, true);
+			}
+		$iterator = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS),
+			\RecursiveIteratorIterator::SELF_FIRST
+		);
+
+		foreach ($iterator as $item)
+			{
+			$file = $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
+			$file = \str_replace('\\', '/', $file);
+			$file = \str_replace('//', '/', $file);
+
+			if ($item->isDir())
+				{
+				if (! \is_dir($file))
+					{
+					\mkdir($file, 0755, true);
+					}
+				}
+			else
+				{
+				copy($item, $file);
+				}
+			}
+		}
+
 	public function deleteFileInNamespace(string $nameSpace, string $file) : void
 		{
 		$path = \str_replace('\\', '/', $this->baseDir . $nameSpace);

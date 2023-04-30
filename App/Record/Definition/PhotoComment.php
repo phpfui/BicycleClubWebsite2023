@@ -24,7 +24,7 @@ abstract class PhotoComment extends \PHPFUI\ORM\Record
 		'photoComment' => ['varchar(255)', 'string', 255, false, false, '', ],
 		'photoCommentId' => ['int(11)', 'int', 11, true, false, ],
 		'photoId' => ['int(11)', 'int', 11, false, false, ],
-		'timestamp' => ['timestamp', 'string', 20, false, false, ],
+		'timestamp' => ['timestamp', 'string', 20, false, false, null, ],
 	];
 
 	/** @var array<string, true> */

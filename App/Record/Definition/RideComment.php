@@ -29,7 +29,7 @@ abstract class RideComment extends \PHPFUI\ORM\Record
 		'memberId' => ['int(11)', 'int', 11, false, false, ],
 		'rideCommentId' => ['int(11)', 'int', 11, true, false, ],
 		'rideId' => ['int(11)', 'int', 11, false, true, 0, ],
-		'time' => ['timestamp', 'string', 20, false, false, ],
+		'time' => ['timestamp', 'string', 20, false, false, null, ],
 	];
 
 	/** @var array<string, true> */

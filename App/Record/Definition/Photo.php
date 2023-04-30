@@ -32,7 +32,7 @@ abstract class Photo extends \PHPFUI\ORM\Record
 		'public' => ['int(11)', 'int', 11, false, false, 0, ],
 		'taken' => ['datetime', 'string', 20, false, true, ],
 		'thumbnail' => ['int(11)', 'int', 11, false, false, 0, ],
-		'uploaded' => ['timestamp', 'string', 20, false, false, ],
+		'uploaded' => ['timestamp', 'string', 20, false, false, null, ],
 	];
 
 	/** @var array<string, true> */

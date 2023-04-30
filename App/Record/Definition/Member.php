@@ -65,7 +65,7 @@ abstract class Member extends \PHPFUI\ORM\Record
 		'firstName' => ['varchar(50)', 'string', 50, false, true, ],
 		'geoLocate' => ['int(1)', 'int', 1, false, false, 1, ],
 		'journal' => ['tinyint(4)', 'int', 4, false, false, 0, ],
-		'lastLogin' => ['timestamp', 'string', 20, false, false, ],
+		'lastLogin' => ['timestamp', 'string', 20, false, false, null, ],
 		'lastName' => ['varchar(50)', 'string', 50, false, true, ],
 		'leaderPoints' => ['int(11)', 'int', 11, false, false, 0, ],
 		'license' => ['char(10)', 'string', 10, false, true, ],

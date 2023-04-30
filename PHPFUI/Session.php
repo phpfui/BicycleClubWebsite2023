@@ -12,7 +12,7 @@ namespace PHPFUI;
  * ### Usage
  *
  * ```
- * \PHPFUI\Session::setFlash('alert', 'That was nasty!');
+ * \PHPFUI\Session::setFlash('error', 'That was nasty!');
  * ```
  *
  * Next request:

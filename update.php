@@ -42,6 +42,7 @@ $updater->setIgnoredRepos([
 
 $updater->setBaseDirectory(PROJECT_ROOT . '/');
 $updater->update();
+$updater->copyDirectory(__DIR__ . '/vendor/maximebf/debugbar/src/DebugBar/Resources', __DIR__ . '/DebugBar/Resources');
 $updater->deleteNamespace('Symfony\Polyfill');
 $updater->deleteNamespace('HighlightUtilities');
 $updater->deleteNamespace('Highlight\Highlight');

@@ -24,7 +24,7 @@
         "psr/http-message": ">=1.0",
         "maximebf/debugbar": "dev-master",
         "intervention/image": "^2.5",
-        "twilio/sdk": "^6.0",
+        "twilio/sdk": "^7.3",
         "phpfui/phpfui": "^6.0",
         "phpfui/instadoc": "^1.0",
         "mpdf/mpdf": "^8.1",

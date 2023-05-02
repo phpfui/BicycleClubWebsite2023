@@ -77,6 +77,19 @@ class Debug
 							$error = new \Unknown\Error();
 
 							break;
+
+
+						case 'Memory':
+							$memoryHog = [];
+
+							// @phpstan-ignore-next-line
+							while (1)
+								{
+								$memoryHog[] = \array_fill(0, 1000, 1);
+								}
+
+							// @phpstan-ignore-next-line
+							break;
 						}
 					}
 				}
@@ -85,10 +98,10 @@ class Debug
 			}
 		else
 			{
-			$configuration = new \BrandEmbassy\Memory\MemoryConfiguration();
-			$limitProvider = new \BrandEmbassy\Memory\MemoryLimitProvider($configuration);
-
-			$form->add(new \App\UI\Display('PHP Memory Available', ($limitProvider->getLimitInBytes() / 1024000) . ' Megs'));
+			$form->add(new \PHPFUI\SubHeader('Test Memory Limit'));
+			$memoryLimitButton = new \PHPFUI\Submit('Start Test', 'Memory');
+			$memoryLimitButton->addClass('alert');
+			$form->add($memoryLimitButton);
 
 			$form->add($this->getDebugButton('Debug Bar', \App\Model\Session::DEBUG_BAR));
 			$form->add($this->getDebugButton('Readable HTML', \App\Model\Session::DEBUG_HTML));

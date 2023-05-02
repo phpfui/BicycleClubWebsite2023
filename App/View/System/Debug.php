@@ -85,6 +85,11 @@ class Debug
 			}
 		else
 			{
+			$configuration = new \BrandEmbassy\Memory\MemoryConfiguration();
+			$limitProvider = new \BrandEmbassy\Memory\MemoryLimitProvider($configuration);
+
+			$form->add(new \App\UI\Display('PHP Memory Available', ($limitProvider->getLimitInBytes() / 1024000) . ' Megs'));
+
 			$form->add($this->getDebugButton('Debug Bar', \App\Model\Session::DEBUG_BAR));
 			$form->add($this->getDebugButton('Readable HTML', \App\Model\Session::DEBUG_HTML));
 

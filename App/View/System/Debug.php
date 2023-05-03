@@ -91,6 +91,7 @@ class Debug
 			$reveal = new \PHPFUI\Reveal($this->page, $memoryLimitButton);
 			$fieldSet = new \PHPFUI\FieldSet('Computed PHP Memory');
 			$div = new \PHPFUI\HTML5Element('div');
+			$div->add(new \App\UI\Loading());
 			$fieldSet->add($div);
 			$reveal->loadUrlOnOpen('/System/memory', $div->getId());
 			$reveal->add($fieldSet);

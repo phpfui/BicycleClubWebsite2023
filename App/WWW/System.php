@@ -227,7 +227,7 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$errorModel->deleteAll();
 		// @phpstan-ignore-next-line
 		\file_get_contents($this->page->getSchemeHost() . '/System/memoryHog');  // create a memory error
-		\usleep(200000);	// wait to make sure the error log is written
+		\sleep(1);	// wait to make sure the error log is written
 		$errors = $errorModel->getErrors(true);
 		// find the error and get the memory limit
 		foreach($errors as $error)

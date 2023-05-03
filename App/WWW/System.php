@@ -227,6 +227,7 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$errorModel->deleteAll();
 		// @phpstan-ignore-next-line
 		\file_get_contents($this->page->getSchemeHost() . '/System/memoryHog');  // create a memory error
+		\usleep(200000);	// wait to make sure the error log is written
 		$errors = $errorModel->getErrors(true);
 		// find the error and get the memory limit
 		foreach($errors as $error)
@@ -239,10 +240,10 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$maxMemory = (int)\substr($error, $pos + \strlen($text));
 				echo 'Your version of PHP supports <b>' . \number_format($maxMemory / 102400, 0, '.', ',') . '</b> MB of memory.';
 				echo '<br><br>At least 700 MB is recommended.';
-
-				exit;
 				}
 			}
+
+		exit;
 		}
 
 	public function memoryHog() : void

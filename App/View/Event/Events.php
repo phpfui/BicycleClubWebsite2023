@@ -490,7 +490,7 @@ class Events
 		$emailButton = new \PHPFUI\Button('Email All', '/Events/email/' . $event->eventId);
 		$emailButton->addClass('warning');
 		$buttonGroup->addButton($emailButton);
-		$signupButton = new \PHPFUI\Button('Signup Sheet');
+		$signupButton = new \PHPFUI\Button('Download Signup Sheet');
 		$signupButton->addClass('success');
 		$this->signupSheetModal($event, $signupButton);
 		$buttonGroup->addButton($signupButton);

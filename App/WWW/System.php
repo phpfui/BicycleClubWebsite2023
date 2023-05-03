@@ -242,6 +242,7 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				echo '<br><br>At least 700 MB is recommended.';
 				}
 			}
+		echo 'Unable to determine memory size.';
 
 		exit;
 		}

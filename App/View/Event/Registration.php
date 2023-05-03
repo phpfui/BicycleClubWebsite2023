@@ -96,7 +96,13 @@ class Registration
 			switch ($_REQUEST['action'])
 				{
 				case 'Save':
+					$this->saveForm($reservation);
+					$this->page->redirect();
 
+					break;
+
+
+				case 'Add Payment':
 					if ($this->canAddPayment)
 						{
 						unset($_POST['paymentId']);
@@ -104,13 +110,12 @@ class Registration
 						$payment->setFrom($_POST);
 						$payment->dateReceived = \App\Tools\Date::todayString();
 						$payment->enteringMemberNumber = \App\Model\Session::signedInMemberId();
-						$payment->insert();
+						$reservation->payment = $payment;
+						$reservation->update();
 						}
-					$this->saveForm($reservation);
 					$this->page->redirect();
 
 					break;
-
 
 				case 'Add Event Registration':
 
@@ -118,6 +123,7 @@ class Registration
 					$_POST['eventId'] = $eventId;
 					$reservation = new \App\Record\Reservation();
 					$reservation->setFrom($_POST);
+					$reservation->memberId = 0;
 					$person = new \App\Record\ReservationPerson();
 					$person->eventId = $eventId;
 					$person->reservation = $reservation;
@@ -195,7 +201,7 @@ class Registration
 			$billing->add(new \PHPFUI\Input\Text('comments', 'Comments to the organizer', $reservation->comments));
 			$form->add($billing);
 
-			$payment = new \App\Record\Payment($reservation->paymentId);
+			$payment = $reservation->payment;
 			$form->add(new \PHPFUI\Input\Hidden('paymentId', (string)$payment->paymentId));
 
 			if ($required && $event->price)
@@ -208,9 +214,9 @@ class Registration
 				}
 
 			$paymentInfo = new \PHPFUI\FieldSet('Payment Information');
-			$mustPay = false;
+			$mustPay = true;
 
-			if (! $this->canAddPayment)
+			if ($this->canAddPayment)
 				{
 				if ($reservation->pricePaid > 0)
 					{
@@ -220,67 +226,40 @@ class Registration
 						}
 					else
 						{
-						// no payment, but payment required, make them select payment type
+						$addPaymentButton = new \PHPFUI\Button('Add Payment');
+						$addPaymentButton->addClass('success');
+						$paymentInfo->add($addPaymentButton);
 
-						$paymentInfo->add(new \App\UI\Display('Total Owed', '$' . \number_format($reservation->pricePaid, 2)));
-						$mustPay = true;
-						$paymentOptions = [];
+						$reveal = new \PHPFUI\Reveal($this->page, $addPaymentButton);
+						$submit = new \PHPFUI\Submit('Add Payment', 'action');
 
-						if ($event->paypal)
-							{
-							$paymentOptions['paypal'] = 'payPal';
-							}
-
-						if ($event->checks)
-							{
-							$paymentOptions['checks'] = 'check';
-							}
-
-						if ($event->door)
-							{
-							$paymentOptions['door'] = 'door';
-							}
-
-						$paymentCount = \count($paymentOptions);
-
-						if ($paymentCount)
-							{
-							if (1 == $paymentCount)
-								{
-								$name = \reset($paymentOptions);
-								$paymentInfo->add("Only {$name} payments will be accepted for this event.");
-								$paymentInfo->add(new \PHPFUI\Input\Hidden('paymentOption', \key($paymentOptions)));
-								}
-							else
-								{
-								$select = new \PHPFUI\Input\Select('paymentOption', 'Select a Payment Type');
-
-								foreach ($paymentOptions as $value => $name)
-									{
-									$select->addOption($name, $value);
-									}
-
-								$paymentInfo->add($select);
-								}
-							}
-						else
-							{
-							$paymentInfo->add('No payment options defined.  Please contact the event organizer.');
-							}
+						$revealForm = new \PHPFUI\Form($this->page);
+						$revealForm->add(new \App\UI\Display('Total Owed', '$' . \number_format($reservation->pricePaid, 2)));
+						$revealForm->add($this->getPaymentFields($payment, (bool)$reservation->paymentId));
+						$revealForm->add($reveal->getButtonAndCancel($submit));
+						$fieldSet = new \PHPFUI\FieldSet('Add Payment Information');
+						$fieldSet->add($revealForm);
+						$reveal->add($fieldSet);
 						}
 					}
 				else
 					{
+					$mustPay = false;
 					$paymentInfo->add('This event is free, no payment required.');
 					}
 				}
-			elseif ($reservation->pricePaid > 0)
-				{
-				$paymentInfo->add($this->getPaymentFields($payment, $reservation->paymentId > 0));
-				}
 			else
 				{
-				$paymentInfo->add('No payment is due.');
+				$mustPay = false;
+
+				if ($reservation->paymentId)
+					{
+					$paymentInfo->add($this->getPaymentFields($payment, $reservation->paymentId > 0));
+					}
+				else
+					{
+					$paymentInfo->add('No payment is due.');
+					}
 				}
 
 			$reservationPersonTable = new \App\Table\ReservationPerson();

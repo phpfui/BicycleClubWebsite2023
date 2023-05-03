@@ -220,6 +220,42 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function memory() : void
+		{
+		$errorModel = new \App\Model\Errors();
+		// clear the error log
+		$errorModel->deleteAll();
+		// @phpstan-ignore-next-line
+		\file_get_contents($this->page->getSchemeHost() . '/System/memoryHog');  // create a memory error
+		$errors = $errorModel->getErrors(true);
+		// find the error and get the memory limit
+		foreach($errors as $error)
+			{
+			$text = 'Allowed memory size of ';
+			$pos = \strpos($error, $text);
+
+			if ($pos)
+				{
+				$maxMemory = (int)\substr($error, $pos + \strlen($text));
+				echo 'Your version of PHP supports <b>' . \number_format($maxMemory / 102400, 0, '.', ',') . '</b> MB of memory.';
+				echo '<br><br>At least 700 MB is recommended.';
+
+				exit;
+				}
+			}
+		}
+
+	public function memoryHog() : void
+		{
+		$memoryHog = [];
+
+		// @phpstan-ignore-next-line
+		while (1)
+			{
+			$memoryHog[] = \array_fill(0, 1000, 1);  // produce an out of memory error
+			}
+		}
+
 	public function migrations() : void
 		{
 		if (\PHPFUI\Session::checkCSRF() && isset($_GET['migration']))

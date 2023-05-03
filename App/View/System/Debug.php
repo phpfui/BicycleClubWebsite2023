@@ -77,19 +77,6 @@ class Debug
 							$error = new \Unknown\Error();
 
 							break;
-
-
-						case 'Memory':
-							$memoryHog = [];
-
-							// @phpstan-ignore-next-line
-							while (1)
-								{
-								$memoryHog[] = \array_fill(0, 1000, 1);
-								}
-
-							// @phpstan-ignore-next-line
-							break;
 						}
 					}
 				}
@@ -98,9 +85,16 @@ class Debug
 			}
 		else
 			{
-			$form->add(new \PHPFUI\SubHeader('Test Memory Limit'));
-			$memoryLimitButton = new \PHPFUI\Submit('Start Test', 'Memory');
-			$memoryLimitButton->addClass('alert');
+			$form->add(new \PHPFUI\SubHeader('PHP Memory Limit'));
+			$memoryLimitButton = new \PHPFUI\Button('Show');
+			$memoryLimitButton->addClass('info');
+			$reveal = new \PHPFUI\Reveal($this->page, $memoryLimitButton);
+			$fieldSet = new \PHPFUI\FieldSet('Computed PHP Memory');
+			$div = new \PHPFUI\HTML5Element('div');
+			$fieldSet->add($div);
+			$reveal->loadUrlOnOpen('/System/memory', $div->getId());
+			$reveal->add($fieldSet);
+			$reveal->add($reveal->getCloseButton('Close'));
 			$form->add($memoryLimitButton);
 
 			$form->add($this->getDebugButton('Debug Bar', \App\Model\Session::DEBUG_BAR));

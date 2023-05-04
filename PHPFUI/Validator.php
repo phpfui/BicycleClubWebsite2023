@@ -81,7 +81,7 @@ class Validator
 	 *
 	 * @return string of JavaScript to be passed to setJavaScript
 	 */
-	protected function getJavaScriptTemplate(string $customJavaScript) : string
+	public function getJavaScriptTemplate(string $customJavaScript) : string
 		{
 		$js = "function {$this->validatorName}(el,required,parent){let to=el.val();if(to.length==0 && !required)return true;let data=el.attr('data-{$this->validatorName}');let from=$('#'+data).val();return({$customJavaScript});};";
 

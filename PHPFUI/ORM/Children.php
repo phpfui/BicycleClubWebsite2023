@@ -23,16 +23,7 @@ class Children extends \PHPFUI\ORM\VirtualField
 	 */
 	public function getValue(array $parameters) : mixed
 		{
-		$child = \array_shift($parameters);
-		$childTable = new $child();
-		$condition = new \PHPFUI\ORM\Condition();
-
-		foreach ($this->currentRecord->getPrimaryKeys() as $primaryKey => $junk)
-			{
-			$condition->and($primaryKey, $this->currentRecord->{$primaryKey});
-			}
-		$childTable->setWhere($condition);
-
+		$childTable = $this->getTable(\array_shift($parameters));
 		$orderBy = \array_shift($parameters);
 		$sort = \array_shift($parameters) ?? 'asc';
 
@@ -43,4 +34,23 @@ class Children extends \PHPFUI\ORM\VirtualField
 
 		return $childTable->getRecordCursor();
 		}
+
+	public function delete(array $parameters) : void
+		{
+		$this->getTable(\array_shift($parameters))->delete();
+		}
+
+	protected function getTable(string $class) : \PHPFUI\ORM\Table
+		{
+		$childTable = new $class();
+		$condition = new \PHPFUI\ORM\Condition();
+
+		foreach ($this->currentRecord->getPrimaryKeys() as $primaryKey => $junk)
+			{
+			$condition->and($primaryKey, $this->currentRecord->{$primaryKey});
+			}
+
+		return $childTable->setWhere($condition);
+		}
+
 	}

@@ -110,12 +110,17 @@ class Join
 			$lastName = new \PHPFUI\Input\Text('lastName', 'Last Name', $member->firstName);
 			$lastName->setRequired()->setToolTip('We want to know your name, so we know who is coming on the rides.');
 			$fieldSet->add($lastName);
-			$current = new \PHPFUI\Input\PasswordEye('password', 'Password', $member->password);
-			$current->setRequired()->setToolTip('Your new password should be 8 characters long, have letters, numbers and punctuation');
+
+			$passwordPolicy = new \App\View\Admin\PasswordPolicy($this->page);
+			$fieldSet->add($passwordPolicy->list());
+			$current = $passwordPolicy->getValidatedPassword('password', 'Password', $member->password);
+			$current->setRequired();
 			$fieldSet->add($current);
-			$confirm = new \PHPFUI\Input\PasswordEye('confirm', 'Confirm Password', $member->password);
+			$confirm = $passwordPolicy->getValidatedPassword('confirm', 'Confirm Password', $member->password);
 			$confirm->addAttribute('data-equalto', $current->getId());
-			$confirm->addErrorMessage('Must equal your password.')->setRequired()->setToolTip('You must enter the same password twice to make sure it is correct');
+			$confirm->addErrorMessage('Passwords must match.');
+			$confirm->setRequired();
+			$confirm->setToolTip('You must enter the same password twice to make sure it is correct');
 			$fieldSet->add($confirm);
 
 			if (empty($_GET['a']))

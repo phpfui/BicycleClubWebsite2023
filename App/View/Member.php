@@ -408,39 +408,51 @@ class Member
 	public function password(\App\Record\Member $member) : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit('Save', 'changePassword');
-		$form = new \PHPFUI\Form($this->page, $submit);
+		$form = new \PHPFUI\Form($this->page);
 
-		if ($form->isMyCallback())
+		if ($form->isMyCallback($submit))
 			{
-			if ($this->page->isAuthorized('Reset Any Password') || $this->memberModel->verifyPassword($_POST['current'], $member))
+			\App\Model\Session::setFlash('post', $_POST);
+			$errors = $this->memberModel->validatePassword($_POST['password']);
+
+			if ($errors)
+				{
+				\App\Model\Session::setFlash('alert', $errors);
+				}
+			elseif ($this->page->isAuthorized('Reset Any Password') || $this->memberModel->verifyPassword($_POST['current'], $member))
 				{
 				$member->password = $this->memberModel->hashPassword($_POST['password']);
+				$member->passwordReset = $member->passwordResetExpires = null;
 				$member->update();
-				$this->page->setResponse('Password Changed');
+				\App\Model\Session::setFlash('success', 'Password Changed');
 				}
 			else
 				{
-				$this->page->setResponse('Invalid Current Password', 'red');
+				\App\Model\Session::setFlash('alert', 'Invalid Current Password');
 				}
+			$this->page->redirect();
 			}
 		else
 			{
+			$post = \App\Model\Session::getFlash('post');
 			$column = new \PHPFUI\Cell(12);
-			$current = new \PHPFUI\Input\PasswordEye('current', 'Current Password', $_GET['pw'] ?? '');
+			$current = new \PHPFUI\Input\PasswordEye('current', 'Current Password', $post['current'] ?? '');
 			$current->setRequired();
 			$current->setToolTip('You need to enter your current password as an extra precaution against fraud');
 			$column->add($current);
-			$current = new \PHPFUI\Input\PasswordEye('password', 'New Password');
-			$current->setRequired();
-			$current->setToolTip('Your new password should be 8 characters long, have letters, numbers and punctuation');
-			$column->add($current);
-			$confirm = new \PHPFUI\Input\PasswordEye('confirm', 'Confirm Password');
-			$confirm->addAttribute('data-equalto', $current->getId());
+			$passwordPolicy = new \App\View\Admin\PasswordPolicy($this->page);
+			$column->add($passwordPolicy->list());
+			$newPassword = $passwordPolicy->getValidatedPassword('password', 'New Password', $post['password'] ?? '');
+			$newPassword->setRequired();
+			$column->add($newPassword);
+			$confirm = new \PHPFUI\Input\PasswordEye('confirm', 'Confirm Password', $post['confirm'] ?? '');
+			$confirm->addAttribute('data-equalto', $newPassword->getId());
 			$confirm->addErrorMessage('Must be the same as the new password.');
 			$confirm->setRequired();
 			$confirm->setToolTip('You must enter the same password twice to make sure it is correct');
 			$column->add($confirm);
 			$form->add($column);
+			$form->setAreYouSure(false);
 			$form->add($submit);
 			}
 
@@ -452,24 +464,38 @@ class Member
 		$submit = new \PHPFUI\Submit('Save Password and Sign In', 'changePassword');
 		$form = new \PHPFUI\Form($this->page);
 
-		if (\App\Model\Session::checkCSRF() && isset($_POST['changePassword'], $_POST['confirm'], $_POST['password']) && $_POST['confirm'] == $_POST['password'])
+		if ($form->isMyCallback($submit))
 			{
-			$member->password = $this->memberModel->hashPassword($_POST['password']);
-			$member->update();
-			$this->memberModel->signInMember($member->email, $member->password);
-			$this->page->redirect('/Home');
+			$passwordValidator = new \App\Model\PasswordPolicy();
+
+			if (isset($_POST['confirm'], $_POST['password']) && $_POST['confirm'] == $_POST['password'] && ! $errors)
+				{
+				$member->password = $this->memberModel->hashPassword($_POST['password']);
+				$member->passwordReset = $member->passwordResetExpires = null;
+				$member->update();
+				$this->memberModel->signInMember($member->email, $member->password);
+				\App\Model\Session::setFlash('success', 'Password Reset');
+				$this->page->redirect('/Home');
+				}
+			else
+				{
+				\App\Model\Session::setFlash('alert', $errors);
+				$this->page->redirect();
+				}
 			}
 		else
 			{
-			$current = new \PHPFUI\Input\PasswordEye('password', 'New Password');
+			$passwordPolicy = new \App\View\Admin\PasswordPolicy($this->page);
+			$form->add($passwordPolicy->list());
+			$current = $passwordPolicy->getValidatedPassword('password', 'New Password');
 			$current->setRequired();
-			$current->setToolTip('Your new password should be 8 characters long, have letters, numbers and punctuation');
 			$form->add($current);
 			$confirm = new \PHPFUI\Input\PasswordEye('confirm', 'Confirm Password');
 			$confirm->addAttribute('data-equalto', $current->getId());
 			$confirm->addErrorMessage('Must be the same as the new password.');
 			$confirm->setRequired();
 			$confirm->setToolTip('You must enter the same password twice to make sure it is correct');
+			$form->setAreYouSure(false);
 			$form->add($confirm);
 			$form->add($submit);
 			}

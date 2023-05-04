@@ -275,6 +275,7 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		$this->addSub('blackList', 'Email Blacklist');
 		$this->addSub('config', 'Site Configuration');
 		$this->addSub('files', 'Manage Files');
+		$this->addSub('passwordPolicy', 'Password Policy');
 
 		$this->addTopMenu('System', 'System');
 		$this->addSub('API/users', 'API Users');

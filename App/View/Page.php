@@ -656,7 +656,7 @@ class Page extends \PHPFUI\Page
 		$password->setToolTip("Your password. We recommend to use a password you don't use anywhere else.");
 		$fieldSet->add($password);
 		$cookies = $memberCookie . $passwordCookie;
-		$remember = new \PHPFUI\Input\CheckBoxBoolean('remember', 'Remember me on this computer (not secure)', ! empty($cookies));
+		$remember = new \PHPFUI\Input\CheckBoxBoolean('remember', 'Remember me (requires cookies for this site)', ! empty($cookies));
 		$fieldSet->add($remember);
 		$form->add($fieldSet);
 		$form->setAreYouSure(false);

@@ -30,6 +30,8 @@ namespace App\Record\Definition;
  * @property \App\Record\Membership $membership related record
  * @property int $newRideEmail MySQL type tinyint(4)
  * @property ?string $password MySQL type varchar(255)
+ * @property ?string $passwordReset MySQL type varchar(20)
+ * @property ?string $passwordResetExpires MySQL type timestamp
  * @property int $pendingLeader MySQL type int(1)
  * @property string $phone MySQL type varchar(20)
  * @property int $profileHeight MySQL type int(10)
@@ -74,6 +76,8 @@ abstract class Member extends \PHPFUI\ORM\Record
 		'membershipId' => ['int(11)', 'int', 11, false, true, ],
 		'newRideEmail' => ['tinyint(4)', 'int', 4, false, false, 0, ],
 		'password' => ['varchar(255)', 'string', 255, false, true, ],
+		'passwordReset' => ['varchar(20)', 'string', 20, false, true, ],
+		'passwordResetExpires' => ['timestamp', 'string', 20, false, true, ],
 		'pendingLeader' => ['int(1)', 'int', 1, false, false, 0, ],
 		'phone' => ['varchar(20)', 'string', 20, false, false, '', ],
 		'profileHeight' => ['int(10)', 'int', 10, false, false, 0, ],

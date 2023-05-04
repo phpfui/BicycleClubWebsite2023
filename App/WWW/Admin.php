@@ -223,6 +223,15 @@ class Admin extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function passwordPolicy() : void
+		{
+		if ($this->page->addHeader('Password Policy'))
+			{
+			$view = new \App\View\Admin\PasswordPolicy($this->page);
+			$this->page->addPageContent($view->edit());
+			}
+		}
+
 	public function permissionGroups() : void
 		{
 		if ($this->page->addHeader('Show Permission Groups'))

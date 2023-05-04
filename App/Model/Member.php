@@ -670,13 +670,11 @@ class Member
 
 		if ($member->loaded())
 			{
-			$newPassword = $this->getRandomPassword();
-			$cryptPassword = $this->hashPassword($newPassword);
-			$strippedPassword = \preg_replace('/[^A-Z0-9]/', '', $cryptPassword);
-			$resetLink = $this->settingTable->value('homePage') . '/Membership/passwordNew/' . $member->memberId . '/' . $strippedPassword;
-			$member->password = $cryptPassword;
+			$member->passwordReset = \bin2hex(\random_bytes(10));
+			$member->passwordResetExpires = \date('Y-m-d H:i:s', \time() + 3600 * 24);
 			$member->loginAttempts = \json_encode([]);
 			$member->update();
+			$resetLink = $this->settingTable->value('homePage') . '/Membership/passwordNew/' . $member->memberId . '/' . $member->passwordReset;
 
 			if ($text && $member->cellPhone)
 				{
@@ -919,6 +917,20 @@ class Member
 			}
 
 		return $updateCount;
+		}
+
+	public function validatePassword(string $passwordToValidate) : array
+		{
+		$policy = new \App\Model\PasswordPolicy();
+
+		$errors = $policy->validate($passwordToValidate);
+
+		if ($errors)
+			{
+			\App\Model\Session::setFlash('alert', $errors);
+			}
+
+		return $errors;
 		}
 
 	public function verifyEmail(string $verifyEmail) : bool

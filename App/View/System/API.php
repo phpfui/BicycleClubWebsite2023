@@ -210,9 +210,10 @@ class API
 		$fieldSet = new \PHPFUI\FieldSet('Change Password');
 		$fieldSet->add(new \PHPFUI\Input\Hidden('oauthUserId', (string)$user->oauthUserId));
 
-		$current = new \PHPFUI\Input\PasswordEye('password', 'New Password');
+		$passwordPolicy = new \App\View\Admin\PasswordPolicy($this->page);
+		$fieldSet->add($passwordPolicy->list());
+		$current = $passwordPolicy->getValidatedPassword('password', 'New Password');
 		$current->setRequired();
-		$current->setToolTip('The password should be 8 characters long, have letters, numbers and punctuation');
 		$fieldSet->add($current);
 		$confirm = new \PHPFUI\Input\PasswordEye('confirm', 'Confirm Password');
 		$confirm->addAttribute('data-equalto', $current->getId());
@@ -220,6 +221,7 @@ class API
 		$confirm->setRequired();
 		$confirm->setToolTip('You must enter the same password twice to make sure it is correct');
 		$fieldSet->add($confirm);
+		$form->setAreYouSure(false);
 		$form->add($fieldSet);
 		$form->add(new \PHPFUI\Submit('Change Password'));
 		$modal->add($form);

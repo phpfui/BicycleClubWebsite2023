@@ -498,9 +498,8 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 	public function passwordNew(\App\Record\Member $member = new \App\Record\Member(), string $hash = '') : void
 		{
 		$this->page->setPublic();
-		$strippedPassword = \preg_replace('/[^A-Z0-9]/', '', $member->password ?? '');
 
-		if ($member->loaded() && $strippedPassword == $hash)
+		if ($member->loaded() && $member->passwordReset == $hash && $member->passwordResetExpires > \date('Y-m-d H:i:s'))
 			{
 			$this->page->addHeader('Reset My Password');
 			$this->page->addPageContent(new \PHPFUI\SubHeader('Enter a new password'));

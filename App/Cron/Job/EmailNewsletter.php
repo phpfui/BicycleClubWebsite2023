@@ -12,13 +12,13 @@ class EmailNewsletter extends \App\Cron\BaseJob
 	/** @param array<string, string> $parameters */
 	public function run(array $parameters = []) : void
 		{
-		$today = $this->controller->runningAtJD();
+		$today = \App\Tools\Date::toString($this->controller->runningAtJD());
 		$newsletterTable = new \App\Table\Newsletter();
-		$newsletterTable->setWhere(new \PHPFUI\ORM\Condition('dateAdded', \App\Tools\Date::todayString(-1)));
+		$newsletterTable->setWhere(new \PHPFUI\ORM\Condition('dateAdded', \App\Tools\Date::increment($today, -1)));
 
 		foreach ($newsletterTable->getRecordCursor() as $newsletter)
 			{
-			if ($newsletter->date > $today - 15 && $newsletter->date < $today + 15)
+			if ($newsletter->date > \App\Tools\Date::increment($today, -15) && $newsletter->date < \App\Tools\Date::increment($today, 15))
 				{
 				$email = new \App\Tools\EMail();
 				$settings = new \App\Table\Setting();
@@ -33,7 +33,7 @@ class EmailNewsletter extends \App\Cron\BaseJob
 				$fileModel = new \App\Model\NewsletterFiles($newsletter->toArray());
 				$emailAttached = clone $email;
 				$emailAttached->addAttachment($fileModel->get($newsletter->newsletterId . '.pdf'), $fileModel->getPrettyFileName());
-				$members = \App\Table\Member::getNewsletterMembers(\App\Tools\Date::toString($today));
+				$members = \App\Table\Member::getNewsletterMembers($today);
 
 				foreach ($members as $member)
 					{

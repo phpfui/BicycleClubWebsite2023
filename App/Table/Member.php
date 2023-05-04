@@ -170,7 +170,7 @@ class Member extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getArrayCursor($sql, $input);
 		}
 
-	public static function getJournalMembers(int $expires) : iterable
+	public static function getJournalMembers(string $expires) : iterable
 		{
 		$sql = 'select m.firstName,m.lastName,m.email,m.memberId from member m left join membership s on m.membershipId=s.membershipId where m.email LIKE "%@%" and s.expires>=? and m.journal=1';
 

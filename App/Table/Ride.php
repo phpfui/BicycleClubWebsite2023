@@ -244,13 +244,6 @@ class Ride extends \PHPFUI\ORM\Table
 		return $ride;
 		}
 
-	public static function getLeaderlessRides(int $date) : \PHPFUI\ORM\RecordCursor
-		{
-		$sql = 'select * from ride where (memberId=0 or memberId is null) and rideDate<?';
-
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [$date]);
-		}
-
 	public function getLeadersRides(array $categories, string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
 		{
 		$statusCondition = new \PHPFUI\ORM\Condition('rideStatus', 1, new \PHPFUI\ORM\Operator\GreaterThan());

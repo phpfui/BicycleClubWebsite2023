@@ -24,7 +24,7 @@ class NewRideNotices extends \App\Cron\BaseJob
 		$model = new \App\Model\Ride();
 		$rideTable = new \App\Table\Ride();
 		$rides = $rideTable->getNewlyAddedUpcomingRides($startTime);
-		$todayString = \App\Tools\Date::todayString();
+		$todayString = \App\Tools\Date::toString($today);
 
 		foreach ($rides as $ride)
 			{

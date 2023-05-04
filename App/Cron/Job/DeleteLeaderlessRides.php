@@ -12,15 +12,13 @@ class DeleteLeaderlessRides extends \App\Cron\BaseJob
 	/** @param array<string, string> $parameters */
 	public function run(array $parameters = []) : void
 		{
-		$today = $this->controller->runningAtJD();
+		$today = \App\Tools\Date::toString($this->controller->runningAtJD());
 		$rideTable = new \App\Table\Ride();
-
-		$rides = $rideTable->getLeaderlessRides($today + 1);
-
-		foreach ($rides as $ride)
-			{
-			$ride->delete();
-			}
+		$condition = new \PHPFUI\ORM\Condition('memberId', 0);
+		$condition->or('memberId', null, new \PHPFUI\ORM\Operator\IsNull());
+		$fullCondition = new \PHPFUI\ORM\Condition('rideDate', $today, new \PHPFUI\ORM\Operator\LessThan());
+		$fullCondition->and($condition);
+		$rideTable->setWhere($condition)->delete();
 		}
 
 	public function willRun() : bool

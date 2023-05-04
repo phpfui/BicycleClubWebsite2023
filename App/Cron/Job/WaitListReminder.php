@@ -20,14 +20,14 @@ class WaitListReminder extends \App\Cron\MemberMailer
 			return;
 			}
 
-		$today = $this->controller->runningAtJD();
+		$today = \App\Tools\Date::toString($this->controller->runningAtJD());
 		$minute = $this->controller->runningAtMinute();
 		$hour = $this->controller->runningAtHour();
 		$endTime = $hour * 60 + $minute;
 		$startTime = $endTime - 60;
 
 		$rideTable = new \App\Table\Ride();
-		$rideTable->setWhere(new \PHPFUI\ORM\Condition('rideDate', \App\Tools\Date::todayString(-1)));
+		$rideTable->setWhere(new \PHPFUI\ORM\Condition('rideDate', $today));
 		$rideSignupTable = new \App\Table\RideSignup();
 
 		$title = $settingTable->value('clubAbbrev') . ' ' . $title;

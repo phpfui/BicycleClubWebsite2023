@@ -17,10 +17,10 @@ class EmailJournal extends \App\Cron\BaseJob
 
 		if (\count($journalItemTable))
 			{
-			$today = $this->controller->runningAtJD();
+			$today = \App\Tools\Date::toString($this->controller->runningAtJD() - 3, 'F j, Y', );
 			$settings = new \App\Table\Setting();
 			$clubAbbrev = $settings->value('clubAbbrev');
-			$title = "{$clubAbbrev} Announcements for the week of " . \App\Tools\Date::format('F j, Y', $today - 3);
+			$title = "{$clubAbbrev} Announcements for the week of {$today}";
 			$html = "<h1>{$title}</h1><p>";
 			$counter = 1;
 

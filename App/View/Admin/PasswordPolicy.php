@@ -31,8 +31,13 @@ class PasswordPolicy extends \App\Model\PasswordPolicy
 
 	public function getErrorMessage() : string
 		{
-		$messages = [];
 		$values = $this->settingsSaver->getValues();
+		if (! $values)
+			{
+			return '';
+			}
+
+		$messages = [];
 		$value = (int)$values[$this->prefix . 'Length'];
 
 		if ($value)
@@ -73,6 +78,11 @@ class PasswordPolicy extends \App\Model\PasswordPolicy
 		$validator = new \PHPFUI\Validator('password');
 
 		$values = $this->settingsSaver->getValues();
+		if (! $values)
+			{
+			return null;
+			}
+
 		$js = [];
 		$value = (int)$values[$this->prefix . 'Length'];
 
@@ -136,6 +146,10 @@ class PasswordPolicy extends \App\Model\PasswordPolicy
 		{
 		$ul = new \PHPFUI\UnorderedList();
 		$values = $this->settingsSaver->getValues();
+		if (! $values)
+			{
+			return null;
+			}
 
 		foreach ($this->fields as $name => $parameters)
 			{

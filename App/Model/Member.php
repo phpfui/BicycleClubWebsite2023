@@ -644,21 +644,15 @@ class Member
 		return $member->membershipId == \App\Model\Session::signedInMembershipId();
 		}
 
-	public function purgePending(int $days = 31) : void
+	public function purgePending(int $days = 3) : void
 		{
-		$memberTable = new \App\Table\Member();
-		$before = \App\Tools\Date::todayString(-$days);
-		$pending = $memberTable->getPendingMembers($before);
-
-		foreach ($pending as $memberInfo)
-			{
-			$memberInfo->member->delete();
-			}
-
 		$membershipTable = new \App\Table\Membership();
-		$pending = $membershipTable->getMemberlessMemberships($before);
+		$before = \App\Tools\Date::todayString(-$days);
+		$condition = new \PHPFUI\ORM\Condition('joined', $before, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$condition->and('pending', 1);
+		$membershipTable->setWhere($condition);
 
-		foreach ($pending as $membership)
+		foreach ($membershipTable->getRecordCursor() as $membership)
 			{
 			$membership->delete();
 			}

@@ -160,8 +160,12 @@ class TextHelper extends \PHPFUI\TextHelper
 	 * Clean up special characters from user input, but leave < and
 	 * > so it is real html
 	 */
-	public static function cleanUserHtml(string $html) : string
+	public static function cleanUserHtml(?string $html) : string
 		{
+		if (! $html)
+			{
+			return '';
+			}
 		$html = \str_replace("\n", '', $html);
 		$html = \App\Tools\TextHelper::htmlentities($html);
 		$html = \str_ireplace(['&lt;', '&gt;'], ['<', '>'], $html);

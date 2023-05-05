@@ -25,6 +25,10 @@ class PasswordPolicy
 		{
 		$values = $this->settingsSaver->getValues();
 		$errors = [];
+		if (! $values)
+			{
+			return $errors;
+			}
 
 		foreach ($this->fields as $key => $parameters)
 			{

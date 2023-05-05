@@ -82,7 +82,7 @@ class Schema extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 	private function getSchema(\PHPFUI\ORM\Table $table) : array
 		{
 		$fields = $table->getFields();
-		$keys = ['mysql_type', 'php_type', 'length', 'nullable', 'default', 'key'];
+		$keys = ['mysql_type', 'php_type', 'length', 'key', 'nullable', 'default', ];
 
 		$response = [];
 
@@ -97,7 +97,7 @@ class Schema extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 			$response[$key] = $schema;
 			}
 		$response['primaryKeys'] = \array_keys($table->getPrimaryKeys());
-		$response['children'] = $table->getRecord()->getVirtualFields();
+		$response['related'] = $table->getRecord()->getVirtualFields();
 
 		return $response;
 		}

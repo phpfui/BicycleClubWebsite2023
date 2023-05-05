@@ -8,6 +8,7 @@ parameters:
 		- common.php
 		- commonbase.php
 	scanDirectories:
+		- oneOffScripts
 		- NoNameSpace
 		- RideWithGPS
 		- PHPFUI

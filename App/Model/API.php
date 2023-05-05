@@ -6,9 +6,7 @@ class API
 	{
 	private array $allowedFields = [];
 
-	private array $children = [];
-
-	private array $disallowedFields = ['password', 'loginAttempts', ];
+	private array $disallowedFields = ['password', 'loginAttempts', 'passwordReset', 'passwordResetExpires'];
 
 	private array $errors = [];
 
@@ -139,36 +137,16 @@ class API
 
 					break;
 
-				case 'children':
-					// @phpstan-ignore-next-line
-					if ('*' == $value && $this->table)
-						{
-						$this->children = $this->table->getRecord()->getVirtualFields();
-						}
-					else
-						{
-						$this->children = \explode(',', (string)$value);
-						}
-
-					break;
-
 				case 'related':
-					// @phpstan-ignore-next-line
-					if ('*' == $value && $this->table)
-						{
-						$this->related = [];
+					$relationships = $this->table->getRecord()->getVirtualFields();
 
-						foreach ($this->table->getRecord()->getFields() as $field => $definition)
-							{
-							if (\str_ends_with($field, 'Id'))
-								{
-								$this->related[] = \substr($field, 0, \strlen($field) - 2);
-								}
-							}
+					if ('*' == $value)
+						{
+						$this->related = $relationships;
 						}
 					else
 						{
-						$this->related = \explode(',', (string)$value);
+						$this->related = \array_intersect(\explode(',', (string)$value), $relationships);
 						}
 
 					break;
@@ -183,49 +161,46 @@ class API
 		return $this;
 		}
 
-	public function getData(\PHPFUI\ORM\Record $record) : array
+	public function getData(mixed $record, array $related) : array
 		{
-		$data = $record->toArray();
-
-		if ($this->allowedFields)
+		if ($record instanceof \PHPFUI\ORM\Record)
 			{
-			$filtered = [];
+			$data = $record->toArray();
 
-			foreach ($this->allowedFields as $field)
+			if ($this->allowedFields)
 				{
-				$filtered[$field] = $data[$field];
-				}
-			$data = $filtered;
-			}
+				$filtered = [];
 
-		foreach ($this->disallowedFields as $field)
-			{
-			unset($data[$field]);
-			}
-
-		$relationships = $record->getVirtualFields();
-
-		foreach ($this->children as $children)
-			{
-			$childTable = \lcfirst(\str_replace('Children', '', (string)$children));
-
-			if (\in_array($children, $relationships) && $this->isAuthorized('GET', $childTable))
-				{
-				foreach ($record->{$children} as $child)
+				foreach ($this->allowedFields as $field)
 					{
-					$data[$childTable][] = $child->toArray();
+					$filtered[$field] = $data[$field];
 					}
+				$data = $filtered;
+				}
+
+			foreach ($this->disallowedFields as $field)
+				{
+				unset($data[$field]);
+				}
+
+			foreach ($related as $relation)
+				{
+				$data[$relation] = $this->getData($record->{$relation}, []);
 				}
 			}
-
-		foreach ($this->related as $related)
+		elseif (\is_iterable($record))
 			{
-			$relatedId = $related . 'Id';
+			$data = [];
 
-			if ($this->isAuthorized('GET', $related) && $record->getTableName() != $related && ! empty($record->{$relatedId}))
+			foreach ($record as $instance)
 				{
-				$data[$related] = $this->getData($record->{$related});
+				$data[] = $this->getData($instance, []);
 				}
+			}
+		else
+			{
+			$data = [];
+			$data[] = $record;
 			}
 
 		return $data;
@@ -262,6 +237,11 @@ class API
 		$get['offset'] = \max(0, $this->table->getOffset() - $this->table->getLimit());
 
 		return $this->controller->getUri() . '?' . \http_build_query($get);
+		}
+
+	public function getRequestedRelated() : array
+		{
+		return $this->related;
 		}
 
 	public function getTable() : ?\PHPFUI\ORM\Table

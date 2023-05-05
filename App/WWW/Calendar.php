@@ -150,7 +150,7 @@ class Calendar extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$content = new \App\View\Content($this->page);
 			$this->page->addPageContent($content->getDisplayCategoryHTML($title));
 			$model = new \App\Model\Calendar();
-			$this->page->addPageContent($this->view->showCalendar($model->getData($_GET), $_GET));
+			$this->page->addPageContent($this->view->showCalendar($model->getCalendarEntries($_GET), $_GET));
 			}
 		}
 

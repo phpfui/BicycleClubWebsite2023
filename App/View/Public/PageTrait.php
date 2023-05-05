@@ -10,7 +10,7 @@ trait PageTrait
 		$container->add(new \PHPFUI\Button('Add An Event', '/Calendar/addEvent'));
 		$model = new \App\Model\Calendar();
 		$view = new \App\View\Calendar($this);
-		$container->add($view->showCalendar($model->getData($_GET), $_GET));
+		$container->add($view->showCalendar($model->getCalendarEntries($_GET), $_GET));
 
 		return $container;
 		}
@@ -74,7 +74,7 @@ trait PageTrait
 		$model = new \App\Model\Calendar();
 		$view = new \App\View\Calendar($this);
 
-		return $view->showCalendar($model->getData($_GET), $_GET, $tabs);
+		return $view->showCalendar($model->getCalendarEntries($_GET), $_GET, $tabs);
 		}
 
 	public function ContactUs() : \App\View\Public\ContactUs

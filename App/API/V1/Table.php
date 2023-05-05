@@ -79,7 +79,7 @@ class Table extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 
 						if ($record->loaded())
 							{
-							$this->setResponse($this->model->getData($record));
+							$this->setResponse($this->model->getData($record, $this->model->getRequestedRelated()));
 							}
 						else
 							{
@@ -105,7 +105,7 @@ class Table extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 
 						foreach ($cursor as $record)
 							{
-							$response[] = $this->model->getData($record);
+							$response[] = $this->model->getData($record, $this->model->getRequestedRelated());
 							}
 						$this->setResponse($response);
 						}

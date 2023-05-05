@@ -25,12 +25,7 @@ class Calendar
 		$this->sendEmail($email, $calendar);
 		}
 
-	public function getColumns() : array
-		{
-		return $this->columns;
-		}
-
-	public function getData(array $request = []) : \App\Table\Calendar
+	public function getCalendarEntries(array $request = []) : \App\Table\Calendar
 		{
 		$calendarTable = new \App\Table\Calendar();
 
@@ -50,6 +45,11 @@ class Calendar
 		$calendarTable->setWhere($condition);
 
 		return $calendarTable;
+		}
+
+	public function getColumns() : array
+		{
+		return $this->columns;
 		}
 
 	/**

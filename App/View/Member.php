@@ -467,6 +467,7 @@ class Member
 		if ($form->isMyCallback($submit))
 			{
 			$passwordValidator = new \App\Model\PasswordPolicy();
+			$errors = $passwordValidator->validate($_POST['password'] ?? '');
 
 			if (isset($_POST['confirm'], $_POST['password']) && $_POST['confirm'] == $_POST['password'] && ! $errors)
 				{

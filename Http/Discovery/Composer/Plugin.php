@@ -45,6 +45,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     private const PROVIDE_RULES = [
         'php-http/async-client-implementation' => [
+            'symfony/http-client:>=6.3' => ['guzzlehttp/promises', 'psr/http-factory-implementation'],
             'symfony/http-client' => ['guzzlehttp/promises', 'php-http/message-factory', 'psr/http-factory-implementation'],
             'php-http/guzzle7-adapter' => [],
             'php-http/guzzle6-adapter' => [],
@@ -52,6 +53,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             'php-http/react-adapter' => [],
         ],
         'php-http/client-implementation' => [
+            'symfony/http-client:>=6.3' => ['psr/http-factory-implementation'],
             'symfony/http-client' => ['php-http/message-factory', 'psr/http-factory-implementation'],
             'php-http/guzzle7-adapter' => [],
             'php-http/guzzle6-adapter' => [],
@@ -147,8 +149,18 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $composer->getPackage()->getRequires(),
             $composer->getPackage()->getDevRequires(),
         ];
+        $pinnedAbstractions = [];
+        $pinned = $composer->getPackage()->getExtra()['discovery'] ?? [];
+        foreach (self::INTERFACE_MAP as $abstraction => $interfaces) {
+            foreach (isset($pinned[$abstraction]) ? [] : $interfaces as $interface) {
+                if (!isset($pinned[$interface])) {
+                    continue 2;
+                }
+            }
+            $pinnedAbstractions[$abstraction] = true;
+        }
 
-        $missingRequires = $this->getMissingRequires($repo, $requires, 'project' === $composer->getPackage()->getType());
+        $missingRequires = $this->getMissingRequires($repo, $requires, 'project' === $composer->getPackage()->getType(), $pinnedAbstractions);
         $missingRequires = [
             'require' => array_fill_keys(array_merge([], ...array_values($missingRequires[0])), '*'),
             'require-dev' => array_fill_keys(array_merge([], ...array_values($missingRequires[1])), '*'),
@@ -227,7 +239,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
     }
 
-    public function getMissingRequires(InstalledRepositoryInterface $repo, array $requires, bool $isProject): array
+    public function getMissingRequires(InstalledRepositoryInterface $repo, array $requires, bool $isProject, array $pinnedAbstractions): array
     {
         $allPackages = [];
         $devPackages = method_exists($repo, 'getDevPackageNames') ? array_fill_keys($repo->getDevPackageNames(), true) : [];
@@ -267,7 +279,14 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $rules = array_intersect_key(self::PROVIDE_RULES, $rules);
 
             while ($rules) {
-                $abstractions[] = $abstraction = key($rules);
+                $abstraction = key($rules);
+
+                if (isset($pinnedAbstractions[$abstraction])) {
+                    unset($rules[$abstraction]);
+                    continue;
+                }
+
+                $abstractions[] = $abstraction;
 
                 foreach (array_shift($rules) as $candidate => $deps) {
                     [$candidate, $version] = explode(':', $candidate, 2) + [1 => null];
@@ -332,21 +351,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 }
 
                 $dep = key($candidates);
+                [$dep] = explode(':', $dep, 2);
                 $missingRequires[$dev][$abstraction] = [$dep];
 
                 if ($isProject && !$dev && isset($devPackages[$dep])) {
                     $missingRequires[2][$abstraction][] = $dep;
-                }
-
-                foreach (current($candidates) as $dep) {
-                    if (isset(self::PROVIDE_RULES[$dep])) {
-                        $abstractions[] = $dep;
-                    } elseif (!isset($allPackages[$dep])) {
-                        $missingRequires[$dev][$abstraction][] = $dep;
-                    } elseif ($isProject && !$dev && isset($devPackages[$dep])) {
-                        $missingRequires[0][$abstraction][] = $dep;
-                        $missingRequires[2][$abstraction][] = $dep;
-                    }
                 }
             }
         }

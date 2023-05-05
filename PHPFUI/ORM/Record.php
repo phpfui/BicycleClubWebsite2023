@@ -27,11 +27,15 @@ abstract class Record extends DataObject
 
 	protected static bool $autoIncrement = false;
 
-	protected static array $displayTransforms = [];
-
 	protected static bool $deleteChildren = true;
 
+	protected static array $displayTransforms = [];
+
+	protected bool $empty = true;
+
 	protected static array $fields = [];
+
+	protected bool $loaded = false;
 
 	protected static array $primaryKeys = [];
 
@@ -42,10 +46,6 @@ abstract class Record extends DataObject
 	protected string $validator = '';
 
 	protected static array $virtualFields = [];
-
-	protected bool $empty = true;
-
-	protected bool $loaded = false;
 
 	/**
 	 * Construct a CRUD object
@@ -286,12 +286,13 @@ abstract class Record extends DataObject
 	 */
 	public function delete() : bool
 		{
-		if (static::deleteChildren)
+		if (static::$deleteChildren)
 			{
 			foreach (static::$virtualFields as $field => $relationship)
 				{
 				$relationshipClass = \array_shift($relationship);
-				if ($relationshipClass == \PHPFUI\ORM\Children::class)
+
+				if (\PHPFUI\ORM\Children::class == $relationshipClass)
 					{
 					$relationshipObject = new \PHPFUI\ORM\Children($this, $field);
 					$relationshipObject->delete($relationship);

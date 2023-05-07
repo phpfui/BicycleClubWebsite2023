@@ -1,81 +1,30 @@
 <?php
+
 namespace RideWithGPS\API;
 
 class Client
 	{
+	public const TIMEOUT = 10;
 
-	private $apiEndpoint = 'https://ridewithgps.com';
-	private $apiKey = '';
-	private $authToken = '';
+	public bool $verify_ssl = true;
 
-	const TIMEOUT = 10;
+	private string $apiEndpoint = 'https://ridewithgps.com';
 
-	public $verify_ssl = true;
+	private string $last_error = '';
 
-	private $request_successful = false;
-	private $last_error = '';
-	private $last_response = [];
-	private $last_request = [];
+	private array $last_request = [];
+
+	private array $last_response = [];
+
+	private bool $request_successful = false;
+
+	private int $version = 2;
 
 	/**
 	 * Create a new instance
-	 *
-	 * @param string $apiKey
-	 * @param string $authToken
 	 */
-	public function __construct($apiKey, $authToken)
+	public function __construct(private string $apiKey, private string $authToken)
 		{
-		$this->apiKey = $apiKey;
-		$this->authToken = $authToken;
-		}
-
-	/**
-	 * @return string The url to the API endpoint
-	 */
-	public function getApiEndpoint()
-		{
-		return $this->apiEndpoint;
-		}
-
-	/**
-	 * Was the last request successful?
-	 *
-	 * @return bool  True for success, false for failure
-	 */
-	public function success()
-		{
-		return $this->request_successful;
-		}
-
-	/**
-	 * Get the last error returned by either the network transport, or by the API.
-	 * If something didn't work, this should contain the string describing the problem.
-	 *
-	 * @return  string|false  describing the error
-	 */
-	public function getLastError()
-		{
-		return $this->last_error ? : false;
-		}
-
-	/**
-	 * Get an array containing the HTTP headers and the body of the API response.
-	 *
-	 * @return array  Assoc array with keys 'headers' and 'body'
-	 */
-	public function getLastResponse()
-		{
-		return $this->last_response;
-		}
-
-	/**
-	 * Get an array containing the HTTP headers and the body of the API request.
-	 *
-	 * @return array  Assoc array
-	 */
-	public function getLastRequest()
-		{
-		return $this->last_request;
 		}
 
 	/**
@@ -85,9 +34,9 @@ class Client
 	 * @param   array $args Assoc array of arguments (if any)
 	 * @param   int $timeout Timeout limit for request in seconds
 	 *
-	 * @return  array|false   Assoc array of API response, decoded from JSON
+	 * @return  array   Assoc array of API response, decoded from JSON
 	 */
-	public function delete($method, $args = [], $timeout = self::TIMEOUT)
+	public function delete(string $method, array $args = [], int $timeout = self::TIMEOUT) : array
 		{
 		return $this->makeRequest('delete', $method, $args, $timeout);
 		}
@@ -99,11 +48,48 @@ class Client
 	 * @param   array $args Assoc array of arguments (usually your data)
 	 * @param   int $timeout Timeout limit for request in seconds
 	 *
-	 * @return  array|false   Assoc array of API response, decoded from JSON
+	 * @return  array   Assoc array of API response, decoded from JSON
 	 */
-	public function get($method, $args = [], $timeout = self::TIMEOUT)
+	public function get(string $method, array $args = [], int $timeout = self::TIMEOUT) : array
 		{
 		return $this->makeRequest('get', $method, $args, $timeout);
+		}
+
+	/**
+	 * @return string The url to the API endpoint
+	 */
+	public function getApiEndpoint() : string
+		{
+		return $this->apiEndpoint;
+		}
+
+	/**
+	 * Get the last error returned by either the network transport, or by the API.
+	 * If something didn't work, this should contain the string describing the problem.
+	 *
+	 * @return  string  describing the error
+	 */
+	public function getLastError() : string
+		{
+		return $this->last_error;
+		}
+
+	/**
+	 * Get an array containing the HTTP headers and the body of the API request.
+	 */
+	public function getLastRequest() : array
+		{
+		return $this->last_request;
+		}
+
+	/**
+	 * Get an array containing the HTTP headers and the body of the API response.
+	 *
+	 * @return array  Assoc array with keys 'headers' and 'body'
+	 */
+	public function getLastResponse() : array
+		{
+		return $this->last_response;
 		}
 
 	/**
@@ -113,9 +99,9 @@ class Client
 	 * @param   array $args Assoc array of arguments (usually your data)
 	 * @param   int $timeout Timeout limit for request in seconds
 	 *
-	 * @return  array|false   Assoc array of API response, decoded from JSON
+	 * @return  array   Assoc array of API response, decoded from JSON
 	 */
-	public function patch($method, $args = [], $timeout = self::TIMEOUT)
+	public function patch(string $method, array $args = [], int $timeout = self::TIMEOUT) : array
 		{
 		return $this->makeRequest('patch', $method, $args, $timeout);
 		}
@@ -127,9 +113,9 @@ class Client
 	 * @param   array $args Assoc array of arguments (usually your data)
 	 * @param   int $timeout Timeout limit for request in seconds
 	 *
-	 * @return  array|false   Assoc array of API response, decoded from JSON
+	 * @return  array   Assoc array of API response, decoded from JSON
 	 */
-	public function post($method, $args = [], $timeout = self::TIMEOUT)
+	public function post(string $method, array $args = [], int $timeout = self::TIMEOUT) : array
 		{
 		return $this->makeRequest('post', $method, $args, $timeout);
 		}
@@ -141,102 +127,112 @@ class Client
 	 * @param   array $args Assoc array of arguments (usually your data)
 	 * @param   int $timeout Timeout limit for request in seconds
 	 *
-	 * @return  array|false   Assoc array of API response, decoded from JSON
+	 * @return  array   Assoc array of API response, decoded from JSON
 	 */
-	public function put($method, $args = [], $timeout = self::TIMEOUT)
+	public function put(string $method, array $args = [], int $timeout = self::TIMEOUT) : array
 		{
 		return $this->makeRequest('put', $method, $args, $timeout);
 		}
 
 	/**
-	 * Performs the underlying HTTP request. Not very exciting.
-	 *
-	 * @param  string $http_verb The HTTP verb to use: get, post, put, patch, delete
-	 * @param  string $method The API method to be called
-	 * @param  array $args Assoc array of parameters to be passed
-	 * @param int $timeout
-	 *
-	 * @return array|false Assoc array of decoded result
-	 * @throws \Exception
+	 * Was the last request successful?
 	 */
-	private function makeRequest($http_verb, $method, $args = [], $timeout = self::TIMEOUT)
+	public function success() : bool
 		{
-		if (! function_exists('curl_init') || ! function_exists('curl_setopt'))
-			{
-			throw new \Exception("cURL support is required, but can't be found.");
-			}
-		$url = $this->apiEndpoint.'/'.$method.'.json';
-		$response = $this->prepareStateForRequest($http_verb, $method, $url, $timeout);
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, [
-								'Accept: application/vnd.api+json',
-								'Content-Type: application/vnd.api+json',
-								]);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_VERBOSE, true);
-		curl_setopt($ch, CURLOPT_HEADER, true);
-		curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
-		curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
-		curl_setopt($ch, CURLOPT_ENCODING, '');
-		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-		$args['apikey'] = $this->apiKey;
-		$args['auth_token'] = $this->authToken;
-		switch ($http_verb)
-			{
-			case 'post':
-				curl_setopt($ch, CURLOPT_POST, true);
-				$this->attachRequestPayload($ch, $args);
-				break;
-			case 'get':
-				$query = http_build_query($args, '', '&');
-				curl_setopt($ch, CURLOPT_URL, $url.'?'.$query);
-				break;
-			case 'delete':
-				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-				break;
-			case 'patch':
-				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
-				$this->attachRequestPayload($ch, $args);
-				break;
-			case 'put':
-				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-				$this->attachRequestPayload($ch, $args);
-				break;
-			}
-		$responseContent = curl_exec($ch);
-		$response['headers'] = curl_getinfo($ch);
-		$response = $this->setResponseState($response, $responseContent, $ch);
-		curl_close($ch);
-		$formattedResponse = $this->formatResponse($response);
-		$this->determineSuccess($response, $formattedResponse, $timeout);
-		return $formattedResponse;
+		return $this->request_successful;
 		}
 
 	/**
-	 * @param string $http_verb
-	 * @param string $method
-	 * @param string $url
-	 * @param integer $timeout
+	 * Encode the data and attach it to the request
+	 *
+	 * @param \CurlHandle $ch cURL session handle, used by reference
+	 * @param array $data Assoc array of data to attach
 	 */
-	private function prepareStateForRequest($http_verb, $method, $url, $timeout)
+	private function attachRequestPayload(\CurlHandle &$ch, array $data) : void
 		{
-		$this->last_error = '';
-		$this->request_successful = false;
-		$this->last_response = array(
-				'headers' => null, // array of details from curl_getinfo()
-				'httpHeaders' => null, // array of HTTP headers
-				'body' => null // content of the response
-		);
-		$this->last_request = array(
-				'method' => $http_verb,
-				'path' => $method,
-				'url' => $url,
-				'body' => '',
-				'timeout' => $timeout,
-		);
-		return $this->last_response;
+		$encoded = \json_encode($data);
+		$this->last_request['body'] = $encoded;
+		\curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
+		}
+
+	/**
+	 * Check if the response was successful or a failure. If it failed, store the error.
+	 *
+	 * @param array $response The response from the curl request
+	 * @param array $formattedResponse The response body payload from the curl request
+	 * @param int $timeout The timeout supplied to the curl request.
+	 *
+	 * @return bool     If the request was successful
+	 */
+	private function determineSuccess(array $response, array $formattedResponse, int $timeout) : bool
+		{
+		$status = $this->findHTTPStatus($response, $formattedResponse);
+
+		if ($status >= 200 && $status <= 299)
+			{
+			$this->request_successful = true;
+
+			return true;
+			}
+
+		if (isset($formattedResponse['detail']))
+			{
+			$this->last_error = \sprintf('%d: %s', $formattedResponse['status'], $formattedResponse['detail']);
+
+			return false;
+			}
+
+		if ($timeout > 0 && $response['headers'] && $response['headers']['total_time'] >= $timeout)
+			{
+			$this->last_error = \sprintf('Request timed out after %f seconds.', $response['headers']['total_time']);
+
+			return false;
+			}
+		$this->last_error = 'Unknown error, call getLastResponse() to find out what happened.';
+
+		return false;
+		}
+
+	/**
+	 * Find the HTTP status code from the headers or API response body
+	 *
+	 * @param array $response The response from the curl request
+	 * @param array $formattedResponse The response body payload from the curl request
+	 *
+	 * @return int  HTTP status code
+	 */
+	private function findHTTPStatus(array $response, array $formattedResponse) : int
+		{
+		if (! empty($response['headers']) && isset($response['headers']['http_code']))
+			{
+			return (int)$response['headers']['http_code'];
+			}
+
+		if (! empty($response['body']) && isset($formattedResponse['status']))
+			{
+			return (int)$formattedResponse['status'];
+			}
+
+		return 418;
+		}
+
+	/**
+	 * Decode the response and format any error messages for debugging
+	 *
+	 * @param array $response The response from the curl request
+	 *
+	 * @return array    The JSON decoded into an array
+	 */
+	private function formatResponse(array $response) : array
+		{
+		$this->last_response = $response;
+
+		if (! empty($response['body']))
+			{
+			return \json_decode($response['body'], true);
+			}
+
+		return [];
 		}
 
 	/**
@@ -245,86 +241,151 @@ class Client
 	 * The "Link" header is parsed into an associative array based on the
 	 * rel names it contains. The original value is available under
 	 * the "_raw" key.
-	 *
-	 * @param string $headersAsString
-	 *
-	 * @return array
 	 */
-	private function getHeadersAsArray($headersAsString)
+	private function getHeadersAsArray(string $headersAsString) : array
 		{
 		$headers = [];
-		foreach (explode("\r\n", $headersAsString) as $i => $line)
+
+		foreach (\explode("\r\n", $headersAsString) as $i => $line)
 			{
-			if ($i === 0)
+			if (0 === $i)
 				{ // HTTP code
 				continue;
 				}
-			$line = trim($line);
+			$line = \trim($line);
+
 			if (empty($line))
 				{
 				continue;
 				}
-			list($key, $value) = explode(': ', $line);
-			if ($key == 'Link')
+			[$key, $value] = \explode(': ', $line);
+
+			if ('Link' == $key)
 				{
-				$value = array_merge(
-						array('_raw' => $value),
-						$this->getLinkHeaderAsArray($value)
+				$value = \array_merge(
+					['_raw' => $value],
+					$this->getLinkHeaderAsArray($value)
 				);
 				}
 			$headers[$key] = $value;
 			}
+
 		return $headers;
 		}
 
 	/**
 	 * Extract all rel => URL pairs from the provided Link header value
-	 *
-	 * @param string $linkHeaderAsString
-	 *
-	 * @return array
 	 */
-	private function getLinkHeaderAsArray($linkHeaderAsString)
+	private function getLinkHeaderAsArray(string $linkHeaderAsString) : array
 		{
 		$urls = [];
-		if (preg_match_all('/<(.*?)>\s*;\s*rel="(.*?)"\s*/', $linkHeaderAsString, $matches))
+
+		if (\preg_match_all('/<(.*?)>\s*;\s*rel="(.*?)"\s*/', $linkHeaderAsString, $matches))
 			{
 			foreach ($matches[2] as $i => $relName)
 				{
 				$urls[$relName] = $matches[1][$i];
 				}
 			}
+
 		return $urls;
 		}
 
 	/**
-	 * Encode the data and attach it to the request
+	 * Performs the underlying HTTP request. Not very exciting.
 	 *
-	 * @param   resource $ch cURL session handle, used by reference
-	 * @param   array $data Assoc array of data to attach
+	 * @param  string $http_verb The HTTP verb to use: get, post, put, patch, delete
+	 * @param  string $method The API method to be called
+	 * @param  array $args Assoc array of parameters to be passed
+	 *
+	 * @throws \Exception
+	 * @return array Assoc array of decoded result, empty for false
 	 */
-	private function attachRequestPayload(&$ch, $data)
+	private function makeRequest(string $http_verb, string $method, array $args = [], int $timeout = self::TIMEOUT) : array
 		{
-		$encoded = json_encode($data);
-		$this->last_request['body'] = $encoded;
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded);
+		if (! \function_exists('curl_init') || ! \function_exists('curl_setopt'))
+			{
+			throw new \Exception("cURL support is required, but can't be found.");
+			}
+		$url = $this->apiEndpoint . '/' . $method . '.json';
+		$response = $this->prepareStateForRequest($http_verb, $method, $url, $timeout);
+		$ch = \curl_init();
+		\curl_setopt($ch, CURLOPT_URL, $url);
+		\curl_setopt($ch, CURLOPT_HTTPHEADER, [
+			'Accept: application/vnd.api+json',
+			'Content-Type: application/vnd.api+json',
+		]);
+		\curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		\curl_setopt($ch, CURLOPT_VERBOSE, true);
+		\curl_setopt($ch, CURLOPT_HEADER, true);
+		\curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+		\curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
+		\curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+		\curl_setopt($ch, CURLOPT_ENCODING, '');
+		\curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+		$args['apikey'] = $this->apiKey;
+		$args['auth_token'] = $this->authToken;
+		$args['version'] = $this->version;
+
+		switch ($http_verb)
+			{
+			case 'post':
+				\curl_setopt($ch, CURLOPT_POST, true);
+				$this->attachRequestPayload($ch, $args);
+
+				break;
+
+			case 'get':
+				$query = \http_build_query($args, '', '&');
+				\curl_setopt($ch, CURLOPT_URL, $url . '?' . $query);
+
+				break;
+
+			case 'delete':
+				\curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+
+				break;
+
+			case 'patch':
+				\curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
+				$this->attachRequestPayload($ch, $args);
+
+				break;
+
+			case 'put':
+				\curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+				$this->attachRequestPayload($ch, $args);
+
+				break;
+			}
+		$responseContent = \curl_exec($ch);
+		$response['headers'] = \curl_getinfo($ch);
+		$response = $this->setResponseState($response, $responseContent, $ch);
+		\curl_close($ch);
+		$formattedResponse = $this->formatResponse($response);
+		$this->determineSuccess($response, $formattedResponse, $timeout);
+
+		return $formattedResponse;
 		}
 
-	/**
-	 * Decode the response and format any error messages for debugging
-	 *
-	 * @param array $response The response from the curl request
-	 *
-	 * @return array|false    The JSON decoded into an array
-	 */
-	private function formatResponse($response)
+	private function prepareStateForRequest(string $http_verb, string $method, string $url, int $timeout) : array
 		{
-		$this->last_response = $response;
-		if (! empty($response['body']))
-			{
-			return json_decode($response['body'], true);
-			}
-		return false;
+		$this->last_error = '';
+		$this->request_successful = false;
+		$this->last_response = [
+			'headers' => null, // array of details from curl_getinfo()
+			'httpHeaders' => null, // array of HTTP headers
+			'body' => null // content of the response
+		];
+		$this->last_request = [
+			'method' => $http_verb,
+			'path' => $method,
+			'url' => $url,
+			'body' => '',
+			'timeout' => $timeout,
+		];
+
+		return $this->last_response;
 		}
 
 	/**
@@ -332,77 +393,28 @@ class Client
 	 *
 	 * @param array $response The response from the curl request
 	 * @param string $responseContent The body of the response from the curl request
-	 * * @return array    The modified response
+	 * @param \CurlHandle $ch cURL session handle, used by reference
+	 *
+	 * @return array    The modified response
 	 */
-	private function setResponseState($response, $responseContent, $ch)
+	private function setResponseState(array $response, string $responseContent, \CurlHandle $ch) : array
 		{
-		if ($responseContent === false)
+		if (! $responseContent)
 			{
-			$this->last_error = curl_error($ch);
+			$this->last_error = \curl_error($ch);
 			}
 		else
 			{
 			$headerSize = $response['headers']['header_size'];
-			$response['httpHeaders'] = $this->getHeadersAsArray(substr($responseContent, 0, $headerSize));
-			$response['body'] = substr($responseContent, $headerSize);
+			$response['httpHeaders'] = $this->getHeadersAsArray(\substr($responseContent, 0, $headerSize));
+			$response['body'] = \substr($responseContent, $headerSize);
+
 			if (isset($response['headers']['request_header']))
 				{
 				$this->last_request['headers'] = $response['headers']['request_header'];
 				}
 			}
+
 		return $response;
 		}
-
-	/**
-	 * Check if the response was successful or a failure. If it failed, store the error.
-	 *
-	 * @param array $response The response from the curl request
-	 * @param array|false $formattedResponse The response body payload from the curl request
-	 * @param int $timeout The timeout supplied to the curl request.
-	 *
-	 * @return bool     If the request was successful
-	 */
-	private function determineSuccess($response, $formattedResponse, $timeout)
-		{
-		$status = $this->findHTTPStatus($response, $formattedResponse);
-		if ($status >= 200 && $status <= 299)
-			{
-			$this->request_successful = true;
-			return true;
-			}
-		if (isset($formattedResponse['detail']))
-			{
-			$this->last_error = sprintf('%d: %s', $formattedResponse['status'], $formattedResponse['detail']);
-			return false;
-			}
-		if ($timeout > 0 && $response['headers'] && $response['headers']['total_time'] >= $timeout)
-			{
-			$this->last_error = sprintf('Request timed out after %f seconds.', $response['headers']['total_time']);
-			return false;
-			}
-		$this->last_error = 'Unknown error, call getLastResponse() to find out what happened.';
-		return false;
-		}
-
-	/**
-	 * Find the HTTP status code from the headers or API response body
-	 *
-	 * @param array $response The response from the curl request
-	 * @param array|false $formattedResponse The response body payload from the curl request
-	 *
-	 * @return int  HTTP status code
-	 */
-	private function findHTTPStatus($response, $formattedResponse)
-		{
-		if (! empty($response['headers']) && isset($response['headers']['http_code']))
-			{
-			return (int)$response['headers']['http_code'];
-			}
-		if (! empty($response['body']) && isset($formattedResponse['status']))
-			{
-			return (int)$formattedResponse['status'];
-			}
-		return 418;
-		}
 	}
-

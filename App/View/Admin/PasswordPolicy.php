@@ -32,6 +32,7 @@ class PasswordPolicy extends \App\Model\PasswordPolicy
 	public function getErrorMessage() : string
 		{
 		$values = $this->settingsSaver->getValues();
+
 		if (! $values)
 			{
 			return '';
@@ -78,6 +79,7 @@ class PasswordPolicy extends \App\Model\PasswordPolicy
 		$validator = new \PHPFUI\Validator('password');
 
 		$values = $this->settingsSaver->getValues();
+
 		if (! $values)
 			{
 			return null;
@@ -146,6 +148,7 @@ class PasswordPolicy extends \App\Model\PasswordPolicy
 		{
 		$ul = new \PHPFUI\UnorderedList();
 		$values = $this->settingsSaver->getValues();
+
 		if (! $values)
 			{
 			return null;

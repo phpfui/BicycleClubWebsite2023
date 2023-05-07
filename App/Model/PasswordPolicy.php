@@ -25,6 +25,7 @@ class PasswordPolicy
 		{
 		$values = $this->settingsSaver->getValues();
 		$errors = [];
+
 		if (! $values)
 			{
 			return $errors;

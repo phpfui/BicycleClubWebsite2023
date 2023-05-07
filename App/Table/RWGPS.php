@@ -35,12 +35,42 @@ class RWGPS extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, ['date' => \App\Tools\Date::todayString()]);
 		}
 
-	public function setClubRides(array $RWGPSIds) : void
+	public function setClubRides(array $routes) : void
 		{
-		if ($RWGPSIds)
+		if ($routes)
 			{
-			$sql = 'update rwgps set club=1 where RWGPSId in (' . \implode(',', $RWGPSIds) . ')';
-			\PHPFUI\ORM::execute($sql);
+			$this->setWhere(new \PHPFUI\ORM\Condition('RWGPSId', \array_keys($routes), new \PHPFUI\ORM\Operator\In()));
+			$this->update(['club' => 1]);
+
+			$this->setWhere(new \PHPFUI\ORM\Condition('club', 1));
+			$this->addSelect('RWGPSId');
+
+			foreach ($this->getArrayCursor() as $row)
+				{
+				unset($routes[$row['RWGPSId']]);
+				}
+			$this->setWhere();
+			$newRows = [];
+
+			foreach ($routes as $ride)
+				{
+				$record = new \App\Record\RWGPS();
+				$record->RWGPSId = $ride['id'];
+				$record->club = 1;
+				$record->description = $ride['description'];
+				$record->elevation = (int)((float)$ride['elevation_gain'] * 3.28);
+				$record->lastUpdated = \date('Y-m-d g:i a', \strtotime($ride['updated_at']));
+				$record->latitude = $ride['first_lat'];
+				$record->longitude = $ride['first_lng'];
+				$record->mileage = (float)$ride['distance'] / 1609.344;
+				$record->state = $ride['administrative_area'];
+				$record->title = $ride['name'];
+				$record->town = $ride['locality'];
+				$record->zip = $ride['postal_code'];
+
+				$newRows[] = $record;
+				}
+			$this->insertOrIgnore($newRows);
 			}
 		}
 

@@ -4,7 +4,7 @@ namespace App\Model;
 
 class RideWithGPS
 	{
-	private ?\RideWithGPS\API\Client $client = null;
+//	private ?\RideWithGPS\API\Client $client = null;
 
 	private readonly string $clubId;
 
@@ -15,10 +15,10 @@ class RideWithGPS
 		$key = $settingTable->value('RideWithGPSAPIKey');
 		$token = $settingTable->value('RideWithGPSAuthToken');
 
-		if ($key && $token && $this->clubId)
-			{
-			$this->client = new \RideWithGPS\API\Client($key, $token);
-			}
+//	if ($key && $token && $this->clubId)
+//		{
+//		$this->client = new \RideWithGPS\API\Client($key, $token);
+//		}
 		}
 
 	public function cleanStreet(string $street, bool $minimize = true) : string
@@ -60,25 +60,26 @@ class RideWithGPS
 		{
 		$routes = [];
 
-		if (! $this->client)
-			{
-			return $routes;
-			}
+//	if (! $this->client)
+//		{
+//		return $routes;
+//		}
 
-		$offset = 0;
-		$limit = 0;
-		$result = $this->client->get("clubs/{$this->clubId}/routes", ['offset' => $offset, 'limit' => $limit]);
-		$limit = 100;
-		$count = $result['results_count'] ?? 0;
+		$offset = 50;
+		$limit = 50;
+		$url = "https://ridewithgps.com/clubs/{$this->clubId}/routes.json";
+//		$result = $this->client->get("clubs/{$this->clubId}/routes", ['offset' => $offset, 'limit' => $limit]);
+		$results = \json_decode(\file_get_contents($url), true);
+		$count = $results['results_count'] ?? 0;
 
 		while (\count($routes) < $count)
 			{
-			$results = $this->client->get("clubs/{$this->clubId}/routes", ['offset' => $offset, 'limit' => $limit]);
-
 			foreach ($results['results'] as $result)
 				{
-				$routes[] = $result['id'];
+				$routes[(int)$result['id']] = $result;
 				}
+			$result = \file_get_contents($url . '?' . \http_build_query(['offset' => $offset, 'limit' => $limit]));
+			$results = \json_decode($result, true);
 			$offset += $limit;
 			}
 

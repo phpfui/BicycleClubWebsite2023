@@ -4,6 +4,7 @@ parameters:
 	editorUrl: '%%file%% %%line%% %%column%%: %%error%%'
 	paths:
 		- App
+		- RideWithGPS
 	scanFiles:
 		- common.php
 		- commonbase.php

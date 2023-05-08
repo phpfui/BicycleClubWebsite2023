@@ -25,7 +25,12 @@ class Backup
 		{
 		foreach ($this->directories as $directory)
 			{
-			@\mkdir($this->basePath . $directory, 0777, true);
+			$dir = $this->basePath . $directory;
+
+			if (! \is_dir($dir))
+				{
+				@\mkdir($dir, 0777, true);
+				}
 			}
 		$backupFilename = $this->basePath . $baseFileName . '.gz';
 		@\unlink($backupFilename);

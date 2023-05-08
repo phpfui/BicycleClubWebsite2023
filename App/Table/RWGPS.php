@@ -49,6 +49,12 @@ class RWGPS extends \PHPFUI\ORM\Table
 				{
 				unset($routes[$row['RWGPSId']]);
 				}
+
+			if (! $routes)
+				{
+				return;
+				}
+
 			$this->setWhere();
 			$newRows = [];
 

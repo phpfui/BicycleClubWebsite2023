@@ -720,6 +720,10 @@ abstract class Table implements \Countable
 	 */
 	public function insert(array $records, string $ignore = '') : bool
 		{
+		if (empty($records))
+			{
+			return false;
+			}
 		$tableName = $this->getTableName();
 		$sql = "insert {$ignore}into `{$tableName}` (";
 

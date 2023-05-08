@@ -47,7 +47,7 @@ class Debug
 
 							break;
 
-						case 'emailErrors':
+						case 'sendErrors':
 							$controller = new \App\Cron\Controller(5);
 							$error = new \App\Cron\Job\PHPErrorReporter($controller);
 							$error->run();
@@ -113,7 +113,7 @@ class Debug
 			$buttonGroup = new \PHPFUI\ButtonGroup();
 			$deleteButton = new \PHPFUI\Submit('Delete Error Files', 'deleteErrors');
 			$deleteButton->addClass('alert');
-			$sendButton = new \PHPFUI\Submit('Send Errors Now', 'emailErrors');
+			$sendButton = new \PHPFUI\Submit('Send Errors Now', 'sendErrors');
 			$sendButton->addClass('');
 			$mySqlErrorButton = new \PHPFUI\Submit('Generate MySQL Error', 'MySQLError');
 			$mySqlErrorButton->addClass('warning');

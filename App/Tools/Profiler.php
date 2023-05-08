@@ -12,9 +12,9 @@ class Profiler
 
 	private readonly \App\Tools\Logger $logger;
 
-	public function __construct($file)
+	public function __construct()
 		{
-		$this->logger = new \App\Tools\Logger($file);
+		$this->logger = new \App\Tools\Logger();
 		$this->callstack = new \SplStack();
 		}
 

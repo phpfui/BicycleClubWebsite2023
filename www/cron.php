@@ -6,7 +6,7 @@
 include $_SERVER['DOCUMENT_ROOT'] . '/../common.php';
 
 // setup a logger and controller
-$logger = new \App\Tools\Logger(__FILE__);
+$logger = new \App\Tools\Logger();
 $controller = new \App\Cron\Controller(5, [$logger, 'debug', ]);
 $controller->setLogLevel(\App\Cron\Controller::LOG_IMPORTANT);
 // always run error reporting no matter what.

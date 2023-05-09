@@ -18,7 +18,8 @@ class PollEdit
 
 		if ($form->isMyCallback())
 			{
-			$poll = new \App\Record\VolunteerPoll($_POST);
+			$poll = new \App\Record\VolunteerPoll();
+			$poll->setFrom($_POST);
 			$poll->volunteerPollId = $volunteerPoll->volunteerPollId;
 			$poll->update();
 			$this->volunteerPollAnswerTable->updateFromTable($_POST);

@@ -119,11 +119,9 @@ class Video
 
 		if ($form->isMyCallback())
 			{
-			$_POST['videoId'] = $video->videoId;
 			$_POST['editor'] = \App\Model\Session::signedInMemberId();
-			$_POST['lastEdited'] = \date('Y-m-d H:i:s', \time());
-
-			$video = new \App\Record\Video($_POST);
+			$_POST['lastEdited'] = \date('Y-m-d H:i:s');
+			$video->setFrom($_POST);
 			$video->update();
 			$this->page->setResponse('Saved');
 

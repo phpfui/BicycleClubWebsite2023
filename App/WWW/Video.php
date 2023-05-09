@@ -85,7 +85,7 @@ class Video extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function upload() : void
 		{
-		if ($this->page->isAuthorized('Edit Video'))
+		if ($this->page->addHeader('Edit Video'))
 			{
 			$config = new \Flow\Config();
 			$config->setTempDir(PROJECT_ROOT . '/files/chunkUploader');

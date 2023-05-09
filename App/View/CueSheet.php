@@ -773,7 +773,8 @@ class CueSheet
 				}
 			elseif ('Save Link' == ($_POST['submit'] ?? ''))
 				{
-				$cueSheetVersion = new \App\Record\CueSheetVersion($_POST);
+				$cueSheetVersion = new \App\Record\CueSheetVersion();
+				$cueSheetVersion->setFrom($_POST);
 				$cueSheetVersion->insertOrUpdate();
 				$this->page->redirect();
 				}

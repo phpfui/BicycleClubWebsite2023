@@ -96,10 +96,9 @@ class Edit
 
 		if ($form->isMyCallback())
 			{
-			$_POST['description'] = \App\Tools\TextHelper::cleanUserHtml($_POST['description']);
-			$updateStoreItem = new \App\Record\StoreItem($_POST);
-			$updateStoreItem->storeItemId = $storeItem->storeItemId;
-			$updateStoreItem->update();
+			unset($_POST['storeItemId']);
+			$storeItem->setFrom($_POST);
+			$storeItem->update();
 
 			$storeItemDetail = new \App\Record\StoreItemDetail();
 			$storeItemDetail->storeItemId = (int)$_POST['storeItemId'];

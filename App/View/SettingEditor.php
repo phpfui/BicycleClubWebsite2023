@@ -16,7 +16,7 @@ class SettingEditor implements \Stringable
 
 		if ($form->isMyCallback())
 			{
-			$settingTable->save($this->settingName, \App\Tools\TextHelper::cleanUserHtml($_POST[$this->settingName]));
+			$settingTable->saveHtml($this->settingName, $_POST[$this->settingName]);
 			$this->page->setResponse('Saved');
 			}
 		else

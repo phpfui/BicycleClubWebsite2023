@@ -28,8 +28,8 @@ class Banner
 
 		if ($form->isMyCallback())
 			{
-			$_POST['bannerId'] = $banner->bannerId;
-			$banner = new \App\Record\Banner($_POST);
+			unset($_POST['bannerId']);
+			$banner->setFrom($_POST);
 			$banner->update();
 			$this->page->setResponse('Saved');
 
@@ -243,7 +243,8 @@ class Banner
 							{
 							$_POST['html'] = \htmlspecialchars($_POST['html']);
 							}
-						$banner = new \App\Record\Banner($_POST);
+						$banner = new \App\Record\Banner((int)$_POST['bannerId']);
+						$banner->setFrom($_POST);
 						$banner->update();
 						$this->page->redirect();
 

@@ -76,9 +76,9 @@ class Polls
 
 		if ($form->isMyCallback())
 			{
-			$_POST['pollId'] = $poll->pollId;
-			$updatePoll = new \App\Record\Poll($_POST);
-			$updatePoll->update();
+			unset($_POST['pollId']);
+			$poll->setFrom($_POST);
+			$poll->update();
 
 			if (isset($_POST['answer']) && \is_array($_POST['answer']))
 				{

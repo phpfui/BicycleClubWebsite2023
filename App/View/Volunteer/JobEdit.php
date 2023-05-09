@@ -18,9 +18,9 @@ class JobEdit
 
 		if ($form->isMyCallback())
 			{
-			$newJob = new \App\Record\Job($_POST);
-			$newJob->jobId = $job->jobId;
-			$newJob->update();
+			unset($_POST['jobId']);
+			$job->setFrom($_POST);
+			$job->update();
 			$this->page->setResponse('Saved');
 			}
 		else

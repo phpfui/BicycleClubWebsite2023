@@ -24,7 +24,7 @@ class MainMessage
 				}
 			unset($value);
 			$this->settingTable->save($type . 'Title', $_POST[$type . 'Title']);
-			$this->settingTable->save($type . 'Body', \App\Tools\TextHelper::cleanUserHtml($_POST[$type . 'Body']));
+			$this->settingTable->saveHtml($type . 'Body', $_POST[$type . 'Body']);
 			$this->page->setResponse('Saved');
 			}
 		elseif (\App\Model\Session::checkCSRF())

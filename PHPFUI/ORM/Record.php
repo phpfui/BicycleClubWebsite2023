@@ -53,7 +53,7 @@ abstract class Record extends DataObject
 	 * ##### Possible $parameter types and values
 	 * - **int** primary key value, will load object values if the primary key value exists
 	 * - **string** primary key value, will load object values if the primary key value exists
-	 * - **array** object will be initialized to these values, but not read from the database
+	 * - **array** mixed keys to use to read object from database
 	 * - **null** (default) constructs an empty object
 	 */
 	public function __construct(int|array|null|string $parameter = null)

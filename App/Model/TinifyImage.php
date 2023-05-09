@@ -69,7 +69,7 @@ class TinifyImage extends \App\Model\File
 		{
 		$file = $this->get($name . $extension);
 
-		if (false !== ($data = @\file_get_contents($file)))
+		if (\file_exists($file) && ($data = \file_get_contents($file)))
 			{
 			$extension = \str_replace('.', '', $extension);
 

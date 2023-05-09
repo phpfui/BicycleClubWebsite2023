@@ -82,6 +82,6 @@ class Messages
 			$value = \str_replace('&nbsp;', ' ', (string)$value);
 			}
 		unset($value);
-		$this->settingTable->save($type . 'Instructions', \App\Tools\TextHelper::cleanUserHtml($_POST[$type . 'Instructions']));
+		$this->settingTable->saveHtml($type . 'Instructions', $_POST[$type . 'Instructions']);
 		}
 	}

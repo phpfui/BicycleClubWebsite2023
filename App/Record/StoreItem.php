@@ -16,4 +16,11 @@ class StoreItem extends \App\Record\Definition\StoreItem
 		'StoreItemOptionChildren' => [\PHPFUI\ORM\Children::class, \App\Table\StoreItemOption::class, 'sequence'],
 		'StorePhotoChildren' => [\PHPFUI\ORM\Children::class, \App\Table\StorePhoto::class],
 	];
+
+	public function clean() : static
+		{
+		$this->description = \App\Tools\TextHelper::cleanUserHtml($this->description);
+
+		return $this;
+		}
 	}

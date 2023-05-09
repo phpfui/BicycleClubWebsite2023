@@ -60,12 +60,7 @@ class Events
 
 		if ($form->isMyCallback())
 			{
-			$_POST['eventId'] = $event->eventId;
-
-			foreach (['information', 'location', 'additionalInfo'] as $field)
-				{
-				$_POST[$field] = \App\Tools\TextHelper::cleanUserHtml($_POST[$field]);
-				}
+			unset($_POST['eventId']);
 			$event->setFrom($_POST);
 			$event->update();
 			$this->page->setResponse('Saved');

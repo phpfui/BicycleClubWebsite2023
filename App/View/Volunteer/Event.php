@@ -38,8 +38,8 @@ class Event
 
 		if ($form->isMyCallback())
 			{
-			$_POST['jobEventId'] = $jobEventId;
-			$jobEvent = new \App\Record\JobEvent($_POST);
+			unset($_POST['jobEventId']);
+			$jobEvent->setFrom($_POST);
 			$jobEvent->update();
 			$this->page->setResponse('Saved');
 

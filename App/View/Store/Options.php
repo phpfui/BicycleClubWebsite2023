@@ -74,10 +74,10 @@ class Options
 
 		if ($form->isMyCallback())
 			{
-			$updateStoreOption = new \App\Record\StoreOption($_POST);
-			$updateStoreOption->storeOptionId = $storeOption->storeOptionId;
-			$updateStoreOption->setOptions($_POST['values'] ?? []);
-			$updateStoreOption->update();
+			unset($_POST['storeOptionId']);
+			$storeOption->setFrom($_POST);
+			$storeOption->setOptions($_POST['values'] ?? []);
+			$storeOption->update();
 			$this->page->setResponse('Saved');
 			$this->page->done();
 

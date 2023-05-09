@@ -22,8 +22,9 @@ class SignInSheet
 
 		if ($form->isMyCallback())
 			{
-			$sheet = new \App\Record\SigninSheet($_POST);
-			$sheet->update();
+			unset($_POST['signinSheetId']);
+			$signinSheet->setFrom($_POST);
+			$signinSheet->update();
 			$this->page->setResponse('Saved');
 			}
 		$fieldSet = new \PHPFUI\FieldSet('Sign In Sheet Information');
@@ -256,7 +257,8 @@ JAVASCRIPT;
 						break;
 
 					case 'Save':
-						$signinSheet = new \App\Record\SigninSheet($_POST);
+						$signinSheet = new \App\Record\SigninSheet();
+						$signinSheet->setFrom($_POST);
 						$signinSheet->update();
 						$this->page->setResponse('Saved');
 
@@ -283,7 +285,8 @@ JAVASCRIPT;
 						break;
 
 					case 'Reject Sign In Sheet':
-						$signinSheet = new \App\Record\SigninSheet($_POST);
+						$signinSheet = new \App\Record\SigninSheet();
+						$signinSheet->setFrom($_POST);
 						$signinSheet->reload();
 						$this->model->reject($signinSheet, $_POST['message'], $_POST['reason']);
 						$this->page->redirect();

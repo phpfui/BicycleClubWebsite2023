@@ -443,9 +443,9 @@ class Invoice
 
 			if ($invoiceUpdates)
 				{
-				$updateInvoice = new \App\Record\Invoice($invoiceUpdates);
-				$updateInvoice->invoiceId = $invoiceId;
-				$updateInvoice->update();
+				$invoice->setFrom($invoiceUpdates);
+				$invoice->invoiceId = $invoiceId;
+				$invoice->update();
 				}
 
 			if (\PHPFUI\ORM::getLastErrors())

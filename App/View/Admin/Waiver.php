@@ -50,10 +50,10 @@ class Waiver implements \Stringable
 
 		if ($form->isMyCallback())
 			{
-			$settings->save($waiverHeaderField, \App\Tools\TextHelper::cleanUserHtml($_POST[$waiverHeaderField]));
-			$settings->save($waiverTextField, \App\Tools\TextHelper::cleanUserHtml($_POST[$waiverTextField]));
-			$settings->save($nonMemberWaiverTextField, \App\Tools\TextHelper::cleanUserHtml($_POST[$nonMemberWaiverTextField]));
-			$settings->save($minorWaiverTextField, \App\Tools\TextHelper::cleanUserHtml($_POST[$minorWaiverTextField]));
+			$settings->saveHtml($waiverHeaderField, $_POST[$waiverHeaderField]);
+			$settings->saveHtml($waiverTextField, $_POST[$waiverTextField]);
+			$settings->saveHtml($nonMemberWaiverTextField, $_POST[$nonMemberWaiverTextField]);
+			$settings->saveHtml($minorWaiverTextField, $_POST[$minorWaiverTextField]);
 			$this->page->setResponse('Saved');
 			}
 		else

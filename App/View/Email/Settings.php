@@ -22,12 +22,12 @@ class Settings implements \Stringable
 		if ($form->isMyCallback())
 			{
 			$this->settingTable->save($this->settingName . 'Title', $_POST['title']);
-			$this->settingTable->save($this->settingName, \App\Tools\TextHelper::cleanUserHtml($_POST['value']));
+			$this->settingTable->saveHtml($this->settingName, $_POST['value']);
 			$this->page->setResponse('Saved');
 			}
 		elseif (\App\Model\Session::checkCSRF() && isset($_POST['test']))
 			{
-			$this->settingTable->save($this->settingName, \App\Tools\TextHelper::cleanUserHtml($_POST['value']));
+			$this->settingTable->saveHtml($this->settingName, $_POST['value']);
 			$this->settingTable->save($this->settingName . 'Title', $_POST['title']);
 			$member = \App\Model\Session::getSignedInMember();
 			$email = new \App\Model\Email($this->settingName, $this->data);

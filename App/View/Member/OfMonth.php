@@ -31,7 +31,6 @@ class OfMonth
 
 		if ($form->isMyCallback())
 			{
-			$_POST['bio'] = \App\Tools\TextHelper::cleanUserHtml($_POST['bio']);
 			unset($_POST['memberOfMonthId']);
 			$memberOfMonth->setFrom($_POST);
 			$memberOfMonth->update();

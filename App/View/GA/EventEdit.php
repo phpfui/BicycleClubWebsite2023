@@ -36,9 +36,9 @@ class EventEdit
 
 		if ($form->isMyCallback())
 			{
+			$id = $event->gaEventId;
 			$event->setFrom($_POST);
-			$event->description = \App\Tools\TextHelper::cleanUserHtml($_POST['description']);
-			$event->signupMessage = \App\Tools\TextHelper::cleanUserHtml($_POST['signupMessage']);
+			$event->gaEventId = $id;
 			$event->update();
 			$this->gaRideTable->updateFromTable($_POST);
 			$this->gaPriceDateTable->updateFromTable($_POST);

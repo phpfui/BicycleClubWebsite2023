@@ -14,4 +14,13 @@ class Event extends \App\Record\Definition\Event
 		'ReservationChildren' => [\PHPFUI\ORM\Children::class, \App\Table\Reservation::class],
 		'ReservationPersonChildren' => [\PHPFUI\ORM\Children::class, \App\Table\ReservationPerson::class],
 	];
+
+	public function clean() : static
+		{
+		$this->information = \App\Tools\TextHelper::cleanUserHtml($this->information);
+		$this->location = \App\Tools\TextHelper::cleanUserHtml($this->location);
+		$this->additionalInfo = \App\Tools\TextHelper::cleanUserHtml($this->additionalInfo);
+
+		return $this;
+		}
 	}

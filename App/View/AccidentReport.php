@@ -17,7 +17,7 @@ class AccidentReport
 
 		if ($form->isMyCallback())
 			{
-			$settings->save(self::MAIL, \App\Tools\TextHelper::cleanUserHtml($_POST[self::MAIL]));
+			$settings->saveHtml(self::MAIL, $_POST[self::MAIL]);
 			$settings->save(self::FILE, $_POST[self::FILE] ?? '');
 			$page->setResponse('Saved');
 			}
@@ -25,7 +25,7 @@ class AccidentReport
 			{
 			if (\App\Model\Session::checkCSRF() && isset($_POST['test']))
 				{
-				$settings->save(self::MAIL, \App\Tools\TextHelper::cleanUserHtml($_POST[self::MAIL]));
+				$settings->saveHtml(self::MAIL, $_POST[self::MAIL]);
 				$settings->save(self::FILE, $_POST[self::FILE]);
 				\App\Model\AccidentReport::report(new \App\Record\Ride());
 				$alert = new \App\UI\Alert('Test email sent. Check your email.');

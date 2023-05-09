@@ -287,8 +287,7 @@ class Permission implements \App\Model\PermissionsInterface
 		if (! $id)
 			{
 			$this->runPermissionLoader = true;
-			$key = ['name' => $permissionName];
-			$permission = new \App\Record\Permission($key);
+			$permission = new \App\Record\Permission(['name' => $permissionName]);
 
 			if ($permission->empty())
 				{
@@ -403,9 +402,11 @@ class Permission implements \App\Model\PermissionsInterface
 			unset($permissionGroup);
 			}
 
+
 		$parameters['permissionId'] = $parameters['groupId'];
 		$parameters['menu'] = 'Permission Group';
-		$permission = new \App\Record\Permission($parameters);
+		$permission = new \App\Record\Permission();
+		$permission->setFrom($parameters);
 		$permission->insertOrUpdate();
 		}
 

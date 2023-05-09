@@ -134,7 +134,9 @@ class RideWithGPS
 			});
 		$view->addCustomColumn('town', static function(array $rwgps)
 			{
-			$url = \App\Model\RideWithGPS::getDirectionsLink(new \App\Record\RWGPS($rwgps));
+			$rwgpsRecord = new \App\Record\RWGPS();
+			$rwgpsRecord->setFrom($rwgps);
+			$url = \App\Model\RideWithGPS::getDirectionsLink($rwgpsRecord);
 
 			if (! \str_starts_with($url, 'http'))
 				{

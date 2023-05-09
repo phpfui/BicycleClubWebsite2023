@@ -617,8 +617,7 @@ class Forum
 					continue;
 					}
 				$row = $forum->toArray();
-				$id = $forum->forumId;
-				$key['forumId'] = $id;
+				$key['forumId'] = $forum->forumId;
 				$member = new \App\Record\ForumMember($key);
 
 				if ($member->loaded())

@@ -124,15 +124,15 @@ class Content extends \App\UI\HTMLEditor
 		return $output;
 		}
 
-	public function getStoryHTML(\PHPFUI\ORM\DataObject $story) : \PHPFUI\HTML5Element
+	public function getStoryHTML(\PHPFUI\ORM\DataObject $storyData) : \PHPFUI\HTML5Element
 		{
-		if ($story->empty()) // content not there, show deleted message
+		if ($storyData->empty()) // content not there, show deleted message
 			{
 			return new \PHPFUI\Header('This content has been deleted', 2);
 			}
 		$abbrevText = '';
-		$blogId = $story->isset('blogId') ? $story->blogId : 0;
-		$story = new \App\Record\Story($story->toArray());
+		$blogId = $storyData->isset('blogId') ? $storyData->blogId : 0;
+		$story = new \App\Record\Story($storyData->storyId);
 		$storyId = $story->storyId;
 		$headline = $story->headline;
 		$subhead = $story->subhead ?? '';

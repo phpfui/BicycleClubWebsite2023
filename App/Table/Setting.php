@@ -28,6 +28,11 @@ class Setting extends \PHPFUI\ORM\Table
 		return $this;
 		}
 
+	public function saveHtml(string $name, string $html) : static
+		{
+		return $this->saveHtml($name, $html);
+		}
+
 	public function value(string $id, string $default = '') : string
 		{
 		if (! isset(self::$pairs[$id]))

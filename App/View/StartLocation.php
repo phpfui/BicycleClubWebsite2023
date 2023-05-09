@@ -44,9 +44,9 @@ class StartLocation
 
 		if ($form->isMyCallback())
 			{
-			$updateLocation = new \App\Record\StartLocation($_POST);
-			$updateLocation->startLocationId = $location->startLocationId;
-			$updateLocation->update();
+			unset($_POST['startLocationId']);
+			$location->setFrom($_POST);
+			$location->update();
 			$this->page->setResponse('Saved');
 			}
 		$type = $location->startLocationId ? 'Edit' : 'Add';

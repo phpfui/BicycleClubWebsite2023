@@ -138,7 +138,8 @@ class Ride
 
 	public function checkForStartTimeConflicts(array $parameters) : string
 		{
-		$ride = new \App\Record\Ride($parameters);
+		$ride = new \App\Record\Ride();
+		$ride->setFrom($parameters);
 		$errors = new \PHPFUI\UnorderedList();
 		$minutesApart = (int)$this->settingTable->value('RideMinutesApart');
 

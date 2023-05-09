@@ -594,7 +594,7 @@ class Member
 		{
 		$invoice = new \App\Record\Invoice(['memberId' => $member->memberId,
 			'orderDate' => \App\Tools\Date::todayString(),
-			'paymentDate' => 0,
+			'paymentDate' => null,
 			'totalPrice' => $price, ]);
 
 		if ($invoice->loaded())

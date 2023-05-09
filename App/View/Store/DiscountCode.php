@@ -45,9 +45,9 @@ class DiscountCode
 
 		if ($form->isMyCallback())
 			{
-			$updateDiscountCode = new \App\Record\DiscountCode($_POST);
-			$updateDiscountCode->discountCodeId = $discountCode->discountCodeId;
-			$updateDiscountCode->update();
+			unset($_POST['discountCodeId']);
+			$discountCode->setFrom($_POST);
+			$discountCode->update();
 			$this->page->setResponse('Saved');
 			}
 		$form->add(new \PHPFUI\Input\Hidden('discountCodeId', (string)$discountCode->discountCodeId));

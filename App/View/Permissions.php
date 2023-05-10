@@ -404,7 +404,7 @@ class Permissions
 			{
 			$memberTable = new \App\Table\Member();
 
-			$memberTable->setMembersWithPermissionId($permission->permissionId);
+			$memberTable->getMembersWithPermissionId($permission->permissionId);
 
 			$headers = ['firstName', 'lastName'];
 

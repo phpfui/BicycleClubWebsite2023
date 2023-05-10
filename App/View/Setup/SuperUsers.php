@@ -38,7 +38,7 @@ class SuperUsers extends \PHPFUI\Container
 		$form->add($callout);
 
 		$memberTable = new \App\Table\Member();
-		$memberTable->setMembersWithPermissionId(1);
+		$memberTable->getMembersWithPermissionId(1);
 
 		$superUserCount = \count($memberTable);
 
@@ -99,7 +99,7 @@ class SuperUsers extends \PHPFUI\Container
 		$form->add($callout);
 
 		$memberTable = new \App\Table\Member();
-		$memberTable->setMembersWithPermissionId(1);
+		$memberTable->getMembersWithPermissionId(1);
 
 		$superUserCount = \count($memberTable);
 

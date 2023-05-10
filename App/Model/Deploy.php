@@ -85,34 +85,48 @@ class Deploy
 		return $this->sortedTags->getTags(\App\Model\ReleaseTag::VERSION_PREFIX);
 		}
 
-	public function sendUpgradeEmail(\Gitonomy\Git\Reference\Tag $tag, string $errorMessage, array $errors) : void
+	public function sendUpgradeEmail(\Gitonomy\Git\Reference\Tag $tag, string $version, string $errorMessage, array $errors) : void
 		{
 		$email = new \App\Tools\EMail();
-		$email->setTo('webmaster@' . $_SERVER['SERVER_NAME']);
-
-		if ($errorMessage)
+		$email->setHtml();
+		$memberTable = new \App\Table\Member();
+		$memberTable->getMembersWithPermission('Super User');
+		foreach($memberTable->getArrayCursor() as $member)
 			{
-			$email->setSubject($_SERVER['SERVER_NAME'] . ' failed to update to release ' . $tag->getName());
-			$email->setBody($errorMessage);
+			$email->addToMember($member);
 			}
-		elseif ($errors)
+
+		if ($errorMessage || $errors)
 			{
-			$email->setSubject($_SERVER['SERVER_NAME'] . ' failed to update to release ' . $tag->getName());
-			$email->setBody(\print_r($errors, true));
+			$email->setSubject($_SERVER['SERVER_NAME'] . ' failed to update to release ' . $version);
+			$email->setBody($errorMessage . '<hr><pre>' . \print_r($errors, true) . '</pre>');
 			}
 		else
 			{
-			$email->setSubject($_SERVER['SERVER_NAME'] . ' updated to release ' . $tag->getName());
-			$email->setHtml();
+			$email->setSubject($_SERVER['SERVER_NAME'] . ' updated to release ' . $version);
 			$markdown = $tag->getMessage();
 			// git considers lines in tags that start with # to be comments, so they need a space in front of them, but then markdown does not see it,
 			// so replace leading spaces followed by # with just #
 			$markdown = \str_replace(' #', '#', $markdown);
 			$parser = new \PHPFUI\InstaDoc\MarkDownParser();
 			$displayText = $parser->text($markdown);
-			$email->setBody($displayText);
+			$settingTable = new \App\Table\Setting();
+
+			$dom = new \voku\helper\HtmlDomParser($displayText);
+
+			foreach ($dom->find('a') as $node)
+				{
+				$link = $node->getAttribute('href');
+
+				if (! \str_contains($link, 'http'))
+					{
+					$link = $settingTable->value('homePage') . $link;
+					$node->setAttribute('href', $link);
+					}
+				}
+			$email->setBody("{$dom}");
 			}
-		$email->send();
+		$email->bulkSend();
 		}
 
 	public function updateToLatest() : void
@@ -143,12 +157,14 @@ class Deploy
 			}
 		$releaseTag = new \App\Model\ReleaseTag($tag->getName());
 
+
+
 		$errors = [];
 
 		if ($releaseTag->isTag() && $releaseTag->isValid())
 			{
 			$errors = $this->deployTarget($latestHash);
 			}
-		$this->sendUpgradeEmail($tag, $releaseTag->getError(), $errors);
+		$this->sendUpgradeEmail($tag, $releaseTag->getMarketingVersion(), $releaseTag->getError(), $errors);
 		}
 	}

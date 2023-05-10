@@ -69,6 +69,7 @@ class PermissionBase
 			'Pending Member',
 			'Ride Coordinator',
 			'Ride Leader',
+			'Super User',
 		];
 		}
 

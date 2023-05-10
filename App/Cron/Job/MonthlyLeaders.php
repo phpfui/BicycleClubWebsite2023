@@ -66,7 +66,7 @@ class MonthlyLeaders extends \App\Cron\BaseJob
 		$email->setFromMember($ridesChair);
 		$email->addToMember($ridesChair);
 		$memberTable = new \App\Table\Member();
-		$memberTable->setMembersWithPermission('Ride Coordinator');
+		$memberTable->getMembersWithPermission('Ride Coordinator');
 
 		foreach ($memberTable->getArrayCursor() as $member)
 			{

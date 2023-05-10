@@ -24,6 +24,9 @@ class Migration_4 extends \PHPFUI\ORM\Migration
 		$permissionTable->rename('Show All Permissions', 'Permissions');
 		$permissionTable->rename('Show Permission Groups', 'Permission Groups');
 
+		$settingTable = new \App\Table\Setting();
+		$settingTable->saveStandardPermissionGroup('Super User', 1);
+
 		return true;
 		}
 	}

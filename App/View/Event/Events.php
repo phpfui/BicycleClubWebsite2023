@@ -111,7 +111,7 @@ class Events
 		$organizer = new \PHPFUI\Input\SelectAutoComplete($this->page, 'organizer', 'Event Organizer');
 		$organizer->setRequired();
 		$memberTable = new \App\Table\Member();
-		$memberTable->setMembersWithPermission('Event Coordinator');
+		$memberTable->getMembersWithPermission('Event Coordinator');
 
 		foreach ($memberTable->getDataObjectCursor() as $member)
 			{

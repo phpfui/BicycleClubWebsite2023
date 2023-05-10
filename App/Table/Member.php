@@ -359,24 +359,25 @@ class Member extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql);
 		}
 
-	public function setMembersWithPermission(string $permissionName) : static
+	public function getMembersWithPermission(string $permissionName) : static
 		{
 		$settingTable = new \App\Table\Setting();
 		$permission = $settingTable->getStandardPermissionGroup($permissionName);
 
-		if ($permission->permissionId)
+		if ($permission && $permission->permissionId)
 			{
-			$this->setMembersWithPermissionId($permission->permissionId);
+			$this->getMembersWithPermissionId($permission->permissionId);
 			}
 		else
 			{
+			$this->setWhere(new \PHPFUI\ORM\Condition('memberId', 0));
 			\App\Tools\Logger::get()->debug($permissionName, 'permission not found');
 			}
 
 		return $this;
 		}
 
-	public function setMembersWithPermissionId(int $permissionId) : static
+	public function getMembersWithPermissionId(int $permissionId) : static
 		{
 		$this->addJoin('userPermission', 'memberId');
 		$this->addJoin('membership', 'membershipId');

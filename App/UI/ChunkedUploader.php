@@ -48,6 +48,9 @@ class ChunkedUploader
 <a href="#" onclick="r.cancel(); return(false);" class="progress-cancel-link"><img src="/cancel.png" title="Cancel upload" /></a>
 </td>
 </tr>
+<tr>
+<td width="100%">You must not leave this page or switch to another tab till the video is 100% uploaded.</td>
+</tr>
 </table>
 </div>
 HTML

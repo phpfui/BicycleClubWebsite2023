@@ -277,7 +277,7 @@ class Page extends \PHPFUI\Page
 		return $container;
 		}
 
-	public function getPermissions() : \App\Model\PermissionsInterface
+	public function getPermissions() : \App\Model\PermissionBase
 		{
 		return $this->controller->getPermissions();
 		}

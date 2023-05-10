@@ -37,20 +37,20 @@ class PacePicker extends \PHPFUI\MultiColumn
 		$categoryLabel->add($categoryInput);
 		$this->add($categoryLabel);
 
-		$categories = \array_merge([['categoryId' => 0, 'category' => 'All']], $categoryTable->getAllCategories());
-		$paceInput = new \PHPFUI\Input\Select($name);
-		$paceInputId = $paceInput->getId();
+		$categoryInput->addOption('All', '0', 0 == $categorySelected);
 
-		foreach ($categories as $category)
+		foreach ($categoryTable->getAllCategories() as $category)
 			{
-			$categoryId = $category['categoryId'];
-			$categoryInput->addOption($category['category'], $categoryId, $categoryId == $categorySelected);
+			$categoryInput->addOption($category->category, (string)$category->categoryId, $category->categoryId == $categorySelected);
 			}
 
 		$categoryId = 0;
 		$js = 'var paces = {';
 		$comma = '';
 		$activePace = null;
+
+		$paceInput = new \PHPFUI\Input\Select($name);
+		$paceInputId = $paceInput->getId();
 
 		foreach ($paces as $key => $pace)
 			{

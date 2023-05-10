@@ -16,7 +16,7 @@ class MainMenu extends \PHPFUI\AccordionMenu
 
 	private array $theMenu = [];
 
-	public function __construct(private readonly \App\Model\PermissionsInterface $permissions)
+	public function __construct(private readonly \App\Model\PermissionBase $permissions)
 		{
 		parent::__construct();
 
@@ -265,9 +265,9 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		$this->addSub('board', 'Edit Board Members');
 		$this->addSub('myPermissions', 'My Permissions');
 		$this->addSub('images', 'System Images');
-		$this->addSub('allPermissions', 'Show All Permissions');
+		$this->addSub('permissions', 'Permissions');
 		$this->addSub('publicPage', 'Edit Public Pages');
-		$this->addSub('permissionGroups', 'Show Permission Groups');
+		$this->addSub('permissionGroups', 'Permission Groups');
 		$this->addSub('clubEmails', 'Club Email Addresses');
 		$this->addSub('emailQueue', 'Email Queue');
 		$this->addSub('editWaiver', 'Waiver Editor');
@@ -275,6 +275,7 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		$this->addSub('blackList', 'Email Blacklist');
 		$this->addSub('config', 'Site Configuration');
 		$this->addSub('files', 'Manage Files');
+		$this->addSub('permissionGroupAssignment', 'Permission Group Assignments');
 		$this->addSub('passwordPolicy', 'Password Policy');
 
 		$this->addTopMenu('System', 'System');

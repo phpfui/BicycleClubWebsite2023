@@ -150,19 +150,12 @@ class Invoice
 
 			foreach ($chairs as $chairName => $chair)
 				{
-				if (\is_array($chair))
+				if (! \is_array($chair))
 					{
-					$emails[$chair['email']] = $chair['firstName'] . ' ' . $chair['lastName'];
+					$memberPicker = new \App\Model\MemberPicker($chairName);
+					$chair = $memberPicker->getMember();
 					}
-				else
-					{
-					$members = $permissionTable->getMembersWithPermissionGroup($chairName);
-
-					foreach ($members ?? [] as $member)
-						{
-						$emails[$member->email] = $member->fullName();
-						}
-					}
+				$emails[$chair['email']] = $chair['firstName'] . ' ' . $chair['lastName'];
 				}
 			$invoice->update();
 			$invoicePDF = $this->generatePDF($invoice);

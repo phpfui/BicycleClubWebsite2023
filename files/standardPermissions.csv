@@ -56,13 +56,13 @@ permissionGroup,permission,revoked,menu
 "Board Member","New Members",0,Membership
 "Board Member","Northeast Cycling Calendar",0,Calendar
 "Board Member","Permission Name",0,Admin
+"Board Member",Permissions,0,Admin
 "Board Member","Purge Expired Content",0,Content
 "Board Member","Recent Content",0,Content
 "Board Member","Ride Comments",0,Rides
 "Board Member","Ride Schedule Filter",0,Rides
 "Board Member","Roster Report",0,Membership
 "Board Member","Show All Members",0,Membership
-"Board Member","Show All Permissions",0,Admin
 "Board Member","Show Members With Permission",0,Admin
 "Board Member","Show Orphan Content",0,Content
 "Board Member","Video Types",0,Video
@@ -382,6 +382,7 @@ permissionGroup,permission,revoked,menu
 "Normal Member","Currently Registered",0,Events
 "Normal Member","Download File CSV File",0,File
 "Normal Member","Edit My Info",0,Membership
+"Normal Member","Edit Photo Title",0,Photo
 "Normal Member","Email All Signed Up Riders",0,Rides
 "Normal Member","Email Leader",0,Leaders
 "Normal Member","Email Member",0,Rides
@@ -439,7 +440,7 @@ permissionGroup,permission,revoked,menu
 "Normal Member","Pay By Check",0,Events
 "Normal Member","Pay With PayPal",0,Membership
 "Normal Member","People Who Voted",0,Polls
-"Normal Member",Photo,0,Photo
+"Normal Member",Permissions,0,Admin
 "Normal Member","Photo Comments",0,Photo
 "Normal Member","Photo Tags",0,Photo
 "Normal Member",Photos,0,Photo
@@ -471,7 +472,6 @@ permissionGroup,permission,revoked,menu
 "Normal Member","Search Rides",0,Rides
 "Normal Member","Search RWGPS",0,RWGPS
 "Normal Member",Shop,0,Store
-"Normal Member","Show All Permissions",0,Admin
 "Normal Member","Show Leaders",0,Leaders
 "Normal Member","Sign Up For A Job",0,Volunteer
 "Normal Member","Sign Up For An Event",0,Events
@@ -814,23 +814,6 @@ Secretary,Vote,0,Polls
 "Store Shipping",Store,0,Store
 "Store Shipping","Unshipped Invoices",0,Store
 "Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
-"Super User",,0,
 "Super User","Board Edit",0,Forums
 Treasurer,"Cancel Order",0,Store
 Treasurer,"Check Maintenance",0,Finance
@@ -1152,7 +1135,9 @@ Treasurer,"Volunteer Points Report",0,Leaders
 "Web Site Tester","Pending Leaders",0,Leaders
 "Web Site Tester","Pending Sign In Sheets",0,SignInSheets
 "Web Site Tester","People Who Voted",0,Polls
+"Web Site Tester","Permission Groups",0,Admin
 "Web Site Tester","Permission Name",0,Admin
+"Web Site Tester",Permissions,0,Admin
 "Web Site Tester",Polls,0,Polls
 "Web Site Tester","Polls For Event",0,Volunteer
 "Web Site Tester","Preregistration Signs",0,GA
@@ -1204,11 +1189,9 @@ Treasurer,"Volunteer Points Report",0,Leaders
 "Web Site Tester","Session Info",0,Admin
 "Web Site Tester",Shop,0,Store
 "Web Site Tester","Show All Members",0,Membership
-"Web Site Tester","Show All Permissions",0,Admin
 "Web Site Tester","Show Leaders",0,Leaders
 "Web Site Tester","Show Member",0,Membership
 "Web Site Tester","Show Orphan Content",0,Content
-"Web Site Tester","Show Permission Groups",0,Admin
 "Web Site Tester","Sign In Sheets",0,SignInSheets
 "Web Site Tester","Sign Up For A Job",0,Volunteer
 "Web Site Tester","Sign Up For An Event",0,Events

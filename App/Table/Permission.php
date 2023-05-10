@@ -18,6 +18,17 @@ class Permission extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRows($sql);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Permission>
+	 */
+	public function getAllPermissionGroups() : \PHPFUI\ORM\RecordCursor
+		{
+		$this->setWhere(new \PHPFUI\ORM\Condition('permissionId', 100000, new \PHPFUI\ORM\Operator\LessThan()));
+		$this->setOrderBy('name');
+
+		return $this->getRecordCursor();
+		}
+
 	public function getAllPermissions(string $column = 'name', string $sort = 'a', int $page = 0, int $limit = 0) : iterable
 		{
 		$sort = 'd' == $sort ? 'desc' : '';
@@ -42,7 +53,8 @@ class Permission extends \PHPFUI\ORM\Table
 
 	public function getMembersWithPermissionGroup(string $name) : ?\PHPFUI\ORM\RecordCursor
 		{
-		$permission = new \App\Record\Permission(['name' => $name]);
+		$settingTable = new \App\Table\Setting();
+		$permission = $settingTable->getStandardPermissionGroup($name);
 
 		if (! $permission->name)
 			{
@@ -74,5 +86,14 @@ class Permission extends \PHPFUI\ORM\Table
 			}
 
 		return $retVal + 1;
+		}
+
+	public function rename(string $currentName, string $newName) : static
+		{
+		$this->setWhere(new \PHPFUI\ORM\Condition('name', $currentName));
+		$this->update(['name' => $newName]);
+		$this->setWhere();
+
+		return $this;
 		}
 	}

@@ -130,12 +130,11 @@ class Leader extends \PDF_MC_Table
 		$this->leaders = [];
 
 		$categoryTable = new \App\Table\Category();
-		$cats = $categoryTable->getAllCategories();
 		$this->blankRow = [];
 
-		foreach ($cats as $cat)
+		foreach ($categoryTable->getAllCategories() as $cat)
 			{
-			$this->blankRow['Lead' . $cat['category']] = 0;
+			$this->blankRow['Lead' . $cat->category] = 0;
 			}
 		$this->blankRow['LeadAll'] = 0;
 		$this->blankRow['Assist'] = 0;

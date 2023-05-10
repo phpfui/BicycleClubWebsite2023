@@ -27,7 +27,8 @@ class Coordinators
 			\PHPFUI\ORM::beginTransaction();
 			$userPermissionTable = new \App\Table\UserPermission();
 			// nuke all coordinator permissions
-			$coordinatorPermission = new \App\Record\Permission(['name' => 'Ride Coordinator']);
+			$settingTable = new \App\Table\Setting();
+			$coordinatorPermission = $settingTable->getStandardPermissionGroup('Ride Coordinator');
 			$userPermissionTable->setWhere(new \PHPFUI\ORM\Condition('permissionGroup', $coordinatorPermission->permissionId));
 			$userPermissionTable->delete();
 			// add back in
@@ -35,10 +36,9 @@ class Coordinators
 
 			$userPermission = new \App\Record\UserPermission();
 
-			foreach ($categories as $category)
+			foreach ($categories as $categoryRecord)
 				{
-				$categoryRecord = new \App\Record\Category($category);
-				$categoryRecord->coordinator = (int)$_POST['coordinator' . $category['categoryId']];
+				$categoryRecord->coordinator = (int)$_POST['coordinator' . $categoryRecord->categoryId];
 				$categoryRecord->update();
 
 				if (! $categoryRecord->coordinator)
@@ -65,8 +65,8 @@ class Coordinators
 
 			foreach ($categories as $category)
 				{
-				$id = $category[$pk];
-				$editControl = $leaderView->getEditControl("coordinator{$id}", '', $leaders, $category['coordinator']);
+				$id = $category->categoryId;
+				$editControl = $leaderView->getEditControl("coordinator{$id}", '', $leaders, $category->coordinator);
 
 				if ($leaderId)
 					{
@@ -76,8 +76,9 @@ class Coordinators
 					{
 					$leaderId = $editControl->getName();
 					}
-				$category['coordinator'] = $editControl;
-				$table->addRow($category);
+				$row = $category->toArray();
+				$row['coordinator'] = $editControl;
+				$table->addRow($row);
 				}
 			$form->add($table);
 			$buttonGroup = new \PHPFUI\ButtonGroup();

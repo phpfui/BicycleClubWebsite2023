@@ -86,6 +86,10 @@ class Store
 		$control = $chair->getEditControl();
 		$control->setToolTip('This is the person store related email will be from.');
 		$fieldSet->add($control);
+		$chair = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPicker('Store Shipping'));
+		$control = $chair->getEditControl();
+		$control->setToolTip('This is the person who will ship any physical merchandise.');
+		$fieldSet->add($control);
 		$storeClosedMessage = new \PHPFUI\Input\Text($storeClosed, 'Store Closed Message', $this->settingTable->value($storeClosed));
 		$storeClosedMessage->setToolTip('If a message is entered, the store will be closed and this message displayed');
 		$fieldSet->add($storeClosedMessage);

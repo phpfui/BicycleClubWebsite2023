@@ -361,7 +361,8 @@ class Member extends \PHPFUI\ORM\Table
 
 	public function setMembersWithPermission(string $permissionName) : static
 		{
-		$permission = new \App\Record\Permission(['name' => $permissionName]);
+		$settingTable = new \App\Table\Setting();
+		$permission = $settingTable->getStandardPermissionGroup($permissionName);
 
 		if ($permission->permissionId)
 			{

@@ -4,9 +4,13 @@ namespace App\View;
 
 class Permissions
 	{
-	private readonly \App\Model\PermissionsInterface $permissionModel;
+	private ?\PHPFUI\ORM\RecordCursor $groupCursor = null;
+
+	private readonly \App\Model\PermissionBase $permissionModel;
 
 	private readonly \App\Table\Permission $permissionTable;
+
+	private readonly \App\Table\Setting $settingTable;
 
 	private readonly \App\Table\UserPermission $userPermissionTable;
 
@@ -15,6 +19,7 @@ class Permissions
 		$this->permissionTable = new \App\Table\Permission();
 		$this->permissionModel = $this->page->getPermissions();
 		$this->userPermissionTable = new \App\Table\UserPermission();
+		$this->settingTable = new \App\Table\Setting();
 		$this->processAJAXRequest();
 		}
 
@@ -191,7 +196,7 @@ class Permissions
 				{
 				$permissionId = $permission['permissionId'];
 
-				if (isset($groupPermissions[$permissionId]) && ! $groupPermissions[$permissionId])
+				if (isset($groupPermissions[$permissionId]) && empty($groupPermissions[$permissionId]))
 					{
 					$revoked = true;
 					$inRevokedGroup[] = $permission;
@@ -269,9 +274,7 @@ class Permissions
 		$this->permissionTable->setOrderBy('name');
 
 		$searchHeaders = ['name' => 'Permission Group', 'system' => 'System Updated'];
-		$normalHeaders = ['members' => 'Members',
-			'edit' => 'Edit',
-			'del' => 'Del', ];
+		$normalHeaders = ['members' => 'Members', 'edit' => 'Edit', 'del' => 'Del', ];
 
 		$view = new \App\UI\ContinuousScrollTable($this->page, $this->permissionTable);
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $this->permissionTable, 'Are you sure you want to permanently delete this permission group?');
@@ -338,6 +341,41 @@ class Permissions
 		$hidden = new \PHPFUI\Input\Hidden($type . $fieldName . '[]', $permission[$index] ?? 0);
 
 		return $hidden . $menu . ($permission['name'] ?? '');
+		}
+
+	public function groupAssignments() : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+
+		$callout = new \PHPFUI\Callout('info');
+		$callout->add('Assign your permission groups to the following functionality area:');
+		$container->add($callout);
+
+		$groups = $this->permissionModel->getStandardGroups();
+
+		$submit = new \PHPFUI\Submit();
+		$form = new \PHPFUI\Form($this->page, $submit);
+
+		if ($form->isMyCallback($submit))
+			{
+			foreach ($groups as $group)
+				{
+				$this->settingTable->saveStandardPermissionGroup($group, (int)$_POST[\str_replace(' ', '', $group)]);
+				}
+			$this->page->setResponse('Saved');
+
+			return $container;
+			}
+
+		foreach ($groups as $group)
+			{
+			$form->add($this->getGroupPicker($group));
+			}
+
+		$form->add($submit);
+		$container->add($form);
+
+		return $container;
 		}
 
 	public function membersWithPermission(\App\Record\Permission $permission) : \PHPFUI\Container
@@ -456,6 +494,24 @@ class Permissions
 		$modalForm->add($fieldSet);
 		$modalForm->add(new \PHPFUI\Submit('Add'));
 		$modal->add($modalForm);
+		}
+
+	private function getGroupPicker(string $groupName) : \PHPFUI\Input\Select
+		{
+		$current = $this->settingTable->getStandardPermissionGroup($groupName);
+		$select = new \PHPFUI\Input\Select(\str_replace(' ', '', $groupName), $groupName);
+
+		if (! $this->groupCursor)
+			{
+			$this->groupCursor = $this->permissionTable->getAllPermissionGroups();
+			}
+
+		foreach ($this->groupCursor as $group)
+			{
+			$select->addOption($group->name, (string)$group->permissionId, ($current->permissionId ?? 0) == $group->permissionId);
+			}
+
+		return $select;
 		}
 
 	private function groupByMenu(array $permissions) : array

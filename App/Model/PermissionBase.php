@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class AllPermissions implements \App\Model\PermissionsInterface
+class PermissionBase
 	{
 	public function addGroup() : \App\Record\Permission
 		{
@@ -59,6 +59,17 @@ class AllPermissions implements \App\Model\PermissionsInterface
 	public function getPermissionsForUser(int $memberId) : array
 		{
 		return [];
+		}
+
+	public function getStandardGroups() : array
+		{
+		return [
+			'Event Coordinator',
+			'Normal Member',
+			'Pending Member',
+			'Ride Coordinator',
+			'Ride Leader',
+		];
 		}
 
 	public function hasPermission(int $permission) : bool

@@ -13,15 +13,6 @@ class Admin extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function allPermissions() : void
-		{
-		if ($this->page->addHeader('Permission Name'))
-			{
-			$view = new \App\View\Permissions($this->page);
-			$this->page->addPageContent($view->getAllPermissions());
-			}
-		}
-
 	public function bikeShopAreas() : void
 		{
 		if ($this->page->addHeader('Bike Shop Areas'))
@@ -232,9 +223,18 @@ class Admin extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function permissionGroupAssignment() : void
+		{
+		if ($this->page->addHeader('Permission Group Assignments'))
+			{
+			$view = new \App\View\Permissions($this->page);
+			$this->page->addPageContent($view->groupAssignments());
+			}
+		}
+
 	public function permissionGroups() : void
 		{
-		if ($this->page->addHeader('Show Permission Groups'))
+		if ($this->page->addHeader('Permission Groups'))
 			{
 			$view = new \App\View\Permissions($this->page);
 			$this->page->addPageContent($view->getAllGroups());
@@ -252,6 +252,15 @@ class Admin extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$this->page->addSubHeader($permission->name);
 			$view = new \App\View\Permissions($this->page);
 			$this->page->addPageContent($view->membersWithPermission($permission));
+			}
+		}
+
+	public function permissions() : void
+		{
+		if ($this->page->addHeader('Permissions'))
+			{
+			$view = new \App\View\Permissions($this->page);
+			$this->page->addPageContent($view->getAllPermissions());
 			}
 		}
 

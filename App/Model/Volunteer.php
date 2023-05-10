@@ -46,7 +46,7 @@ class Volunteer
 
 		foreach ($categoryTable->getAllCategories() as $cat)
 			{
-			$categoryPoints[$cat['categoryId']] = (int)$this->settingsSaver->getValue($prefix . 'Lead' . $cat['category']);
+			$categoryPoints[$cat->categoryId] = (int)$this->settingsSaver->getValue($prefix . 'Lead' . $cat->category);
 			}
 		$assistPoints = (int)$this->settingsSaver->getValue($prefix . 'Assist');
 		$statusPoints = (int)$this->settingsSaver->getValue($prefix . 'Status');

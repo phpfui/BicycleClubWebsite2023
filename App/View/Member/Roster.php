@@ -50,12 +50,11 @@ class Roster
 			$alpha[$char] = $char;
 			}
 		$categoryTable = new \App\Table\Category();
-		$allCats = $categoryTable->getAllCategories();
 		$categories = [];
 
-		foreach ($allCats as $category)
+		foreach ($categoryTable->getAllCategories() as $category)
 			{
-			$categories[$category['categoryId']] = $category['category'];
+			$categories[$category->categoryId] = $category->category;
 			}
 		$membershipTable = new \App\Table\Membership();
 		$membership = $membershipTable->getOldestMembership();

@@ -188,7 +188,7 @@ class LeaderPoints
 
 		foreach ($categoryTable->getAllCategories() as $cat)
 			{
-			$categories[$prefix . 'Lead' . $cat['category']] = $cat['category'] . ' Ride Leader';
+			$categories[$prefix . 'Lead' . $cat->category] = $cat->category . ' Ride Leader';
 			}
 		$categories[$prefix . 'LeadAll'] = 'All Ride Leader';
 		$categories[$prefix . 'Assist'] = 'Assistant Leader';

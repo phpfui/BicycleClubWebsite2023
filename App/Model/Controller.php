@@ -14,7 +14,7 @@ class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\Na
 
 	private array $routes = [];
 
-	public function __construct(private readonly \App\Model\PermissionsInterface $permissions)
+	public function __construct(private readonly \App\Model\PermissionBase $permissions)
 		{
 		$uri = $_SERVER['REQUEST_URI'] ?? '';
 		$query = \strpos((string)$uri, '?');
@@ -69,7 +69,7 @@ class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\Na
 		return $this->footer;
 		}
 
-	public function getPermissions() : \App\Model\PermissionsInterface
+	public function getPermissions() : \App\Model\PermissionBase
 		{
 		return $this->permissions;
 		}

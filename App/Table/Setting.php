@@ -8,6 +8,13 @@ class Setting extends \PHPFUI\ORM\Table
 
 	private static array $pairs = [];
 
+	public function getStandardPermissionGroup(string $name) : ?\App\Record\Permission
+		{
+		$permission = new \App\Record\Permission((int)$this->value($this->getGroupName($name)));
+
+		return $permission->loaded() ? $permission : null;
+		}
+
 	public function save(string $name, string | int $value) : static
 		{
 		$record = new \App\Record\Setting($name);
@@ -33,6 +40,11 @@ class Setting extends \PHPFUI\ORM\Table
 		return $this->saveHtml($name, $html);
 		}
 
+	public function saveStandardPermissionGroup(string $name, int $permissionId) : static
+		{
+		return $this->save($this->getGroupName($name), $permissionId);
+		}
+
 	public function value(string $id, string $default = '') : string
 		{
 		if (! isset(self::$pairs[$id]))
@@ -43,5 +55,10 @@ class Setting extends \PHPFUI\ORM\Table
 			}
 
 		return self::$pairs[$id];
+		}
+
+	private function getGroupName(string $name) : string
+		{
+		return 'StandardGroup ' . $name;
 		}
 	}

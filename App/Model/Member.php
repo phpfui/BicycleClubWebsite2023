@@ -479,8 +479,8 @@ class Member
 
 				// set all members to have normal member privledge
 				$this->memberTable->setWhere(new \PHPFUI\ORM\Condition('membershipId', $member->membershipId));
-				$normalMember = new \App\Record\Permission(['name' => 'Normal Member']);
-				$pendingMember = new \App\Record\Permission(['name' => 'Pending Member']);
+				$normalMember = $this->settingTable->getStandardPermissionGroup('Normal Member');
+				$pendingMember = $this->settingTable->getStandardPermissionGroup('Pending Member');
 
 				foreach ($this->memberTable->getRecordCursor() as $memberRecord)
 					{
@@ -792,7 +792,7 @@ class Member
 
 	public function setNormalMemberPermission(\App\Record\Member $member) : void
 		{
-		$permission = new \App\Record\Permission(['name' => 'Normal Member']);
+		$permission = $this->settingTable->getStandardPermissionGroup('Normal Member');
 		\App\Table\UserPermission::addPermissionToUser($member->memberId, $permission->permissionId);
 		}
 

@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class Permission implements \App\Model\PermissionsInterface
+class Permission extends \App\Model\PermissionBase
 	{
 	protected array $permissions = [];
 
@@ -47,17 +47,12 @@ class Permission implements \App\Model\PermissionsInterface
 
 	public function addGroup() : \App\Record\Permission
 		{
-		$newName = 'New Permission Group Name';
-		$permission = new \App\Record\Permission(['name' => $newName]);
-
-		if (! $permission->loaded())
-			{
-			$permissionTable = new \App\Table\Permission();
-			$permission->permissionId = $permissionTable->getNextGroupId();
-			$permission->name = $newName;
-			$permission->menu = 'Permission Group';
-			$permission->insert();
-			}
+		$permissionTable = new \App\Table\Permission();
+		$permission = new \App\Record\Permission();
+		$permission->permissionId = $permissionTable->getNextGroupId();
+		$permission->name = 'New Permission Group Name';
+		$permission->menu = 'Permission Group';
+		$permission->insert();
 
 		return $permission;
 		}
@@ -319,13 +314,18 @@ class Permission implements \App\Model\PermissionsInterface
 		$permissionGroupName = new \App\Record\Permission();
 		$permissionTable = new \App\Table\Permission();
 		$permissionGroupTable = new \App\Table\PermissionGroup();
+		$settingTable = new \App\Table\Setting();
 
 		foreach ($csvReader as $row)
 			{
 			if ($permissionGroupName->name != $row['permissionGroup'])
 				{
-				$permissionGroupName->setEmpty();
-				$permissionGroupName->read(['name' => $row['permissionGroup'], 'system' => 1]);
+				$permissionGroupName = $settingTable->getStandardPermissionGroup($row['permissionGroup']);
+
+				if (! $permissionGroupName)
+					{
+					$permissionGroupName = new \App\Record\Permission(['name' => $row['permissionGroup'], 'system' => 1]);
+					}
 
 				if (! $permissionGroupName->loaded())
 					{
@@ -402,6 +402,16 @@ class Permission implements \App\Model\PermissionsInterface
 			unset($permissionGroup);
 			}
 
+		foreach ($revoked as $permissionId => $junk)
+			{
+			$permissionId = (int)$permissionId;
+			$group['permissionId'] = $permissionId;
+			$group['revoked'] = 1;
+			$permissionGroup = new \App\Record\PermissionGroup();
+			$permissionGroup->setFrom($group);
+			$permissionGroup->insert();
+			unset($permissionGroup);
+			}
 
 		$parameters['permissionId'] = $parameters['groupId'];
 		$parameters['menu'] = 'Permission Group';
@@ -441,6 +451,17 @@ class Permission implements \App\Model\PermissionsInterface
 			$permissionId = (int)$permissionId;
 			$member['permissionGroup'] = $permissionId;
 			$member['revoked'] = $revoked[$permissionId] ?? 0;
+			$permission = new \App\Record\UserPermission();
+			$permission->setFrom($member);
+			$permission->insertOrUpdate();
+			unset($permission);
+			}
+
+		foreach ($revoked as $permissionId => $junk)
+			{
+			$permissionId = (int)$permissionId;
+			$member['permissionGroup'] = $permissionId;
+			$member['revoked'] = 1;
 			$permission = new \App\Record\UserPermission();
 			$permission->setFrom($member);
 			$permission->insertOrUpdate();

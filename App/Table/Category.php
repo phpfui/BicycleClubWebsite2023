@@ -6,19 +6,6 @@ class Category extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Category::class;
 
-	private array $categories = [];
-
-	public function __construct()
-		{
-		parent::__construct();
-		$sql = 'select * from category order by ordering';
-
-		foreach (\PHPFUI\ORM::getRows($sql) as $row)
-			{
-			$this->categories[$row['categoryId']] = $row;
-			}
-		}
-
 	public function changeCategory(int $from, int $to) : void
 		{
 		\App\Table\MemberCategory::changeCategory($from, $to);
@@ -46,9 +33,14 @@ class Category extends \PHPFUI\ORM\Table
 		$this->delete();
 		}
 
-	public function getAllCategories()
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Category>
+	 */
+	public function getAllCategories() : \PHPFUI\ORM\RecordCursor
 		{
-		return $this->categories;
+		$this->setOrderBy('ordering');
+
+		return $this->getRecordCursor();
 		}
 
 	public function getCategoryForId(int $categoryId) : string
@@ -60,11 +52,11 @@ class Category extends \PHPFUI\ORM\Table
 		{
 		$defaults = [];
 
-		foreach ($this->categories as $id => $category)
+		foreach ($this->getAllCategories() as $category)
 			{
-			if (! empty($category['memberDefault']))
+			if (! empty($category->memberDefault))
 				{
-				$defaults[] = $id;
+				$defaults[] = $category->categoryId;
 				}
 			}
 

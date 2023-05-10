@@ -139,6 +139,11 @@ class Comments
 		$rideCommentTable->setWhere(new \PHPFUI\ORM\Condition('rideId', $this->ride->rideId));
 		$rideCommentTable->addOrderBy('time', 'desc');
 
+		if (! $this->page->isAuthorized('Ride Comments'))
+			{
+			return $container;
+			}
+
 		$fieldSet = new \PHPFUI\FieldSet('Ride Comments');
 
 		if (\App\Table\Ride::COMMENTS_ENABLED == $this->ride->commentsDisabled)
@@ -146,44 +151,45 @@ class Comments
 			$add = new \PHPFUI\Button('Add Comment');
 			$fieldSet->add($add);
 			$this->getModal($add);
+
+			foreach ($rideCommentTable->getRecordCursor() as $rideComment)
+				{
+				$rideCommentId = $rideComment->rideCommentId;
+				$row = new \PHPFUI\GridX();
+				$nameColumn = new \PHPFUI\Cell($this->deleteComments ? 11 : 12);
+				$time = \App\Tools\TimeHelper::relativeFormat($rideComment->time);
+				$rider = $rideComment->member;
+
+				$location = \App\Model\RideWithGPS::getMapPinLink($rideComment->toArray());
+
+				if ($location)
+					{
+					$location = new \PHPFUI\Link($location, 'from');
+					$location->addAttribute('target', '_blank');
+					}
+
+				$rideComment->comment = \App\Tools\TextHelper::addLinks($rideComment->comment);
+				$nameColumn->add("<b>{$rider->fullName()}</b> - <i>{$time}</i> said {$location}:<br>" . $rideComment->comment);
+				$row->add($nameColumn);
+
+				if ($this->deleteComments)
+					{
+					$deleteColumn = new \PHPFUI\Cell(1);
+					$trash = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
+					$trash->addAttribute('onclick', $delete->execute([$index => $rideCommentId]));
+					$deleteColumn->add($trash);
+					$row->add($deleteColumn);
+					}
+				$row->setId("{$index}-{$rideCommentId}");
+				$fieldSet->add($row);
+				$fieldSet->add('<hr>');
+				}
 			}
 		else
 			{
 			$fieldSet->add(new \PHPFUI\Header('Comments have been disabled for this ride', 4));
 			}
 
-		foreach ($rideCommentTable->getRecordCursor() as $rideComment)
-			{
-			$rideCommentId = $rideComment->rideCommentId;
-			$row = new \PHPFUI\GridX();
-			$nameColumn = new \PHPFUI\Cell($this->deleteComments ? 11 : 12);
-			$time = \App\Tools\TimeHelper::relativeFormat($rideComment->time);
-			$rider = $rideComment->member;
-
-			$location = \App\Model\RideWithGPS::getMapPinLink($rideComment->toArray());
-
-			if ($location)
-				{
-				$location = new \PHPFUI\Link($location, 'from');
-				$location->addAttribute('target', '_blank');
-				}
-
-			$rideComment->comment = \App\Tools\TextHelper::addLinks($rideComment->comment);
-			$nameColumn->add("<b>{$rider->fullName()}</b> - <i>{$time}</i> said {$location}:<br>" . $rideComment->comment);
-			$row->add($nameColumn);
-
-			if ($this->deleteComments)
-				{
-				$deleteColumn = new \PHPFUI\Cell(1);
-				$trash = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-				$trash->addAttribute('onclick', $delete->execute([$index => $rideCommentId]));
-				$deleteColumn->add($trash);
-				$row->add($deleteColumn);
-				}
-			$row->setId("{$index}-{$rideCommentId}");
-			$fieldSet->add($row);
-			$fieldSet->add('<hr>');
-			}
 		$container->add($fieldSet);
 
 		return $container;

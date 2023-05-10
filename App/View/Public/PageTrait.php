@@ -107,9 +107,8 @@ trait PageTrait
 			'speed' => 'Average Speed',
 			'description' => 'Description', ]);
 		$categoryTable = new \App\Table\Category();
-		$categories = $categoryTable->getAllCategories();
 
-		foreach ($categories as $category)
+		foreach ($categoryTable->getAllCategories() as $category)
 			{
 			if ($category['minSpeed'] && $category['maxSpeed'])
 				{

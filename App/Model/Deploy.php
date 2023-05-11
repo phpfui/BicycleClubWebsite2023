@@ -91,6 +91,7 @@ class Deploy
 		$email->setHtml();
 		$memberTable = new \App\Table\Member();
 		$memberTable->getMembersWithPermission('Super User');
+
 		foreach($memberTable->getArrayCursor() as $member)
 			{
 			$email->addToMember($member);

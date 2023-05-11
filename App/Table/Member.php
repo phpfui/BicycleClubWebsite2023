@@ -245,6 +245,35 @@ class Member extends \PHPFUI\ORM\Table
 		return new \PHPFUI\ORM\DataObject($this->getMembership($memberId));
 		}
 
+	public function getMembersWithPermission(string $permissionName) : static
+		{
+		$settingTable = new \App\Table\Setting();
+		$permission = $settingTable->getStandardPermissionGroup($permissionName);
+
+		if ($permission && $permission->permissionId)
+			{
+			$this->getMembersWithPermissionId($permission->permissionId);
+			}
+		else
+			{
+			$this->setWhere(new \PHPFUI\ORM\Condition('memberId', 0));
+			\App\Tools\Logger::get()->debug($permissionName, 'permission not found');
+			}
+
+		return $this;
+		}
+
+	public function getMembersWithPermissionId(int $permissionId) : static
+		{
+		$this->addJoin('userPermission', 'memberId');
+		$this->addJoin('membership', 'membershipId');
+		$condition = new \PHPFUI\ORM\Condition('permissionGroup', $permissionId);
+		$condition->and('expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$this->setWhere($condition);
+
+		return $this;
+		}
+
 	public function getName(?int $memberId) : string
 		{
 		$sql = 'select IFNULL( (SELECT concat(firstName, " ", lastName) from member where memberId=?) ,"System")';
@@ -357,35 +386,6 @@ class Member extends \PHPFUI\ORM\Table
 		$sql = self::getSelectFields() . ' where acceptedWaiver>"2000" order by lastLogin desc limit 25';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql);
-		}
-
-	public function getMembersWithPermission(string $permissionName) : static
-		{
-		$settingTable = new \App\Table\Setting();
-		$permission = $settingTable->getStandardPermissionGroup($permissionName);
-
-		if ($permission && $permission->permissionId)
-			{
-			$this->getMembersWithPermissionId($permission->permissionId);
-			}
-		else
-			{
-			$this->setWhere(new \PHPFUI\ORM\Condition('memberId', 0));
-			\App\Tools\Logger::get()->debug($permissionName, 'permission not found');
-			}
-
-		return $this;
-		}
-
-	public function getMembersWithPermissionId(int $permissionId) : static
-		{
-		$this->addJoin('userPermission', 'memberId');
-		$this->addJoin('membership', 'membershipId');
-		$condition = new \PHPFUI\ORM\Condition('permissionGroup', $permissionId);
-		$condition->and('expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
-		$this->setWhere($condition);
-
-		return $this;
 		}
 
 	public function updatePointDifference(int $memberId, int $difference) : bool

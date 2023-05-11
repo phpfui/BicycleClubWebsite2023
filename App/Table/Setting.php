@@ -20,16 +20,8 @@ class Setting extends \PHPFUI\ORM\Table
 		$record = new \App\Record\Setting($name);
 
 		$record->value = "{$value}";
-
-		if ($record->loaded())
-			{
-			$record->update();
-			}
-		else
-			{
-			$record->name = $name;
-			$record->insert();
-			}
+		$record->name = $name;
+		$record->insertOrUpdate();
 		self::$pairs[$name] = $value;
 
 		return $this;

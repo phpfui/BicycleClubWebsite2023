@@ -20,7 +20,7 @@ class Setting extends \PHPFUI\ORM\Table
 		$record = new \App\Record\Setting($name);
 
 		$record->value = "{$value}";
-		$record->name = $name;
+		$record->name = \substr($name, 0, 30);
 		$record->insertOrUpdate();
 		self::$pairs[$name] = $value;
 
@@ -39,6 +39,8 @@ class Setting extends \PHPFUI\ORM\Table
 
 	public function value(string $id, string $default = '') : string
 		{
+		$id = \substr($id, 0, 30);
+
 		if (! isset(self::$pairs[$id]))
 			{
 			$return = new \App\Record\Setting($id);
@@ -51,6 +53,6 @@ class Setting extends \PHPFUI\ORM\Table
 
 	private function getGroupName(string $name) : string
 		{
-		return 'StandardGroup ' . $name;
+		return \substr('StandardGroup ' . $name, 0, 30);
 		}
 	}

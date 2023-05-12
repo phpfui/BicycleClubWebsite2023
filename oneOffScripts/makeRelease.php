@@ -7,49 +7,16 @@ echo "Make a release (NOTE: lines starting with # in the release notes will be i
 if (\in_array('-?', $argv) || \in_array('--help', $argv))
 	{
 	echo "Parameters:\n\n";
-	echo "    Version (required)\n";
 	echo "    --overwrite (overwrite existing tag)\n";
 	echo "    -? or --help (this help)\n";
 
 	exit;
 	}
 
-$version = $argv[1] ?? null;
+$releaseNotes = new \App\Model\ReleaseNotes();
+$highestVersion = $releaseNotes->getHighestRelease();
 
-if (empty($version))
-	{
-	echo "You must specify a release as the first parameter\n";
-
-	exit;
-	}
-
-if (! \str_starts_with($version, \App\Model\ReleaseTag::VERSION_PREFIX))
-	{
-	echo 'The version must start with ' . \App\Model\ReleaseTag::VERSION_PREFIX . "\n";
-
-	exit;
-	}
-
-$versionParts = \explode('.', \substr($version, \strlen(\App\Model\ReleaseTag::VERSION_PREFIX)));
-
-if (\count($versionParts) < 2)
-	{
-	echo "The version must contain at least two segments separated by periods. Example: V2.8\n";
-
-	exit;
-	}
-
-foreach ($versionParts as $index => $part)
-	{
-	if ($part != (int)$part)
-		{
-		echo "The version must contain only numbers.\n";
-
-		exit;
-		}
-	$versionParts[$index] = \sprintf('%02d', (int)$part);
-	}
-$version = \App\Model\ReleaseTag::VERSION_PREFIX . \implode('.', $versionParts);
+$version = \App\Model\ReleaseTag::VERSION_PREFIX . $highestVersion;
 
 $repo = new \Gitonomy\Git\Repository(PROJECT_ROOT);
 
@@ -68,15 +35,7 @@ if (! \in_array('--overwrite', $argv))
 		}
 	}
 
-// check for releaseNotes.md in current commit
 $releaseNoteName = "files/releaseNotes/{$version}.md";
-
-if (! \file_exists($releaseNoteName))
-	{
-	echo "The file {$releaseNoteName} was not found.\n";
-
-	exit;
-	}
 
 // delete any existing tags
 foreach ($tagsForVersion as $commit => $tag)

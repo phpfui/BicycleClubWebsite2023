@@ -33,13 +33,13 @@ A mobile friendly website to manage a bicycle club.
 ### Much More!
 
 ## Documentation
-* [Requirements](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/1.%20Requirements.md)
-* [Installation](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/2.%20Installation.md)
-* [Backups](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/3.%20Backups.md)
-* [Permissions](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/4.%20Permissions.md)
-* [REST API](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/5.%20API.md)
-* [Architecture](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/6.%20Architecture.md)
-* [Philosophy](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/7.%20Philosophy.md)
-* [Database](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/8.%20Database.md)
+* [Requirements](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/01.%20Requirements.md)
+* [Installation](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/02.%20Installation.md)
+* [Backups](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/03.%20Backups.md)
+* [Permissions](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/04.%20Permissions.md)
+* [REST API](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/05.%20API.md)
+* [Architecture](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/06.%20Architecture.md)
+* [Philosophy](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/07.%20Philosophy.md)
+* [Database](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/08.%20Database.md)
 * [GNU AGPLv3 License](License.md)
 

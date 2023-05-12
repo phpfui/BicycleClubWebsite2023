@@ -2287,6 +2287,7 @@
                 "issues": "https://github.com/php-http/message-factory/issues",
                 "source": "https://github.com/php-http/message-factory/tree/1.1.0"
             },
+            "abandoned": "psr/http-factory",
             "time": "2023-04-14T14:16:17+00:00"
         },
         {
@@ -2642,16 +2643,16 @@
         },
         {
             "name": "phpfui/instadoc",
-            "version": "V1.3.2",
+            "version": "V1.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/InstaDoc.git",
-                "reference": "eeecc76bf5a0dc6c74da2df77ecbbefa00b8731e"
+                "reference": "0d6816329223b26f98c03dc7f1f7d5e11f97cc76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/InstaDoc/zipball/eeecc76bf5a0dc6c74da2df77ecbbefa00b8731e",
-                "reference": "eeecc76bf5a0dc6c74da2df77ecbbefa00b8731e",
+                "url": "https://api.github.com/repos/phpfui/InstaDoc/zipball/0d6816329223b26f98c03dc7f1f7d5e11f97cc76",
+                "reference": "0d6816329223b26f98c03dc7f1f7d5e11f97cc76",
                 "shasum": ""
             },
             "require": {
@@ -2669,7 +2670,7 @@
                 "phpfui/html-unit-tester": "^1.0",
                 "phpfui/phpunit-syntax-coverage": "^1.0",
                 "phpstan/phpstan": "^1.8",
-                "phpunit/phpunit": "<10.0",
+                "phpunit/phpunit": "<11.0",
                 "roave/security-advisories": "dev-latest"
             },
             "type": "library",
@@ -2702,22 +2703,22 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/InstaDoc/issues",
-                "source": "https://github.com/phpfui/InstaDoc/tree/V1.3.2"
+                "source": "https://github.com/phpfui/InstaDoc/tree/V1.3.3"
             },
-            "time": "2023-03-25T17:42:23+00:00"
+            "time": "2023-05-12T16:28:47+00:00"
         },
         {
             "name": "phpfui/orm",
-            "version": "V1.1.9",
+            "version": "V1.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ORM.git",
-                "reference": "094339a4622cce177a1443982b8828a3b03644e2"
+                "reference": "c2dc1c5843bf29d241d23435f2f2cc27385769fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ORM/zipball/094339a4622cce177a1443982b8828a3b03644e2",
-                "reference": "094339a4622cce177a1443982b8828a3b03644e2",
+                "url": "https://api.github.com/repos/phpfui/ORM/zipball/c2dc1c5843bf29d241d23435f2f2cc27385769fb",
+                "reference": "c2dc1c5843bf29d241d23435f2f2cc27385769fb",
                 "shasum": ""
             },
             "require": {
@@ -2764,9 +2765,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ORM/issues",
-                "source": "https://github.com/phpfui/ORM/tree/V1.1.9"
+                "source": "https://github.com/phpfui/ORM/tree/V1.1.10"
             },
-            "time": "2023-05-08T20:24:48+00:00"
+            "time": "2023-05-12T16:02:42+00:00"
         },
         {
             "name": "phpfui/phpfui",
@@ -6178,12 +6179,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "bc1d6711a0a8bb1f2db39755266a44bd74614c72"
+                "reference": "61c471d69c76162ef7b1b4ef5cc4badc2cbc470e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/bc1d6711a0a8bb1f2db39755266a44bd74614c72",
-                "reference": "bc1d6711a0a8bb1f2db39755266a44bd74614c72",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/61c471d69c76162ef7b1b4ef5cc4badc2cbc470e",
+                "reference": "61c471d69c76162ef7b1b4ef5cc4badc2cbc470e",
                 "shasum": ""
             },
             "conflict": {
@@ -6411,7 +6412,7 @@
                 "laravel/framework": "<6.20.42|>=7,<7.30.6|>=8,<8.75",
                 "laravel/socialite": ">=1,<1.0.99|>=2,<2.0.10",
                 "latte/latte": "<2.10.8",
-                "lavalite/cms": "<=5.8",
+                "lavalite/cms": "<=9",
                 "lcobucci/jwt": ">=3.4,<3.4.6|>=4,<4.0.4|>=4.1,<4.1.5",
                 "league/commonmark": "<0.18.3",
                 "league/flysystem": "<1.1.4|>=2,<2.1.1",
@@ -6509,6 +6510,7 @@
                 "phpwhois/phpwhois": "<=4.2.5",
                 "phpxmlrpc/extras": "<0.6.1",
                 "phpxmlrpc/phpxmlrpc": "<4.9.2",
+                "pimcore/customer-management-framework-bundle": "<3.3.9",
                 "pimcore/data-hub": "<1.2.4",
                 "pimcore/perspective-editor": "<1.5.1",
                 "pimcore/pimcore": "<10.5.21",
@@ -6777,7 +6779,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-10T22:04:31+00:00"
+            "time": "2023-05-12T16:04:21+00:00"
         },
         {
             "name": "sebastian/cli-parser",

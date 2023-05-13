@@ -34,6 +34,14 @@ class Member extends \PHPFUI\ORM\Table
 			$whereCondition->and('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
 			}
 
+		foreach ($parameters as $field => $value)
+			{
+			if (\str_starts_with($field, 'membership_'))
+				{
+				$whereCondition->and(\str_replace('_', '.', $field), '%' . $value . '%', new \PHPFUI\ORM\Operator\Like());
+				}
+			}
+
 		if (! empty($parameters['categories']) && \is_array($parameters['categories']))
 			{
 			$categories = [];

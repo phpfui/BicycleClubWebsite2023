@@ -857,7 +857,7 @@ class Forum
 						if ($this->page->isAuthorized('Delete Forum Message'))
 							{
 							$forumMesage = new \App\Record\ForumMessage();
-							$forumMesage->setFrom($_POST['forumMessageId']);
+							$forumMesage->setFrom($_POST);
 							$forumMesage->delete();
 							$this->page->setResponse($_POST['deleteId']);
 							}
@@ -887,33 +887,11 @@ class Forum
 
 						break;
 
-					case 'Save':
-						$forumMember = new \App\Record\ForumMember(['forumId' => (int)$_POST['forumId'], 'memberId' => \App\Model\Session::signedInMemberId()]);
-						$forumMember->delete();
-						$forumMember->emailType = (int)$_POST['emailType'];
-
-						if ($forumMember->emailType)
-							{
-							$forumMember->insert();
-							}
-						$this->page->redirect();
-
-						break;
-
 					case 'Add Member':
-						$key = ['forumId' => (int)$_POST['forumId'], 'memberId' => (int)$_POST['memberId']];
+					case 'Save':
 						$forumMember = new \App\Record\ForumMember();
-						$forumMember->setFrom($key);
-						$forumMember->emailType = (int)$_POST['emailType'];
-
-						if ($forumMember->loaded())
-							{
-							$forumMember->update();
-							}
-						else
-							{
-							$forumMember->insert();
-							}
+						$forumMember->setFrom(['forumId' => (int)$_POST['forumId'], 'memberId' => (int)$_POST['memberId'], (int)$_POST['emailType']]);
+						$forumMember->save();
 						$this->page->redirect();
 
 						break;

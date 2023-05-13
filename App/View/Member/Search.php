@@ -17,8 +17,8 @@ class Search implements \Stringable
 			{
 			$this->fields['license'] = 'Plate';
 			}
-		$this->fields['address'] = 'Address';
-		$this->fields['town'] = 'Town';
+		$this->fields['membership_address'] = 'Address';
+		$this->fields['membership_town'] = 'Town';
 		$this->specialFields['firstName'] = 'First Name';
 		$this->specialFields['lastName'] = 'Last Name';
 		$this->specialFields['email'] = 'email';
@@ -38,6 +38,7 @@ class Search implements \Stringable
 			{
 			$view = new \App\View\Member($this->page);
 			$memberTable = new \App\Table\Member();
+			$memberTable->setLimit(50);
 			$_GET['pending'] = 0;
 			$members = $memberTable->find($_GET);
 			$output = $view->show($members);
@@ -82,8 +83,8 @@ class Search implements \Stringable
 	protected function getSearchModal(\PHPFUI\HTML5Element $modalLink, array $parameters) : \PHPFUI\Reveal
 		{
 		$searchFields = [];
-		$searchFields['state'] = 'State';
-		$searchFields['zip'] = 'Zip';
+		$searchFields['membership_state'] = 'State';
+		$searchFields['membership_zip'] = 'Zip';
 		$searchFields['categories'] = 'Categories';
 		$parameters = $this->setDefaults($searchFields, $parameters);
 		$parameters = $this->setDefaults($this->fields, $parameters);
@@ -118,9 +119,9 @@ class Search implements \Stringable
 			}
 		$picker = $categoryView->getMultiCategoryPicker('categories', 'Member Ride Categories', $parameters['categories']);
 		$extra->add($picker);
-		$state = new \PHPFUI\Input\Text('state', 'State', $parameters['state']);
+		$state = new \PHPFUI\Input\Text('membership_state', 'State', $parameters['membership_state']);
 		$state->addAttribute('size', (string)2);
-		$zip = new \PHPFUI\Input\Zip($this->page, 'zip', 'Zip', $parameters['zip']);
+		$zip = new \PHPFUI\Input\Zip($this->page, 'membership_zip', 'Zip', $parameters['membership_zip']);
 		$extra->add(new \PHPFUI\MultiColumn($state, $zip));
 		$all = new \PHPFUI\Input\CheckBox('all', 'Past Members');
 		$extra->add($all);

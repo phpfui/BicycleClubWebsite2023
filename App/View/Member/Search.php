@@ -4,6 +4,8 @@ namespace App\View\Member;
 
 class Search implements \Stringable
 	{
+	protected $exceptions = [];
+
 	protected $fields = [];
 
 	protected $specialFields = [];
@@ -24,6 +26,12 @@ class Search implements \Stringable
 		$this->specialFields['email'] = 'email';
 		$this->specialFields['emergencyPhone'] = 'Emergency Phone';
 		$this->specialFields['emergencyContact'] = 'Emergency Contact';
+
+		$this->exceptions['membership_address'] = 'showNoStreet';
+		$this->exceptions['membership_town'] = 'showNoTown';
+		$this->exceptions['membership_zip'] = 'showNoTown';
+		$this->exceptions['phone'] = 'showNoPhone';
+		$this->exceptions['cellPhone'] = 'showNoPhone';
 		}
 
 	public function __toString() : string
@@ -39,6 +47,23 @@ class Search implements \Stringable
 			$view = new \App\View\Member($this->page);
 			$memberTable = new \App\Table\Member();
 			$memberTable->setLimit(50);
+			$memberTable->addOrderBy('firstName');
+
+			if (! $this->page->isAuthorized('Super User'))
+				{
+				$condition = $memberTable->getWhereCondition();
+				$condition->and('showNothing', 0);
+
+				foreach ($_GET as $field => $value)
+					{
+					$excludeField = $this->exceptions[$field] ?? '';
+
+					if ($excludeField)
+						{
+						$condition->and($excludeField, 0);
+						}
+					}
+				}
 			$_GET['pending'] = 0;
 			$members = $memberTable->find($_GET);
 			$output = $view->show($members);

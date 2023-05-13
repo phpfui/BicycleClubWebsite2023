@@ -101,7 +101,7 @@ class Edit
 			$storeItem->update();
 
 			$storeItemDetail = new \App\Record\StoreItemDetail();
-			$storeItemDetail->storeItemId = (int)$_POST['storeItemId'];
+			$storeItemDetail->storeItem = $storeItem;
 
 			foreach ($_POST['storeItemDetailId'] ?? [] as $index => $storePhotoId)
 				{

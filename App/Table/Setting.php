@@ -29,7 +29,7 @@ class Setting extends \PHPFUI\ORM\Table
 
 	public function saveHtml(string $name, string $html) : static
 		{
-		return $this->saveHtml($name, $html);
+		return $this->save($name, \App\Tools\TextHelper::cleanUserHtml($html));
 		}
 
 	public function saveStandardPermissionGroup(string $name, int $permissionId) : static

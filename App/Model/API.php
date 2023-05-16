@@ -67,7 +67,7 @@ class API
 			$this->errors[] = "Table {$tableName} does not exist.";
 			$this->errors[] = 'Valid table names are:';
 
-			foreach (\PHPFUI\ORM\Table::getAllTables() as $table)
+			foreach (\PHPFUI\ORM\Table::getAllTables(['Setting', 'OauthToken', 'OauthUser']) as $table)
 				{
 				$tableName = $table->getTableName();
 

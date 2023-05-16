@@ -33,7 +33,7 @@ class Schema extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 					return;
 					}
 
-				foreach (\PHPFUI\ORM\Table::getAllTables() as $table)
+				foreach (\PHPFUI\ORM\Table::getAllTables(['Setting', 'OauthToken', 'OauthUser']) as $table)
 					{
 					$tableName = $table->getTableName();
 

@@ -1,3 +1,5 @@
+Fix table definitions for banner, oauthuser, member
+
 More than max people allowed on ride.
 
 RWGPS

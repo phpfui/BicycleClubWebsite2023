@@ -60,15 +60,9 @@ class RideWithGPS
 		{
 		$routes = [];
 
-//	if (! $this->client)
-//		{
-//		return $routes;
-//		}
-
 		$offset = 50;
 		$limit = 50;
 		$url = "https://ridewithgps.com/clubs/{$this->clubId}/routes.json";
-//		$result = $this->client->get("clubs/{$this->clubId}/routes", ['offset' => $offset, 'limit' => $limit]);
 		$results = \json_decode(\file_get_contents($url), true);
 		$count = $results['results_count'] ?? 0;
 

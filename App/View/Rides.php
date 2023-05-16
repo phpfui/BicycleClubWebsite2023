@@ -281,6 +281,11 @@ class Rides
 			$fieldSet->add(new \App\UI\Display('Start Location', $this->startLocationView->getText($ride->startLocationId)));
 			}
 
+		if ($ride->RWGPSId)
+			{
+			$fieldSet->add(new \App\UI\Display('RWGPS Detail', new \PHPFUI\Link("/RWGPS/detail/{$ride->RWGPSId}", \PHPFUI\TextHelper::unhtmlentities($ride->RWGPS->title) . ' - ' . $ride->RWGPSId, false)));
+			}
+
 		if ($ride->cueSheetId)
 			{
 			$cueSheetView = new \App\View\CueSheet($this->page);
@@ -361,8 +366,6 @@ class Rides
 		$menuItem = new \PHPFUI\MenuItem('Stats', '#');
 		$this->getStatsReveal($menuItem, $RWGPSId);
 		$menu->addMenuItem($menuItem);
-//		$target = new \PHPFUI\MenuItem('Target Pace ' . $ride->targetPace);
-//		$menu->addMenuItem($target);
 
 		return "<p>{$menu}<p>";
 		}

@@ -8,7 +8,7 @@ class API
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
-		$this->tables = \PHPFUI\ORM\Table::getAllTables();
+		$this->tables = \PHPFUI\ORM\Table::getAllTables(['Setting', 'OauthToken', 'OauthUser']);
 		}
 
 	public function edit(\App\Record\OauthUser $user = new \App\Record\OauthUser()) : \PHPFUI\Form

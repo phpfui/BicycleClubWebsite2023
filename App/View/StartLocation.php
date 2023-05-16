@@ -265,11 +265,6 @@ class StartLocation
 
 	public function showLocations() : \App\UI\ContinuousScrollTable
 		{
-		$deleteLocation = new \PHPFUI\AJAX('deleteLocation', 'Permanently delete this location?');
-		$deleteLocation->addFunction('success', '$("#id-"+data.response).css("background-color","red").hide("fast")');
-		$this->page->addJavaScript($deleteLocation->getPageJS());
-		$page = $this->page->isAuthorized('Delete Start Location') ? null : $this->page;
-
 		$startLocationTable = new \App\Table\StartLocation();
 
 		$searchableHeaders = ['name', 'link'];

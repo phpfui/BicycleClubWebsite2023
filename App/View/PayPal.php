@@ -123,7 +123,7 @@ class PayPal
 			$clientId->setRequired(! $type);
 			$clientId->setToolTip('The Client Id is a long string of letters and numbers.');
 			$column->add($clientId);
-			$secret = new \PHPFUI\Input\Text("PayPal{$type}Secret", "Secret for REST API associated with above {$type} Email address", $this->paypalModel->getSecret($type));
+			$secret = new \PHPFUI\Input\PasswordEye("PayPal{$type}Secret", "Secret for REST API associated with above {$type} Email address", $this->paypalModel->getSecret($type));
 			$secret->setRequired(! $type);
 			$secret->setToolTip('The Secret is a long string of letters and numbers.');
 			$column->add($secret);

@@ -62,7 +62,7 @@ class Permission extends \App\Model\PermissionBase
 		$this->runPermissionLoader = true;
 		$permission = new \App\Record\Permission();
 		$permission->setFrom(['menu' => $menu, 'name' => $name]);
-		$id = $permission->insert();
+		$id = $permission->insertOrUpdate();
 
 		if ($id < 100000)
 			{
@@ -71,6 +71,27 @@ class Permission extends \App\Model\PermissionBase
 			}
 
 		return $id;
+		}
+
+	public function addPermissionToGroup(string $group, string $permissionName, string $menu) : bool
+		{
+		$permissionId = $this->getPermissionId($permissionName);
+
+		if (! $permissionId)
+			{
+			$permission = new \App\Record\Permission();
+			$permission->menu = $menu;
+			$permission->name = $permissionName;
+			$permissionId = $permission->insertOrUpdate();
+			}
+
+		$permissionGroup = new \App\Record\PermissionGroup();
+		$settingTable = new \App\Table\Setting();
+		$permissionGroup->groupId = $settingTable->getStandardPermissionGroup('Normal Member')->permissionId;
+		$permissionGroup->permissionId = $permissionId;
+		$permissionGroup->revoked = 0;
+
+		return $permissionGroup->save();
 		}
 
 	public function addPermissionToUser(int $memberId, string $permissionName) : bool

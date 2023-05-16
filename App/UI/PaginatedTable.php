@@ -8,11 +8,11 @@ class PaginatedTable extends \PHPFUI\SortableTable
 
 	private bool $continuousScroll = false;
 
+	private string $csvDownloadName = '';
+
 	private ?\PHPFUI\ORM\ArrayCursor $cursor = null;
 
 	private array $customColumns = [];
-
-	private string $cvsDownloadName = '';
 
 	private array $fieldTable = [];
 
@@ -183,9 +183,9 @@ class PaginatedTable extends \PHPFUI\SortableTable
 		return $this;
 		}
 
-	public function setDownloadName(string $cvsDownloadName) : static
+	public function setDownloadName(string $csvDownloadName) : static
 		{
-		$this->cvsDownloadName = $cvsDownloadName;
+		$this->csvDownloadName = $csvDownloadName;
 
 		return $this;
 		}
@@ -374,9 +374,9 @@ class PaginatedTable extends \PHPFUI\SortableTable
 			{
 			unset($this->parameters['downloadCSV']);
 
-			if ($this->cvsDownloadName)
+			if ($this->csvDownloadName)
 				{
-				$fileName = $this->cvsDownloadName;
+				$fileName = $this->csvDownloadName;
 				}
 			else
 				{

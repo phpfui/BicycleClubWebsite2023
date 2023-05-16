@@ -38,6 +38,16 @@ class RWGPS extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$cueSheet->output('D', "CueSheet_rwgps_{$rwgps->RWGPSId}.pdf");
 		}
 
+	public function detail(\App\Record\RWGPS $rwgps = new \App\Record\RWGPS()) : void
+		{
+		if ($this->page->addHeader('RideWithGPS Detail'))
+			{
+			$this->page->addPageContent(new \PHPFUI\SubHeader($rwgps->title));
+			$this->page->addPageContent($this->view->info($rwgps));
+			$this->page->addPageContent($this->view->additional($rwgps));
+			}
+		}
+
 	public function find() : void
 		{
 		if ($this->page->addHeader('Search RWGPS'))

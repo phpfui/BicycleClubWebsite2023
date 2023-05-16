@@ -16,7 +16,6 @@ class ReCAPTCHA
 		$fieldSet = new \PHPFUI\FieldSet('Google ReCAPTCHA Keys');
 		$link = new \PHPFUI\Link('https://www.google.com/recaptcha', 'here');
 		$fieldSet->add("<b>Google ReCAPTCHA</b> is a free service to help avoid robots from filling out forms. You can get a free account {$link}.");
-//		$fieldSet->add(" V3 is preferred over V2 if both are set.");
 
 		$fields = [];
 		$fields['ReCAPTCHAPublicKey'] = 'Site Key (leave blank to turn off)';

@@ -19,14 +19,14 @@ abstract class VolunteerPoint extends \PHPFUI\ORM\Record
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'date' => ['date', 'string', 10, true, false, ],
-		'jobEventId' => ['int(10)', 'int', 10, true, false, ],
-		'memberId' => ['int(11)', 'int', 11, true, false, ],
+		'date' => ['date', 'string', 10, false, false, ],
+		'jobEventId' => ['int(10)', 'int', 10, false, false, ],
+		'memberId' => ['int(11)', 'int', 11, false, false, ],
 		'pointsAwarded' => ['int(5)', 'int', 5, false, false, 0, ],
 	];
 
 	/** @var array<string, true> */
-	protected static array $primaryKeys = ['jobEventId' => true, 'memberId' => true, 'date' => true, ];
+	protected static array $primaryKeys = ['jobEventId' => true, 'date' => true, 'memberId' => true, ];
 
 	protected static string $table = 'volunteerPoint';
 	}

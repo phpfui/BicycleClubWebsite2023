@@ -32,7 +32,7 @@ abstract class RWGPS extends \PHPFUI\ORM\Record
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'RWGPSId' => ['int(11)', 'int', 11, true, false, ],
+		'RWGPSId' => ['int(11)', 'int', 11, false, false, ],
 		'club' => ['int(1)', 'int', 1, false, false, 0, ],
 		'csv' => ['text', 'string', 65535, false, true, ],
 		'description' => ['varchar(255)', 'string', 255, false, false, '', ],
@@ -54,5 +54,5 @@ abstract class RWGPS extends \PHPFUI\ORM\Record
 	/** @var array<string, true> */
 	protected static array $primaryKeys = ['RWGPSId' => true, ];
 
-	protected static string $table = 'rwgps';
+	protected static string $table = 'RWGPS';
 	}

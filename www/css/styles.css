@@ -8570,4 +8570,12 @@ header {
   opacity: 0.75;
 }
 
+.fa-star-half-stroke {
+  color: darkorange !important;
+}
+
+.fa-star.fas {
+  color: darkorange !important;
+}
+
 /*# sourceMappingURL=styles.css.map */

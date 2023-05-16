@@ -56,6 +56,6 @@ foreach ($tableObjects as $name => $table)
 	$contents = \file_get_contents($phpFile);
 	$class = \lcfirst($class);
 	$contents = \str_replace(\strtolower($table->getTableName()), \lcfirst($class), $contents);
-	$contents = \str_replace("'rWGPS'", "'rwgps'", $contents);
+	$contents = \str_replace("'rWGPS", "'RWGPS", $contents);
 	\file_put_contents($phpFile, $contents);
 	}

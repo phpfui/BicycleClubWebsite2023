@@ -6,9 +6,12 @@ class RideWithGPS
 	{
 	private readonly \App\Model\RideWithGPS $model;
 
+	private readonly \App\UI\RWGPSPicker $rwgpsPicker;
+
 	public function __construct(private readonly \App\View\Page $page)
 		{
 		$this->model = new \App\Model\RideWithGPS();
+		$this->rwgpsPicker = new \App\UI\RWGPSPicker($page, 'RWGPSAlternateId', 'Select an alternate route by title, street name or town');
 
 		$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($_POST['rwgpsUrl'] ?? '');
 
@@ -30,6 +33,112 @@ class RideWithGPS
 				}
 			$this->page->redirect($this->page->getBaseURL() . '/' . $RWGPSId['RWGPSId']);
 			}
+		}
+
+	public function additional(\App\Record\RWGPS $rwgps) : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+
+		$key = ['RWGPSId' => $rwgps->RWGPSId, 'memberId' => \App\Model\Session::signedInMemberId()];
+		$rwgpsRating = new \App\Record\RWGPSRating($key);
+		$rwgpsComment = new \App\Record\RWGPSComment($key);
+
+		if (\App\Model\Session::checkCSRF())
+			{
+			if (($_POST['submit'] ?? '') == 'Rate It')
+				{
+				$rwgpsRating->setFrom($key);
+				$rwgpsRating->rating = $_POST['rating'];
+				$rwgpsRating->insertOrUpdate();
+				$this->page->redirect();
+				}
+			elseif (($_POST['submit'] ?? '') == 'Add Comment')
+				{
+				$rwgpsComment->setFrom($key);
+				$rwgpsComment->comments = $_POST['comments'];
+				$rwgpsComment->save();
+				$this->page->redirect();
+				}
+			elseif (($_POST['submit'] ?? '') == 'Add Alternate Route')
+				{
+				$alternateRoute = new \App\Record\RWGPSAlternate();
+				$alternateRoute->RWGPS = $rwgps;
+				$alternateRoute->RWGPSAlternateId = (int)$_POST['RWGPSAlternateId'];
+				$alternateRoute->memberId = \App\Model\Session::signedInMemberId();
+				$alternateRoute->insertOrIgnore();
+				$this->page->redirect();
+				}
+			}
+
+		$ratingSet = new \PHPFUI\FieldSet('Rating');
+		$multiColumn = new \PHPFUI\HTML5Element('div');
+		$multiColumn->addClass('clearfix');
+		$ratingResult = $rwgps->rating();
+
+		if (null !== $ratingResult['rating'])
+			{
+			$rating = \number_format((float)$ratingResult['rating'], 1);
+			$starBar = new \App\UI\StarBar(5, (float)$rating);
+			$starBar->add(" <b>{$rating}</b> ");
+			$starBar->add(" <b>Total: {$ratingResult['count']}</b> ");
+			$multiColumn->add($starBar);
+			}
+		$rateItButton = new \PHPFUI\Button('Rate It');
+		$rateItButton->addClass('success');
+		$rateItButton->addClass('float-right');
+		$this->addRatingReveal($rateItButton, $rwgpsRating);
+		$multiColumn->add($rateItButton);
+
+		$ratingSet->add($multiColumn);
+		$container->add($ratingSet);
+
+		$routesSet = new \PHPFUI\FieldSet('Alternate Routes');
+		$alternateRouteButton = new \PHPFUI\Button('Add Alternate Route');
+
+		$alternateRouteTable = new \App\UI\RecordCursorTable($rwgps->alternateRoutes);
+		$headers = ['Route', 'Member', 'Del'];
+		$canDeleteAlternate = $this->page->isAuthorized('Delete Alternate RWGPS Route');
+
+		$deleter = new \App\Model\DeleteRecord($this->page, $alternateRouteTable, new \App\Table\RWGPSAlternate(), 'Are you sure you want to permanently delete this alternate route?');
+		$deleter->setConditionalCallback(static fn (array $comment) => $comment['memberId'] == \App\Model\Session::signedInMemberId() || $canDeleteAlternate);
+		$alternateRouteTable->addCustomColumn('RWGPSId_RWGPSAlternateId', static fn (array $alternate) => $alternate['RWGPSId'] . '_' . $alternate['RWGPSAlternateId']);
+		$alternateRouteTable->addCustomColumn('Route', static function(array $alternate) {$rwgps = new \App\Record\RWGPS($alternate['RWGPSAlternateId']);
+
+			return new \PHPFUI\Link("/RWGPS/detail/{$rwgps->RWGPSId}", \PHPFUI\TextHelper::unhtmlentities($rwgps->title) . ' - ' . $rwgps->RWGPSId, false);});
+		$alternateRouteTable->addCustomColumn('Del', $deleter->columnCallback(...));
+		$alternateRouteTable->addCustomColumn('Member', static function(array $alternate) {$member = new \App\Record\Member($alternate['memberId']);
+
+			return $member->fullName();});
+		$alternateRouteTable->setHeaders($headers);
+		$routesSet->add($alternateRouteTable);
+		$this->addAlternateRouteReveal($alternateRouteButton, $rwgps);
+		$routesSet->add($alternateRouteButton);
+		$container->add($routesSet);
+
+		$commentSet = new \PHPFUI\FieldSet('Route Comments');
+
+		$commentTable = new \App\UI\RecordCursorTable($rwgps->comments);
+		$headers = ['Comments', 'Member', 'At', 'Del'];
+		$canDeleteComment = $this->page->isAuthorized('Delete RWGPS Comment');
+
+		$deleter = new \App\Model\DeleteRecord($this->page, $commentTable, new \App\Table\RWGPSComment(), 'Are you sure you want to permanently delete this comment?');
+		$deleter->setConditionalCallback(static fn (array $comment) => $comment['memberId'] == \App\Model\Session::signedInMemberId() || $canDeleteComment);
+		$commentTable->addCustomColumn('RWGPSId_memberId', static fn (array $comment) => $comment['RWGPSId'] . '_' . $comment['memberId']);
+		$commentTable->addCustomColumn('Del', $deleter->columnCallback(...));
+		$commentTable->addCustomColumn('Comments', static fn (array $comment) => $comment['comments']);
+		$commentTable->addCustomColumn('Member', static function(array $comment) {$member = new \App\Record\Member($comment['memberId']);
+
+			return $member->fullName();});
+		$commentTable->addCustomColumn('At', static fn (array $comments) => $comments['lastEdited']);
+		$commentTable->setHeaders($headers);
+		$commentSet->add($commentTable);
+
+		$commentButton = new \PHPFUI\Button('Add Comment');
+		$this->addCommentReveal($commentButton, $rwgpsComment, $rwgps->title);
+		$commentSet->add($commentButton);
+		$container->add($commentSet);
+
+		return $container;
 		}
 
 	public function addUpdate(\App\Record\RWGPS $rwgps) : \PHPFUI\Form | \PHPFUI\FieldSet
@@ -127,8 +236,7 @@ class RideWithGPS
 
 		$view->addCustomColumn('title', static function(array $rwgps)
 			{
-			$name = new \PHPFUI\Link(\App\Model\RideWithGPS::getRouteLink($rwgps['RWGPSId']), \PHPFUI\TextHelper::unhtmlentities($rwgps['title']));
-			$name->addAttribute('target', '_blank');
+			$name = new \PHPFUI\Link("/RWGPS/detail/{$rwgps['RWGPSId']}", \PHPFUI\TextHelper::unhtmlentities($rwgps['title']) . ' - ' . $rwgps['RWGPSId'], false);
 
 			return $name;
 			});
@@ -228,6 +336,49 @@ class RideWithGPS
 		$container->add($view);
 
 		return $container;
+		}
+
+	private function addAlternateRouteReveal(\PHPFUI\HTML5Element $modalLink, \App\Record\RWGPS $rwgps) : void
+		{
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAreYouSure(false);
+		$form->add(new \PHPFUI\Header("Alternate for {$rwgps->title}", 5));
+
+		$form->add($this->rwgpsPicker->getEditControl());
+		$submit = new \PHPFUI\Submit('Add Alternate Route');
+		$submit->addClass('success');
+		$form->add($modal->getButtonAndCancel($submit));
+		$modal->add($form);
+		}
+
+	private function addCommentReveal(\PHPFUI\HTML5Element $modalLink, \App\Record\RWGPSComment $rwgpsComment, string $title) : void
+		{
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAreYouSure(false);
+		$form->add(new \PHPFUI\SubHeader($title));
+		$textArea = new \PHPFUI\Input\TextArea('comments', 'Comments (limited to 255 characters)', $rwgpsComment->comments ?? '');
+		$textArea->setRequired()->setAttribute('maxlength', (string)255)->setAttribute('rows', (string)3);
+
+		$form->add($textArea);
+		$submit = new \PHPFUI\Submit('Add Comment');
+		$submit->addClass('success');
+		$form->add($modal->getButtonAndCancel($submit));
+		$modal->add($form);
+		}
+
+	private function addRatingReveal(\PHPFUI\HTML5Element $modalLink, \App\Record\RWGPSRating $rwgpsRating) : void
+		{
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAreYouSure(false);
+		$form->add(new \App\UI\RatingBar($this->page, 'rating', 5, $rwgpsRating->rating ?? 0));
+		$form->add('<hr>');
+		$submit = new \PHPFUI\Submit('Rate It');
+		$submit->addClass('success');
+		$form->add($modal->getButtonAndCancel($submit));
+		$modal->add($form);
 		}
 
 	private function getStatsReveal(array $rwgps) : \PHPFUI\FAIcon

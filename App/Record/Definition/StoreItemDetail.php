@@ -7,9 +7,9 @@ namespace App\Record\Definition;
  *
  * @property ?string $detailLine MySQL type char(100)
  * @property ?int $quantity MySQL type int(5)
- * @property ?int $storeItemDetailId MySQL type int(6)
+ * @property int $storeItemDetailId MySQL type int(6)
  * @property \App\Record\StoreItemDetail $storeItemDetail related record
- * @property ?int $storeItemId MySQL type int(6)
+ * @property int $storeItemId MySQL type int(6)
  * @property \App\Record\StoreItem $storeItem related record
  */
 abstract class StoreItemDetail extends \PHPFUI\ORM\Record
@@ -18,11 +18,11 @@ abstract class StoreItemDetail extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'detailLine' => ['char(100)', 'string', 100, false, true, ],
-		'quantity' => ['int(5)', 'int', 5, false, true, ],
-		'storeItemDetailId' => ['int(6)', 'int', 6, false, true, ],
-		'storeItemId' => ['int(6)', 'int', 6, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'detailLine' => ['char(100)', 'string', 100, true, ],
+		'quantity' => ['int(5)', 'int', 5, true, ],
+		'storeItemDetailId' => ['int(6)', 'int', 6, false, ],
+		'storeItemId' => ['int(6)', 'int', 6, false, ],
 	];
 
 	/** @var array<string, true> */

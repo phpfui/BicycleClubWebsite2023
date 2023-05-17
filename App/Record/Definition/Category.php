@@ -20,15 +20,15 @@ abstract class Category extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'category' => ['char(2)', 'string', 2, false, true, ],
-		'categoryId' => ['int(11)', 'int', 11, true, false, ],
-		'coordinator' => ['int(11)', 'int', 11, false, false, 0, ],
-		'description' => ['varchar(100)', 'string', 100, false, true, ],
-		'maxSpeed' => ['varchar(5)', 'string', 5, false, true, ],
-		'memberDefault' => ['tinyint(1)', 'int', 1, false, false, 0, ],
-		'minSpeed' => ['varchar(5)', 'string', 5, false, true, ],
-		'ordering' => ['int(11)', 'int', 11, false, false, 999999, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'category' => ['char(2)', 'string', 2, true, ],
+		'categoryId' => ['int(11)', 'int', 11, false, ],
+		'coordinator' => ['int(11)', 'int', 11, false, 0, ],
+		'description' => ['varchar(100)', 'string', 100, true, ],
+		'maxSpeed' => ['varchar(5)', 'string', 5, true, ],
+		'memberDefault' => ['tinyint(1)', 'int', 1, false, 0, ],
+		'minSpeed' => ['varchar(5)', 'string', 5, true, ],
+		'ordering' => ['int(11)', 'int', 11, false, 999999, ],
 	];
 
 	/** @var array<string, true> */

@@ -22,16 +22,16 @@ abstract class Customer extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'address' => ['varchar(100)', 'string', 100, false, true, ],
-		'customerId' => ['int(11)', 'int', 11, true, false, ],
-		'email' => ['varchar(100)', 'string', 100, false, true, ],
-		'firstName' => ['varchar(50)', 'string', 50, false, true, ],
-		'lastName' => ['varchar(50)', 'string', 50, false, true, ],
-		'password' => ['varchar(50)', 'string', 50, false, true, ],
-		'state' => ['char(2)', 'string', 2, false, true, ],
-		'town' => ['varchar(50)', 'string', 50, false, true, ],
-		'zip' => ['varchar(10)', 'string', 10, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'address' => ['varchar(100)', 'string', 100, true, ],
+		'customerId' => ['int(11)', 'int', 11, false, ],
+		'email' => ['varchar(100)', 'string', 100, true, ],
+		'firstName' => ['varchar(50)', 'string', 50, true, ],
+		'lastName' => ['varchar(50)', 'string', 50, true, ],
+		'password' => ['varchar(50)', 'string', 50, true, ],
+		'state' => ['char(2)', 'string', 2, true, ],
+		'town' => ['varchar(50)', 'string', 50, true, ],
+		'zip' => ['varchar(10)', 'string', 10, true, ],
 	];
 
 	/** @var array<string, true> */

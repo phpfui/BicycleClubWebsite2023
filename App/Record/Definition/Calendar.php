@@ -30,24 +30,24 @@ abstract class Calendar extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'calendarId' => ['int(11)', 'int', 11, true, false, ],
-		'description' => ['text', 'string', 65535, false, true, ],
-		'distances' => ['char(20)', 'string', 20, false, true, ],
-		'eventDate' => ['date', 'string', 10, false, false, ],
-		'eventDays' => ['int(2)', 'int', 2, false, true, ],
-		'eventType' => ['int(1)', 'int', 1, false, true, ],
-		'location' => ['varchar(100)', 'string', 100, false, true, ],
-		'pending' => ['int(1)', 'int', 1, false, false, 1, ],
-		'price' => ['int(5)', 'int', 5, false, true, ],
-		'privateContact' => ['char(50)', 'string', 50, false, true, ],
-		'privateEmail' => ['char(50)', 'string', 50, false, true, ],
-		'publicContact' => ['char(50)', 'string', 50, false, true, ],
-		'publicEmail' => ['char(50)', 'string', 50, false, true, ],
-		'startTime' => ['time', 'string', 0, false, true, ],
-		'state' => ['char(2)', 'string', 2, false, true, ],
-		'title' => ['char(100)', 'string', 100, false, true, ],
-		'webSite' => ['char(100)', 'string', 100, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'calendarId' => ['int(11)', 'int', 11, false, ],
+		'description' => ['text', 'string', 65535, true, ],
+		'distances' => ['char(20)', 'string', 20, true, ],
+		'eventDate' => ['date', 'string', 10, false, ],
+		'eventDays' => ['int(2)', 'int', 2, true, ],
+		'eventType' => ['int(1)', 'int', 1, true, ],
+		'location' => ['varchar(100)', 'string', 100, true, ],
+		'pending' => ['int(1)', 'int', 1, false, 1, ],
+		'price' => ['int(5)', 'int', 5, true, ],
+		'privateContact' => ['char(50)', 'string', 50, true, ],
+		'privateEmail' => ['char(50)', 'string', 50, true, ],
+		'publicContact' => ['char(50)', 'string', 50, true, ],
+		'publicEmail' => ['char(50)', 'string', 50, true, ],
+		'startTime' => ['time', 'string', 0, true, ],
+		'state' => ['char(2)', 'string', 2, true, ],
+		'title' => ['char(100)', 'string', 100, true, ],
+		'webSite' => ['char(100)', 'string', 100, true, ],
 	];
 
 	/** @var array<string, true> */

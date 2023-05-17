@@ -25,16 +25,16 @@ abstract class VolunteerJobShift extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'email' => ['text', 'string', 65535, false, true, ],
-		'jobId' => ['int(6)', 'int', 6, false, true, ],
-		'jobShiftId' => ['int(6)', 'int', 6, false, true, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'notes' => ['varchar(255)', 'string', 255, false, false, '', ],
-		'shiftLeader' => ['int(1)', 'int', 1, false, true, ],
-		'signedUpDate' => ['timestamp', 'string', 20, false, false, null, ],
-		'volunteerJobShiftId' => ['int(11)', 'int', 11, true, false, ],
-		'worked' => ['tinyint(4)', 'int', 4, false, false, 0, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'email' => ['text', 'string', 65535, true, ],
+		'jobId' => ['int(6)', 'int', 6, true, ],
+		'jobShiftId' => ['int(6)', 'int', 6, true, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'notes' => ['varchar(255)', 'string', 255, false, '', ],
+		'shiftLeader' => ['int(1)', 'int', 1, true, ],
+		'signedUpDate' => ['timestamp', 'string', 20, false, null, ],
+		'volunteerJobShiftId' => ['int(11)', 'int', 11, false, ],
+		'worked' => ['tinyint(4)', 'int', 4, false, 0, ],
 	];
 
 	/** @var array<string, true> */

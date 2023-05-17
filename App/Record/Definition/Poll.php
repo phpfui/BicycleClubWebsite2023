@@ -24,16 +24,16 @@ abstract class Poll extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'emailConfirmation' => ['int(1)', 'int', 1, false, true, ],
-		'endDate' => ['date', 'string', 10, false, false, ],
-		'memberId' => ['int(11)', 'int', 11, false, true, ],
-		'membershipOnly' => ['int(1)', 'int', 1, false, true, ],
-		'pollId' => ['int(11)', 'int', 11, true, false, ],
-		'question' => ['text', 'string', 65535, false, true, ],
-		'required' => ['int(1)', 'int', 1, false, true, ],
-		'startDate' => ['date', 'string', 10, false, false, ],
-		'storyId' => ['int(11)', 'int', 11, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'emailConfirmation' => ['int(1)', 'int', 1, true, ],
+		'endDate' => ['date', 'string', 10, false, ],
+		'memberId' => ['int(11)', 'int', 11, true, ],
+		'membershipOnly' => ['int(1)', 'int', 1, true, ],
+		'pollId' => ['int(11)', 'int', 11, false, ],
+		'question' => ['text', 'string', 65535, true, ],
+		'required' => ['int(1)', 'int', 1, true, ],
+		'startDate' => ['date', 'string', 10, false, ],
+		'storyId' => ['int(11)', 'int', 11, true, ],
 	];
 
 	/** @var array<string, true> */

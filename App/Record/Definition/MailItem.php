@@ -25,18 +25,18 @@ abstract class MailItem extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'body' => ['mediumtext', 'string', 16777215, false, true, ],
-		'domain' => ['varchar(30)', 'string', 30, false, true, '', ],
-		'fromEmail' => ['varchar(100)', 'string', 100, false, true, '', ],
-		'fromName' => ['varchar(100)', 'string', 100, false, true, '', ],
-		'html' => ['int(11)', 'int', 11, false, true, 0, ],
-		'mailItemId' => ['int(11)', 'int', 11, true, false, ],
-		'memberId' => ['int(11)', 'int', 11, false, true, ],
-		'paused' => ['int(11)', 'int', 11, false, true, 0, ],
-		'replyTo' => ['varchar(100)', 'string', 100, false, true, '', ],
-		'replyToName' => ['varchar(100)', 'string', 100, false, true, '', ],
-		'title' => ['varchar(255)', 'string', 255, false, true, '', ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'body' => ['mediumtext', 'string', 16777215, true, ],
+		'domain' => ['varchar(30)', 'string', 30, true, '', ],
+		'fromEmail' => ['varchar(100)', 'string', 100, true, '', ],
+		'fromName' => ['varchar(100)', 'string', 100, true, '', ],
+		'html' => ['int(11)', 'int', 11, true, 0, ],
+		'mailItemId' => ['int(11)', 'int', 11, false, ],
+		'memberId' => ['int(11)', 'int', 11, true, ],
+		'paused' => ['int(11)', 'int', 11, true, 0, ],
+		'replyTo' => ['varchar(100)', 'string', 100, true, '', ],
+		'replyToName' => ['varchar(100)', 'string', 100, true, '', ],
+		'title' => ['varchar(255)', 'string', 255, true, '', ],
 	];
 
 	/** @var array<string, true> */

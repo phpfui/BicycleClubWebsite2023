@@ -20,13 +20,13 @@ abstract class OauthUser extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'lastLogin' => ['timestamp', 'string', 20, false, true, null, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'oauthUserId' => ['int(11)', 'int', 11, true, false, ],
-		'password' => ['varchar(255)', 'string', 255, false, true, ],
-		'permissions' => ['text', 'string', 65535, false, true, ],
-		'userName' => ['varchar(100)', 'string', 100, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'lastLogin' => ['timestamp', 'string', 20, true, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'oauthUserId' => ['int(11)', 'int', 11, false, ],
+		'password' => ['varchar(255)', 'string', 255, true, ],
+		'permissions' => ['text', 'string', 65535, true, ],
+		'userName' => ['varchar(100)', 'string', 100, true, ],
 	];
 
 	/** @var array<string, true> */

@@ -24,15 +24,15 @@ abstract class StoreOrder extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'added' => ['timestamp', 'string', 20, false, false, null, ],
-		'invoiceId' => ['int(11)', 'int', 11, false, false, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'optionsSelected' => ['varchar(255)', 'string', 255, false, false, ],
-		'quantity' => ['int(11)', 'int', 11, false, false, ],
-		'storeItemId' => ['int(11)', 'int', 11, false, false, ],
-		'storeOrderId' => ['int(11)', 'int', 11, true, false, ],
-		'updated' => ['timestamp', 'string', 20, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'added' => ['timestamp', 'string', 20, false, null, ],
+		'invoiceId' => ['int(11)', 'int', 11, false, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'optionsSelected' => ['varchar(255)', 'string', 255, false, ],
+		'quantity' => ['int(11)', 'int', 11, false, ],
+		'storeItemId' => ['int(11)', 'int', 11, false, ],
+		'storeOrderId' => ['int(11)', 'int', 11, false, ],
+		'updated' => ['timestamp', 'string', 20, true, ],
 	];
 
 	/** @var array<string, true> */

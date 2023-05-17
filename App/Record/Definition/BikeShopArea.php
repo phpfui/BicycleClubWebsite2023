@@ -16,10 +16,10 @@ abstract class BikeShopArea extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'area' => ['varchar(255)', 'string', 255, false, true, ],
-		'bikeShopAreaId' => ['int(11)', 'int', 11, true, false, ],
-		'state' => ['char(2)', 'string', 2, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'area' => ['varchar(255)', 'string', 255, true, ],
+		'bikeShopAreaId' => ['int(11)', 'int', 11, false, ],
+		'state' => ['char(2)', 'string', 2, true, ],
 	];
 
 	/** @var array<string, true> */

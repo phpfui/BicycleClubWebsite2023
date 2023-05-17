@@ -30,21 +30,21 @@ abstract class CueSheet extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'RWGPSId' => ['int(11)', 'int', 11, false, true, ],
-		'cueSheetId' => ['int(11)', 'int', 11, true, false, ],
-		'dateAdded' => ['date', 'string', 10, false, false, ],
-		'description' => ['text', 'string', 65535, false, true, ],
-		'destination' => ['varchar(100)', 'string', 100, false, true, ],
-		'elevation' => ['int(5)', 'int', 5, false, true, ],
-		'memberId' => ['int(11)', 'int', 11, false, true, ],
-		'mileage' => ['float', 'float', 0, false, true, 0, ],
-		'name' => ['varchar(100)', 'string', 100, false, true, ],
-		'pending' => ['int(1)', 'int', 1, false, false, 1, ],
-		'pointsAwarded' => ['int(11)', 'int', 11, false, false, 0, ],
-		'revisionDate' => ['date', 'string', 10, false, true, ],
-		'startLocationId' => ['int(11)', 'int', 11, false, true, ],
-		'terrain' => ['int(1)', 'int', 1, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'RWGPSId' => ['int(11)', 'int', 11, true, ],
+		'cueSheetId' => ['int(11)', 'int', 11, false, ],
+		'dateAdded' => ['date', 'string', 10, false, ],
+		'description' => ['text', 'string', 65535, true, ],
+		'destination' => ['varchar(100)', 'string', 100, true, ],
+		'elevation' => ['int(5)', 'int', 5, true, ],
+		'memberId' => ['int(11)', 'int', 11, true, ],
+		'mileage' => ['float', 'float', 0, true, 0, ],
+		'name' => ['varchar(100)', 'string', 100, true, ],
+		'pending' => ['int(1)', 'int', 1, false, 1, ],
+		'pointsAwarded' => ['int(11)', 'int', 11, false, 0, ],
+		'revisionDate' => ['date', 'string', 10, true, ],
+		'startLocationId' => ['int(11)', 'int', 11, true, ],
+		'terrain' => ['int(1)', 'int', 1, true, ],
 	];
 
 	/** @var array<string, true> */

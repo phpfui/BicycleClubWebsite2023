@@ -4,6 +4,7 @@ namespace PHPStan\PhpDocParser\Parser;
 
 use PHPStan\PhpDocParser\Ast;
 use PHPStan\PhpDocParser\Lexer\Lexer;
+use function str_replace;
 use function strtolower;
 use function substr;
 
@@ -47,7 +48,7 @@ class ConstExprParser
 
 			return $this->enrichWithAttributes(
 				$tokens,
-				new Ast\ConstExpr\ConstExprFloatNode($value),
+				new Ast\ConstExpr\ConstExprFloatNode(str_replace('_', '', $value)),
 				$startLine,
 				$startIndex
 			);
@@ -59,7 +60,7 @@ class ConstExprParser
 
 			return $this->enrichWithAttributes(
 				$tokens,
-				new Ast\ConstExpr\ConstExprIntegerNode($value),
+				new Ast\ConstExpr\ConstExprIntegerNode(str_replace('_', '', $value)),
 				$startLine,
 				$startIndex
 			);
@@ -126,7 +127,7 @@ class ConstExprParser
 					);
 				case 'array':
 					$tokens->consumeTokenType(Lexer::TOKEN_OPEN_PARENTHESES);
-					return $this->parseArray($tokens, Lexer::TOKEN_CLOSE_PARENTHESES);
+					return $this->parseArray($tokens, Lexer::TOKEN_CLOSE_PARENTHESES, $startIndex);
 			}
 
 			if ($tokens->tryConsumeTokenType(Lexer::TOKEN_DOUBLE_COLON)) {
@@ -177,7 +178,7 @@ class ConstExprParser
 			);
 
 		} elseif ($tokens->tryConsumeTokenType(Lexer::TOKEN_OPEN_SQUARE_BRACKET)) {
-			return $this->parseArray($tokens, Lexer::TOKEN_CLOSE_SQUARE_BRACKET);
+			return $this->parseArray($tokens, Lexer::TOKEN_CLOSE_SQUARE_BRACKET, $startIndex);
 		}
 
 		throw new ParserException(
@@ -191,12 +192,11 @@ class ConstExprParser
 	}
 
 
-	private function parseArray(TokenIterator $tokens, int $endToken): Ast\ConstExpr\ConstExprArrayNode
+	private function parseArray(TokenIterator $tokens, int $endToken, int $startIndex): Ast\ConstExpr\ConstExprArrayNode
 	{
 		$items = [];
 
 		$startLine = $tokens->currentTokenLine();
-		$startIndex = $tokens->currentTokenIndex();
 
 		if (!$tokens->tryConsumeTokenType($endToken)) {
 			do {

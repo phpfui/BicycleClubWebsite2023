@@ -17,11 +17,11 @@ abstract class SystemEmail extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'email' => ['varchar(100)', 'string', 100, false, true, ],
-		'mailbox' => ['varchar(50)', 'string', 50, false, true, ],
-		'name' => ['varchar(50)', 'string', 50, false, true, ],
-		'systemEmailId' => ['int(11)', 'int', 11, true, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'email' => ['varchar(100)', 'string', 100, true, ],
+		'mailbox' => ['varchar(50)', 'string', 50, true, ],
+		'name' => ['varchar(50)', 'string', 50, true, ],
+		'systemEmailId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

@@ -17,10 +17,10 @@ abstract class BlogItem extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'blogId' => ['int(11)', 'int', 11, true, false, ],
-		'ranking' => ['int(11)', 'int', 11, false, false, ],
-		'storyId' => ['int(11)', 'int', 11, true, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'blogId' => ['int(11)', 'int', 11, false, ],
+		'ranking' => ['int(11)', 'int', 11, false, ],
+		'storyId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

@@ -25,18 +25,18 @@ abstract class SlideShow extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'active' => ['int(11)', 'int', 11, false, false, 0, ],
-		'added' => ['timestamp', 'string', 20, false, false, null, ],
-		'alignment' => ['varchar(20)', 'string', 20, false, false, '', ],
-		'endDate' => ['date', 'string', 10, false, true, ],
-		'memberId' => ['int(10) unsigned', 'int', 10, false, true, ],
-		'name' => ['varchar(255)', 'string', 255, false, true, ],
-		'settings' => ['text', 'string', 65535, false, true, ],
-		'slideShowId' => ['int(11)', 'int', 11, true, false, ],
-		'startDate' => ['date', 'string', 10, false, true, ],
-		'updated' => ['timestamp', 'string', 20, false, true, ],
-		'width' => ['int(11)', 'int', 11, false, false, 0, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'active' => ['int(11)', 'int', 11, false, 0, ],
+		'added' => ['timestamp', 'string', 20, false, null, ],
+		'alignment' => ['varchar(20)', 'string', 20, false, '', ],
+		'endDate' => ['date', 'string', 10, true, ],
+		'memberId' => ['int(10) unsigned', 'int', 10, true, ],
+		'name' => ['varchar(255)', 'string', 255, true, ],
+		'settings' => ['text', 'string', 65535, true, ],
+		'slideShowId' => ['int(11)', 'int', 11, false, ],
+		'startDate' => ['date', 'string', 10, true, ],
+		'updated' => ['timestamp', 'string', 20, true, ],
+		'width' => ['int(11)', 'int', 11, false, 0, ],
 	];
 
 	/** @var array<string, true> */

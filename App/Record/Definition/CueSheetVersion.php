@@ -21,13 +21,13 @@ abstract class CueSheetVersion extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'cueSheetId' => ['int(11)', 'int', 11, false, true, ],
-		'cueSheetVersionId' => ['int(11)', 'int', 11, true, false, ],
-		'dateAdded' => ['date', 'string', 10, false, false, ],
-		'extension' => ['char(10)', 'string', 10, false, true, ],
-		'link' => ['varchar(200)', 'string', 200, false, true, ],
-		'memberId' => ['int(11)', 'int', 11, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'cueSheetId' => ['int(11)', 'int', 11, true, ],
+		'cueSheetVersionId' => ['int(11)', 'int', 11, false, ],
+		'dateAdded' => ['date', 'string', 10, false, ],
+		'extension' => ['char(10)', 'string', 10, true, ],
+		'link' => ['varchar(200)', 'string', 200, true, ],
+		'memberId' => ['int(11)', 'int', 11, true, ],
 	];
 
 	/** @var array<string, true> */

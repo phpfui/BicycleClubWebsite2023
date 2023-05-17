@@ -19,11 +19,11 @@ abstract class ForumAttachment extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'fileName' => ['varchar(255)', 'string', 255, false, true, ],
-		'forumAttachmentId' => ['int(11)', 'int', 11, true, false, ],
-		'forumId' => ['int(11)', 'int', 11, false, true, ],
-		'forumMessageId' => ['int(11)', 'int', 11, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'fileName' => ['varchar(255)', 'string', 255, true, ],
+		'forumAttachmentId' => ['int(11)', 'int', 11, false, ],
+		'forumId' => ['int(11)', 'int', 11, true, ],
+		'forumMessageId' => ['int(11)', 'int', 11, true, ],
 	];
 
 	/** @var array<string, true> */

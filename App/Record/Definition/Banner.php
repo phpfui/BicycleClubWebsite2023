@@ -23,17 +23,17 @@ abstract class Banner extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'bannerId' => ['int(11)', 'int', 11, true, false, ],
-		'css' => ['text', 'string', 65535, false, true, ],
-		'description' => ['varchar(200)', 'string', 200, false, true, ],
-		'endDate' => ['date', 'string', 10, false, true, ],
-		'fileNameExt' => ['char(10)', 'string', 10, false, true, ],
-		'html' => ['text', 'string', 65535, false, true, ],
-		'js' => ['text', 'string', 65535, false, true, ],
-		'pending' => ['int(11)', 'int', 11, false, false, 1, ],
-		'startDate' => ['date', 'string', 10, false, true, ],
-		'url' => ['varchar(200)', 'string', 200, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'bannerId' => ['int(11)', 'int', 11, false, ],
+		'css' => ['text', 'string', 65535, true, ],
+		'description' => ['varchar(200)', 'string', 200, true, ],
+		'endDate' => ['date', 'string', 10, true, ],
+		'fileNameExt' => ['char(10)', 'string', 10, true, ],
+		'html' => ['text', 'string', 65535, true, ],
+		'js' => ['text', 'string', 65535, true, ],
+		'pending' => ['int(11)', 'int', 11, false, 1, ],
+		'startDate' => ['date', 'string', 10, true, ],
+		'url' => ['varchar(200)', 'string', 200, true, ],
 	];
 
 	/** @var array<string, true> */

@@ -17,11 +17,11 @@ abstract class Incentive extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'description' => ['varchar(100)', 'string', 100, false, true, ],
-		'incentiveId' => ['int(11)', 'int', 11, true, false, ],
-		'notRide' => ['int(1)', 'int', 1, false, true, ],
-		'points' => ['int(2)', 'int', 2, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'description' => ['varchar(100)', 'string', 100, true, ],
+		'incentiveId' => ['int(11)', 'int', 11, false, ],
+		'notRide' => ['int(1)', 'int', 1, true, ],
+		'points' => ['int(2)', 'int', 2, true, ],
 	];
 
 	/** @var array<string, true> */

@@ -17,12 +17,12 @@ abstract class Ziptax extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'zip_code' => ['varchar(32)', 'string', 32, false, true, ],
-		'zip_id' => ['int(11)', 'int', 11, true, false, ],
-		'zip_tax_rate' => ['decimal(7,4)', 'float', 7, false, true, ],
-		'zipcounty' => ['varchar(32)', 'string', 32, false, true, ],
-		'zipstate' => ['varchar(32)', 'string', 32, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'zip_code' => ['varchar(32)', 'string', 32, true, ],
+		'zip_id' => ['int(11)', 'int', 11, false, ],
+		'zip_tax_rate' => ['decimal(7,4)', 'float', 7, true, ],
+		'zipcounty' => ['varchar(32)', 'string', 32, true, ],
+		'zipstate' => ['varchar(32)', 'string', 32, true, ],
 	];
 
 	/** @var array<string, true> */

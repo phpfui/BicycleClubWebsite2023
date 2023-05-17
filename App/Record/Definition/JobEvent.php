@@ -19,13 +19,13 @@ abstract class JobEvent extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'cutoffDate' => ['date', 'string', 10, false, true, ],
-		'date' => ['date', 'string', 10, false, false, ],
-		'email' => ['text', 'string', 65535, false, true, ],
-		'jobEventId' => ['int(11)', 'int', 11, true, false, ],
-		'name' => ['char(100)', 'string', 100, false, true, ],
-		'organizer' => ['int(11)', 'int', 11, false, true, 0, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'cutoffDate' => ['date', 'string', 10, true, ],
+		'date' => ['date', 'string', 10, false, ],
+		'email' => ['text', 'string', 65535, true, ],
+		'jobEventId' => ['int(11)', 'int', 11, false, ],
+		'name' => ['char(100)', 'string', 100, true, ],
+		'organizer' => ['int(11)', 'int', 11, true, 0, ],
 	];
 
 	/** @var array<string, true> */

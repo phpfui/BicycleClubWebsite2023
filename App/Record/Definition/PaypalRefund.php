@@ -23,16 +23,16 @@ abstract class PaypalRefund extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'amount' => ['decimal(7,2)', 'float', 7, false, true, ],
-		'createdDate' => ['date', 'string', 10, false, false, ],
-		'createdMemberNumber' => ['int(11)', 'int', 11, false, true, ],
-		'invoiceId' => ['int(10)', 'int', 10, false, true, ],
-		'paypalRefundId' => ['int(11)', 'int', 11, true, false, ],
-		'paypaltx' => ['varchar(20)', 'string', 20, false, true, ],
-		'refundOnDate' => ['date', 'string', 10, false, true, ],
-		'refundedDate' => ['date', 'string', 10, false, true, ],
-		'response' => ['text', 'string', 65535, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'amount' => ['decimal(7,2)', 'float', 7, true, ],
+		'createdDate' => ['date', 'string', 10, false, ],
+		'createdMemberNumber' => ['int(11)', 'int', 11, true, ],
+		'invoiceId' => ['int(10)', 'int', 10, true, ],
+		'paypalRefundId' => ['int(11)', 'int', 11, false, ],
+		'paypaltx' => ['varchar(20)', 'string', 20, true, ],
+		'refundOnDate' => ['date', 'string', 10, true, ],
+		'refundedDate' => ['date', 'string', 10, true, ],
+		'response' => ['text', 'string', 65535, true, ],
 	];
 
 	/** @var array<string, true> */

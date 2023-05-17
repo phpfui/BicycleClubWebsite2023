@@ -17,11 +17,11 @@ abstract class PhotoFolder extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'parentFolderId' => ['int(11)', 'int', 11, false, true, 0, ],
-		'permissionId' => ['int(11)', 'int', 11, false, true, ],
-		'photoFolder' => ['varchar(255)', 'string', 255, false, false, '', ],
-		'photoFolderId' => ['int(11)', 'int', 11, true, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'parentFolderId' => ['int(11)', 'int', 11, true, 0, ],
+		'permissionId' => ['int(11)', 'int', 11, true, ],
+		'photoFolder' => ['varchar(255)', 'string', 255, false, '', ],
+		'photoFolderId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

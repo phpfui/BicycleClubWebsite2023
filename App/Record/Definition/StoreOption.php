@@ -16,10 +16,10 @@ abstract class StoreOption extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'optionName' => ['char(100)', 'string', 100, false, false, '', ],
-		'optionValues' => ['varchar(255)', 'string', 255, false, false, '', ],
-		'storeOptionId' => ['int(11)', 'int', 11, true, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'optionName' => ['char(100)', 'string', 100, false, '', ],
+		'optionValues' => ['varchar(255)', 'string', 255, false, '', ],
+		'storeOptionId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

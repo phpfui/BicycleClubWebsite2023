@@ -18,11 +18,11 @@ abstract class GaPriceDate extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'date' => ['date', 'string', 10, false, false, ],
-		'gaEventId' => ['int(11)', 'int', 11, false, false, ],
-		'gaPriceDateId' => ['int(11)', 'int', 11, true, false, ],
-		'price' => ['decimal(5,2)', 'float', 5, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'date' => ['date', 'string', 10, false, ],
+		'gaEventId' => ['int(11)', 'int', 11, false, ],
+		'gaPriceDateId' => ['int(11)', 'int', 11, false, ],
+		'price' => ['decimal(5,2)', 'float', 5, true, ],
 	];
 
 	/** @var array<string, true> */

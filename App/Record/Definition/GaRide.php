@@ -21,14 +21,14 @@ abstract class GaRide extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'description' => ['varchar(100)', 'string', 100, false, true, ],
-		'distance' => ['int(3)', 'int', 3, false, true, ],
-		'endTime' => ['time', 'string', 0, false, true, ],
-		'extraPrice' => ['decimal(6,2)', 'float', 6, false, true, ],
-		'gaEventId' => ['int(11)', 'int', 11, false, false, ],
-		'gaRideId' => ['int(11)', 'int', 11, true, false, ],
-		'startTime' => ['time', 'string', 0, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'description' => ['varchar(100)', 'string', 100, true, ],
+		'distance' => ['int(3)', 'int', 3, true, ],
+		'endTime' => ['time', 'string', 0, true, ],
+		'extraPrice' => ['decimal(6,2)', 'float', 6, true, ],
+		'gaEventId' => ['int(11)', 'int', 11, false, ],
+		'gaRideId' => ['int(11)', 'int', 11, false, ],
+		'startTime' => ['time', 'string', 0, true, ],
 	];
 
 	/** @var array<string, true> */

@@ -18,12 +18,12 @@ abstract class BoardMember extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'description' => ['text', 'string', 65535, false, true, ],
-		'extension' => ['char(10)', 'string', 10, false, false, '', ],
-		'memberId' => ['int(11)', 'int', 11, true, false, ],
-		'rank' => ['int(2)', 'int', 2, false, true, ],
-		'title' => ['varchar(50)', 'string', 50, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'description' => ['text', 'string', 65535, true, ],
+		'extension' => ['char(10)', 'string', 10, false, '', ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'rank' => ['int(2)', 'int', 2, true, ],
+		'title' => ['varchar(50)', 'string', 50, true, ],
 	];
 
 	/** @var array<string, true> */

@@ -15,9 +15,9 @@ abstract class VideoType extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'name' => ['varchar(70)', 'string', 70, false, true, '', ],
-		'videoTypeId' => ['int(11)', 'int', 11, true, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'name' => ['varchar(70)', 'string', 70, true, '', ],
+		'videoTypeId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

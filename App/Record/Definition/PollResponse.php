@@ -8,9 +8,9 @@ namespace App\Record\Definition;
  * @property ?int $answer MySQL type int(2)
  * @property int $memberId MySQL type int(11)
  * @property \App\Record\Member $member related record
- * @property ?int $membershipId MySQL type int(11)
+ * @property int $membershipId MySQL type int(11)
  * @property \App\Record\Membership $membership related record
- * @property ?int $pollId MySQL type int(6)
+ * @property int $pollId MySQL type int(6)
  * @property \App\Record\Poll $poll related record
  */
 abstract class PollResponse extends \PHPFUI\ORM\Record
@@ -19,11 +19,11 @@ abstract class PollResponse extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'answer' => ['int(2)', 'int', 2, false, true, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'membershipId' => ['int(11)', 'int', 11, false, true, ],
-		'pollId' => ['int(6)', 'int', 6, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'answer' => ['int(2)', 'int', 2, true, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'membershipId' => ['int(11)', 'int', 11, false, ],
+		'pollId' => ['int(6)', 'int', 6, false, ],
 	];
 
 	/** @var array<string, true> */

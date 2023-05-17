@@ -31,24 +31,24 @@ abstract class RWGPS extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'RWGPSId' => ['int(11)', 'int', 11, false, false, ],
-		'club' => ['int(1)', 'int', 1, false, false, 0, ],
-		'csv' => ['text', 'string', 65535, false, true, ],
-		'description' => ['varchar(255)', 'string', 255, false, false, '', ],
-		'elevation' => ['int(10)', 'int', 10, false, true, ],
-		'feetPerMile' => ['decimal(5,1)', 'float', 5, false, false, 0, ],
-		'lastUpdated' => ['date', 'string', 10, false, true, ],
-		'latitude' => ['decimal(10,6)', 'float', 10, false, true, ],
-		'longitude' => ['decimal(10,6)', 'float', 10, false, true, ],
-		'mileage' => ['decimal(4,1)', 'float', 4, false, true, ],
-		'query' => ['varchar(255)', 'string', 255, false, true, ],
-		'startLocationId' => ['int(11)', 'int', 11, false, true, ],
-		'state' => ['char(2)', 'string', 2, false, false, '', ],
-		'status' => ['int(11)', 'int', 11, false, true, ],
-		'title' => ['varchar(255)', 'string', 255, false, false, '', ],
-		'town' => ['varchar(50)', 'string', 50, false, false, '', ],
-		'zip' => ['varchar(10)', 'string', 10, false, false, '', ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'RWGPSId' => ['int(11)', 'int', 11, false, ],
+		'club' => ['int(1)', 'int', 1, false, 0, ],
+		'csv' => ['text', 'string', 65535, true, ],
+		'description' => ['varchar(255)', 'string', 255, false, '', ],
+		'elevation' => ['int(10)', 'int', 10, true, ],
+		'feetPerMile' => ['decimal(5,1)', 'float', 5, false, 0, ],
+		'lastUpdated' => ['date', 'string', 10, true, ],
+		'latitude' => ['decimal(10,6)', 'float', 10, true, ],
+		'longitude' => ['decimal(10,6)', 'float', 10, true, ],
+		'mileage' => ['decimal(4,1)', 'float', 4, true, ],
+		'query' => ['varchar(255)', 'string', 255, true, ],
+		'startLocationId' => ['int(11)', 'int', 11, true, ],
+		'state' => ['char(2)', 'string', 2, false, '', ],
+		'status' => ['int(11)', 'int', 11, true, ],
+		'title' => ['varchar(255)', 'string', 255, false, '', ],
+		'town' => ['varchar(50)', 'string', 50, false, '', ],
+		'zip' => ['varchar(10)', 'string', 10, false, '', ],
 	];
 
 	/** @var array<string, true> */

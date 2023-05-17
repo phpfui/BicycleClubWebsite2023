@@ -69,6 +69,7 @@ class AutoComplete extends \PHPFUI\Input\Input
 		if (isset($_POST[$this->className]) && \PHPFUI\Session::checkCSRF() && $_POST['fieldName'] == $name)
 			{
 			$returnValue = \json_encode(\call_user_func($this->callback, $_POST), JSON_INVALID_UTF8_IGNORE);
+
 			if ($returnValue)
 				{
 				$this->page->setRawResponse($returnValue);

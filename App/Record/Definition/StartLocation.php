@@ -20,14 +20,14 @@ abstract class StartLocation extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'active' => ['tinyint(4)', 'int', 4, false, true, 1, ],
-		'directions' => ['text', 'string', 65535, false, true, ],
-		'latitude' => ['decimal(10,6)', 'float', 10, false, true, ],
-		'link' => ['varchar(255)', 'string', 255, false, true, ],
-		'longitude' => ['decimal(10,6)', 'float', 10, false, true, ],
-		'name' => ['varchar(100)', 'string', 100, false, true, ],
-		'startLocationId' => ['int(11)', 'int', 11, true, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'active' => ['tinyint(4)', 'int', 4, true, 1, ],
+		'directions' => ['text', 'string', 65535, true, ],
+		'latitude' => ['decimal(10,6)', 'float', 10, true, ],
+		'link' => ['varchar(255)', 'string', 255, true, ],
+		'longitude' => ['decimal(10,6)', 'float', 10, true, ],
+		'name' => ['varchar(100)', 'string', 100, true, ],
+		'startLocationId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

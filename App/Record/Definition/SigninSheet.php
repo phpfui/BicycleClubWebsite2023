@@ -20,13 +20,13 @@ abstract class SigninSheet extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'dateAdded' => ['date', 'string', 10, false, false, ],
-		'ext' => ['char(10)', 'string', 10, false, true, '', ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'pending' => ['int(1)', 'int', 1, false, true, 1, ],
-		'pointsAwarded' => ['int(11)', 'int', 11, false, false, 0, ],
-		'signinSheetId' => ['int(11)', 'int', 11, true, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'dateAdded' => ['date', 'string', 10, false, ],
+		'ext' => ['char(10)', 'string', 10, true, '', ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'pending' => ['int(1)', 'int', 1, true, 1, ],
+		'pointsAwarded' => ['int(11)', 'int', 11, false, 0, ],
+		'signinSheetId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

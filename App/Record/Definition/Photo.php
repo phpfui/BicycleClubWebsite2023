@@ -23,16 +23,16 @@ abstract class Photo extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'extension' => ['varchar(10)', 'string', 10, false, false, '', ],
-		'memberId' => ['int(11)', 'int', 11, false, true, ],
-		'photo' => ['varchar(255)', 'string', 255, false, false, '', ],
-		'photoFolderId' => ['int(11)', 'int', 11, false, false, ],
-		'photoId' => ['int(11)', 'int', 11, true, false, ],
-		'public' => ['int(11)', 'int', 11, false, false, 0, ],
-		'taken' => ['datetime', 'string', 20, false, true, ],
-		'thumbnail' => ['int(11)', 'int', 11, false, false, 0, ],
-		'uploaded' => ['timestamp', 'string', 20, false, false, null, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'extension' => ['varchar(10)', 'string', 10, false, '', ],
+		'memberId' => ['int(11)', 'int', 11, true, ],
+		'photo' => ['varchar(255)', 'string', 255, false, '', ],
+		'photoFolderId' => ['int(11)', 'int', 11, false, ],
+		'photoId' => ['int(11)', 'int', 11, false, ],
+		'public' => ['int(11)', 'int', 11, false, 0, ],
+		'taken' => ['datetime', 'string', 20, true, ],
+		'thumbnail' => ['int(11)', 'int', 11, false, 0, ],
+		'uploaded' => ['timestamp', 'string', 20, false, null, ],
 	];
 
 	/** @var array<string, true> */

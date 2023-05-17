@@ -28,22 +28,22 @@ abstract class StoreItem extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'active' => ['int(1)', 'int', 1, false, false, 0, ],
-		'clothing' => ['int(1)', 'int', 1, false, true, ],
-		'cut' => ['char(1)', 'string', 1, false, true, ],
-		'description' => ['text', 'string', 65535, false, true, ],
-		'noShipping' => ['int(1)', 'int', 1, false, true, ],
-		'parent' => ['int(5)', 'int', 5, false, true, ],
-		'payByPoints' => ['int(1)', 'int', 1, false, true, ],
-		'pickupZip' => ['char(5)', 'string', 5, false, true, ],
-		'pointsOnly' => ['int(1)', 'int', 1, false, false, 0, ],
-		'price' => ['decimal(5,2)', 'float', 5, false, true, ],
-		'shipping' => ['decimal(5,2)', 'float', 5, false, true, ],
-		'storeItemId' => ['int(11)', 'int', 11, true, false, ],
-		'taxable' => ['int(1)', 'int', 1, false, true, ],
-		'title' => ['char(100)', 'string', 100, false, true, ],
-		'type' => ['int(11)', 'int', 11, false, false, 0, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'active' => ['int(1)', 'int', 1, false, 0, ],
+		'clothing' => ['int(1)', 'int', 1, true, ],
+		'cut' => ['char(1)', 'string', 1, true, ],
+		'description' => ['text', 'string', 65535, true, ],
+		'noShipping' => ['int(1)', 'int', 1, true, ],
+		'parent' => ['int(5)', 'int', 5, true, ],
+		'payByPoints' => ['int(1)', 'int', 1, true, ],
+		'pickupZip' => ['char(5)', 'string', 5, true, ],
+		'pointsOnly' => ['int(1)', 'int', 1, false, 0, ],
+		'price' => ['decimal(5,2)', 'float', 5, true, ],
+		'shipping' => ['decimal(5,2)', 'float', 5, true, ],
+		'storeItemId' => ['int(11)', 'int', 11, false, ],
+		'taxable' => ['int(1)', 'int', 1, true, ],
+		'title' => ['char(100)', 'string', 100, true, ],
+		'type' => ['int(11)', 'int', 11, false, 0, ],
 	];
 
 	/** @var array<string, true> */

@@ -26,20 +26,20 @@ abstract class Membership extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'address' => ['varchar(100)', 'string', 100, false, true, ],
-		'affiliation' => ['varchar(200)', 'string', 200, false, true, ],
-		'allowedMembers' => ['int(1)', 'int', 1, false, false, 0, ],
-		'expires' => ['date', 'string', 10, false, true, ],
-		'joined' => ['date', 'string', 10, false, true, ],
-		'lastRenewed' => ['date', 'string', 10, false, true, ],
-		'membershipId' => ['int(11)', 'int', 11, true, false, ],
-		'pending' => ['int(1)', 'int', 1, false, false, 1, ],
-		'renews' => ['date', 'string', 10, false, true, ],
-		'state' => ['char(2)', 'string', 2, false, true, ],
-		'subscriptionId' => ['varchar(20)', 'string', 20, false, true, ],
-		'town' => ['varchar(50)', 'string', 50, false, true, ],
-		'zip' => ['varchar(10)', 'string', 10, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'address' => ['varchar(100)', 'string', 100, true, ],
+		'affiliation' => ['varchar(200)', 'string', 200, true, ],
+		'allowedMembers' => ['int(1)', 'int', 1, false, 0, ],
+		'expires' => ['date', 'string', 10, true, ],
+		'joined' => ['date', 'string', 10, true, ],
+		'lastRenewed' => ['date', 'string', 10, true, ],
+		'membershipId' => ['int(11)', 'int', 11, false, ],
+		'pending' => ['int(1)', 'int', 1, false, 1, ],
+		'renews' => ['date', 'string', 10, true, ],
+		'state' => ['char(2)', 'string', 2, true, ],
+		'subscriptionId' => ['varchar(20)', 'string', 20, true, ],
+		'town' => ['varchar(50)', 'string', 50, true, ],
+		'zip' => ['varchar(10)', 'string', 10, true, ],
 	];
 
 	/** @var array<string, true> */

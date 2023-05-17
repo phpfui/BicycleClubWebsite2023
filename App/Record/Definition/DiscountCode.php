@@ -21,16 +21,16 @@ abstract class DiscountCode extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'description' => ['varchar(60)', 'string', 60, false, true, ],
-		'discount' => ['float(10,2)', 'float', 10, false, true, ],
-		'discountCode' => ['char(15)', 'string', 15, false, true, ],
-		'discountCodeId' => ['int(11)', 'int', 11, true, false, ],
-		'expirationDate' => ['date', 'string', 10, false, false, ],
-		'maximumUses' => ['int(11)', 'int', 11, false, true, ],
-		'repeatCount' => ['int(11)', 'int', 11, false, true, ],
-		'startDate' => ['date', 'string', 10, false, false, ],
-		'validItemNumbers' => ['text', 'string', 65535, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'description' => ['varchar(60)', 'string', 60, true, ],
+		'discount' => ['float(10,2)', 'float', 10, true, ],
+		'discountCode' => ['char(15)', 'string', 15, true, ],
+		'discountCodeId' => ['int(11)', 'int', 11, false, ],
+		'expirationDate' => ['date', 'string', 10, false, ],
+		'maximumUses' => ['int(11)', 'int', 11, true, ],
+		'repeatCount' => ['int(11)', 'int', 11, true, ],
+		'startDate' => ['date', 'string', 10, false, ],
+		'validItemNumbers' => ['text', 'string', 65535, true, ],
 	];
 
 	/** @var array<string, true> */

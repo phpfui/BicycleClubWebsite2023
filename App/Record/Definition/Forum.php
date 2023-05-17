@@ -20,14 +20,14 @@ abstract class Forum extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'attachments' => ['int(1)', 'int', 1, false, true, 0, ],
-		'closed' => ['int(1)', 'int', 1, false, true, ],
-		'description' => ['text', 'string', 65535, false, true, ],
-		'email' => ['varchar(255)', 'string', 255, false, true, ],
-		'forumId' => ['int(11)', 'int', 11, true, false, ],
-		'name' => ['varchar(255)', 'string', 255, false, true, ],
-		'whiteList' => ['text', 'string', 65535, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'attachments' => ['int(1)', 'int', 1, true, 0, ],
+		'closed' => ['int(1)', 'int', 1, true, ],
+		'description' => ['text', 'string', 65535, true, ],
+		'email' => ['varchar(255)', 'string', 255, true, ],
+		'forumId' => ['int(11)', 'int', 11, false, ],
+		'name' => ['varchar(255)', 'string', 255, true, ],
+		'whiteList' => ['text', 'string', 65535, true, ],
 	];
 
 	/** @var array<string, true> */

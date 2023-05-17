@@ -18,11 +18,11 @@ abstract class AdditionalEmail extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'additionalEmailId' => ['int(11)', 'int', 11, true, false, ],
-		'email' => ['varchar(100)', 'string', 100, false, false, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'verified' => ['int(1)', 'int', 1, false, false, 0, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'additionalEmailId' => ['int(11)', 'int', 11, false, ],
+		'email' => ['varchar(100)', 'string', 100, false, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'verified' => ['int(1)', 'int', 1, false, 0, ],
 	];
 
 	/** @var array<string, true> */

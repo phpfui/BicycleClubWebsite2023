@@ -18,11 +18,11 @@ abstract class RWGPSComment extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'RWGPSId' => ['int(11)', 'int', 11, false, false, ],
-		'comments' => ['varchar(255)', 'string', 255, false, false, ],
-		'lastEdited' => ['timestamp', 'string', 20, false, false, null, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'RWGPSId' => ['int(11)', 'int', 11, false, ],
+		'comments' => ['varchar(255)', 'string', 255, false, ],
+		'lastEdited' => ['timestamp', 'string', 20, false, null, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

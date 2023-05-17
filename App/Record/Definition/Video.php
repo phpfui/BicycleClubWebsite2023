@@ -24,17 +24,17 @@ abstract class Video extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'description' => ['mediumtext', 'string', 16777215, false, true, ],
-		'editor' => ['int(6)', 'int', 6, false, true, ],
-		'fileName' => ['varchar(255)', 'string', 255, false, true, ],
-		'hits' => ['int(6)', 'int', 6, false, true, ],
-		'lastEdited' => ['timestamp', 'string', 20, false, false, null, ],
-		'public' => ['int(11)', 'int', 11, false, false, 0, ],
-		'title' => ['varchar(255)', 'string', 255, false, false, ],
-		'videoDate' => ['date', 'string', 10, false, false, ],
-		'videoId' => ['int(11)', 'int', 11, true, false, ],
-		'videoTypeId' => ['int(11)', 'int', 11, false, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'description' => ['mediumtext', 'string', 16777215, true, ],
+		'editor' => ['int(6)', 'int', 6, true, ],
+		'fileName' => ['varchar(255)', 'string', 255, true, ],
+		'hits' => ['int(6)', 'int', 6, true, ],
+		'lastEdited' => ['timestamp', 'string', 20, false, null, ],
+		'public' => ['int(11)', 'int', 11, false, 0, ],
+		'title' => ['varchar(255)', 'string', 255, false, ],
+		'videoDate' => ['date', 'string', 10, false, ],
+		'videoId' => ['int(11)', 'int', 11, false, ],
+		'videoTypeId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

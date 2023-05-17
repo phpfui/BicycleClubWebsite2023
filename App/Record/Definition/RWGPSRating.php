@@ -17,10 +17,10 @@ abstract class RWGPSRating extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'RWGPSId' => ['int(11)', 'int', 11, false, false, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'rating' => ['int(11)', 'int', 11, false, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'RWGPSId' => ['int(11)', 'int', 11, false, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'rating' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

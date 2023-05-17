@@ -19,12 +19,12 @@ abstract class JobShift extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'endTime' => ['time', 'string', 0, false, false, ],
-		'jobId' => ['int(6)', 'int', 6, false, true, ],
-		'jobShiftId' => ['int(11)', 'int', 11, true, false, ],
-		'needed' => ['int(2)', 'int', 2, false, true, ],
-		'startTime' => ['time', 'string', 0, false, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'endTime' => ['time', 'string', 0, false, ],
+		'jobId' => ['int(6)', 'int', 6, true, ],
+		'jobShiftId' => ['int(11)', 'int', 11, false, ],
+		'needed' => ['int(2)', 'int', 2, true, ],
+		'startTime' => ['time', 'string', 0, false, ],
 	];
 
 	/** @var array<string, true> */

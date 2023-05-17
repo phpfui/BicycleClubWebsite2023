@@ -26,19 +26,19 @@ abstract class BikeShop extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'address' => ['varchar(100)', 'string', 100, false, true, '', ],
-		'bikeShopAreaId' => ['int(11)', 'int', 11, false, true, 0, ],
-		'bikeShopId' => ['int(11)', 'int', 11, true, false, ],
-		'contact' => ['varchar(255)', 'string', 255, false, true, '', ],
-		'email' => ['varchar(100)', 'string', 100, false, true, '', ],
-		'name' => ['varchar(255)', 'string', 255, false, true, '', ],
-		'notes' => ['varchar(255)', 'string', 255, false, true, '', ],
-		'phone' => ['varchar(20)', 'string', 20, false, true, '', ],
-		'state' => ['char(2)', 'string', 2, false, true, '', ],
-		'town' => ['varchar(50)', 'string', 50, false, true, '', ],
-		'url' => ['varchar(255)', 'string', 255, false, true, '', ],
-		'zip' => ['varchar(10)', 'string', 10, false, true, '', ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'address' => ['varchar(100)', 'string', 100, true, '', ],
+		'bikeShopAreaId' => ['int(11)', 'int', 11, true, 0, ],
+		'bikeShopId' => ['int(11)', 'int', 11, false, ],
+		'contact' => ['varchar(255)', 'string', 255, true, '', ],
+		'email' => ['varchar(100)', 'string', 100, true, '', ],
+		'name' => ['varchar(255)', 'string', 255, true, '', ],
+		'notes' => ['varchar(255)', 'string', 255, true, '', ],
+		'phone' => ['varchar(20)', 'string', 20, true, '', ],
+		'state' => ['char(2)', 'string', 2, true, '', ],
+		'town' => ['varchar(50)', 'string', 50, true, '', ],
+		'url' => ['varchar(255)', 'string', 255, true, '', ],
+		'zip' => ['varchar(10)', 'string', 10, true, '', ],
 	];
 
 	/** @var array<string, true> */

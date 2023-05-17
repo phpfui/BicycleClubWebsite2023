@@ -15,9 +15,9 @@ abstract class Blog extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'blogId' => ['int(11)', 'int', 11, true, false, ],
-		'name' => ['varchar(100)', 'string', 100, false, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'blogId' => ['int(11)', 'int', 11, false, ],
+		'name' => ['varchar(100)', 'string', 100, false, ],
 	];
 
 	/** @var array<string, true> */

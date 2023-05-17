@@ -21,13 +21,13 @@ abstract class ReservationPerson extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'email' => ['varchar(50)', 'string', 50, false, true, ],
-		'eventId' => ['int(6)', 'int', 6, false, true, ],
-		'firstName' => ['varchar(50)', 'string', 50, false, true, ],
-		'lastName' => ['varchar(50)', 'string', 50, false, true, ],
-		'reservationId' => ['int(10)', 'int', 10, false, true, ],
-		'reservationPersonId' => ['int(11)', 'int', 11, true, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'email' => ['varchar(50)', 'string', 50, true, ],
+		'eventId' => ['int(6)', 'int', 6, true, ],
+		'firstName' => ['varchar(50)', 'string', 50, true, ],
+		'lastName' => ['varchar(50)', 'string', 50, true, ],
+		'reservationId' => ['int(10)', 'int', 10, true, ],
+		'reservationPersonId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

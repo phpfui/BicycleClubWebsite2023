@@ -16,9 +16,9 @@ abstract class SigninSheetRide extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'rideId' => ['int(11)', 'int', 11, true, false, ],
-		'signinSheetId' => ['int(11)', 'int', 11, true, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'rideId' => ['int(11)', 'int', 11, false, ],
+		'signinSheetId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

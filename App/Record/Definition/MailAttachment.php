@@ -18,11 +18,11 @@ abstract class MailAttachment extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'fileName' => ['mediumblob', 'string', 0, false, true, ],
-		'mailAttachmentId' => ['int(11)', 'int', 11, true, false, ],
-		'mailItemId' => ['int(11)', 'int', 11, false, false, ],
-		'prettyName' => ['varchar(255)', 'string', 255, false, true, '', ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'fileName' => ['mediumblob', 'string', 0, true, ],
+		'mailAttachmentId' => ['int(11)', 'int', 11, false, ],
+		'mailItemId' => ['int(11)', 'int', 11, false, ],
+		'prettyName' => ['varchar(255)', 'string', 255, true, '', ],
 	];
 
 	/** @var array<string, true> */

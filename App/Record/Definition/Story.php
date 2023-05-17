@@ -28,22 +28,22 @@ abstract class Story extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'author' => ['varchar(30)', 'string', 30, false, true, ],
-		'body' => ['text', 'string', 65535, false, true, ],
-		'date' => ['date', 'string', 10, false, true, ],
-		'editorId' => ['int(11)', 'int', 11, false, true, ],
-		'endDate' => ['date', 'string', 10, false, true, ],
-		'headline' => ['varchar(200)', 'string', 200, false, true, ],
-		'javaScript' => ['text', 'string', 65535, false, true, ],
-		'lastEdited' => ['date', 'string', 10, false, true, ],
-		'membersOnly' => ['int(11)', 'int', 11, false, true, 0, ],
-		'noTitle' => ['int(1)', 'int', 1, false, true, ],
-		'onTop' => ['int(1)', 'int', 1, false, true, ],
-		'showFull' => ['int(1)', 'int', 1, false, true, ],
-		'startDate' => ['date', 'string', 10, false, true, ],
-		'storyId' => ['int(11)', 'int', 11, true, false, ],
-		'subhead' => ['varchar(200)', 'string', 200, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'author' => ['varchar(30)', 'string', 30, true, ],
+		'body' => ['text', 'string', 65535, true, ],
+		'date' => ['date', 'string', 10, true, ],
+		'editorId' => ['int(11)', 'int', 11, true, ],
+		'endDate' => ['date', 'string', 10, true, ],
+		'headline' => ['varchar(200)', 'string', 200, true, ],
+		'javaScript' => ['text', 'string', 65535, true, ],
+		'lastEdited' => ['date', 'string', 10, true, ],
+		'membersOnly' => ['int(11)', 'int', 11, true, 0, ],
+		'noTitle' => ['int(1)', 'int', 1, true, ],
+		'onTop' => ['int(1)', 'int', 1, true, ],
+		'showFull' => ['int(1)', 'int', 1, true, ],
+		'startDate' => ['date', 'string', 10, true, ],
+		'storyId' => ['int(11)', 'int', 11, false, ],
+		'subhead' => ['varchar(200)', 'string', 200, true, ],
 	];
 
 	/** @var array<string, true> */

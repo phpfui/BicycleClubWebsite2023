@@ -18,12 +18,12 @@ abstract class HttpRequest extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'REQUEST_METHOD' => ['varchar(10)', 'string', 10, false, true, ],
-		'REQUEST_URI' => ['varchar(255)', 'string', 255, false, true, ],
-		'_get' => ['text', 'string', 65535, false, true, ],
-		'_post' => ['text', 'string', 65535, false, true, ],
-		'httpRequestId' => ['int(11)', 'int', 11, true, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'REQUEST_METHOD' => ['varchar(10)', 'string', 10, true, ],
+		'REQUEST_URI' => ['varchar(255)', 'string', 255, true, ],
+		'_get' => ['text', 'string', 65535, true, ],
+		'_post' => ['text', 'string', 65535, true, ],
+		'httpRequestId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

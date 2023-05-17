@@ -19,12 +19,12 @@ abstract class JournalItem extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'body' => ['mediumtext', 'string', 16777215, false, true, ],
-		'journalItemId' => ['int(11)', 'int', 11, true, false, ],
-		'memberId' => ['int(11)', 'int', 11, false, true, ],
-		'timeSent' => ['timestamp', 'string', 20, false, false, null, ],
-		'title' => ['char(100)', 'string', 100, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'body' => ['mediumtext', 'string', 16777215, true, ],
+		'journalItemId' => ['int(11)', 'int', 11, false, ],
+		'memberId' => ['int(11)', 'int', 11, true, ],
+		'timeSent' => ['timestamp', 'string', 20, false, null, ],
+		'title' => ['char(100)', 'string', 100, true, ],
 	];
 
 	/** @var array<string, true> */

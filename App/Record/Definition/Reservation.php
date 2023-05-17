@@ -33,23 +33,23 @@ abstract class Reservation extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'address' => ['varchar(100)', 'string', 100, false, true, ],
-		'comments' => ['varchar(50)', 'string', 50, false, true, ],
-		'eventId' => ['int(6)', 'int', 6, false, true, ],
-		'invoiceId' => ['int(11)', 'int', 11, false, true, 0, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'paymentId' => ['int(6)', 'int', 6, false, true, ],
-		'phone' => ['varchar(20)', 'string', 20, false, true, '', ],
-		'pricePaid' => ['decimal(6,2)', 'float', 6, false, false, 0, ],
-		'reservationFirstName' => ['varchar(50)', 'string', 50, false, true, ],
-		'reservationId' => ['int(11)', 'int', 11, true, false, ],
-		'reservationLastName' => ['varchar(50)', 'string', 50, false, true, ],
-		'reservationemail' => ['varchar(50)', 'string', 50, false, true, ],
-		'signedUpAt' => ['timestamp', 'string', 20, false, false, null, ],
-		'state' => ['char(2)', 'string', 2, false, true, ],
-		'town' => ['varchar(50)', 'string', 50, false, true, ],
-		'zip' => ['varchar(10)', 'string', 10, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'address' => ['varchar(100)', 'string', 100, true, ],
+		'comments' => ['varchar(50)', 'string', 50, true, ],
+		'eventId' => ['int(6)', 'int', 6, true, ],
+		'invoiceId' => ['int(11)', 'int', 11, true, 0, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'paymentId' => ['int(6)', 'int', 6, true, ],
+		'phone' => ['varchar(20)', 'string', 20, true, '', ],
+		'pricePaid' => ['decimal(6,2)', 'float', 6, false, 0, ],
+		'reservationFirstName' => ['varchar(50)', 'string', 50, true, ],
+		'reservationId' => ['int(11)', 'int', 11, false, ],
+		'reservationLastName' => ['varchar(50)', 'string', 50, true, ],
+		'reservationemail' => ['varchar(50)', 'string', 50, true, ],
+		'signedUpAt' => ['timestamp', 'string', 20, false, null, ],
+		'state' => ['char(2)', 'string', 2, true, ],
+		'town' => ['varchar(50)', 'string', 50, true, ],
+		'zip' => ['varchar(10)', 'string', 10, true, ],
 	];
 
 	/** @var array<string, true> */

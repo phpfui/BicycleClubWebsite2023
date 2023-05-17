@@ -7,14 +7,14 @@ namespace App\Record\Definition;
  *
  * @property ?string $description MySQL type text
  * @property ?string $detailLine MySQL type char(100)
- * @property ?int $invoiceId MySQL type int(6)
+ * @property int $invoiceId MySQL type int(6)
  * @property \App\Record\Invoice $invoice related record
  * @property ?float $price MySQL type decimal(5,2)
  * @property ?int $quantity MySQL type int(3)
  * @property ?float $shipping MySQL type decimal(5,2)
- * @property ?int $storeItemDetailId MySQL type int(6)
+ * @property int $storeItemDetailId MySQL type int(6)
  * @property \App\Record\StoreItemDetail $storeItemDetail related record
- * @property ?int $storeItemId MySQL type int(6)
+ * @property int $storeItemId MySQL type int(6)
  * @property \App\Record\StoreItem $storeItem related record
  * @property ?float $tax MySQL type decimal(7,2)
  * @property ?string $title MySQL type char(100)
@@ -26,18 +26,18 @@ abstract class InvoiceItem extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'description' => ['text', 'string', 65535, false, true, ],
-		'detailLine' => ['char(100)', 'string', 100, false, true, ],
-		'invoiceId' => ['int(6)', 'int', 6, false, true, ],
-		'price' => ['decimal(5,2)', 'float', 5, false, true, ],
-		'quantity' => ['int(3)', 'int', 3, false, true, ],
-		'shipping' => ['decimal(5,2)', 'float', 5, false, true, ],
-		'storeItemDetailId' => ['int(6)', 'int', 6, false, true, ],
-		'storeItemId' => ['int(6)', 'int', 6, false, true, ],
-		'tax' => ['decimal(7,2)', 'float', 7, false, true, ],
-		'title' => ['char(100)', 'string', 100, false, true, ],
-		'type' => ['int(5)', 'int', 5, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'description' => ['text', 'string', 65535, true, ],
+		'detailLine' => ['char(100)', 'string', 100, true, ],
+		'invoiceId' => ['int(6)', 'int', 6, false, ],
+		'price' => ['decimal(5,2)', 'float', 5, true, ],
+		'quantity' => ['int(3)', 'int', 3, true, ],
+		'shipping' => ['decimal(5,2)', 'float', 5, true, ],
+		'storeItemDetailId' => ['int(6)', 'int', 6, false, ],
+		'storeItemId' => ['int(6)', 'int', 6, false, ],
+		'tax' => ['decimal(7,2)', 'float', 7, true, ],
+		'title' => ['char(100)', 'string', 100, true, ],
+		'type' => ['int(5)', 'int', 5, true, ],
 	];
 
 	/** @var array<string, true> */

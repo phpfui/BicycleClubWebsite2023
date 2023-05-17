@@ -26,20 +26,20 @@ abstract class PublicPage extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'banner' => ['tinyint(1)', 'int', 1, false, true, 0, ],
-		'blog' => ['tinyint(1)', 'int', 1, false, true, 0, ],
-		'blogAfter' => ['varchar(100)', 'string', 100, false, true, ],
-		'footerMenu' => ['tinyint(4)', 'int', 4, false, false, 0, ],
-		'header' => ['tinyint(1)', 'int', 1, false, true, 0, ],
-		'hidden' => ['tinyint(1)', 'int', 1, false, true, ],
-		'homePageNotification' => ['tinyint(4)', 'int', 4, false, false, 0, ],
-		'method' => ['varchar(200)', 'string', 200, false, true, ],
-		'name' => ['varchar(200)', 'string', 200, false, true, ],
-		'publicMenu' => ['tinyint(4)', 'int', 4, false, false, 1, ],
-		'publicPageId' => ['int(11)', 'int', 11, true, false, ],
-		'sequence' => ['int(10)', 'int', 10, false, true, 0, ],
-		'url' => ['varchar(100)', 'string', 100, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'banner' => ['tinyint(1)', 'int', 1, true, 0, ],
+		'blog' => ['tinyint(1)', 'int', 1, true, 0, ],
+		'blogAfter' => ['varchar(100)', 'string', 100, true, ],
+		'footerMenu' => ['tinyint(4)', 'int', 4, false, 0, ],
+		'header' => ['tinyint(1)', 'int', 1, true, 0, ],
+		'hidden' => ['tinyint(1)', 'int', 1, true, ],
+		'homePageNotification' => ['tinyint(4)', 'int', 4, false, 0, ],
+		'method' => ['varchar(200)', 'string', 200, true, ],
+		'name' => ['varchar(200)', 'string', 200, true, ],
+		'publicMenu' => ['tinyint(4)', 'int', 4, false, 1, ],
+		'publicPageId' => ['int(11)', 'int', 11, false, ],
+		'sequence' => ['int(10)', 'int', 10, true, 0, ],
+		'url' => ['varchar(100)', 'string', 100, true, ],
 	];
 
 	/** @var array<string, true> */

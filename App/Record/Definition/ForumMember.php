@@ -17,10 +17,10 @@ abstract class ForumMember extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'emailType' => ['int(1)', 'int', 1, false, true, ],
-		'forumId' => ['int(11)', 'int', 11, true, false, 0, ],
-		'memberId' => ['int(11)', 'int', 11, true, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'emailType' => ['int(1)', 'int', 1, true, ],
+		'forumId' => ['int(11)', 'int', 11, false, 0, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

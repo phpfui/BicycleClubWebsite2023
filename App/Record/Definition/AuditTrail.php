@@ -20,13 +20,13 @@ abstract class AuditTrail extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'additional' => ['text', 'string', 65535, false, true, ],
-		'auditTrailId' => ['int(11)', 'int', 11, true, false, ],
-		'input' => ['text', 'string', 65535, false, true, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'statement' => ['text', 'string', 65535, false, true, ],
-		'time' => ['timestamp', 'string', 20, false, false, null, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'additional' => ['text', 'string', 65535, true, ],
+		'auditTrailId' => ['int(11)', 'int', 11, false, ],
+		'input' => ['text', 'string', 65535, true, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'statement' => ['text', 'string', 65535, true, ],
+		'time' => ['timestamp', 'string', 20, false, null, ],
 	];
 
 	/** @var array<string, true> */

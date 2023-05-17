@@ -17,11 +17,11 @@ abstract class Permission extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'menu' => ['varchar(20)', 'string', 20, false, true, ],
-		'name' => ['varchar(100)', 'string', 100, false, false, ],
-		'permissionId' => ['int(11)', 'int', 11, true, false, ],
-		'system' => ['tinyint(4)', 'int', 4, false, false, 0, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'menu' => ['varchar(20)', 'string', 20, true, ],
+		'name' => ['varchar(100)', 'string', 100, false, ],
+		'permissionId' => ['int(11)', 'int', 11, false, ],
+		'system' => ['tinyint(4)', 'int', 4, false, 0, ],
 	];
 
 	/** @var array<string, true> */

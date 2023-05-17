@@ -18,12 +18,12 @@ abstract class PointHistory extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'editorId' => ['int(11)', 'int', 11, false, true, ],
-		'leaderPoints' => ['int(8)', 'int', 8, false, true, 0, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'oldLeaderPoints' => ['int(8)', 'int', 8, false, true, 0, ],
-		'time' => ['timestamp', 'string', 20, false, false, null, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'editorId' => ['int(11)', 'int', 11, true, ],
+		'leaderPoints' => ['int(8)', 'int', 8, true, 0, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'oldLeaderPoints' => ['int(8)', 'int', 8, true, 0, ],
+		'time' => ['timestamp', 'string', 20, false, null, ],
 	];
 
 	/** @var array<string, true> */

@@ -24,16 +24,16 @@ abstract class ForumMessage extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'forumId' => ['int(11)', 'int', 11, false, true, ],
-		'forumMessageId' => ['int(11)', 'int', 11, true, false, ],
-		'htmlMessage' => ['text', 'string', 65535, false, true, ],
-		'lastEdited' => ['timestamp', 'string', 20, false, true, ],
-		'lastEditorId' => ['int(11)', 'int', 11, false, true, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'posted' => ['timestamp', 'string', 20, false, false, null, ],
-		'textMessage' => ['text', 'string', 65535, false, true, ],
-		'title' => ['varchar(255)', 'string', 255, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'forumId' => ['int(11)', 'int', 11, true, ],
+		'forumMessageId' => ['int(11)', 'int', 11, false, ],
+		'htmlMessage' => ['text', 'string', 65535, true, ],
+		'lastEdited' => ['timestamp', 'string', 20, true, ],
+		'lastEditorId' => ['int(11)', 'int', 11, true, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'posted' => ['timestamp', 'string', 20, false, null, ],
+		'textMessage' => ['text', 'string', 65535, true, ],
+		'title' => ['varchar(255)', 'string', 255, true, ],
 	];
 
 	/** @var array<string, true> */

@@ -19,12 +19,12 @@ abstract class MemberOfMonth extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'bio' => ['mediumtext', 'string', 16777215, false, true, ],
-		'fileNameExt' => ['varchar(10)', 'string', 10, false, true, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'memberOfMonthId' => ['int(11)', 'int', 11, true, false, ],
-		'month' => ['date', 'string', 10, false, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'bio' => ['mediumtext', 'string', 16777215, true, ],
+		'fileNameExt' => ['varchar(10)', 'string', 10, true, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'memberOfMonthId' => ['int(11)', 'int', 11, false, ],
+		'month' => ['date', 'string', 10, false, ],
 	];
 
 	/** @var array<string, true> */

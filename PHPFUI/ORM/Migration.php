@@ -227,6 +227,18 @@ abstract class Migration
 		}
 
 	/**
+	 * Adds a primary key to the table.
+	 */
+	protected function addPrimaryKey(string $table, array $fields) : bool
+		{
+		$this->dropPrimaryKey($table);
+		$keys = implode('`, `', $fields);
+		$this->alters[$table] = ["ADD PRIMARY KEY (`{$keys}`)"];
+
+		return true;
+		}
+
+	/**
 	 * Adds a primary key to the table.  If $field is not specified, it will the primary key will be the table name with Id appended.  If $newFieldName is not specified, it will default to $field. This method works on an existing field only.
 	 */
 	protected function addPrimaryKeyAutoIncrement(string $table, string $field = '', string $newFieldName = '') : bool
@@ -267,6 +279,8 @@ abstract class Migration
 
 	/**
 	 * Duplicate rows with the same key values will be deleted
+	 *
+	 * @param array<string> $keys
 	 */
 	protected function deleteDuplicateRows(string $table, array $keys) : bool
 		{
@@ -282,8 +296,16 @@ abstract class Migration
 
 			foreach ($keys as $key)
 				{
-				$input[] = $row[$key];
-				$where .= "{$comma}`{$key}`=?";
+				// @phpstan-ignore-next-line
+				if (is_null($row[$key]))
+					{
+					$where .= "{$comma}`{$key}` is null";
+					}
+				else
+					{
+					$input[] = $row[$key];
+					$where .= "{$comma}`{$key}`=?";
+					}
 				$comma = ' and ';
 				}
 			$sql = "delete from `{$table}` where {$where} limit {$count}";

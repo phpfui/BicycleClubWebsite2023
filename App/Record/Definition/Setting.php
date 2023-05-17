@@ -14,9 +14,9 @@ abstract class Setting extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'name' => ['varchar(30)', 'string', 30, true, false, '', ],
-		'value' => ['text', 'string', 65535, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'name' => ['varchar(30)', 'string', 30, false, '', ],
+		'value' => ['text', 'string', 65535, true, ],
 	];
 
 	/** @var array<string, true> */

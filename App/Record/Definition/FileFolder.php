@@ -17,11 +17,11 @@ abstract class FileFolder extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'fileFolder' => ['varchar(255)', 'string', 255, false, false, '', ],
-		'fileFolderId' => ['int(11)', 'int', 11, true, false, ],
-		'parentFolderId' => ['int(11)', 'int', 11, false, true, 0, ],
-		'permissionId' => ['int(11)', 'int', 11, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'fileFolder' => ['varchar(255)', 'string', 255, false, '', ],
+		'fileFolderId' => ['int(11)', 'int', 11, false, ],
+		'parentFolderId' => ['int(11)', 'int', 11, true, 0, ],
+		'permissionId' => ['int(11)', 'int', 11, true, ],
 	];
 
 	/** @var array<string, true> */

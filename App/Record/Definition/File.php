@@ -22,15 +22,15 @@ abstract class File extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'extension' => ['varchar(10)', 'string', 10, false, false, '', ],
-		'file' => ['varchar(255)', 'string', 255, false, false, '', ],
-		'fileFolderId' => ['int(11)', 'int', 11, false, false, ],
-		'fileId' => ['int(11)', 'int', 11, true, false, ],
-		'fileName' => ['varchar(255)', 'string', 255, false, false, '', ],
-		'memberId' => ['int(11)', 'int', 11, false, true, ],
-		'public' => ['int(11)', 'int', 11, false, false, 0, ],
-		'uploaded' => ['timestamp', 'string', 20, false, true, null, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'extension' => ['varchar(10)', 'string', 10, false, '', ],
+		'file' => ['varchar(255)', 'string', 255, false, '', ],
+		'fileFolderId' => ['int(11)', 'int', 11, false, ],
+		'fileId' => ['int(11)', 'int', 11, false, ],
+		'fileName' => ['varchar(255)', 'string', 255, false, '', ],
+		'memberId' => ['int(11)', 'int', 11, true, ],
+		'public' => ['int(11)', 'int', 11, false, 0, ],
+		'uploaded' => ['timestamp', 'string', 20, true, null, ],
 	];
 
 	/** @var array<string, true> */

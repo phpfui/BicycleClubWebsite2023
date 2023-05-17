@@ -16,10 +16,10 @@ abstract class UserPermission extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'memberId' => ['int(11)', 'int', 11, true, false, ],
-		'permissionGroup' => ['int(11)', 'int', 11, true, false, ],
-		'revoked' => ['int(11)', 'int', 11, false, false, 0, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'permissionGroup' => ['int(11)', 'int', 11, false, ],
+		'revoked' => ['int(11)', 'int', 11, false, 0, ],
 	];
 
 	/** @var array<string, true> */

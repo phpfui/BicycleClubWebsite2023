@@ -12,7 +12,7 @@ namespace App\Record\Definition;
  * @property int $memberId MySQL type int(11)
  * @property \App\Record\Member $member related record
  * @property ?int $rideComments MySQL type int(1)
- * @property ?int $rideId MySQL type int(11)
+ * @property int $rideId MySQL type int(11)
  * @property \App\Record\Ride $ride related record
  * @property string $signedUpTime MySQL type timestamp
  * @property ?int $status MySQL type int(2)
@@ -23,16 +23,16 @@ abstract class RideSignup extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'attended' => ['int(1)', 'int', 1, false, true, 0, ],
-		'comments' => ['varchar(200)', 'string', 200, false, true, ],
-		'firstRide' => ['int(1)', 'int', 1, false, true, ],
-		'firstRideInCategory' => ['int(1)', 'int', 1, false, true, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'rideComments' => ['int(1)', 'int', 1, false, true, 1, ],
-		'rideId' => ['int(11)', 'int', 11, false, true, ],
-		'signedUpTime' => ['timestamp', 'string', 20, false, false, null, ],
-		'status' => ['int(2)', 'int', 2, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'attended' => ['int(1)', 'int', 1, true, 0, ],
+		'comments' => ['varchar(200)', 'string', 200, true, ],
+		'firstRide' => ['int(1)', 'int', 1, true, ],
+		'firstRideInCategory' => ['int(1)', 'int', 1, true, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'rideComments' => ['int(1)', 'int', 1, true, 1, ],
+		'rideId' => ['int(11)', 'int', 11, false, ],
+		'signedUpTime' => ['timestamp', 'string', 20, false, null, ],
+		'status' => ['int(2)', 'int', 2, true, ],
 	];
 
 	/** @var array<string, true> */

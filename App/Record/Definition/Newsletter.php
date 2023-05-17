@@ -18,12 +18,12 @@ abstract class Newsletter extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'date' => ['date', 'string', 10, false, false, ],
-		'dateAdded' => ['date', 'string', 10, false, false, ],
-		'html' => ['mediumtext', 'string', 16777215, false, true, ],
-		'newsletterId' => ['int(11)', 'int', 11, true, false, ],
-		'size' => ['int(10)', 'int', 10, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'date' => ['date', 'string', 10, false, ],
+		'dateAdded' => ['date', 'string', 10, false, ],
+		'html' => ['mediumtext', 'string', 16777215, true, ],
+		'newsletterId' => ['int(11)', 'int', 11, false, ],
+		'size' => ['int(10)', 'int', 10, true, ],
 	];
 
 	/** @var array<string, true> */

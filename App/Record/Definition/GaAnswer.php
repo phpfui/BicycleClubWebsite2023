@@ -17,10 +17,10 @@ abstract class GaAnswer extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'answer' => ['varchar(255)', 'string', 255, false, true, ],
-		'gaAnswerId' => ['int(11)', 'int', 11, true, false, ],
-		'gaEventId' => ['int(11)', 'int', 11, false, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'answer' => ['varchar(255)', 'string', 255, true, ],
+		'gaAnswerId' => ['int(11)', 'int', 11, false, ],
+		'gaEventId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

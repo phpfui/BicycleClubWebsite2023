@@ -27,18 +27,18 @@ abstract class Slide extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'added' => ['timestamp', 'string', 20, false, false, null, ],
-		'caption' => ['varchar(255)', 'string', 255, false, true, ],
-		'extension' => ['varchar(10)', 'string', 10, false, true, ],
-		'memberId' => ['int(10) unsigned', 'int', 10, false, true, ],
-		'photoId' => ['int(11)', 'int', 11, false, true, ],
-		'sequence' => ['int(11)', 'int', 11, false, false, 0, ],
-		'showCaption' => ['int(11)', 'int', 11, false, false, 1, ],
-		'slideId' => ['int(11)', 'int', 11, true, false, ],
-		'slideShowId' => ['int(11)', 'int', 11, false, false, ],
-		'updated' => ['timestamp', 'string', 20, false, true, ],
-		'url' => ['varchar(255)', 'string', 255, false, true, '', ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'added' => ['timestamp', 'string', 20, false, null, ],
+		'caption' => ['varchar(255)', 'string', 255, true, ],
+		'extension' => ['varchar(10)', 'string', 10, true, ],
+		'memberId' => ['int(10) unsigned', 'int', 10, true, ],
+		'photoId' => ['int(11)', 'int', 11, true, ],
+		'sequence' => ['int(11)', 'int', 11, false, 0, ],
+		'showCaption' => ['int(11)', 'int', 11, false, 1, ],
+		'slideId' => ['int(11)', 'int', 11, false, ],
+		'slideShowId' => ['int(11)', 'int', 11, false, ],
+		'updated' => ['timestamp', 'string', 20, true, ],
+		'url' => ['varchar(255)', 'string', 255, true, '', ],
 	];
 
 	/** @var array<string, true> */

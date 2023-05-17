@@ -24,16 +24,16 @@ abstract class Payment extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'amount' => ['decimal(6,2)', 'float', 6, false, true, ],
-		'dateReceived' => ['date', 'string', 10, false, false, ],
-		'enteringMemberNumber' => ['int(6)', 'int', 6, false, true, ],
-		'invoiceId' => ['int(11)', 'int', 11, false, true, 0, ],
-		'membershipId' => ['int(11)', 'int', 11, false, true, ],
-		'paymentDated' => ['date', 'string', 10, false, true, ],
-		'paymentId' => ['int(11)', 'int', 11, true, false, ],
-		'paymentNumber' => ['varchar(50)', 'string', 50, false, true, ],
-		'paymentType' => ['int(1)', 'int', 1, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'amount' => ['decimal(6,2)', 'float', 6, true, ],
+		'dateReceived' => ['date', 'string', 10, false, ],
+		'enteringMemberNumber' => ['int(6)', 'int', 6, true, ],
+		'invoiceId' => ['int(11)', 'int', 11, true, 0, ],
+		'membershipId' => ['int(11)', 'int', 11, true, ],
+		'paymentDated' => ['date', 'string', 10, true, ],
+		'paymentId' => ['int(11)', 'int', 11, false, ],
+		'paymentNumber' => ['varchar(50)', 'string', 50, true, ],
+		'paymentType' => ['int(1)', 'int', 1, true, ],
 	];
 
 	/** @var array<string, true> */

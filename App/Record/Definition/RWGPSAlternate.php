@@ -18,10 +18,10 @@ abstract class RWGPSAlternate extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'RWGPSAlternateId' => ['int(11)', 'int', 11, false, false, ],
-		'RWGPSId' => ['int(11)', 'int', 11, false, false, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'RWGPSAlternateId' => ['int(11)', 'int', 11, false, ],
+		'RWGPSId' => ['int(11)', 'int', 11, false, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

@@ -21,14 +21,14 @@ abstract class Job extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'date' => ['date', 'string', 10, false, false, ],
-		'description' => ['text', 'string', 65535, false, true, ],
-		'jobEventId' => ['int(5)', 'int', 5, false, true, ],
-		'jobId' => ['int(11)', 'int', 11, true, false, ],
-		'location' => ['char(100)', 'string', 100, false, true, ],
-		'organizer' => ['int(6)', 'int', 6, false, true, ],
-		'title' => ['char(100)', 'string', 100, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'date' => ['date', 'string', 10, false, ],
+		'description' => ['text', 'string', 65535, true, ],
+		'jobEventId' => ['int(5)', 'int', 5, true, ],
+		'jobId' => ['int(11)', 'int', 11, false, ],
+		'location' => ['char(100)', 'string', 100, true, ],
+		'organizer' => ['int(6)', 'int', 6, true, ],
+		'title' => ['char(100)', 'string', 100, true, ],
 	];
 
 	/** @var array<string, true> */

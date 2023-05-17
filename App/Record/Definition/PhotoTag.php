@@ -21,14 +21,14 @@ abstract class PhotoTag extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'frontToBack' => ['int(11)', 'int', 11, false, false, ],
-		'leftToRight' => ['int(11)', 'int', 11, false, false, ],
-		'memberId' => ['int(11)', 'int', 11, false, true, ],
-		'photoId' => ['int(11)', 'int', 11, false, false, ],
-		'photoTag' => ['varchar(100)', 'string', 100, false, false, '', ],
-		'photoTagId' => ['int(11)', 'int', 11, true, false, ],
-		'taggerId' => ['int(11)', 'int', 11, false, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'frontToBack' => ['int(11)', 'int', 11, false, ],
+		'leftToRight' => ['int(11)', 'int', 11, false, ],
+		'memberId' => ['int(11)', 'int', 11, true, ],
+		'photoId' => ['int(11)', 'int', 11, false, ],
+		'photoTag' => ['varchar(100)', 'string', 100, false, '', ],
+		'photoTagId' => ['int(11)', 'int', 11, false, ],
+		'taggerId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

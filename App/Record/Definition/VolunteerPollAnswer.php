@@ -17,10 +17,10 @@ abstract class VolunteerPollAnswer extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'answer' => ['varchar(100)', 'string', 100, false, true, ],
-		'volunteerPollAnswerId' => ['int(11)', 'int', 11, true, false, ],
-		'volunteerPollId' => ['int(6)', 'int', 6, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'answer' => ['varchar(100)', 'string', 100, true, ],
+		'volunteerPollAnswerId' => ['int(11)', 'int', 11, false, ],
+		'volunteerPollId' => ['int(6)', 'int', 6, true, ],
 	];
 
 	/** @var array<string, true> */

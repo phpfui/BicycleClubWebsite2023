@@ -17,10 +17,10 @@ abstract class GaIncentive extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'description' => ['char(250)', 'string', 250, false, true, ],
-		'gaEventId' => ['int(11)', 'int', 11, false, false, ],
-		'gaIncentiveId' => ['int(11)', 'int', 11, true, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'description' => ['char(250)', 'string', 250, true, ],
+		'gaEventId' => ['int(11)', 'int', 11, false, ],
+		'gaIncentiveId' => ['int(11)', 'int', 11, false, ],
 	];
 
 	/** @var array<string, true> */

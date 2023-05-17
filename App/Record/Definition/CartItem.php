@@ -26,16 +26,16 @@ abstract class CartItem extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'cartItemId' => ['int(11)', 'int', 11, true, false, ],
-		'dateAdded' => ['date', 'string', 10, false, false, ],
-		'discountCodeId' => ['int(11)', 'int', 11, false, true, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'optionsSelected' => ['varchar(255)', 'string', 255, false, true, ],
-		'quantity' => ['int(3)', 'int', 3, false, true, ],
-		'storeItemDetailId' => ['int(6)', 'int', 6, false, true, ],
-		'storeItemId' => ['int(6)', 'int', 6, false, true, ],
-		'type' => ['int(5)', 'int', 5, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'cartItemId' => ['int(11)', 'int', 11, false, ],
+		'dateAdded' => ['date', 'string', 10, false, ],
+		'discountCodeId' => ['int(11)', 'int', 11, true, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'optionsSelected' => ['varchar(255)', 'string', 255, true, ],
+		'quantity' => ['int(3)', 'int', 3, true, ],
+		'storeItemDetailId' => ['int(6)', 'int', 6, true, ],
+		'storeItemId' => ['int(6)', 'int', 6, true, ],
+		'type' => ['int(5)', 'int', 5, true, ],
 	];
 
 	/** @var array<string, true> */

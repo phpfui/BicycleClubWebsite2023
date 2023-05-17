@@ -19,12 +19,12 @@ abstract class PhotoComment extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'photoComment' => ['varchar(255)', 'string', 255, false, false, '', ],
-		'photoCommentId' => ['int(11)', 'int', 11, true, false, ],
-		'photoId' => ['int(11)', 'int', 11, false, false, ],
-		'timestamp' => ['timestamp', 'string', 20, false, false, null, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'photoComment' => ['varchar(255)', 'string', 255, false, '', ],
+		'photoCommentId' => ['int(11)', 'int', 11, false, ],
+		'photoId' => ['int(11)', 'int', 11, false, ],
+		'timestamp' => ['timestamp', 'string', 20, false, null, ],
 	];
 
 	/** @var array<string, true> */

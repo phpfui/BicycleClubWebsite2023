@@ -2,6 +2,7 @@
 
 namespace PHPStan\PhpDocParser\Parser;
 
+use LogicException;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use function array_pop;
 use function assert;
@@ -43,6 +44,27 @@ class TokenIterator
 	public function getTokens(): array
 	{
 		return $this->tokens;
+	}
+
+
+	public function getContentBetween(int $startPos, int $endPos): string
+	{
+		if ($startPos < 0 || $endPos > count($this->tokens)) {
+			throw new LogicException();
+		}
+
+		$content = '';
+		for ($i = $startPos; $i < $endPos; $i++) {
+			$content .= $this->tokens[$i][Lexer::VALUE_OFFSET];
+		}
+
+		return $content;
+	}
+
+
+	public function getTokenCount(): int
+	{
+		return count($this->tokens);
 	}
 
 
@@ -244,6 +266,66 @@ class TokenIterator
 			$expectedTokenValue,
 			$this->currentTokenLine()
 		);
+	}
+
+	/**
+	 * Check whether the position is directly preceded by a certain token type.
+	 *
+	 * During this check TOKEN_HORIZONTAL_WS and TOKEN_PHPDOC_EOL are skipped
+	 */
+	public function hasTokenImmediatelyBefore(int $pos, int $expectedTokenType): bool
+	{
+		$tokens = $this->tokens;
+		$pos--;
+		for (; $pos >= 0; $pos--) {
+			$token = $tokens[$pos];
+			$type = $token[Lexer::TYPE_OFFSET];
+			if ($type === $expectedTokenType) {
+				return true;
+			}
+			if (!in_array($type, [
+				Lexer::TOKEN_HORIZONTAL_WS,
+				Lexer::TOKEN_PHPDOC_EOL,
+			], true)) {
+				break;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Check whether the position is directly followed by a certain token type.
+	 *
+	 * During this check TOKEN_HORIZONTAL_WS and TOKEN_PHPDOC_EOL are skipped
+	 */
+	public function hasTokenImmediatelyAfter(int $pos, int $expectedTokenType): bool
+	{
+		$tokens = $this->tokens;
+		$pos++;
+		for ($c = count($tokens); $pos < $c; $pos++) {
+			$token = $tokens[$pos];
+			$type = $token[Lexer::TYPE_OFFSET];
+			if ($type === $expectedTokenType) {
+				return true;
+			}
+			if (!in_array($type, [
+				Lexer::TOKEN_HORIZONTAL_WS,
+				Lexer::TOKEN_PHPDOC_EOL,
+			], true)) {
+				break;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Whether the given position is immediately surrounded by parenthesis.
+	 */
+	public function hasParentheses(int $startPos, int $endPos): bool
+	{
+		return $this->hasTokenImmediatelyBefore($startPos, Lexer::TOKEN_OPEN_PARENTHESES)
+			&& $this->hasTokenImmediatelyAfter($endPos, Lexer::TOKEN_CLOSE_PARENTHESES);
 	}
 
 }

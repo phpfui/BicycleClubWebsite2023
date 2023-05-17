@@ -31,23 +31,23 @@ abstract class Invoice extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'discount' => ['float(10,2)', 'float', 10, false, true, ],
-		'discountCodeId' => ['int(11)', 'int', 11, false, true, ],
-		'errors' => ['text', 'string', 65535, false, true, ],
-		'fullfillmentDate' => ['date', 'string', 10, false, true, ],
-		'instructions' => ['char(125)', 'string', 125, false, true, ],
-		'invoiceId' => ['int(11)', 'int', 11, true, false, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'orderDate' => ['date', 'string', 10, false, false, ],
-		'paidByCheck' => ['int(1)', 'int', 1, false, true, 0, ],
-		'paymentDate' => ['date', 'string', 10, false, true, ],
-		'paypalPaid' => ['decimal(7,2)', 'float', 7, false, true, ],
-		'paypaltx' => ['varchar(50)', 'string', 50, false, true, ],
-		'pointsUsed' => ['int(3)', 'int', 3, false, true, ],
-		'totalPrice' => ['decimal(7,2)', 'float', 7, false, true, ],
-		'totalShipping' => ['decimal(7,2)', 'float', 7, false, true, ],
-		'totalTax' => ['decimal(7,2)', 'float', 7, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'discount' => ['float(10,2)', 'float', 10, true, ],
+		'discountCodeId' => ['int(11)', 'int', 11, true, ],
+		'errors' => ['text', 'string', 65535, true, ],
+		'fullfillmentDate' => ['date', 'string', 10, true, ],
+		'instructions' => ['char(125)', 'string', 125, true, ],
+		'invoiceId' => ['int(11)', 'int', 11, false, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'orderDate' => ['date', 'string', 10, false, ],
+		'paidByCheck' => ['int(1)', 'int', 1, true, 0, ],
+		'paymentDate' => ['date', 'string', 10, true, ],
+		'paypalPaid' => ['decimal(7,2)', 'float', 7, true, ],
+		'paypaltx' => ['varchar(50)', 'string', 50, true, ],
+		'pointsUsed' => ['int(3)', 'int', 3, true, ],
+		'totalPrice' => ['decimal(7,2)', 'float', 7, true, ],
+		'totalShipping' => ['decimal(7,2)', 'float', 7, true, ],
+		'totalTax' => ['decimal(7,2)', 'float', 7, true, ],
 	];
 
 	/** @var array<string, true> */

@@ -20,13 +20,13 @@ abstract class OauthToken extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'client' => ['varchar(255)', 'string', 255, false, true, ],
-		'expires' => ['timestamp', 'string', 20, false, false, null, ],
-		'oauthTokenId' => ['int(11)', 'int', 11, true, false, ],
-		'oauthUserId' => ['int(11)', 'int', 11, false, true, ],
-		'scopes' => ['text', 'string', 65535, false, true, ],
-		'token' => ['varchar(255)', 'string', 255, false, true, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'client' => ['varchar(255)', 'string', 255, true, ],
+		'expires' => ['timestamp', 'string', 20, false, null, ],
+		'oauthTokenId' => ['int(11)', 'int', 11, false, ],
+		'oauthUserId' => ['int(11)', 'int', 11, true, ],
+		'scopes' => ['text', 'string', 65535, true, ],
+		'token' => ['varchar(255)', 'string', 255, true, ],
 	];
 
 	/** @var array<string, true> */

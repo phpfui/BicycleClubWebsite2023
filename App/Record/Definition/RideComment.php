@@ -22,14 +22,14 @@ abstract class RideComment extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'comment' => ['varchar(255)', 'string', 255, false, true, ],
-		'latitude' => ['decimal(18,15)', 'float', 18, false, true, ],
-		'longitude' => ['decimal(18,15)', 'float', 18, false, true, ],
-		'memberId' => ['int(11)', 'int', 11, false, false, ],
-		'rideCommentId' => ['int(11)', 'int', 11, true, false, ],
-		'rideId' => ['int(11)', 'int', 11, false, true, 0, ],
-		'time' => ['timestamp', 'string', 20, false, false, null, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'comment' => ['varchar(255)', 'string', 255, true, ],
+		'latitude' => ['decimal(18,15)', 'float', 18, true, ],
+		'longitude' => ['decimal(18,15)', 'float', 18, true, ],
+		'memberId' => ['int(11)', 'int', 11, false, ],
+		'rideCommentId' => ['int(11)', 'int', 11, false, ],
+		'rideId' => ['int(11)', 'int', 11, true, 0, ],
+		'time' => ['timestamp', 'string', 20, false, null, ],
 	];
 
 	/** @var array<string, true> */

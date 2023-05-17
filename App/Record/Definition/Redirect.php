@@ -16,10 +16,10 @@ abstract class Redirect extends \PHPFUI\ORM\Record
 
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, KEY, ALLOWS_NULL, DEFAULT
-		'originalUrl' => ['varchar(255)', 'string', 255, false, false, ],
-		'redirectId' => ['int(11)', 'int', 11, true, false, ],
-		'redirectUrl' => ['varchar(255)', 'string', 255, false, false, ],
+		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
+		'originalUrl' => ['varchar(255)', 'string', 255, false, ],
+		'redirectId' => ['int(11)', 'int', 11, false, ],
+		'redirectUrl' => ['varchar(255)', 'string', 255, false, ],
 	];
 
 	/** @var array<string, true> */

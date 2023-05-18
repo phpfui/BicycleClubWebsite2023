@@ -8,21 +8,21 @@ class RWGPS extends \PHPFUI\ORM\Table
 
 	public function closest(float $lat, float $long, int $limit = 1, float $distance = 0.5) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'SELECT *,(3959*acos(cos(radians(:lat))*cos(radians(latitude))*cos(radians(longitude)-radians(:lon))+sin(radians(:lat))*sin(radians(latitude)))) AS distance FROM rwgps HAVING distance < :distance ORDER BY distance LIMIT :limit;';
+		$sql = 'SELECT *,(3959*acos(cos(radians(:lat))*cos(radians(latitude))*cos(radians(longitude)-radians(:lon))+sin(radians(:lat))*sin(radians(latitude)))) AS distance FROM RWGPS HAVING distance < :distance ORDER BY distance LIMIT :limit;';
 
 		return \PHPFUI\ORM::getArrayCursor($sql, ['lat' => $lat, 'long' => $long, 'distance' => $distance, 'limit' => $limit]);
 		}
 
 	public function getMissing() : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from rwgps where status >= 400 and status < 500';
+		$sql = 'select * from RWGPS where status >= 400 and status < 500';
 
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql);
 		}
 
 	public function getOldest(int $limit = 10) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from rwgps where (lastUpdated < ? or lastUpdated is null) or (csv = "" and RWGPSId>0) order by lastUpdated limit ' . $limit;
+		$sql = 'select * from RWGPS where (lastUpdated < ? or lastUpdated is null) or (csv = "" and RWGPSId>0) order by lastUpdated limit ' . $limit;
 		$input = [\App\Tools\Date::todayString(-60)];
 
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, $input);
@@ -30,7 +30,7 @@ class RWGPS extends \PHPFUI\ORM\Table
 
 	public function getUpcomingEmptyRWGPS() : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select distinct rwgps.* from ride left join rwgps on rwgps.RWGPSId=ride.RWGPSId where rwgps.lastUpdated is null and ride.RWGPSId is not null and rideDate>=:date';
+		$sql = 'select distinct RWGPS.* from ride left join RWGPS on RWGPS.RWGPSId=ride.RWGPSId where RWGPS.lastUpdated is null and ride.RWGPSId is not null and rideDate>=:date';
 
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, ['date' => \App\Tools\Date::todayString()]);
 		}

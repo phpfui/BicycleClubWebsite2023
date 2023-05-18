@@ -51,6 +51,15 @@ class SettingsSaver
 				}
 			else
 				{
+				foreach (['password', 'private', 'secret', 'key'] as $password)
+					{
+					if (false != \stripos($name, $password))
+						{
+						$type = 'PasswordEye';
+
+						break;
+						}
+					}
 				$class = '\\PHPFUI\\Input\\' . $type;
 
 				if (\class_exists($class))

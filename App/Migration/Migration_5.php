@@ -25,8 +25,6 @@ class Migration_5 extends \PHPFUI\ORM\Migration
 
 	public function up() : bool
 		{
-		$this->down();
-
 		$permissions = new \App\Model\Permission();
 		$permissions->addPermissionToGroup('Normal Member', 'RideWithGPS Detail', 'RWGPS');
 
@@ -34,6 +32,10 @@ class Migration_5 extends \PHPFUI\ORM\Migration
 			{
 			$this->renameTable('rwgps', 'RWGPS');
 			}
+
+		$this->dropTable('RWGPSAlternate');
+		$this->dropTable('RWGPSComment');
+		$this->dropTable('RWGPSRating');
 
 		return $this->runSQL('
 			create table RWGPSAlternate (

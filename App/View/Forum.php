@@ -887,8 +887,10 @@ class Forum
 
 						break;
 
-					case 'Add Member':
 					case 'Save':
+						$_POST['memberId'] = \App\Model\Session::signedInMemberId();
+						// Intentionally fall through
+					case 'Add Member':
 						$forumMember = new \App\Record\ForumMember();
 						$forumMember->setFrom(['forumId' => (int)$_POST['forumId'], 'memberId' => (int)$_POST['memberId'], (int)$_POST['emailType']]);
 						$forumMember->save();

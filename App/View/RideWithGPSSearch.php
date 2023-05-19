@@ -151,12 +151,12 @@ class RideWithGPSSearch implements \Stringable
 
 		if (! empty($parameters['mileage_min']))
 			{
-			$condition->and('rwgps.mileage', $parameters['mileage_min'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			$condition->and('RWGPS.mileage', $parameters['mileage_min'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
 			}
 
 		if (! empty($parameters['mileage_max']))
 			{
-			$condition->and('rwgps.mileage', $parameters['mileage_max'], new \PHPFUI\ORM\Operator\LessThanEqual());
+			$condition->and('RWGPS.mileage', $parameters['mileage_max'], new \PHPFUI\ORM\Operator\LessThanEqual());
 			}
 
 		if (! empty($parameters['feetPerMile_min']))
@@ -181,12 +181,12 @@ class RideWithGPSSearch implements \Stringable
 
 		if (! empty($parameters['title']))
 			{
-			$condition->and('rwgps.title', '%' . $parameters['title'] . '%', new \PHPFUI\ORM\Operator\Like());
+			$condition->and('RWGPS.title', '%' . $parameters['title'] . '%', new \PHPFUI\ORM\Operator\Like());
 			}
 
 		if (! empty($parameters['description']))
 			{
-			$condition->and('rwgps.description', '%' . $parameters['description'] . '%', new \PHPFUI\ORM\Operator\Like());
+			$condition->and('RWGPS.description', '%' . $parameters['description'] . '%', new \PHPFUI\ORM\Operator\Like());
 			}
 
 		if (! empty($parameters['csv']))

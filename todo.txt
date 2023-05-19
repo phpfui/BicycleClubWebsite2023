@@ -1,10 +1,7 @@
-More than max people allowed on ride.
 
-RWGPS
-	Rate RWGPS routes
-		1-5 stars
-		Comments
-			Comment categories? (too much traffic, hilly, dirt, ??)
+Embedded images in forum posts not coming through
+
+More than max people allowed on ride.
 
 Suggestion box
 

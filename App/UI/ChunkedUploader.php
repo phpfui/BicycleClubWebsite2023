@@ -49,7 +49,7 @@ class ChunkedUploader
 </td>
 </tr>
 <tr>
-<td width="100%">You must not leave this page or switch to another tab till the video is 100% uploaded.</td>
+<td width="100%">You must not leave this page or switch to another tab till the file is 100% uploaded.</td>
 </tr>
 </table>
 </div>
@@ -132,7 +132,6 @@ r.assignBrowse($(".flow-browse-image")[0], false, false, {accept: "image/*"});';
 		$(".flow-progress .progress-pause-link").show();
 	});
 	r.on("catchAll", function() {
-		console.log.apply(console, arguments);
 	});
 	window.r = {
 		pause: function () {

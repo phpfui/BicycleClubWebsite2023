@@ -48,7 +48,7 @@ class RideWithGPS
 			if (($_POST['submit'] ?? '') == 'Rate It')
 				{
 				$rwgpsRating->setFrom($key);
-				$rwgpsRating->rating = $_POST['rating'];
+				$rwgpsRating->rating = (int)$_POST['rating'];
 				$rwgpsRating->insertOrUpdate();
 				$this->page->redirect();
 				}
@@ -66,6 +66,7 @@ class RideWithGPS
 				$alternateRoute->RWGPSAlternateId = (int)$_POST['RWGPSAlternateId'];
 				$alternateRoute->memberId = \App\Model\Session::signedInMemberId();
 				$alternateRoute->insertOrIgnore();
+
 				$this->page->redirect();
 				}
 			}
@@ -125,7 +126,7 @@ class RideWithGPS
 		$deleter->setConditionalCallback(static fn (array $comment) => $comment['memberId'] == \App\Model\Session::signedInMemberId() || $canDeleteComment);
 		$commentTable->addCustomColumn('RWGPSId_memberId', static fn (array $comment) => $comment['RWGPSId'] . '_' . $comment['memberId']);
 		$commentTable->addCustomColumn('Del', $deleter->columnCallback(...));
-		$commentTable->addCustomColumn('Comments', static fn (array $comment) => $comment['comments']);
+		$commentTable->addCustomColumn('Comments', static fn (array $comment) => \str_replace("\n", '<br>', $comment['comments']));
 		$commentTable->addCustomColumn('Member', static function(array $comment) {$member = new \App\Record\Member($comment['memberId']);
 
 			return $member->fullName();});
@@ -359,7 +360,7 @@ class RideWithGPS
 		$form->setAreYouSure(false);
 		$form->add(new \PHPFUI\SubHeader($title));
 		$textArea = new \PHPFUI\Input\TextArea('comments', 'Comments (limited to 255 characters)', $rwgpsComment->comments ?? '');
-		$textArea->setRequired()->setAttribute('maxlength', (string)255)->setAttribute('rows', (string)3);
+		$textArea->setRequired()->setAttribute('maxlength', (string)65760)->setAttribute('rows', (string)10);
 
 		$form->add($textArea);
 		$submit = new \PHPFUI\Submit('Add Comment');

@@ -387,7 +387,6 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$view = new \App\View\Ride\Signup($this->page, $ride);
 				$form = $view->getForm();
 				$submit = new \PHPFUI\Submit();
-				$modal->closeOnClick($submit);
 				$bg = new \PHPFUI\ButtonGroup();
 				$bg->addButton($submit);
 				$close = new \PHPFUI\Cancel('Cancel');

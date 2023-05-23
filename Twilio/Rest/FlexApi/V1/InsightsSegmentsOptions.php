@@ -21,91 +21,57 @@ use Twilio\Values;
 abstract class InsightsSegmentsOptions
 {
     /**
-     * @param string $token The Token HTTP request header
-     * @return FetchInsightsSegmentsOptions Options builder
-     */
-    public static function fetch(
-        
-        string $token = Values::NONE
-
-    ): FetchInsightsSegmentsOptions
-    {
-        return new FetchInsightsSegmentsOptions(
-            $token
-        );
-    }
-
-    /**
+     * @param string $segmentId To unique id of the segment
      * @param string[] $reservationId The list of reservation Ids
-     * @param string $token The Token HTTP request header
+     * @param string $authorization The Authorization HTTP request header
      * @return ReadInsightsSegmentsOptions Options builder
      */
     public static function read(
         
+        string $segmentId = Values::NONE,
         array $reservationId = Values::ARRAY_NONE,
-        string $token = Values::NONE
+        string $authorization = Values::NONE
 
     ): ReadInsightsSegmentsOptions
     {
         return new ReadInsightsSegmentsOptions(
+            $segmentId,
             $reservationId,
-            $token
+            $authorization
         );
     }
 
-}
-
-class FetchInsightsSegmentsOptions extends Options
-    {
-    /**
-     * @param string $token The Token HTTP request header
-     */
-    public function __construct(
-        
-        string $token = Values::NONE
-
-    ) {
-        $this->options['token'] = $token;
-    }
-
-    /**
-     * The Token HTTP request header
-     *
-     * @param string $token The Token HTTP request header
-     * @return $this Fluent Builder
-     */
-    public function setToken(string $token): self
-    {
-        $this->options['token'] = $token;
-        return $this;
-    }
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $options = \http_build_query(Values::of($this->options), '', ' ');
-        return '[Twilio.FlexApi.V1.FetchInsightsSegmentsOptions ' . $options . ']';
-    }
 }
 
 class ReadInsightsSegmentsOptions extends Options
     {
     /**
+     * @param string $segmentId To unique id of the segment
      * @param string[] $reservationId The list of reservation Ids
-     * @param string $token The Token HTTP request header
+     * @param string $authorization The Authorization HTTP request header
      */
     public function __construct(
         
+        string $segmentId = Values::NONE,
         array $reservationId = Values::ARRAY_NONE,
-        string $token = Values::NONE
+        string $authorization = Values::NONE
 
     ) {
+        $this->options['segmentId'] = $segmentId;
         $this->options['reservationId'] = $reservationId;
-        $this->options['token'] = $token;
+        $this->options['authorization'] = $authorization;
+    }
+
+    /**
+     * To unique id of the segment
+     *
+     * @param string $segmentId To unique id of the segment
+     * @return $this Fluent Builder
+     */
+    public function setSegmentId(string $segmentId): self
+    {
+        $this->options['segmentId'] = $segmentId;
+        return $this;
     }
 
     /**
@@ -121,14 +87,14 @@ class ReadInsightsSegmentsOptions extends Options
     }
 
     /**
-     * The Token HTTP request header
+     * The Authorization HTTP request header
      *
-     * @param string $token The Token HTTP request header
+     * @param string $authorization The Authorization HTTP request header
      * @return $this Fluent Builder
      */
-    public function setToken(string $token): self
+    public function setAuthorization(string $authorization): self
     {
-        $this->options['token'] = $token;
+        $this->options['authorization'] = $authorization;
         return $this;
     }
 

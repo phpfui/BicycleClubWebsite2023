@@ -68,10 +68,10 @@ class Orders
 			return $link;
 			});
 		$view->setSearchColumns($headers)->setSortableColumns(\array_keys($headers))->setHeaders($headers);
-		$container->add($view);
 		$labelButton = new \PHPFUI\Button('Labels');
 		$labelButton->addClass('secondary');
 		$container->add($labelButton);
+		$container->add($view);
 
 		$reveal = new \PHPFUI\Reveal($this->page, $labelButton);
 		$form = new \PHPFUI\Form($this->page);

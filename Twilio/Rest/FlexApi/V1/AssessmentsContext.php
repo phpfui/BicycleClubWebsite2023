@@ -30,21 +30,21 @@ class AssessmentsContext extends InstanceContext
      * Initialize the AssessmentsContext
      *
      * @param Version $version Version that contains the resource
-     * @param string $assessmentId The id of the assessment to be modified
+     * @param string $assessmentSid The SID of the assessment to be modified
      */
     public function __construct(
         Version $version,
-        $assessmentId
+        $assessmentSid
     ) {
         parent::__construct($version);
 
         // Path Solution
         $this->solution = [
-        'assessmentId' =>
-            $assessmentId,
+        'assessmentSid' =>
+            $assessmentSid,
         ];
 
-        $this->uri = '/Insights/QM/Assessments/' . \rawurlencode($assessmentId)
+        $this->uri = '/Insights/QualityManagement/Assessments/' . \rawurlencode($assessmentSid)
         .'';
     }
 
@@ -72,14 +72,14 @@ class AssessmentsContext extends InstanceContext
                 $answerId,
         ]);
 
-        $headers = Values::of(['Token' => $options['token']]);
+        $headers = Values::of(['Authorization' => $options['authorization']]);
 
         $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
         return new AssessmentsInstance(
             $this->version,
             $payload,
-            $this->solution['assessmentId']
+            $this->solution['assessmentSid']
         );
     }
 

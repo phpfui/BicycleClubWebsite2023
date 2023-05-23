@@ -30,21 +30,21 @@ class InsightsQuestionnairesCategoryContext extends InstanceContext
      * Initialize the InsightsQuestionnairesCategoryContext
      *
      * @param Version $version Version that contains the resource
-     * @param string $categoryId The ID of the category to be deleted
+     * @param string $categorySid The SID of the category to be deleted
      */
     public function __construct(
         Version $version,
-        $categoryId
+        $categorySid
     ) {
         parent::__construct($version);
 
         // Path Solution
         $this->solution = [
-        'categoryId' =>
-            $categoryId,
+        'categorySid' =>
+            $categorySid,
         ];
 
-        $this->uri = '/Insights/QM/Categories/' . \rawurlencode($categoryId)
+        $this->uri = '/Insights/QualityManagement/Categories/' . \rawurlencode($categorySid)
         .'';
     }
 
@@ -60,7 +60,7 @@ class InsightsQuestionnairesCategoryContext extends InstanceContext
 
         $options = new Values($options);
 
-        $headers = Values::of(['Token' => $options['token']]);
+        $headers = Values::of(['Authorization' => $options['authorization']]);
 
         return $this->version->delete('DELETE', $this->uri, [], [], $headers);
     }
@@ -84,14 +84,14 @@ class InsightsQuestionnairesCategoryContext extends InstanceContext
                 $name,
         ]);
 
-        $headers = Values::of(['Token' => $options['token']]);
+        $headers = Values::of(['Authorization' => $options['authorization']]);
 
         $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
         return new InsightsQuestionnairesCategoryInstance(
             $this->version,
             $payload,
-            $this->solution['categoryId']
+            $this->solution['categorySid']
         );
     }
 

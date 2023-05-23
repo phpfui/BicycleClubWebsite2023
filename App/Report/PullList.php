@@ -16,7 +16,7 @@ class PullList
 
 		foreach ($itemResult as $item)
 			{
-			$key = $item['storeItemId'] . '-' . $item['storeItemDetailId'];
+			$key = $item['storeItemId'] . '`' . $item['storeItemDetailId'] . '`' . $item['title'] . '`' . $item['detailLine'];
 
 			if (! isset($items[$key]))
 				{
@@ -58,7 +58,7 @@ class PullList
 
 		foreach ($items as $key => $value)
 			{
-			$keys = \explode('-', $key);
+			$keys = \explode('`', $key);
 
 			$storeItemDetail = new \App\Record\StoreItemDetail(['storeItemId' => $keys[0],
 				'storeItemDetailId' => $keys[1], ]);
@@ -66,10 +66,17 @@ class PullList
 
 			if ($storeItemDetail->loaded())
 				{
-				$pdf->Row([$key,
+				$pdf->Row([$keys[0],
 					$value,
 					$storeItemDetail->storeItem->title,
 					$storeItemDetail->detailLine]);
+				}
+			else
+				{
+				$pdf->Row([$keys[0],
+					$value,
+					$keys[2],
+					$keys[3]]);
 				}
 			}
 

@@ -30,6 +30,7 @@ use Twilio\Deserialize;
  * @property string|null $messagingServiceSid
  * @property string|null $fallbackUrl
  * @property string|null $callbackUrl
+ * @property bool|null $continueOnFailure
  * @property \DateTime|null $dateCreated
  * @property \DateTime|null $dateUpdated
  * @property string|null $url
@@ -54,6 +55,7 @@ class DomainConfigMessagingServiceInstance extends InstanceResource
             'messagingServiceSid' => Values::array_get($payload, 'messaging_service_sid'),
             'fallbackUrl' => Values::array_get($payload, 'fallback_url'),
             'callbackUrl' => Values::array_get($payload, 'callback_url'),
+            'continueOnFailure' => Values::array_get($payload, 'continue_on_failure'),
             'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
             'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
             'url' => Values::array_get($payload, 'url'),

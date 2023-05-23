@@ -529,6 +529,27 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, $input);
 		}
 
+	public function setInventoryBySignup(string $rideDate) : static
+		{
+		$this->addJoin('startLocation');
+		$this->addJoin('rideSignup', new \PHPFUI\ORM\Condition('ride.rideId', new \PHPFUI\ORM\Field('rideSignup.rideId')));
+		$this->addJoin('member', new \PHPFUI\ORM\Condition('member.memberId', new \PHPFUI\ORM\Field('rideSignup.memberId')));
+		$this->addJoin('invoice', new \PHPFUI\ORM\Condition('invoice.memberId', new \PHPFUI\ORM\Field('member.memberId')));
+		$this->addJoin('invoiceItem', new \PHPFUI\ORM\Condition('invoice.invoiceId', new \PHPFUI\ORM\Field('invoiceItem.invoiceId')));
+		$whereCondition = new \PHPFUI\ORM\Condition('rideDate', $rideDate);
+		$whereCondition->and(new \PHPFUI\ORM\Condition('fullfillmentDate', null, new \PHPFUI\ORM\Operator\IsNull()));
+		$whereCondition->and(new \PHPFUI\ORM\Condition('type', \App\Model\Cart::TYPE_ORDER));
+		$this->setWhere($whereCondition);
+		$this->addOrderBy('ride.title');
+		$this->addSelect('ride.title', 'Ride');
+		$this->addSelect(new \PHPFUI\ORM\Literal('concat(member.firstName," ",member.lastName)'), 'Name');
+		$this->addSelect('invoiceItem.title', 'Description');
+		$this->addSelect('invoiceItem.detailLine', 'Detail');
+		$this->addSelect('invoiceItem.quantity', 'Quantity');
+
+		return $this;
+		}
+
 	public function setRidesForCueSheetCursor(\App\Record\CueSheet $cuesheet) : static
 		{
 		$this->setWhere(new \PHPFUI\ORM\Condition('cueSheetId', $cuesheet->cueSheetId));

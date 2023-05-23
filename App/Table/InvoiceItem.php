@@ -60,7 +60,7 @@ class InvoiceItem extends \PHPFUI\ORM\Table
 
 	public static function getUnshippedItems() : iterable
 		{
-		$sql = 'select * from invoice i,invoiceItem ii where i.fullfillmentDate=0 and i.paymentDate > "1000-01-01" and i.invoiceId = ii.invoiceId';
+		$sql = 'select * from invoice i,invoiceItem ii where i.fullfillmentDate is null and i.paymentDate > "1000-01-01" and i.invoiceId = ii.invoiceId';
 
 		return \PHPFUI\ORM::getArrayCursor($sql);
 		}

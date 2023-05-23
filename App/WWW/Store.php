@@ -428,6 +428,17 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function ridePullList() : void
+		{
+		if ($this->page->isAuthorized('Unshipped Invoices'))
+			{
+			$date = $_GET['rideDate'] ?? \App\Tools\Date::todayString();
+			$report = new \App\Report\RidePullList();
+			$report->download($date);
+			$this->page->done();
+			}
+		}
+
 	public function shop() : void
 		{
 		$this->page->setPublic();
@@ -443,17 +454,27 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			$form = new \PHPFUI\Form($this->page);
 			$form->setAreYouSure(false);
-			$form->add($this->invoiceView->show($invoiceTable, 'All invoices have been shipped'));
+			$buttonGroup = new \App\UI\CancelButtonGroup();
 
 			if (\count($invoiceTable))
 				{
 				$pullList = new \PHPFUI\Button('Print Pull List', '/Store/pullList');
 				$pullList->addAttribute('target', '_blank');
-				$buttonGroup = new \App\UI\CancelButtonGroup();
+				$buttonGroup->addButton($pullList);
+				$pullList = new \PHPFUI\Button('Print Ride Pull List');
+				$pullList->addClass('warning');
+				$this->addRidePullListModal($pullList);
 				$buttonGroup->addButton($pullList);
 				$markAsShipped = new \PHPFUI\Submit('Mark As Shipped', 'markAsShipped');
 				$markAsShipped->addClass('secondary');
 				$buttonGroup->addButton($markAsShipped);
+				$form->add($buttonGroup);
+				}
+
+			$form->add($this->invoiceView->show($invoiceTable, 'All invoices have been shipped'));
+
+			if (\count($buttonGroup))
+				{
 				$form->add($buttonGroup);
 				}
 			$this->page->addPageContent($form);
@@ -515,5 +536,22 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$thumbModel->createThumb((int)$settings->value('thumbnailSize'));
 				}
 			}
+		}
+
+	private function addRidePullListModal(\PHPFUI\HTML5Element $modalLink) : \PHPFUI\Reveal
+		{
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAttribute('method', 'get');
+		$form->addAttribute('action', '/Store/ridePullList');
+
+		$form->setAreYouSure(false);
+		$form->add(new \PHPFUI\Input\Date($this->page, 'rideDate', 'Date of Rides'));
+		$submit = new \PHPFUI\Submit('Print Ride Pull List');
+		$modal->closeOnClick($submit);
+		$form->add($modal->getButtonAndCancel($submit));
+		$modal->add($form);
+
+		return $modal;
 		}
 	}

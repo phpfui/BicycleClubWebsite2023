@@ -31,21 +31,21 @@ class InsightsQuestionnairesContext extends InstanceContext
      * Initialize the InsightsQuestionnairesContext
      *
      * @param Version $version Version that contains the resource
-     * @param string $id The unique ID of the questionnaire
+     * @param string $questionnaireSid The SID of the questionnaire
      */
     public function __construct(
         Version $version,
-        $id
+        $questionnaireSid
     ) {
         parent::__construct($version);
 
         // Path Solution
         $this->solution = [
-        'id' =>
-            $id,
+        'questionnaireSid' =>
+            $questionnaireSid,
         ];
 
-        $this->uri = '/Insights/QM/Questionnaires/' . \rawurlencode($id)
+        $this->uri = '/Insights/QualityManagement/Questionnaires/' . \rawurlencode($questionnaireSid)
         .'';
     }
 
@@ -61,7 +61,7 @@ class InsightsQuestionnairesContext extends InstanceContext
 
         $options = new Values($options);
 
-        $headers = Values::of(['Token' => $options['token']]);
+        $headers = Values::of(['Authorization' => $options['authorization']]);
 
         return $this->version->delete('DELETE', $this->uri, [], [], $headers);
     }
@@ -79,14 +79,14 @@ class InsightsQuestionnairesContext extends InstanceContext
 
         $options = new Values($options);
 
-        $headers = Values::of(['Token' => $options['token']]);
+        $headers = Values::of(['Authorization' => $options['authorization']]);
 
         $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
         return new InsightsQuestionnairesInstance(
             $this->version,
             $payload,
-            $this->solution['id']
+            $this->solution['questionnaireSid']
         );
     }
 
@@ -111,18 +111,18 @@ class InsightsQuestionnairesContext extends InstanceContext
                 $options['name'],
             'Description' =>
                 $options['description'],
-            'QuestionIds' =>
-                Serialize::map($options['questionIds'], function ($e) { return $e; }),
+            'QuestionSids' =>
+                Serialize::map($options['questionSids'], function ($e) { return $e; }),
         ]);
 
-        $headers = Values::of(['Token' => $options['token']]);
+        $headers = Values::of(['Authorization' => $options['authorization']]);
 
         $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
         return new InsightsQuestionnairesInstance(
             $this->version,
             $payload,
-            $this->solution['id']
+            $this->solution['questionnaireSid']
         );
     }
 

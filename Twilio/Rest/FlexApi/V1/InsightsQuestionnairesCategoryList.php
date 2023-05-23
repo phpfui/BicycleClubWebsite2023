@@ -40,7 +40,7 @@ class InsightsQuestionnairesCategoryList extends ListResource
         $this->solution = [
         ];
 
-        $this->uri = '/Insights/QM/Categories';
+        $this->uri = '/Insights/QualityManagement/Categories';
     }
 
     /**
@@ -61,7 +61,7 @@ class InsightsQuestionnairesCategoryList extends ListResource
                 $name,
         ]);
 
-        $headers = Values::of(['Token' => $options['token']]);
+        $headers = Values::of(['Authorization' => $options['authorization']]);
 
         $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
@@ -136,8 +136,8 @@ class InsightsQuestionnairesCategoryList extends ListResource
     {
 
         $params = Values::of([
-            'Token' =>
-                $options['token'],
+            'Authorization' =>
+                $options['authorization'],
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,
@@ -169,16 +169,16 @@ class InsightsQuestionnairesCategoryList extends ListResource
     /**
      * Constructs a InsightsQuestionnairesCategoryContext
      *
-     * @param string $categoryId The ID of the category to be deleted
+     * @param string $categorySid The SID of the category to be deleted
      */
     public function getContext(
-        string $categoryId
+        string $categorySid
         
     ): InsightsQuestionnairesCategoryContext
     {
         return new InsightsQuestionnairesCategoryContext(
             $this->version,
-            $categoryId
+            $categorySid
         );
     }
 

@@ -341,7 +341,7 @@ class Editor
 
 							if (! $assistant->loaded())
 								{
-								$assistant->insert();
+								$assistant->insertOrIgnore();
 								}
 							}
 						$rideModel = new \App\Model\Ride();

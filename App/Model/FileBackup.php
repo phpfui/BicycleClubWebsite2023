@@ -10,20 +10,14 @@ class FileBackup
 		{
 		$this->masterDir = PROJECT_ROOT . '/../Backup-' . $_SERVER['HTTP_HOST'];
 
-		if (! \is_dir($this->masterDir))
-			{
-			\mkdir($this->masterDir, 0755, true);
-			}
+		\App\Tools\File::mkdir($this->masterDir, 0755, true);
 		}
 
 	public function run(string $rootDirectory, string $subDirectory) : void
 		{
 		$dest = $this->masterDir . '/' . $subDirectory;
 
-		if (! \is_dir($dest))
-			{
-			\mkdir($dest, 0755, true);
-			}
+		\App\Tools\File::mkdir($dest, 0755, true);
 		$source = $rootDirectory . '/' . $subDirectory;
 		$iterator = new \RecursiveIteratorIterator(
 			new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS),
@@ -38,10 +32,7 @@ class FileBackup
 
 			if ($item->isDir())
 				{
-				if (! \is_dir($file))
-					{
-					\mkdir($file, 0755, true);
-					}
+				\App\Tools\File::mkdir($file, 0755, true);
 				}
 			else
 				{

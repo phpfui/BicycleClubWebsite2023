@@ -51,7 +51,7 @@ abstract class File
 		{
 		foreach (\glob($this->directory . "{$id}.*") as $filename)
 			{
-			\unlink($filename);
+			\App\Tools\File::unlink($filename);
 			}
 		}
 
@@ -308,7 +308,7 @@ abstract class File
 								}
 							else
 								{
-								\unlink($destination);
+								\App\Tools\File::unlink($destination);
 								$this->error = $error;
 								}
 							}

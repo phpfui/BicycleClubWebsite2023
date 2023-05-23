@@ -34,7 +34,7 @@ class Errors
 			if (\file_exists($filename))
 				{
 				++$count;
-				@\unlink($filename);
+				\App\Tools\File::unlink($filename);
 				}
 			}
 
@@ -82,7 +82,7 @@ class Errors
 
 				if ($delete)
 					{
-					@\unlink($filename);
+					\App\Tools\File::unlink($filename);
 					}
 				}
 			}

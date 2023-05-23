@@ -62,7 +62,7 @@ class Deploy
 		// allow the documentation to refresh next time it is used
 		foreach (\glob(PROJECT_ROOT . '/*.serial') as $file)
 			{
-			@\unlink($file);
+			\App\Tools\File::unlink($file);
 			}
 		$this->migrationModel->migrate();
 

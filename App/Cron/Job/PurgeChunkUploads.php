@@ -16,7 +16,7 @@ class PurgeChunkUploads extends \App\Cron\BaseJob
 			{
 			if (! \str_contains((string)$file, '.gitignore'))
 				{
-				\unlink($file);
+				\App\Tools\File::unlink($file);
 				}
 			}
 		}

@@ -177,7 +177,7 @@ class Permission extends \App\Model\PermissionBase
 			\fwrite($handle, '$this->permissions[\'' . \str_replace("'", "\\'", $key) . '\'] = ' . $value . ";\n");
 			}
 		\fclose($handle);
-		@\unlink($this->permissionLoaderFile);
+		\App\Tools\File::unlink($this->permissionLoaderFile);
 		@\rename($newName, $this->permissionLoaderFile);
 		}
 

@@ -20,7 +20,7 @@ class ImportMembers extends \PHPFUI\Container
 
 		if (isset($_GET['delete']))
 			{
-			\unlink($this->importModel->getFileName());
+			\App\Tools\File::unlink($this->importModel->getFileName());
 			\PHPFUI\ORM::execute('truncate table member');
 			\PHPFUI\ORM::execute('truncate table membership');
 

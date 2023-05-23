@@ -29,8 +29,8 @@ class ProfileImages extends \App\Model\ThumbnailImageFiles
 
 	public function delete(string | int $id = '') : void
 		{
-		@\unlink($this->getPhotoFilePath());
-		@\unlink($this->getCropPath());
+		\App\Tools\File::unlink($this->getPhotoFilePath());
+		\App\Tools\File::unlink($this->getCropPath());
 		}
 
 	public function exists(string $path) : bool

@@ -115,10 +115,7 @@ abstract class Settings
 		\array_pop($parts);
 		$dir = \implode('/', $parts);
 
-		if (! \is_dir($dir))
-			{
-			\mkdir($dir, recursive: true);
-			}
+		\App\Tools\File::mkdir($dir, recursive: true);
 		\file_put_contents($fileName, "<?php\nreturn " . \var_export($this->settings, true) . ';');
 
 		return true;

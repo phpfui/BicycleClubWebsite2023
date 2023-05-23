@@ -6,10 +6,7 @@ class DBInit extends \PHPFUI\Container
 	{
 	public function __construct(private readonly \PHPFUI\Page $page, \App\View\Setup\WizardBar $wizardBar)
 		{
-		if (! \is_dir(\PHPFUI\ORM::getMigrationNamespacePath()))
-			{
-			\mkdir(\PHPFUI\ORM::getMigrationNamespacePath(), 0x777, true);
-			}
+		\App\Tools\File::mkdir(\PHPFUI\ORM::getMigrationNamespacePath(), 0x777, true);
 		$migrator = new \PHPFUI\ORM\Migrator();
 
 		$this->add(new \PHPFUI\Header('Initialize the Database', 4));

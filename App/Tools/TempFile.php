@@ -21,7 +21,7 @@ class TempFile implements \Stringable
 	public function __destruct()
 		{
 		$this->close();
-		@\unlink($this->name);
+		\App\Tools\File::unlink($this->name);
 		}
 
 	public function __toString() : string

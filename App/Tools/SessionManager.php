@@ -17,7 +17,7 @@ class SessionManager
 			{
 			if (\filemtime($file) < $endTime)
 				{
-				\unlink($file);
+				\App\Tools\File::unlink($file);
 				}
 			}
 		}

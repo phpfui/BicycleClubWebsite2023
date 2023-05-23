@@ -80,7 +80,7 @@ class Content extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->isAuthorized('Delete Image'))
 			{
-			@\unlink(PUBLIC_ROOT . $_POST['src']);
+			\App\Tools\File::unlink(PUBLIC_ROOT . $_POST['src']);
 			}
 		else
 			{

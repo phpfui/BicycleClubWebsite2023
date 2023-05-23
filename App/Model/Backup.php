@@ -27,13 +27,10 @@ class Backup
 			{
 			$dir = $this->basePath . $directory;
 
-			if (! \is_dir($dir))
-				{
-				@\mkdir($dir, 0777, true);
-				}
+			\App\Tools\File::mkdir($dir, 0777, true);
 			}
 		$backupFilename = $this->basePath . $baseFileName . '.gz';
-		@\unlink($backupFilename);
+		\App\Tools\File::unlink($backupFilename);
 
 		$dbSettings = new \App\Settings\DB();
 		$settings = [];

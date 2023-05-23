@@ -102,7 +102,7 @@ class Files
 
 							if ($_POST['base'] == "{$base}")
 								{
-								\unlink($this->fileModel->get($file));
+								\App\Tools\File::unlink($this->fileModel->get($file));
 								$this->page->setResponse($_POST['base']);
 
 								break;

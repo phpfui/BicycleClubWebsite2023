@@ -51,8 +51,8 @@ class ThumbnailImageFiles extends \App\Model\TinifyImage
 
 	public function delete(string | int $id = '') : void
 		{
-		@\unlink(PUBLIC_ROOT . $this->getPhotoFileName());
-		@\unlink(PUBLIC_ROOT . $this->getThumbFileName());
+		\App\Tools\File::unlink(PUBLIC_ROOT . $this->getPhotoFileName());
+		\App\Tools\File::unlink(PUBLIC_ROOT . $this->getThumbFileName());
 		}
 
 	public function getItem() : array

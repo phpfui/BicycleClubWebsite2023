@@ -68,7 +68,7 @@ class Import
 								}
 							}
 						$output = "Imported {$good} with {$error} errors";
-						\unlink($source_file);
+						\App\Tools\File::unlink($source_file);
 						}
 					}
 				}

@@ -48,7 +48,7 @@ class Finance extends \App\Model\File
 
 		if ($this->errors)
 			{
-			\unlink($path);
+			\App\Tools\File::unlink($path);
 
 			return $this->errors[0];
 			}

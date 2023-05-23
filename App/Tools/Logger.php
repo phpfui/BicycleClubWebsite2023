@@ -21,10 +21,7 @@ class Logger
 			{
 			$filename = $this->getFileName();
 
-			if (\file_exists($filename))
-				{
-				\unlink($filename);
-				}
+			\App\Tools\File::unlink($filename);
 			}
 		}
 

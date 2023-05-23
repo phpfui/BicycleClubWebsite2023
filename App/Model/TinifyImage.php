@@ -219,10 +219,10 @@ class TinifyImage extends \App\Model\File
 		try
 			{
 			$toFile = $file . '.tinify';
-			@\unlink($toFile);
+			\App\Tools\File::unlink($toFile);
 			$source = \Tinify\Source::fromFile($file);
 			$source->toFile($toFile);
-			@\unlink($file);
+			\App\Tools\File::unlink($file);
 			\rename($toFile, $file);
 			}
 		catch (\Throwable $e)
@@ -246,7 +246,7 @@ class TinifyImage extends \App\Model\File
 	public function resizeTo(string $file, int $width, int $height) : void
 		{
 		$toFile = $file . '.tinify';
-		@\unlink($toFile);
+		\App\Tools\File::unlink($toFile);
 		$result = \getimagesize($file);
 		$imageWidth = $result[0];
 		$imageHeight = $result[1];
@@ -279,7 +279,7 @@ class TinifyImage extends \App\Model\File
 			$this->error = $e->getMessage();
 			}
 
-		\unlink($file);
+		\App\Tools\File::unlink($file);
 		\rename($toFile, $file);
 		}
 
@@ -293,7 +293,7 @@ class TinifyImage extends \App\Model\File
 	public function resizeToHeight(string $file, int $height) : void
 		{
 		$toFile = $file . '.tinify';
-		@\unlink($toFile);
+		\App\Tools\File::unlink($toFile);
 
 		// if not supported format, just return, we are done
 		if (! $this->isSupportedImageType($file))
@@ -312,7 +312,7 @@ class TinifyImage extends \App\Model\File
 			$this->error = $e->getMessage();
 			}
 
-		\unlink($file);
+		\App\Tools\File::unlink($file);
 		\rename($toFile, $file);
 		}
 
@@ -326,7 +326,7 @@ class TinifyImage extends \App\Model\File
 	public function resizeToWidth(string $file, int $width) : void
 		{
 		$toFile = $file . '.tinify';
-		@\unlink($toFile);
+		\App\Tools\File::unlink($toFile);
 
 		// if not supported format, just return, we are done
 		if (! $this->isSupportedImageType($file))
@@ -345,7 +345,7 @@ class TinifyImage extends \App\Model\File
 			$this->error = $e->getMessage();
 			}
 
-		\unlink($file);
+		\App\Tools\File::unlink($file);
 		\rename($toFile, $file);
 		}
 

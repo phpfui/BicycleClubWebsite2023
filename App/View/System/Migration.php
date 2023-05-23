@@ -8,10 +8,7 @@ class Migration
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
-		if (! \is_dir(\PHPFUI\ORM::getMigrationNamespacePath()))
-			{
-			\mkdir(\PHPFUI\ORM::getMigrationNamespacePath(), 0x777, true);
-			}
+		\App\Tools\File::mkdir(\PHPFUI\ORM::getMigrationNamespacePath(), 0x777, true);
 		$this->model = new \PHPFUI\ORM\Migrator();
 		}
 

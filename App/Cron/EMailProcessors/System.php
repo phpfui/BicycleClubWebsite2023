@@ -110,7 +110,7 @@ class System
 
 		foreach ($tempFiles as $file)
 			{
-			\unlink($file);
+			\App\Tools\File::unlink($file);
 			}
 
 		return true;

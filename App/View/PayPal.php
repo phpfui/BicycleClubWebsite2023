@@ -20,7 +20,7 @@ class PayPal
 			{
 			if ($_POST['submit'] == $this->buttonText)
 				{
-				@\unlink(PUBLIC_ROOT . $this->logo);
+				\App\Tools\File::unlink(PUBLIC_ROOT . $this->logo);
 				$imageModel = new \App\Model\PayPalLogo();
 				$allowedFiles = ['.jpg' => 'image/jpeg',
 					'.gif' => 'image/gif',

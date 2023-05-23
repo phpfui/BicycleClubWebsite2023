@@ -288,10 +288,7 @@ class Video
 						$fileName = $_SERVER['DOCUMENT_ROOT'] . '/video/' . $video->fileName;
 						$video->delete();
 
-						if (\file_exists($fileName) && ! \is_dir($fileName))
-							{
-							\unlink($fileName);
-							}
+						\App\Tools\File::unlink($fileName);
 						$this->page->setResponse($_POST['videoId']);
 
 						break;

@@ -38,10 +38,7 @@ class Video extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$fileName = $_SERVER['DOCUMENT_ROOT'] . '/video/' . $video->fileName;
 
-				if (\file_exists($fileName) && ! \is_dir($fileName))
-					{
-					\unlink($fileName);
-					}
+				\App\Tools\File::unlink($fileName);
 				$video->fileName = '';
 				$video->update();
 				$this->page->redirect('/Video/edit/' . $video->videoId);

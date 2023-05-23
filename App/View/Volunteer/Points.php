@@ -4,13 +4,6 @@ namespace App\View\Volunteer;
 
 class Points
 	{
-	/**
-	 * @var string[]
-	 *
-	 * @psalm-var array{0: string, 1: string, 2: string, 3: string}
-	 */
-	private array $hidden = ['p', 'l', 'c', 's'];
-
 	public function __construct(private readonly \App\View\Page $page)
 		{
 		}
@@ -75,56 +68,24 @@ class Points
 		return $container;
 		}
 
-	public function listHistory(\PHPFUI\ORM\DataObjectCursor $points) : string
+	public function listHistory(\App\Table\PointHistory $pointsTable) : string
 		{
 		$container = new \PHPFUI\Container();
 
-		$table = new \PHPFUI\SortableTable();
+		$table = new \App\UI\ContinuousScrollTable($this->page, $pointsTable);
 
 		// get the parameter we know we are interested in
-		$parameters = $table->getParsedParameters();
-		$p = (int)($parameters['p'] ?? 0);
-		$limit = (int)($parameters['l'] ?? 20);
-		$column = $parameters['c'] ?? 'time';
-		$sort = $parameters['s'] ?? 'd';
-		$total = 0;
 
 		$sortableHeaders = ['time' => 'Time', 'leaderPoints' => 'Leader Points', 'oldLeaderPoints' => 'Pre Edit Points', ];
 		$normalHeaders = ['member' => 'Member', 'editorId' => 'Editor'];
-		$table->setSortableColumns(\array_keys($sortableHeaders))->setSortedColumnOrder($column, $sort)->setHeaders($normalHeaders + $sortableHeaders);
+		$table->addCustomColumn('member', static function(array $row) {$member = new \App\Record\Member($row['memberId']);
 
-		foreach ($points as $point)
-			{
-			$row = $point->toArray();
-			$total += $point->leaderPoints;
-			$row['member'] = $point->member->fullName();
+			return $member->fullName();});
+		$table->addCustomColumn('editorId', static function(array $row) {if (empty($row['editorId'])) return 'System'; $member = new \App\Record\Member($row['editorId']);
 
-			if (empty($point->editorId))
-				{
-				$point->oldLeaderPoints = null;
-				$row['editorId'] = 'System';
-				}
-			else
-				{
-				$editor = new \App\Record\Member($point->editorId);
-				$row['editorId'] = $editor->fullName();
-				}
-			$table->addRow($row);
-			}
-		$row = ['time' => '<b>Total</b>', 'leaderPoints' => "<b>{$total}</b>"];
-		$table->addRow($row);
-		// set page to magic value for replacement
-		$parameters['p'] = 'PAGE';
-		$url = $table->getBaseUrl() . '?' . \http_build_query($parameters);
-
-		$lastPage = (int)((\count($points) - 1) / $limit) + 1;
-		// Add the paginator to the bottom
-		$paginator = new \PHPFUI\Pagination($p, $lastPage, $url);
-		$paginator->center()->setFastForward(10)->setWindow(5);
-
+			return $member->fullName();});
+		$table->setSortableColumns(\array_keys($sortableHeaders))->setHeaders($normalHeaders + $sortableHeaders)->setSearchColumns($sortableHeaders);
 		$container->add($table);
-
-		$container->add($paginator);
 
 		return "{$container}";
 		}
@@ -140,14 +101,10 @@ class Points
 		if ($_GET)
 			{
 			$pointHistoryTable = new \App\Table\PointHistory();
+			$this->setSearch($pointHistoryTable, $_GET);
+			$output = $this->listHistory($pointHistoryTable);
 
-			$points = $pointHistoryTable->find($_GET);
-			$output = $this->listHistory($points);
-
-			if (\count($points))
-			 {
-			 $output .= $row . $button;
-			 }
+			$output .= $button;
 			}
 		else
 			{
@@ -159,7 +116,6 @@ class Points
 
 	protected function getSearchModal(\PHPFUI\HTML5Element $modalLink, array $parameters) : \PHPFUI\Reveal
 		{
-		$this->setDefaults($parameters);
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
@@ -176,13 +132,6 @@ class Points
 		$to = new \PHPFUI\Input\Date($this->page, 'time_max', 'To Date', $parameters['time_max'] ?? '');
 		$fieldSet->add(new \PHPFUI\MultiColumn($from, $to));
 
-		foreach ($this->hidden as $field)
-			{
-			if (isset($parameters[$field]))
-				{
-				$fieldSet->add(new \PHPFUI\Input\Hidden($field, $parameters[$field]));
-				}
-			}
 		$form->add($fieldSet);
 		$submit = new \PHPFUI\Submit('Search');
 		$form->add($modal->getButtonAndCancel($submit));
@@ -191,20 +140,34 @@ class Points
 		return $modal;
 		}
 
-	protected function setDefaults(array &$parameters) : void
+	protected function setSearch(\App\Table\PointHistory $pointHistoryTable, array $parameters) : static
 		{
-		$searchFields = [];
-		$searchFields['l'] = 20;
-		$searchFields['p'] = 0;
+		$condition = new \PHPFUI\ORM\Condition();
 
-		foreach ($searchFields as $key => $value)
+		if (! empty($parameters['memberId']))
 			{
-			if (! isset($parameters[$key]))
-				{
-				$parameters[$key] = $value;
-				}
+			$condition->and('memberId', $parameters['memberId']);
 			}
-		$parameters['p'] = 0;
+
+		if (! empty($parameters['editorId']))
+			{
+			$condition->and('editorId', $parameters['editorId']);
+			}
+
+		if (! empty($parameters['time_min']))
+			{
+			$condition->and('time', $parameters['time_min'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			}
+
+		if (! empty($parameters['time_max']))
+			{
+			$condition->and('time', $parameters['time_max'], new \PHPFUI\ORM\Operator\LessThanEqual());
+			}
+
+		$pointHistoryTable->setWhere($condition);
+		$pointHistoryTable->setOrderBy('time');
+
+		return $this;
 		}
 
 	private function getInfoReveal(\PHPFUI\ORM\DataObject $item, array $category) : \PHPFUI\HTML5Element

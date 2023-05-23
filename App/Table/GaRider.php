@@ -80,7 +80,7 @@ class GaRider extends \PHPFUI\ORM\Table
 
 	public function purgePendingDupes(\App\Record\GaEvent $event)
 		{
-		$sql = 'DELETE FROM gaRider where gaEventId=? and pending=1 and email IN (select email from garider where gaEventId=? and pending=0)';
+		$sql = 'DELETE FROM gaRider where gaEventId=? and pending=1 and email IN (select email from gaRider where gaEventId=? and pending=0)';
 
 		return \PHPFUI\ORM::execute($sql, [$event->gaEventId, $event->gaEventId]);
 		}

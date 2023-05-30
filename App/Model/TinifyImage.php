@@ -27,7 +27,11 @@ class TinifyImage extends \App\Model\File
 		{
 		$type = $this->getImageType($filename);
 		$img = $this->openImageFromAny($filename, $type);
-		$exif = @\exif_read_data($filename);
+		$exif = [];
+		if (file_exists($filename))
+			{
+			$exif = @\exif_read_data($filename);
+			}
 		$changed = false;
 
 		if ($img && $exif && isset($exif['Orientation']))
@@ -133,7 +137,11 @@ class TinifyImage extends \App\Model\File
 		{
 		$returnValue = [];
 		$filePath = $this->get((string)$name . $extension);
-		$exif = @\exif_read_data($filePath);
+		$exif = [];
+		if (file_exists($filePath))
+			{
+			$exif = @\exif_read_data($filePath);
+			}
 
 		if (! $exif)
 			{

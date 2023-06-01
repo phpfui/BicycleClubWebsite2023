@@ -12,12 +12,6 @@ namespace ICalendarOrg;
 
 /**
  * Object for storing a list of unfolded iCalendar lines (ZCiCalDataNode objects)
- *
- * @property object $parentnode Parent of this node
- * @property array $child Array of children for this node
- * @property data $data Array of data for this node
- * @property object $next Next sibling of this node
- * @property object $prev Previous sibling of this node
  */
 class ZCiCalNode
 	{
@@ -130,7 +124,6 @@ class ZCiCalNode
 	 *
 	 * @throws \Exception
 	 * @return string iCalendar formatted output
-	 *
 	 */
 	public function export(?ZCiCalNode $node = null, int $level = 0) : string
 		{
@@ -181,7 +174,6 @@ class ZCiCalNode
 	 * Get Attribute
 	 *
 	 * @param int $i array id of attribute to get
-	 *
 	 */
 	public function getAttrib(int $i) : string
 		{
@@ -192,7 +184,6 @@ class ZCiCalNode
 	 * Get the first child of this object
 	 *
 	 * @return ?ZCiCalNode The first child
-	 *
 	 */
 	public function getFirstChild() : ?ZCiCalNode
 		{
@@ -206,7 +197,6 @@ class ZCiCalNode
 
 	/**
 	 * Return the name of the object
-	 *
 	 */
 	public function getName() : string
 		{
@@ -228,7 +218,6 @@ class ZCiCalNode
 	 *
 	 * @param ZCiCalDataNode $d attributes
 	 * @param string $p properties
-	 *
 	 */
 	public function printDataLine(ZCiCalDataNode $d, string $p) : string
 		{
@@ -277,7 +266,6 @@ class ZCiCalNode
 	 * Set Attribute
 	 *
 	 * @param string $value value of attribute to set
-	 *
 	 */
 	public function setAttrib(string $value) : ZCiCalNode
 		{

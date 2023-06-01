@@ -29,6 +29,6 @@ class RatingBar extends \PHPFUI\HTML5Element
 			}
 
 		// compressed css
-		$page->addCSS('.rate{float:left;height:5rem;padding:0 0.1rem;}.rate:not(:checked)>input{position:absolute;top:-9999px;}.rate:not(:checked)>label{float:right;width:1em;overflow:hidden;white-space:nowrap;cursor:pointer;font-size:3rem;color:gainsboro;// not selected}.rate:not(:checked)>label:before{content:"★ ";}.rate>input:checked~label{color:#ffc700;// previously selected, but not now}.rate:not(:checked)>label:hover,.rate:not(:checked)>label:hover~label{color:#deb217;// highlighted but not selected}.rate>input:checked+label:hover,.rate>input:checked+label:hover~label,.rate>input:checked~label:hover,.rate>input:checked~label:hover~label,.rate>label:hover~input:checked~label{color:#c59b08;// will be selected if clicked}');
+		$page->addCSS('.rate{float:left;height:5rem;padding:0 0.1rem;}.rate:not(:checked)>input{position:absolute;top:-9999px;}.rate:not(:checked)>label{float:right;width:.75em;overflow:hidden;white-space:nowrap;cursor:pointer;font-size:3rem;color:gainsboro;// not selected}.rate:not(:checked)>label:before{content:"★ ";}.rate>input:checked~label{color:#ffc700;// previously selected, but not now}.rate:not(:checked)>label:hover,.rate:not(:checked)>label:hover~label{color:#deb217;// highlighted but not selected}.rate>input:checked+label:hover,.rate>input:checked+label:hover~label,.rate>input:checked~label:hover,.rate>input:checked~label:hover~label,.rate>label:hover~input:checked~label{color:#c59b08;// will be selected if clicked}');
 		}
 	}

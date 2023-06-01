@@ -541,6 +541,8 @@ class Ride extends \PHPFUI\ORM\Table
 		$whereCondition->and(new \PHPFUI\ORM\Condition('type', \App\Model\Cart::TYPE_ORDER));
 		$this->setWhere($whereCondition);
 		$this->addOrderBy('ride.title');
+		$this->addOrderBy('member.lastName');
+		$this->addOrderBy('member.firstName');
 		$this->addSelect('ride.title', 'Ride');
 		$this->addSelect(new \PHPFUI\ORM\Literal('concat(member.firstName," ",member.lastName)'), 'Name');
 		$this->addSelect('invoiceItem.title', 'Description');

@@ -52,12 +52,17 @@ class ZCiCal
 			$eventcount = 0;
 			$eventpos = 0;
 
+			// We need to handle data folding, so let's detect when we need
+			// to unfold and keep track of what we're unfolding onto.
+			$lastdatakey = null;
+
 			foreach ($lines as $line)
 				{
 				if ('BEGIN:' == \substr($line, 0, 6))
 					{
 					// start new object
 					$name = \substr($line, 6);
+					$lastdatakey = null;
 
 					if ('VEVENT' == $name)
 						{
@@ -84,6 +89,7 @@ class ZCiCal
 				elseif ('END:' == \substr($line, 0, 4))
 					{
 					$name = \substr($line, 4);
+					$lastdatakey = null;
 
 					if ('VEVENT' == $name)
 						{
@@ -116,9 +122,19 @@ class ZCiCal
 							}
 						}
 					}
+				elseif (' ' == \substr($line, 0, 1))
+					{
+						// This appends to the previous line.
+						if (null !== $lastdatakey) {
+							$this->curnode->data[$lastdatakey]->values[
+								\count($this->curnode->data[$lastdatakey]->values) - 1
+							] .= \ltrim($line);
+						}
+					}
 				else
 					{
 					$datanode = new \ICalendarOrg\ZCiCalDataNode($line);
+					$lastdatakey = $datanode->getName();
 
 					if ('VEVENT' == $this->curnode->getName())
 						{
@@ -207,10 +223,7 @@ class ZCiCal
 		}
 
 	/**
-	 * CountEvents()
-	 *
 	 * Return the # of VEVENTs in the object
-	 *
 	 */
 	public function countEvents() : int
 		{
@@ -231,10 +244,7 @@ class ZCiCal
 		}
 
 	/**
-	 * CountVenues()
-	 *
 	 * Return the # of VVENUEs in the object
-	 *
 	 */
 	public function countVenues() : int
 		{
@@ -268,8 +278,6 @@ class ZCiCal
 
 	/**
 	 * Escape slashes, commas and semicolons in strings
-	 *
-	 *
 	 */
 	public static function formatContent(string $content) : string
 		{

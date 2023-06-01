@@ -48,7 +48,7 @@ class RideWithGPS
 			if (($_POST['submit'] ?? '') == 'Rate It')
 				{
 				$rwgpsRating->setFrom($key);
-				$rwgpsRating->rating = (int)$_POST['rating'];
+				$rwgpsRating->rating = (int)($_POST['rating'] ?? 0);
 				$rwgpsRating->insertOrUpdate();
 				$this->page->redirect();
 				}
@@ -218,7 +218,11 @@ class RideWithGPS
 			$fieldSet->add(new \App\UI\Display('State', $rwgps->state));
 			$fieldSet->add(new \App\UI\Display('Zip', $rwgps->zip));
 			$fieldSet->add(new \App\UI\Display('Club Library Route', $rwgps->club ? 'Yes' : 'Not Yet'));
-			$fieldSet->add(new \App\UI\Display('Last Updated', $rwgps->lastUpdated));
+
+			if ($rwgps->lastUpdated)
+				{
+				$fieldSet->add(new \App\UI\Display('Last Updated', $rwgps->lastUpdated));
+				}
 			}
 		else
 			{

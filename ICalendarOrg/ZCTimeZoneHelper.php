@@ -89,7 +89,6 @@ class ZCTimeZoneHelper
 					{
 					$tobj = new \ICalendarOrg\ZCiCalNode('STANDARD', $tzobj);
 					}
-				//$tzobj->data[$tobj->getName()] == $tobj;
 
 				// convert timestamp to local time zone
 				$ts = \ICalendarOrg\ZDateHelper::toUnixDateTime(\ICalendarOrg\ZDateHelper::toLocalDateTime(\ICalendarOrg\ZDateHelper::toSQLDateTime($transition['ts']), $tzid));

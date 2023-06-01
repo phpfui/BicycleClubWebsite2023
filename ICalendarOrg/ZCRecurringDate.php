@@ -85,13 +85,6 @@ class ZCRecurringDate
 	public ?string $freq = null;
 
 	/**
-	 * start of week number (i.e. 0 for Sunday, 5 for Friday)
-	 *
-	 * @var ?integer
-	 */
-	public ?int $weekstart = null;
-
-	/**
 	 * inteval of repeating event (i.e. every 2 weeks, every 6 months)
 	 *
 	 */
@@ -130,6 +123,13 @@ class ZCRecurringDate
 	 * @var int $until UTC Unix Timestamp
 	 */
 	public ?int $until = null;
+
+	/**
+	 * start of week number (i.e. 0 for Sunday, 5 for Friday)
+	 *
+	 * @var ?integer
+	 */
+	public ?int $weekstart = null;
 
 	/**
 	 * Max year supported
@@ -400,7 +400,6 @@ class ZCRecurringDate
 
 	/**
 	 * display debug message
-	 *
 	 */
 	public function debug(int $level, string $msg) : self
 		{
@@ -419,7 +418,6 @@ class ZCRecurringDate
 	 *
 	 * @throws \Exception
 	 * @return array<int>
-	 *
 	 */
 	public function getDates(?int $maxdate = null) : array
 		{
@@ -609,8 +607,6 @@ class ZCRecurringDate
 
 	/**
 	 * set debug level (0: none, 1: minimal, 2: more output)
-	 *
-	 *
 	 */
 	public function setDebug(int $level) : self
 		{
@@ -621,8 +617,6 @@ class ZCRecurringDate
 
 	/**
 	 * save error
-	 *
-	 *
 	 */
 	public function setError(string $msg) : self
 		{
@@ -1020,7 +1014,6 @@ class ZCRecurringDate
 	 * Determine if the loop has reached the end date
 	 *
 	 * @param array<int> $rdates array of repeating dates
-	 *
 	 */
 	private function maxDates(array $rdates) : bool
 		{

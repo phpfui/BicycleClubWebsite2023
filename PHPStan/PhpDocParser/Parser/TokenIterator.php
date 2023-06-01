@@ -22,6 +22,9 @@ class TokenIterator
 	/** @var int[] */
 	private $savePoints = [];
 
+	/** @var list<int> */
+	private $skippedTokenTypes = [Lexer::TOKEN_HORIZONTAL_WS];
+
 	/**
 	 * @param list<array{string, int, int}> $tokens
 	 */
@@ -30,11 +33,7 @@ class TokenIterator
 		$this->tokens = $tokens;
 		$this->index = $index;
 
-		if ($this->tokens[$this->index][Lexer::TYPE_OFFSET] !== Lexer::TOKEN_HORIZONTAL_WS) {
-			return;
-		}
-
-		$this->index++;
+		$this->skipIrrelevantTokens();
 	}
 
 
@@ -103,6 +102,21 @@ class TokenIterator
 	}
 
 
+	public function endIndexOfLastRelevantToken(): int
+	{
+		$endIndex = $this->currentTokenIndex();
+		$endIndex--;
+		while (in_array($this->tokens[$endIndex][Lexer::TYPE_OFFSET], $this->skippedTokenTypes, true)) {
+			if (!isset($this->tokens[$endIndex - 1])) {
+				break;
+			}
+			$endIndex--;
+		}
+
+		return $endIndex;
+	}
+
+
 	public function isCurrentTokenValue(string $tokenValue): bool
 	{
 		return $this->tokens[$this->index][Lexer::VALUE_OFFSET] === $tokenValue;
@@ -131,12 +145,7 @@ class TokenIterator
 		}
 
 		$this->index++;
-
-		if (($this->tokens[$this->index][Lexer::TYPE_OFFSET] ?? -1) !== Lexer::TOKEN_HORIZONTAL_WS) {
-			return;
-		}
-
-		$this->index++;
+		$this->skipIrrelevantTokens();
 	}
 
 
@@ -150,12 +159,7 @@ class TokenIterator
 		}
 
 		$this->index++;
-
-		if (($this->tokens[$this->index][Lexer::TYPE_OFFSET] ?? -1) !== Lexer::TOKEN_HORIZONTAL_WS) {
-			return;
-		}
-
-		$this->index++;
+		$this->skipIrrelevantTokens();
 	}
 
 
@@ -167,10 +171,7 @@ class TokenIterator
 		}
 
 		$this->index++;
-
-		if ($this->tokens[$this->index][Lexer::TYPE_OFFSET] === Lexer::TOKEN_HORIZONTAL_WS) {
-			$this->index++;
-		}
+		$this->skipIrrelevantTokens();
 
 		return true;
 	}
@@ -184,10 +185,7 @@ class TokenIterator
 		}
 
 		$this->index++;
-
-		if ($this->tokens[$this->index][Lexer::TYPE_OFFSET] === Lexer::TOKEN_HORIZONTAL_WS) {
-			$this->index++;
-		}
+		$this->skipIrrelevantTokens();
 
 		return true;
 	}
@@ -217,12 +215,34 @@ class TokenIterator
 	public function next(): void
 	{
 		$this->index++;
+		$this->skipIrrelevantTokens();
+	}
 
-		if ($this->tokens[$this->index][Lexer::TYPE_OFFSET] !== Lexer::TOKEN_HORIZONTAL_WS) {
+
+	private function skipIrrelevantTokens(): void
+	{
+		if (!isset($this->tokens[$this->index])) {
 			return;
 		}
 
-		$this->index++;
+		while (in_array($this->tokens[$this->index][Lexer::TYPE_OFFSET], $this->skippedTokenTypes, true)) {
+			if (!isset($this->tokens[$this->index + 1])) {
+				break;
+			}
+			$this->index++;
+		}
+	}
+
+
+	public function addEndOfLineToSkippedTokens(): void
+	{
+		$this->skippedTokenTypes = [Lexer::TOKEN_HORIZONTAL_WS, Lexer::TOKEN_PHPDOC_EOL];
+	}
+
+
+	public function removeEndOfLineFromSkippedTokens(): void
+	{
+		$this->skippedTokenTypes = [Lexer::TOKEN_HORIZONTAL_WS];
 	}
 
 	/** @phpstan-impure */

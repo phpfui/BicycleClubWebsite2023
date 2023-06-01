@@ -28,7 +28,8 @@ class TinifyImage extends \App\Model\File
 		$type = $this->getImageType($filename);
 		$img = $this->openImageFromAny($filename, $type);
 		$exif = [];
-		if (file_exists($filename))
+
+		if (\file_exists($filename))
 			{
 			$exif = @\exif_read_data($filename);
 			}
@@ -138,7 +139,8 @@ class TinifyImage extends \App\Model\File
 		$returnValue = [];
 		$filePath = $this->get((string)$name . $extension);
 		$exif = [];
-		if (file_exists($filePath))
+
+		if (\file_exists($filePath))
 			{
 			$exif = @\exif_read_data($filePath);
 			}

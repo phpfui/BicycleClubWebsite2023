@@ -12,7 +12,6 @@ class RidePullList
 
 	public function generate(string $date) : \PDF_MC_Table
 		{
-
 		$rideTable = new \App\Table\Ride();
 		$rideTable->setInventoryBySignup($date);
 

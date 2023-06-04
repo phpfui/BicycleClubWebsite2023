@@ -608,7 +608,7 @@ class Ride extends \PHPFUI\ORM\Table
 		$sql = 'select * from ride left join pace on pace.paceId=ride.paceId where rideDate >= ?';
 		$input = [\App\Tools\Date::todayString()];
 
-		$sql .= ' order by rideDate asc,pace.ordering asc,targetPace asc,mileage desc';
+		$sql .= ' order by rideDate asc,pace.ordering asc,targetPace desc,mileage desc';
 
 		if ($limit)
 			{

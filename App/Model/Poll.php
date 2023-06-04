@@ -57,11 +57,7 @@ class Poll
 		$oldAnswer = $oldPollResponse->answer ?? 0;
 		$oldPollResponse->delete();
 		$key['answer'] = $get['answer'];
-
-		if (! $poll->membershipOnly)
-			{
-			$key['memberId'] = \App\Model\Session::signedInMemberId();
-			}
+		$key['memberId'] = \App\Model\Session::signedInMemberId();
 		$newPollResponse = new \App\Record\PollResponse();
 		$newPollResponse->setFrom($key);
 		$newPollResponse->insert();
@@ -92,7 +88,7 @@ class Poll
 			$email->setSubject($title);
 			$email->setHtml();
 			$email->setBody($message);
-			$email->setFromMember($secretary->toArray());
+			$email->setFromMember($secretary);
 			$email->addBCC('voting@' . \strtolower((string)$_SERVER['SERVER_NAME']));
 			$email->addToMember($voter);
 			$email->send();

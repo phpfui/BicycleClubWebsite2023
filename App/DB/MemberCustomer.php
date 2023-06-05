@@ -72,7 +72,7 @@ class MemberCustomer
 		return isset($this->customer->{$field});
 		}
 
-	public function __set(string $field, $value)
+	public function __set(string $field, mixed $value)
 		{
 		if ($this->member->loaded())
 			{
@@ -89,8 +89,6 @@ class MemberCustomer
 			{
 			$this->customer->{$field} = $value;
 			}
-
-		return $value;
 		}
 
 	public function getCustomer() : \App\Record\Customer

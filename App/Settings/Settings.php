@@ -48,18 +48,11 @@ abstract class Settings
 		return $this->settings[$field] ?? null;
 		}
 
-	/**
-	 * Allows for $object->field = $x syntax
-	 *
-	 * @return mixed  returns $value so you can string together assignments
-	 */
-	public function __set(string $field, $value)
+	public function __set(string $field, mixed $value)
 		{
 		$this->load();
 
 		$this->settings[$field] = $value;
-
-		return $value;
 		}
 
 	/**

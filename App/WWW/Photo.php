@@ -297,6 +297,13 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$this->page->turnOffBanner();
 
+		if ($photo->empty())
+			{
+			$this->page->addPageContent(new \PHPFUI\SubHeader('Photo Not Found'));
+
+			return;
+			}
+
 		if ($this->page->addHeader('View Photo'))
 			{
 			$this->page->addPageContent($this->view->getBreadCrumbs('/Photo/browse/', $photo->photoFolderId, $photo->photoId));

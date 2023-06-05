@@ -48,7 +48,7 @@ abstract class Settings
 		return $this->settings[$field] ?? null;
 		}
 
-	public function __set(string $field, mixed $value)
+	public function __set(string $field, mixed $value) : void
 		{
 		$this->load();
 

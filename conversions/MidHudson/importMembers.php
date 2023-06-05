@@ -26,6 +26,7 @@ function cleanEmail(string $email) : string
 	}
 
 $tables = [];
+$tables[] = new \App\Table\UserPermission();
 $tables[] = new \App\Table\Payment();
 $tables[] = new \App\Table\InvoiceItem();
 $tables[] = new \App\Table\Invoice();
@@ -35,7 +36,7 @@ $tables[] = new \App\Table\Membership();
 // delete all data to avoid importing dupes
 foreach ($tables as $table)
 	{
-	$table->delete(true);
+	\PHPFUI\ORM::execute('truncate table ' . $table->getTableName());
 	}
 
 $permissions = new \App\Model\Permission();

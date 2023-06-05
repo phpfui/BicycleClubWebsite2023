@@ -26,6 +26,7 @@ class Migration_4 extends \PHPFUI\ORM\Migration
 
 		$settingTable = new \App\Table\Setting();
 		$settingTable->saveStandardPermissionGroup('Super User', 1);
+		$settingTable->saveStandardPermissionGroup('Normal Member', 6);
 
 		return true;
 		}

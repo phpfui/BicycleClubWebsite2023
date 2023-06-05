@@ -178,8 +178,10 @@ class SlideShow
 
 		if ($slideShow->slideShowId)
 			{
-			$contentLink = new \App\UI\Display('Context Insertion Text', $this->getInsertionText($slideShow->slideShowId));
-			$form->add($contentLink);
+			$fieldSet = new \PHPFUI\FieldSet('Content');
+			$contentLink = new \App\UI\Display('Insertion Text', $this->getInsertionText($slideShow->slideShowId));
+			$fieldSet->add($contentLink);
+			$form->add($fieldSet);
 			}
 
 		$buttonGroup->addButton($listButton);

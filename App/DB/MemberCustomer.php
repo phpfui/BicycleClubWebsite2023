@@ -72,7 +72,7 @@ class MemberCustomer
 		return isset($this->customer->{$field});
 		}
 
-	public function __set(string $field, mixed $value)
+	public function __set(string $field, mixed $value) : void
 		{
 		if ($this->member->loaded())
 			{

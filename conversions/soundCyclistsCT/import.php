@@ -307,6 +307,9 @@ foreach ($categoryReader as $row)
  *
  * Ride Levels of Interest
  */
+$addBruce = new \App\Cron\Job\AddBruce(new \App\Cron\Controller(5));
+$addBruce->run();
+
 $dupMembers = ['csadler88@yahoo.com', 'lpelecovich@odysseyre.com'];
 
 $memberReader = \getReader('Member Information View.csv');

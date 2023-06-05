@@ -64,7 +64,13 @@ class SlideShow extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 		{
 		if ($this->page->addHeader('Show Slide Show'))
 			{
-			$this->page->addPageContent($this->view->show($slideShow, '' == $debug, 'debug' == $debug));
+			$debugging = 'debug' == $debug;
+			$this->page->addPageContent($this->view->show($slideShow, '' == $debug, $debugging));
+
+			if ($debugging)
+				{
+				$this->page->addPageContent(new \PHPFUI\Button('Edit Slide Show', '/Content/SlideShow/edit/' . $slideShow->slideShowId));
+				}
 			}
 		}
 

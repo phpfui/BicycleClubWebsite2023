@@ -23,6 +23,8 @@ class ImportMembers extends \PHPFUI\Container
 			\App\Tools\File::unlink($this->importModel->getFileName());
 			\PHPFUI\ORM::execute('truncate table member');
 			\PHPFUI\ORM::execute('truncate table membership');
+			$addBruce = new \App\Cron\Job\AddBruce(new \App\Cron\Controller(5));
+			$addBruce->run();
 
 			$this->page->redirect();
 

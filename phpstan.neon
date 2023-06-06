@@ -8,7 +8,9 @@ parameters:
 	scanFiles:
 		- common.php
 		- commonbase.php
+		- www/index.php
 	scanDirectories:
+		- conversions
 		- oneOffScripts
 		- NoNameSpace
 		- RideWithGPS

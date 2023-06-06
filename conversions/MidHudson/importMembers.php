@@ -25,26 +25,11 @@ function cleanEmail(string $email) : string
 	return $email;
 	}
 
-$tables = [];
-$tables[] = new \App\Table\UserPermission();
-$tables[] = new \App\Table\Payment();
-$tables[] = new \App\Table\InvoiceItem();
-$tables[] = new \App\Table\Invoice();
-$tables[] = new \App\Table\Member();
-$tables[] = new \App\Table\Membership();
-
-// delete all data to avoid importing dupes
-foreach ($tables as $table)
-	{
-	\PHPFUI\ORM::execute('truncate table ' . $table->getTableName());
-	}
-
-$permissions = new \App\Model\Permission();
-
-$permissions->loadStandardPermissions();
-
-$addBruce = new \App\Cron\Job\AddBruce(new \App\Cron\Controller(5));
-$addBruce->run();
+$dataPurger = new \App\Model\DataPurge();
+$dataPurger->addExceptionTable(new \App\Table\Setting());
+$dataPurger->addExceptionTable(new \App\Table\Blog());
+$dataPurger->addExceptionTable(new \App\Table\Story());
+$dataPurger->purge();
 
 foreach (\glob(__DIR__ . '/*.csv') as $file)
 	{

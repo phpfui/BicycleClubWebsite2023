@@ -141,64 +141,11 @@ function getReader(string $fileName) : \App\Tools\CSVReader
 	return new \App\Tools\CSVReader($fileName);
 	}
 
-//$memberReader = getReader('Member Information View.csv');
-//
-//print_r(array_keys($memberReader->current()));
-//exit;
-
-// save off settings and restore them after restore
-$settingTable = new \App\Table\Setting();
-$settings = [];
-
-foreach ($settingTable->getRecordCursor() as $record)
-	{
-	$settings[$record->name] = $record->value;
-	}
-
-// drop all the tables, probably garbage
-$tables = \PHPFUI\ORM::getRows('show tables');
-
-foreach ($tables as $row)
-	{
-	$table = \array_pop($row);
-	\PHPFUI\ORM::execute('drop table ' . $table);
-	}
-
-// get a new copy of the db
-$restore = new \App\Model\Restore(PROJECT_ROOT . '/Initial.schema');
-
-if (! $restore->run())
-	{
-	\print_r($restore->getErrors());
-
-	exit;
-	}
-
-// run latest migrations
-$migrator = new \PHPFUI\ORM\Migrator();
-$migrator->migrate();
-
-$errors = $migrator->getErrors();
-
-if ($errors)
-	{
-	\print_r($errors);
-
-	exit;
-	}
-
-// restore settings
-foreach ($settings as $name => $value)
-	{
-	$setting = new \App\Record\Setting();
-	$setting->name = $name;
-	$setting->value = $value;
-	$setting->insertOrUpdate();
-	}
-
-$permissionModel = new \App\Model\Permission();
-
-$permissionModel->loadStandardPermissions();
+$dataPurger = new \App\Model\DataPurge();
+$dataPurger->addExceptionTable(new \App\Table\Setting());
+$dataPurger->addExceptionTable(new \App\Table\Blog());
+$dataPurger->addExceptionTable(new \App\Table\Story());
+$dataPurger->purge();
 
 /**
  * import categories

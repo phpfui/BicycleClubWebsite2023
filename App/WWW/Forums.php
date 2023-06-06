@@ -156,7 +156,9 @@ class Forums extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					{
 					$this->page->addHeader($header, '', true);
 					}
-				$this->page->addPageContent($this->view->listMembers($forum, \App\Table\ForumMember::getMembers($forum)));
+				$forumMemberTable = new \App\Table\ForumMember();
+				$forumMemberTable->setMembersQuery($forum);
+				$this->page->addPageContent($this->view->listMembers($forum, $forumMemberTable));
 				}
 			}
 		else

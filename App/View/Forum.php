@@ -498,79 +498,75 @@ class Forum
 		return $container;
 		}
 
-	public function listMembers(\App\Record\Forum $forum, \PHPFUI\ORM\DataObjectCursor $members) : \PHPFUI\Form
+	public function listMembers(\App\Record\Forum $forum, \App\Table\ForumMember $forumMemberTable) : \PHPFUI\Container
 		{
-		$submit = new \PHPFUI\Submit('Save Settings');
-		$form = new \PHPFUI\Form($this->page, $submit);
+		$container = new \PHPFUI\Container();
+		$form = new \PHPFUI\Form($this->page, new \PHPFUI\Submit());
 
 		if ($form->isMyCallback())
 			{
-			if (isset($_POST['emailType']) && \is_array($_POST['emailType']))
+			$key = ['memberId' => $_POST['memberId'] ?? 0, 'forumId' => $forum->forumId];
+
+			$forumMember = new \App\Record\ForumMember($key);
+
+			if ($forumMember->loaded())
 				{
-				$key = ['forumId' => $_POST['forumId']];
-
-				$forumMember = new \App\Record\ForumMember();
-
-				foreach ($_POST['emailType'] as $memberId => $value)
-					{
-					$key['memberId'] = $memberId;
-					$forumMember->read($key);
-
-					if ($forumMember->emailType != $value)
-						{
-						$forumMember->emailType = (int)$value;
-						$forumMember->update();
-						}
-					}
+				$forumMember->emailType = (int)$_POST['emailType'];
+				$forumMember->update();
+				$this->page->setResponse('Saved');
 				}
-			$this->page->setResponse('Saved');
+			else
+				{
+				$this->page->setResponse('not found');
+				}
 
-			return $form;
+			return $container;
 			}
 
-		$addMemberButton = new \PHPFUI\Button('Add Member');
-		$this->getAddMemberModal($addMemberButton, $forum);
-		$form->add($addMemberButton);
-
-		if (\count($members))
+		if (\count($forumMemberTable))
 			{
 			$form->add(new \PHPFUI\SubHeader('Members for ' . $forum->name));
 			$form->add(new \PHPFUI\Input\Hidden('forumId', (string)$forum->forumId));
-			$table = new \PHPFUI\Table();
-			$delete = new \PHPFUI\AJAX('deleteMember');
-			$delete->addFunction('success', '$("#memberId-"+data.response).css("background-color","red").hide("fast")');
-			$this->page->addJavaScript($delete->getPageJS());
-			$table->setRecordId('memberId');
-			$table->setHeaders(['member' => 'Member', 'option' => 'Setting', 'del' => 'Delete']);
 
-			foreach ($members as $member)
+			$table = new \App\UI\ContinuousScrollTable($this->page, $forumMemberTable);
+			$headers = ['firstName', 'lastName'];
+			$table->setSearchColumns($headers)->setSortableColumns($headers);
+			$headers[] = 'setting';
+			$headers[] = 'delete';
+			$table->setHeaders($headers);
+			$this->page->addJavaScript('function changeSubscription(id,value){$.ajax({method:"POST",dataType:"json",data:{memberId:id,emailType:value,submit:"Save",csrf:"' . \PHPFUI\Session::csrf() . '"}})}');
+			$deleter = new \App\Model\DeleteRecord($this->page, $table, $forumMemberTable, 'Are you sure you want to delete this member from the forum?');
+			$table->addCustomColumn('delete', $deleter->columnCallback(...));
+			$table->addCustomColumn('forumId_memberId', static fn (array $member) => $member['forumId'] . '_' . $member['memberId']);
+			$that = $this;
+			$table->addCustomColumn('setting', static function(array $member) use ($that)
 				{
-				$row = $member->toArray();
-				$row['member'] = $row['firstName'] . ' ' . $row['lastName'];
-				$select = new \PHPFUI\Input\Select("emailType[{$row['memberId']}]");
+				$select = new \PHPFUI\Input\Select("emailType[{$member['memberId']}]");
 
-				foreach ($this->subscriptionTypes as $key => $name)
+				foreach ($that->subscriptionTypes as $key => $name)
 					{
 					if ($key)
 						{
-						$select->addOption($name, $key, $key == $row['emailType']);
+						$select->addOption($name, $key, $key == $member['emailType']);
 						}
 					}
-				$row['option'] = $select;
-				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-				$icon->addAttribute('onclick', $delete->execute(['forumId' => $forum->forumId, 'memberId' => $row['memberId']]));
-				$row['del'] = $icon;
-				$table->addRow($row);
-				}
-			$form->add($table);
-			$form->add($submit);
+				$select->addAttribute('onchange', 'changeSubscription(' . $member['memberId'] . ', this.value)');
+
+				return $select;
+				});
+			$addMemberButton = new \PHPFUI\Button('Add Member');
+			$this->getAddMemberModal($addMemberButton, $forum);
+			$form->add($addMemberButton);
+
+			$container->add($form);
+			$container->add($table);
 			}
 		else
 			{
-			$form->add(new \PHPFUI\SubHeader('No members found in ' . $forum->name));
+			$container->add(new \PHPFUI\SubHeader('No members found in ' . $forum->name));
 			}
 
-		return $form;
+		return $container;
 		}
 
 	public function memberForums() : \PHPFUI\Table

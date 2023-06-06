@@ -54,7 +54,9 @@ class Forum
 			$fields['email'] = \App\Model\Member::cleanEmail($fields['email']);
 			}
 
-		return \App\Table\ForumMember::getMembers($forum, $fields);
+		$forumMemberTable = new \App\Table\ForumMember();
+
+		return $forumMemberTable->getMembers($forum, $fields);
 		}
 
 	public function isAdditionalEmail(string $from, \App\Record\Forum $forum) : array
@@ -93,7 +95,8 @@ class Forum
 	public function post(array $message) : int
 		{
 		$forum = new \App\Record\Forum((int)$message['forumId']);
-		$members = \App\Table\ForumMember::getEmailMembers($forum);
+		$forumMemberTable = new \App\Table\ForumMember();
+		$members = $forumMemberTable->getEmailMembers($forum);
 
 		if (! $forum->loaded() || $forum->closed || ! \count($members))
 			{

@@ -34,7 +34,8 @@ class ForumJournal extends \App\Cron\BaseJob
 
 			if (\count($messages))
 				{
-				$members = \App\Table\ForumMember::getDigestMembers($forum);
+				$forumMemberTable = new \App\Table\ForumMember();
+				$members = $forumMemberTable->getDigestMembers($forum);
 				$email = new \App\Tools\EMail();
 				$title = "{$clubAbbrev} {$forum->name} Daily Digest";
 				$email->setSubject($title);

@@ -95,6 +95,7 @@ class Video
 		$videoType = new \PHPFUI\Input\Select('videoTypeId', 'Video Type');
 
 		$videoTypeTable = new \App\Table\VideoType();
+		$videoType->addOption('None', '0');
 
 		foreach ($videoTypeTable->getRecordCursor() as $type)
 			{

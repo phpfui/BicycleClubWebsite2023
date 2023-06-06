@@ -8,6 +8,8 @@ class Logger
 
 	private string $content = '<pre>';
 
+	private array $ignoredErrors = ['exif_read_data'];
+
 	private static ?self $logger = null;
 
 	private bool $timeStamp = false;
@@ -232,12 +234,22 @@ class Logger
 	 */
 	protected function log(mixed $message) : static
 		{
+		$error = $this->print($message);
+
+		foreach ($this->ignoredErrors as $ignore)
+			{
+			if (\str_contains($error, $ignore))
+				{
+				return $this;
+				}
+			}
+
 		if ($this->timeStamp)
 			{
 			[$microtime, $time] = \explode(' ', \microtime());
 			$this->content .= \date('h:i:s A ', (int)$time) . $microtime . "\n";
 			}
-		$this->content .= $this->print($message) . "\n";
+		$this->content .= $error . "\n";
 
 		if ($this->alwaysFlush)
 			{

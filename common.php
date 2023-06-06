@@ -8,14 +8,13 @@ function trans(string $text, array $parameters = []) : string
 
 \App\Tools\SessionManager::start();
 
-
 $dbSettings = new \App\Settings\DB();
 date_default_timezone_set($dbSettings->timeZone ?? 'America/New_York');
 $pdo = $dbSettings->getPDO();
 \PHPFUI\ORM::setLogger(new \PHPFUI\ORM\StandardErrorLogger());
 if (! $pdo)
 	{
-	\PHPFUI\ORM::log(\PSR\Log\LogLevel::EMERGENCY, $dbSettings->getError());
+	\PHPFUI\ORM::log(\Psr\Log\LogLevel::EMERGENCY, $dbSettings->getError());
 	exit;
 	}
 \PHPFUI\ORM::addConnection($pdo);

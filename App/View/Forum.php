@@ -401,7 +401,6 @@ class Forum
 				$subscriptionButton = new \PHPFUI\Button('Subscribe');
 				$subscriptionButton->addClass('success');
 				$member->setFrom($key);
-				$member->emailType = 0;
 				}
 			$modal = $this->getSubscriptionModal($subscriptionButton, $member, $forum->name);
 
@@ -710,7 +709,7 @@ class Forum
 			}
 		else
 			{
-	  $text = 'Reply';
+			$text = 'Reply';
 			$replyButton = new \PHPFUI\FAIcon('fas', 'reply-all', '#');
 			$replyButton->setToolTip('Reply to the group.');
 			}
@@ -800,7 +799,7 @@ class Forum
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
 		$form->add(new \PHPFUI\Input\Hidden('forumId', (string)$member->forumId));
-		$radio = $this->getSubscriptionRadio($member->emailType);
+		$radio = $this->getSubscriptionRadio($member->emailType ?? 0);
 		$form->add($radio);
 		$form->add('<br>');
 		$submit = new \PHPFUI\Submit('Save', 'action');
@@ -888,9 +887,18 @@ class Forum
 						// Intentionally fall through
 					case 'Add Member':
 						$forumMember = new \App\Record\ForumMember();
-						$forumMember->setFrom(['forumId' => (int)$_POST['forumId'], 'memberId' => (int)$_POST['memberId'], (int)$_POST['emailType']]);
-						$forumMember->save();
-						$this->page->redirect();
+						$forumMember->setFrom($_POST);
+
+						if (! $forumMember->emailType)
+							{
+							$forumMember->delete();
+							$this->page->redirect('/Forums/my');
+							}
+						else
+							{
+							$forumMember->save();
+							$this->page->redirect();
+							}
 
 						break;
 					}

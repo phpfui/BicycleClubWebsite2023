@@ -3,7 +3,7 @@
     "description": "A mobile friendly website to manage a bicycle club",
     "minimum-stability": "stable",
     "keywords": ["bicycle", "club", "website"],
-    "license": "GNU AGPLv3",
+    "license": "AGPL-3.0-or-later",
     "authors": [
         {
         "name": "Bruce Wells",

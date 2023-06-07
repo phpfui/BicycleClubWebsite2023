@@ -85,7 +85,7 @@ class Session
 	 */
 	public static function setFlash(string $key, mixed $value = null) : void
 		{
-		if (! is_null($value))
+		if (null !== $value)
 			{
 			$_SESSION['flash'][$key] = \json_encode($value);
 			}

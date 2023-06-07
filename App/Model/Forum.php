@@ -96,7 +96,7 @@ class Forum
 		{
 		$forum = new \App\Record\Forum((int)$message['forumId']);
 		$forumMemberTable = new \App\Table\ForumMember();
-		$members = $forumMemberTable->getEmailMembers($forum);
+		$members = $forumMemberTable->getMembers($forum);
 
 		if (! $forum->loaded() || $forum->closed || ! \count($members))
 			{

@@ -546,11 +546,11 @@ class Content extends \App\UI\HTMLEditor
 						[$width, $height, $type, $attr] = \getimagesize($photo->getFullPath());
 						$sizeSet = new \PHPFUI\FieldSet('Current Size (Enter a smaller width if desired)');
 
-						$widthHidden = new \PHPFUI\Input\Hidden('widthHidden', $width);
+						$widthHidden = new \PHPFUI\Input\Hidden('widthHidden', (string)$width);
 						$widthHidden->setId('widthHiddenId');
 						$sizeSet->add($widthHidden);
 
-						$heightHidden = new \PHPFUI\Input\Hidden('heightHidden', $height);
+						$heightHidden = new \PHPFUI\Input\Hidden('heightHidden', (string)$height);
 						$heightHidden->setId('heightHiddenId');
 						$sizeSet->add($heightHidden);
 

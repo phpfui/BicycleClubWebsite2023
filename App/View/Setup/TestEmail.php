@@ -23,7 +23,7 @@ class TestEmail extends \PHPFUI\Container
 			$email->setSubject('This is a test email');
 			$email->setFrom($_POST['email']);
 			$email->addTo($_POST['email']);
-			$email->useSMTPServer(! $_POST['localServer']);
+			$email->useSMTPServer(! (int)($_POST['localServer'] ?? 0));
 			$error = $email->send();
 
 			\PHPFUI\Session::setFlash('post', $_POST);

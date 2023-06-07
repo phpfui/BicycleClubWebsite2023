@@ -4,7 +4,7 @@ namespace App\View\Public;
 
 class ContactUs implements \Stringable
 	{
-	private readonly \PHPFUI\ReCAPTCHA $captcha;
+	private ?\PHPFUI\ReCAPTCHA $captcha = null;
 
 	private readonly \PHPFUI\MathCaptcha $mathCaptcha;
 
@@ -30,7 +30,7 @@ class ContactUs implements \Stringable
 			{
 			\App\Model\Session::setFlash('post', $_POST);
 
-			if ($this->captcha->isValid() && $this->mathCaptcha->isValid())
+			if ((! $this->captcha || $this->captcha->isValid()) && $this->mathCaptcha->isValid())
 				{
 				$settings = new \App\Table\Setting();
 				$link = $settings->value('homePage');

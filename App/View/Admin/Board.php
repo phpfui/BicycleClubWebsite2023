@@ -49,6 +49,7 @@ class Board
 					{
 					$board->extension = $this->imageModel->getExtension();
 					$board->update();
+					$this->imageModel->update($board->toArray());
 					$this->imageModel->createThumb(100);
 					\App\Model\Session::setFlash('success', 'Photo uploaded successfully');
 					}
@@ -110,6 +111,9 @@ class Board
 			$buttonGroup = new \App\UI\CancelButtonGroup();
 			$buttonGroup->addButton($submit);
 			$buttonGroup->addButton($addPhotoButton);
+			$boardListButton = new \PHPFUI\Button('Board List', '/Admin/board');
+			$boardListButton->addClass('secondary');
+			$buttonGroup->addButton($boardListButton);
 			$form->add($buttonGroup);
 			}
 
@@ -165,8 +169,8 @@ class Board
 
 				foreach ($_POST['memberId'] as $memberId)
 					{
+					$boardMember->read($memberId);
 					$boardMember->rank = --$rank;
-					$boardMember->memberId = (int)$memberId;
 					$boardMember->update();
 					}
 				}

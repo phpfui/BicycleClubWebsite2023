@@ -13,30 +13,20 @@ class MailProcessor extends \App\Cron\BaseJob
 	public function run(array $parameters = []) : void
 		{
 		$processors = \App\Cron\EMailProcessorFactory::get();
-		$settingTable = new \App\Table\Setting();
-		$server = $settingTable->value('IMAPServer');
 
-		if (! $server)
+		$imap = new \App\Model\IMAP();
+
+		if (! $imap->valid())
 			{
 			return;
 			}
-
-		$mbox = @\imap_open($server, $box = $settingTable->value('IMAPMailBox'), $password = $settingTable->value('IMAPPassword'));
-
-		if (! $mbox)
-			{
-			$errors = \imap_errors();
-			\App\Tools\Logger::get()->debug($errors);
-
-			return;
-			}
-		$numMessages = @\imap_num_msg($mbox);
+		$numMessages = \count($imap);
 		$parser = new \ZBateson\MailMimeParser\MailMimeParser();
 
 		for ($i = 1; $i <= $numMessages; ++$i)
 			{
 			$tempFile = new \App\Tools\TempFile();
-			\imap_savebody($mbox, $tempFile, $i);
+			$imap->saveBodyToFile($tempFile, $i);
 			$processed = false;
 			$message = null;
 
@@ -67,14 +57,13 @@ class MailProcessor extends \App\Cron\BaseJob
 
 			if ($message)
 				{
-				@\imap_delete($mbox, (string)$i);
+				$imap->delete((string)$i);
 				}
 			else
 				{
 				$this->controller->log_critical('unable to parse email');
 				}
 			}
-		@\imap_close($mbox, CL_EXPUNGE);
 		unset($processors);
 		}
 

@@ -8,7 +8,7 @@ class ReCAPTCHA
 		{
 		}
 
-	public function editSettings() : \PHPFUI\Form
+	public function edit() : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit();
 		$settingsSaver = new \App\Model\SettingsSaver();
@@ -43,7 +43,7 @@ class ReCAPTCHA
 
 		if ($form->isMyCallback())
 			{
-			$settingsSaver->save();
+			$settingsSaver->save($_POST);
 			$this->page->setResponse('Saved');
 			}
 		else

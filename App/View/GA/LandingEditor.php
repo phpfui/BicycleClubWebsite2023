@@ -139,7 +139,7 @@ class LandingEditor
 			}
 		elseif ($form->isMyCallback())
 			{
-			$settingsSaver->save();
+			$settingsSaver->save($_POST);
 			$this->page->setResponse('Saved');
 			}
 		else

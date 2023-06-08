@@ -101,7 +101,7 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		if ($this->page->addHeader('Set FavIcon'))
 			{
 			$view = new \App\View\System\FavIcon($this->page);
-			$this->page->addPageContent($view->editSettings());
+			$this->page->addPageContent($view->edit());
 			}
 		}
 

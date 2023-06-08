@@ -22,7 +22,7 @@ class PasswordPolicy extends \App\Model\PasswordPolicy
 
 		if ($form->isMyCallback($submit))
 			{
-			$this->settingsSaver->save();
+			$this->settingsSaver->save($_POST);
 			$this->page->setResponse('Saved');
 			}
 

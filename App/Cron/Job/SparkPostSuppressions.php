@@ -6,7 +6,7 @@ class SparkPostSuppressions extends \App\Cron\BaseJob
 	{
 	public function getDescription() : string
 		{
-		return 'Process SparkPost Suppression Lists)';
+		return 'Process SparkPost Suppression Lists';
 		}
 
 	/** @param array<string, string> $parameters */

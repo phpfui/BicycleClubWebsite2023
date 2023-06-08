@@ -131,13 +131,13 @@ class Config implements \PHPFUI\Interfaces\NanoClass, \Stringable
 
 			case 10:
 				$view = new \App\View\System\SMTPSettings($this->page);
-				$this->page->add(new \App\View\Setup\Generic('Email SMTP Settings', $view->editSettings(), $wizardBar));
+				$this->page->add(new \App\View\Setup\Generic('Email SMTP Settings', $view->edit(), $wizardBar));
 
 				break;
 
 			case 11:
-				$view = new \App\View\Admin\SystemEmail($this->page);
-				$this->page->add(new \App\View\Setup\Generic('Email IMAP Settings', $view->editSettings(), $wizardBar));
+				$view = new \App\View\System\IMAPSettings($this->page);
+				$this->page->add(new \App\View\Setup\Generic('Email IMAP Settings', $view->edit(), $wizardBar));
 
 				break;
 
@@ -164,37 +164,37 @@ class Config implements \PHPFUI\Interfaces\NanoClass, \Stringable
 
 			case 15:
 				$view = new \App\View\System\GoogleAnalytics($this->page);
-				$this->page->add(new \App\View\Setup\Generic('Google Analytics Settings', $view->editSettings(), $wizardBar));
+				$this->page->add(new \App\View\Setup\Generic('Google Analytics Settings', $view->edit(), $wizardBar));
 
 				break;
 
 			case 16:
 				$view = new \App\View\System\ReCAPTCHA($this->page);
-				$this->page->add(new \App\View\Setup\Generic('Google ReCAPTCHA Settings', $view->editSettings(), $wizardBar));
+				$this->page->add(new \App\View\Setup\Generic('Google ReCAPTCHA Settings', $view->edit(), $wizardBar));
 
 				break;
 
 			case 17:
 				$view = new \App\View\System\SlackSettings($this->page);
-				$this->page->add(new \App\View\Setup\Generic('Slack Settings', $view->editSettings(), $wizardBar));
+				$this->page->add(new \App\View\Setup\Generic('Slack Settings', $view->edit(), $wizardBar));
 
 				break;
 
 			case 18:
 				$view = new \App\View\System\TwilioSettings($this->page);
-				$this->page->add(new \App\View\Setup\Generic('Twilio SMS Settings', $view->editSettings(), $wizardBar));
+				$this->page->add(new \App\View\Setup\Generic('Twilio SMS Settings', $view->edit(), $wizardBar));
 
 				break;
 
 			case 19:
 				$view = new \App\View\System\TinifySettings($this->page);
-				$this->page->add(new \App\View\Setup\Generic('Tinify Settings', $view->editSettings(), $wizardBar));
+				$this->page->add(new \App\View\Setup\Generic('Tinify Settings', $view->edit(), $wizardBar));
 
 				break;
 
 			case 20:
 				$view = new \App\View\System\FavIcon($this->page);
-				$this->page->add(new \App\View\Setup\Generic('FavIcon Settings', $view->editSettings(), $wizardBar));
+				$this->page->add(new \App\View\Setup\Generic('FavIcon Settings', $view->edit(), $wizardBar));
 
 				break;
 

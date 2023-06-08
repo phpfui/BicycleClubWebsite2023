@@ -8,7 +8,7 @@ class ConstantContact
 		{
 		}
 
-	public function editSettings(string $authorize) : \PHPFUI\Form
+	public function edit(string $authorize) : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit();
 		$settingsSaver = new \App\Model\SettingsSaver();
@@ -152,7 +152,7 @@ class ConstantContact
 
 		if ($form->isMyCallback())
 			{
-			$settingsSaver->save();
+			$settingsSaver->save($_POST);
 			$this->page->setResponse('Saved');
 			}
 		else

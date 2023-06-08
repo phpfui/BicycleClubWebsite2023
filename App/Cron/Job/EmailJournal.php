@@ -54,7 +54,7 @@ class EmailJournal extends \App\Cron\BaseJob
 			$email->setFromMember($memberPicker->getMember());
 			$email->setSubject($title);
 
-			foreach (\App\Table\Member::getJournalMembers($today) as $member)
+			foreach (\App\Table\Member::getJournalMembers(\App\Tools\Date::todayString()) as $member)
 				{
 				$email->addToMember($member);
 				}

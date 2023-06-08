@@ -11,7 +11,7 @@ class FavIcon
 		$this->model = new \App\Model\FavIconFiles();
 		}
 
-	public function editSettings() : \PHPFUI\Form
+	public function edit() : \PHPFUI\Form
 		{
 		$uploadButtonName = 'Save';
 		$settingsFieldName = 'faviconHeaders';

@@ -8,9 +8,24 @@ class SMTPSettings
 		{
 		}
 
-	public function editSettings() : \PHPFUI\Form
+	public function edit() : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit();
+		$buttonGroup = new \App\UI\CancelButtonGroup($submit);
+
+		$member = \App\Model\Session::signedInMemberRecord();
+
+		if ($member->email)
+			{
+			$testButton = new \PHPFUI\Submit('Test', 'action');
+			$testButton->addClass('warning');
+			$buttonGroup->addButton($testButton);
+			}
+		$defaults = new \PHPFUI\Submit('IONOS Defaults', 'action');
+		$defaults->addClass('secondary');
+		$defaults->setConfirm('Are you sure you want to reset to the IONOS defaults?');
+		$buttonGroup->addButton($defaults);
+
 		$settingsSaver = new \App\Model\SettingsSaver('SMTP');
 		$form = new \PHPFUI\Form($this->page, $submit);
 		$fieldSet = new \PHPFUI\FieldSet('SMTP Server Settings');
@@ -30,12 +45,49 @@ class SMTPSettings
 
 		if ($form->isMyCallback())
 			{
-			$settingsSaver->save();
+			$settingsSaver->save($_POST);
 			$this->page->setResponse('Saved');
+			}
+		elseif (\App\Model\Session::checkCSRF() && isset($_POST['action']))
+			{
+			switch ($_POST['action'])
+				{
+				case 'Test':
+					$email = new \App\Tools\EMail(false);
+					$email->addToMember($member->toArray());
+					$email->setFromMember($member->toArray());
+					$email->setSubject('SMTP Setup test email from ' . $_SERVER['SERVER_NAME']);
+					$email->setBody('Your SMTP setup is correct!');
+					$error = $email->send();
+
+					if ($error)
+						{
+						\App\Model\Session::setFlash('alert', $error);
+						}
+					else
+						{
+						\App\Model\Session::setFlash('success', 'Email sent. Check your inbox or spam folder.');
+						}
+
+					break;
+
+				case 'IONOS Defaults':
+					$settings = [];
+					$settings['SMTPHost'] = 'smtp.ionos.com';
+					$settings['SMTPUsername'] = '*@' . $_SERVER['SERVER_NAME'];
+					$settings['SMTPSecure'] = 'STARTTLS';
+					$settings['SMTPPort'] = '587';
+					$settingsSaver->save($settings, true);
+					\App\Model\Session::setFlash('success', 'Reset to IONOS defaults');
+
+					break;
+
+				}
+			$this->page->redirect();
 			}
 		else
 			{
-			$form->add(new \App\UI\CancelButtonGroup($submit));
+			$form->add($buttonGroup);
 			}
 
 		return $form;

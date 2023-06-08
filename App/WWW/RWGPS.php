@@ -60,7 +60,7 @@ class RWGPS extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('RideWithGPS Settings'))
 			{
-			$this->page->addPageContent($this->view->editSettings());
+			$this->page->addPageContent($this->view->edit());
 			}
 		}
 

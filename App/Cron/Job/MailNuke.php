@@ -12,27 +12,17 @@ class MailNuke extends \App\Cron\BaseJob
 	/** @param array<string, string> $parameters */
 	public function run(array $parameters = []) : void
 		{
-		$settingTable = new \App\Table\Setting();
-		$server = $settingTable->value('IMAPServer');
+		$imap = new \App\Model\IMAP();
 
-		if (! $server)
+		if (\count($imap))
 			{
-			return;
-			}
-		$mbox = @\imap_open($server, $box = $settingTable->value('IMAPMailBox'), $password = $settingTable->value('IMAPPassword'));
-
-		if (@\imap_num_msg($mbox))
-			{
-			@\imap_delete($mbox, '0');
+			$imap->delete('0');
 			echo 'Nuked first';
 			}
 		else
 			{
 			echo 'Nothing to nuke';
 			}
-		echo '<br>';
-		echo '<br>';
-		@\imap_close($mbox, CL_EXPUNGE);
 		}
 
 	public function willRun() : bool

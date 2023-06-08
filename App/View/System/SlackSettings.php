@@ -11,7 +11,7 @@ class SlackSettings
 		$this->model = new \App\Model\Errors();
 		}
 
-	public function editSettings() : \PHPFUI\Form
+	public function edit() : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit();
 		$form = new \PHPFUI\Form($this->page, $submit);

@@ -44,10 +44,10 @@ class SettingsSaver
 			{
 			$type = \ucwords($type);
 
-			if (! \strcasecmp('CheckBox', $type))
+			if (\str_contains($type, 'CheckBox'))
 				{
 				$required = false;
-				$input = new \PHPFUI\Input\CheckBoxBoolean($name, $label, $value);
+				$input = new \PHPFUI\Input\CheckBoxBoolean($name, $label, (bool)$value);
 				}
 			else
 				{
@@ -108,7 +108,7 @@ class SettingsSaver
 		return $this->currentValues;
 		}
 
-	public function save() : static
+	public function save(array $post, bool $preserveValues = false) : static
 		{
 		if (empty($this->JSONName))
 			{
@@ -116,19 +116,19 @@ class SettingsSaver
 
 			foreach ($this->save as $field => $value)
 				{
-				if (isset($_POST[$field]) && $value != $_POST[$field])
+				if (isset($post[$field]) && $value != $post[$field])
 					{
-					$this->settingTable->save($field, $_POST[$field]);
+					$this->settingTable->save($field, $post[$field]);
 					}
 				}
 			\PHPFUI\ORM::commit();
 			}
 		else
 			{
-			$json = [];
+			$json = $preserveValues ? $this->getValues() : [];
 			$length = \strlen($this->JSONName);
 
-			foreach ($_POST as $key => $value)
+			foreach ($post as $key => $value)
 				{
 				if ($this->JSONName == \substr($key, 0, $length))
 					{

@@ -522,7 +522,12 @@ class Forum
 			return $container;
 			}
 
-		if (\count($forumMemberTable))
+		if (! \count($forumMemberTable))
+			{
+			$table = '';
+			$container->add(new \PHPFUI\SubHeader('No members found in ' . $forum->name));
+			}
+		else
 			{
 			$form->add(new \PHPFUI\SubHeader('Members for ' . $forum->name));
 			$form->add(new \PHPFUI\Input\Hidden('forumId', (string)$forum->forumId));
@@ -553,17 +558,13 @@ class Forum
 
 				return $select;
 				});
-			$addMemberButton = new \PHPFUI\Button('Add Member');
-			$this->getAddMemberModal($addMemberButton, $forum);
-			$form->add($addMemberButton);
+			}
+		$addMemberButton = new \PHPFUI\Button('Add Member');
+		$this->getAddMemberModal($addMemberButton, $forum);
+		$form->add($addMemberButton);
 
-			$container->add($form);
-			$container->add($table);
-			}
-		else
-			{
-			$container->add(new \PHPFUI\SubHeader('No members found in ' . $forum->name));
-			}
+		$container->add($form);
+		$container->add($table);
 
 		return $container;
 		}

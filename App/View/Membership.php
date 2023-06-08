@@ -120,7 +120,7 @@ class Membership
 
 		if ($form->isMyCallback())
 			{
-			$settingsSaver->save();
+			$settingsSaver->save($_POST);
 
 			foreach ($extraFields as $field)
 				{

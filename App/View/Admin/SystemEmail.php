@@ -44,7 +44,6 @@ class SystemEmail implements \Stringable
 
 					break;
 
-
 				default:
 
 					$this->page->redirect();
@@ -98,35 +97,6 @@ class SystemEmail implements \Stringable
 			}
 
 		return (string)$output;
-		}
-
-	public function editSettings() : \PHPFUI\Form
-		{
-		$submit = new \PHPFUI\Submit();
-		$settingsSaver = new \App\Model\SettingsSaver();
-		$form = new \PHPFUI\Form($this->page, $submit);
-		$fieldSet = new \PHPFUI\FieldSet('Email Processor Settings');
-		$fieldSet->add('The website needs to read emails to the club. You must provide <b>IMAP credentials</b> for a global account that receives all emails going to your domain. The website will direct those to the correct people.');
-		$server = $settingsSaver->generateField('IMAPServer', 'IMAP Server Name (leave blank to turn off)', 'text', false);
-		$server->setToolTip('Get the server name from your ISP.  Generally domain:port enclosed in {}.');
-		$fieldSet->add($server);
-		$mailbox = $settingsSaver->generateField('IMAPMailBox', 'IMAP Mail Box');
-		$mailbox->setToolTip('This should be a catch all mailbox.');
-		$fieldSet->add($mailbox);
-		$fieldSet->add($settingsSaver->generateField('IMAPPassword', 'IMAP Mail Box Password', 'PasswordEye'));
-		$form->add($fieldSet);
-
-		if ($form->isMyCallback())
-			{
-			$settingsSaver->save();
-			$this->page->setResponse('Saved');
-			}
-		else
-			{
-			$form->add(new \App\UI\CancelButtonGroup($submit));
-			}
-
-		return $form;
 		}
 
 	private function addEmailModal(\PHPFUI\HTML5Element $modalLink) : void

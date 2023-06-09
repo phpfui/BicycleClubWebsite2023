@@ -14,6 +14,18 @@ class RWGPS extends \App\Record\Definition\RWGPS
 		'comments' => [\PHPFUI\ORM\Children::class, \App\Table\RWGPSComment::class, 'lastEdited', 'desc'],
 	];
 
+	public function clean() : static
+		{
+		$this->town = $this->town ?? '';
+		$this->state = $this->state ?? '';
+		$this->zip = $this->zip ?? '';
+		$this->description = $this->description ?? '';
+		$this->title = $this->title ?? '';
+		$this->club = $this->club ?? 0;
+
+		return $this;
+		}
+
 	public function computeFeetPerMile() : static
 		{
 		if (! empty($this->elevation) && ! empty($this->mileage))

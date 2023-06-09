@@ -73,9 +73,12 @@ class RWGPS extends \PHPFUI\ORM\Table
 				$record->title = $ride['name'];
 				$record->town = $ride['locality'];
 				$record->zip = $ride['postal_code'];
+				$record->clean();
+//	[unpaved_pct] => 42
 
 				$newRows[] = $record;
 				}
+
 			$this->insertOrIgnore($newRows);
 			}
 		}

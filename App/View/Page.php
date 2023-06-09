@@ -51,7 +51,7 @@ class Page extends \PHPFUI\Page
 		$_SERVER['HTTP_HOST'] ??= 'www.';
 
 		// host must have three or more segments.  domain.com does now work with PayPal.  www.domain.com does. So if not there, redirect to home page
-		if ('127.0.0.1' != $_SERVER['SERVER_ADDR'] && '::1' != $_SERVER['SERVER_ADDR'] && \count(\explode('.', (string)$_SERVER['HTTP_HOST'])) < 3)
+		if ('127.0.0.1' != $_SERVER['SERVER_ADDR'] && '::1' != $_SERVER['SERVER_ADDR'] && (\count(\explode('.', (string)$_SERVER['HTTP_HOST'])) < 3 || 'https' != $_SERVER['REQUEST_SCHEME']))
 			{
 			\header("location: {$this->value('homePage')}");
 

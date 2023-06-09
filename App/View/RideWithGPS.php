@@ -166,16 +166,17 @@ class RideWithGPS
 		$settingsSaver = new \App\Model\SettingsSaver();
 		$form = new \PHPFUI\Form($this->page, $submit);
 		$fieldSet = new \PHPFUI\FieldSet('RideWithGPS API Settings');
-		$fieldSet->add(' You will need to get the User Id, Club Id and API Key from a RideWithGPS representative. Once you have those, sign into the club account and generate the auth token here: <a href="https://ridewithgps.com/api" target="_blank">RideWithGPS API</a>. Leave the Club Id empty to turn off.');
+		$fieldSet->add(' You will need your RWGPS Club Id to enable RWGPS integration. Leave the Club Id empty to turn off.');
+//		$fieldSet->add(' You will need to get the User Id, Club Id and API Key from a RideWithGPS representative. Once you have those, sign into the club account and generate the auth token here: <a href="https://ridewithgps.com/api" target="_blank">RideWithGPS API</a>. Leave the Club Id empty to turn off.');
 		$clubId = $settingsSaver->generateField('RideWithGPSClubId', 'Club Id');
 		$clubId->setRequired(false);
 		$fieldSet->add($clubId);
-		$userId = $settingsSaver->generateField('RideWithGPSUserId', 'User Id');
-		$fieldSet->add($userId);
-		$apiKey = $settingsSaver->generateField('RideWithGPSAPIKey', 'API Key');
-		$fieldSet->add($apiKey);
-		$authToken = $settingsSaver->generateField('RideWithGPSAuthToken', 'Auth Token');
-		$fieldSet->add($authToken);
+//		$userId = $settingsSaver->generateField('RideWithGPSUserId', 'User Id');
+//		$fieldSet->add($userId);
+//		$apiKey = $settingsSaver->generateField('RideWithGPSAPIKey', 'API Key');
+//		$fieldSet->add($apiKey);
+//		$authToken = $settingsSaver->generateField('RideWithGPSAuthToken', 'Auth Token');
+//		$fieldSet->add($authToken);
 		$form->add($fieldSet);
 
 		$fieldSet = new \PHPFUI\FieldSet('Club RideWithGPS Settings');

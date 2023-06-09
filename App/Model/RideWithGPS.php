@@ -60,6 +60,11 @@ class RideWithGPS
 		{
 		$routes = [];
 
+		if (! $this->clubId)
+			{
+			return $routes;
+			}
+
 		$offset = 50;
 		$limit = 50;
 		$url = "https://ridewithgps.com/clubs/{$this->clubId}/routes.json";
@@ -362,3 +367,43 @@ class RideWithGPS
 		return isset($route['latitude']) && isset($route['longitude']) && ((float)$route['latitude'] + (float)$route['longitude']);
 		}
 	}
+
+/*
+	[id] => 43200270
+	[group_membership_id] => 474439
+	[name] => Fort Edward to Fort Ann on Champlain Canalway Trail
+	[description] => Part of the Empire State Trail
+	[created_at] => 2023-06-07T13:22:44-07:00
+	[distance] => 38017.2
+	[elevation_gain] => 77.8214
+	[elevation_loss] => 77.3618
+	[visibility] => 0
+	[first_lat] => 43.27367
+	[first_lng] => -73.58005
+	[last_lat] => 43.27367
+	[last_lng] => -73.58005
+	[is_trip] =>
+	[postal_code] => 12828
+	[locality] => Fort Edward
+	[administrative_area] => NY
+	[pavement_type_id] =>
+	[country_code] => US
+	[has_course_points] => 1
+	[updated_at] => 2023-06-07T13:22:44-07:00
+	[best_for_id] =>
+	[planner_options] => 64
+	[user_id] => 459297
+	[deleted_at] =>
+	[sw_lng] => -73.58006
+	[sw_lat] => 43.27367
+	[ne_lng] => -73.48618
+	[ne_lat] => 43.413873
+	[track_id] => 6480e7146b34d70c8e2c9b5c
+	[archived_at] =>
+	[likes_count] => 0
+	[track_type] => out_and_back
+	[terrain] => flat
+	[difficulty] => easy
+	[unpaved_pct] => 42
+	[nav_enabled] => 1
+ */

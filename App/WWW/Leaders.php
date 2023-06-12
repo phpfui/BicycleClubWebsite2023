@@ -116,16 +116,8 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Leader Configuration'))
 			{
-			$landing = new \App\UI\LandingPage($this->page);
-			$landing->addLink('/Leaders/settings', 'Edit Ride Settings');
-			$landing->addLink('/Leaders/pace/0', 'Edit All Pace');
-			$landing->addLink('/Leaders/categories', 'Edit Categories');
-			$landing->addLink('/Leaders/coordinators', 'Ride Coordinators');
-			$landing->addLink('/Leaders/newLeader', 'Edit New Leader Email');
-			$landing->addLink('/Leaders/newRiderEmail', 'Edit New Rider Email');
-			$landing->addLink('/Leaders/rideStatus', 'Edit Request Ride Status Email');
-			$landing->addLink('/Leaders/waitListEmail', 'Edit Wait List Email');
-			$landing->addLink('/Leaders/movePace', 'Move Pace');
+			$landing = $this->page->mainMenu->getLandingPage($this->page, '/Leaders/configure');
+
 			$this->page->addPageContent($landing);
 			}
 		}

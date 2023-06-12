@@ -63,10 +63,7 @@ class CueSheets extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 		{
 		if ($this->page->addHeader('Cue Sheet Configuration'))
 			{
-			$landing = new \App\UI\LandingPage($this->page);
-			$landing->addLink('/CueSheets/acceptEmail', 'Edit Accept Cue Sheet Email');
-			$landing->addLink('/CueSheets/rejectEmail', 'Edit Reject Cue Sheet Email');
-			$landing->addLink('/CueSheets/coordinator', 'Cue Sheet Coordinator');
+			$landing = $this->page->mainMenu->getLandingPage($this->page, '/CueSheets/configure');
 			$this->page->addPageContent($landing);
 			}
 		}

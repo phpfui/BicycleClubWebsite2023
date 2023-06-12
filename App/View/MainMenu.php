@@ -4,54 +4,50 @@ namespace App\View;
 
 class MainMenu extends \PHPFUI\AccordionMenu
 	{
-	private string $activeLink = '';
-
 	private string $activeMenu = '';
 
 	private string $currentMenu = '';
 
-	private string $currentName = '';
-
-	private bool $started = false;
-
 	private array $theMenu = [];
 
-	public function __construct(private readonly \App\Model\PermissionBase $permissions)
+	public function __construct(private readonly \App\Model\PermissionBase $permissions, private string $activeLink = '')
 		{
 		parent::__construct();
+		$parts = \explode('/', $this->activeLink);
+		$this->activeMenu = $parts[1];
 
-		$this->addTopMenu('Rides', 'Rides');
-		$this->addSub('edit/0', 'Add A Ride');
-		$this->addSub('addByCueSheet', 'Add CueSheet Ride');
-		$this->addSub('past', 'Past Rides');
-		$this->addSub('myPast', 'My Past Rides');
-		$this->addSub('attendance', 'Ride Attendance');
-		$this->addSub('schedule', 'Ride Schedule');
-		$this->addSub('statistics', 'Ride Statistics');
-		$this->addSub('search', 'Search Rides');
-		$this->addSub('myCategoryRides', 'Rides In My Category');
-		$this->addSub('csv', 'Download Rides.csv');
+		$menu = $this->addTopMenu('Rides', 'Rides');
+		$this->addSub($menu, '/Rides/edit/0', 'Add A Ride');
+		$this->addSub($menu, '/Rides/addByCueSheet', 'Add CueSheet Ride');
+		$this->addSub($menu, '/Rides/past', 'Past Rides');
+		$this->addSub($menu, '/Rides/myPast', 'My Past Rides');
+		$this->addSub($menu, '/Rides/attendance', 'Ride Attendance');
+		$this->addSub($menu, '/Rides/schedule', 'Ride Schedule');
+		$this->addSub($menu, '/Rides/statistics', 'Ride Statistics');
+		$this->addSub($menu, '/Rides/search', 'Search Rides');
+		$this->addSub($menu, '/Rides/myCategoryRides', 'Rides In My Category');
+		$this->addSub($menu, '/Rides/csv', 'Download Rides.csv');
 
-		$this->addTopMenu('Newsletter', 'Newsletters');
-		$this->addSub('all', 'Newsletters');
-		$this->addSub('upload', 'Add A Newsletter');
-		$this->addSub('settings', 'Newsletter Settings');
+		$menu = $this->addTopMenu('Newsletter', 'Newsletters');
+		$this->addSub($menu, '/Newsletter/all', 'Newsletters');
+		$this->addSub($menu, '/Newsletter/upload', 'Add A Newsletter');
+		$this->addSub($menu, '/Newsletter/settings', 'Newsletter Settings');
 
-		$this->addTopMenu('News', 'News');
-		$this->addSub('latest', 'Latest News');
-		$this->addSub('board', 'Board Minutes');
+		$menu = $this->addTopMenu('News', 'News');
+		$this->addSub($menu, '/News/latest', 'Latest News');
+		$this->addSub($menu, '/News/board', 'Board Minutes');
 
-		$this->addTopMenu('Photo', 'Photos');
-		$this->addSub('browse', 'Browse Photos');
-		$this->addSub('myPhotos', 'My Photos');
-		$this->addSub('taggers', 'Top Taggers');
-		$this->addSub('inPhotos', 'In Photos');
-		$this->addSub('search', 'Find Photos');
-		$this->addSub('mostTagged', 'Most Tagged');
+		$menu = $this->addTopMenu('Photo', 'Photos');
+		$this->addSub($menu, '/Photo/browse', 'Browse Photos');
+		$this->addSub($menu, '/Photo/myPhotos', 'My Photos');
+		$this->addSub($menu, '/Photo/taggers', 'Top Taggers');
+		$this->addSub($menu, '/Photo/inPhotos', 'In Photos');
+		$this->addSub($menu, '/Photo/search', 'Find Photos');
+		$this->addSub($menu, '/Photo/mostTagged', 'Most Tagged');
 
-		$this->addTopMenu('Forums', 'Forums');
-		$this->addSub('manage', 'Manage Forums');
-		$this->addSub('my', 'My Forums');
+		$menu = $this->addTopMenu('Forums', 'Forums');
+		$this->addSub($menu, '/Forums/manage', 'Manage Forums');
+		$this->addSub($menu, '/Forums/my', 'My Forums');
 
 		$forumTable = new \App\Table\Forum();
 		$forumTable->addOrderBy('name');
@@ -60,159 +56,172 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			{
 			if ($permissions->isAuthorized($forum->name, 'Forums'))
 				{
-				$this->addSub('home/' . $forum->forumId, $forum->name);
+				$this->addSub($menu, '/Forums/home/' . $forum->forumId, $forum->name);
 				}
 			}
 
-		$this->addTopMenu('CueSheets', 'Cue Sheets');
-		$settingTable = new \App\Table\Setting();
-		$this->addSub('addCue', 'Add A New Cue Sheet');
-		$this->addSub('pending', 'Approve Cue Sheets');
-		$this->addSub('notes', 'Cue Sheet Notes');
-		$this->addSub('configure', 'Cue Sheet Configuration');
-		$this->addSub('find', 'Find A Cue Sheet');
-		$this->addSub('my', 'My Cue Sheets');
-		$this->addSub('recent', 'Recent Cue Sheets');
-		$this->addSub('statistics', 'Cue Sheet Statistics');
-		$this->addSub('templates', 'Cue Sheet Templates');
-		$this->addSub('merge', 'Merge Cue Sheets');
+		$menu = $this->addTopMenu('CueSheets', 'Cue Sheets');
+		$this->addSub($menu, '/CueSheets/addCue', 'Add A New Cue Sheet');
+		$this->addSub($menu, '/CueSheets/pending', 'Approve Cue Sheets');
+		$this->addSub($menu, '/CueSheets/notes', 'Cue Sheet Notes');
+		$configMenu = $this->addMenu($menu, '/CueSheets/configure', 'Cue Sheet Configuration');
+		$this->addSub($configMenu, '/CueSheets/acceptEmail', 'Edit Accept Cue Sheet Email');
+		$this->addSub($configMenu, '/CueSheets/rejectEmail', 'Edit Reject Cue Sheet Email');
+		$this->addSub($configMenu, '/CueSheets/coordinator', 'Cue Sheet Coordinator');
+		$this->addSub($menu, '/CueSheets/find', 'Find A Cue Sheet');
+		$this->addSub($menu, '/CueSheets/my', 'My Cue Sheets');
+		$this->addSub($menu, '/CueSheets/recent', 'Recent Cue Sheets');
+		$this->addSub($menu, '/CueSheets/statistics', 'Cue Sheet Statistics');
+		$this->addSub($menu, '/CueSheets/templates', 'Cue Sheet Templates');
+		$this->addSub($menu, '/CueSheets/merge', 'Merge Cue Sheets');
 
-		$this->addTopMenu('RWGPS', 'Ride With GPS');
-		$this->addSub('find', 'Search RWGPS');
-		$this->addSub('settings', 'RideWithGPS Settings');
-		$this->addSub('stats', 'RWGPS Stats');
-		$this->addSub('upcoming', 'Upcoming RWGPS');
-		$this->addSub('addUpdate', 'Add / Update RWGPS');
+		$menu = $this->addTopMenu('RWGPS', 'Ride With GPS');
+		$this->addSub($menu, '/RWGPS/find', 'Search RWGPS');
+		$this->addSub($menu, '/RWGPS/settings', 'RideWithGPS Settings');
+		$this->addSub($menu, '/RWGPS/stats', 'RWGPS Stats');
+		$this->addSub($menu, '/RWGPS/upcoming', 'Upcoming RWGPS');
+		$this->addSub($menu, '/RWGPS/addUpdate', 'Add / Update RWGPS');
+		$settingTable = new \App\Table\Setting();
 		$url = $settingTable->value('RideWithGPSURL');
 
 		if ($url)
 			{
-			$this->addSub($url, 'Club RWGPS Library');
+			$this->addSub($menu, $url, 'Club RWGPS Library');
 			}
 
-		$this->addTopMenu('Events', 'Events');
-		$this->addSub('edit/0', 'Add Event');
-		$this->addSub('my', 'My Events');
-		$this->addSub('messages', 'Manage Messages');
-		$this->addSub('manage/All', 'Manage All Events');
-		$this->addSub('manage/My', 'Manage My Events');
-		$this->addSub('upcoming', 'Upcoming Events');
+		$menu = $this->addTopMenu('Events', 'Events');
+		$this->addSub($menu, '/Events/edit/0', 'Add Event');
+		$this->addSub($menu, '/Events/my', 'My Events');
+		$this->addSub($menu, '/Events/messages', 'Manage Messages');
+		$this->addSub($menu, '/Events/manage/All', 'Manage All Events');
+		$this->addSub($menu, '/Events/manage/My', 'Manage My Events');
+		$this->addSub($menu, '/Events/upcoming', 'Upcoming Events');
 
-		$this->addTopMenu('Leaders', 'Leaders');
-		$this->addSub('crashReport', 'Crash Report');
-		$this->addSub('pending', 'Approve Pending Leaders');
-		$this->addSub('apply', 'Become A Ride Leader');
-		$this->addSub('email', 'Email All Leaders');
-		$this->addSub('configure', 'Leader Configuration');
-		$this->addSub('report', 'Leader Report');
-		$this->addSub('pastRides', 'My Past Leads');
-		$this->addSub('myRides', 'My Upcoming Leads');
-		$this->addSub('show', 'Leaders By Name');
-		$this->addSub('unreported', 'My Unreported Leads');
-		$this->addSub('allUnreported', 'All Unreported Rides');
-		$this->addSub('assistantLeads', 'My Assistant Leads');
-		$this->addSub('minorWaiver', 'Minor Waiver');
-		$this->addSub('nonMemberWaiver', 'Non Member Waiver');
+		$menu = $this->addTopMenu('Leaders', 'Leaders');
+		$this->addSub($menu, '/Leaders/crashReport', 'Crash Report');
+		$this->addSub($menu, '/Leaders/pending', 'Approve Pending Leaders');
+		$this->addSub($menu, '/Leaders/apply', 'Become A Ride Leader');
+		$this->addSub($menu, '/Leaders/email', 'Email All Leaders');
+		$this->addSub($menu, '/Leaders/report', 'Leader Report');
+		$this->addSub($menu, '/Leaders/pastRides', 'My Past Leads');
+		$this->addSub($menu, '/Leaders/myRides', 'My Upcoming Leads');
+		$this->addSub($menu, '/Leaders/show', 'Leaders By Name');
+		$this->addSub($menu, '/Leaders/unreported', 'My Unreported Leads');
+		$this->addSub($menu, '/Leaders/allUnreported', 'All Unreported Rides');
+		$this->addSub($menu, '/Leaders/assistantLeads', 'My Assistant Leads');
+		$this->addSub($menu, '/Leaders/minorWaiver', 'Minor Waiver');
+		$this->addSub($menu, '/Leaders/nonMemberWaiver', 'Non Member Waiver');
 
-		$this->addTopMenu('Locations', 'Locations');
-		$this->addSub('locations', 'Start Locations');
-		$this->addSub('merge', 'Merge Start Locations');
-		$this->addSub('new', 'Add Start Location');
+		$configMenu = $this->addMenu($menu, '/Leaders/configure', 'Leader Configuration');
+		$this->addSub($configMenu, '/Leaders/settings', 'Edit Ride Settings');
+//		$this->addSub($configMenu, '/Leaders/pace/0', 'Edit All Pace');
+		$this->addSub($configMenu, '/Leaders/categories', 'Edit Categories');
+		$this->addSub($configMenu, '/Leaders/coordinators', 'Ride Coordinators');
+		$this->addSub($configMenu, '/Leaders/newLeader', 'Edit New Leader Email');
+		$this->addSub($configMenu, '/Leaders/newRiderEmail', 'Edit New Rider Email');
+		$this->addSub($configMenu, '/Leaders/rideStatus', 'Edit Request Ride Status Email');
+		$this->addSub($configMenu, '/Leaders/waitListEmail', 'Edit Wait List Email');
+		$this->addSub($configMenu, '/Leaders/movePace', 'Move Pace');
 
-		$this->addTopMenu('Membership', 'Membership');
-		$this->addSub('extend', 'Extend Memberships');
-		$this->addSub('editMembership/0', 'Add New Membership');
-		$this->addSub('audit', 'Membership Audit');
-		$this->addSub('statistics', 'Club Statistics');
-		$this->addSub('find', 'Find Members');
-		$this->addSub('myInfo', 'Edit My Info');
-		$this->addSub('myNotifications', 'My Notifications');
-		$this->addSub('roster', 'Club Roster');
-		$this->addSub('rosterReport', 'Roster Report');
-		$this->addSub('password', 'Change My Password');
-		$this->addSub('combineMemberships', 'Combine Memberships');
-		$this->addSub('combineMembers', 'Combine Members');
-		$this->addSub('card', 'Membership Card');
-		$this->addSub('emailAll', 'Email All Members');
-		$this->addSub('subscriptions', 'Update Subscriptions');
-		$this->addSub('minor', 'Print Minor Release');
-		$this->addSub('configure', 'Membership Configuration');
-		$this->addSub('qrCodes', 'Membership QR Codes');
-		$this->addSub('mom/' . \App\Tools\Date::year(\App\Tools\Date::today()), 'Member Of The Month');
-		$this->addSub('emails', 'Membership Emails');
-		$this->addSub('confirm', 'Membership Confirm');
-		$this->addSub('newMembers', 'New Members');
-		$this->addSub('csv', 'Download CSV');
-		$this->addSub('recent', 'Recent Sign Ins');
-//		$this->addSub('Subscription', 'Manage My Subscription');
-		$this->addSub('renew', 'Renew My Membership');
+		$menu = $this->addTopMenu('Locations', 'Locations');
+		$this->addSub($menu, '/Locations/locations', 'Start Locations');
+		$this->addSub($menu, '/Locations/merge', 'Merge Start Locations');
+		$this->addSub($menu, '/Locations/new', 'Add Start Location');
 
-		$this->addTopMenu('GA', $settingTable->value('generalAdmissionName', 'General Admission'));
-		$this->addSub('manage', 'Manage Dates');
-		$this->addSub('editRider/0', 'Add Registration');
-		$this->addSub('email', 'Email Registrants');
-		$this->addSub('labels', 'Mailing Labels');
-		$this->addSub('landingPageEditor', 'Landing Page Editor');
-		$this->addSub('register', 'Register');
-		$this->addSub('find', 'Find Registrants');
-		$this->addSub('download', 'Download Registrants');
+		$menu = $this->addTopMenu('Membership', 'Membership');
+		$this->addSub($menu, '/Membership/extend', 'Extend Memberships');
+		$this->addSub($menu, '/Membership/editMembership/0', 'Add New Membership');
+		$this->addSub($menu, '/Membership/audit', 'Membership Audit');
+		$this->addSub($menu, '/Membership/statistics', 'Club Statistics');
+		$this->addSub($menu, '/Membership/find', 'Find Members');
+		$this->addSub($menu, '/Membership/myInfo', 'Edit My Info');
+		$this->addSub($menu, '/Membership/myNotifications', 'My Notifications');
+		$this->addSub($menu, '/Membership/roster', 'Club Roster');
+		$this->addSub($menu, '/Membership/rosterReport', 'Roster Report');
+		$this->addSub($menu, '/Membership/password', 'Change My Password');
+		$this->addSub($menu, '/Membership/combineMemberships', 'Combine Memberships');
+		$this->addSub($menu, '/Membership/combineMembers', 'Combine Members');
+		$this->addSub($menu, '/Membership/card', 'Membership Card');
+		$this->addSub($menu, '/Membership/emailAll', 'Email All Members');
+		$this->addSub($menu, '/Membership/subscriptions', 'Update Subscriptions');
+		$this->addSub($menu, '/Membership/minor', 'Print Minor Release');
+		$this->addSub($menu, '/Membership/configure', 'Membership Configuration');
+		$this->addSub($menu, '/Membership/qrCodes', 'Membership QR Codes');
+		$this->addSub($menu, '/Membership/mom/' . \App\Tools\Date::year(\App\Tools\Date::today()), 'Member Of The Month');
+		$this->addSub($menu, '/Membership/emails', 'Membership Emails');
+		$this->addSub($menu, '/Membership/confirm', 'Membership Confirm');
+		$this->addSub($menu, '/Membership/newMembers', 'New Members');
+		$this->addSub($menu, '/Membership/csv', 'Download CSV');
+		$this->addSub($menu, '/Membership/recent', 'Recent Sign Ins');
+//		$this->addSub($menu, '/Membership/Subscription', 'Manage My Subscription');
+		$this->addSub($menu, '/Membership/renew', 'Renew My Membership');
 
-		$this->addTopMenu('Volunteer', 'Volunteer');
-		$this->addSub('pickAJob', 'Volunteer');
-		$this->addSub('myJobs', 'My Assignments');
-		$this->addSub('events', 'Volunteer Events');
-		$this->addSub('myPoints', 'My Points');
-		$this->addSub('pointHistory', 'Point History');
-		$this->addSub('points', 'Outstanding Volunteer Points');
-		$this->addSub('pointsReport', 'Volunteer Points Report');
-		$this->addSub('pointsSettings', 'Volunteer Points Settings');
-		$this->addSub('historyReport', 'Volunteer History Report');
+		$menu = $this->addTopMenu('GA', $settingTable->value('generalAdmissionName', 'General Admission'));
+		$this->addSub($menu, '/GA/manage', 'Manage Dates');
+		$this->addSub($menu, '/GA/editRider/0', 'Add Registration');
+		$this->addSub($menu, '/GA/email', 'Email Registrants');
+		$this->addSub($menu, '/GA/labels', 'Mailing Labels');
+		$this->addSub($menu, '/GA/landingPageEditor', 'Landing Page Editor');
+		$this->addSub($menu, '/GA/register', 'Register');
+		$this->addSub($menu, '/GA/find', 'Find Registrants');
+		$this->addSub($menu, '/GA/download', 'Download Registrants');
 
-		$this->addTopMenu('Video', 'Videos');
-		$this->addSub('addVideo', 'Add Video');
-		$this->addSub('types', 'Video Types');
-		$this->addSub('search', 'Find Videos');
-		$this->addSub('all', 'All Videos');
+		$menu = $this->addTopMenu('Volunteer', 'Volunteer');
+		$this->addSub($menu, '/Volunteer/pickAJob', 'Volunteer');
+		$this->addSub($menu, '/Volunteer/myJobs', 'My Assignments');
+		$this->addSub($menu, '/Volunteer/events', 'Volunteer Events');
+		$this->addSub($menu, '/Volunteer/myPoints', 'My Points');
+		$this->addSub($menu, '/Volunteer/pointHistory', 'Point History');
+		$this->addSub($menu, '/Volunteer/points', 'Outstanding Volunteer Points');
+		$this->addSub($menu, '/Volunteer/pointsReport', 'Volunteer Points Report');
+		$this->addSub($menu, '/Volunteer/pointsSettings', 'Volunteer Points Settings');
+		$this->addSub($menu, '/Volunteer/historyReport', 'Volunteer History Report');
 
-		$this->addTopMenu('Store', 'Store');
-		$this->addSub('addItem', 'Add Store Item');
-		$this->addSub('DiscountCodes/list', 'Discount Codes');
-		$this->addSub('shop', 'Shop');
-		$this->addSub('inventory', 'Manage Inventory');
-		$this->addSub('inventoryReport', 'Inventory Report');
-		$this->addSub('invoiceReport', 'Invoice Report');
-		$this->addSub('email', 'Email Buyers');
-		$this->addSub('find', 'Find Invoice');
-		$this->addSub('unshipped', 'Unshipped Invoices');
-		$this->addSub('cart', 'My Cart');
-		$this->addSub('checkout', 'Check Out');
-		$this->addSub('myOrders', 'My Completed Orders');
-		$this->addSub('configuration', 'Store Configuration');
-		$this->addSub('Options/list', 'Store Options');
-		$this->addSub('Orders/list', 'Store Orders');
-		$this->addSub('myUnpaid', 'My Unpaid Invoices');
+		$menu = $this->addTopMenu('Video', 'Videos');
+		$this->addSub($menu, '/Video/addVideo', 'Add Video');
+		$this->addSub($menu, '/Video/types', 'Video Types');
+		$this->addSub($menu, '/Video/search', 'Find Videos');
+		$this->addSub($menu, '/Video/all', 'All Videos');
 
-		$this->addTopMenu('File', 'Files');
-		$this->addSub('browse', 'Browse Files');
-		$this->addSub('myFiles', 'My Files');
-		$this->addSub('search', 'Find Files');
+		$menu = $this->addTopMenu('Store', 'Store');
+		$this->addSub($menu, '/Store/addItem', 'Add Store Item');
+		$this->addSub($menu, '/Store/DiscountCodes/list', 'Discount Codes');
+		$this->addSub($menu, '/Store/shop', 'Shop');
+		$this->addSub($menu, '/Store/inventory', 'Manage Inventory');
+		$this->addSub($menu, '/Store/inventoryReport', 'Inventory Report');
+		$this->addSub($menu, '/Store/invoiceReport', 'Invoice Report');
+		$this->addSub($menu, '/Store/email', 'Email Buyers');
+		$this->addSub($menu, '/Store/find', 'Find Invoice');
+		$this->addSub($menu, '/Store/unshipped', 'Unshipped Invoices');
+		$this->addSub($menu, '/Store/cart', 'My Cart');
+		$this->addSub($menu, '/Store/checkout', 'Check Out');
+		$this->addSub($menu, '/Store/myOrders', 'My Completed Orders');
+		$this->addSub($menu, '/Store/configuration', 'Store Configuration');
+		$this->addSub($menu, '/Store/Options/list', 'Store Options');
+		$this->addSub($menu, '/Store/Orders/list', 'Store Orders');
+		$this->addSub($menu, '/Store/myUnpaid', 'My Unpaid Invoices');
 
-		$this->addTopMenu('Content', 'Content');
-		$this->addSub('newStory', 'Add Content');
-		$this->addSub('SlideShow/list', 'Slide Shows');
-		$this->addSub('recent', 'Recent Content');
-		$this->addSub('search', 'Search Content');
-		$this->addSub('categories', 'Content By Category');
-		$this->addSub('orphan', 'Show Orphan Content');
-		$this->addSub('purge', 'Purge Expired Content');
+		$menu = $this->addTopMenu('File', 'Files');
+		$this->addSub($menu, '/File/browse', 'Browse Files');
+		$this->addSub($menu, '/File/myFiles', 'My Files');
+		$this->addSub($menu, '/File/search', 'Find Files');
 
-		$this->addTopMenu('Polls', 'Polls');
-		$this->addSub('edit/0', 'Add Poll');
-		$this->addSub('past', 'Past Polls');
-		$this->addSub('current', 'Current Polls');
-		$this->addSub('future', 'Future Polls');
-		$this->addSub('myVotes', 'My Votes');
-		$this->addSub('myMembershipVotes', 'My Membership Votes');
+		$menu = $this->addTopMenu('Content', 'Content');
+		$this->addSub($menu, '/Content/newStory', 'Add Content');
+		$this->addSub($menu, '/Content/SlideShow/list', 'Slide Shows');
+		$this->addSub($menu, '/Content/recent', 'Recent Content');
+		$this->addSub($menu, '/Content/search', 'Search Content');
+		$this->addSub($menu, '/Content/categories', 'Content By Category');
+		$this->addSub($menu, '/Content/orphan', 'Show Orphan Content');
+		$this->addSub($menu, '/Content/purge', 'Purge Expired Content');
+
+		$menu = $this->addTopMenu('Polls', 'Polls');
+		$this->addSub($menu, '/Polls/edit/0', 'Add Poll');
+		$this->addSub($menu, '/Polls/past', 'Past Polls');
+		$this->addSub($menu, '/Polls/current', 'Current Polls');
+		$this->addSub($menu, '/Polls/future', 'Future Polls');
+		$this->addSub($menu, '/Polls/myVotes', 'My Votes');
+		$this->addSub($menu, '/Polls/myMembershipVotes', 'My Membership Votes');
 
 		$settingTable = new \App\Table\Setting();
 
@@ -220,92 +229,96 @@ class MainMenu extends \PHPFUI\AccordionMenu
 
 		if (! empty($calendarName))
 			{
-			$this->addTopMenu('Calendar', 'Calendar');
-			$this->addSub('notes', 'Calendar Notes');
-			$this->addSub('addEvent', 'Add Calendar Event');
-			$this->addSub('configure', 'Calendar Configuration');
-			$this->addSub('events', $calendarName);
-			$this->addSub('pending', 'Pending Calendar Events');
-			$this->addSub('rejected', 'Rejected Calendar Events');
+			$menu = $this->addTopMenu('Calendar', 'Calendar');
+			$this->addSub($menu, '/Calendar/notes', 'Calendar Notes');
+			$this->addSub($menu, '/Calendar/addEvent', 'Add Calendar Event');
+			$configMenu = $this->addMenu($menu, '/Calendar/configure', 'Calendar Configuration');
+			$this->addSub($configMenu, '/Calendar/acceptEmail', 'Edit Accept Calendar Email');
+			$this->addSub($configMenu, '/Calendar/rejectEmail', 'Edit Reject Calendar Email');
+			$this->addSub($configMenu, '/Calendar/thankYouEmail', 'Edit Thank You Calendar Email');
+			$this->addSub($configMenu, '/Calendar/coordinator', 'Calendar Coordinator');
+			$this->addSub($menu, '/Calendar/events', $calendarName);
+			$this->addSub($menu, '/Calendar/pending', 'Pending Calendar Events');
+			$this->addSub($menu, '/Calendar/rejected', 'Rejected Calendar Events');
 			}
 
-		$this->addTopMenu('Finance', 'Finances');
-		$this->addSub('store', 'Store Payment Summary');
-		$this->addSub('invoice', 'Invoice Summary');
-		$this->addSub('checksReceived', 'Print Checks Received');
-		$this->addSub('maintenance', 'Check Maintenance');
-		$this->addSub('payPal', 'PayPal Settings');
-		$this->addSub('importTaxTable', 'Import Tax Table');
-		$this->addSub('tax', 'Taxes Collected');
-		$this->addSub('payPalTerms', 'Edit PayPal Terms and Conditions');
-		$this->addSub('checksNotReceived', 'Unreceived Checks');
-		$this->addSub('missingInvoices', 'Missing Invoices');
+		$menu = $this->addTopMenu('Finance', 'Finances');
+		$this->addSub($menu, '/Finance/store', 'Store Payment Summary');
+		$this->addSub($menu, '/Finance/invoice', 'Invoice Summary');
+		$this->addSub($menu, '/Finance/checksReceived', 'Print Checks Received');
+		$this->addSub($menu, '/Finance/maintenance', 'Check Maintenance');
+		$this->addSub($menu, '/Finance/payPal', 'PayPal Settings');
+		$this->addSub($menu, '/Finance/importTaxTable', 'Import Tax Table');
+		$this->addSub($menu, '/Finance/tax', 'Taxes Collected');
+		$this->addSub($menu, '/Finance/payPalTerms', 'Edit PayPal Terms and Conditions');
+		$this->addSub($menu, '/Finance/checksNotReceived', 'Unreceived Checks');
+		$this->addSub($menu, '/Finance/missingInvoices', 'Missing Invoices');
 
-		$this->addTopMenu('Banners', 'Banners');
-		$this->addSub('addBanner', 'Add Banner');
-		$this->addSub('allBanners', 'All Banners');
-		$this->addSub('pending', 'Pending Banners');
-		$this->addSub('past', 'Past Banners');
-		$this->addSub('current', 'Current Banners');
-		$this->addSub('active', 'Active Banners');
-		$this->addSub('settings', 'Banner Settings');
+		$menu = $this->addTopMenu('Banners', 'Banners');
+		$this->addSub($menu, '/Banners/addBanner', 'Add Banner');
+		$this->addSub($menu, '/Banners/allBanners', 'All Banners');
+		$this->addSub($menu, '/Banners/pending', 'Pending Banners');
+		$this->addSub($menu, '/Banners/past', 'Past Banners');
+		$this->addSub($menu, '/Banners/current', 'Current Banners');
+		$this->addSub($menu, '/Banners/active', 'Active Banners');
+		$this->addSub($menu, '/Banners/settings', 'Banner Settings');
 
-		$this->addTopMenu('SignInSheets', 'Sign In Sheets');
-		$this->addSub('pending', 'Pending Sign In Sheets');
-		$this->addSub('find', 'Search Sign In Sheets');
-		$this->addSub('my', 'My Sign In Sheets');
-		$this->addSub('rejectEmail', 'Edit Reject Sign In Sheet Email');
-		$this->addSub('settings', 'Sign In Sheets Configuration');
-		$this->addSub('tips', 'Sign In Sheets Tips');
-		$this->addSub('acceptEmail', 'Edit Accept Sign In Sheet Email');
+		$menu = $this->addTopMenu('SignInSheets', 'Sign In Sheets');
+		$this->addSub($menu, '/SignInSheets/pending', 'Pending Sign In Sheets');
+		$this->addSub($menu, '/SignInSheets/find', 'Search Sign In Sheets');
+		$this->addSub($menu, '/SignInSheets/my', 'My Sign In Sheets');
+		$this->addSub($menu, '/SignInSheets/rejectEmail', 'Edit Reject Sign In Sheet Email');
+		$this->addSub($menu, '/SignInSheets/settings', 'Sign In Sheets Configuration');
+		$this->addSub($menu, '/SignInSheets/tips', 'Sign In Sheets Tips');
+		$this->addSub($menu, '/SignInSheets/acceptEmail', 'Edit Accept Sign In Sheet Email');
 
-		$this->addTopMenu('Admin', 'Administration');
-		$this->addSub('bikeShopAreas', 'Bike Shop Areas');
-		$this->addSub('bikeShopList', 'Bike Shop Maintenance');
-		$this->addSub('board', 'Edit Board Members');
-		$this->addSub('myPermissions', 'My Permissions');
-		$this->addSub('images', 'System Images');
-		$this->addSub('permissions', 'Permissions');
-		$this->addSub('publicPage', 'Edit Public Pages');
-		$this->addSub('permissionGroups', 'Permission Groups');
-		$this->addSub('clubEmails', 'Club Email Addresses');
-		$this->addSub('emailQueue', 'Email Queue');
-		$this->addSub('editWaiver', 'Waiver Editor');
-		$this->addSub('journalQueue', 'Journal Queue');
-		$this->addSub('blackList', 'Email Blacklist');
-		$this->addSub('config', 'Site Configuration');
-		$this->addSub('files', 'Manage Files');
-		$this->addSub('permissionGroupAssignment', 'Permission Group Assignments');
-		$this->addSub('passwordPolicy', 'Password Policy');
+		$menu = $this->addTopMenu('Admin', 'Administration');
+		$this->addSub($menu, '/Admin/bikeShopAreas', 'Bike Shop Areas');
+		$this->addSub($menu, '/Admin/bikeShopList', 'Bike Shop Maintenance');
+		$this->addSub($menu, '/Admin/board', 'Edit Board Members');
+		$this->addSub($menu, '/Admin/myPermissions', 'My Permissions');
+		$this->addSub($menu, '/Admin/images', 'System Images');
+		$this->addSub($menu, '/Admin/permissions', 'Permissions');
+		$this->addSub($menu, '/Admin/publicPage', 'Edit Public Pages');
+		$this->addSub($menu, '/Admin/permissionGroups', 'Permission Groups');
+		$this->addSub($menu, '/Admin/clubEmails', 'Club Email Addresses');
+		$this->addSub($menu, '/Admin/emailQueue', 'Email Queue');
+		$this->addSub($menu, '/Admin/editWaiver', 'Waiver Editor');
+		$this->addSub($menu, '/Admin/journalQueue', 'Journal Queue');
+		$this->addSub($menu, '/Admin/blackList', 'Email Blacklist');
+		$this->addSub($menu, '/Admin/config', 'Site Configuration');
+		$this->addSub($menu, '/Admin/files', 'Manage Files');
+		$this->addSub($menu, '/Admin/permissionGroupAssignment', 'Permission Group Assignments');
+		$this->addSub($menu, '/Admin/passwordPolicy', 'Password Policy');
 
-		$this->addTopMenu('System', 'System');
-		$this->addSub('API/users', 'API Users');
-		$this->addSub('Settings/analytics', 'Google Analytics Settings');
-		$this->addSub('auditTrail', 'Audit Trail');
-		$this->addSub('Settings/captcha', 'Google ReCAPTCHA');
-		$this->addSub('Settings/tinify', 'Tinify API Settings');
-		$this->addSub('Settings/constantContact', 'Constant Contact Settings');
-		$this->addSub('Settings/sparkpost', 'SparkPost API Settings');
-		$this->addSub('Settings/email', 'Email Processor Settings');
-		$this->addSub('Settings/favIcon', 'Set FavIcon');
-		$this->addSub('importSQL', 'Import SQL');
-		$this->addSub('inputTest', 'Input Test');
-		$this->addSub('permission', 'Permission Reloader');
-		$this->addSub('inputNormal', 'Input Normal');
-		$this->addSub('cron', 'Cron Jobs');
-		$this->addSub('license', 'License');
-		$this->addSub('pHPInfo', 'PHP Info');
-		$this->addSub('debug', 'Debug Status');
-		$this->addSub('redirects', 'Redirects');
-		$this->addSub('sessionInfo', 'Session Info');
-		$this->addSub('Settings/sms', 'SMS Settings');
-		$this->addSub('migrations', 'Migrations');
-		$this->addSub('Settings/smtp', 'SMTP Settings');
-		$this->addSub('Settings/slack', 'Slack Settings');
-		$this->addSub('docs', 'PHP Documentation');
-		$this->addSub('releaseNotes', 'Release Notes');
-		$this->addSub('releases', 'Releases');
-		$this->addSub('versions/origin/master', 'Versions');
+		$menu = $this->addTopMenu('System', 'System');
+		$this->addSub($menu, '/System/API/users', 'API Users');
+		$this->addSub($menu, '/System/Settings/analytics', 'Google Analytics Settings');
+		$this->addSub($menu, '/System/auditTrail', 'Audit Trail');
+		$this->addSub($menu, '/System/Settings/captcha', 'Google ReCAPTCHA');
+		$this->addSub($menu, '/System/Settings/tinify', 'Tinify API Settings');
+		$this->addSub($menu, '/System/Settings/constantContact', 'Constant Contact Settings');
+		$this->addSub($menu, '/System/Settings/sparkpost', 'SparkPost API Settings');
+		$this->addSub($menu, '/System/Settings/email', 'Email Processor Settings');
+		$this->addSub($menu, '/System/Settings/favIcon', 'Set FavIcon');
+		$this->addSub($menu, '/System/importSQL', 'Import SQL');
+		$this->addSub($menu, '/System/inputTest', 'Input Test');
+		$this->addSub($menu, '/System/permission', 'Permission Reloader');
+		$this->addSub($menu, '/System/inputNormal', 'Input Normal');
+		$this->addSub($menu, '/System/cron', 'Cron Jobs');
+		$this->addSub($menu, '/System/license', 'License');
+		$this->addSub($menu, '/System/pHPInfo', 'PHP Info');
+		$this->addSub($menu, '/System/debug', 'Debug Status');
+		$this->addSub($menu, '/System/redirects', 'Redirects');
+		$this->addSub($menu, '/System/sessionInfo', 'Session Info');
+		$this->addSub($menu, '/System/Settings/sms', 'SMS Settings');
+		$this->addSub($menu, '/System/migrations', 'Migrations');
+		$this->addSub($menu, '/System/Settings/smtp', 'SMTP Settings');
+		$this->addSub($menu, '/System/Settings/slack', 'Slack Settings');
+		$this->addSub($menu, '/System/docs', 'PHP Documentation');
+		$this->addSub($menu, '/System/releaseNotes', 'Release Notes');
+		$this->addSub($menu, '/System/releases', 'Releases');
+		$this->addSub($menu, '/System/versions/origin/master', 'Versions');
 		}
 
 	public function getActiveMenu() : string
@@ -313,22 +326,15 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		return $this->activeMenu;
 		}
 
-	public function getLandingPage(Page $page, string $section) : \App\UI\LandingPage
+	public function getLandingPage(\App\View\Page $page, string $section) : \App\UI\LandingPage
 		{
 		$landingPage = new \App\UI\LandingPage($page);
-		$match = "~|~{$section}";
 
-		foreach ($this->theMenu as $key => $menuSection)
+		if (isset($this->theMenu[$section]))
 			{
-			if (\strpos($key, $match))
+			foreach ($this->theMenu[$section]->getMenuItems() as $menuItem)
 				{
-				foreach ($menuSection->getMenuItems() as $menuItem)
-					{
-					$landingPage->addLink($menuItem->getLink(), $menuItem->getName());
-					}
-				$landingPage->sort();
-
-				return $landingPage;
+				$landingPage->addMenuItem($menuItem);
 				}
 			}
 
@@ -351,47 +357,43 @@ class MainMenu extends \PHPFUI\AccordionMenu
 
 		foreach ($this->theMenu as $key => $menu)
 			{
-			$parts = \explode('|~', $key);
-			$returnValue[] = $parts[1];
+			foreach ($menu->getMenuItems() as $menuItem)
+			$returnValue[] = $menuItem->getLink();
 			}
 
 		return $returnValue;
 		}
 
-	public function setActiveLink(string $link) : bool
-		{
-		$this->activeLink = $link;
-		$parts = \explode('/', $link);
-		$this->activeMenu = $parts[1];
-
-		return true;
-		}
-
 	protected function getStart() : string
 		{
-		if (! $this->started)
-			{
-			$this->started = true;
-
-			foreach ($this->theMenu as $menuText => &$menu)
-				{
-				[$menuText, $menuPath] = \explode('~|~', $menuText);
-
-				if ($menuPath == $this->activeMenu)
-					{
-					$menu->addClass('is-active');
-					}
-				$menu->setActiveLink($this->activeLink);
-				$menu->sort();
-
-				$this->addSubMenu(new \PHPFUI\MenuItem($menuText), $menu);
-				}
-			}
+		$this->walk('sort');
 
 		return parent::getStart();
 		}
 
-	private function addSub(string $page, string $name) : static
+	private function addMenu(\PHPFUI\Menu $parentMenu, string $menuName, string $name) : ?\PHPFUI\Menu
+		{
+		$this->currentMenu = $menuName;
+
+		$menu = null;
+
+		if ($this->permissions->isAuthorized($name, $menuName))
+			{
+			$menu = new \PHPFUI\Menu();
+			$parentMenu->addSubMenu(new \PHPFUI\MenuItem($name), $menu);
+
+			if ($this->activeLink == $menuName)
+				{
+				$parentMenu->addClass('is-active');
+				$menu->addClass('is-active');
+				}
+			$this->theMenu[$menuName] = $menu;
+			}
+
+		return $menu;
+		}
+
+	private function addSub(\PHPFUI\Menu $parentMenu, string $page, string $name) : static
 		{
 		if ($this->permissions->isAuthorized($name, $this->currentMenu))
 			{
@@ -404,41 +406,38 @@ class MainMenu extends \PHPFUI\AccordionMenu
 				// do nothing, outside link
 				$target = '_blank';
 				}
-			elseif ('/' != $page[0])
-				{
-				$page = '/' . $this->currentMenu . '/' . $page;
-				}
-			else
-				{
-				$page = '/' . $this->currentMenu . $page;
-				}
-			$currentIndex = "{$this->currentName}~|~{$this->currentMenu}";
 
-			if (isset($this->theMenu[$currentIndex]))
-				{
-				$menuItem = new \PHPFUI\MenuItem($name, $page);
+			$menuItem = new \PHPFUI\MenuItem($name, $page);
 
-				if ($target)
-					{
-					$menuItem->getLinkObject()->addAttribute('target', $target);
-					}
-				$this->theMenu[$currentIndex]->addMenuItem($menuItem);
+			if ($target)
+				{
+				$menuItem->getLinkObject()->addAttribute('target', $target);
 				}
+
+			if ($this->activeLink == $page)
+				{
+				$menuItem->setActive();
+				}
+
+			$parentMenu->addMenuItem($menuItem);
 			}
 
 		return $this;
 		}
 
-	private function addTopMenu(string $menu, string $name) : static
+	private function addTopMenu(string $menuName, string $name) : ?\PHPFUI\Menu
 		{
-		$this->currentMenu = $menu;
-		$this->currentName = $name;
+		$this->currentMenu = $menuName;
 
-		if ($this->permissions->isAuthorized($name, $menu))
+		$menu = null;
+
+		if ($this->permissions->isAuthorized($name, $menuName))
 			{
-			$this->theMenu["{$name}~|~{$menu}"] = new \PHPFUI\Menu();
+			$menu = new \PHPFUI\Menu();
+			$this->addSubMenu(new \PHPFUI\MenuItem($name), $menu);
+			$this->theMenu[$menuName] = $menu;
 			}
 
-		return $this;
+		return $menu;
 		}
 	}

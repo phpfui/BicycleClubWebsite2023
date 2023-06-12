@@ -6,6 +6,8 @@ class Page extends \PHPFUI\Page
 	{
 	use \App\Tools\SchemeHost;
 
+	public readonly \App\View\MainMenu $mainMenu;
+
 	protected \App\Table\Setting $settingTable;
 
 	private bool $bannerOff = false;
@@ -21,8 +23,6 @@ class Page extends \PHPFUI\Page
 	private string $forgotPassword = 'forgotPassword';
 
 	private readonly \PHPFUI\Container $mainColumn;
-
-	private readonly \App\View\MainMenu $mainMenu;
 
 	private static bool $passwordReset = false;
 
@@ -41,10 +41,7 @@ class Page extends \PHPFUI\Page
 		\header('Content-Type: text/html; charset=utf-8');
 		$this->cookies = new \App\Tools\Cookies();
 		$this->settingTable = new \App\Table\Setting();
-		$this->mainMenu = new \App\View\MainMenu($this->controller->getPermissions());
-
-		// set the active menu and currently active link
-		$this->mainMenu->setActiveLink($this->getBaseURL());
+		$this->mainMenu = new \App\View\MainMenu($this->controller->getPermissions(), $this->getBaseURL());
 
 		// hard redirect since it seems impossible to make apache redirect to include www.
 		$_SERVER['SERVER_ADDR'] ??= '::1';
@@ -489,13 +486,16 @@ class Page extends \PHPFUI\Page
 		$menuSections = $this->mainMenu->getMenuSections();
 		$search = new \PHPFUI\Input\SelectAutoComplete($this, 'search');
 
-		foreach ($menuSections as $section)
+		foreach ($menuSections as $menu)
 			{
-			$items = $section->getMenuItems();
+			$items = $menu->getMenuItems();
 
 			foreach ($items as $item)
 				{
-				$search->addOption($item->getName(), $item->getLink());
+				if ($item instanceof \PHPFUI\MenuItem)
+					{
+					$search->addOption($item->getName(), $item->getLink());
+					}
 				}
 			}
 		$id = $search->getHiddenField()->getId();

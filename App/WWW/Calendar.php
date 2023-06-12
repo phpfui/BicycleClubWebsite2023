@@ -67,11 +67,7 @@ class Calendar extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->calendarName && $this->page->addHeader('Calendar Configuration'))
 			{
-			$landing = new \App\UI\LandingPage($this->page);
-			$landing->addLink('/Calendar/acceptEmail', 'Edit Accept Calendar Email');
-			$landing->addLink('/Calendar/rejectEmail', 'Edit Reject Calendar Email');
-			$landing->addLink('/Calendar/thankYouEmail', 'Edit Thank You Calendar Email');
-			$landing->addLink('/Calendar/coordinator', 'Calendar Coordinator');
+			$landing = $this->page->mainMenu->getLandingPage($this->page, '/Calendar/configure');
 			$this->page->addPageContent($landing);
 			}
 		}

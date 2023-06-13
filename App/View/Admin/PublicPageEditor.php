@@ -186,7 +186,7 @@ class PublicPageEditor
 		$fieldSet->add(new \PHPFUI\MultiColumn($banner, $blog));
 
 		$hidden = new \PHPFUI\Input\RadioGroup('hidden', 'Page Visability', (string)$publicPage->hidden);
-		$hidden->setToolTip('PUBLIC links allow third party website to link to them. NO OUTSIDE LINKS will not allow a third party page to access the link, but is accessable via direct links on the website.');
+		$hidden->setToolTip('PUBLIC links allow third party website to link to them. NO OUTSIDE LINKS will not allow a third party page to access the link, but is still public and accessable via direct links on the website.');
 		$hidden->addButton('Public', (string)0);
 		$hidden->addButton('No Outside Links', (string)1);
 

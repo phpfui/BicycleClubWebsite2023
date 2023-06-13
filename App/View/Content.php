@@ -408,28 +408,27 @@ class Content extends \App\UI\HTMLEditor
 		$subhead->setToolTip('Sub Headline for more secondary information. You can leave blank if you want');
 		$fieldSet->add($subhead);
 		$form->add($fieldSet);
-		$fieldSet = new \PHPFUI\FieldSet('Active Dates');
-		$column = new \PHPFUI\Cell(12, 3, 3);
-		$date = new \PHPFUI\Input\Date($this->page, 'date', 'Story Date', $story->date);
-		$date->setToolTip('Date of the story.  Defaults to today');
-		$column->add($date);
-		$fieldSet->add($column);
-		$column = new \PHPFUI\Cell(12, 3, 3);
-		$startDate = new \PHPFUI\Input\Date($this->page, 'startDate', 'Start Date', $story->startDate);
-		$startDate->setToolTip('Content will be shown on start date, leave blank to start immediately');
-		$column->add($startDate);
-		$fieldSet->add($column);
-		$column = new \PHPFUI\Cell(12, 3, 3);
-		$endDate = new \PHPFUI\Input\Date($this->page, 'endDate', 'End Date', $story->endDate);
-		$endDate->setToolTip('Content will be shown on end date, leave blank to run forever.');
-		$column->add($endDate);
-		$fieldSet->add($column);
-		$column = new \PHPFUI\Cell(12, 3, 3);
+
+		$tabs = new \PHPFUI\Tabs();
+
+		$container = new \PHPFUI\Container();
 		$author = new \PHPFUI\Input\Text('author', 'Author', $story->author);
 		$author->setToolTip("If set, the author's name will be shown with the last edited date.");
-		$column->add($author);
-		$fieldSet->add($column);
-		$form->add($fieldSet);
+		$container->add($author);
+		$fieldSet = new \PHPFUI\FieldSet('Active Dates');
+		$date = new \PHPFUI\Input\Date($this->page, 'date', 'Story Date', $story->date);
+		$date->setToolTip('Date of the story.  Defaults to today');
+		$fieldSet->add($date);
+		$startDate = new \PHPFUI\Input\Date($this->page, 'startDate', 'Start Date', $story->startDate);
+		$startDate->setToolTip('Content will be shown on start date, leave blank to start immediately');
+		$fieldSet->add($startDate);
+		$endDate = new \PHPFUI\Input\Date($this->page, 'endDate', 'End Date', $story->endDate);
+		$endDate->setToolTip('Content will be shown on end date, leave blank to run forever.');
+		$fieldSet->add($endDate);
+
+		$container->add($fieldSet);
+		$tabs->addTab('Dates', $container, true);
+
 		$fieldSet = new \PHPFUI\FieldSet('Special Handling');
 		$column = new \PHPFUI\Cell(12, 6, 3);
 		$cb = new \PHPFUI\Input\CheckBoxBoolean('showFull', 'Show Full Content', (bool)$story->showFull);
@@ -451,7 +450,8 @@ class Content extends \App\UI\HTMLEditor
 		$cb->setToolTip('If you check this, the story will only be shown to members even if it is on a public page.');
 		$column->add($cb);
 		$fieldSet->add($column);
-		$form->add($fieldSet);
+		$tabs->addTab('Special Handling', $fieldSet);
+
 		$blogs = \App\Table\Blog::getBlogsByNameForStory($storyId);
 		$multiSelect = new \PHPFUI\Input\MultiSelect('blog', 'Assign to Pages');
 		$multiSelect->setColumns(3);
@@ -460,8 +460,11 @@ class Content extends \App\UI\HTMLEditor
 			{
 			$multiSelect->addOption($blog->name, $blog->blogId, (bool)$blog->storyId);
 			}
-		$form->add($multiSelect);
+		$tabs->addTab('Pages', $multiSelect);
 		$form->add($modal->getButtonAndCancel(new \PHPFUI\Submit()));
+		$form->add('<br>');
+		$form->add($tabs);
+
 		$modal->add($form);
 		}
 

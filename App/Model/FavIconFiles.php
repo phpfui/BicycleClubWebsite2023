@@ -32,7 +32,7 @@ class FavIconFiles extends \App\Model\File
 
 			foreach (\glob($this->getPath() . '*.*') as $filename)
 				{
-				if (! \str_contains('.zip', (string)$filename))
+				if (! \str_contains((string)$filename, '.zip'))
 					{
 					$file = \strrchr((string)$filename, '/');
 					\rename($filename, PUBLIC_ROOT . $file);

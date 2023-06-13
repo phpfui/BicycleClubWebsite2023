@@ -1,5 +1,10 @@
 apple-touch*
-favicon.*
+android-chrome*.png
+browserconfig.xml
+safari*.*
+favicon*.*
 .htaccess
+*.webmanifest
+mstile*.png
 *.old
 

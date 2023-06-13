@@ -9,7 +9,12 @@ class PublicPage extends \App\Record\Definition\PublicPage
 	{
 	public function clean() : static
 		{
-		$this->url = '/' . \preg_replace('/[^0-9a-zA-Z_]/', '', $this->url);
+		if (! \str_starts_with($this->url, '/'))
+			{
+			$this->url = '/' . $this->url;
+			}
+
+		$this->url = \preg_replace('/[^\w\/.]/', '', $this->url);
 
 		return $this;
 		}

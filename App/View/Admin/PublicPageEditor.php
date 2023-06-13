@@ -36,10 +36,6 @@ class PublicPageEditor
 
 		if ($form->isMyCallback())
 			{
-			if ('/' != $_POST['url'][0])
-				{
-				$_POST['url'] = '/' . $_POST['url'];
-				}
 			$_POST['publicPageId'] = $publicPage->publicPageId;
 
 			if ($publicPage->publicPageId)
@@ -98,10 +94,6 @@ class PublicPageEditor
 					break;
 
 				case 'Add':
-					if ('/' != $_POST['url'][0])
-						{
-						$_POST['url'] = '/' . $_POST['url'];
-						}
 					$publicPage = new \App\Record\PublicPage();
 					$publicPage->setFrom($_POST);
 					$publicPage->insert();

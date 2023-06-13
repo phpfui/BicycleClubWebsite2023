@@ -18,7 +18,7 @@ class CueSheets extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 
 	public function acceptEmail() : void
 		{
-		if ($this->page->addHeader('Edit Accept Cue Sheet Email'))
+		if ($this->page->addHeader('Accept Cue Sheet Email'))
 			{
 			$editor = new \App\View\Email\Settings($this->page, 'acceptCue', new \App\Model\Email\CueSheet());
 			$editor->addButton($this->backButton);
@@ -224,7 +224,7 @@ class CueSheets extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 
 	public function rejectEmail() : void
 		{
-		if ($this->page->addHeader('Edit Reject Cue Sheet Email'))
+		if ($this->page->addHeader('Reject Cue Sheet Email'))
 			{
 			$editor = new \App\View\Email\Settings($this->page, 'rejectCue', new \App\Model\Email\CueSheet());
 			$editor->addButton($this->backButton);

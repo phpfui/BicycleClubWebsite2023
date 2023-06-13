@@ -17,7 +17,7 @@ class SignInSheets extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoC
 
 	public function acceptEmail() : void
 		{
-		if ($this->page->addHeader('Edit Accept Sign In Sheet Email'))
+		if ($this->page->addHeader('Accept Sign In Sheet Email'))
 			{
 			$editor = new \App\View\Email\Settings($this->page, 'acceptSignInSheet', new \App\Model\Email\SignInSheet());
 			$this->page->addPageContent($editor);
@@ -150,7 +150,7 @@ class SignInSheets extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoC
 
 	public function rejectEmail() : void
 		{
-		if ($this->page->addHeader('Edit Reject Sign In Sheet Email'))
+		if ($this->page->addHeader('Reject Sign In Sheet Email'))
 			{
 			$editor = new \App\View\Email\Settings($this->page, 'rejectSignInSheet', new \App\Model\Email\SignInSheet());
 			$this->page->addPageContent($editor);

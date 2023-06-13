@@ -22,6 +22,7 @@ permissionGroup,permission,revoked,menu
 "Board Member",Administration,0,Admin
 "Board Member","Audit Trail",0,Admin
 "Board Member",Board,0,Forums
+"Board Member","Board Members",0,Admin
 "Board Member",Calendar,0,Calendar
 "Board Member","Club Email Addresses",0,Admin
 "Board Member",Content,0,Content
@@ -33,7 +34,6 @@ permissionGroup,permission,revoked,menu
 "Board Member","Delete Video",0,Video
 "Board Member","Download Video CSV File",0,Video
 "Board Member","Edit Board Member",0,Admin
-"Board Member","Edit Board Members",0,Admin
 "Board Member","Edit Content",0,Content
 "Board Member","Edit Forum",0,Forums
 "Board Member","Edit Forum Message",0,Forums
@@ -68,22 +68,22 @@ permissionGroup,permission,revoked,menu
 "Board Member","Video Types",0,Video
 "Board Member","Visible Email Addresses",0,Membership
 "Board Member","Volunteer Points Report",0,Leaders
+"Calendar Administrator","Accept Calendar Email",0,Calendar
 "Calendar Administrator","Add Calendar Event",0,Calendar
 "Calendar Administrator","Approve Calendar Entries",0,Calendar
 "Calendar Administrator",Calendar,0,Calendar
 "Calendar Administrator","Calendar Configuration",0,Calendar
 "Calendar Administrator","Calendar Coordinator",0,Calendar
 "Calendar Administrator","Calendar Notes",0,Calendar
-"Calendar Administrator","Edit Accept Calendar Email",0,Calendar
 "Calendar Administrator","Edit Calendar Event",0,Calendar
-"Calendar Administrator","Edit Reject Calendar Email",0,Calendar
-"Calendar Administrator","Edit Thank You Calendar Email",0,Calendar
 "Calendar Administrator","Northeast Cycling Calendar",0,Calendar
 "Calendar Administrator","Pending Calendar Events",0,Calendar
 "Calendar Administrator","Pending Cycling Calendar Events",0,Calendar
 "Calendar Administrator","Pending Events",0,Calendar
+"Calendar Administrator","Reject Calendar Email",0,Calendar
 "Calendar Administrator","Reject Calender Event",0,Calendar
 "Calendar Administrator","Rejected Calendar Events",0,Calendar
+"Calendar Administrator","Thank You Calendar Email",0,Calendar
 "Content Editor","Add Content",0,Content
 "Content Editor",Content,0,Content
 "Content Editor","Content By Category",0,Content
@@ -95,6 +95,7 @@ permissionGroup,permission,revoked,menu
 "Content Editor","Purge Expired Content",0,Content
 "Content Editor","Recent Content",0,Content
 "Content Editor","Show Orphan Content",0,Content
+"Cue Sheet Administrator","Accept Cue Sheet Email",0,CueSheets
 "Cue Sheet Administrator","Add A New Cue Sheet",0,CueSheets
 "Cue Sheet Administrator","Approve Cue Sheets",0,CueSheets
 "Cue Sheet Administrator","Change Cue Sheet Author",0,CueSheets
@@ -108,16 +109,15 @@ permissionGroup,permission,revoked,menu
 "Cue Sheet Administrator",CueSheets,0,CueSheets
 "Cue Sheet Administrator","Delete Cue Sheet",0,CueSheets
 "Cue Sheet Administrator","Delete Cue Sheet Version",0,CueSheets
-"Cue Sheet Administrator","Edit Accept Cue Sheet Email",0,CueSheets
 "Cue Sheet Administrator","Edit Cue Sheet",0,CueSheets
 "Cue Sheet Administrator","Edit Cue Sheet Version",0,CueSheets
-"Cue Sheet Administrator","Edit Reject Cue Sheet Email",0,CueSheets
 "Cue Sheet Administrator","Find A Cue Sheet",0,CueSheets
 "Cue Sheet Administrator","Merge Cue Sheets",0,CueSheets
 "Cue Sheet Administrator","Merge Start Locations",0,CueSheets
 "Cue Sheet Administrator","My Cue Sheets",0,CueSheets
 "Cue Sheet Administrator","Recent Cue Sheets",0,CueSheets
 "Cue Sheet Administrator","Reject Cue Sheet",0,CueSheets
+"Cue Sheet Administrator","Reject Cue Sheet Email",0,CueSheets
 "Cue Sheet Administrator","RideWithGPS Settings",0,CueSheets
 "Cue Sheet Administrator","Search Cue Sheets",0,CueSheets
 "Cue Sheet Administrator","View Cue Sheet",0,CueSheets
@@ -158,6 +158,7 @@ permissionGroup,permission,revoked,menu
 "Forum Moderator","Edit Forum Message",0,Forums
 "Forum Moderator","Forum Members",0,Forums
 "Forum Moderator","Manage Forums",0,Forums
+"Golden Apple Administrator","Accept Cue Sheet Email",0,CueSheets
 "Golden Apple Administrator","Add A New Cue Sheet",0,CueSheets
 "Golden Apple Administrator","Add GA Event",0,GA
 "Golden Apple Administrator","Add Registration",0,GA
@@ -175,11 +176,9 @@ permissionGroup,permission,revoked,menu
 "Golden Apple Administrator","Delete Cue Sheet",0,CueSheets
 "Golden Apple Administrator","Delete Cue Sheet Version",0,CueSheets
 "Golden Apple Administrator","Download Registrants",0,GA
-"Golden Apple Administrator","Edit Accept Cue Sheet Email",0,CueSheets
 "Golden Apple Administrator","Edit Cue Sheet",0,CueSheets
 "Golden Apple Administrator","Edit Cue Sheet Version",0,CueSheets
 "Golden Apple Administrator","Edit GA Event",0,GA
-"Golden Apple Administrator","Edit Reject Cue Sheet Email",0,CueSheets
 "Golden Apple Administrator","Edit Rider",0,GA
 "Golden Apple Administrator","Edit Route",0,GA
 "Golden Apple Administrator","Email All Members",0,Membership
@@ -211,6 +210,7 @@ permissionGroup,permission,revoked,menu
 "Golden Apple Administrator",Register,0,GA
 "Golden Apple Administrator","Registration Sheets",0,GA
 "Golden Apple Administrator","Reject Cue Sheet",0,CueSheets
+"Golden Apple Administrator","Reject Cue Sheet Email",0,CueSheets
 "Golden Apple Administrator","RideWithGPS Settings",0,CueSheets
 "Golden Apple Administrator","Search Cue Sheets",0,CueSheets
 "Golden Apple Administrator",Statistics,0,GA
@@ -228,10 +228,9 @@ permissionGroup,permission,revoked,menu
 "Helping Hands","Purge Expired Content",0,Content
 "Helping Hands","Recent Content",0,Content
 "Helping Hands","Show Orphan Content",0,Content
+"Incentives Chair","Accept Sign In Sheet Email",0,SignInSheets
 "Incentives Chair","Approve Sign In Sheets",0,SignInSheets
-"Incentives Chair","Edit Accept Sign In Sheet Email",0,SignInSheets
 "Incentives Chair","Edit Member",0,Membership
-"Incentives Chair","Edit Reject Sign In Sheet Email",0,SignInSheets
 "Incentives Chair","Edit Sign In Sheet",0,SignInSheets
 "Incentives Chair","Edit Volunteer Points",0,Membership
 "Incentives Chair","Find Invoice",0,Store
@@ -241,6 +240,7 @@ permissionGroup,permission,revoked,menu
 "Incentives Chair","Pending Sign In Sheets",0,SignInSheets
 "Incentives Chair","Point History",0,Volunteer
 "Incentives Chair","Reject Sign In Sheet",0,SignInSheets
+"Incentives Chair","Reject Sign In Sheet Email",0,SignInSheets
 "Incentives Chair","Search Sign In Sheets",0,SignInSheets
 "Incentives Chair","Sign In Sheets",0,SignInSheets
 "Incentives Chair","Sign In Sheets Tips",0,SignInSheets
@@ -262,7 +262,6 @@ permissionGroup,permission,revoked,menu
 "Membership Chair","Edit Member Permissions",0,Membership
 "Membership Chair","Edit Membership",0,Membership
 "Membership Chair","Edit Membership Dates",0,Membership
-"Membership Chair","Edit My Info",0,Membership
 "Membership Chair","Edit Volunteer Points",0,Membership
 "Membership Chair","Email All Members",0,Membership
 "Membership Chair","Email All Members Criteria",0,Membership
@@ -289,6 +288,7 @@ permissionGroup,permission,revoked,menu
 "Membership Chair","Memberships with No Members",0,Membership
 "Membership Chair","Memberships with No Payments",0,Membership
 "Membership Chair","Memberships with No Permissions",0,Membership
+"Membership Chair","My Info",0,Membership
 "Membership Chair","New Member Email",0,Membership
 "Membership Chair","New Member Followup Email",0,Membership
 "Membership Chair","New Members",0,Membership
@@ -351,9 +351,8 @@ permissionGroup,permission,revoked,menu
 "Newsletter Only",Newsletters,0,Newsletter
 "Normal Member","Add A New Cue Sheet",0,CueSheets
 "Normal Member","Add File",0,File
-"Normal Member","Add File Folder",0,File
+"Normal Member","Add Folder",0,Photo
 "Normal Member","Add Photo",0,Photo
-"Normal Member","Add Photo Folder",0,Photo
 "Normal Member",Administration,0,Admin
 "Normal Member",Advocacy,0,Forums
 "Normal Member","All Videos",0,Video
@@ -381,7 +380,6 @@ permissionGroup,permission,revoked,menu
 "Normal Member","Current Polls",0,Polls
 "Normal Member","Currently Registered",0,Events
 "Normal Member","Download File CSV File",0,File
-"Normal Member","Edit My Info",0,Membership
 "Normal Member","Edit Photo Title",0,Photo
 "Normal Member","Email All Signed Up Riders",0,Rides
 "Normal Member","Email Leader",0,Leaders
@@ -422,6 +420,7 @@ permissionGroup,permission,revoked,menu
 "Normal Member","My Events",0,Events
 "Normal Member","My Files",0,File
 "Normal Member","My Forums",0,Forums
+"Normal Member","My Info",0,Membership
 "Normal Member","My Notifications",0,Membership
 "Normal Member","My Past Rides",0,Rides
 "Normal Member","My Permissions",0,Admin
@@ -465,6 +464,7 @@ permissionGroup,permission,revoked,menu
 "Normal Member","Rides for Leader",0,Leaders
 "Normal Member","Rides For Location",0,Rides
 "Normal Member","Rides In My Category",0,Rides
+"Normal Member","RideWithGPS Detail",0,RWGPS
 "Normal Member",RWGPS,0,RWGPS
 "Normal Member","RWGPS Stats",0,RWGPS
 "Normal Member","Search Content",0,Content
@@ -494,9 +494,9 @@ permissionGroup,permission,revoked,menu
 "Normal Member","XC Ski",0,Forums
 "Normal Member","XC Ski/Snowshoe Lovers",0,Forums
 "Pending Member","Change My Password",0,Membership
-"Pending Member","Edit My Info",0,Membership
 "Pending Member",Membership,0,Membership
 "Pending Member","My Assignments",0,Volunteer
+"Pending Member","My Info",0,Membership
 "Pending Member","Pay With PayPal",0,Membership
 "Pending Member","Print Minor Release",0,Membership
 "Pending Member","Renew My Membership",0,Membership
@@ -522,6 +522,7 @@ permissionGroup,permission,revoked,menu
 "Photo Admin","View Album Photo",0,Photo
 "Photo Admin","View Member Photos",0,Photo
 "Photo Admin","View Photo",0,Photo
+"Ride Chair","Accept Cue Sheet Email",0,CueSheets
 "Ride Chair","Add A New Cue Sheet",0,CueSheets
 "Ride Chair","Add A Ride",0,Rides
 "Ride Chair","Add Start Location",0,Leaders
@@ -533,6 +534,7 @@ permissionGroup,permission,revoked,menu
 "Ride Chair","Assistant Leads",0,Leaders
 "Ride Chair","Become A Ride Leader",0,Leaders
 "Ride Chair","Can See Rider Comments",0,Rides
+"Ride Chair",Categories,0,Leaders
 "Ride Chair","Change Ride Leader",0,Rides
 "Ride Chair","Change Ride Pace",0,Rides
 "Ride Chair","Clone As Leader",0,Rides
@@ -555,25 +557,17 @@ permissionGroup,permission,revoked,menu
 "Ride Chair","Delete Start Location",0,Rides
 "Ride Chair","Download Rider Waiver",0,Rides
 "Ride Chair","Download Rides.csv",0,Rides
-"Ride Chair","Edit Accept Cue Sheet Email",0,CueSheets
 "Ride Chair","Edit All Pace",0,Leaders
-"Ride Chair","Edit Categories",0,Leaders
 "Ride Chair","Edit Cue Sheet",0,CueSheets
 "Ride Chair","Edit Cue Sheet Version",0,CueSheets
 "Ride Chair","Edit Leader Settings",0,Leaders
 "Ride Chair","Edit Member",0,Membership
 "Ride Chair","Edit Member Permissions",0,Membership
-"Ride Chair","Edit New Leader Email",0,Leaders
-"Ride Chair","Edit New Rider Email",0,Leaders
 "Ride Chair","Edit Pace",0,Leaders
-"Ride Chair","Edit Reject Cue Sheet Email",0,CueSheets
-"Ride Chair","Edit Request Ride Status Email",0,Leaders
 "Ride Chair","Edit Ride",0,Rides
-"Ride Chair","Edit Ride Settings",0,Leaders
 "Ride Chair","Edit Ride Signups",0,Rides
 "Ride Chair","Edit Rider Sign Up Email",0,Leaders
 "Ride Chair","Edit Start Location",0,Rides
-"Ride Chair","Edit Wait List Email",0,Leaders
 "Ride Chair","Email All Leaders",0,Leaders
 "Ride Chair","Email All Signed Up Riders",0,Rides
 "Ride Chair","Email All Volunteers",0,Volunteer
@@ -602,16 +596,21 @@ permissionGroup,permission,revoked,menu
 "Ride Chair","My Unreported Rides",0,Leaders
 "Ride Chair","My Upcoming Leads",0,Leaders
 "Ride Chair","My Upcoming Rides",0,Leaders
+"Ride Chair","New Leader Email",0,Leaders
+"Ride Chair","New Rider Email",0,Leaders
 "Ride Chair","Non Member Waiver",0,Leaders
 "Ride Chair","Past Rides",0,Rides
 "Ride Chair","Past Rides for Leader",0,Leaders
 "Ride Chair","Pending Leaders",0,Leaders
 "Ride Chair","Print Sign In Sheet",0,Rides
 "Ride Chair","Recent Cue Sheets",0,CueSheets
+"Ride Chair","Reject Cue Sheet Email",0,CueSheets
+"Ride Chair","Request Ride Status Email",0,Leaders
 "Ride Chair","Ride Attendance",0,Rides
 "Ride Chair","Ride Comments",0,Rides
 "Ride Chair","Ride Coordinators",0,Leaders
 "Ride Chair","Ride Schedule",0,Rides
+"Ride Chair","Ride Settings",0,Leaders
 "Ride Chair","Ride Sign Up",0,Rides
 "Ride Chair","Ride Statistics",0,Rides
 "Ride Chair",Rides,0,Rides
@@ -634,6 +633,7 @@ permissionGroup,permission,revoked,menu
 "Ride Chair","Visible Email Addresses",0,Membership
 "Ride Chair","Volunteer Points Report",0,Leaders
 "Ride Chair","Volunteer Points Settings",0,Leaders
+"Ride Chair","Wait List Email",0,Leaders
 "Ride Coordinator","Add A Ride",0,Rides
 "Ride Coordinator","Add Start Location",0,Leaders
 "Ride Coordinator","All Unreported Rides",0,Leaders
@@ -740,10 +740,6 @@ permissionGroup,permission,revoked,menu
 "Safety Chair","Edit Content",0,Content
 "Safety Chair","Edit Forum",0,Forums
 "Safety Chair","Edit Forum Message",0,Forums
-"Safety Chair","Edit New Leader Email",0,Leaders
-"Safety Chair","Edit New Rider Email",0,Leaders
-"Safety Chair","Edit Public Pages",0,Admin
-"Safety Chair","Edit Request Ride Status Email",0,Leaders
 "Safety Chair","Email All Members",0,Membership
 "Safety Chair","Email All Members Criteria",0,Membership
 "Safety Chair","Email Queue",0,Admin
@@ -752,11 +748,15 @@ permissionGroup,permission,revoked,menu
 "Safety Chair","Manage Files",0,Admin
 "Safety Chair","Members In Group",0,Admin
 "Safety Chair","Move Blog Item",0,Content
+"Safety Chair","New Leader Email",0,Leaders
 "Safety Chair","New Member Email",0,Membership
 "Safety Chair","New Member Followup Email",0,Membership
 "Safety Chair","New Members",0,Membership
 "Safety Chair","New Post",0,Forums
+"Safety Chair","New Rider Email",0,Leaders
+"Safety Chair","Public Pages",0,Admin
 "Safety Chair",Reply,0,Forums
+"Safety Chair","Request Ride Status Email",0,Leaders
 "Safety Chair","Search Content",0,Content
 "Safety Chair","Show Members With Permission",0,Admin
 "Safety Chair","Show Orphan Content",0,Content
@@ -826,6 +826,7 @@ Treasurer,"Invoice Report",0,Store
 Treasurer,"Missing Invoices",0,Finance
 Treasurer,"Outstanding Volunteer Points",0,Volunteer
 Treasurer,"PayPal Settings",0,Finance
+Treasurer,"PayPal Terms and Conditions",0,Finance
 Treasurer,"Print Checks Received",0,Finance
 Treasurer,"Store Payment Summary",0,Finance
 Treasurer,"Taxes Collected",0,Finance
@@ -858,7 +859,6 @@ Treasurer,"Volunteer Points Report",0,Leaders
 "Volunteer Only","Cancel Order",0,Store
 "Volunteer Only","Change My Password",0,Membership
 "Volunteer Only","Check Out",0,Store
-"Volunteer Only","Edit My Info",0,Membership
 "Volunteer Only",Home,0,Home
 "Volunteer Only","Home Page",0,Home
 "Volunteer Only","Job Shifts",0,Volunteer
@@ -869,6 +869,7 @@ Treasurer,"Volunteer Points Report",0,Leaders
 "Volunteer Only","My Assignments",0,Volunteer
 "Volunteer Only","My Cart",0,Store
 "Volunteer Only","My Completed Orders",0,Store
+"Volunteer Only","My Info",0,Membership
 "Volunteer Only","My Unpaid Invoices",0,Store
 "Volunteer Only",News,0,News
 "Volunteer Only",Newsletters,0,Newsletter
@@ -878,6 +879,9 @@ Treasurer,"Volunteer Points Report",0,Leaders
 "Volunteer Only",Store,0,Store
 "Volunteer Only","Verify Additional Email",0,Membership
 "Volunteer Only",Volunteer,0,Volunteer
+"Web Site Tester","Accept Calendar Email",0,Calendar
+"Web Site Tester","Accept Cue Sheet Email",0,CueSheets
+"Web Site Tester","Accept Sign In Sheet Email",0,SignInSheets
 "Web Site Tester","Active Banners",0,Banners
 "Web Site Tester","Add A New Cue Sheet",0,CueSheets
 "Web Site Tester","Add A Newsletter",0,Newsletter
@@ -924,6 +928,7 @@ Treasurer,"Volunteer Points Report",0,Leaders
 "Web Site Tester","Board Edit",0,Forums
 "Web Site Tester","Board Edit Message",0,Forums
 "Web Site Tester","Board Members",0,Forums
+"Web Site Tester","Board Members",0,Admin
 "Web Site Tester","Board Minutes",0,News
 "Web Site Tester",Calendar,0,Calendar
 "Web Site Tester","Calendar Configuration",0,Calendar
@@ -931,6 +936,7 @@ Treasurer,"Volunteer Points Report",0,Leaders
 "Web Site Tester","Calendar Notes",0,Calendar
 "Web Site Tester","Can See Rider Comments",0,Rides
 "Web Site Tester","Cancel Order",0,Store
+"Web Site Tester",Categories,0,Leaders
 "Web Site Tester","Change Cue Sheet Author",0,CueSheets
 "Web Site Tester","Change My Password",0,Membership
 "Web Site Tester","Change Ride Leader",0,Rides
@@ -964,15 +970,10 @@ Treasurer,"Volunteer Points Report",0,Leaders
 "Web Site Tester","Discount Codes",0,Store
 "Web Site Tester","Download Invoice",0,Store
 "Web Site Tester","Edit A Job",0,Volunteer
-"Web Site Tester","Edit Accept Calendar Email",0,Calendar
-"Web Site Tester","Edit Accept Cue Sheet Email",0,CueSheets
-"Web Site Tester","Edit Accept Sign In Sheet Email",0,SignInSheets
 "Web Site Tester","Edit Affiliation",0,Membership
 "Web Site Tester","Edit Banner",0,Banners
 "Web Site Tester","Edit Board Member",0,Admin
-"Web Site Tester","Edit Board Members",0,Admin
 "Web Site Tester","Edit Calendar Event",0,Calendar
-"Web Site Tester","Edit Categories",0,Leaders
 "Web Site Tester","Edit Content",0,Content
 "Web Site Tester","Edit Cue Sheet",0,CueSheets
 "Web Site Tester","Edit Cue Sheet Version",0,CueSheets
@@ -988,17 +989,10 @@ Treasurer,"Volunteer Points Report",0,Leaders
 "Web Site Tester","Edit Member Permissions",0,Membership
 "Web Site Tester","Edit Membership",0,Membership
 "Web Site Tester","Edit Membership Dates",0,Membership
-"Web Site Tester","Edit My Info",0,Membership
-"Web Site Tester","Edit New Leader Email",0,Leaders
 "Web Site Tester","Edit Pace",0,Leaders
-"Web Site Tester","Edit PayPal Terms and Conditions",0,Finance
 "Web Site Tester","Edit Permission Group",0,Admin
 "Web Site Tester","Edit Poll",0,Polls
 "Web Site Tester","Edit Poll After Start",0,Polls
-"Web Site Tester","Edit Reject Calendar Email",0,Calendar
-"Web Site Tester","Edit Reject Cue Sheet Email",0,CueSheets
-"Web Site Tester","Edit Reject Sign In Sheet Email",0,SignInSheets
-"Web Site Tester","Edit Request Ride Status Email",0,Leaders
 "Web Site Tester","Edit Reservation",0,Events
 "Web Site Tester","Edit Ride",0,Rides
 "Web Site Tester","Edit Ride Signups",0,Rides
@@ -1103,6 +1097,7 @@ Treasurer,"Volunteer Points Report",0,Leaders
 "Web Site Tester","My Completed Orders",0,Store
 "Web Site Tester","My Cue Sheets",0,CueSheets
 "Web Site Tester","My Events",0,Events
+"Web Site Tester","My Info",0,Membership
 "Web Site Tester","My Past Rides",0,Rides
 "Web Site Tester","My Permissions",0,Admin
 "Web Site Tester","My Sign In Sheets",0,SignInSheets
@@ -1110,6 +1105,7 @@ Treasurer,"Volunteer Points Report",0,Leaders
 "Web Site Tester","My Unreported Rides",0,Leaders
 "Web Site Tester","My Upcoming Rides",0,Leaders
 "Web Site Tester","My Votes",0,Polls
+"Web Site Tester","New Leader Email",0,Leaders
 "Web Site Tester","New Member Email",0,Membership
 "Web Site Tester","New Member Followup Email",0,Membership
 "Web Site Tester","New Post",0,Forums
@@ -1129,6 +1125,7 @@ Treasurer,"Volunteer Points Report",0,Leaders
 "Web Site Tester","Pay With PayPal",0,Membership
 "Web Site Tester","Pay With PayPal Messages",0,Events
 "Web Site Tester","PayPal Settings",0,Finance
+"Web Site Tester","PayPal Terms and Conditions",0,Finance
 "Web Site Tester","Pending Banners",0,Banners
 "Web Site Tester","Pending Cycling Calendar Events",0,Calendar
 "Web Site Tester","Pending Events",0,Calendar
@@ -1153,12 +1150,16 @@ Treasurer,"Volunteer Points Report",0,Leaders
 "Web Site Tester","Refund Participant",0,Events
 "Web Site Tester",Register,0,GA
 "Web Site Tester","Registration Sheets",0,GA
+"Web Site Tester","Reject Calendar Email",0,Calendar
 "Web Site Tester","Reject Calender Event",0,Calendar
 "Web Site Tester","Reject Cue Sheet",0,CueSheets
+"Web Site Tester","Reject Cue Sheet Email",0,CueSheets
 "Web Site Tester","Reject Sign In Sheet",0,SignInSheets
+"Web Site Tester","Reject Sign In Sheet Email",0,SignInSheets
 "Web Site Tester","Renew My Membership",0,Membership
 "Web Site Tester","Renewed Member Email",0,Membership
 "Web Site Tester",Reply,0,Forums
+"Web Site Tester","Request Ride Status Email",0,Leaders
 "Web Site Tester","Reservation Confirmed",0,Events
 "Web Site Tester","Reset Any Password",0,Membership
 "Web Site Tester","Reset Password",0,Membership

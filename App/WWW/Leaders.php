@@ -105,7 +105,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function categories() : void
 		{
-		if ($this->page->addHeader('Edit Categories'))
+		if ($this->page->addHeader('Categories'))
 			{
 			$view = new \App\View\Categories($this->page, $this->backButton);
 			$this->page->addPageContent($view->edit());
@@ -254,7 +254,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function newLeader() : void
 		{
-		if ($this->page->addHeader('Edit New Leader Email'))
+		if ($this->page->addHeader('New Leader Email'))
 			{
 			$editor = new \App\View\Email\Settings($this->page, 'newLeader', new \App\Model\Email\Leader());
 			$editor->addButton($this->backButton);
@@ -264,7 +264,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function newRiderEmail() : void
 		{
-		if ($this->page->addHeader('Edit New Rider Email'))
+		if ($this->page->addHeader('New Rider Email'))
 			{
 			$editor = new \App\View\Email\Settings($this->page, 'newRiderEmail', new \App\Model\Email\Rider());
 			$editor->addButton($this->backButton);
@@ -351,7 +351,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function rideStatus() : void
 		{
-		if ($this->page->addHeader('Edit Request Ride Status Email'))
+		if ($this->page->addHeader('Request Ride Status Email'))
 			{
 			$editor = new \App\View\Email\Settings($this->page, 'requestSta', new \App\Model\Email\Ride());
 			$editor->addButton($this->backButton);
@@ -361,7 +361,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function settings() : void
 		{
-		if ($this->page->addHeader('Edit Ride Settings'))
+		if ($this->page->addHeader('Ride Settings'))
 			{
 			$this->page->addPageContent($this->view->getSettings($this->backButton));
 			}
@@ -445,7 +445,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function waitListEmail() : void
 		{
-		if ($this->page->addHeader('Edit Wait List Email'))
+		if ($this->page->addHeader('Wait List Email'))
 			{
 			$editor = new \App\View\Email\Settings($this->page, 'waitListEmail', new \App\Model\Email\Rider());
 			$editor->addButton($this->backButton);

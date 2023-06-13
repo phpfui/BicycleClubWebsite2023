@@ -225,7 +225,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 				$alert->addClass('alert');
 				}
 			$this->page->addPageContent($alert);
-			$this->page->addPageContent(new \PHPFUI\Button('Edit My Info', '/Membership/myInfo'));
+			$this->page->addPageContent(new \PHPFUI\Button('My Info', '/Membership/myInfo'));
 			}
 		}
 
@@ -428,7 +428,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		{
 		$this->page->setRenewing();
 
-		if ($this->page->addHeader('Edit My Info'))
+		if ($this->page->addHeader('My Info'))
 			{
 			$this->page->addPageContent($this->memberView->edit(\App\Model\Session::signedInMemberRecord()));
 			}
@@ -729,7 +729,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 				$alert->addClass('alert');
 				}
 			$this->page->addPageContent($alert);
-			$this->page->addPageContent(new \PHPFUI\Button('Edit My Info', '/Membership/myInfo'));
+			$this->page->addPageContent(new \PHPFUI\Button('My Info', '/Membership/myInfo'));
 			}
 		}
 

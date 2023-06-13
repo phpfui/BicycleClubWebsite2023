@@ -50,7 +50,7 @@ class Admin extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function board() : void
 		{
-		if ($this->page->addHeader('Edit Board Members'))
+		if ($this->page->addHeader('Board Members'))
 			{
 			$view = new \App\View\Admin\Board($this->page);
 			$this->page->addPageContent($view->editView());
@@ -266,7 +266,7 @@ class Admin extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function publicEdit(\App\Record\PublicPage $publicPage = new \App\Record\PublicPage()) : void
 		{
-		if ($this->page->addHeader('Edit Public Pages'))
+		if ($this->page->addHeader('Public Pages'))
 			{
 			if (! $publicPage->empty())
 				{
@@ -282,7 +282,7 @@ class Admin extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function publicPage() : void
 		{
-		if ($this->page->addHeader('Edit Public Pages'))
+		if ($this->page->addHeader('Public Pages'))
 			{
 			$publicPageTable = new \App\Table\PublicPage();
 			$publicPageTable->addOrderBy('sequence');

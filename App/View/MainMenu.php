@@ -65,8 +65,8 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		$this->addSub($menu, '/CueSheets/pending', 'Approve Cue Sheets');
 		$this->addSub($menu, '/CueSheets/notes', 'Cue Sheet Notes');
 		$configMenu = $this->addMenu($menu, '/CueSheets/configure', 'Cue Sheet Configuration');
-		$this->addSub($configMenu, '/CueSheets/acceptEmail', 'Edit Accept Cue Sheet Email');
-		$this->addSub($configMenu, '/CueSheets/rejectEmail', 'Edit Reject Cue Sheet Email');
+		$this->addSub($configMenu, '/CueSheets/acceptEmail', 'Accept Cue Sheet Email');
+		$this->addSub($configMenu, '/CueSheets/rejectEmail', 'Reject Cue Sheet Email');
 		$this->addSub($configMenu, '/CueSheets/coordinator', 'Cue Sheet Coordinator');
 		$this->addSub($menu, '/CueSheets/find', 'Find A Cue Sheet');
 		$this->addSub($menu, '/CueSheets/my', 'My Cue Sheets');
@@ -113,14 +113,14 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		$this->addSub($menu, '/Leaders/nonMemberWaiver', 'Non Member Waiver');
 
 		$configMenu = $this->addMenu($menu, '/Leaders/configure', 'Leader Configuration');
-		$this->addSub($configMenu, '/Leaders/settings', 'Edit Ride Settings');
-//		$this->addSub($configMenu, '/Leaders/pace/0', 'Edit All Pace');
+		$this->addSub($configMenu, '/Leaders/settings', 'Ride Settings');
+//		$this->addSub($configMenu, '/Leaders/pace/0', 'All Pace');
 		$this->addSub($configMenu, '/Leaders/categories', 'Edit Categories');
 		$this->addSub($configMenu, '/Leaders/coordinators', 'Ride Coordinators');
-		$this->addSub($configMenu, '/Leaders/newLeader', 'Edit New Leader Email');
-		$this->addSub($configMenu, '/Leaders/newRiderEmail', 'Edit New Rider Email');
-		$this->addSub($configMenu, '/Leaders/rideStatus', 'Edit Request Ride Status Email');
-		$this->addSub($configMenu, '/Leaders/waitListEmail', 'Edit Wait List Email');
+		$this->addSub($configMenu, '/Leaders/newLeader', 'New Leader Email');
+		$this->addSub($configMenu, '/Leaders/newRiderEmail', 'New Rider Email');
+		$this->addSub($configMenu, '/Leaders/rideStatus', 'Request Ride Status Email');
+		$this->addSub($configMenu, '/Leaders/waitListEmail', 'Wait List Email');
 		$this->addSub($configMenu, '/Leaders/movePace', 'Move Pace');
 
 		$menu = $this->addTopMenu('Locations', 'Locations');
@@ -134,7 +134,7 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		$this->addSub($menu, '/Membership/audit', 'Membership Audit');
 		$this->addSub($menu, '/Membership/statistics', 'Club Statistics');
 		$this->addSub($menu, '/Membership/find', 'Find Members');
-		$this->addSub($menu, '/Membership/myInfo', 'Edit My Info');
+		$this->addSub($menu, '/Membership/myInfo', 'My Info');
 		$this->addSub($menu, '/Membership/myNotifications', 'My Notifications');
 		$this->addSub($menu, '/Membership/roster', 'Club Roster');
 		$this->addSub($menu, '/Membership/rosterReport', 'Roster Report');
@@ -233,9 +233,9 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			$this->addSub($menu, '/Calendar/notes', 'Calendar Notes');
 			$this->addSub($menu, '/Calendar/addEvent', 'Add Calendar Event');
 			$configMenu = $this->addMenu($menu, '/Calendar/configure', 'Calendar Configuration');
-			$this->addSub($configMenu, '/Calendar/acceptEmail', 'Edit Accept Calendar Email');
-			$this->addSub($configMenu, '/Calendar/rejectEmail', 'Edit Reject Calendar Email');
-			$this->addSub($configMenu, '/Calendar/thankYouEmail', 'Edit Thank You Calendar Email');
+			$this->addSub($configMenu, '/Calendar/acceptEmail', 'Accept Calendar Email');
+			$this->addSub($configMenu, '/Calendar/rejectEmail', 'Reject Calendar Email');
+			$this->addSub($configMenu, '/Calendar/thankYouEmail', 'Thank You Calendar Email');
 			$this->addSub($configMenu, '/Calendar/coordinator', 'Calendar Coordinator');
 			$this->addSub($menu, '/Calendar/events', $calendarName);
 			$this->addSub($menu, '/Calendar/pending', 'Pending Calendar Events');
@@ -250,7 +250,7 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		$this->addSub($menu, '/Finance/payPal', 'PayPal Settings');
 		$this->addSub($menu, '/Finance/importTaxTable', 'Import Tax Table');
 		$this->addSub($menu, '/Finance/tax', 'Taxes Collected');
-		$this->addSub($menu, '/Finance/payPalTerms', 'Edit PayPal Terms and Conditions');
+		$this->addSub($menu, '/Finance/payPalTerms', 'PayPal Terms and Conditions');
 		$this->addSub($menu, '/Finance/checksNotReceived', 'Unreceived Checks');
 		$this->addSub($menu, '/Finance/missingInvoices', 'Missing Invoices');
 
@@ -267,19 +267,19 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		$this->addSub($menu, '/SignInSheets/pending', 'Pending Sign In Sheets');
 		$this->addSub($menu, '/SignInSheets/find', 'Search Sign In Sheets');
 		$this->addSub($menu, '/SignInSheets/my', 'My Sign In Sheets');
-		$this->addSub($menu, '/SignInSheets/rejectEmail', 'Edit Reject Sign In Sheet Email');
+		$this->addSub($menu, '/SignInSheets/rejectEmail', 'Reject Sign In Sheet Email');
 		$this->addSub($menu, '/SignInSheets/settings', 'Sign In Sheets Configuration');
 		$this->addSub($menu, '/SignInSheets/tips', 'Sign In Sheets Tips');
-		$this->addSub($menu, '/SignInSheets/acceptEmail', 'Edit Accept Sign In Sheet Email');
+		$this->addSub($menu, '/SignInSheets/acceptEmail', 'Accept Sign In Sheet Email');
 
 		$menu = $this->addTopMenu('Admin', 'Administration');
 		$this->addSub($menu, '/Admin/bikeShopAreas', 'Bike Shop Areas');
 		$this->addSub($menu, '/Admin/bikeShopList', 'Bike Shop Maintenance');
-		$this->addSub($menu, '/Admin/board', 'Edit Board Members');
+		$this->addSub($menu, '/Admin/board', 'Board Members');
 		$this->addSub($menu, '/Admin/myPermissions', 'My Permissions');
 		$this->addSub($menu, '/Admin/images', 'System Images');
 		$this->addSub($menu, '/Admin/permissions', 'Permissions');
-		$this->addSub($menu, '/Admin/publicPage', 'Edit Public Pages');
+		$this->addSub($menu, '/Admin/publicPage', 'Public Pages');
 		$this->addSub($menu, '/Admin/permissionGroups', 'Permission Groups');
 		$this->addSub($menu, '/Admin/clubEmails', 'Club Email Addresses');
 		$this->addSub($menu, '/Admin/emailQueue', 'Email Queue');

@@ -120,7 +120,7 @@ class Pace
 				{
 				$buttonGroup->addButton($add);
 				}
-			$editCategories = new \PHPFUI\Button('Edit Categories', '/Leaders/categories');
+			$editCategories = new \PHPFUI\Button('Categories', '/Leaders/categories');
 			$editCategories->addClass('secondary');
 			$buttonGroup->addButton($editCategories);
 			$form->add($buttonGroup);

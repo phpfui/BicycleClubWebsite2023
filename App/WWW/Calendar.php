@@ -22,7 +22,7 @@ class Calendar extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function acceptEmail() : void
 		{
-		if ($this->calendarName && $this->page->addHeader('Edit Accept Calendar Email'))
+		if ($this->calendarName && $this->page->addHeader('Accept Calendar Email'))
 			{
 			$this->editEmail('acceptCalendar');
 			}
@@ -181,7 +181,7 @@ class Calendar extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function rejectEmail() : void
 		{
-		if ($this->calendarName && $this->page->addHeader('Edit Reject Calendar Email'))
+		if ($this->calendarName && $this->page->addHeader('Reject Calendar Email'))
 			{
 			$this->editEmail('rejectCalendar');
 			}
@@ -201,7 +201,7 @@ class Calendar extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function thankYouEmail() : void
 		{
-		if ($this->calendarName && $this->page->addHeader('Edit Thank You Calendar Email'))
+		if ($this->calendarName && $this->page->addHeader('Thank You Calendar Email'))
 			{
 			$this->editEmail('thankYouCalendar');
 			}

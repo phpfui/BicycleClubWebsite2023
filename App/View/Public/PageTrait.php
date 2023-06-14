@@ -148,8 +148,9 @@ trait PageTrait
 
 		$settingTable = new \App\Table\Setting();
 		$limit = (int)$settingTable->value('publicRideListLimit');
+		$showNoLeader = (int)$settingTable->value('NoLeadersOnPublicSchedule');
 
-		return $ridesView->schedule(\App\Table\Ride::upcomingRides($limit));
+		return $ridesView->schedule(\App\Table\Ride::upcomingRides($limit), showNoLeader:$showNoLeader);
 		}
 
 	public function Store()

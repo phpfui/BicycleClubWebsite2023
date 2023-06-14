@@ -71,7 +71,7 @@ class Leader
 		{
 		$rideSettings = new \App\View\Ride\Settings($this->page);
 		$fields = \array_merge(['DeleteRidesPastDays', 'RideEditedWarningDays', 'unaffiliatedMessage', 'RideMinutesApart', 'RideSignupLimit',
-			'RequireRiderWaiver', 'AdvancePostVolunteer', 'PacePicker', 'LeaderForum', 'LeaderlessName'], $rideSettings->getFieldNames());
+			'RequireRiderWaiver', 'NoLeadersOnPublicSchedule', 'AdvancePostVolunteer', 'PacePicker', 'LeaderForum', 'LeaderlessName'], $rideSettings->getFieldNames());
 		$container = new \PHPFUI\Container();
 		$submit = new \PHPFUI\Submit();
 		$form = new \PHPFUI\Form($this->page, $submit);
@@ -140,6 +140,15 @@ class Leader
 			$requireWaiver->setToolTip('Checking this will require rider to agree to the waiver on sign up.');
 			$multiColumn->add($requireWaiver);
 
+			$field = 'NoLeadersOnPublicSchedule';
+			$value = (bool)$settingTable->value($field);
+			$noLeader = new \PHPFUI\Input\CheckBoxBoolean($field, "Don't show leaders on public schedule", $value);
+			$noLeader->setToolTip('Checking this will remove ride leader names from the public schedule.');
+			$multiColumn->add($noLeader);
+
+			$form->add($multiColumn);
+
+			$multiColumn = new \PHPFUI\MultiColumn();
 			$field = 'AdvancePostVolunteer';
 			$value = (int)$settingTable->value($field);
 			$hoursBefore = new \PHPFUI\Input\Number($field, 'Volunteer Credit Advance Posting Hours', $value);

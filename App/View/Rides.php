@@ -518,7 +518,7 @@ class Rides
 		return $fieldSet;
 		}
 
-	public function schedule(\PHPFUI\ORM\DataObjectCursor $rides, string $noRidesMessage = 'No rides are currently scheduled') : \App\UI\Accordion | \PHPFUI\Header
+	public function schedule(\PHPFUI\ORM\DataObjectCursor $rides, string $noRidesMessage = 'No rides are currently scheduled', int $showNoLeader = 0) : \App\UI\Accordion | \PHPFUI\Header
 		{
 		if (! \count($rides))
 			{
@@ -565,7 +565,7 @@ class Rides
 			$mileage = new \PHPFUI\Cell(1);
 			$mileage->add(\App\Tools\TextHelper::htmlentities($ride->mileage));
 			$row->add($mileage);
-			$title = new \PHPFUI\Cell(5 + ! $targetPaceColumn);
+			$title = new \PHPFUI\Cell(5 + ! $targetPaceColumn + (int)$showNoLeader * 3);
 
 			if ($ride->unaffiliated)
 				{
@@ -575,25 +575,29 @@ class Rides
 				}
 			$title->add($ride->title);
 			$row->add($title);
-			$leader = new \PHPFUI\Cell(3);
 
 			$status = '';
 
-			if (\App\Table\Ride::STATUS_NO_LEADER == $ride->rideStatus)
+			if (! $showNoLeader)
 				{
-				$status = $leaderName = "<span class='ride-cancelled'>{$leaderless}</span>";
+				$leader = new \PHPFUI\Cell(3);
+
+				if (\App\Table\Ride::STATUS_NO_LEADER == $ride->rideStatus)
+					{
+					$status = $leaderName = "<span class='ride-cancelled'>{$leaderless}</span>";
+					}
+				elseif (\App\Table\Ride::STATUS_WEATHER == $ride->rideStatus)
+					{
+					$status = \App\Table\Ride::getStatusValues()[$ride->rideStatus];
+					$status = $leaderName = "<span class='ride-cancelled'>{$status}</span>";
+					}
+				else
+					{
+					$leaderName = $this->leader->getName($ride->memberId);
+					}
+				$leader->add($leaderName);
+				$row->add($leader);
 				}
-			elseif (\App\Table\Ride::STATUS_WEATHER == $ride->rideStatus)
-				{
-				$status = \App\Table\Ride::getStatusValues()[$ride->rideStatus];
-				$status = $leaderName = "<span class='ride-cancelled'>{$status}</span>";
-				}
-			else
-				{
-				$leaderName = $this->leader->getName($ride->memberId);
-				}
-			$leader->add($leaderName);
-			$row->add($leader);
 			$today = \App\Tools\Date::todayString();
 			$content = new \PHPFUI\Container();
 			$content->add($this->addLinks($ride->description ?? ''));

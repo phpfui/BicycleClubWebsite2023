@@ -75,6 +75,7 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			$this->addSub($menu, '/CueSheets/addCue', 'Add A New Cue Sheet');
 			$this->addSub($menu, '/CueSheets/pending', 'Approve Cue Sheets');
 			$this->addSub($menu, '/CueSheets/notes', 'Cue Sheet Notes');
+
 			if ($configMenu = $this->addMenu($menu, '/CueSheets/configure', 'Cue Sheet Configuration'))
 				{
 				$this->addSub($configMenu, '/CueSheets/acceptEmail', 'Accept Cue Sheet Email');
@@ -272,6 +273,7 @@ class MainMenu extends \PHPFUI\AccordionMenu
 				{
 				$this->addSub($menu, '/Calendar/notes', 'Calendar Notes');
 				$this->addSub($menu, '/Calendar/addEvent', 'Add Calendar Event');
+
 				if ($configMenu = $this->addMenu($menu, '/Calendar/configure', 'Calendar Configuration'))
 					{
 					$this->addSub($configMenu, '/Calendar/acceptEmail', 'Accept Calendar Email');

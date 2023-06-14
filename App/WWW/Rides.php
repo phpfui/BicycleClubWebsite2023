@@ -350,7 +350,9 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->page->addPageContent(new \PHPFUI\SubHeader('Upcoming Rides'));
 		$settingTable = new \App\Table\Setting();
 		$limit = (int)$settingTable->value('publicRideListLimit');
-		$this->page->addPageContent($this->view->schedule(\App\Table\Ride::upcomingRides($limit)));
+		$showNoLeader = (int)$settingTable->value('NoLeadersOnPublicSchedule');
+
+		$this->page->addPageContent($this->view->schedule(\App\Table\Ride::upcomingRides($limit), showNoLeader:$showNoLeader));
 		}
 
 	public function search() : void

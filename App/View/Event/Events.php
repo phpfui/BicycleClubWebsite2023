@@ -44,29 +44,72 @@ class Events
 		return $container;
 		}
 
-	public function edit(\App\Record\Event $event) : \PHPFUI\Form
+	public function edit(\App\Record\Event $event) : \App\UI\ErrorForm
 		{
 		if ($event->eventId ?? 0)
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \PHPFUI\Form($this->page, $submit);
+			$form = new \App\UI\ErrorForm($this->page, $submit);
 			}
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add', 'action');
 			$event->organizer = \App\Model\Session::signedInMemberId();
-			$form = new \PHPFUI\Form($this->page);
+			$form = new \App\UI\ErrorForm($this->page);
 			}
 
 		if ($form->isMyCallback())
 			{
 			unset($_POST['eventId']);
 			$event->setFrom($_POST);
-			$event->update();
-			$this->page->setResponse('Saved');
+			$errors = $event->validate();
+
+			if ($errors)
+				{
+				$this->page->setRawResponse($form->returnErrors($errors));
+				}
+			else
+				{
+				$event->update();
+				$this->page->setResponse('Saved');
+				}
 
 			return $form;
 			}
+
+		$tabs = new \PHPFUI\Tabs();
+
+		$infoFields = new \PHPFUI\FieldSet('Event Information');
+		$title = new \PHPFUI\Input\Text('title', 'Event Title', $event->title);
+		$title->setRequired()->setToolTip('The title of the event, keep it short and concise. No need to include e date, as it will always be shown with a date and day of week.');
+		$infoFields->add($title);
+		$organizer = new \PHPFUI\Input\SelectAutoComplete($this->page, 'organizer', 'Event Organizer');
+		$organizer->setRequired();
+		$memberTable = new \App\Table\Member();
+		$memberTable->getMembersWithPermission('Event Coordinator');
+
+		foreach ($memberTable->getDataObjectCursor() as $member)
+			{
+			$organizer->addOption("{$member->firstName} {$member->lastName}", $member->memberId, $member->memberId == $event->organizer);
+			}
+		$infoFields->add($organizer);
+		$form->add($infoFields);
+
+		$buttonGroup = new \PHPFUI\ButtonGroup();
+		$buttonGroup->addButton($submit);
+
+		if ($event->eventId ?? 0)
+			{
+			$clone = new \PHPFUI\Button('Clone', '/Events/clone/' . $event->eventId);
+			$clone->addClass('secondary');
+			$buttonGroup->addButton($clone);
+			}
+		$cancel = new \PHPFUI\Button('Cancel', '/Events/manage/My');
+		$cancel->addClass('hollow')->addClass('secondary');
+		$buttonGroup->addButton($cancel);
+		$form->add($buttonGroup);
+		$form->add('<br>');
+		$form->add(new \PHPFUI\FormError());
 
 		$lteValidator = new \PHPFUI\Validator\LTE();
 		$gteValidator = new \PHPFUI\Validator\GTE();
@@ -103,21 +146,21 @@ class Events
 
 		$dateFields->add($dates);
 
-		$form->add($dateFields);
-		$infoFields = new \PHPFUI\FieldSet('Event Information');
-		$title = new \PHPFUI\Input\Text('title', 'Event Title', $event->title);
-		$title->setRequired()->setToolTip('The title of the event, keep it short and concise. No need to include e date, as it will always be shown with a date and day of week.');
-		$infoFields->add($title);
-		$organizer = new \PHPFUI\Input\SelectAutoComplete($this->page, 'organizer', 'Event Organizer');
-		$organizer->setRequired();
-		$memberTable = new \App\Table\Member();
-		$memberTable->getMembersWithPermission('Event Coordinator');
+		$timeFields = new \PHPFUI\FieldSet('Event Times');
+		$times = new \PHPFUI\MultiColumn();
+		$startTime = new \PHPFUI\Input\Text('startTime', 'Start Time', $event->startTime);
+		$times->add($startTime);
+		$endTime = new \PHPFUI\Input\Text('endTime', 'End Time', $event->endTime);
+		$times->add($endTime);
+		$timeFields->add($times);
 
-		foreach ($memberTable->getDataObjectCursor() as $member)
-			{
-			$organizer->addOption("{$member->firstName} {$member->lastName}", $member->memberId, $member->memberId == $event->organizer);
-			}
-		$infoFields->add($organizer);
+		$container = new \PHPFUI\Container();
+		$container->add($dateFields);
+		$container->add($timeFields);
+
+		$tabs->addTab('Dates', $container, true);
+
+		$pricingFields = new \PHPFUI\FieldSet('Pricing');
 		$membersOnly = new \PHPFUI\Input\RadioGroup('membersOnly', 'Membership Requirements', (string)$event->membersOnly);
 		$membersOnly->setSeparateRows(false);
 		$membersOnly->addButton('Public', (string)\App\Table\Event::PUBLIC);
@@ -125,9 +168,7 @@ class Events
 		$membersOnly->addButton('Include Membership', (string)\App\Table\Event::FREE_MEMBERSHIP);
 		$membersOnly->addButton('Charge Membership', (string)\App\Table\Event::PAID_MEMBERSHIP);
 		$membersOnly->setToolTip('Select membership requirement: Public (no membership needed), Members Only (must be an existing member), Include (free) membership, Charge (for a new) Membership.');
-		$infoFields->add($membersOnly);
-		$form->add($infoFields);
-		$pricingFields = new \PHPFUI\FieldSet('Pricing');
+		$pricingFields->add($membersOnly);
 		$price = new \PHPFUI\Input\Number('price', 'Price', $event->price);
 		$numbers = new \PHPFUI\MultiColumn();
 		$numbers->add($price);
@@ -155,42 +196,27 @@ class Events
 		$checkboxes->add(new \PHPFUI\Input\CheckBoxBoolean('checks', 'Check', (bool)$event->checks));
 		$checkboxes->add(new \PHPFUI\Input\CheckBoxBoolean('door', 'Door', (bool)$event->door));
 		$pricingFields->add($checkboxes);
-		$form->add($pricingFields);
-		$timeFields = new \PHPFUI\FieldSet('Event Times');
-		$times = new \PHPFUI\MultiColumn();
-		$startTime = new \PHPFUI\Input\Text('startTime', 'Start Time', $event->startTime);
-		$times->add($startTime);
-		$endTime = new \PHPFUI\Input\Text('endTime', 'End Time', $event->endTime);
-		$times->add($endTime);
-		$timeFields->add($times);
-		$form->add($timeFields);
-		$generalFields = new \PHPFUI\FieldSet('Event General Information');
+
+		$tabs->addTab('Pricing', $pricingFields);
+
 		$information = new \PHPFUI\Input\TextArea('information', 'General Information', \str_replace("\n", '<div></div>', $event->information ?? ''));
 		$information->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
-		$generalFields->add($information);
+		$tabs->addTab('General Information', $information);
+
 		$location = new \PHPFUI\Input\TextArea('location', 'Location of Venue', \str_replace("\n", '<div></div>', $event->location ?? ''));
 		$location->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
-		$generalFields->add($location);
+		$tabs->addTab('Location', $location);
+
+
+		$directions = new \PHPFUI\Container();
+		$directionsUrl = new \PHPFUI\Input\Url('directionsUrl', 'Directions Link', $event->directionsUrl);
+		$directions->add($directionsUrl);
 		$additionalInfo = new \PHPFUI\Input\TextArea('additionalInfo', 'Directions to Venue', \str_replace("\n", '<div></div>', $event->additionalInfo ?? ''));
 		$additionalInfo->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
-		$generalFields->add($additionalInfo);
-		$directionsUrl = new \PHPFUI\Input\Url('directionsUrl', 'Directions Link', $event->directionsUrl);
-		$generalFields->add($directionsUrl);
-		$form->add($generalFields);
-		$buttonGroup = new \PHPFUI\ButtonGroup();
-		$buttonGroup->addButton($submit);
+		$directions->add($additionalInfo);
+		$tabs->addTab('Directions', $directions);
 
-		if ($event->eventId ?? 0)
-			{
-			$clone = new \PHPFUI\Button('Clone', '/Events/clone/' . $event->eventId);
-			$clone->addClass('secondary');
-			$buttonGroup->addButton($clone);
-			}
-		$cancel = new \PHPFUI\Button('Cancel', '/Events/manage/My');
-		$cancel->addClass('hollow')->addClass('secondary');
-		$buttonGroup->addButton($cancel);
-		$form->add($buttonGroup);
-		$form->add(new \PHPFUI\FormError());
+		$form->add($tabs);
 
 		return $form;
 		}

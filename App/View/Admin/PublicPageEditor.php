@@ -42,9 +42,37 @@ class PublicPageEditor
 				{
 				unset($_POST['publicPageId']);
 				$publicPage->setFrom($_POST);
-				$publicPage->update();
+				$errors = $publicPage->validate();
+				$menuSections = $this->page->mainMenu->getMenuSections();
+
+				foreach ($menuSections as $menu)
+					{
+					$items = $menu->getMenuItems();
+
+					foreach ($items as $item)
+						{
+						if ($item instanceof \PHPFUI\MenuItem)
+							{
+							if ($item->getLink() == $publicPage->url)
+								{
+								$errors['url'] = ["{$publicPage->url} is not unique"];
+
+								break;
+								}
+							}
+						}
+					}
+
+				if ($errors)
+					{
+					$this->page->setRawResponse($form->returnErrors($errors));
+					}
+				else
+					{
+					$publicPage->update();
+					$this->page->setResponse('Saved');
+					}
 				}
-			$this->page->setResponse('Saved');
 
 			return $form;
 			}
@@ -157,9 +185,9 @@ class PublicPageEditor
 		$modal->add($modalForm);
 		}
 
-	private function getForm(\App\Record\PublicPage $publicPage, ?\PHPFUI\Submit $submit = null) : \PHPFUI\Form
+	private function getForm(\App\Record\PublicPage $publicPage, ?\PHPFUI\Submit $submit = null) : \App\UI\ErrorForm
 		{
-		$form = new \PHPFUI\Form($this->page, $submit);
+		$form = new \App\UI\ErrorForm($this->page, $submit);
 		$fieldSet = new \PHPFUI\FieldSet('Page Settings');
 		$name = new \PHPFUI\Input\Text('name', 'Page Header Name', $publicPage->name);
 		$name->setRequired();

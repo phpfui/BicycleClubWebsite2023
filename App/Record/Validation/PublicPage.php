@@ -20,7 +20,7 @@ class PublicPage extends \PHPFUI\ORM\Validator
 		'name' => ['maxlength'],
 		'publicMenu' => ['required', 'integer'],
 		'sequence' => ['integer'],
-		'url' => ['maxlength', 'starts_with:/'],
+		'url' => ['maxlength', 'starts_with:/', 'unique'],
 	];
 
 	public function __construct(\App\Record\PublicPage $record)

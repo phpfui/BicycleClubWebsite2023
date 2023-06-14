@@ -396,7 +396,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$modal->add($form);
 				$buttonGroup->addButton($signup);
 				}
-			$this->page->addPageContent($this->view->getSignedUpRiders($ride, $editSignups, $this->canSeeRiderComments($ride), $signup));
+			$this->page->addPageContent($this->view->getSignedUpRidersView($ride, $editSignups, $this->canSeeRiderComments($ride), $signup));
 
 			if ($ride->rideDate <= \App\Tools\Date::todayString() && ($this->model->isLeaderOrAssistant($ride) ||
 					$this->page->isAuthorized('Confirm Riders On Any Ride')))

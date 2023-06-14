@@ -443,7 +443,10 @@ class Ride
 
 			foreach ($signedUpRiders as $rider)
 				{
-				$ul->addItem(new \PHPFUI\ListItem("{$rider->firstName} {$rider->lastName} {$status[$rider->status]}"));
+				if (! $rider->showNothing)
+					{
+					$ul->addItem(new \PHPFUI\ListItem("{$rider->firstName} {$rider->lastName} {$status[$rider->status]}"));
+					}
 				}
 			$signup .= $ul;
 			}

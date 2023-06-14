@@ -370,7 +370,7 @@ class Rides
 		return "<p>{$menu}<p>";
 		}
 
-	public function getSignedUpRiders(\App\Record\Ride $ride, bool $editSignups, bool $showComments = false, ?\PHPFUI\Button $signup = null) : \PHPFUI\FieldSet
+	public function getSignedUpRidersView(\App\Record\Ride $ride, bool $editSignups, bool $showComments = false, ?\PHPFUI\Button $signup = null) : \PHPFUI\FieldSet
 		{
 		$model = new \App\Model\RideSignup($ride, \App\Model\Session::signedInMemberRecord());
 		$model->notifyWaitList();
@@ -443,9 +443,21 @@ class Rides
 				{
 				$status = 'Confirmed';
 				}
-			$image = $this->memberView->getImageIcon($rider->toArray());
-			$nameColumn->add("<b>{$rider->firstName} {$rider->lastName}</b> {$image}<br>{$status}");
-			$row->add($nameColumn);
+
+			$private = false;
+
+			if ($rider->showNothing && $rider->memberId != \App\Model\Session::signedInMemberId() && \App\Model\Session::signedInMemberId() != $ride->memberId)
+				{
+				$nameColumn->add("<b>Private</b><br>{$status}");
+				$row->add($nameColumn);
+				$private = true;
+				}
+			else
+				{
+				$image = $this->memberView->getImageIcon($rider->toArray());
+				$nameColumn->add("<b>{$rider->firstName} {$rider->lastName}</b> {$image}<br>{$status}");
+				$row->add($nameColumn);
+				}
 
 			$selectColumn = new \PHPFUI\Cell(4);
 
@@ -455,7 +467,7 @@ class Rides
 				$select->addAttribute('onchange', 'selectRiderContactMethod(this.value)');
 				$select->addOption('Choose ...');
 
-				if ($textMember && $rider->allowTexting && $isLeader)
+				if ($textMember && $rider->allowTexting && $isLeader && ! $private)
 					{
 					$select->addOption('Text Member', "/Membership/text/{$rider->memberId}");
 					}
@@ -465,7 +477,7 @@ class Rides
 					$select->addOption('Call Cell', 'tel:1-' . $rider->cellPhone);
 					}
 
-				if ($emailMember)
+				if ($emailMember && ! $private)
 					{
 					$select->addOption('Email Member', "/Membership/email/{$rider->memberId}");
 					}

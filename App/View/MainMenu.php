@@ -75,10 +75,12 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			$this->addSub($menu, '/CueSheets/addCue', 'Add A New Cue Sheet');
 			$this->addSub($menu, '/CueSheets/pending', 'Approve Cue Sheets');
 			$this->addSub($menu, '/CueSheets/notes', 'Cue Sheet Notes');
-			$configMenu = $this->addMenu($menu, '/CueSheets/configure', 'Cue Sheet Configuration');
-			$this->addSub($configMenu, '/CueSheets/acceptEmail', 'Accept Cue Sheet Email');
-			$this->addSub($configMenu, '/CueSheets/rejectEmail', 'Reject Cue Sheet Email');
-			$this->addSub($configMenu, '/CueSheets/coordinator', 'Cue Sheet Coordinator');
+			if ($configMenu = $this->addMenu($menu, '/CueSheets/configure', 'Cue Sheet Configuration'))
+				{
+				$this->addSub($configMenu, '/CueSheets/acceptEmail', 'Accept Cue Sheet Email');
+				$this->addSub($configMenu, '/CueSheets/rejectEmail', 'Reject Cue Sheet Email');
+				$this->addSub($configMenu, '/CueSheets/coordinator', 'Cue Sheet Coordinator');
+				}
 			$this->addSub($menu, '/CueSheets/find', 'Find A Cue Sheet');
 			$this->addSub($menu, '/CueSheets/my', 'My Cue Sheets');
 			$this->addSub($menu, '/CueSheets/recent', 'Recent Cue Sheets');
@@ -130,16 +132,18 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			$this->addSub($menu, '/Leaders/minorWaiver', 'Minor Waiver');
 			$this->addSub($menu, '/Leaders/nonMemberWaiver', 'Non Member Waiver');
 
-			$configMenu = $this->addMenu($menu, '/Leaders/configure', 'Leader Configuration');
-			$this->addSub($configMenu, '/Leaders/settings', 'Ride Settings');
-	//		$this->addSub($configMenu, '/Leaders/pace/0', 'All Pace');
-			$this->addSub($configMenu, '/Leaders/categories', 'Edit Categories');
-			$this->addSub($configMenu, '/Leaders/coordinators', 'Ride Coordinators');
-			$this->addSub($configMenu, '/Leaders/newLeader', 'New Leader Email');
-			$this->addSub($configMenu, '/Leaders/newRiderEmail', 'New Rider Email');
-			$this->addSub($configMenu, '/Leaders/rideStatus', 'Request Ride Status Email');
-			$this->addSub($configMenu, '/Leaders/waitListEmail', 'Wait List Email');
-			$this->addSub($configMenu, '/Leaders/movePace', 'Move Pace');
+			if ($configMenu = $this->addMenu($menu, '/Leaders/configure', 'Leader Configuration'))
+				{
+				$this->addSub($configMenu, '/Leaders/settings', 'Ride Settings');
+		//		$this->addSub($configMenu, '/Leaders/pace/0', 'All Pace');
+				$this->addSub($configMenu, '/Leaders/categories', 'Edit Categories');
+				$this->addSub($configMenu, '/Leaders/coordinators', 'Ride Coordinators');
+				$this->addSub($configMenu, '/Leaders/newLeader', 'New Leader Email');
+				$this->addSub($configMenu, '/Leaders/newRiderEmail', 'New Rider Email');
+				$this->addSub($configMenu, '/Leaders/rideStatus', 'Request Ride Status Email');
+				$this->addSub($configMenu, '/Leaders/waitListEmail', 'Wait List Email');
+				$this->addSub($configMenu, '/Leaders/movePace', 'Move Pace');
+				}
 			}
 
 		if ($menu = $this->addTopMenu('Locations', 'Locations'))
@@ -268,11 +272,13 @@ class MainMenu extends \PHPFUI\AccordionMenu
 				{
 				$this->addSub($menu, '/Calendar/notes', 'Calendar Notes');
 				$this->addSub($menu, '/Calendar/addEvent', 'Add Calendar Event');
-				$configMenu = $this->addMenu($menu, '/Calendar/configure', 'Calendar Configuration');
-				$this->addSub($configMenu, '/Calendar/acceptEmail', 'Accept Calendar Email');
-				$this->addSub($configMenu, '/Calendar/rejectEmail', 'Reject Calendar Email');
-				$this->addSub($configMenu, '/Calendar/thankYouEmail', 'Thank You Calendar Email');
-				$this->addSub($configMenu, '/Calendar/coordinator', 'Calendar Coordinator');
+				if ($configMenu = $this->addMenu($menu, '/Calendar/configure', 'Calendar Configuration'))
+					{
+					$this->addSub($configMenu, '/Calendar/acceptEmail', 'Accept Calendar Email');
+					$this->addSub($configMenu, '/Calendar/rejectEmail', 'Reject Calendar Email');
+					$this->addSub($configMenu, '/Calendar/thankYouEmail', 'Thank You Calendar Email');
+					$this->addSub($configMenu, '/Calendar/coordinator', 'Calendar Coordinator');
+					}
 				$this->addSub($menu, '/Calendar/events', $calendarName);
 				$this->addSub($menu, '/Calendar/pending', 'Pending Calendar Events');
 				$this->addSub($menu, '/Calendar/rejected', 'Rejected Calendar Events');

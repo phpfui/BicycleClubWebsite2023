@@ -350,6 +350,16 @@ return $member->fullName();});
 				$buttonGroup->add($renameFolderButton);
 				}
 			}
+		else
+			{
+			if ($this->page->isAuthorized('Add File'))
+				{
+				$addFileButton = new \PHPFUI\Button('Add File');
+				$addFileButton->addClass('success');
+				$addFileButton->setConfirm('You can only add files to folders. Create or choose a folder first');
+				$buttonGroup->add($addFileButton);
+				}
+			}
 
 		if ($parentFolder->loaded() && ($this->moveFile || $this->moveFolder))
 			{

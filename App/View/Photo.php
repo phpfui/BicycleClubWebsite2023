@@ -615,6 +615,16 @@ JS;
 				$buttonGroup->add($renameFolderButton);
 				}
 			}
+		else
+			{
+			if ($this->page->isAuthorized('Add Photo'))
+				{
+				$addPhotoButton = new \PHPFUI\Button('Add Photo');
+				$addPhotoButton->addClass('success');
+				$addPhotoButton->setConfirm('You can only add photos to folders. Create or choose a folder first');
+				$buttonGroup->add($addPhotoButton);
+				}
+			}
 
 		if ($parentFolder->loaded() && ($this->movePhoto || $this->moveFolder))
 			{

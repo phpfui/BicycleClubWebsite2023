@@ -381,7 +381,10 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			{
 			foreach ($this->theMenu[$section]->getMenuItems() as $menuItem)
 				{
-				$landingPage->addMenuItem($menuItem);
+				if ($menuItem instanceof \PHPFUI\MenuItem)
+					{
+					$landingPage->addMenuItem($menuItem);
+					}
 				}
 			}
 

@@ -868,6 +868,7 @@ JS;
 				'public' => $_POST['public'] ?? 0,
 			]);
 			$photoId = $photo->insert();
+			$photo->reload();
 
 			if ($this->photoFiles->upload((string)$photoId, 'file', $_FILES, $fileTypes))
 				{

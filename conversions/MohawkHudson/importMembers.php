@@ -48,6 +48,7 @@ $permissionMapping = ['Board Director' => 'Board Member',
 function addPermissions(\App\Record\Member $member, string $optionsString) : void
 	{
 	global $permissions, $permissionMapping;
+	$permissions->addPermissionToUser($member->memberId, 'Normal Member');
 	$parts = \explode(',', $optionsString);
 
 	foreach ($parts as $part)
@@ -117,11 +118,50 @@ function getState(string $state) : string
 	exit;
 	}
 
-$dataPurger = new \App\Model\DataPurge();
-$dataPurger->addExceptionTable(new \App\Table\Setting());
-$dataPurger->addExceptionTable(new \App\Table\Blog());
-$dataPurger->addExceptionTable(new \App\Table\Story());
-$dataPurger->purge();
+//$dataPurger = new \App\Model\DataPurge();
+//$dataPurger->addAllTables();
+// All these tables have memberId, uncomment to delete all data in them
+//$dataPurger->removeExceptionTable(new \App\Table\AdditionalEmail());
+//$dataPurger->removeExceptionTable(new \App\Table\AssistantLeader());
+//$dataPurger->removeExceptionTable(new \App\Table\BoardMember());
+//$dataPurger->removeExceptionTable(new \App\Table\CartItem());
+//$dataPurger->removeExceptionTable(new \App\Table\CueSheet());
+//$dataPurger->removeExceptionTable(new \App\Table\CueSheetVersion());
+//$dataPurger->removeExceptionTable(new \App\Table\File());
+//$dataPurger->removeExceptionTable(new \App\Table\ForumMember());
+//$dataPurger->removeExceptionTable(new \App\Table\ForumMessage());
+//$dataPurger->removeExceptionTable(new \App\Table\GaRider());
+//$dataPurger->removeExceptionTable(new \App\Table\Invoice());
+//$dataPurger->removeExceptionTable(new \App\Table\JournalItem());
+//$dataPurger->removeExceptionTable(new \App\Table\MailItem());
+//$dataPurger->removeExceptionTable(new \App\Table\MailPiece());
+//$dataPurger->removeExceptionTable(new \App\Table\Member());
+//$dataPurger->removeExceptionTable(new \App\Table\MemberCategory());
+//$dataPurger->removeExceptionTable(new \App\Table\MemberOfMonth());
+//$dataPurger->removeExceptionTable(new \App\Table\Membership());
+//$dataPurger->removeExceptionTable(new \App\Table\OauthUser());
+//$dataPurger->removeExceptionTable(new \App\Table\Photo());
+//$dataPurger->removeExceptionTable(new \App\Table\PhotoComment());
+//$dataPurger->removeExceptionTable(new \App\Table\PhotoTag());
+//$dataPurger->removeExceptionTable(new \App\Table\PointHistory());
+//$dataPurger->removeExceptionTable(new \App\Table\Poll());
+//$dataPurger->removeExceptionTable(new \App\Table\PollResponse());
+//$dataPurger->removeExceptionTable(new \App\Table\Reservation());
+//$dataPurger->removeExceptionTable(new \App\Table\Ride());
+//$dataPurger->removeExceptionTable(new \App\Table\RideComment());
+//$dataPurger->removeExceptionTable(new \App\Table\RideSignup());
+//$dataPurger->removeExceptionTable(new \App\Table\RWGPSAlternate());
+//$dataPurger->removeExceptionTable(new \App\Table\RWGPSComment());
+//$dataPurger->removeExceptionTable(new \App\Table\RWGPSRating());
+//$dataPurger->removeExceptionTable(new \App\Table\SigninSheet());
+//$dataPurger->removeExceptionTable(new \App\Table\Slide());
+//$dataPurger->removeExceptionTable(new \App\Table\SlideShow());
+//$dataPurger->removeExceptionTable(new \App\Table\StoreOrder());
+//$dataPurger->removeExceptionTable(new \App\Table\UserPermission());
+//$dataPurger->removeExceptionTable(new \App\Table\VolunteerJobShift());
+//$dataPurger->removeExceptionTable(new \App\Table\VolunteerPoint());
+//$dataPurger->removeExceptionTable(new \App\Table\VolunteerPollResponse());
+//$dataPurger->purge();
 
 $permissions = new \App\Model\Permission();
 
@@ -202,6 +242,13 @@ function insertMembers(string $csvName) : int
 		$membership->joined = $row['Use Created Date'];
 		$membership->lastRenewed = $row['Previous Expiration Date'];
 
+		$existingMembership = new \App\Record\Membership();
+
+		if ($existingMembership->read(['zip' => $membership->zip, 'address' => $membership->address]))
+			{
+			$membership = $existingMembership;
+			}
+
 		foreach ($members as $row)
 			{
 			$member = new \App\Record\Member();
@@ -227,8 +274,15 @@ function insertMembers(string $csvName) : int
 			$member->membership = $membership;
 			$member->firstName = $row['First Name'];
 			$member->lastName = $row['Last Name'];
+			$existingMember = new \App\Record\Member();
+
+			if ($existingMember->read(['firstName' => $member->firstName, 'lastName' => $member->lastName]))
+				{
+				$membership = $existingMembership;
+				}
+
 			$member->membership = $membership;
-			$member->insert();
+			$member->insertOrUpdate();
 			\addPermissions($member, $row['Roles']);
 			++$insertedCount;
 			}

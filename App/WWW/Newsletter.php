@@ -162,6 +162,7 @@ class Newsletter extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 				$newsletter->dateAdded = \App\Tools\Date::todayString();
 				$newsletter->size = 0;
 				$id = $newsletter->insert();
+				$newsletter->reload();
 				}
 			else
 				{

@@ -493,6 +493,7 @@ return $member->fullName();});
 						$slide = new \App\Record\Slide();
 						$slide->setFrom($_POST);
 						$id = $slide->insert();
+						$slide->reload();
 
 						$imageModel = new \App\Model\SlideImage($slide);
 

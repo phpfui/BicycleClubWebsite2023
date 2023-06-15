@@ -29,6 +29,8 @@ $_SERVER['SERVER_NAME'] = $db;
 
 include __DIR__ . '/../common.php';
 
+echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
+
 if ($dbSettings->empty())
 	{
 	\help("Database {$db} was not found");

@@ -445,6 +445,7 @@ return $member->fullName();});
 				'public' => $_POST['public'] ?? 0,
 			]);
 			$fileId = $file->insert();
+			$file->reload();
 
 			if ($this->fileFiles->upload((string)$fileId, 'file', $_FILES, null))
 				{

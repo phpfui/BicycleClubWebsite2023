@@ -97,6 +97,8 @@ class CueSheet
 
 				if ($this->fileModel->upload((string)$versionId, 'userfile', $_FILES) || ! empty($_POST['link']))
 					{
+					$cueSheetVersion->reload();
+
 					if ($cueSheetVersion->extension = $this->fileModel->getExtension())
 						{
 						$cueSheetVersion->update();

@@ -8,9 +8,22 @@ class DataPurge
 
 	private array $tables = [];
 
+	public function addAllTables() : static
+		{
+		foreach (\PHPFUI\ORM\Table::getAllTables() as $table)
+			{
+			if ($table->count())
+				{
+				$this->addExceptionTable($table);
+				}
+			}
+
+		return $this;
+		}
+
 	public function addExceptionTable(\PHPFUI\ORM\Table $table) : static
 		{
-		$this->tables[] = $table;
+		$this->tables[$table->getTableName()] = $table;
 
 		return $this;
 		}
@@ -49,10 +62,6 @@ class DataPurge
 			exit;
 			}
 
-		$permissions = new \App\Model\Permission();
-
-		$permissions->loadStandardPermissions();
-
 		// run latest migrations
 		$migrator = new \PHPFUI\ORM\Migrator();
 		$migrator->migrate();
@@ -76,8 +85,19 @@ class DataPurge
 				}
 			}
 
+		$permissions = new \App\Model\Permission();
+
+		$permissions->loadStandardPermissions();
+
 		$addBruce = new \App\Cron\Job\AddBruce(new \App\Cron\Controller(5));
 		$addBruce->run();
+
+		return $this;
+		}
+
+	public function removeExceptionTable(\PHPFUI\ORM\Table $table) : static
+		{
+		unset($this->tables[$table->getTableName()]);
 
 		return $this;
 		}

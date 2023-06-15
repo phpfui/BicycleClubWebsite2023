@@ -14,7 +14,7 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		{
 		parent::__construct();
 		$parts = \explode('/', $this->activeLink);
-		$this->activeMenu = $parts[1];
+		$this->activeMenu = $parts[1] ?? '';
 
 		if ($menu = $this->addTopMenu('Rides', 'Rides'))
 			{

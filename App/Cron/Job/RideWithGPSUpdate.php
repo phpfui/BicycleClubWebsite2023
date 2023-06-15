@@ -15,7 +15,7 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 		$model = new \App\Model\RideWithGPS();
 		$rwgpsTable = new \App\Table\RWGPS();
 
-		$count = 2;
+		$count = 10;
 
 		$upcoming = $rwgpsTable->getUpcomingEmptyRWGPS();
 
@@ -58,4 +58,4 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 		{
 		return true;
 		}
-}
+	}

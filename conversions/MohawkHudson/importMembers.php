@@ -118,8 +118,8 @@ function getState(string $state) : string
 	exit;
 	}
 
-//$dataPurger = new \App\Model\DataPurge();
-//$dataPurger->addAllTables();
+$dataPurger = new \App\Model\DataPurge();
+$dataPurger->addAllTables();
 // All these tables have memberId, uncomment to delete all data in them
 //$dataPurger->removeExceptionTable(new \App\Table\AdditionalEmail());
 //$dataPurger->removeExceptionTable(new \App\Table\AssistantLeader());
@@ -135,10 +135,10 @@ function getState(string $state) : string
 //$dataPurger->removeExceptionTable(new \App\Table\JournalItem());
 //$dataPurger->removeExceptionTable(new \App\Table\MailItem());
 //$dataPurger->removeExceptionTable(new \App\Table\MailPiece());
-//$dataPurger->removeExceptionTable(new \App\Table\Member());
-//$dataPurger->removeExceptionTable(new \App\Table\MemberCategory());
+$dataPurger->removeExceptionTable(new \App\Table\Member());
+$dataPurger->removeExceptionTable(new \App\Table\MemberCategory());
 //$dataPurger->removeExceptionTable(new \App\Table\MemberOfMonth());
-//$dataPurger->removeExceptionTable(new \App\Table\Membership());
+$dataPurger->removeExceptionTable(new \App\Table\Membership());
 //$dataPurger->removeExceptionTable(new \App\Table\OauthUser());
 //$dataPurger->removeExceptionTable(new \App\Table\Photo());
 //$dataPurger->removeExceptionTable(new \App\Table\PhotoComment());
@@ -161,7 +161,7 @@ function getState(string $state) : string
 //$dataPurger->removeExceptionTable(new \App\Table\VolunteerJobShift());
 //$dataPurger->removeExceptionTable(new \App\Table\VolunteerPoint());
 //$dataPurger->removeExceptionTable(new \App\Table\VolunteerPollResponse());
-//$dataPurger->purge();
+$dataPurger->purge();
 
 $permissions = new \App\Model\Permission();
 
@@ -241,12 +241,13 @@ function insertMembers(string $csvName) : int
 		$membership->expires = \App\Tools\Date::toString($expired);
 		$membership->joined = $row['Use Created Date'];
 		$membership->lastRenewed = $row['Previous Expiration Date'];
+		$membership->clean();
 
 		$existingMembership = new \App\Record\Membership();
 
 		if ($existingMembership->read(['zip' => $membership->zip, 'address' => $membership->address]))
 			{
-			$membership = $existingMembership;
+			$membership = clone $existingMembership;
 			}
 
 		foreach ($members as $row)
@@ -274,11 +275,12 @@ function insertMembers(string $csvName) : int
 			$member->membership = $membership;
 			$member->firstName = $row['First Name'];
 			$member->lastName = $row['Last Name'];
+			$member->clean();
 			$existingMember = new \App\Record\Member();
 
 			if ($existingMember->read(['firstName' => $member->firstName, 'lastName' => $member->lastName]))
 				{
-				$membership = $existingMembership;
+				$membership = clone $existingMembership;
 				}
 
 			$member->membership = $membership;

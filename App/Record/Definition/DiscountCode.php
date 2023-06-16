@@ -8,10 +8,10 @@ namespace App\Record\Definition;
  * @property ?string $description MySQL type varchar(60)
  * @property ?float $discount MySQL type float(10,2)
  * @property ?string $discountCode MySQL type char(15)
- * @property int $discountCodeId MySQL type int(11)
+ * @property int $discountCodeId MySQL type int
  * @property string $expirationDate MySQL type date
- * @property ?int $maximumUses MySQL type int(11)
- * @property ?int $repeatCount MySQL type int(11)
+ * @property ?int $maximumUses MySQL type int
+ * @property ?int $repeatCount MySQL type int
  * @property string $startDate MySQL type date
  * @property ?string $validItemNumbers MySQL type text
  */
@@ -25,10 +25,10 @@ abstract class DiscountCode extends \PHPFUI\ORM\Record
 		'description' => ['varchar(60)', 'string', 60, true, ],
 		'discount' => ['float(10,2)', 'float', 10, true, ],
 		'discountCode' => ['char(15)', 'string', 15, true, ],
-		'discountCodeId' => ['int(11)', 'int', 11, false, ],
+		'discountCodeId' => ['int', 'int', 0, false, ],
 		'expirationDate' => ['date', 'string', 10, false, ],
-		'maximumUses' => ['int(11)', 'int', 11, true, ],
-		'repeatCount' => ['int(11)', 'int', 11, true, ],
+		'maximumUses' => ['int', 'int', 0, true, ],
+		'repeatCount' => ['int', 'int', 0, true, ],
 		'startDate' => ['date', 'string', 10, false, ],
 		'validItemNumbers' => ['text', 'string', 65535, true, ],
 	];

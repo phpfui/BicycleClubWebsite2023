@@ -8,16 +8,16 @@ namespace App\Record\Definition;
  * @property ?int $banner MySQL type tinyint(1)
  * @property ?int $blog MySQL type tinyint(1)
  * @property ?string $blogAfter MySQL type varchar(100)
- * @property int $footerMenu MySQL type tinyint(4)
+ * @property int $footerMenu MySQL type tinyint
  * @property ?int $header MySQL type tinyint(1)
  * @property ?int $hidden MySQL type tinyint(1)
- * @property int $homePageNotification MySQL type tinyint(4)
+ * @property int $homePageNotification MySQL type tinyint
  * @property ?string $method MySQL type varchar(200)
  * @property ?string $name MySQL type varchar(200)
- * @property int $publicMenu MySQL type tinyint(4)
- * @property int $publicPageId MySQL type int(11)
+ * @property int $publicMenu MySQL type tinyint
+ * @property int $publicPageId MySQL type int
  * @property \App\Record\PublicPage $publicPage related record
- * @property ?int $sequence MySQL type int(10)
+ * @property ?int $sequence MySQL type int
  * @property ?string $url MySQL type varchar(100)
  */
 abstract class PublicPage extends \PHPFUI\ORM\Record
@@ -30,15 +30,15 @@ abstract class PublicPage extends \PHPFUI\ORM\Record
 		'banner' => ['tinyint(1)', 'int', 1, true, 0, ],
 		'blog' => ['tinyint(1)', 'int', 1, true, 0, ],
 		'blogAfter' => ['varchar(100)', 'string', 100, true, ],
-		'footerMenu' => ['tinyint(4)', 'int', 4, false, 0, ],
+		'footerMenu' => ['tinyint', 'int', 0, false, 0, ],
 		'header' => ['tinyint(1)', 'int', 1, true, 0, ],
 		'hidden' => ['tinyint(1)', 'int', 1, true, ],
-		'homePageNotification' => ['tinyint(4)', 'int', 4, false, 0, ],
+		'homePageNotification' => ['tinyint', 'int', 0, false, 0, ],
 		'method' => ['varchar(200)', 'string', 200, true, ],
 		'name' => ['varchar(200)', 'string', 200, true, ],
-		'publicMenu' => ['tinyint(4)', 'int', 4, false, 1, ],
-		'publicPageId' => ['int(11)', 'int', 11, false, ],
-		'sequence' => ['int(10)', 'int', 10, true, 0, ],
+		'publicMenu' => ['tinyint', 'int', 0, false, 1, ],
+		'publicPageId' => ['int', 'int', 0, false, ],
+		'sequence' => ['int', 'int', 0, true, 0, ],
 		'url' => ['varchar(100)', 'string', 100, true, ],
 	];
 

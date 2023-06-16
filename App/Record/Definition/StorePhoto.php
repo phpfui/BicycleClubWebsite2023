@@ -7,10 +7,10 @@ namespace App\Record\Definition;
  *
  * @property ?string $extension MySQL type varchar(10)
  * @property ?string $filename MySQL type varchar(255)
- * @property int $sequence MySQL type int(11)
- * @property int $storeItemId MySQL type int(11)
+ * @property int $sequence MySQL type int
+ * @property int $storeItemId MySQL type int
  * @property \App\Record\StoreItem $storeItem related record
- * @property int $storePhotoId MySQL type int(11)
+ * @property int $storePhotoId MySQL type int
  * @property \App\Record\StorePhoto $storePhoto related record
  */
 abstract class StorePhoto extends \PHPFUI\ORM\Record
@@ -22,9 +22,9 @@ abstract class StorePhoto extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'extension' => ['varchar(10)', 'string', 10, true, ],
 		'filename' => ['varchar(255)', 'string', 255, true, ],
-		'sequence' => ['int(11)', 'int', 11, false, ],
-		'storeItemId' => ['int(11)', 'int', 11, false, ],
-		'storePhotoId' => ['int(11)', 'int', 11, false, ],
+		'sequence' => ['int', 'int', 0, false, ],
+		'storeItemId' => ['int', 'int', 0, false, ],
+		'storePhotoId' => ['int', 'int', 0, false, ],
 	];
 
 	/** @var array<string, true> */

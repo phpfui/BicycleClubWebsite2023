@@ -8,7 +8,7 @@ namespace App\Record\Definition;
  * @property ?string $email MySQL type varchar(100)
  * @property ?string $mailbox MySQL type varchar(50)
  * @property ?string $name MySQL type varchar(50)
- * @property int $systemEmailId MySQL type int(11)
+ * @property int $systemEmailId MySQL type int
  * @property \App\Record\SystemEmail $systemEmail related record
  */
 abstract class SystemEmail extends \PHPFUI\ORM\Record
@@ -21,7 +21,7 @@ abstract class SystemEmail extends \PHPFUI\ORM\Record
 		'email' => ['varchar(100)', 'string', 100, true, ],
 		'mailbox' => ['varchar(50)', 'string', 50, true, ],
 		'name' => ['varchar(50)', 'string', 50, true, ],
-		'systemEmailId' => ['int(11)', 'int', 11, false, ],
+		'systemEmailId' => ['int', 'int', 0, false, ],
 	];
 
 	/** @var array<string, true> */

@@ -7,7 +7,7 @@ namespace App\Record\Definition;
  *
  * @property string $optionName MySQL type char(100)
  * @property string $optionValues MySQL type varchar(255)
- * @property int $storeOptionId MySQL type int(11)
+ * @property int $storeOptionId MySQL type int
  * @property \App\Record\StoreOption $storeOption related record
  */
 abstract class StoreOption extends \PHPFUI\ORM\Record
@@ -19,7 +19,7 @@ abstract class StoreOption extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'optionName' => ['char(100)', 'string', 100, false, '', ],
 		'optionValues' => ['varchar(255)', 'string', 255, false, '', ],
-		'storeOptionId' => ['int(11)', 'int', 11, false, ],
+		'storeOptionId' => ['int', 'int', 0, false, ],
 	];
 
 	/** @var array<string, true> */

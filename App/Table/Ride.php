@@ -47,16 +47,6 @@ class Ride extends \PHPFUI\ORM\Table
 		\PHPFUI\ORM::execute($sql, $input);
 		}
 
-	public function deleteRWGPS(array $RWGPSIds) : void
-		{
-		if ($RWGPSIds)
-			{
-			$sql = 'update ride set RWGPSId=null where RWGPSId=0 or RWGPSId in (' . \implode(',', $RWGPSIds) . ')';
-
-			\PHPFUI\ORM::execute($sql);
-			}
-		}
-
 	public function find(array $parameters) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from ride

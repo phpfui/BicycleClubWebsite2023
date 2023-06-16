@@ -4,57 +4,71 @@ namespace App\Model;
 
 class RideWithGPS
 	{
-//	private ?\RideWithGPS\API\Client $client = null;
-
 	private readonly string $clubId;
+
+	private array $states = [
+		'Alaska' => 'AK',
+		'Alabama' => 'AL',
+		'Arkansas' => 'AR',
+		'Arizona' => 'AZ',
+		'California' => 'CA',
+		'Colorado' => 'CO',
+		'Connecticut' => 'CT',
+		'District of Columbia' => 'DC',
+		'Delaware' => 'DE',
+		'Florida' => 'FL',
+		'Georgia' => 'GA',
+		'Hawaii' => 'HI',
+		'Iowa' => 'IA',
+		'Idaho' => 'ID',
+		'Illinois' => 'IL',
+		'Indiana' => 'IN',
+		'Kansas' => 'KS',
+		'Kentucky' => 'KY',
+		'Louisiana' => 'LA',
+		'Massachusetts' => 'MA',
+		'Maryland' => 'MD',
+		'Maine' => 'ME',
+		'Michigan' => 'MI',
+		'Minnesota' => 'MN',
+		'Missouri' => 'MO',
+		'Mississippi' => 'MS',
+		'Montana' => 'MT',
+		'North Carolina' => 'NC',
+		'North Dakota' => 'ND',
+		'Nebraska' => 'NE',
+		'New Hampshire' => 'NH',
+		'New Jersey' => 'NJ',
+		'New Mexico' => 'NM',
+		'Nevada' => 'NV',
+		'New York' => 'NY',
+		'Ohio' => 'OH',
+		'Oklahoma' => 'OK',
+		'Oregon' => 'OR',
+		'Pennsylvania' => 'PA',
+		'Puerto Rico' => 'PR',
+		'Rhode Island' => 'RI',
+		'South Carolina' => 'SC',
+		'Sout hDakota' => 'SD',
+		'Tennessee' => 'TN',
+		'Texas' => 'TX',
+		'Utah' => 'UT',
+		'Virginia' => 'VA',
+		'Vermont' => 'VT',
+		'Washington' => 'WA',
+		'Wisconsin' => 'WI',
+		'West Virginia' => 'WV',
+		'Wyoming' => 'WY',
+	];
 
 	public function __construct()
 		{
 		$settingTable = new \App\Table\Setting();
 		$this->clubId = $settingTable->value('RideWithGPSClubId');
-		$key = $settingTable->value('RideWithGPSAPIKey');
-		$token = $settingTable->value('RideWithGPSAuthToken');
-
-//	if ($key && $token && $this->clubId)
-//		{
-//		$this->client = new \RideWithGPS\API\Client($key, $token);
-//		}
-		}
-
-	public function cleanStreet(string $street, bool $minimize = true) : string
-		{
-		// do as much cleaning as we can
-		$street = \PHPFUI\TextHelper::unicode_decode(\PHPFUI\TextHelper::unhtmlentities($street));
-		$street = \preg_replace('/[^ -~]/', '', $street);
-		$street = \str_replace('?', '', $street);
-
-		if (! $minimize)
-			{
-			return $street;
-			}
-
-		$street = \str_replace('State Highway', 'RT', $street);
-		$parts = \explode(' ', $street);
-
-		if ('Turn' == $parts[0])
-			{
-			\array_shift($parts);
-			}
-
-		foreach ($parts as &$part)
-			{
-			$part = \str_replace(['Avenue', 'Drive', 'Street', 'Lane', 'Road', 'Place', 'left', 'right', 'onto', ], ['Ave', 'Dr', 'St', 'Ln', 'Rd', 'Pl', 'L', 'R', '-', ], $part);
-			}
-		$parts[0] = \ucfirst($parts[0]);
-		$street = \implode(' ', $parts);
-
-		return $street;
 		}
 
 	/**
-	 * @return array containing all RWGPS ids in club library
-	 *
-	 * @psalm-return list<mixed>
+	 * @return array<int, array<mixed>> containing all RWGPS ids in club library indexed by rwgpsId as an integer
 	 */
 	public function getClubRoutes() : array
 		{
@@ -83,39 +97,6 @@ class RideWithGPS
 			}
 
 		return $routes;
-		}
-
-	public function getCSVReader(string $csv) : \App\Tools\CSVReader
-		{
-		$tempFile = new \App\Tools\TempFile();
-		$newHeaders = 'turn,street,distance,elevation,description,edited';
-		$metricHeaders = 'Type,Notes,Distance (km) From Start,Elevation (m),Description,Edited';
-		// could be metric, if so, convert to English
-		if (\str_contains($csv, $metricHeaders))
-			{
-			$cues = \str_replace($metricHeaders, $newHeaders, $csv);
-			$metricFile = new \App\Tools\TempFile();
-			\file_put_contents($metricFile, $cues);
-			$metricReader = new \App\Tools\CSVReader($metricFile);
-
-			$metricWriter = new \App\Tools\CSVWriter($tempFile, ',', false);
-			$metricWriter->addHeaderRow();
-
-			foreach ($metricReader as $row)
-				{
-				$row['distance'] = \number_format((float)$row['distance'] * 0.621371, 2);
-				$metricWriter->outputRow($row);
-				}
-			unset($metricWriter);
-			}
-		else
-			{
-			$headers = 'Type,Notes,Distance (miles) From Start,Elevation (ft),Description,Edited';
-			$cues = \str_replace($headers, $newHeaders, $csv);
-			\file_put_contents($tempFile, $cues);
-			}
-
-		return new \App\Tools\CSVReader($tempFile);
 		}
 
 	public static function getDirectionsLink(\App\Record\RWGPS $route) : string
@@ -198,18 +179,13 @@ class RideWithGPS
 		return $id;
 		}
 
-	public function scrape(\App\Record\RWGPS $rwgps, bool $delay = true) : ?\App\Record\RWGPS
+	public function scrape(\App\Record\RWGPS $rwgps) : ?\App\Record\RWGPS
 		{
-		if ($delay)
-			{
-			\sleep(\random_int(3, 5));
-			}
-		$url = static::getRouteLink($rwgps->RWGPSId);
-
-		if (empty($url))
+		if (! $rwgps->RWGPSId)
 			{
 			return null;
 			}
+		$url = "https://ridewithgps.com/routes/{$rwgps->RWGPSId}.json";
 
 		$client = new \GuzzleHttp\Client(['verify' => false, 'http_errors' => false]);
 
@@ -217,149 +193,99 @@ class RideWithGPS
 			{
 			$response = $client->request('GET', $url);
 			}
-		catch (\Throwable)
+		catch (\Throwable $e)
 			{
 			\App\Tools\Logger::get()->debug($url);
 			\App\Tools\Logger::get()->debug($rwgps);
 
 			return null;
 			}
-		$rwgps->status = $response->getStatusCode();
-		$rwgps->lastUpdated = \App\Tools\Date::todayString();
+		$status = $response->getStatusCode();
 
-		if (200 != $rwgps->status)
+		if (200 != $status)
 			{
 			// 404 = not found, 403 = not public
-			if ($rwgps->status >= 400 && $rwgps->status < 500)
+			if ($status >= 400 && $status < 500)
 				{
 				$rideTable = new \App\Table\Ride();
-				$rideTable->setWhere(new \PHPFUI\ORM\Condition('RWGPSId', $rwgps->RWGPSId));
-				$rideTable->delete();
+				$rideTable->changeRWGPSId($rwgps->RWGPSId, null);
 				$rwgps->delete();
 				}
 			else
 				{
-				\App\Tools\Logger::get()->debug("RWGPS returned {$rwgps->status} for {$url}");
+				\App\Tools\Logger::get()->debug("RWGPS returned {$status} for {$url}");
 				}
 
 			return null;
 			}
-		$html = $response->getBody();
-		$dom = new \voku\helper\HtmlDomParser("{$html}");
 
-		foreach ($dom->find('meta') as $node)
-			{
-			$attributes = $node->getAllAttributes();
-			$content = $attributes['content'] ?? '';
-			$name = $attributes['name'] ?? '';
-			$property = $attributes['property'] ?? '';
+		$json = $response->getBody();
+		$data = \json_decode($json, true);
 
-			if ('keywords' == $name)
-				{
-				$parts = \explode(',', $content);
-				$rwgps->town = \str_replace('Town of ', '', $parts[0] ?? '');
-				$rwgps->state = \str_replace(['New York', 'New Jersey', 'Connecticut'], ['NY', 'NJ', 'CT'], $parts[1] ?? '');
-				$rwgps->zip = $parts[2] ?? '';
-				}
-			elseif ('description' == $name)
-				{
-				if (\strpos($content, '--'))
-					{
-					$parts = \explode(' -- ', $content);
-					$rwgps->description = \trim($parts[0]);
-					$content = $parts[1] ?? '';
-					}
-				$parts = \explode(' ', $content);
-				$prior = '';
-
-				foreach ($parts as $part)
-					{
-					if ('mi,' == $part)
-						{
-						$rwgps->mileage = (float)$prior;
-						}
-					elseif ('ft.' == $part)
-						{
-						$rwgps->elevation = (int)\trim($prior, '+');
-						}
-					$prior = $part;
-					}
-				}
-			elseif ('og:title' == $property)
-				{
-				$content = \str_replace('(copy)', '', $content);
-				$content = \str_replace('  ', ' ', $content);
-				$content = \trim($content);
-				$rwgps->title = $content;
-				}
-			}
-
-		if ($rwgps->RWGPSId > 0)
-			{
-			$rwgps->csv = $this->getFile('csv', $url, $delay);
-			}
-		else
-			{
-			$rwgps->csv = '';
-			}
-		$kml = $this->getFile('kml', $url, $delay);
-
-		if ($kml)
-			{
-			$coords = \str_replace(\chr(10), '', $kml);
-			$tag = '<coordinates>';
-			$coords = \substr($coords, \strpos($coords, $tag) + \strlen($tag));
-			$values = \explode(',', $coords);
-
-			if (isset($values[0]))
-				{
-				$rwgps->longitude = (float)$values[0];
-				}
-
-			if (isset($values[1]))
-				{
-				$rwgps->latitude = (float)$values[1];
-				}
-			}
+		$this->updateFromData($rwgps, $data);
 
 		return $rwgps;
 		}
 
-	private function getFile(string $extension, string $url, bool $delay) : string
+	public function updateFromData(\App\Record\RWGPS $rwgps, array $data) : void
 		{
-		if ($delay)
+		$rwgps->RWGPSId = $data['id'];
+		$rwgps->town = $data['locality'];
+		$state = \App\Tools\TextHelper::properCase($data['administrative_area'] ?? '');
+		$rwgps->state = $this->states[$state] ?? $state;
+
+		if (2 == \strlen($rwgps->state))
 			{
-			\sleep(\random_int(3, 5));
+			$rwgps->state = \strtoupper($rwgps->state);
 			}
-		$parts = \parse_url($url);
-		$parts['path'] .= '.' . $extension;
+		$rwgps->country = $data['country_code'];
+		$rwgps->zip = $data['postal_code'];
+		$rwgps->description = $data['description'];
+		$rwgps->miles = $data['distance'] * 0.0006213727366498068;
+		$rwgps->km = $data['distance'] / 1000.0;
+		$rwgps->elevationMeters = $data['elevation_gain'];
+		$rwgps->elevationFeet = $data['elevation_gain'] * 3.28084;
+		$rwgps->title = $data['name'];
+		$rwgps->longitude = $data['first_lng'];
+		$rwgps->latitude = $data['first_lat'];
+		$rwgps->percentPaved = 100 - (int)$data['unpaved_pct'];
+		$updated_at = (int)$data['updated_at'];
 
-		$urlWithExtension = $this->unparse_url($parts);
-
-		try
+		if ($data['updated_at'] == $updated_at)
 			{
-			return \file_get_contents($urlWithExtension);
+			$rwgps->lastUpdated = \date('Y-m-d H:i:s', $updated_at);
 			}
-		catch (\Throwable)
+		else
 			{
+			$rwgps->lastUpdated = \date('Y-m-d H:i:s', \strtotime($data['updated_at']));
 			}
+		$rwgps->lastSynced = \date('Y-m-d H:i:s');
 
-		return '';
-		}
+		$rwgps->csv = $data['has_course_points'] ? '[]' : '';
 
-	private function unparse_url(array $parsed_url) : string
-		{
-		$scheme = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
-		$host = $parsed_url['host'] ?? '';
-		$port = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
-		$user = $parsed_url['user'] ?? '';
-		$pass = isset($parsed_url['pass']) ? ':' . $parsed_url['pass'] : '';
-		$pass = ($user || $pass) ? "{$pass}@" : '';
-		$path = $parsed_url['path'] ?? '';
-		$query = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
-		$fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
+		if (\count($data['course_points'] ?? []))
+			{
+			$stream = \fopen('php://memory', 'r+');
+			$header = false;
+			$lastDistance = 0.0;
 
-		return "{$scheme}{$user}{$pass}{$host}{$port}{$path}{$query}{$fragment}";
+			foreach ($data['course_points'] as $point)
+				{
+				$distance = (float)$point['d'];
+				$gox = $distance - $lastDistance;
+				$row = ['turn' => $point['t'], 'street' => $point['n'], 'distance' => round($distance, 2), 'gox' => round($gox, 2)];
+				$lastDistance = $distance;
+
+				if (! $header)
+					{
+					$header = true;
+					\fputcsv($stream, \array_keys($row));
+					}
+				\fputcsv($stream, $row);
+				}
+			\rewind($stream);
+			$rwgps->csv = \stream_get_contents($stream);
+			}
 		}
 
 	private static function validGeoLocation(array $route) : bool
@@ -367,43 +293,3 @@ class RideWithGPS
 		return isset($route['latitude']) && isset($route['longitude']) && ((float)$route['latitude'] + (float)$route['longitude']);
 		}
 	}
-
-/*
-	[id] => 43200270
-	[group_membership_id] => 474439
-	[name] => Fort Edward to Fort Ann on Champlain Canalway Trail
-	[description] => Part of the Empire State Trail
-	[created_at] => 2023-06-07T13:22:44-07:00
-	[distance] => 38017.2
-	[elevation_gain] => 77.8214
-	[elevation_loss] => 77.3618
-	[visibility] => 0
-	[first_lat] => 43.27367
-	[first_lng] => -73.58005
-	[last_lat] => 43.27367
-	[last_lng] => -73.58005
-	[is_trip] =>
-	[postal_code] => 12828
-	[locality] => Fort Edward
-	[administrative_area] => NY
-	[pavement_type_id] =>
-	[country_code] => US
-	[has_course_points] => 1
-	[updated_at] => 2023-06-07T13:22:44-07:00
-	[best_for_id] =>
-	[planner_options] => 64
-	[user_id] => 459297
-	[deleted_at] =>
-	[sw_lng] => -73.58006
-	[sw_lat] => 43.27367
-	[ne_lng] => -73.48618
-	[ne_lat] => 43.413873
-	[track_id] => 6480e7146b34d70c8e2c9b5c
-	[archived_at] =>
-	[likes_count] => 0
-	[track_type] => out_and_back
-	[terrain] => flat
-	[difficulty] => easy
-	[unpaved_pct] => 42
-	[nav_enabled] => 1
- */

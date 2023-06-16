@@ -7,13 +7,13 @@ namespace App\Record\Definition;
  *
  * @property ?string $address MySQL type varchar(100)
  * @property ?string $affiliation MySQL type varchar(200)
- * @property int $allowedMembers MySQL type int(1)
+ * @property int $allowedMembers MySQL type int
  * @property ?string $expires MySQL type date
  * @property ?string $joined MySQL type date
  * @property ?string $lastRenewed MySQL type date
- * @property int $membershipId MySQL type int(11)
+ * @property int $membershipId MySQL type int
  * @property \App\Record\Membership $membership related record
- * @property int $pending MySQL type int(1)
+ * @property int $pending MySQL type int
  * @property ?string $renews MySQL type date
  * @property ?string $state MySQL type char(2)
  * @property ?string $subscriptionId MySQL type varchar(20)
@@ -29,12 +29,12 @@ abstract class Membership extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'address' => ['varchar(100)', 'string', 100, true, ],
 		'affiliation' => ['varchar(200)', 'string', 200, true, ],
-		'allowedMembers' => ['int(1)', 'int', 1, false, 0, ],
+		'allowedMembers' => ['int', 'int', 0, false, 0, ],
 		'expires' => ['date', 'string', 10, true, ],
 		'joined' => ['date', 'string', 10, true, ],
 		'lastRenewed' => ['date', 'string', 10, true, ],
-		'membershipId' => ['int(11)', 'int', 11, false, ],
-		'pending' => ['int(1)', 'int', 1, false, 1, ],
+		'membershipId' => ['int', 'int', 0, false, ],
+		'pending' => ['int', 'int', 0, false, 1, ],
 		'renews' => ['date', 'string', 10, true, ],
 		'state' => ['char(2)', 'string', 2, true, ],
 		'subscriptionId' => ['varchar(20)', 'string', 20, true, ],

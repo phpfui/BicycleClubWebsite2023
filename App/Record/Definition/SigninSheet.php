@@ -7,11 +7,11 @@ namespace App\Record\Definition;
  *
  * @property string $dateAdded MySQL type date
  * @property ?string $ext MySQL type char(10)
- * @property int $memberId MySQL type int(11)
+ * @property int $memberId MySQL type int
  * @property \App\Record\Member $member related record
- * @property ?int $pending MySQL type int(1)
- * @property int $pointsAwarded MySQL type int(11)
- * @property int $signinSheetId MySQL type int(11)
+ * @property ?int $pending MySQL type int
+ * @property int $pointsAwarded MySQL type int
+ * @property int $signinSheetId MySQL type int
  * @property \App\Record\SigninSheet $signinSheet related record
  */
 abstract class SigninSheet extends \PHPFUI\ORM\Record
@@ -23,10 +23,10 @@ abstract class SigninSheet extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'dateAdded' => ['date', 'string', 10, false, ],
 		'ext' => ['char(10)', 'string', 10, true, '', ],
-		'memberId' => ['int(11)', 'int', 11, false, ],
-		'pending' => ['int(1)', 'int', 1, true, 1, ],
-		'pointsAwarded' => ['int(11)', 'int', 11, false, 0, ],
-		'signinSheetId' => ['int(11)', 'int', 11, false, ],
+		'memberId' => ['int', 'int', 0, false, ],
+		'pending' => ['int', 'int', 0, true, 1, ],
+		'pointsAwarded' => ['int', 'int', 0, false, 0, ],
+		'signinSheetId' => ['int', 'int', 0, false, ],
 	];
 
 	/** @var array<string, true> */

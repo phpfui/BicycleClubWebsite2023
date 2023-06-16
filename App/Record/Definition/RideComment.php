@@ -8,11 +8,11 @@ namespace App\Record\Definition;
  * @property ?string $comment MySQL type varchar(255)
  * @property ?float $latitude MySQL type decimal(18,15)
  * @property ?float $longitude MySQL type decimal(18,15)
- * @property int $memberId MySQL type int(11)
+ * @property int $memberId MySQL type int
  * @property \App\Record\Member $member related record
- * @property int $rideCommentId MySQL type int(11)
+ * @property int $rideCommentId MySQL type int
  * @property \App\Record\RideComment $rideComment related record
- * @property ?int $rideId MySQL type int(11)
+ * @property ?int $rideId MySQL type int
  * @property \App\Record\Ride $ride related record
  * @property string $time MySQL type timestamp
  */
@@ -26,9 +26,9 @@ abstract class RideComment extends \PHPFUI\ORM\Record
 		'comment' => ['varchar(255)', 'string', 255, true, ],
 		'latitude' => ['decimal(18,15)', 'float', 18, true, ],
 		'longitude' => ['decimal(18,15)', 'float', 18, true, ],
-		'memberId' => ['int(11)', 'int', 11, false, ],
-		'rideCommentId' => ['int(11)', 'int', 11, false, ],
-		'rideId' => ['int(11)', 'int', 11, true, 0, ],
+		'memberId' => ['int', 'int', 0, false, ],
+		'rideCommentId' => ['int', 'int', 0, false, ],
+		'rideId' => ['int', 'int', 0, true, 0, ],
 		'time' => ['timestamp', 'string', 20, false, null, ],
 	];
 

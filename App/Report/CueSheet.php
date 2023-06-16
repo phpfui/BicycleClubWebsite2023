@@ -6,7 +6,11 @@ class CueSheet extends \FPDF
 	{
 	private int $angle = 0;
 
-	private readonly float $firstColumn;
+	private float $ascent = 0;
+
+	private float $distance = 0.0;
+
+	private float $firstColumn;
 
 	private float $height = 0.0;
 
@@ -14,24 +18,23 @@ class CueSheet extends \FPDF
 
 	private float $margin = 0.0;
 
-	private \App\Record\RWGPS $rwgps;
+	private float $secondColumn;
 
-	private readonly \App\Model\RideWithGPS $rwgpsModel;
+	private float $secondRow;
 
-	private readonly float $secondColumn;
+	private float $topMargin;
 
-	private readonly float $secondRow;
+	private float $topRow;
 
-	private readonly float $topMargin;
+	private string $units;
 
-	private readonly float $topRow;
-
-	private readonly float $width;
+	private float $width;
 
 	public function __construct()
 		{
 		parent::__construct('P', 'mm', 'letter');
-		$this->rwgpsModel = new \App\Model\RideWithGPS();
+		$settingTable = new \App\Table\Setting();
+		$this->units = $settingTable->value('RWGPSUnits');
 		$this->SetAutoPageBreak(false);
 		$this->width = $this->GetPageWidth();
 		$this->height = $this->GetPageHeight();
@@ -44,6 +47,73 @@ class CueSheet extends \FPDF
 		$this->SetMargins($this->margin, $this->topMargin, $this->margin);
 		}
 
+	public function cleanStreet(string $street, bool $minimize = true) : string
+		{
+		// do as much cleaning as we can
+		$street = \PHPFUI\TextHelper::unicode_decode(\PHPFUI\TextHelper::unhtmlentities($street));
+		$street = \preg_replace('/[^ -~]/', '', $street);
+		$street = \str_replace('?', '', $street);
+
+		if (! $minimize)
+			{
+			return $street;
+			}
+
+		$street = \str_replace('State Highway', 'RT', $street);
+		$parts = \explode(' ', $street);
+
+		if ('Turn' == $parts[0])
+			{
+			\array_shift($parts);
+			}
+
+		foreach ($parts as &$part)
+			{
+			$part = \str_replace(['Avenue', 'Drive', 'Street', 'Lane', 'Road', 'Place', 'left', 'right', 'onto', 'Route', ], ['Ave', 'Dr', 'St', 'Ln', 'Rd', 'Pl', 'L', 'R', '-', 'Rt', ], $part);
+			}
+		$parts[0] = \ucfirst($parts[0]);
+		$street = \implode(' ', $parts);
+
+		$parts = \explode(', ', $street);
+
+		if (2 == \count($parts))
+			{
+			if ((int)$parts[1] == $parts[1])
+				{
+				if (! \str_contains($parts[0], 'Rt ' . $parts[1]))
+					{
+					$parts[1] = 'Rt ' . $parts[1];
+					}
+				else
+					{
+					unset($parts[1]);
+					}
+				}
+			$street = \implode(', ', $parts);
+			}
+
+		return $street;
+		}
+
+	public function generate(\App\Tools\CSVReader $reader, string $title, string $leader = '', string $cellPhoneNumber = '') : static
+		{
+		$title = $this->cleanStreet($title, false);
+
+		$topHeight = $this->height / 2.0 - $this->margin * 2.5;
+		$bottomHeight = $this->height / 2.0 - $this->margin * 2;
+
+		while ($reader->valid())
+			{
+			$this->newPage($title, $leader, $cellPhoneNumber);
+			$this->printSection($this->firstColumn, $this->topRow, $topHeight, $reader);
+			$this->printSection($this->secondColumn, $this->topRow, $topHeight, $reader);
+			$this->printSection($this->firstColumn, $this->secondRow, $bottomHeight, $reader);
+			$this->printSection($this->secondColumn, $this->secondRow, $bottomHeight, $reader);
+			}
+
+		return $this;
+		}
+
 	public function generateFromRide(\App\Record\Ride $ride) : static
 		{
 		if (! $ride->loaded())
@@ -53,62 +123,58 @@ class CueSheet extends \FPDF
 			return $this;
 			}
 
-		$this->rwgps = $ride->RWGPS;
-
-		if (! $this->rwgps->loaded())
-			{
-			$this->newPage('RideWithGPS ride not found');
-
-			return $this;
-			}
-
 		$leader = '';
-		$cell = '';
-
+		$cellPhoneNumber = '';
 		$member = $ride->member;
 
 		if ($member->loaded())
 			{
 			$leader = $member->fullName();
-			$cell = $member->cellPhone;
+			$cellPhoneNumber = $member->cellPhone;
 			}
 
-		return $this->generate($ride->title, $leader, $cell);
+		return $this->generateFromRWGPS($ride->RWGPS, $ride->title, $leader, $cellPhoneNumber);
 		}
 
-	public function generateFromRWGPS(\App\Record\RWGPS $rwgps) : static
+	public function generateFromRWGPS(\App\Record\RWGPS $rwgps, string $title = '', string $leader = '', string $cellPhoneNumber = '') : static
 		{
-		$this->rwgps = $rwgps;
-
-		if (! $this->rwgps->loaded())
+		if (! $rwgps->loaded())
 			{
 			$this->newPage('RideWithGPS ride not found');
 
 			return $this;
 			}
 
-		return $this->generate($this->rwgps->title);
+		$title = $title ?: $rwgps->title;
+		$this->ascent = $rwgps->elevationMeters;
+
+		$this->distance = $rwgps->km * 1000;
+
+		return $this->generate($rwgps->getCSVReader(), $title, $leader, $cellPhoneNumber);
 		}
 
-	private function generate(string $title, string $leader = '', string $cell = '') : static
+	private function getBigUnits(float $meters) : float
 		{
-		$reader = $this->rwgpsModel->getCSVReader($this->rwgps->csv ?? '');
-
-		$title = $this->rwgpsModel->cleanStreet($title, false);
-
-		$topHeight = $this->height / 2.0 - $this->margin * 2.5;
-		$bottomHeight = $this->height / 2.0 - $this->margin * 2;
-
-		while ($reader->valid())
+		if ('Miles' == $this->units)
 			{
-			$this->newPage($title, $leader, $cell);
-			$this->printSection($this->firstColumn, $this->topRow, $topHeight, $reader);
-			$this->printSection($this->secondColumn, $this->topRow, $topHeight, $reader);
-			$this->printSection($this->firstColumn, $this->secondRow, $bottomHeight, $reader);
-			$this->printSection($this->secondColumn, $this->secondRow, $bottomHeight, $reader);
+			// return miles
+			return $meters * 0.000621371;
 			}
 
-		return $this;
+		// must want kilometers
+		return $meters / 1000;
+		}
+
+	private function getSmallUnits(float $meters) : float
+		{
+		if ('Miles' == $this->units)
+			{
+			// return feet
+			return $meters * 3.28084;
+			}
+
+		// must want meters
+		return $meters;
 		}
 
 	private function limit(string &$street, float $streetWidth) : string
@@ -136,7 +202,7 @@ class CueSheet extends \FPDF
 		return $streetContinued;
 		}
 
-	private function newPage(string $title, string $leader = '', string $cell = '') : void
+	private function newPage(string $title, string $leader = '', string $cellPhoneNumber = '') : void
 		{
 		$this->AddPage();
 		$this->SetFont('Arial', 'B', 14);
@@ -144,9 +210,11 @@ class CueSheet extends \FPDF
 
 
 		$this->Text($this->margin, $this->topMargin, $title);
-		$this->SetXY($this->width - 50, $y);
-		$this->writeLabel('Mileage', $this->rwgps->mileage ?? '');
-		$this->writeLabel(' Elevation', $this->rwgps->elevation ?? '');
+		$this->SetXY($this->width - 51, $y);
+		$this->writeLabel('Dist', \round($this->getBigUnits($this->distance), 2) . ' ' . \substr($this->units, 0, 2));
+		$ascent = number_format($this->getSmallUnits($this->ascent), 2);
+		$unit = 'Miles' == $this->units ? 'ft' : 'm';
+		$this->writeLabel(' Ele', " +{$ascent} {$unit}");
 
 		$this->setLineWidth(0.1);
 		$this->SetDash(2, 2);
@@ -157,26 +225,28 @@ class CueSheet extends \FPDF
 		$this->SetDash();
 
 		$end = $this->height / 2 - $this->margin * 2.5;
-		$this->printLeader($this->firstColumn, $this->topRow + $end, $leader, $cell);
-		$this->printLeader($this->secondColumn, $this->topRow + $end, $leader, $cell);
-		$this->printLeader($this->firstColumn, $this->secondRow + $end, $leader, $cell);
-		$this->printLeader($this->secondColumn, $this->secondRow + $end, $leader, $cell);
+		$this->printLeader($this->firstColumn, $this->topRow + $end, $leader, $cellPhoneNumber);
+		$this->printLeader($this->secondColumn, $this->topRow + $end, $leader, $cellPhoneNumber);
+		$this->printLeader($this->firstColumn, $this->secondRow + $end, $leader, $cellPhoneNumber);
+		$this->printLeader($this->secondColumn, $this->secondRow + $end, $leader, $cellPhoneNumber);
 		}
 
-	private function printLeader(float $column, float $row, string $leader, string $cell) : void
+	private function printLeader(float $column, float $row, string $leader, string $cellPhoneNumber) : void
 		{
 		$this->SetXY($column, $row);
 		$this->writeLabel('Leader', $leader);
 		$this->SetXY($column + 65, $row);
-		$this->writeLabel('Cell', $cell);
+		$this->writeLabel('Cell', $cellPhoneNumber);
 		}
 
-	private function printRow(float $x, float $y, array $row, string $border, float $lineHeight = 7.0) : float
+	/** @param array<string, string> $row */
+	private function printRow(float $x, float $y, array $row, string $border, float $lineHeight = 7.0, string $alignment = 'R') : float
 		{
 		$height = $lineHeight;
 		$this->setXY($x, $y);
-		$row['street'] ??= '';
-		$street = $this->rwgpsModel->cleanStreet($row['street']);
+
+		$row['street'] = $row['street'] ?? '';
+		$street = $this->cleanStreet($row['street']);
 		$streetWidth = 65;
 		$currentBorder = $border;
 		$streetContinued = $this->limit($street, $streetWidth);
@@ -187,8 +257,8 @@ class CueSheet extends \FPDF
 			}
 
 		$this->setLineWidth(0.2);
-		$this->Cell(14, $lineHeight, $row['distance'], $currentBorder, 0, 'C', true);
-		$this->Cell(12, $lineHeight, $row['gox'], $currentBorder, 0, 'C', true);
+		$this->Cell(14, $lineHeight, $row['distance'], $currentBorder, 0, $alignment, true);
+		$this->Cell(12, $lineHeight, $row['gox'], $currentBorder, 0, $alignment, true);
 		$turnY = $this->GetY();
 		$turnX = $this->GetX();
 		$this->Cell(5, $lineHeight, '', $currentBorder, 0, 'C', true);
@@ -212,6 +282,8 @@ class CueSheet extends \FPDF
 					break;
 
 
+				case 'Left_sharp':
+				case 'Left_slight':
 				case 'Left':
 
 					$turnX += 4.75;
@@ -221,6 +293,7 @@ class CueSheet extends \FPDF
 					break;
 
 
+				case 'Flag, Blue':
 				case 'Start':
 
 					$turnY += $lineHeight - 1.5;
@@ -230,6 +303,8 @@ class CueSheet extends \FPDF
 					break;
 
 
+				case 'Right_sharp':
+				case 'Right_slight':
 				case 'Right':
 
 					$turnY += $lineHeight - 2;
@@ -295,17 +370,17 @@ class CueSheet extends \FPDF
 		$this->SetFont('Arial', 'B', 8);
 		$this->SetFillColor(204);
 
-		$row = [];
-		$row['distance'] = 'Distance';
-		$row['turn'] = '';
-		$row['gox'] = 'Go X';
-		$row['street'] = '';
-		$y += $this->printRow($x, $y, $row, 'TL', 4);
+		$header = [];
+		$header['distance'] = 'Distance';
+		$header['turn'] = '';
+		$header['gox'] = 'Go X';
+		$header['street'] = '';
+		$y += $this->printRow($x, $y, $header, 'TL', 4, 'C');
 		$this->SetFont('Arial', 'B', 8);
-		$row['distance'] = 'At Turn';
-		$row['gox'] = 'Miles';
-		$row['street'] = 'Then Turn Onto';
-		$y += $this->printRow($x, $y, $row, 'LB', 4);
+		$header['distance'] = 'At Turn';
+		$header['gox'] = $this->units;
+		$header['street'] = 'Then Turn Onto';
+		$y += $this->printRow($x, $y, $header, 'LB', 4, 'C');
 
 		$this->SetFont('Arial', '', 14);
 		$count = 1;
@@ -322,17 +397,17 @@ class CueSheet extends \FPDF
 				}
 
 			$row = $reader->current();
-			$row['distance'] ??= 0;
-			$row['distance'] = \number_format($row['distance'], 2);
-			$row['gox'] = \number_format((float)$row['distance'] - (float)$this->lastDistance, 2);
-			$this->lastDistance = (float)$row['distance'];
+			$originalDistance = (float)$row['distance'];
+			$row['distance'] = \number_format($this->getBigUnits($originalDistance), 2);
+			$row['gox'] = \number_format($this->getBigUnits($originalDistance - $this->lastDistance), 2);
+			$this->lastDistance = $originalDistance;
 			$y += $this->printRow($x, $y, $row, 'LB');
 			$reader->next();
 			++$count;
 			}
 		}
 
-	private function Rotate(int $angle, $x = -1, $y = -1) : void
+	private function Rotate(int $angle, float $x = -1.0, float $y = -1.0) : void
 		{
 		if (-1 == $x)
 			{
@@ -378,7 +453,7 @@ class CueSheet extends \FPDF
 
 	private function writeLabel(string $label, string $value) : void
 		{
-		if ($value)
+		if (\strlen($value))
 			{
 			$this->SetFont('Arial', 'B', 8);
 			$this->Write(2.7, $label . ': ');

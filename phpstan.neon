@@ -4,7 +4,6 @@ parameters:
 	editorUrl: '%%file%% %%line%% %%column%%: %%error%%'
 	paths:
 		- App
-		- RideWithGPS
 	scanFiles:
 		- common.php
 		- commonbase.php
@@ -13,7 +12,6 @@ parameters:
 		- conversions
 		- oneOffScripts
 		- NoNameSpace
-		- RideWithGPS
 		- PHPFUI
 	ignoreErrors:
 		-

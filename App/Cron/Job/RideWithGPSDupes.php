@@ -12,7 +12,7 @@ class RideWithGPSDupes extends \App\Cron\BaseJob
 	/** @param array<string, string> $parameters */
 	public function run(array $parameters = []) : void
 		{
-		$dupFields = ['mileage', 'elevation', 'latitude', 'longitude'];
+		$dupFields = ['km', 'elevationMeters', 'latitude', 'longitude'];
 
 		$rwgpsTable = new \App\Table\RWGPS();
 		$rideTable = new \App\Table\Ride();
@@ -22,7 +22,7 @@ class RideWithGPSDupes extends \App\Cron\BaseJob
 			$rwgpsTable->addOrderBy($field);
 			}
 		$rwgpsTable->addOrderBy('club');	// keep the club version in case of tie
-		$rwgpsTable->addOrderBy('RWGPSId');	// pick the most recent
+		$rwgpsTable->addOrderBy('lastUpdated');	// pick the most recent
 
 		$last = new \App\Record\RWGPS();
 

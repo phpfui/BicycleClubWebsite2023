@@ -135,6 +135,17 @@ class Menu extends \PHPFUI\HTML5Element
 		return $this;
 		}
 
+	/**
+	 * Sort the menu by name displayed to the user.
+	 */
+	public function sort() : static
+		{
+		$this->sorted = true;
+		\ksort($this->menuItems);
+
+		return $this;
+		}
+
 	public function walk(string $method, mixed $argument = null) : static
 		{
 		foreach ($this->menuItems as $item)
@@ -159,17 +170,6 @@ class Menu extends \PHPFUI\HTML5Element
 					}
 				}
 			}
-
-		return $this;
-		}
-
-	/**
-	 * Sort the menu by name displayed to the user.
-	 */
-	public function sort() : static
-		{
-		$this->sorted = true;
-		\ksort($this->menuItems);
 
 		return $this;
 		}

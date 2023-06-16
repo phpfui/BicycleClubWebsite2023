@@ -435,7 +435,7 @@ class MainMenu extends \PHPFUI\AccordionMenu
 
 		$menu = null;
 
-		if ($this->permissions->isAuthorized($name, $menuName))
+		if ($this->permissions->isAuthorized($name, $this->currentMenu))
 			{
 			$menu = new \PHPFUI\Menu();
 			$parentMenu->addSubMenu(new \PHPFUI\MenuItem($name), $menu);

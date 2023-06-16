@@ -4,6 +4,8 @@ namespace App\View;
 
 class RideWithGPS
 	{
+	private readonly bool $metric;
+
 	private readonly \App\Model\RideWithGPS $model;
 
 	private readonly \App\UI\RWGPSPicker $rwgpsPicker;
@@ -12,6 +14,7 @@ class RideWithGPS
 		{
 		$this->model = new \App\Model\RideWithGPS();
 		$this->rwgpsPicker = new \App\UI\RWGPSPicker($page, 'RWGPSAlternateId', 'Select an alternate route by title, street name or town');
+		$this->metric = 'km' == $page->value('RWGPSUnits');
 
 		$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($_POST['rwgpsUrl'] ?? '');
 
@@ -25,7 +28,7 @@ class RideWithGPS
 				$rwgpsRecord->insertOrUpdate();
 				}
 
-			$rwgps = $this->model->scrape($rwgpsRecord, false);
+			$rwgps = $this->model->scrape($rwgpsRecord);
 
 			if ($rwgps)
 				{
@@ -165,25 +168,23 @@ class RideWithGPS
 		$submit = new \PHPFUI\Submit();
 		$settingsSaver = new \App\Model\SettingsSaver();
 		$form = new \PHPFUI\Form($this->page, $submit);
-		$fieldSet = new \PHPFUI\FieldSet('RideWithGPS API Settings');
+		$fieldSet = new \PHPFUI\FieldSet('Club RideWithGPS Settings');
 		$fieldSet->add(' You will need your RWGPS Club Id to enable RWGPS integration. Leave the Club Id empty to turn off.');
-//		$fieldSet->add(' You will need to get the User Id, Club Id and API Key from a RideWithGPS representative. Once you have those, sign into the club account and generate the auth token here: <a href="https://ridewithgps.com/api" target="_blank">RideWithGPS API</a>. Leave the Club Id empty to turn off.');
 		$clubId = $settingsSaver->generateField('RideWithGPSClubId', 'Club Id');
 		$clubId->setRequired(false);
 		$fieldSet->add($clubId);
-//		$userId = $settingsSaver->generateField('RideWithGPSUserId', 'User Id');
-//		$fieldSet->add($userId);
-//		$apiKey = $settingsSaver->generateField('RideWithGPSAPIKey', 'API Key');
-//		$fieldSet->add($apiKey);
-//		$authToken = $settingsSaver->generateField('RideWithGPSAuthToken', 'Auth Token');
-//		$fieldSet->add($authToken);
-		$form->add($fieldSet);
 
-		$fieldSet = new \PHPFUI\FieldSet('Club RideWithGPS Settings');
 		$view = new \App\View\Coordinators($this->page);
 		$fieldSet->add($view->getEmail('RideWithGPS Coordinator'));
+
 		$clubUrl = $settingsSaver->generateField('RideWithGPSURL', 'Club Library URL', 'url', false);
 		$fieldSet->add($clubUrl);
+
+		$units = new \PHPFUI\Input\RadioGroup('RWGPSUnits', 'Measurement Units');
+		$units->addButton('Imperial', 'Miles');
+		$units->addButton('Metric', 'km');
+		$fieldSet->add($settingsSaver->generateField('RWGPSUnits', 'Measurement Units', $units));
+
 		$form->add($fieldSet);
 
 		if ($form->isMyCallback())
@@ -213,8 +214,17 @@ class RideWithGPS
 			$fieldSet->add(new \App\UI\Display('Directions', $directionsLink));
 			$fieldSet->add(new \App\UI\Display('Title', $rwgps->title));
 			$fieldSet->add(new \App\UI\Display('Description', $rwgps->description));
-			$fieldSet->add(new \App\UI\Display('Mileage', $rwgps->mileage ?? 0));
-			$fieldSet->add(new \App\UI\Display('Elevation', $rwgps->elevation ?? 0));
+
+			if ($this->metric)
+				{
+				$fieldSet->add(new \App\UI\Display('Distance (km)', $rwgps->km ?? 0));
+				$fieldSet->add(new \App\UI\Display('Elevation (m)', $rwgps->elevationMeters ?? 0));
+				}
+			else
+				{
+				$fieldSet->add(new \App\UI\Display('Mileage', $rwgps->miles ?? 0));
+				$fieldSet->add(new \App\UI\Display('Elevation (ft)', $rwgps->elevationFeet ?? 0));
+				}
 			$fieldSet->add(new \App\UI\Display('Town', $rwgps->town));
 			$fieldSet->add(new \App\UI\Display('State', $rwgps->state));
 			$fieldSet->add(new \App\UI\Display('Zip', $rwgps->zip));
@@ -235,7 +245,22 @@ class RideWithGPS
 
 	public function list(\App\Table\RWGPS $rwgpsTable, array $additionalHeaders = []) : \App\UI\ContinuousScrollTable
 		{
-		$sortableHeaders = ['title' => 'Name', 'mileage' => 'Mile<wbr>age', 'elevation' => 'Elev<wbr>ation', 'feetPerMile' => 'Ft/Mi', 'town' => 'Start', 'club' => 'Club', ];
+		$sortableHeaders = ['title' => 'Name', ];
+
+		if ($this->metric)
+			{
+			$sortableHeaders['km'] = 'km';
+			$sortableHeaders['elevationMeters'] = 'Elev<wbr>ation';
+			$sortableHeaders['metersPerKm'] = 'm/km';
+			}
+		else
+			{
+			$sortableHeaders['miles'] = 'Miles';
+			$sortableHeaders['elevationFeet'] = 'Elev<wbr>ation';
+			$sortableHeaders['feetPerMile'] = 'Ft/Mi';
+			}
+		$sortableHeaders['town'] = 'Start';
+		$sortableHeaders['club'] = 'Club';
 		$normalHeaders = $additionalHeaders + ['cuesheet' => 'Cue', 'stats' => 'Stats'];
 
 		$view = new \App\UI\ContinuousScrollTable($this->page, $rwgpsTable);
@@ -292,13 +317,27 @@ class RideWithGPS
 			{
 			if ($rwgps->mileage > 0)
 				{
-				$mileage += $rwgps->mileage;
+				if ($this->metric)
+					{
+					$mileage += $rwgps->km;
+					}
+				else
+					{
+					$mileage += $rwgps->miles;
+					}
 				++$mileageCount;
 				}
 
 			if ($rwgps->elevation > 0)
 				{
-				$elevation += $rwgps->elevation;
+				if ($this->metric)
+					{
+					$elevation += $rwgps->elevationMeters;
+					}
+				else
+					{
+					$elevation += $rwgps->elevationFeet;
+					}
 				++$elevationCount;
 				}
 			$clubCount += $rwgps->club;
@@ -324,11 +363,30 @@ class RideWithGPS
 		$fieldSet->add(new \App\UI\Display('Club Routes', $clubCount));
 		$container->add($fieldSet);
 
+		if ($this->metric)
+			{
+			$unitLarge = 'km';
+			$unitSmall = 'm';
+			}
+		else
+			{
+			$unitLarge = 'miles';
+			$unitSmall = 'ft';
+			}
+
 		$fieldSet = new \PHPFUI\FieldSet('Interesting Numbers');
-		$fieldSet->add(new \App\UI\Display('Total Mileage', \number_format($mileage, 0)));
-		$fieldSet->add(new \App\UI\Display('Average Ride Mileage', \number_format($mileage / ($mileageCount ?: 1), 1)));
-		$fieldSet->add(new \App\UI\Display('Total Miles of Elevation', \number_format($elevation / 5180, 0)));
-		$fieldSet->add(new \App\UI\Display('Average Ride Elevation (ft)', \number_format($elevation / ($elevationCount ?: 1), 0)));
+		$fieldSet->add(new \App\UI\Display("Total Distance ({$unitLarge})", \number_format($mileage, 0)));
+		$fieldSet->add(new \App\UI\Display("Average Ride Distance ({$unitLarge})", \number_format($mileage / ($mileageCount ?: 1), 1)));
+
+		if ($this->metric)
+			{
+			$fieldSet->add(new \App\UI\Display('Total Kilometers of Elevation', \number_format($elevation / 1000, 0)));
+			}
+		else
+			{
+			$fieldSet->add(new \App\UI\Display('Total Miles of Elevation', \number_format($elevation / 5180, 0)));
+			}
+		$fieldSet->add(new \App\UI\Display("Average Ride Elevation ({$unitSmall})", \number_format($elevation / ($elevationCount ?: 1), 0)));
 		$container->add($fieldSet);
 
 		$container->add(new \PHPFUI\SubHeader('Start Towns'));

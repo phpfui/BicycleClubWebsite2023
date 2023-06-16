@@ -7,18 +7,18 @@ namespace App\Record\Definition;
  *
  * @property ?string $address MySQL type varchar(100)
  * @property ?string $comments MySQL type varchar(50)
- * @property ?int $eventId MySQL type int(6)
+ * @property ?int $eventId MySQL type int
  * @property \App\Record\Event $event related record
- * @property ?int $invoiceId MySQL type int(11)
+ * @property ?int $invoiceId MySQL type int
  * @property \App\Record\Invoice $invoice related record
- * @property int $memberId MySQL type int(11)
+ * @property int $memberId MySQL type int
  * @property \App\Record\Member $member related record
- * @property ?int $paymentId MySQL type int(6)
+ * @property ?int $paymentId MySQL type int
  * @property \App\Record\Payment $payment related record
  * @property ?string $phone MySQL type varchar(20)
  * @property float $pricePaid MySQL type decimal(6,2)
  * @property ?string $reservationFirstName MySQL type varchar(50)
- * @property int $reservationId MySQL type int(11)
+ * @property int $reservationId MySQL type int
  * @property \App\Record\Reservation $reservation related record
  * @property ?string $reservationLastName MySQL type varchar(50)
  * @property ?string $reservationemail MySQL type varchar(50)
@@ -36,14 +36,14 @@ abstract class Reservation extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'address' => ['varchar(100)', 'string', 100, true, ],
 		'comments' => ['varchar(50)', 'string', 50, true, ],
-		'eventId' => ['int(6)', 'int', 6, true, ],
-		'invoiceId' => ['int(11)', 'int', 11, true, 0, ],
-		'memberId' => ['int(11)', 'int', 11, false, ],
-		'paymentId' => ['int(6)', 'int', 6, true, ],
+		'eventId' => ['int', 'int', 0, true, ],
+		'invoiceId' => ['int', 'int', 0, true, 0, ],
+		'memberId' => ['int', 'int', 0, false, ],
+		'paymentId' => ['int', 'int', 0, true, ],
 		'phone' => ['varchar(20)', 'string', 20, true, '', ],
 		'pricePaid' => ['decimal(6,2)', 'float', 6, false, 0, ],
 		'reservationFirstName' => ['varchar(50)', 'string', 50, true, ],
-		'reservationId' => ['int(11)', 'int', 11, false, ],
+		'reservationId' => ['int', 'int', 0, false, ],
 		'reservationLastName' => ['varchar(50)', 'string', 50, true, ],
 		'reservationemail' => ['varchar(50)', 'string', 50, true, ],
 		'signedUpAt' => ['timestamp', 'string', 20, false, null, ],

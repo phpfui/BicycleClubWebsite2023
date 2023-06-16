@@ -7,9 +7,9 @@ namespace App\Record\Definition;
  *
  * @property ?string $client MySQL type varchar(255)
  * @property string $expires MySQL type timestamp
- * @property int $oauthTokenId MySQL type int(11)
+ * @property int $oauthTokenId MySQL type int
  * @property \App\Record\OauthToken $oauthToken related record
- * @property ?int $oauthUserId MySQL type int(11)
+ * @property ?int $oauthUserId MySQL type int
  * @property \App\Record\OauthUser $oauthUser related record
  * @property ?string $scopes MySQL type text
  * @property ?string $token MySQL type varchar(255)
@@ -23,8 +23,8 @@ abstract class OauthToken extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'client' => ['varchar(255)', 'string', 255, true, ],
 		'expires' => ['timestamp', 'string', 20, false, null, ],
-		'oauthTokenId' => ['int(11)', 'int', 11, false, ],
-		'oauthUserId' => ['int(11)', 'int', 11, true, ],
+		'oauthTokenId' => ['int', 'int', 0, false, ],
+		'oauthUserId' => ['int', 'int', 0, true, ],
 		'scopes' => ['text', 'string', 65535, true, ],
 		'token' => ['varchar(255)', 'string', 255, true, ],
 	];

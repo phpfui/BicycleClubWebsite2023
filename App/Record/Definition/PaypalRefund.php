@@ -7,10 +7,10 @@ namespace App\Record\Definition;
  *
  * @property ?float $amount MySQL type decimal(7,2)
  * @property string $createdDate MySQL type date
- * @property ?int $createdMemberNumber MySQL type int(11)
- * @property ?int $invoiceId MySQL type int(10)
+ * @property ?int $createdMemberNumber MySQL type int
+ * @property ?int $invoiceId MySQL type int
  * @property \App\Record\Invoice $invoice related record
- * @property int $paypalRefundId MySQL type int(11)
+ * @property int $paypalRefundId MySQL type int
  * @property \App\Record\PaypalRefund $paypalRefund related record
  * @property ?string $paypaltx MySQL type varchar(20)
  * @property ?string $refundOnDate MySQL type date
@@ -26,9 +26,9 @@ abstract class PaypalRefund extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'amount' => ['decimal(7,2)', 'float', 7, true, ],
 		'createdDate' => ['date', 'string', 10, false, ],
-		'createdMemberNumber' => ['int(11)', 'int', 11, true, ],
-		'invoiceId' => ['int(10)', 'int', 10, true, ],
-		'paypalRefundId' => ['int(11)', 'int', 11, false, ],
+		'createdMemberNumber' => ['int', 'int', 0, true, ],
+		'invoiceId' => ['int', 'int', 0, true, ],
+		'paypalRefundId' => ['int', 'int', 0, false, ],
 		'paypaltx' => ['varchar(20)', 'string', 20, true, ],
 		'refundOnDate' => ['date', 'string', 10, true, ],
 		'refundedDate' => ['date', 'string', 10, true, ],

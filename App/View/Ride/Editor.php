@@ -312,7 +312,7 @@ class Editor
 						$parameters['RWGPSId'] = $cueSheet->RWGPSId;
 
 						$parameters['description'] = $cueSheet->description;
-						$parameters['elevation'] = $cueSheet->RWGPS->elevation;
+						$parameters['elevation'] = $cueSheet->RWGPS->elevationFeet;
 						$parameters['mileage'] = $cueSheet->mileage;
 						$parameters['startLocationId'] = $cueSheet->startLocationId;
 						$parameters['title'] = $cueSheet->name;
@@ -386,7 +386,7 @@ class Editor
 
 						if ($elevation > 0)
 							{
-							$rwgps->elevation = $elevation;
+							$rwgps->elevationFeet = $elevation;
 							}
 						$this->page->setRawResponse(\json_encode(['response' => $rwgps->toArray()], JSON_THROW_ON_ERROR));
 
@@ -482,14 +482,14 @@ class Editor
 		$RWGPSId = new \PHPFUI\Input\Url('RWGPSId', 'Ride With GPS Link', \App\Model\RideWithGPS::getRouteLink($ride->RWGPSId));
 
 		$ajax = new \PHPFUI\AJAX('changeRWGPS');
-		$js = 'if(data.response.mileage)$("#' . $this->mileageSelectorId . '").val(data.response.mileage);';
+		$js = 'if(data.response.miles)$("#' . $this->mileageSelectorId . '").val(data.response.miles);';
 		$RWGPSId->addAttribute('onchange', $ajax->execute(['RWGPSId' => 'this.value']));
 		$multiColumn = new \PHPFUI\MultiColumn($RWGPSId);
 
 		if ($showElevation)
 			{
 			$elevation = new \PHPFUI\Input\Number('elevation', 'Elevation Gain (if known)', $ride->elevation);
-			$js .= 'if(data.response.elevation)$("#' . $elevation->getId() . '").val(data.response.elevation);';
+			$js .= 'if(data.response.elevationFeet)$("#' . $elevation->getId() . '").val(data.response.elevationFeet);';
 			$elevation->setToolTip('Just how hilly was this ride?');
 			$elevation->addAttribute('min', (string)0)->addAttribute('max', (string)99999)->addAttribute('step', (string)100);
 			$multiColumn->add($elevation);

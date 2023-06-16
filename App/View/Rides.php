@@ -258,7 +258,7 @@ class Rides
 
 		if ($ride->mileage)
 			{
-			$fieldSet->add(new \App\UI\Display('Mileage', $ride->mileage));
+			$fieldSet->add(new \App\UI\Display('Distance', $ride->mileage));
 			}
 
 		if ($ride->regrouping)

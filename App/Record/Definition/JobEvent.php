@@ -8,10 +8,10 @@ namespace App\Record\Definition;
  * @property ?string $cutoffDate MySQL type date
  * @property string $date MySQL type date
  * @property ?string $email MySQL type text
- * @property int $jobEventId MySQL type int(11)
+ * @property int $jobEventId MySQL type int
  * @property \App\Record\JobEvent $jobEvent related record
  * @property ?string $name MySQL type char(100)
- * @property ?int $organizer MySQL type int(11)
+ * @property ?int $organizer MySQL type int
  */
 abstract class JobEvent extends \PHPFUI\ORM\Record
 	{
@@ -23,9 +23,9 @@ abstract class JobEvent extends \PHPFUI\ORM\Record
 		'cutoffDate' => ['date', 'string', 10, true, ],
 		'date' => ['date', 'string', 10, false, ],
 		'email' => ['text', 'string', 65535, true, ],
-		'jobEventId' => ['int(11)', 'int', 11, false, ],
+		'jobEventId' => ['int', 'int', 0, false, ],
 		'name' => ['char(100)', 'string', 100, true, ],
-		'organizer' => ['int(11)', 'int', 11, true, 0, ],
+		'organizer' => ['int', 'int', 0, true, 0, ],
 	];
 
 	/** @var array<string, true> */

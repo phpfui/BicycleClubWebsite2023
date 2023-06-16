@@ -9,12 +9,12 @@ namespace App\Record\Definition;
  * @property ?string $domain MySQL type varchar(30)
  * @property ?string $fromEmail MySQL type varchar(100)
  * @property ?string $fromName MySQL type varchar(100)
- * @property ?int $html MySQL type int(11)
- * @property int $mailItemId MySQL type int(11)
+ * @property ?int $html MySQL type int
+ * @property int $mailItemId MySQL type int
  * @property \App\Record\MailItem $mailItem related record
- * @property ?int $memberId MySQL type int(11)
+ * @property ?int $memberId MySQL type int
  * @property \App\Record\Member $member related record
- * @property ?int $paused MySQL type int(11)
+ * @property ?int $paused MySQL type int
  * @property ?string $replyTo MySQL type varchar(100)
  * @property ?string $replyToName MySQL type varchar(100)
  * @property ?string $title MySQL type varchar(255)
@@ -30,10 +30,10 @@ abstract class MailItem extends \PHPFUI\ORM\Record
 		'domain' => ['varchar(30)', 'string', 30, true, '', ],
 		'fromEmail' => ['varchar(100)', 'string', 100, true, '', ],
 		'fromName' => ['varchar(100)', 'string', 100, true, '', ],
-		'html' => ['int(11)', 'int', 11, true, 0, ],
-		'mailItemId' => ['int(11)', 'int', 11, false, ],
-		'memberId' => ['int(11)', 'int', 11, true, ],
-		'paused' => ['int(11)', 'int', 11, true, 0, ],
+		'html' => ['int', 'int', 0, true, 0, ],
+		'mailItemId' => ['int', 'int', 0, false, ],
+		'memberId' => ['int', 'int', 0, true, ],
+		'paused' => ['int', 'int', 0, true, 0, ],
 		'replyTo' => ['varchar(100)', 'string', 100, true, '', ],
 		'replyToName' => ['varchar(100)', 'string', 100, true, '', ],
 		'title' => ['varchar(255)', 'string', 255, true, '', ],

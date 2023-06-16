@@ -15,33 +15,19 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 		$model = new \App\Model\RideWithGPS();
 		$rwgpsTable = new \App\Table\RWGPS();
 
-		$count = 10;
-
-		$upcoming = $rwgpsTable->getUpcomingEmptyRWGPS();
+		$upcoming = $rwgpsTable->getUpcomingRWGPS();
 
 		foreach ($upcoming as $rwgps)
 			{
-			if (! $rwgps->RWGPSId)
-				{
-				$rideTable = new \App\Table\Ride();
-				$rideTable->changeRWGPSId(0, null);
-
-				continue;
-				}
 			$updated = $model->scrape($rwgps);
 
 			if ($updated && $updated->RWGPSId)
 				{
 				$updated->insertOrUpdate();
 				}
-
-			if (--$count <= 0)
-				{
-				return;
-				}
 			}
 
-		$rides = $rwgpsTable->getOldest($count);
+		$rides = $rwgpsTable->getOldest(20);
 
 		foreach ($rides as $rwgps)
 			{

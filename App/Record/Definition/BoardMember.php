@@ -7,9 +7,9 @@ namespace App\Record\Definition;
  *
  * @property ?string $description MySQL type text
  * @property string $extension MySQL type char(10)
- * @property int $memberId MySQL type int(11)
+ * @property int $memberId MySQL type int
  * @property \App\Record\Member $member related record
- * @property ?int $rank MySQL type int(2)
+ * @property ?int $rank MySQL type int
  * @property ?string $title MySQL type varchar(50)
  */
 abstract class BoardMember extends \PHPFUI\ORM\Record
@@ -21,8 +21,8 @@ abstract class BoardMember extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'description' => ['text', 'string', 65535, true, ],
 		'extension' => ['char(10)', 'string', 10, false, '', ],
-		'memberId' => ['int(11)', 'int', 11, false, ],
-		'rank' => ['int(2)', 'int', 2, true, ],
+		'memberId' => ['int', 'int', 0, false, ],
+		'rank' => ['int', 'int', 0, true, ],
 		'title' => ['varchar(50)', 'string', 50, true, ],
 	];
 

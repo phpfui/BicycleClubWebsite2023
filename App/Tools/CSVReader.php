@@ -85,7 +85,17 @@ class CSVReader implements \Iterator
 		{
 		$this->index = -1;
 		$this->closeFile();
-		$this->fh = @\fopen($this->fileName, 'r');
+
+		if (\file_exists($this->fileName))
+			{
+			$this->fh = @\fopen($this->fileName, 'r');
+			}
+		else // assume it is a string
+			{
+			$this->fh = \fopen('php://memory', 'r+');
+			\fwrite($this->fh, $this->fileName);
+			\rewind($this->fh);
+			}
 
 		if ($this->fh && $this->headerRow)
 			{

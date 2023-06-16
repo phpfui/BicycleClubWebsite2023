@@ -5,28 +5,11 @@ $_SERVER['SERVER_NAME'] = $argv[1] ?? 'localhost';
 
 include __DIR__ . '/../common.php';
 
-$tableObjects = \PHPFUI\ORM\Table::getAllTables();
-
 echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 
 echo "Generate Record Models\n\n";
 
-\array_shift($argv);
-
 $generator = new \PHPFUI\ORM\Tool\Generate\CRUD();
-
-if (\count($argv))
-	{
-	foreach ($argv as $table)
-		{
-		if ($generator->generate($table))
-			{
-			echo "{$table}\n";
-			}
-		}
-
-	exit;
-	}
 
 $tables = \PHPFUI\ORM::getTables();
 
@@ -41,11 +24,13 @@ foreach ($tables as $table)
 	{
 	if ($generator->generate($table))
 		{
-//		echo "{$table}\n";
+		echo "{$table}\n";
 		}
 	}
 
 \system('codestyle');
+
+$tableObjects = \PHPFUI\ORM\Table::getAllTables();
 
 foreach ($tableObjects as $name => $table)
 	{

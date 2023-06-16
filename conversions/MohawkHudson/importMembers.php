@@ -230,8 +230,17 @@ function insertMembers(string $csvName) : int
 				}
 			$membership->address .= $comma . $row['Street 2'];
 			}
-		$membership->town = $row['City'];
 		$membership->zip = \fixZip($row['Zip Code']);
+		$membership->clean();
+
+		$existingMembership = new \App\Record\Membership();
+
+		if ($existingMembership->read(['zip' => $membership->zip, 'address' => $membership->address]))
+			{
+			$membership = clone $existingMembership;
+			}
+
+		$membership->town = $row['City'];
 		$membership->state = \getState($row['State']);
 		$membership->pending = 0;
 		$membership->allowedMembers = \count($members);
@@ -243,16 +252,22 @@ function insertMembers(string $csvName) : int
 		$membership->lastRenewed = $row['Previous Expiration Date'];
 		$membership->clean();
 
-		$existingMembership = new \App\Record\Membership();
-
-		if ($existingMembership->read(['zip' => $membership->zip, 'address' => $membership->address]))
-			{
-			$membership = clone $existingMembership;
-			}
 
 		foreach ($members as $row)
 			{
 			$member = new \App\Record\Member();
+			$member->firstName = $row['First Name'];
+			$member->lastName = $row['Last Name'];
+			$member->clean();
+
+			$existingMember = new \App\Record\Member();
+
+			if ($existingMember->read(['firstName' => $member->firstName, 'lastName' => $member->lastName]))
+				{
+				$membership = clone $existingMembership;
+				}
+
+
 			$member->allowTexting = 1;
 			$member->cellPhone = $row['Cell Phone'];
 			$member->phone = $row['Home Phone'];
@@ -273,16 +288,7 @@ function insertMembers(string $csvName) : int
 			$member->showNothing = 0;
 			$member->verifiedEmail = 9;
 			$member->membership = $membership;
-			$member->firstName = $row['First Name'];
-			$member->lastName = $row['Last Name'];
 			$member->clean();
-			$existingMember = new \App\Record\Member();
-
-			if ($existingMember->read(['firstName' => $member->firstName, 'lastName' => $member->lastName]))
-				{
-				$membership = clone $existingMembership;
-				}
-
 			$member->membership = $membership;
 			$member->insertOrUpdate();
 			\addPermissions($member, $row['Roles']);

@@ -7,13 +7,13 @@ namespace App\Record\Definition;
  *
  * @property string $extension MySQL type varchar(10)
  * @property string $file MySQL type varchar(255)
- * @property int $fileFolderId MySQL type int(11)
+ * @property int $fileFolderId MySQL type int
  * @property \App\Record\FileFolder $fileFolder related record
- * @property int $fileId MySQL type int(11)
+ * @property int $fileId MySQL type int
  * @property string $fileName MySQL type varchar(255)
- * @property ?int $memberId MySQL type int(11)
+ * @property ?int $memberId MySQL type int
  * @property \App\Record\Member $member related record
- * @property int $public MySQL type int(11)
+ * @property int $public MySQL type int
  * @property ?string $uploaded MySQL type timestamp
  */
 abstract class File extends \PHPFUI\ORM\Record
@@ -25,11 +25,11 @@ abstract class File extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'extension' => ['varchar(10)', 'string', 10, false, '', ],
 		'file' => ['varchar(255)', 'string', 255, false, '', ],
-		'fileFolderId' => ['int(11)', 'int', 11, false, ],
-		'fileId' => ['int(11)', 'int', 11, false, ],
+		'fileFolderId' => ['int', 'int', 0, false, ],
+		'fileId' => ['int', 'int', 0, false, ],
 		'fileName' => ['varchar(255)', 'string', 255, false, '', ],
-		'memberId' => ['int(11)', 'int', 11, true, ],
-		'public' => ['int(11)', 'int', 11, false, 0, ],
+		'memberId' => ['int', 'int', 0, true, ],
+		'public' => ['int', 'int', 0, false, 0, ],
 		'uploaded' => ['timestamp', 'string', 20, true, null, ],
 	];
 

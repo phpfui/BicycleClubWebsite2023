@@ -9,7 +9,7 @@ namespace App\Record\Definition;
  * @property ?string $REQUEST_URI MySQL type varchar(255)
  * @property ?string $_get MySQL type text
  * @property ?string $_post MySQL type text
- * @property int $httpRequestId MySQL type int(11)
+ * @property int $httpRequestId MySQL type int
  * @property \App\Record\HttpRequest $httpRequest related record
  */
 abstract class HttpRequest extends \PHPFUI\ORM\Record
@@ -23,7 +23,7 @@ abstract class HttpRequest extends \PHPFUI\ORM\Record
 		'REQUEST_URI' => ['varchar(255)', 'string', 255, true, ],
 		'_get' => ['text', 'string', 65535, true, ],
 		'_post' => ['text', 'string', 65535, true, ],
-		'httpRequestId' => ['int(11)', 'int', 11, false, ],
+		'httpRequestId' => ['int', 'int', 0, false, ],
 	];
 
 	/** @var array<string, true> */

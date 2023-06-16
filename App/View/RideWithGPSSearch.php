@@ -11,11 +11,14 @@ class RideWithGPSSearch implements \Stringable
 	 */
 	private array $hidden = ['p', 'l', 'c', 's'];
 
+	private readonly bool $metric;
+
 	private readonly \App\Table\RWGPS $rwgpsTable;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
 		$this->rwgpsTable = new \App\Table\RWGPS();
+		$this->metric = 'km' == $this->page->value('RWGPSUnits');
 		}
 
 	public function __toString() : string
@@ -92,8 +95,16 @@ class RideWithGPSSearch implements \Stringable
 		$form->setAttribute('method', 'get');
 		$fieldSet = new \PHPFUI\FieldSet('Find a Ride With GPS Route');
 
-		$fieldSet->add($this->getRangeSlider('mileage', $parameters));
-		$fieldSet->add($this->getRangeSlider('feetPerMile', $parameters, 0, 150));
+		if ($this->metric)
+			{
+			$fieldSet->add($this->getRangeSlider('km', $parameters, 1, 350));
+			$fieldSet->add($this->getRangeSlider('metersPerKm', $parameters, 0, 100));
+			}
+		else
+			{
+			$fieldSet->add($this->getRangeSlider('miles', $parameters));
+			$fieldSet->add($this->getRangeSlider('feetPerMile', $parameters, 0, 150));
+			}
 
 		$fieldSet->add(new \PHPFUI\MultiColumn(new \PHPFUI\Input\Text('town', 'Starting Town', $parameters['town']), new \PHPFUI\Input\CheckBoxBoolean('club', 'Club Routes Only', $parameters['club'])));
 		$fieldSet->add(new \PHPFUI\Input\Text('title', 'Title includes', $parameters['title']));
@@ -119,10 +130,21 @@ class RideWithGPSSearch implements \Stringable
 		{
 		$searchFields = [];
 		$searchFields['RWGPSId'] = '';
-		$searchFields['mileage_min'] = 20;
-		$searchFields['mileage_max'] = 80;
-		$searchFields['feetPerMile_min'] = 1;
-		$searchFields['feetPerMile_max'] = 100;
+
+		if ($this->metric)
+			{
+			$searchFields['km_min'] = 20;
+			$searchFields['km_max'] = 300;
+			$searchFields['metersPerKm_min'] = 1;
+			$searchFields['metersPerKm_max'] = 100;
+			}
+		else
+			{
+			$searchFields['miles_min'] = 20;
+			$searchFields['miles_max'] = 80;
+			$searchFields['feetPerMile_min'] = 1;
+			$searchFields['feetPerMile_max'] = 100;
+			}
 		$searchFields['club'] = 0;
 		$searchFields['town'] = '';
 		$searchFields['title'] = '';
@@ -149,24 +171,23 @@ class RideWithGPSSearch implements \Stringable
 			$condition->and('RWGPSId', $parameters['RWGPSId']);
 			}
 
-		if (! empty($parameters['mileage_min']))
-			{
-			$condition->and('RWGPS.mileage', $parameters['mileage_min'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
-			}
+		$fields = $this->metric ? ['km', 'metersPerKm'] : ['miles', 'feetPerMile'];
 
-		if (! empty($parameters['mileage_max']))
+		foreach ($fields as $field)
 			{
-			$condition->and('RWGPS.mileage', $parameters['mileage_max'], new \PHPFUI\ORM\Operator\LessThanEqual());
-			}
+			$index = $field . '_min';
 
-		if (! empty($parameters['feetPerMile_min']))
-			{
-			$condition->and('feetPerMile', $parameters['feetPerMile_min'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
-			}
+			if (! empty($parameters[$index]))
+				{
+				$condition->and('RWGPS.' . $field, $parameters[$index], new \PHPFUI\ORM\Operator\GreaterThanEqual());
+				}
 
-		if (! empty($parameters['feetPerMile_max']))
-			{
-			$condition->and('feetPerMile', $parameters['feetPerMile_max'], new \PHPFUI\ORM\Operator\LessThanEqual());
+			$index = $field . '_max';
+
+			if (! empty($parameters[$index]))
+				{
+				$condition->and('RWGPS.' . $field, $parameters[$index], new \PHPFUI\ORM\Operator\LessThanEqual());
+				}
 			}
 
 		if (! empty($parameters['club']))
@@ -195,7 +216,7 @@ class RideWithGPSSearch implements \Stringable
 			}
 
 		$this->rwgpsTable->setWhere($condition);
-		$this->rwgpsTable->setOrderBy('mileage');
+		$this->rwgpsTable->setOrderBy($this->metric ? 'km' : 'miles');
 
 		return $this;
 		}

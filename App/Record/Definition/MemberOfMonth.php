@@ -7,9 +7,9 @@ namespace App\Record\Definition;
  *
  * @property ?string $bio MySQL type mediumtext
  * @property ?string $fileNameExt MySQL type varchar(10)
- * @property int $memberId MySQL type int(11)
+ * @property int $memberId MySQL type int
  * @property \App\Record\Member $member related record
- * @property int $memberOfMonthId MySQL type int(11)
+ * @property int $memberOfMonthId MySQL type int
  * @property \App\Record\MemberOfMonth $memberOfMonth related record
  * @property string $month MySQL type date
  */
@@ -22,8 +22,8 @@ abstract class MemberOfMonth extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'bio' => ['mediumtext', 'string', 16777215, true, ],
 		'fileNameExt' => ['varchar(10)', 'string', 10, true, ],
-		'memberId' => ['int(11)', 'int', 11, false, ],
-		'memberOfMonthId' => ['int(11)', 'int', 11, false, ],
+		'memberId' => ['int', 'int', 0, false, ],
+		'memberOfMonthId' => ['int', 'int', 0, false, ],
 		'month' => ['date', 'string', 10, false, ],
 	];
 

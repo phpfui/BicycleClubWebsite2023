@@ -7,12 +7,12 @@ namespace App\Record\Definition;
  *
  * @property string $date MySQL type date
  * @property ?string $description MySQL type text
- * @property ?int $jobEventId MySQL type int(5)
+ * @property ?int $jobEventId MySQL type int
  * @property \App\Record\JobEvent $jobEvent related record
- * @property int $jobId MySQL type int(11)
+ * @property int $jobId MySQL type int
  * @property \App\Record\Job $job related record
  * @property ?string $location MySQL type char(100)
- * @property ?int $organizer MySQL type int(6)
+ * @property ?int $organizer MySQL type int
  * @property ?string $title MySQL type char(100)
  */
 abstract class Job extends \PHPFUI\ORM\Record
@@ -24,10 +24,10 @@ abstract class Job extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'date' => ['date', 'string', 10, false, ],
 		'description' => ['text', 'string', 65535, true, ],
-		'jobEventId' => ['int(5)', 'int', 5, true, ],
-		'jobId' => ['int(11)', 'int', 11, false, ],
+		'jobEventId' => ['int', 'int', 0, true, ],
+		'jobId' => ['int', 'int', 0, false, ],
 		'location' => ['char(100)', 'string', 100, true, ],
-		'organizer' => ['int(6)', 'int', 6, true, ],
+		'organizer' => ['int', 'int', 0, true, ],
 		'title' => ['char(100)', 'string', 100, true, ],
 	];
 

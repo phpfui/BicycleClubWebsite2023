@@ -8,17 +8,17 @@ namespace App\Record\Definition;
  * @property ?string $author MySQL type varchar(30)
  * @property ?string $body MySQL type text
  * @property ?string $date MySQL type date
- * @property ?int $editorId MySQL type int(11)
+ * @property ?int $editorId MySQL type int
  * @property ?string $endDate MySQL type date
  * @property ?string $headline MySQL type varchar(200)
  * @property ?string $javaScript MySQL type text
  * @property ?string $lastEdited MySQL type date
- * @property ?int $membersOnly MySQL type int(11)
- * @property ?int $noTitle MySQL type int(1)
- * @property ?int $onTop MySQL type int(1)
- * @property ?int $showFull MySQL type int(1)
+ * @property ?int $membersOnly MySQL type int
+ * @property ?int $noTitle MySQL type int
+ * @property ?int $onTop MySQL type int
+ * @property ?int $showFull MySQL type int
  * @property ?string $startDate MySQL type date
- * @property int $storyId MySQL type int(11)
+ * @property int $storyId MySQL type int
  * @property \App\Record\Story $story related record
  * @property ?string $subhead MySQL type varchar(200)
  */
@@ -32,17 +32,17 @@ abstract class Story extends \PHPFUI\ORM\Record
 		'author' => ['varchar(30)', 'string', 30, true, ],
 		'body' => ['text', 'string', 65535, true, ],
 		'date' => ['date', 'string', 10, true, ],
-		'editorId' => ['int(11)', 'int', 11, true, ],
+		'editorId' => ['int', 'int', 0, true, ],
 		'endDate' => ['date', 'string', 10, true, ],
 		'headline' => ['varchar(200)', 'string', 200, true, ],
 		'javaScript' => ['text', 'string', 65535, true, ],
 		'lastEdited' => ['date', 'string', 10, true, ],
-		'membersOnly' => ['int(11)', 'int', 11, true, 0, ],
-		'noTitle' => ['int(1)', 'int', 1, true, ],
-		'onTop' => ['int(1)', 'int', 1, true, ],
-		'showFull' => ['int(1)', 'int', 1, true, ],
+		'membersOnly' => ['int', 'int', 0, true, 0, ],
+		'noTitle' => ['int', 'int', 0, true, ],
+		'onTop' => ['int', 'int', 0, true, ],
+		'showFull' => ['int', 'int', 0, true, ],
 		'startDate' => ['date', 'string', 10, true, ],
-		'storyId' => ['int(11)', 'int', 11, false, ],
+		'storyId' => ['int', 'int', 0, false, ],
 		'subhead' => ['varchar(200)', 'string', 200, true, ],
 	];
 

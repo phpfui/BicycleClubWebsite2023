@@ -8,15 +8,15 @@ namespace App\Record\Definition;
  * @property string $added MySQL type timestamp
  * @property ?string $caption MySQL type varchar(255)
  * @property ?string $extension MySQL type varchar(10)
- * @property ?int $memberId MySQL type int(10) unsigned
+ * @property ?int $memberId MySQL type int unsigned
  * @property \App\Record\Member $member related record
- * @property ?int $photoId MySQL type int(11)
+ * @property ?int $photoId MySQL type int
  * @property \App\Record\Photo $photo related record
- * @property int $sequence MySQL type int(11)
- * @property int $showCaption MySQL type int(11)
- * @property int $slideId MySQL type int(11)
+ * @property int $sequence MySQL type int
+ * @property int $showCaption MySQL type int
+ * @property int $slideId MySQL type int
  * @property \App\Record\Slide $slide related record
- * @property int $slideShowId MySQL type int(11)
+ * @property int $slideShowId MySQL type int
  * @property \App\Record\SlideShow $slideShow related record
  * @property ?string $updated MySQL type timestamp
  * @property ?string $url MySQL type varchar(255)
@@ -31,12 +31,12 @@ abstract class Slide extends \PHPFUI\ORM\Record
 		'added' => ['timestamp', 'string', 20, false, null, ],
 		'caption' => ['varchar(255)', 'string', 255, true, ],
 		'extension' => ['varchar(10)', 'string', 10, true, ],
-		'memberId' => ['int(10) unsigned', 'int', 10, true, ],
-		'photoId' => ['int(11)', 'int', 11, true, ],
-		'sequence' => ['int(11)', 'int', 11, false, 0, ],
-		'showCaption' => ['int(11)', 'int', 11, false, 1, ],
-		'slideId' => ['int(11)', 'int', 11, false, ],
-		'slideShowId' => ['int(11)', 'int', 11, false, ],
+		'memberId' => ['int unsigned', 'int', 0, true, ],
+		'photoId' => ['int', 'int', 0, true, ],
+		'sequence' => ['int', 'int', 0, false, 0, ],
+		'showCaption' => ['int', 'int', 0, false, 1, ],
+		'slideId' => ['int', 'int', 0, false, ],
+		'slideShowId' => ['int', 'int', 0, false, ],
 		'updated' => ['timestamp', 'string', 20, true, ],
 		'url' => ['varchar(255)', 'string', 255, true, '', ],
 	];

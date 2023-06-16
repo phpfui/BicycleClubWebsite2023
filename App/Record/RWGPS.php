@@ -26,26 +26,36 @@ class RWGPS extends \App\Record\Definition\RWGPS
 		return $this;
 		}
 
-	public function computeFeetPerMile() : static
+	public function computeElevationGain() : static
 		{
-		if (! empty($this->elevation) && ! empty($this->mileage))
+		if (! empty($this->elevationFeet) && ! empty($this->miles))
 			{
-			$this->feetPerMile = $this->elevation / $this->mileage;
+			$this->feetPerMile = $this->elevationFeet / $this->miles;
+			}
+
+		if (! empty($this->elevationMeters) && ! empty($this->km))
+			{
+			$this->metersPerKm = $this->elevationMeters / $this->km;
 			}
 
 		return $this;
 		}
 
+	public function getCSVReader() : \App\Tools\CSVReader
+		{
+		return new \App\Tools\CSVReader($this->csv);
+		}
+
 	public function insert() : int
 		{
-		$this->computeFeetPerMile();
+		$this->computeElevationGain();
 
 		return parent::insert();
 		}
 
 	public function insertOrUpdate() : int
 		{
-		$this->computeFeetPerMile();
+		$this->computeElevationGain();
 
 		return parent::insertOrUpdate();
 		}
@@ -65,7 +75,7 @@ class RWGPS extends \App\Record\Definition\RWGPS
 
 	public function update() : bool
 		{
-		$this->computeFeetPerMile();
+		$this->computeElevationGain();
 
 		return parent::update();
 		}

@@ -8,9 +8,9 @@ namespace App\Record\Definition;
  * @property string $date MySQL type date
  * @property string $dateAdded MySQL type date
  * @property ?string $html MySQL type mediumtext
- * @property int $newsletterId MySQL type int(11)
+ * @property int $newsletterId MySQL type int
  * @property \App\Record\Newsletter $newsletter related record
- * @property ?int $size MySQL type int(10)
+ * @property ?int $size MySQL type int
  */
 abstract class Newsletter extends \PHPFUI\ORM\Record
 	{
@@ -22,8 +22,8 @@ abstract class Newsletter extends \PHPFUI\ORM\Record
 		'date' => ['date', 'string', 10, false, ],
 		'dateAdded' => ['date', 'string', 10, false, ],
 		'html' => ['mediumtext', 'string', 16777215, true, ],
-		'newsletterId' => ['int(11)', 'int', 11, false, ],
-		'size' => ['int(10)', 'int', 10, true, ],
+		'newsletterId' => ['int', 'int', 0, false, ],
+		'size' => ['int', 'int', 0, true, ],
 	];
 
 	/** @var array<string, true> */

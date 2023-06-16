@@ -7,9 +7,9 @@ namespace App\Record\Definition;
  *
  * @property ?string $menu MySQL type varchar(20)
  * @property string $name MySQL type varchar(100)
- * @property int $permissionId MySQL type int(11)
+ * @property int $permissionId MySQL type int
  * @property \App\Record\Permission $permission related record
- * @property int $system MySQL type tinyint(4)
+ * @property int $system MySQL type tinyint
  */
 abstract class Permission extends \PHPFUI\ORM\Record
 	{
@@ -20,8 +20,8 @@ abstract class Permission extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'menu' => ['varchar(20)', 'string', 20, true, ],
 		'name' => ['varchar(100)', 'string', 100, false, ],
-		'permissionId' => ['int(11)', 'int', 11, false, ],
-		'system' => ['tinyint(4)', 'int', 4, false, 0, ],
+		'permissionId' => ['int', 'int', 0, false, ],
+		'system' => ['tinyint', 'int', 0, false, 0, ],
 	];
 
 	/** @var array<string, true> */

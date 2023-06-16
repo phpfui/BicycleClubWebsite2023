@@ -13,74 +13,19 @@ class RWGPS extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getArrayCursor($sql, ['lat' => $lat, 'long' => $long, 'distance' => $distance, 'limit' => $limit]);
 		}
 
-	public function getMissing() : \PHPFUI\ORM\RecordCursor
-		{
-		$sql = 'select * from RWGPS where status >= 400 and status < 500';
-
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql);
-		}
-
 	public function getOldest(int $limit = 10) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from RWGPS where (lastUpdated < ? or lastUpdated is null) or (csv = "" and RWGPSId>0) order by lastUpdated limit ' . $limit;
+		$sql = 'select * from RWGPS where (lastSynced < ? or lastSynced is null) or (csv = "[]" and RWGPSId>0) order by lastUpdated limit ' . $limit;
 		$input = [\App\Tools\Date::todayString(-60)];
 
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, $input);
 		}
 
-	public function getUpcomingEmptyRWGPS() : \PHPFUI\ORM\RecordCursor
+	public function getUpcomingRWGPS() : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select distinct RWGPS.* from ride left join RWGPS on RWGPS.RWGPSId=ride.RWGPSId where RWGPS.lastUpdated is null and ride.RWGPSId is not null and rideDate>=:date';
+		$sql = 'select distinct RWGPS.* from ride left join RWGPS on RWGPS.RWGPSId=ride.RWGPSId where ride.RWGPSId > 0 and rideDate>=:date';
 
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, ['date' => \App\Tools\Date::todayString()]);
-		}
-
-	public function setClubRides(array $routes) : void
-		{
-		if ($routes)
-			{
-			$this->setWhere(new \PHPFUI\ORM\Condition('RWGPSId', \array_keys($routes), new \PHPFUI\ORM\Operator\In()));
-			$this->update(['club' => 1]);
-
-			$this->setWhere(new \PHPFUI\ORM\Condition('club', 1));
-			$this->addSelect('RWGPSId');
-
-			foreach ($this->getArrayCursor() as $row)
-				{
-				unset($routes[$row['RWGPSId']]);
-				}
-
-			if (! $routes)
-				{
-				return;
-				}
-
-			$this->setWhere();
-			$newRows = [];
-
-			foreach ($routes as $ride)
-				{
-				$record = new \App\Record\RWGPS();
-				$record->RWGPSId = $ride['id'];
-				$record->club = 1;
-				$record->description = $ride['description'];
-				$record->elevation = (int)((float)$ride['elevation_gain'] * 3.28);
-				$record->lastUpdated = \date('Y-m-d g:i a', \strtotime($ride['updated_at']));
-				$record->latitude = $ride['first_lat'];
-				$record->longitude = $ride['first_lng'];
-				$record->mileage = (float)$ride['distance'] / 1609.344;
-				$record->state = $ride['administrative_area'];
-				$record->title = $ride['name'];
-				$record->town = $ride['locality'];
-				$record->zip = $ride['postal_code'];
-				$record->clean();
-//	[unpaved_pct] => 42
-
-				$newRows[] = $record;
-				}
-
-			$this->insertOrIgnore($newRows);
-			}
 		}
 
 	public function setNonClubBetween(string $startDate = '', string $endDate = '') : static

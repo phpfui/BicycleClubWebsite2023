@@ -15,7 +15,7 @@ class RWGPS extends \PHPFUI\ORM\Table
 
 	public function getOldest(int $limit = 10) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from RWGPS where (lastSynced < ? or lastSynced is null) or (csv = "[]" and RWGPSId>0) order by lastUpdated limit ' . $limit;
+		$sql = 'select * from RWGPS where (lastSynced < ? or lastSynced is null) or (csv = "" and RWGPSId>0) order by lastUpdated limit ' . $limit;
 		$input = [\App\Tools\Date::todayString(-60)];
 
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, $input);

@@ -261,7 +261,7 @@ class RideWithGPS
 			}
 		$rwgps->lastSynced = \date('Y-m-d H:i:s');
 
-		$rwgps->csv = $data['has_course_points'] ? '[]' : '';
+		$rwgps->csv = $data['has_course_points'] ? '' : null;
 
 		if (\count($data['course_points'] ?? []))
 			{
@@ -271,9 +271,9 @@ class RideWithGPS
 
 			foreach ($data['course_points'] as $point)
 				{
-				$distance = (float)$point['d'];
+				$distance = (float)($point['d'] ?? 0.0);
 				$gox = $distance - $lastDistance;
-				$row = ['turn' => $point['t'], 'street' => $point['n'], 'distance' => round($distance, 2), 'gox' => round($gox, 2)];
+				$row = ['turn' => $point['t'], 'street' => $point['n'] ?? '', 'distance' => \round($distance, 2), 'gox' => \round($gox, 2)];
 				$lastDistance = $distance;
 
 				if (! $header)

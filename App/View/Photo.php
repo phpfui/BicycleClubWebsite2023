@@ -211,6 +211,7 @@ class Photo
 		if ($photo->memberId == $this->signedInMember || $this->page->isAuthorized('Edit Photo Title'))
 			{
 			$save = new \PHPFUI\Submit('Save');
+			$save->addClass('small');
 			$form = new \PHPFUI\Form($this->page, $save);
 
 			if ($form->isMyCallback())
@@ -223,7 +224,6 @@ class Photo
 				return $container;
 				}
 
-
 			$gridX = new \PHPFUI\GridX();
 			$gridX->addClass('align-middle');
 			$cell = new \PHPFUI\Cell(10, 11);
@@ -235,10 +235,12 @@ class Photo
 			$gridX->add($buttonCell);
 			$form->add($gridX);
 
+
 			$publicField = new \PHPFUI\Input\CheckBoxBoolean('public', 'Allow Public Views', (bool)$photo->public);
 			$publicField->setToolTip('If checked, this photo can be accessed by anyone with the correct link');
 			$callout = new \PHPFUI\HTML5Element('b');
-			$link = new \PHPFUI\Link($this->page->value('homePage') . '/Photo/image/' . $photo->photoId, $photo->photo);
+			$url = $this->page->value('homePage') . '/Photo/image/' . $photo->photoId;
+			$link = new \PHPFUI\Link($url, $photo->photo);
 			$link->addAttribute('target', '_blank');
 			$callout->add($link);
 			$publicField->addAttribute('onclick', '$("#' . $callout->getId() . '").toggleClass("hide");');
@@ -247,7 +249,25 @@ class Photo
 				{
 				$callout->addClass('hide');
 				}
-			$form->add(new \PHPFUI\MultiColumn($publicField, $callout));
+
+			$gridX = new \PHPFUI\GridX();
+			$gridX->addClass('align-middle');
+			$publicViewCell = new \PHPFUI\Cell(4);
+			$publicViewCell->add($publicField);
+			$gridX->add($publicViewCell);
+			$linkCell = new \PHPFUI\Cell(7);
+			$linkCell->add($callout);
+			$gridX->add($linkCell);
+			$copyCell = new \PHPFUI\Cell(1);
+			$copyButton = new \PHPFUI\Button('Copy');
+			$flash = new \PHPFUI\Callout('success');
+			$flash->add($url . ' Copied to clipboard');
+			$this->page->addCopyToClipboard($url, $copyButton, $flash);
+			$copyButton->addClass('tiny warning');
+			$copyCell->add($copyButton);
+			$gridX->add($copyCell);
+			$form->add($gridX);
+			$form->add($flash);
 
 			$container->add($form);
 			}

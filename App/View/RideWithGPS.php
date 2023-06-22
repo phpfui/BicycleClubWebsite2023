@@ -315,7 +315,7 @@ class RideWithGPS
 
 		foreach ($rwgpsTable->getRecordCursor() as $rwgps)
 			{
-			if ($rwgps->mileage > 0)
+			if ($rwgps->miles > 0)
 				{
 				if ($this->metric)
 					{
@@ -328,7 +328,7 @@ class RideWithGPS
 				++$mileageCount;
 				}
 
-			if ($rwgps->elevation > 0)
+			if ($rwgps->elevationFeet > 0)
 				{
 				if ($this->metric)
 					{

@@ -26,7 +26,7 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 			if ($updated && $updated->RWGPSId)
 				{
 				// if the ride has been updated, notify call signed up riders
-				if ($original->lastUpdated < $updated->lastUpdated)
+				if ($original->csv != $updated->csv)
 					{
 					$settingTable = new \App\Table\Setting();
 					$url = $settingTable->value('homePage');
@@ -44,7 +44,7 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 						$email->setSubject('The RWGPS route has changed for the ride ' . $ride->title);
 						$link = new \PHPFUI\Link($url . '/Rides/signedUp/' . $ride->rideId, $ride->title);
 						$updatedAt = \date('g:i a', \strtotime($updated->lastUpdated)) . ' on ' . $updatedAt = \date('F j', \strtotime($updated->lastUpdated));
-						$html = "The {$rwgpsLink} has changed for the ride {$link} was changed at {$updatedAt}.<p>You should reload the route if you have done so previously.";
+						$html = "The {$rwgpsLink} has changed for the ride {$link} was changed at {$updatedAt}.<p>You should reload the route if you have downloaded it previously.";
 						$email->setBody($html);
 						$email->setHtml();
 

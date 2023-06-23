@@ -239,6 +239,13 @@ class Video
 			return new \PHPFUI\FAIcon('far', 'edit', '/Video/edit/' . $video['videoId']);
 			});
 
+		$view->addCustomColumn('DL', static function(array $video) {
+			$icon = new \PHPFUI\FAIcon('fas', 'download', '/video/' . $video['fileName']);
+			$icon->setAttribute('download');
+
+			return $icon;
+			});
+
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $videoTable, 'Are you sure you want to permanently delete this video?');
 		$view->addCustomColumn('description', static function(array $row) {return new \PHPFUI\Link('/Video/edit/' . $row['videoId'], $row['title'], false);});
 		$view->addCustomColumn('del', $deleter->columnCallback(...));
@@ -248,6 +255,11 @@ class Video
 		if ($this->page->isAuthorized('Edit Video'))
 			{
 			$editControls[] = 'edit';
+			}
+
+		if ($this->page->isAuthorized('Download Video'))
+			{
+			$editControls[] = 'DL';
 			}
 
 		if ($this->page->isAuthorized('Delete Video'))

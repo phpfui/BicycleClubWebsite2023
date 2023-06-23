@@ -212,7 +212,7 @@ class CueSheet extends \FPDF
 		$this->Text($this->margin, $this->topMargin, $title);
 		$this->SetXY($this->width - 51, $y);
 		$this->writeLabel('Dist', \round($this->getBigUnits($this->distance), 2) . ' ' . \substr($this->units, 0, 2));
-		$ascent = number_format($this->getSmallUnits($this->ascent), 2);
+		$ascent = \number_format($this->getSmallUnits($this->ascent), 2);
 		$unit = 'Miles' == $this->units ? 'ft' : 'm';
 		$this->writeLabel(' Ele', " +{$ascent} {$unit}");
 

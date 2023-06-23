@@ -59,15 +59,10 @@ class IconBase extends \PHPFUI\HTML5Element
 				$link = "href='{$this->link}' ";
 				}
 
-			$target = $this->getAttribute('target');
-
-			if ($target)
-				{
-				$target = "target='{$target}' ";
-				}
-			$output = "<a {$target}id='{$id}a' {$link}>";
+			$attributes = $this->getAttributes();
+			$output = "<a{$attributes} id='{$id}a' {$link}>";
 			}
-		$this->deleteAttribute('target');
+		$this->deleteAttributes();
 
 		return $output . $this->getToolTip(parent::getStart() . parent::getBody() . parent::getEnd());
 		}

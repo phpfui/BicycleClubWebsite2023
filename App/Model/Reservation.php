@@ -257,7 +257,7 @@ class Reservation
 	public function updatePrices(\App\Record\Reservation $reservation) : float
 		{
 		$persons = $reservation->ReservationPersonChildren;
-		$price = 0;
+		$price = 0.0;
 		$event = new \App\Record\Event(['membersOnly' => 0]);
 
 		$personCount = \count($persons);

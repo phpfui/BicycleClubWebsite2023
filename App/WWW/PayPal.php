@@ -63,6 +63,12 @@ class PayPal extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$json = \json_decode(\file_get_contents('php://input'), true);
 
+		if (! isset($json['orderID']))
+			{
+			$this->logger->debug($json, __METHOD__ . ' invalid json');
+
+			return;
+			}
 		$request = new \PayPalCheckoutSdk\Orders\OrdersCaptureRequest($json['orderID']);
 		$request->prefer('return=representation');
 		$model = new \App\Model\PayPal($paypalType);

@@ -386,7 +386,7 @@ class Editor
 
 						if ($elevation > 0)
 							{
-							$rwgps->elevationFeet = $elevation;
+							$rwgps->elevationFeet = (float)$elevation;
 							}
 						$this->page->setRawResponse(\json_encode(['response' => $rwgps->toArray()], JSON_THROW_ON_ERROR));
 

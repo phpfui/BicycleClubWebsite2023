@@ -4297,16 +4297,16 @@
         },
         {
             "name": "twilio/sdk",
-            "version": "7.4.1",
+            "version": "7.5.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:twilio/twilio-php.git",
-                "reference": "427baa8472006bf0ec6aa1bc79be10ae37b2389f"
+                "reference": "c5c25509391a7369d8fc89e27cb177967c9dff83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/427baa8472006bf0ec6aa1bc79be10ae37b2389f",
-                "reference": "427baa8472006bf0ec6aa1bc79be10ae37b2389f",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/c5c25509391a7369d8fc89e27cb177967c9dff83",
+                "reference": "c5c25509391a7369d8fc89e27cb177967c9dff83",
                 "shasum": ""
             },
             "require": {
@@ -4342,7 +4342,7 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2023-05-18T07:58:57+00:00"
+            "time": "2023-06-15T07:36:24+00:00"
         },
         {
             "name": "voku/simple_html_dom",

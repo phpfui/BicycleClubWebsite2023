@@ -446,7 +446,7 @@ class Rides
 
 			$private = false;
 
-			if ($rider->showNothing && $rider->memberId != \App\Model\Session::signedInMemberId() && \App\Model\Session::signedInMemberId() != $ride->memberId)
+			if ($rider->showNoRideSignup && $rider->memberId != \App\Model\Session::signedInMemberId() && ! $isLeader)
 				{
 				$nameColumn->add("<b>Private</b><br>{$status}");
 				$row->add($nameColumn);
@@ -467,7 +467,7 @@ class Rides
 				$select->addAttribute('onchange', 'selectRiderContactMethod(this.value)');
 				$select->addOption('Choose ...');
 
-				if ($textMember && $rider->allowTexting && $isLeader && ! $private)
+				if ($textMember && $rider->allowTexting && ! $private)
 					{
 					$select->addOption('Text Member', "/Membership/text/{$rider->memberId}");
 					}

@@ -41,6 +41,7 @@ namespace App\Record\Definition;
  * @property ?int $rideComments MySQL type int
  * @property int $rideJournal MySQL type tinyint
  * @property int $showNoPhone MySQL type tinyint
+ * @property ?int $showNoRideSignup MySQL type int
  * @property int $showNoStreet MySQL type tinyint
  * @property int $showNoTown MySQL type tinyint
  * @property int $showNothing MySQL type tinyint
@@ -87,6 +88,7 @@ abstract class Member extends \PHPFUI\ORM\Record
 		'rideComments' => ['int', 'int', 0, true, 1, ],
 		'rideJournal' => ['tinyint', 'int', 0, false, 0, ],
 		'showNoPhone' => ['tinyint', 'int', 0, false, 0, ],
+		'showNoRideSignup' => ['int', 'int', 0, true, 0, ],
 		'showNoStreet' => ['tinyint', 'int', 0, false, 0, ],
 		'showNoTown' => ['tinyint', 'int', 0, false, 0, ],
 		'showNothing' => ['tinyint', 'int', 0, false, 0, ],

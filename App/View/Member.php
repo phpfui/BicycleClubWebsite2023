@@ -288,7 +288,8 @@ class Member
 		$fields = ['showNothing' => 'My info',
 			'showNoStreet' => 'Street',
 			'showNoTown' => 'Town, zip',
-			'showNoPhone' => 'Phone', ];
+			'showNoPhone' => 'Phone',
+			'showNoRideSignup' => 'Ride Signup', ];
 		$multiColumn = new \PHPFUI\MultiColumn();
 
 		foreach ($fields as $field => $title)

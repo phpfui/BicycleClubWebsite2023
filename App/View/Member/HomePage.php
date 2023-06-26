@@ -169,9 +169,6 @@ class HomePage implements \Stringable
 			$ol->addItem($listItem);
 			}
 
-		$content = new \App\View\Content($this->page);
-		$output->add($content->getDisplayCategoryHTML('User Home Page'));
-
 		if (\count($ol))
 			{
 			$output->add(new \PHPFUI\SubHeader("What's Happening"));
@@ -193,6 +190,10 @@ class HomePage implements \Stringable
 				$output->add($item['html']);
 				}
 			}
+
+		$content = new \App\View\Content($this->page);
+		$output->add($content->getDisplayCategoryHTML('User Home Page'));
+
 		$rideView = new \App\View\Rides($this->page);
 		$output->add(new \PHPFUI\SubHeader('Upcoming Rides'));
 		$settingTable = new \App\Table\Setting();

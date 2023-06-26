@@ -35,7 +35,7 @@ class Registration
 
 		if ($reservation->empty())
 			{
-			// no record yet, do a post and redirect
+			// no record yet, setup for a post and redirect
 			$submit = new \PHPFUI\Submit('Add Event Registration', 'action');
 			$form = new \PHPFUI\Form($this->page);
 			}
@@ -256,10 +256,6 @@ class Registration
 					{
 					$paymentInfo->add($this->getPaymentFields($payment, $reservation->paymentId > 0));
 					}
-				else
-					{
-					$paymentInfo->add('No payment is due.');
-					}
 				}
 
 			$reservationPersonTable = new \App\Table\ReservationPerson();
@@ -273,7 +269,7 @@ class Registration
 
 			$personCount = \count($reservationPersonTable);
 
-			if ($personCount)
+			if ($personCount && \count($paymentInfo) > 1)
 				{
 				$form->add($paymentInfo);
 				}

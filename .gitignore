@@ -9,6 +9,7 @@ backup
 .php-cs-fixer.cache
 .phpintel
 .phpunit.result.cache
+.phpunit.cache/
 .scannerwork/
 .viminfo
 .DS_Store

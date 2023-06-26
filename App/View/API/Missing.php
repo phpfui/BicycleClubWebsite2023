@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Api;
+namespace App\View\API;
 
 class Missing extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 	{

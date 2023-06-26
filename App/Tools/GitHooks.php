@@ -114,7 +114,7 @@ class GitHooks
 			}
 
 		// run syntax check
-		$command = 'vendor\\bin\\phpunits --group SyntaxTest';
+		$command = 'vendor\\bin\\phpunit --group SyntaxTest';
 
 		return $this->runShellCommand($command);
 		}

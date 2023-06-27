@@ -75,7 +75,7 @@ class HomePage implements \Stringable
 
 				$reservation = new \App\Record\Reservation(['eventId' => $event['eventId'], 'memberId' => \App\Model\Session::signedInMemberId()]);
 
-				if (! $reservation->loaded())
+				if (! $reservation->loaded() || ($event['price'] && ! $reservation->paymentId))
 					{
 					$event['status'] = new \PHPFUI\Button('Sign Up', '/Events/signup/' . $event['eventId']);
 					}

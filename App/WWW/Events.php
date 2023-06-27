@@ -316,12 +316,17 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$this->reservationTable->addOrderBy('lastName')->addOrderBy('firstName');
 				$participantCursor = $this->reservationTable->getArrayCursor();
 				$table = new \PHPFUI\Table();
+				$attending = 0;
 
 				foreach ($participantCursor as $participant)
 					{
-					$table->addRow(['name' => $participant['firstName'] . ' ' . $participant['lastName']]);
+					if (! $event->price || ($event->price && $participant['paymentId']))
+						{
+						++$attending;
+						$table->addRow(['name' => $participant['firstName'] . ' ' . $participant['lastName']]);
+						}
 					}
-				$table->addRow(['name' => '<b>Total Attending:</b> ' . \count($participantCursor)]);
+				$table->addRow(['name' => '<b>Total Attending:</b> ' . $attending]);
 				$this->page->addPageContent($table);
 				$this->page->addPageContent(new \PHPFUI\Button('Register Now', '/Events/signUp/' . $event->eventId));
 				}

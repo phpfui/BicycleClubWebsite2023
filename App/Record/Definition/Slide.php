@@ -41,8 +41,8 @@ abstract class Slide extends \PHPFUI\ORM\Record
 		'url' => ['varchar(255)', 'string', 255, true, '', ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['slideId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['slideId', ];
 
 	protected static string $table = 'slide';
 	}

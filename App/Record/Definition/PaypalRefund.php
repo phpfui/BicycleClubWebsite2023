@@ -35,8 +35,8 @@ abstract class PaypalRefund extends \PHPFUI\ORM\Record
 		'response' => ['text', 'string', 65535, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['paypalRefundId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['paypalRefundId', ];
 
 	protected static string $table = 'paypalRefund';
 	}

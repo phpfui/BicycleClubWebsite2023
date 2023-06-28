@@ -41,8 +41,8 @@ abstract class BikeShop extends \PHPFUI\ORM\Record
 		'zip' => ['varchar(10)', 'string', 10, true, '', ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['bikeShopId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['bikeShopId', ];
 
 	protected static string $table = 'bikeShop';
 	}

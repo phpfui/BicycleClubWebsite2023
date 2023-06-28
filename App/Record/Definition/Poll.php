@@ -36,8 +36,8 @@ abstract class Poll extends \PHPFUI\ORM\Record
 		'storyId' => ['int', 'int', 0, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['pollId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['pollId', ];
 
 	protected static string $table = 'poll';
 	}

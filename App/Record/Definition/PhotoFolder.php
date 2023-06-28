@@ -24,8 +24,8 @@ abstract class PhotoFolder extends \PHPFUI\ORM\Record
 		'photoFolderId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['photoFolderId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['photoFolderId', ];
 
 	protected static string $table = 'photoFolder';
 	}

@@ -29,8 +29,8 @@ abstract class SigninSheet extends \PHPFUI\ORM\Record
 		'signinSheetId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['signinSheetId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['signinSheetId', ];
 
 	protected static string $table = 'signinSheet';
 	}

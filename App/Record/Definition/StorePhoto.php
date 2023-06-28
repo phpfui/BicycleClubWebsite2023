@@ -27,8 +27,8 @@ abstract class StorePhoto extends \PHPFUI\ORM\Record
 		'storePhotoId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['storePhotoId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['storePhotoId', ];
 
 	protected static string $table = 'storePhoto';
 	}

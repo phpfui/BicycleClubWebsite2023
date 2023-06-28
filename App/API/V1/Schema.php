@@ -96,7 +96,7 @@ class Schema extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 				}
 			$response[$key] = $schema;
 			}
-		$response['primaryKeys'] = \array_keys($table->getPrimaryKeys());
+		$response['primaryKeys'] = $table->getPrimaryKeys();
 		$response['related'] = $table->getRecord()->getVirtualFields();
 
 		return $response;

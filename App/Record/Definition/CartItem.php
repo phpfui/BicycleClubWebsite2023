@@ -38,8 +38,8 @@ abstract class CartItem extends \PHPFUI\ORM\Record
 		'type' => ['int', 'int', 0, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['cartItemId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['cartItemId', ];
 
 	protected static string $table = 'cartItem';
 	}

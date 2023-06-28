@@ -30,8 +30,8 @@ abstract class StartLocation extends \PHPFUI\ORM\Record
 		'startLocationId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['startLocationId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['startLocationId', ];
 
 	protected static string $table = 'startLocation';
 	}

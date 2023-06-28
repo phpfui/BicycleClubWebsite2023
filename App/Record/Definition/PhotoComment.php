@@ -27,8 +27,8 @@ abstract class PhotoComment extends \PHPFUI\ORM\Record
 		'timestamp' => ['timestamp', 'string', 20, false, null, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['photoCommentId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['photoCommentId', ];
 
 	protected static string $table = 'photoComment';
 	}

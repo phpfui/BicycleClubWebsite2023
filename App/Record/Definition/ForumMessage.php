@@ -36,8 +36,8 @@ abstract class ForumMessage extends \PHPFUI\ORM\Record
 		'title' => ['varchar(255)', 'string', 255, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['forumMessageId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['forumMessageId', ];
 
 	protected static string $table = 'forumMessage';
 	}

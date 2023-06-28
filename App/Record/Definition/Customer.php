@@ -34,8 +34,8 @@ abstract class Customer extends \PHPFUI\ORM\Record
 		'zip' => ['varchar(10)', 'string', 10, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['customerId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['customerId', ];
 
 	protected static string $table = 'customer';
 	}

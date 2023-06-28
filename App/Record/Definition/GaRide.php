@@ -31,8 +31,8 @@ abstract class GaRide extends \PHPFUI\ORM\Record
 		'startTime' => ['time', 'string', 0, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['gaRideId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['gaRideId', ];
 
 	protected static string $table = 'gaRide';
 	}

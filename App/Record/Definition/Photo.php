@@ -35,8 +35,8 @@ abstract class Photo extends \PHPFUI\ORM\Record
 		'uploaded' => ['timestamp', 'string', 20, false, null, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['photoId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['photoId', ];
 
 	protected static string $table = 'photo';
 	}

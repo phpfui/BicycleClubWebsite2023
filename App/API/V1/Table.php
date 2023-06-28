@@ -58,9 +58,9 @@ class Table extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 			{
 			\array_shift($parameters);
 			\array_shift($parameters);
-			$keys = $table->getPrimaryKeys();
+			$keys = [];
 
-			foreach ($keys as $key => $value)
+			foreach ($table->getPrimaryKeys() as $key)
 				{
 				$keys[$key] = \array_shift($parameters);
 				}

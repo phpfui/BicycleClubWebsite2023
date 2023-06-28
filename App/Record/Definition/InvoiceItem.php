@@ -40,8 +40,8 @@ abstract class InvoiceItem extends \PHPFUI\ORM\Record
 		'type' => ['int', 'int', 0, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['invoiceId' => true, 'storeItemId' => true, 'storeItemDetailId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['invoiceId', 'storeItemId', 'storeItemDetailId', ];
 
 	protected static string $table = 'invoiceItem';
 	}

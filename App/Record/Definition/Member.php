@@ -95,8 +95,8 @@ abstract class Member extends \PHPFUI\ORM\Record
 		'verifiedEmail' => ['int', 'int', 0, false, 0, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['memberId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['memberId', ];
 
 	protected static string $table = 'member';
 	}

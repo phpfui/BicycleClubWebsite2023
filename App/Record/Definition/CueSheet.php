@@ -47,8 +47,8 @@ abstract class CueSheet extends \PHPFUI\ORM\Record
 		'terrain' => ['int', 'int', 0, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['cueSheetId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['cueSheetId', ];
 
 	protected static string $table = 'cueSheet';
 	}

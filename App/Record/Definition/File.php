@@ -33,8 +33,8 @@ abstract class File extends \PHPFUI\ORM\Record
 		'uploaded' => ['timestamp', 'string', 20, true, null, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['fileId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['fileId', ];
 
 	protected static string $table = 'file';
 	}

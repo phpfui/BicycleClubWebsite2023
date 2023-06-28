@@ -50,7 +50,7 @@ class Categories
 		else
 			{
 			$table = new \PHPFUI\OrderableTable($this->page);
-			$table->setRecordId($pk = \array_key_first($this->categoryTable->getPrimaryKeys()));
+			$table->setRecordId($pk = $this->categoryTable->getPrimaryKeys()[0]);
 			$textarea = new \PHPFUI\Input\TextArea('descriptionText', 'Category Description');
 			$popupEditor = new \PHPFUI\PopupInput($this->page, $textarea);
 			'?csrf=' . \App\Model\Session::csrf();

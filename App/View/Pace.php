@@ -62,7 +62,7 @@ class Pace
 		else
 			{
 			$table = new \PHPFUI\OrderableTable($this->page);
-			$table->setRecordId($pk = \array_key_first($this->paceTable->getPrimaryKeys()));
+			$table->setRecordId($pk = $this->paceTable->getPrimaryKeys()[0]);
 			$paces = $this->paceTable->getPaceOrder($category->categoryId);
 			$url = '?csrf=' . \App\Model\Session::csrf();
 			$count = $total = \count($paces);

@@ -29,8 +29,8 @@ abstract class OauthToken extends \PHPFUI\ORM\Record
 		'token' => ['varchar(255)', 'string', 255, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['oauthTokenId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['oauthTokenId', ];
 
 	protected static string $table = 'oauthToken';
 	}

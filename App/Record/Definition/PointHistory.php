@@ -26,7 +26,7 @@ abstract class PointHistory extends \PHPFUI\ORM\Record
 		'time' => ['timestamp', 'string', 20, false, null, ],
 	];
 
-	/** @var array<string, true> */
+	/** @var array<string> */
 	protected static array $primaryKeys = [];
 
 	protected static string $table = 'pointHistory';

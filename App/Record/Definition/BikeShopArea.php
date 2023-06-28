@@ -22,8 +22,8 @@ abstract class BikeShopArea extends \PHPFUI\ORM\Record
 		'state' => ['char(2)', 'string', 2, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['bikeShopAreaId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['bikeShopAreaId', ];
 
 	protected static string $table = 'bikeShopArea';
 	}

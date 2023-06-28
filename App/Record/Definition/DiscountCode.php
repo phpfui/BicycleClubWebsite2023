@@ -33,8 +33,8 @@ abstract class DiscountCode extends \PHPFUI\ORM\Record
 		'validItemNumbers' => ['text', 'string', 65535, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['discountCodeId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['discountCodeId', ];
 
 	protected static string $table = 'discountCode';
 	}

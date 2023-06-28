@@ -39,8 +39,8 @@ abstract class SlideShow extends \PHPFUI\ORM\Record
 		'width' => ['int', 'int', 0, false, 0, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['slideShowId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['slideShowId', ];
 
 	protected static string $table = 'slideShow';
 	}

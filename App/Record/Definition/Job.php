@@ -31,8 +31,8 @@ abstract class Job extends \PHPFUI\ORM\Record
 		'title' => ['char(100)', 'string', 100, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['jobId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['jobId', ];
 
 	protected static string $table = 'job';
 	}

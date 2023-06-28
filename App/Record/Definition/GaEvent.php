@@ -60,8 +60,8 @@ abstract class GaEvent extends \PHPFUI\ORM\Record
 		'volunteerEvent' => ['int', 'int', 0, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['gaEventId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['gaEventId', ];
 
 	protected static string $table = 'gaEvent';
 	}

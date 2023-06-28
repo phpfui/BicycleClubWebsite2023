@@ -109,6 +109,11 @@ class PaginatedTable extends \PHPFUI\SortableTable
 			{
 			$this->setSortedColumnOrder($this->sortColumn, $this->sort);
 			$this->dataTable->setOrderBy($this->sortColumn, $this->sort);
+
+			foreach ($this->dataTable->getPrimaryKeys() as $field)
+				{
+				$this->dataTable->setOrderBy($field, $this->sort);
+				}
 			}
 
 		$this->cursor = $this->getRawArrayCursor();

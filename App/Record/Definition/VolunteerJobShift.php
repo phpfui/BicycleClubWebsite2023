@@ -37,8 +37,8 @@ abstract class VolunteerJobShift extends \PHPFUI\ORM\Record
 		'worked' => ['tinyint', 'int', 0, false, 0, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['volunteerJobShiftId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['volunteerJobShiftId', ];
 
 	protected static string $table = 'volunteerJobShift';
 	}

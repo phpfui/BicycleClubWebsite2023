@@ -21,8 +21,8 @@ abstract class SigninSheetRide extends \PHPFUI\ORM\Record
 		'signinSheetId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['signinSheetId' => true, 'rideId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['signinSheetId', 'rideId', ];
 
 	protected static string $table = 'signinSheetRide';
 	}

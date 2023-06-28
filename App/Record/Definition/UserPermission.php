@@ -22,8 +22,8 @@ abstract class UserPermission extends \PHPFUI\ORM\Record
 		'revoked' => ['int', 'int', 0, false, 0, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['memberId' => true, 'permissionGroup' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['memberId', 'permissionGroup', ];
 
 	protected static string $table = 'userPermission';
 	}

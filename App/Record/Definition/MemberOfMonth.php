@@ -27,8 +27,8 @@ abstract class MemberOfMonth extends \PHPFUI\ORM\Record
 		'month' => ['date', 'string', 10, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['memberOfMonthId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['memberOfMonthId', ];
 
 	protected static string $table = 'memberOfMonth';
 	}

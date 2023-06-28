@@ -23,8 +23,8 @@ abstract class GaIncentive extends \PHPFUI\ORM\Record
 		'gaIncentiveId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['gaIncentiveId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['gaIncentiveId', ];
 
 	protected static string $table = 'gaIncentive';
 	}

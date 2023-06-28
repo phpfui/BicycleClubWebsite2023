@@ -24,8 +24,8 @@ abstract class Incentive extends \PHPFUI\ORM\Record
 		'points' => ['int', 'int', 0, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['incentiveId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['incentiveId', ];
 
 	protected static string $table = 'incentive';
 	}

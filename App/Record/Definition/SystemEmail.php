@@ -24,8 +24,8 @@ abstract class SystemEmail extends \PHPFUI\ORM\Record
 		'systemEmailId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['systemEmailId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['systemEmailId', ];
 
 	protected static string $table = 'systemEmail';
 	}

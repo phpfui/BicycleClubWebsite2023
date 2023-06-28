@@ -26,8 +26,8 @@ abstract class PollResponse extends \PHPFUI\ORM\Record
 		'pollId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['pollId' => true, 'membershipId' => true, 'memberId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['pollId', 'membershipId', 'memberId', ];
 
 	protected static string $table = 'pollResponse';
 	}

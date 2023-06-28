@@ -28,8 +28,8 @@ abstract class JobEvent extends \PHPFUI\ORM\Record
 		'organizer' => ['int', 'int', 0, true, 0, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['jobEventId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['jobEventId', ];
 
 	protected static string $table = 'jobEvent';
 	}

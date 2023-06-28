@@ -25,8 +25,8 @@ abstract class MailAttachment extends \PHPFUI\ORM\Record
 		'prettyName' => ['varchar(255)', 'string', 255, true, '', ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['mailAttachmentId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['mailAttachmentId', ];
 
 	protected static string $table = 'mailAttachment';
 	}

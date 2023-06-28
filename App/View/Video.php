@@ -240,10 +240,11 @@ class Video
 			});
 
 		$view->addCustomColumn('DL', static function(array $video) {
-			$icon = new \PHPFUI\FAIcon('fas', 'download', '/video/' . $video['fileName']);
-			$icon->setAttribute('download');
+			$icon = new \PHPFUI\FAIcon('fas', 'download');
+			$link = new \PHPFUI\Link('/video/' . $video['fileName'], $icon, false);
+			$link->setAttribute('download');
 
-			return $icon;
+			return $link;
 			});
 
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $videoTable, 'Are you sure you want to permanently delete this video?');

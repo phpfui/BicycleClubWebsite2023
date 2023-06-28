@@ -35,8 +35,8 @@ abstract class StoreOrder extends \PHPFUI\ORM\Record
 		'updated' => ['timestamp', 'string', 20, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['storeOrderId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['storeOrderId', ];
 
 	protected static string $table = 'storeOrder';
 	}

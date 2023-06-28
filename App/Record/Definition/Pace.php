@@ -30,8 +30,8 @@ abstract class Pace extends \PHPFUI\ORM\Record
 		'paceId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['paceId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['paceId', ];
 
 	protected static string $table = 'pace';
 	}

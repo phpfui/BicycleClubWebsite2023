@@ -46,8 +46,8 @@ abstract class Story extends \PHPFUI\ORM\Record
 		'subhead' => ['varchar(200)', 'string', 200, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['storyId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['storyId', ];
 
 	protected static string $table = 'story';
 	}

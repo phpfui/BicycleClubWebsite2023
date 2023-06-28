@@ -36,8 +36,8 @@ abstract class Banner extends \PHPFUI\ORM\Record
 		'url' => ['varchar(200)', 'string', 200, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['bannerId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['bannerId', ];
 
 	protected static string $table = 'banner';
 	}

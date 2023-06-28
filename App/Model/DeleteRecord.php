@@ -12,7 +12,7 @@ class DeleteRecord
 
 	public function __construct(\PHPFUI\Interfaces\Page $page, \PHPFUI\Table $table, \PHPFUI\ORM\Table $dbTable, string $message = 'Are you sure you want to delete this row?')
 		{
-		$this->primaryKeys = \array_keys($dbTable->getPrimaryKeys());
+		$this->primaryKeys = $dbTable->getPrimaryKeys();
 		$primaryKey = \implode('_', $this->primaryKeys);
 		$functionName = 'delete_' . \ucfirst($primaryKey);
 

@@ -21,8 +21,8 @@ abstract class MemberCategory extends \PHPFUI\ORM\Record
 		'memberId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['memberId' => true, 'categoryId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['memberId', 'categoryId', ];
 
 	protected static string $table = 'memberCategory';
 	}

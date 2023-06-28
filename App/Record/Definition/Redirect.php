@@ -22,8 +22,8 @@ abstract class Redirect extends \PHPFUI\ORM\Record
 		'redirectUrl' => ['varchar(255)', 'string', 255, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['redirectId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['redirectId', ];
 
 	protected static string $table = 'redirect';
 	}

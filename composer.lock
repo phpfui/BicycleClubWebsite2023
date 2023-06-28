@@ -2655,16 +2655,16 @@
         },
         {
             "name": "phpfui/orm",
-            "version": "V1.2.1",
+            "version": "V1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ORM.git",
-                "reference": "12edfb8f1b0b7afab14cfe931460834c02c1dad7"
+                "reference": "857b3651de0b88e6ca90142bf66c6992b523c3ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ORM/zipball/12edfb8f1b0b7afab14cfe931460834c02c1dad7",
-                "reference": "12edfb8f1b0b7afab14cfe931460834c02c1dad7",
+                "url": "https://api.github.com/repos/phpfui/ORM/zipball/857b3651de0b88e6ca90142bf66c6992b523c3ec",
+                "reference": "857b3651de0b88e6ca90142bf66c6992b523c3ec",
                 "shasum": ""
             },
             "require": {
@@ -2711,9 +2711,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ORM/issues",
-                "source": "https://github.com/phpfui/ORM/tree/V1.2.1"
+                "source": "https://github.com/phpfui/ORM/tree/V1.3.1"
             },
-            "time": "2023-06-20T01:15:55+00:00"
+            "time": "2023-06-28T15:36:38+00:00"
         },
         {
             "name": "phpfui/phpfui",
@@ -3461,16 +3461,16 @@
         },
         {
             "name": "setasign/fpdf",
-            "version": "1.8.5",
+            "version": "1.8.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Setasign/FPDF.git",
-                "reference": "f4104a04c9a3f95c4c26a0a0531abebcc980987a"
+                "reference": "0838e0ee4925716fcbbc50ad9e1799b5edfae0a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Setasign/FPDF/zipball/f4104a04c9a3f95c4c26a0a0531abebcc980987a",
-                "reference": "f4104a04c9a3f95c4c26a0a0531abebcc980987a",
+                "url": "https://api.github.com/repos/Setasign/FPDF/zipball/0838e0ee4925716fcbbc50ad9e1799b5edfae0a0",
+                "reference": "0838e0ee4925716fcbbc50ad9e1799b5edfae0a0",
                 "shasum": ""
             },
             "require": {
@@ -3501,9 +3501,9 @@
                 "pdf"
             ],
             "support": {
-                "source": "https://github.com/Setasign/FPDF/tree/1.8.5"
+                "source": "https://github.com/Setasign/FPDF/tree/1.8.6"
             },
-            "time": "2022-11-18T07:02:00+00:00"
+            "time": "2023-06-26T14:44:25+00:00"
         },
         {
             "name": "setasign/fpdi",
@@ -5110,16 +5110,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.19.2",
+            "version": "v3.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "210dd89560edb27a8e0d5086b734ac5b5fd4e0e4"
+                "reference": "0e8249e0b15e2bc022fbbd1090ce29d071481e69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/210dd89560edb27a8e0d5086b734ac5b5fd4e0e4",
-                "reference": "210dd89560edb27a8e0d5086b734ac5b5fd4e0e4",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/0e8249e0b15e2bc022fbbd1090ce29d071481e69",
+                "reference": "0e8249e0b15e2bc022fbbd1090ce29d071481e69",
                 "shasum": ""
             },
             "require": {
@@ -5194,7 +5194,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.19.2"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.20.0"
             },
             "funding": [
                 {
@@ -5202,7 +5202,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-06-25T16:42:58+00:00"
+            "time": "2023-06-27T20:22:39+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -6123,17 +6123,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "237f1821ece806de66072813d8cbe5bdbc8f3117"
+                "reference": "3b77f2101068074f1c98977cc34ef939bbce3d19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/237f1821ece806de66072813d8cbe5bdbc8f3117",
-                "reference": "237f1821ece806de66072813d8cbe5bdbc8f3117",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/3b77f2101068074f1c98977cc34ef939bbce3d19",
+                "reference": "3b77f2101068074f1c98977cc34ef939bbce3d19",
                 "shasum": ""
             },
             "conflict": {
                 "3f/pygmentize": "<1.2",
-                "admidio/admidio": "<4.2.8",
+                "admidio/admidio": "<4.2.9",
                 "adodb/adodb-php": "<=5.20.20|>=5.21,<=5.21.3",
                 "aheinze/cockpit": "<=2.2.1",
                 "akaunting/akaunting": "<2.1.13",
@@ -6167,7 +6167,7 @@
                 "baserproject/basercms": "<4.7.5",
                 "bassjobsen/bootstrap-3-typeahead": ">4.0.2",
                 "bigfork/silverstripe-form-capture": ">=3,<3.1.1",
-                "billz/raspap-webgui": "<=2.6.6",
+                "billz/raspap-webgui": "<2.8.9",
                 "bk2k/bootstrap-package": ">=7.1,<7.1.2|>=8,<8.0.8|>=9,<9.0.4|>=9.1,<9.1.3|>=10,<10.0.10|>=11,<11.0.3",
                 "bmarshall511/wordpress_zero_spam": "<5.2.13",
                 "bolt/bolt": "<3.7.2",
@@ -6396,7 +6396,7 @@
                 "modx/revolution": "<= 2.8.3-pl|<2.8",
                 "mojo42/jirafeau": "<4.4",
                 "monolog/monolog": ">=1.8,<1.12",
-                "moodle/moodle": "<4.2-rc.2|= 3.11",
+                "moodle/moodle": "<4.2-rc.2|= 4.2.0|= 3.11",
                 "mustache/mustache": ">=2,<2.14.1",
                 "namshi/jose": "<2.2",
                 "neoan3-apps/template": "<1.1.1",
@@ -6731,7 +6731,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-22T20:04:46+00:00"
+            "time": "2023-06-28T00:17:41+00:00"
         },
         {
             "name": "sebastian/cli-parser",

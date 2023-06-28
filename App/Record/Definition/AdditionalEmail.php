@@ -25,8 +25,8 @@ abstract class AdditionalEmail extends \PHPFUI\ORM\Record
 		'verified' => ['int', 'int', 0, false, 0, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['additionalEmailId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['additionalEmailId', ];
 
 	protected static string $table = 'additionalEmail';
 	}

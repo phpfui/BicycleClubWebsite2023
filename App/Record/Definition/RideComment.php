@@ -32,8 +32,8 @@ abstract class RideComment extends \PHPFUI\ORM\Record
 		'time' => ['timestamp', 'string', 20, false, null, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['rideCommentId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['rideCommentId', ];
 
 	protected static string $table = 'rideComment';
 	}

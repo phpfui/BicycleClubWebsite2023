@@ -26,8 +26,8 @@ abstract class ForumAttachment extends \PHPFUI\ORM\Record
 		'forumMessageId' => ['int', 'int', 0, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['forumAttachmentId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['forumAttachmentId', ];
 
 	protected static string $table = 'forumAttachment';
 	}

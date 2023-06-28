@@ -59,7 +59,7 @@ class Coordinators
 			$leaders = $memberTable->getLeaders();
 			$leaderView = new \App\View\Leader($this->page);
 			$table = new \PHPFUI\Table();
-			$table->setRecordId($pk = \array_key_first($categoryTable->getPrimaryKeys()));
+			$table->setRecordId($pk = $categoryTable->getPrimaryKeys()[0]);
 			$table->setHeaders(['category' => 'Category', 'coordinator' => 'Coordinator', ]);
 			$leaderId = '';
 

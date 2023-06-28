@@ -42,8 +42,8 @@ abstract class Membership extends \PHPFUI\ORM\Record
 		'zip' => ['varchar(10)', 'string', 10, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['membershipId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['membershipId', ];
 
 	protected static string $table = 'membership';
 	}

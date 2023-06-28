@@ -30,8 +30,8 @@ abstract class CueSheetVersion extends \PHPFUI\ORM\Record
 		'memberId' => ['int', 'int', 0, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['cueSheetVersionId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['cueSheetVersionId', ];
 
 	protected static string $table = 'cueSheetVersion';
 	}

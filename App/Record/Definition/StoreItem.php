@@ -46,8 +46,8 @@ abstract class StoreItem extends \PHPFUI\ORM\Record
 		'type' => ['int', 'int', 0, false, 0, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['storeItemId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['storeItemId', ];
 
 	protected static string $table = 'storeItem';
 	}

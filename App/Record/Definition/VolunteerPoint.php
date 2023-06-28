@@ -25,8 +25,8 @@ abstract class VolunteerPoint extends \PHPFUI\ORM\Record
 		'pointsAwarded' => ['int', 'int', 0, false, 0, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['jobEventId' => true, 'date' => true, 'memberId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['jobEventId', 'date', 'memberId', ];
 
 	protected static string $table = 'volunteerPoint';
 	}

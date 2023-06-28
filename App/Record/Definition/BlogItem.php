@@ -23,8 +23,8 @@ abstract class BlogItem extends \PHPFUI\ORM\Record
 		'storyId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['blogId' => true, 'storyId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['blogId', 'storyId', ];
 
 	protected static string $table = 'blogItem';
 	}

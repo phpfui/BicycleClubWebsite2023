@@ -25,8 +25,8 @@ abstract class Ziptax extends \PHPFUI\ORM\Record
 		'zipstate' => ['varchar(32)', 'string', 32, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['zip_id' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['zip_id', ];
 
 	protected static string $table = 'ziptax';
 	}

@@ -23,8 +23,8 @@ abstract class VolunteerPollAnswer extends \PHPFUI\ORM\Record
 		'volunteerPollId' => ['int', 'int', 0, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['volunteerPollAnswerId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['volunteerPollAnswerId', ];
 
 	protected static string $table = 'volunteerPollAnswer';
 	}

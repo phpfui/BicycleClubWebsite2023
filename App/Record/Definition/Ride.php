@@ -71,8 +71,8 @@ abstract class Ride extends \PHPFUI\ORM\Record
 		'unaffiliated' => ['int', 'int', 0, true, 0, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['rideId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['rideId', ];
 
 	protected static string $table = 'ride';
 	}

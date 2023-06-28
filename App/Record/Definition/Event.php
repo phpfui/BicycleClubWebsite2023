@@ -62,8 +62,8 @@ abstract class Event extends \PHPFUI\ORM\Record
 		'title' => ['varchar(100)', 'string', 100, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['eventId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['eventId', ];
 
 	protected static string $table = 'event';
 	}

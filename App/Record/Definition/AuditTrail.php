@@ -29,8 +29,8 @@ abstract class AuditTrail extends \PHPFUI\ORM\Record
 		'time' => ['timestamp', 'string', 20, false, null, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['auditTrailId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['auditTrailId', ];
 
 	protected static string $table = 'auditTrail';
 	}

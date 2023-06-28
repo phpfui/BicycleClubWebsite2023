@@ -27,8 +27,8 @@ abstract class JobShift extends \PHPFUI\ORM\Record
 		'startTime' => ['time', 'string', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['jobShiftId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['jobShiftId', ];
 
 	protected static string $table = 'jobShift';
 	}

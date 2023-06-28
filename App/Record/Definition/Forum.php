@@ -30,8 +30,8 @@ abstract class Forum extends \PHPFUI\ORM\Record
 		'whiteList' => ['text', 'string', 65535, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['forumId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['forumId', ];
 
 	protected static string $table = 'forum';
 	}

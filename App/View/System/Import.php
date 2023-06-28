@@ -213,7 +213,7 @@ class Import
 		$writer = new \App\Tools\CSVWriter("{$model}_template.csv");
 		$fields = $record->getFields();
 
-		foreach ($record->getPrimaryKeys() as $field => $junk)
+		foreach ($record->getPrimaryKeys() as $field)
 			{
 			unset($fields[$field]);
 			}

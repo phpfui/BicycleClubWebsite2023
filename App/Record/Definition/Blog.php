@@ -20,8 +20,8 @@ abstract class Blog extends \PHPFUI\ORM\Record
 		'name' => ['varchar(100)', 'string', 100, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['blogId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['blogId', ];
 
 	protected static string $table = 'blog';
 	}

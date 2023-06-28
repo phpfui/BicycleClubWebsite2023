@@ -25,8 +25,8 @@ abstract class GaPriceDate extends \PHPFUI\ORM\Record
 		'price' => ['decimal(5,2)', 'float', 5, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['gaPriceDateId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['gaPriceDateId', ];
 
 	protected static string $table = 'gaPriceDate';
 	}

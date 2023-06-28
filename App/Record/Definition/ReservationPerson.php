@@ -30,8 +30,8 @@ abstract class ReservationPerson extends \PHPFUI\ORM\Record
 		'reservationPersonId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['reservationPersonId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['reservationPersonId', ];
 
 	protected static string $table = 'reservationPerson';
 	}

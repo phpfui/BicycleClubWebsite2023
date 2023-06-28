@@ -28,8 +28,8 @@ abstract class MailPiece extends \PHPFUI\ORM\Record
 		'name' => ['varchar(100)', 'string', 100, true, '', ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['mailPieceId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['mailPieceId', ];
 
 	protected static string $table = 'mailPiece';
 	}

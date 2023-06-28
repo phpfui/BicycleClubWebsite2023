@@ -35,8 +35,8 @@ abstract class RideSignup extends \PHPFUI\ORM\Record
 		'status' => ['int', 'int', 0, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['rideId' => true, 'memberId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['rideId', 'memberId', ];
 
 	protected static string $table = 'rideSignup';
 	}

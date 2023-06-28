@@ -39,8 +39,8 @@ abstract class MailItem extends \PHPFUI\ORM\Record
 		'title' => ['varchar(255)', 'string', 255, true, '', ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['mailItemId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['mailItemId', ];
 
 	protected static string $table = 'mailItem';
 	}

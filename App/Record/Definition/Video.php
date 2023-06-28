@@ -37,8 +37,8 @@ abstract class Video extends \PHPFUI\ORM\Record
 		'videoTypeId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['videoId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['videoId', ];
 
 	protected static string $table = 'video';
 	}

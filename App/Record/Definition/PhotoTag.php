@@ -31,8 +31,8 @@ abstract class PhotoTag extends \PHPFUI\ORM\Record
 		'taggerId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['photoTagId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['photoTagId', ];
 
 	protected static string $table = 'photoTag';
 	}

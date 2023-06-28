@@ -26,8 +26,8 @@ abstract class BoardMember extends \PHPFUI\ORM\Record
 		'title' => ['varchar(50)', 'string', 50, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['memberId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['memberId', ];
 
 	protected static string $table = 'boardMember';
 	}

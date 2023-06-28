@@ -24,8 +24,8 @@ abstract class Permission extends \PHPFUI\ORM\Record
 		'system' => ['tinyint', 'int', 0, false, 0, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['permissionId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['permissionId', ];
 
 	protected static string $table = 'permission';
 	}

@@ -31,8 +31,8 @@ abstract class Category extends \PHPFUI\ORM\Record
 		'ordering' => ['int', 'int', 0, false, 999999, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['categoryId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['categoryId', ];
 
 	protected static string $table = 'category';
 	}

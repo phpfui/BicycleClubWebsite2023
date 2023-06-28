@@ -50,8 +50,8 @@ abstract class Invoice extends \PHPFUI\ORM\Record
 		'totalTax' => ['decimal(7,2)', 'float', 7, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['invoiceId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['invoiceId', ];
 
 	protected static string $table = 'invoice';
 	}

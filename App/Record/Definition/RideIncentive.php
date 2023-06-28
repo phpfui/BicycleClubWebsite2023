@@ -21,8 +21,8 @@ abstract class RideIncentive extends \PHPFUI\ORM\Record
 		'rideId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['rideId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['rideId', ];
 
 	protected static string $table = 'rideIncentive';
 	}

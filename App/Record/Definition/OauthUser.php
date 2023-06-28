@@ -29,8 +29,8 @@ abstract class OauthUser extends \PHPFUI\ORM\Record
 		'userName' => ['varchar(100)', 'string', 100, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['oauthUserId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['oauthUserId', ];
 
 	protected static string $table = 'oauthUser';
 	}

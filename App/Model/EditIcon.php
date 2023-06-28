@@ -9,7 +9,7 @@ class EditIcon
 	public function __construct(\App\UI\ContinuousScrollTable $table, \PHPFUI\ORM\Table $dbTable, private string $url)
 		{
 		$this->url = \rtrim($this->url, '/');
-		$this->primaryKey = \key($dbTable->getPrimaryKeys());
+		$this->primaryKey = $dbTable->getPrimaryKeys()[0];
 		$table->addCustomColumn('edit', $this->columnCallback(...));
 		}
 

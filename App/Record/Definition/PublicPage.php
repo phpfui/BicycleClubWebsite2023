@@ -42,8 +42,8 @@ abstract class PublicPage extends \PHPFUI\ORM\Record
 		'url' => ['varchar(100)', 'string', 100, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['publicPageId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['publicPageId', ];
 
 	protected static string $table = 'publicPage';
 	}

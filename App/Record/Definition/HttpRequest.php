@@ -26,8 +26,8 @@ abstract class HttpRequest extends \PHPFUI\ORM\Record
 		'httpRequestId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['httpRequestId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['httpRequestId', ];
 
 	protected static string $table = 'httpRequest';
 	}

@@ -24,8 +24,8 @@ abstract class RWGPSAlternate extends \PHPFUI\ORM\Record
 		'memberId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['RWGPSId' => true, 'RWGPSAlternateId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['RWGPSId', 'RWGPSAlternateId', ];
 
 	protected static string $table = 'RWGPSAlternate';
 	}

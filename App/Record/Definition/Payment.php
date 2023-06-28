@@ -36,8 +36,8 @@ abstract class Payment extends \PHPFUI\ORM\Record
 		'paymentType' => ['int', 'int', 0, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['paymentId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['paymentId', ];
 
 	protected static string $table = 'payment';
 	}

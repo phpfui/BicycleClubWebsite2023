@@ -21,8 +21,8 @@ abstract class AssistantLeader extends \PHPFUI\ORM\Record
 		'rideId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['rideId' => true, 'memberId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['rideId', 'memberId', ];
 
 	protected static string $table = 'assistantLeader';
 	}

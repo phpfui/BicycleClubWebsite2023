@@ -19,8 +19,8 @@ abstract class Setting extends \PHPFUI\ORM\Record
 		'value' => ['text', 'string', 65535, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['name' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['name', ];
 
 	protected static string $table = 'setting';
 	}

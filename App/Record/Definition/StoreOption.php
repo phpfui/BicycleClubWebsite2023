@@ -22,8 +22,8 @@ abstract class StoreOption extends \PHPFUI\ORM\Record
 		'storeOptionId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['storeOptionId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['storeOptionId', ];
 
 	protected static string $table = 'storeOption';
 	}

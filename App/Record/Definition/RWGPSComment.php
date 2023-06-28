@@ -27,8 +27,8 @@ abstract class RWGPSComment extends \PHPFUI\ORM\Record
 		'memberId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['RWGPSId' => true, 'memberId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['RWGPSId', 'memberId', ];
 
 	protected static string $table = 'RWGPSComment';
 	}

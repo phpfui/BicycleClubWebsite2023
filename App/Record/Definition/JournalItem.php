@@ -27,8 +27,8 @@ abstract class JournalItem extends \PHPFUI\ORM\Record
 		'title' => ['char(100)', 'string', 100, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['journalItemId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['journalItemId', ];
 
 	protected static string $table = 'journalItem';
 	}

@@ -23,8 +23,8 @@ abstract class GaAnswer extends \PHPFUI\ORM\Record
 		'gaEventId' => ['int', 'int', 0, false, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['gaAnswerId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['gaAnswerId', ];
 
 	protected static string $table = 'gaAnswer';
 	}

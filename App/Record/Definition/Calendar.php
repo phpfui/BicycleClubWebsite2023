@@ -50,8 +50,8 @@ abstract class Calendar extends \PHPFUI\ORM\Record
 		'webSite' => ['char(100)', 'string', 100, true, ],
 	];
 
-	/** @var array<string, true> */
-	protected static array $primaryKeys = ['calendarId' => true, ];
+	/** @var array<string> */
+	protected static array $primaryKeys = ['calendarId', ];
 
 	protected static string $table = 'calendar';
 	}

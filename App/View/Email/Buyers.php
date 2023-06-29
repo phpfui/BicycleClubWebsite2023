@@ -35,6 +35,11 @@ class Buyers implements \Stringable
 					{
 					foreach ($cursor as $buyer)
 						{
+						if (empty($buyer['email']))
+							{
+							continue;
+							}
+
 						$email = new \App\Tools\EMail();
 						$email->setSubject($_POST['subject']);
 						$email->setFromMember($member);
@@ -59,7 +64,7 @@ class Buyers implements \Stringable
 
 					foreach ($cursor as $buyer)
 						{
-						if (isset($buyer['email']))
+						if (! empty($buyer['email']))
 							{
 							$ul->addItem(new \PHPFUI\ListItem(\PHPFUI\Link::email($buyer['email'], $buyer['firstName'] . ' ' . $buyer['lastName'])));
 							}

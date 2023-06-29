@@ -1,5 +1,3 @@
-don't show in ride signup list
-
 Signed up riders over the limit
 
 Embedded images in forum posts not coming through

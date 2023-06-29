@@ -656,22 +656,23 @@ class Invoice
 			$condition->and($nameCondition);
 			}
 
-		if (! empty($parameters['status']))
+		if (! empty($parameters['shipped']))
 			{
-			switch ($parameters['status'])
+			switch ((int)$parameters['shipped'])
 				{
-				case 'S':
+				case 1:
 					$condition->and('fullfillmentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
 
 					break;
 
-				case 'N':
-					$condition->and(new \PHPFUI\ORM\Condition('fullfillmentDate', null, new \PHPFUI\ORM\Operator\IsNull()));
+				case 2:
+					$condition->and('fullfillmentDate', null, new \PHPFUI\ORM\Operator\IsNull());
+					$condition->and('paymentDate', null, new \PHPFUI\ORM\Operator\IsNotNull());
 
 					break;
 
-				case 'U':
-					$condition->and(new \PHPFUI\ORM\Condition('paymentDate', null, new \PHPFUI\ORM\Operator\IsNull()));
+				case 3:
+					$condition->and('paymentDate', null, new \PHPFUI\ORM\Operator\IsNull());
 
 					break;
 				}

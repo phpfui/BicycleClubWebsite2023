@@ -16,7 +16,7 @@ class Search implements \Stringable
 		$row = new \PHPFUI\GridX();
 		$row->add('<br>');
 
-		if (! empty($_GET['status']))
+		if (isset($_GET['shipped']))
 			{
 			$model = new \App\Model\Invoice();
 			$invoiceTable = $model->getInvoiceTable($_GET);
@@ -54,11 +54,11 @@ class Search implements \Stringable
 		$fieldSet->add(new \PHPFUI\MultiColumn($invoiceId, $transactionId));
 		$fieldSet->add(new \PHPFUI\MultiColumn($text, $name));
 		$fieldSet->add(new \PHPFUI\MultiColumn($startDate, $endDate));
-		$radio = new \PHPFUI\Input\RadioGroup('status', '', $parameters['status']);
-		$radio->addButton('Shipped', 'S');
-		$radio->addButton('Not Shipped', 'N');
-		$radio->addButton('Unpaid', 'U');
-		$radio->addButton('All', 'A');
+		$radio = new \PHPFUI\Input\RadioGroup('shipped', '', $parameters['shipped']);
+		$radio->addButton('Shipped', '1');
+		$radio->addButton('Not Shipped', '2');
+		$radio->addButton('Unpaid', '3');
+		$radio->addButton('All', '0');
 		$fieldSet->add($radio);
 		$form->add($fieldSet);
 		$submit = new \PHPFUI\Submit('Search');
@@ -73,7 +73,7 @@ class Search implements \Stringable
 		$defaults = [];
 		$defaults['invoiceId'] = '';
 		$defaults['name'] = '';
-		$defaults['status'] = 'A';
+		$defaults['shipped'] = '0';
 		$defaults['paypaltx'] = '';
 		$defaults['text'] = '';
 		$defaults['orderDate_through'] = '';

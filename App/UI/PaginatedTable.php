@@ -105,6 +105,15 @@ class PaginatedTable extends \PHPFUI\SortableTable
 			$this->dataTable->setLimit($this->limitNumber, $this->pageNumber);
 			}
 
+// possible pagination optimization
+//SELECT * FROM people
+//    INNER JOIN (
+//      -- Paginate the narrow subquery instead of the entire table
+//      SELECT id FROM people ORDER BY first_name, id LIMIT 10 OFFSET 450000
+//    ) AS tmp USING (id)
+//ORDER BY
+//  first_name, id
+
 		if ($this->sortColumn)
 			{
 			$this->setSortedColumnOrder($this->sortColumn, $this->sort);

@@ -6,6 +6,19 @@ class Category extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Category::class;
 
+	private array $categories = [];
+
+	public function __construct()
+		{
+		parent::__construct();
+		$sql = 'select * from category order by ordering';
+
+		foreach (\PHPFUI\ORM::getRows($sql) as $row)
+			{
+			$this->categories[$row['categoryId']] = $row;
+			}
+		}
+
 	public function changeCategory(int $from, int $to) : void
 		{
 		\App\Table\MemberCategory::changeCategory($from, $to);

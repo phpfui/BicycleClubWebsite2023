@@ -121,7 +121,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 
 			foreach ($this->dataTable->getPrimaryKeys() as $field)
 				{
-				$this->dataTable->setOrderBy($field, $this->sort);
+				$this->dataTable->addOrderBy($field, $this->sort);
 				}
 			}
 

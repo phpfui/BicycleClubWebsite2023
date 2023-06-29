@@ -122,7 +122,7 @@ class Member extends \PHPFUI\ORM\Table
 			{
 			$categories = []; // all categories requested
 			}
-		$sql = 'select m.firstName,m.lastName,m.email,m.memberId from member m left join membership s on m.membershipId=s.membershipId ';
+		$sql = 'select distinct m.firstName,m.lastName,m.email,m.memberId from member m left join membership s on m.membershipId=s.membershipId ';
 
 		if ($categories)
 			{

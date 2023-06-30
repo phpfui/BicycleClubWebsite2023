@@ -25,6 +25,9 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 
 			if ($updated && $updated->RWGPSId)
 				{
+				// datebase may store things differently, save and reload to make it consistant
+				$updated->insertOrUpdate();
+				$updated->reload();
 				// if the ride has been updated, notify call signed up riders
 				if ($original->csv != $updated->csv)
 					{
@@ -55,7 +58,6 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 						$email->bulkSend();
 						}
 					}
-				$updated->insertOrUpdate();
 				}
 			}
 

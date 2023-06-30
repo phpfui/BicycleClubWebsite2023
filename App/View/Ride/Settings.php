@@ -59,7 +59,7 @@ class Settings
 			case 'maxRidersOption':
 				if (! (int)$this->settingTable->value('RideSignupLimit'))
 					{
-					$maxRiders = new \PHPFUI\Input\Number('maxRiders', 'Rider Limit', $ride->maxRiders);
+					$maxRiders = new \PHPFUI\Input\Number('maxRiders', 'Rider Limit', $ride->maxRiders ? : (int)$this->settingTable->value('RideSignupLimitDefault'));
 					$maxRiders->addAttribute('max', (string)99)->addAttribute('min', (string)0);
 					$maxRiders->setToolTip('You can limit the number of riders, zero is unlimited riders');
 

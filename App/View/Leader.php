@@ -70,7 +70,7 @@ class Leader
 	public function getSettings(\PHPFUI\Button $backButton) : \PHPFUI\Container
 		{
 		$rideSettings = new \App\View\Ride\Settings($this->page);
-		$fields = \array_merge(['DeleteRidesPastDays', 'RideEditedWarningDays', 'unaffiliatedMessage', 'RideMinutesApart', 'RideSignupLimit',
+		$fields = \array_merge(['DeleteRidesPastDays', 'RideEditedWarningDays', 'unaffiliatedMessage', 'RideMinutesApart', 'RideSignupLimit', 'RideSignupLimitDefault',
 			'RequireRiderWaiver', 'NoLeadersOnPublicSchedule', 'AdvancePostVolunteer', 'PacePicker', 'LeaderForum', 'LeaderlessName'], $rideSettings->getFieldNames());
 		$container = new \PHPFUI\Container();
 		$submit = new \PHPFUI\Submit();
@@ -124,12 +124,22 @@ class Leader
 			$minutesApart->addAttribute('step', (string)15)->addAttribute('min', (string)0)->addAttribute('max', (string)120);
 			$minutesApart->setToolTip('The number of minutes rides must be separated that leave from the same start location. Zero is off, 30 would mandate a 1/2 hour separation of departure times.');
 			$multiColumn->add($minutesApart);
+			$multiColumn->add('&nbsp;');
+			$form->add($multiColumn);
 
+			$multiColumn = new \PHPFUI\MultiColumn();
 			$field = 'RideSignupLimit';
 			$value = (int)$settingTable->value($field);
 			$signupLimit = new \PHPFUI\Input\Number($field, 'Rider Signup Limit', $value);
 			$signupLimit->addAttribute('step', (string)1)->addAttribute('min', (string)0);
 			$signupLimit->setToolTip('This limits the number of riders that can sign up for a ride. Additional riders signing up after the ride is full will be waitlisted. Zero is no limit.');
+			$multiColumn->add($signupLimit);
+
+			$field = 'RideSignupLimitDefault';
+			$value = (int)$settingTable->value($field);
+			$signupLimit = new \PHPFUI\Input\Number($field, 'Rider Signup Limit Default', $value);
+			$signupLimit->addAttribute('step', (string)1)->addAttribute('min', (string)0);
+			$signupLimit->setToolTip('This is the default rider limit if there is no rider limit. Leaders are free to change this on each ride.');
 			$multiColumn->add($signupLimit);
 			$form->add($multiColumn);
 

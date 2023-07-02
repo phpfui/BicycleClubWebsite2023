@@ -36,6 +36,8 @@ class Member
 		'lastRenewed',
 	];
 
+	private readonly \App\Model\MembershipDues $duesModel;
+
 	private readonly \App\Table\Member $memberTable;
 
 	private readonly \App\Table\Setting $settingTable;
@@ -44,6 +46,7 @@ class Member
 		{
 		$this->memberTable = new \App\Table\Member();
 		$this->settingTable = new \App\Table\Setting();
+		$this->duesModel = new \App\Model\MembershipDues();
 		}
 
 	public function add(array $member) : int
@@ -101,7 +104,7 @@ class Member
 
 		$members = $this->memberTable->membersInMembership($member['membershipId']);
 
-		$maxMembersOnMembership = (int)$this->settingTable->value('maxMembersOnMembership');
+		$maxMembersOnMembership = (int)$this->duesModel->MaxMembersOnMembership;
 		$memberId = 0;
 
 		if (! $maxMembersOnMembership || $maxMembersOnMembership > \count($members))
@@ -385,7 +388,7 @@ class Member
 		// set membership to new expiration date
 		$member = $invoice->member;
 		$today = \App\Tools\Date::todayString();
-		$paidMembers = $this->settingTable->value('PaidMembers');
+		$paidMembers = $this->duesModel->PaidMembers;
 		$membership = new \App\Record\Membership();
 
 		switch($invoiceItem->storeItemDetailId)
@@ -434,21 +437,21 @@ class Member
 				// if family, set to unlimited members on membership
 				if ('Unlimited' == $paidMembers)
 					{
-					$membership->allowedMembers = (int)$this->settingTable->value('maxMembersOnMembership');
+					$membership->allowedMembers = (int)$this->duesModel->MaxMembersOnMembership;
 					}
 				else
 					{
 					$membership->allowedMembers = 1;
 					}
 
-				$membershipTerm = $this->settingTable->value('MembershipTerm');
+				$membershipTerm = $this->duesModel->MembershipTerm;
 
 				if ('Annual' == $membershipTerm)
 					{
 					$currentMonth = (int)\date('n');
 					$year = (int)\date('Y');
-					$startMonth = (int)$this->settingTable->value('MembershipStartMonth');
-					$graceMonth = (int)$this->settingTable->value('MembershipGraceMonth');
+					$startMonth = (int)$this->duesModel->MembershipStartMonth;
+					$graceMonth = (int)$this->duesModel->MembershipGraceMonth;
 					// no wrap over year end
 					if ($startMonth < $graceMonth)
 						{
@@ -502,7 +505,7 @@ class Member
 				// if family, set to unlimited members on membership
 				if ('Family' == $paidMembers || 'Unlimited' == $paidMembers)
 					{
-					$membership->allowedMembers = (int)$this->settingTable->value('maxMembersOnMembership');
+					$membership->allowedMembers = (int)$this->duesModel->MaxMembersOnMembership;
 					}
 				else
 					{
@@ -537,32 +540,6 @@ class Member
 	public function getFields() : array
 		{
 		return $this->memberTable->getFields();
-		}
-
-	public function getMembershipPrice(int $members, int $years = 1) : float
-		{
-		$membershipType = $this->settingTable->value('MembershipType');
-		$dues = 'Subscription' == $membershipType ? 'subscriptionDues' : 'annualDues';
-		$duesPrice = (float)$this->settingTable->value($dues);
-		$additionalDues = (float)$this->settingTable->value('additionalMemberDues');
-
-		if ($additionalDues > 0)
-			{
-			$maxMembers = (int)$this->settingTable->value('maxMembersOnMembership');
-			$paidMembers = $this->settingTable->value('PaidMembers');
-
-			if ('Family' == $paidMembers)
-				{
-				$maxMembers = 2;
-				}
-
-			if ($maxMembers > 0)
-				{
-				$members = \min($members, $maxMembers);
-				}
-			}
-
-		return ($duesPrice + ($members - 1) * $additionalDues) * $years;
 		}
 
 	public function getNewMemberInvoice(\App\Record\Member $member) : \App\Record\Invoice
@@ -967,9 +944,9 @@ class Member
 
 	private function createInvoice(\App\Record\Member $member, int $additionalMembers, int $years, float $donation = 0.0, string $dedication = '') : \App\Record\Invoice
 		{
-		$annualDues = (float)$this->settingTable->value('annualDues');
-		$additionalMemberDues = (float)$this->settingTable->value('additionalMemberDues');
-		$totalPrice = $annualDues * $years + $additionalMembers * $years * $additionalMemberDues + $donation;
+		$annualDues = $this->duesModel->getMembershipPrice(1, $years);
+		$additionalMemberDues = $this->duesModel->getAdditionalMembershipPrice($additionalMembers + 1, $years);
+		$totalPrice = $this->duesModel->getTotalMembershipPrice($additionalMembers + 1, $years);
 		$today = \App\Tools\Date::todayString();
 		$invoice = new \App\Record\Invoice();
 		$invoice->orderDate = $today;
@@ -994,7 +971,7 @@ class Member
 			$invoiceItem->title = self::MEMBERSHIP_TITLE;
 			$invoiceItem->description = '';
 			$invoiceItem->detailLine = '';
-			$invoiceItem->price = (float)$annualDues;
+			$invoiceItem->price = (float)\number_format($annualDues / $years, 2);
 			$invoiceItem->shipping = 0.0;
 			$invoiceItem->quantity = $years;
 			$invoiceItem->type = \App\Model\Cart::TYPE_MEMBERSHIP;
@@ -1002,7 +979,7 @@ class Member
 			$invoiceItem->insert();
 			}
 
-		$paidMembers = $this->settingTable->value('PaidMembers');
+		$paidMembers = $this->duesModel->PaidMembers;
 
 		if ('Unlimited' == $paidMembers)
 			{
@@ -1024,7 +1001,7 @@ class Member
 			$invoiceItem->tax = 0.0;
 
 			$invoiceItem->storeItemDetailId = self::ADDITIONAL_MEMBERSHIP;
-			$invoiceItem->price = $additionalMemberDues;
+			$invoiceItem->price = (float)\number_format($additionalMemberDues / $years, 2);
 			$invoiceItem->quantity = $additionalMembers;
 			$invoiceItem->title = self::MEMBERSHIP_ADDITIONAL_TITLE;
 			$invoiceItem->description = 'One 12 Month Membership for an additional household member';

@@ -6,7 +6,7 @@ class DeleteRecord
 	{
 	private $conditionalCallBack = null;
 
-	private readonly \PHPFUI\AJAX $delete;
+	private \PHPFUI\AJAX $delete;
 
 	private array $primaryKeys;
 

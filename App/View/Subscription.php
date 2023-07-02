@@ -20,10 +20,11 @@ class Subscription
 		$this->member = $memberTable->getMembership((int)$memberId);
 		$this->paypalModel = new \App\Model\PayPal($this->type);
 		$settingTable = new \App\Table\Setting();
-		$this->subscriptionDues = (float)$settingTable->value('subscriptionDues');
+		$duesModel = new \App\Model\MembershipDues();
+		$this->subscriptionDues = (float)$duesModel->SubscriptionDues;
 		$this->clubName = $settingTable->value('clubName');
 		$members = \App\Table\Member::membersInMembership($this->member['membershipId']);
-		$this->subscriptionDues += (\count($members) - 1) * (float)$settingTable->value('additionalMemberDues');
+		$this->subscriptionDues += (\count($members) - 1) * (float)$duesModel->AdditionalMemberDues[0];
 		}
 
 	public function populateForm(\PHPFUI\Form $form) : void

@@ -70,10 +70,11 @@ class Reservation
 			$price = 0;
 			$invoiceItem->title = \App\Model\Member::MEMBERSHIP_TITLE;
 
+			$duesModel = new \App\Model\MembershipDues();
+
 			if (\App\Table\Event::PAID_MEMBERSHIP == $event->membersOnly)
 				{
-				$memberModel = new \App\Model\Member();
-				$price = $memberModel->getMembershipPrice($attendees->count());
+				$price = $duesModel->getMembershipPrice($attendees->count());
 				}
 			$invoiceItem->description = '';
 			$invoiceItem->detailLine = \array_shift($names);
@@ -85,8 +86,7 @@ class Reservation
 			$invoiceItem->storeItemId = 1;
 			$invoiceItem->storeItemDetailId = \App\Model\Member::EVENT_MEMBERSHIP;
 			$invoiceItem->insert();
-			$settingTable = new \App\Table\Setting();
-			$maxMembers = (int)$settingTable->value('maxMembersOnMembership');
+			$maxMembers = (int)$duesModel->MaxMembersOnMembership;
 			$invoiceItem->title = \App\Model\Member::MEMBERSHIP_ADDITIONAL_TITLE;
 			$invoiceItem->price = 0.0;
 			$invoiceItem->storeItemDetailId = \App\Model\Member::EVENT_ADDITIONAL_MEMBERSHIP;
@@ -272,8 +272,8 @@ class Reservation
 
 		if (! \App\Model\Session::isSignedIn() && \App\Table\Event::PAID_MEMBERSHIP == $event->membersOnly)
 			{
-			$memberModel = new \App\Model\Member();
-			$price += (float)$memberModel->getMembershipPrice($personCount);
+			$duesModel = new \App\Model\MembershipDues();
+			$price += (float)$duesModel->getMembershipPrice($personCount);
 			}
 		$reservation->pricePaid = $price;
 		$reservation->update();

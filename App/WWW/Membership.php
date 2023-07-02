@@ -265,6 +265,16 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		}
 
+	public function dues() : void
+		{
+		if ($this->page->addHeader('Membership Dues'))
+			{
+			$duesView = new \App\View\Membership\Dues($this->page);
+
+			$this->page->addPageContent($duesView->getForm());
+			}
+		}
+
 	public function edit(\App\Record\Member $member = new \App\Record\Member()) : void
 		{
 		if ($this->page->addHeader('Edit Member') && $member->loaded())

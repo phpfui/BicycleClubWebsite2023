@@ -4,7 +4,7 @@ namespace App\View\Admin;
 
 class BikeShop
 	{
-	private readonly \PHPFUI\Input\Select $area;
+	private \PHPFUI\Input\Select $area;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{

@@ -36,42 +36,7 @@
  **/
 class PDF_Label extends FPDF
 	{
-	// Private properties
-	private $_Margin_Left = 0;          // Left margin of labels
-
-	private $_Margin_Top = 0;          // Top margin of labels
-
-	private $_X_Space = 0;          // Horizontal space between 2 labels
-
-	private $_Y_Space = 0;          // Vertical space between 2 labels
-
-	private $_X_Number = 0;          // Number of labels horizontally
-
-	private $_Y_Number = 0;          // Number of labels vertically
-
-	private $_Width = 0;          // Width of label
-
-	private $_Height = 0;          // Height of label
-
-	private $_Char_Size = 10;         // Character size
-
-	private $_Line_Height = 10;         // Default line height
-
-	private $_Metric = 'mm';       // Type of metric for labels.. Will help to calculate good values
-
-	private $_Metric_Doc = 'mm';       // Type of metric for the document
-
-	private $_Font_Name = 'helvetica';    // Name of the font
-
-	private $_Image_Filename = '';         // Set to background image
-
-	private $_Image_Width_Percent = 100;  // Image Width Percent
-
 	private $_Alignment = 'L';        // Alignment
-
-	private $_COUNTX = 1;
-
-	private $_COUNTY = 1;
 
 	// Listing of labels size
 	private $_Avery_Labels = [
@@ -93,6 +58,41 @@ class PDF_Label extends FPDF
 			'NX' => 2, 'NY' => 4, 'SpaceX' => 9.525, 'SpaceY' => 4.826, 'width' => 85.725, 'height' => 59.182,
 			'font-size' => 32],
 	];
+
+	private $_Char_Size = 10;         // Character size
+
+	private $_COUNTX = 1;
+
+	private $_COUNTY = 1;
+
+	private $_Font_Name = 'helvetica';    // Name of the font
+
+	private $_Height = 0;          // Height of label
+
+	private $_Image_Filename = '';         // Set to background image
+
+	private $_Image_Width_Percent = 100;  // Image Width Percent
+
+	private $_Line_Height = 10;         // Default line height
+
+	// Private properties
+	private $_Margin_Left = 0;          // Left margin of labels
+
+	private $_Margin_Top = 0;          // Top margin of labels
+
+	private $_Metric = 'mm';       // Type of metric for labels.. Will help to calculate good values
+
+	private $_Metric_Doc = 'mm';       // Type of metric for the document
+
+	private $_Width = 0;          // Width of label
+
+	private $_X_Number = 0;          // Number of labels horizontally
+
+	private $_X_Space = 0;          // Horizontal space between 2 labels
+
+	private $_Y_Number = 0;          // Number of labels vertically
+
+	private $_Y_Space = 0;          // Vertical space between 2 labels
 
 	// Constructor
 	public function __construct($format = '5160', $unit = 'mm', $posX = 1, $posY = 1)
@@ -144,20 +144,6 @@ class PDF_Label extends FPDF
 		$this->_COUNTX = $posX;
 		$this->_COUNTY = $posY;
 		}
-
-	public function _Set_Format($format) : void
-		{
-		$this->_Metric = $format['metric'];
-		$this->_Margin_Left = $this->_Convert_Metric($format['marginLeft'], $this->_Metric, $this->_Metric_Doc);
-		$this->_Margin_Top = $this->_Convert_Metric($format['marginTop'], $this->_Metric, $this->_Metric_Doc);
-		$this->_X_Space = $this->_Convert_Metric($format['SpaceX'], $this->_Metric, $this->_Metric_Doc);
-		$this->_Y_Space = $this->_Convert_Metric($format['SpaceY'], $this->_Metric, $this->_Metric_Doc);
-		$this->_X_Number = $format['NX'];
-		$this->_Y_Number = $format['NY'];
-		$this->_Width = $this->_Convert_Metric($format['width'], $this->_Metric, $this->_Metric_Doc);
-		$this->_Height = $this->_Convert_Metric($format['height'], $this->_Metric, $this->_Metric_Doc);
-		$this->Set_Font_Size($format['font-size']);
-		}
 	// convert units (in to mm, mm to in)
 	// $src and $dest must be 'in' or 'mm'
 
@@ -176,18 +162,6 @@ class PDF_Label extends FPDF
 
 		}
 
-	// Give the height for a char size given.
-
-	public function Set_Font_Size($pt) : void
-		{
-		if ($pt > 3)
-			{
-			$this->_Char_Size = $pt;
-			$this->_Line_Height = $this->_Get_Height_Chars($pt);
-			$this->SetFontSize($this->_Char_Size);
-			}
-		}
-
 	public function _Get_Height_Chars($pt)
 		{
 		// Array matching character sizes and line heights
@@ -195,45 +169,18 @@ class PDF_Label extends FPDF
 		return 25.4 * $pt / 72;
 		}
 
-	public function Set_Font_Name($fontname) : void
+	public function _Set_Format($format) : void
 		{
-		if ('' != $fontname)
-			{
-			$this->_Font_Name = $fontname;
-			$this->SetFont($this->_Font_Name);
-			}
-		}
-
-	// Sets the character size
-	// This changes the line height too
-
-	public function getLabelStock()
-		{
-		return $this->_Avery_Labels;
-		}
-	// Set the maximum font size possible
-	// for the given string and returns the points used
-
-	public function Set_Alignment($align) : void
-		{
-		$this->_Alignment = $align;
-		}
-
-	// Method to change font name
-
-	public function Set_Max_Font_Size($string, $maxFont)
-		{
-		$size = $maxFont;
-		$this->SetFontSize($size); // start with a large font
-
-		while ($this->GetStringWidth($string . ' ') >= $this->_Width)
-			{
-			$size -= 2;
-			$this->SetFontSize($size);
-			}
-		$this->Set_Font_Size($size);
-
-		return $size;
+		$this->_Metric = $format['metric'];
+		$this->_Margin_Left = $this->_Convert_Metric($format['marginLeft'], $this->_Metric, $this->_Metric_Doc);
+		$this->_Margin_Top = $this->_Convert_Metric($format['marginTop'], $this->_Metric, $this->_Metric_Doc);
+		$this->_X_Space = $this->_Convert_Metric($format['SpaceX'], $this->_Metric, $this->_Metric_Doc);
+		$this->_Y_Space = $this->_Convert_Metric($format['SpaceY'], $this->_Metric, $this->_Metric_Doc);
+		$this->_X_Number = $format['NX'];
+		$this->_Y_Number = $format['NY'];
+		$this->_Width = $this->_Convert_Metric($format['width'], $this->_Metric, $this->_Metric_Doc);
+		$this->_Height = $this->_Convert_Metric($format['height'], $this->_Metric, $this->_Metric_Doc);
+		$this->Set_Font_Size($format['font-size']);
 		}
 
 	// Print a label
@@ -293,9 +240,62 @@ class PDF_Label extends FPDF
 			}
 		}
 
+	// Sets the character size
+	// This changes the line height too
+
+	public function getLabelStock()
+		{
+		return $this->_Avery_Labels;
+		}
+	// Set the maximum font size possible
+	// for the given string and returns the points used
+
+	public function Set_Alignment($align) : void
+		{
+		$this->_Alignment = $align;
+		}
+
 	public function Set_Background_Image($fileName, $percentageWidth = 100) : void
 		{
 		$this->_Image_Filename = $fileName;
 		$this->_Image_Width_Percent = $percentageWidth;
+		}
+
+	public function Set_Font_Name($fontname) : void
+		{
+		if ('' != $fontname)
+			{
+			$this->_Font_Name = $fontname;
+			$this->SetFont($this->_Font_Name);
+			}
+		}
+
+	// Give the height for a char size given.
+
+	public function Set_Font_Size($pt) : void
+		{
+		if ($pt > 3)
+			{
+			$this->_Char_Size = $pt;
+			$this->_Line_Height = $this->_Get_Height_Chars($pt);
+			$this->SetFontSize($this->_Char_Size);
+			}
+		}
+
+	// Method to change font name
+
+	public function Set_Max_Font_Size($string, $maxFont)
+		{
+		$size = $maxFont;
+		$this->SetFontSize($size); // start with a large font
+
+		while ($this->GetStringWidth($string . ' ') >= $this->_Width)
+			{
+			$size -= 2;
+			$this->SetFontSize($size);
+			}
+		$this->Set_Font_Size($size);
+
+		return $size;
 		}
 	}

@@ -14,4 +14,5 @@ return $config->setFinder(PhpCsFixer\Finder::create()
 			->in(__DIR__.'/oneOffScripts')
 			->in(__DIR__.'/www')
 			->in(__DIR__.'/Tests')
+			->in(__DIR__.'/NoNameSpace')
     );

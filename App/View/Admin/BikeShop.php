@@ -4,7 +4,7 @@ namespace App\View\Admin;
 
 class BikeShop
 	{
-	private readonly \PHPFUI\Input\Select $area;
+	private readonly \PHPFUI\Input\Select $area; // @phpstan-ignore-line
 
 	public function __construct(private readonly \App\View\Page $page)
 		{

@@ -6,7 +6,7 @@
  * Date:    2015-11-29                                                          *
  * Author:  Olivier PLATHEY                                                     *
  *******************************************************************************/
-require('ttfparser.php');
+require 'ttfparser.php';
 function Message($txt, $severity = '') : void
 	{
 	if (PHP_SAPI == 'cli')
@@ -31,38 +31,38 @@ function Message($txt, $severity = '') : void
 
 function Notice($txt) : void
 	{
-	Message($txt, 'Notice');
+	\Message($txt, 'Notice');
 	}
 
 function Warning($txt) : void
 	{
-	Message($txt, 'Warning');
+	\Message($txt, 'Warning');
 	}
 
 function Error($txt) : void
 	{
-	Message($txt, 'Error');
+	\Message($txt, 'Error');
 
 	exit;
 	}
 
 function LoadMap($enc)
 	{
-	$file = __DIR__ . '/' . strtolower($enc) . '.map';
-	$a = file($file);
+	$file = __DIR__ . '/' . \strtolower($enc) . '.map';
+	$a = \file($file);
 
 	if (empty($a))
 		{
-		Error('Encoding not found: ' . $enc);
+		\Error('Encoding not found: ' . $enc);
 		}
 
-	$map = array_fill(0, 256, ['uv' => -1, 'name' => '.notdef']);
+	$map = \array_fill(0, 256, ['uv' => -1, 'name' => '.notdef']);
 
 	foreach ($a as $line)
 		{
-		$e = explode(' ', rtrim($line));
-		$c = hexdec(substr($e[0], 1));
-		$uv = hexdec(substr($e[1], 2));
+		$e = \explode(' ', \rtrim($line));
+		$c = \hexdec(\substr($e[0], 1));
+		$uv = \hexdec(\substr($e[1], 2));
 		$name = $e[2];
 		$map[$c] = ['uv' => $uv, 'name' => $name];
 		}
@@ -80,14 +80,14 @@ function GetInfoFromTrueType($file, $embed, $subset, $map)
 		}
 	catch (Exception $e)
 		{
-		Error($e->getMessage());
+		\Error($e->getMessage());
 		}
 
 	if ($embed)
 		{
 		if (! $ttf->embeddable)
 			{
-			Error('Font license does not allow embedding');
+			\Error('Font license does not allow embedding');
 			}
 
 		if ($subset)
@@ -107,10 +107,10 @@ function GetInfoFromTrueType($file, $embed, $subset, $map)
 			}
 		else
 			{
-			$info['Data'] = file_get_contents($file);
+			$info['Data'] = \file_get_contents($file);
 			}
 
-		$info['OriginalSize'] = strlen($info['Data']);
+		$info['OriginalSize'] = \strlen($info['Data']);
 		}
 
 	$k = 1000 / $ttf->unitsPerEm;
@@ -118,15 +118,15 @@ function GetInfoFromTrueType($file, $embed, $subset, $map)
 	$info['Bold'] = $ttf->bold;
 	$info['ItalicAngle'] = $ttf->italicAngle;
 	$info['IsFixedPitch'] = $ttf->isFixedPitch;
-	$info['Ascender'] = round($k * $ttf->typoAscender);
-	$info['Descender'] = round($k * $ttf->typoDescender);
-	$info['UnderlineThickness'] = round($k * $ttf->underlineThickness);
-	$info['UnderlinePosition'] = round($k * $ttf->underlinePosition);
-	$info['FontBBox'] = [round($k * $ttf->xMin), round($k * $ttf->yMin), round($k * $ttf->xMax),
-			round($k * $ttf->yMax)];
-	$info['CapHeight'] = round($k * $ttf->capHeight);
-	$info['MissingWidth'] = round($k * $ttf->glyphs[0]['w']);
-	$widths = array_fill(0, 256, $info['MissingWidth']);
+	$info['Ascender'] = \round($k * $ttf->typoAscender);
+	$info['Descender'] = \round($k * $ttf->typoDescender);
+	$info['UnderlineThickness'] = \round($k * $ttf->underlineThickness);
+	$info['UnderlinePosition'] = \round($k * $ttf->underlinePosition);
+	$info['FontBBox'] = [\round($k * $ttf->xMin), \round($k * $ttf->yMin), \round($k * $ttf->xMax),
+		\round($k * $ttf->yMax)];
+	$info['CapHeight'] = \round($k * $ttf->capHeight);
+	$info['MissingWidth'] = \round($k * $ttf->glyphs[0]['w']);
+	$widths = \array_fill(0, 256, $info['MissingWidth']);
 
 	foreach ($map as $c => $v)
 		{
@@ -136,11 +136,11 @@ function GetInfoFromTrueType($file, $embed, $subset, $map)
 				{
 				$id = $ttf->chars[$v['uv']];
 				$w = $ttf->glyphs[$id]['w'];
-				$widths[$c] = round($k * $w);
+				$widths[$c] = \round($k * $w);
 				}
 			else
 				{
-				Warning('Character ' . $v['name'] . ' is missing');
+				\Warning('Character ' . $v['name'] . ' is missing');
 				}
 			}
 		}
@@ -155,58 +155,58 @@ function GetInfoFromType1($file, $embed, $map)
 	// Return information from a Type1 font
 	if ($embed)
 		{
-		$f = fopen($file, 'rb');
+		$f = \fopen($file, 'rb');
 
 		if (! $f)
 			{
-			Error('Can\'t open font file');
+			\Error('Can\'t open font file');
 			}
 
 		// Read first segment
-		$a = unpack('Cmarker/Ctype/Vsize', fread($f, 6));
+		$a = \unpack('Cmarker/Ctype/Vsize', \fread($f, 6));
 
 		if (128 != $a['marker'])
 			{
-			Error('Font file is not a valid binary Type1');
+			\Error('Font file is not a valid binary Type1');
 			}
 
 		$size1 = $a['size'];
-		$data = fread($f, $size1);
+		$data = \fread($f, $size1);
 		// Read second segment
-		$a = unpack('Cmarker/Ctype/Vsize', fread($f, 6));
+		$a = \unpack('Cmarker/Ctype/Vsize', \fread($f, 6));
 
 		if (128 != $a['marker'])
 			{
-			Error('Font file is not a valid binary Type1');
+			\Error('Font file is not a valid binary Type1');
 			}
 
 		$size2 = $a['size'];
-		$data .= fread($f, $size2);
-		fclose($f);
+		$data .= \fread($f, $size2);
+		\fclose($f);
 		$info['Data'] = $data;
 		$info['Size1'] = $size1;
 		$info['Size2'] = $size2;
 		}
 
-	$afm = substr($file, 0, -3) . 'afm';
+	$afm = \substr($file, 0, -3) . 'afm';
 
-	if (! file_exists($afm))
+	if (! \file_exists($afm))
 		{
-		Error('AFM font file not found: ' . $afm);
+		\Error('AFM font file not found: ' . $afm);
 		}
 
-	$a = file($afm);
+	$a = \file($afm);
 
 	if (empty($a))
 		{
-		Error('AFM file empty or not readable');
+		\Error('AFM file empty or not readable');
 		}
 
 	foreach ($a as $line)
 		{
-		$e = explode(' ', rtrim($line));
+		$e = \explode(' ', \rtrim($line));
 
-		if (count($e) < 2)
+		if (\count($e) < 2)
 			{
 			continue;
 			}
@@ -267,7 +267,7 @@ function GetInfoFromType1($file, $embed, $map)
 
 	if (! isset($info['FontName']))
 		{
-		Error('FontName missing in AFM file');
+		\Error('FontName missing in AFM file');
 		}
 
 	if (! isset($info['Ascender']))
@@ -280,7 +280,7 @@ function GetInfoFromType1($file, $embed, $map)
 		$info['Descender'] = $info['FontBBox'][1];
 		}
 
-	$info['Bold'] = isset($info['Weight']) && preg_match('/bold|black/i', $info['Weight']);
+	$info['Bold'] = isset($info['Weight']) && \preg_match('/bold|black/i', $info['Weight']);
 
 	if (isset($cw['.notdef']))
 		{
@@ -291,7 +291,7 @@ function GetInfoFromType1($file, $embed, $map)
 		$info['MissingWidth'] = 0;
 		}
 
-	$widths = array_fill(0, 256, $info['MissingWidth']);
+	$widths = \array_fill(0, 256, $info['MissingWidth']);
 
 	foreach ($map as $c => $v)
 		{
@@ -303,7 +303,7 @@ function GetInfoFromType1($file, $embed, $map)
 				}
 			else
 				{
-				Warning('Character ' . $v['name'] . ' is missing');
+				\Warning('Character ' . $v['name'] . ' is missing');
 				}
 			}
 		}
@@ -377,17 +377,17 @@ function MakeWidthArray($widths)
 
 	for ($c = 0; $c <= 255; $c++)
 		{
-		if ("'" == chr($c))
+		if ("'" == \chr($c))
 			{
 			$s .= "'\\''";
 			}
-		elseif ('\\' == chr($c))
+		elseif ('\\' == \chr($c))
 			{
 			$s .= "'\\\\'";
 			}
 		elseif ($c >= 32 && $c <= 126)
 			{
-			$s .= "'" . chr($c) . "'";
+			$s .= "'" . \chr($c) . "'";
 			}
 		else
 			{
@@ -415,7 +415,7 @@ function MakeWidthArray($widths)
 function MakeFontEncoding($map)
 	{
 	// Build differences from reference encoding
-	$ref = LoadMap('cp1252');
+	$ref = \LoadMap('cp1252');
 	$s = '';
 	$last = 0;
 
@@ -433,7 +433,7 @@ function MakeFontEncoding($map)
 			}
 		}
 
-	return rtrim($s);
+	return \rtrim($s);
 	}
 
 function MakeUnicodeArray($map)
@@ -500,15 +500,15 @@ function MakeUnicodeArray($map)
 
 function SaveToFile($file, $s, $mode) : void
 	{
-	$f = fopen($file, 'w' . $mode);
+	$f = \fopen($file, 'w' . $mode);
 
 	if (! $f)
 		{
-		Error('Can\'t write to file ' . $file);
+		\Error('Can\'t write to file ' . $file);
 		}
 
-	fwrite($f, $s);
-	fclose($f);
+	\fwrite($f, $s);
+	\fclose($f);
 	}
 
 function MakeDefinitionFile($file, $type, $enc, $embed, $subset, $map, $info) : void
@@ -516,19 +516,19 @@ function MakeDefinitionFile($file, $type, $enc, $embed, $subset, $map, $info) : 
 	$s = "<?php\n";
 	$s .= '$type = \'' . $type . "';\n";
 	$s .= '$name = \'' . $info['FontName'] . "';\n";
-	$s .= '$desc = ' . MakeFontDescriptor($info) . ";\n";
+	$s .= '$desc = ' . \MakeFontDescriptor($info) . ";\n";
 	$s .= '$up = ' . $info['UnderlinePosition'] . ";\n";
 	$s .= '$ut = ' . $info['UnderlineThickness'] . ";\n";
-	$s .= '$cw = ' . MakeWidthArray($info['Widths']) . ";\n";
+	$s .= '$cw = ' . \MakeWidthArray($info['Widths']) . ";\n";
 	$s .= '$enc = \'' . $enc . "';\n";
-	$diff = MakeFontEncoding($map);
+	$diff = \MakeFontEncoding($map);
 
 	if ($diff)
 		{
 		$s .= '$diff = \'' . $diff . "';\n";
 		}
 
-	$s .= '$uv = ' . MakeUnicodeArray($map) . ";\n";
+	$s .= '$uv = ' . \MakeUnicodeArray($map) . ";\n";
 
 	if ($embed)
 		{
@@ -551,19 +551,19 @@ function MakeDefinitionFile($file, $type, $enc, $embed, $subset, $map, $info) : 
 		}
 
 	$s .= "?>\n";
-	SaveToFile($file, $s, 't');
+	\SaveToFile($file, $s, 't');
 	}
 
 function MakeFont($fontfile, $enc = 'cp1252', $embed = true, $subset = true) : void
 	{
-	ini_set('auto_detect_line_endings', '1');
+	\ini_set('auto_detect_line_endings', '1');
 
-	if (! file_exists($fontfile))
+	if (! \file_exists($fontfile))
 		{
-		Error('Font file not found: ' . $fontfile);
+		\Error('Font file not found: ' . $fontfile);
 		}
 
-	$ext = strtolower(substr($fontfile, -3));
+	$ext = \strtolower(\substr($fontfile, -3));
 
 	if ('ttf' == $ext || 'otf' == $ext)
 		{
@@ -575,51 +575,51 @@ function MakeFont($fontfile, $enc = 'cp1252', $embed = true, $subset = true) : v
 		}
 	else
 		{
-		Error('Unrecognized font file extension: ' . $ext);
+		\Error('Unrecognized font file extension: ' . $ext);
 		}
 
-	$map = LoadMap($enc);
+	$map = \LoadMap($enc);
 
 	if ('TrueType' == $type)
 		{
-		$info = GetInfoFromTrueType($fontfile, $embed, $subset, $map);
+		$info = \GetInfoFromTrueType($fontfile, $embed, $subset, $map);
 		}
 	else
 		{
-		$info = GetInfoFromType1($fontfile, $embed, $map);
+		$info = \GetInfoFromType1($fontfile, $embed, $map);
 		}
 
-	$basename = substr(basename($fontfile), 0, -4);
+	$basename = \substr(\basename($fontfile), 0, -4);
 
 	if ($embed)
 		{
-		if (function_exists('gzcompress'))
+		if (\function_exists('gzcompress'))
 			{
 			$file = $basename . '.z';
-			SaveToFile($file, gzcompress($info['Data']), 'b');
+			\SaveToFile($file, \gzcompress($info['Data']), 'b');
 			$info['File'] = $file;
-			Message('Font file compressed: ' . $file);
+			\Message('Font file compressed: ' . $file);
 			}
 		else
 			{
-			$info['File'] = basename($fontfile);
+			$info['File'] = \basename($fontfile);
 			$subset = false;
-			Notice('Font file could not be compressed (zlib extension not available)');
+			\Notice('Font file could not be compressed (zlib extension not available)');
 			}
 		}
 
-	MakeDefinitionFile($basename . '.php', $type, $enc, $embed, $subset, $map, $info);
-	Message('Font definition file generated: ' . $basename . '.php');
+	\MakeDefinitionFile($basename . '.php', $type, $enc, $embed, $subset, $map, $info);
+	\Message('Font definition file generated: ' . $basename . '.php');
 	}
 
 if (PHP_SAPI == 'cli')
 	{
 	// Command-line interface
-	ini_set('log_errors', '0');
+	\ini_set('log_errors', '0');
 
 	if (1 == $argc)
 		{
-		die("Usage: php makefont.php fontfile [encoding] [embed] [subset]\n");
+		exit("Usage: php makefont.php fontfile [encoding] [embed] [subset]\n");
 		}
 
 	$fontfile = $argv[1];
@@ -651,5 +651,5 @@ if (PHP_SAPI == 'cli')
 		$subset = true;
 		}
 
-	MakeFont($fontfile, $enc, $embed, $subset);
+	\MakeFont($fontfile, $enc, $embed, $subset);
 	}

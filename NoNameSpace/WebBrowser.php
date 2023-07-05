@@ -15,23 +15,130 @@ class WebBrowser
 		$this->SetState($prevstate);
 		}
 
-	public function ResetState() : void
+	public function DeleteCookies($domainpattern, $pathpattern, $namepattern) : void
 		{
-		$this->data = ['allowedprotocols' => ['http' => true, 'https' => true, ],
-			'allowedredirprotocols' => ['http' => true, 'https' => true, ],
-			'cookies' => [],
-			'referer' => '',
-			'autoreferer' => true,
-			'useragent' => 'firefox',
-			'followlocation' => true,
-			'maxfollow' => 20,
-			'extractforms' => false,
-			'httpopts' => [], ];
+		foreach ($this->data['cookies'] as $domain => $paths)
+			{
+			if ('' == $domainpattern || \substr($domain, -\strlen($domainpattern)) == $domainpattern)
+				{
+				foreach ($paths as $path => $cookies)
+					{
+					if ('' == $pathpattern || \substr($path, 0, \strlen($pathpattern)) == $pathpattern)
+						{
+						foreach ($cookies as $num => $info)
+							{
+							if ('' == $namepattern || false !== \strpos($info['name'], $namepattern))
+								{
+								unset($this->data['cookies'][$domain][$path][$num]);
+								}
+							}
+
+						if (! \count($this->data['cookies'][$domain][$path]))
+							{
+							unset($this->data['cookies'][$domain][$path]);
+							}
+						}
+					}
+
+				if (! \count($this->data['cookies'][$domain]))
+					{
+					unset($this->data['cookies'][$domain]);
+					}
+				}
+			}
 		}
 
-	public function SetState(array $options = []) : void
+	public function DeleteSessionCookies() : void
 		{
-		$this->data = \array_merge($this->data, $options);
+		foreach ($this->data['cookies'] as $domain => $paths)
+			{
+			foreach ($paths as $path => $cookies)
+				{
+				foreach ($cookies as $num => $info)
+					{
+					if (! isset($info['expires_ts']))
+						{
+						unset($this->data['cookies'][$domain][$path][$num]);
+						}
+					}
+
+				if (! \count($this->data['cookies'][$domain][$path]))
+					{
+					unset($this->data['cookies'][$domain][$path]);
+					}
+				}
+
+			if (! \count($this->data['cookies'][$domain]))
+				{
+				unset($this->data['cookies'][$domain]);
+				}
+			}
+		}
+
+	public function ExtractForms(string $baseurl, string $data)
+		{
+		$result = [];
+
+		if (! $this->html)
+			{
+			$this->html = new \voku\helper\HtmlDomParser($data);
+			}
+		$html5rows = $this->html->find('input[form],textarea[form],select[form],button[form],datalist[id]');
+		$rows = $this->html->find('form');
+
+		foreach ($rows as $row)
+			{
+			$info = [];
+
+			if (isset($row->id))
+				{
+				$info['id'] = \trim($row->id);
+				}
+
+			if (isset($row->name))
+				{
+				$info['name'] = (string)$row->name;
+				}
+			$info['action'] = (isset($row->action) ? HTTP::ConvertRelativeToAbsoluteURL($baseurl, (string)$row->action) : $baseurl);
+			$info['method'] = (isset($row->method) && 'post' == \strtolower(\trim($row->method)) ? 'post' : 'get');
+
+			if ('post' == $info['method'])
+				{
+				$info['enctype'] = (isset($row->enctype) ? \strtolower($row->enctype) : 'application/x-www-form-urlencoded');
+				}
+
+			if (isset($row->{'accept-charset'}))
+				{
+				$info['accept-charset'] = (string)$row->{'accept-charset'};
+				}
+			$fields = [];
+			$rows2 = $row->find('input,textarea,select,button');
+
+			foreach ($rows2 as $row2)
+				{
+				if (! isset($row2->form))
+					{
+					$fields = $this->ExtractFieldFromDOM($fields, $row2);
+					}
+				}
+			// Handle HTML5.
+			if (isset($info['id']) && '' != $info['id'])
+				{
+				foreach ($html5rows as $row2)
+					{
+					if (false !== \strpos(' ' . $info['id'] . ' ', ' ' . $row2->form . ' '))
+						{
+						$fields = $this->ExtractFieldFromDOM($fields, $row2);
+						}
+					}
+				}
+			$form = new WebBrowserForm();
+			$form->info = $info;
+			$form->fields = $fields;
+			$result[] = $form;
+			}
+
+		return $result;
 		}
 
 	public function GetState()
@@ -450,142 +557,23 @@ class WebBrowser
 		return $result;
 		}
 
-	public function ExtractForms(string $baseurl, string $data)
+	public function ResetState() : void
 		{
-		$result = [];
-
-		if (! $this->html)
-			{
-			$this->html = new \voku\helper\HtmlDomParser($data);
-			}
-		$html5rows = $this->html->find('input[form],textarea[form],select[form],button[form],datalist[id]');
-		$rows = $this->html->find('form');
-
-		foreach ($rows as $row)
-			{
-			$info = [];
-
-			if (isset($row->id))
-				{
-				$info['id'] = \trim($row->id);
-				}
-
-			if (isset($row->name))
-				{
-				$info['name'] = (string)$row->name;
-				}
-			$info['action'] = (isset($row->action) ? HTTP::ConvertRelativeToAbsoluteURL($baseurl, (string)$row->action) : $baseurl);
-			$info['method'] = (isset($row->method) && 'post' == \strtolower(\trim($row->method)) ? 'post' : 'get');
-
-			if ('post' == $info['method'])
-				{
-				$info['enctype'] = (isset($row->enctype) ? \strtolower($row->enctype) : 'application/x-www-form-urlencoded');
-				}
-
-			if (isset($row->{'accept-charset'}))
-				{
-				$info['accept-charset'] = (string)$row->{'accept-charset'};
-				}
-			$fields = [];
-			$rows2 = $row->find('input,textarea,select,button');
-
-			foreach ($rows2 as $row2)
-				{
-				if (! isset($row2->form))
-					{
-					$fields = $this->ExtractFieldFromDOM($fields, $row2);
-					}
-				}
-			// Handle HTML5.
-			if (isset($info['id']) && '' != $info['id'])
-				{
-				foreach ($html5rows as $row2)
-					{
-					if (false !== \strpos(' ' . $info['id'] . ' ', ' ' . $row2->form . ' '))
-						{
-						$fields = $this->ExtractFieldFromDOM($fields, $row2);
-						}
-					}
-				}
-			$form = new WebBrowserForm();
-			$form->info = $info;
-			$form->fields = $fields;
-			$result[] = $form;
-			}
-
-		return $result;
+		$this->data = ['allowedprotocols' => ['http' => true, 'https' => true, ],
+			'allowedredirprotocols' => ['http' => true, 'https' => true, ],
+			'cookies' => [],
+			'referer' => '',
+			'autoreferer' => true,
+			'useragent' => 'firefox',
+			'followlocation' => true,
+			'maxfollow' => 20,
+			'extractforms' => false,
+			'httpopts' => [], ];
 		}
 
-	public function DeleteSessionCookies() : void
+	public function SetState(array $options = []) : void
 		{
-		foreach ($this->data['cookies'] as $domain => $paths)
-			{
-			foreach ($paths as $path => $cookies)
-				{
-				foreach ($cookies as $num => $info)
-					{
-					if (! isset($info['expires_ts']))
-						{
-						unset($this->data['cookies'][$domain][$path][$num]);
-						}
-					}
-
-				if (! \count($this->data['cookies'][$domain][$path]))
-					{
-					unset($this->data['cookies'][$domain][$path]);
-					}
-				}
-
-			if (! \count($this->data['cookies'][$domain]))
-				{
-				unset($this->data['cookies'][$domain]);
-				}
-			}
-		}
-
-	public function DeleteCookies($domainpattern, $pathpattern, $namepattern) : void
-		{
-		foreach ($this->data['cookies'] as $domain => $paths)
-			{
-			if ('' == $domainpattern || \substr($domain, -\strlen($domainpattern)) == $domainpattern)
-				{
-				foreach ($paths as $path => $cookies)
-					{
-					if ('' == $pathpattern || \substr($path, 0, \strlen($pathpattern)) == $pathpattern)
-						{
-						foreach ($cookies as $num => $info)
-							{
-							if ('' == $namepattern || false !== \strpos($info['name'], $namepattern))
-								{
-								unset($this->data['cookies'][$domain][$path][$num]);
-								}
-							}
-
-						if (! \count($this->data['cookies'][$domain][$path]))
-							{
-							unset($this->data['cookies'][$domain][$path]);
-							}
-						}
-					}
-
-				if (! \count($this->data['cookies'][$domain]))
-					{
-					unset($this->data['cookies'][$domain]);
-					}
-				}
-			}
-		}
-
-	private function GetExpiresTimestamp(string $ts)
-		{
-		$year = (int)\substr($ts, 0, 4);
-		$month = (int)\substr($ts, 5, 2);
-		$day = (int)\substr($ts, 8, 2);
-		$hour = (int)\substr($ts, 11, 2);
-		$min = (int)\substr($ts, 14, 2);
-		$sec = (int)\substr($ts, 17, 2);
-
-		return \gmmktime($hour, $min, $sec, $month, $day, $year);
+		$this->data = \array_merge($this->data, $options);
 		}
 
 	private function ExtractFieldFromDOM(array $fields, $row) : array
@@ -682,5 +670,17 @@ class WebBrowser
 			}
 
 		return $fields;
+		}
+
+	private function GetExpiresTimestamp(string $ts)
+		{
+		$year = (int)\substr($ts, 0, 4);
+		$month = (int)\substr($ts, 5, 2);
+		$day = (int)\substr($ts, 8, 2);
+		$hour = (int)\substr($ts, 11, 2);
+		$min = (int)\substr($ts, 14, 2);
+		$sec = (int)\substr($ts, 17, 2);
+
+		return \gmmktime($hour, $min, $sec, $month, $day, $year);
 		}
 	}

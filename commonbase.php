@@ -1,29 +1,29 @@
 <?php
-date_default_timezone_set('America/New_York');
+
+\date_default_timezone_set('America/New_York');
 // allow the autoloader and db to be included from any script that needs it.
 
-if (! defined('PROJECT_ROOT'))
+if (! \defined('PROJECT_ROOT'))
 	{
-	define ('PROJECT_ROOT', __DIR__);
-	define ('PUBLIC_ROOT', __DIR__ . '/www/');
+	\define('PROJECT_ROOT', __DIR__);
+	\define('PUBLIC_ROOT', __DIR__ . '/www/');
 
 	// allow the autoloader to be included from any script that needs it.
 	function autoload(string $className) : void
 		{
-		$dir = (strpos($className, '\\') === false) ? '\\NoNameSpace\\' : '\\';
-		$path = str_replace('\\', DIRECTORY_SEPARATOR, PROJECT_ROOT . $dir . "{$className}.php");
+		$dir = (false === \strpos($className, '\\')) ? '\\NoNameSpace\\' : '\\';
+		$path = \str_replace('\\', DIRECTORY_SEPARATOR, PROJECT_ROOT . $dir . "{$className}.php");
 
-		if (file_exists($path))
+		if (\file_exists($path))
 			{
 			include_once $path;
 			}
 		}
 
-	spl_autoload_register('autoload');
+	\spl_autoload_register('autoload');
 	}
 
 // setup error logging
-error_reporting(E_ALL);
-ini_set('error_log', PROJECT_ROOT . '/error.log');
+\error_reporting(E_ALL);
+\ini_set('error_log', PROJECT_ROOT . '/error.log');
 new \App\Tools\ErrorLogging();
-

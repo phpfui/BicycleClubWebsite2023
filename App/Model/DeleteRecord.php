@@ -6,7 +6,7 @@ class DeleteRecord
 	{
 	private $conditionalCallBack = null;
 
-	private readonly \PHPFUI\AJAX $delete;
+	private readonly \PHPFUI\AJAX $delete; // @phpstan-ignore-line
 
 	private array $primaryKeys;
 

@@ -2,9 +2,9 @@
 
 class WebBrowserForm
 	{
-	public array $info = [];
-
 	public array $fields = [];
+
+	public array $info = [];
 
 	public function FindFormFields($name = false, $value = false, $type = false) : array
 		{
@@ -19,6 +19,65 @@ class WebBrowserForm
 			}
 
 		return $fields;
+		}
+
+	public function GenerateFormRequest($submitname = false, $submitvalue = false) : array
+		{
+		$method = $this->info['method'];
+		$fields = [];
+		$files = [];
+
+		foreach ($this->fields as $field)
+			{
+			if ('input.file' == $field['type'])
+				{
+				if (\is_array($field['value']))
+					{
+					$field['value']['name'] = $field['name'];
+					$files[] = $field['value'];
+					$method = 'post';
+					}
+				}
+			elseif ('input.reset' == $field['type'] || 'button.reset' == $field['type'])
+				{
+				}
+			elseif ('input.submit' == $field['type'] || 'button.submit' == $field['type'])
+				{
+				if ((false === $submitname || $field['name'] === $submitname) && (false === $submitvalue || $field['value'] === $submitvalue))
+					{
+					if (! isset($fields[$field['name']]))
+						{
+						$fields[$field['name']] = [];
+						}
+					$fields[$field['name']][] = $field['value'];
+					}
+				}
+			elseif (('input.radio' != $field['type'] && 'input.checkbox' != $field['type']) || $field['checked'])
+				{
+				if (! isset($fields[$field['name']]))
+					{
+					$fields[$field['name']] = [];
+					}
+				$fields[$field['name']][] = $field['value'];
+				}
+			}
+
+		if ('get' == $method)
+			{
+			$url = HTTP::ExtractURL($this->info['action']);
+			unset($url['query']);
+			$url['queryvars'] = $fields;
+			$result = ['url' => HTTP::CondenseURL($url),
+				'options' => [], ];
+			}
+		else
+			{
+			$result = ['url' => $this->info['action'],
+				'options' => ['postvars' => $fields,
+					'files' => $files, ], ];
+			}
+
+		return $result;
 		}
 
 	public function GetFormValue(string $name, $checkval = false, $type = false) : string
@@ -89,65 +148,6 @@ class WebBrowserForm
 				'name' => $name,
 				'value' => $value,
 				'checked' => $checked, ];
-			}
-
-		return $result;
-		}
-
-	public function GenerateFormRequest($submitname = false, $submitvalue = false) : array
-		{
-		$method = $this->info['method'];
-		$fields = [];
-		$files = [];
-
-		foreach ($this->fields as $field)
-			{
-			if ('input.file' == $field['type'])
-				{
-				if (\is_array($field['value']))
-					{
-					$field['value']['name'] = $field['name'];
-					$files[] = $field['value'];
-					$method = 'post';
-					}
-				}
-			elseif ('input.reset' == $field['type'] || 'button.reset' == $field['type'])
-				{
-				}
-			elseif ('input.submit' == $field['type'] || 'button.submit' == $field['type'])
-				{
-				if ((false === $submitname || $field['name'] === $submitname) && (false === $submitvalue || $field['value'] === $submitvalue))
-					{
-					if (! isset($fields[$field['name']]))
-						{
-						$fields[$field['name']] = [];
-						}
-					$fields[$field['name']][] = $field['value'];
-					}
-				}
-			elseif (('input.radio' != $field['type'] && 'input.checkbox' != $field['type']) || $field['checked'])
-				{
-				if (! isset($fields[$field['name']]))
-					{
-					$fields[$field['name']] = [];
-					}
-				$fields[$field['name']][] = $field['value'];
-				}
-			}
-
-		if ('get' == $method)
-			{
-			$url = HTTP::ExtractURL($this->info['action']);
-			unset($url['query']);
-			$url['queryvars'] = $fields;
-			$result = ['url' => HTTP::CondenseURL($url),
-				'options' => [], ];
-			}
-		else
-			{
-			$result = ['url' => $this->info['action'],
-				'options' => ['postvars' => $fields,
-					'files' => $files, ], ];
 			}
 
 		return $result;

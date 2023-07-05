@@ -151,7 +151,7 @@ class MembershipDues
 
 			if (\is_array($default))
 				{
-				if ('[' != $value[0])
+				if ('[' != ($value[0] ?? ''))
 					{
 					$value = [$value];
 					}

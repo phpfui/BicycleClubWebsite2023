@@ -2,7 +2,7 @@
 
 namespace App\API;
 
-class Authorize extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
+class Authorize_OAuth extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 	{
 	private \Psr\Http\Message\ServerRequestInterface $request;
 

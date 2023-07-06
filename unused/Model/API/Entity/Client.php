@@ -7,6 +7,11 @@ class Client implements \League\OAuth2\Server\Entities\ClientEntityInterface
   use \League\OAuth2\Server\Entities\Traits\ClientTrait;
   use \League\OAuth2\Server\Entities\Traits\EntityTrait;
 
+  public function setConfidential() : void
+	{
+	$this->isConfidential = false;
+	}
+
   public function setName($name) : void
 	{
 	$this->name = $name;
@@ -15,10 +20,5 @@ class Client implements \League\OAuth2\Server\Entities\ClientEntityInterface
   public function setRedirectUri($uri) : void
 	{
 	$this->redirectUri = $uri;
-	}
-
-  public function setConfidential() : void
-	{
-	$this->isConfidential = false;
 	}
   }

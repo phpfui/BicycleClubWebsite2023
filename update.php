@@ -1,6 +1,6 @@
 <?php
 
-if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+if ('WIN' === \strtoupper(\substr(PHP_OS, 0, 3)))
 	{
 	$php = 'php';
 	$composer = 'composer';
@@ -11,11 +11,11 @@ else
 	$composer = $php . ' composer.phar';
 	}
 
-exec($composer . ' self-update');
+\exec($composer . ' self-update');
 
 include 'commonbase.php';
 
-exec($composer . ' update');
+\exec($composer . ' update');
 
 // Localize files
 $updater = new ComposerUpdate();
@@ -63,23 +63,24 @@ $updater->deleteFileInNamespace('Clue\StreamFilter', 'functions_include.php');
 $updater->deleteFileInNamespace('Clue\StreamFilter', 'functions.php');
 
 // update the public files
-exec($php . ' vendor/phpfui/instadoc/install.php www/PHPFUI');
+\exec($php . ' vendor/phpfui/instadoc/install.php www/PHPFUI');
 
 $source = __DIR__ . '/vendor/phpfui/orm/translations';
 $dest = __DIR__ . '/languages/';
+
 foreach ($iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS), \RecursiveIteratorIterator::SELF_FIRST) as $item)
 	{
   if ($item->isDir())
 		{
 		$dir = $dest . $iterator->getSubPathName();
-		if (! is_dir($dir))
+
+		if (! \is_dir($dir))
 			{
-			mkdir($dir, 0777, true);
+			\mkdir($dir, 0777, true);
 			}
 		}
   else
 		{
-		copy($item, $dest . $iterator->getSubPathName());
+		\copy($item, $dest . $iterator->getSubPathName());
 		}
 	}
-

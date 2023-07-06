@@ -884,7 +884,6 @@ class PHPMailer
 	 * @access public
 	 * @param string $name Custom header name
 	 * @param string $value Header value
-	 * @return void
 	 */
 	public function addCustomHeader($name, $value = null) : void
 	{
@@ -1007,7 +1006,6 @@ class PHPMailer
 	 * @param string $encoding File encoding (see $Encoding).
 	 * @param string $type File extension (MIME) type.
 	 * @param string $disposition Disposition to use
-	 * @return void
 	 */
 	public function addStringAttachment(
 		$string,
@@ -1147,7 +1145,6 @@ class PHPMailer
 
 	/**
 	 * Clear all To recipients.
-	 * @return void
 	 */
 	public function clearAddresses() : void
 	{
@@ -1160,7 +1157,6 @@ class PHPMailer
 
 	/**
 	 * Clear all recipient types.
-	 * @return void
 	 */
 	public function clearAllRecipients() : void
 	{
@@ -1173,7 +1169,6 @@ class PHPMailer
 
 	/**
 	 * Clear all filesystem, string, and binary attachments.
-	 * @return void
 	 */
 	public function clearAttachments() : void
 	{
@@ -1182,7 +1177,6 @@ class PHPMailer
 
 	/**
 	 * Clear all BCC recipients.
-	 * @return void
 	 */
 	public function clearBCCs() : void
 	{
@@ -1195,7 +1189,6 @@ class PHPMailer
 
 	/**
 	 * Clear all CC recipients.
-	 * @return void
 	 */
 	public function clearCCs() : void
 	{
@@ -1208,7 +1201,6 @@ class PHPMailer
 
 	/**
 	 * Clear all custom headers.
-	 * @return void
 	 */
 	public function clearCustomHeaders() : void
 	{
@@ -1219,7 +1211,6 @@ class PHPMailer
 	 * Clear queued addresses of given kind.
 	 * @access protected
 	 * @param string $kind 'to', 'cc', or 'bcc'
-	 * @return void
 	 */
 	public function clearQueuedAddresses($kind) : void
 	{
@@ -1234,7 +1225,6 @@ class PHPMailer
 
 	/**
 	 * Clear all ReplyTo recipients.
-	 * @return void
 	 */
 	public function clearReplyTos() : void
 	{
@@ -1943,7 +1933,7 @@ class PHPMailer
 	public function encodeQPphp(
 		$string,
 		$line_max = 76,
-		/** @noinspection PhpUnusedParameterInspection */ 
+		/** @noinspection PhpUnusedParameterInspection */
 		$space_conv = false
 	) {
 		return $this->encodeQP($string, $line_max);
@@ -2339,7 +2329,6 @@ class PHPMailer
 	/**
 	 * Sets message type to HTML or plain.
 	 * @param bool $isHtml True for HTML mode.
-	 * @return void
 	 */
 	public function isHTML($isHtml = true) : void
 	{
@@ -2352,7 +2341,6 @@ class PHPMailer
 
 	/**
 	 * Send messages using PHP's mail() function.
-	 * @return void
 	 */
 	public function isMail() : void
 	{
@@ -2361,7 +2349,6 @@ class PHPMailer
 
 	/**
 	 * Send messages using qmail.
-	 * @return void
 	 */
 	public function isQmail() : void
 	{
@@ -2377,7 +2364,6 @@ class PHPMailer
 
 	/**
 	 * Send messages using $Sendmail.
-	 * @return void
 	 */
 	public function isSendmail() : void
 	{
@@ -2393,7 +2379,6 @@ class PHPMailer
 
 	/**
 	 * Send messages using SMTP.
-	 * @return void
 	 */
 	public function isSMTP() : void
 	{
@@ -3008,7 +2993,6 @@ class PHPMailer
 	 * You should only do this to plain-text bodies as wrapping HTML tags may break them.
 	 * This is called automatically by createBody(), so you don't need to call it yourself.
 	 * @access public
-	 * @return void
 	 */
 	public function setWordWrap() : void
 	{
@@ -3050,7 +3034,6 @@ class PHPMailer
 
 	/**
 	 * Close the active SMTP session if one exists.
-	 * @return void
 	 */
 	public function smtpClose() : void
 	{
@@ -4082,7 +4065,6 @@ class PHPMailer
 	 * Add an error message to the error container.
 	 * @access protected
 	 * @param string $msg
-	 * @return void
 	 */
 	protected function setError($msg) : void
 	{
@@ -4114,7 +4096,6 @@ class PHPMailer
 	 * Set the message type.
 	 * PHPMailer only supports some preset message types, not arbitrary MIME structures.
 	 * @access protected
-	 * @return void
 	 */
 	protected function setMessageType() : void
 	{

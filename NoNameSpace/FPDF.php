@@ -63,10 +63,6 @@ protected $FontSizePt;         // current font size in points
 
 protected $FontStyle;          // current font style
 
-protected $h;              // dimensions of current page in user unit
-
-protected $hPt;          // dimensions of current page in points
-
 protected $iconv;              // whether iconv is available
 
 protected $images;             // array of used images
@@ -119,9 +115,13 @@ protected $underline;          // underlining flag
 
 protected $w;
 
+protected $h;              // dimensions of current page in user unit
+
 protected $WithAlpha;          // indicates whether alpha channel is used
 
 protected $wPt;
+
+protected $hPt;          // dimensions of current page in points
 
 protected $ws;                 // word spacing
 
@@ -164,16 +164,9 @@ public function __construct($orientation = 'P', $unit = 'mm', $size = 'A4')
 	$this->iconv = \function_exists('iconv');
 	// Font path
 	if(\defined('FPDF_FONTPATH'))
-	{
 		$this->fontpath = FPDF_FONTPATH;
-
-		if('/' != \substr($this->fontpath, -1) && '\\' != \substr($this->fontpath, -1))
-			$this->fontpath .= '/';
-	}
-	elseif(\is_dir(__DIR__ . '/font'))
-		$this->fontpath = __DIR__ . '/font/';
 	else
-		$this->fontpath = '';
+		$this->fontpath = __DIR__ . '/font/';
 	// Core fonts
 	$this->CoreFonts = ['courier', 'helvetica', 'times', 'symbol', 'zapfdingbats'];
 	// Scale factor

@@ -7,6 +7,28 @@ class RefreshToken implements \League\OAuth2\Server\Repositories\RefreshTokenRep
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getNewRefreshToken()
+		{
+		\App\Tools\Logger::get()->debug(__METHOD__);
+
+		return new \App\Model\API\Entity\RefreshToken();
+		}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isRefreshTokenRevoked($tokenId) : bool
+		{
+		\App\Tools\Logger::get()->debug(__METHOD__);
+		$oauthToken = new \App\Record\OauthToken();
+		$oauthToken->read(['token' => $tokenId]);
+
+		return ! $oauthToken->loaded();
+		}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function persistNewRefreshToken(\League\OAuth2\Server\Entities\RefreshTokenEntityInterface $refreshToken) : void
 		{
 		\App\Tools\Logger::get()->debug(__METHOD__);
@@ -32,27 +54,5 @@ class RefreshToken implements \League\OAuth2\Server\Repositories\RefreshTokenRep
 			{
 			$oauthToken->delete();
 			}
-		}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isRefreshTokenRevoked($tokenId) : bool
-		{
-		\App\Tools\Logger::get()->debug(__METHOD__);
-		$oauthToken = new \App\Record\OauthToken();
-		$oauthToken->read(['token' => $tokenId]);
-
-		return ! $oauthToken->loaded();
-		}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getNewRefreshToken()
-		{
-		\App\Tools\Logger::get()->debug(__METHOD__);
-
-		return new \App\Model\API\Entity\RefreshToken();
 		}
 	}

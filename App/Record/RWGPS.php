@@ -12,6 +12,7 @@ class RWGPS extends \App\Record\Definition\RWGPS
 	protected static array $virtualFields = [
 		'alternateRoutes' => [\PHPFUI\ORM\Children::class, \App\Table\RWGPSAlternate::class],
 		'comments' => [\PHPFUI\ORM\Children::class, \App\Table\RWGPSComment::class, 'lastEdited', 'desc'],
+		'ratings' => [\PHPFUI\ORM\Children::class, \App\Table\RWGPSRating::class],
 	];
 
 	public function clean() : static

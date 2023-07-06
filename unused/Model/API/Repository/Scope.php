@@ -7,16 +7,16 @@ class Scope implements \League\OAuth2\Server\Repositories\ScopeRepositoryInterfa
   /**
    * {@inheritDoc}
    */
-  public function getScopeEntityByIdentifier($scopeIdentifier) : ?\League\OAuth2\Server\Entities\ScopeEntityInterface
-		{
-		return null;
+  public function finalizeScopes(array $scopes, $grantType, \League\OAuth2\Server\Entities\ClientEntityInterface $clientEntity, $userIdentifier = null) : array
+	  {
+		return [];
 		}
 
   /**
    * {@inheritDoc}
    */
-  public function finalizeScopes(array $scopes, $grantType, \League\OAuth2\Server\Entities\ClientEntityInterface $clientEntity, $userIdentifier = null) : array
-	  {
-		return [];
+  public function getScopeEntityByIdentifier($scopeIdentifier) : ?\League\OAuth2\Server\Entities\ScopeEntityInterface
+		{
+		return null;
 		}
 	}

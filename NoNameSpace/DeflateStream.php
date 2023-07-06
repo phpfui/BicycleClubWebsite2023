@@ -4,19 +4,19 @@
 	// (C) 2013 CubicleSoft.  All Rights Reserved.
 	class DeflateStream
 	{
-		private $open;
-
-		private $fp;
+		private $compress;
 
 		private $filter;
 
-		private $compress;
+		private $fp;
 
 		private $indata;
 
-		private $outdata;
+		private $open;
 
 		private $options;
+
+		private $outdata;
 
 		private static $supported;
 

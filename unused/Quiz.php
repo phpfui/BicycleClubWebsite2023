@@ -8,11 +8,6 @@ class Quiz
 		{
 		}
 
-	public function getQuiz(int $page) : \PHPFUI\Container
-		{
-		return new \PHPFUI\Container();
-		}
-
 	public function bikeQuestions(array $data) : \PHPFUI\HTML5Element
 		{
 		$fieldSet = new \PHPFUI\FieldSet('Your Bike(s)');
@@ -28,6 +23,24 @@ class Quiz
 		$fieldSet->add($this->getRadioGroup('pedals', 'Pedal Type', ['Clipless', 'Toe Clips', 'Platform', ], $data));
 		$fieldSet->add($this->getRange('gears', 'Number of Cogs on Cassette', 13, 5, $data));
 		$fieldSet->add($this->getRange('year', 'Year Bike Manufactured', \date('Y'), 1970, $data));
+
+		return $fieldSet;
+		}
+
+	public function cyclingQuestions(array $data) : \PHPFUI\HTML5Element
+		{
+		$fieldSet = new \PHPFUI\FieldSet('Your Cycling Experience');
+		$fieldSet->add('Please answer these questions about your cycling experiences.  Check all that apply.');
+
+		$yearsRiding = $this->getNumber('yearsRiding', 'Number of years riding as an adult', $data, 60);
+		$longestRide = $this->getNumber('longestRide', 'Longest Ride One Day Ride (in miles)', $data, 200);
+		$monthlyRides = $this->getNumber('monthlyRides', 'Rides you do per month (0 for less than 12 a year)', $data, 30);
+		$fieldSet->add(new \PHPFUI\MultiColumn($yearsRiding, $longestRide, $monthlyRides));
+		$fieldSet->add($this->checkBox('otherClub', 'Ridden with another cycling club', $data));
+		$fieldSet->add($this->checkBox('training', 'Ridden on a regular training ride', $data));
+		$fieldSet->add($this->checkBox('paceLine', 'Ride pace lines regularly', $data));
+		$fieldSet->add($this->checkBox('peloton', 'Ridden in a cycling peloton (not the stationary bike)', $data));
+		$fieldSet->add($this->checkBox('cat4Racer', 'Cat 4 Bicycle Racer or better', $data));
 
 		return $fieldSet;
 		}
@@ -52,22 +65,9 @@ class Quiz
 		return $fieldSet;
 		}
 
-	public function cyclingQuestions(array $data) : \PHPFUI\HTML5Element
+	public function getQuiz(int $page) : \PHPFUI\Container
 		{
-		$fieldSet = new \PHPFUI\FieldSet('Your Cycling Experience');
-		$fieldSet->add('Please answer these questions about your cycling experiences.  Check all that apply.');
-
-		$yearsRiding = $this->getNumber('yearsRiding', 'Number of years riding as an adult', $data, 60);
-		$longestRide = $this->getNumber('longestRide', 'Longest Ride One Day Ride (in miles)', $data, 200);
-		$monthlyRides = $this->getNumber('monthlyRides', 'Rides you do per month (0 for less than 12 a year)', $data, 30);
-		$fieldSet->add(new \PHPFUI\MultiColumn($yearsRiding, $longestRide, $monthlyRides));
-		$fieldSet->add($this->checkBox('otherClub', 'Ridden with another cycling club', $data));
-		$fieldSet->add($this->checkBox('training', 'Ridden on a regular training ride', $data));
-		$fieldSet->add($this->checkBox('paceLine', 'Ride pace lines regularly', $data));
-		$fieldSet->add($this->checkBox('peloton', 'Ridden in a cycling peloton (not the stationary bike)', $data));
-		$fieldSet->add($this->checkBox('cat4Racer', 'Cat 4 Bicycle Racer or better', $data));
-
-		return $fieldSet;
+		return new \PHPFUI\Container();
 		}
 
 	public function personalQuestions(array $data) : \PHPFUI\HTML5Element
@@ -82,6 +82,11 @@ class Quiz
 		return $fieldSet;
 		}
 
+	private function checkBox(string $field, string $label, array $data) : \PHPFUI\Input\CheckBox
+		{
+		return new \PHPFUI\Input\CheckBox($field, $label, $data[$field]);
+		}
+
 	private function getNumber(string $field, string $label, array $data, int $max = 0) : \PHPFUI\Input\Number
 		{
 		$count = new \PHPFUI\Input\Number($field, $label, $data[$field]);
@@ -94,19 +99,6 @@ class Quiz
 			}
 
 		return $count;
-		}
-
-	private function getRange(string $field, string $label, int $max, int $min, array $data) : \PHPFUI\Input\Select
-		{
-		$select = new \PHPFUI\Input\Select($field, $label);
-		$select->addOption('No Idea', 0);
-
-		while ($max >= $min)
-			{
-			$select->addOption($max--);
-			}
-
-		return $select;
 		}
 
 	private function getRadioGroup(string $field, string $label, array $options, array $data) : \PHPFUI\Input\RadioGroup
@@ -131,8 +123,16 @@ class Quiz
 		return $radioGroup;
 		}
 
-	private function checkBox(string $field, string $label, array $data) : \PHPFUI\Input\CheckBox
+	private function getRange(string $field, string $label, int $max, int $min, array $data) : \PHPFUI\Input\Select
 		{
-		return new \PHPFUI\Input\CheckBox($field, $label, $data[$field]);
+		$select = new \PHPFUI\Input\Select($field, $label);
+		$select->addOption('No Idea', 0);
+
+		while ($max >= $min)
+			{
+			$select->addOption($max--);
+			}
+
+		return $select;
 		}
 	}

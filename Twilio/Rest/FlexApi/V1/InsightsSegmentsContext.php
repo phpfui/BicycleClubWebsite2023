@@ -14,75 +14,73 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class InsightsSegmentsContext extends InstanceContext
-    {
-    /**
-     * Initialize the InsightsSegmentsContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $segmentId To unique id of the segment
-     */
-    public function __construct(
-        Version $version,
-        $segmentId
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the InsightsSegmentsContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $segmentId To unique id of the segment
+	 */
+	public function __construct(
+		Version $version,
+		$segmentId
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'segmentId' =>
-            $segmentId,
-        ];
+		// Path Solution
+		$this->solution = [
+			'segmentId' => $segmentId,
+		];
 
-        $this->uri = '/Insights/Segments/' . \rawurlencode($segmentId)
-        .'';
-    }
+		$this->uri = '/Insights/Segments/' . \rawurlencode($segmentId)
+		. '';
+	}
 
-    /**
-     * Fetch the InsightsSegmentsInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return InsightsSegmentsInstance Fetched InsightsSegmentsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(array $options = []): InsightsSegmentsInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $headers = Values::of(['Token' => $options['token']]);
+		return '[Twilio.FlexApi.V1.InsightsSegmentsContext ' . \implode(' ', $context) . ']';
+	}
 
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+	/**
+	 * Fetch the InsightsSegmentsInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return InsightsSegmentsInstance Fetched InsightsSegmentsInstance
+	 */
+	public function fetch(array $options = []) : InsightsSegmentsInstance
+	{
 
-        return new InsightsSegmentsInstance(
-            $this->version,
-            $payload,
-            $this->solution['segmentId']
-        );
-    }
+		$options = new Values($options);
 
+		$headers = Values::of(['Token' => $options['token']]);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.FlexApi.V1.InsightsSegmentsContext ' . \implode(' ', $context) . ']';
-    }
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new InsightsSegmentsInstance(
+			$this->version,
+			$payload,
+			$this->solution['segmentId']
+		);
+	}
 }

@@ -457,7 +457,6 @@ class SMTP
 	 *
 	 * @see quit()
 	 * @access public
-	 * @return void
 	 */
 	public function close() : void
 		{
@@ -1108,7 +1107,6 @@ class SMTP
 	 * @param string $str Debug string to output
 	 * @param int $level The debug level of this message; see DEBUG_* constants
 	 *
-	 * @return void
 	 */
 	protected function edebug($str, $level = 0) : void
 		{

@@ -35,13 +35,13 @@ class ttfparser
 
 	public $unitsPerEm;
 
-	public $xMin;
-
-	public $yMin;
-
 	public $xMax;
 
+	public $xMin;
+
 	public $yMax;
+
+	public $yMin;
 
 	protected $f;
 

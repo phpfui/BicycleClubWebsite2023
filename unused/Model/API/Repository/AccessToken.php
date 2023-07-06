@@ -7,6 +7,34 @@ class AccessToken implements \League\OAuth2\Server\Repositories\AccessTokenRepos
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getNewToken(\League\OAuth2\Server\Entities\ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
+		{
+		$accessToken = new \App\Model\API\Entity\AccessToken();
+		$accessToken->setClient($clientEntity);
+
+		foreach ($scopes as $scope)
+			{
+			$accessToken->addScope($scope);
+			}
+		$accessToken->setUserIdentifier($userIdentifier);
+
+		return $accessToken;
+		}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isAccessTokenRevoked($tokenId) : bool
+		{
+		$oauthToken = new \App\Record\OauthToken();
+		$oauthToken->read(['token' => $tokenId]);
+
+		return ! $oauthToken->loaded();
+		}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function persistNewAccessToken(\League\OAuth2\Server\Entities\AccessTokenEntityInterface $accessToken) : void
 		{
 		// Some logic here to save the access token to a database
@@ -33,33 +61,5 @@ class AccessToken implements \League\OAuth2\Server\Repositories\AccessTokenRepos
 			{
 			$oauthToken->delete();
 			}
-		}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isAccessTokenRevoked($tokenId) : bool
-		{
-		$oauthToken = new \App\Record\OauthToken();
-		$oauthToken->read(['token' => $tokenId]);
-
-		return ! $oauthToken->loaded();
-		}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getNewToken(\League\OAuth2\Server\Entities\ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
-		{
-		$accessToken = new \App\Model\API\Entity\AccessToken();
-		$accessToken->setClient($clientEntity);
-
-		foreach ($scopes as $scope)
-			{
-			$accessToken->addScope($scope);
-			}
-		$accessToken->setUserIdentifier($userIdentifier);
-
-		return $accessToken;
 		}
 	}

@@ -4,9 +4,9 @@ namespace App\WWW;
 
 class ZoHo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
-	private \App\Table\Setting $settingTable;
-
 	private \Asad\OAuth2\Client\Provider\Zoho $provider;
+
+	private \App\Table\Setting $settingTable;
 
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{
@@ -19,6 +19,30 @@ class ZoHo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			'clientId' => $zoho->clientId,    // The client ID assigned to you by the provider
 			'clientSecret' => $zoho->clientSecret,    // The client password assigned to you by the provider
 			'redirectUri' => $zoho->redirectUri]);
+		}
+
+	public function getToken() : void
+		{
+		if (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state']))
+			{
+			unset($_SESSION['oauth2state']);
+			$this->page->addPageContent(new \PHPFUI\SubHeader('Invalid state'));
+
+			return;
+			}
+
+		// Try to get an access token (using the authorization code grant)
+		$token = $this->provider->getAccessToken('authorization_code', ['code' => $_GET['code']]);
+		$this->saveToken($token);
+		}
+
+	public function refreshToken() : void
+		{
+		$grant = new \League\OAuth2\Client\Grant\RefreshToken();
+		$refreshToken = $this->settingTable->value('zohoRefreshToken');
+		$token = $this->provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
+		$this->page->addPageContent(new \PHPFUI\Debug($token));
+		$this->saveToken($token);
 		}
 
 	public function requestToken() : void
@@ -39,15 +63,6 @@ class ZoHo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		exit;
 		}
 
-	public function refreshToken() : void
-		{
-		$grant = new \League\OAuth2\Client\Grant\RefreshToken();
-		$refreshToken = $this->settingTable->value('zohoRefreshToken');
-		$token = $this->provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
-		$this->page->addPageContent(new \PHPFUI\Debug($token));
-		$this->saveToken($token);
-		}
-
 	public function status() : void
 		{
 		$this->page->addPageContent(new \PHPFUI\SubHeader('Token'));
@@ -55,21 +70,6 @@ class ZoHo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->page->addPageContent(new \PHPFUI\SubHeader('Refresh Token'));
 		$this->page->addPageContent($this->settingTable->value('zohoRefreshToken'));
 	}
-
-	public function getToken() : void
-		{
-		if (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state']))
-			{
-			unset($_SESSION['oauth2state']);
-			$this->page->addPageContent(new \PHPFUI\SubHeader('Invalid state'));
-
-			return;
-			}
-
-		// Try to get an access token (using the authorization code grant)
-		$token = $this->provider->getAccessToken('authorization_code', ['code' => $_GET['code']]);
-		$this->saveToken($token);
-		}
 
 	private function saveToken(\League\OAuth2\Client\Token\AccessTokenInterface $token) : void
 		{

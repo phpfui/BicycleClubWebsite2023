@@ -60,6 +60,6 @@ class RWGPSPicker
 			return '';
 			}
 
-		return ($RWGPS->title ?? 'No Name') . ' - ' . \number_format($RWGPS->mileage ?? 0, 1) . ' Miles';
+		return ($RWGPS->title ?? 'No Name') . ' - ' . \number_format($RWGPS->miles ?? 0, 1) . ' Miles';
 		}
 	}

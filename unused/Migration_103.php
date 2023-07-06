@@ -4,7 +4,6 @@ namespace App\DB\Migration;
 
 class Migration_103 extends \PHPFUI\ORM\Migration
 	{
-
 	public function description() : string
 		{
 		return 'Add foreign keys';

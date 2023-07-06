@@ -155,10 +155,9 @@ trait PageTrait
 
 	public function Store()
 		{
-		$storeApp = new \App\WWW\Store($this->getController());
 		$storeView = new \App\View\Store($this);
 
-		return $storeView->shop($storeApp->getCartModel());
+		return $storeView->shop(new \App\Model\Cart());
 		}
 
 	public function UpcomingClubEvents()

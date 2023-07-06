@@ -512,7 +512,7 @@ class Member
 			return new \PHPFUI\Header($noMembers, 5);
 			}
 		$delete = new \PHPFUI\AJAX('deleteMember', 'Permanently delete this member?');
-		$delete->addFunction('success', '$("#member-"+data.response).css("background-color","red").hide("fast")');
+		$delete->addFunction('success', '$("#member-"+data.response).css("background-color","red").hide("fast").remove()');
 		$columns = [];
 		$columns[] = $this->makeColumn(4, 'memberName', 'Name');
 		$columns[] = $this->makeColumn(3, 'address', 'Address', 'showNoStreet');
@@ -768,7 +768,7 @@ class Member
 
 		if ($this->page->isAuthorized('Edit Volunteer Points'))
 			{
-			$points = new \PHPFUI\Input\Number('leaderPoints', 'Volunteer Points', $member->leaderPoints ?? 0);
+			$points = new \PHPFUI\Input\Number('volunteerPoints', 'Volunteer Points', $member->volunteerPoints ?? 0);
 			$points->addAttribute('max', (string)9999)->addAttribute('min', (string)0);
 			$points->setToolTip('You can change the number of volunteer points if you need to override the system calculation');
 			$multiColumn->add($points);
@@ -884,7 +884,7 @@ class Member
 		$table = new \PHPFUI\Table();
 		$table->setRecordId($id = 'additionalEmailId');
 		$delete = new \PHPFUI\AJAX('deleteEmail', 'Are you sure you want to delete this email address?');
-		$delete->addFunction('success', '$("#' . $id . '-"+data.response).css("background-color","red").hide("slow")');
+		$delete->addFunction('success', '$("#' . $id . '-"+data.response).css("background-color","red").hide("fast").remove()');
 		$this->page->addJavaScript($delete->getPageJS());
 		$additionalEmailTable = new \App\Table\AdditionalEmail();
 		$additionalEmailTable->setWhere(new \PHPFUI\ORM\Condition('memberId', $member->memberId));
@@ -927,7 +927,7 @@ class Member
 		$memberFieldSet = new \PHPFUI\Container();
 
 		$link = new \PHPFUI\Link("/Volunteer/myPoints/{$member->memberId}", 'Available Volunteer Points', false);
-		$points = new \App\UI\Display($link, $member->leaderPoints ?? 0);
+		$points = new \App\UI\Display($link, $member->volunteerPoints ?? 0);
 		$points->setToolTip('You can redeem these point in the store.  Volunteer points will automatically be applied to eligible items on checkout.');
 		$memberFieldSet->add($points);
 
@@ -1008,7 +1008,7 @@ class Member
 		if ($photo)
 			{
 			$delete = new \PHPFUI\AJAX('deleteImage', 'Delete this photo?');
-			$delete->addFunction('success', '$("#"+data.response).css("background-color","red").hide("fast")');
+			$delete->addFunction('success', '$("#"+data.response).css("background-color","red").hide("fast").remove()');
 			$this->page->addJavaScript($delete->getPageJS());
 			$currentFieldSet->add($photo);
 
@@ -1267,7 +1267,7 @@ class Member
 
 			if (! $this->page->isAuthorized('Edit Volunteer Points'))
 				{
-				unset($_POST['leaderPoints']);
+				unset($_POST['volunteerPoints']);
 				}
 
 			if (! $this->page->isAuthorized('Edit Member Deceased'))

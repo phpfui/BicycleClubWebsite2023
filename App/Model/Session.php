@@ -48,6 +48,24 @@ class Session extends \PHPFUI\Session
 			}
 		}
 
+	/**
+	 * @return array<\App\Record\CartItem>
+	 */
+	public static function getCartItems() : array
+		{
+		$post = $_SESSION['cartItems'] ?? [];
+		$items = [];
+
+		foreach ($post as $item)
+			 {
+			 $cartItem = new \App\Record\CartItem();
+			 $cartItem->setFrom($item);
+			 $items[] = $cartItem;
+			 }
+
+		return $items;
+		}
+
 	public static function getCustomerNumber() : int
 		{
 		return $_SESSION['customerNumber'] ?? 0;
@@ -117,6 +135,28 @@ class Session extends \PHPFUI\Session
 			$_SESSION['membershipId'] = $member->membershipId;
 			$_SESSION['acceptedWaiver'] = $member->acceptedWaiver;
 			$_SESSION['expires'] = $member->membership->expires;
+			}
+		}
+
+	/**
+	 * @param array<\App\Record\CartItem> $cartItems
+	 */
+	public static function saveCartItems(array $cartItems) : void
+		{
+		$items = [];
+
+		foreach ($cartItems as $cartItem)
+			{
+			$items[] = $cartItem->toArray();
+			}
+
+		if ($items)
+			{
+			$_SESSION['cartItems'] = $items;
+			}
+		else
+			{
+			unset($_SESSION['cartItems']);
 			}
 		}
 

@@ -384,7 +384,7 @@ class Member extends \PHPFUI\ORM\Table
 
 	public static function outstandingPoints(string $sort) : iterable
 		{
-		$sql = 'select * from member where leaderPoints>0 order by ' . $sort;
+		$sql = 'select * from member where volunteerPoints>0 order by ' . $sort;
 
 		return \PHPFUI\ORM::getArrayCursor($sql);
 		}
@@ -398,7 +398,7 @@ class Member extends \PHPFUI\ORM\Table
 
 	public function updatePointDifference(int $memberId, int $difference) : bool
 		{
-		$sql = 'update member set leaderPoints=leaderPoints+? where memberId=?';
+		$sql = 'update member set volunteerPoints=volunteerPoints+? where memberId=?';
 
 		return \PHPFUI\ORM::execute($sql, [$difference, $memberId]);
 		}

@@ -244,7 +244,7 @@ class Cart
 		if (\count($invoiceTable))
 			{
 			$column->add(new \PHPFUI\Header('But you have unpaid invoices, so take a look at those', 5));
-			$buttonGroup->addButton(new \PHPFUI\Button('Unpaid Invoices', '/Store/myUnpaid'));
+			$buttonGroup->addButton(new \PHPFUI\Button('Unpaid Invoices', '/Store/Invoice/myUnpaid'));
 			}
 		$shop = new \PHPFUI\Button('Continue Shopping', '/Store/shop');
 		$shop->addClass('info');

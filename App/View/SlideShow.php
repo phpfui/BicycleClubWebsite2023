@@ -132,7 +132,7 @@ class SlideShow
 		$slideTable->addOrderBy('sequence');
 		$table = new \PHPFUI\Table();
 		$delete = new \PHPFUI\AJAX('deleteSlide', 'Permanently delete this slide?');
-		$delete->addFunction('success', "$('#{$recordIndex}-'+data.response).css('background-color','red').hide('fast');");
+		$delete->addFunction('success', "$('#{$recordIndex}-'+data.response).css('background-color','red').hide('fast').remove();");
 		$this->page->addJavaScript($delete->getPageJS());
 
 		foreach ($slideTable->getRecordCursor() as $slide)

@@ -240,7 +240,7 @@ class Forum
 		if ($deleteId)
 			{
 			$delete = new \PHPFUI\AJAX('deleteMessage', 'Permanently delete this message?');
-			$delete->addFunction('success', '$("#"+data.response).css("background-color","red").hide("fast")');
+			$delete->addFunction('success', '$("#"+data.response).css("background-color","red").hide("fast").remove()');
 			$this->page->addJavaScript($delete->getPageJS());
 			$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
 			$icon->addAttribute('onclick', $delete->execute(['forumMessageId' => $message->forumMessageId, 'deleteId' => '"' . $deleteId . '"']));
@@ -338,7 +338,7 @@ class Forum
 		$view->setSortDirection('d');
 
 		$delete = new \PHPFUI\AJAX('deleteMessage', 'Permanently delete this message?');
-		$delete->addFunction('success', '$("#' . $recordId . '-"+data.response).css("background-color","red").hide("slow")');
+		$delete->addFunction('success', '$("#' . $recordId . '-"+data.response).css("background-color","red").hide("slow").remove()');
 		$this->page->addJavaScript($delete->getPageJS());
 
 		$view->addCustomColumn('title', static fn (array $message) => new \PHPFUI\Link("/Forums/post/{$message['forumId']}/{$message['forumMessageId']}", $message['title'] ?? '', false));
@@ -459,7 +459,7 @@ class Forum
 			$table = new \PHPFUI\Table();
 			$table->setRecordId('forumId');
 			$delete = new \PHPFUI\AJAX('deleteForum', 'Permanently delete this forum?');
-			$delete->addFunction('success', '$("#forumId-"+data.response).css("background-color","red").hide("fast")');
+			$delete->addFunction('success', '$("#forumId-"+data.response).css("background-color","red").hide("fast").remove()');
 			$this->page->addJavaScript($delete->getPageJS());
 			$table->setHeaders(['name' => 'Forum Name',
 				'email' => 'email Address',

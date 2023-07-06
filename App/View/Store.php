@@ -169,7 +169,7 @@ class Store
 
 	public function item(\App\Record\StoreItem $storeItem) : \PHPFUI\Form | \PHPFUI\SubHeader
 		{
-		if ($storeItem->empty() || ! $storeItem->active || ((\App\Model\Session::getSignedInMember()['leaderPoints'] ?? 0) <= 0 && $storeItem->pointsOnly))
+		if ($storeItem->empty() || ! $storeItem->active || ((\App\Model\Session::getSignedInMember()['volunteerPoints'] ?? 0) <= 0 && $storeItem->pointsOnly))
 			{
 			return new \PHPFUI\SubHeader('Item Not Found');
 			}
@@ -273,7 +273,7 @@ class Store
 			}
 		else
 			{
-			$items = \App\Table\StoreItem::byTitle(\App\Model\Session::getSignedInMember()['leaderPoints'] ?? 0, true);
+			$items = \App\Table\StoreItem::byTitle(\App\Model\Session::getSignedInMember()['volunteerPoints'] ?? 0, true);
 			$cartView = new \App\View\Store\Cart($this->page, $cart);
 			$container->add($cartView->status());
 			$container->add(new \PHPFUI\Header('Shop'));

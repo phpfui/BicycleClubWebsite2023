@@ -220,7 +220,7 @@ class Volunteer
 				{
 				$pointHistory = new \App\Record\PointHistory();
 				$pointHistory->memberId = $memberId;
-				$pointHistory->leaderPoints = $points;
+				$pointHistory->volunteerPoints = $points;
 				$pointHistory->insert();
 				$memberTable->updatePointDifference($memberId, $points);
 				}

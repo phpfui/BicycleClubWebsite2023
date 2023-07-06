@@ -44,12 +44,14 @@ class Cart
 
 	private int $volunteerPoints = 0;
 
-	public function __construct()
+	public function __construct(string $zip = '')
 		{
 		$this->customerModel = new \App\Model\Customer();
 		$this->memberId = $this->customerModel->getNumber();
 		$this->discountCode = new \App\Record\DiscountCode();
 		$this->zero();
+		$zipTax = new \App\Table\Ziptax();
+		$this->taxRate = $zipTax->getTaxRateForZip($zip);
 		}
 
 	public function addFromStore(array $request) : void
@@ -211,10 +213,8 @@ class Cart
 		return $returnValue && $cartItems;
 		}
 
-	public function compute(float $taxRate, int $availablePoints = 0) : void
+	public function compute(int $availablePoints = 0) : void
 		{
-		$this->taxRate = $taxRate;
-
 		if (! $this->computed)
 			{
 			$this->volunteerPoints = $availablePoints;
@@ -228,7 +228,16 @@ class Cart
 				if (! empty($cartItem['quantity']))
 					{
 					$itemCount[$cartItem['storeItemId'] . '-' . ($cartItem['storeItemDetailId'] ?? 0)] = $cartItem['quantity'];
-					$value = $taxableValue = (float)($cartItem['price'] * $cartItem['quantity']);
+					$value = (float)($cartItem['price'] * $cartItem['quantity']);
+
+					$price = (float)$cartItem['price'];
+					// NYS taxable clothing exemption (for now, tax computations are too much for this app).
+					if ($cartItem['clothing'])
+						{
+						$price = $price - 100.00;
+						$price = \max(0.0, $price);
+						}
+					$taxableValue = (float)($price * $cartItem['quantity']);
 
 					if ($cartItem['payByPoints'])
 						{
@@ -254,7 +263,7 @@ class Cart
 						$this->tax += $taxableValue * $this->taxRate / 100.00 + (float)$cartItem['shipping'] * $this->taxRate / 100.00;
 						}
 
-					if ($cartItem['clothingTotal'])
+					if ($cartItem['taxableClothingTotal'])
 						{
 						$localTaxRate = $this->taxRate - 4.0;
 						$localTaxRate = \max($localTaxRate, 0.0);
@@ -320,7 +329,7 @@ class Cart
 
 			foreach ($this->items as &$cartItem)
 				{
-				$taxableTotal = $nonTaxableTotal = $pickupTotal = $shipping = $items = $clothingTotal = $points = $noShipping = 0;
+				$taxableTotal = $nonTaxableTotal = $pickupTotal = $shipping = $items = $taxableClothingTotal = $points = $noShipping = 0;
 
 				if (\App\Model\Cart::TYPE_GA == $cartItem['type'])
 					{
@@ -370,7 +379,9 @@ class Cart
 								}
 							elseif ($storeItem->clothing)
 								{
-								$clothingTotal += $value;
+								$price = $storeItem->price - 100;
+								$price = \max($price, 0.0);
+								$taxableClothingTotal += $price * $cartItem['quantity'];
 								}
 							else
 								{
@@ -386,7 +397,7 @@ class Cart
 					}
 				$cartItem['taxableTotal'] = $taxableTotal;
 				$cartItem['nonTaxableTotal'] = $nonTaxableTotal;
-				$cartItem['clothingTotal'] = $clothingTotal;
+				$cartItem['taxableClothingTotal'] = $taxableClothingTotal;
 				$cartItem['pickupTotal'] = $pickupTotal;
 				$cartItem['shipping'] = $shipping;
 				$cartItem['points'] = $points;
@@ -425,6 +436,13 @@ class Cart
 	public function getVolunteerPoints() : int
 		{
 		return $this->volunteerPoints;
+		}
+
+	public function setMemberId(int $memberId) : self
+		{
+		$this->memberId = $memberId;
+
+		return $this;
 		}
 
 	public function updateCartQuantities(array $quantities) : void

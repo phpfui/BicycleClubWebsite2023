@@ -9,7 +9,7 @@ class PointHistory extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, array<string>> */
 	public static array $validators = [
-		'leaderPoints' => ['integer'],
+		'volunteerPoints' => ['integer'],
 		'memberId' => ['required', 'integer'],
 		'editorId' => ['integer'],
 		'oldLeaderPoints' => ['integer'],

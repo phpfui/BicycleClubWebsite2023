@@ -59,7 +59,7 @@ class Polls implements \Stringable
 			$polls = $volunteerPollTable->getPolls($this->jobEvent->jobEventId);
 			$form->saveOnClick($add);
 			$delete = new \PHPFUI\AJAX('deletePoll', 'Permanently delete this poll?');
-			$delete->addFunction('success', '$("#volunteerPollId-"+data.response).css("background-color","red").hide("slow")');
+			$delete->addFunction('success', '$("#volunteerPollId-"+data.response).css("background-color","red").hide("fast").remove()');
 			$this->page->addJavaScript($delete->getPageJS());
 			$table = new \PHPFUI\Table();
 			$table->setRecordId('volunteerPollId');

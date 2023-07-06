@@ -42,7 +42,7 @@ class Content extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$blogs = \App\Table\Blog::getBlogsByName();
 		$table->setRecordId('blogId');
 		$ajax = new \PHPFUI\AJAX('deleteCategory', 'Permanently delete this category?');
-		$ajax->addFunction('success', '$("#blogId-"+data.response).css("background-color","red").hide("fast")');
+		$ajax->addFunction('success', '$("#blogId-"+data.response).css("background-color","red").hide("fast").remove()');
 		$this->page->addJavaScript($ajax->getPageJS());
 		$table->addHeader('name', 'Category');
 

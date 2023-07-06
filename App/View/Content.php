@@ -263,7 +263,7 @@ class Content extends \App\UI\HTMLEditor
 			if ($this->page->getPermissions()->isAuthorized('Delete Item From Blog', 'Content'))
 				{
 				$deleteFromPage = new \PHPFUI\AJAX('removeContentFromPage', 'Are you sure you want to remove this story from the page? You can get it back in the Content section.');
-				$deleteFromPage->addFunction('success', '$("#storyId-"+data.response).css("background-color","red").hide("fast")');
+				$deleteFromPage->addFunction('success', '$("#storyId-"+data.response).css("background-color","red").hide("fast").remove()');
 				$this->page->addJavaScript($deleteFromPage->getPageJS());
 				$removeItem = new \PHPFUI\MenuItem('Remove', '#');
 				$removeItem->setIcon(new \PHPFUI\FAIcon('far', 'trash-alt'));
@@ -276,7 +276,7 @@ class Content extends \App\UI\HTMLEditor
 		elseif ($this->page->getPermissions()->isAuthorized('Delete Content', 'Content'))
 			{
 			$deleteContent = new \PHPFUI\AJAX('deleteContent', 'Permanently delete! Are you sure?');
-			$deleteContent->addFunction('success', '$("#storyId-"+data.response).css("background-color","red").hide("fast")');
+			$deleteContent->addFunction('success', '$("#storyId-"+data.response).css("background-color","red").hide("fast").remove()');
 			$this->page->addJavaScript($deleteContent->getPageJS());
 			$deleteItem = new \PHPFUI\MenuItem('Delete', '#');
 			$deleteItem->addAttribute('onclick', $deleteContent->execute(['storyId' => $storyId]));
@@ -484,7 +484,7 @@ class Content extends \App\UI\HTMLEditor
 		$table = new \PHPFUI\OrderableTable($this->page);
 		$rowId = 'storyId';
 		$delete = new \PHPFUI\AJAX('removeContentFromPage', 'Are you sure you want to remove this story from this page?');
-		$delete->addFunction('success', "$('#{$rowId}-'+data.response).css('background-color','red').hide('fast')");
+		$delete->addFunction('success', "$('#{$rowId}-'+data.response).css('background-color','red').hide('fast').remove()");
 		$this->page->addJavaScript($delete->getPageJS());
 		$table->setRecordId($rowId);
 		$table->addHeader('headline', 'Story');
@@ -714,7 +714,7 @@ class Content extends \App\UI\HTMLEditor
 			$table->setHeaders(['View', 'Copy', 'Delete']);
 			$table->setRecordId($recordIndex = 'index');
 			$delete = new \PHPFUI\AJAX('deleteStoryPhoto', 'Permanently delete this photo from this story?');
-			$delete->addFunction('success', "$('#{$recordIndex}-'+data.response).css('background-color','red').hide('fast');");
+			$delete->addFunction('success', "$('#{$recordIndex}-'+data.response).css('background-color','red').hide('fast').remove();");
 			$this->page->addJavaScript($delete->getPageJS());
 
 			foreach ($currentFiles as $index => $file)

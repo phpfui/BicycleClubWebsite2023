@@ -60,7 +60,7 @@ class Jobs
 			$jobs = $jobTable->getJobs($jobEvent->jobEventId);
 			$form->saveOnClick($add);
 			$delete = new \PHPFUI\AJAX('deleteJob', 'Permanently delete this job and all associated shifts?');
-			$delete->addFunction('success', '$("#jobId-"+data.response).css("background-color","red").hide("slow")');
+			$delete->addFunction('success', '$("#jobId-"+data.response).css("background-color","red").hide("fast").remove()');
 			$this->page->addJavaScript($delete->getPageJS());
 			$table = new \PHPFUI\Table();
 			$table->setRecordId('jobId');

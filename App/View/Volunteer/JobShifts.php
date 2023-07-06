@@ -65,7 +65,7 @@ class JobShifts
 			$shifts = $this->jobShiftTable->getJobShifts($job->jobId);
 			$form->saveOnClick($add);
 			$delete = new \PHPFUI\AJAX('deleteShift', 'Permanently delete this shift and all current volunteers?');
-			$delete->addFunction('success', '$("#jobShiftId-"+data.response).css("background-color","red").hide("slow").remove();');
+			$delete->addFunction('success', '$("#jobShiftId-"+data.response).css("background-color","red").hide("fast").remove();');
 			$this->page->addJavaScript($delete->getPageJS());
 			$form->add(new \PHPFUI\Input\Hidden('jobId', (string)$job->jobId));
 			$table = new \PHPFUI\Table();

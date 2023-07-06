@@ -112,7 +112,7 @@ foreach ($memberships as $ids)
 		$member['showNoPhone'] = '0';
 		$member['verifiedEmail'] = 10;
 		$member['emailAnnouncements'] = ($member['Subscribed to emails'] ?? 'yes') == 'yes';
-		$member['leaderPoints'] = 0;
+		$member['volunteerPoints'] = 0;
 		$member['eMailReminderDaysA'] = 1;
 		$member['eMailReminderDaysB'] = 3;
 		$member['acceptedWaiver'] = 0;

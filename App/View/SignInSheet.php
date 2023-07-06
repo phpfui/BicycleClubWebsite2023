@@ -74,7 +74,7 @@ JAVASCRIPT;
 		$table->setRecordId($recordIndex);
 		$table->setHeaders(['title' => 'Ride', 'rideDate' => 'Date', 'edit' => 'Edit', 'del' => 'Del', ]);
 		$delete = new \PHPFUI\AJAX('deleteSignInSheetRide', 'Delete this ride from this sign in sheet?');
-		$delete->addFunction('success', "$('#id-'+data.response).css('background-color','red').hide('fast')");
+		$delete->addFunction('success', "$('#id-'+data.response).css('background-color','red').hide('fast').remove()");
 		$this->page->addJavaScript($delete->getPageJS());
 
 		foreach ($rides as $ride)

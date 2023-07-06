@@ -323,7 +323,7 @@ class Events
 		$view->setRecordId('eventId');
 
 		$delete = new \PHPFUI\AJAX('deleteEvent', 'Permanently delete this event?');
-		$delete->addFunction('success', "$('#eventId-'+data.response).css('background-color','red').hide('fast')");
+		$delete->addFunction('success', "$('#eventId-'+data.response).css('background-color','red').hide('fast').remove()");
 		$this->page->addJavaScript($delete->getPageJS());
 		$view->addCustomColumn('title', static fn (array $event) => new \PHPFUI\Link('/Events/edit/' . $event['eventId'], $event['title'] ?? 'Missing', false));
 		$view->addCustomColumn('attendees', static function(array $event) use ($delete)
@@ -547,7 +547,7 @@ class Events
 			});
 
 		$delete = new \PHPFUI\AJAX('deleteReservation', 'Permanently delete this reservation?');
-		$delete->addFunction('success', "$('#reservationId-'+data.response).css('background-color','red').hide('fast');location.reload();");
+		$delete->addFunction('success', "$('#reservationId-'+data.response).css('background-color','red').hide('fast').remove();location.reload();");
 		$this->page->addJavaScript($delete->getPageJS());
 
 		$paymentTypes = \App\Table\Payment::getPaymentTypes();

@@ -462,7 +462,7 @@ class CueSheet
 		$row->add($date);
 		$header = $row;
 		$delete = new \PHPFUI\AJAX('deleteCueSheet', 'Permanently delete this cue sheet?');
-		$delete->addFunction('success', '$("#"+data.response).css("background-color","red").hide("fast")');
+		$delete->addFunction('success', '$("#"+data.response).css("background-color","red").hide("fast").remove()');
 		$this->page->addJavaScript($delete->getPageJS());
 		$accordion = new \App\UI\Accordion();
 
@@ -619,7 +619,7 @@ class CueSheet
 			if (! $this->deleteVersion)
 				{
 				$this->deleteVersion = new \PHPFUI\AJAX('deleteVersion', 'Permanently delete this revision and associated file?');
-				$this->deleteVersion->addFunction('success', '$("#"+data.response).css("background-color","red").hide("fast")');
+				$this->deleteVersion->addFunction('success', '$("#"+data.response).css("background-color","red").hide("fast").remove()');
 				$this->page->addJavaScript($this->deleteVersion->getPageJS());
 				}
 			$delete = $this->deleteVersion;

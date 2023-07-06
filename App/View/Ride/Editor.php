@@ -439,7 +439,7 @@ class Editor
 				{
 				$index = 'memberId';
 				$delete = new \PHPFUI\AJAX('deleteAssistant');
-				$delete->addFunction('success', "$('#{$index}-'+data.response).css('background-color','red').hide('fast')");
+				$delete->addFunction('success', "$('#{$index}-'+data.response).css('background-color','red').hide('fast').remove()");
 				$this->page->addJavaScript($delete->getPageJS());
 				$table = new \PHPFUI\Table();
 				$table->setHeaders(['name' => 'Assistant Leaders', 'del' => 'Del']);

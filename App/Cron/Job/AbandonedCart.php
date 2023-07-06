@@ -26,7 +26,7 @@ class AbandonedCart extends \App\Cron\BaseJob
 			if ($memberId > 0)
 				{
 				$member = new \App\Record\Member($memberId);
-				$fullUrl = $url . '/Store/myUnpaid';
+				$fullUrl = $url . '/Store/Invoice/myUnpaid';
 				$additional = 'You can also cancel your order.';
 				}
 			else

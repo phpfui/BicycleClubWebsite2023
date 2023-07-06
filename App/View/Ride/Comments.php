@@ -133,7 +133,7 @@ class Comments
 			}
 		$index = 'rideCommentId';
 		$delete = new \PHPFUI\AJAX('deleteComment', 'Are you sure you want to delete this comment?');
-		$delete->addFunction('success', "$('#{$index}-'+data.response).css('background-color','red').hide('fast')");
+		$delete->addFunction('success', "$('#{$index}-'+data.response).css('background-color','red').hide('fast').remove()");
 		$this->page->addJavaScript($delete->getPageJS());
 		$rideCommentTable = new \App\Table\RideComment();
 		$rideCommentTable->setWhere(new \PHPFUI\ORM\Condition('rideId', $this->ride->rideId));

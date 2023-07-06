@@ -58,7 +58,7 @@ class TableEditor
 			$recordId = $this->name . 'Id';
 			$types = $this->table->addOrderBy('name')->getArrayCursor();
 			$delete = new \PHPFUI\AJAX('deleteRecord', 'Permanently delete this?');
-			$delete->addFunction('success', '$("#' . $recordId . '-"+data.response).css("background-color","red").hide("fast")');
+			$delete->addFunction('success', '$("#' . $recordId . '-"+data.response).css("background-color","red").hide("fast").remove()');
 			$this->page->addJavaScript($delete->getPageJS());
 			$table = new \PHPFUI\Table();
 			$table->addAttribute('style', 'width: 100%;');

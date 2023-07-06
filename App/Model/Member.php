@@ -25,7 +25,7 @@ class Member
 	protected array $supervisorFields = [
 		'lastLogin',
 		'allowedMembers',
-		'leaderPoints',
+		'volunteerPoints',
 		'acceptedWaiver',
 		'pending',
 		'pendingLeader',
@@ -109,7 +109,7 @@ class Member
 			unset($member['memberId'], $member['lastLogin'], $member['password']);
 
 			$member['verifiedEmail'] = 9;
-			unset($member['leaderPoints'], $member['acceptedWaiver']);
+			unset($member['volunteerPoints'], $member['acceptedWaiver']);
 
 			$member['pendingLeader'] = 0;
 			$member['deceased'] = 0;
@@ -737,16 +737,16 @@ class Member
 				}
 			}
 
-		if (isset($member['leaderPoints']))
+		if (isset($member['volunteerPoints']))
 			{
 			$oldMember = new \App\Record\Member($member['memberId']);
 
-			if ($oldMember->leaderPoints != $member['leaderPoints'])
+			if ($oldMember->volunteerPoints != $member['volunteerPoints'])
 				{
 				$pointHistory = new \App\Record\PointHistory();
 				$pointHistory->setFrom($member);
 				$pointHistory->editorId = \App\Model\Session::signedInMemberId();
-				$pointHistory->oldLeaderPoints = $oldMember->leaderPoints;
+				$pointHistory->oldLeaderPoints = $oldMember->volunteerPoints;
 				$pointHistory->insert();
 				}
 			}

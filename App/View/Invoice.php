@@ -58,14 +58,14 @@ class Invoice
 
 			foreach (\App\Table\Payment::getPaymentTypes() as $index => $type)
 				{
-				$paymentType->addOption($type, $index, 1 == $index);
+				$paymentType->addOption($type, $index, 0 == $index);
 				}
 			$multiColumn->add($paymentType);
 			$checkNumber = new \PHPFUI\Input\Text('paymentNumber', 'Payment Number');
 			$multiColumn->add($checkNumber);
-			$checkDate = new \PHPFUI\Input\Date($this->page, 'paymentDated', 'Payment Date');
+			$checkDate = new \PHPFUI\Input\Date($this->page, 'paymentDated', 'Payment Date', $invoice->paymentDate);
 			$multiColumn->add($checkDate);
-			$checkAmount = new \PHPFUI\Input\Number('paymentAmount', 'Payment Amount');
+			$checkAmount = new \PHPFUI\Input\Number('paymentAmount', 'Payment Amount', $invoice->totalPrice);
 			$checkAmount->setToolTip('Whole numbers are assumed to be dollars and no cents.');
 			$multiColumn->add($checkAmount);
 			$fieldSet->add($multiColumn);
@@ -113,7 +113,7 @@ class Invoice
 		$view = new \App\UI\ContinuousScrollTable($this->page, $invoiceTable);
 
 		$view->addCustomColumn('label', static fn (array $invoice) => new \PHPFUI\Link('Store/mailingLabel/' . $invoice['invoiceId'], 'Print', false));
-		$view->addCustomColumn('view', static fn (array $invoice) => new \PHPFUI\FAIcon('fas', 'file-download', '/Store/invoice/' . $invoice['invoiceId']));
+		$view->addCustomColumn('view', static fn (array $invoice) => new \PHPFUI\FAIcon('fas', 'file-download', '/Store/Invoice/download/' . $invoice['invoiceId']));
 		$view->addCustomColumn('cancel', $this->getCancelColumn(...));
 		$view->addCustomColumn('paymentDate', $this->getPaymentDate(...));
 		$view->addCustomColumn('fullfillmentDate', $this->getFullfillmentDate(...));
@@ -177,7 +177,7 @@ class Invoice
 
 		if (! $deleted)
 			{
-			$download = new \PHPFUI\FAIcon('fas', 'file-download', '/Store/invoice/' . $invoice->invoiceId);
+			$download = new \PHPFUI\FAIcon('fas', 'file-download', '/Store/Invoice/download/' . $invoice->invoiceId);
 			$fieldSet->add(new \App\UI\Display('Download', $download));
 			}
 		$container->add($fieldSet);
@@ -189,7 +189,13 @@ class Invoice
 
 		foreach ($invoice->InvoiceItemChildren as $item)
 			{
-			$table->addRow($item->toArray());
+			$row = $item->toArray();
+
+			foreach (['price', 'shipping', 'tax'] as $index)
+				{
+				$row[$index] = '$' . $row[$index];
+				}
+			$table->addRow($row);
 			}
 		$fieldSet->add($table);
 		$container->add($fieldSet);

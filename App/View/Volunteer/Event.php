@@ -57,7 +57,7 @@ class Event
 		$table->setSortDirection('d');
 		$table->setRecordId($recordId);
 		$delete = new \PHPFUI\AJAX('deleteJobEventDate', 'Permanently delete this event and all related data?');
-		$delete->addFunction('success', '$("#' . $recordId . '-"+data.response).css("background-color","red").hide("slow")');
+		$delete->addFunction('success', '$("#' . $recordId . '-"+data.response).css("background-color","red").hide("fast").remove()');
 		$this->page->addJavaScript($delete->getPageJS());
 
 		$headers = ['name', 'date'];

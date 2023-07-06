@@ -181,7 +181,7 @@ class Board
 			{
 			$index = 'memberId';
 			$delete = new \PHPFUI\AJAX('deleteBoardMember', 'Are you sure you want to delete this board member?');
-			$delete->addFunction('success', "$('#id{$index}-'+data.response).css('background-color','red').hide('fast')");
+			$delete->addFunction('success', "$('#id{$index}-'+data.response).css('background-color','red').hide('fast').remove()");
 			$this->page->addJavaScript($delete->getPageJS());
 
 			$add = new \PHPFUI\Button('Add Board Member');

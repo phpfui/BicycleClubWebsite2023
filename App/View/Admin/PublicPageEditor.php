@@ -134,7 +134,7 @@ class PublicPageEditor
 			{
 			$rowId = 'publicPageId';
 			$delete = new \PHPFUI\AJAX('deletePublicPage', 'Are you sure you want to delete this page?');
-			$delete->addFunction('success', "$('#{$rowId}-'+data.response).css('background-color','red').hide('fast')");
+			$delete->addFunction('success', "$('#{$rowId}-'+data.response).css('background-color','red').hide('fast').remove()");
 			$this->page->addJavaScript($delete->getPageJS());
 			$table = new \PHPFUI\OrderableTable($this->page);
 			$table->setRecordId($rowId);

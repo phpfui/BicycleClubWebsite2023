@@ -28,7 +28,7 @@ class Files
 		$recordIndex = 'base';
 		$table->setRecordId($recordIndex);
 		$delete = new \PHPFUI\AJAX('deleteFile', 'Permanently delete this File?');
-		$delete->addFunction('success', "$('#{$recordIndex}-'+data.response).css('background-color','red').hide('fast')");
+		$delete->addFunction('success', "$('#{$recordIndex}-'+data.response).css('background-color','red').hide('fast').remove()");
 		$this->page->addJavaScript($delete->getPageJS());
 
 		$files = $this->fileModel->getAll();

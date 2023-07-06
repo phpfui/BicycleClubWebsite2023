@@ -62,7 +62,7 @@ class Orders
 
 		$view->addCustomColumn('invoiceId', static function(array $storeOrder)
 			{
-			$link = new \PHPFUI\Link('/Store/invoice/' . $storeOrder['invoiceId'], $storeOrder['invoiceId'], false);
+			$link = new \PHPFUI\Link('/Store/Invoice/download/' . $storeOrder['invoiceId'], $storeOrder['invoiceId'], false);
 			$link->addAttribute('target', '_blank');
 
 			return $link;

@@ -277,7 +277,7 @@ function insertMembers(string $csvName) : int
 			$member->emailNewsletter = 1;
 			$member->geoLocate = 1;
 			$member->journal = 1;
-			$member->leaderPoints = 0;
+			$member->volunteerPoints = 0;
 			$member->newRideEmail = 1;
 			$member->pendingLeader = 0;
 			$member->rideComments = 1;

@@ -35,7 +35,13 @@ class Invoice
 			if ($invoice->pointsUsed > 0 && $memberId > 0)
 				{
 				$memberRecord = new \App\Record\Member($memberId);
-				$memberRecord->leaderPoints += $invoice->pointsUsed;
+				$pointHistory = new \App\Record\PointHistory();
+				$pointHistory->member = $memberRecord;
+				$pointHistory->oldLeaderPoints = $memberRecord->volunteerPoints;
+				$memberRecord->volunteerPoints += $invoice->pointsUsed;
+				$pointHistory->volunteerPoints = $memberRecord->volunteerPoints;
+				$pointHistory->insert();
+				// need to update point history here
 				$memberRecord->update();
 				}
 
@@ -92,7 +98,6 @@ class Invoice
 				switch ($invoiceItem->type)
 					{
 					case \App\Model\Cart::TYPE_ORDER:
-						$invoice->fullfillmentDate = null;
 						$storeItem = $invoiceItem->storeItem;
 						$invoice->fullfillmentDate = null;
 						// add into storeOrder table
@@ -263,13 +268,14 @@ class Invoice
 	 */
 	public function generateFromCart(\App\Model\Cart $cartModel) : int
 		{
+		\App\Tools\Logger::get()->debug($cartModel);
 		$taxRate = $cartModel->getTaxRate();
 		$pointsEarned = $pointsUsed = 0;
 		$member = $this->customerModel->read($customerNumber = $this->customerModel->getNumber());
 
-		if (! empty($member->leaderPoints))
+		if (! empty($member->volunteerPoints))
 			{
-			$pointsEarned = (int)$member->leaderPoints;
+			$pointsEarned = (int)$member->volunteerPoints;
 			}
 		$pointsTotal = $cartModel->getPayableByPoints();
 
@@ -300,7 +306,11 @@ class Invoice
 			if ($pointsUsed > 0)
 				{
 				$memberRecord = $member->getMember();
-				$memberRecord->leaderPoints = $pointsEarned - $pointsUsed;
+				$pointHistory = new \App\Record\PointHistory();
+				$pointHistory->member = $memberRecord;
+				$pointHistory->oldLeaderPoints = $memberRecord->volunteerPoints;
+				$pointHistory->volunteerPoints = $memberRecord->volunteerPoints = $pointsEarned - $pointsUsed;
+				$pointHistory->insert();
 				$memberRecord->update();
 				}
 			$instructions = $_POST['instructions'] ?? 'None';
@@ -351,13 +361,13 @@ class Invoice
 								}
 
 							$taxableTotal = (float)$cartItem['taxableTotal'];
-							$clothingTotal = (float)$cartItem['clothingTotal'];
+							$taxableClothingTotal = (float)$cartItem['taxableClothingTotal'];
 							$shipping = (float)$cartItem['shipping'];
 							$tax = 0.0;
 
 							if ($taxRate)
 								{
-								$tax = $taxableTotal * $taxRate / 100.00 + $shipping * $taxRate / 100.00 + $clothingTotal * ($taxRate - 4.0) / 100.00;
+								$tax = $taxableTotal * $taxRate / 100.00 + $shipping * $taxRate / 100.00 + $taxableClothingTotal * ($taxRate - 4.0) / 100.00;
 								}
 							$invoiceItem = new \App\Record\InvoiceItem();
 							$invoiceItem->invoiceId = $invoiceId;
@@ -451,7 +461,7 @@ class Invoice
 				\PHPFUI\ORM::commit();
 				}
 
-			if ($invoiceId && $balanceDue <= 0)
+			if ($invoiceId && $balanceDue <= 0.0)
 				{
 				$this->execute($invoice);
 				}
@@ -485,7 +495,18 @@ class Invoice
 
 		if ($invoice->paypalPaid > 0)
 			{
-			$payment = 'PayPal Transaction Id ' . $invoice->paypaltx;
+			if ($invoice->paypaltx)
+				{
+				$payment = 'PayPal Transaction Id ' . $invoice->paypaltx;
+				}
+			elseif ($invoice->paidByCheck)
+				{
+				$payment = 'Paid by Check';
+				}
+			else
+				{
+				$payment = 'Paid by Cash';
+				}
 			}
 
 		if ($invoice->pointsUsed > 0)

@@ -44,7 +44,7 @@ class PollEdit
 			{
 			$answers = $this->volunteerPollAnswerTable->getPollAnswers($volunteerPoll->volunteerPollId);
 			$delete = new \PHPFUI\AJAX('deleteAnswer', 'Permanently delete this answer and all responses?');
-			$delete->addFunction('success', '$("#volunteerPollAnswerId-"+data.response).css("background-color","red").hide("slow").remove();');
+			$delete->addFunction('success', '$("#volunteerPollAnswerId-"+data.response).css("background-color","red").hide("fast").remove();');
 			$this->page->addJavaScript($delete->getPageJS());
 			$table = new \PHPFUI\Table();
 			$table->setRecordId('volunteerPollAnswerId');

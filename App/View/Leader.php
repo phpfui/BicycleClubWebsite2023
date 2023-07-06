@@ -334,7 +334,7 @@ class Leader
 			$page = $this->page;
 
 			$delete = new \PHPFUI\AJAX('deleteLeader', "Delete this member's leader application?");
-			$delete->addFunction('success', '$("#memberId-"+data.response).css("background-color","red").hide("fast")');
+			$delete->addFunction('success', '$("#memberId-"+data.response).css("background-color","red").hide("fast").remove()');
 			$this->page->addJavaScript($delete->getPageJS());
 
 			$table->addCustomColumn('Del', static function(array $member) use ($delete)
@@ -346,7 +346,7 @@ class Leader
 				});
 
 			$approve = new \PHPFUI\AJAX('approveLeader', 'Promote this member to a ride leader?');
-			$approve->addFunction('success', '$("#memberId-"+data.response).css("background-color","green").hide("fast")');
+			$approve->addFunction('success', '$("#memberId-"+data.response).css("background-color","green").hide("fast").remove()');
 			$this->page->addJavaScript($approve->getPageJS());
 			$table->addCustomColumn('Accept', static function(array $member) use ($approve)
 				{

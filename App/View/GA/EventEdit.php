@@ -231,7 +231,7 @@ class EventEdit
 		$table = new \PHPFUI\Table();
 		$table->setRecordId($recordId = 'gaPriceDateId');
 		$delete = new \PHPFUI\AJAX('deletePrice', 'Permanently delete this price?');
-		$delete->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast')");
+		$delete->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast').remove()");
 		$this->page->addJavaScript($delete->getPageJS());
 		$table->setHeaders(['date' => 'Date', 'price' => 'Price', 'del' => 'Del']);
 

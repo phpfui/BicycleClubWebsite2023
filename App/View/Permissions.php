@@ -416,7 +416,7 @@ class Permissions
 			$functionName = 'deleteMember';
 			$view->setRecordId('memberId');
 			$delete = new \PHPFUI\AJAX('deleteMember');
-			$delete->addFunction('success', "$('#memberId-'+data.response).css('background-color','red').hide('fast')");
+			$delete->addFunction('success', "$('#memberId-'+data.response).css('background-color','red').hide('fast').remove()");
 			$this->page->addJavaScript($delete->getPageJS());
 			$view->addCustomColumn('remove', static function(array $member) use ($delete, $permission)
 				{

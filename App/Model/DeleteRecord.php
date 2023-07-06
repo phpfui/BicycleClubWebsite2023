@@ -29,7 +29,7 @@ class DeleteRecord
 
 		$table->setRecordId($primaryKey);
 		$this->delete = new \PHPFUI\AJAX($functionName, $message);
-		$this->delete->addFunction('success', '$("#' . $primaryKey . '-"+data.response).css("background-color","red").hide("fast")');
+		$this->delete->addFunction('success', '$("#' . $primaryKey . '-"+data.response).css("background-color","red").hide("fast").remove()');
 		$page->addJavaScript($this->delete->getPageJS());
 		}
 

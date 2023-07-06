@@ -19,7 +19,7 @@ class Points
 
 		$container->add(new \PHPFUI\SubHeader($member->firstName . ' ' . $member->lastName));
 
-		$container->add(new \App\UI\Display('Available Volunteer Points', $member->leaderPoints ?? 0));
+		$container->add(new \App\UI\Display('Available Volunteer Points', $member->volunteerPoints ?? 0));
 
 		$categories = [];
 		$categories['Ride Leads'] = ['table' => \App\Table\Ride::class, 'date' => 'rideDate', 'name' => 'title'];
@@ -76,7 +76,7 @@ class Points
 
 		// get the parameter we know we are interested in
 
-		$sortableHeaders = ['time' => 'Time', 'leaderPoints' => 'Leader Points', 'oldLeaderPoints' => 'Pre Edit Points', ];
+		$sortableHeaders = ['time' => 'Time', 'volunteerPoints' => 'Leader Points', 'oldLeaderPoints' => 'Pre Edit Points', ];
 		$normalHeaders = ['member' => 'Member', 'editorId' => 'Editor'];
 		$table->addCustomColumn('member', static function(array $row) {$member = new \App\Record\Member($row['memberId']);
 

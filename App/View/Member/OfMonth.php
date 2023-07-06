@@ -171,7 +171,7 @@ class OfMonth
 					}
 				$table->setHeaders($headers);
 				$delete = new \PHPFUI\AJAX('deleteMOM', 'Permanently delete this Member Of The Month?');
-				$delete->addFunction('success', "$('#{$recordIndex}-'+data.response).css('background-color','red').hide('fast')");
+				$delete->addFunction('success', "$('#{$recordIndex}-'+data.response).css('background-color','red').hide('fast').remove()");
 				$this->page->addJavaScript($delete->getPageJS());
 
 				foreach ($members as $MOM)

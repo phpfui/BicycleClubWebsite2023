@@ -13,6 +13,8 @@ try
 		}
 
 	include '../common.php';
+	$url = $_SERVER['REQUEST_METHOD'] . ': ' . $_SERVER['REQUEST_URI'] . '?' . $_SERVER['QUERY_STRING'];
+	\App\Tools\Logger::get()->debug($url);
 
 	if (! $dbSettings || $dbSettings->Setup || \str_contains($url, '/Config/') || \str_ends_with($url, '/Config'))
 		{

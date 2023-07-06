@@ -8,8 +8,6 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	protected int $customerId;
 
-	private readonly \PHPFUI\Button $backButton;
-
 	private readonly \App\Model\Customer $customerModel;
 
 	private readonly \App\Model\Invoice $invoiceModel;
@@ -23,26 +21,7 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		parent::__construct($controller);
 		$this->invoiceView = new \App\View\Invoice($this->page);
 		$this->storeView = new \App\View\Store($this->page);
-		$this->backButton = new \PHPFUI\Button('Store Functions', '/Store/configure');
 		$this->invoiceModel = new \App\Model\Invoice();
-
-		if (\App\Model\Session::checkCSRF())
-			{
-			if (isset($_POST['markAsShipped']))
-				{
-				if (\is_array($_POST['ship']))
-					{
-					foreach ($_POST['ship'] as $invoiceId => $ship)
-						{
-						if ($ship)
-							{
-							$this->invoiceModel->markAsShipped(new \App\Record\Invoice($invoiceId));
-							}
-						}
-					}
-				$this->page->redirect();
-				}
-			}
 		$this->customerModel = new \App\Model\Customer();
 		$this->customerId = $this->customerModel->getNumber();
 		$this->customer = $this->customerModel->read($this->customerId);
@@ -94,7 +73,7 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					$this->page->addPageContent(new \PHPFUI\Header("Invoice {$invoice->invoiceId} Canceled"));
 					$this->invoiceModel->delete($invoice);
 					}
-				$this->page->redirect('/Store/myUnpaid', '', 2);
+				$this->page->redirect('/Store/Invoice/myUnpaid', '', 2);
 				}
 			else
 				{
@@ -115,10 +94,11 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$this->page->setPublic();
 		$this->page->addHeader('My Cart');
-		$cartView = new \App\View\Store\Cart($this->page, $this->getCartModel());
+		$cartModel = new \App\Model\Cart();
+		$cartView = new \App\View\Store\Cart($this->page, $cartModel);
 		$cart = $cartView->show(new \PHPFUI\Form($this->page), true);
 
-		if ($this->getCartModel()->getItems())
+		if ($cartModel->getItems())
 			{
 			$buttonGroup = new \PHPFUI\ButtonGroup();
 			$checkOut = new \PHPFUI\Submit('Check Out');
@@ -143,7 +123,10 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$errors = null;
 		$this->page->setPublic();
 
-		$cartView = new \App\View\Store\Cart($this->page, $this->getCartModel());
+		$model = new \App\Model\Cart();
+		$model->compute($this->customer->volunteerPoints ?? 0);
+
+		$cartView = new \App\View\Store\Cart($this->page, $model);
 
 		$errors = $this->customer->validate();
 
@@ -198,76 +181,6 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function getCartModel() : \App\Model\Cart
-		{
-		$cartModel = new \App\Model\Cart();
-		$zipTax = new \App\Table\Ziptax();
-		$taxRate = $zipTax->getTaxRateForZip($this->customer->zip);
-		$leaderPoints = $this->customer->leaderPoints ?? 0;
-		$cartModel->compute($taxRate, $leaderPoints);
-
-		return $cartModel;
-		}
-
-	public function inventory() : void
-		{
-		if ($this->page->addHeader('Manage Inventory'))
-			{
-			$storeItemTable = new \App\Table\StoreItem();
-			$this->page->addPageContent($this->storeView->showInventory($storeItemTable));
-			}
-		}
-
-	public function inventoryReport() : void
-		{
-		if ($this->page->addHeader('Inventory Report'))
-			{
-			if (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
-				{
-				$report = new \App\Report\Inventory();
-				$report->download($_POST);
-				$this->page->done();
-				}
-			else
-				{
-				$this->page->addPageContent($this->storeView->getInventoryRequest());
-				}
-			}
-		}
-
-	public function invoice(\App\Record\Invoice $invoice) : void
-		{
-		if (! $invoice->empty())
-			{
-			if ($this->page->isAuthorized('Download Invoice') || $invoice['memberId'] == $this->customerId)
-				{
-				$pdf = $this->invoiceModel->generatePDF($invoice);
-				$pdf->Output($this->invoiceModel->getFileName($invoice), 'I');
-				}
-			}
-		}
-
-	public function invoiceReport() : void
-		{
-		if ($this->page->addHeader('Invoice Report'))
-			{
-			if (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
-				{
-				$report = new \App\Report\InvoiceReport();
-				$report->download($_POST);
-				$this->page->done();
-				}
-			else
-				{
-				$form = new \PHPFUI\Form($this->page);
-				$this->storeView->getInvoiceRequest($form);
-				$form->addAttribute('target', '_blank');
-				$form->add(new \PHPFUI\Submit('Generate Report'));
-				$this->page->addPageContent($form);
-				}
-			}
-		}
-
 	public function item(\App\Record\StoreItem $storeItem = new \App\Record\StoreItem()) : void
 		{
 		if (! $storeItem->storeItemId)
@@ -303,18 +216,6 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$invoiceTable = new \App\Table\Invoice();
 			$invoiceTable->setCompletedForMember($this->customerId);
 			$this->page->addPageContent($this->invoiceView->show($invoiceTable));
-			}
-		}
-
-	public function myUnpaid() : void
-		{
-		$this->page->setPublic($this->customerId < 0);
-
-		if ($this->page->addHeader('My Unpaid Invoices'))
-			{
-			$invoiceTable = new \App\Table\Invoice();
-			$invoiceTable->setUnpaidForMember($this->customerId);
-			$this->page->addPageContent($this->invoiceView->show($invoiceTable, 'You have no unpaid invoices'));
 			}
 		}
 
@@ -442,43 +343,7 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	public function shop() : void
 		{
 		$this->page->setPublic();
-		$this->page->addPageContent($this->storeView->shop($this->getCartModel()));
-		}
-
-	public function unshipped() : void
-		{
-		if ($this->page->addHeader('Unshipped Invoices'))
-			{
-			$invoiceTable = new \App\Table\Invoice();
-			$invoiceTable->setUnshippedInvoices();
-
-			$form = new \PHPFUI\Form($this->page);
-			$form->setAreYouSure(false);
-			$buttonGroup = new \App\UI\CancelButtonGroup();
-
-			if (\count($invoiceTable))
-				{
-				$pullList = new \PHPFUI\Button('Print Pull List', '/Store/pullList');
-				$pullList->addAttribute('target', '_blank');
-				$buttonGroup->addButton($pullList);
-				$pullList = new \PHPFUI\Button('Print Ride Pull List');
-				$pullList->addClass('warning');
-				$this->addRidePullListModal($pullList);
-				$buttonGroup->addButton($pullList);
-				$markAsShipped = new \PHPFUI\Submit('Mark As Shipped', 'markAsShipped');
-				$markAsShipped->addClass('secondary');
-				$buttonGroup->addButton($markAsShipped);
-				$form->add($buttonGroup);
-				}
-
-			$form->add($this->invoiceView->show($invoiceTable, 'All invoices have been shipped'));
-
-			if (\count($buttonGroup))
-				{
-				$form->add($buttonGroup);
-				}
-			$this->page->addPageContent($form);
-			}
+		$this->page->addPageContent($this->storeView->shop(new \App\Model\Cart()));
 		}
 
 	public function upload() : void
@@ -536,22 +401,5 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$thumbModel->createThumb((int)$settings->value('thumbnailSize'));
 				}
 			}
-		}
-
-	private function addRidePullListModal(\PHPFUI\HTML5Element $modalLink) : \PHPFUI\Reveal
-		{
-		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
-		$form = new \PHPFUI\Form($this->page);
-		$form->setAttribute('method', 'get');
-		$form->addAttribute('action', '/Store/ridePullList');
-
-		$form->setAreYouSure(false);
-		$form->add(new \PHPFUI\Input\Date($this->page, 'rideDate', 'Date of Rides'));
-		$submit = new \PHPFUI\Submit('Print Ride Pull List');
-		$modal->closeOnClick($submit);
-		$form->add($modal->getButtonAndCancel($submit));
-		$modal->add($form);
-
-		return $modal;
 		}
 	}

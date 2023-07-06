@@ -170,7 +170,7 @@ class LandingEditor
 			}
 		$delete = new \PHPFUI\AJAX('deleteTab', 'Are you sure you want to delete this tab?');
 		$recordId = 'tabId';
-		$delete->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast')");
+		$delete->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast').remove()");
 		$this->page->addJavaScript($delete->getPageJS());
 		$table = new \PHPFUI\Table();
 		$table->setRecordId($recordId);

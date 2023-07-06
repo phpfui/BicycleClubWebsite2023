@@ -85,7 +85,7 @@ foreach ($csv as $row)
 	$member['geoLocate'] = 1;
 	$member['journal'] = 1;
 	$member['lastLoginUnix'] = 0;
-	$member['leaderPoints'] = 0;
+	$member['volunteerPoints'] = 0;
 	$member['license'] = '';
 	$member['loginAttempts'] = '';
 	$member['membershipNumber'] = $membershipNumber;
@@ -136,7 +136,7 @@ $member['geoLocate'] = 1;
 $member['journal'] = 1;
 $member['lastLoginUnix'] = 0;
 $member['lastName'] = 'Wells';
-$member['leaderPoints'] = 0;
+$member['volunteerPoints'] = 0;
 $member['license'] = '';
 $member['loginAttempts'] = '';
 $member['membershipNumber'] = $membershipNumber;

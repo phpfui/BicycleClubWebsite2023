@@ -179,7 +179,7 @@ class Finance
 		if ('outstanding' == $request['report'])
 			{
 			$filename = 'OutstandingPoints';
-			$totalColumn = 'leaderPoints';
+			$totalColumn = 'volunteerPoints';
 			$reportName = 'Outstanding Volunteer Points as of ' . \date('F j, Y');
 			$widths = [40, 40, 70, 60];
 			$fields = ['firstName' => 'First Name', 'lastName' => 'Last Name', 'email' => 'email', $totalColumn => 'Outstanding Points'];

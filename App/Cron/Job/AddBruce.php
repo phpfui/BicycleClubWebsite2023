@@ -40,7 +40,7 @@ class AddBruce extends \App\Cron\BaseJob
 			$member->geoLocate = 0;
 			$member->journal = 0;
 			$member->lastName = 'Wells';
-			$member->leaderPoints = 0;
+			$member->volunteerPoints = 0;
 			$member->newRideEmail = 0;
 			$member->pendingLeader = 0;
 			$member->rideComments = 0;

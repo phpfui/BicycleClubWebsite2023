@@ -138,11 +138,12 @@ class Members implements \Stringable
 
 				if (empty($_POST['allMembers']))    // don't add to the journal if emailing all members
 					{
-					$nextJournal = \App\Tools\Date::todayString(1);
+					$index = 1;
+					$nextJournal = \App\Tools\Date::todayString($index);
 
 					while (4 != \App\Tools\Date::formatString('w', $nextJournal))
 						{
-						++$nextJournal;
+						$nextJournal = \App\Tools\Date::todayString(++$index);
 						}
 
 					if ($_POST['eventDate'] >= $nextJournal)

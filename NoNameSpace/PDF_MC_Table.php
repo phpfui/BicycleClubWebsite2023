@@ -12,11 +12,8 @@ class HMTLAttribs
 
 	public $justify;
 
-	protected $pdf;
-
-	public function __construct($pdf)
+	public function __construct(protected \FPDF $pdf)
 		{
-		$this->pdf = $pdf;
 		$this->SaveAttributes();
 		}
 

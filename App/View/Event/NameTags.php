@@ -20,8 +20,8 @@ class NameTags implements \Stringable
 		{
 		$form = new \PHPFUI\Form($this->page);
 		$stockFieldSet = new \PHPFUI\FieldSet('Select Label Stock Number');
-		$pdfLabels = new \PDF_Label(5384);
-		$stock = new \PHPFUI\Input\RadioGroup('stock', '', (string)5384);
+		$pdfLabels = new \PDF_Label($stock = '5384');
+		$stock = new \PHPFUI\Input\RadioGroup('stock', '', $stock);
 		$stock->setSeparateRows();
 		$labels = $pdfLabels->getLabelStock();
 

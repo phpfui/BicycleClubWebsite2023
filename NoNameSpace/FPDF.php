@@ -11,6 +11,14 @@ class FPDF
 {
 public const VERSION = '1.86';
 
+public $FontFamily;         // current font family
+
+public $FontSize;           // current font size in user unit
+
+public $FontSizePt;         // current font size in points
+
+public $FontStyle;          // current font style
+
 protected $AliasNbPages;       // alias for total number of pages
 
 protected $AutoPageBreak;      // automatic page breaking
@@ -49,19 +57,15 @@ protected $encodings;          // array of encodings
 
 protected $FillColor;          // commands for filling color
 
-protected $FontFamily;         // current font family
-
 protected $FontFiles;          // array of font files
 
 protected $fontpath;           // directory containing fonts
 
 protected $fonts;              // array of used fonts
 
-protected $FontSize;           // current font size in user unit
+protected $h;              // dimensions of current page in user unit
 
-protected $FontSizePt;         // current font size in points
-
-protected $FontStyle;          // current font style
+protected $hPt;          // dimensions of current page in points
 
 protected $iconv;              // whether iconv is available
 
@@ -115,13 +119,9 @@ protected $underline;          // underlining flag
 
 protected $w;
 
-protected $h;              // dimensions of current page in user unit
-
 protected $WithAlpha;          // indicates whether alpha channel is used
 
 protected $wPt;
-
-protected $hPt;          // dimensions of current page in points
 
 protected $ws;                 // word spacing
 

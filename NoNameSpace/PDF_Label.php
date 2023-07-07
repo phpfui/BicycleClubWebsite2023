@@ -36,7 +36,7 @@
  **/
 class PDF_Label extends FPDF
 	{
-	private $_Alignment = 'L';        // Alignment
+	private string $_Alignment = 'L';        // Alignment
 
 	// Listing of labels size
 	private $_Avery_Labels = [
@@ -95,7 +95,7 @@ class PDF_Label extends FPDF
 	private $_Y_Space = 0;          // Vertical space between 2 labels
 
 	// Constructor
-	public function __construct($format = '5160', $unit = 'mm', $posX = 1, $posY = 1)
+	public function __construct(string $format = '5160', string $unit = 'mm', int $posX = 1, int $posY = 1)
 		{
 		if (\is_array($format))
 			{

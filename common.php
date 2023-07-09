@@ -17,10 +17,11 @@ $pdo = $dbSettings->getPDO();
 if (! $pdo)
 	{
 	\PHPFUI\ORM::log(\Psr\Log\LogLevel::EMERGENCY, $dbSettings->getError());
-
-	exit;
 	}
-\PHPFUI\ORM::addConnection($pdo);
+else
+	{
+	\PHPFUI\ORM::addConnection($pdo);
+	}
 \PHPFUI\ORM::setTranslationCallback([\PHPFUI\Translation\Translator::class, 'trans']);
 \PHPFUI\Translation\Translator::setTranslationDirectory(PROJECT_ROOT . '/languages');
 \PHPFUI\Translation\Translator::setLocale('en_US');

@@ -311,7 +311,7 @@ class RideWithGPS
 		{
 		$rwgpsTable = new \App\Table\RWGPS();
 
-		$synced = $missing = $total = $clubCount = $mileage = $elevation = $mileageCount = $elevationCount = 0;
+		$synced = $total = $clubCount = $mileage = $elevation = $mileageCount = $elevationCount = 0;
 
 		foreach ($rwgpsTable->getRecordCursor() as $rwgps)
 			{
@@ -343,11 +343,6 @@ class RideWithGPS
 			$clubCount += $rwgps->club;
 			++$total;
 
-			if ($rwgps->status > 200)
-				{
-				++$missing;
-				}
-
 			if (\strlen($rwgps->csv ?? '') > 0)
 				{
 				++$synced;
@@ -357,9 +352,8 @@ class RideWithGPS
 
 		$fieldSet = new \PHPFUI\FieldSet('Overall Ride With GPS Stats');
 		$fieldSet->add(new \App\UI\Display('Total Routes', $total));
-		$fieldSet->add(new \App\UI\Display('Missing Routes', $missing));
 		$fieldSet->add(new \App\UI\Display('Synced Routes', $synced));
-		$fieldSet->add(new \App\UI\Display('Unsynced Routes', $total - $missing - $synced));
+		$fieldSet->add(new \App\UI\Display('Unsynced Routes', $total - $synced));
 		$fieldSet->add(new \App\UI\Display('Club Routes', $clubCount));
 		$container->add($fieldSet);
 

@@ -32,7 +32,7 @@ class Edit
 					}
 				\App\Model\Session::saveCartItems([]);
 				$invoiceModel = new \App\Model\Invoice();
-				$cartModel = new \App\Model\Cart($member->membership->zip);
+				$cartModel = new \App\Model\Cart();
 				$cartModel->setMemberId($cartItem->memberId);
 				$cartModel->compute($volunteerPoints);
 				$invoiceId = $invoiceModel->generateFromCart($cartModel);

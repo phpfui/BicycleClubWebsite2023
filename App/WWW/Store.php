@@ -95,7 +95,9 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->page->setPublic();
 		$this->page->addHeader('My Cart');
 		$cartModel = new \App\Model\Cart();
+		$cartModel->compute($this->customer->volunteerPoints ?? 0);
 		$cartView = new \App\View\Store\Cart($this->page, $cartModel);
+
 		$cart = $cartView->show(new \PHPFUI\Form($this->page), true);
 
 		if ($cartModel->getItems())
@@ -118,7 +120,7 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function checkOut(string $badDiscountCode = '') : void
+	public function checkout(string $badDiscountCode = '') : void
 		{
 		$errors = null;
 		$this->page->setPublic();

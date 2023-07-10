@@ -16,8 +16,6 @@ class Cart
 
 	final public const TYPE_STORE = 0;
 
-	private int $availablePoints = 0;
-
 	private bool $computed = false;
 
 	private int $count = 0;
@@ -38,20 +36,16 @@ class Cart
 
 	private float $tax = 0.0;
 
-	private float $taxRate = 0.0;
-
 	private float $total = 0.0;
 
 	private int $volunteerPoints = 0;
 
-	public function __construct(string $zip = '')
+	public function __construct()
 		{
 		$this->customerModel = new \App\Model\Customer();
 		$this->memberId = $this->customerModel->getNumber();
 		$this->discountCode = new \App\Record\DiscountCode();
 		$this->zero();
-		$zipTax = new \App\Table\Ziptax();
-		$this->taxRate = $zipTax->getTaxRateForZip($zip);
 		}
 
 	public function addFromStore(array $request) : void
@@ -213,12 +207,11 @@ class Cart
 		return $returnValue && $cartItems;
 		}
 
-	public function compute(int $availablePoints = 0) : void
+	public function compute(int $volunteerPoints = 0) : void
 		{
 		if (! $this->computed)
 			{
-			$this->volunteerPoints = $availablePoints;
-			$this->availablePoints = $availablePoints;
+			$this->volunteerPoints = $volunteerPoints;
 			$this->computed = true;
 			$this->zero();
 			$itemCount = [];
@@ -230,45 +223,9 @@ class Cart
 					$itemCount[$cartItem['storeItemId'] . '-' . ($cartItem['storeItemDetailId'] ?? 0)] = $cartItem['quantity'];
 					$value = (float)($cartItem['price'] * $cartItem['quantity']);
 
-					$price = (float)$cartItem['price'];
-					// NYS taxable clothing exemption (for now, tax computations are too much for this app).
-					if ($cartItem['clothing'])
-						{
-						$price = $price - 100.00;
-						$price = \max(0.0, $price);
-						}
-					$taxableValue = (float)($price * $cartItem['quantity']);
-
 					if ($cartItem['payByPoints'])
 						{
 						$this->payableByPoints += $value;
-
-						if ($this->availablePoints > 0)
-							{
-							if ($this->availablePoints >= $taxableValue)
-								{
-								$this->availablePoints -= (int)$taxableValue;
-								$taxableValue = 0.0;
-								}
-							else
-								{
-								$taxableValue -= (float)$this->availablePoints;
-								$this->availablePoints = 0;
-								}
-							}
-						}
-
-					if ($cartItem['taxableTotal'])
-						{
-						$this->tax += $taxableValue * $this->taxRate / 100.00 + (float)$cartItem['shipping'] * $this->taxRate / 100.00;
-						}
-
-					if ($cartItem['taxableClothingTotal'])
-						{
-						$localTaxRate = $this->taxRate - 4.0;
-						$localTaxRate = \max($localTaxRate, 0.0);
-						$this->tax += (float)$cartItem['shipping'] * $this->taxRate / 100.00;
-						$this->tax += $taxableValue * $localTaxRate / 100.00;
 						}
 
 					if (! $cartItem['noShipping'])
@@ -308,7 +265,12 @@ class Cart
 
 	public function getGrandTotal() : float
 		{
-		$appliedPoints = \min($this->payableByPoints, $this->volunteerPoints);
+		$appliedPoints = 0;
+
+		if ($this->volunteerPoints)
+			{
+			$appliedPoints = \min($this->payableByPoints, $this->volunteerPoints);
+			}
 		$total = $this->total + $this->shipping + $this->tax - $this->discount - $appliedPoints;
 
 		if ($total < 0.0)
@@ -325,11 +287,18 @@ class Cart
 			{
 			$this->items = \App\Table\CartItem::getCartFor($this->memberId);
 			$gaModel = new \App\Model\GeneralAdmission();
-			$zipTax = new \App\Table\Ziptax();
+			$this->tax = 0.0;
+			$taxCalculator = new \App\Model\TaxCalculator();
 
 			foreach ($this->items as &$cartItem)
 				{
-				$taxableTotal = $nonTaxableTotal = $pickupTotal = $shipping = $items = $taxableClothingTotal = $points = $noShipping = 0;
+				$cartItemRecord = new \App\Record\CartItem();
+				$cartItemRecord->setFrom($cartItem);
+				$tax = $taxCalculator->compute($cartItemRecord);
+				$this->tax += $tax;
+				$cartItem['tax'] = $tax;
+
+				$pickupTotal = $shipping = $items = $points = $noShipping = 0;
 
 				if (\App\Model\Cart::TYPE_GA == $cartItem['type'])
 					{
@@ -337,12 +306,10 @@ class Cart
 					// storeItemDetailId = gaRiderId
 					$event = new \App\Record\GaEvent($cartItem['storeItemId']);
 					$rider = new \App\Record\GaRider($cartItem['storeItemDetailId']);
-					$nonTaxableTotal = $gaModel->getPrice($event, $rider);
 					$cartItem['title'] = $event->title;
 					$cartItem['description'] = $event->description;
 					$cartItem['detailLine'] = $rider->firstName . ' ' . $rider->lastName;
-					$cartItem['price'] = $nonTaxableTotal;
-					$cartItem['taxable'] = 0;
+					$cartItem['price'] = $gaModel->getPrice($event, $rider);
 					$cartItem['payByPoints'] = 0;
 					$cartItem['clothing'] = 0;
 					$cartItem['quantity'] = 1;
@@ -370,34 +337,9 @@ class Cart
 							{
 							$shipping = $storeItem->shipping * (int)$cartItem['quantity'];
 							}
-
-						if ($storeItem->taxable)
-							{
-							if ((int)($storeItem->pickupZip))
-								{
-								$pickupTotal += $zipTax->getTaxRateForZip($storeItem->pickupZip);
-								}
-							elseif ($storeItem->clothing)
-								{
-								$price = $storeItem->price - 100;
-								$price = \max($price, 0.0);
-								$taxableClothingTotal += $price * $cartItem['quantity'];
-								}
-							else
-								{
-								$taxableTotal += $value + $shipping;
-								}
-							}
-						else
-							{
-							$nonTaxableTotal += $value;
-							}
 						$items = $cartItem['quantity'];
 						}
 					}
-				$cartItem['taxableTotal'] = $taxableTotal;
-				$cartItem['nonTaxableTotal'] = $nonTaxableTotal;
-				$cartItem['taxableClothingTotal'] = $taxableClothingTotal;
 				$cartItem['pickupTotal'] = $pickupTotal;
 				$cartItem['shipping'] = $shipping;
 				$cartItem['points'] = $points;
@@ -421,11 +363,6 @@ class Cart
 	public function getTax() : float
 		{
 		return $this->tax;
-		}
-
-	public function getTaxRate() : float
-		{
-		return $this->taxRate;
 		}
 
 	public function getTotal() : float

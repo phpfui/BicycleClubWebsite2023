@@ -9,8 +9,8 @@ class Ziptax extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, array<string>> */
 	public static array $validators = [
-		'zip_code' => ['maxlength'],
-		'zip_tax_rate' => ['number'],
+		'zip_code' => ['maxlength', 'required'],
+		'zip_tax_rate' => ['number', 'required'],
 		'zipcounty' => ['maxlength'],
 		'zipstate' => ['maxlength'],
 	];

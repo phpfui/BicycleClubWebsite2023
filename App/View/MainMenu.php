@@ -296,7 +296,9 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			$this->addSub($menu, '/Finance/maintenance', 'Check Maintenance');
 			$this->addSub($menu, '/Finance/payPal', 'PayPal Settings');
 			$this->addSub($menu, '/Finance/importTaxTable', 'Import Tax Table');
+			$this->addSub($menu, '/Finance/editTaxTable', 'Edit Tax Table');
 			$this->addSub($menu, '/Finance/tax', 'Taxes Collected');
+			$this->addSub($menu, '/Finance/taxCalculation', 'Tax Calculation');
 			$this->addSub($menu, '/Finance/payPalTerms', 'PayPal Terms and Conditions');
 			$this->addSub($menu, '/Finance/checksNotReceived', 'Unreceived Checks');
 			$this->addSub($menu, '/Finance/missingInvoices', 'Missing Invoices');

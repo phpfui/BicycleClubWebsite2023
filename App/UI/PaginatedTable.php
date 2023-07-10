@@ -155,7 +155,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 			{
 			if (\strlen((string)$value) && \str_starts_with($name, 's_'))
 				{
-				$fieldName = \str_replace('_', '.', \substr($name, 2));
+				$fieldName = \substr($name, 2);
 
 				if (isset($this->fieldTable[$fieldName]))
 					{

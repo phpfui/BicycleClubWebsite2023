@@ -107,6 +107,7 @@ class Cart
 		$headers = ['description' => 'Description',
 			'quantity' => 'Quantity',
 			'price' => 'Unit Price',
+			'tax' => 'Tax',
 			'total' => 'Total', ];
 
 		if ($editQuantities)
@@ -129,8 +130,9 @@ class Cart
 				$item['price'] = (float)($item['price'] ?? 0.0);
 				$item['quantity'] = (int)($item['quantity'] ?? 0);
 				$subTotal += $item['price'] * $item['quantity'];
-				$item['total'] = '$' . \number_format($item['price'] * $item['quantity'], 2);
+				$item['total'] = '$' . \number_format($item['price'] * $item['quantity'] + $item['tax'], 2);
 				$item['price'] = '$' . \number_format($item['price'], 2);
+				$item['tax'] = '$' . \number_format($item['tax'], 2);
 				$messages = [];
 
 				switch ($item['type'])
@@ -210,13 +212,9 @@ class Cart
 			$cart->add($this->summaryLine('<b>Available Points</b>', '$' . $this->model->getVolunteerPoints()));
 			}
 
-		if ($this->model->getPayableByPoints())
-			{
-			$cart->add($this->summaryLine('<b>Payable By Points</b>', '$' . \number_format($this->model->getPayableByPoints(), 2)));
-			}
-
 		if ($this->model->getPayableByPoints() > 0.0 && $this->model->getVolunteerPoints() > 0)
 			{
+			$cart->add($this->summaryLine('<b>Payable By Points</b>', '$' . \number_format($this->model->getPayableByPoints(), 2)));
 			$cart->add($this->summaryLine('<b>Applied Points</b>', '-$' . \number_format(\min($this->model->getPayableByPoints(), $this->model->getVolunteerPoints()), 2)));
 			}
 		$cart->add($this->summaryLine('<b>Shipping</b>', '$' . \number_format($this->model->getShipping(), 2)));
@@ -256,7 +254,7 @@ class Cart
 
 	public function status() : string | \App\UI\Alert
 		{
-		$this->model->compute(0);
+		$this->model->compute();
 		$value = '$' . \number_format($this->model->getTotal(), 2);
 		$count = $this->model->getCount();
 

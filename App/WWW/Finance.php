@@ -40,6 +40,24 @@ class Finance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function editTaxTable() : void
+		{
+		if ($this->page->addHeader('Edit Tax Table'))
+			{
+			$view = new \App\View\Finance\Tax($this->page);
+			$this->page->addPageContent($view->show());
+			}
+		}
+
+	public function editZiptax(\App\Record\Ziptax $zipTax = new \App\Record\Ziptax()) : void
+		{
+		if ($this->page->addHeader('Edit Tax Table'))
+			{
+			$view = new \App\View\Finance\Tax($this->page);
+			$this->page->addPageContent($view->edit($zipTax));
+			}
+		}
+
 	public function importTaxTable() : void
 		{
 		if ($this->page->addHeader('Import Tax Table'))
@@ -144,6 +162,15 @@ class Finance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$this->page->addPageContent($this->view->getTaxRequest());
 				}
+			}
+		}
+
+	public function taxCalculation() : void
+		{
+		if ($this->page->addHeader('Tax Calculation'))
+			{
+			$view = new \App\View\Finance\Tax($this->page);
+			$this->page->addPageContent($view->getTaxCalculation());
 			}
 		}
 	}

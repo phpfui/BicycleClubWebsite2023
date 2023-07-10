@@ -268,8 +268,6 @@ class Invoice
 	 */
 	public function generateFromCart(\App\Model\Cart $cartModel) : int
 		{
-		\App\Tools\Logger::get()->debug($cartModel);
-		$taxRate = $cartModel->getTaxRate();
 		$pointsEarned = $pointsUsed = 0;
 		$member = $this->customerModel->read($customerNumber = $this->customerModel->getNumber());
 
@@ -298,6 +296,7 @@ class Invoice
 		$invoiceUpdates = [];
 		$invoiceId = 0;
 		$cartItems = $cartModel->getItems();
+		$taxCalculator = new \App\Model\TaxCalculator();
 
 		if ($cartItems)
 			{
@@ -319,7 +318,7 @@ class Invoice
 			$invoice->memberId = $customerNumber;
 			$invoice->totalPrice = $cartModel->getTotal();
 			$invoice->totalShipping = $cartModel->getShipping();
-			$invoice->totalTax = $cartModel->getTax();
+			$invoice->totalTax = 0.0;
 			$invoice->discount = $cartModel->getDiscount();
 			$invoice->paymentDate = null;
 			$invoice->pointsUsed = (int)\round($pointsUsed);
@@ -336,6 +335,9 @@ class Invoice
 					{
 					continue;
 					}
+
+				$tax = $taxCalculator->compute($cartItem);
+				$invoice->totalTax += $tax;
 
 				switch ($cartItem['type'])
 					{
@@ -360,15 +362,7 @@ class Invoice
 								$storeItemDetail->read($key);
 								}
 
-							$taxableTotal = (float)$cartItem['taxableTotal'];
-							$taxableClothingTotal = (float)$cartItem['taxableClothingTotal'];
 							$shipping = (float)$cartItem['shipping'];
-							$tax = 0.0;
-
-							if ($taxRate)
-								{
-								$tax = $taxableTotal * $taxRate / 100.00 + $shipping * $taxRate / 100.00 + $taxableClothingTotal * ($taxRate - 4.0) / 100.00;
-								}
 							$invoiceItem = new \App\Record\InvoiceItem();
 							$invoiceItem->invoiceId = $invoiceId;
 							$invoiceItem->storeItemId = $cartItem['storeItemId'];
@@ -418,7 +412,7 @@ class Invoice
 						$invoiceItem->shipping = 0.0;
 						$invoiceItem->quantity = 1;
 						$invoiceItem->type = $cartItem['type'];
-						$invoiceItem->tax = 0.0;
+						$invoiceItem->tax = $tax;
 						$invoiceItem->insert();
 						$this->paypalType = 'General_Admission';
 
@@ -433,6 +427,9 @@ class Invoice
 						break;
 					}
 				}
+			// save the computed tax
+			$invoice->update();
+
 			$balanceDue = $invoice->unpaidBalance();
 			// delete cart from member
 			$cartItemTable = new \App\Table\CartItem();

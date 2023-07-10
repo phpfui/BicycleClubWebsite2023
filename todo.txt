@@ -1,9 +1,5 @@
 User customizable tax rate calculations
 
-Create Invoice
-	Add payment to invoice page /Store/Invoice/pay
-		redirect to unshipped invoices
-
 Gear Calculator
 
 Signed up riders over the limit

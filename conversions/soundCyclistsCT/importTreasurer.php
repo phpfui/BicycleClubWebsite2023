@@ -17,7 +17,7 @@ $rootFolder->read(['fileFolder' => $rootFolderName]);
 if (! $rootFolder->loaded())
 	{
 	$rootFolder->fileFolder = $rootFolderName;
-	$rootFolder->parentId = 0;
+	$rootFolder->parentFolderId = 0;
 	$rootFolder->insert();
 	}
 
@@ -121,9 +121,9 @@ foreach ($iterator as $item)
 		$year = \date('Y', $time);
 		$fileFolder = new \App\Record\FileFolder();
 
-		if (! $fileFolder->read(['parentId' => $rootFolder->fileFolderId, 'fileFolder' => $year]))
+		if (! $fileFolder->read(['parentFolderId' => $rootFolder->fileFolderId, 'fileFolder' => $year]))
 			{
-			$fileFolder->parentId = $rootFolder->fileFolderId;
+			$fileFolder->parentFolderId = $rootFolder->fileFolderId;
 			$fileFolder->fileFolder = $year;
 			}
 		$file = new \App\Record\File();

@@ -100,8 +100,8 @@ class ImportMembers extends \PHPFUI\Container
 		{
 		$csvReader = new \App\Tools\CSVReader($this->importModel->getFileName(), true, \PHPFUI\Session::getFlash('separator') ?? ',');
 		$membershipModel = new \App\Model\Membership();
-		$settingsTable = new \App\Table\Setting();
-		$paidMembers = $settingsTable->value('PaidMembers');
+		$duesModel = new \App\Model\MembershipDues();
+		$paidMembers = $duesModel->PaidMembers;
 		$membershipModel->import($csvReader, $_POST, 'Paid' == $paidMembers);
 		}
 

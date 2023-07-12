@@ -6,6 +6,8 @@ class Join
 	{
 	private readonly \PHPFUI\ReCAPTCHA $captcha;
 
+	private readonly \App\Model\MembershipDues $duesModel;
+
 	private string $forgotPassword = 'ForgotPassword';
 
 	private readonly \App\Model\Member $memberModel;
@@ -19,6 +21,7 @@ class Join
 		$this->memberModel = new \App\Model\Member();
 		$this->memberView = new \App\View\Member($page);
 		$this->settingTable = new \App\Table\Setting();
+		$this->duesModel = new \App\Model\MembershipDues();
 		$this->captcha = new \PHPFUI\ReCAPTCHA($this->page, $this->settingTable->value('ReCAPTCHAPublicKey'), $this->settingTable->value('ReCAPTCHAPrivateKey'));
 		}
 
@@ -319,7 +322,7 @@ class Join
 		$members = \App\Table\Member::membersInMembership($member->membershipId);
 		$renewView = new \App\View\Membership\Renew($this->page, $member->membership, $this->memberView);
 		$container = $renewView->renew(true);
-		$allowedMembers = (int)$this->settingTable->value('maxMembersOnMembership');
+		$allowedMembers = (int)$this->duesModel->MaxMembersOnMembership;
 
 		if (! $allowedMembers || \count($members) < $allowedMembers)
 			{

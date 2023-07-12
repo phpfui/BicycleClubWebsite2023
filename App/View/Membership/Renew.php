@@ -6,23 +6,21 @@ class Renew
 	{
 	private float $additionalMemberDues = 0;
 
-	private int $allowedFamilyMembers = 0;
+	private readonly \App\Model\MembershipDues $duesModel;
 
 	private readonly \App\Model\Member $memberModel;
 
 	private readonly iterable $members;
 
-	private float $membershipPrice = 0;
-
 	private readonly \App\Table\Setting $settingTable;
 
 	public function __construct(private readonly \App\View\Page $page, private readonly \App\Record\Membership $membership, private readonly \App\View\Member $memberView)
 		{
+		$this->duesModel = new \App\Model\MembershipDues();
 		$this->memberModel = new \App\Model\Member();
 		$this->settingTable = new \App\Table\Setting();
 		$this->members = \App\Table\Member::membersInMembership($membership->membershipId);
-		$this->additionalMemberDues = (float)$this->settingTable->value('additionalMemberDues');
-		$this->membershipPrice = (float)$this->settingTable->value('annualDues');
+		$this->additionalMemberDues = \array_sum($this->duesModel->AdditionalMemberDues);
 
 		if (isset($_GET['delete']))
 			{
@@ -78,17 +76,17 @@ class Renew
 		$maxMembers = \max((int)($_POST['maxMembers'] ?? 1), 1);
 		$additionalMembers = \max($additionalMembers, $maxMembers - 1);
 
-		$paidMembers = $this->settingTable->value('PaidMembers');
+		$paidMembers = $this->duesModel->PaidMembers;
 
 		if ($years > 1)
 			{
 			$output->add("<br>You elected to renew for {$years} years");
 			}
-		$output->add("<br>{$paidMembers} Membership is $" . $this->membershipPrice . ' every 12 months.');
+		$output->add("<br>{$paidMembers} Membership is $" . $this->duesModel->getMembershipPriceByYear($years) . ' every 12 months.');
 
 		if ($additionalMembers && $this->additionalMemberDues)
 			{
-			$output->add('<br>Additional members are $' . $this->additionalMemberDues . ' per year.');
+			$output->add('<br>Additional members are $' . $this->duesModel->getAdditionalMemberPriceByYear($years) . ' per year.');
 			$output->add("<br>You have {$additionalMembers} additional member");
 
 			if ($additionalMembers > 1)
@@ -99,7 +97,16 @@ class Renew
 
 		if ('Family' == $paidMembers && $additionalMembers > 0)
 			{
-			$additionalMembers = 1;
+			$additionalMembers = \count($this->members);
+
+			if ($additionalMembers > 2)
+				{
+				$additionalMembers -= 2;
+				}
+			else
+				{
+				$additionalMembers = 0;
+				}
 			}
 		elseif ('Unlimited' == $paidMembers)
 			{
@@ -108,11 +115,11 @@ class Renew
 
 		if ($years)
 			{
-			$unpaidBalance = $years * ($this->membershipPrice + $additionalMembers * $this->additionalMemberDues);
+			$unpaidBalance = $this->duesModel->getTotalMembershipPrice(\count($this->members), $years);
 			}
 		else
 			{
-			$unpaidBalance = $additionalMembers * $this->additionalMemberDues;
+			$unpaidBalance = $additionalMembers * $this->duesModel->getAdditionalMemberPriceByYear(1);
 			}
 
 		$donation = (float)($_POST['donation'] ?? 0.0);
@@ -157,9 +164,22 @@ class Renew
 			}
 
 		$numberMembers = \count($this->members);
-		$functions = [];
-		$paidMembers = $this->settingTable->value('PaidMembers');
-		$renewalType = $this->settingTable->value('MembershipType');
+
+		$form = new \PHPFUI\Form($this->page);
+
+		if (\PHPFUI\Session::checkCSRF())
+			{
+			$years = (int)($_POST['years'] ?? 0);
+			$maxMembers = (int)($_POST['maxMembers'] ?? 1);
+			$price = $this->duesModel->getTotalMembershipPrice($maxMembers, $years);
+			$price += (float)($_POST['donation'] ?? 0);
+			$this->page->setResponse(\number_format($price, 2));
+
+			return $container;
+			}
+
+		$paidMembers = $this->duesModel->PaidMembers;
+		$renewalType = $this->duesModel->MembershipType;
 
 		if ('Both' == $renewalType)
 			{
@@ -200,7 +220,7 @@ class Renew
 			$container->add($table);
 			}
 
-		$maxMembersOnMembership = (int)$this->settingTable->value('maxMembersOnMembership');
+		$maxMembersOnMembership = (int)$this->duesModel->MaxMembersOnMembership;
 
 		if (! $maxMembersOnMembership || $maxMembersOnMembership > \count($this->members))
 			{
@@ -211,38 +231,75 @@ class Renew
 
 		$membershipRates = new \PHPFUI\FieldSet('Membership Rates');
 
+		$table = new \PHPFUI\Table();
+		$dues = $this->duesModel->AnnualDues;
+		$additionalDues = $this->duesModel->AdditionalMemberDues;
+
+		$headers = [];
+		$numberYears = \count($dues);
+
+		if ($numberYears > 1)
+			{
+			$headers[] = 'Years';
+			}
+
 		switch ($paidMembers)
 			{
 			case 'Unlimited':
-				$membershipRates->add(new \App\UI\Display('Annual Dues', '$' . $this->membershipPrice));
+				$headers[] = 'Annual Dues';
 
 				break;
 
 			case 'Paid':
-				$membershipRates->add(new \App\UI\Display('Annual Dues', '$' . $this->membershipPrice));
+				$headers[] = 'Annual Dues';
 
-				if ($this->additionalMemberDues)
+				if (\array_sum($additionalDues))
 					{
-					$membershipRates->add(new \App\UI\Display('Additional Member Dues', '$' . $this->additionalMemberDues));
+					$headers[] = 'Additional Member Dues';
 					}
 
 				break;
 
 			case 'Family':
-				$membershipRates->add(new \App\UI\Display('Annual Dues', '$' . $this->membershipPrice));
-				$membershipRates->add(new \App\UI\Display('Additional Member Dues', '$' . $this->additionalMemberDues));
-				$this->allowedFamilyMembers = 1;
+				$headers[] = 'Annual Family (2 members) Dues';
+
+				if (\array_sum($additionalDues))
+					{
+					$headers[] = 'Additional Member Dues';
+					}
 
 				break;
 			}
+		$table->setHeaders($headers);
+
+		foreach ($dues as $year => $amount)
+			{
+			$row = [];
+
+			if ($numberYears > 1)
+				{
+				$years = $year + 1;
+
+				if ($years >= $numberYears)
+					{
+					$years = "{$years}+";
+					}
+				$row['Years'] = $years;
+				}
+
+			$row['Annual Dues'] = $row['Annual Family (2 members) Dues'] = '$' . \number_format((float)$amount, 2);
+			$row['Additional Member Dues'] = '$' . \number_format((float)($additionalDues[$year] ?? 0.0), 2);
+			$table->addRow($row);
+			}
+		$membershipRates->add($table);
 		$container->add($membershipRates);
 
 		$totalDue = new \PHPFUI\HTML5Element('div');
+		$totalDueId = $totalDue->getId();
 		$totalDisplay = new \PHPFUI\MultiColumn('<b>Total Due</b>', $totalDue);
 
 		if ('Manual' == $renewalType || 'Both' == $renewalType)
 			{
-			$form = new \PHPFUI\Form($this->page);
 			$form->setAttribute('action', '/Membership/renewCheckout');
 			$multiColumn = new \PHPFUI\MultiColumn();
 			$yearlyRenewal = new \PHPFUI\FieldSet('Yearly Renewal');
@@ -258,7 +315,7 @@ class Renew
 				{
 				$years->addOption("{$i} Year" . (($i > 1) ? 's' : ''), (string)$i, 1 == $i);
 				}
-			$years->addAttribute('onchange', 'computePrice();');
+			$years->addAttribute('onchange', 'updatePrice();');
 			$multiColumn->add($years);
 
 			if ($this->additionalMemberDues)
@@ -274,7 +331,7 @@ class Renew
 					{
 					$maxMembers->addOption("{$i} Member" . (($i > 1) ? 's' : ''), (string)$i, $i == $numberMembers);
 					}
-				$maxMembers->addAttribute('onchange', 'computePrice()');
+				$maxMembers->addAttribute('onchange', 'updatePrice()');
 				$multiColumn->add($maxMembers);
 				}
 			else
@@ -291,7 +348,7 @@ class Renew
 			$donation = new \PHPFUI\Input\Text('donation', 'Donation Amount', '0');
 			$donationId = $donation->getId();
 			$donation->setToolTip('Your donation will be added to your membership dues.');
-			$donation->addAttribute('onchange', 'updateDonation()');
+			$donation->addAttribute('onchange', 'updatePrice()');
 			$multiColumn->add($donation);
 			$donationSet->add($multiColumn);
 			$donationSet->add(new \PHPFUI\Input\Text('itemDetail', 'Donation notes or dedications', ''));
@@ -299,18 +356,6 @@ class Renew
 
 			$yearId = $years->getId();
 			$maxMembersId = $maxMembers->getId();
-			$totalDueId = $totalDue->getId();
-			$this->additionalMemberDues = (float)$this->additionalMemberDues;
-			$js = <<<JAVASCRIPT
-function computePrice() {
-var years = {$dollar}('#{$yearId}').val();
-var members = {$dollar}('#{$maxMembersId}').val() - 1 - {$this->allowedFamilyMembers};
-if (members < 0) members = 0;
-var price = parseInt($('#{$donationId}').val()) + years * ({$this->membershipPrice} + members * {$this->additionalMemberDues});
-{$dollar}('#{$totalDueId}').html('<b>$'+price+'</b>');}computePrice()
-JAVASCRIPT;
-			$functions[] = 'computePrice()';
-			$this->page->addJavaScript($js);
 			$form->add($totalDisplay);
 
 			if ($confirmAndPayButton)
@@ -339,23 +384,14 @@ JAVASCRIPT;
 					{
 					$maxMembersOnMembership = 10;
 					}
-				$maxMembers = new \PHPFUI\Input\Select('maxMembersSubscription', 'Number of members on your membership');
+				$maxMembers = new \PHPFUI\Input\Select('MaxMembersSubscription', 'Number of members on your membership');
 
 				for ($i = $numberMembers; $i <= $maxMembersOnMembership; ++$i)
 					{
 					$maxMembers->addOption("{$i} Member" . (($i > 1) ? 's' : ''), (string)$i, $i == $numberMembers);
 					}
-				$maxMembers->addAttribute('onchange', 'computePriceSubscription()');
+				$maxMembers->addAttribute('onchange', 'updatePrice()');
 				$maxMembersId = $maxMembers->getId();
-				$totalDueId = $totalDue->getId();
-				$js = <<<JAVASCRIPT
-function computePriceSubscription() {
-var members = {$dollar}('#{$maxMembersId}').val() - 1;
-var price = {$this->membershipPrice} + members * {$this->additionalMemberDues};
-{$dollar}('#{$totalDueId}').html('$'+price);}computePriceSubscription()
-JAVASCRIPT;
-				$functions[] = 'computePriceSubscription()';
-				$this->page->addJavaScript($js);
 				}
 			else
 				{
@@ -367,7 +403,16 @@ JAVASCRIPT;
 			$container->add(new \PHPFUI\Button('Subscribe', '/Membership/subscription'));
 			$container->add($fieldSet);
 			}
-		$this->page->addJavaScript('function updateDonation() {' . \implode(';', $functions) . '}');
+		$dollar = '$';
+		$formId = $form->getId();
+
+		$js = <<<JAVASCRIPT
+function updatePrice(){var form={$dollar}('#{$formId}');
+$.ajax({type:'POST',dataType:'html',data:form.serialize(),
+success:function(response){var data;try{data=JSON.parse(response);}catch(e){alert('Error: '+response);}
+{$dollar}('#{$totalDueId}').html('<b>$'+data.response+'</b>')}});};updatePrice();
+JAVASCRIPT;
+		$this->page->addJavaScript($js);
 
 		return $container;
 		}

@@ -35,54 +35,6 @@ class Membership
 		$fieldSet->add($settingsSaver->generateField('donationText', 'Additional Donation Text')->setRequired(false));
 		$form->add($fieldSet);
 
-		$fieldSet = new \PHPFUI\FieldSet('Membership Term');
-		$extraFields[] = $membershipTerm = 'MembershipTerm';
-		$multiColumn = new \PHPFUI\MultiColumn();
-		$memberTerm = new \PHPFUI\Input\RadioGroup($membershipTerm, 'Membership Term', $this->settingTable->value($membershipTerm));
-		$memberTerm->addButton('Annual');
-		$memberTerm->addButton('12 Months');
-		$memberTerm->setRequired()->setToolTip('Annual membership terms all renew on the same month. 12 month memberships are good for 12 months from date of joining.');
-		$extraFields[] = $membershipStartMonth = 'MembershipStartMonth';
-		$startMonth = new \App\UI\Month($membershipStartMonth, 'Membership Start Month', $this->settingTable->value($membershipStartMonth));
-		$startMonth->setToolTip('For annual memberships, The month when all the memberships renew');
-		$extraFields[] = $membershipGraceMonth = 'MembershipGraceMonth';
-		$graceMonth = new \App\UI\Month($membershipGraceMonth, 'Membership Grace Month', $this->settingTable->value($membershipGraceMonth));
-		$graceMonth->setToolTip('For annual memberships, if joining after this month, membership is good through the end of the next renwal period');
-		$fieldSet->add(new \PHPFUI\MultiColumn($memberTerm, $startMonth, $graceMonth));
-
-		$extraFields[] = $membershipType = 'MembershipType';
-		$fieldSet->add($settingsSaver->generateField($membershipType, '', new \PHPFUI\Input\Hidden($membershipType, 'Manual'), false));
-//		$renewalType->addButton('Manual Renewal', 'Manual');
-//		$renewalType->addButton('Subscription', 'Subscription');
-//		$renewalType->addButton('Both', 'Both');
-//		$fieldSet->add($renewalType);
-		$form->add($fieldSet);
-
-		$fieldSet = new \PHPFUI\FieldSet('Membership Dues');
-		$multiColumn = new \PHPFUI\MultiColumn();
-		$multiColumn->add($settingsSaver->generateField('annualDues', 'Membership Dues', 'Number'));
-		$multiColumn->add($settingsSaver->generateField('additionalMemberDues', 'Additional Member Dues', 'Number'));
-//		$multiColumn->add($settingsSaver->generateField('subscriptionDues', 'Subscription Dues', 'Number'));
-		$fieldSet->add($multiColumn);
-
-		$extraFields[] = $paidMembers = 'PaidMembers';
-		$memberType = new \PHPFUI\Input\RadioGroup($paidMembers, 'Membership Type', $this->settingTable->value($paidMembers));
-		$memberType->addButton('Unlimited', 'Unlimited');
-		$memberType->addButton('Paid Only', 'Paid');
-		$memberType->addButton('Family (two paid)', 'Family');
-		$memberType->setRequired();
-
-		$maxMembersOnMembership = $settingsSaver->generateField('maxMembersOnMembership', 'Max Members On Membership', 'Number')->setRequired(false);
-		$maxMembersOnMembership->setToolTip('You can limit total members on a membership, for family membership, all members above 2 are free');
-
-		$fieldSet->add(new \PHPFUI\MultiColumn($memberType, $maxMembersOnMembership));
-
-//		$multiColumn = new \PHPFUI\MultiColumn();
-//		$multiColumn->add($settingsSaver->generateField('discountCD', 'New Member Discount Code'));
-//		$multiColumn->add($settingsSaver->generateField('discountDL', 'New Member Discount Amount', 'number'));
-//		$fieldSet->add($multiColumn);
-		$form->add($fieldSet);
-
 		$fieldSet = new \PHPFUI\FieldSet('Membership Defaults');
 		$multiColumn = new \PHPFUI\MultiColumn();
 

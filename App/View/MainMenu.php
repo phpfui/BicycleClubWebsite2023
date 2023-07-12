@@ -172,6 +172,7 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			$this->addSub($menu, '/Membership/subscriptions', 'Update Subscriptions');
 			$this->addSub($menu, '/Membership/minor', 'Print Minor Release');
 			$this->addSub($menu, '/Membership/configure', 'Membership Configuration');
+			$this->addSub($menu, '/Membership/dues', 'Membership Dues');
 			$this->addSub($menu, '/Membership/qrCodes', 'Membership QR Codes');
 			$this->addSub($menu, '/Membership/mom/' . \App\Tools\Date::year(\App\Tools\Date::today()), 'Member Of The Month');
 			$this->addSub($menu, '/Membership/emails', 'Membership Emails');

@@ -32,6 +32,9 @@ class SparkPostSuppressions extends \App\Cron\BaseJob
 					$member->rideJournal = 0;
 					$member->update();
 
+					$message = $member->fullName() . ' has been removed from the SparkPost suppression list';
+					\App\Tools\Logger::get()->debug($message);
+
 					$deletes[] = $suppression['recipient'];
 					}
 				}

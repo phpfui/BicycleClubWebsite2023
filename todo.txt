@@ -1,5 +1,3 @@
-User customizable tax rate calculations
-
 Gear Calculator
 
 Signed up riders over the limit

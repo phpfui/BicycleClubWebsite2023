@@ -84,6 +84,17 @@ trait PageTrait
 		return new \App\View\Public\ContactUs($this, $boardMemberTable->getBoardMembers());
 		}
 
+	public function GearCalculator() : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+
+		$view = new \App\UI\GearCalculator($this);
+
+		$container->add($view->show());
+
+		return $container;
+		}
+
 	public function Join() : string | \PHPFUI\HTML5Element
 		{
 		if (! isset($_POST['ForgotPassword']) && ! $this->getDone())

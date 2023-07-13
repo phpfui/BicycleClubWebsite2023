@@ -230,8 +230,8 @@ class SelectAutoComplete extends \PHPFUI\Input\Select
 			return '';
 			}
 
-		$data = \str_replace('&amp;', '&', $data); // need both to remove pesky &amp;!
-		$data = \PHPFUI\TextHelper::unhtmlentities($data);  // need this too!
+//		$data = \str_replace('&amp;', '&', $data); // need both to remove pesky &amp;!
+//		$data = \PHPFUI\TextHelper::unhtmlentities($data);  // need this too!
 		$data = \str_replace("'", "\'", $data);
 
 		return $data;

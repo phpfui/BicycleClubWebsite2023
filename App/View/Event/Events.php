@@ -44,36 +44,22 @@ class Events
 		return $container;
 		}
 
-	public function edit(\App\Record\Event $event) : \App\UI\ErrorForm
+	public function edit(\App\Record\Event $event) : \App\UI\ErrorFormSaver
 		{
 		if ($event->eventId ?? 0)
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \App\UI\ErrorForm($this->page, $submit);
+			$form = new \App\UI\ErrorFormSaver($this->page, $event, $submit);
 			}
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add', 'action');
 			$event->organizer = \App\Model\Session::signedInMemberId();
-			$form = new \App\UI\ErrorForm($this->page);
+			$form = new \App\UI\ErrorFormSaver($this->page, $event);
 			}
 
-		if ($form->isMyCallback())
+		if ($form->save())
 			{
-			unset($_POST['eventId']);
-			$event->setFrom($_POST);
-			$errors = $event->validate();
-
-			if ($errors)
-				{
-				$this->page->setRawResponse($form->returnErrors($errors));
-				}
-			else
-				{
-				$event->update();
-				$this->page->setResponse('Saved');
-				}
-
 			return $form;
 			}
 

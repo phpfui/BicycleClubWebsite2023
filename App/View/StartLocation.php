@@ -29,34 +29,47 @@ class StartLocation
 		return false;
 		}
 
-	public function edit(\App\Record\StartLocation $location) : \PHPFUI\Form
+	public function edit(\App\Record\StartLocation $location) : \App\UI\ErrorFormSaver
 		{
 		if ($location->startLocationId)
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \PHPFUI\Form($this->page, $submit);
+			$form = new \App\UI\ErrorFormSaver($this->page, $location, $submit);
 			}
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add');
-			$form = new \PHPFUI\Form($this->page);
+			$form = new \App\UI\ErrorFormSaver($this->page, $location);
 			}
 
-		if ($form->isMyCallback())
+		if ($form->save())
 			{
-			unset($_POST['startLocationId']);
-			$location->setFrom($_POST);
-			$location->update();
-			$this->page->setResponse('Saved');
+			return $form;
 			}
+
 		$type = $location->startLocationId ? 'Edit' : 'Add';
 		$fieldSet = new \PHPFUI\FieldSet($type . ' Location');
 		$location = new \App\Record\StartLocation($location->startLocationId);
 		$form->add(new \PHPFUI\Input\Hidden('startLocationId', (string)$location->startLocationId));
+
 		$name = new \PHPFUI\Input\Text('name', 'Location Name', $location->name);
 		$name->setToolTip('Enter enough information so people know where it is.');
 		$name->setRequired();
 		$fieldSet->add($name);
+
+		$town = new \PHPFUI\Input\Text('town', 'Start Location Town', $location->town);
+		$town->setToolTip('Should be the location the place is generally known as.');
+		$fieldSet->add($town);
+
+		$state = new \PHPFUI\Input\Text('state', 'Start Location State', $location->state);
+		$state->setToolTip('State abbreviation');
+		$state->addAttribute('maxlength', '2');
+		$fieldSet->add($state);
+
+		$nearestExit = new \PHPFUI\Input\Text('nearestExit', 'Nearest Exit', $location->nearestExit);
+		$nearestExit->setToolTip('Include highway and exit number');
+		$fieldSet->add($nearestExit);
+
 		$url = new \PHPFUI\Input\Url('link', 'Link to web site', $location->link);
 		$url->addAttribute('placeholder', 'http://www.');
 		$url->setToolTip('Optional link to a web site of the start location, like Google Maps for example.');

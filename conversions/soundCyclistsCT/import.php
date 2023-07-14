@@ -415,42 +415,42 @@ foreach ($memberships as $row)
  * URL of registration page
  * URL of registration page No Payment
  */
-$specialEventReader = \getReader('Special Events List.csv');
-
-$eventTitles = [];
-
-foreach ($specialEventReader as $row)
-	{
-	$event = new \App\Record\Event();
-
-	$event->eventDate = \makeDate($row['Event Date']);
-	$event->organizer = \getMember($row['Coordinator'])->memberId;
-	$event->startTime = $row['Event Start Time'];
-	$event->title = $row['Event'];
-	$event->paypal = 1;
-	$event->information = $row['Event Description'];
-	$eventTitles[$event->title] = $event->insert();
-	}
-
-$olderEventReader = \getReader('Special Events List.csv');
-
-foreach ($olderEventReader as $row)
-	{
-	$row['Title'] = $row['Title'] ?? 'Unknown';
-	$title = $row['Title'];
-
-	if (isset($eventTitles[$title]) || 'Member Registration' == $title)
-		{
-		continue;
-		}
-	$event = new \App\Record\Event();
-
-	$event->eventDate = \makeDate($row['Event Date']);
-	$event->title = $row['Title'];
-	$event->paypal = 1;
-	$event->information = $row['Event Description'];
-	$eventTitles[$event->title] = $event->insert();
-	}
+//$specialEventReader = \getReader('Special Events List.csv');
+//
+//$eventTitles = [];
+//
+//foreach ($specialEventReader as $row)
+//	{
+//	$event = new \App\Record\Event();
+//
+//	$event->eventDate = \makeDate($row['Event Date']);
+//	$event->organizer = \getMember($row['Coordinator'])->memberId;
+//	$event->startTime = $row['Event Start Time'];
+//	$event->title = $row['Event'];
+//	$event->paypal = 1;
+//	$event->information = $row['Event Description'];
+//	$eventTitles[$event->title] = $event->insert();
+//	}
+//
+//$olderEventReader = \getReader('Special Events List.csv');
+//
+//foreach ($olderEventReader as $row)
+//	{
+//	$row['Title'] = $row['Title'] ?? 'Unknown';
+//	$title = $row['Title'];
+//
+//	if (isset($eventTitles[$title]) || 'Member Registration' == $title)
+//		{
+//		continue;
+//		}
+//	$event = new \App\Record\Event();
+//
+//	$event->eventDate = \makeDate($row['Event Date']);
+//	$event->title = $row['Title'];
+//	$event->paypal = 1;
+//	$event->information = $row['Event Description'];
+//	$eventTitles[$event->title] = $event->insert();
+//	}
 
 $memberTable = new \App\Table\Member();
 $eventRegistrations = \getReader('Event Reg (All Activity).csv');
@@ -540,7 +540,27 @@ foreach ($eventRegistrations as $row)
  * JustPace
  */
 $memberTable = new \App\Table\Member();
+
+$startLocations = [];
 $startLocationTable = new \App\Table\StartLocation();
+$startLocationTable->delete(true);
+
+$startLocationReader = \getReader('Ride Start Locations.csv');
+$startLocations = [];
+
+foreach ($startLocationReader as $row)
+	{
+	$startLocation = new \App\Record\StartLocation();
+	$startLocation->name = $row['Start Location'];
+	$startLocation->town = $row['Start Town'];
+	$startLocation->link = $row['Google Map'];
+	$startLocation->address = $row['Street Address'];
+	$startLocation->state = $row['State'];
+	$startLocation->nearestExit = $row['Nearest Exit'];
+	$startLocation->nearestExit = $row['Nearest Exit'];
+	$startLocation->directions = $row['Directions'];
+	$startLocations[$startLocation->name] = $startLocation->insert();
+	}
 
 $rideReader = \getReader('Ride Schedule List.csv');
 
@@ -573,13 +593,7 @@ foreach ($rideReader as $rideImport)
 		$ride->member = $cursor->current();
 		}
 
-	$startLocationTable->setWhere(new \PHPFUI\ORM\Condition('name', $rideImport['Start Location'], new \PHPFUI\ORM\Operator\Like()));
-	$cursor = $startLocationTable->getRecordCursor();
-
-	if ($cursor->count())
-		{
-		$ride->startLocation = $cursor->current();
-		}
+	$ride->startLocationId = $startLocations[$rideImport['Start Location']] ?? null;
 
 	$ride->insert();
 	}
@@ -599,9 +613,6 @@ foreach ($iterator as $item)
 $csvReader = \getReader('Ride Library.csv');
 
 $RWGPSIds = [];
-$startLocations = [];
-$startLocationTable = new \App\Table\StartLocation();
-$startLocationTable->delete(true);
 $cueSheetTable = new \App\Table\CueSheet();
 $cueSheetTable->delete(true);
 $fields = ['PDF', 'Excel', 'Word', 'GPS'];
@@ -636,63 +647,18 @@ foreach ($csvReader as $rideImport)
 	unset($dom);
 	$RWGPSId = $RWGPSId['RWGPSId'] ?? 0;
 	$RWGPSIds[$RWGPSId] = null;
-	$startLocationName = \trim($rideImport['Start location'] . ', ' . $rideImport['Start City text']);
-	$startLocationId = null;
-
-	if (! isset($startLocations[$startLocationName]))
-		{
-		$startLocation = new \App\Record\StartLocation();
-		$startLocation->name = $startLocationName;
-		$dom = new \voku\helper\HtmlDomParser($rideImport['Google Map']);
-
-		foreach ($dom->find('a') as $node)
-			{
-			$startLocation->link = \str_replace(' ', '+', $node->href);
-			}
-		unset($dom);
-		$startLocation->directions = \trim($rideImport['Street address']);
-
-		if (\strlen($startLocation->directions))
-			{
-			$startLocation->directions .= ' - ';
-			}
-		$startLocation->directions .= \trim($rideImport['Directions']);
-		$startLocation->directions .= ' - ';
-		$startLocation->active = 1;
-		$existingStart = new \App\Record\StartLocation();
-
-		if (! $existingStart->read(['name' => $startLocation->name, 'directions' => $startLocation->name]))
-			{
-			$startLocationId = $startLocation->insert();
-			}
-		else
-			{
-			$startLocationId = $existingStart->startLocationId;
-			}
-		$startLocations[$startLocationName] = $startLocationId;
-
-		if (\is_int($startLocationId))
-			{
-			$RWGPSIds[$RWGPSId] = $startLocationId;
-			}
-		}
-
+	$startLocationName = \trim($rideImport['Start location']);
+	$startLocationId = $startLocations[$startLocationName] ?? null;
+	$RWGPSIds[$RWGPSId] = $startLocationId;
 	// add cue sheets
 	$cuesheet = new \App\Record\CueSheet();
 	$cuesheet->name = $rideImport['Ride Name'];
 	$cuesheet->mileage = (float)$rideImport['Miles'];
 	$cuesheet->startLocationId = $startLocationId;
 	$cuesheet->RWGPSId = $RWGPSId;
-	$cuesheet->description = $rideImport['Description'];
-
-  if ($rideImport['Notes'])
-		{
-		$cuesheet->description .= ' Notes: ' . $rideImport['Notes'];
-		}
   $cuesheet->pending = 0;
 	$cuesheet->member = \getMember($rideImport['Cue Sheet By']);
 	$cuesheet->dateAdded = \makeDate($rideImport['Revised Date']);
-	$cuesheet->revisionDate = \makeDate($rideImport['Last Modified Time']);
 	$cuesheet->terrain = $terrains[$rideImport['Terrain']];
 	$existingSheet = new \App\Record\CueSheet();
 
@@ -759,3 +725,16 @@ function addFile(\App\Record\CueSheet $cueSheet, string $file, string $path) : v
 	$destination = $path . $cueSheetVersion->cueSheetVersionId . $cueSheetVersion->extension;
 	\copy($importFile, $destination);
 	}
+
+
+/*
+Warning: Undefined array key "Street address" in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 664
+Deprecated: trim(): Passing null to parameter #1 ($string) of type string is deprecated in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 664
+Warning: Undefined array key "Directions" in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 670
+Deprecated: trim(): Passing null to parameter #1 ($string) of type string is deprecated in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 670
+Warning: Undefined array key "Description" in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 697
+Warning: Undefined array key "Notes" in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 699
+Warning: Undefined array key "Last Modified Time" in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 706
+makeDate(): Argument #1 ($mdyFormat) must be of type string, null given, called in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 706;
+
+ */

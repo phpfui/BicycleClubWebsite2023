@@ -8,7 +8,7 @@ class Tax
 		{
 		}
 
-	public function edit(\App\Record\Ziptax $zipTax) : \App\UI\ErrorForm
+	public function edit(\App\Record\Ziptax $zipTax) : \App\UI\ErrorFormSaver
 		{
 		if ($zipTax->loaded())
 			{
@@ -19,24 +19,10 @@ class Tax
 			$submit = null;
 			}
 
-		$form = new \App\UI\ErrorForm($this->page, $submit);
+		$form = new \App\UI\ErrorFormSaver($this->page, $zipTax, $submit);
 
-		if ($form->isMyCallback())
+		if ($form->save())
 			{
-			unset($_POST['zip_id']);
-			$zipTax->setFrom($_POST);
-			$errors = $zipTax->validate();
-
-			if ($errors)
-				{
-				$this->page->setRawResponse($form->returnErrors($errors));
-				}
-			else
-				{
-				$zipTax->update();
-				$this->page->setResponse('Saved');
-				}
-
 			return $form;
 			}
 		elseif (! $submit)

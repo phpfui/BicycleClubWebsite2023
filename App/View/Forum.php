@@ -53,7 +53,7 @@ class Forum
 		return $container;
 		}
 
-	public function edit(\App\Record\Forum $forum) : \PHPFUI\Form
+	public function edit(\App\Record\Forum $forum) : \App\UI\ErrorFormSaver
 		{
 		$post = \App\Model\Session::getFlash('post');
 
@@ -65,31 +65,17 @@ class Forum
 		if ($forum->forumId)
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \App\UI\ErrorForm($this->page, $submit);
+			$form = new \App\UI\ErrorFormSaver($this->page, $forum, $submit);
 
-			if ($form->isMyCallback())
+			if ($form->save())
 				{
-				unset($_POST['forumId']);
-				$forum->setFrom($_POST);
-				$errors = $forum->validate();
-
-				if ($errors)
-					{
-					$this->page->setRawResponse($form->returnErrors($errors));
-					}
-				else
-					{
-					$forum->update();
-					$this->page->setResponse('Saved');
-					}
-
 				return $form;
 				}
 			}
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add');
-			$form = new \PHPFUI\Form($this->page);
+			$form = new \App\UI\ErrorFormSaver($this->page, $forum);
 
 			if ('Add' == ($_POST['submit'] ?? '') && \App\Model\Session::checkCSRF())
 				{

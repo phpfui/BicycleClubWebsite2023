@@ -21,7 +21,6 @@ namespace App\Record\Definition;
  * @property int $journal MySQL type tinyint
  * @property string $lastLogin MySQL type timestamp
  * @property ?string $lastName MySQL type varchar(50)
- * @property int $volunteerPoints MySQL type int
  * @property ?string $license MySQL type char(10)
  * @property ?string $loginAttempts MySQL type varchar(255)
  * @property int $memberId MySQL type int
@@ -46,6 +45,7 @@ namespace App\Record\Definition;
  * @property int $showNoTown MySQL type tinyint
  * @property int $showNothing MySQL type tinyint
  * @property int $verifiedEmail MySQL type int
+ * @property int $volunteerPoints MySQL type int
  */
 abstract class Member extends \PHPFUI\ORM\Record
 	{
@@ -70,7 +70,6 @@ abstract class Member extends \PHPFUI\ORM\Record
 		'journal' => ['tinyint', 'int', 0, false, 0, ],
 		'lastLogin' => ['timestamp', 'string', 20, false, null, ],
 		'lastName' => ['varchar(50)', 'string', 50, true, ],
-		'volunteerPoints' => ['int', 'int', 0, false, 0, ],
 		'license' => ['char(10)', 'string', 10, true, ],
 		'loginAttempts' => ['varchar(255)', 'string', 255, true, ],
 		'memberId' => ['int', 'int', 0, false, ],
@@ -93,6 +92,7 @@ abstract class Member extends \PHPFUI\ORM\Record
 		'showNoTown' => ['tinyint', 'int', 0, false, 0, ],
 		'showNothing' => ['tinyint', 'int', 0, false, 0, ],
 		'verifiedEmail' => ['int', 'int', 0, false, 0, ],
+		'volunteerPoints' => ['int', 'int', 0, false, 0, ],
 	];
 
 	/** @var array<string> */

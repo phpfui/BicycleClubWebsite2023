@@ -4,7 +4,7 @@ namespace App\UI;
 
 class WheelSize extends \PHPFUI\Input\Select
 	{
-	public function __construct(\PHPFUI\Page $page, string $value)
+	public function __construct(string $value)
 		{
 		parent::__construct('wd', 'Wheel Size');
 		parent::setToolTip('Select your tire size');
@@ -24,8 +24,6 @@ class WheelSize extends \PHPFUI\Input\Select
 					$separator = ' \ ';
 					}
 				}
-			$name = \str_replace([\chr(215), \chr(188), \chr(189), \chr(190)], [' x ', ' &frac14;', ' &fraq12;', ' &frac34;'], $name);
-//			echo $name.'<br>';
 
 			$key = $row['Diameter'] . '~' . $row['ISO'];
 			$this->addOption($name, $key, $value == $key);

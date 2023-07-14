@@ -14,7 +14,11 @@ class StartLocation extends \PHPFUI\ORM\Validator
 		'latitude' => ['number'],
 		'link' => ['maxlength'],
 		'longitude' => ['number'],
-		'name' => ['maxlength'],
+		'name' => ['maxlength', 'required'],
+		'address' => ['maxlength'],
+		'town' => ['maxlength'],
+		'state' => ['maxlength'],
+		'nearestExit' => ['maxlength'],
 	];
 
 	public function __construct(\App\Record\StartLocation $record)

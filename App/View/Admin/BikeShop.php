@@ -39,29 +39,15 @@ class BikeShop
 			}
 		}
 
-	public function edit(\App\Record\BikeShop $bikeShop = new \App\Record\BikeShop()) : \PHPFUI\Form
+	public function edit(\App\Record\BikeShop $bikeShop = new \App\Record\BikeShop()) : \App\UI\ErrorFormSaver
 		{
 		if (! $bikeShop->empty())
 			{
 			$submit = new \PHPFUI\Submit('Save');
-			$form = new \App\UI\ErrorForm($this->page, $submit);
+			$form = new \App\UI\ErrorFormSaver($this->page, $bikeShop, $submit);
 
-			if ($form->isMyCallback())
+			if ($form->save())
 				{
-				unset($_POST['bikeShopId']);
-				$bikeShop->setFrom($_POST);
-				$errors = $bikeShop->validate();
-
-				if ($errors)
-					{
-					$this->page->setRawResponse($form->returnErrors($errors));
-					}
-				else
-					{
-					$bikeShop->update();
-					$this->page->setResponse('Saved');
-					}
-
 				return $form;
 				}
 
@@ -71,8 +57,8 @@ class BikeShop
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add', 'action');
-			$form = new \PHPFUI\Form($this->page);
 			$bikeShop = new \App\Record\BikeShop();
+			$form = new \App\UI\ErrorFormSaver($this->page, $bikeShop);
 			}
 
 		$fieldSet = new \PHPFUI\FieldSet('Contact Info');

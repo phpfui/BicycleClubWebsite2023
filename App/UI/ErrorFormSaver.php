@@ -33,7 +33,7 @@ class ErrorFormSaver extends \App\UI\ErrorForm
 			return false;
 			}
 		$this->record->update();
-		$this->page->setResponse('Saved');
+		$this->page->setRawResponse(\json_encode(['response' => 'Saved', 'color' => 'lime', 'record' => $this->record->toArray(), ]));
 
 		return true;
 		}

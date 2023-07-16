@@ -14,10 +14,10 @@ class Board
 		$this->imageModel = new \App\Model\BoardImages();
 		}
 
-	public function editMember(\App\Record\BoardMember $board) : \PHPFUI\Form
+	public function editMember(\App\Record\BoardMember $board) : \App\UI\ErrorFormSaver
 		{
 		$submit = new \PHPFUI\Submit();
-		$form = new \PHPFUI\Form($this->page, $submit);
+		$form = new \App\UI\ErrorFormSaver($this->page, $board, $submit);
 
 		if ($board->empty())
 			{
@@ -28,11 +28,9 @@ class Board
 
 		$this->imageModel->update($board->toArray());
 
-		if ($form->isMyCallback())
+		if ($form->save())
 			{
-			$board->setFrom($_POST);
-			$board->update();
-			$this->page->setResponse('Saved');
+			return $form;
 			}
 		elseif (\App\Model\Session::checkCSRF())
 			{
@@ -148,7 +146,8 @@ class Board
 					if ($boardMember)
 						{
 						$data = ['memberId' => $boardMember, 'title' => 'Board Member'];
-						$boardMember = new \App\Record\BoardMember($data);
+						$boardMember = new \App\Record\BoardMember();
+						$boardMember->setFrom($data);
 						$id = $boardMember->insertOrUpdate();
 						$this->page->redirect("/Admin/boardMember/{$id}");
 						}

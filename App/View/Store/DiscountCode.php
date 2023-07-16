@@ -25,30 +25,27 @@ class DiscountCode
 		return false;
 		}
 
-	public function edit(\App\Record\DiscountCode $discountCode = new \App\Record\DiscountCode()) : string | \PHPFUI\Form
+	public function edit(\App\Record\DiscountCode $discountCode = new \App\Record\DiscountCode()) : \App\UI\ErrorFormSaver
 		{
-		if ($this->checkForAdd())
-			{
-			return '';
-			}
-
 		if ($discountCode->discountCodeId)
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \PHPFUI\Form($this->page, $submit);
+			$form = new \App\UI\ErrorFormSaver($this->page, $discountCode, $submit);
 			}
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add');
-			$form = new \PHPFUI\Form($this->page);
+			$form = new \App\UI\ErrorFormSaver($this->page, $discountCode);
 			}
 
-		if ($form->isMyCallback())
+		if ($this->checkForAdd())
 			{
-			unset($_POST['discountCodeId']);
-			$discountCode->setFrom($_POST);
-			$discountCode->update();
-			$this->page->setResponse('Saved');
+			return $form;
+			}
+
+		if ($form->save())
+			{
+			return $form;
 			}
 		$form->add(new \PHPFUI\Input\Hidden('discountCodeId', (string)$discountCode->discountCodeId));
 		$fieldSet = new \PHPFUI\FieldSet('Discount Code Information');

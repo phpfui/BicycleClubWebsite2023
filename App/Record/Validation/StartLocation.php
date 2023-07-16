@@ -12,7 +12,7 @@ class StartLocation extends \PHPFUI\ORM\Validator
 		'active' => ['integer'],
 		'directions' => ['maxlength'],
 		'latitude' => ['number'],
-		'link' => ['maxlength'],
+		'link' => ['maxlength', 'website'],
 		'longitude' => ['number'],
 		'name' => ['maxlength', 'required'],
 		'address' => ['maxlength'],

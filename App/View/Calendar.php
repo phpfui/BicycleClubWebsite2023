@@ -12,39 +12,30 @@ class Calendar
 		$this->processRequest();
 		}
 
-	public function edit(\App\Record\Calendar $calendar = new \App\Record\Calendar(), bool $publicEditor = false) : string | \PHPFUI\Form
+	public function edit(\App\Record\Calendar $calendar = new \App\Record\Calendar(), bool $publicEditor = false) : \App\UI\ErrorFormSaver
 		{
 		if ($calendar->loaded())
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \PHPFUI\Form($this->page, $submit);
+			$form = new \App\UI\ErrorFormSaver($this->page, $calendar, $submit);
 			$id = $calendar->calendarId;
 			}
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add');
-			$form = new \PHPFUI\Form($this->page);
+			$form = new \App\UI\ErrorFormSaver($this->page, $calendar);
 			$id = 0;
 			}
 
-		if ($form->isMyCallback())
+		if ($form->save())
 			{
-			unset($_POST['calendarId'], $_POST['pending']);
-
-			if (empty($_POST['startTime']))
-				{
-				$_POST['startTime'] = -1;
-				}
-			$calendar->setFrom($_POST);
-
 			if ($publicEditor)
 				{
 				$calendar->pending = 1;
+				$calendar->update();
 				}
-			$calendar->update();
-			$this->page->setResponse('Saved');
 
-			return '';
+			return $form;
 			}
 		$fieldSet = new \PHPFUI\FieldSet('Required Fields');
 		$title = new \PHPFUI\Input\Text('title', 'Event Title', $calendar['title']);
@@ -86,7 +77,7 @@ class Calendar
 		$description->setRequired();
 		$fieldSet->add($description);
 
-		$privateEmail = new \PHPFUI\Input\Text('privateEmail', 'Private email address', $calendar->privateEmail);
+		$privateEmail = new \PHPFUI\Input\Email('privateEmail', 'Private email address', $calendar->privateEmail);
 		$privateEmail->setRequired();
 		$privateEmail->setToolTip('This is your email address. It will not be made public. We will use it to contact you if we have questions about your event.');
 		$fieldSet->add($privateEmail);

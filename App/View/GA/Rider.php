@@ -9,33 +9,27 @@ class Rider
 		$this->processRequest();
 		}
 
-	public function edit(\App\Record\GaRider $rider) : string | \PHPFUI\Form
+	public function edit(\App\Record\GaRider $rider) : \App\UI\ErrorFormSaver
 		{
 		if ($rider->loaded())
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \PHPFUI\Form($this->page, $submit);
+			$form = new \App\UI\ErrorFormSaver($this->page, $rider, $submit);
 
-			if ($form->isMyCallback())
+			if ($form->save())
 				{
-				$_POST['gaRiderId'] = $rider->gaRiderId;
-				$rider->setFrom($_POST);
-				$rider->update();
-				$this->page->setResponse('Saved');
-
-				return '';
+				return $form;
 				}
 			$form->add($this->getEditFields($rider));
 			$form->add(new \PHPFUI\Input\Hidden('gaEventId', (string)$rider->gaEventId));
 			$form->add($submit);
-			$form->add(new \PHPFUI\FormError());
 
 			return $form;
 			}
 
 		$rider = new \App\Record\GaRider();
 		$submit = new \PHPFUI\Submit('Add Rider');
-		$form = new \PHPFUI\Form($this->page);
+		$form = new \App\UI\ErrorFormSaver($this->page, $rider);
 		$form->add(new \App\View\GA\EventPicker($this->page, \App\View\GA\EventPicker::SINGLE_SELECT, 'Select Event'));
 		$form->add($this->getEditFields($rider));
 		$form->add($submit);

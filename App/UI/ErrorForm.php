@@ -17,7 +17,9 @@ class ErrorForm extends \PHPFUI\Form
 var error="Please correct the following errors:<ul>";for(const [key,value] of Object.entries(post.errors))
 {var $input=$("[name=\'"+key+"\']");$input.addClass("is-invalid-input")
 for(const element of value){error+="<li><b>"+key+"</b>: <i>"+element+"</i></li>";}}
-error+="</ul>";$(".' . $formErrorClass . '").html(error).attr("style","display:block");}}');
+error+="</ul>";$(".' . $formErrorClass . '").html(error).attr("style","display:block");}
+else if(post.record){for(const [key,value] of Object.entries(post.record))
+{var $input=$("[name=\'"+key+"\']");if($input.length)$input.val(value);}}}');
 		}
 
 	public function returnErrors(array $errors) : string

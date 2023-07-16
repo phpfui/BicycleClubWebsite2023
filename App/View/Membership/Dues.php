@@ -25,7 +25,7 @@ class Dues
 		$startMonth = new \App\UI\Month('MembershipStartMonth', 'Membership Start Month', $this->duesModel->MembershipStartMonth);
 		$startMonth->setToolTip('For annual memberships, The month when all the memberships renew');
 		$graceMonth = new \App\UI\Month('MembershipGraceMonth', 'Membership Grace Month', $this->duesModel->MembershipGraceMonth);
-		$graceMonth->setToolTip('For annual memberships, if joining after this month, membership is good through the end of the next renwal period');
+		$graceMonth->setToolTip('For annual memberships, if joining after this month, membership is good through the end of the next renewal period');
 		$fieldSet->add(new \PHPFUI\MultiColumn($memberTerm, $startMonth, $graceMonth));
 
 //		$renewalType = new \PHPFUI\Input\RadioGroup('MembershipType', 'Manual', $this->duesModel->MembershipType);

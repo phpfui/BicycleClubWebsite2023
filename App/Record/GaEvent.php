@@ -25,6 +25,12 @@ class GaEvent extends \App\Record\Definition\GaEvent
 		{
 		$this->description = \App\Tools\TextHelper::cleanUserHtml($this->description);
 		$this->signupMessage = \App\Tools\TextHelper::cleanUserHtml($this->signupMessage);
+		$this->cleanProperName('incentiveName');
+		$this->cleanProperName('location');
+		$this->cleanProperName('question');
+		$this->cleanProperName('registrar');
+		$this->cleanProperName('title');
+		$this->signupMessage = \App\Tools\TextHelper::cleanUserHtml($this->signupMessage);
 
 		return $this;
 		}

@@ -42,6 +42,12 @@ class ThumbnailImageFiles extends \App\Model\TinifyImage
 
 		$newFilename = PUBLIC_ROOT . $this->getThumbFileName();
 		$settingTable = new \App\Table\Setting();
+		$key = $settingTable->value('TinifyKey');
+
+		if (! $key)
+			{
+			return false;
+			}
 		\Tinify\Tinify::setKey($settingTable->value('TinifyKey'));
 		$source = \Tinify\Source::fromFile($originalFilename);
 		$resized = $source->resize(['method' => 'scale', 'height' => $maxDimension]);

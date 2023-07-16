@@ -17,6 +17,14 @@ class JobEvent extends \App\Record\Definition\JobEvent
 		'VolunteerPollChildren' => [\PHPFUI\ORM\Children::class, \App\Table\VolunteerPoll::class],
 	];
 
+	public function clean() : static
+		{
+		$this->cleanEmail('email');
+		$this->cleanProperName('name');
+
+		return $this;
+		}
+
 	public function insert() : int
 		{
 		$this->fixDates();

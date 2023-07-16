@@ -12,11 +12,16 @@ class Event
 		$this->processRequest();
 		}
 
-	public function edit(\App\Record\JobEvent $jobEvent) : string | \PHPFUI\Form
+	public function edit(\App\Record\JobEvent $jobEvent) : \App\UI\ErrorFormSaver
 		{
 		$jobEventId = $jobEvent->jobEventId;
 		$submit = new \PHPFUI\Submit('Save');
 		$form = $this->getForm($jobEvent, $submit);
+
+		if ($form->save())
+			{
+			return $form;
+			}
 
 		$form->addAsFirst(new \App\View\Volunteer\Menu($jobEvent, 'Event'));
 		$form->addAsFirst(new \PHPFUI\SubHeader($jobEvent->name));
@@ -35,16 +40,6 @@ class Event
 		$buttonGroup = new \App\UI\CancelButtonGroup();
 		$buttonGroup->addButton($submit);
 		$form->add($buttonGroup);
-
-		if ($form->isMyCallback())
-			{
-			unset($_POST['jobEventId']);
-			$jobEvent->setFrom($_POST);
-			$jobEvent->update();
-			$this->page->setResponse('Saved');
-
-			return '';
-			}
 
 		return $form;
 		}
@@ -166,9 +161,9 @@ class Event
 		$modal->add($form);
 		}
 
-	private function getForm(\App\Record\JobEvent $jobEvent, ?\PHPFUI\Submit $submit = null) : \PHPFUI\Form
+	private function getForm(\App\Record\JobEvent $jobEvent, ?\PHPFUI\Submit $submit = null) : \App\UI\ErrorFormSaver
 		{
-		$form = new \PHPFUI\Form($this->page, $submit);
+		$form = new \App\UI\ErrorFormSaver($this->page, $jobEvent, $submit);
 		$fieldSet = new \PHPFUI\FieldSet('Event Information');
 		$fieldSet->add(new \PHPFUI\Input\Hidden('jobEventId', (string)$jobEvent->jobEventId));
 		$name = new \PHPFUI\Input\Text('name', 'Event Name', $jobEvent->name);

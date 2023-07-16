@@ -10,8 +10,8 @@ class DiscountCode extends \PHPFUI\ORM\Validator
 	/** @var array<string, array<string>> */
 	public static array $validators = [
 		'description' => ['maxlength'],
-		'discount' => ['number'],
-		'discountCode' => ['maxlength'],
+		'discount' => ['number', 'required'],
+		'discountCode' => ['maxlength', 'required'],
 		'expirationDate' => ['required', 'date', 'gte_field:startDate'],
 		'maximumUses' => ['integer'],
 		'repeatCount' => ['integer'],

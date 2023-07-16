@@ -9,21 +9,21 @@ class Calendar extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, array<string>> */
 	public static array $validators = [
-		'description' => ['maxlength'],
+		'description' => ['maxlength', 'required'],
 		'distances' => ['maxlength'],
 		'eventDate' => ['required', 'date'],
-		'eventDays' => ['integer'],
+		'eventDays' => ['integer', 'required'],
 		'eventType' => ['integer'],
-		'location' => ['maxlength'],
+		'location' => ['maxlength', 'required'],
 		'pending' => ['required', 'integer'],
 		'price' => ['integer'],
 		'privateContact' => ['maxlength'],
-		'privateEmail' => ['maxlength', 'email'],
+		'privateEmail' => ['maxlength', 'email', 'required'],
 		'publicContact' => ['maxlength'],
 		'publicEmail' => ['maxlength', 'email'],
 		'startTime' => ['time'],
-		'state' => ['maxlength'],
-		'title' => ['maxlength'],
+		'state' => ['maxlength', 'required'],
+		'title' => ['maxlength', 'required'],
 		'webSite' => ['maxlength', 'website'],
 	];
 

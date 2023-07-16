@@ -18,12 +18,12 @@ class EventEdit
 		$this->processRequest();
 		}
 
-	public function Edit(\App\Record\GaEvent $event) : \PHPFUI\Form
+	public function Edit(\App\Record\GaEvent $event) : \App\UI\ErrorFormSaver
 		{
 		if ($event->loaded())
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \PHPFUI\Form($this->page, $submit);
+			$form = new \App\UI\ErrorFormSaver($this->page, $event, $submit);
 			}
 		else
 			{
@@ -31,19 +31,14 @@ class EventEdit
 			$organizer = \App\Model\Session::signedInMemberRecord();
 			$event->registrar = $organizer->fullName();
 			$event->registrarEmail = $organizer->email;
-			$form = new \PHPFUI\Form($this->page);
+			$form = new \App\UI\ErrorFormSaver($this->page, $event);
 			}
 
-		if ($form->isMyCallback())
+		if ($form->save())
 			{
-			$id = $event->gaEventId;
-			$event->setFrom($_POST);
-			$event->gaEventId = $id;
-			$event->update();
 			$this->gaRideTable->updateFromTable($_POST);
 			$this->gaPriceDateTable->updateFromTable($_POST);
 			$this->gaAnswerTable->updateFromTable($_POST);
-			$this->page->setResponse('Saved');
 
 			return $form;
 			}
@@ -69,7 +64,6 @@ class EventEdit
 		$form->add($tabContent);
 		$form->add('<br>');
 		$form->add($submit);
-		$form->add(new \PHPFUI\FormError());
 
 		return $form;
 		}

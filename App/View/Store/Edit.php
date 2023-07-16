@@ -70,7 +70,7 @@ class Edit
 					$storeItemOption->setFrom($_POST);
 					$storeItemOption->sequence = $storeItemOptionTable->getRecordCursor()->current()->sequence + 1;
 					$storeItemOption->storeItemId = $storeItemId;
-					$storeItemOption->storeOptionId = (int)$_POST['storeOptionId'];
+					$storeItemOption->storeOptionId = (int)($_POST['storeOptionId'] ?? 0);
 					$storeItemOption->insert();
 					$this->page->redirect();
 

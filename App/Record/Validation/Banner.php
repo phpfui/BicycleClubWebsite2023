@@ -17,7 +17,7 @@ class Banner extends \PHPFUI\ORM\Validator
 		'js' => ['maxlength'],
 		'pending' => ['required', 'integer'],
 		'startDate' => ['required', 'date', 'lte_field:endDate'],
-		'url' => ['maxlength', 'website'],
+		'url' => ['maxlength', 'website|istarts_with:/istarts_with:#', 'required'],
 	];
 
 	public function __construct(\App\Record\Banner $record)

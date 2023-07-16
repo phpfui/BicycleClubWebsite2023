@@ -17,8 +17,8 @@ class Slide extends \PHPFUI\ORM\Validator
 		'sequence' => ['required', 'integer'],
 		'showCaption' => ['required', 'integer'],
 		'slideShowId' => ['required', 'integer'],
-		'updated' => ['required', 'datetime'],
-		'url' => ['maxlength'],
+		'updated' => ['datetime'],
+		'url' => ['maxlength', 'website|istarts_with:/'],
 	];
 
 	public function __construct(\App\Record\Slide $record)

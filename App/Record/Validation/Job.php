@@ -14,7 +14,7 @@ class Job extends \PHPFUI\ORM\Validator
 		'jobEventId' => ['integer'],
 		'location' => ['maxlength'],
 		'organizer' => ['integer'],
-		'title' => ['maxlength'],
+		'title' => ['maxlength', 'required'],
 	];
 
 	public function __construct(\App\Record\Job $record)

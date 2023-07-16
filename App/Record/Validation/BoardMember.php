@@ -10,9 +10,9 @@ class BoardMember extends \PHPFUI\ORM\Validator
 	/** @var array<string, array<string>> */
 	public static array $validators = [
 		'description' => ['maxlength'],
-		'extension' => ['required', 'maxlength'],
+		'extension' => ['maxlength'],
 		'rank' => ['integer'],
-		'title' => ['maxlength'],
+		'title' => ['maxlength', 'required'],
 	];
 
 	public function __construct(\App\Record\BoardMember $record)

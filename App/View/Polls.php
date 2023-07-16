@@ -58,7 +58,7 @@ class Polls
 		if ($poll->pollId)
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \PHPFUI\Form($this->page, $submit);
+			$form = new \App\UI\ErrorFormSaver($this->page, $poll, $submit);
 
 			if (! $this->page->isAuthorized('Edit Poll After Start') && $poll->startDate <= \App\Tools\Date::todayString())
 				{
@@ -71,21 +71,16 @@ class Polls
 			{
 			$submit = new \PHPFUI\Submit('Add', 'action');
 			$poll->memberId = \App\Model\Session::signedInMemberId();
-			$form = new \PHPFUI\Form($this->page);
+			$form = new \App\UI\ErrorFormSaver($this->page, $poll);
 			}
 
-		if ($form->isMyCallback())
+		if ($form->save())
 			{
-			unset($_POST['pollId']);
-			$poll->setFrom($_POST);
-			$poll->update();
-
 			if (isset($_POST['answer']) && \is_array($_POST['answer']))
 				{
 				$pollAnswerTable = new \App\Table\PollAnswer();
 				$pollAnswerTable->saveAnswers($poll->pollId, $_POST['answer']);
 				}
-			$this->page->setResponse('Saved');
 
 			return $container;
 			}

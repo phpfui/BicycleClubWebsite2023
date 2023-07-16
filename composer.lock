@@ -5168,16 +5168,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.21.2",
+            "version": "v3.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "80f68059bd371cd42c7b03bb6caa6352faed5b8e"
+                "reference": "92b019f6c8d79aa26349d0db7671d37440dc0ff3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/80f68059bd371cd42c7b03bb6caa6352faed5b8e",
-                "reference": "80f68059bd371cd42c7b03bb6caa6352faed5b8e",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/92b019f6c8d79aa26349d0db7671d37440dc0ff3",
+                "reference": "92b019f6c8d79aa26349d0db7671d37440dc0ff3",
                 "shasum": ""
             },
             "require": {
@@ -5253,7 +5253,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.21.2"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.22.0"
             },
             "funding": [
                 {
@@ -5261,7 +5261,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-07-16T09:28:11+00:00"
+            "time": "2023-07-16T23:08:06+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -5931,16 +5931,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.2.5",
+            "version": "10.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "15a89f123d8ca9c1e1598d6d87a56a8bf28c72cd"
+                "reference": "1c17815c129f133f3019cc18e8d0c8622e6d9bcd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/15a89f123d8ca9c1e1598d6d87a56a8bf28c72cd",
-                "reference": "15a89f123d8ca9c1e1598d6d87a56a8bf28c72cd",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1c17815c129f133f3019cc18e8d0c8622e6d9bcd",
+                "reference": "1c17815c129f133f3019cc18e8d0c8622e6d9bcd",
                 "shasum": ""
             },
             "require": {
@@ -6012,7 +6012,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.5"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.6"
             },
             "funding": [
                 {
@@ -6028,7 +6028,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-14T04:18:47+00:00"
+            "time": "2023-07-17T12:08:28+00:00"
         },
         {
             "name": "psr/cache",
@@ -6182,17 +6182,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "63f15424de3fd93ab776497787df3bb2eded004b"
+                "reference": "e5af9ce18347a240cb120454a8c2665c5b162aa1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/63f15424de3fd93ab776497787df3bb2eded004b",
-                "reference": "63f15424de3fd93ab776497787df3bb2eded004b",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/e5af9ce18347a240cb120454a8c2665c5b162aa1",
+                "reference": "e5af9ce18347a240cb120454a8c2665c5b162aa1",
                 "shasum": ""
             },
             "conflict": {
                 "3f/pygmentize": "<1.2",
-                "admidio/admidio": "<4.2.9",
+                "admidio/admidio": "<4.2.10",
                 "adodb/adodb-php": "<=5.20.20|>=5.21,<=5.21.3",
                 "aheinze/cockpit": "<=2.2.1",
                 "aimeos/aimeos-typo3": "<19.10.12|>=20,<20.10.5",
@@ -6810,7 +6810,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-14T22:04:26+00:00"
+            "time": "2023-07-17T11:04:34+00:00"
         },
         {
             "name": "sebastian/cli-parser",

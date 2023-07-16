@@ -14,7 +14,7 @@ class GaRider extends \App\Record\Definition\GaRider
 		$this->cleanProperName('firstName');
 		$this->cleanProperName('address');
 		$this->cleanProperName('town');
-		$this->cleanProperName('state');
+		$this->cleanUpperCase('state');
 		$this->cleanProperName('contact');
 		$this->cleanPhone('contactPhone');
 		$this->cleanPhone('zip', '\\-');

@@ -9,11 +9,11 @@ class OauthUser extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, array<string>> */
 	public static array $validators = [
-		'lastLogin' => ['required', 'datetime'],
+		'lastLogin' => ['datetime'],
 		'memberId' => ['required', 'integer'],
 		'password' => ['maxlength'],
 		'permissions' => ['maxlength'],
-		'userName' => ['maxlength'],
+		'userName' => ['maxlength', 'required'],
 	];
 
 	public function __construct(\App\Record\OauthUser $record)

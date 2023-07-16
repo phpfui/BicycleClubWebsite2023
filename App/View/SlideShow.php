@@ -9,24 +9,25 @@ class SlideShow
 		$this->processRequest();
 		}
 
-	public function editShow(\App\Record\SlideShow $slideShow) : string | \PHPFUI\Form
+	public function editShow(\App\Record\SlideShow $slideShow) : \App\UI\ErrorFormSaver
 		{
 		if ($slideShow->loaded())
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \PHPFUI\Form($this->page, $submit);
+			$form = new \App\UI\ErrorFormSaver($this->page, $slideShow, $submit);
 			}
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add', 'action');
-			$form = new \PHPFUI\Form($this->page);
+			$form = new \App\UI\ErrorFormSaver($this->page, $slideShow);
 			}
 
-		if ($form->isMyCallback())
+		$fields = $_POST['settings'] ?? [];
+		unset($_POST['settings']);
+
+		if ($form->save())
 			{
-			$slideShow->setFrom($_POST);
 			$slideShow->memberId = \App\Model\Session::signedInMemberId();
-			$fields = $_POST['settings'] ?? [];
 			// convert settings to correct type
 			foreach ($fields as $name => $value)
 				{
@@ -61,9 +62,8 @@ class SlideShow
 					$slide->update();
 					}
 				}
-			$this->page->setResponse('Saved');
 
-			return '';
+			return $form;
 			}
 		$fieldSet = new \PHPFUI\FieldSet('Slide Show Details');
 		$name = new \PHPFUI\Input\Text('name', 'Slide Show Name', $slideShow->name);
@@ -190,7 +190,7 @@ class SlideShow
 		return $form;
 		}
 
-	public function editSlide(\App\Record\SlideShow $slideShow, \App\Record\Slide $slide = new \App\Record\Slide()) : string | \PHPFUI\Form
+	public function editSlide(\App\Record\SlideShow $slideShow, \App\Record\Slide $slide = new \App\Record\Slide()) : \App\UI\ErrorFormSaver
 		{
 		$addPhotoButton = new \PHPFUI\Button('Add Photo');
 		$addPhotoButton->addClass('success');
@@ -198,25 +198,21 @@ class SlideShow
 	 if ($slide->loaded())
 		 {
 		 $submit = new \PHPFUI\Submit();
-		 $form = new \PHPFUI\Form($this->page, $submit);
+		 $form = new \App\UI\ErrorFormSaver($this->page, $slide, $submit);
 		 $form->saveOnClick($addPhotoButton);
 		 }
 	 else
 		 {
 		 $submit = new \PHPFUI\Submit('Add Slide', 'action');
 		 $submit->addClass('success');
-		 $form = new \PHPFUI\Form($this->page);
+		 $form = new \App\UI\ErrorFormSaver($this->page, $slide);
 		 }
 
-	 if ($form->isMyCallback())
-		 {
-		 $_POST['slideShowId'] = $slideShow->slideShowId;
-		 $_POST['slideId'] = $slide->slideId;
-		 $slide->setFrom($_POST);
-		 $slide->update();
-		 $this->page->setResponse('Saved');
+	 $slide->slideShowId = $slideShow->slideShowId;
 
-		 return '';
+	 if ($form->save())
+		 {
+		 return $form;
 		 }
 
 	 $fieldSet = new \PHPFUI\FieldSet('Slide Details');
@@ -228,7 +224,7 @@ class SlideShow
    $fieldSet->add(new \PHPFUI\Input\CheckBoxBoolean('showCaption', 'Show the caption', (bool)$slide->showCaption));
 	 $form->add($fieldSet);
 
-	 $url = new \PHPFUI\Input\Url('url', 'Click URL', $slide->url);
+	 $url = new \PHPFUI\Input\Text('url', 'Click URL', $slide->url);
 	 $url->setToolTip('User will be taken to this URL if they click on this slide');
 	 $fieldSet->add($url);
 

@@ -12,7 +12,7 @@ class CueSheetVersion extends \PHPFUI\ORM\Validator
 		'cueSheetId' => ['integer'],
 		'dateAdded' => ['required', 'date'],
 		'extension' => ['maxlength'],
-		'link' => ['maxlength'],
+		'link' => ['maxlength', 'website'],
 		'memberId' => ['integer'],
 	];
 

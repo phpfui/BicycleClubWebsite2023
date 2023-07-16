@@ -17,7 +17,7 @@ class GaEvent extends \PHPFUI\ORM\Validator
 		'includeMembership' => ['integer'],
 		'lastRegistrationDate' => ['required', 'date', 'lte_field:eventDate'],
 		'live' => ['integer'],
-		'location' => ['maxlength'],
+		'location' => ['maxlength', 'required'],
 		'maxRegistrants' => ['integer'],
 		'otherEvent' => ['integer'],
 		'parent' => ['integer'],
@@ -26,7 +26,7 @@ class GaEvent extends \PHPFUI\ORM\Validator
 		'registrarEmail' => ['maxlength', 'email'],
 		'showPreregistration' => ['integer'],
 		'signupMessage' => ['maxlength'],
-		'title' => ['maxlength'],
+		'title' => ['maxlength', 'required'],
 		'volunteerDiscount' => ['integer'],
 		'volunteerEvent' => ['integer'],
 	];

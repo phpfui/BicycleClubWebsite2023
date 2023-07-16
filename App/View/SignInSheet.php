@@ -17,16 +17,14 @@ class SignInSheet
 
 	public function Edit(\App\Record\SigninSheet $signinSheet) : string
 		{
-		$submit = new \PHPFUI\Submit('Save', 'action');
-		$form = new \PHPFUI\Form($this->page, $submit);
+		$submit = new \PHPFUI\Submit('Save');
+		$form = new \App\UI\ErrorFormSaver($this->page, $signinSheet, $submit);
 
-		if ($form->isMyCallback())
+		if ($form->save())
 			{
-			unset($_POST['signinSheetId']);
-			$signinSheet->setFrom($_POST);
-			$signinSheet->update();
-			$this->page->setResponse('Saved');
+			return '';
 			}
+
 		$fieldSet = new \PHPFUI\FieldSet('Sign In Sheet Information');
 		$fieldSet->add(new \PHPFUI\Input\Hidden('signinSheetId', (string)$signinSheet->signinSheetId));
 		$fieldSet->add(new \App\UI\Display('Number', $signinSheet->signinSheetId));
@@ -209,7 +207,6 @@ JAVASCRIPT;
 	private function getRideSelect(string $date = '', int $leader = 0) : \PHPFUI\Input\Select
 		{
 		$rideSelect = new \PHPFUI\Input\Select('rideId', 'Select the ride');
-//		$rideSelect->setRequired();
 		$rideSelect->setToolTip('Enter the date of the ride first, then select the ride.');
 		$rideTable = new \App\Table\Ride();
 		$rides = $rideTable->getDateRange(\App\Tools\Date::fromString($date), \App\Tools\Date::fromString($date));
@@ -252,14 +249,6 @@ JAVASCRIPT;
 							{
 							$fileModel->rotateRight($fileName);
 							}
-						$this->page->setResponse('Saved');
-
-						break;
-
-					case 'Save':
-						$signinSheet = new \App\Record\SigninSheet();
-						$signinSheet->setFrom($_POST);
-						$signinSheet->update();
 						$this->page->setResponse('Saved');
 
 						break;

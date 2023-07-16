@@ -11,19 +11,15 @@ class API
 		$this->tables = \PHPFUI\ORM\Table::getAllTables(['Setting', 'OauthToken', 'OauthUser']);
 		}
 
-	public function edit(\App\Record\OauthUser $user = new \App\Record\OauthUser()) : \PHPFUI\Form
+	public function edit(\App\Record\OauthUser $user = new \App\Record\OauthUser()) : \App\UI\ErrorFormSaver
 		{
 		if ($user->oauthUserId)
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \PHPFUI\Form($this->page, $submit);
+			$form = new \App\UI\ErrorFormSaver($this->page, $user, $submit);
 
-			if ($form->isMyCallback($submit))
+			if ($form->save())
 				{
-				$user->setFrom($_POST);
-				$user->update();
-				$this->page->setResponse('Saved');
-
 				return $form;
 				}
 			elseif (\App\Model\Session::checkCSRF() && ($_POST['submit'] ?? '') == 'Change Password')
@@ -37,7 +33,7 @@ class API
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add User');
-			$form = new \PHPFUI\Form($this->page);
+			$form = new \App\UI\ErrorFormSaver($this->page, $user);
 
 			if (\App\Model\Session::checkCSRF() && ($_POST['submit'] ?? '') == $submit->getText())
 				{
@@ -53,7 +49,7 @@ class API
 
 		if (! $user->password)
 			{
-			$callout = new \PHPFUI\Callout('alert');
+			$callout = new \PHPFUI\Callout('warning');
 			$callout->add('You must set a password for this user.');
 			$form->add($callout);
 			}

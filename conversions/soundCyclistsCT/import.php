@@ -553,7 +553,12 @@ foreach ($startLocationReader as $row)
 	$startLocation = new \App\Record\StartLocation();
 	$startLocation->name = $row['Start Location'];
 	$startLocation->town = $row['Start Town'];
-	$startLocation->link = $row['Google Map'];
+	$dom = new \voku\helper\HtmlDomParser($row['Google Map']);
+
+	foreach ($dom->find('a') as $node)
+		{
+		$startLocation->link = \str_replace(' ', '+', \trim($node->getAttribute('href')));
+		}
 	$startLocation->address = $row['Street Address'];
 	$startLocation->state = $row['State'];
 	$startLocation->nearestExit = $row['Nearest Exit'];

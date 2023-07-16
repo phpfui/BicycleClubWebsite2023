@@ -127,17 +127,14 @@ class Forum
 		return $form;
 		}
 
-	public function editMessage(\App\Record\ForumMessage $message) : \PHPFUI\Form
+	public function editMessage(\App\Record\ForumMessage $message) : \App\UI\ErrorFormSaver
 		{
 		$submit = new \PHPFUI\Submit('Save Post');
-		$form = new \PHPFUI\Form($this->page, $submit);
+		$form = new \App\UI\ErrorFormSaver($this->page, $message, $submit);
 
-		if ($form->isMyCallback())
+		if ($form->save())
 			{
-			unset($_POST['forumMessageId']);
-			$message->setFrom($_POST);
-			$message->update();
-			$this->page->setResponse('Saved');
+			return $form;
 			}
 		$form->add(new \PHPFUI\Input\Hidden('forumMessageId', (string)$message->forumMessageId));
 		$fieldSet = new \PHPFUI\FieldSet('Message Information');

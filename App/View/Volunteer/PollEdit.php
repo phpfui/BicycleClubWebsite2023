@@ -12,18 +12,13 @@ class PollEdit
 		$this->processAJAXRequest();
 		}
 
-	public function getPollForm(\App\Record\JobEvent $jobEvent, \App\Record\VolunteerPoll $volunteerPoll, ?\PHPFUI\Submit $submit = null) : \PHPFUI\Form
+	public function getPollForm(\App\Record\JobEvent $jobEvent, \App\Record\VolunteerPoll $volunteerPoll, ?\PHPFUI\Submit $submit = null) : \App\UI\ErrorFormSaver
 		{
-		$form = new \PHPFUI\Form($this->page, $submit);
+		$form = new \App\UI\ErrorFormSaver($this->page, $jobEvent, $submit);
 
-		if ($form->isMyCallback())
+		if ($form->save())
 			{
-			$poll = new \App\Record\VolunteerPoll();
-			$poll->setFrom($_POST);
-			$poll->volunteerPollId = $volunteerPoll->volunteerPollId;
-			$poll->update();
 			$this->volunteerPollAnswerTable->updateFromTable($_POST);
-			$this->page->setResponse('Saved');
 
 			return $form;
 			}

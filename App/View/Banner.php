@@ -9,7 +9,7 @@ class Banner
 		$this->processRequest();
 		}
 
-	public function edit(\App\Record\Banner $banner) : string | \PHPFUI\Form
+	public function edit(\App\Record\Banner $banner) : \App\UI\ErrorFormSaver
 		{
 		$addBannerButton = new \PHPFUI\Button('Upload Banner');
 		$addBannerButton->addClass('success');
@@ -18,22 +18,17 @@ class Banner
 		if ($banner->loaded())
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \PHPFUI\Form($this->page, $submit);
+			$form = new \App\UI\ErrorFormSaver($this->page, $banner, $submit);
 			}
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add', 'add');
-			$form = new \PHPFUI\Form($this->page);
+			$form = new \App\UI\ErrorFormSaver($this->page, $banner);
 			}
 
-		if ($form->isMyCallback())
+		if ($form->save())
 			{
-			unset($_POST['bannerId']);
-			$banner->setFrom($_POST);
-			$banner->update();
-			$this->page->setResponse('Saved');
-
-			return '';
+			return $form;
 			}
 		elseif (\App\Model\Session::checkCSRF())
 			{

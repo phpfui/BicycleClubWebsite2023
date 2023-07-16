@@ -16,27 +16,22 @@ class OfMonth
 		$this->processRequest();
 		}
 
-	public function edit(\App\Record\MemberOfMonth $memberOfMonth) : string | \PHPFUI\Form
+	public function edit(\App\Record\MemberOfMonth $memberOfMonth) : \App\UI\ErrorFormSaver
 		{
 		if ($memberOfMonth->loaded())
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \PHPFUI\Form($this->page, $submit);
+			$form = new \App\UI\ErrorFormSaver($this->page, $memberOfMonth, $submit);
 			}
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add');
-			$form = new \PHPFUI\Form($this->page);
+			$form = new \App\UI\ErrorFormSaver($this->page, $memberOfMonth);
 			}
 
-		if ($form->isMyCallback())
+		if ($form->save())
 			{
-			unset($_POST['memberOfMonthId']);
-			$memberOfMonth->setFrom($_POST);
-			$memberOfMonth->update();
-			$this->page->setResponse('Saved');
-
-			return '';
+			return $form;
 			}
 
 		if ($memberOfMonth->month < '2000')
@@ -281,7 +276,8 @@ class OfMonth
 
 					case 'Update Photo':
 					case 'Add Photo':
-
+						\App\Tools\Logger::get()->debug($_POST);
+						\App\Tools\Logger::get()->debug($_FILES);
 						$memberOfMonth = new \App\Record\MemberOfMonth((int)$_POST['memberOfMonthId']);
 
 						if ($this->fileModel->upload($memberOfMonth->memberOfMonthId, 'photo', $_FILES))

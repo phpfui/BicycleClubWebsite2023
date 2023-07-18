@@ -55,6 +55,10 @@ class Rides
 		return $ride->memberId == $member->memberId || $this->page->isAuthorized('Delete Ride');
 		}
 
+
+	/**
+	 * @param array<int,int> $categories
+	 */
 	public function categorySelector(array $categories) : \PHPFUI\HTML5Element
 		{
 		$categoryTable = new \App\Table\Category();
@@ -70,11 +74,11 @@ class Rides
 
 		foreach ($categoryTable->getAllCategories() as $category)
 			{
-			$menuItem = $checkBoxMenu->addCheckBox($category['category'], $categories[$category['categoryId']] ?? false, $category['categoryId'], $category['categoryId']);
+			$menuItem = $checkBoxMenu->addCheckBox($category->category, $categories[$category->categoryId] ?? false, (string)$category->categoryId, $category->categoryId);
 
-			if (empty($categories[$category['categoryId']]))
+			if (empty($categories[$category->categoryId]))
 				{
-				$js .= '$(".cat-' . $category['categoryId'] . '").hide();';
+				$js .= '$(".cat-' . $category->categoryId . '").hide();';
 				}
 			}
 		$this->page->addJavaScript($js);

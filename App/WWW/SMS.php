@@ -47,7 +47,7 @@ class SMS extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		if (! \count($signups))
 			{
 			$smsModel->setBody('We did not find a ride you signed up for today, so we can\'t forward your SMS to any ride. Sorry about that.');
-			$member['allowTexting'] = 1;
+			$member->allowTexting = 1;
 			$smsModel->textMember($member);
 
 			return;

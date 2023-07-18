@@ -259,8 +259,7 @@ class TextHelper extends \PHPFUI\TextHelper
 	/**
 	 * return all links in the given text
 	 *
-	 *
-	 * @return array of links
+	 * @return array<string> of links
 	 */
 	public static function getLinks(string $text) : array
 		{
@@ -295,8 +294,7 @@ class TextHelper extends \PHPFUI\TextHelper
 	 * text in array indexed by value enclosed by '~', case insensitive.
 	 *
 	 * @param string $text to be searched for ~value~
-	 * @param array $values indexed by value inside of ~value~
-	 *
+	 * @param array<string,?string> $values indexed by value inside of ~value~
 	 */
 	public static function processText(string $text, array $values) : string
 		{
@@ -338,7 +336,6 @@ class TextHelper extends \PHPFUI\TextHelper
 	 *
 	 * @param callable $callable function(string).  Should return
 	 *  							 text based on parameter
-	 *
 	 */
 	public static function replace(string $subject, callable $callable) : string
 		{

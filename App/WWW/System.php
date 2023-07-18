@@ -415,7 +415,7 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('Releases'))
 			{
-			$view = new \App\View\System\Releases($this->page, $repo);
+			$view = new \App\View\System\Releases($repo);
 			$this->page->addPageContent($view->list($deployer->getReleaseTags()));
 			}
 		}

@@ -99,6 +99,9 @@ class RideSignup
 			}
 		}
 
+	/**
+	 * @param array<string,mixed> $fields
+	 */
 	public function updateSignup(array $fields) : void
 		{
 		// make sure any wait list people are processed first

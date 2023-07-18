@@ -10,6 +10,7 @@ namespace App\Record;
  */
 class Photo extends \App\Record\Definition\Photo
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'PhotoCommentChildren' => [\PHPFUI\ORM\Children::class, \App\Table\PhotoComment::class],
 		'PhotoTagChildren' => [\PHPFUI\ORM\Children::class, \App\Table\PhotoTag::class],

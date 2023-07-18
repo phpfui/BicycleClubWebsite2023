@@ -12,20 +12,25 @@ class PaginatedTable extends \PHPFUI\SortableTable
 
 	private ?\PHPFUI\ORM\ArrayCursor $cursor = null;
 
+	/** @var array<string,array<mixed>> */
 	private array $customColumns = [];
 
+	/** @var array<string,string> */
 	private array $fieldTable = [];
 
 	private bool $filled = false;
 
 	private int $limitNumber = 25;
 
+	/** @var array<\PHPFUI\ORM\Operator> */
 	private array $operators = [];
 
 	private int $pageNumber = 0;
 
+	/** @var array<string,string> */
 	private array $parameters = [];
 
+	/** @var array<string,\App\UI\SearchField|\PHPFUI\Input\Input> */
 	private array $searchColumns = [];
 
 	private bool $showLimitSelect = true;
@@ -60,6 +65,9 @@ class PaginatedTable extends \PHPFUI\SortableTable
 			}
 		}
 
+	/**
+	 * @param array<mixed> $additionalData
+	 */
 	public function addCustomColumn(string $field, callable $callback, array $additionalData = []) : static
 		{
 		$this->customColumns[$field] = [$callback, $additionalData];
@@ -185,6 +193,9 @@ class PaginatedTable extends \PHPFUI\SortableTable
 		return $this->dataTable->getArrayCursor();
 		}
 
+	/**
+	 * @param ?array<string,string> $parameters
+	 */
 	public function getUrl(?array $parameters = null) : string
 		{
 		return $this->getBaseUrl() . '?' . \http_build_query($parameters ?? $this->parameters);
@@ -207,7 +218,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 	/**
 	 * Specify column headers
 	 *
-	 * @param array $headers if the key is a string, then use it as a column name, and use the value for the title. Otherwise value is the field name and the title is capitalSplit from the value.
+	 * @param array<int|string,string|\PHPFUI\Input\Input> $headers if the key is a string, then use it as a column name, and use the value for the title. Otherwise value is the field name and the title is capitalSplit from the value.
 	 */
 	public function setHeaders(array $headers) : static
 		{
@@ -236,7 +247,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 	/**
 	 * Specify which columns are sortable.
 	 *
-	 * @param array $inputs if the key is a string, then value must be a PHPFUI\Input. If value is a string, then it is assumed a field name.
+	 * @param array<string|int,string|\PHPFUI\Input\Input> $inputs if the key is a string, then value must be a PHPFUI\Input. If value is a string, then it is assumed a field name.
 	 */
 	public function setSearchColumns(array $inputs) : static
 		{
@@ -395,7 +406,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 			else
 				{
 				$parts = \explode('\\', $this->dataTable::class);
-				$fileName = \array_pop($parts) . '_' . \App\Tools\Date::todayString() . '.csv';
+				$fileName = \array_pop($parts) . '_' . \date('Y-m-d') . '.csv';
 				}
 
 			$csvWriter = new \App\Tools\CSVWriter($fileName);

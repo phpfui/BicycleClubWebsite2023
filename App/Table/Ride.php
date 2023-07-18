@@ -24,6 +24,9 @@ class Ride extends \PHPFUI\ORM\Table
 
 	protected static string $className = '\\' . \App\Record\Ride::class;
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public function allRidesWithRWGPS() : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from ride where description like "%ridewithgps%" or description like "%rwgps%"';
@@ -31,7 +34,7 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql);
 		}
 
-	public static function changePace(int $from, int $to)
+	public static function changePace(int $from, int $to) : bool
 		{
 		$sql = 'update ride set paceId=:to where paceId=:from';
 
@@ -47,6 +50,9 @@ class Ride extends \PHPFUI\ORM\Table
 		\PHPFUI\ORM::execute($sql, $input);
 		}
 
+	/**
+	 * @param array<string,array<int>|string> $parameters
+	 */
 	public function find(array $parameters) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from ride
@@ -83,7 +89,7 @@ class Ride extends \PHPFUI\ORM\Table
 			$and = ' and ';
 			}
 
-		if (! empty($parameters['startLocationId']) && (int)$parameters['startLocationId'])
+		if ($parameters['startLocationId'] ?? 0)
 			{
 			$sql .= $and . 'startLocationId=?';
 			$input[] = (int)$parameters['startLocationId'];
@@ -129,6 +135,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public static function futureRidesForMember(\App\Record\Member $member) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from ride where memberId=? and rideDate>=? order by rideDate';
@@ -136,6 +145,11 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [$member->memberId, \App\Tools\Date::todayString(), ]);
 		}
 
+	/**
+	 * @param array<int> $categories
+	 *
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public static function getAssistantLeadersRides(int $assistantLeader, array $categories, int $startDate, int $endDate) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select r.* from ride r
@@ -163,7 +177,10 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, $input);
 		}
 
-	public static function getCountByStartLocation() : iterable
+	/**
+	 * @return array<int,array<string,int>>
+	 */
+	public static function getCountByStartLocation() : array
 		{
 		$sql = 'select startLocationId,count(rideId) as count,rideId from ride where startLocationId>0 group by startLocationId';
 		$rides = \PHPFUI\ORM::getDataObjectCursor($sql, []);
@@ -198,6 +215,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public static function getDateRange(int $start, int $end, string $sort = '') : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from ride
@@ -217,6 +237,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return $ride;
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public static function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from ride where memberId=? and rideDate>=? and rideDate<=? order by rideDate';
@@ -234,6 +257,11 @@ class Ride extends \PHPFUI\ORM\Table
 		return $ride;
 		}
 
+	/**
+	 * @param array<int> $categories
+	 *
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public function getLeadersRides(array $categories, string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
 		{
 		$statusCondition = new \PHPFUI\ORM\Condition('rideStatus', 1, new \PHPFUI\ORM\Operator\GreaterThan());
@@ -253,6 +281,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return $this->getRecordCursor();
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public static function getMyCategoryRides(\App\Record\Member $member) : \PHPFUI\ORM\RecordCursor
 		{
 		$categories = \App\Table\MemberCategory::getRideCategoriesForMember($member->memberId);
@@ -271,6 +302,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride());
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public static function getMyDateRange(string $start, string $end, string $sort = '') : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select ride.* from ride
@@ -322,6 +356,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return $ride;
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public function getNewlyAddedUpcomingRides(string $start, string $end = '') : \PHPFUI\ORM\RecordCursor
 		{
 		if (! $end)
@@ -343,25 +380,10 @@ class Ride extends \PHPFUI\ORM\Table
 		return $ride;
 		}
 
-	public function getRidesByMemberForDateRange(int $memberId, string $startDate, string $endDate, array $fields = []) : \PHPFUI\ORM\RecordCursor
-		{
-		$select = '*';
-
-		if ($fields)
-			{
-			$select = \implode(',', \array_flip(\array_intersect_key(\array_flip($fields), $this->getFields())));
-			}
-		$sql = "select {$select} from ride where memberId=? and rideDate>=? and rideDate<=? order by rideDate";
-
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$memberId, $startDate, $endDate, ]);
-		}
-
-	public function getRidesByMemberForYear(int $memberId, int $year, array $fields = []) : \PHPFUI\ORM\RecordCursor
-		{
-		return $this->getRidesByMemberForDateRange($memberId, \App\Tools\Date::makeString($year, 1, 1), \App\Tools\Date::makeString($year, 12, 31), $fields);
-		}
-
-	public static function getRidesForLocation(int $startLocationId, string $date = '') : iterable
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
+	public static function getRidesForLocation(int $startLocationId, string $date = '') : \PHPFUI\ORM\RecordCursor
 		{
 		$data = [$startLocationId];
 		$sql = 'select * from ride where startLocationId=?';
@@ -374,9 +396,12 @@ class Ride extends \PHPFUI\ORM\Table
 
 		$sql .= ' order by rideDate desc';
 
-		return \PHPFUI\ORM::getRows($sql, $data);
+		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, $data);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public static function getRideStatus(string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from ride where rideStatus>0 and rideStatus!=3 and rideDate>=? and rideDate<=?';
@@ -384,6 +409,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [$startDate, $endDate]);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public static function getRideStatusUnawarded(string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from ride where rideDate>=? and rideDate<=? and unaffiliated=0 and ((rideStatus>0 and pointsAwarded=0) or (rideStatus=0 and pointsAwarded>0))';
@@ -398,6 +426,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return (int)\round((int)\PHPFUI\ORM::getValue($sql, [$RWGPSId, self::STATUS_COMPLETED, ]));
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public function getRWGPSStats(\App\Record\RWGPS $rwgps) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from ride where RWGPSId = ? and elevation > 0 and rideStatus = ?';
@@ -465,6 +496,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return $ride;
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public static function pastRidesForAssistant(\App\Record\Member $member, int $limit = 50, int $year = 0) : \PHPFUI\ORM\RecordCursor
 		{
 		$input = [$member->memberId];
@@ -493,6 +527,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, $input);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public static function pastRidesForMember(\App\Record\Member $member, int $limit = 50, int $year = 0) : \PHPFUI\ORM\RecordCursor
 		{
 		$input = [$member->memberId];
@@ -564,6 +601,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return $this;
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public static function unreportedRides() : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from ride r
@@ -572,6 +612,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [\App\Tools\Date::todayString()]);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public static function unreportedRidesForMember(int $memberId) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from ride where memberId=? and unaffiliated=0 and rideStatus=0 and rideDate<=? and unaffiliated=0 order by rideDate desc limit 10';
@@ -593,6 +636,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
 	public static function upcomingRides(int $limit = 0) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from ride left join pace on pace.paceId=ride.paceId where rideDate >= ?';

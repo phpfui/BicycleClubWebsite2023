@@ -6,6 +6,7 @@ class Subscription
 	{
 	protected string $clubName;
 
+	/** @var array<string,mixed> */
 	protected array $member = [];
 
 	protected float $subscriptionDues;
@@ -14,16 +15,16 @@ class Subscription
 
 	private readonly \App\Model\PayPal $paypalModel;
 
-	public function __construct(private readonly \App\View\Page $page, $memberId)
+	public function __construct(private readonly \App\View\Page $page, int $memberId)
 		{
 		$memberTable = new \App\Table\Member();
-		$this->member = $memberTable->getMembership((int)$memberId);
+		$this->member = $memberTable->getMembership($memberId);
 		$this->paypalModel = new \App\Model\PayPal($this->type);
 		$settingTable = new \App\Table\Setting();
 		$duesModel = new \App\Model\MembershipDues();
 		$this->subscriptionDues = (float)$duesModel->SubscriptionDues;
 		$this->clubName = $settingTable->value('clubName');
-		$members = \App\Table\Member::membersInMembership($this->member['membershipId']);
+		$members = \App\Table\Member::membersInMembership((int)$this->member['membershipId']);
 		$this->subscriptionDues += (\count($members) - 1) * (float)$duesModel->AdditionalMemberDues[0];
 		}
 

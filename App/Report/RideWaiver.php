@@ -101,8 +101,8 @@ class RideWaiver extends \Mpdf\Mpdf
 
 	protected function printHeader(\App\Record\Ride $ride) : void
 		{
-		$date = \App\Tools\Date::formatString('F j, Y', $ride['rideDate']);
-		$title = \App\Tools\TextHelper::unhtmlentities($ride['title']);
+		$date = \App\Tools\Date::formatString('F j, Y', $ride->rideDate);
+		$title = \App\Tools\TextHelper::unhtmlentities($ride->title);
 		$paceTable = new \App\Table\Pace();
 		$memberInfo = $ride->member;
 		$leader = $memberInfo->loaded() ? \App\Tools\TextHelper::unhtmlentities($memberInfo->fullName()) : 'Leaderless';
@@ -113,7 +113,7 @@ class RideWaiver extends \Mpdf\Mpdf
 		$this->WriteText($x, $y, 'RideId: ');
 		$x += 10;
 		$this->SetFont('Times', 'B', 8);
-		$this->WriteText($x, $y, "{$ride['rideId']}");
+		$this->WriteText($x, $y, "{$ride->rideId}");
 		$x += 12;
 		$this->SetFont('Times', '', 8);
 		$this->WriteText($x, $y, 'Date: ');
@@ -131,7 +131,7 @@ class RideWaiver extends \Mpdf\Mpdf
 		$this->WriteText($x, $y, 'Cat: ');
 		$x += 7;
 		$this->SetFont('Times', 'B', 8);
-		$this->WriteText($x, $y, $paceTable->getPace($ride['paceId']));
+		$this->WriteText($x, $y, $paceTable->getPace($ride->paceId));
 		$y += 4;
 		$x = 10;
 		$this->SetFont('Times', '', 8);

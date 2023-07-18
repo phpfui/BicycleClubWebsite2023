@@ -18,6 +18,9 @@ class OauthToken extends \App\Record\Definition\OauthToken
 		return $this->insert();
 		}
 
+	/**
+	 * @return array<string,array<string,int>>
+	 */
 	public function getPermissions() : array
 		{
 		return \json_decode($this->scopes ?: '[]', true);

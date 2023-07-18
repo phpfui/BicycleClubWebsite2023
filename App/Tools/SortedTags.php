@@ -4,6 +4,7 @@ namespace App\Tools;
 
 class SortedTags
 	{
+	/** @var array<\Gitonomy\Git\Reference\Tag> */
 	private array $tags = [];
 
 	public function __construct(\Gitonomy\Git\Repository $repo)
@@ -22,6 +23,7 @@ class SortedTags
 		return $this->tags[$sha1] ?? null;
 		}
 
+	/** @return array<string,\Gitonomy\Git\Reference\Tag> */
 	public function getTags(string $tagPrefix = '') : array
 		{
 		if (! $tagPrefix)

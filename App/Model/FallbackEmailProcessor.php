@@ -5,9 +5,7 @@ namespace App\Model;
 class FallbackEmailProcessor
   {
   /**
-   * @return string[]
-   *
-   * @psalm-return list<string>
+   * @return array<string>
    */
   public function getAddresses(?\ZBateson\MailMimeParser\Header\IHeader $header, string $url) : array
 		{
@@ -29,6 +27,9 @@ class FallbackEmailProcessor
 		return $addresses;
 		}
 
+	/**
+	 * @return array<string,string>
+	 */
   public function getValidEmailAddresses() : array
 		{
 		$forumTable = new \App\Table\Forum();

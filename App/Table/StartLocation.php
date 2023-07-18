@@ -6,7 +6,10 @@ class StartLocation extends \PHPFUI\ORM\Table
 {
 	protected static string $className = '\\' . \App\Record\StartLocation::class;
 
-	public function getAll(array $where = []) : iterable
+	/**
+	 * @param array<string,mixed> $where
+	 */
+	public function getAll(array $where = []) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from startLocation ';
 		$data = [];
@@ -28,14 +31,14 @@ class StartLocation extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, $data);
 		}
 
-	public function getByName(string $name) : iterable
+	public function getByName(string $name) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from startLocation where name like ?';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, ["%{$name}%"]);
 		}
 
-	public function getStartsWith(string $char) : iterable
+	public function getStartsWith(string $char) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from startLocation where name regexp ? group by startLocationId order by name';
 

@@ -4,16 +4,20 @@ namespace App\Tools;
 
 class EMail
 	{
+	/** @var array<string,string> */
 	protected array $attachments = [];
 
+	/** @var array<string,array<string,string>> */
 	protected array $bcc = [];
 
 	protected string $body = '';
 
+	/** @var array<string,array<string,string>> */
 	protected array $cc = [];
 
 	protected string $fromEmail = '';
 
+	/** @var array<string,mixed> */
 	protected array $fromMember = [];
 
 	protected string $fromName = '';
@@ -30,6 +34,7 @@ class EMail
 
 	protected string $subject = '';
 
+	/** @var array<string,array<string,string>> */
 	protected array $to = [];
 
 	protected bool $useSMTPServer = true;
@@ -82,6 +87,7 @@ class EMail
 		return $this->add($this->bcc, $email, $name, $memberId);
 		}
 
+	/** @param array<string,mixed> $member */
 	public function addBCCMember(array $member) : EMail
 		{
 		if (empty($member['memberId']))
@@ -97,6 +103,7 @@ class EMail
 		return $this->add($this->cc, $email, $name, $memberId);
 		}
 
+	/** @param array<string,mixed> $member */
 	public function addCCMember(array $member) : EMail
 		{
 		if (empty($member['memberId']))
@@ -112,6 +119,7 @@ class EMail
 		return $this->add($this->to, $email, $name, $memberId);
 		}
 
+	/** @param array<string,mixed> $member */
 	public function addToMember(array $member) : static
 		{
 		if (empty($member['email']))
@@ -378,7 +386,8 @@ class EMail
 		return $this;
 		}
 
-	public function setFromMember(array $member) : EMail
+	/** @param array<string,mixed> $member */
+	public function setFromMember(array $member) : static
 		{
 		$this->fromMember = $member;
 		$name = ($this->fromMember['firstName'] ?? '') . ' ' . ($this->fromMember['lastName'] ?? '');
@@ -419,7 +428,8 @@ class EMail
 		return $this->addTo($email, $name, $memberId);
 		}
 
-	public function setToMember(array $member) : EMail
+	/** @param array<string,mixed> $member */
+	public function setToMember(array $member) : static
 		{
 		$this->to = [];
 
@@ -433,6 +443,9 @@ class EMail
 		return $this;
 		}
 
+	/**
+	 * @param array<string,array<string,string>> &$list
+	 */
 	private function add(array &$list, ?string $email, ?string $name, int $memberId = 0) : static
 		{
 		$email = self::cleanEmail($email);

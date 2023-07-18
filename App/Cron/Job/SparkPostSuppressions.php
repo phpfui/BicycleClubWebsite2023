@@ -32,7 +32,15 @@ class SparkPostSuppressions extends \App\Cron\BaseJob
 					$member->rideJournal = 0;
 					$member->update();
 
-					$message = $member->fullName() . ' has been removed from the SparkPost suppression list';
+					if ('Bounce Rule' != $suppression['source'])
+						{
+						$message = $member->fullName() . ', ' . $member->email . ' has been removed from the SparkPost suppression list';
+						$deletes[] = $suppression['recipient'];
+						}
+					else
+						{
+						$message = $member->fullName() . ', ' . $member->email . ' is bouncing: ' . $suppression['description'];
+						}
 					\App\Tools\Logger::get()->debug($message);
 
 					$deletes[] = $suppression['recipient'];

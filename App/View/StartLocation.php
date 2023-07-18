@@ -130,6 +130,9 @@ class StartLocation
 		return $link;
 		}
 
+	/**
+	 * @param array<string,string> $location
+	 */
 	public static function getTextFromArray(array $location) : string
 		{
 		if (empty($location['link']))
@@ -312,7 +315,7 @@ class StartLocation
 				return $count;
 				}
 
-			return new \PHPFUI\Link('/Rides/forLocation/' . $location['startLocationId'], $count, false);
+			return new \PHPFUI\Link('/Rides/forLocation/' . $location['startLocationId'], (string)$count, false);
 			});
 
 		$view->addCustomColumn('cuesheets', static function(array $location) use ($cuesheets)
@@ -324,7 +327,7 @@ class StartLocation
 				return $count;
 				}
 
-			return new \PHPFUI\Link("/CueSheets/find?startLocation={$location['startLocationId']}&order=A", $count, false);
+			return new \PHPFUI\Link("/CueSheets/find?startLocation={$location['startLocationId']}&order=A", (string)$count, false);
 			});
 
 		$view->addCustomColumn('name', static function(array $location)

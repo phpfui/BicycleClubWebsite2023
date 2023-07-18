@@ -7,11 +7,11 @@ class GaRider extends \PHPFUI\ORM\Table
 	protected static string $className = '\\' . \App\Record\GaRider::class;
 
 	/**
-	 * @return array
+	 * @param array<int> $events
 	 *
-	 * @psalm-return list<mixed>
+	 * @return array<array<string,mixed>>
 	 */
-	public static function getEmailsForEvents(array $events, $pending = 0) : iterable
+	public static function getEmailsForEvents(array $events, $pending = 0) : array
 		{
 		$sql = 'select email,firstName,lastName,gaRiderId,pending from gaRider where gaEventId in (';
 		$ids = [];
@@ -44,6 +44,11 @@ class GaRider extends \PHPFUI\ORM\Table
 		return $retVal;
 		}
 
+	/**
+	 * @param array<int> $events
+	 *
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\GaRider>
+	 */
 	public function getForEvents(array $events) : \PHPFUI\ORM\RecordCursor
 		{
 		$this->addOrderBy('lastName')->addOrderBy('firstName');
@@ -57,6 +62,9 @@ class GaRider extends \PHPFUI\ORM\Table
 		return $this->getRecordCursor();
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\GaRider>
+	 */
 	public function getPaidRiderCursor(\App\Record\GaEvent $event) : \PHPFUI\ORM\RecordCursor
 		{
 		$condition = new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId);
@@ -67,6 +75,9 @@ class GaRider extends \PHPFUI\ORM\Table
 		return $this->getRecordCursor();
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\GaRider>
+	 */
 	public function getRidersBySignup(\App\Record\GaEvent $gaEvent) : \PHPFUI\ORM\RecordCursor
 		{
 		$this->addOrderBy('signedUpOn');
@@ -78,7 +89,7 @@ class GaRider extends \PHPFUI\ORM\Table
 		return $this->getRecordCursor();
 		}
 
-	public function purgePendingDupes(\App\Record\GaEvent $event)
+	public function purgePendingDupes(\App\Record\GaEvent $event) : bool
 		{
 		$sql = 'DELETE FROM gaRider where gaEventId=? and pending=1 and email IN (select email from (select distinct email from gaRider where gaEventId=? and pending=0) as c)';
 

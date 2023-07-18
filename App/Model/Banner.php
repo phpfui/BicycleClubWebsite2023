@@ -11,12 +11,12 @@ class Banner
 		$this->fileModel = new \App\Model\BannerFiles();
 		}
 
-	public function canDelete($id) : bool
+	public function canDelete(int $id) : bool
 		{
 		return true;
 		}
 
-	public function delete($id) : void
+	public function delete(int $id) : void
 		{
 		if ($this->canDelete($id))
 			{

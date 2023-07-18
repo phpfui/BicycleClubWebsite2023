@@ -37,25 +37,24 @@ class Permissions
 			{
 			$form->add(new \PHPFUI\Input\Hidden('memberId', (string)$memberId));
 			$permissions = $this->page->getPermissions();
-			$result = $this->permissionTable->getAll();
+			$result = $this->permissionTable->getRecordCursor();
 
+			$newResult = [];
 			if (! $permissions->isAuthorized('Super User'))
 				{
 				$userPermissions = $permissions->getPermissionsForUser(\App\Model\Session::signedInMemberId());
-				$newResult = [];
 
 				foreach ($result as $permission)
 					{
-					if (isset($userPermissions[$permission['permissionId']]))
+					if (isset($userPermissions[$permission->permissionId]))
 						{
-						$newResult[] = $permission;
+						$newResult[] = $permission->toArray();
 						}
 					}
-				$result = $newResult;
 				}
 			$allPermissions = $allGroups = [];
 
-			foreach ($result as $permission)
+			foreach ($newResult as $permission)
 				{
 				$id = $permission['permissionId'];
 
@@ -76,21 +75,21 @@ class Permissions
 
 			foreach ($permissions as $permission)
 				{
-				$permissionId = $permission['permissionGroup'];
+				$permissionId = $permission->permissionGroup;
 
-				if ($permission['revoked'])
+				if ($permission->revoked)
 					{
-					$inRevoked[] = $permission;
+					$inRevoked[] = $permission->toArray();
 					unset($notInRevoked[$permissionId]);
 					}
 				elseif ($permissionId < 100000)
 					{
-					$inGroup[] = $permission;
+					$inGroup[] = $permission->toArray();
 					unset($notInGroup[$permissionId]);
 					}
 				else
 					{
-					$additional[] = $permission;
+					$additional[] = $permission->toArray();
 					unset($notAdditional[$permissionId]);
 					}
 				}

@@ -34,6 +34,9 @@ class Membership extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$start, $end]);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Membership>
+	 */
 	public function getMemberlessMemberships(string $date) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from membership where joined<? and membershipId not in (select membershipId from member)';

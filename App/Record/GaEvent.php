@@ -13,6 +13,7 @@ namespace App\Record;
  */
 class GaEvent extends \App\Record\Definition\GaEvent
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'GaAnswerChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaAnswer::class],
 		'GaIncentiveChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaIncentive::class],

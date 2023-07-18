@@ -6,6 +6,7 @@ class Volunteer
 	{
 	private readonly int $advanceHours;
 
+	/** @var array<int,int> */
 	private array $memberPoints = [];
 
 	private readonly \App\Model\SettingsSaver $settingsSaver;
@@ -155,6 +156,9 @@ class Volunteer
 		return $this;
 		}
 
+	/**
+	 * @param array<string,array<string,string>> $files
+	 */
 	public function email($event, int $jobId, iterable $members, string $subject, string $message, $shiftInfo, array $files) : void
 		{
 		$email = new \App\Tools\EMail();

@@ -48,8 +48,6 @@ namespace PHPFUI\ORM;
  * | minvalue       | Must be less than or equal | value, required |
  * | month_day_year | Loosely formatted date (M-D-Y) | None |
  * | month_year     | Loosely formatted Month Year | None |
- * | neq_field      | Not Equal to field | field, required |
- * | not_equal      | Value must not be equal | value, required |
  * | number         | Floating point number or whole number | None |
  * | required       | Field is required, can't be null or blank, 0 is OK | None |
  * | starts_with    | Field must start with (case sensitive) | comma separated list of strings |
@@ -66,9 +64,8 @@ namespace PHPFUI\ORM;
  * * gte_field
  * * lte_field
  * * eq_field
- * * neq_field
  *
- * Field validators take another field name as a parameter and perform the specified condition test. To compare against a specific value, use minvalue, maxvalue, equal or not_equal.
+ * Field validators take another field name as a parameter and perform the specified condition test. To compare against a specific value, use minvalue, maxvalue, or equal.
  *
  * ## Unique Parameters
  * Without any parameters, the **unique** validator will make sure no other record has a matching value for the field being validated. The current record is always exempted from the unique test so it can be updated.
@@ -92,6 +89,12 @@ namespace PHPFUI\ORM;
  * You want the name to be unique for a specific type in the division: *unique:type,shoes,division*
  * You want the name to be unique for a specific type and division: *unique:type,shoes,division,10*
  *
+ * ## NOT Operator
+ * You can reverse any validator by preceding the validator with an ! (exclamation mark).
+ *
+ * **Example:**
+ * !starts_with:/ will fail if the field starts with a /
+ *
  * ## OR Operator
  * You can validate a field if any one of the validators passes.  Use the vertical bar (|) to separate validators. If one of the validators passes, then the the field is valid.
  *
@@ -105,16 +108,17 @@ namespace PHPFUI\ORM;
  */
 abstract class Validator
 	{
-	/** @var string[] */
+	/** @var array<string> */
 	public static array $dateSeparators = ['-', '.', '_', ':', '/'];
 
+	/** @var array<string,array<string>> */
 	public static array $validators = [];
 
 	private string $currentField = '';
 
 	private bool $currentRequired = false;
 
-	/** @var array<string, string[]> */
+	/** @var array<string, array<string>> */
 	private array $errors = [];
 
 	/** @var array<string, array<mixed>> */
@@ -128,7 +132,7 @@ abstract class Validator
 	/**
 	 * Return any errors.
 	 *
-	 * @return array<string, string[]>  indexed by field(s) with error and array of translated errors.
+	 * @return array<string, array<string>>  indexed by field(s) with error and array of translated errors.
 	 */
 	public function getErrors() : array
 		{
@@ -173,6 +177,7 @@ abstract class Validator
 	/**
 	 * Gets the errors for a value with the record definition and associated validators
 	 *
+	 * @param array<string> $validators
 	 * @param array<int, array<string>> $fieldDefinitions
 	 *
 	 * @return array<string> of errors of translated text
@@ -275,7 +280,7 @@ abstract class Validator
 	/**
 	 * @param array<int, array<mixed>> $fieldDefinitions
 	 */
-	private function validate_card($number, array $fieldDefinitions) : string
+	private function validate_card(string $number, array $fieldDefinitions) : string
 		{
 		// Strip any non-digits (useful for credit card numbers with spaces and hyphens)
 		$number = \preg_replace('/\D/', '', (string)$number);
@@ -713,29 +718,6 @@ abstract class Validator
 	 * @param string[] $parameters
 	 * @param array<int, array<mixed>> $fieldDefinitions
 	 */
-	private function validate_neq_field(mixed $value, array $parameters, array $fieldDefinitions) : string
-		{
-		$field = $parameters[0] ?? '';
-		$compare = $this->record[$field];
-
-		return empty($compare) || $value != $compare ? '' : \PHPFUI\ORM::trans('.validator.neq_field', ['value' => $value, 'field' => $field, 'compare' => $compare]);
-		}
-
-	/**
-	 * @param string[] $parameters
-	 * @param array<int, array<mixed>> $fieldDefinitions
-	 */
-	private function validate_not_equal(mixed $value, array $parameters, array $fieldDefinitions) : string
-		{
-		$required = $parameters[0] ?? '';
-
-		return $required != $value ? '' : \PHPFUI\ORM::trans('.validator.not_equal', ['value' => $value, 'required' => $required]);
-		}
-
-	/**
-	 * @param string[] $parameters
-	 * @param array<int, array<mixed>> $fieldDefinitions
-	 */
 	private function validate_number(mixed $value, array $parameters, array $fieldDefinitions) : string
 		{
 		return false !== \filter_var($value, \FILTER_VALIDATE_FLOAT) ? '' : \PHPFUI\ORM::trans('.validator.number', ['value' => $value]);
@@ -888,10 +870,19 @@ abstract class Validator
 	/**
 	 * Validate one rule.
 	 *
+	 * @param array<int, array<mixed>> $fieldDefinitions
+	 *
 	 * @return array<string> of errors of translated text
 	 */
 	private function validateRule(string $validator, mixed $value, array $fieldDefinitions) : array
 		{
+		$not = false;
+		if ($validator[0] == '!')
+			{
+			$not = true;
+			$validator = substr($validator, 1);
+			}
+
 		$parts = \explode(':', (string)$validator);
 
 		$parameters = $errors = [];

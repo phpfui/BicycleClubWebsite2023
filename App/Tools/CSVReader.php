@@ -19,6 +19,7 @@ class CSVReader implements \Iterator
 	/** @var array<string, string> */
 	private array $current = [];
 
+	/** @var ?resource */
 	private $fh = null;
 
 	/** @var array<string> */

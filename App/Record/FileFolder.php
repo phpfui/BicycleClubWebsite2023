@@ -10,6 +10,7 @@ namespace App\Record;
  */
 class FileFolder extends \App\Record\Definition\FileFolder
 	{
+	/** @var array<string, array<string>> */
 	 protected static array $virtualFields = [
 	 	'FileChildren' => [\PHPFUI\ORM\Children::class, \App\Table\File::class],
 	 	'parentFolder' => [\PHPFUI\ORM\RelatedRecord::class, \App\Record\FileFolder::class],

@@ -11,18 +11,20 @@ class TaxCalculator
 		$this->executor = new \NXP\MathExecutor();
 		}
 
-	public function compute(\App\Record\CartItem $cartItem) : float
+	/**
+	 * @param array<string,mixed> $cartItem
+	 */
+	public function compute(array $cartItem) : float
 		{
-		$this->executor->setVars($cartItem->toArray());
-		$storeItem = $cartItem->storeItem;
+		$this->executor->setVars($cartItem);
+		$storeItem = new \App\Record\StoreItem($cartItem['storeItemId']);
 
 		if (! $storeItem->taxable)
 			{
 			return 0.0;
 			}
 		$this->executor->setVars($storeItem->toArray(), false);
-//		$this->executor->setVars($cartItem->StoreItemDetail->current()->toArray(), false);
-		$member = $cartItem->member;
+		$member = new \App\Record\Member($cartItem['memberId']);
 		$this->executor->setVars($member->toArray(), false);
 		$membership = $member->membership;
 		$this->executor->setVars($membership->toArray(), false);

@@ -269,7 +269,8 @@ class Invoice
 	public function generateFromCart(\App\Model\Cart $cartModel) : int
 		{
 		$pointsEarned = $pointsUsed = 0;
-		$member = $this->customerModel->read($customerNumber = $this->customerModel->getNumber());
+		$customerNumber = $cartModel->getCustomerNumber();
+		$member = $this->customerModel->read($cartModel->getCustomerNumber());
 
 		if (! empty($member->volunteerPoints))
 			{
@@ -315,7 +316,7 @@ class Invoice
 			$instructions = $_POST['instructions'] ?? 'None';
 			$invoice = new \App\Record\Invoice();
 			$invoice->orderDate = \App\Tools\Date::todayString();
-			$invoice->memberId = $customerNumber;
+			$invoice->memberId = $cartModel->getCustomerNumber();
 			$invoice->totalPrice = $cartModel->getTotal();
 			$invoice->totalShipping = $cartModel->getShipping();
 			$invoice->totalTax = 0.0;
@@ -383,7 +384,7 @@ class Invoice
 							$invoiceItem->quantity = (int)$cartItem['quantity'];
 							$invoiceItem->type = $cartItem['type'];
 							$invoiceItem->tax = $tax;
-							$invoiceItem->insert();
+							$invoiceItem->insertOrUpdate();
 
 							if (\App\Model\Cart::TYPE_STORE == $cartItem['type'])
 								{
@@ -433,7 +434,7 @@ class Invoice
 			$balanceDue = $invoice->unpaidBalance();
 			// delete cart from member
 			$cartItemTable = new \App\Table\CartItem();
-			$cartItemTable->setWhere(new \PHPFUI\ORM\Condition('memberId', $customerNumber));
+			$cartItemTable->setWhere(new \PHPFUI\ORM\Condition('memberId', $cartModel->getCustomerNumber()));
 			$cartItemTable->delete();
 
 			if ($balanceDue <= 0)

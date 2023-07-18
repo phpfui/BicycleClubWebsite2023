@@ -10,6 +10,7 @@ namespace App\Record;
  */
 class MailItem extends \App\Record\Definition\MailItem
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'MailPieceChildren' => [\PHPFUI\ORM\Children::class, \App\Table\MailPiece::class],
 		'MailAttachmentChildren' => [\PHPFUI\ORM\Children::class, \App\Table\MailAttachment::class],

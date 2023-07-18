@@ -8,10 +8,13 @@ class Statistics
 
 	private readonly \App\Table\Member $memberTable;
 
+	/** @var array<int,int> */
 	private array $monthArray = [1 => 0];
 
+	/** @var array<array<string,int>> */
 	private array $perYear = [];
 
+	/** @var array<array<string,int>> */
 	private array $renewalStats = [];
 
 	public function __construct()
@@ -30,20 +33,24 @@ class Statistics
 		return $this->attrition;
 		}
 
+	/**
+	 * @return array<array<string,int>>
+	 */
 	public function getPerYear() : array
 		{
 		return $this->perYear;
 		}
 
+	/**
+	 * @return array<array<string,int>>
+	 */
 	public function getRenewals() : array
 		{
 		return $this->renewalStats;
 		}
 
 	/**
-	 * @return int[]
-	 *
-	 * @psalm-return array<array-key, int>
+	 * @return array<int,int>
 	 */
 	public function lastSignIns(int $days = 365) : array
 		{

@@ -48,7 +48,7 @@ class Points
 			$class = $category['table'];
 			$items = $class::getForMemberDate($member->memberId, $startDate, $endDate);
 
-			if ($items)
+			if (count($items))
 				{
 				$tabs->addTab($name, $this->listDates($items, $category), $selected);
 				$selected = false;
@@ -114,6 +114,9 @@ class Points
 		return $button . $output;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	protected function getSearchModal(\PHPFUI\HTML5Element $modalLink, array $parameters) : \PHPFUI\Reveal
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
@@ -140,6 +143,9 @@ class Points
 		return $modal;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	protected function setSearch(\App\Table\PointHistory $pointHistoryTable, array $parameters) : static
 		{
 		$condition = new \PHPFUI\ORM\Condition();
@@ -170,6 +176,9 @@ class Points
 		return $this;
 		}
 
+	/**
+	 * @param array<string,string> $category
+	 */
 	private function getInfoReveal(\PHPFUI\ORM\DataObject $item, array $category) : \PHPFUI\HTML5Element
 		{
 		$opener = new \PHPFUI\FAIcon('far', 'question-circle');
@@ -194,7 +203,10 @@ class Points
 		return $opener;
 		}
 
-	private function listDates(iterable $items, array $category) : \PHPFUI\Table
+	/**
+	 * @param array<string,string> $category
+	 */
+	private function listDates(\PHPFUI\ORM\DataObjectCursor $items, array $category) : \PHPFUI\Table
 		{
 		$table = new \PHPFUI\Table();
 		$headers = ['date' => 'Date', 'name' => 'Name', 'credited' => 'Credited', 'info' => 'Info'];

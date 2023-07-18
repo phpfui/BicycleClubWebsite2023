@@ -12,6 +12,7 @@ class Ride
 
 	private readonly \App\Table\Pace $paceTable;
 
+	/** @var array<string> */
 	private array $protectedFields = ['pointsAwarded', 'releasePrinted', ];
 
 	private readonly RideImages $rideImages;
@@ -34,13 +35,15 @@ class Ride
 		$this->clubAbbrev = $this->settingTable->value('clubAbbrev');
 	}
 
+	/**
+	 * @param array<string,mixed> $parameters
+	 */
 	public function add(array $parameters) : int
 		{
 		$parameters = $this->cleanProtectedFields($parameters);
 		$parameters = $this->cleanDescription($parameters);
 		$tomorrow = \App\Tools\Date::todayString(1);
 
-		// @phpstan-ignore-next-line
 		if (($parameters['rideDate'] ?? '1000-01-01') < $tomorrow)
 			{
 			$parameters['rideDate'] = $tomorrow;
@@ -53,7 +56,6 @@ class Ride
 			\App\Model\Session::setFlash('alert', $errors);
 			}
 
-		// @phpstan-ignore-next-line
 		if (empty($parameters['memberId']))
 			{
 			$parameters['memberId'] = \App\Model\Session::signedInMemberId();
@@ -136,6 +138,9 @@ class Ride
 		$ride->update();
 		}
 
+	/**
+	 * @param array<string,mixed> $parameters
+	 */
 	public function checkForStartTimeConflicts(array $parameters) : string
 		{
 		$ride = new \App\Record\Ride();
@@ -153,9 +158,9 @@ class Ride
 
 		foreach ($rides as $rideFound)
 			{
-			if ($rideFound['rideId'] != $ride->rideId)
+			if ($rideFound->rideId != $ride->rideId)
 				{
-				$startTimes[] = \App\Tools\TimeHelper::fromString($rideFound['startTime']);
+				$startTimes[] = \App\Tools\TimeHelper::fromString($rideFound->startTime);
 				}
 			}
 
@@ -180,9 +185,7 @@ class Ride
 		}
 
 	/**
-	 * @return (int|mixed|string)[]
-	 *
-	 * @psalm-return array{RWGPSId: int, description: string}
+	 * @param array<string,mixed> $parameters
 	 */
 	public function cleanDescription(array $parameters) : array
 		{
@@ -281,7 +284,7 @@ class Ride
 			}
 		}
 
-	public function downloadCSV(iterable $rides) : void
+	public function downloadCSV(\PHPFUI\ORM\DataObjectCursor $rides) : void
 		{
 		$writer = new \App\Tools\CSVWriter('rides.csv');
 		$writer->addHeaderRow();
@@ -289,11 +292,6 @@ class Ride
 			'cueSheetId' => 'name',
 			'paceId' => 'pace',
 			'startLocationId' => 'name',
-		];
-		$relationTables = [
-			'cueSheetId' => new \App\Record\CueSheet(),
-			'paceId' => new \App\Record\Pace(),
-			'startLocationId' => new \App\Record\StartLocation(),
 		];
 		$status = \App\Table\Ride::getStatusValues();
 
@@ -307,10 +305,7 @@ class Ride
 			foreach ($relations as $relationId => $field)
 				{
 				$relation = \substr($relationId, 0, \strlen($relationId) - 2);
-				$record = $relationTables[$relationId];
-				$record->setEmpty();
-				$record->read($ride[$relationId]);
-				$row[$relation] = $record->{$field};
+				$row[$relation] = $ride->{$relationId}->{$field} ?? '';
 				}
 			$writer->outputRow($row);
 			}
@@ -554,7 +549,6 @@ class Ride
 
 		if (\count($differences) && $warningDays)
 			{
-			// @phpstan-ignore-next-line
 			$oldRide = new \App\Record\Ride($parameters['rideId']);
 			$oldRideTime = \strtotime($oldRide->rideDate . ' ' . ($oldRide->startTime ?? '9:00 AM'));
 
@@ -582,7 +576,6 @@ class Ride
 					}
 				$email->setBody(\App\Tools\TextHelper::cleanUserHtml($body));
 				$email->setHtml();
-				// @phpstan-ignore-next-line
 				$members = $this->rideSignupTable->getSignedUpRiders($parameters['rideId']);
 
 				foreach ($members as $member)
@@ -593,13 +586,11 @@ class Ride
 				}
 			}
 		// if the ride status is not yet, but they have an average pace and riders
-		// @phpstan-ignore-next-line
 		if (empty($parameters['rideStatus']) && ! empty($parameters['averagePace']) && ! empty($parameters['numberOfRiders']))
 			{
 			$parameters['rideStatus'] = \App\Table\Ride::STATUS_COMPLETED;  // then set the status to completed
 			}
 
-		// @phpstan-ignore-next-line
 		if (! empty($parameters['memberId']))
 			{
 			$ride = new \App\Record\Ride($parameters['rideId']);
@@ -615,7 +606,6 @@ class Ride
 			}
 		$error = $this->checkForStartTimeConflicts($parameters);
 
-		// @phpstan-ignore-next-line
 		$ride = new \App\Record\Ride($parameters['rideId']);
 		$ride->setFrom($parameters);
 		$ride->update();
@@ -627,6 +617,11 @@ class Ride
 		return $error;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 *
+	 * @return array<string,string>
+	 */
 	private function cleanProtectedFields(array $parameters) : array
 		{
 		foreach ($this->protectedFields as $field)
@@ -649,6 +644,11 @@ class Ride
 		return 'No cue sheet';
 		}
 
+	/**
+	 * @param array<string,mixed> $parameters
+	 *
+	 * @return array<string,array<string,string>>
+	 */
 	private function getDifferences(array $parameters) : array
 		{
 		$diffs = [];
@@ -800,7 +800,7 @@ class Ride
 	/**
 	 * Removes the RWGPS link and returns it as an array. Modifies passed in string
 	 *
-	 * @return array with RWGPS id and query string
+	 * @return array<int|string> with RWGPS id and query string
 	 */
 	private function stripRideWithGPS(string &$description) : array
 		{
@@ -832,7 +832,6 @@ class Ride
 			}
 
 		$words = \explode(' ', $description);
-
 
 		foreach ($words as $index => $word)
 			{

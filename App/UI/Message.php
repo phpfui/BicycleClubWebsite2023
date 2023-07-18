@@ -4,9 +4,9 @@ namespace App\UI;
 
 class Message implements \Stringable
 	{
-	public function __construct(protected $name, protected $title)
- {
- }
+	public function __construct(protected string $name, protected string $title)
+		{
+		}
 
 	public function __toString() : string
 		{

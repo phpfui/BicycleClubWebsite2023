@@ -22,6 +22,9 @@ else if(post.record){for(const [key,value] of Object.entries(post.record))
 {var $input=$("[name=\'"+key+"\']");if($input.length)$input.val(value);}}}');
 		}
 
+	/**
+	 * @param array<string, array<string>> $errors
+	 */
 	public function returnErrors(array $errors) : string
 		{
 		return \json_encode(['response' => 'Error!', 'color' => 'red', 'errors' => $errors, ]);

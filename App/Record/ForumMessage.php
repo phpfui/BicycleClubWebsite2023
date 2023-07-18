@@ -10,6 +10,7 @@ namespace App\Record;
  */
 class ForumMessage extends \App\Record\Definition\ForumMessage
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'ForumAttachmentChildren' => [\PHPFUI\ORM\Children::class, \App\Table\ForumAttachment::class],
 		'lastEditor' => [\PHPFUI\ORM\RelatedRecord::class, \App\Record\Member::class],

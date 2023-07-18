@@ -4,6 +4,9 @@ namespace App\Model;
 
 class ThumbnailImageFiles extends \App\Model\TinifyImage
 	{
+	/**
+	 * @param array<string,mixed> $item
+	 */
 	public function __construct(string $type, private string $index, protected array $item = [])
 		{
 		$this->item = $item;
@@ -61,6 +64,9 @@ class ThumbnailImageFiles extends \App\Model\TinifyImage
 		\App\Tools\File::unlink(PUBLIC_ROOT . $this->getThumbFileName());
 		}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getItem() : array
 		{
 		return $this->item;
@@ -111,6 +117,9 @@ class ThumbnailImageFiles extends \App\Model\TinifyImage
 		return new \PHPFUI\Image($this->verifyImage($this->getThumbFileName()));
 		}
 
+	/**
+	 * @param array<string,mixed> $item
+	 */
 	public function update(array $item) : void
 		{
 		$this->item = $item;

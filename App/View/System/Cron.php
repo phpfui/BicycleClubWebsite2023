@@ -6,6 +6,7 @@ class Cron
 	{
 	private readonly \App\Cron\Controller $controller;
 
+	/** @var array<string,\App\Cron\BaseJob> */
 	private array $jobs;
 
 	public function __construct(private readonly \App\View\Page $page)

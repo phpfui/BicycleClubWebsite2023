@@ -6,6 +6,9 @@ class Newsletter extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Newsletter::class;
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Newsletter>
+	 */
 	public function getAllByYear(int $year) : \PHPFUI\ORM\RecordCursor
 		{
 		$start = \App\Tools\Date::toString(\gregoriantojd(1, 1, $year));

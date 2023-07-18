@@ -4,6 +4,7 @@ namespace App\View\System;
 
 class API
 	{
+	/** @var array<string,\PHPFUI\ORM\Table> */
 	private readonly array $tables;
 
 	public function __construct(private readonly \App\View\Page $page)

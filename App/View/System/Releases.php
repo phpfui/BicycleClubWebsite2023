@@ -4,11 +4,13 @@ namespace App\View\System;
 
 class Releases
 	{
-	// @phpstan-ignore-next-line
-	public function __construct(\App\View\Page $page, private readonly \Gitonomy\Git\Repository $model)
+	public function __construct(private readonly \Gitonomy\Git\Repository $model)
 		{
 		}
 
+	/**
+	 * @param array<string,\Gitonomy\Git\Reference\Tag> $releases
+	 */
 	public function list(array $releases) : \PHPFUI\Container
 		{
 		$queryParameters = [\PHPFUI\Session::csrfField() => \PHPFUI\Session::csrf()];

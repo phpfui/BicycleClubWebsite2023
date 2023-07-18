@@ -4,7 +4,7 @@ namespace App\View;
 
 class ClusterDuck extends \PHPFUI\Page
 	{
-	public function __construct($message = 'We should have this fixed already. Try hitting refresh.')
+	public function __construct(string $message = 'We should have this fixed already. Try hitting refresh.')
 		{
 		parent::__construct();
 

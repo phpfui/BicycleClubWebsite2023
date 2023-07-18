@@ -4,6 +4,7 @@ namespace App\Tools;
 
 class LinkInfo
 	{
+	/** @var array<string,true> */
 	protected array $references = [];
 
 	protected bool $scanned = false;
@@ -21,9 +22,7 @@ class LinkInfo
 		}
 
 	/**
-	 * @return (int|string)[]
-	 *
-	 * @psalm-return list<array-key>
+	 * @return array<string>
 	 */
 	public function getReferences() : array
 		{

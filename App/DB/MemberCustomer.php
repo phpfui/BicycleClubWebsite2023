@@ -39,7 +39,7 @@ class MemberCustomer
 			}
 		}
 
-	public function __get(string $field)
+	public function __get(string $field) : mixed
 		{
 		if ($this->member->loaded())
 			{
@@ -116,6 +116,9 @@ class MemberCustomer
 		return $this->membership;
 		}
 
+	/**
+	 * @param array<string, mixed> $fields
+	 */
 	public function save(array $fields) : void
 		{
 		if ($this->member->loaded())
@@ -129,6 +132,9 @@ class MemberCustomer
 			}
 		}
 
+	/**
+	 * @return array<string, mixed>
+	 */
 	public function toArray() : array
 		{
 		if ($this->member->loaded())
@@ -151,6 +157,9 @@ class MemberCustomer
 		return $this->customer->update();
 		}
 
+	/**
+	 * @return array<string, array<string>>
+	 */
 	public function validate() : array
 		{
 		if ($this->member->loaded())

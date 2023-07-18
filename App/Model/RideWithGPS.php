@@ -6,6 +6,7 @@ class RideWithGPS
 	{
 	private readonly string $clubId;
 
+	/** @var array<string,string> */
 	private array $states = [
 		'Alaska' => 'AK',
 		'Alabama' => 'AL',
@@ -109,6 +110,9 @@ class RideWithGPS
 		return "https://www.google.com/maps/dir/?api=1&destination={$route->latitude},{$route->longitude}";
 		}
 
+	/**
+	 * @param array<string,mixed> $route
+	 */
 	public static function getMapPinLink(array $route) : string
 		{
 		if (! self::validGeoLocation($route))
@@ -140,9 +144,7 @@ class RideWithGPS
 		}
 
 	/**
-	 * @return (int|string)[]|false
-	 *
-	 * @psalm-return array{scheme?: string, user?: string, pass?: string, host?: string, port?: int, path?: string, query?: string, fragment?: string, RWGPSId: int}|false
+	 * @return array<int|string>|false
 	 */
 	public static function getRWGPSIdFromLink(string $link) : array | bool
 		{
@@ -227,6 +229,9 @@ class RideWithGPS
 		return $rwgps;
 		}
 
+	/**
+	 * @param array<string,mixed> $data
+	 */
 	public function updateFromData(\App\Record\RWGPS $rwgps, array $data) : void
 		{
 		$rwgps->RWGPSId = $data['id'];
@@ -288,6 +293,9 @@ class RideWithGPS
 			}
 		}
 
+	/**
+	 * @param array<string,mixed> $route
+	 */
 	private static function validGeoLocation(array $route) : bool
 		{
 		return isset($route['latitude']) && isset($route['longitude']) && ((float)$route['latitude'] + (float)$route['longitude']);

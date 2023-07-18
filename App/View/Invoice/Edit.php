@@ -23,6 +23,11 @@ class Edit
 					return;
 					}
 				$member = $cartItems[0]->member;
+				// delete old CartItems for this user, they may have a saved cart
+				$cartItemTable = new \App\Table\CartItem();
+				$cartItemTable->setWhere(new \PHPFUI\ORM\Condition('memberId', $member->memberId));
+				$cartItemTable->delete();
+
 				$volunteerPoints = $member->volunteerPoints ?? 0;
 
 				foreach ($cartItems as $cartItem)
@@ -51,6 +56,7 @@ class Edit
 				$cartItem->cartItemId = \mt_rand();
 				$items[] = $cartItem;
 				\App\Model\Session::saveCartItems($items);
+
 				$this->page->redirect();
 				}
 			elseif (($_POST['submit'] ?? '') == 'getOptions')

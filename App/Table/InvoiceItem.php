@@ -45,7 +45,10 @@ class InvoiceItem extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
 		}
 
-	public static function getByDateType(string $startDate, string $endDate, array $types = []) : iterable
+	/**
+	 * @param array<int> $types
+	 */
+	public static function getByDateType(string $startDate, string $endDate, array $types = []) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from invoiceItem ii left join invoice i on i.invoiceId=ii.invoiceId where i.orderDate>=? and i.orderDate<=? and i.paymentDate>"1000-01-01"';
 		$input = [$startDate, $endDate, ];
@@ -58,7 +61,7 @@ class InvoiceItem extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
 		}
 
-	public static function getUnshippedItems() : iterable
+	public static function getUnshippedItems() : \PHPFUI\ORM\ArrayCursor
 		{
 		$sql = 'select * from invoice i,invoiceItem ii where i.fullfillmentDate is null and i.paymentDate > "1000-01-01" and i.invoiceId = ii.invoiceId';
 

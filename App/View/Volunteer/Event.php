@@ -127,6 +127,9 @@ class Event
 			}
 		}
 
+	/**
+	 * @param array<string,mixed> $row
+	 */
 	private function addCopyEventModal(\PHPFUI\HTML5Element $modalLink, array $row) : void
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);

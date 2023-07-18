@@ -20,7 +20,7 @@ class PacePicker extends \PHPFUI\MultiColumn
 
 			foreach ($paces as $key => $pace)
 				{
-				$select->addOption(\App\View\Categories::getPaceLabel(new \App\Record\Pace($pace)), $key, $selected == $key);
+				$select->addOption(\App\View\Categories::getPaceLabel(new \App\Record\Pace($pace)), (string)$key, $selected == $key);
 				}
 
 			$this->add($select);
@@ -63,7 +63,7 @@ class PacePicker extends \PHPFUI\MultiColumn
 				$categoryId = $pace['categoryId'];
 				}
 			$active = $selected == $key;
-			$paceInput->addOption($pace['pace'], $key, $active);
+			$paceInput->addOption($pace['pace'], (string)$key, $active);
 
 			if ($active && ! $activePace)
 				{

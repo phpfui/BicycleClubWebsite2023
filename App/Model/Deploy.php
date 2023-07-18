@@ -16,7 +16,7 @@ class Deploy
 		}
 
 	/**
-	 * @return array of migration errors
+	 * @return array<string> of migration errors
 	 */
 	public function deployTarget(string $target) : array
 		{
@@ -80,11 +80,15 @@ class Deploy
 		return $this->migrationModel->getErrors();
 		}
 
+	/** @return array<string,\Gitonomy\Git\Reference\Tag> */
 	public function getReleaseTags() : array
 		{
 		return $this->sortedTags->getTags(\App\Model\ReleaseTag::VERSION_PREFIX);
 		}
 
+	/**
+	 * @param array<string> $errors
+	 */
 	public function sendUpgradeEmail(\Gitonomy\Git\Reference\Tag $tag, string $version, string $errorMessage, array $errors) : void
 		{
 		$email = new \App\Tools\EMail();

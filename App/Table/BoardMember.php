@@ -35,6 +35,9 @@ class BoardMember extends \PHPFUI\ORM\Table
 		return $position;
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\BoardMember>
+	 */
 	public function getBoardMembers() : \PHPFUI\ORM\RecordCursor
 		{
 		$this->addOrderBy('rank', 'desc');

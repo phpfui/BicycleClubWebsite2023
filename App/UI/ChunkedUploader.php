@@ -4,6 +4,9 @@ namespace App\UI;
 
 class ChunkedUploader
 	{
+	/**
+	 * @var array<string,mixed>
+	 */
 	private array $options = [];
 
 	public function __construct(private readonly \PHPFUI\Interfaces\Page $page)
@@ -165,7 +168,7 @@ function readablizeBytes(bytes) {
 		return $container;
 		}
 
-	public function setOption(string $option, $value = null) : self
+	public function setOption(string $option, mixed $value = null) : self
 		{
 		if (null === $value)
 			{

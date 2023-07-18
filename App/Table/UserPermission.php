@@ -24,13 +24,13 @@ class UserPermission extends \PHPFUI\ORM\Table
 		\PHPFUI\ORM::execute('delete from userPermission where memberId=?', [$number]);
 		}
 
-	public static function deletePermissionsForMembership($number) : void
+	public static function deletePermissionsForMembership(int $membershipId) : void
 		{
 		$sql = 'delete from userPermission where memberId in (select memberId from member where membershipId=?)';
-		\PHPFUI\ORM::execute($sql, [$number]);
+		\PHPFUI\ORM::execute($sql, [$membershipId]);
 		}
 
-	public static function forMember($memberId) : iterable
+	public static function forMember(int $memberId) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from userPermission u,permission p where u.memberId=? and u.permissionGroup=p.permissionId order by p.menu,p.name';
 
@@ -38,21 +38,19 @@ class UserPermission extends \PHPFUI\ORM\Table
 		}
 
 	/**
-	 * @return array<array> array of userPermissons with name and revoked
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\UserPermission>
 	 */
-	public static function getPermissionsForUser($memberId) : iterable
+	public static function getPermissionsForUser(int $memberId) : \PHPFUI\ORM\RecordCursor
 		{
-		return \PHPFUI\ORM::getRows('select * from userPermission u left join permission p on p.permissionId=u.permissionGroup where u.memberId=?', [$memberId]);
+		return \PHPFUI\ORM::getRecordCursor(new \App\Record\UserPermission(), 'select u.* from userPermission u left join permission p on p.permissionId=u.permissionGroup where u.memberId=?', [$memberId]);
 		}
 
 	public static function removePermissionFromUser(int $memberId, int $permission) : bool
 		{
-		\PHPFUI\ORM::execute(
+		return \PHPFUI\ORM::execute(
 			'delete from userPermission where memberId=? and permissionGroup=?',
 			[$memberId, $permission, ]
 		);
-
-		return true;
 		}
 
 	public static function revokePermissionForUser(int $memberId, int $permission) : bool
@@ -63,8 +61,6 @@ class UserPermission extends \PHPFUI\ORM\Table
 			}
 
 		$key = [$memberId, $permission, 1];
-		\PHPFUI\ORM::execute('insert into userPermission (memberId, permissionGroup, revoked) VALUES (?,?,?) on duplicate key update revoked=1', $key);
-
-		return true;
+		return \PHPFUI\ORM::execute('insert into userPermission (memberId, permissionGroup, revoked) VALUES (?,?,?) on duplicate key update revoked=1', $key);
 		}
 	}

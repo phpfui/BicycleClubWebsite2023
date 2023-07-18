@@ -9,6 +9,7 @@ namespace App\Record;
  */
 class Blog extends \App\Record\Definition\Blog
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'BlogItemChildren' => [\PHPFUI\ORM\Children::class, \App\Table\BlogItem::class],
 	];

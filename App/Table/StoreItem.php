@@ -6,7 +6,7 @@ class StoreItem extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\StoreItem::class;
 
-	public static function byTitle(int $volunteerPoints = 0, bool $activeOnly = false) : iterable
+	public static function byTitle(int $volunteerPoints = 0, bool $activeOnly = false) : \PHPFUI\ORM\ArrayCursor
 		{
 		$leadersOnly = $volunteerPoints ? '' : 'and pointsOnly=0';
 		$active = $activeOnly ? 'and active=1 and (storeItemId in (select storeItemId from storeItemDetail where storeItemId=storeItemId and quantity>0)' .

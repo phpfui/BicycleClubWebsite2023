@@ -93,7 +93,7 @@ class JobEvent extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$date]);
 		}
 
-	public function getJobEventsBetween(string $startDate, string $endDate) : iterable
+	public function getJobEventsBetween(string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from jobEvent where cutoffDate>=? and cutoffDate<=? order by cutoffDate';
 

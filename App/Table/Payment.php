@@ -6,7 +6,12 @@ class Payment extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Payment::class;
 
-	public static function getByDate(string $startDate, string $endDate, array $paymentTypes = [], $userOnly = false) : iterable
+	/**
+	 * @param array<int> $paymentTypes
+	 *
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Payment>
+	 */
+	public static function getByDate(string $startDate, string $endDate, array $paymentTypes = [], bool $userOnly = false) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'SELECT * FROM payment where dateReceived>=? and dateReceived<=?';
 		$input = [$startDate,
@@ -27,6 +32,9 @@ class Payment extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Payment(), $sql, $input);
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public static function getPaymentTypes() : array
 		{
 		return ['Cash',

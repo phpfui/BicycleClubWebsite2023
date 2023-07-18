@@ -50,7 +50,7 @@ class Page extends \PHPFUI\Page
 		// host must have three or more segments.  domain.com does now work with PayPal.  www.domain.com does. So if not there, redirect to home page
 		if ('127.0.0.1' != $_SERVER['SERVER_ADDR'] && '::1' != $_SERVER['SERVER_ADDR'] && (\count(\explode('.', (string)$_SERVER['HTTP_HOST'])) < 3 || 'https' != $_SERVER['REQUEST_SCHEME']))
 			{
-			\header("location: {$this->value('homePage')}");
+			\header("location: {$this->value('homePage')}{$_SERVER['REQUEST_URI']}");
 
 			exit();
 			}
@@ -646,12 +646,12 @@ class Page extends \PHPFUI\Page
 		$fieldSet = new \PHPFUI\FieldSet('Sign In to ' . $this->value('boardName'));
 
 		$memberCookie = $this->cookies->get('Member');
-		$emailAddress = \App\Model\Member::cleanEmail($_GET['email'] ?? $memberCookie ?? '');
+		$emailAddress = \App\Model\Member::cleanEmail($_GET['email'] ?? $memberCookie);
 		$email = new \PHPFUI\Input\Email('email', 'Your email Address', $emailAddress);
 		$email->setToolTip('Your email address on file with us.  Eg. yourname@gmail.com');
 		$fieldSet->add($email);
 		$passwordCookie = $this->cookies->get('Password');
-		$pw = $_GET['pw'] ?? $passwordCookie ?? '';
+		$pw = $_GET['pw'] ?? $passwordCookie;
 		$password = new \PHPFUI\Input\PasswordEye('password', 'Password', $pw);
 		$password->setToolTip("Your password. We recommend to use a password you don't use anywhere else.");
 		$fieldSet->add($password);

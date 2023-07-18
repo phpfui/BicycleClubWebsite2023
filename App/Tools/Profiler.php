@@ -31,7 +31,7 @@ class Profiler
 		$this->logger->outputNow();
 		}
 
-	public function start($file) : void
+	public function start(string $file) : void
 		{
 		if (\count($this->callstack))
 			{

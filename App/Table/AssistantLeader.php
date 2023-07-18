@@ -6,14 +6,14 @@ class AssistantLeader extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\AssistantLeader::class;
 
-	public static function getForDateRange(string $startDate, string $endDate) : iterable
+	public static function getForDateRange(string $startDate, string $endDate) : \PHPFUI\ORM\ArrayCursor
 		{
 		$sql = 'select al.* from assistantLeader al left join ride r on r.rideId=al.rideId where r.rideDate>=? and r.rideDate<=?';
 
 		return \PHPFUI\ORM::getArrayCursor($sql, [$startDate, $endDate]);
 		}
 
-	public static function getForMemberDate(int $memberId, string $startDate, string $endDate) : iterable
+	public static function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select r.* from ride r left join assistantLeader a on a.rideId=r.rideId where a.memberId=? and r.rideDate>=? and r.rideDate<=? order by r.rideDate';
 
@@ -21,7 +21,7 @@ class AssistantLeader extends \PHPFUI\ORM\Table
 		}
 
 	/**
-	 * Return RecordCursor<Member>
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Member>
 	 */
 	public static function getForRide(\App\Record\Ride $ride) : \PHPFUI\ORM\RecordCursor
 		{

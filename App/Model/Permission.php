@@ -4,6 +4,7 @@ namespace App\Model;
 
 class Permission extends \App\Model\PermissionBase
 	{
+	/** @var array<string,int> */
 	protected array $permissions = [];
 
 	private int $count = 0;
@@ -213,7 +214,12 @@ class Permission extends \App\Model\PermissionBase
 		return $this->permissions[$name] ?? 0;
 		}
 
-	public function getPermissionsForGroup($group, array $permissions = []) : array
+	/**
+	 * @param array<int, int> $permissions array indexed by permissionId with a value enabled (int)
+	 *
+	 * @return array<int, int> array indexed by permissionId with a value enabled (int)
+	 */
+	public function getPermissionsForGroup(string|int $group, array $permissions = []) : array
 		{
 		if (! \is_numeric($group))
 			{
@@ -230,16 +236,16 @@ class Permission extends \App\Model\PermissionBase
 
 			foreach ($result as $permission)
 				{
-				if (! $permission['revoked'])
+				if (! $permission->revoked)
 					{
-					if (! isset($permissions[$permission['permissionId']]))
+					if (! isset($permissions[$permission->permissionId]))
 						{
-						$permissions[$permission['permissionId']] = 1;
+						$permissions[$permission->permissionId] = 1;
 						}
 					}
 				else
 					{
-					$permissions[$permission['permissionId']] = 0;
+					$permissions[$permission->permissionId] = 0;
 					}
 				}
 			}
@@ -261,21 +267,21 @@ class Permission extends \App\Model\PermissionBase
 
 			foreach ($result as $permission)
 				{
-				if (! $permission['revoked'])
+				if (! $permission->revoked)
 					{
-					if (! isset($permissions[$permission['permissionGroup']]))
+					if (! isset($permissions[$permission->permissionGroup]))
 						{
-						$permissions[$permission['permissionGroup']] = 1;
+						$permissions[$permission->permissionGroup] = 1;
 						}
 					}
 				else
 					{
-					$permissions[$permission['permissionGroup']] = 0;
+					$permissions[$permission->permissionGroup] = 0;
 					}
 
-				if ($permission['permissionGroup'] < 100000)
+				if ($permission->permissionGroup < 100000)
 					{
-					$permissions = $this->getPermissionsForGroup($permission['permissionGroup'], $permissions);
+					$permissions = $this->getPermissionsForGroup($permission->permissionGroup, $permissions);
 					}
 				}
 			}
@@ -399,6 +405,9 @@ class Permission extends \App\Model\PermissionBase
 		return \App\Table\UserPermission::revokePermissionForUser($memberId, $permission);
 		}
 
+	/**
+	 * @param array<string,string|array<int>> $parameters
+	 */
 	public function saveGroup(array $parameters) : void
 		{
 		$group = ['groupId' => $parameters['groupId']];
@@ -441,6 +450,9 @@ class Permission extends \App\Model\PermissionBase
 		$permission->insertOrUpdate();
 		}
 
+	/**
+	 * @param array<string,string|array<int>> $parameters
+	 */
 	public function saveMember(array $parameters) : void
 		{
 		$member = ['memberId' => $parameters['memberId']];

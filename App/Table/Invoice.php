@@ -6,6 +6,9 @@ class Invoice extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Invoice::class;
 
+	/**
+	 * @param array<string,array<int>|string> $parameters
+	 */
 	public function find(array $parameters) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select distinct i.*,COALESCE(m.email,c.email) as email,COALESCE(m.firstName, c.firstName) as firstName, COALESCE(m.lastName, c.lastName) as lastName ' .
@@ -106,7 +109,7 @@ class Invoice extends \PHPFUI\ORM\Table
 								{
 								$value = (int)$value;
 
-								if ($value)
+								if ($value)	// @phpstan-ignore-line
 									{
 									$sql .= $and . 'i.' . $field . '=?';
 									$input[] = $value;
@@ -156,7 +159,10 @@ class Invoice extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
 		}
 
-	public static function getByDateType(string $startDate, string $endDate, array $types = []) : iterable
+	/**
+	 * @param array<int> $types
+	 */
+	public static function getByDateType(string $startDate, string $endDate, array $types = []) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from invoice where orderDate>=? and orderDate<=? and paymentDate>"1000-01-01"';
 		$input = [$startDate, $endDate, ];
@@ -176,7 +182,7 @@ class Invoice extends \PHPFUI\ORM\Table
 		return (int)\PHPFUI\ORM::getValue($sql, [$discountCodeId]);
 		}
 
-	public static function getPaidByDate(int $shipped, string $startDate = '', string $endDate = '', int $points = 0) : iterable
+	public static function getPaidByDate(int $shipped, string $startDate = '', string $endDate = '', int $points = 0) : \PHPFUI\ORM\ArrayCursor
 		{
 		$sql = self::getSelectFields();
 		$sql .= 'where i.paymentDate>"1000-01-01"';
@@ -210,6 +216,9 @@ class Invoice extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getArrayCursor($sql, $input);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Invoice>
+	 */
 	public static function getTaxes(string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'SELECT * FROM invoice where orderDate >= ? and orderDate <= ? and totalTax>0 and paymentDate>"1000-01-01"';
@@ -217,21 +226,30 @@ class Invoice extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Invoice(), $sql, [$startDate, $endDate, ]);
 		}
 
-	public static function getUnpaidBefore(string $date) : iterable
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Invoice>
+	 */
+	public static function getUnpaidBefore(string $date) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from invoice where orderDate < ? and paymentDate is null';
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Invoice(), $sql, [$date]);
 		}
 
-	public static function getUnpaidOn(string $date) : iterable
+	/**
+	 * @param array<string> $dates
+	 *
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Invoice>
+	 */
+	public function getUnpaidOn(array $dates) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from invoice where orderDate = ? and paymentDate is null';
+		$condition = new \PHPFUI\ORM\Condition('paymentDate', null, new \PHPFUI\ORM\Operator\IsNull());
+		$condition->and('orderDate', $dates, new \PHPFUI\ORM\Operator\In());
 
-		return \PHPFUI\ORM::getRows($sql, [$date]);
+		return $this->getRecordCursor();
 		}
 
-	public static function pointsUsed(string $start, string $end, string $sort) : iterable
+	public static function pointsUsed(string $start, string $end, string $sort) : \PHPFUI\ORM\ArrayCursor
 		{
 		$sql = 'select m.*,i.* from invoice i left join member m on m.memberId=i.memberId where i.pointsUsed > 0';
 		$input = [];

@@ -4,9 +4,11 @@ namespace App\View\Admin;
 
 class Images
 	{
-	protected $fieldsToSave = [];
+	/** @var array<string> */
+	protected array $fieldsToSave = [];
 
-	protected array $files;
+	/** @var array<string> */
+	protected array $files = [];
 
 	private readonly \App\Model\ImageFiles $model;
 

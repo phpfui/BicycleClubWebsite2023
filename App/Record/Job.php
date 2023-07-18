@@ -9,6 +9,7 @@ namespace App\Record;
  */
 class Job extends \App\Record\Definition\Job
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'JobShiftChildren' => [\PHPFUI\ORM\Children::class, \App\Table\JobShift::class],
 	];

@@ -6,7 +6,7 @@ class VolunteerPollAnswer extends \PHPFUI\ORM\Table
 {
 	protected static string $className = '\\' . \App\Record\VolunteerPollAnswer::class;
 
-	public function getPollAnswers(int $volunteerPollId) : iterable
+	public function getPollAnswers(int $volunteerPollId) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from volunteerPollAnswer where volunteerPollId=? order by answer';
 

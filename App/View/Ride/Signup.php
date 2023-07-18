@@ -4,7 +4,7 @@ namespace App\View\Ride;
 
 class Signup
 	{
-	protected iterable $members;
+	protected \PHPFUI\ORM\RecordCursor $members;
 
 	private readonly \App\Table\Setting $settingTable;
 

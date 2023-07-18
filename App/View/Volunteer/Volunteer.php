@@ -8,7 +8,7 @@ class Volunteer
 		{
 		}
 
-	public function getEvents(iterable $events) : \PHPFUI\Table
+	public function getEvents(\PHPFUI\ORM\DataObjectCursor $events) : \PHPFUI\Table
 		{
 		$table = new \PHPFUI\Table();
 		$table->addHeader('name', 'Events');

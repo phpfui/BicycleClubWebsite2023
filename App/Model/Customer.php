@@ -27,7 +27,7 @@ class Customer
 		elseif ($memberId = \App\Model\Session::getCustomerNumber())
 			{
 			}
-		elseif ($memberId = $cookie->get('customerNumber'))
+		elseif ($memberId = (int)$cookie->get('customerNumber'))
 			{
 			\App\Model\Session::setCustomerNumber($memberId);
 			}
@@ -38,7 +38,7 @@ class Customer
 			}
 		else
 			{
-			$cookie->set('customerNumber', $memberId, true);
+			$cookie->set('customerNumber', (string)$memberId, true);
 			}
 
 		return $memberId;

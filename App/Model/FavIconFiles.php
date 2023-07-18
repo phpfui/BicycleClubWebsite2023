@@ -4,6 +4,7 @@ namespace App\Model;
 
 class FavIconFiles extends \App\Model\File
 	{
+	/** @var array<string> */
 	private array $errors = [];
 
 	public function __construct()
@@ -11,6 +12,9 @@ class FavIconFiles extends \App\Model\File
 		parent::__construct('../files/favicons');
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public function getErrors() : array
 		{
 		if ($this->getLastError())

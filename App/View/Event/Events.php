@@ -284,7 +284,7 @@ class Events
 
 		foreach ($events as $event)
 			{
-			$select->addOption($event->title, $event->eventId);
+			$select->addOption($event->title, (string)$event->eventId);
 			}
 
 		return $select;

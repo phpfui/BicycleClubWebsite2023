@@ -20,8 +20,10 @@ class Member
 
 	final public const MEMBERSHIP_TITLE = '12 Month Membership';
 
+	/** @var array<string,int> */
 	protected array $passwordOptions = ['cost' => 11];
 
+	/** @var array<string> */
 	protected array $supervisorFields = [
 		'lastLogin',
 		'allowedMembers',
@@ -49,6 +51,9 @@ class Member
 		$this->duesModel = new \App\Model\MembershipDues();
 		}
 
+	/**
+	 * @param array<string,mixed> $member
+	 */
 	public function add(array $member) : int
 		{
 		$member['pendingLeader'] = 0;
@@ -90,6 +95,8 @@ class Member
 
 	/**
 	 * return added memberId if adding a member is allowed, else return 0
+	 *
+	 * @param array<string,mixed> $member
 	 */
 	public function addMemberToMembership(array $member) : int
 		{
@@ -162,6 +169,9 @@ class Member
 		return $email;
 		}
 
+	/**
+	 * @param array<string,string> $post
+	 */
 	public function combineMembers(array $post) : int
 		{
 		$members = [];
@@ -250,13 +260,15 @@ class Member
 		}
 
 	/**
+	 * @param array<string,string> $post
+	 *
 	 * @return int $membershipId
 	 */
 	public function combineMembership(array $post) : int
 		{
 		$members = [];
 		$membershipsCombined = [];
-		$membershipId = $post['membershipId'] ?? 0;
+		$membershipId = (int)($post['membershipId'] ?? 0);
 
 		if (! $membershipId)
 			{
@@ -383,6 +395,9 @@ class Member
 		return ! $member->loaded();
 		}
 
+	/**
+	 * @return array<string,mixed> person with email
+	 */
 	public function executeInvoice(\App\Record\Invoice $invoice, \App\Record\InvoiceItem $invoiceItem, \App\Record\Payment $payment) : array
 		{
 		// set membership to new expiration date
@@ -532,11 +547,17 @@ class Member
 		return $member->toArray();
 		}
 
+	/**
+	 * @return array<string,string>
+	 */
 	public function get(int $memberId) : array
 		{
 		return $this->memberTable->getMembership($memberId);
 		}
 
+	/**
+	 * @return array<string,array<mixed>>
+	 */
 	public function getFields() : array
 		{
 		return $this->memberTable->getFields();
@@ -675,7 +696,7 @@ class Member
 	/**
 	 * set full save to false if not validating user access to supervisor fields
 	 *
-	 * @param array $member fields to update index by field name
+	 * @param array<string,mixed> $member fields to update index by field name
 	 * @param bool $fullSave save all the fields passed, if false, filter out supervisor fields
 	 */
 	public function saveFromPost(array $member, bool $fullSave = true) : void
@@ -773,6 +794,9 @@ class Member
 		\App\Table\UserPermission::addPermissionToUser($member->memberId, $permission->permissionId);
 		}
 
+	/**
+	 * @return array<string,string> error messsages
+	 */
 	public function signInMember(string $email, string $password) : array
 		{
 		$returnValue = [];
@@ -849,8 +873,7 @@ class Member
 		}
 
 	/**
-	 *
-	 * @psalm-return 0|positive-int
+	 * @param array<string,string> $parameters
 	 */
 	public function updateSubscriptions(array $parameters) : int
 		{
@@ -890,6 +913,9 @@ class Member
 		return $updateCount;
 		}
 
+	/**
+	 * @return array<string> errors
+	 */
 	public function validatePassword(string $passwordToValidate) : array
 		{
 		$policy = new \App\Model\PasswordPolicy();

@@ -6,7 +6,10 @@ class Banner extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Banner::class;
 
-	public function getActiveRows() : iterable
+	/**
+	 * @return array<array<string,string>>
+	 */
+	public function getActiveRows() : array
 		{
 		$sql = 'select * from banner where endDate>=? and startDate<=? and pending=0';
 

@@ -6,6 +6,9 @@ class AuditTrail extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\AuditTrail::class;
 
+	/**
+	 * @param array<string,string> $input
+	 */
 	public static function log(string $sql, array $input = []) : void
 		{
 		$auditTrail = new \App\Record\AuditTrail();

@@ -6,6 +6,7 @@ class Pace extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Pace::class;
 
+	/** @var array<int, array<string,string>> */
 	private array $paces = [];
 
 	public function __construct()
@@ -29,19 +30,25 @@ class Pace extends \PHPFUI\ORM\Table
 		return $this->paces[$paceId]['pace'] ?? 'All';
 		}
 
-	public function getPaceOrder(int $categoryId) : iterable
+	public function getPaceOrder(int $categoryId) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from pace where categoryId=? order by ordering';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$categoryId]);
 		}
 
+	/** @return array<int, array<string,string>> */
 	public function getPaces() : array
 		{
 		return $this->paces;
 		}
 
-	public function getPacesForCategories(array $categories) : iterable
+	/**
+	 * @param array<int> $categories
+	 *
+	 * @return array<int>
+	 */
+	public function getPacesForCategories(array $categories) : array
 		{
 		$paces = [];
 
@@ -49,7 +56,7 @@ class Pace extends \PHPFUI\ORM\Table
 			{
 			if (\in_array($pace['categoryId'], $categories))
 				{
-				$paces[] = $pace['paceId'];
+				$paces[] = (int)$pace['paceId'];
 				}
 			}
 

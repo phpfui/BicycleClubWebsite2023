@@ -6,6 +6,9 @@ class Calendar extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Calendar::class;
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Calendar>
+	 */
 	public function getPending() : \PHPFUI\ORM\RecordCursor
 		{
 		$condition = new \PHPFUI\ORM\Condition('pending', 1);

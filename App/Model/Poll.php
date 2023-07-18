@@ -23,7 +23,7 @@ class Poll
 		foreach ($requiredPolls as $poll)
 			{
 			// poll is not required if no answers, and probably saved too early.
-			if (! $this->getVote($poll) && (\is_countable($poll->PollAnswerChildren) ? \count($poll->PollAnswerChildren) : 0))
+			if (! $this->getVote($poll) && \count($poll->PollAnswerChildren))
 				{
 				return $poll;
 				}

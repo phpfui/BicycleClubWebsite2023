@@ -4,6 +4,7 @@ namespace App\Model;
 
 class EmailData implements \App\DB\Interface\EmailData
 	{
+	/** @var array<string, string> */
 	protected array $fields = [];
 
 	public function toArray() : array

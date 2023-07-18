@@ -6,6 +6,9 @@ class Category extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Category::class;
 
+	/**
+	 * @var array<int,array<string,string>>
+	 */
 	private array $categories = [];
 
 	public function __construct()
@@ -61,6 +64,9 @@ class Category extends \PHPFUI\ORM\Table
 		return $this->categories[$categoryId]['category'] ?? 'All';
 		}
 
+	/**
+	 * @return array<int>
+	 */
 	public function getDefaults() : array
 		{
 		$defaults = [];
@@ -76,7 +82,7 @@ class Category extends \PHPFUI\ORM\Table
 		return $defaults;
 		}
 
-	public function getDistributions() : iterable
+	public function getDistributions() : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select c.category,count(*) as count from category c ' .
 			'left join memberCategory mc on mc.categoryId=c.categoryId ' .

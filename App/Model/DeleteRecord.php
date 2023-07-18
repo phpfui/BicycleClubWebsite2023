@@ -4,10 +4,12 @@ namespace App\Model;
 
 class DeleteRecord
 	{
+	/** @var ?callable */
 	private $conditionalCallBack = null;
 
 	private readonly \PHPFUI\AJAX $delete; // @phpstan-ignore-line
 
+	/** @var array<string> */
 	private array $primaryKeys;
 
 	public function __construct(\PHPFUI\Interfaces\Page $page, \PHPFUI\Table $table, \PHPFUI\ORM\Table $dbTable, string $message = 'Are you sure you want to delete this row?')
@@ -33,6 +35,9 @@ class DeleteRecord
 		$page->addJavaScript($this->delete->getPageJS());
 		}
 
+	/**
+	 * @param array<string,mixed> $row
+	 */
 	public function columnCallback(array $row)
 		{
 		if ($this->conditional($row))
@@ -53,6 +58,9 @@ class DeleteRecord
 		return $this;
 		}
 
+	/**
+	 * @param array<string,mixed> $row
+	 */
 	private function conditional(array $row) : bool
 		{
 		$cb = $this->conditionalCallBack;
@@ -60,6 +68,11 @@ class DeleteRecord
 		return $cb ? $cb($row) : true;
 		}
 
+	/**
+	 * @param array<string,mixed> $row
+	 *
+	 * @return array<string,mixed> $row
+	 */
 	private function getPrimaryKeyValues(array $row) : array
 		{
 		$values = [];

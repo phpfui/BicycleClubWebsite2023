@@ -83,7 +83,7 @@ class Membership
 				{
 				continue;
 				}
-			$member['category'] = \App\Table\MemberCategory::getRideCategoryStringForMember($member['memberId']);
+			$member['category'] = \App\Table\MemberCategory::getRideCategoryStringForMember((int)$member['memberId']);
 			$csvWriter->outputRow(\array_intersect_key($member, $columns));
 			++$count;
 			}
@@ -92,7 +92,7 @@ class Membership
 		}
 
 	/**
-	 * @param array $mapping array indexed by db field name containing the field to move over from the import file
+	 * @param array<string,string> $mapping array indexed by db field name containing the field to move over from the import file
 	 * @param bool $singleMembership true if each member has thier own membership record, false combine memberships of subsquent lines with same address and town
 	 *
 	 * @return int number of members imported

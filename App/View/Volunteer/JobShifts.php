@@ -84,7 +84,7 @@ class JobShifts
 				{
 				$shift = $shiftRecord->toArray();
 				$id = $shiftRecord->jobShiftId;
-				$hidden = new \PHPFUI\Input\Hidden("jobShiftId[{$id}]", $shiftRecord->jobShiftId);
+				$hidden = new \PHPFUI\Input\Hidden("jobShiftId[{$id}]", (string)$shiftRecord->jobShiftId);
 				$shift['startTime'] = new \PHPFUI\Input\Time($this->page, "startTime[{$id}]", '', $shiftRecord->startTime, 5);
 				$shift['endTime'] = new \PHPFUI\Input\Time($this->page, "endTime[{$id}]", '', $shiftRecord->endTime, 5);
 				$needed = new \PHPFUI\Input\Number("needed[{$id}]", '', $shiftRecord->needed);

@@ -31,7 +31,7 @@ class Timer
 		return \number_format(($this->get_time() - $this->start), $decimals);
 		}
 
-	public function getLaps()
+	public function getLaps() : array
 		{
 		return $this->laps;
 		}

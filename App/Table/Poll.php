@@ -6,6 +6,9 @@ class Poll extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Poll::class;
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Poll>
+	 */
 	public static function byYear(int $year) : \PHPFUI\ORM\RecordCursor
 		{
 		$pollTable = new \App\Table\Poll();
@@ -17,6 +20,9 @@ class Poll extends \PHPFUI\ORM\Table
 		return $pollTable->getRecordCursor();
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Poll>
+	 */
 	public static function current() : \PHPFUI\ORM\RecordCursor
 		{
 		$pollTable = new \App\Table\Poll();
@@ -29,6 +35,9 @@ class Poll extends \PHPFUI\ORM\Table
 		return $pollTable->getRecordCursor();
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Poll>
+	 */
 	public static function future() : \PHPFUI\ORM\RecordCursor
 		{
 		$pollTable = new \App\Table\Poll();
@@ -40,6 +49,9 @@ class Poll extends \PHPFUI\ORM\Table
 		return $pollTable->getRecordCursor();
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Poll>
+	 */
 	public function getRequiredPolls() : \PHPFUI\ORM\RecordCursor
 		{
 		$pollTable = new \App\Table\Poll();
@@ -64,6 +76,9 @@ class Poll extends \PHPFUI\ORM\Table
 		return $record;
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Poll>
+	 */
 	public static function myPolls() : \PHPFUI\ORM\RecordCursor
 		{
 		$pollTable = new \App\Table\Poll();

@@ -4,6 +4,7 @@ namespace App\Migration;
 
 class Migration_8 extends \PHPFUI\ORM\Migration
 	{
+	/** @var array<string> */
 	private array $headers = [
 		'Edit Accept Cue Sheet Email',
 		'Edit Reject Cue Sheet Email',

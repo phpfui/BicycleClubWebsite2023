@@ -51,7 +51,7 @@ class Reports
 		$pollTable = new \App\Table\VolunteerPoll();
 		$polls = $pollTable->getPolls($jobEvent->jobEventId);
 
-		if ($polls)
+		if (count($polls))
 			{
 			$form->add('<h3>Poll Reports</h3>');
 			$fieldSet = new \PHPFUI\FieldSet('Select Polls for Report');

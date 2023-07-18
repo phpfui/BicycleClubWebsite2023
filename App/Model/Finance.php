@@ -4,13 +4,10 @@ namespace App\Model;
 
 class Finance extends \App\Model\File
 	{
+	/** @var array<string> */
 	private array $errors = [];
 
-	/**
-	 * @var string[]
-	 *
-	 * @psalm-var array{0: string, 1: string, 2: string, 3: string}
-	 */
+	/** @var array<string> */
 	private array $requiredTaxFields = ['State', 'ZipCode', 'TaxRegionName', 'EstimatedCombinedRate'];
 
 	public function __construct()
@@ -18,6 +15,9 @@ class Finance extends \App\Model\File
 		parent::__construct('../files/taxrates');
 		}
 
+	/**
+	 * @return array<string>
+	 */
   public function getErrors() : array
 		{
 		if ($this->getLastError())
@@ -28,9 +28,12 @@ class Finance extends \App\Model\File
 		return $this->errors;
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public function getTaxImportFields() : array
 		{
-	return $this->requiredTaxFields;
+		return $this->requiredTaxFields;
 		}
 
 	public function processFile(string | int $path) : string

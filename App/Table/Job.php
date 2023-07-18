@@ -20,7 +20,7 @@ class Job extends \PHPFUI\ORM\Table
 		return true;
 		}
 
-	public function getJobs(int $jobId) : iterable
+	public function getJobs(int $jobId) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select j.*,sum(js.needed) needed,(SELECT COUNT(*) FROM volunteerJobShift vjs WHERE vjs.jobId=j.jobId) taken
 						from job j

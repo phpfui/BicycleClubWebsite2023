@@ -243,6 +243,9 @@ class RideWithGPS
 		return $fieldSet;
 		}
 
+	/**
+	 * @param array<string,string> $additionalHeaders
+	 */
 	public function list(\App\Table\RWGPS $rwgpsTable, array $additionalHeaders = []) : \App\UI\ContinuousScrollTable
 		{
 		$sortableHeaders = ['title' => 'Name', ];
@@ -439,6 +442,9 @@ class RideWithGPS
 		$modal->add($form);
 		}
 
+	/**
+	 * @param array<string,mixed> $rwgps
+	 */
 	private function getStatsReveal(array $rwgps) : \PHPFUI\FAIcon
 		{
 		$opener = new \PHPFUI\FAIcon('fas', 'info-circle');

@@ -13,8 +13,6 @@ class CueSheetPicker
 
 	/**
 	 * @return (mixed|string)[][][]
-	 *
-	 * @psalm-return array{suggestions: list<array{value: string, data: mixed}>}
 	 */
 	public function callback(array $parameters) : array
 		{

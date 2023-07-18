@@ -44,23 +44,24 @@ class PermissionBase
 		}
 
 	/**
-	 *
-	 * @psalm-return array<empty, empty>
+	 * @param array<int,int> $permissions
 	 */
-	public function getPermissionsForGroup($group, array $permissions = []) : array
+	public function getPermissionsForGroup(string|int $group, array $permissions = []) : array
 		{
 		return [];
 		}
 
 	/**
-	 *
-	 * @psalm-return array<empty, empty>
+	 * @return array<int,int>
 	 */
 	public function getPermissionsForUser(int $memberId) : array
 		{
 		return [];
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public function getStandardGroups() : array
 		{
 		return [

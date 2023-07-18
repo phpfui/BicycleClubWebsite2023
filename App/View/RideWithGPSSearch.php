@@ -49,6 +49,9 @@ class RideWithGPSSearch implements \Stringable
 		return $button . $output;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	protected function getRangeSlider(string $name, array $parameters, int $minValue = 1, int $maxValue = 250, string $subtitle = '') : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
@@ -86,6 +89,9 @@ class RideWithGPSSearch implements \Stringable
 		return $container;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	protected function getSearchModal(\PHPFUI\HTML5Element $modalLink, array $parameters) : \PHPFUI\Reveal
 		{
 		$this->setDefaults($parameters);
@@ -126,6 +132,9 @@ class RideWithGPSSearch implements \Stringable
 		return $modal;
 		}
 
+	/**
+	 * @param array<string,string> &$parameters
+	 */
 	protected function setDefaults(array &$parameters) : void
 		{
 		$searchFields = [];
@@ -162,6 +171,9 @@ class RideWithGPSSearch implements \Stringable
 		$parameters['p'] = 0;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	protected function setSearch(array $parameters) : static
 		{
 		$condition = new \PHPFUI\ORM\Condition();

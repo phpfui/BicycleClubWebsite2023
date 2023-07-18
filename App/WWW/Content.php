@@ -39,7 +39,9 @@ class Content extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	public function categories() : void
 		{
 		$table = new \PHPFUI\Table();
-		$blogs = \App\Table\Blog::getBlogsByName();
+		$blogTable = new \App\Table\Blog();
+		$blogTable->setOrderBy('name');
+		$blogs = $blogTable->getRecordCursor();
 		$table->setRecordId('blogId');
 		$ajax = new \PHPFUI\AJAX('deleteCategory', 'Permanently delete this category?');
 		$ajax->addFunction('success', '$("#blogId-"+data.response).css("background-color","red").hide("fast").remove()');
@@ -51,9 +53,9 @@ class Content extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$table->addHeader('delete', 'Delete');
 			}
 
-		foreach ($blogs as $blogObject)
+		foreach ($blogs as $blogRecord)
 			{
-			$blog = $blogObject->toArray();
+			$blog = $blogRecord->toArray();
 			$id = $blog['blogId'];
 			$url = \urlencode((string)$blog['name']);
 			$blog['name'] = "<a href='/Content/category/{$url}'>{$blog['name']}</a>";

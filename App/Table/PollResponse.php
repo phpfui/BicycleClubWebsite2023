@@ -6,7 +6,7 @@ class PollResponse extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\PollResponse::class;
 
-	public function getVotes(int $pollId) : iterable
+	public function getVotes(int $pollId) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select count(r.answer) count,a.answer from pollResponse r left join pollAnswer a on a.pollId=r.pollId and a.pollAnswerId=r.answer where r.pollId=? group by r.answer order by count desc';
 

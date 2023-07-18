@@ -26,6 +26,7 @@ class Cart
 
 	private \App\Record\DiscountCode $discountCode;
 
+	/** @var array<array<string, string>> */
 	private array $items = [];
 
 	private int $memberId = 0;
@@ -48,6 +49,9 @@ class Cart
 		$this->zero();
 		}
 
+	/**
+	 * @param array<string,string|array<string>> $request
+	 */
 	public function addFromStore(array $request) : void
 		{
 		if (! $this->memberId)
@@ -120,6 +124,9 @@ class Cart
 			}
 		}
 
+	/**
+	 * @param array<string,mixed> $rider
+	 */
 	public function addGaRider(array $rider) : int
 		{
 		// storeItemId = gaEventId;
@@ -281,6 +288,9 @@ class Cart
 		return $total;
 		}
 
+	/**
+	 * @return array<array<string, mixed>>
+	 */
 	public function getItems() : array
 		{
 		if (empty($this->items))
@@ -294,7 +304,7 @@ class Cart
 				{
 				$cartItemRecord = new \App\Record\CartItem();
 				$cartItemRecord->setFrom($cartItem);
-				$tax = $taxCalculator->compute($cartItemRecord);
+				$tax = $taxCalculator->compute($cartItemRecord->toArray());
 				$this->tax += $tax;
 				$cartItem['tax'] = $tax;
 
@@ -382,6 +392,9 @@ class Cart
 		return $this;
 		}
 
+	/**
+	 * @param array<string,string> $quantities
+	 */
 	public function updateCartQuantities(array $quantities) : void
 		{
 		foreach ($quantities as $key => $quantity)

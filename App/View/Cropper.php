@@ -4,8 +4,10 @@ namespace App\View;
 
 class Cropper
 	{
+	/** @var array<string,\PHPFUI\Input> */
 	private array $fields = [];
 
+	/** @var array<string,mixed> */
 	private array $parameters = [];
 
 	public function __construct(private readonly \App\View\Page $page, private readonly ?\PHPFUI\Image $image)

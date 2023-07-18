@@ -12,6 +12,9 @@ class MemberPicker extends \App\Model\MemberPickerBase
 		parent::__construct($name);
 		}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getMember(string $title = '', bool $returnSomeone = true) : array
 		{
 		$member = $this->getSavedMember($title, $returnSomeone);
@@ -37,6 +40,9 @@ class MemberPicker extends \App\Model\MemberPickerBase
 		return $member;
 		}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getSavedMember(string $title = '', bool $returnSomeone = true) : array
 		{
 		if (empty($title))

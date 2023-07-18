@@ -66,21 +66,21 @@ class Inventory
 				{
 				if ('S' == $type)
 					{
-					$sid = \App\Table\StoreItemDetail::getInStock($item['storeItemId']);
+					$sid = \App\Table\StoreItemDetail::getInStock((int)$item['storeItemId']);
 					}
 				elseif ('O' == $type)
 					{
-					$sid = \App\Table\StoreItemDetail::getOutOfStock($item['storeItemId']);
+					$sid = \App\Table\StoreItemDetail::getOutOfStock((int)$item['storeItemId']);
 					}
 				else
 					{
-					$sid = \App\Table\StoreItemDetail::getAllStock($item['storeItemId']);
+					$sid = \App\Table\StoreItemDetail::getAllStock((int)$item['storeItemId']);
 					}
 
 				if ($rows = \count($sid))
 					{
 					$detail = $sid->current();
-					$total = $detail['quantity'] * $item['price'];
+					$total = (int)$detail['quantity'] * (float)$item['price'];
 					$grandTotal += $total;
 
 					if ($item['shipping'] > 0)
@@ -107,7 +107,7 @@ class Inventory
 						{
 						$sid->next();
 						$detail = $sid->current();
-						$total = $detail['quantity'] * $item['price'];
+						$total = (int)$detail['quantity'] * (float)$item['price'];
 						$grandTotal += $total;
 						$pdf->Row([$item['storeItemId'] . '-' . $detail['storeItemDetailId'],
 							'',

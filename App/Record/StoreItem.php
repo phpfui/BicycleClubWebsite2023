@@ -11,6 +11,7 @@ namespace App\Record;
  */
 class StoreItem extends \App\Record\Definition\StoreItem
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'StoreItemDetailChildren' => [\PHPFUI\ORM\Children::class, \App\Table\StoreItemDetail::class],
 		'StoreItemOptionChildren' => [\PHPFUI\ORM\Children::class, \App\Table\StoreItemOption::class, 'sequence'],

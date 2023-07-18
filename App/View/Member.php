@@ -294,7 +294,7 @@ class Member
 
 		foreach ($fields as $field => $title)
 			{
-			$multiColumn->add(new \PHPFUI\Input\CheckBoxBoolean($field, $title, $member[$field]));
+			$multiColumn->add(new \PHPFUI\Input\CheckBoxBoolean($field, $title, (bool)$member[$field]));
 			}
 		$fieldSet->add($multiColumn);
 		$container->add($fieldSet);

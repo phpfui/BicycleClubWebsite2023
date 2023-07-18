@@ -4,6 +4,7 @@ namespace App\Model;
 
 class PasswordPolicy
 	{
+	/** @var array<string, array<null|string>> */
 	protected array $fields = [
 		'Length' => [null, 'Password must be at least :value characters long'],
 		'Upper' => ['/[A-Z]/', 'Password must contain UPPER case characters'],
@@ -21,6 +22,9 @@ class PasswordPolicy
 		$this->settingsSaver = new \App\Model\SettingsSaver($this->prefix);
 		}
 
+	/**
+	 * @return array<string> errors
+	 */
 	public function validate(string $password) : array
 		{
 		$values = $this->settingsSaver->getValues();

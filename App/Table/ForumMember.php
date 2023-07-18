@@ -25,16 +25,19 @@ class ForumMember extends \PHPFUI\ORM\Table
 		);
 		}
 
-	public function getDigestMembers(\App\Record\Forum $forum) : iterable
+	public function getDigestMembers(\App\Record\Forum $forum) : \PHPFUI\ORM\DataObjectCursor
 		{
 		return $this->getMembers($forum, ['emailType' => self::DAILY]);
 		}
 
-	public function getEmailMembers(\App\Record\Forum $forum) : iterable
+	public function getEmailMembers(\App\Record\Forum $forum) : \PHPFUI\ORM\DataObjectCursor
 		{
 		return $this->getMembers($forum, ['emailType' => self::INDIVIDUAL]);
 		}
 
+	/**
+	 * @param array<string,mixed> $additionalWhere
+	 */
 	public function getMembers(\App\Record\Forum $forum, array $additionalWhere = []) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$this->setMembersQuery($forum, $additionalWhere);
@@ -42,6 +45,9 @@ class ForumMember extends \PHPFUI\ORM\Table
 		return $this->getDataObjectCursor();
 		}
 
+	/**
+	 * @return array<int,string>
+	 */
 	public static function getSubscriptionTypes() : array
 		{
 		return [
@@ -52,6 +58,9 @@ class ForumMember extends \PHPFUI\ORM\Table
 		];
 		}
 
+	/**
+	 * @param array<string,mixed> $additionalWhere
+	 */
 	public function setMembersQuery(\App\Record\Forum $forum, array $additionalWhere = []) : self
 		{
 		$this->addJoin('member');

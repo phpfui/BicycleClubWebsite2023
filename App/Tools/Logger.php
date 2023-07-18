@@ -8,6 +8,7 @@ class Logger
 
 	private string $content = '<pre>';
 
+	/** @var array<string> */
 	private array $ignoredErrors = ['exif_read_data'];
 
 	private static ?self $logger = null;
@@ -132,11 +133,8 @@ class Logger
 	/**
 	 * returns a html formatted string with full stack trace
 	 *
-	 * @param array $stack stack trace array from exception or
-	 *                            debug_backtrace
-	 * @param int $showParameters level 0 = none, 1 = scalar, 2 =
-	 *                            all
-	 *
+	 * @param array<array<string,mixed>> $stack stack trace array from exception or debug_backtrace
+	 * @param int $showParameters level 0 = none, 1 = scalar, 2 = all
 	 */
 	public function formatTrace(array $stack, int $showParameters = 2) : string
 		{

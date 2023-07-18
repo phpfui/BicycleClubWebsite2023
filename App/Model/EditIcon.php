@@ -13,7 +13,10 @@ class EditIcon
 		$table->addCustomColumn('edit', $this->columnCallback(...));
 		}
 
-	private function columnCallback(array $row)
+	/**
+	 * @param array<string, mixed> $row
+	 */
+	private function columnCallback(array $row) : \PHPFUI\FAIcon
 		{
 		return new \PHPFUI\FAIcon('far', 'edit', $this->url . '/' . $row[$this->primaryKey]);
 		}

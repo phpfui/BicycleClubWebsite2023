@@ -4,7 +4,8 @@ namespace App\View\Admin;
 
 class PublicPageEditor
 	{
-	private array $methods = [''];
+	/** @var array<string,string> */
+	private array $methods = ['' => 'None'];
 
 	public function __construct(private readonly \App\View\Page $page)
 		{

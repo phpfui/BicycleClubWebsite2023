@@ -4,6 +4,7 @@ namespace App\Model;
 
 class TinyMCETextArea implements \PHPFUI\Interfaces\HTMLEditor
 	{
+	/** @var array<string,bool|string> */
 	private static array $settings = [
 		'height' => '"40em"',
 		'relative_urls' => false,

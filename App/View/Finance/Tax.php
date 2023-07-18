@@ -106,7 +106,7 @@ class Tax
 				$cartItem->storeItem = $storeItem;
 				$cartItem->quantity = 1;
 				$taxCalculator = new \App\Model\TaxCalculator();
-				$taxCalculator->compute($cartItem);
+				$taxCalculator->compute($cartItem->toArray());
 				$cartLink = new \PHPFUI\Link('/Store/cart', 'Shopping Cart.', false);
 				\App\Model\Session::setFlash('success', 'Your forumula has no syntax errors. You may have computational errors. Please test in the ' . $cartLink);
 				}

@@ -54,7 +54,10 @@ class Event extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getValue($sql, $parameters);
 		}
 
-	public function getMostRecentRegistered(int $limit = 10) : iterable
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Event>
+	 */
+	public function getMostRecentRegistered(int $limit = 10) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select distinct e.* from reservation r left join event e on e.eventId=r.eventId order by e.eventDate desc';
 

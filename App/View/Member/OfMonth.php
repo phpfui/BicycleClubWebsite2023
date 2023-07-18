@@ -276,8 +276,6 @@ class OfMonth
 
 					case 'Update Photo':
 					case 'Add Photo':
-						\App\Tools\Logger::get()->debug($_POST);
-						\App\Tools\Logger::get()->debug($_FILES);
 						$memberOfMonth = new \App\Record\MemberOfMonth((int)$_POST['memberOfMonthId']);
 
 						if ($this->fileModel->upload($memberOfMonth->memberOfMonthId, 'photo', $_FILES))

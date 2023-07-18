@@ -4,7 +4,13 @@ namespace App\DB;
 
 class StoreItemDetail extends \PHPFUI\ORM\VirtualField
 	{
-	public function getValue(array $parameters) : mixed
+
+	/**
+	 * @param array<mixed> $parameters
+	 *
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\StoreItemDetail>
+	 */
+	public function getValue(array $parameters) : \PHPFUI\ORM\RecordCursor
 		{
 		$table = new \App\Table\StoreItemDetail();
 		// @phpstan-ignore-next-line

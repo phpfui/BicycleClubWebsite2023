@@ -13,7 +13,7 @@ class Cart
 		$this->processRequest($_POST);
 		}
 
-	public function checkOut(\App\DB\MemberCustomer $customer, $badDiscountCode = '') : \PHPFUI\Form
+	public function checkOut(\App\DB\MemberCustomer $customer, string $badDiscountCode = '') : \PHPFUI\Form
 		{
 		$form = new \PHPFUI\Form($this->page);
 		$form->add(new \PHPFUI\Header('Check Out'));
@@ -128,7 +128,7 @@ class Cart
 				$item['index'] = ++$index;
 				$add = false;
 				$item['price'] = (float)($item['price'] ?? 0.0);
-				$item['quantity'] = (int)($item['quantity'] ?? 0);
+				$item['quantity'] = (int)($item['quantity'] ?? 0);	// @phpstan-ignore-line
 				$subTotal += $item['price'] * $item['quantity'];
 				$item['total'] = '$' . \number_format($item['price'] * $item['quantity'] + $item['tax'], 2);
 				$item['price'] = '$' . \number_format($item['price'], 2);
@@ -282,6 +282,9 @@ class Cart
 		return $alert;
 		}
 
+	/**
+	 * @param array<string,array<string,string>|string> $parameters
+	 */
 	private function processRequest(array $parameters) : void
 		{
 		if ('delete' == ($parameters['action'] ?? ''))

@@ -66,6 +66,9 @@ class EmailQueue
 		return $this->mailPieceTable->count();
 		}
 
+	/**
+	 * @param array<string,string> $mailItem
+	 */
 	private function getCount(array $mailItem)
 		{
 		$this->mailPieceTable->setWhere(new \PHPFUI\ORM\Condition('mailItemId', $mailItem['mailItemId']));
@@ -74,6 +77,9 @@ class EmailQueue
 		return $this->mailPieceTable->count();
 		}
 
+	/**
+	 * @param array<string,string> $mailItem
+	 */
 	private function getEditItemModal(array $mailItem) : \PHPFUI\FAIcon
 		{
 		$editIcon = new \PHPFUI\FAIcon('far', 'edit', '#');
@@ -109,6 +115,9 @@ class EmailQueue
 		return $member->fullName();
 		}
 
+	/**
+	 * @param array<string,string> $mailItem
+	 */
 	private function getPauseControl(array $mailItem) : \PHPFUI\FAIcon
 		{
 		$pause = new \PHPFUI\FAIcon('fas', $mailItem['paused'] ? 'play' : 'pause', '#');

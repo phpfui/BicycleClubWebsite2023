@@ -198,7 +198,7 @@ class Board
 				$row = new \PHPFUI\GridX();
 				$titleColumn = new \PHPFUI\Cell(5);
 				$title = "<strong><em>{$board->title}</em></strong>";
-				$hidden = new \PHPFUI\Input\Hidden('memberId[]', $memberId);
+				$hidden = new \PHPFUI\Input\Hidden('memberId[]', (string)$memberId);
 				$titleColumn->add($title . $hidden);
 				$row->add($titleColumn);
 				$descriptionColumn = new \PHPFUI\Cell(5);

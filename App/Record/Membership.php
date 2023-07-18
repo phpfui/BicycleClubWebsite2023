@@ -11,6 +11,7 @@ namespace App\Record;
  */
 class Membership extends \App\Record\Definition\Membership
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'MemberChildren' => [\PHPFUI\ORM\Children::class, \App\Table\Member::class],
 		'PaymentChildren' => [\PHPFUI\ORM\Children::class, \App\Table\Payment::class],

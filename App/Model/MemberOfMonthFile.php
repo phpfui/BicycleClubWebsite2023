@@ -9,6 +9,9 @@ class MemberOfMonthFile extends \App\Model\TinifyImage
 		parent::__construct('images/MOM');
 		}
 
+	/**
+	 * @param array<string,mixed> $MOM
+	 */
 	public function getImage(array $MOM) : string
 		{
 		$date = \App\Tools\Date::formatString('F Y', $MOM['month']);

@@ -36,7 +36,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 				foreach ($riders as $rider)
 					{
-					$csvWriter->outputRow($this->processRider($rider->toArray()));
+					$csvWriter->outputRow($this->processRider($rider));
 					}
 				}
 			else
@@ -337,14 +337,19 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->page->addPageContent($unsubscribe);
 		}
 
-	private function processRider(array $rider) : array
+	/**
+	 * @return array<string,string>
+	 */
+	private function processRider(\App\Record\GaRider $rider) : array
 		{
-		foreach ($rider as $key => $field)
+		$row = $rider->toArray();
+
+		foreach ($row as $key => $field)
 			{
-			$rider[$key] = \App\Tools\TextHelper::unhtmlentities($field);
+			$row[$key] = \App\Tools\TextHelper::unhtmlentities($field);
 			}
 
-		return $rider;
+		return $row;
 		}
 
 	private function signUpCommon(\App\Record\GaEvent $event = new \App\Record\GaEvent()) : void

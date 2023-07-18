@@ -9,6 +9,7 @@ namespace App\Record;
  */
 class CartItem extends \App\Record\Definition\CartItem
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'StoreItemDetail' => [\App\DB\StoreItemDetail::class],
 	];

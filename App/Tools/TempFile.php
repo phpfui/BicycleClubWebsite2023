@@ -4,6 +4,7 @@ namespace App\Tools;
 
 class TempFile implements \Stringable
 	{
+	/** @var ?resource */
 	protected $handle = null;
 
 	protected string $name = '';

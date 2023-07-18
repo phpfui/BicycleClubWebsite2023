@@ -4,9 +4,12 @@ namespace App\Report;
 
 class Finance
 	{
+	/**
+	 * @param array<string,string> $request
+	 */
 	public function downloadChecksReceived(array $request) : void
 		{
-		$payments = \App\Table\Payment::getByDate($start = $request['start'], $end = $request['end'], \App\View\Finance::getPaymentRequest($request), $request['myChecks']);
+		$payments = \App\Table\Payment::getByDate($start = $request['start'], $end = $request['end'], \App\View\Finance::getPaymentRequest($request), (bool)$request['myChecks']);
 		$paymentTypes = \App\Table\Payment::getPaymentTypes();
 
 		if (\count($payments))
@@ -92,6 +95,9 @@ class Finance
 			}
 		}
 
+	/**
+	 * @param array<string,string> $request
+	 */
 	public function downloadInvoiceSummary(array $request) : void
 		{
 		$typeArray = $this->getTypes($request);
@@ -112,12 +118,15 @@ class Finance
 			}
 		}
 
+	/**
+	 * @param array<string,string> $request
+	 */
 	public function downloadPaymentSummary(array $request) : void
 		{
 		$typeArray = $this->getTypes($request);
 		$items = \App\Table\InvoiceItem::getByDateType($start = $request['start'], $end = $request['end'], $typeArray);
 
-		if ($items)
+		if (count($items))
 			{
 			$filename = 'storePayments' . $start . '-' . $end . '.tsv';
 			$csvWriter = new \App\Tools\CSVWriter($filename, "\t");
@@ -174,6 +183,9 @@ class Finance
 			}
 		}
 
+	/**
+	 * @param array<string,string> $request
+	 */
 	public function downloadPoints(array $request) : void
 		{
 		if ('outstanding' == $request['report'])
@@ -288,6 +300,9 @@ class Finance
 			}
 		}
 
+	/**
+	 * @param array<string,string> $request
+	 */
 	public function downloadTaxesCollected(array $request) : void
 		{
 		$taxes = \App\Table\Invoice::getTaxes($start = $request['start'], $end = $request['end']);
@@ -318,6 +333,11 @@ class Finance
 			}
 		}
 
+	/**
+	 * @param array<string,string> $request
+	 *
+	 * @return array<int>
+	 */
 	private function getTypes(array $request) : array
 		{
 		$typeArray = [];

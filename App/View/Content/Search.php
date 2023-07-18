@@ -4,6 +4,7 @@ namespace App\View\Content;
 
 class Search implements \Stringable
 	{
+	/** @var array<string,string> */
 	private array $searchFields = [
 		'headline' => 'Story Headline',
 		'subhead' => 'Story Sub Heading',

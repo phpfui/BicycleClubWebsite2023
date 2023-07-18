@@ -6,7 +6,7 @@ class VolunteerPoint extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\VolunteerPoint::class;
 
-	public static function getForMemberDate(int $memberId, string $startDate, string $endDate) : iterable
+	public static function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select vp.*,je.name from volunteerPoint vp
 			left join jobEvent je on je.jobEventId=vp.jobEventId

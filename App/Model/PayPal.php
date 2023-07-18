@@ -210,6 +210,9 @@ class PayPal
 		return $env->baseUrl();
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	public function save(array $parameters) : void
 		{
 		foreach ($parameters as $key => $value)

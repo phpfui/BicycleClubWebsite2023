@@ -10,6 +10,7 @@ namespace App\Record;
  */
 class PhotoFolder extends \App\Record\Definition\PhotoFolder
 	{
+	/** @var array<string, array<string>> */
 	 protected static array $virtualFields = [
 	 	'PhotoChildren' => [\PHPFUI\ORM\Children::class, \App\Table\Photo::class],
 	 	'parentFolder' => [\PHPFUI\ORM\RelatedRecord::class, \App\Record\PhotoFolder::class],

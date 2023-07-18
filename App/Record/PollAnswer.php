@@ -8,6 +8,7 @@ namespace App\Record;
  */
 class PollAnswer extends \App\Record\Definition\PollAnswer
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'PollResponseChildren' => [\PHPFUI\ORM\Children::class, \App\Table\PollResponse::class],
 	];

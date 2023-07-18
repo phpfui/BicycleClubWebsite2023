@@ -6,6 +6,9 @@ class ErrorCallout extends \PHPFUI\Callout
 	{
 	private \PHPFUI\UnorderedList $ul;
 
+	/**
+	 * @param array<string, array<string>> $errors
+	 */
 	public function __construct(array $errors = [])
 		{
 		parent::__construct('alert');
@@ -21,6 +24,9 @@ class ErrorCallout extends \PHPFUI\Callout
 		return $this;
 		}
 
+	/**
+	 * @param array<string, array<string>> $validationErrors
+	 */
 	public function addValidationErrors(array $validationErrors) : static
 		{
 		foreach ($validationErrors as $field => $errors)

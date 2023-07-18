@@ -10,6 +10,7 @@ namespace App\Record;
  */
 class Event extends \App\Record\Definition\Event
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'ReservationChildren' => [\PHPFUI\ORM\Children::class, \App\Table\Reservation::class],
 		'ReservationPersonChildren' => [\PHPFUI\ORM\Children::class, \App\Table\ReservationPerson::class],

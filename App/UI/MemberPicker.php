@@ -55,6 +55,9 @@ class MemberPicker
 		return $control;
 		}
 
+	/**
+	 * @param array<string, mixed> $member
+	 */
 	public function getText(array $member) : string
 		{
 		if (! isset($member['firstName']))

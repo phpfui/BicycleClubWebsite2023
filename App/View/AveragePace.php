@@ -4,6 +4,7 @@ namespace App\View;
 
 class AveragePace extends \PHPFUI\Base
 	{
+	/** @var array<int,array<string,int>> */
 	private array $paces = [];
 
 	public function addRide(\App\Record\Ride $ride) : static

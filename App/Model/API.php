@@ -4,14 +4,19 @@ namespace App\Model;
 
 class API
 	{
+	/** @var array<string> */
 	private array $allowedFields = [];
 
+	/** @var array<string> */
 	private array $disallowedFields = ['password', 'loginAttempts', 'passwordReset', 'passwordResetExpires'];
 
+	/** @var array<string> */
 	private array $errors = [];
 
+	/** @var array<string,array<string,int>> */
 	private array $permissions = [];
 
+	/** @var array<string> */
 	private array $related = [];
 
 	private ?\PHPFUI\ORM\Table $table = null;
@@ -80,6 +85,9 @@ class API
 			}
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	public function applyParameters(array $parameters) : static
 		{
 		if (! $this->table)
@@ -161,6 +169,11 @@ class API
 		return $this;
 		}
 
+	/**
+	 * @param array<string> $related
+	 *
+	 * @return array<\PHPFUI\ORM\Record|array<string,mixed>>
+	 */
 	public function getData(mixed $record, array $related) : array
 		{
 		if ($record instanceof \PHPFUI\ORM\Record)
@@ -206,6 +219,9 @@ class API
 		return $data;
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public function getErrors() : array
 		{
 		return $this->errors;
@@ -327,19 +343,19 @@ class API
 		}
 
 	private function getOperator(string $symbol) : \PHPFUI\ORM\Operator
- {
-	 return match ($symbol) {
-		 '=' => new \PHPFUI\ORM\Operator\Equal(),
-		 '!=' => new \PHPFUI\ORM\Operator\NotEqual(),
-		 '>' => new \PHPFUI\ORM\Operator\GreaterThan(),
-		 '>=' => new \PHPFUI\ORM\Operator\GreaterThanEqual(),
-		 '<' => new \PHPFUI\ORM\Operator\LessThan(),
-		 '<=' => new \PHPFUI\ORM\Operator\LessThanEqual(),
-		 'IN' => new \PHPFUI\ORM\Operator\In(),
-		 'NOT IN' => new \PHPFUI\ORM\Operator\NotIn(),
-		 'LIKE' => new \PHPFUI\ORM\Operator\Like(),
-		 'NOT LIKE' => new \PHPFUI\ORM\Operator\NotLike(),
-		 default => throw new \Exception("'{$symbol}' is not a valid operator in where clause.  Must be one of (=, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN)"),
-	 };
- }
+		{
+		return match ($symbol) {
+			'=' => new \PHPFUI\ORM\Operator\Equal(),
+			'!=' => new \PHPFUI\ORM\Operator\NotEqual(),
+			'>' => new \PHPFUI\ORM\Operator\GreaterThan(),
+			'>=' => new \PHPFUI\ORM\Operator\GreaterThanEqual(),
+			'<' => new \PHPFUI\ORM\Operator\LessThan(),
+			'<=' => new \PHPFUI\ORM\Operator\LessThanEqual(),
+			'IN' => new \PHPFUI\ORM\Operator\In(),
+			'NOT IN' => new \PHPFUI\ORM\Operator\NotIn(),
+			'LIKE' => new \PHPFUI\ORM\Operator\Like(),
+			'NOT LIKE' => new \PHPFUI\ORM\Operator\NotLike(),
+			default => throw new \Exception("'{$symbol}' is not a valid operator in where clause.  Must be one of (=, !=, >, >=, <, <=, LIKE, NOT LIKE, IN, NOT IN)"),
+			};
+		}
 	}

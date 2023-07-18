@@ -6,13 +6,18 @@ class GitHooks
 	{
 	private int $exitStatus = 0;
 
+	/** @var array<string> */
 	private array $installedPackages = ['phpunit', 'phpstan', 'php-cs-fixer'];
 
 	private string $method;
 
 	private readonly \Gitonomy\Git\Repository $repo;
 
-	/** @group SyntaxTest */
+	/**
+	 * @group SyntaxTest
+	 *
+	 * @var array<string, true>
+	 */
 	private array $validFiles = ['App' => true, 'oneOffScripts' => true, 'NoNameSpace' => true, 'www' => true, 'conversions' => true];
 
 	public function __construct(string $hook)

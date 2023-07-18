@@ -4,6 +4,7 @@ namespace App\Model;
 
 class TinyMCEInline implements \PHPFUI\Interfaces\HTMLEditor
 	{
+	/** @var array<string,bool|string> */
 	private array $options = [
 		'inline' => true,
 		'menubar' => true,
@@ -33,6 +34,9 @@ class TinyMCEInline implements \PHPFUI\Interfaces\HTMLEditor
 		return $this;
 		}
 
+	/**
+	 * @param array<string,bool|string> $options
+	 */
 	public function addOptions(array $options) : static
 		{
 		$this->options = \array_merge($this->options, $options);

@@ -9,6 +9,9 @@ class MemberPickerNoSave extends \App\Model\MemberPickerBase
 		parent::__construct($name);
 		}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getMember(string $title = '', bool $returnSomeone = true) : array
 		{
 		if (\is_array($this->member) && ! empty($this->member))

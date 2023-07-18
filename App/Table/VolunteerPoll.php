@@ -22,14 +22,14 @@ class VolunteerPoll extends \PHPFUI\ORM\Table
 		return true;
 		}
 
-	public function getAllPolls() : iterable
+	public function getAllPolls() : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from volunteerPoll p left join jobEvent j on p.jobEventId=j.jobEventId order by question';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql);
 		}
 
-	public function getPolls(int $jobEventId) : iterable
+	public function getPolls(int $jobEventId) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from volunteerPoll p left join jobEvent j on p.jobEventId=j.jobEventId where p.jobEventId=? order by p.question';
 

@@ -83,17 +83,17 @@ class Leader extends \PDF_MC_Table
 
 		foreach ($rides as $ride)
 			{
-			if ($ride['unaffiliated'] && $ride['rideStatus'] <= \App\Table\Ride::STATUS_WEATHER)
+			if ($ride->unaffiliated && $ride->rideStatus <= \App\Table\Ride::STATUS_WEATHER)
 				{
 				continue;	// don't count unreported unafilliated rides
 				}
 
-			if ($this->lastLeader != $ride['memberId'])
+			if ($this->lastLeader != $ride->memberId)
 				{
 				$this->addRow();
-				$this->lastLeader = $ride['memberId'];
+				$this->lastLeader = $ride->memberId;
 				}
-			$date = $ride['rideDate'];
+			$date = $ride->rideDate;
 			++$this->ridesByYear[(int)$date];
 
 			if ($date > $today && ! $this->nextLead)
@@ -150,7 +150,7 @@ class Leader extends \PDF_MC_Table
 
 			foreach ($volunteers as $volunteer)
 				{
-				if ($id = $this->addLeader($volunteer['memberId']))
+				if ($id = $this->addLeader((int)$volunteer['memberId']))
 					{
 					++$this->leaders[$id]['Volunteer'];
 					}
@@ -184,7 +184,7 @@ class Leader extends \PDF_MC_Table
 
 		foreach ($rideStatus as $status)
 			{
-			if ($id = $this->addLeader($status['memberId']))
+			if ($id = $this->addLeader((int)$status['memberId']))
 				{
 				++$this->leaders[$id]['Status'];
 				}
@@ -195,7 +195,7 @@ class Leader extends \PDF_MC_Table
 
 		foreach ($assistantLeaders as $leader)
 			{
-			if ($id = $this->addLeader($leader['memberId']))
+			if ($id = $this->addLeader((int)$leader['memberId']))
 				{
 				++$this->leaders[$id]['Assist'];
 				}
@@ -208,9 +208,9 @@ class Leader extends \PDF_MC_Table
 
 		foreach ($rides as $ride)
 			{
-			if ($id = $this->addLeader($ride['memberId']))
+			if ($id = $this->addLeader($ride->memberId))
 				{
-				$cat = $categoryTable->getCategoryForId($paceTable->getCategoryIdFromPaceId($ride['paceId']));
+				$cat = $categoryTable->getCategoryForId($paceTable->getCategoryIdFromPaceId($ride->paceId));
 				++$this->leaders[$id]['Lead' . $cat];
 				}
 			}

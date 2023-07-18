@@ -13,6 +13,9 @@ class RWGPS extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getArrayCursor($sql, ['lat' => $lat, 'long' => $long, 'distance' => $distance, 'limit' => $limit]);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\RWGPS>
+	 */
 	public function getOldest(int $limit = 10) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from RWGPS where (lastSynced < ? or lastSynced is null) or (csv = "" and RWGPSId>0) order by lastUpdated limit ' . $limit;
@@ -21,6 +24,9 @@ class RWGPS extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, $input);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\RWGPS>
+	 */
 	public function getUpcomingRWGPS() : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select distinct RWGPS.* from ride left join RWGPS on RWGPS.RWGPSId=ride.RWGPSId where ride.RWGPSId > 0 and rideDate>=:date';

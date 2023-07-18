@@ -8,6 +8,7 @@ class RideStatusRequest
 
 	private readonly string $request;
 
+	/** @var array<string,mixed> */
 	private readonly array $sender;
 
 	public function __construct()

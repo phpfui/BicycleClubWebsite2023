@@ -11,6 +11,7 @@ namespace App\Record;
  */
 class JobEvent extends \App\Record\Definition\JobEvent
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'JobChildren' => [\PHPFUI\ORM\Children::class, \App\Table\Job::class],
 		'VolunteerPointChildern' => [\PHPFUI\ORM\Children::class, \App\Table\VolunteerPoint::class],

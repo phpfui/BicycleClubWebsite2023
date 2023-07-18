@@ -215,13 +215,16 @@ class Newsletter extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		}
 
+	/**
+	 * @param array<string, array<int|string, mixed>> $buttons
+	 */
 	private function renderButtons(array $buttons) : \PHPFUI\GridX
 		{
 		$row = new \PHPFUI\GridX();
 
 		foreach ($buttons as $month => $monthButtons)
 			{
-			if (1 == (\is_countable($monthButtons) ? \count($monthButtons) : 0))
+			if (1 == (\is_countable($monthButtons) ? \count($monthButtons) : 0)) // @phpstan-ignore-line
 				{
 				$button = new \PHPFUI\Button($month, '/Newsletter/download/' . \current($monthButtons));
 				$button->addAttribute('style', 'margin-right:.25em;');

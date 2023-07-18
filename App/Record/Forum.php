@@ -11,6 +11,7 @@ namespace App\Record;
  */
 class Forum extends \App\Record\Definition\Forum
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'ForumMessageChildren' => [\PHPFUI\ORM\Children::class, \App\Table\ForumMessage::class],
 		'ForumMemberChildren' => [\PHPFUI\ORM\Children::class, \App\Table\ForumMember::class],

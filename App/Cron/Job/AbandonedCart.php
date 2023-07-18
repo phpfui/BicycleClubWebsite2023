@@ -12,8 +12,10 @@ class AbandonedCart extends \App\Cron\BaseJob
 	/** @param array<string, string> $parameters */
 	public function run(array $parameters = []) : void
 		{
-		$invoices = \App\Table\Invoice::getUnpaidOn(\App\Tools\Date::toString($this->controller->runningAtJD() - 1));
-		$invoices = \array_merge($invoices, \App\Table\Invoice::getUnpaidOn(\App\Tools\Date::toString($this->controller->runningAtJD() - 4)));
+		$invoiceTable = new \App\Table\Invoice();
+		$unpaidDates = [\App\Tools\Date::toString($this->controller->runningAtJD() - 1)];
+		$unpaidDates[] = \App\Tools\Date::toString($this->controller->runningAtJD() - 4);
+		$invoices = $invoiceTable->getUnpaidOn($unpaidDates);
 		$invoiceModel = new \App\Model\Invoice();
 		$settingTable = new \App\Table\Setting();
 		$clubAbbrev = $settingTable->value('clubAbbrev');
@@ -21,7 +23,7 @@ class AbandonedCart extends \App\Cron\BaseJob
 
 		foreach ($invoices as $invoice)
 			{
-			$memberId = $invoice['memberId'];
+			$memberId = $invoice->memberId;
 
 			if ($memberId > 0)
 				{
@@ -32,7 +34,7 @@ class AbandonedCart extends \App\Cron\BaseJob
 			else
 				{
 				$member = new \App\Record\Customer(0 - $memberId);
-				$fullUrl = $url . '/Store/pay/' . $invoice['invoiceId'] . '/Store';
+				$fullUrl = $url . '/Store/pay/' . $invoice->invoiceId . '/Store';
 				$additional = '';
 				}
 

@@ -6,7 +6,7 @@ class MemberCategory extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\MemberCategory::class;
 
-	public static function changeCategory($from, $to)
+	public static function changeCategory(int $from, int $to) : bool
 		{
 		$sql = 'update memberCategory set categoryId=:to where categoryId=:from';
 
@@ -14,10 +14,13 @@ class MemberCategory extends \PHPFUI\ORM\Table
 			'to' => $to, ]);
 		}
 
-	public static function getRideCategoriesForMember($memberId) : array
+	/**
+	 * @return array<int,int>
+	 */
+	public static function getRideCategoriesForMember(?int $memberId) : array
 		{
 		$sql = 'select categoryId from memberCategory where memberId=?';
-		$cats = \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId]);
+		$cats = \PHPFUI\ORM::getDataObjectCursor($sql, [(int)$memberId]);
 		$returnValue = [];
 
 		foreach ($cats as $row)
@@ -28,10 +31,7 @@ class MemberCategory extends \PHPFUI\ORM\Table
 		return $returnValue;
 		}
 
-	/**
-	 * @return null|scalar
-	 */
-	public static function getRideCategoryStringForMember($memberId)
+	public static function getRideCategoryStringForMember(int $memberId) : string
 		{
 		$sql = 'select group_concat(category) from category c left join memberCategory mc on mc.categoryId = c.categoryId where mc.memberId=?';
 

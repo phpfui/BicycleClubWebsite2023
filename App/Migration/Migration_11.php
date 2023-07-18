@@ -4,6 +4,7 @@ namespace App\Migration;
 
 class Migration_11 extends \PHPFUI\ORM\Migration
 	{
+	/** @var array<string> */
 	private array $tables = ['member', 'pointHistory'];
 
 	public function description() : string

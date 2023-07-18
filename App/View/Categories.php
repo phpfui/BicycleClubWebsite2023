@@ -126,7 +126,7 @@ class Categories
 		return $form;
 		}
 
-	public static function getCategoryLabel(\App\Record\Category $category)
+	public static function getCategoryLabel(\App\Record\Category $category) : string
 		{
 		$label = $category->category ?? 'All';
 
@@ -146,7 +146,7 @@ class Categories
 		return $label;
 		}
 
-	public function getCategoryPicker(string $fieldName = 'category', string $label = '', $selected = 0) : \PHPFUI\Input\Select
+	public function getCategoryPicker(string $fieldName = 'category', string $label = '', int $selected = 0) : \PHPFUI\Input\Select
 		{
 		$select = new \PHPFUI\Input\Select($fieldName, $label);
 		$select->addOption('All', (string)0, 0 == $selected);
@@ -174,7 +174,7 @@ class Categories
 		return $select;
 		}
 
-	public static function getPaceLabel(\App\Record\Pace $pace)
+	public static function getPaceLabel(\App\Record\Pace $pace) : string
 		{
 		$label = $pace->pace;
 

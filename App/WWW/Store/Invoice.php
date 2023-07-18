@@ -85,15 +85,13 @@ class Invoice extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function pay(\App\Record\Invoice $invoice)
+	public function pay(\App\Record\Invoice $invoice) : void
 		{
-		$container = new \PHPFUI\Container();
-
 		if ($invoice->unpaidBalance() <= 0.0)
 			{
 			$this->page->redirect('/Store/paid/' . $invoice->invoiceId);
 
-			return $container;
+			return;
 			}
 
 		if ($this->page->addHeader('Add Invoice Payment'))

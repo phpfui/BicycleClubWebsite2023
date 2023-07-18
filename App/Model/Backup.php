@@ -6,6 +6,7 @@ class Backup
 	{
 	private readonly string $basePath;
 
+	/** @var array<string> */
 	private array $directories = [];
 
 	public function __construct()

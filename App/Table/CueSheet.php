@@ -6,6 +6,9 @@ class CueSheet extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\CueSheet::class;
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\CueSheet>
+	 */
 	public static function getApprovedUnawarded(string $startDate, string $endDate = '') : \PHPFUI\ORM\RecordCursor
 		{
 		if (! $endDate)
@@ -17,7 +20,10 @@ class CueSheet extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\CueSheet(), $sql, [$startDate, $endDate]);
 		}
 
-	public static function getCountByStartLocation() : iterable
+	/**
+	 * @return array<string,array<string,int>>
+	 */
+	public static function getCountByStartLocation() : array
 		{
 		$sql = 'select startLocationId,count(cueSheetId) as count,cueSheetId from cueSheet where startLocationId>0 group by startLocationId';
 		$cueSheet = \PHPFUI\ORM::getDataObjectCursor($sql, []);

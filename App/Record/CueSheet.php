@@ -9,10 +9,12 @@ namespace App\Record;
  */
 class CueSheet extends \App\Record\Definition\CueSheet
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'CueSheetVersionChildren' => [\PHPFUI\ORM\Children::class, \App\Table\CueSheetVersion::class],
 	];
 
+	/** @var array<string> */
 	private static array $terrainNames = ['',
 		'Flat',
 		'Rolling',
@@ -21,6 +23,7 @@ class CueSheet extends \App\Record\Definition\CueSheet
 		'Mountainous',
 		'Oh My God!', ];
 
+	/** @return  array<string> */
 	public function allTerrains() : array
 		{
 		return self::$terrainNames;

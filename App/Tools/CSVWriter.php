@@ -16,8 +16,10 @@ class CSVWriter
 	{
 	private bool $headerRow = false;
 
+	/** @var ?resource */
 	private $out = null;
 
+	/** @var array<string> */
 	private array $rowColumns = [];
 
 	/**

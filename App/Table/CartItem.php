@@ -6,13 +6,16 @@ class CartItem extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\CartItem::class;
 
-	public function deleteDiscountForMember(int $memberId)
+	public function deleteDiscountForMember(int $memberId) : bool
 		{
 		$sql = 'delete from cartItem where discountCodeId is not null and memberId=?';
 
 		return \PHPFUI\ORM::execute($sql, [$memberId]);
 		}
 
+	/**
+	 * @return array<array<string, string>>
+	 */
 	public static function getCartFor(int $memberId) : array
 		{
 		$sql = 'select i.*,d.detailLine,c.* from cartItem c
@@ -23,10 +26,7 @@ class CartItem extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRows($sql, [$memberId]);
 		}
 
-	/**
-	 * @return null|scalar
-	 */
-	public static function getItemCountForMember(string $validItemNumbers, int $customerNumber)
+	public static function getItemCountForMember(string $validItemNumbers, int $customerNumber) : int
 		{
 		$itemNumbers = \explode(',', $validItemNumbers);
 		$sql = 'select count(*) from cartItem where memberId=' . (int)$customerNumber . ' and (';
@@ -51,10 +51,10 @@ class CartItem extends \PHPFUI\ORM\Table
 			}
 		$sql .= ')';
 
-		return \PHPFUI\ORM::getValue($sql);
+		return (int)\PHPFUI\ORM::getValue($sql);
 		}
 
-	public static function purgeOldItems(string $strDate)
+	public static function purgeOldItems(string $strDate) : bool
 		{
 		$sql = 'delete from cartItem where added<?';
 

@@ -14,7 +14,7 @@ class Accumulator
 
 	public float $totalTax;
 
-	public $type;
+	public int $type;
 
 	public function __construct()
 		{
@@ -26,7 +26,10 @@ class Accumulator
 		$this->totalShipping = 0.0;
 		}
 
-	public function increment($invoiceItem) : void
+	/**
+	 * @param array<string, mixed> $invoiceItem
+	 */
+	public function increment(array $invoiceItem) : void
 		{
 		$this->itemName = $invoiceItem['title'];
 		$this->type = $invoiceItem['type'];

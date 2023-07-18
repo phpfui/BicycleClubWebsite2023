@@ -34,7 +34,7 @@ class VideoSearch
 		return $button . $output;
 		}
 
-	protected function getSearchModal(\PHPFUI\HTML5Element $modalLink)
+	protected function getSearchModal(\PHPFUI\HTML5Element $modalLink) : \PHPFUI\Reveal
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
 		$form = new \PHPFUI\Form($this->page);

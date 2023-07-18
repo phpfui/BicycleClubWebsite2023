@@ -8,7 +8,7 @@ class Jobs
 		{
 		}
 
-	public function list(\App\Record\JobEvent $jobEvent)
+	public function list(\App\Record\JobEvent $jobEvent) : string
 		{
 		$output = '';
 		$submit = new \PHPFUI\Submit();
@@ -88,7 +88,7 @@ class Jobs
 			$buttonGroup = new \App\UI\CancelButtonGroup();
 			$buttonGroup->addButton($add);
 			$form->add($buttonGroup);
-			$output = $form;
+			$output = (string)$form;
 			}
 
 		return $output;
@@ -102,7 +102,7 @@ class Jobs
 		$fieldSet->add(new \App\UI\Display('Location', $job->location));
 		$fieldSet->add(new \App\UI\Display('Job Description', $job->description));
 
-		return $fieldSet;
+		return (string)$fieldSet;
 		}
 
 	private function addJobModal(\PHPFUI\HTML5Element $modalLink, \App\Record\JobEvent $jobEvent) : \PHPFUI\Reveal

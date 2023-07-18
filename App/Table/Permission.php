@@ -6,18 +6,6 @@ class Permission extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Permission::class;
 
-	public function getAll($order = '') : iterable
-		{
-		$sql = 'select * from permission';
-
-		if ($order)
-			{
-			$sql .= ' order by ' . $order;
-			}
-
-		return \PHPFUI\ORM::getRows($sql);
-		}
-
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Permission>
 	 */
@@ -29,7 +17,7 @@ class Permission extends \PHPFUI\ORM\Table
 		return $this->getRecordCursor();
 		}
 
-	public function getAllPermissions(string $column = 'name', string $sort = 'a', int $page = 0, int $limit = 0) : iterable
+	public function getAllPermissions(string $column = 'name', string $sort = 'a', int $page = 0, int $limit = 0) : \PHPFUI\ORM\ArrayCursor
 		{
 		$sort = 'd' == $sort ? 'desc' : '';
 		$column .= 'menu' == $column ? " {$sort},name {$sort}" : " {$sort}";

@@ -6,13 +6,16 @@ class SigninSheet extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\SigninSheet::class;
 
-	public static function fromMember($memberId) : \PHPFUI\ORM\DataObjectCursor
+	public static function fromMember(int $memberId) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = self::getSelectFields() . ' where s.memberId=? order by s.dateAdded desc';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId]);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\SigninSheet>
+	 */
 	public static function getApprovedUnawarded(string $startDate, string $endDate = '') : \PHPFUI\ORM\RecordCursor
 		{
 		if (! $endDate)
@@ -45,42 +48,53 @@ class SigninSheet extends \PHPFUI\ORM\Table
 				left outer join ride r on r.rideId=sr.rideId ';
 		}
 
+
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	public function search(array $parameters) : bool
 		{
 		$condition = $this->getWhereCondition();
 		$this->addJoin('signinSheetRide', 'signinSheetId');
 		$this->addJoin('ride');
+		$returnValue = false;
 
 		if (! empty($parameters['MemberName']))
 			{
 			$condition->and('signinSheet.memberId', $parameters['MemberName']);
+			$returnValue = true;
 			}
 
 		if (! empty($parameters['ride_title']))
 			{
 			$condition->and('ride.title', '%' . $parameters['ride_title'] . '%', new \PHPFUI\ORM\Operator\Like());
+			$returnValue = true;
 			}
 
 		if (! empty($parameters['addedEnd']))
 			{
 			$condition->and('signinSheet.dateAdded', $parameters['addedEnd'], new \PHPFUI\ORM\Operator\LessThanEqual());
+			$returnValue = true;
 			}
 
 		if (! empty($parameters['addedStart']))
 			{
 			$condition->and('signinSheet.dateAdded', $parameters['addedStart'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			$returnValue = true;
 			}
 
 		if (! empty($parameters['rideDateEnd']))
 			{
 			$condition->and('ride.rideDate', $parameters['rideDateEnd'], new \PHPFUI\ORM\Operator\LessThanEqual());
+			$returnValue = true;
 			}
 
 		if (! empty($parameters['rideDateStart']))
 			{
 			$condition->and('ride.rideDate', $parameters['rideDateStart'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			$returnValue = true;
 			}
 
-		return true;
+		return $returnValue;
 		}
 	}

@@ -7,6 +7,7 @@ namespace App\Record\Validation;
  */
 class VideoType extends \PHPFUI\ORM\Validator
 	{
+	/** @var array<string, array<string>> */
 	public static array $validators = [
 		'name' => ['required', 'maxlength'],
 		'videoTypeId' => ['integer'],

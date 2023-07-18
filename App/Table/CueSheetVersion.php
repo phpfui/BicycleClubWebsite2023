@@ -6,7 +6,10 @@ class CueSheetVersion extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\CueSheetVersion::class;
 
-	public function allRidesWithRWGPSLinks() : iterable
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\CueSheetVersion>
+	 */
+	public function allRidesWithRWGPSLinks() : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from cueSheetVersion where link like "%ridewithgps%" or link like "%rwgps%"';
 

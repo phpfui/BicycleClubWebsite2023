@@ -10,6 +10,7 @@ namespace App\Record;
  */
 class Member extends \App\Record\Definition\Member
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'MemberCategoryChildren' => [\PHPFUI\ORM\Children::class, \App\Table\MemberCategory::class],
 		'MemberOfMonthChildren' => [\PHPFUI\ORM\Children::class, \App\Table\MemberOfMonth::class],
@@ -18,6 +19,7 @@ class Member extends \App\Record\Definition\Member
 	public function clean() : static
 		{
 		$this->cleanEmail('email');
+		$this->email = \App\Model\Member::cleanEmail($this->email);
 		$this->cleanProperName('lastName');
 		$this->cleanProperName('firstName');
 		$this->cleanProperName('emergencyContact');

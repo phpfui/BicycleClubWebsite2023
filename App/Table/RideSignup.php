@@ -43,6 +43,9 @@ class RideSignup extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$ride->rideId, self::CANCELLED]);
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public static function getAttendedStatus() : array
 		{
 		return [
@@ -67,34 +70,43 @@ class RideSignup extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getValue($sql, $input);
 		}
 
-	public function getMemberRidesForDate(\App\Record\Member $member, string $date) : iterable
+	public function getMemberRidesForDate(\App\Record\Member $member, string $date) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from rideSignup rs left join ride r on r.rideId=rs.rideId where rs.memberId=? and r.rideDate=? order by rs.status desc, r.startTime desc';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$member->memberId, $date]);
 		}
 
-	public static function getNewest(\App\Record\Member $member) : iterable
+	/**
+	 * @return array<string,string>
+	 */
+	public static function getNewest(\App\Record\Member $member) : array
 		{
 		$sql = 'select * from rideSignup rs left join ride r on r.rideId=rs.rideId where rs.memberId=? and r.rideId is not null and r.rideDate > 0 order by r.rideDate desc limit 1';
 
 		return \PHPFUI\ORM::getRow($sql, [$member->memberId]);
 		}
 
-	public static function getOldest(\App\Record\Member $member) : iterable
+	/**
+	 * @return array<string,string>
+	 */
+	public static function getOldest(\App\Record\Member $member) : array
 		{
 		$sql = 'select * from rideSignup rs left join ride r on r.rideId=rs.rideId where rs.memberId=? and r.rideId is not null and r.rideDate > 0 order by r.rideDate limit 1';
 
 		return \PHPFUI\ORM::getRow($sql, [$member->memberId]);
 		}
 
-	public function getRiderFrequency(int $status, int $startDate, int $endDate) : iterable
+	public function getRiderFrequency(int $status, int $startDate, int $endDate) : \PHPFUI\ORM\ArrayCursor
 		{
 		$sql = 'select count(*) count,rs.memberId from ridesignup rs left join ride r on r.rideId=rs.rideId where rs.attended=? and r.rideDate>=? and r.rideDate<=? group by r.memberid order by count desc';
 
 		return \PHPFUI\ORM::getArrayCursor($sql, [$status, $startDate, $endDate]);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\RideSignup>
+	 */
 	public function getRidersForAttended(\App\Record\Ride $ride, int $attended = self::CONFIRMED) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from rideSignup where rideId=? and attended=? order by signedUpTime';
@@ -102,6 +114,9 @@ class RideSignup extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, [$ride->rideId, $attended]);
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\RideSignup>
+	 */
 	public function getRidersForStatus(\App\Record\Ride $ride, int $status) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from rideSignup where rideId=? and status=? order by signedUpTime';
@@ -109,6 +124,9 @@ class RideSignup extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, [$ride->rideId, $status]);
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public static function getRiderStatus() : array
 		{
 		return [
@@ -122,21 +140,21 @@ class RideSignup extends \PHPFUI\ORM\Table
 		];
 		}
 
-	public function getRidesForMember(\App\Record\Member $member, string $startDate = '2000-01-01', string $endDate = '2999-12-31') : iterable
+	public function getRidesForMember(\App\Record\Member $member, string $startDate = '2000-01-01', string $endDate = '2999-12-31') : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from rideSignup rs left join ride r on r.rideId=rs.rideId where rs.memberId=? and r.rideDate>=? and r.rideDate<=? order by r.rideDate desc';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$member->memberId, $startDate, $endDate]);
 		}
 
-	public static function getSignedUpByPermmissionId(int $rideId, int $permissionId) : iterable
+	public static function getSignedUpByPermmissionId(int $rideId, int $permissionId) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'SELECT * FROM member m left join userPermission u on u.memberId = m.memberId left join rideSignup r on r.memberId=m.memberId WHERE u.permissionGroup = ? and r.rideId = ?';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$permissionId, $rideId]);
 		}
 
-	public function getSignedUpRiders(int $rideId, string $order = 'r.status,r.signedUpTime') : iterable
+	public function getSignedUpRiders(int $rideId, string $order = 'r.status,r.signedUpTime') : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from member m left join rideSignup r on r.memberId=m.memberId where r.rideId=? and r.status<=? order by ' . $order;
 

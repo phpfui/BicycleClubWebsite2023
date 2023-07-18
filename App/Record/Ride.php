@@ -13,6 +13,7 @@ namespace App\Record;
  */
 class Ride extends \App\Record\Definition\Ride
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'AssistantLeaderChildren' => [\PHPFUI\ORM\Children::class, \App\Table\AssistantLeader::class],
 		'RideCommentChildren' => [\PHPFUI\ORM\Children::class, \App\Table\RideComment::class],

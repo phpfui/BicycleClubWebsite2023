@@ -16,11 +16,9 @@ class Cron
 		}
 
 	/**
-	 * 	 * Get all Job classes
+	 * Get all Job classes
 	 *
-	 * @return object[]
-	 *
-	 * @psalm-return array<array-key, object>
+	 * @return array<string,\App\Cron\BaseJob>
 	 */
 	public function getAllJobs() : array
 		{
@@ -62,8 +60,7 @@ class Cron
 
 				for ($i = 0; $i < $minutesInDay; $i += $this->controller->getInterval())
 					{
-					/** @noinspection PhpUndefinedMethodInspection */
-					if ($cronObject->willRun())
+					if ($cronObject->willRun())	// @phpstan-ignore-line
 						{
 						++$runCount;
 						}

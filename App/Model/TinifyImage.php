@@ -455,6 +455,9 @@ class TinifyImage extends \App\Model\File
 		return $size / $imageSize;
 		}
 
+	/**
+	 * @param array<string,mixed> $exif
+	 */
 	private function getLatitude(array $exif) : ?float
 		{
 		if (isset($exif['GPSLatitude'], $exif['GPSLatitudeRef']))
@@ -465,6 +468,9 @@ class TinifyImage extends \App\Model\File
 		return null;
 		}
 
+	/**
+	 * @param array<string,mixed> $exif
+	 */
 	private function getLongitude(array $exif) : ?float
 		{
 		if (isset($exif['GPSLongitude'], $exif['GPSLongitudeRef']))
@@ -475,6 +481,9 @@ class TinifyImage extends \App\Model\File
 		return null;
 		}
 
+	/**
+	 * @param array<mixed> $coordinate
+	 */
 	private function gps(array $coordinate, string $hemisphere) : float
 		{
 		for ($i = 0; $i < 3; $i++)

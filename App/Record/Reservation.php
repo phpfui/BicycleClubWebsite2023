@@ -9,6 +9,7 @@ namespace App\Record;
  */
 class Reservation extends \App\Record\Definition\Reservation
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'ReservationPersonChildren' => [\PHPFUI\ORM\Children::class, \App\Table\ReservationPerson::class],
 	];

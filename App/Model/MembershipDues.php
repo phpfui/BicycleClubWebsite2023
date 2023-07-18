@@ -16,6 +16,7 @@ namespace App\Model;
  */
 class MembershipDues
 	{
+	/** @var array<string,string|array<string|float>> */
 	private array $fields = [
 		'MembershipTerm' => '12 Months',
 		'MembershipStartMonth' => '1',
@@ -41,11 +42,17 @@ class MembershipDues
 			}
 		}
 
-	public function __get(string $field) : string | array | null
+	/**
+	 * @return string | float | array<string|float> | null
+	 */
+	public function __get(string $field) : string | float | array | null
 		{
 		return $this->fields[$field] ?? null;
 		}
 
+	/**
+	 * @param string | array<string|float> $value
+	 */
 	public function __set(string $field, string | array $value) : void
 		{
 		if (isset($this->fields[$field]))
@@ -164,6 +171,9 @@ class MembershipDues
 			}
 		}
 
+	/**
+	 * @param array<string,string|array<float|string>> $post
+	 */
 	public function save(array $post) : void
 		{
 		foreach ($this->fields as $field => $default)

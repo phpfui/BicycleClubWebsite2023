@@ -10,6 +10,7 @@ namespace App\Record;
  */
 class VolunteerPoll extends \App\Record\Definition\VolunteerPoll
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'VolunteerPollAnswerChildren' => [\PHPFUI\ORM\Children::class, \App\Table\VolunteerPollAnswer::class],
 		'VolunteerPollResponseChildren' => [\PHPFUI\ORM\Children::class, \App\Table\VolunteerPollResponse::class],

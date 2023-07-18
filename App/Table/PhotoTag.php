@@ -27,7 +27,7 @@ class PhotoTag extends \PHPFUI\ORM\Table
 		return $value + 1;
 		}
 
-	public function getTagsForPhoto(int $photoId) : iterable
+	public function getTagsForPhoto(int $photoId) : \PHPFUI\ORM\ArrayCursor
 		{
 		$sql = 'select * from photoTag where photoId=? order by frontToBack, leftToRight';
 		$input = [$photoId];
@@ -35,14 +35,14 @@ class PhotoTag extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getArrayCursor($sql, $input);
 		}
 
-	public function mostTagged() : iterable
+	public function mostTagged() : \PHPFUI\ORM\ArrayCursor
 		{
 		$sql = 'select pt.memberId,count(pt.memberId) count,m.* from photoTag pt left join member m on m.memberId=pt.memberId group by pt.memberId order by count desc,m.lastName,m.firstName limit 50';
 
 		return \PHPFUI\ORM::getArrayCursor($sql);
 		}
 
-	public function topTaggers() : iterable
+	public function topTaggers() : \PHPFUI\ORM\ArrayCursor
 		{
 		$sql = 'select taggerId,count(taggerId) count,m.* from photoTag pt left join member m on m.memberId=pt.taggerId group by pt.taggerId order by count desc limit 50';
 

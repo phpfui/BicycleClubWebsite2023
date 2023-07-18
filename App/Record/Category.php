@@ -9,6 +9,7 @@ namespace App\Record;
  */
 class Category extends \App\Record\Definition\Category
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'PaceChildren' => [\PHPFUI\ORM\Children::class, \App\Table\Pace::class],
 	];

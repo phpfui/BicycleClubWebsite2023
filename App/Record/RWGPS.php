@@ -9,6 +9,7 @@ namespace App\Record;
  */
 class RWGPS extends \App\Record\Definition\RWGPS
 	{
+	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'alternateRoutes' => [\PHPFUI\ORM\Children::class, \App\Table\RWGPSAlternate::class],
 		'comments' => [\PHPFUI\ORM\Children::class, \App\Table\RWGPSComment::class, 'lastEdited', 'desc'],
@@ -62,7 +63,7 @@ class RWGPS extends \App\Record\Definition\RWGPS
 		}
 
 	/**
-	 * @return array['count', 'rating']
+	 * @return array<string,mixed>
 	 */
 	public function rating() : array
 		{

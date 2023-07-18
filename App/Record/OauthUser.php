@@ -7,6 +7,7 @@ namespace App\Record;
  */
 class OauthUser extends \App\Record\Definition\OauthUser
 	{
+	/** @var array<string, int> */
 	private array $cost = ['cost' => 12];
 
 	public function authenticateUser(string $userName, string $password) : bool
@@ -39,6 +40,9 @@ class OauthUser extends \App\Record\Definition\OauthUser
 		return true;
 		}
 
+	/**
+	 * @return array<string,array<string,int>>
+	 */
 	public function getPermissions() : array
 		{
 		return \json_decode($this->permissions ?: '[]', true);
@@ -51,8 +55,12 @@ class OauthUser extends \App\Record\Definition\OauthUser
 		return $this;
 		}
 
+	/**
+	 * @param array<string,array<string,int>> $permissions
+	 */
 	public function setPermissions(array $permissions) : static
 		{
+		\App\Tools\Logger::get()->debug($permissions);
 		$this->permissions = \json_encode($permissions, JSON_THROW_ON_ERROR);
 
 		return $this;

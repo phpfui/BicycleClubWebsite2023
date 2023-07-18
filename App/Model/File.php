@@ -10,13 +10,10 @@ abstract class File
 
 	protected string $error = '';
 
-	/**
-	 * @var string
-	 */
-	protected $extension = '';
+	protected string $extension = '';
 
 	/**
-	 * @var string[]
+	 * @var array<string,string>
 	 */
 	protected array $mimeTypes = [
 		'.doc' => 'application/msword',
@@ -38,9 +35,9 @@ abstract class File
 		'.xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 	];
 
-	protected $uploadName = '';
+	protected string $uploadName = '';
 
-	protected $uploadSize = 0;
+	protected int $uploadSize = 0;
 
 	protected function __construct(protected string $type)
 		{
@@ -105,9 +102,7 @@ abstract class File
 		}
 
 	/**
-	 * @return string[]
-	 *
-	 * @psalm-return list<string>
+	 * @return array<string>
 	 */
 	public function getAll(string $match = '*') : array
 		{
@@ -141,6 +136,9 @@ abstract class File
 		return $this->error;
 		}
 
+	/**
+	 * @return array<string,string>
+	 */
 	public function getMimeTypes() : array
 		{
 		return $this->mimeTypes;
@@ -161,6 +159,11 @@ abstract class File
 		return $this->uploadSize;
 		}
 
+	/**
+	 * @param array<string> $files
+	 *
+	 * @return array<string>
+	 */
 	public function paginateFiles(array $files, int $page, int $limit = 25) : array
 		{
 		return \array_slice($files, $page * $limit, $limit);
@@ -182,8 +185,9 @@ abstract class File
 		}
 
 	/**
+	 * @param array<string> $files
 	 *
-	 * @psalm-return list<mixed>
+	 * @return array<string>
 	 */
 	public function sortFiles(array $files, string $sort = 'name', string $dir = 'a') : array
 		{
@@ -207,13 +211,10 @@ abstract class File
 	/**
 	 * Save an uploaded a file
 	 *
-	 * @param ?string $id base name of file to be upload, if
-	 *              null, use uploaded file name
-	 * @param string $name index into $files array of file to
-	 *  						 process
-	 * @param array $files generally $_FILES
-	 * @param array $filetypes valid extentions to accept
-	 *
+	 * @param string|int|null $id base name of file to be upload, if null, use uploaded file name
+	 * @param string $name index into $files array of file to process
+	 * @param array<string,mixed> $files generally $_FILES
+	 * @param ?array<string,string> $filetypes valid extentions to accept
 	 */
 	public function upload(string | int | null $id, string $name, array $files, ?array $filetypes = []) : bool
 		{

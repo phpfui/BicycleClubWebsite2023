@@ -64,6 +64,9 @@ class StoreImages extends \App\Model\ThumbnailImageFiles
 		return $pig;
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\StorePhoto>
+	 */
 	private function getPhotos() : \PHPFUI\ORM\RecordCursor
 		{
 		$storePhotoTable = new \App\Table\StorePhoto();

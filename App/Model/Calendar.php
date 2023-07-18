@@ -5,9 +5,7 @@ namespace App\Model;
 class Calendar
 	{
 	/**
-	 * @var string[]
-	 *
-	 * @psalm-var array{eventDate: string, title: string, distances: string, startTime: string, location: string, publicContact: string}
+	 * @var array<string,string>
 	 */
 	private array $columns = ['eventDate' => 'Date',
 		'title' => 'Name',
@@ -25,6 +23,9 @@ class Calendar
 		$this->sendEmail($email, $calendar);
 		}
 
+	/**
+	 * @param array<string,string> $request
+	 */
 	public function getCalendarEntries(array $request = []) : \App\Table\Calendar
 		{
 		$calendarTable = new \App\Table\Calendar();
@@ -47,15 +48,19 @@ class Calendar
 		return $calendarTable;
 		}
 
+	/**
+	 * @return array<string,string>
+	 */
 	public function getColumns() : array
 		{
 		return $this->columns;
 		}
 
 	/**
-	 * @return (mixed|string)[]
+	 * @param array<string,string> $request
+	 * @param array<string,string> $additional
 	 *
-	 * @psalm-return array<array-key, mixed|string>
+	 * @return array<string, mixed|string>
 	 */
 	public function getHeaders(array $request = [], int $panel = 0, array $additional = []) : array
 		{
@@ -102,9 +107,7 @@ class Calendar
 		}
 
 	/**
-	 * @return string[]
-	 *
-	 * @psalm-return array{1: string, 2: string, 3: string, 4: string, 5?: string}
+	 * @return array<string>
 	 */
 	public function getTabs() : array
 		{

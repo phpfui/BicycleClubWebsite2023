@@ -8,6 +8,7 @@ class ReleaseNotes implements \Countable
 
 	private readonly \PHPFUI\InstaDoc\MarkDownParser $parser;
 
+	/** @var array<string> */
 	private array $versions;
 
 	public function __construct()

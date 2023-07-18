@@ -4,6 +4,7 @@ namespace App\Migration;
 
 class Migration_6 extends \PHPFUI\ORM\Migration
 	{
+	/** @var array<string, array<mixed>> */
 	private array $tableChanges = [
 		'assistantLeader' => [['rideId', 'memberId'], 'memberId'],
 		'blogItem' => [['blogId', 'storyId']],

@@ -22,7 +22,7 @@ class Cookies
 		return $this;
 		}
 
-	public function get(string $name)
+	public function get(string $name) : string
 		{
 		$cookieName = $this->prefix . $name;
 

@@ -4,11 +4,13 @@ namespace App\View\Ride;
 
 class Settings
 	{
+	/** @var array<string,string> */
 	private array $optionalFields = [
 		'regroupingOption' => 'Regrouping Policy',
 		'targetPaceOption' => 'Target Pace',
 		'maxRidersOption' => 'Rider Limit'];
 
+	/** @var array<string> */
 	private array $optionalTypes = ['Hidden', 'Visible', 'Required'];
 
 	private readonly \App\Table\Setting $settingTable;
@@ -18,6 +20,7 @@ class Settings
 		$this->settingTable = new \App\Table\Setting();
 		}
 
+	/** @return array<string> */
 	public function getFieldNames() : array
 		{
 		return \array_keys($this->optionalFields);

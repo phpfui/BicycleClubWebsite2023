@@ -78,14 +78,14 @@ class InvoiceReport
 
 		foreach ($invoices as $invoice)
 			{
-			$customer = $customerModel->read($invoice['memberId']);
+			$customer = $customerModel->read((int)$invoice['memberId']);
 			$shipped = '';
 
 			if ($invoice['fullfillmentDate'] > '1000-00-00')
 				{
 				$shipped = $invoice['fullfillmentDate'];
 				}
-			$itemDetails = \App\Table\InvoiceItem::findItems($invoice['invoiceId'], $parameters['restrict'], $parameters['exclude'], $parameters['text']);
+			$itemDetails = \App\Table\InvoiceItem::findItems((int)$invoice['invoiceId'], $parameters['restrict'], $parameters['exclude'], $parameters['text']);
 
 			if (\count($itemDetails))
 				{

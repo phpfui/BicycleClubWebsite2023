@@ -6,20 +6,16 @@ class Blog extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Blog::class;
 
-	public static function getBlogsByName() : iterable
-		{
-		$sql = 'select * from blog order by name';
-
-		return \PHPFUI\ORM::getDataObjectCursor($sql, []);
-		}
-
-	public static function getBlogsByNameForStory(int $storyId) : iterable
+	public static function getBlogsByNameForStory(int $storyId) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select b.*,bi.storyId from blog b left outer join blogItem bi on bi.blogId=b.blogId and bi.storyId=? order by name';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$storyId]);
 		}
 
+	/**
+	 * @return array<string,string>
+	 */
 	public static function getNewestStory(string $blogname) : array
 		{
 		$sql = 'select s.* from story s
@@ -40,7 +36,7 @@ class Blog extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getValue($sql, [$blogname]);
 		}
 
-	public static function getStoriesForBlog(string $pageName, bool $signedIn = false, int $year = 0) : iterable
+	public static function getStoriesForBlog(string $pageName, bool $signedIn = false, int $year = 0) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$today = \App\Tools\Date::todayString();
 		$sql = 'select s.*,b.blogId,bi.ranking from story s
@@ -70,7 +66,7 @@ class Blog extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
 		}
 
-	public static function renumberBlog(int $blogId)
+	public static function renumberBlog(int $blogId) : bool
 		{
 		$sql = 'SET @ordering_inc = 1;SET @new_ordering = 0;UPDATE blogItem SET ranking = (@new_ordering := @new_ordering + @ordering_inc) WHERE blogId=? ORDER BY ranking;';
 

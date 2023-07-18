@@ -9,7 +9,7 @@ class Video
 		$this->processRequest();
 		}
 
-	public function accordionList(iterable $videos) : \PHPFUI\Accordion
+	public function accordionList(\PHPFUI\ORM\ArrayCursor $videos) : \PHPFUI\Accordion
 		{
 		$accordion = new \PHPFUI\Accordion();
 

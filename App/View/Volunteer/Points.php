@@ -48,7 +48,7 @@ class Points
 			$class = $category['table'];
 			$items = $class::getForMemberDate($member->memberId, $startDate, $endDate);
 
-			if (count($items))
+			if (\count($items))
 				{
 				$tabs->addTab($name, $this->listDates($items, $category), $selected);
 				$selected = false;

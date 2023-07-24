@@ -20,16 +20,6 @@ class Invoice extends \App\Record\Definition\Invoice
 		'ReservationChildren' => [\PHPFUI\ORM\Children::class, \App\Table\Reservation::class],
 	];
 
-	public function update() : bool
-		{
-		// if paid by volunteer points, no tax is due
-		if ($this->totalPrice <= $this->pointsUsed)
-			{
-			$this->totalTax = 0.0;
-			}
-		return parent::update();
-		}
-
 	public function total() : float
 		{
 		return $this->totalPrice + $this->totalTax + $this->totalShipping;
@@ -38,5 +28,16 @@ class Invoice extends \App\Record\Definition\Invoice
 	public function unpaidBalance() : float
 		{
 		return ($this->totalPrice + $this->totalTax + $this->totalShipping) - $this->paypalPaid - $this->pointsUsed - $this->paidByCheck;
+		}
+
+	public function update() : bool
+		{
+		// if paid by volunteer points, no tax is due
+		if ($this->totalPrice <= $this->pointsUsed)
+			{
+			$this->totalTax = 0.0;
+			}
+
+		return parent::update();
 		}
 	}

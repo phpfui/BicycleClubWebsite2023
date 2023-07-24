@@ -143,21 +143,24 @@ class RideWithGPS
 		return "https://ridewithgps.com/{$type}/{$RWGPSId}{$query}";
 		}
 
-	/**
-	 * @return array<int|string>|false
-	 */
-	public static function getRWGPSIdFromLink(string $link) : array | bool
+	public static function getRWGPSIdFromLink(string $link) : int
 		{
 		$parts = \explode('/', $link);
 		$id = \parse_url($link);
+		$RWGPSId = 0;
 
 		foreach ($parts as $index => $part)
 			{
-			if ('routes' == $part)
+			if ('collections' == $part)
+				{
+				// do nothing
+				break;
+				}
+			elseif ('routes' == $part)
 				{
 				if (\count($parts) > $index + 1)
 					{
-					$id['RWGPSId'] = (int)$parts[$index + 1];
+					$RWGPSId = (int)$parts[$index + 1];
 
 					break;
 					}
@@ -166,19 +169,14 @@ class RideWithGPS
 				{
 				if (\count($parts) > $index + 1)
 					{
-					$id['RWGPSId'] = 0 - (int)$parts[$index + 1];
+					$RWGPSId = 0 - (int)$parts[$index + 1];
 
 					break;
 					}
 				}
 			}
 
-		if (! isset($id['RWGPSId']))
-			{
-			$id['RWGPSId'] = 0;
-			}
-
-		return $id;
+		return $RWGPSId;
 		}
 
 	public function scrape(\App\Record\RWGPS $rwgps) : ?\App\Record\RWGPS

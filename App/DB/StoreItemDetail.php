@@ -4,7 +4,6 @@ namespace App\DB;
 
 class StoreItemDetail extends \PHPFUI\ORM\VirtualField
 	{
-
 	/**
 	 * @param array<mixed> $parameters
 	 *

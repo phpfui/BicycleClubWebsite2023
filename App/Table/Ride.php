@@ -24,16 +24,6 @@ class Ride extends \PHPFUI\ORM\Table
 
 	protected static string $className = '\\' . \App\Record\Ride::class;
 
-	/**
-	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
-	 */
-	public function allRidesWithRWGPS() : \PHPFUI\ORM\RecordCursor
-		{
-		$sql = 'select * from ride where description like "%ridewithgps%" or description like "%rwgps%"';
-
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql);
-		}
-
 	public static function changePace(int $from, int $to) : bool
 		{
 		$sql = 'update ride set paceId=:to where paceId=:from';

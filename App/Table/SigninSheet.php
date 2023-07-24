@@ -48,7 +48,6 @@ class SigninSheet extends \PHPFUI\ORM\Table
 				left outer join ride r on r.rideId=sr.rideId ';
 		}
 
-
 	/**
 	 * @param array<string,string> $parameters
 	 */

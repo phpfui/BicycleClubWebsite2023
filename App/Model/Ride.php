@@ -191,29 +191,25 @@ class Ride
 		{
 		$RWGPSId = $this->stripRideWithGPS($parameters['description']);
 
-		if (empty($RWGPSId['RWGPSId']))
+		if (! $RWGPSId)
 			{
 			$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($parameters['RWGPSId'] ?? '');
 			}
 
-		if (! empty($RWGPSId['RWGPSId']))
+		if ($RWGPSId)
 			{
-			$rwgps = new \App\Record\RWGPS($RWGPSId['RWGPSId']);
+			$rwgps = new \App\Record\RWGPS($RWGPSId);
 
 			if (! $rwgps->loaded())
 				{
-				$rwgps->RWGPSId = $RWGPSId['RWGPSId'];
+				$rwgps->RWGPSId = $RWGPSId;
 				$rwgps->insertOrUpdate();
 				}
-			}
-		else
-			{
-			$RWGPSId['RWGPSId'] = 0;
 			}
 
 		if (! \is_int($parameters['RWGPSId']))
 			{
-			$parameters['RWGPSId'] = (int)$RWGPSId['RWGPSId'];
+			$parameters['RWGPSId'] = $RWGPSId;
 			}
 		$parameters['description'] = \App\Tools\TextHelper::cleanUserHtml($parameters['description']);
 
@@ -798,14 +794,14 @@ class Ride
 		}
 
 	/**
-	 * Removes the RWGPS link and returns it as an array. Modifies passed in string
-	 *
-	 * @return array<int|string> with RWGPS id and query string
+	 * Removes the RWGPS link and returns it as an int. Modifies passed in string
 	 */
-	private function stripRideWithGPS(string &$description) : array
+	private function stripRideWithGPS(string &$description) : int
 		{
-		$RWGPSId = [];
+		$RWGPSId = 0;
 		$description = \str_replace('rwgps.com', 'ridewithgps.com', $description);
+
+		$description = \App\Tools\TextHelper::addRideLinks($description, true);
 
 		if (! \str_contains($description, 'ridewithgps'))
 			{
@@ -819,29 +815,16 @@ class Ride
 			if (\str_contains($node->getAttribute('href'), 'ridewithgps'))
 				{
 				$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($node->getAttribute('href'));
-				// delete the found nodes
-				$node->outertext = '';
+
+				if ($RWGPSId)
+					{
+					// delete the found nodes
+					$node->outertext = '';
+					}
 				}
 			}
 
 		$description = "{$dom}";
-
-		if (! \str_contains($description, 'ridewithgps'))
-			{
-			return $RWGPSId;
-			}
-
-		$words = \explode(' ', $description);
-
-		foreach ($words as $index => $word)
-			{
-			if (\str_contains($word, 'ridewithgps'))
-				{
-				$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($word);
-				$words[$index] = '';
-				}
-			}
-		$description = \implode(' ', $words);
 
 		return $RWGPSId;
 		}

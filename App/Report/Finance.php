@@ -126,7 +126,7 @@ class Finance
 		$typeArray = $this->getTypes($request);
 		$items = \App\Table\InvoiceItem::getByDateType($start = $request['start'], $end = $request['end'], $typeArray);
 
-		if (count($items))
+		if (\count($items))
 			{
 			$filename = 'storePayments' . $start . '-' . $end . '.tsv';
 			$csvWriter = new \App\Tools\CSVWriter($filename, "\t");

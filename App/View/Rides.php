@@ -55,7 +55,6 @@ class Rides
 		return $ride->memberId == $member->memberId || $this->page->isAuthorized('Delete Ride');
 		}
 
-
 	/**
 	 * @param array<int,int> $categories
 	 */
@@ -604,7 +603,7 @@ class Rides
 				}
 			$today = \App\Tools\Date::todayString();
 			$content = new \PHPFUI\Container();
-			$content->add($this->addLinks($ride->description ?? ''));
+			$content->add(\App\Tools\TextHelper::addRideLinks($ride->description ?? '', $this->page->isSignedIn()));
 
 			if ($status)
 				{
@@ -1092,38 +1091,6 @@ class Rides
 		return $output;
 		}
 
-	private function addLinks(string $content) : string
-		{
-		$removedLinks = [];
-		// convert real links into something that is not a link
-		$content = $this->replaceLinksWithDummies($content, $removedLinks);
-		// make any text links into real links
-		$content = \App\Tools\TextHelper::addLinks($content);
-		// convert any newly converted links
-		$content = $this->replaceLinksWithDummies($content, $removedLinks);
-		// wrap any links via dom
-		$content = \App\Tools\TextHelper::wrapLinks($content);
-
-		// replace text links with real links to sign in
-		$home = '/Rides/memberSchedule';
-		$signIn = 'Sign In';
-		// add back the real links with sign in links
-		$newLinks = [];
-
-		foreach ($removedLinks as $link => $text)
-			{
-			if (! $this->page->isSignedIn() && \str_contains((string)$link, 'link'))
-				{
-				$text = $home;
-				}
-			$newLinks[$link] = $text;
-			}
-
-		$content = \str_replace(\array_keys($newLinks), \array_values($newLinks), $content);
-
-		return $content;
-		}
-
 	private function canEdit(\PHPFUI\ORM\DataObject $ride) : bool
 		{
 		$member = \App\Model\Session::signedInMemberRecord();
@@ -1298,46 +1265,5 @@ class Rides
 		$dropDown->setHover();
 
 		return $dropDown;
-		}
-
-	private function replaceLinksWithDummies(string $html, array &$links) : string
-		{
-		$html = \str_replace('&nbsp;', ' ', $html); // html editor could insert this after a link, which could look like a valid url
-		$dom = new \voku\helper\HtmlDomParser($html);
-		$counter = \count($links);
-
-		foreach ($dom->find('a') as $node)
-			{
-			$href = $node->getAttribute('href');
-
-			if (empty($links[$href]))
-				{
-				$text = 'text' . $counter;
-				$link = 'link' . $counter;
-				$links[$text] = $node->innertext;
-				$links[$link] = $href;
-				$node->innertext = $text;
-				$node->setAttribute('href', $link);
-				++$counter;
-				}
-			}
-
-		foreach ($dom->find('img') as $node)
-			{
-			if ($node->hasAttribute('src'))
-				{
-				$src = $node->getAttribute('src');
-
-				if (empty($links[$src]))
-					{
-					$link = 'src' . $counter;
-					$links[$link] = $src;
-					$node->setAttribute('src', $link);
-					++$counter;
-					}
-				}
-			}
-
-		return "{$dom}";
 		}
 	}

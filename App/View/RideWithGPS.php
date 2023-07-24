@@ -18,14 +18,14 @@ class RideWithGPS
 
 		$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($_POST['rwgpsUrl'] ?? '');
 
-		if (\App\Model\Session::checkCSRF() && ! empty($_POST['submit']) && $RWGPSId['RWGPSId'])
+		if (\App\Model\Session::checkCSRF() && ! empty($_POST['submit']) && $RWGPSId)
 			{
-			$rwgpsRecord = new \App\Record\RWGPS($RWGPSId['RWGPSId']);
+			$rwgpsRecord = new \App\Record\RWGPS($RWGPSId);
 
 			if ($rwgpsRecord->empty())
 				{
-				$rwgpsRecord->setFrom($RWGPSId);
-				$rwgpsRecord->insertOrUpdate();
+				$rwgpsRecord->RWGPSId = $RWGPSId;
+				$rwgpsRecord->insert();
 				}
 
 			$rwgps = $this->model->scrape($rwgpsRecord);
@@ -34,7 +34,7 @@ class RideWithGPS
 				{
 				$rwgps->update();
 				}
-			$this->page->redirect($this->page->getBaseURL() . '/' . $RWGPSId['RWGPSId']);
+			$this->page->redirect($this->page->getBaseURL() . '/' . $RWGPSId);
 			}
 		}
 

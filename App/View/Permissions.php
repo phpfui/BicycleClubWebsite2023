@@ -40,6 +40,7 @@ class Permissions
 			$result = $this->permissionTable->getRecordCursor();
 
 			$newResult = [];
+
 			if (! $permissions->isAuthorized('Super User'))
 				{
 				$userPermissions = $permissions->getPermissionsForUser(\App\Model\Session::signedInMemberId());

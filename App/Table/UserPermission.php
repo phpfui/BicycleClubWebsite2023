@@ -61,6 +61,7 @@ class UserPermission extends \PHPFUI\ORM\Table
 			}
 
 		$key = [$memberId, $permission, 1];
+
 		return \PHPFUI\ORM::execute('insert into userPermission (memberId, permissionGroup, revoked) VALUES (?,?,?) on duplicate key update revoked=1', $key);
 		}
 	}

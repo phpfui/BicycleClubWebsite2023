@@ -7,7 +7,7 @@ abstract class MemberPickerBase
 	protected bool $currentMember = true;
 
 	/** @var array<string,mixed> */
- 	protected array $member = [];
+	protected array $member = [];
 
 	protected \App\Table\Member $memberTable;
 

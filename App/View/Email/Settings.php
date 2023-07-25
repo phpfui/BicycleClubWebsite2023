@@ -62,24 +62,7 @@ class Settings implements \Stringable
 			$form->add($buttonGroup);
 
 			$fieldSet = new \PHPFUI\FieldSet('Substitution Fields');
-			$fieldSet->add('You can substitute member specific fields in the body of text. The following may be substituted for the member\'s value. They are <strong>CASE SENSITIVE</strong>, so copy them exactly as you see them.<p>');
-			$multiColumn = new \PHPFUI\MultiColumn();
-
-			foreach ($this->data->toArray() as $field => $value)
-				{
-				if (\count($multiColumn) >= 3)
-					{
-					$fieldSet->add($multiColumn);
-					$multiColumn = new \PHPFUI\MultiColumn();
-					}
-				$multiColumn->add("~{$field}~");
-				}
-
-			while (\count($multiColumn) < 3)
-				{
-				$multiColumn->add('&nbsp;');
-				}
-			$fieldSet->add($multiColumn);
+			$fieldSet->add(new \App\UI\SubstitutionFields($this->data->toArray()));
 			$form->add($fieldSet);
 			}
 

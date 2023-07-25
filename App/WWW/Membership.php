@@ -321,14 +321,8 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 	public function emails(string $email = '') : void
 		{
 		$emails = [
-			'newMember' => 'New Member',
-			'renewedMsg' => 'Renewed Member',
-			'expirngMsg' => 'Expiring Member',
-			//				'subscriptionMsg' => 'Subscription Renewing',
-			'expireMsg' => 'Lapsed Member',
 			'newsletter' => 'Newsletter',
 			'Waiver' => 'Waiver Accepted',
-			'NMEMbody' => 'New Member Followup',
 			'newPasswordEmail' => 'New Password',
 		];
 
@@ -349,6 +343,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 					{
 					$landingPage->addLink("/Membership/emails/{$link}", "{$header} Email");
 					}
+				$landingPage->addLink('/Membership/notifications', 'Membership Notifications');
 				$landingPage->sort();
 				$this->page->addPageContent($landingPage);
 				}
@@ -487,6 +482,37 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			else
 				{
 				$this->page->addPageContent(new \PHPFUI\SubHeader('Member not found'));
+				}
+			}
+		}
+
+	public function notifications(int $id = -1, string $test = '') : void
+		{
+		if ($this->page->addHeader('Membership Notifications'))
+			{
+			$view = new \App\View\Membership\Notices($this->page);
+
+			if (-1 != $id)
+				{
+				$notice = new \App\Record\MemberNotice($id);
+
+				if ('test' === $test)
+					{
+					$email = new \App\Model\Email\Notice($notice, new \App\Model\Email\Member());
+					$email->addToMember(\App\Model\Session::getSignedInMember());
+					$email->send();
+					\App\Model\Session::setFlash('success', 'Check your inbox for a test email.');
+					$this->page->redirect('/Membership/notifications/' . $id);
+					}
+				else
+					{
+					$this->page->addPageContent($view->edit($notice));
+					}
+				}
+			else
+				{
+				$this->page->addPageContent(new \PHPFUI\Button('Add Notification', '/Membership/notifications/0'));
+				$this->page->addPageContent($view->list());
 				}
 			}
 		}

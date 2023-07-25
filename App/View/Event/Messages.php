@@ -39,24 +39,7 @@ class Messages
 				$form->add($alert);
 				}
 			$fieldSet = new \PHPFUI\FieldSet('Substitution Fields');
-			$fieldSet->add('You can substitute specific fields in the following bodies of text.<p>');
-			$multiColumn = new \PHPFUI\MultiColumn();
-
-			foreach ($fields as $field)
-				{
-				if (\count($multiColumn) >= 3)
-					{
-					$fieldSet->add($multiColumn);
-					$multiColumn = new \PHPFUI\MultiColumn();
-					}
-				$multiColumn->add("~{$field}~<br>");
-				}
-
-			while (\count($multiColumn) < 3)
-				{
-				$multiColumn->add('&nbsp;');
-				}
-			$fieldSet->add($multiColumn);
+			$fieldSet->add(new \App\UI\SubstitutionFields($fields));
 			$form->add($fieldSet);
 			$fieldSet = new \PHPFUI\FieldSet('Payment Instructions');
 			$value = $this->settingTable->value($type . 'Instructions');

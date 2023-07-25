@@ -20,36 +20,36 @@ use Twilio\Page;
 use Twilio\Version;
 
 class TollfreeVerificationPage extends Page
-	{
-	/**
-	 * @param Version $version Version that contains the resource
-	 * @param Response $response Response from the API
-	 * @param array $solution The context solution
-	 */
-	public function __construct(Version $version, Response $response, array $solution)
-	{
-		parent::__construct($version, $response);
+    {
+    /**
+     * @param Version $version Version that contains the resource
+     * @param Response $response Response from the API
+     * @param array $solution The context solution
+     */
+    public function __construct(Version $version, Response $response, array $solution)
+    {
+        parent::__construct($version, $response);
 
-		// Path Solution
-		$this->solution = $solution;
-	}
+        // Path Solution
+        $this->solution = $solution;
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Messaging.V1.TollfreeVerificationPage]';
-	}
+    /**
+     * @param array $payload Payload response from the API
+     * @return TollfreeVerificationInstance \Twilio\Rest\Messaging\V1\TollfreeVerificationInstance
+     */
+    public function buildInstance(array $payload): TollfreeVerificationInstance
+    {
+        return new TollfreeVerificationInstance($this->version, $payload);
+    }
 
-	/**
-	 * @param array $payload Payload response from the API
-	 * @return TollfreeVerificationInstance \Twilio\Rest\Messaging\V1\TollfreeVerificationInstance
-	 */
-	public function buildInstance(array $payload) : TollfreeVerificationInstance
-	{
-		return new TollfreeVerificationInstance($this->version, $payload);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Messaging.V1.TollfreeVerificationPage]';
+    }
 }

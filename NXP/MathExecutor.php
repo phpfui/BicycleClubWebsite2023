@@ -508,7 +508,6 @@ class MathExecutor
           'pi' => static fn() => M_PI,
           'pow' => static fn($arg1, $arg2) => $arg1 ** $arg2,
           'rad2deg' => static fn($arg) => \rad2deg($arg),
-          'return' => static fn($arg) => $arg,
           'round' => static fn($num, int $precision = 0) => \round($num, $precision),
           'sin' => static fn($arg) => \sin($arg),
           'sinh' => static fn($arg) => \sinh($arg),

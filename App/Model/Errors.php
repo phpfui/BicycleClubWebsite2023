@@ -50,6 +50,11 @@ class Errors
 		{
 		$errors = [];
 
+		if ('https' !== $_SERVER['REQUEST_SCHEME'])
+			{
+			return $errors;
+			}
+
 		foreach ($this->files as $filename)
 			{
 			if (\file_exists($filename))
@@ -101,7 +106,7 @@ class Errors
 		{
 		$hook = $this->getSlackUrl();
 
-		if ($hook && ($_SERVER['SERVER_NAME'] ?? 'localhost') != 'localhost')
+		if ($hook)
 			{
 			$guzzle = new \GuzzleHttp\Client(['verify' => false, 'http_errors' => false]);
 			$client = new \Maknz\Slack\Client($hook, [], $guzzle);

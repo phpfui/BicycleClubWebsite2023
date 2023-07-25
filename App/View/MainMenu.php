@@ -162,6 +162,7 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			$this->addSub($menu, '/Membership/find', 'Find Members');
 			$this->addSub($menu, '/Membership/myInfo', 'My Info');
 			$this->addSub($menu, '/Membership/myNotifications', 'My Notifications');
+			$this->addSub($menu, '/Membership/notifications', 'Membership Notifications');
 			$this->addSub($menu, '/Membership/roster', 'Club Roster');
 			$this->addSub($menu, '/Membership/rosterReport', 'Roster Report');
 			$this->addSub($menu, '/Membership/password', 'Change My Password');

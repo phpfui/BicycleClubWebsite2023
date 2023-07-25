@@ -63,8 +63,7 @@ class Member
 		$member['email'] = static::cleanEmail($member['email']);
 		$member['firstName'] = \ucwords((string)$member['firstName']);
 		$member['lastName'] = \ucwords((string)$member['lastName']);
-		$member['expires'] = $member['lastRenewed'] = 0;
-		$member['joined'] = \App\Tools\Date::todayString();
+		$member['expires'] = $member['lastRenewed'] = null;
 		$defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal'];
 
 		foreach ($defaultFields as $field)

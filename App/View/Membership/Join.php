@@ -40,7 +40,7 @@ class Join
 
 		$form->setAreYouSure(false);
 
-		if (isset($_POST['submit']) && 'Join' == $_POST['submit'])// && $this->captcha->isValid())
+		if (isset($_POST['submit']) && 'Join' == $_POST['submit'] && $this->captcha->isValid())
 			{
 			\App\Model\Session::setFlash('post', $_POST);
 			$fullName = $_POST['firstName'] . ' ' . $_POST['lastName'];

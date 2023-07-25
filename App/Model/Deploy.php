@@ -162,8 +162,6 @@ class Deploy
 			}
 		$releaseTag = new \App\Model\ReleaseTag($tag->getName());
 
-
-
 		$errors = [];
 
 		if ($releaseTag->isTag() && $releaseTag->isValid())

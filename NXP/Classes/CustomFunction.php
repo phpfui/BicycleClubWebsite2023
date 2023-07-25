@@ -31,6 +31,7 @@ class CustomFunction
         $this->isVariadic = $reflection->isVariadic();
         $this->totalParamCount = $reflection->getNumberOfParameters();
         $this->requiredParamCount = $reflection->getNumberOfRequiredParameters();
+
     }
 
     /**

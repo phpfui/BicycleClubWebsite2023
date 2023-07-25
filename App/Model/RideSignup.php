@@ -160,7 +160,7 @@ class RideSignup
 					\App\Model\Session::setFlash('alert', 'Ride is full, you are now on the wait list.');
 					}
 				$rider->setFrom($fields);
-				$rider->signedUpTime = '';
+				$rider->signedUpTime = null;	// @phpstan-ignore-line
 				$signedUpTime = $this->rideSignupTable->getEarliestRiderSignupTime($this->member, $this->ride->rideDate);
 
 				if ($signedUpTime)

@@ -154,7 +154,7 @@ class RideSignup extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$permissionId, $rideId]);
 		}
 
-	public function getSignedUpRiders(int $rideId, string $order = 'r.status,r.signedUpTime') : \PHPFUI\ORM\DataObjectCursor
+	public function getSignedUpRiders(int $rideId, string $order = 'r.signedUpTime desc') : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from member m left join rideSignup r on r.memberId=m.memberId where r.rideId=? and r.status<=? order by ' . $order;
 

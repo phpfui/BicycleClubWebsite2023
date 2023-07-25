@@ -421,7 +421,7 @@ class Ride
 
 	public function getRideNoticeBody(\App\Record\Ride $ride, \App\Record\Member $leader = new \App\Record\Member()) : string
 		{
-		$signedUpRiders = $this->rideSignupTable->getSignedUpRiders($ride->rideId, 'r.signedUpTime');
+		$signedUpRiders = $this->rideSignupTable->getSignedUpRiders($ride->rideId);
 		$signup = '';
 
 		if (\count($signedUpRiders))

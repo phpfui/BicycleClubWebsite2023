@@ -35,9 +35,12 @@ class MemberNotices extends \App\Cron\BaseJob
 
 					foreach ($memberTable->getRecordCursor() as $member)
 						{
-						$email = new \App\Model\Email\Notice($notice, new \App\Model\Email\Member($member));
-						$email->setToMember($member->toArray());
-						$email->bulkSend();
+						if ($member->emailAnnouncements || $notice->overridePreferences)
+							{
+							$email = new \App\Model\Email\Notice($notice, new \App\Model\Email\Member($member));
+							$email->setToMember($member->toArray());
+							$email->bulkSend();
+							}
 						}
 					}
 				}

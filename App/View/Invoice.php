@@ -112,7 +112,7 @@ class Invoice
 
 		$view = new \App\UI\ContinuousScrollTable($this->page, $invoiceTable);
 
-		$view->addCustomColumn('label', static fn (array $invoice) => new \PHPFUI\Link('Store/mailingLabel/' . $invoice['invoiceId'], 'Print', false));
+		$view->addCustomColumn('label', static fn (array $invoice) => new \PHPFUI\Link('/Store/mailingLabel/' . $invoice['invoiceId'], 'Print', false));
 		$view->addCustomColumn('view', static fn (array $invoice) => new \PHPFUI\FAIcon('fas', 'file-download', '/Store/Invoice/download/' . $invoice['invoiceId']));
 		$view->addCustomColumn('cancel', $this->getCancelColumn(...));
 		$view->addCustomColumn('paymentDate', $this->getPaymentDate(...));

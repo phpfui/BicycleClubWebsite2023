@@ -107,7 +107,7 @@ class Payments
 
 			if (! empty($payment->invoiceId))
 				{
-				$row['invoiceId'] = new \PHPFUI\FAIcon('fas', 'file-pdf', '/Store/Invoice/download' . $payment->invoiceId);
+				$row['invoiceId'] = new \PHPFUI\FAIcon('fas', 'file-pdf', '/Store/Invoice/download/' . $payment->invoiceId);
 				}
 			else
 				{

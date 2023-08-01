@@ -145,6 +145,8 @@ $dataPurger = new \App\Model\DataPurge();
 $dataPurger->addExceptionTable(new \App\Table\Setting());
 $dataPurger->addExceptionTable(new \App\Table\Blog());
 $dataPurger->addExceptionTable(new \App\Table\Story());
+$dataPurger->addExceptionTable(new \App\Table\Permission());
+$dataPurger->addExceptionTable(new \App\Table\PermissionGroup());
 $dataPurger->purge();
 
 /**
@@ -601,6 +603,10 @@ foreach ($rideReader as $rideImport)
 	$ride->startLocationId = $startLocations[$rideImport['Start Location']] ?? null;
 
 	$ride->insert();
+	$rideSignup = new \App\Record\RideSignup();
+	$rideSignup->member = $ride->member;
+	$rideSignup->status = \App\Record\RideSignup::DEFINITELY_RIDING;
+	$rideSignup->insert();
 	}
 
 $iterator = new \DirectoryIterator(__DIR__ . '/zoho/files_for_ridelibrary');

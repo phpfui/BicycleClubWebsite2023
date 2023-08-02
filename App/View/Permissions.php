@@ -39,35 +39,36 @@ class Permissions
 			$permissions = $this->page->getPermissions();
 			$result = $this->permissionTable->getRecordCursor();
 
-			$newResult = [];
-
 			if (! $permissions->isAuthorized('Super User'))
 				{
+				$newResult = [];
 				$userPermissions = $permissions->getPermissionsForUser(\App\Model\Session::signedInMemberId());
 
 				foreach ($result as $permission)
 					{
 					if (isset($userPermissions[$permission->permissionId]))
 						{
-						$newResult[] = $permission->toArray();
+						$newResult[] = clone $permission;
 						}
 					}
+				$result = $newResult;
 				}
 			$allPermissions = $allGroups = [];
 
-			foreach ($newResult as $permission)
+			foreach ($result as $permission)
 				{
-				$id = $permission['permissionId'];
+				$id = $permission->permissionId;
 
 				if ($id >= 100000)
 					{
-					$allPermissions[$id] = $permission;
+					$allPermissions[$id] = $permission->toArray();
 					}
 				else
 					{
-					$allGroups[$id] = $permission;
+					$allGroups[$id] = $permission->toArray();
 					}
 				}
+
 			$permissions = $this->userPermissionTable->getPermissionsForUser($memberId);
 			$notAdditional = $allPermissions;
 			$notInRevoked = $allPermissions;

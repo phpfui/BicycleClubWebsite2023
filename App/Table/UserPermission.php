@@ -37,12 +37,10 @@ class UserPermission extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId]);
 		}
 
-	/**
-	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\UserPermission>
-	 */
-	public static function getPermissionsForUser(int $memberId) : \PHPFUI\ORM\RecordCursor
+
+	public static function getPermissionsForUser(int $memberId) : \PHPFUI\ORM\DataObjectCursor
 		{
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\UserPermission(), 'select u.* from userPermission u left join permission p on p.permissionId=u.permissionGroup where u.memberId=?', [$memberId]);
+		return \PHPFUI\ORM::getDataObjectCursor('select * from userPermission u left join permission p on p.permissionId=u.permissionGroup where u.memberId=?', [$memberId]);
 		}
 
 	public static function removePermissionFromUser(int $memberId, int $permission) : bool

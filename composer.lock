@@ -2775,16 +2775,16 @@
         },
         {
             "name": "phpfui/phpfui",
-            "version": "V6.2.13",
+            "version": "V6.2.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/phpfui.git",
-                "reference": "9c35412c2ac148d274ea9398cfffa8f63115a89d"
+                "reference": "6e3172084636f5d5116391061a667539bd5b039c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/phpfui/zipball/9c35412c2ac148d274ea9398cfffa8f63115a89d",
-                "reference": "9c35412c2ac148d274ea9398cfffa8f63115a89d",
+                "url": "https://api.github.com/repos/phpfui/phpfui/zipball/6e3172084636f5d5116391061a667539bd5b039c",
+                "reference": "6e3172084636f5d5116391061a667539bd5b039c",
                 "shasum": ""
             },
             "require": {
@@ -2836,9 +2836,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/phpfui/issues",
-                "source": "https://github.com/phpfui/phpfui/tree/V6.2.13"
+                "source": "https://github.com/phpfui/phpfui/tree/V6.2.14"
             },
-            "time": "2023-07-17T20:14:10+00:00"
+            "time": "2023-07-25T22:07:48+00:00"
         },
         {
             "name": "phpfui/translation",
@@ -4298,16 +4298,16 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "6.6.0",
+            "version": "6.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "575e3a4a602619a3d9e1cd0d437ce875ff756395"
+                "reference": "6d4ca510724901084dde245481129b1cbea3aa74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/575e3a4a602619a3d9e1cd0d437ce875ff756395",
-                "reference": "575e3a4a602619a3d9e1cd0d437ce875ff756395",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/6d4ca510724901084dde245481129b1cbea3aa74",
+                "reference": "6d4ca510724901084dde245481129b1cbea3aa74",
                 "shasum": ""
             },
             "type": "component",
@@ -4351,9 +4351,9 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/6.6.0"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/6.6.1"
             },
-            "time": "2023-07-12T06:32:00+00:00"
+            "time": "2023-08-02T05:17:12+00:00"
         },
         {
             "name": "twilio/sdk",
@@ -5933,16 +5933,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.2.6",
+            "version": "10.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "1c17815c129f133f3019cc18e8d0c8622e6d9bcd"
+                "reference": "a215d9ee8bac1733796e4ddff3306811f14414e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1c17815c129f133f3019cc18e8d0c8622e6d9bcd",
-                "reference": "1c17815c129f133f3019cc18e8d0c8622e6d9bcd",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a215d9ee8bac1733796e4ddff3306811f14414e5",
+                "reference": "a215d9ee8bac1733796e4ddff3306811f14414e5",
                 "shasum": ""
             },
             "require": {
@@ -5967,7 +5967,7 @@
                 "sebastian/diff": "^5.0",
                 "sebastian/environment": "^6.0",
                 "sebastian/exporter": "^5.0",
-                "sebastian/global-state": "^6.0",
+                "sebastian/global-state": "^6.0.1",
                 "sebastian/object-enumerator": "^5.0",
                 "sebastian/recursion-context": "^5.0",
                 "sebastian/type": "^4.0",
@@ -6014,7 +6014,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.6"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.7"
             },
             "funding": [
                 {
@@ -6030,7 +6030,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-17T12:08:28+00:00"
+            "time": "2023-08-02T06:46:08+00:00"
         },
         {
             "name": "psr/cache",

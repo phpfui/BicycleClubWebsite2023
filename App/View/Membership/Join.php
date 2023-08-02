@@ -59,7 +59,7 @@ class Join
 
 			if (! $error)
 				{
-				if (! \filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
+				if (empty($_POST['email']) || ! \filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
 					{
 					\App\Model\Session::setFlash('alert', 'Please enter a valid email');
 					$this->page->redirect();

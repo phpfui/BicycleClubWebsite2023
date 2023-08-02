@@ -18,6 +18,10 @@ class Member extends \App\Record\Definition\Member
 
 	public function clean() : static
 		{
+		if (null === $this->email)
+			{
+			$this->email = '';
+			}
 		$this->cleanEmail('email');
 		$this->email = \App\Model\Member::cleanEmail($this->email);
 		$this->cleanProperName('lastName');

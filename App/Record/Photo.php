@@ -33,6 +33,8 @@ class Photo extends \App\Record\Definition\Photo
 
 	public function getImage() : \PHPFUI\Image
 		{
-		return new \PHPFUI\Image('/Photo/image/' . $this->photoId, $this->photo ?: 'photo');
+		$fileTime = \filemtime($this->getFullPath());
+
+		return new \PHPFUI\Image('/Photo/image/' . $this->photoId . '-' . $fileTime, $this->photo ?: 'photo');
 		}
 	}

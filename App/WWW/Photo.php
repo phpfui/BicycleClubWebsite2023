@@ -138,8 +138,11 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->page->redirect($url);
 		}
 
-	public function image(\App\Record\Photo $photo = new \App\Record\Photo()) : void
+	public function image(string $id = '') : void
 		{
+		$parts = \explode('-', $id);
+		$photo = new \App\Record\Photo((int)($parts[0] ?? 0));
+
 		if (! $photo->empty() && ($photo->public || $this->page->isAuthorized('View Album Photo')))
 			{
 			$fileModel = new \App\Model\PhotoFiles();

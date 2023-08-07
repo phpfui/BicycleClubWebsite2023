@@ -2,11 +2,11 @@
 
 namespace App\UI;
 
-class WheelSize extends \PHPFUI\Input\Select
+class TirePicker extends \PHPFUI\Input\Select
 	{
-	public function __construct(string $value)
+	public function __construct(string $name, string $label = '', string $value = '')
 		{
-		parent::__construct('wd', 'Wheel Size');
+		parent::__construct($name, $label);
 		parent::setToolTip('Select your tire size');
 		$csvReader = new \App\Tools\CSVReader(PROJECT_ROOT . '/files/gearCalculator/tires.csv');
 		$indexes = ['Metric', 'American', 'Imperial'];

@@ -160,6 +160,12 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function gears() : void
+		{
+		$model = new \App\Model\GearCalculator($_GET);
+		$model->print();
+		}
+
 	public function myFiles(\App\Record\Member $member = new \App\Record\Member()) : void
 		{
 		$this->page->turnOffBanner();

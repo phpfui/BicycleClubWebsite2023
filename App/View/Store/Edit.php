@@ -36,16 +36,18 @@ class Edit
 					break;
 
 				case 'deleteOption':
-
-					$storeItemOption = new \App\Record\StoreItemOption((int)$_POST['storeOptionId']);
+					$key = $_POST;
+					unset($key['sequence']);
+					$storeItemOption = new \App\Record\StoreItemOption($key);
 					$storeItemOption->delete();
 					$this->page->setResponse($_POST['sequence']);
 
 					break;
 
 				case 'deleteItemDetail':
-
-					$storeItemDetail = new \App\Record\StoreItemDetail((int)$_POST['storeItemDetailId']);
+					$key = $_POST;
+					unset($key['detailLine'], $key['quantity']);
+					$storeItemDetail = new \App\Record\StoreItemDetail($key);
 					$storeItemDetail->delete();
 					$this->page->setResponse($_POST['storeItemDetailId']);
 

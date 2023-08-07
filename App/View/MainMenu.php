@@ -434,9 +434,9 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		return parent::getStart();
 		}
 
-	private function addMenu(\PHPFUI\Menu $parentMenu, string $menuName, string $name) : ?\PHPFUI\Menu
+	private function addMenu(\PHPFUI\Menu $parentMenu, string $page, string $name) : ?\PHPFUI\Menu
 		{
-		$this->currentMenu = $menuName;
+		$this->currentMenu = $name;
 
 		$menu = null;
 
@@ -445,12 +445,12 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			$menu = new \PHPFUI\Menu();
 			$parentMenu->addSubMenu(new \PHPFUI\MenuItem($name), $menu);
 
-			if ($this->activeLink == $menuName)
+			if ($this->activeLink == $page)
 				{
 				$parentMenu->addClass('is-active');
 				$menu->addClass('is-active');
 				}
-			$this->theMenu[$menuName] = $menu;
+			$this->theMenu[$name] = $menu;
 			}
 
 		return $menu;

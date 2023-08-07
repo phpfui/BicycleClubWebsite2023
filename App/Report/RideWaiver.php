@@ -18,6 +18,7 @@ class RideWaiver extends \Mpdf\Mpdf
 		{
 		$this->settingTable = new \App\Table\Setting();
 		$config = ['format' => 'LETTER'];
+		$config['mode'] = 'utf-8';
 		parent::__construct($config);
 		$this->SetAutoPageBreak(false);
 

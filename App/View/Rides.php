@@ -286,7 +286,9 @@ class Rides
 
 		if ($ride->RWGPSId)
 			{
-			$fieldSet->add(new \App\UI\Display('RWGPS Detail', new \PHPFUI\Link("/RWGPS/detail/{$ride->RWGPSId}", \PHPFUI\TextHelper::unhtmlentities($ride->RWGPS->title) . ' - ' . $ride->RWGPSId, false)));
+			$link = new \PHPFUI\Link("/RWGPS/detail/{$ride->RWGPSId}", \PHPFUI\TextHelper::unhtmlentities($ride->RWGPS->title) . ' - ' . $ride->RWGPSId, false);
+			$link->addAttribute('target', '_blank');
+			$fieldSet->add(new \App\UI\Display('RWGPS Detail', $link));
 			}
 
 		if ($ride->cueSheetId)

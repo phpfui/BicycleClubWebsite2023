@@ -204,8 +204,16 @@ class RideSignup
 				$email->setSubject('Rider signup change');
 				$body = 'For your ride on ' . $this->ride->rideDate;
 				$body .= ", {$this->member->fullName()} has {$action}.";
+
+				if ($this->member->memberId !== \App\Model\Session::signedInMemberId())
+					{
+					$changer = \App\Model\Session::signedInMemberRecord();
+					$email->addToMember($changer->toArray());
+					$email->addToMember($this->member->toArray());
+					$body .= '<br><br>This change was made by ' . $changer->fullName();
+					}
 				$email->setBody($body);
-				$email->setToMember($leader->toArray());
+				$email->addToMember($leader->toArray());
 				$email->setFromMember($this->member->toArray());
 				$email->setHtml();
 				$email->send();

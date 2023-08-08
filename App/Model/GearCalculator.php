@@ -10,8 +10,16 @@ namespace App\Model;
  */
 class GearCalculator
 	{
+	use \App\Tools\SchemeHost;
+
 	/** @var array<int> */
 	private array $cogs = [];
+
+	/** @var array<float> */
+	private array $frontInternal = [];
+
+	/** @var array<float> */
+	private array $rearInternal = [];
 
 	/** @var array<int> */
 	private array $rings = [];
@@ -21,15 +29,11 @@ class GearCalculator
 	 */
 	public function __construct(private array $parameters)
 		{
-		for ($i = 1; $i <= 10; ++$i)
-			{
-			$field = 'ring' . $i;
+		unset($this->parameters['csrf']);
+		$this->frontInternal = $this->getFloatArray('fh');
+		$this->rearInternal = $this->getFloatArray('rh');
 
-			if ($this->{$field} > 0)
-				{
-				$this->rings[] = (int)$this->{$field};
-				}
-			}
+		$this->rings = $this->getIntArray('ring');
 
 		if (empty($this->rings))
 			{
@@ -38,15 +42,7 @@ class GearCalculator
 
 		if (empty($this->uc) || empty($this->c))
 			{
-			for ($i = 0; $i < 30; ++$i)
-				{
-				$field = 'cog' . $i;
-
-				if ($this->{$field} > 0)
-					{
-					$this->cogs[] = (int)$this->{$field};
-					}
-				}
+			$this->cogs = $this->getIntArray('cog');
 			}
 
 		if (empty($this->cogs))
@@ -135,10 +131,43 @@ class GearCalculator
 		return $this->cogs;
 		}
 
+	/**
+	 * @return array<float>
+	 */
+	public function getFrontInternal() : array
+		{
+		return $this->frontInternal;
+		}
+
+	public function getPageName() : string
+		{
+		return \implode('/', $this->rings) . '- ' . \implode(',', $this->cogs);
+		}
+
+	/**
+	 * @return array<float>
+	 */
+	public function getRearInternal() : array
+		{
+		return $this->rearInternal;
+		}
+
 	/** @return array<int> */
 	public function getRings() : array
 		{
 		return $this->rings;
+		}
+
+	public function getURL() : string
+		{
+		$url = $this->getSchemeHost() . $_SERVER['REQUEST_URI'];
+
+		if ($this->parameters)
+			{
+			$url .= '&' . \http_build_query($this->parameters);
+			}
+
+		return $url;
 		}
 
 	public function print() : void
@@ -182,5 +211,45 @@ class GearCalculator
 		$pdf->writeHTML("<style media='print'>table {border-collapse:collapse;border:1px solid black;padding:10mm;text-align:center;}</style>");
 		$pdf->writeHTML($table);
 		$pdf->Output('GearCalculator.pdf', 'I');
+		}
+
+	/**
+	 * @return array<float>
+	 */
+	private function getFloatArray(string $type) : array
+		{
+		$retVal = [];
+
+		for ($i = 0; $i < 30; ++$i)
+			{
+			$field = $type . $i;
+
+			if ($this->{$field} > 0.0)
+				{
+				$retVal[] = (float)$this->{$field};
+				}
+			}
+
+		return $retVal;
+		}
+
+	/**
+	 * @return array<int>
+	 */
+	private function getIntArray(string $type) : array
+		{
+		$retVal = [];
+
+		for ($i = 0; $i < 30; ++$i)
+			{
+			$field = $type . $i;
+
+			if ($this->{$field} > 0)
+				{
+				$retVal[] = (int)$this->{$field};
+				}
+			}
+
+		return $retVal;
 		}
 	}

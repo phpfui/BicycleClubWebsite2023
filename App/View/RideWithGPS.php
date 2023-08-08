@@ -108,7 +108,10 @@ class RideWithGPS
 		$alternateRouteTable->addCustomColumn('RWGPSId_RWGPSAlternateId', static fn (array $alternate) => $alternate['RWGPSId'] . '_' . $alternate['RWGPSAlternateId']);
 		$alternateRouteTable->addCustomColumn('Route', static function(array $alternate) {$rwgps = new \App\Record\RWGPS($alternate['RWGPSAlternateId']);
 
-			return new \PHPFUI\Link("/RWGPS/detail/{$rwgps->RWGPSId}", \PHPFUI\TextHelper::unhtmlentities($rwgps->title) . ' - ' . $rwgps->RWGPSId, false);});
+			$link = new \PHPFUI\Link("/RWGPS/detail/{$rwgps->RWGPSId}", \PHPFUI\TextHelper::unhtmlentities($rwgps->title) . ' - ' . $rwgps->RWGPSId, false);
+			$link->addAttribute('target', '_blank');
+
+			return $link;});
 		$alternateRouteTable->addCustomColumn('Del', $deleter->columnCallback(...));
 		$alternateRouteTable->addCustomColumn('Member', static function(array $alternate) {$member = new \App\Record\Member($alternate['memberId']);
 
@@ -271,6 +274,7 @@ class RideWithGPS
 		$view->addCustomColumn('title', static function(array $rwgps)
 			{
 			$name = new \PHPFUI\Link("/RWGPS/detail/{$rwgps['RWGPSId']}", \PHPFUI\TextHelper::unhtmlentities($rwgps['title']) . ' - ' . $rwgps['RWGPSId'], false);
+			$name->addAttribute('target', '_blank');
 
 			return $name;
 			});

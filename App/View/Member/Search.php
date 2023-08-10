@@ -58,7 +58,7 @@ class Search implements \Stringable
 					{
 					$excludeField = $this->exceptions[$field] ?? '';
 
-					if ($excludeField)
+					if ($excludeField && ! empty($value))
 						{
 						$condition->and($excludeField, 0);
 						}

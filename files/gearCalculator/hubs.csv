@@ -1,0 +1,64 @@
+ratios,name,type
+1.467-1.000,"Bendix 2-speed Blue Band",rh
+1.000-0.682,"Bendix 2-speed Red Band, Yellow Band",rh
+1.000-0.686,"Classified Powershift",rh
+1.333-1.000-0.750-0.600,"Fichtel & Sachs 4-speed Universal Torpedo",rh
+1.000-0.750-0.600,"Fichtel &amp; Sachs 3-speed 25, 29",rh
+1.477-1.297-1.138-1.000-0.878-0.770-0.676-0.594-0.521-0.458-0.402-0.353-0.309-0.272,"Kindernay 14-speed XIV",rh
+1.800-0.500,"NuVinci continuously-variable (N180,N360)",rh
+1.700-0.550,"NuVinci continuously-variable Commuter, Commercial",rh
+1.750-0.500,"NuVinci continuously-variable N171",rh
+1.900-0.500,"NuVinci continuously-variable N380",rh
+3.297-2.793-2.376-2.031-1.715-1.450-1.235-1.054-0.890-0.755-0.643-0.550,"Pinion 12-speed P1.12 bottom bracket",fh
+3.489-3.117-2.793-2.525-2.261-2.031-1.816-1.621-1.450-1.311-1.176-1.054-0.943-0.842-0.755-0.682-0.612-0.550,"Pinion 18-speed P1.18 bottom bracket",fh
+2.793-2.376-2.031-1.708-1.454-1.242-1.057-0.897-0.769,"Pinion 9-speed P1.9CR bottom bracket",fh
+3.117-2.525-2.031-1.621-1.311-1.054-0.842-0.682-0.550,"Pinion 9-speed P1.9XR bottom bracket",fh
+1.467-1.292-1.135-1.000-0.881-0.774-0.682-0.600-0.528-0.464-0.409-0.360-0.316-0.279,"Rohloff Speedhub 14-speed",rh
+2.363-2.215-2.061-1.917-1.768-1.614-1.481-1.333-1.179-1.000-0.852-0.698,"Sachs 12-speed Elan/SRAM E12",rh
+1.000-0.762,"Sachs 2-speed Doppel-Torpedo",rh
+1.362-1.000,"Sachs 2-speed Duomatic, Automatic",rh
+1.000-0.738,"Sachs 2-speed w/6 cogs Orbit",rh
+1.579-1.281-1.000-0.781-0.633,"Sachs 5-speed Pentasport P5/SRAM Spectro P5",rh
+1.500-1.286-1.000-0.778-0.667,"Sachs 5-speed Torpedo (old type)",rh
+1.742-1.476-1.236-1.000-0.809-0.677-0.574,"Sachs 7-speed Super 7/SRAM Spectro S7",rh
+1.685-1.476-1.227-1.000-0.815-0.677-0.593,"Sachs 7-speed Torpedo (old type)",rh
+2.500-1.000,"Schlumpf 2-speed High-Speed Drive bottom bracket",fh
+1.000-0.400,"Schlumpf 2-speed Mountain Drive bottom bracket",fdh
+1.650-1.000,"Schlumpf 2-speed Speed Drive bottom bracket",fh
+2.153-1.888-1.667-1.462-1.292-1.134-0.995-0.878-0.770-0.681-0.527,"Shimano 11-Speed Alfine",rh
+1.333-1.000-0.750,"Shimano 3-speed",rh
+1.364-1.000-0.733,"Shimano 3-speed Nexus Inter-3",rh
+1.843-1.500-1.244-1.000,"Shimano 4-speed Nexus Inter-4",rh
+1.545-1.335-1.159-1.001-0.750,"Shimano 5-speed Nexus Inter-5",rh
+1.545-1.335-1.145-0.989-0.843-0.741-0.632,"Shimano 7-speed Nexus Inter-7",rh
+1.615-1.419-1.223-1.000-0.851-0.748-0.644-0.527,"Shimano 8-speed Nexus, Alfine",rh
+2.630-1.200-1.622-1.277-1.000,"Shimano Steps SG-C7000-5D 5-speed for E-bike",rh
+1.362-1.000,"SRAM 2-speed Automatix",rh
+1.362-1.000-0.734,"SRAM 3-speed (Fichtel, Sachs)",rh
+1.581-1.355-1.204-1.054-0.903-0.803-0.710-0.609,"SRAM 8-speed G8",rh
+1.581-1.355-1.204-1.054-0.903-0.803-0.710-0.609-0.541,"SRAM 9-speed G9",rh
+1.844-1.611-1.375-1.172-1.000-0.853-0.727-0.621-0.542,"SRAM 9-speed i-Motion 9",rh
+1.000-0.865,"Sturmey-Archer 2-speed close-ratio TC",rh
+1.000-0.714,"Sturmey-Archer 2-speed S2 (1966)",rh
+1.380-1.000,"Sturmey-Archer 2-speed S2, S2C, B2C (2010)",rh
+1.000-0.750,"Sturmey-Archer 2-speed wide-ratio T,TB,TBC,TBF,TBFC,TF",rh
+1.333-1.000-0.750,"Sturmey-Archer 3-speed (Brampton, Hercules, NK, Steyr)",rh
+1.067-1.000-0.923,"Sturmey-Archer 3-speed close-ratio AC",rh
+1.125-1.000-0.889,"Sturmey-Archer 3-speed close-ratio KS",rh
+1.000-0.900-0.750,"Sturmey-Archer 3-speed fixed gear ASC",rh
+1.000-0.750-0.625,"Sturmey-Archer 3-speed fixed gear S3X",rh
+1.156-1.000-0.865,"Sturmey-Archer 3-speed medium-ratio AM",rh
+1.167-1.000-0.857,"Sturmey-Archer 3-speed medium-ratio KSW",rh
+1.250-1.000-0.800,"Sturmey-Archer 3-speed original 1902 (Fichtel & Sachs)",rh
+1.568-1.000-0.638,"Sturmey-Archer 3-speed special Brompton wide ratio",rh
+1.385-1.000-0.722,"Sturmey-Archer 3-speed super-wide-ratio SW",rh
+1.072-1.000-0.932,"Sturmey-Archer 3-speed ultra-close-ratio AR",rh
+1.091-1.000-0.900-0.750,"Sturmey-Archer 4-speed close-ratio",rh
+1.125-1.000-0.857-0.667,"Sturmey-Archer 4-speed medium-ratio FM",rh
+1.267-1.000-0.789-0.667,"Sturmey-Archer 4-speed,rh
+1.313-1.000-0.762,Sturmey-Archer 3-speed A (not AW!)",rh
+1.500-1.125-1.000-0.857-0.667,"Sturmey-Archer 5-speed",rh
+1.600-1.333-1.000-0.750-0.625,"Sturmey-Archer 5-speed (QS-RC5,S5C,S-RC5,X-RD5,XL-RD5,S-RF5,X-RF5)",rh
+1.667-1.450-1.243-1.000-804.000-0.690-0.600,"Sturmey-Archer 7-speed",rh
+3.054-2.384-2.106-1.858-1.644-1.450-1.281-1.000,"Sturmey-Archer 8-speed",rh
+3.239-2.485-2.186-1.931-1.677-1.481-1.303-1.000,"Sturmey-Archer 8-speed wide-ratio",rh

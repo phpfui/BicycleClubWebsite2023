@@ -7,6 +7,8 @@ namespace App\Model;
  * @property string $t
  * @property string $u
  * @property string $uc
+ * @property string $fh
+ * @property string $rh
  */
 class GearCalculator
 	{
@@ -16,10 +18,10 @@ class GearCalculator
 	private array $cogs = [];
 
 	/** @var array<float> */
-	private array $frontInternal = [];
+	private array $frontHub = [];
 
 	/** @var array<float> */
-	private array $rearInternal = [];
+	private array $rearHub = [];
 
 	/** @var array<int> */
 	private array $rings = [];
@@ -30,8 +32,24 @@ class GearCalculator
 	public function __construct(private array $parameters)
 		{
 		unset($this->parameters['csrf']);
-		$this->frontInternal = $this->getFloatArray('fh');
-		$this->rearInternal = $this->getFloatArray('rh');
+
+		if (empty($this->ufh))
+			{
+			$this->frontHub = $this->getFloatArray('fh');
+			}
+		else
+			{
+			$this->frontHub = $this->getHubArray('fh');
+			}
+
+		if (empty($this->urh))
+			{
+			$this->rearHub = $this->getFloatArray('rh');
+			}
+		else
+			{
+			$this->rearHub = $this->getHubArray('rh');
+			}
 
 		$this->rings = $this->getIntArray('ring');
 
@@ -80,7 +98,7 @@ class GearCalculator
 		return \array_key_exists($field, $this->parameters);
 		}
 
-	public function computeGear(int $ring, int $cog) : string
+	public function computeGear(float $ring, float $cog) : string
 		{
 		if (empty($cog))
 			{
@@ -134,9 +152,9 @@ class GearCalculator
 	/**
 	 * @return array<float>
 	 */
-	public function getFrontInternal() : array
+	public function getFrontHub() : array
 		{
-		return $this->frontInternal;
+		return $this->frontHub;
 		}
 
 	public function getPageName() : string
@@ -147,9 +165,9 @@ class GearCalculator
 	/**
 	 * @return array<float>
 	 */
-	public function getRearInternal() : array
+	public function getRearHub() : array
 		{
-		return $this->rearInternal;
+		return $this->rearHub;
 		}
 
 	/** @return array<int> */
@@ -177,7 +195,6 @@ class GearCalculator
 		$pdf = new \Mpdf\Mpdf($config);
 		$pdf->SetMargins(15, 15, 15);
 		$pdf->addPage();
-		$table = new \PHPFUI\Table();
 		$cogs = \explode('-', $this->c);
 
 		$ringSizes = ['&nbsp;'];
@@ -194,8 +211,8 @@ class GearCalculator
 				}
 			}
 		$cogs = \explode('-', $this->c);
+		$table = new \PHPFUI\Table();
 		$table->addRow($boldRings);
-		$table->addAttribute('border', '1');
 		$rings = \count($ringSizes);
 
 		foreach ($cogs as $cog)
@@ -204,11 +221,12 @@ class GearCalculator
 
 			for ($ring = 1; $ring < $rings; ++$ring)
 				{
-				$row[] = $this->computeGear($ringSizes[$ring], (int)$cog);
+				$row[] = $this->computeGear((float)$ringSizes[$ring], (float)$cog);
 				}
 			$table->addRow($row);
 			}
-		$pdf->writeHTML("<style media='print'>table {border-collapse:collapse;border:1px solid black;padding:10mm;text-align:center;}</style>");
+		$table->addAttribute('border', '1');
+		$pdf->writeHTML("<style media='print'>table {border-collapse:collapsed;border:1px solid black;text-align:center;}</style>");
 		$pdf->writeHTML($table);
 		$pdf->Output('GearCalculator.pdf', 'I');
 		}
@@ -228,6 +246,23 @@ class GearCalculator
 				{
 				$retVal[] = (float)$this->{$field};
 				}
+			}
+
+		return $retVal;
+		}
+
+	/**
+	 * @return array<float>
+	 */
+	private function getHubArray(string $type) : array
+		{
+		$parts = \explode('-', $this->{$type});
+
+		$retVal = [];
+
+		foreach ($parts as $part)
+			{
+			$retVal[] = (float)$part;
 			}
 
 		return $retVal;

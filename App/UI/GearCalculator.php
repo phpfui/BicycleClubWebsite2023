@@ -26,7 +26,7 @@ class GearCalculator
 		$u = $this->model->u ?? '0';
 		$this->units = new \PHPFUI\Input\Select('u', 'Units');
 		$this->units->addAttribute('onChange', 'update()');
-		$this->units->addOption('Gear inches', '0', '0' == $u);
+		$this->units->addOption('Gear Inches', '0', '0' == $u);
 		$this->units->addOption('Gear Ratio', '1', '1' == $u);
 		$this->units->addOption('Meters Development', '2', '2' == $u);
 
@@ -47,21 +47,19 @@ class GearCalculator
 		{
 		$form = new \PHPFUI\Form($this->page);
 		$id = $form->getId();
-//		$form->add(new \PHPFUI\Debug($this->model));
 		$js = <<<JAVASCRIPT
 function update(){reloadPage($('#{$id}').serialize())};
 function print(){window.location.assign('/File/gears'+'?'+$('#{$id}').serialize())};
-function reloadPage(parms){window.location.assign(window.location.pathname+'?'+parms.slice(0,parms.indexOf('&csrf=')))};
-function updateCassette(parms){var params=$('#{$id}').serialize();window.location.assign(window.location.pathname+'?uc=1&'+params)};
+function reloadPage(parms){window.location.assign(window.location.pathname+'?'+parms.slice(0,parms.indexOf('&csrf='))+window.location.hash)};
+function updateCassette(){var params=$('#{$id}').serialize();window.location.assign(window.location.pathname+'?uc=1&'+params+window.location.hash)};
+function updateHub(hub){var params=$('#{$id}').serialize();window.location.assign(window.location.pathname+'?u'+hub+'=1&'+params+window.location.hash)};
 function addField(field,number){var params=$('#{$id}').serialize();reloadPage(field+'='+number+'&'+params)};
 function deleteField(field){var params=$('#{$id}').serialize();reloadPage(params.replace(target='&'+field+'='+$('input[name="'+field+'"]').val(),''))};
 JAVASCRIPT;
 		$this->page->addJavaScript($js);
-
 		$form->setAreYouSure(false);
 
 		$form->add($this->tirePicker);
-		$form->add($this->cassettePicker);
 		$form->add($this->units);
 
 		$printButton = new \PHPFUI\Button('Print');
@@ -78,36 +76,36 @@ JAVASCRIPT;
 		$buttonGroup->addButton($copiedButton);
 		$form->add($buttonGroup);
 
-		$table = new \PHPFUI\Table();
-
 		$ringSizes = $this->model->getRings();
 
 		$buttonGroup = new \PHPFUI\ButtonGroup();
 		$buttonGroup->addClass('tiny');
 
-		if (! $this->model->getFrontInternal())
+		if (! $this->model->getFrontHub())
 			{
-			$frontInternal = new \PHPFUI\Button('Front Hub');
-			$frontInternal->addClass('warning');
-			$frontInternal->setAttribute('onClick', 'addField("fh0",1.0)');
-			$buttonGroup->addButton($frontInternal);
+			$frontHub = new \PHPFUI\Button('Front Hub');
+			$frontHub->addClass('warning');
+			$frontHub->setAttribute('onClick', 'addField("fh0",1.0)');
+			$buttonGroup->addButton($frontHub);
 			}
 
-		if (! $this->model->getRearInternal())
+		if (! $this->model->getRearHub())
 			{
-			$rearInternal = new \PHPFUI\Button('Rear Hub');
-			$rearInternal->addClass('warning');
-			$rearInternal->setAttribute('onClick', 'addField("rh0",1.0)');
-			$buttonGroup->addButton($rearInternal);
+			$rearHub = new \PHPFUI\Button('Rear Hub');
+			$rearHub->addClass('warning');
+			$rearHub->setAttribute('onClick', 'addField("rh0",1.0)');
+			$buttonGroup->addButton($rearHub);
 			}
 
-		//$headers = ['&nbsp;' => $buttonGroup];
-		$headers = ['&nbsp;'];
+		$headers = ['&nbsp;' => $buttonGroup];
+		//$headers = ['&nbsp;'];
 
 		foreach ($ringSizes as $ring => $teeth)
 			{
 			$headers[] = 'Ring ' . ($ring + 1);
 			}
+
+		$table = new \PHPFUI\Table();
 		$table->setHeaders($headers);
 		$cogs = $this->model->getCogs();
 
@@ -131,28 +129,110 @@ JAVASCRIPT;
 			$table->addRow($row);
 			}
 
-		if ($this->model->getFrontInternal() || $this->model->getRearInternal())
+		if ($this->model->getFrontHub() || $this->model->getRearHub())
 			{
 			$tabs = new \PHPFUI\Tabs();
-			$tabs->addTab('Gears', $table, true);
+			$tabs->addTab('Gears', $this->cassettePicker . $table, true);
 
-			if ($this->model->getFrontInternal())
+			if ($this->model->getFrontHub())
 				{
-				$tabs->addTab('Front Internal', $this->getInternal($this->model->getFrontInternal(), 'fh'));
+				$tabs->addTab('Front Hub', $this->getHub($this->model->getFrontHub(), 'fh'));
 				}
 
-			if ($this->model->getRearInternal())
+			if ($this->model->getRearHub())
 				{
-				$tabs->addTab('Rear Internal', $this->getInternal($this->model->getRearInternal(), 'rh'));
+				$tabs->addTab('Rear Hub', $this->getHub($this->model->getRearHub(), 'rh'));
 				}
-			$form->add($tabs);
+			$form->add('<p>' . $tabs->getTabs()->addAttribute('data-deep-link', 'true'));
+			$form->add($tabs->getContent() . '</p>');
 			}
 		else
 			{
+			$form->add($this->cassettePicker);
 			$form->add($table);
 			}
 
 		return $form;
+		}
+
+	/**
+	 * @param array<float> $ratios
+	 */
+	private function getHub(array $ratios, string $type) : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+		$hubPicker = new \App\UI\HubPicker($type, ('rh' == $type ? 'Rear' : 'Front') . ' Hub', $this->getHubString($ratios));
+		$hubPicker->addAttribute('onChange', 'updateHub("' . $type . '")');
+		$container->add($hubPicker);
+
+		$multiColumn = new \PHPFUI\MultiColumn();
+
+		$ratioCount = \count($ratios);
+		$count = 0;
+
+		foreach ($ratios as $index => $ratio)
+			{
+			if (++$count > 6)
+				{
+				$container->add($multiColumn);
+				$multiColumn = new \PHPFUI\MultiColumn();
+				$count = 1;
+				}
+			$multiColumn->add($this->getInput($type . $index, \number_format($ratio, 3), $index == $ratioCount - 1));
+			}
+		$container->add($multiColumn);
+
+		$ringSizes = $this->model->getRings();
+
+		$gridx = new \PHPFUI\GridX();
+
+		foreach ($ratios as $ratioIndex => $ratio)
+			{
+			$headers = $ratioIndex ? [] : ['&nbsp;'];
+
+			$ratioString = \number_format($ratio, 3);
+
+			foreach ($ringSizes as $ring => $teeth)
+				{
+				$headers[] = "<b>{$teeth} * {$ratioString}</b>";
+				}
+
+			$table = new \PHPFUI\Table();
+			$table->addRow($headers);
+			$cogs = $this->model->getCogs();
+
+			foreach ($cogs as $cogIndex => $cog)
+				{
+				$row = $ratioIndex ? [] : ["<b>{$cog}</b>"];
+
+				foreach ($ringSizes as $ring => $teeth)
+					{
+					$row[] = $this->model->computeGear($teeth * $ratio, $cog);
+					}
+				$table->addRow($row);
+				}
+			$cell = new \PHPFUI\Cell();
+			$cell->addClass('auto');
+			$cell->add($table);
+			$gridx->add($cell);
+			}
+
+		$container->add($gridx);
+
+		return $container;
+		}
+
+	/**
+	 * @param array<float> $ratios
+	 */
+	private function getHubString(array $ratios) : string
+		{
+		foreach ($ratios as &$ratio)
+			{
+			$ratio = \number_format($ratio, 3);
+			}
+
+		return \implode('-', $ratios);
 		}
 
 	private function getInput(string $field, string $value, bool $last) : \PHPFUI\GridX
@@ -183,27 +263,5 @@ JAVASCRIPT;
 		$gridX->add($cellB);
 
 		return $gridX;
-		}
-
-	/**
-	 * @param array<float> $ratios
-	 */
-	private function getInternal(array $ratios, string $type) : \PHPFUI\Container
-		{
-		$container = new \PHPFUI\Container();
-		$container->add('Enter gear ratios as decimal fractions');
-
-		$multiColumn = new \PHPFUI\MultiColumn();
-
-		foreach ($ratios as $index => $ratio)
-			{
-			$multiColumn->add($this->getInput($type . $index, \number_format($ratio, 3), $index == \count($ratios) - 1));
-			}
-		$container->add($multiColumn);
-
-		$table = new \PHPFUI\Table();
-		$container->add($table);
-
-		return $container;
 		}
 	}

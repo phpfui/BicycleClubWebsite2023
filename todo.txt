@@ -1,4 +1,9 @@
 Gear Calculator
+	Percent difference
+	Print with ratios
+	Front ratio table
+
+Cache busting
 
 Signed up riders over the limit
 

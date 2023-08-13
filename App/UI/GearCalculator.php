@@ -49,7 +49,8 @@ class GearCalculator
 		$id = $form->getId();
 		$js = <<<JAVASCRIPT
 function update(){reloadPage($('#{$id}').serialize())};
-function print(){window.location.assign('/File/gears'+'?'+$('#{$id}').serialize())};
+function print(){window.location.assign('/File/gearPrint'+'?'+$('#{$id}').serialize())};
+function csv(){window.location.assign('/File/gearCSV'+'?'+$('#{$id}').serialize())};
 function reloadPage(parms){window.location.assign(window.location.pathname+'?'+parms.slice(0,parms.indexOf('&csrf='))+window.location.hash)};
 function updateCassette(){var params=$('#{$id}').serialize();window.location.assign(window.location.pathname+'?uc=1&'+params+window.location.hash)};
 function updateHub(hub){var params=$('#{$id}').serialize();window.location.assign(window.location.pathname+'?u'+hub+'=1&'+params+window.location.hash)};
@@ -59,11 +60,17 @@ JAVASCRIPT;
 		$this->page->addJavaScript($js);
 		$form->setAreYouSure(false);
 
+		$title = new \PHPFUI\Input\Text('tl', 'Title', $this->model->tl ?? '');
+		$title->addAttribute('onChange', 'update()');
+		$form->add($title);
 		$form->add($this->tirePicker);
 		$form->add($this->units);
 
 		$printButton = new \PHPFUI\Button('Print');
 		$printButton->setAttribute('onClick', 'print()');
+		$csvButton = new \PHPFUI\Button('CSV');
+		$csvButton->addClass('warning');
+		$csvButton->setAttribute('onClick', 'csv()');
 		$shareButton = new \PHPFUI\Button('<i class="fa-solid fa-share-nodes"></i> Share');
 		$shareButton->addClass('success');
 		$copiedButton = new \PHPFUI\Button('URL Copied!');
@@ -72,6 +79,7 @@ JAVASCRIPT;
 
 		$buttonGroup = new \PHPFUI\ButtonGroup();
 		$buttonGroup->addButton($printButton);
+		$buttonGroup->addButton($csvButton);
 		$buttonGroup->addButton($shareButton);
 		$buttonGroup->addButton($copiedButton);
 		$form->add($buttonGroup);
@@ -184,40 +192,7 @@ JAVASCRIPT;
 
 		$ringSizes = $this->model->getRings();
 
-		$gridx = new \PHPFUI\GridX();
-
-		foreach ($ratios as $ratioIndex => $ratio)
-			{
-			$headers = $ratioIndex ? [] : ['&nbsp;'];
-
-			$ratioString = \number_format($ratio, 3);
-
-			foreach ($ringSizes as $ring => $teeth)
-				{
-				$headers[] = "<b>{$teeth} * {$ratioString}</b>";
-				}
-
-			$table = new \PHPFUI\Table();
-			$table->addRow($headers);
-			$cogs = $this->model->getCogs();
-
-			foreach ($cogs as $cogIndex => $cog)
-				{
-				$row = $ratioIndex ? [] : ["<b>{$cog}</b>"];
-
-				foreach ($ringSizes as $ring => $teeth)
-					{
-					$row[] = $this->model->computeGear($teeth * $ratio, $cog);
-					}
-				$table->addRow($row);
-				}
-			$cell = new \PHPFUI\Cell();
-			$cell->addClass('auto');
-			$cell->add($table);
-			$gridx->add($cell);
-			}
-
-		$container->add($gridx);
+		$container->add($this->model->getTable());
 
 		return $container;
 		}

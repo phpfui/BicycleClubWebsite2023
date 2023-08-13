@@ -4,11 +4,12 @@ namespace App\Model;
 
 /**
  * @property string $c
- * @property string $t
- * @property string $u
- * @property string $uc
  * @property string $fh
  * @property string $rh
+ * @property string $t
+ * @property string $tl
+ * @property string $u
+ * @property string $uc
  */
 class GearCalculator
 	{
@@ -98,7 +99,7 @@ class GearCalculator
 		return \array_key_exists($field, $this->parameters);
 		}
 
-	public function computeGear(float $ring, float $cog) : string
+	public function computeGear(float $ring, int $cog) : string
 		{
 		if (empty($cog))
 			{
@@ -138,6 +139,20 @@ class GearCalculator
 		return \number_format($gear, 1) . " {$units}PH";
 		}
 
+	public function csv() : void
+		{
+		$writer = new \App\Tools\CSVWriter('GearCalculator.csv');
+
+		foreach ($this->getTable()->getRows() as $row)
+			{
+			foreach ($row as &$cell)
+				{
+				$cell = \strip_tags($cell);
+				}
+			$writer->outputRow($row);
+			}
+		}
+
 	public function getCassette() : string
 		{
 		return \implode('-', $this->cogs);
@@ -150,6 +165,117 @@ class GearCalculator
 		}
 
 	/**
+	 * Gear * 2 across (highest first) / cogs down
+	 *
+	 * param array<float> $hub1
+	 * param array<float> $hub2
+	 */
+	public function getDualHubCassetteTable(int $ring, array $hub1, array $hub2) : \PHPFUI\Table
+		{
+		$this->orderHubs($hub1, $hub2);
+
+		$table = new \PHPFUI\Table();
+		$headers = ['<b>Gear</b>'];
+
+		$gear1 = \count($hub1);
+
+		foreach ($hub1 as $ratio1)
+			{
+			$gear2 = \count($hub2);
+
+			foreach ($hub2 as $ratio2)
+				{
+				$headers[] = "<b>{$gear1}-{$gear2}</b>";
+				--$gear2;
+				}
+			--$gear1;
+			}
+
+		$table->addRow($headers);
+
+		foreach ($this->cogs as $cog)
+			{
+			$row = ["<b>{$cog}</b>"];
+
+			foreach ($hub1 as $ratio1)
+				{
+				$gear2 = \count($hub2);
+
+				foreach ($hub2 as $ratio2)
+					{
+					$row[] = $this->computeGear($ring * $ratio1 * $ratio2, $cog);
+					}
+				}
+			$table->addRow($row);
+			}
+
+		return $table;
+		}
+
+	/**
+	 * More traditional 2 x gear chart but with hubs
+	 *
+	 * param array<float> $hub1
+	 * param array<float> $hub2
+	 */
+	public function getDualHubTable(int $ring, int $cog, array $hub1, array $hub2) : \PHPFUI\Table
+		{
+		$this->orderHubs($hub1, $hub2);
+
+		$table = new \PHPFUI\Table();
+
+		$headers = ['<b>Gears</b>'];
+
+		$gear = \count($hub1);
+
+		foreach ($hub1 as $ratio)
+			{
+			$headers[] = "<b>{$gear}</b>";
+			--$gear;
+			}
+
+		$table->addRow($headers);
+
+		$gear = \count($hub2);
+
+		foreach ($hub2 as $cogRatio)
+			{
+			$row = ["<b>{$gear}</b>"];
+
+			foreach ($hub1 as $ringRatio)
+				{
+				$row[] = $this->computeGear((float)$ring * $cogRatio * $ringRatio, $cog);
+				}
+			$table->addRow($row);
+			--$gear;
+			}
+
+		return $table;
+		}
+
+	/**
+	 * Two columns, Gear number (highest first), numbers
+	 *
+	 * @param array<float> $hub
+	 */
+	public function getFixieTable(int $ring, int $cog, array $hub) : \PHPFUI\Table
+		{
+		$gear = \count($hub);
+
+		$table = new \PHPFUI\Table();
+		$table->addRow(['<b>Gear</b>', '<b>Value</b>']);
+
+		foreach ($hub as $ratio)
+			{
+			$row = ["<b>{$gear}</b>", $this->computeGear($ring * $ratio, $cog)];
+			$table->addRow($row);
+			--$gear;
+			}
+
+		return $table;
+		}
+
+	/**
 	 * @return array<float>
 	 */
 	public function getFrontHub() : array
@@ -157,9 +283,44 @@ class GearCalculator
 		return $this->frontHub;
 		}
 
+	/**
+	 * Gear across (highest first) / cogs down
+	 *
+	 * @param array<float> $hub
+	 */
+	public function getHubCassetteTable(int $ring, array $hub) : \PHPFUI\Table
+		{
+		$gear = \count($hub);
+
+		$table = new \PHPFUI\Table();
+		$headers = ['<b>Gear/Cog</b>'];
+		$gears = \count($hub);
+
+		while ($gear)
+			{
+			$headers[] = "<b>{$gear}</b>";
+			--$gear;
+			}
+
+		$table->addRow($headers);
+
+		foreach ($this->cogs as $cog)
+			{
+			$row = ["<b>{$cog}</b>"];
+
+			foreach ($hub as $ratio)
+				{
+				$row[] = $this->computeGear($ring * $ratio, $cog);
+				}
+			$table->addRow($row);
+			}
+
+		return $table;
+		}
+
 	public function getPageName() : string
 		{
-		return \implode('/', $this->rings) . '- ' . \implode(',', $this->cogs);
+		return $this->tl ?? 'Gear Calculator';
 		}
 
 	/**
@@ -174,6 +335,309 @@ class GearCalculator
 	public function getRings() : array
 		{
 		return $this->rings;
+		}
+
+	/**
+	 *  Dual hubs, Mulitple Chain Rings and Multiple Cogs
+	 *
+	 * param array<float> $hub1
+	 * param array<float> $hub2
+	 */
+	public function getRingsCassetteDualHubsTable(array $hub1, array $hub2) : \PHPFUI\Table
+		{
+		$this->orderHubs($hub1, $hub2);
+		$table = new \PHPFUI\Table();
+		$headers = ['<b>Gear</b>'];
+
+		foreach ($this->cogs as $cog)
+			{
+			$headers[] = "<b>{$cog}</b>";
+			}
+
+		$table->addRow($headers);
+
+		$gear1 = \count($hub1);
+
+		foreach ($hub1 as $ratio1)
+			{
+			$gear2 = \count($hub2);
+
+			foreach ($hub2 as $ratio2)
+				{
+				foreach ($this->rings as $ring)
+					{
+					$row = ["<b>{$gear1}-{$gear2}-{$ring}</b>"];
+
+					foreach ($this->cogs as $cog)
+						{
+						$row[] = $this->computeGear($ring * $ratio1 * $ratio2, $cog);
+						}
+					$table->addRow($row);
+					}
+				--$gear2;
+				}
+			--$gear1;
+			}
+
+		return $table;
+		}
+
+	/**
+	 * Side by side tables by gear with Chain Rings across / cogs down
+	 *
+	 * @param array<float> $hub
+	 */
+	public function getRingsCogsHub(array $hub) : \PHPFUI\Table
+		{
+		$gear = \count($hub);
+
+		$table = new \PHPFUI\Table();
+		$headers = ['<b>Gear</b>'];
+
+		if (\count($this->cogs) > \count($this->rings) * \count($hub))
+			{
+			foreach ($hub as $ratio)
+				{
+				foreach ($this->rings as $ring)
+					{
+					$ratioString = \number_format($ratio, 3);
+					$headers[] = "<b>{$ring}*{$ratioString}</b>";
+					}
+				}
+
+			$table->addRow($headers);
+
+			foreach ($this->cogs as $cog)
+				{
+				$row = ["<b>{$cog}</b>"];
+
+				foreach ($hub as $ratio)
+					{
+					foreach ($this->rings as $ring)
+						{
+						$row[] = $this->computeGear($ring * $ratio, $cog);
+						}
+					}
+				$table->addRow($row);
+				}
+			}
+		else
+			{
+			foreach ($this->cogs as $cog)
+				{
+				$headers[] = "<b>{$cog}</b>";
+				}
+
+			$table->addRow($headers);
+
+			$gear = \count($hub);
+
+			foreach ($hub as $ratio)
+				{
+				foreach ($this->rings as $ring)
+					{
+					$row = ["<b>{$gear}-{$ring}</b>"];
+
+					foreach ($this->cogs as $cog)
+						{
+						$row[] = $this->computeGear($ring * $ratio, $cog);
+						}
+					$table->addRow($row);
+					}
+				--$gear;
+				}
+			}
+
+		return $table;
+		}
+
+	/**
+	 * Chair Rings * gears across / gears down
+	 *
+	 * param array<float> $hub1
+	 * param array<float> $hub2
+	 */
+	public function getRingsDualHubsTable(int $cog, array $hub1, array $hub2) : \PHPFUI\Table
+		{
+		$this->orderHubs($hub1, $hub2);
+
+		$table = new \PHPFUI\Table();
+		$headers = ['<b>Gear</b>'];
+
+		$gear1 = \count($hub1);
+
+		foreach ($hub1 as $ratio1)
+			{
+			foreach ($this->rings as $ring)
+				{
+				$ratio = \number_format($ratio1, 3);
+				$headers[] = "<b>{$ring}*{$gear1}</b>";
+				}
+			--$gear1;
+			}
+
+		$table->addRow($headers);
+
+		$gear2 = \count($hub2);
+
+		foreach ($hub2 as $ratio2)
+			{
+			$row = ["<b>{$gear2}</b>"];
+
+			foreach ($hub1 as $ratio1)
+				{
+				foreach ($this->rings as $ring)
+					{
+					$row[] = $this->computeGear($ring * $ratio1 * $ratio2, $cog);
+					}
+				}
+			$table->addRow($row);
+			--$gear2;
+			}
+
+		return $table;
+		}
+
+	/**
+	 * Chair Rings across / gears down
+	 *
+	 * @param array<float> $hub
+	 */
+	public function getRingsHub(int $cog, array $hub) : \PHPFUI\Table
+		{
+		$gear = \count($hub);
+
+		$table = new \PHPFUI\Table();
+		$headers = ['<b>Gear</b>'];
+
+		foreach ($this->rings as $ring)
+			{
+			$headers[] = "<b>{$ring}</b>";
+			}
+
+		$table->addRow($headers);
+
+		foreach ($hub as $ratio)
+			{
+			$row = ["<b>{$gear}</b>"];
+			--$gear;
+
+			foreach ($this->rings as $ring)
+				{
+				$row[] = $this->computeGear($ring * $ratio, $cog);
+				}
+			$table->addRow($row);
+			}
+
+		return $table;
+		}
+
+	public function getTable() : \PHPFUI\Table
+		{
+		if (empty($this->rearHub) && empty($this->frontHub))
+			{
+			$table = $this->getTraditionTable();
+			}
+		elseif (! empty($this->rearHub) && ! empty($this->frontHub))
+			{
+			if (1 == \count($this->rings))
+				{
+				$ring = $this->rings[0];
+
+				if (1 == \count($this->cogs))
+					{
+					// More traditional 2 x gear chart
+					$table = $this->getDualHubTable($ring, $this->cogs[0], $this->rearHub, $this->frontHub);
+					}
+				else
+					{
+					// Gear across (highest first) / cogs down
+					$table = $this->getDualHubCassetteTable($ring, $this->rearHub, $this->frontHub);
+					}
+				}
+			else // we have multiple chain rings
+				{
+				$table = new \PHPFUI\Table();
+
+				if (1 == \count($this->cogs))
+					{
+					// Chair Rings * gears across / gears down
+					$table = $this->getRingsDualHubsTable($this->cogs[0], $this->rearHub, $this->frontHub);
+					}
+				else
+					{
+					$table = new \PHPFUI\Table();
+					$table->addRow(['Your kidding right?']);
+					// Mulitple Chain Rings and Multiple Cogs
+					$table = $this->getRingsCassetteDualHubsTable($this->rearHub, $this->frontHub);
+					}
+				}
+			}
+		else // we just have one chain ring
+			{
+			$hub = $this->rearHub ?: $this->frontHub;
+
+			if (1 == \count($this->rings))
+				{
+				$ring = $this->rings[0];
+
+				if (1 == \count($this->cogs))
+					{
+					// Two columns, Gear number (highest first), numbers
+					$table = $this->getFixieTable($ring, $this->cogs[0], $hub);
+					}
+				else
+					{
+					// Gear across (highest first) / cogs down
+					$table = $this->getHubCassetteTable($ring, $hub);
+					}
+				}
+			else // we have multiple chain rings
+				{
+				if (1 == \count($this->cogs))
+					{
+					// Chair Rings across / gears down
+					$table = $this->getRingsHub($this->cogs[0], $hub);
+					}
+				else // Mulitple Chain Rings and Multiple Cogs
+					{
+					$table = $this->getRingsCogsHub($hub);
+					}
+				}
+			}
+
+		return $table;
+		}
+
+	/**
+	 * No hubs, just gears
+	 */
+	public function getTraditionTable() : \PHPFUI\Table
+		{
+		$table = new \PHPFUI\Table();
+
+		$headers = ['&nbsp;'];
+
+		foreach ($this->rings as $ringIndex => $ring)
+			{
+			$headers[] = "<b>{$ring}</b>";
+			}
+
+		$table->addRow($headers);
+		$rings = \count($this->rings);
+
+		foreach ($this->cogs as $cog)
+			{
+			$row = ["<b>{$cog}</b>"];
+
+			foreach ($this->rings as $ring)
+				{
+				$row[] = $this->computeGear((float)$ring, $cog);
+				}
+			$table->addRow($row);
+			}
+
+		return $table;
 		}
 
 	public function getURL() : string
@@ -195,36 +659,7 @@ class GearCalculator
 		$pdf = new \Mpdf\Mpdf($config);
 		$pdf->SetMargins(15, 15, 15);
 		$pdf->addPage();
-		$cogs = \explode('-', $this->c);
-
-		$ringSizes = ['&nbsp;'];
-		$boldRings = ['&nbsp;'];
-
-		for ($i = 1; $i <= 10; ++$i)
-			{
-			$field = 'ring' . $i;
-
-			if ($this->{$field} > 0)
-				{
-				$ringSizes[] = (int)$this->{$field};
-				$boldRings[] = "<b>{$this->{$field}}</b>";
-				}
-			}
-		$cogs = \explode('-', $this->c);
-		$table = new \PHPFUI\Table();
-		$table->addRow($boldRings);
-		$rings = \count($ringSizes);
-
-		foreach ($cogs as $cog)
-			{
-			$row = ["<b>{$cog}</b>"];
-
-			for ($ring = 1; $ring < $rings; ++$ring)
-				{
-				$row[] = $this->computeGear((float)$ringSizes[$ring], (float)$cog);
-				}
-			$table->addRow($row);
-			}
+		$table = $this->getTable();
 		$table->addAttribute('border', '1');
 		$pdf->writeHTML("<style media='print'>table {border-collapse:collapsed;border:1px solid black;text-align:center;}</style>");
 		$pdf->writeHTML($table);
@@ -286,5 +721,21 @@ class GearCalculator
 			}
 
 		return $retVal;
+		}
+
+	/**
+	 * Order hubs so hub1 has fewer gears
+	 *
+	 * param array<float> $hub1
+	 * param array<float> $hub2
+	 */
+	private function orderHubs(array &$hub1, array &$hub2) : void
+		{
+		if (\count($hub1) > \count($hub2))
+			{
+			$temp = $hub1;
+			$hub1 = $hub2;
+			$hub2 = $temp;
+			}
 		}
 	}

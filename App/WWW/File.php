@@ -160,7 +160,13 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function gears() : void
+	public function gearCSV() : void
+		{
+		$model = new \App\Model\GearCalculator($_GET);
+		$model->csv();
+		}
+
+	public function gearPrint() : void
 		{
 		$model = new \App\Model\GearCalculator($_GET);
 		$model->print();

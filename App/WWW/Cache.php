@@ -4,7 +4,7 @@ namespace App\WWW;
 
 class Cache extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
-	public function buster() : void
+	public function buster(array $parts = []) : void
 		{
 		$type = 'text';
 		$url = \str_replace('/Cache/buster', '', $this->page->getBaseURL());

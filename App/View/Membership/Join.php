@@ -177,7 +177,14 @@ class Join
 
 		$verifyCode = $this->memberModel->getVerifyCode($member->password);
 
-		if (\App\Model\Session::checkCSRF() && isset($_POST['submit']) && $verifyCode == $code)
+		if ($verifyCode != $code)
+			{
+			$callout = new \PHPFUI\Callout('alert');
+			$callout->add('Bad Link');
+
+			return $callout;
+			}
+		elseif (\App\Model\Session::checkCSRF() && isset($_POST['submit']) && $verifyCode == $code)
 			{
 			if ('Continue' == $_POST['submit'])
 				{

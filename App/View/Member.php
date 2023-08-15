@@ -620,6 +620,7 @@ class Member
 					$detail[] = new \PHPFUI\FAIcon('far', 'edit', "/Membership/editMembership/{$member->membershipId}");
 					}
 				}
+
 			// delete
 			if (($canDelete || $member->membershipId == \App\Model\Session::signedInMembershipId()) && $id != \App\Model\Session::signedInMemberId())
 				{

@@ -22,6 +22,7 @@ class Schema extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 
 				// use a known table to avoid false error reporting
 				$model = new \App\Model\API('setting', $this->controller);
+
 				// log any errors
 				if ($model->getErrors())
 					{
@@ -47,6 +48,7 @@ class Schema extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 			else
 				{
 				$model = new \App\Model\API($parameters[1], $this->controller);
+
 				// log any errors
 				if ($model->getErrors())
 					{

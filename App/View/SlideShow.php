@@ -28,6 +28,7 @@ class SlideShow
 		if ($form->save())
 			{
 			$slideShow->memberId = \App\Model\Session::signedInMemberId();
+
 			// convert settings to correct type
 			foreach ($fields as $name => $value)
 				{

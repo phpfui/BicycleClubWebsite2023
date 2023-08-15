@@ -14,6 +14,7 @@ class Table extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 		$this->uri = $controller->getUri();
 		$parts = \explode('/', $this->uri);
 		$this->model = new \App\Model\API($parts[3] ?? '', $this->controller);
+
 		// log any errors
 		if ($this->model->getErrors())
 			{

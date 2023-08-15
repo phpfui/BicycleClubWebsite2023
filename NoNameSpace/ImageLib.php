@@ -2457,6 +2457,7 @@ class ImageLib
 				//get current alpha value (represents the TANSPARENCY!)
 				$colorxy = \imagecolorat($img, $x, $y);
 				$alpha = ($colorxy >> 24) & 0xFF;
+
 				//calculate new alpha
 				if (127 !== $minalpha)
 				{
@@ -2468,6 +2469,7 @@ class ImageLib
 				}
 				//get the color index with new alpha
 				$alphacolorxy = \imagecolorallocatealpha($img, ($colorxy >> 16) & 0xFF, ($colorxy >> 8) & 0xFF, $colorxy & 0xFF, $alpha);
+
 				//set pixel with the new color + opacity
 				if (! \imagesetpixel($img, $x, $y, $alphacolorxy))
 				{

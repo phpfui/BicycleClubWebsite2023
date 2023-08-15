@@ -113,6 +113,7 @@ class PDF_Label extends FPDF
 		$this->SetMargins(0, 0);
 		$this->SetAutoPageBreak(false);
 		$this->_Metric_Doc = $unit;
+
 		// Start at the given label position
 		if ($posX > 0)
 			{

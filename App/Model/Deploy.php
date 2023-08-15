@@ -59,6 +59,7 @@ class Deploy
 		$this->repo->run('clean', ['-f']); // remove unstaged files
 		$wc = $this->repo->getWorkingCopy();
 		$wc->checkout($target);
+
 		// allow the documentation to refresh next time it is used
 		foreach (\glob(PROJECT_ROOT . '/*.serial') as $file)
 			{

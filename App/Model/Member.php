@@ -158,6 +158,7 @@ class Member
 	public static function cleanEmail(string $email) : string
 		{
 		$email = \strtolower(\trim($email));
+
 		// Strip dots in gmail domains
 		if ($end = \strpos($email, '@gmail.com'))
 			{
@@ -325,6 +326,7 @@ class Member
 					$days += \App\Tools\Date::diff($today, $oldMembership->expires);
 					}
 				$oldMembership->delete();
+
 				// is there any time left on the membership?
 				if ($days)
 					{
@@ -448,6 +450,7 @@ class Member
 				$invoice->update();
 				$member->verifiedEmail = 9;
 				$member->update();
+
 				// if family, set to unlimited members on membership
 				if ('Unlimited' == $paidMembers)
 					{
@@ -466,6 +469,7 @@ class Member
 					$year = (int)\date('Y');
 					$startMonth = (int)$this->duesModel->MembershipStartMonth;
 					$graceMonth = (int)$this->duesModel->MembershipGraceMonth;
+
 					// no wrap over year end
 					if ($startMonth < $graceMonth)
 						{
@@ -834,6 +838,7 @@ class Member
 						{
 						$recentAttempts = [];
 						$member->lastLogin = \date('Y-m-d H:i:s');
+
 						// Check if a newer hashing algorithm is available or the cost has changed
 						if (\password_needs_rehash($hash, PASSWORD_DEFAULT, $this->passwordOptions))
 							{

@@ -29,6 +29,7 @@ class OauthUser extends \App\Record\Definition\OauthUser
 			}
 
 		$this->lastLogin = \date('Y-m-d H:i:s');
+
 		// Check if a newer hashing algorithm is available or the cost has changed
 		if (\password_needs_rehash($hash, PASSWORD_DEFAULT, $this->cost))
 			{

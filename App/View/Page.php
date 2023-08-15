@@ -37,6 +37,7 @@ class Page extends \PHPFUI\Page
 	public function __construct(public \App\Model\Controller $controller)
 		{
 		parent::__construct();
+//		$this->setCacheBuster(new \PHPFUI\CacheBuster(PUBLIC_ROOT, '/Cache/buster'));
 		\header('Access-Control-Allow-Origin: ' . $this->getSchemeHost());
 		\header('Content-Type: text/html; charset=utf-8');
 		$this->cookies = new \App\Tools\Cookies();
@@ -545,6 +546,7 @@ class Page extends \PHPFUI\Page
 				{
 				\App\Model\Session::signWaiver();
 				}
+
 			// add required pages here
 			if (! \App\Model\Session::signedWaiver())
 				{

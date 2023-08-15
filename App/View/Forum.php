@@ -853,6 +853,7 @@ class Forum
 
 					case 'Reply':
 						$url = '/Forums/home/' . $_POST['forumId'];
+
 						// Intentionally fall through
 					case 'New Post':
 						$member = \App\Model\Session::getSignedInMember();
@@ -868,6 +869,7 @@ class Forum
 
 					case 'Save':
 						$_POST['memberId'] = \App\Model\Session::signedInMemberId();
+
 						// Intentionally fall through
 					case 'Add Member':
 						$forumMember = new \App\Record\ForumMember();

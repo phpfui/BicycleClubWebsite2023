@@ -37,11 +37,13 @@ class StoreImages extends \App\Model\ThumbnailImageFiles
 		{
 		$pig = new \App\UI\ProductImageGallery($page);
 		$photos = $this->getPhotos();
+
 		// no photos, no image
 		if (0 == \count($photos))
 			{
 			return $this->getPhotoImg('Club Logo');
 			}
+
 		// one photo, no gallery
 		if (1 == \count($photos))
 			{

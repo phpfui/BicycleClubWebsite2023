@@ -344,9 +344,11 @@ class Cart
 					$redirect = '/Store/paid/' . $invoiceId;
 
 					break;
+
 				/** @noinspection PhpMissingBreakStatementInspection */
 				case 'Remove':
 					$parameters['discountCode'] = '';
+
 					// Intentionally fall through
 				case 'Apply':
 					$redirect = '/Store/checkout/';

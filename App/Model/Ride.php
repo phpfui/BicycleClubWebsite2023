@@ -581,6 +581,7 @@ class Ride
 				$email->bulkSend();
 				}
 			}
+
 		// if the ride status is not yet, but they have an average pace and riders
 		if (empty($parameters['rideStatus']) && ! empty($parameters['averagePace']) && ! empty($parameters['numberOfRiders']))
 			{
@@ -796,8 +797,14 @@ class Ride
 	/**
 	 * Removes the RWGPS link and returns it as an int. Modifies passed in string
 	 */
-	private function stripRideWithGPS(string &$description) : int
+	private function stripRideWithGPS(?string &$description) : int
 		{
+		if (null === $description)
+			{
+			$description = '';
+
+			return 0;
+			}
 		$RWGPSId = 0;
 		$description = \str_replace('rwgps.com', 'ridewithgps.com', $description);
 

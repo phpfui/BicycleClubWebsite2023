@@ -135,6 +135,7 @@ class Rider
 		$thumbsUp = new \PHPFUI\FAIcon('far', 'thumbs-up');
 		$member = $rider->memberId ? $thumbsUp . ' &nbsp; &nbsp; &nbsp; &nbsp; ' . $editIcon : new \PHPFUI\FAIcon('far', 'thumbs-down');
 		$fieldSet->add(new \App\UI\Display('Club Member', $member));
+
 		// add gaIncentiveId, prize
 		return $fieldSet;
 		}

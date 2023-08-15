@@ -52,6 +52,7 @@ class Cron
 			{
 			$tempController = clone $this->controller;
 			$class = $cronObject::class;
+
 			/** @noinspection PhpUndefinedMethodInspection */
 			if (! $cronObject->isDisabled() && $cronObject->willRun())
 				{

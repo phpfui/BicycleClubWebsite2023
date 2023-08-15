@@ -187,6 +187,7 @@ class Scrapper
 							$dom = new \DOMDocument();
 							$html = $this->cleanXDebugClasses($result['body']);
 							$dom->loadHTML($html);
+
 							// grab all links in page
 							foreach ($this->elements as $tagName => $attributes) // for each tag with links
 								{
@@ -440,6 +441,7 @@ class Scrapper
 
 			return false;
 			}
+
 		// not sure what it could be at this point, so look at it.
 		return true;
 		}

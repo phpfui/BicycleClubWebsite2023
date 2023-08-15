@@ -140,6 +140,7 @@ class WebBrowserForm
 					}
 				}
 			}
+
 		// Add the field if it doesn't exist.
 		if (! $result && $create)
 			{

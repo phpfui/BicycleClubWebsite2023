@@ -8,6 +8,7 @@ class StarBar extends \PHPFUI\HTML5Element
 		{
 		parent::__construct('span');
 		$value = \round($value, 1);
+
 		// .3 .4 .5 .6 ,7 are half stars
 		for ($i = 0.0; $i < $numberStars; $i += 1.0)
 			{

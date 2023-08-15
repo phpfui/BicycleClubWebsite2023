@@ -258,6 +258,7 @@ class SMTP
 			if (! \array_key_exists('AUTH', $this->server_caps))
 				{
 				$this->setError('Authentication is not allowed at this stage');
+
 				// 'at this stage' means that auth may be allowed after the stage changes
 				// e.g. after STARTTLS
 				return false;
@@ -309,6 +310,7 @@ class SMTP
 					{
 					return false;
 					}
+
 				// Send encoded username and password
 				if (! $this->sendCommand(
 					'User & Password',
@@ -349,6 +351,7 @@ class SMTP
 					return false;
 					}
 				$oauth = $OAuth->getOauth64();
+
 				// Start authentication
 				if (! $this->sendCommand('AUTH', 'AUTH XOAUTH2 ' . $oauth, 235))
 					{
@@ -369,6 +372,7 @@ class SMTP
 				require_once 'extras/ntlm_sasl_client.php';
 				$temp = new stdClass();
 				$ntlm_client = new ntlm_sasl_client_class();
+
 				//Check that functions are available
 				if (! $ntlm_client->initialize($temp))
 					{
@@ -408,6 +412,7 @@ class SMTP
 					$realm,
 					$workstation
 				);
+
 				// send encoded username
 				return $this->sendCommand('Username', \base64_encode($msg3), 235);
 
@@ -421,6 +426,7 @@ class SMTP
 				$challenge = \base64_decode(\substr($this->last_reply, 4));
 				// Build the response
 				$response = $username . ' ' . $this->hmac($challenge, $password);
+
 				// send encoded credentials
 				return $this->sendCommand('Username', \base64_encode($response), 235);
 
@@ -487,6 +493,7 @@ class SMTP
 	public function connect($host, $port = null, $timeout = 30, $options = [])
 		{
 		static $streamok;
+
 		//This is enabled by default since 5.0.0 but some providers disable it
 		//Check this once and cache the result
 		if (null === $streamok)
@@ -495,6 +502,7 @@ class SMTP
 			}
 		// Clear errors to avoid confusion
 		$this->setError('');
+
 		// Make sure we are __not__ connected
 		if ($this->connected())
 			{
@@ -547,6 +555,7 @@ class SMTP
 			);
 			\restore_error_handler();
 			}
+
 		// Verify we connected properly
 		if (! \is_resource($this->smtp_conn))
 			{
@@ -564,11 +573,13 @@ class SMTP
 			return false;
 			}
 		$this->edebug('Connection: opened', self::DEBUG_CONNECTION);
+
 		// SMTP server can take longer to respond, give longer timeout for first read
 		// Windows does not have support for this timeout function
 		if ('WIN' != \substr(PHP_OS, 0, 3))
 			{
 			$max = \ini_get('max_execution_time');
+
 			// Don't bother if unlimited
 			if (0 != $max && $timeout > $max)
 				{
@@ -663,6 +674,7 @@ class SMTP
 				{
 				$in_headers = false;
 				}
+
 			//Break this line up into several smaller lines if it's too long
 			//Micro-optimisation: isset($str[$len]) is faster than (strlen($str) > $len),
 			while (isset($line[self::MAX_LINE_LENGTH]))
@@ -670,6 +682,7 @@ class SMTP
 				//Working backwards, try to find a space within the last MAX_LINE_LENGTH chars of the line to break on
 				//so as to avoid breaking in the middle of a word
 				$pos = \strrpos(\substr($line, 0, self::MAX_LINE_LENGTH), ' ');
+
 				//Deliberately matches both false and 0
 				if (! $pos)
 					{
@@ -685,6 +698,7 @@ class SMTP
 					//Move along by the amount we dealt with
 					$line = \substr($line, $pos + 1);
 					}
+
 				//If processing headers add a LWSP-char to the front of new line RFC822 section 3.1.1
 				if ($in_headers)
 					{
@@ -692,6 +706,7 @@ class SMTP
 					}
 				}
 			$lines_out[] = $line;
+
 			//Send the lines to the server
 			foreach ($lines_out as $line_out)
 				{
@@ -812,6 +827,7 @@ class SMTP
 
 			return;
 			}
+
 		// the tight logic knot ;)
 		if (! \array_key_exists($name, $this->server_caps))
 			{
@@ -1048,6 +1064,7 @@ class SMTP
 			}
 		//Allow the best TLS version(s) we can
 		$crypto_method = STREAM_CRYPTO_METHOD_TLS_CLIENT;
+
 		//PHP 5.6.7 dropped inclusion of TLS 1.1 and 1.2 in STREAM_CRYPTO_METHOD_TLS_CLIENT
 		//so add them back in manually if we can
 		if (\defined('STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT'))
@@ -1114,6 +1131,7 @@ class SMTP
 			{
 			return;
 			}
+
 		//Avoid clash with built-in function names
 		if (! \in_array($this->Debugoutput, ['error_log', 'html', 'echo']) && \is_callable($this->Debugoutput))
 			{
@@ -1206,6 +1224,7 @@ class SMTP
 			$this->edebug("SMTP -> get_lines(): \$data is \"{$data}\"", self::DEBUG_LOWLEVEL);
 			$this->edebug("SMTP -> get_lines(): \$str is  \"{$str}\"", self::DEBUG_LOWLEVEL);
 			$data .= $str;
+
 			// If response is only 3 chars (not valid, but RFC5321 S4.2 says it must be handled),
 			// or 4th character is a space, we are done reading, break the loop,
 			// string array access is a micro-optimisation over strlen
@@ -1225,6 +1244,7 @@ class SMTP
 
 				break;
 				}
+
 			// Now check if reads took too long
 			if ($endtime && \time() > $endtime)
 				{
@@ -1356,6 +1376,7 @@ class SMTP
 
 			return false;
 			}
+
 		//Reject line breaks in all commands
 		if (false !== \strpos($commandstring, "\n") || false !== \strpos($commandstring, "\r"))
 			{

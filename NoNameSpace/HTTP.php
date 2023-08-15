@@ -538,6 +538,7 @@ class HTTP
 		$query = $url['query'];
 		$username = $url['loginusername'];
 		$password = $url['loginpassword'];
+
 		// Cleanup input headers.
 		if (! isset($options['headers']))
 			{
@@ -605,6 +606,7 @@ class HTTP
 					}
 				}
 			}
+
 		// Process the method.
 		if (! isset($options['method']))
 			{
@@ -622,6 +624,7 @@ class HTTP
 				}
 			}
 		$options['method'] = \preg_replace('/[^A-Z]/', '', \strtoupper($options['method']));
+
 		// Process the HTTP version.
 		if (! isset($options['httpver']))
 			{
@@ -632,6 +635,7 @@ class HTTP
 		$data = $options['method'] . ' ';
 		$data .= ($useproxy && ! $proxyconnect ? $url['scheme'] . '://' . $host . ':' . $port : '') . $path . ('' != $query ? '?' . $query : '');
 		$data .= ' HTTP/' . $options['httpver'] . "\r\n";
+
 		// Process the headers.
 		if ($useproxy && ! $proxyconnect && '' != $proxyusername)
 			{
@@ -710,6 +714,7 @@ class HTTP
 				unset($options['postvars']);
 				}
 			$bodysize = \strlen($body);
+
 			// Only count the amount of data to send.
 			foreach ($options['files'] as $num => $info)
 				{
@@ -760,6 +765,7 @@ class HTTP
 			{
 			$bodysize = \strlen($body);
 			}
+
 		// Finalize the headers.
 		if ($bodysize || '' != $body || 'POST' == $options['method'])
 			{
@@ -1003,6 +1009,7 @@ class HTTP
 			{
 			$result['rawsend'] .= $data;
 			}
+
 		// Send extra data.
 		if (isset($options['write_body_callback']))
 			{
@@ -1099,6 +1106,7 @@ class HTTP
 							'error' => self::HTTPTranslate("The file '%s' does not exist.", $info['datafile']),
 							'errorcode' => 'file_open', ];
 						}
+
 					// Read/Write 65K at a time.
 					while ($info['filesize'] >= 65536)
 						{
@@ -1273,6 +1281,7 @@ class HTTP
 		do
 			{
 			$autodecode = (! isset($options['auto_decode']) || $options['auto_decode']);
+
 			// Process the response line.
 			while (false === \strpos($data, "\n") && ($data2 = \fgets($fp, 116000)) !== false)
 				{
@@ -1401,6 +1410,7 @@ class HTTP
 						'errorcode' => 'read_header_callback', ];
 					}
 				}
+
 			// Determine if decoding the content is possible and necessary.
 			if ($autodecode && ! isset($headers['Content-Encoding']) || ('gzip' != \strtolower($headers['Content-Encoding'][0]) && 'deflate' != \strtolower($headers['Content-Encoding'][0])))
 				{
@@ -1539,6 +1549,7 @@ class HTTP
 							break;
 							}
 						}
+
 					// Ignore one newline.
 					while (false === \strpos($data, "\n") && ($data2 = \fgets($fp, 116000)) !== false)
 						{

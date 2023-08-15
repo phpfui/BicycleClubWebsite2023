@@ -254,6 +254,7 @@ class PDF_MC_Table extends FPDF
 	public function OpenTag($tag, $attr) : void
 		{
 		$this->PushAttributes();
+
 		//Opening tag
 		switch (\strtoupper($tag))
 			{
@@ -610,6 +611,7 @@ class PDF_MC_Table extends FPDF
 		$h = $fontHeight * $nb;
 		//Issue a page break first if needed
 		$this->CheckPageBreak($h);
+
 		//Draw the cells of the row
 		foreach ($this->headers as $key => $value)
 			{
@@ -778,6 +780,7 @@ class PDF_MC_Table extends FPDF
 						{
 						$e = \str_replace("\r", '', $e);
 						}
+
 					//Text
 					if ($this->HREF)
 						{
@@ -836,6 +839,7 @@ class PDF_MC_Table extends FPDF
 										$value = '';
 										$e = \substr($e, $i + 2);  // remove ='
 										$x = 0;
+
 										// find end quote
 										while ($x < \strlen($e))
 											{

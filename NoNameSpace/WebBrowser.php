@@ -121,6 +121,7 @@ class WebBrowser
 					$fields = $this->ExtractFieldFromDOM($fields, $row2);
 					}
 				}
+
 			// Handle HTML5.
 			if (isset($info['id']) && '' != $info['id'])
 				{
@@ -186,6 +187,7 @@ class WebBrowser
 			{
 			$this->data['referer'] = $tempoptions['headers']['Referer'];
 			}
+
 		// If a referrer is specified, use it to generate an absolute URL.
 		if ('' != $this->data['referer'])
 			{
@@ -409,6 +411,7 @@ class WebBrowser
 					'info' => $result,
 					'errorcode' => 'retrievewebpage', ];
 				}
+
 			// Set up structures for another round.
 			if ($this->data['autoreferer'])
 				{
@@ -422,6 +425,7 @@ class WebBrowser
 
 				$tempoptions['headers']['Referer'] = $url;
 				$url = $result['headers']['Location'][0];
+
 				// Generate an absolute URL.
 				if ('' != $this->data['referer'])
 					{
@@ -445,6 +449,7 @@ class WebBrowser
 				$urlinfo = $urlinfo2;
 				$numredirects++;
 				}
+
 			// Handle any 'Set-Cookie' headers.
 			if (isset($result['headers']['Set-Cookie']))
 				{
@@ -547,6 +552,7 @@ class WebBrowser
 		while (isset($result['headers']['Location']) && $this->data['followlocation'] && $numfollow);
 		$result['numredirects'] = $numredirects;
 		$result['redirectts'] = $redirectts;
+
 		// Extract the forms from the page in a parsed format.
 		// Call WebBrowser::GenerateFormRequest() to prepare an actual request for Process().
 		if ($this->data['extractforms'])

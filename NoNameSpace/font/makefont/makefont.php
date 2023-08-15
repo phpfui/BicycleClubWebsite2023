@@ -319,6 +319,7 @@ function MakeFontDescriptor($info)
 	$fd = "array('Ascent'=>" . $info['Ascender'];
 	// Descent
 	$fd .= ",'Descent'=>" . $info['Descender'];
+
 	// CapHeight
 	if (! empty($info['CapHeight']))
 		{
@@ -350,6 +351,7 @@ function MakeFontDescriptor($info)
 	$fd .= ",'FontBBox'=>'[" . $fbb[0] . ' ' . $fbb[1] . ' ' . $fbb[2] . ' ' . $fbb[3] . "]'";
 	// ItalicAngle
 	$fd .= ",'ItalicAngle'=>" . $info['ItalicAngle'];
+
 	// StemV
 	if (isset($info['StdVW']))
 		{

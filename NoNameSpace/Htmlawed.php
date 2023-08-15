@@ -356,6 +356,7 @@ function hl_bal($t, $do = 1, $in = 'div') {
 			$ok = $inOk;
 			unset($cI['del'], $cI['ins']);
 		}
+
 		// bad tags, & ele content
 		if (isset($e) && (1 == $do || (isset($ok['#pcdata']) && (3 == $do || 5 == $do)))) {
 			echo '&lt;', $s, $e, $a, '&gt;';
@@ -374,6 +375,7 @@ function hl_bal($t, $do = 1, $in = 'div') {
 				echo \preg_replace('`\S`', '', $x);
 			}
 		}
+
 		// get markup
 		if (! \preg_match('`^(/?)([a-z1-6]+)([^>]*)>(.*)`sm', $t[$i], $r)) {
 			$x = $t[$i];
@@ -385,6 +387,7 @@ function hl_bal($t, $do = 1, $in = 'div') {
 		$a = null;
 		$x = null;
 		[$all, $s, $e, $a, $x] = $r;
+
 		// close tag
 		if ($s) {
 			if (isset($cE[$e]) || ! \in_array($e, $q)) {
@@ -412,6 +415,7 @@ function hl_bal($t, $do = 1, $in = 'div') {
 
 			continue;
 		}
+
 		// open tag
 		// $cB ele needs $eB ele as child
 		if (isset($cB[$e]) && \strlen(\trim($x))) {
@@ -432,6 +436,7 @@ function hl_bal($t, $do = 1, $in = 'div') {
 
 			continue;
 		}
+
 		// if no open ele, $in = parent; mostly immediate parent-child relation should hold
 		if (! $ql || ! isset($eN[$e]) || ! \array_intersect($q, $cN2)) {
 			if (! isset($ok[$e])) {
@@ -454,6 +459,7 @@ function hl_bal($t, $do = 1, $in = 'div') {
 
 			continue;
 		}
+
 		// specific parent-child
 		if (isset($cS[$p][$e])) {
 			if (! isset($cE[$e])) {
@@ -800,6 +806,7 @@ function hl_tag($t) {
 	// tag/attribute handler
 	global $C;
 	$t = $t[0];
+
 	// invalid < >
 	if ('< ' == $t) {
 		return '&lt; ';
@@ -1092,6 +1099,7 @@ function hl_tag($t) {
 			$a['style'] = isset($a['style']) ? \rtrim($a['style'], ' ;') . '; ' . $c . ';' : $c . ';';
 		}
 	}
+
 	// unique ID
 	if ($C['unique_ids'] && isset($a['id'])) {
 		if (\preg_match('`\s`', ($id = $a['id'])) || (isset($GLOBALS['hl_Ids'][$id]) && 1 == $C['unique_ids'])) {
@@ -1103,6 +1111,7 @@ function hl_tag($t) {
 			$GLOBALS['hl_Ids'][($a['id'] = $id)] = 1;
 		}
 	}
+
 	// xml:lang
 	if ($C['xml:lang'] && isset($a['lang'])) {
 		$a['xml:lang'] = $a['xml:lang'] ?? $a['lang'];
@@ -1111,10 +1120,12 @@ function hl_tag($t) {
 			unset($a['lang']);
 		}
 	}
+
 	// for transformed tag
 	if (! empty($trt)) {
 		$a['style'] = isset($a['style']) ? \rtrim($a['style'], ' ;') . '; ' . $trt : $trt;
 	}
+
 	// return with empty ele /
 	if (empty($C['hook_tag'])) {
 		$aA = '';

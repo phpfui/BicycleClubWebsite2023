@@ -162,6 +162,7 @@ public function __construct($orientation = 'P', $unit = 'mm', $size = 'A4')
 	$this->WithAlpha = false;
 	$this->ws = 0;
 	$this->iconv = \function_exists('iconv');
+
 	// Font path
 	if(\defined('FPDF_FONTPATH'))
 		$this->fontpath = FPDF_FONTPATH;
@@ -169,6 +170,7 @@ public function __construct($orientation = 'P', $unit = 'mm', $size = 'A4')
 		$this->fontpath = __DIR__ . '/font/';
 	// Core fonts
 	$this->CoreFonts = ['courier', 'helvetica', 'times', 'symbol', 'zapfdingbats'];
+
 	// Scale factor
 	if('pt' == $unit)
 		$this->k = 1;
@@ -312,6 +314,7 @@ public function AddPage($orientation = '', $size = '', $rotation = 0) : void
 	// Set line width
 	$this->LineWidth = $lw;
 	$this->_out(\sprintf('%.2F w', $lw * $this->k));
+
 	// Set font
 	if($family)
 		$this->SetFont($family, $style, $fontsize);
@@ -330,15 +333,18 @@ public function AddPage($orientation = '', $size = '', $rotation = 0) : void
 	$this->InHeader = true;
 	$this->Header();
 	$this->InHeader = false;
+
 	// Restore line width
 	if($this->LineWidth != $lw)
 	{
 		$this->LineWidth = $lw;
 		$this->_out(\sprintf('%.2F w', $lw * $this->k));
 	}
+
 	// Restore font
 	if($family)
 		$this->SetFont($family, $style, $fontsize);
+
 	// Restore colors
 	if($this->DrawColor != $dc)
 	{
@@ -746,6 +752,7 @@ public function MultiCell($w, $h, $txt, $border = 0, $align = 'J', $fill = false
 		else
 			$i++;
 	}
+
 	// Last chunk
 	if($this->ws > 0)
 	{
@@ -933,6 +940,7 @@ public function SetFont($family, $style = '', $size = 0) : void
 
 	if(0 == $size)
 		$size = $this->FontSizePt;
+
 	// Test if font is already selected
 	if($this->FontFamily == $family && $this->FontStyle == $style && $this->FontSizePt == $size)
 		return;
@@ -1191,6 +1199,7 @@ public function Write($h, $txt, $link = '') : void
 		else
 			$i++;
 	}
+
 	// Last chunk
 	if($i != $j)
 		$this->Cell($l / 1000 * $this->FontSize, $h, \substr($s, $j), 0, 0, '', false, $link);
@@ -1205,6 +1214,7 @@ protected function _beginpage($orientation, $size, $rotation) : void
 	$this->x = $this->lMargin;
 	$this->y = $this->tMargin;
 	$this->FontFamily = '';
+
 	// Check page size and orientation
 	if('' == $orientation)
 		$orientation = $this->DefOrientation;
@@ -1700,6 +1710,7 @@ protected function _putfonts() : void
 				$this->encodings[$font['enc']] = $this->n;
 			}
 		}
+
 		// ToUnicode CMap
 		if(isset($font['uv']))
 		{
@@ -1837,6 +1848,7 @@ protected function _putimage(&$info) : void
 	$this->_put('/Length ' . \strlen($info['data']) . '>>');
 	$this->_putstream($info['data']);
 	$this->_put('endobj');
+
 	// Soft mask
 	if(isset($info['smask']))
 	{
@@ -1844,6 +1856,7 @@ protected function _putimage(&$info) : void
 		$smask = ['w' => $info['w'], 'h' => $info['h'], 'cs' => 'DeviceGray', 'bpc' => 8, 'f' => $info['f'], 'dp' => $dp, 'data' => $info['smask']];
 		$this->_putimage($smask);
 	}
+
 	// Palette
 	if('Indexed' == $info['cs'])
 		$this->_putstreamobject($info['pal']);
@@ -1920,6 +1933,7 @@ protected function _putpage($n) : void
 		$this->_put('/Group <</Type /Group /S /Transparency /CS /DeviceRGB>>');
 	$this->_put('/Contents ' . ($this->n + 1) . ' 0 R>>');
 	$this->_put('endobj');
+
 	// Page content
 	if(! empty($this->AliasNbPages))
 		$this->pages[$n] = \str_replace($this->AliasNbPages, $this->page, $this->pages[$n]);

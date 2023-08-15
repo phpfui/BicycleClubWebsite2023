@@ -25,6 +25,7 @@ class Releases
 		foreach ($releases as $sha1 => $tag)
 			{
 			$releaseTag = new \App\Model\ReleaseTag($tag->getName());
+
 			// Is it a release tag?, if not skip it.
 			if (! $releaseTag->isTag())
 				{

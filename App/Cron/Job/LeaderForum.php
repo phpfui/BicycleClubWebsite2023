@@ -43,6 +43,7 @@ class LeaderForum extends \App\Cron\BaseJob
 		$forumMember = new \App\Record\ForumMember();
 		$forumMember->emailType = \App\Table\ForumMember::INDIVIDUAL;
 		$forumMember->forumId = $leaderForum;
+
 		// add new members
 		foreach ($addMembers as $memberId)
 			{

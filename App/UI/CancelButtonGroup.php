@@ -18,6 +18,7 @@ class CancelButtonGroup extends \PHPFUI\ButtonGroup
 		{
 		$parts = \explode('/', \parse_url((string)$_SERVER['REQUEST_URI'])['path']);
 		$last = \array_pop($parts);
+
 		// if last one was a number, then go another one up
 		if ((int)$last > 0)
 			{

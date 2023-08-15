@@ -114,6 +114,7 @@ class TextHelper extends \PHPFUI\TextHelper
 		$textDelimiter = '~~~~';
 		$var = '$1';
 		$text = \preg_replace(self::$urlRegEx, '<a href="' . $urlDelimiter . $var . $urlDelimiter . '" rel="noopener noreferrer" target="_blank">' . $textDelimiter . $var . $textDelimiter . '</a>', $text);
+
 		// <wbr> escape the displayed part of the url to make it wrap better.
 		while ($startPos = \strpos($text, $textDelimiter))
 			{
@@ -122,6 +123,7 @@ class TextHelper extends \PHPFUI\TextHelper
 			$url = \substr($text, $startPos, $endPos - $startPos);
 			$text = \str_replace("{$textDelimiter}{$url}{$textDelimiter}", $url, $text);
 			}
+
 		// make sure the url has http
 		while ($startPos = \strpos($text, $urlDelimiter))
 			{

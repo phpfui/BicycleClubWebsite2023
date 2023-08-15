@@ -1256,12 +1256,14 @@ class PHPMailer
 
 		$bodyEncoding = $this->Encoding;
 		$bodyCharSet = $this->CharSet;
+
 		//Can we do a 7-bit downgrade?
 		if ('8bit' == $bodyEncoding && ! $this->has8bitChars($this->Body)) {
 			$bodyEncoding = '7bit';
 			//All ISO 8859, Windows codepage and UTF-8 charsets are ascii compatible up to 7-bit
 			$bodyCharSet = 'us-ascii';
 		}
+
 		//If lines are too long, and we're not already using an encoding that will shorten them,
 		//change to quoted-printable transfer encoding for the body part only
 		if ('base64' != $this->Encoding && self::hasLineLongerThanMax($this->Body)) {
@@ -1270,12 +1272,14 @@ class PHPMailer
 
 		$altBodyEncoding = $this->Encoding;
 		$altBodyCharSet = $this->CharSet;
+
 		//Can we do a 7-bit downgrade?
 		if ('8bit' == $altBodyEncoding && ! $this->has8bitChars($this->AltBody)) {
 			$altBodyEncoding = '7bit';
 			//All ISO 8859, Windows codepage and UTF-8 charsets are ascii compatible up to 7-bit
 			$altBodyCharSet = 'us-ascii';
 		}
+
 		//If lines are too long, and we're not already using an encoding that will shorten them,
 		//change to quoted-printable transfer encoding for the alt body part only
 		if ('base64' != $altBodyEncoding && self::hasLineLongerThanMax($this->AltBody)) {
@@ -1419,6 +1423,7 @@ class PHPMailer
 					throw new phpmailerException($this->lang('signing') . ' Could not write temp file');
 				}
 				$signed = \tempnam(\sys_get_temp_dir(), 'signed');
+
 				//Workaround for PHP bug https://bugs.php.net/bug.php?id=69197
 				if (empty($this->sign_extracerts_file)) {
 					$sign = @\openssl_pkcs7_sign(
@@ -1662,6 +1667,7 @@ class PHPMailer
 		// stabilize line endings
 		$body = \str_replace("\r\n", "\n", $body);
 		$body = \str_replace("\n", "\r\n", $body);
+
 		// END stabilize line endings
 		while ("\r\n\r\n" == \substr($body, \strlen($body) - 4, 4)) {
 			$body = \substr($body, 0, \strlen($body) - 2);
@@ -1738,6 +1744,7 @@ class PHPMailer
 		} else {
 			$privKey = \openssl_pkey_get_private($privKeyStr);
 		}
+
 		//Workaround for missing digest algorithms in old PHP & OpenSSL versions
 		//@link http://stackoverflow.com/a/11117338/333340
 		if (\version_compare(PHP_VERSION, '5.3.0') >= 0 &&
@@ -1795,9 +1802,11 @@ class PHPMailer
 				$matchcount = \preg_match_all('/[^\040\041\043-\133\135-\176]/', $str, $matches);
 
 				break;
+
 			/** @noinspection PhpMissingBreakStatementInspection */
 			case 'comment':
 				$matchcount = \preg_match_all('/[()"]/', $str, $matches);
+
 				// Intentional fall-through
 				// Intentionally fall through
 			case 'text':
@@ -1813,6 +1822,7 @@ class PHPMailer
 		}
 
 		$maxlen = 75 - 7 - \strlen($this->CharSet);
+
 		// Try to select the encoding which should produce the shortest output
 		if ($matchcount > \strlen($str) / 3) {
 			// More than a third of the content will need encoding, so B encoding will be most efficient
@@ -1860,10 +1870,12 @@ class PHPMailer
 				$pattern = '^A-Za-z0-9!*+\/ -';
 
 				break;
+
 			/** @noinspection PhpMissingBreakStatementInspection */
 			case 'comment':
 				// RFC 2047 section 5.2
 				$pattern = '\(\)"';
+
 				// intentional fall-through
 				// for this reason we build the $pattern without including delimiters and []
 				// Intentionally fall through
@@ -1891,6 +1903,7 @@ class PHPMailer
 				$encoded = \str_replace($char, '=' . \sprintf('%02X', \ord($char)), $encoded);
 			}
 		}
+
 		// Replace every spaces to _ (more readable than =20)
 		return \str_replace(' ', '_', $encoded);
 	}
@@ -1960,6 +1973,7 @@ class PHPMailer
 			case '7bit':
 			case '8bit':
 				$encoded = $this->fixEOL($str);
+
 				// Make sure it ends with a line break
 				if (\substr($encoded, -(\strlen($this->LE))) != $this->LE) {
 					$encoded .= $this->LE;
@@ -2017,6 +2031,7 @@ class PHPMailer
 	{
 		// Normalise to \n
 		$nstr = \str_replace(["\r\n", "\r"], "\n", $str);
+
 		// Now convert LE as needed
 		if ("\n" !== $this->LE) {
 			$nstr = \str_replace("\n", $this->LE, $nstr);
@@ -2128,6 +2143,7 @@ class PHPMailer
 
 				break;
 		}
+
 		// RFC1341 part 5 says 7bit is assumed if not specified
 		if ('7bit' != $this->Encoding) {
 			// RFC 2045 section 6.4 says multipart MIME parts may only use 7bit, 8bit or binary CTE
@@ -2591,6 +2607,7 @@ class PHPMailer
 
 			foreach ($list as $address) {
 				$address = \trim($address);
+
 				//Is there a separate name part?
 				if (false === \strpos($address, '<')) {
 					//No separate name, just use the whole thing
@@ -2708,6 +2725,7 @@ class PHPMailer
 			}
 
 			$this->setMessageType();
+
 			// Refuse to send an empty message unless we are specifically allowing it
 			if (! $this->AllowEmpty && empty($this->Body)) {
 				throw new phpmailerException($this->lang('empty_message'), self::STOP_CRITICAL);
@@ -2782,6 +2800,7 @@ class PHPMailer
 			! empty($this->CharSet) &&
 			($pos = \strrpos($address, '@')) !== false) {
 			$domain = \substr($address, ++$pos);
+
 			// Verify CharSet string is a valid one, and domain properly encoded in this CharSet.
 			if ($this->has8bitChars($domain) && @\mb_check_encoding($domain, $this->CharSet)) {
 				$domain = \mb_convert_encoding($domain, 'UTF-8', $this->CharSet);
@@ -2888,6 +2907,7 @@ class PHPMailer
 	{
 		$address = \trim($address);
 		$name = \trim(\preg_replace('/[\r\n]+/', '', $name)); //Strip breaks and trim
+
 		// Don't validate now addresses with IDN. Will be done in send().
 		if (($pos = \strrpos($address, '@')) === false ||
 			(! $this->has8bitChars(\substr($address, ++$pos)) || ! $this->idnSupported()) &&
@@ -2965,12 +2985,14 @@ class PHPMailer
 			// Calculate an absolute path so it can work if CWD is not here
 			$lang_path = __DIR__ . DIRECTORY_SEPARATOR . 'language' . DIRECTORY_SEPARATOR;
 		}
+
 		//Validate $langcode
 		if (! \preg_match('/^[a-z]{2}(?:_[a-zA-Z]{2})?$/', $langcode)) {
 			$langcode = 'en';
 		}
 		$foundlang = true;
 		$lang_file = $lang_path . 'phpmailer.lang-' . $langcode . '.php';
+
 		// There is no English translation file
 		if ('en' != $langcode) {
 			// Make sure language file path is readable
@@ -3127,6 +3149,7 @@ class PHPMailer
 						$hello = $this->serverHostname();
 					}
 					$this->smtp->hello($hello);
+
 					//Automatically enable TLS encryption if:
 					// * it's not disabled
 					// * we have openssl extension
@@ -3168,6 +3191,7 @@ class PHPMailer
 		}
 		// If we get here, all connection attempts have failed, so close connection hard
 		$this->smtp->close();
+
 		// As we've caught all exceptions, just report whatever the last one was
 		if ($this->exceptions && null !== $lastexception) {
 			throw $lastexception;
@@ -3265,6 +3289,7 @@ class PHPMailer
 		if (\is_callable($patternselect)) {
 			return \call_user_func($patternselect, $address);
 		}
+
 		//Reject line breaks in addresses; it's valid RFC5322, but not RFC5321
 		if (false !== \strpos($address, "\n") || false !== \strpos($address, "\r")) {
 			return false;
@@ -3379,6 +3404,7 @@ class PHPMailer
 		$crlflen = \strlen(self::CRLF);
 
 		$message = $this->fixEOL($message);
+
 		//Remove a trailing line break
 		if (\substr($message, -$lelen) == $this->LE) {
 			$message = \substr($message, 0, -$lelen);
@@ -3546,6 +3572,7 @@ class PHPMailer
 			return false;
 		}
 		$params = [$kind, $address, $name];
+
 		// Enqueue addresses with IDN until we know the PHPMailer::$CharSet.
 		if ($this->has8bitChars(\substr($address, ++$pos)) && $this->idnSupported()) {
 			if ('Reply-To' != $kind) {
@@ -3564,6 +3591,7 @@ class PHPMailer
 
 			return false;
 		}
+
 		// Immediately add standard addresses without IDN.
 		return \call_user_func_array([$this, 'addAnAddress'], $params);
 	}
@@ -3616,6 +3644,7 @@ class PHPMailer
 				$cidUniq[$cid] = true;
 
 				$mime[] = \sprintf('--%s%s', $boundary, $this->LE);
+
 				//Only include a filename property if we have one
 				if (! empty($name)) {
 					$mime[] = \sprintf(
@@ -3631,6 +3660,7 @@ class PHPMailer
 						$this->LE
 					);
 				}
+
 				// RFC1341 part 5 says 7bit is assumed if not specified
 				if ('7bit' != $encoding) {
 					$mime[] = \sprintf('Content-Transfer-Encoding: %s%s', $encoding, $this->LE);
@@ -3728,6 +3758,7 @@ class PHPMailer
 		if ($this->SMTPDebug <= 0) {
 			return;
 		}
+
 		//Avoid clash with built-in function names
 		if (! \in_array($this->Debugoutput, ['error_log', 'html', 'echo']) && \is_callable($this->Debugoutput)) {
 			\call_user_func($this->Debugoutput, $str, $this->SMTPDebug);
@@ -3837,6 +3868,7 @@ class PHPMailer
 		$result .= $this->textLine('--' . $boundary);
 		$result .= \sprintf('Content-Type: %s; charset=%s', $contentType, $charSet);
 		$result .= $this->LE;
+
 		// RFC1341 part 5 says 7bit is assumed if not specified
 		if ('7bit' != $encoding) {
 			$result .= $this->headerLine('Content-Transfer-Encoding', $encoding);
@@ -3902,6 +3934,7 @@ class PHPMailer
 
 			return $this->language[$key];
 		}
+
 			//Return the key as a fallback
 			return $key;
 
@@ -3926,6 +3959,7 @@ class PHPMailer
 		$to = \implode(', ', $toArr);
 
 		$params = null;
+
 		//This sets the SMTP envelope sender which gets turned into a return-path header by the receiver
 		if (! empty($this->Sender) && $this->validateAddress($this->Sender)) {
 			// CVE-2016-10033, CVE-2016-10045: Don't pass -f if characters will be escaped.
@@ -4177,6 +4211,7 @@ class PHPMailer
 			$this->smtp->quit();
 			$this->smtp->close();
 		}
+
 		//Create error message for any bad addresses
 		if (\count($bad_rcpt) > 0) {
 			$errstr = '';

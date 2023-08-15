@@ -182,6 +182,7 @@ class Invoice
 				{
 				$email->setFrom($address, $name);
 				$email->setReplyTo($address, $name);
+
 				// email is from the first person with an item on the invoice.  Good enough.
 				break;
 				}

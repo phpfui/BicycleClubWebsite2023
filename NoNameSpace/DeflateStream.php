@@ -89,6 +89,7 @@
 
 			if ('zlib' != $options['type'] && 'gzip' != $options['type'] && ($this->compress || 'auto' != $options['type']))  $options['type'] = 'raw';
 			$this->options = $options;
+
 			// Add the deflate filter.
 			if ($this->compress)  $this->filter = \stream_filter_append($this->fp, 'zlib.deflate', STREAM_FILTER_WRITE, $compresslevel);
 			else  $this->filter = \stream_filter_append($this->fp, 'zlib.inflate', STREAM_FILTER_READ);
@@ -267,6 +268,7 @@
 							// Calculate the number of bytes to skip.  If flags are set, the size can be dynamic.
 							$size = 10;
 							$y = \strlen($this->indata);
+
 							// FLG.FEXTRA
 							if ($size && ($flg & 0x04))
 							{
@@ -277,18 +279,21 @@
 									$size = ($size + 2 + $xlen <= $y ? $size + 2 + $xlen : 0);
 								}
 							}
+
 							// FLG.FNAME
 							if ($size && ($flg & 0x08))
 							{
 								$pos = \strpos($this->indata, "\x00", $size);
 								$size = (false !== $pos ? $pos + 1 : 0);
 							}
+
 							// FLG.FCOMMENT
 							if ($size && ($flg & 0x10))
 							{
 								$pos = \strpos($this->indata, "\x00", $size);
 								$size = (false !== $pos ? $pos + 1 : 0);
 							}
+
 							// FLG.FHCRC
 							if ($size && ($flg & 0x02))  $size = ($size + 2 <= $y ? $size + 2 : 0);
 
@@ -320,6 +325,7 @@
 						$flg = \ord($this->indata[1]);
 						$cm = $cmf & 0x0F;
 						$cinfo = ($cmf & 0xF0) >> 4;
+
 						// Compression method 'deflate' ($cm = 8), window size - 8 ($cinfo < 8), no preset dictionaries ($flg bit 5), checksum validates.
 						if (8 != $cm || $cinfo > 7 || ($flg & 0x20) || (($cmf << 8 | $flg) % 31) != 0)  $this->options['type'] = 'ignore';
 						else
@@ -346,6 +352,7 @@
 				$this->indata = '';
 				$this->ProcessOutput();
 			}
+
 			// Only set when an unrecoverable header error has occurred for gzip or zlib.
 			if ('ignore' == $this->options['type'])  $this->indata = '';
 		}

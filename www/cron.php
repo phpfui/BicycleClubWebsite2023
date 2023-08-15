@@ -17,6 +17,7 @@ if (isset($_GET['runall']))
 	{
 	$controller->setRunAll();
 	}
+
 // run the cron jobs if no direct option
 if (empty($_GET['runnow']))
 	{

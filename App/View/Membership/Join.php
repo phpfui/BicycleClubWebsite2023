@@ -85,7 +85,8 @@ class Join
 						$membership->expires = \App\Tools\Date::makeString($year, 1, 30);
 						$membership->update();
 						}
-					$this->page->redirect("/Membership/verify/{$id}");
+					$verifyCode = $this->memberModel->getVerifyCode($member->password);
+					$this->page->redirect("/Membership/verify/{$id}/{$verifyCode}");
 					$this->page->setDone();
 
 					return $container;
@@ -177,16 +178,9 @@ class Join
 
 		$verifyCode = $this->memberModel->getVerifyCode($member->password);
 
-		if ($verifyCode != $code)
+		if (\App\Model\Session::checkCSRF() && isset($_POST['submit']))
 			{
-			$callout = new \PHPFUI\Callout('alert');
-			$callout->add('Bad Link');
-
-			return $callout;
-			}
-		elseif (\App\Model\Session::checkCSRF() && isset($_POST['submit']) && $verifyCode == $code)
-			{
-			if ('Continue' == $_POST['submit'])
+			if ('Continue' == $_POST['submit'] && $verifyCode == $code)
 				{
 				$member->verifiedEmail += 1;
 				}

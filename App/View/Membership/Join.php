@@ -4,7 +4,7 @@ namespace App\View\Membership;
 
 class Join
 	{
-	private readonly \PHPFUI\ReCAPTCHA $captcha;
+	private ?\PHPFUI\ReCAPTCHA $captcha = null;
 
 	private readonly \App\Model\MembershipDues $duesModel;
 
@@ -22,13 +22,17 @@ class Join
 		$this->memberView = new \App\View\Member($page);
 		$this->settingTable = new \App\Table\Setting();
 		$this->duesModel = new \App\Model\MembershipDues();
-		$this->captcha = new \PHPFUI\ReCAPTCHA($this->page, $this->settingTable->value('ReCAPTCHAPublicKey'), $this->settingTable->value('ReCAPTCHAPrivateKey'));
+
+		if ('127.0.0.1' != $_SERVER['SERVER_ADDR'] && '::1' != $_SERVER['SERVER_ADDR'])
+			{
+			$this->captcha = new \PHPFUI\ReCAPTCHA($this->page, $this->settingTable->value('ReCAPTCHAPublicKey'), $this->settingTable->value('ReCAPTCHAPrivateKey'));
+			}
 		}
 
 	public function getEmail() : \PHPFUI\HTML5Element
 		{
-		$member = new \App\Record\Member();
 		$post = \App\Model\Session::getFlash('post');
+		$member = new \App\Record\Member();
 
 		if ($post)
 			{
@@ -40,7 +44,7 @@ class Join
 
 		$form->setAreYouSure(false);
 
-		if (isset($_POST['submit']) && 'Join' == $_POST['submit'] && $this->captcha->isValid())
+		if (isset($_POST['submit']) && 'Join' == $_POST['submit'] && (! $this->captcha || $this->captcha->isValid()))
 			{
 			\App\Model\Session::setFlash('post', $_POST);
 			$fullName = $_POST['firstName'] . ' ' . $_POST['lastName'];
@@ -69,6 +73,7 @@ class Join
 				elseif ($this->memberModel->emailIsUnused($_POST['email']))
 					{
 					$id = $this->memberModel->add($_POST);
+					$member->read($id);
 
 					if (! empty($_GET['a']))
 						{

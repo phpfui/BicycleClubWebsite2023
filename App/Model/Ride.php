@@ -434,7 +434,7 @@ class Ride
 
 			foreach ($signedUpRiders as $rider)
 				{
-				if (! $rider->showNothing)
+				if (! $rider->showNoRideSignup)
 					{
 					$ul->addItem(new \PHPFUI\ListItem("{$rider->firstName} {$rider->lastName} {$status[$rider->status]}"));
 					}

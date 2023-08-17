@@ -205,7 +205,7 @@ class RideSignup
 				$body = 'For your ride on ' . $this->ride->rideDate;
 				$body .= ", {$this->member->fullName()} has {$action}.";
 
-				if ($this->member->memberId !== \App\Model\Session::signedInMemberId())
+				if ($this->member->memberId != \App\Model\Session::signedInMemberId())
 					{
 					$changer = \App\Model\Session::signedInMemberRecord();
 					$email->addToMember($changer->toArray());

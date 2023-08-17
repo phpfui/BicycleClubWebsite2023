@@ -1,8 +1,6 @@
 Gear Calculator
 	Percent difference
 
-Cache busting
-
 Signed up riders over the limit
 
 Embedded images in forum posts not coming through

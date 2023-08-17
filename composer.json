@@ -44,7 +44,8 @@
         "psr-php7/log": "^1.0",
         "phpfui/translation": "^1.0",
         "phpfui/orm": "^1.0",
-        "nxp/math-executor": "^2.3"
+        "nxp/math-executor": "^2.3",
+        "php-http/message-factory": "^1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.0",

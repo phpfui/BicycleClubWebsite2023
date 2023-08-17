@@ -646,7 +646,13 @@ class GearCalculator
 
 		if ($this->parameters)
 			{
-			$url .= '&' . \http_build_query($this->parameters);
+			$query = \strpos($url, '?');
+
+			if ($query)
+				{
+				$url = \substr($url, 0, $query);
+				}
+			$url .= '?' . \http_build_query($this->parameters);
 			}
 
 		return $url;

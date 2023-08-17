@@ -6,6 +6,11 @@ namespace PHPFUI;
  * CacheBuster adds the file timestamp into the file path.  If the file date is different from the previous date, this forces the browser to reload the resource.
  *
  * Since it is file time stamp based, if the file has not changed it's time stamp (meaning it's contents have not changed), then the browser cache is still valid.
+ *
+ * issues:
+ *  - css and js map files
+ *  - apache RewriteRule overrides extension
+ *  - some file reading issues
  */
 class CacheBuster
 	{
@@ -16,8 +21,10 @@ class CacheBuster
 	 * @param array<string,string> $mimeTypes
 	 */
 	public function __construct(protected string $sourceDirectory, protected string $baseUrl, protected array $mimeTypes = [
-															'css' => 'text/css;charset=UTF-8',
+															'css' => 'text/css',
 															'js' => 'application/javascript',
+															'woff2' => 'font/woff2',
+															'ttf' => 'font/ttf',
 															])
 		{
 		}
@@ -45,7 +52,7 @@ class CacheBuster
 		$fileName = str_replace('//', '/', $this->sourceDirectory . '/' . $file);
 		$time = filemtime($fileName);
 
-		return str_replace('//', '/', $this->baseUrl . '/' . $time . '/' . $file);
+		return str_replace('//', '/', $this->baseUrl . '/' . $file) . '.' . $time;
 		}
 
 	/**
@@ -55,6 +62,7 @@ class CacheBuster
 	 */
 	public function outputBustedPage(string $filePath) : never
 		{
+		\header_remove(null);
 		$url = \str_replace($this->baseUrl, '', $filePath);
 		$parts = explode('/', $url);
 		while (empty($parts[0]) || ctype_digit($parts[0]))
@@ -62,8 +70,16 @@ class CacheBuster
 			array_shift($parts);
 			}
 		$fullFilePath = str_replace('//', '/', $this->sourceDirectory . '/' . implode('/', $parts));
-		if (! file_exists($fullFilePath))
+		$parts = explode('.', $fullFilePath);
+		while (ctype_digit($parts[count($parts) - 1]))
 			{
+			array_pop($parts);
+			}
+		$fullFilePath = implode('.', $parts);
+
+		if (!file_exists($fullFilePath))
+			{
+			\header('HTTP/1.1 404 bot Found');
 			\http_response_code(404);
 			exit;
 			}
@@ -72,11 +88,12 @@ class CacheBuster
 
 		if (empty($contents))
 			{
-			\http_response_code(404);
+			\header('HTTP/1.1 204 No Content');
+			\http_response_code(204);
 			exit;
 			}
-		\header_remove(null);
 		$size = \strlen($contents);
+		\header('HTTP/1.1 200 OK');
 		\header('Content-Length: ' . $size);
 		\header('Last-Modified: ' . \date('r', \filemtime($fullFilePath)));
 
@@ -95,20 +112,3 @@ class CacheBuster
 		exit;
 		}
 	}
-
-/*
-
-BAD
-
-Expires: Thu, 19 Nov 1981 08:52:00 GMT
-Cache-Control: no-store, no-cache, must-revalidate
-Pragma: no-cache
-Access-Control-Allow-Origin: http://wcc
-Keep-Alive: timeout=5, max=100
-Connection: Keep-Alive
-
-GOOD
-
-ETag: "15b7-602f73d61fb5c"
-Accept-Ranges: bytes
-*/

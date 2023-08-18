@@ -4807,16 +4807,16 @@
         },
         {
             "name": "zurb/foundation",
-            "version": "v6.7.5",
+            "version": "v6.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/foundation/foundation-sites.git",
-                "reference": "f3267f2604e3cece6d2ab05ba6f1d728339d86ca"
+                "reference": "7f74c154cdebb0d1496978f7e09cfe5cb92c3324"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/foundation/foundation-sites/zipball/f3267f2604e3cece6d2ab05ba6f1d728339d86ca",
-                "reference": "f3267f2604e3cece6d2ab05ba6f1d728339d86ca",
+                "url": "https://api.github.com/repos/foundation/foundation-sites/zipball/7f74c154cdebb0d1496978f7e09cfe5cb92c3324",
+                "reference": "7f74c154cdebb0d1496978f7e09cfe5cb92c3324",
                 "shasum": ""
             },
             "type": "library",
@@ -4846,9 +4846,9 @@
                 "email": "contact@get.foundation",
                 "forum": "https://github.com/foundation/foundation-sites/discussions",
                 "issues": "https://github.com/foundation/foundation-sites/issues",
-                "source": "https://github.com/foundation/foundation-sites/tree/v6.7.5"
+                "source": "https://github.com/foundation/foundation-sites/tree/v6.8.1"
             },
-            "time": "2022-07-12T18:49:00+00:00"
+            "time": "2023-08-18T13:09:54+00:00"
         }
     ],
     "packages-dev": [
@@ -5547,16 +5547,16 @@
         },
         {
             "name": "phpfui/phpunit-syntax-coverage",
-            "version": "V1.0.11",
+            "version": "V1.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/PHPUnitSyntaxCoverage.git",
-                "reference": "7cdb6552589b2f2e028de649604be011d32a9ea2"
+                "reference": "8955ef4f4e8d320c6cdc6b058dbd98c724c816d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/PHPUnitSyntaxCoverage/zipball/7cdb6552589b2f2e028de649604be011d32a9ea2",
-                "reference": "7cdb6552589b2f2e028de649604be011d32a9ea2",
+                "url": "https://api.github.com/repos/phpfui/PHPUnitSyntaxCoverage/zipball/8955ef4f4e8d320c6cdc6b058dbd98c724c816d1",
+                "reference": "8955ef4f4e8d320c6cdc6b058dbd98c724c816d1",
                 "shasum": ""
             },
             "require": {
@@ -5600,9 +5600,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/PHPUnitSyntaxCoverage/issues",
-                "source": "https://github.com/phpfui/PHPUnitSyntaxCoverage/tree/V1.0.11"
+                "source": "https://github.com/phpfui/PHPUnitSyntaxCoverage/tree/V1.0.12"
             },
-            "time": "2023-07-10T19:32:32+00:00"
+            "time": "2023-08-17T19:51:24+00:00"
         },
         {
             "name": "phpstan/phpstan",
@@ -6239,12 +6239,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "f93212dfbd5160f97b808a2988bb549ffbd049b5"
+                "reference": "7a0792500b5d9f0b4d81fba229b191e747bd2ef2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/f93212dfbd5160f97b808a2988bb549ffbd049b5",
-                "reference": "f93212dfbd5160f97b808a2988bb549ffbd049b5",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/7a0792500b5d9f0b4d81fba229b191e747bd2ef2",
+                "reference": "7a0792500b5d9f0b4d81fba229b191e747bd2ef2",
                 "shasum": ""
             },
             "conflict": {
@@ -6313,7 +6313,7 @@
                 "centreon/centreon": "<22.10.0.0-beta1",
                 "cesnet/simplesamlphp-module-proxystatistics": "<3.1",
                 "chriskacerguis/codeigniter-restserver": "<=2.7.1",
-                "cockpit-hq/cockpit": "<2.6.3",
+                "cockpit-hq/cockpit": "<=2.6.3",
                 "codeception/codeception": "<3.1.3|>=4,<4.1.22",
                 "codeigniter/framework": "<3.1.9",
                 "codeigniter4/framework": "<4.3.5",
@@ -6890,7 +6890,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-08-17T00:12:49+00:00"
+            "time": "2023-08-17T20:04:28+00:00"
         },
         {
             "name": "sebastian/cli-parser",

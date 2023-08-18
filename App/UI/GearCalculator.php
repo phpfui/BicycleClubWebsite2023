@@ -64,7 +64,12 @@ JAVASCRIPT;
 		$title->addAttribute('onChange', 'update()');
 		$form->add($title);
 		$form->add($this->tirePicker);
-		$form->add($this->units);
+		$multiColumn = new \PHPFUI\MultiColumn();
+		$multiColumn->add($this->units);
+		$precision = new \PHPFUI\Input\Number('p', 'Precision', (int)($this->model->p ?? 2));
+		$precision->addAttribute('onchange', 'update()');
+		$multiColumn->add($precision);
+		$form->add($multiColumn);
 
 		$printButton = new \PHPFUI\Button('Print');
 		$printButton->setAttribute('onClick', 'print()');

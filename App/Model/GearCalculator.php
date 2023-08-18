@@ -3,13 +3,16 @@
 namespace App\Model;
 
 /**
- * @property string $c
- * @property string $fh
- * @property string $rh
- * @property string $t
- * @property string $tl
- * @property string $u
- * @property string $uc
+ * @property string $c Cassette
+ * @property string $fh Front Hub
+ * @property string $rh Read Hub
+ * @property int $p Precision
+ * @property string $t Tire Size
+ * @property string $tl Title
+ * @property string $u Update
+ * @property string $uf Update Front Hub
+ * @property string $ur Update Rear Hub
+ * @property string $uc Update Cassette
  */
 class GearCalculator
 	{
@@ -114,7 +117,7 @@ class GearCalculator
 				// the diameter of the drive wheel, times the size of the front sprocket divided by the size of the rear sprocket
 				$gear = (int)$diameter * 0.0393700787 * $ring / $cog;
 
-				return \number_format($gear, 2);
+				return \number_format($gear, (int)($this->p ?? 2));
 
 			case '1': // gear ratio
 				$gear = $ring / $cog;
@@ -665,11 +668,16 @@ class GearCalculator
 		$pdf = new \Mpdf\Mpdf($config);
 		$pdf->SetMargins(15, 15, 15);
 		$pdf->addPage();
+
+		if ($this->tl)
+			{
+			$pdf->writeHTML("<h2>{$this->tl}</h2>");
+			}
 		$table = $this->getTable();
 		$table->addAttribute('border', '1');
 		$pdf->writeHTML("<style media='print'>table {border-collapse:collapsed;border:1px solid black;text-align:center;}</style>");
 		$pdf->writeHTML($table);
-		$pdf->Output('GearCalculator.pdf', 'I');
+		$pdf->Output($this->tl ?: 'GearCalculator.pdf', 'I');
 		}
 
 	/**

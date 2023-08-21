@@ -14,11 +14,14 @@ class Editor
 
 	private readonly \App\View\Ride\Settings $rideSettingsView;
 
+	private int $startTimeOffset = 15;
+
 	public function __construct(private readonly \App\View\Page $page)
 		{
 		$this->description = new \PHPFUI\Input\TextArea('description', 'Description');
 		$this->description->htmlEditing($page, new \App\Model\TinyMCETextArea());
 		$this->rideSettingsView = new \App\View\Ride\Settings($page);
+		$this->startTimeOffset = ((int)$this->page->value('RideStartTimeOffset')) ?: 15;
 		$this->processRequest();
 		}
 
@@ -33,7 +36,7 @@ class Editor
 		$date->setToolTip('The date of the ride');
 		$date->setRequired();
 
-		$time = new \PHPFUI\Input\Time($this->page, 'startTime', 'Start Time', '09:00');
+		$time = new \PHPFUI\Input\Time($this->page, 'startTime', 'Start Time', '09:00', $this->startTimeOffset);
 		$time->setToolTip('Time the ride leaves the start location');
 		$time->setRequired();
 		$category = new \App\View\PacePicker('paceId', 'Category', 'Pace');
@@ -161,7 +164,7 @@ class Editor
 
 			if (! $rideStarted && ! $afterRide)
 				{
-				$time = new \PHPFUI\Input\Time($this->page, 'startTime', 'Start Time', $ride->startTime);
+				$time = new \PHPFUI\Input\Time($this->page, 'startTime', 'Start Time', $ride->startTime, $this->startTimeOffset);
 				$time->setToolTip('Time the ride leaves the start location');
 				$time->setRequired();
 				$multiColumn->add($time);
@@ -183,7 +186,7 @@ class Editor
 			$date->setMinDate(\App\Tools\Date::todayString());
 			$date->setToolTip('The date of the ride');
 			$date->setRequired();
-			$time = new \PHPFUI\Input\Time($this->page, 'startTime', 'Start Time', $ride->startTime);
+			$time = new \PHPFUI\Input\Time($this->page, 'startTime', 'Start Time', $ride->startTime, $this->startTimeOffset);
 			$time->setToolTip('Time the ride leaves the start location');
 			$time->setRequired();
 			$fieldSet->add(new \PHPFUI\MultiColumn($date, $time));

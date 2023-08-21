@@ -29,7 +29,7 @@ class TaxCalculator
 		$membership = $member->membership;
 		$this->executor->setVars($membership->toArray(), false);
 		$zipTaxTable = new \App\Table\Ziptax();
-		$this->executor->setVar('taxRate', $zipTaxTable->getTaxRateForZip($membership->zip));
+		$this->executor->setVar('taxRate', $zipTaxTable->getTaxRateForZip($membership->zip ?? ''));
 		$settingTable = new \App\Table\Setting();
 
 		return $this->executor->execute($settingTable->value('salesTaxFormula'));

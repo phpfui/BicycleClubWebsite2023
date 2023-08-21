@@ -70,7 +70,7 @@ class Leader
 	public function getSettings(\PHPFUI\Button $backButton) : \PHPFUI\Container
 		{
 		$rideSettings = new \App\View\Ride\Settings($this->page);
-		$fields = \array_merge(['DeleteRidesPastDays', 'RideEditedWarningDays', 'unaffiliatedMessage', 'RideMinutesApart', 'RideSignupLimit', 'RideSignupLimitDefault',
+		$fields = \array_merge(['DeleteRidesPastDays', 'RideEditedWarningDays', 'unaffiliatedMessage', 'RideMinutesApart', 'RideStartTimeOffset', 'RideSignupLimit', 'RideSignupLimitDefault',
 			'RequireRiderWaiver', 'NoLeadersOnPublicSchedule', 'AdvancePostVolunteer', 'PacePicker', 'LeaderForum', 'LeaderlessName'], $rideSettings->getFieldNames());
 		$container = new \PHPFUI\Container();
 		$submit = new \PHPFUI\Submit();
@@ -118,13 +118,21 @@ class Leader
 			$form->add($multiColumn);
 
 			$multiColumn = new \PHPFUI\MultiColumn();
+			$offsetField = 'RideStartTimeOffset';
+			$offsetValue = ((int)$settingTable->value($offsetField)) ?: 15;
+
 			$field = 'RideMinutesApart';
 			$value = (int)$settingTable->value($field);
 			$minutesApart = new \PHPFUI\Input\Number($field, 'Ride Departure Minutes Apart', $value);
-			$minutesApart->addAttribute('step', (string)15)->addAttribute('min', (string)0)->addAttribute('max', (string)120);
+			$minutesApart->addAttribute('step', (string)$offsetValue)->addAttribute('min', (string)0)->addAttribute('max', (string)120);
 			$minutesApart->setToolTip('The number of minutes rides must be separated that leave from the same start location. Zero is off, 30 would mandate a 1/2 hour separation of departure times.');
 			$multiColumn->add($minutesApart);
-			$multiColumn->add('&nbsp;');
+
+			$startTimeOffset = new \PHPFUI\Input\Number($offsetField, 'Ride Start Time Offset', $offsetValue);
+			$startTimeOffset->addAttribute('step', (string)1)->addAttribute('min', (string)0)->addAttribute('max', (string)15);
+			$startTimeOffset->setToolTip('The number of minute increments for the ride start times.');
+			$multiColumn->add($startTimeOffset);
+
 			$form->add($multiColumn);
 
 			$multiColumn = new \PHPFUI\MultiColumn();

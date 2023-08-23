@@ -4,7 +4,6 @@ namespace Laminas\Validator\File;
 
 use Laminas\Validator\AbstractValidator;
 use Laminas\Validator\Exception;
-use Psr\Http\Message\UploadedFileInterface;
 use Traversable;
 
 use function array_key_exists;
@@ -178,7 +177,7 @@ class Count extends AbstractValidator
     /**
      * Adds a file for validation
      *
-     * @param string|array|UploadedFileInterface $file
+     * @param string|array $file
      * @return $this
      */
     public function addFile($file)
@@ -195,10 +194,6 @@ class Count extends AbstractValidator
             }
         }
 
-        if ($file instanceof UploadedFileInterface && is_string($file->getClientFilename())) {
-            $this->files[(string) $file->getClientFilename()] = $file->getClientFilename();
-        }
-
         return $this;
     }
 
@@ -207,22 +202,18 @@ class Count extends AbstractValidator
      * not bigger than max (when max is not null). Attention: When checking with set min you
      * must give all files with the first call, otherwise you will get a false.
      *
-     * @param  string|array|UploadedFileInterface $value Filenames to check for count
-     * @param  array                              $file  File data from \Laminas\File\Transfer\Transfer
+     * @param  string|array $value Filenames to check for count
+     * @param  array        $file  File data from \Laminas\File\Transfer\Transfer
      * @return bool
      */
     public function isValid($value, $file = null)
     {
-        if ($this->isUploadedFilterInterface($value)) {
-            $this->addFile($value);
-        } elseif ($file !== null) {
-            if (! array_key_exists('destination', $file)) {
-                $file['destination'] = dirname($value);
-            }
+        if (($file !== null) && ! array_key_exists('destination', $file)) {
+            $file['destination'] = dirname($value);
+        }
 
-            if (array_key_exists('tmp_name', $file)) {
-                $value = $file['destination'] . DIRECTORY_SEPARATOR . $file['name'];
-            }
+        if (($file !== null) && array_key_exists('tmp_name', $file)) {
+            $value = $file['destination'] . DIRECTORY_SEPARATOR . $file['name'];
         }
 
         if (($file === null) || ! empty($file['tmp_name'])) {
@@ -230,7 +221,6 @@ class Count extends AbstractValidator
         }
 
         $this->count = count($this->files);
-
         if (($this->getMax() !== null) && ($this->count > $this->getMax())) {
             return $this->throwError($file, self::TOO_MANY);
         }
@@ -262,21 +252,6 @@ class Count extends AbstractValidator
         }
 
         $this->error($errorType);
-        return false;
-    }
-
-    /**
-     * Checks if the type of uploaded file is UploadedFileInterface.
-     *
-     * @param  string|array|UploadedFileInterface $value Filenames to check for count
-     * @return bool
-     */
-    private function isUploadedFilterInterface($value)
-    {
-        if ($value instanceof UploadedFileInterface) {
-            return true;
-        }
-
         return false;
     }
 }

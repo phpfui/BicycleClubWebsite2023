@@ -148,7 +148,7 @@ class RideWithGPS
 		return $container;
 		}
 
-	public function addUpdate(\App\Record\RWGPS $rwgps) : \PHPFUI\Form | \PHPFUI\FieldSet
+	public function addUpdate(\App\Record\RWGPS $rwgps = new \App\Record\RWGPS()) : \PHPFUI\Form | \PHPFUI\FieldSet
 		{
 		if ($rwgps->loaded())
 			{

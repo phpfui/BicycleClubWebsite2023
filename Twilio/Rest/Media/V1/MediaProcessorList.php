@@ -47,8 +47,8 @@ class MediaProcessorList extends ListResource
     /**
      * Create the MediaProcessorInstance
      *
-     * @param string $extension The [Media Extension](/docs/live/api/media-extensions-overview) name or URL. Ex: `video-composer-v2`
-     * @param string $extensionContext The context of the Media Extension, represented as a JSON dictionary. See the documentation for the specific [Media Extension](/docs/live/api/media-extensions-overview) you are using for more information about the context to send.
+     * @param string $extension The [Media Extension](/docs/live/media-extensions-overview) name or URL. Ex: `video-composer-v2`
+     * @param string $extensionContext The context of the Media Extension, represented as a JSON dictionary. See the documentation for the specific [Media Extension](/docs/live/media-extensions-overview) you are using for more information about the context to send.
      * @param array|Options $options Optional Arguments
      * @return MediaProcessorInstance Created MediaProcessorInstance
      * @throws TwilioException When an HTTP error occurs.

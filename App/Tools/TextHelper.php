@@ -219,7 +219,6 @@ class TextHelper extends \PHPFUI\TextHelper
 	/**
 	 * Format a phone number
 	 *
-	 * @param string $phone
 	 *
 	 */
 	public static function formatPhone(?string $phone, ?string $separator = '-') : string

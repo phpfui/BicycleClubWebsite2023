@@ -33,7 +33,15 @@ class Photo extends \App\Record\Definition\Photo
 
 	public function getImage() : \PHPFUI\Image
 		{
-		$fileTime = \filemtime($this->getFullPath());
+		$fileName = $this->getFullPath();
+		if (! file_exists($fileName))
+			{
+			$file = new \App\Model\ImageFiles();
+			$settingTable = new \App\Table\Setting();
+
+			return $file->getImg($settingTable->value('clubLogo'));
+			}
+		$fileTime = \filemtime($fileName);
 
 		return new \PHPFUI\Image('/Photo/image/' . $this->photoId . '-' . $fileTime, $this->photo ?: 'photo');
 		}

@@ -18,11 +18,10 @@ class MassMailer extends \App\Cron\BaseJob
 			{
 			if ($mailItem->paused)  // we are paused
 				{
-echo "paused\n";
 				continue;
 				}
 			$mail = new \App\Tools\EMail();
-echo "make email\n";
+
 			if (! empty($mailItem->domain))
 				{
 				$mail->setDomain($mailItem->domain);
@@ -55,19 +54,16 @@ echo "make email\n";
 					$tempFiles[] = $tempfile;
 					}
 				$mail->addAttachment($mailAttachment->fileName, $mailAttachment->prettyName);
-echo "attach {$mailAttachment->prettyName	}\n";
 			}
 			$sent = 0;
 
 			foreach ($mailItem->MailPieceChildren as $mailPiece)
 				{
-echo "$sent sent\n";
 				$mail->setBody(\str_replace('~unsubscribe~', 'unsubscribe/' . $mailPiece->memberId . '/' . $mailPiece->email, (string)$mailItem->body));
 				$mail->setTo($mailPiece->email, $mailPiece->name);
 
 				if ($error = $mail->send())
 					{
-echo $error."\n";
 					if ('Could not instantiate mail function.' == $error)  // bad domain, just delete it
 						{
 						$this->controller->log_important("Bad email: {$mailPiece->email} <{$mailPiece->name}>");

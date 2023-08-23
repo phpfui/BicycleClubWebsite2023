@@ -371,6 +371,11 @@ class EMail
 
 	public function setFrom(?string $from, ?string $name = '') : static
 		{
+		if (! $from)
+			{
+			return $this;
+			}
+
 		if (! \str_contains($from, '@'))
 			{
 			$from .= '@' . $this->server;

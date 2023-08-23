@@ -5,7 +5,6 @@ namespace Laminas\Validator;
 use Exception;
 use Laminas\Stdlib\ArrayUtils;
 use Laminas\Validator\Exception\InvalidArgumentException;
-use SensitiveParameter;
 use Traversable;
 
 use function array_key_exists;
@@ -356,19 +355,14 @@ class CreditCard extends AbstractValidator
         return $this;
     }
 
-    // The following rule is buggy for parameters attributes
-    // phpcs:disable SlevomatCodingStandard.TypeHints.ParameterTypeHintSpacing.NoSpaceBetweenTypeHintAndParameter
-
     /**
      * Returns true if and only if $value follows the Luhn algorithm (mod-10 checksum)
      *
      * @param  string $value
      * @return bool
      */
-    public function isValid(
-        #[SensitiveParameter]
-        $value
-    ) {
+    public function isValid($value)
+    {
         $this->setValue($value);
 
         if (! is_string($value)) {
@@ -439,6 +433,4 @@ class CreditCard extends AbstractValidator
 
         return true;
     }
-
-    // phpcs:enable SlevomatCodingStandard.TypeHints.ParameterTypeHintSpacing.NoSpaceBetweenTypeHintAndParameter
 }

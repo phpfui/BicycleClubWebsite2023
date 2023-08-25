@@ -61,7 +61,7 @@ echo "attach {$mailAttachment->prettyName	}\n";
 
 			foreach ($mailItem->MailPieceChildren as $mailPiece)
 				{
-echo "$sent sent\n":
+echo "$sent sent\n";
 				$mail->setBody(\str_replace('~unsubscribe~', 'unsubscribe/' . $mailPiece->memberId . '/' . $mailPiece->email, (string)$mailItem->body));
 				$mail->setTo($mailPiece->email, $mailPiece->name);
 

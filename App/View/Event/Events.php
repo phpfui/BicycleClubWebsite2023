@@ -13,6 +13,7 @@ class Events
 	public function __construct(private readonly \App\View\Page $page)
 		{
 		$this->eventTable = new \App\Table\Event();
+		$this->event = new \App\Record\Event();
 		$this->reservationTable = new \App\Table\Reservation();
 		$this->processRequest();
 		}
@@ -719,7 +720,7 @@ class Events
 				if ($this->event->numberReservations > \count($reservations))
 					{
 					$addAttendee = new \PHPFUI\Button('Add Attendee');
-					$addAttendee->addClass('success');
+					$addAttendee->addClass('warning');
 					$addAttendeeId = $addAttendee->getId();
 					$addAttendee->setAttribute('onclick', 'return addAttendee();');
 					$buttonGroup->addButton($addAttendee);

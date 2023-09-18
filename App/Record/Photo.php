@@ -34,7 +34,8 @@ class Photo extends \App\Record\Definition\Photo
 	public function getImage() : \PHPFUI\Image
 		{
 		$fileName = $this->getFullPath();
-		if (! file_exists($fileName))
+
+		if (! \file_exists($fileName))
 			{
 			$file = new \App\Model\ImageFiles();
 			$settingTable = new \App\Table\Setting();

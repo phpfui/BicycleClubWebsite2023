@@ -348,7 +348,7 @@ class Registration
 			if ($reservation->reservationId && $this->canAddAttendee && $personCount < $event->numberReservations)
 				{
 				$add = new \PHPFUI\Button('Add Attendee');
-				$add->addClass('success');
+				$add->addClass('warning');
 				$form->add(new \PHPFUI\Input\Hidden('reservationId', (string)$reservation->reservationId));
 				$form->saveOnClick($add);
 				$this->addModal($reservation, $add);

@@ -13,6 +13,8 @@ class Video extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Add Video'))
 			{
+			$callout = new \PHPFUI\Callout('info');
+			$callout->add('You must first add the video information before you can upload the video.');
 			$videoView = new \App\View\Video($this->page);
 			$video = new \App\Record\Video();
 			$this->page->addPageContent($videoView->edit($video));

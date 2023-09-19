@@ -212,28 +212,21 @@ class Member
 			$member->update();
 
 			// Combine other memberId references
-			$tables[] = new \App\Table\AuditTrail();
-			$tables[] = new \App\Table\CartItem();
-			$tables[] = new \App\Table\Invoice();
-			$tables[] = new \App\Table\PollResponse();
-			$tables[] = new \App\Table\Reservation();
-			$tables[] = new \App\Table\VolunteerJobShift();
-			$tables[] = new \App\Table\VolunteerPollResponse();
-			$tables[] = new \App\Table\AdditionalEmail();
-			$tables[] = new \App\Table\AssistantLeader();
-			$tables[] = new \App\Table\BoardMember();
-			$tables[] = new \App\Table\ForumMember();
-			$tables[] = new \App\Table\ForumMessage();
-			$tables[] = new \App\Table\GaRider();
-			$tables[] = new \App\Table\MemberCategory();
-			$tables[] = new \App\Table\MemberOfMonth();
-			$tables[] = new \App\Table\RideComment();
-			$tables[] = new \App\Table\Ride();
-			$tables[] = new \App\Table\RideSignup();
-			$tables[] = new \App\Table\SigninSheet();
-			$tables[] = new \App\Table\CueSheet();
-			$tables[] = new \App\Table\Poll();
-			$tables[] = new \App\Table\SlideShow();
+			$path = PROJECT_ROOT . '/App/Table/*.php';
+			$tables = [];
+
+			foreach (\glob($path) as $class)
+				{
+				$class = \str_replace('/', '\\', (string)$class);
+				$class = \substr($class, \strrpos($class, __NAMESPACE__));
+				$class = \substr($class, 0, \strpos($class, '.'));
+				$table = new $class();
+
+				if (\array_key_exists('memberId', \array_keys($table->getFields())))
+					{
+					$tables[] = $table;
+					}
+				}
 
 			$userPermissionTable = new \App\Table\UserPermission();
 

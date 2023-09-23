@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class RideWithGPS
+class RideWithGPS extends GPS
 	{
 	private readonly string $clubId;
 
@@ -108,19 +108,6 @@ class RideWithGPS
 			}
 
 		return "https://www.google.com/maps/dir/?api=1&destination={$route->latitude},{$route->longitude}";
-		}
-
-	/**
-	 * @param array<string,mixed> $route
-	 */
-	public static function getMapPinLink(array $route) : string
-		{
-		if (! self::validGeoLocation($route))
-			{
-			return '';
-			}
-
-		return "https://www.google.com/maps/?q={$route['latitude']},{$route['longitude']}";
 		}
 
 	public static function getRouteLink(?int $RWGPSId) : string
@@ -289,13 +276,5 @@ class RideWithGPS
 			\rewind($stream);
 			$rwgps->csv = \stream_get_contents($stream);
 			}
-		}
-
-	/**
-	 * @param array<string,mixed> $route
-	 */
-	private static function validGeoLocation(array $route) : bool
-		{
-		return isset($route['latitude']) && isset($route['longitude']) && ((float)$route['latitude'] + (float)$route['longitude']);
 		}
 	}

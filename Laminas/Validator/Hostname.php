@@ -39,6 +39,13 @@ use function substr;
  *
  * The second is tests/Laminas/Validator/HostnameTestForm.php which is designed to be run via HTML
  * to allow users to test entering UTF-8 characters in a form.
+ *
+ * @psalm-type Options = array{
+ *    allow?: int-mask-of<self::ALLOW_*>,
+ *    useIdnCheck?: bool,
+ *    useTldCheck?: bool,
+ *    ipValidator?: null|ValidatorInterface,
+ * }
  */
 class Hostname extends AbstractValidator
 {
@@ -82,7 +89,6 @@ class Hostname extends AbstractValidator
 
     /**
      * Array of valid top-level-domains
-     * IanaVersion 2022072400
      *
      * @see ftp://data.iana.org/TLD/tlds-alpha-by-domain.txt  List of all TLDs by domain
      * @see http://www.iana.org/domains/root/db/ Official list of supported TLDs
@@ -92,7 +98,6 @@ class Hostname extends AbstractValidator
     protected $validTlds = [
         'aaa',
         'aarp',
-        'abarth',
         'abb',
         'abbott',
         'abbvie',
@@ -108,7 +113,6 @@ class Hostname extends AbstractValidator
         'aco',
         'actor',
         'ad',
-        'adac',
         'ads',
         'adult',
         'ae',
@@ -128,7 +132,6 @@ class Hostname extends AbstractValidator
         'airtel',
         'akdn',
         'al',
-        'alfaromeo',
         'alibaba',
         'alipay',
         'allfinanz',
@@ -267,7 +270,6 @@ class Hostname extends AbstractValidator
         'brussels',
         'bs',
         'bt',
-        'bugatti',
         'build',
         'builders',
         'business',
@@ -287,7 +289,6 @@ class Hostname extends AbstractValidator
         'cam',
         'camera',
         'camp',
-        'cancerresearch',
         'canon',
         'capetown',
         'capital',
@@ -372,7 +373,6 @@ class Hostname extends AbstractValidator
         'contact',
         'contractors',
         'cooking',
-        'cookingchannel',
         'cool',
         'coop',
         'corsica',
@@ -504,7 +504,6 @@ class Hostname extends AbstractValidator
         'ferrari',
         'ferrero',
         'fi',
-        'fiat',
         'fidelity',
         'fido',
         'film',
@@ -530,7 +529,6 @@ class Hostname extends AbstractValidator
         'fo',
         'foo',
         'food',
-        'foodnetwork',
         'football',
         'ford',
         'forex',
@@ -636,7 +634,6 @@ class Hostname extends AbstractValidator
         'helsinki',
         'here',
         'hermes',
-        'hgtv',
         'hiphop',
         'hisamitsu',
         'hitachi',
@@ -658,7 +655,6 @@ class Hostname extends AbstractValidator
         'host',
         'hosting',
         'hot',
-        'hoteles',
         'hotels',
         'hotmail',
         'house',
@@ -771,7 +767,6 @@ class Hostname extends AbstractValidator
         'lamborghini',
         'lamer',
         'lancaster',
-        'lancia',
         'land',
         'landrover',
         'lanxess',
@@ -802,7 +797,6 @@ class Hostname extends AbstractValidator
         'limited',
         'limo',
         'lincoln',
-        'linde',
         'link',
         'lipsy',
         'live',
@@ -814,7 +808,6 @@ class Hostname extends AbstractValidator
         'loans',
         'locker',
         'locus',
-        'loft',
         'lol',
         'london',
         'lotte',
@@ -834,7 +827,6 @@ class Hostname extends AbstractValidator
         'lv',
         'ly',
         'ma',
-        'macys',
         'madrid',
         'maif',
         'maison',
@@ -848,7 +840,6 @@ class Hostname extends AbstractValidator
         'markets',
         'marriott',
         'marshalls',
-        'maserati',
         'mattel',
         'mba',
         'mc',
@@ -908,7 +899,6 @@ class Hostname extends AbstractValidator
         'mu',
         'museum',
         'music',
-        'mutual',
         'mv',
         'mw',
         'mx',
@@ -949,7 +939,6 @@ class Hostname extends AbstractValidator
         'nl',
         'no',
         'nokia',
-        'northwesternmutual',
         'norton',
         'now',
         'nowruz',
@@ -995,7 +984,6 @@ class Hostname extends AbstractValidator
         'partners',
         'parts',
         'party',
-        'passagens',
         'pay',
         'pccw',
         'pe',
@@ -1151,7 +1139,6 @@ class Hostname extends AbstractValidator
         'select',
         'sener',
         'services',
-        'ses',
         'seven',
         'sew',
         'sex',
@@ -1268,7 +1255,6 @@ class Hostname extends AbstractValidator
         'tiaa',
         'tickets',
         'tienda',
-        'tiffany',
         'tips',
         'tires',
         'tirol',
@@ -1298,7 +1284,6 @@ class Hostname extends AbstractValidator
         'trading',
         'training',
         'travel',
-        'travelchannel',
         'travelers',
         'travelersinsurance',
         'trust',
@@ -1360,7 +1345,6 @@ class Hostname extends AbstractValidator
         'voto',
         'voyage',
         'vu',
-        'vuelos',
         'wales',
         'walmart',
         'walter',
@@ -1478,7 +1462,6 @@ class Hostname extends AbstractValidator
         'укр',
         '香港',
         '亚马逊',
-        '诺基亚',
         '食品',
         '飞利浦',
         '台湾',
@@ -1808,7 +1791,7 @@ class Hostname extends AbstractValidator
     /**
      * Options for the hostname validator
      *
-     * @var array
+     * @var Options
      */
     protected $options = [
         'allow'       => self::ALLOW_DNS, // Allow these hostnames
@@ -1824,15 +1807,20 @@ class Hostname extends AbstractValidator
      *
      * @see http://www.iana.org/cctld/specifications-policies-cctlds-01apr02.htm  Technical Specifications for ccTLDs
      *
-     * @param array $options    OPTIONAL Array of validator options; see Hostname::$options
-     * @param int  $allow       OPTIONAL Set what types of hostname to allow (default ALLOW_DNS)
-     * @param bool $useIdnCheck OPTIONAL Set whether IDN domains are validated (default true)
-     * @param bool $useTldCheck Set whether the TLD element of a hostname is validated (default true)
-     * @param Ip   $ipValidator OPTIONAL
+     * Options Parameters should be passed as an array in the following format:
+     * $options = [
+     *      'allow' => ALLOW_DNS, // OPTIONAL Set what types of hostname to allow (default ALLOW_DNS)
+     *      'useIdnCheck' => true, // OPTIONAL Set whether IDN domains are validated (default true)
+     *      'useTldCheck' => true, // Set whether the TLD element of a hostname is validated (default true)
+     *      'ipValidator' => null, // An IP validator instance or null @link Ip
+     * ];
+     *
+     * For backwards compatibility, options can also be passed as variables in the order stated above.
+     *
+     * @param Options $options OPTIONAL Array of validator options; see Hostname::$options
      */
     public function __construct($options = [])
     {
-        // phpcs:enable
         if (! is_array($options)) {
             $options       = func_get_args();
             $temp['allow'] = array_shift($options);

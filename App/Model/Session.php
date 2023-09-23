@@ -228,6 +228,5 @@ class Session extends \PHPFUI\Session
 		{
 		$_SESSION['acceptedWaiver'] = $_SESSION['expires'] = $_SESSION['memberId'] = $_SESSION['membershipId'] = 0;
 		unset($_SESSION['userPermissions'], $_SESSION['photos'], $_SESSION['files']);
-
 		}
 	}

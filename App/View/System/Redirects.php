@@ -35,7 +35,7 @@ class Redirects implements \Stringable
 					break;
 
 
-				case 'Add':
+				case 'Add Redirect':
 
 					$redirect = new \App\Record\Redirect();
 					$redirect->setFrom($_POST);
@@ -82,7 +82,8 @@ class Redirects implements \Stringable
 				}
 			$form->add($table);
 
-			$add = new \PHPFUI\Button('Add');
+			$add = new \PHPFUI\Button('Add Redirect');
+			$add->addClass('success');
 			$buttonGroup = new \App\UI\CancelButtonGroup();
 
 			if (\count($this->redirectTable))
@@ -113,7 +114,7 @@ class Redirects implements \Stringable
 		$redirect->setRequired()->setToolTip('The new URL that replaces the original ULR. Needs to exist. Assumed root relative (do not start with /)');
 		$fieldSet->add($redirect);
 		$form->add($fieldSet);
-		$submit = new \PHPFUI\Submit('Add', 'action');
+		$submit = new \PHPFUI\Submit('Add Redirect', 'action');
 		$form->add($modal->getButtonAndCancel($submit));
 		$modal->add($form);
 		}

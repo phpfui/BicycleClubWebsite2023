@@ -222,7 +222,7 @@ class Member
 				$class = \substr($class, 0, \strpos($class, '.'));
 				$table = new $class();
 
-				if (\array_key_exists('memberId', \array_keys($table->getFields())))
+				if (\array_key_exists('memberId', $table->getFields()))
 					{
 					$tables[] = $table;
 					}

@@ -161,19 +161,23 @@ class Rider
 
 		if ($event->loaded())
 			{
-			$select = new \PHPFUI\Input\Select('referral', $event->question);
 			$gaAnswerTable = new \App\Table\GaAnswer();
 			$gaAnswerTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $rider->gaEventId));
 			$gaAnswerTable->addOrderBy('answer');
+			$answerCursor = $gaAnswerTable->getRecordCursor();
 
-			$select->addOption('Please Select', '', 0 == $rider->referral);
-
-			foreach ($gaAnswerTable->getRecordCursor() as $answer)
+			if (\count($answerCursor))
 				{
-				$select->addOption($answer->answer, $answer->gaAnswerId, $rider->referral ? $rider->referral == $answer->gaAnswerId : false);
+				$select = new \PHPFUI\Input\Select('referral', $event->question);
+				$select->addOption('Please Select', '', 0 == $rider->referral);
+
+				foreach ($gaAnswerTable->getRecordCursor() as $answer)
+					{
+					$select->addOption($answer->answer, $answer->gaAnswerId, $rider->referral ? $rider->referral == $answer->gaAnswerId : false);
+					}
+				$select->setRequired();
+				$riderFieldset->add($select);
 				}
-			$select->setRequired();
-			$riderFieldset->add($select);
 			}
 
 		return $riderFieldset;

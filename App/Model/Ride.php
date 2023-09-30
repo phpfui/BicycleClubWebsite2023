@@ -452,7 +452,7 @@ class Ride
 		$message = '<a href="' . $this->homePage . '">' . $this->clubName . '</a> would like to remind you of an upcoming ride:<br><br>'
 			. 'On <b>' . \App\Tools\Date::formatString('l, F j', $ride->rideDate) . '</b> starting at <b>' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '</b><br>'
 			. "{$ride->mileage} miles at a " . $this->getPace($ride->paceId) . ' pace.';
-			$message .= " Targeted average: {$ride->targetPace}";
+			$message .= ' Targeted average: ' . \number_format($ride->targetPace, 1);
 			$message .= "<br>{$locationText}";
 
 		if ($leader->empty())

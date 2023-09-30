@@ -6,7 +6,36 @@ class Rider
 	{
 	public function __construct(private readonly \App\View\Page $page)
 		{
-		$this->processRequest();
+		if (\App\Model\Session::checkCSRF())
+			{
+			if ('Add Rider' == ($_POST['submit'] ?? ''))
+				{
+				$rider = new \App\Record\GaRider();
+				$rider->setFrom($_POST);
+				$rider->signedUpOn = \date('Y-m-d H:i:s');
+				$rider->gaRideId = 0;
+				$rider->memberId = 0;
+				$rider->referral = 0;
+				$rider->gaIncentiveId = 0;
+				$rider->prize = 0;
+
+				$id = $rider->insert();
+				$url = $this->page->getBaseURL();
+				$pos = \strrpos($url, '/');
+
+				if ($pos > 0)
+					{
+					$url = \substr($url, 0, $pos + 1);
+					}
+				$this->page->redirect($url . $id);
+				}
+			elseif ('deleteRider' == ($_POST['action'] ?? ''))
+				{
+				$rider = new \App\Record\GaRider((int)$_POST['gaRiderId']);
+				$rider->delete();
+				$this->page->setResponse($_POST['gaRiderId']);
+				}
+			}
 		}
 
 	public function edit(\App\Record\GaRider $rider) : \App\UI\ErrorFormSaver
@@ -47,6 +76,7 @@ class Rider
 			{
 			$fieldset = new \PHPFUI\FieldSet('Event Information');
 			$fieldset->add(new \App\UI\Display('Event', $event->title . ' / ' . $event->eventDate));
+			$fieldset->add(new \PHPFUI\Input\Hidden('gaEventId', "{$event->gaEventId}"));
 			$container->add($fieldset);
 			}
 		$container->add($this->getRiderSettings($rider, $event));
@@ -181,39 +211,5 @@ class Rider
 			}
 
 		return $riderFieldset;
-		}
-
-	private function processRequest() : void
-		{
-		if (\App\Model\Session::checkCSRF())
-			{
-			if ('Add Rider' == ($_POST['submit'] ?? ''))
-				{
-				$rider = new \App\Record\GaRider();
-				$rider->setFrom($_POST);
-				$rider->signedUpOn = \date('Y-m-d H:i:s');
-				$rider->gaRideId = 0;
-				$rider->memberId = 0;
-				$rider->referral = 0;
-				$rider->gaIncentiveId = 0;
-				$rider->prize = 0;
-
-				$id = $rider->insert();
-				$url = $this->page->getBaseURL();
-				$pos = \strrpos($url, '/');
-
-				if ($pos > 0)
-					{
-					$url = \substr($url, 0, $pos + 1);
-					}
-				$this->page->redirect($url . $id);
-				}
-			elseif ('deleteRider' == ($_POST['action'] ?? ''))
-				{
-				$rider = new \App\Record\GaRider((int)$_POST['gaRiderId']);
-				$rider->delete();
-				$this->page->setResponse($_POST['gaRiderId']);
-				}
-			}
 		}
 	}

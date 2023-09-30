@@ -228,25 +228,29 @@ class Invoice extends \FPDF
 		if (\file_exists($image))
 			{
 			$info = \getimagesize($image);
-			$width = $info[0];
-			$height = $info[1];
-			$maxWidth = 116;
 
-			if ($width > $maxWidth)
+			if (\is_array($info))
 				{
-				$height = $height * $maxWidth / $width;
-				$width = $maxWidth;
-				}
-			$maxHeight = 44;
+				$width = $info[0];
+				$height = $info[1];
+				$maxWidth = 116;
 
-			if ($height > $maxHeight)
-				{
-				$width = $width * $maxHeight / $height;
-				$height = $maxHeight;
+				if ($width > $maxWidth)
+					{
+					$height = $height * $maxWidth / $width;
+					$width = $maxWidth;
+					}
+				$maxHeight = 44;
+
+				if ($height > $maxHeight)
+					{
+					$width = $width * $maxHeight / $height;
+					$height = $maxHeight;
+					}
+				$this->Image($image, null, null, $width, $height);
+				$y1 += $height + 2;
+				$this->SetXY($x1, $y1);
 				}
-			$this->Image($image, null, null, $width, $height);
-			$y1 += $height + 2;
-			$this->SetXY($x1, $y1);
 			}
 		$this->SetFont('Arial', 'B', 12);
 		$length = $this->GetStringWidth($name);

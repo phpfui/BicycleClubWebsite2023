@@ -34,7 +34,7 @@ class GeneralAdmission
 		$event = new \App\Record\GaEvent($invoiceItem->storeItemId);
 		$rider = new \App\Record\GaRider($invoiceItem->storeItemDetailId);
 		$rider->pending = 0;
-		$rider->pricePaid = $invoiceItem->price;
+		$rider->pricePaid = (float)$invoiceItem->price;
 
 		if (! $this->email)
 			{

@@ -225,7 +225,7 @@ class Invoice extends \FPDF
 		$y1 = 8;
 		$this->SetXY($x1, $y1);
 
-		if (\file_exists($image))
+		if ($image && \file_exists($image) && ! \is_dir($image))
 			{
 			$info = \getimagesize($image);
 

@@ -454,7 +454,7 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 					if ($event->price > 0)
 						{
-						$Price = $participant['pricePaid'];
+						$Price = (float)$participant['pricePaid'];
 
 						if ($participant['paymentId'])
 							{
@@ -467,7 +467,7 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 							$PaymentReceived = 'No';
 							}
 						}
-					$pdf->Row([$name, '$' . \number_format((float)$Price, 2), $PaymentReceived, $PaymentType, $PaymentNumber]);
+					$pdf->Row([$name, '$' . \number_format($Price, 2), $PaymentReceived, $PaymentType, $PaymentNumber]);
 					}
 				$pdf->Row(['', '', '', '', '']);
 				$pdf->Row(['Total Attending', $total, '', '', '']);

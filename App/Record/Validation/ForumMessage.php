@@ -11,7 +11,7 @@ class ForumMessage extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'forumId' => ['integer'],
 		'htmlMessage' => ['maxlength'],
-		'lastEdited' => ['required', 'datetime'],
+		'lastEdited' => ['datetime'],
 		'lastEditorId' => ['integer'],
 		'memberId' => ['required', 'integer'],
 		'posted' => ['required', 'datetime'],

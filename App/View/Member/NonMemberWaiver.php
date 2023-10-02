@@ -11,9 +11,9 @@ class NonMemberWaiver
 		$this->fields[] = new \PHPFUI\Input\Email('email', 'Your email address');
 		$this->fields[] = new \PHPFUI\Input\Text('firstName', 'First Name');
 		$this->fields[] = new \PHPFUI\Input\Text('lastName', 'Last Name');
-		$this->fields[] = new \PHPFUI\Input\Tel($page, 'cellPhone', 'Cell Phone');
+		$this->fields[] = new \App\UI\TelUSA($page, 'cellPhone', 'Cell Phone');
 		$this->fields[] = new \PHPFUI\Input\Text('emergencyContact', 'Emergency Contact Name');
-		$this->fields[] = new \PHPFUI\Input\Tel($page, 'emergencyPhone', 'Emergency Contact Phone');
+		$this->fields[] = new \App\UI\TelUSA($page, 'emergencyPhone', 'Emergency Contact Phone');
 		}
 
 	public function addField(\PHPFUI\Input $input) : static

@@ -860,7 +860,7 @@ class Member
 	private function getCellSettings(\App\Record\Member $member) : \PHPFUI\FieldSet
 		{
 		$fieldSet = new \PHPFUI\FieldSet('Cell Phone Settings');
-		$cellPhone = new \PHPFUI\Input\Tel($this->page, 'cellPhone', 'Cell Phone', $member->cellPhone);
+		$cellPhone = new \App\UI\TelUSA($this->page, 'cellPhone', 'Cell Phone', $member->cellPhone);
 		$fieldSet->add($cellPhone);
 		$allowTexting = new \PHPFUI\Input\CheckBoxBoolean('allowTexting', 'Enable club texts', (bool)$member->allowTexting);
 		$allowTexting->setToolTip('Members can send texts to other members via the website, or a ride.  Uncheck to opt out of club texts.');
@@ -937,12 +937,12 @@ class Member
 		$lastName = new \PHPFUI\Input\Text('lastName', 'Last Name', $member->lastName);
 		$lastName->setRequired();
 		$memberFieldSet->add(new \PHPFUI\MultiColumn($firstName, $lastName));
-		$phone = new \PHPFUI\Input\Tel($this->page, 'phone', 'Phone', $member->phone);
-		$cellPhone = new \PHPFUI\Input\Tel($this->page, 'cellPhone', 'Cell Phone', $member->cellPhone);
+		$phone = new \App\UI\TelUSA($this->page, 'phone', 'Phone', $member->phone);
+		$cellPhone = new \App\UI\TelUSA($this->page, 'cellPhone', 'Cell Phone', $member->cellPhone);
 		$cellPhone->setRequired();
 		$memberFieldSet->add(new \PHPFUI\MultiColumn($phone, $cellPhone));
 		$emergencyContact = new \PHPFUI\Input\Text('emergencyContact', 'Emergency Contact Name', $member->emergencyContact);
-		$emergencyPhone = new \PHPFUI\Input\Tel($this->page, 'emergencyPhone', 'Emergency Contact Phone', $member->emergencyPhone);
+		$emergencyPhone = new \App\UI\TelUSA($this->page, 'emergencyPhone', 'Emergency Contact Phone', $member->emergencyPhone);
 		$memberFieldSet->add(new \PHPFUI\MultiColumn($emergencyContact, $emergencyPhone));
 
 		return $memberFieldSet;

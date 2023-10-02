@@ -22,7 +22,7 @@ class TwilioSettings
 		$token = $settingsSaver->generateField('TwilioToken', 'Auth Token');
 		$token->setRequired(false);
 		$fieldSet->add($token);
-		$tel = new \PHPFUI\Input\Tel($this->page, 'TwilioNumber', 'SMS Phone Number');
+		$tel = new \App\UI\TelUSA($this->page, 'TwilioNumber', 'SMS Phone Number');
 		$number = $settingsSaver->generateField('TwilioNumber', 'SMS Phone Number', $tel);
 		$number->setRequired(false);
 		$fieldSet->add($number);

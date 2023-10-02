@@ -76,7 +76,7 @@ class Member implements \Stringable
 				$email->addAttribute('placeholder', 'your@email.com');
 				$email->setRequired();
 				$fieldSet->add($email);
-				$phone = new \PHPFUI\Input\Tel($this->page, 'phone', 'Phone Number');
+				$phone = new \App\UI\TelUSA($this->page, 'phone', 'Phone Number');
 				$phone->setToolTip('Occasionally email does not work, and a phone call may be better, but it is not required.');
 				$phone->addAttribute('placeholder', '914-555-1212');
 				$fieldSet->add($phone);

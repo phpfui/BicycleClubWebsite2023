@@ -95,14 +95,14 @@ class Signup
 		$text = new \PHPFUI\Input\Text('comments', 'Comments to Leader', $rider->comments ?? '');
 		$text->setToolTip('Comments to the leader. These are not public comments, they just go to the leader. See the ride comments section for public comments.');
 		$fieldSet->add($text);
-		$cell = new \PHPFUI\Input\Tel($this->page, 'cellPhone', 'Cell Phone Number', $this->member->cellPhone);
+		$cell = new \App\UI\TelUSA($this->page, 'cellPhone', 'Cell Phone Number', $this->member->cellPhone);
 		$cell->setToolTip('In case the leader has to contact on the ride.');
 		$cell->setRequired();
 		$fieldSet->add($cell);
 		$contact = new \PHPFUI\Input\Text('emergencyContact', 'Emergency Contact', $this->member->emergencyContact);
 		$contact->setToolTip('Person we should call in case of emergency.');
 		$fieldSet->add($contact);
-		$ephone = new \PHPFUI\Input\Tel($this->page, 'emergencyPhone', 'Emergency Phone Number', $this->member->emergencyPhone);
+		$ephone = new \App\UI\TelUSA($this->page, 'emergencyPhone', 'Emergency Phone Number', $this->member->emergencyPhone);
 		$ephone->setToolTip('Phone number of the emergency contact.');
 		$fieldSet->add($ephone);
 		$plate = new \PHPFUI\Input\Text('license', 'Car License Plate', $this->member->license ?: '');

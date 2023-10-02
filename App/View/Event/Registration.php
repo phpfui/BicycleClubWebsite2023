@@ -195,7 +195,7 @@ class Registration
 			$multiColumn->add($zip);
 			$multiColumn->add(new \App\UI\Display('Price', '$' . \number_format($reservation->pricePaid, 2)));
 			$billing->add($multiColumn);
-			$billing->add(new \PHPFUI\Input\Tel($this->page, 'phone', 'Phone', $reservation->phone));
+			$billing->add(new \App\UI\TelUSA($this->page, 'phone', 'Phone', $reservation->phone));
 			$email = new \PHPFUI\Input\Email('reservationemail', 'email', $reservation->reservationemail);
 			$billing->add($email);
 			$billing->add(new \PHPFUI\Input\Text('comments', 'Comments to the organizer', $reservation->comments));

@@ -180,12 +180,12 @@ class Rider
 		$riderFieldset->add(new \PHPFUI\MultiColumn($firstName, $lastName));
 		$email = new \PHPFUI\Input\Email('email', 'Email address', $rider->email);
 		$email->setRequired();
-		$phone = new \PHPFUI\Input\Tel($this->page, 'phone', 'Phone', $rider->phone);
+		$phone = new \App\UI\TelUSA($this->page, 'phone', 'Phone', $rider->phone);
 		$phone->setRequired();
 		$riderFieldset->add(new \PHPFUI\MultiColumn($email, $phone));
 		$emergencyContact = new \PHPFUI\Input\Text('contact', 'Emergency Contact Name', $rider->contact);
 		$emergencyContact->setRequired();
-		$emergencyPhone = new \PHPFUI\Input\Tel($this->page, 'contactPhone', 'Emergency Contact Phone', $rider->contactPhone);
+		$emergencyPhone = new \App\UI\TelUSA($this->page, 'contactPhone', 'Emergency Contact Phone', $rider->contactPhone);
 		$emergencyPhone->setRequired();
 		$riderFieldset->add(new \PHPFUI\MultiColumn($emergencyContact, $emergencyPhone));
 

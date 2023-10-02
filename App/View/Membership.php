@@ -27,7 +27,7 @@ class Membership
 		$fieldSet->add($this->generateMemberPicker('Membership Chair'));
 		$fieldSet->add($settingsSaver->generateField('memberAddr', 'Membership Chair Snail Mail Address')->setRequired(false));
 		$fieldSet->add($settingsSaver->generateField('memberTown', 'Membership Chair Town, State, Zip')->setRequired(false));
-		$tel = new \PHPFUI\Input\Tel($this->page, 'phone', 'Membership Phone Number');
+		$tel = new \App\UI\TelUSA($this->page, 'phone', 'Membership Phone Number');
 		$fieldSet->add($settingsSaver->generateField('phone', 'Membership Phone Number')->setRequired(false));
 		$fieldSet->add($settingsSaver->generateField('joinPage', 'Join Club Link', 'url'));
 		$fieldSet->add($settingsSaver->generateField('donationText', 'Additional Donation Text')->setRequired(false));

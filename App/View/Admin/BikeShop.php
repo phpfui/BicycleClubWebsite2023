@@ -67,7 +67,7 @@ class BikeShop
 		$fieldSet->add($name);
 
 		$contact = new \PHPFUI\Input\Text('contact', 'Contact', $bikeShop->contact);
-		$phone = new \PHPFUI\Input\Tel($this->page, 'phohne', 'Phone', $bikeShop->phone);
+		$phone = new \App\UI\TelUSA($this->page, 'phone', 'Phone', $bikeShop->phone);
 		$fieldSet->add(new \PHPFUI\MultiColumn($contact, $phone));
 
 		$email = new \PHPFUI\Input\Email('email', 'Email Address', $bikeShop->email);

@@ -27,12 +27,6 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			{
 			$menu = new \PHPFUI\Menu();
 			$parentMenu->addSubMenu(new \PHPFUI\MenuItem($name), $menu);
-
-			if ($this->activeLink == $page)
-				{
-				$parentMenu->addClass('is-active');
-				$menu->addClass('is-active');
-				}
 			$this->theMenu[$name] = $menu;
 			}
 
@@ -131,6 +125,33 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			}
 
 		return $returnValue;
+		}
+
+	/**
+	 * Set the active MenuItem by link
+	 *
+	 * @return bool true if an active link was set
+	 */
+	public function setActiveLink(string $link) : bool
+		{
+		do
+			{
+			if (parent::setActiveLink($link))
+				{
+				return true;
+				}
+			$parts = \explode('/', $link);
+			\array_pop($parts);
+			$link = \implode('/', $parts);
+
+			if (\array_key_exists($parts[1] ?? '', $this->theMenu))
+				{
+				$this->theMenu[$parts[1]]->addClass('is-active');
+				}
+			}
+		while (\count($parts) > 1);
+
+		return false;
 		}
 
 	protected function getStart() : string

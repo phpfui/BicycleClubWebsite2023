@@ -42,10 +42,10 @@ class QRCodes
 
 					$qrCode = \Endroid\QrCode\QrCode::create($url)
 						->setEncoding(new \Endroid\QrCode\Encoding\Encoding('UTF-8'))
-						->setErrorCorrectionLevel(new \Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh())
+						->setErrorCorrectionLevel(\Endroid\QrCode\ErrorCorrectionLevel::High)
 						->setSize((int)($_POST['pixels'] ?? 300))
 						->setMargin(10)
-						->setRoundBlockSizeMode(new \Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin())
+						->setRoundBlockSizeMode(\Endroid\QrCode\RoundBlockSizeMode::Margin)
 						->setForegroundColor(new \Endroid\QrCode\Color\Color(0, 0, 0))
 						->setBackgroundColor(new \Endroid\QrCode\Color\Color(255, 255, 255));
 

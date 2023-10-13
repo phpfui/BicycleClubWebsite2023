@@ -1,3 +1,7 @@
+Pasted images in club wide emails
+
+edit email queue may lose html formatting
+
 Gear Calculator
 	Percent difference
 

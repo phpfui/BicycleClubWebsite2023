@@ -37,7 +37,10 @@ class Footer implements \Stringable
 			}
 		$topBar->addLeft($menu);
 
-		$topBar->addRight("&copy; {$copyright}");
+		$toolTip = new \PHPFUI\ToolTip("&copy; {$copyright}", 'Check this site out on GitHub');
+		$link = new \PHPFUI\Link('https://github.com/phpfui/BicycleClubWebsite2023', $toolTip);
+		$link->addAttribute('target', '_blank');
+		$topBar->addRight($link);
 
 		return "{$topBar}";
 		}

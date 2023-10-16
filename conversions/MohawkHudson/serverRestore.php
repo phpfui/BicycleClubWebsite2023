@@ -23,9 +23,11 @@ function getDatabase(string $server) : int
 	{
 	$dbSettings = new \App\Settings\DB($server);
 	$pdo = $dbSettings->getPDO();
+
 	if (! $pdo)
 		{
 		\PHPFUI\ORM::log(\Psr\Log\LogLevel::EMERGENCY, $dbSettings->getError());
+
 		exit;
 		}
 
@@ -40,7 +42,7 @@ function getDatabase(string $server) : int
 \PHPFUI\Translation\Translator::setLocale('en_US');
 \date_default_timezone_set('America/New_York');
 
-$drupalConnection = getDatabase($argv[1] ?? 'drupal');
+$drupalConnection = \getDatabase($argv[1] ?? 'drupal');
 
 $fileName = $argv[3] ?? PROJECT_ROOT . '/www.mohawkhudsoncyclingclub.org.sql.gz';
 
@@ -53,7 +55,7 @@ echo 'Backup is dated ' . \date('F d Y H:i:s.', \filemtime($fileName)) . "\n";
 
 // Raising this value may increase performance
 $bufferSize = 4096 * 8; // read 4kb at a time
-$restoredFileName = "backup.mhbc.sql";
+$restoredFileName = 'backup.mhbc.sql';
 
 // Open our files (in binary mode)
 $file = \gzopen($fileName, 'rb');
@@ -97,4 +99,3 @@ else
 	}
 
 \unlink($cleanedFileName);
-

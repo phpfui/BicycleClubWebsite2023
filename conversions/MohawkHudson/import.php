@@ -19,6 +19,18 @@ function trans(string $text, array $parameters = []) : string
 	return \PHPFUI\Translation\Translator::trans($text, $parameters);
 	}
 
+function deleteFile(string $fileName) : void
+	{
+	if (! \unlink($fileName))
+		{
+		echo "Failed to delete file {$fileName}\n";
+		}
+	else
+		{
+		echo "Deleted file {$fileName}\n";
+		}
+	}
+
 function getDatabase(string $server) : int
 	{
 	$dbSettings = new \App\Settings\DB($server);
@@ -45,18 +57,11 @@ function getDatabase(string $server) : int
 $liveConnection = \getDatabase($argv[1] ?? 'mohawk');
 $drupalConnection = \getDatabase($argv[2] ?? 'drupal');
 
-$restore = false;
+$fileName = $argv[3] ?? PROJECT_ROOT . '/www.mohawkhudsoncyclingclub.org.sql.gz';
 
-if ($restore)
+if (\file_exists($fileName))
 	{
-	$fileName = $argv[3] ?? PROJECT_ROOT . '/www.mohawkhudsoncyclingclub.org.sql.gz';
-
-	if (! \file_exists($fileName))
-		{
-		\help("Backup file {$fileName} was not found");
-		}
-
-	echo 'Backup is dated ' . \date('F d Y H:i:s.', \filemtime($fileName)) . "\n";
+	echo "Backup file {$fileName} is dated " . \date('F d Y H:i:s.', \filemtime($fileName)) . "\n";
 
 	// Raising this value may increase performance
 	$bufferSize = 4096 * 8; // read 4kb at a time
@@ -77,11 +82,14 @@ if ($restore)
 	\fclose($outFile);
 	\gzclose($file);
 
+	\deleteFile($fileName);
+
 	$cleanedFileName = 'cleaned.mhbc.sql';
+	echo "Cleaning file {$restoredFileName} into file {$cleanedFileName}\n";
 	$cleaner = new \PHPFUI\ORM\Tool\CleanBackup($restoredFileName, $cleanedFileName);
 	$cleaner->run();
 
-	echo "Restoring backup\n";
+	echo "Restoring backup {$cleanedFileName}\n";
 
 	$restore = new \App\Model\Restore($cleanedFileName);
 	$restore->run();
@@ -100,14 +108,16 @@ if ($restore)
 		{
 		echo "Backup restored with no errors\n";
 		}
+	\deleteFile($restoredFileName);
+	\deleteFile($cleanedFileName);
 	}
 else
 	{
 	echo "Using current data\n";
 	}
 
-$keys = ['cell_phone', 'emergency_contact_phone', 'expiration_date', 'first_name', 'home_phone', 'last_name', 'license_plate', 'list_in_public_directory', 'private_email', 'user_management_notes', ];
-$values = ['cellPhone', 'emergencyPhone', 'expires', 'firstName', 'phone', 'lastName', 'license', 'showNothing', 'email', 'affiliation', ];
+$keys = ['cell_phone', 'emergency_contact_phone', 'expiration_date', 'first_name', 'home_phone', 'last_name', 'license_plate', 'list_in_public_directory', 'private_email', 'user_management_notes', 'previous_expiration_date', 'legacy_date_changed', 'date_paid'];
+$values = ['cellPhone', 'emergencyPhone', 'expires', 'firstName', 'phone', 'lastName', 'license', 'showNothing', 'email', 'affiliation', 'previous_expiration_date', 'legacy_date_changed', 'date_paid'];
 $validFields = \array_combine($keys, $values);
 
 $badTables = ['user__field_interests', 'user__field_mailchimp_subscription', 'user__field_mailing_address', 'user__field_membership_level', 'user__field_membership_order', 'user__field_membership_type',
@@ -179,6 +189,7 @@ WHERE (`node_field_data`.`status` = '1') AND (`node_field_data`.`type` IN ('star
 ORDER BY `name` ASC";
 
 $drupalStartLocationsCursor = \PHPFUI\ORM::getArrayCursor($startLocationSQL);
+echo "Converting {$drupalStartLocationsCursor->count()} start locations\n";
 
 $permissionMapping = [
 	'administrator' => 'Super User',
@@ -218,7 +229,7 @@ foreach ($drupalStartLocationsCursor as $startArray)
 		$startArray['address'] .= ', ' . $startArray['address3'];
 		}
 	$startLocation->setFrom($startArray);
-	$startLocation->active = true;
+	$startLocation->active = 1;
 	$startLocation->insertOrUpdate();
 	}
 
@@ -268,14 +279,18 @@ $memberTables[] = new \App\Table\VolunteerPollResponse();
 $existingMembers = [];
 $existingMembers[] = new \App\Record\Member(['email' => 'elivote@outlook.com']);
 $existingMembers[] = new \App\Record\Member(['email' => 'fkelly12054@gmail.com']);
+$today = \App\Tools\Date::todayString();
 
 $permissions = new \App\Model\Permission();
+
+echo "Converting {$drupalMemberCursor->count()} members\n";
 
 foreach ($drupalMemberCursor as $memberArray)
 	{
 	$memberArray['email'] = \App\Model\Member::cleanEmail($memberArray['email']);
 
 	$member = new \App\Record\Member(['email' => $memberArray['email']]);
+	$membership = $member->membership;
 
 	if ($member->memberId < 1000)
 		{
@@ -288,12 +303,13 @@ foreach ($drupalMemberCursor as $memberArray)
 				foreach ($memberTables as $table)
 					{
 					$table->setWhere($condition);
-					$table->update(['memberId', $memberArray['memberId']]);
+					$table->update(['memberId' => $memberArray['memberId']]);
 					}
 				}
 			}
 		$member->delete();
 		}
+	$member = new \App\Record\Member();
 	$member->setFrom($memberArray);
 	$member->allowTexting = 1;
 	$member->deceased = 0;
@@ -309,17 +325,35 @@ foreach ($drupalMemberCursor as $memberArray)
 	$member->showNoPhone = 0;
 	$member->showNoStreet = 0;
 	$member->showNoTown = 0;
-	$member->showNothing = ! $member->showNothing;
+	$member->showNothing = $member->showNothing ? 0 : 1;
 	$member->verifiedEmail = 9;
-	$membership = $member->membership;
 
-	if (! $membership->membershipId)
+	$dates = [];
+	$dates[] = \App\Tools\Date::fromString($memberArray['previous_expiration_date'] ?? $today) - 365;
+	$dates[] = \App\Tools\Date::fromString($memberArray['legacy_date_changed'] ?? $today);
+	$dates[] = \App\Tools\Date::fromString($memberArray['date_paid'] ?? $today);
+	$joined = \App\Tools\Date::today();
+
+	foreach ($dates as $date)
 		{
-		\print_r($member);
-		\print_r($memberArray);
+		$joined = \min($joined, $date);
 		}
+	$joinedString = \App\Tools\Date::toString($joined);
+
+	if (empty($membership->joined) || $membership->joined > $joinedString)
+		{
+		$memberArray['joined'] = $joinedString;
+		}
+	else
+		{
+		$memberArray['joined'] = $membership->joined;
+		}
+
+	$membershipId = $membership->membershipId;
+
 	$membership->setFrom($memberArray);
 	$membership->insertOrUpdate();
+
 	$member->membership = $membership;
 	$member->insertOrUpdate();
 	$permissions->addPermissionToUser($member->memberId, 'Normal Member');
@@ -330,6 +364,8 @@ foreach ($drupalMemberCursor as $memberArray)
 \PHPFUI\ORM::useConnection($drupalConnection);
 $sql = 'SELECT entity_id,roles_target_id from user__roles where deleted=0 order by entity_id;';
 $permissionCursor = \PHPFUI\ORM::getArrayCursor($sql);
+
+echo "Converting {$permissionCursor->count()} permissions\n";
 
 \PHPFUI\ORM::useConnection($liveConnection);
 

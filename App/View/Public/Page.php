@@ -77,6 +77,10 @@ class Page extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 
 	public function getUniqueLink(\App\Record\PublicPage $publicPage) : string
 		{
+		if ($publicPage->redirectUrl)
+			{
+			return $publicPage->redirectUrl;
+			}
 		$baseLink = $publicPage->url ?? '';
 
 		if ($publicPage->hidden)

@@ -204,15 +204,17 @@ class PublicPageEditor
 		$url = new \PHPFUI\Input\Text('url', 'URL of the page', $publicPage->url);
 		$url->setToolTip('The URL relative to the root domain.  Should start with a /.');
 		$url->setRequired();
+		$redirect = new \PHPFUI\Input\Url('redirectUrl', 'Redirect to this URL', $publicPage->redirectUrl);
+		$redirect->setToolTip('If set, redirect to this URL');
+		$fieldSet->add(new \PHPFUI\MultiColumn($url, $redirect));
+
 		$homePageNotification = new \PHPFUI\Input\CheckBoxBoolean(' homePageNotification', 'Home Page Notification', (bool)$publicPage->homePageNotification);
 		$homePageNotification->setToolTip('Latest content headline will be listed on the user Home page');
-		$fieldSet->add(new \PHPFUI\MultiColumn($url, $homePageNotification));
-
 		$banner = new \PHPFUI\Input\CheckBoxBoolean('banner', 'Show page with banner', (bool)$publicPage->banner);
 		$banner->setToolTip('Check to show photo carousel at top of page');
 		$blog = new \PHPFUI\Input\CheckBoxBoolean('blog', 'Allow Custom Content', (bool)$publicPage->blog);
 		$blog->setToolTip('Check to display content at top of page (named as the header)');
-		$fieldSet->add(new \PHPFUI\MultiColumn($banner, $blog));
+		$fieldSet->add(new \PHPFUI\MultiColumn($homePageNotification, $banner, $blog));
 
 		$hidden = new \PHPFUI\Input\RadioGroup('hidden', 'Page Visability', (string)$publicPage->hidden);
 		$hidden->setToolTip('PUBLIC links allow third party website to link to them. NO OUTSIDE LINKS will not allow a third party page to access the link, but is still public and accessable via direct links on the website.');

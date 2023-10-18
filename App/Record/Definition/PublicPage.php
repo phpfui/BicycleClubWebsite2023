@@ -17,6 +17,7 @@ namespace App\Record\Definition;
  * @property int $publicMenu MySQL type tinyint
  * @property int $publicPageId MySQL type int
  * @property \App\Record\PublicPage $publicPage related record
+ * @property ?string $redirectUrl MySQL type varchar(255)
  * @property ?int $sequence MySQL type int
  * @property ?string $url MySQL type varchar(100)
  */
@@ -38,6 +39,7 @@ abstract class PublicPage extends \PHPFUI\ORM\Record
 		'name' => ['varchar(200)', 'string', 200, true, ],
 		'publicMenu' => ['tinyint', 'int', 0, false, 1, ],
 		'publicPageId' => ['int', 'int', 0, false, ],
+		'redirectUrl' => ['varchar(255)', 'string', 255, true, ],
 		'sequence' => ['int', 'int', 0, true, 0, ],
 		'url' => ['varchar(100)', 'string', 100, true, ],
 	];

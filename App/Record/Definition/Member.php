@@ -7,20 +7,20 @@ namespace App\Record\Definition;
  *
  * @property ?string $acceptedWaiver MySQL type timestamp
  * @property int $allowTexting MySQL type int
- * @property string $cellPhone MySQL type varchar(20)
+ * @property ?string $cellPhone MySQL type varchar(20)
  * @property int $deceased MySQL type int
  * @property int $discountCount MySQL type int
- * @property ?string $email MySQL type varchar(100)
+ * @property string $email MySQL type varchar(100)
  * @property int $emailAnnouncements MySQL type tinyint
  * @property int $emailNewsletter MySQL type int
  * @property ?string $emergencyContact MySQL type varchar(50)
  * @property ?string $emergencyPhone MySQL type varchar(20)
  * @property string $extension MySQL type varchar(10)
- * @property ?string $firstName MySQL type varchar(50)
+ * @property string $firstName MySQL type varchar(50)
  * @property int $geoLocate MySQL type int
  * @property int $journal MySQL type tinyint
  * @property string $lastLogin MySQL type timestamp
- * @property ?string $lastName MySQL type varchar(50)
+ * @property string $lastName MySQL type varchar(50)
  * @property ?string $license MySQL type char(10)
  * @property ?string $loginAttempts MySQL type varchar(255)
  * @property int $memberId MySQL type int
@@ -32,7 +32,7 @@ namespace App\Record\Definition;
  * @property ?string $passwordReset MySQL type varchar(20)
  * @property ?string $passwordResetExpires MySQL type timestamp
  * @property int $pendingLeader MySQL type int
- * @property string $phone MySQL type varchar(20)
+ * @property ?string $phone MySQL type varchar(20)
  * @property int $profileHeight MySQL type int
  * @property int $profileWidth MySQL type int
  * @property int $profileX MySQL type int
@@ -56,20 +56,20 @@ abstract class Member extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'acceptedWaiver' => ['timestamp', 'string', 20, true, ],
 		'allowTexting' => ['int', 'int', 0, false, 1, ],
-		'cellPhone' => ['varchar(20)', 'string', 20, false, '', ],
+		'cellPhone' => ['varchar(20)', 'string', 20, true, '', ],
 		'deceased' => ['int', 'int', 0, false, 0, ],
 		'discountCount' => ['int', 'int', 0, false, 0, ],
-		'email' => ['varchar(100)', 'string', 100, true, ],
+		'email' => ['varchar(100)', 'string', 100, false, ],
 		'emailAnnouncements' => ['tinyint', 'int', 0, false, 0, ],
 		'emailNewsletter' => ['int', 'int', 0, false, 1, ],
-		'emergencyContact' => ['varchar(50)', 'string', 50, true, ],
+		'emergencyContact' => ['varchar(50)', 'string', 50, true, '', ],
 		'emergencyPhone' => ['varchar(20)', 'string', 20, true, '', ],
 		'extension' => ['varchar(10)', 'string', 10, false, '', ],
-		'firstName' => ['varchar(50)', 'string', 50, true, ],
+		'firstName' => ['varchar(50)', 'string', 50, false, ],
 		'geoLocate' => ['int', 'int', 0, false, 1, ],
 		'journal' => ['tinyint', 'int', 0, false, 0, ],
 		'lastLogin' => ['timestamp', 'string', 20, false, null, ],
-		'lastName' => ['varchar(50)', 'string', 50, true, ],
+		'lastName' => ['varchar(50)', 'string', 50, false, ],
 		'license' => ['char(10)', 'string', 10, true, ],
 		'loginAttempts' => ['varchar(255)', 'string', 255, true, ],
 		'memberId' => ['int', 'int', 0, false, ],
@@ -79,7 +79,7 @@ abstract class Member extends \PHPFUI\ORM\Record
 		'passwordReset' => ['varchar(20)', 'string', 20, true, ],
 		'passwordResetExpires' => ['timestamp', 'string', 20, true, ],
 		'pendingLeader' => ['int', 'int', 0, false, 0, ],
-		'phone' => ['varchar(20)', 'string', 20, false, '', ],
+		'phone' => ['varchar(20)', 'string', 20, true, '', ],
 		'profileHeight' => ['int', 'int', 0, false, 0, ],
 		'profileWidth' => ['int', 'int', 0, false, 0, ],
 		'profileX' => ['int', 'int', 0, false, 0, ],

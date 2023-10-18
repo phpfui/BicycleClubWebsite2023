@@ -22,6 +22,8 @@ class Register implements \Stringable
 				unset($rider['prize']);
 				$this->cartModel->addGaRider($rider);
 				$this->page->redirect();
+
+				return;
 				}
 			}
 
@@ -40,6 +42,8 @@ class Register implements \Stringable
 			$membership['signedUpOn'] = \date('Y-m-d H:i:s');
 			$this->cartModel->addGaRider($membership);
 			$this->page->redirect();
+
+			return;
 			}
 		}
 

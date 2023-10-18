@@ -8,7 +8,7 @@ class Rider
 		{
 		if (\App\Model\Session::checkCSRF())
 			{
-			if ('Add Rider' == ($_POST['submit'] ?? ''))
+			if ('Add Registration' == ($_POST['submit'] ?? ''))
 				{
 				$rider = new \App\Record\GaRider();
 				$rider->setFrom($_POST);
@@ -57,7 +57,7 @@ class Rider
 			}
 
 		$rider = new \App\Record\GaRider();
-		$submit = new \PHPFUI\Submit('Add Rider');
+		$submit = new \PHPFUI\Submit('Add Registration');
 		$form = new \App\UI\ErrorFormSaver($this->page, $rider);
 		$form->add(new \App\View\GA\EventPicker($this->page, \App\View\GA\EventPicker::SINGLE_SELECT, 'Select Event'));
 		$form->add($this->getEditFields($rider));

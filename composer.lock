@@ -1437,22 +1437,22 @@
         },
         {
             "name": "laminas/laminas-uri",
-            "version": "2.10.0",
+            "version": "2.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-uri.git",
-                "reference": "663b050294945c7345cc3a61f3ca661d5f9e1f80"
+                "reference": "e662c685125061d3115906e5eb30f966842cc226"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-uri/zipball/663b050294945c7345cc3a61f3ca661d5f9e1f80",
-                "reference": "663b050294945c7345cc3a61f3ca661d5f9e1f80",
+                "url": "https://api.github.com/repos/laminas/laminas-uri/zipball/e662c685125061d3115906e5eb30f966842cc226",
+                "reference": "e662c685125061d3115906e5eb30f966842cc226",
                 "shasum": ""
             },
             "require": {
                 "laminas/laminas-escaper": "^2.9",
-                "laminas/laminas-validator": "^2.15",
-                "php": "~8.0.0 || ~8.1.0 || ~8.2.0"
+                "laminas/laminas-validator": "^2.39",
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0"
             },
             "conflict": {
                 "zendframework/zend-uri": "*"
@@ -1491,7 +1491,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2022-10-16T15:02:45+00:00"
+            "time": "2023-10-18T09:56:55+00:00"
         },
         {
             "name": "laminas/laminas-validator",
@@ -1583,12 +1583,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/maximebf/php-debugbar.git",
-                "reference": "376ff32ee50c2c24cebd16ccb5a30c647e9b3c6d"
+                "reference": "27b3c2f2340d429e466d42ebcd47034bf3cd1850"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/376ff32ee50c2c24cebd16ccb5a30c647e9b3c6d",
-                "reference": "376ff32ee50c2c24cebd16ccb5a30c647e9b3c6d",
+                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/27b3c2f2340d429e466d42ebcd47034bf3cd1850",
+                "reference": "27b3c2f2340d429e466d42ebcd47034bf3cd1850",
                 "shasum": ""
             },
             "require": {
@@ -1642,7 +1642,7 @@
                 "issues": "https://github.com/maximebf/php-debugbar/issues",
                 "source": "https://github.com/maximebf/php-debugbar/tree/master"
             },
-            "time": "2023-09-22T11:01:00+00:00"
+            "time": "2023-10-12T16:09:55+00:00"
         },
         {
             "name": "mpdf/mpdf",
@@ -2765,16 +2765,16 @@
         },
         {
             "name": "phpfui/orm",
-            "version": "V1.5.1",
+            "version": "V1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ORM.git",
-                "reference": "5c9047264565c7df2a71bc445415ef118efb0daa"
+                "reference": "2e5391b7ec107a5c6bf13eb04b271620094ad73c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ORM/zipball/5c9047264565c7df2a71bc445415ef118efb0daa",
-                "reference": "5c9047264565c7df2a71bc445415ef118efb0daa",
+                "url": "https://api.github.com/repos/phpfui/ORM/zipball/2e5391b7ec107a5c6bf13eb04b271620094ad73c",
+                "reference": "2e5391b7ec107a5c6bf13eb04b271620094ad73c",
                 "shasum": ""
             },
             "require": {
@@ -2821,22 +2821,22 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ORM/issues",
-                "source": "https://github.com/phpfui/ORM/tree/V1.5.1"
+                "source": "https://github.com/phpfui/ORM/tree/V1.5.2"
             },
-            "time": "2023-09-30T19:16:58+00:00"
+            "time": "2023-10-19T15:01:27+00:00"
         },
         {
             "name": "phpfui/phpfui",
-            "version": "V6.2.15",
+            "version": "V6.2.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/phpfui.git",
-                "reference": "15148372267bf70fabfea372b9e0de6afcbb27a1"
+                "reference": "5dfbbaee1a68042cb8ea3890768be8a8b24e4213"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/phpfui/zipball/15148372267bf70fabfea372b9e0de6afcbb27a1",
-                "reference": "15148372267bf70fabfea372b9e0de6afcbb27a1",
+                "url": "https://api.github.com/repos/phpfui/phpfui/zipball/5dfbbaee1a68042cb8ea3890768be8a8b24e4213",
+                "reference": "5dfbbaee1a68042cb8ea3890768be8a8b24e4213",
                 "shasum": ""
             },
             "require": {
@@ -2888,9 +2888,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/phpfui/issues",
-                "source": "https://github.com/phpfui/phpfui/tree/V6.2.15"
+                "source": "https://github.com/phpfui/phpfui/tree/V6.2.16"
             },
-            "time": "2023-09-29T18:21:09+00:00"
+            "time": "2023-10-09T20:50:24+00:00"
         },
         {
             "name": "phpfui/translation",
@@ -4345,16 +4345,16 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "6.7.0",
+            "version": "6.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "02e194ec4d37aab8335332f8ac3e8d2292ba2d47"
+                "reference": "b1ddb5ec9b0c7f5d542429a044bd303648d2d647"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/02e194ec4d37aab8335332f8ac3e8d2292ba2d47",
-                "reference": "02e194ec4d37aab8335332f8ac3e8d2292ba2d47",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/b1ddb5ec9b0c7f5d542429a044bd303648d2d647",
+                "reference": "b1ddb5ec9b0c7f5d542429a044bd303648d2d647",
                 "shasum": ""
             },
             "type": "component",
@@ -4398,22 +4398,22 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/6.7.0"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/6.7.1"
             },
-            "time": "2023-08-30T11:10:35+00:00"
+            "time": "2023-10-19T03:04:57+00:00"
         },
         {
             "name": "twilio/sdk",
-            "version": "7.11.1",
+            "version": "7.12.0",
             "source": {
                 "type": "git",
                 "url": "git@github.com:twilio/twilio-php.git",
-                "reference": "f6ffe7073e7f13250c7aa201468fedd342037350"
+                "reference": "f281d7b793f02377ab0f38e7166e16820acc3eae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/f6ffe7073e7f13250c7aa201468fedd342037350",
-                "reference": "f6ffe7073e7f13250c7aa201468fedd342037350",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/f281d7b793f02377ab0f38e7166e16820acc3eae",
+                "reference": "f281d7b793f02377ab0f38e7166e16820acc3eae",
                 "shasum": ""
             },
             "require": {
@@ -4449,7 +4449,7 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2023-10-05T08:46:00+00:00"
+            "time": "2023-10-19T11:57:30+00:00"
         },
         {
             "name": "voku/simple_html_dom",
@@ -5441,16 +5441,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.38",
+            "version": "1.10.39",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "5302bb402c57f00fb3c2c015bac86e0827e4b691"
+                "reference": "d9dedb0413f678b4d03cbc2279a48f91592c97c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/5302bb402c57f00fb3c2c015bac86e0827e4b691",
-                "reference": "5302bb402c57f00fb3c2c015bac86e0827e4b691",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/d9dedb0413f678b4d03cbc2279a48f91592c97c4",
+                "reference": "d9dedb0413f678b4d03cbc2279a48f91592c97c4",
                 "shasum": ""
             },
             "require": {
@@ -5499,7 +5499,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-06T14:19:14+00:00"
+            "time": "2023-10-17T15:46:26+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -6026,12 +6026,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "efd339340c840237fad050f3ea6fd8bbbbfc7ed6"
+                "reference": "c8ae106748275c5feb622b72dce28a0427770f4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/efd339340c840237fad050f3ea6fd8bbbbfc7ed6",
-                "reference": "efd339340c840237fad050f3ea6fd8bbbbfc7ed6",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/c8ae106748275c5feb622b72dce28a0427770f4f",
+                "reference": "c8ae106748275c5feb622b72dce28a0427770f4f",
                 "shasum": ""
             },
             "conflict": {
@@ -6171,7 +6171,7 @@
                 "ezsystems/ezplatform-richtext": ">=2.3,<2.3.7.1-dev",
                 "ezsystems/ezplatform-user": ">=1,<1.0.1",
                 "ezsystems/ezpublish-kernel": "<6.13.8.2-dev|>=7,<7.5.30",
-                "ezsystems/ezpublish-legacy": "<=2017.12.7.3|>=2018.6,<=2019.03.5.1",
+                "ezsystems/ezpublish-legacy": "<=2017.12.7.3|>=2018.06,<=2019.03.5.1",
                 "ezsystems/platform-ui-assets-bundle": ">=4.2,<4.2.3",
                 "ezsystems/repository-forms": ">=2.3,<2.3.2.1-dev|>=2.5,<2.5.15",
                 "ezyang/htmlpurifier": "<4.1.1",
@@ -6309,7 +6309,7 @@
                 "magento/magento1ee": ">=1,<1.14.4.3-dev",
                 "magento/product-community-edition": ">=2,<2.2.10|>=2.3,<2.3.2.0-patch2",
                 "maikuolan/phpmussel": ">=1,<1.6",
-                "mantisbt/mantisbt": "<=2.25.5",
+                "mantisbt/mantisbt": "<=2.25.7",
                 "marcwillmann/turn": "<0.3.3",
                 "matyhtf/framework": "<3.0.6",
                 "mautic/core": "<4.3",
@@ -6461,7 +6461,7 @@
                 "silverstripe/comments": ">=1.3,<1.9.99|>=2,<2.9.99|>=3,<3.1.1",
                 "silverstripe/forum": "<=0.6.1|>=0.7,<=0.7.3",
                 "silverstripe/framework": "<4.13.14|>=5,<5.0.13",
-                "silverstripe/graphql": "<3.5.2|>=4.0.0.0-alpha1,<4.0.0.0-alpha2|>=4.1.1,<4.1.2|>=4.2.2,<4.2.3",
+                "silverstripe/graphql": "<3.8.2|>=4,<4.1.3|>=4.2,<4.2.5|>=4.3,<4.3.4|>=5,<5.0.3",
                 "silverstripe/hybridsessions": ">=1,<2.4.1|>=2.5,<2.5.1",
                 "silverstripe/recipe-cms": ">=4.5,<4.5.3",
                 "silverstripe/registry": ">=2.1,<2.1.2|>=2.2,<2.2.1",
@@ -6699,7 +6699,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-11T21:04:21+00:00"
+            "time": "2023-10-18T17:04:20+00:00"
         },
         {
             "name": "sebastian/cli-parser",

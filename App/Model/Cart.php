@@ -250,6 +250,21 @@ class Cart
 			}
 		}
 
+	public function delete(\App\Record\CartItem $cartItem) : bool
+		{
+		if (self::TYPE_EVENT == $cartItem->type)
+			{
+			}
+		elseif (self::TYPE_GA == $cartItem->type)
+			{
+			$gaRider = new \App\Record\GaRider();
+			$gaRider->gaRiderId = $cartItem->storeItemDetailId;
+			$gaRider->delete();
+			}
+
+		return $cartItem->delete();
+		}
+
 	public function getCount() : int
 		{
 		return $this->count;

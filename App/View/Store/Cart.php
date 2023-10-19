@@ -134,15 +134,16 @@ class Cart
 				$item['price'] = '$' . \number_format($item['price'], 2);
 				$item['tax'] = '$' . \number_format($item['tax'], 2);
 				$messages = [];
+				$message = '';
 
 				switch ($item['type'])
 					{
 					case \App\Model\Cart::TYPE_GA:
-						$message = $this->gaModel->getWarningMessage($item['storeItemDetailId']);
+						$warnings = $this->gaModel->getWarningMessages($item['storeItemDetailId']);
 
-						if ($message)
+						if ($warnings)
 							{
-							$messages[] = $message;
+							$messages = \array_merge($messages, $warnings);
 							}
 
 						if (\in_array($item['detailLine'], $dupes))
@@ -161,7 +162,7 @@ class Cart
 							$editLink = "<br><a href='/GA/editRider/{$item['storeItemDetailId']}'>{$item['detailLine']}</a>";
 							}
 
-						$item['description'] = "{$item['title']}" . $message;
+						$item['description'] = "{$item['title']}<br><b>{$item['detailLine']}</b>" . $message;
 						$dupes[] = $item['detailLine'];
 						$item['quantity'] = 1;
 						$add = true;
@@ -289,8 +290,7 @@ class Cart
 		{
 		if ('delete' == ($parameters['action'] ?? ''))
 			{
-			$cartItem = new \App\Record\CartItem($parameters['cartItemId']);
-			$cartItem->delete();
+			$this->model->delete(new \App\Record\CartItem((int)$parameters['cartItemId']));
 			$this->page->redirect();
 			}
 		elseif (isset($parameters['submit']) && \App\Model\Session::checkCSRF())

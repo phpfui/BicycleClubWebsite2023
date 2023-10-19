@@ -133,22 +133,34 @@ class GeneralAdmission
 		return $price;
 		}
 
-	public function getWarningMessage(int $gaRiderId) : string
+	/**
+	 * @return array<string>
+	 */
+	public function getWarningMessages(int $gaRiderId) : array
 		{
 		$rider = new \App\Record\GaRider($gaRiderId);
-		$message = '';
-		$condition = new \PHPFUI\ORM\Condition('email', $rider->email ?? '');
-		$condition->and('pending', 0)->and('gaEventId', $rider->gaEventId);
-		$this->gaRiderTable->setWhere($condition);
-		$similar = $this->gaRiderTable->getRecordCursor();
+		$messages = [];
 
-		if (\count($similar))
+		$fields = [
+			'phone' => 'phone number',
+			'email' => 'email address',
+		];
+
+		foreach ($fields as $field => $fieldName)
 			{
-			$dupRider = $similar->current();
-			$message = 'A rider with this email address registered on ' . $dupRider->signedUpOn;
+			$condition = new \PHPFUI\ORM\Condition($field, $rider->{$field} ?? '');
+			$condition->and('pending', 0)->and('gaEventId', $rider->gaEventId);
+			$this->gaRiderTable->setWhere($condition);
+			$similar = $this->gaRiderTable->getRecordCursor();
+
+			if (\count($similar))
+				{
+				$dupRider = $similar->current();
+				$messages[] = "A rider with this {$fieldName} registered on {$dupRider->signedUpOn}";
+				}
 			}
 
-		return $message;
+		return $messages;
 		}
 
 	public function setRiderPending(int $gaRiderId, int $pending) : void

@@ -180,13 +180,15 @@ class Member
 		$membershipsCombined = null;
 		$tables = null;
 
+		$addFields = ['volunteerPoints', 'discountCount'];
+
 		if ($memberId)
 			{
 			$member = new \App\Record\Member($memberId);
 
 			foreach ($post as $key => $value)
 				{
-				if (\str_contains($key, 'combine'))
+				if ($value && \str_contains($key, 'combine'))
 					{
 					[$junk, $combinedMemberId] = \explode('-', $key);
 
@@ -196,7 +198,12 @@ class Member
 
 						if ($combine->membershipId == $member->membershipId)
 							{
-							$members[] = $memberId;
+							$members[] = $combinedMemberId;
+
+							foreach ($addFields as $field)
+								{
+								$member->{$field} += $combine->{$field};
+								}
 
 							foreach ($member->toArray() as $key => $value)
 								{
@@ -217,7 +224,8 @@ class Member
 
 			foreach (\glob($path) as $class)
 				{
-				$class = \str_replace('/', '\\', (string)$class);
+				$class = \str_replace(PROJECT_ROOT, '', (string)$class);
+				$class = \str_replace('/', '\\', $class);
 				$class = \substr($class, \strrpos($class, __NAMESPACE__));
 				$class = \substr($class, 0, \strpos($class, '.'));
 				$table = new $class();
@@ -234,7 +242,6 @@ class Member
 
 			foreach ($members as $deleteMemberId)
 				{
-				$key = ['memberId' => $deleteMemberId];
 				$condition = new \PHPFUI\ORM\Condition('memberId', $deleteMemberId);
 
 				foreach ($tables as $table)

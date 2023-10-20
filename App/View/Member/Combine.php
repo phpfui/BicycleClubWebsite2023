@@ -42,7 +42,7 @@ class Combine
 		$container = new \PHPFUI\Container();
 		$container->add(new \PHPFUI\SubHeader('Combined Member'));
 
-		if (! $member->empty())
+		if ($member->loaded())
 			{
 			$view = new \App\View\Member($this->page);
 			$container->add($view->show($member->membership->MemberChildren));

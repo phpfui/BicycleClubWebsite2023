@@ -58,7 +58,7 @@ class Combine
 		$form->setAttribute('method', 'GET');
 		$form->setAreYouSure(false);
 		$fieldSet = new \PHPFUI\FieldSet('Enter Address To Find');
-		$fieldSet->add(new \PHPFUI\Input\Text('address', 'Can be partial address', $search));
+		$fieldSet->add(new \PHPFUI\Input\Text('membership_address', 'Can be partial address', $search));
 		$form->add($fieldSet);
 		$form->add(new \PHPFUI\Submit('Search'));
 
@@ -76,7 +76,7 @@ class Combine
 			$alert = new \App\UI\Alert('No match, please try again');
 			$alert->addClass('warning');
 			$container->add($alert);
-			$container->add($this->getSearchPage($get['address']));
+			$container->add($this->getSearchPage($get['membership_address']));
 
 			return $container;
 			}

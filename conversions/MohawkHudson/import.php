@@ -139,7 +139,7 @@ foreach (\PHPFUI\ORM::getTables() as $table)
 	{
 	$tablePrefix = 'user__field_';
 
-	if (\str_starts_with($table, 'migrate'))
+	if (\str_starts_with($table, 'migrate') || \str_starts_with($table, 'cache_'))
 		{
 		\PHPFUI\ORM::execute('drop table ' . $table);
 		}

@@ -2,6 +2,8 @@ parameters:
 	level: 5
 	errorFormat: raw
 	editorUrl: '%%file%% %%line%% %%column%%: %%error%%'
+	bootstrapFiles:
+		- commonbase.php
 	paths:
 		- App
 	scanFiles:

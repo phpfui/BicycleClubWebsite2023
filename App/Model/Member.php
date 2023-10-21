@@ -976,7 +976,7 @@ class Member
 		{
 		$annualDues = $this->duesModel->getMembershipPrice(1, $years);
 		$additionalMemberDues = $this->duesModel->getAdditionalMembershipPrice($additionalMembers + 1, $years);
-		$totalPrice = $this->duesModel->getTotalMembershipPrice($additionalMembers + 1, $years);
+		$totalPrice = $this->duesModel->getTotalMembershipPrice($additionalMembers + 1, $years) + $donation;
 		$today = \App\Tools\Date::todayString();
 		$invoice = new \App\Record\Invoice();
 		$invoice->orderDate = $today;

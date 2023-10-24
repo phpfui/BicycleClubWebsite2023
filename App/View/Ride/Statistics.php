@@ -21,7 +21,7 @@ class Statistics
 			$rideTable = new \App\Table\Ride();
 			$rideTable->find($_GET);
 			$rideTable->addSelect('member.firstName', 'First Name');
-			$rideTable->addSelect('member.firstLast', 'Last Name');
+			$rideTable->addSelect('member.lastName', 'Last Name');
 			$rideTable->addSelect(new \PHPFUI\ORM\Literal('count(ride.rideId)'), '# Number Of Club Rides');
 			$rideTable->addSelect(new \PHPFUI\ORM\Literal('round(sum(ride.mileage))'), '# Club Miles');
 			$rideTable->addSelect(new \PHPFUI\ORM\Literal('sum(ride.elevation)'), 'Elevation Gained');

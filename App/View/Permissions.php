@@ -23,7 +23,7 @@ class Permissions
 		$this->processAJAXRequest();
 		}
 
-	public function editMember(int $memberId) : \PHPFUI\Form
+	public function editMember(\App\Record\Member $member) : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit();
 		$form = new \PHPFUI\Form($this->page, $submit);
@@ -35,7 +35,7 @@ class Permissions
 			}
 		else
 			{
-			$form->add(new \PHPFUI\Input\Hidden('memberId', (string)$memberId));
+			$form->add(new \PHPFUI\Input\Hidden('memberId', (string)$member->memberId));
 			$permissions = $this->page->getPermissions();
 			$result = $this->permissionTable->getRecordCursor();
 
@@ -69,7 +69,7 @@ class Permissions
 					}
 				}
 
-			$permissions = $this->userPermissionTable->getPermissionsForUser($memberId);
+			$permissions = $this->userPermissionTable->getPermissionsForUser($member->memberId);
 			$notAdditional = $allPermissions;
 			$notInRevoked = $allPermissions;
 			$notInGroup = $allGroups;

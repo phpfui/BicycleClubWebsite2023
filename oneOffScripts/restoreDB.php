@@ -36,7 +36,22 @@ if ($dbSettings->empty())
 	\help("Database {$db} was not found");
 	}
 
-$fileName = $argv[2] ?? 'backup.gz';
+$baseFileName = $fileName = $argv[2] ?? 'backup';
+
+if (! \str_contains($baseFileName, '.'))
+	{
+	foreach (['.zip', '.gz', '.sql'] as $extension)
+		{
+		$fullFileName = $baseFileName . $extension;
+
+		if (\file_exists($fullFileName))
+			{
+			$fileName = $fullFileName;
+
+			break;
+			}
+		}
+	}
 
 if (! \file_exists($fileName))
 	{
@@ -45,27 +60,48 @@ if (! \file_exists($fileName))
 
 echo 'Backup is dated ' . \date('F d Y H:i:s.', \filemtime($fileName)) . "\n";
 
-// Raising this value may increase performance
-$bufferSize = 4096 * 8; // read 4kb at a time
-$outFileName = \str_replace('.gz', '', $fileName);
+if (\str_contains($fileName, '.gz'))
+	{
+	// Raising this value may increase performance
+	$bufferSize = 4096 * 8; // read 4kb at a time
+	$outFileName = \str_replace('.gz', '', $fileName);
 
-// Open our files (in binary mode)
-$file = \gzopen($fileName, 'rb');
-$outFile = \fopen($outFileName, 'wb');
+	// Open our files (in binary mode)
+	$file = \gzopen($fileName, 'rb');
+	$outFile = \fopen($outFileName, 'wb');
 
-// Keep repeating until the end of the input file
-while(! \gzeof($file)) {
-	// Read buffer-size bytes
-	// Both fwrite and gzread and binary-safe
-	\fwrite($outFile, \gzread($file, $bufferSize));
-}
+	// Keep repeating until the end of the input file
+	while(! \gzeof($file)) {
+		// Read buffer-size bytes
+		// Both fwrite and gzread and binary-safe
+		\fwrite($outFile, \gzread($file, $bufferSize));
+	}
 
-// Files are done, close files
-\fclose($outFile);
-\gzclose($file);
+	// Files are done, close files
+	\fclose($outFile);
+	\gzclose($file);
+	}
+elseif (\str_contains($fileName, '.zip'))
+	{
+	$zip = new \ZipArchive();
+	echo "unzipping {$fileName}\n";
+	$status = $zip->open('.\\' . $fileName);
+
+	if (true === $status)
+		{
+		// Extract the contents of the ZIP file to the current directory.
+		$zip->extractTo('.');
+		// Close the ZIP file.
+		$zip->close();
+		}
+	else
+		{
+		\help("Error unzipping file {$fileName}: {$status}");
+		}
+	}
 
 $restoredFileName = "backup.{$db}.sql";
-$cleaner = new \PHPFUI\ORM\Tool\CleanBackup('backup', $restoredFileName);
+$cleaner = new \PHPFUI\ORM\Tool\CleanBackup($baseFileName, $restoredFileName);
 $cleaner->run();
 
 echo "Restoring backup\n";

@@ -13,12 +13,14 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Rides/edit/0', 'Add A Ride');
 			$this->addSub($menu, '/Rides/addByCueSheet', 'Add CueSheet Ride');
 			$this->addSub($menu, '/Rides/past', 'Past Rides');
-			$this->addSub($menu, '/Rides/myPast', 'My Past Rides');
+			$this->addSub($menu, '/Rides/My/past', 'My Past Rides');
 			$this->addSub($menu, '/Rides/attendance', 'Ride Attendance');
 			$this->addSub($menu, '/Rides/schedule', 'Ride Schedule');
-			$this->addSub($menu, '/Rides/statistics', 'Ride Statistics');
+			$this->addSub($menu, '/Rides/Statistics/ride', 'Ride Statistics');
+			$this->addSub($menu, '/Rides/Statistics/riders', 'Rider Statistics');
 			$this->addSub($menu, '/Rides/search', 'Search Rides');
-			$this->addSub($menu, '/Rides/myCategoryRides', 'Rides In My Category');
+			$this->addSub($menu, '/Rides/My/category', 'Rides In My Category');
+//			$this->addSub($menu, '/Rides/My/statistics', 'My Ride Statistics');
 			$this->addSub($menu, '/Rides/csv', 'Download Rides.csv');
 			}
 

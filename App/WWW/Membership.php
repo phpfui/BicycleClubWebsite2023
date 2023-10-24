@@ -572,7 +572,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 				{
 				$this->page->addSubHeader('for ' . $member->fullName());
 				$view = new \App\View\Permissions($this->page);
-				$this->page->addPageContent($view->editMember($member->memberId));
+				$this->page->addPageContent($view->editMember($member));
 				}
 			else
 				{

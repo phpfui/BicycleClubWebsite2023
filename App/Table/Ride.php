@@ -45,84 +45,58 @@ class Ride extends \PHPFUI\ORM\Table
 	 */
 	public function find(array $parameters) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from ride
-			left join pace on pace.paceId=ride.paceId
-			where';
-		$and = ' ';
-		$input = [];
+		$this->addJoin('pace');
+
+		$condition = new \PHPFUI\ORM\Condition();
 
 		if (! empty($parameters['start']))
 			{
-			$sql .= $and . 'rideDate>=?';
-			$input[] = $parameters['start'];
-			$and = ' and ';
+			$condition->and('rideDate', $parameters['start'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
 			}
 
 		if (! empty($parameters['end']))
 			{
-			$sql .= $and . 'rideDate<=?';
-			$input[] = $parameters['end'];
-			$and = ' and ';
+			$condition->and('rideDate', $parameters['end'], new \PHPFUI\ORM\Operator\LessThanEqual());
 			}
 
 		if (! empty($parameters['minDistance']))
 			{
-			$sql .= $and . 'mileage>=?';
-			$input[] = (int)$parameters['minDistance'];
-			$and = ' and ';
+			$condition->and('mileage', $parameters['minDistance'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
 			}
 
 		if (! empty($parameters['maxDistance']))
 			{
-			$sql .= $and . 'mileage<=?';
-			$input[] = (int)$parameters['maxDistance'];
-			$and = ' and ';
+			$condition->and('mileage', $parameters['maxDistance'], new \PHPFUI\ORM\Operator\LessThanEqual());
 			}
 
 		if ($parameters['startLocationId'] ?? 0)
 			{
-			$sql .= $and . 'startLocationId=?';
-			$input[] = (int)$parameters['startLocationId'];
-			$and = ' and ';
+			$condition->and('startLocationId', $parameters['startLocationId']);
 			}
 
 		if (! empty($parameters['title']))
 			{
-			$sql .= $and . 'title like ?';
-			$input[] = '%' . $parameters['title'] . '%';
-			$and = ' and ';
+			$condition->and('title', '%' . $parameters['title'] . '%', new \PHPFUI\ORM\Operator\Like());
 			}
 
 		if (! empty($parameters['description']))
 			{
-			$sql .= $and . 'description like ?';
-			$input[] = '%' . $parameters['description'] . '%';
-			$and = ' and ';
+			$condition->and('description', '%' . $parameters['description'] . '%', new \PHPFUI\ORM\Operator\Like());
 			}
 
 		if (! empty($parameters['categories']))
 			{
 			$paceTable = new \App\Table\Pace();
 			$paces = $paceTable->getPacesForCategories($parameters['categories']);
-
-			if ($paces)
-				{
-				$sql .= $and . 'ride.paceId in (';
-				$comma = '';
-
-				foreach ($paces as $id)
-					{
-					$sql .= $comma . '?';
-					$input[] = $id;
-					$comma = ',';
-					}
-				$sql .= ')';
-				$and = ' and ';
-				}
+			$condition->and('ride.paceId', $paces, new \PHPFUI\ORM\Operator\In());
 			}
-		$sql .= ' order by rideDate asc,pace.ordering asc,startTime asc,mileage';
+		$this->setWhere($condition);
+		$this->setOrderBy('rideDate');
+		$this->addOrderBy('pace.ordering');
+		$this->addOrderBy('startTime');
+		$this->addOrderBy('mileage');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
+		return $this->getDataObjectCursor();
 		}
 
 	/**

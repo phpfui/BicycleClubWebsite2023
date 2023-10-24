@@ -2,42 +2,10 @@
 
 namespace App\View\Ride;
 
-class Search implements \Stringable
+class Search
 	{
 	public function __construct(private readonly \App\View\Page $page)
 		{
-		}
-
-	public function __toString() : string
-		{
-		$button = new \PHPFUI\Button('Search Rides');
-		$modal = $this->getDateRangeModal($button);
-		$output = new \PHPFUI\Container();
-		$output->add($button);
-		$row = new \PHPFUI\GridX();
-
-		if (! empty($_GET['start']) && ! empty($_GET['end']))
-			{
-			$start = $_GET['start'];
-			$end = $_GET['end'];
-			$format = 'l, F j, Y';
-			$row->add(\App\Tools\Date::formatString($format, $start) . ' - ' . \App\Tools\Date::formatString($format, $end));
-			$view = new \App\View\Rides($this->page);
-			$rideTable = new \App\Table\Ride();
-			$rides = $rideTable->find($_GET);
-			$output->add($view->schedule($rides, 'No Rides found'));
-
-			if (\count($rides))
-				{
-				$output->add($button);
-				}
-			}
-		else
-			{
-			$modal->showOnPageLoad();
-			}
-
-		return (string)"{$output}";
 		}
 
 	public function csvSearch() : string
@@ -62,7 +30,7 @@ class Search implements \Stringable
 		return "{$output}";
 		}
 
-	protected function getDateRangeModal(\PHPFUI\HTML5Element $modalLink, string $name = 'Search Rides') : \PHPFUI\Reveal
+	public function getDateRangeModal(\PHPFUI\HTML5Element $modalLink, string $name = 'Search Rides') : \PHPFUI\Reveal
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
 		$form = new \PHPFUI\Form($this->page);
@@ -128,5 +96,32 @@ class Search implements \Stringable
 		$modal->add($form);
 
 		return $modal;
+		}
+
+	public function list() : \PHPFUI\Container
+		{
+		$button = new \PHPFUI\Button($name = 'Search Rides');
+		$modal = $this->getDateRangeModal($button, $name);
+		$output = new \PHPFUI\Container();
+		$output->add($button);
+
+		if (! empty($_GET['start']) && ! empty($_GET['end']))
+			{
+			$view = new \App\View\Rides($this->page);
+			$rideTable = new \App\Table\Ride();
+			$rides = $rideTable->find($_GET);
+			$output->add($view->schedule($rides, 'No Rides found'));
+
+			if (\count($rides))
+				{
+				$output->add($button);
+				}
+			}
+		else
+			{
+			$modal->showOnPageLoad();
+			}
+
+		return $output;
 		}
 	}

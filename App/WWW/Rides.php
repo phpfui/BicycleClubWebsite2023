@@ -203,54 +203,6 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->page->addPageContent($this->view->schedule(\App\Table\Ride::upcomingRides()));
 		}
 
-	public function myCategoryRides() : void
-		{
-		if ($this->page->addHeader('Rides In My Category'))
-			{
-			$this->page->addPageContent($this->view->schedule(\App\Table\Ride::getMyCategoryRides(\App\Model\Session::signedInMemberRecord())));
-			}
-		}
-
-	public function myPast(int $year = 0, int $month = 0) : void
-		{
-		$today = \App\Tools\Date::today();
-		$year = $year ?: \App\Tools\Date::year($today);
-		$month = $month ?: \App\Tools\Date::month($today);
-
-		if ($this->page->addHeader('My Past Rides'))
-			{
-			$noRides = 'You have no online signups';
-			$newestRide = \App\Table\Ride::getMyNewest();
-			$oldestRide = \App\Table\Ride::getMyOldest();
-
-			if ($newestRide->loaded() && $oldestRide->loaded())
-				{
-				$firstYear = (int)$oldestRide->rideDate;
-				$newestYear = (int)$newestRide->rideDate;
-
-				$yearMonthNav = new \App\UI\YearMonthSubNav($this->page->getBaseURL(), $year, $month, $firstYear, $newestYear);
-				$this->page->addPageContent($yearMonthNav);
-
-				if ($month && $year)
-					{
-					$start = \App\Tools\Date::makeString($year, $month, 1);
-
-					if (++$month > 12)
-						{
-						++$year;
-						$month = 1;
-						}
-					$end = \App\Tools\Date::toString(\App\Tools\Date::make($year, $month, 1) - 1);
-					$this->page->addPageContent($this->view->schedule(\App\Table\Ride::getMyDateRange($start, $end), $noRides));
-					}
-				}
-			else
-				{
-				$this->page->addPageContent($noRides);
-				}
-			}
-		}
-
 	public function optOut(\App\Record\Ride $ride = new \App\Record\Ride()) : void
 		{
 		if ($ride->loaded())
@@ -359,7 +311,8 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Search Rides'))
 			{
-			$this->page->addPageContent($view = new \App\View\Ride\Search($this->page));
+			$view = new \App\View\Ride\Search($this->page);
+			$this->page->addPageContent($view->list());
 			}
 		}
 
@@ -465,23 +418,6 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		else
 			{
 			$this->page->redirect('/Rides/memberSchedule');
-			}
-		}
-
-	public function statistics(int $year = 0) : void
-		{
-		if (! $year)
-			{
-			$year = \App\Tools\Date::format('Y');
-			}
-
-		if ($this->page->addHeader('Ride Statistics'))
-			{
-			$oldest = \App\Table\Ride::getOldest();
-			$earliest = (int)\App\Tools\Date::formatString('Y', $oldest['rideDate'] ?? \App\Tools\Date::todayString());
-			$subnav = new \App\UI\YearSubNav('/Rides/statistics', $year, $earliest);
-			$this->page->addPageContent($subnav);
-			$this->page->addPageContent($this->view->stats($year));
 			}
 		}
 

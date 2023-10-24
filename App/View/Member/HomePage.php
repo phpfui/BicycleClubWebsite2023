@@ -23,7 +23,7 @@ class HomePage implements \Stringable
 		if (! $ride->empty())
 			{
 			$daysOut = \App\Tools\Date::fromString($ride['rideDate']) - $today;
-			$order[] = ['priority' => $daysOut, 'link' => '/Rides/myCategoryRides', 'li' => 'Upcoming rides in your categories'];
+			$order[] = ['priority' => $daysOut, 'link' => '/Rides/My/category', 'li' => 'Upcoming rides in your categories'];
 			}
 
 		// new newsletter

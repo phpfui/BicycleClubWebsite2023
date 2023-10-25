@@ -184,7 +184,7 @@ class Permission extends \App\Model\PermissionBase
 
 	public function generateStandardPermissions() : void
 		{
-		$csvWriter = new \App\Tools\CSVWriter(PROJECT_ROOT . '/files/standardPermissions.csv', download:false);
+		$csvWriter = new \App\Tools\CSV\FileWriter(PROJECT_ROOT . '/files/standardPermissions.csv', download:false);
 		$csvWriter->addHeaderRow();
 
 		$permissionGroupTable = new \App\Table\PermissionGroup();
@@ -335,7 +335,7 @@ class Permission extends \App\Model\PermissionBase
 
 	public function loadStandardPermissions() : void
 		{
-		$csvReader = new \App\Tools\CSVReader(PROJECT_ROOT . '/files/standardPermissions.csv');
+		$csvReader = new \App\Tools\CSV\FileReader(PROJECT_ROOT . '/files/standardPermissions.csv');
 
 		$permission = new \App\Record\Permission();
 		$permissionGroupName = new \App\Record\Permission();

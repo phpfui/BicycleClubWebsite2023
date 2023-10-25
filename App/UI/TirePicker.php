@@ -8,7 +8,7 @@ class TirePicker extends \PHPFUI\Input\Select
 		{
 		parent::__construct($name, $label);
 		parent::setToolTip('Select your tire size');
-		$csvReader = new \App\Tools\CSVReader(PROJECT_ROOT . '/files/gearCalculator/tires.csv');
+		$csvReader = new \App\Tools\CSV\FileReader(PROJECT_ROOT . '/files/gearCalculator/tires.csv');
 		$indexes = ['Metric', 'American', 'Imperial'];
 
 		foreach ($csvReader as $row)

@@ -95,7 +95,7 @@ class CueSheet extends \FPDF
 		return $street;
 		}
 
-	public function generate(\App\Tools\CSVReader $reader, string $title, string $leader = '', string $cellPhoneNumber = '') : static
+	public function generate(\App\Tools\CSV\FileReader $reader, string $title, string $leader = '', string $cellPhoneNumber = '') : static
 		{
 		$title = $this->cleanStreet($title, false);
 
@@ -356,7 +356,7 @@ class CueSheet extends \FPDF
 		return $height;
 		}
 
-	private function printSection(float $x, float $y, float $height, \App\Tools\CSVReader $reader) : void
+	private function printSection(float $x, float $y, float $height, \App\Tools\CSV\FileReader $reader) : void
 		{
 		$this->SetXY($x, $y);
 

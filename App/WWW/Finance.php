@@ -106,7 +106,7 @@ class Finance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			{
 			if (isset($_FILES['file']) && \App\Model\Session::checkCSRF())
 				{
-				$csvReader = new \App\Tools\CSVReader($_FILES['file']['tmp_name']);
+				$csvReader = new \App\Tools\CSV\FileReader($_FILES['file']['tmp_name']);
 				$model = new \App\Model\Invoice();
 				$missingInvoices = $model->findMissingInvoices($csvReader);
 				$this->page->addPageContent($this->view->ShowMissingInvoices($missingInvoices));

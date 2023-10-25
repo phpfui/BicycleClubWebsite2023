@@ -1,3 +1,5 @@
+email club members validation
+
 Pasted images in club wide emails
 
 Edit start location on day of ride

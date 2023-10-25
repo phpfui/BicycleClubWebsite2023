@@ -48,7 +48,7 @@ class Import
 					if (\is_uploaded_file($_FILES['file']['tmp_name']))
 						{
 						$source_file = $_FILES['file']['tmp_name'];
-						$reader = new \App\Tools\CSVReader($source_file);
+						$reader = new \App\Tools\CSV\FileReader($source_file);
 						$reader->next();
 						$error = 0;
 						$good = 0;
@@ -210,7 +210,7 @@ class Import
 		{
 		$class = "\\App\Table\\{$model}";
 		$record = new $class();
-		$writer = new \App\Tools\CSVWriter("{$model}_template.csv");
+		$writer = new \App\Tools\CSV\FileWriter("{$model}_template.csv");
 		$fields = $record->getFields();
 
 		foreach ($record->getPrimaryKeys() as $field)

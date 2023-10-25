@@ -399,7 +399,7 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			if ('CSV' == $type)
 				{
-				$csvWriter = new \App\Tools\CSVWriter($fileName . 'csv');
+				$csvWriter = new \App\Tools\CSV\FileWriter($fileName . 'csv');
 				$csvWriter->addHeaderRow();
 				$participants = $this->reservationTable->setReservationsCursor($event);
 

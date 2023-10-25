@@ -1,40 +1,36 @@
 <?php
 
-namespace App\Tools;
+namespace App\Tools\CSV;
 
 /**
- * A simple CSV file reader.
+ * Base class for a simple CSV reader supporting files, string or streams as input
  *
  * Emulates an array of records (arrays), implimented as an Iterator, so can be used in a foreach statements.
  *
- * - If your CSV file has headers (the default), then the keys of the returned array will be the header values.
- * - You can also specify a different field delimiter, for example ("\t") for tabs.
+ * - If your CSV has headers (the default), then the keys of the returned array will be the header values.
+ * - You can also specify a different field separator, for example ("\t") for tabs.
  * - Use rewind to reset to the top of the file.
  * - The header record is NEVER returned as a record.  The first iteration will be the first record in the file, excluding the header record if specified.
+ * - An empty stream will return -1 as the current index.
  *
  * @implements \Iterator<array<string, string>>
  */
-class CSVReader implements \Iterator
+abstract class Reader implements \Iterator
 	{
 	/** @var array<string, string> */
 	private array $current = [];
-
-	/** @var ?resource */
-	private $fh = null;
 
 	/** @var array<string> */
 	private array $headers = [];
 
 	private int $index = 0;
 
-	public function __construct(private readonly string $fileName, private readonly bool $headerRow = true, private readonly string $delimiter = ',')
+	/**
+	 * @param ?resource $stream
+	 */
+	public function __construct(protected $stream, private readonly bool $headerRow, private readonly string $separator, private string $enclosure, private string $escape)
 		{
 		$this->rewind();
-		}
-
-	public function __destruct()
-		{
-		$this->closeFile();
 		}
 
 	/** @return array<string, string> */
@@ -43,18 +39,24 @@ class CSVReader implements \Iterator
 		return $this->current;
 		}
 
+	/**
+	 * @return int index of the record in the CSV stream. Zero is index of first data record. -1 means the CSV stream is empty
+	 */
 	public function key() : int
 		{
 		return $this->index;
 		}
 
+	/**
+	 * Load the next record in the stream
+	 */
 	public function next() : void
 		{
 		$this->current = [];
 
-		if ($this->fh)
+		if ($this->stream)
 			{
-			$array = \fgetcsv($this->fh, 0, $this->delimiter);
+			$array = \fgetcsv($this->stream, 0, $this->separator, $this->enclosure, $this->escape);
 
 			if ($array)
 				{
@@ -82,25 +84,22 @@ class CSVReader implements \Iterator
 			}
 		}
 
+	/**
+	 * rewind the reader to the first record
+	 */
 	public function rewind() : void
 		{
 		$this->index = -1;
-		$this->closeFile();
+		$this->open();
 
-		if (\file_exists($this->fileName))
+		if ($this->stream)
 			{
-			$this->fh = @\fopen($this->fileName, 'r');
-			}
-		else // assume it is a string
-			{
-			$this->fh = \fopen('php://memory', 'r+');
-			\fwrite($this->fh, $this->fileName);
-			\rewind($this->fh);
-			}
+			\rewind($this->stream);
 
-		if ($this->fh && $this->headerRow)
-			{
-			$this->headers = \fgetcsv($this->fh, 0, $this->delimiter);
+			if ($this->headerRow)
+				{
+				$this->headers = \fgetcsv($this->stream, 0, $this->separator, $this->enclosure, $this->escape);
+				}
 			}
 		$this->next();
 		}
@@ -119,17 +118,14 @@ class CSVReader implements \Iterator
 
 	public function valid() : bool
 		{
-		return $this->current && $this->fh;
+		return $this->current && $this->stream;
 		}
 
-	private function closeFile() : static
+	/**
+	 * Override the open method to support your data type
+	 */
+	protected function open() : static
 		{
-		if ($this->fh)
-			{
-			\fclose($this->fh);
-			$this->fh = null;
-			}
-
 		return $this;
 		}
 	}

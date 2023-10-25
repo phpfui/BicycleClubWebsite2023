@@ -39,7 +39,7 @@ class MonthlyLeaders extends \App\Cron\BaseJob
 			$leaderRides[$ride['memberId']][] = $ride['rideDate'];
 			}
 		$file = new \App\Tools\TempFile('monthlyLeaders');
-		$csv = new \App\Tools\CSVWriter($file, ',', false);
+		$csv = new \App\Tools\CSV\FileWriter($file, download:false);
 		$range = $startDate . ' through ' . $endDate;
 		$csv->outputRow(['Full Name', 'First Name', 'Last Name', 'Total Rides', 'Dates Led ' . $range]);
 

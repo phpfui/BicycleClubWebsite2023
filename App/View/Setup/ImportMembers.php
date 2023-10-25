@@ -34,7 +34,7 @@ class ImportMembers extends \PHPFUI\Container
 		if (isset($_GET['export']))
 			{
 			$membershipModel = new \App\Model\Membership();
-			$csvWriter = new \App\Tools\CSVWriter('members.csv');
+			$csvWriter = new \App\Tools\CSV\FileWriter('members.csv');
 			$membershipModel->export($csvWriter);
 			$this->page->done();
 
@@ -98,7 +98,7 @@ class ImportMembers extends \PHPFUI\Container
 
 	private function doImport() : void
 		{
-		$csvReader = new \App\Tools\CSVReader($this->importModel->getFileName(), true, \PHPFUI\Session::getFlash('separator') ?? ',');
+		$csvReader = new \App\Tools\CSV\FileReader($this->importModel->getFileName(), true, \PHPFUI\Session::getFlash('separator') ?? ',');
 		$membershipModel = new \App\Model\Membership();
 		$duesModel = new \App\Model\MembershipDues();
 		$paidMembers = $duesModel->PaidMembers;
@@ -155,7 +155,7 @@ class ImportMembers extends \PHPFUI\Container
 
 	private function importWidget(\App\View\Setup\WizardBar $wizardBar, string $separator, int $count) : string
 		{
-		$csvReader = new \App\Tools\CSVReader($this->importModel->getFileName(), true, $separator);
+		$csvReader = new \App\Tools\CSV\FileReader($this->importModel->getFileName(), true, $separator);
 		$headers = \array_keys($csvReader->current());
 		\sort($headers);
 		$container = new \PHPFUI\Container();

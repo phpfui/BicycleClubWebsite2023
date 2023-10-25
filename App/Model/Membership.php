@@ -17,7 +17,7 @@ class Membership
 	/**
 	 * @return int number of members exported
 	 */
-	public function export(\App\Tools\CSVWriter $csvWriter, string $startDate = '1980-1-1', string $endDate = '2222-2-2', string $type = 'full') : int
+	public function export(\App\Tools\CSV\FileWriter $csvWriter, string $startDate = '1980-1-1', string $endDate = '2222-2-2', string $type = 'full') : int
 		{
 		$members = $this->memberTable->getAllMembers($startDate, $endDate);
 
@@ -97,7 +97,7 @@ class Membership
 	 *
 	 * @return int number of members imported
 	 */
-	public function import(\App\Tools\CSVReader $csvReader, array $mapping, bool $singleMembership = false) : int
+	public function import(\App\Tools\CSV\FileReader $csvReader, array $mapping, bool $singleMembership = false) : int
 		{
 		$fields = [...\array_keys($this->memberTable->getFields()), ...\array_keys($this->membershipTable->getFields())];
 

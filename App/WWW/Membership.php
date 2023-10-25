@@ -255,7 +255,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			if (isset($_POST['type']))
 				{
 				$membershipModel = new \App\Model\Membership();
-				$csvWriter = new \App\Tools\CSVWriter('members.csv');
+				$csvWriter = new \App\Tools\CSV\FileWriter('members.csv');
 				$membershipModel->export($csvWriter, $_POST['start'], $_POST['end'], $_POST['type']);
 				}
 			else

@@ -10,7 +10,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			{
 			if (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
 				{
-				$csvWriter = new \App\Tools\CSVWriter('GARegistrants.csv');
+				$csvWriter = new \App\Tools\CSV\FileWriter('GARegistrants.csv');
 				$csvWriter->addHeaderRow();
 
 				$events = [];

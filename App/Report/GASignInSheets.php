@@ -21,7 +21,7 @@ class GASignInSheets
 
 		if (self::CSV == $this->type)
 			{
-			$csvWriter = new \App\Tools\CSVWriter("GARegistrants{$this->event->gaEventId}.csv");
+			$csvWriter = new \App\Tools\CSV\FileWriter("GARegistrants{$this->event->gaEventId}.csv");
 			$csvWriter->addHeaderRow();
 
 			foreach ($riders as $rider)

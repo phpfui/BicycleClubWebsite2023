@@ -282,7 +282,7 @@ class Ride
 
 	public function downloadCSV(\PHPFUI\ORM\DataObjectCursor $rides) : void
 		{
-		$writer = new \App\Tools\CSVWriter('rides.csv');
+		$writer = new \App\Tools\CSV\FileWriter('rides.csv');
 		$writer->addHeaderRow();
 		$relations = [
 			'cueSheetId' => 'name',

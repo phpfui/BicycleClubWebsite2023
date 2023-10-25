@@ -19,7 +19,7 @@ class Roster
 		if ($csv)
 			{
 			$fileName = "{$clubAbbrev}_Roster{$parameters['startDate']}-{$parameters['endDate']}.csv";
-			$csvWriter = new \App\Tools\CSVWriter($fileName);
+			$csvWriter = new \App\Tools\CSV\FileWriter($fileName);
 			$csvWriter->addHeaderRow();
 			$csvWriter->outputRow($fields);
 			}

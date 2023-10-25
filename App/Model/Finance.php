@@ -38,7 +38,7 @@ class Finance extends \App\Model\File
 
 	public function processFile(string | int $path) : string
 		{
-		$csvReader = new \App\Tools\CSVReader($path);
+		$csvReader = new \App\Tools\CSV\FileReader($path);
 		$row = $csvReader->current();
 
 		foreach ($this->requiredTaxFields as $required)

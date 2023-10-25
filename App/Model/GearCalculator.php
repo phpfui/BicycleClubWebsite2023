@@ -144,7 +144,7 @@ class GearCalculator
 
 	public function csv() : void
 		{
-		$writer = new \App\Tools\CSVWriter('GearCalculator.csv');
+		$writer = new \App\Tools\CSV\FileWriter('GearCalculator.csv');
 
 		foreach ($this->getTable()->getRows() as $row)
 			{

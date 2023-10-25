@@ -106,7 +106,7 @@ class Finance
 		if (\count($items))
 			{
 			$filename = 'invoicePayments' . $start . '-' . $end . '.tsv';
-			$csvWriter = new \App\Tools\CSVWriter($filename, "\t");
+			$csvWriter = new \App\Tools\CSV\FileWriter($filename, separator:"\t");
 			$csvWriter->addHeaderRow();
 
 			foreach ($items as $item)
@@ -129,7 +129,7 @@ class Finance
 		if (\count($items))
 			{
 			$filename = 'storePayments' . $start . '-' . $end . '.tsv';
-			$csvWriter = new \App\Tools\CSVWriter($filename, "\t");
+			$csvWriter = new \App\Tools\CSV\FileWriter($filename, separator:"\t");
 
 			if ($request['fullDetails'])
 				{
@@ -237,7 +237,7 @@ class Finance
 
 		if ('CSV' == $request['downloadType'])
 			{
-			$csvWriter = new \App\Tools\CSVWriter($filename . '.csv');
+			$csvWriter = new \App\Tools\CSV\FileWriter($filename . '.csv');
 			$csvWriter->outputRow($fields);
 
 
@@ -310,7 +310,7 @@ class Finance
 		if (\count($taxes))
 			{
 			$filename = 'taxesCollected' . \App\Tools\Date::formatString('ymd', $start) . '-' . \App\Tools\Date::formatString('ymd', $end) . '.csv';
-			$csvWriter = new \App\Tools\CSVWriter($filename);
+			$csvWriter = new \App\Tools\CSV\FileWriter($filename);
 			$csvWriter->outputRow(['Order Date', 'Gross Sale', 'Shipping', 'Sales Tax', 'Total Sale', 'PayPal Paid',
 				'Volunteer Points', 'ZipCode', 'State', ]);
 			$customerModel = new \App\Model\Customer();

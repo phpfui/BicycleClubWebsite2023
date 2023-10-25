@@ -27,7 +27,7 @@ class InvoiceReport
 		if ($csv)
 			{
 			$fileName = "InvoiceReport_{$parameters['startDate']}-{$parameters['endDate']}.csv";
-			$csvWriter = new \App\Tools\CSVWriter($fileName);
+			$csvWriter = new \App\Tools\CSV\FileWriter($fileName);
 			$fields = ['First Name', 'Last Name', 'Street Address 1', 'City', 'State', 'Zip Code', ];
 
 			foreach($invoiceItem->getFields() as $key => $value)

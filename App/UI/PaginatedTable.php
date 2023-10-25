@@ -409,7 +409,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 				$fileName = \array_pop($parts) . '_' . \date('Y-m-d') . '.csv';
 				}
 
-			$csvWriter = new \App\Tools\CSVWriter($fileName);
+			$csvWriter = new \App\Tools\CSV\FileWriter($fileName);
 			$csvWriter->addHeaderRow();
 
 			$this->dataTable->setLimit(0);

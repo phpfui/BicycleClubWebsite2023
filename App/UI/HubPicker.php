@@ -8,7 +8,7 @@ class HubPicker extends \PHPFUI\Input\Select
 		{
 		parent::__construct($name, $label);
 		parent::setToolTip('Select your hub');
-		$csvReader = new \App\Tools\CSVReader(PROJECT_ROOT . '/files/gearCalculator/hubs.csv');
+		$csvReader = new \App\Tools\CSV\FileReader(PROJECT_ROOT . '/files/gearCalculator/hubs.csv');
 
 		$found = false;
 

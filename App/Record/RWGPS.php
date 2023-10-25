@@ -43,9 +43,9 @@ class RWGPS extends \App\Record\Definition\RWGPS
 		return $this;
 		}
 
-	public function getCSVReader() : \App\Tools\CSVReader
+	public function getCSVReader() : \App\Tools\CSV\FileReader
 		{
-		return new \App\Tools\CSVReader($this->csv);
+		return new \App\Tools\CSV\FileReader($this->csv);
 		}
 
 	public function insert() : int

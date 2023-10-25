@@ -39,7 +39,7 @@ class Statistics
 
 			if (\count($rides))
 				{
-				$writer = new \App\Tools\CSVWriter('RidersStatistics.csv');
+				$writer = new \App\Tools\CSV\FileWriter('RidersStatistics.csv');
 				$writer->addHeaderRow();
 
 				foreach ($rides as $rider)

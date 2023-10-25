@@ -78,7 +78,7 @@ class My extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$rideSignupTable->addSelect('rideSignup.*');
 			$rideSignupTable->addSelect('ride.*');
 			$rideSignupTable->setWhere($condition);
-			$writer = new \App\Tools\CSVWriter('riderStats.csv');
+			$writer = new \App\Tools\CSV\FileWriter('riderStats.csv');
 			$writer->addHeaderRow();
 
 			foreach ($rideSignupTable->getArrayCursor() as $row)

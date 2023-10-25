@@ -8,7 +8,7 @@ class CassettePicker extends \PHPFUI\Input\Select
 		{
 		parent::__construct($name, $label);
 		parent::setToolTip('Select your cassette');
-		$csvReader = new \App\Tools\CSVReader(PROJECT_ROOT . '/files/gearCalculator/cassettes.csv');
+		$csvReader = new \App\Tools\CSV\FileReader(PROJECT_ROOT . '/files/gearCalculator/cassettes.csv');
 
 		$found = false;
 

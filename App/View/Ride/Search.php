@@ -30,13 +30,18 @@ class Search
 		return "{$output}";
 		}
 
-	public function getDateRangeModal(\PHPFUI\HTML5Element $modalLink, string $name = 'Search Rides') : \PHPFUI\Reveal
+	public function getDateRangeModal(\PHPFUI\HTML5Element $modalLink, string $name = 'Search Rides', string $buttonName = '') : \PHPFUI\Reveal
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
 		$form->setAttribute('method', 'get');
 		$fieldSet = new \PHPFUI\FieldSet($name);
+
+		if (empty($buttonName))
+			{
+			$buttonName = $name;
+			}
 		$end = \App\Tools\Date::today();
 		$start = $end - 30;
 		$min = $max = '';
@@ -91,7 +96,7 @@ class Search
 		$fieldSet->add($multiPicker);
 
 		$form->add($fieldSet);
-		$submit = new \PHPFUI\Submit($name);
+		$submit = new \PHPFUI\Submit($buttonName);
 		$form->add($modal->getButtonAndCancel($submit));
 		$modal->add($form);
 

@@ -91,7 +91,7 @@ class Ride extends \PHPFUI\ORM\Table
 			$condition->and('ride.paceId', $paces, new \PHPFUI\ORM\Operator\In());
 			}
 		$this->setWhere($condition);
-		$this->setOrderBy('rideDate');
+		$this->addOrderBy('rideDate');
 		$this->addOrderBy('pace.ordering');
 		$this->addOrderBy('startTime');
 		$this->addOrderBy('mileage');

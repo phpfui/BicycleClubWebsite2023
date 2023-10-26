@@ -4,42 +4,33 @@ namespace App\View\Ride;
 
 class Statistics
 	{
-	public function __construct(private readonly \App\View\Page $page)
+	private \App\Table\Ride $rideTable;
+
+	public function __construct(private readonly \App\View\Page $page, private readonly string $title)
 		{
+		$this->rideTable = new \App\Table\Ride();
 		}
 
 	public function download() : \PHPFUI\Container
 		{
-		$button = new \PHPFUI\Button($name = 'Download Rider Statistics');
+		$button = new \PHPFUI\Button('Download ' . $this->title . ' Statistics');
 		$rideSearch = new \App\View\Ride\Search($this->page);
-		$modal = $rideSearch->getDateRangeModal($button, $name);
+		$modal = $rideSearch->getDateRangeModal($button, $this->title . ' Statistics', 'Download');
 		$output = new \PHPFUI\Container();
 		$output->add($button);
 
 		if (! empty($_GET['start']) && ! empty($_GET['end']))
 			{
-			$rideTable = new \App\Table\Ride();
-			$rideTable->find($_GET);
-			$rideTable->addSelect('member.firstName', 'First Name');
-			$rideTable->addSelect('member.lastName', 'Last Name');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('count(ride.rideId)'), '# Number Of Club Rides');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('round(sum(ride.mileage))'), '# Club Miles');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('sum(ride.elevation)'), 'Elevation Gained');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('round(avg(ride.averagePace),1)'), 'AVS');
-			$rideTable->addJoin('member');
-			$rideSignupJoin = new \PHPFUI\ORM\Condition('rideSignup.rideId', new \PHPFUI\ORM\Literal('ride.rideId'));
-			$rideSignupJoin->and('rideSignup.memberId', new \PHPFUI\ORM\Literal('member.memberId'));
-			$rideTable->addJoin('rideSignup', $rideSignupJoin);
-			$rideTable->setOrderBy('member.lastName');
-			$rideTable->addOrderBy('member.firstName');
-			$rideTable->addGroupBy('member.lastName');
-			$rideTable->addGroupBy('member.firstName');
+			$this->rideTable->find($_GET);
 
-			$rides = $rideTable->getArrayCursor();
+			$rides = $this->rideTable->getArrayCursor();
+			$input = [];
+			$sql = $this->rideTable->getSQL($input);
+			\App\Tools\Logger::get()->debug($input, $sql);
 
 			if (\count($rides))
 				{
-				$writer = new \App\Tools\CSV\FileWriter('RidersStatistics.csv');
+				$writer = new \App\Tools\CSV\FileWriter(\str_replace(' ', '_', $this->title . ' Statistics.csv'));
 				$writer->addHeaderRow();
 
 				foreach ($rides as $rider)
@@ -54,5 +45,10 @@ class Statistics
 			}
 
 		return $output;
+		}
+
+	public function getRideTable() : \App\Table\Ride
+		{
+		return $this->rideTable;
 		}
 	}

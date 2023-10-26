@@ -39,15 +39,7 @@ class AccidentReport
 			$fieldSet->add($textarea);
 			$form->add($fieldSet);
 			$fieldSet = new \PHPFUI\FieldSet('File To Attach to email');
-			$select = new \PHPFUI\Input\Select(self::FILE);
-			$selectedFile = $settings->value(self::FILE);
-
-			foreach (\glob(PUBLIC_ROOT . 'pdf/*.pdf') as $file)
-				{
-				$file = \basename((string)$file);
-				$select->addOption($file, $file, $file == $selectedFile);
-				}
-			$fieldSet->add($select);
+			$fieldSet->add(new \App\UI\PublicFilePicker(self::FILE));
 			$form->add($fieldSet);
 			$buttonGroup = new \App\UI\CancelButtonGroup();
 			$buttonGroup->addButton($submit);

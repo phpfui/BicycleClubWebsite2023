@@ -15,6 +15,13 @@ class SettingsSaver
 		$this->settingTable = new \App\Table\Setting();
 		}
 
+	public function addInput(\PHPFUI\Input $input) : \PHPFUI\Input
+		{
+		$this->save[$input->getName()] = $input->getValue();
+
+		return $input;
+		}
+
 	/**
 	 * @param \PHPFUI\Input\Tel|\PHPFUI\Input\TextArea|string $type
 	 */

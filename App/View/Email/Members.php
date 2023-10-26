@@ -14,7 +14,7 @@ class Members implements \Stringable
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
-		$this->parameters = $_POST;
+		$this->parameters = \App\Model\Session::getFlash('post') ?? [];
 		$defaultFields = [];
 		$defaultFields['currentMembers'] = 1;
 		$defaultFields['categories'] = [0];
@@ -36,6 +36,8 @@ class Members implements \Stringable
 
 		if ($_POST)
 			{
+			\App\Model\Session::setFlash('post', $_POST);
+
 			foreach ($requiredFields as $field)
 				{
 				if (! isset($_POST[$field]))
@@ -158,10 +160,6 @@ class Members implements \Stringable
 				$this->alert = new \App\UI\Alert('You emailed ' . \count($members) . ' club members');
 				}
 			}
-		else
-			{
-			$this->parameters = $defaultFields;
-			}
 		}
 
 	public function __toString() : string
@@ -175,7 +173,7 @@ class Members implements \Stringable
 			}
 		$fieldSet = new \PHPFUI\FieldSet('Selection Criteria');
 		$categoryView = new \App\View\Categories($this->page, new \PHPFUI\Button('back'));
-		$picker = $categoryView->getMultiCategoryPicker('categories', 'Category Restriction', $this->parameters['categories']);
+		$picker = $categoryView->getMultiCategoryPicker('categories', 'Category Restriction', $this->parameters['categories'] ?? []);
 		$picker->setToolTip('Pick specific categories if you to restrict the email, optional');
 		$memberTypes = new \PHPFUI\FieldSet('Membership Types');
 		$currentMembers = new \PHPFUI\Input\CheckBoxBoolean('currentMembers', 'Current', $this->parameters['currentMembers']);

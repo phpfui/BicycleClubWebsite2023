@@ -24,7 +24,12 @@ class Footer implements \Stringable
 		$topBar = new \PHPFUI\TopBar();
 		$menu = new \PHPFUI\Menu();
 		$menu->addClass('simple');
-		$menu->addMenuItem(new \PHPFUI\MenuItem('By-Laws', '/pdf/By-Laws.pdf'));
+		$byLawsFile = $this->publicPage->value('ByLawsFile');
+
+		if ($byLawsFile)
+			{
+			$menu->addMenuItem(new \PHPFUI\MenuItem('By-Laws', $byLawsFile));
+			}
 
 		$publicPageTable = new \App\Table\PublicPage();
 		$publicPageTable->addOrderBy('sequence');

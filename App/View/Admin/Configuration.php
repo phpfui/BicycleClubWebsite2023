@@ -27,6 +27,7 @@ class Configuration
 		$necc = $settingsSaver->generateField('calendarName', 'Cycling Calendar Name');
 		$necc->setRequired(false)->setToolTip('Leave blank to disable');
 		$fieldSet->add($necc);
+		$fieldSet->add($settingsSaver->addInput(new \App\UI\PublicFilePicker('ByLawsFile', 'By Laws File for Footer')));
 		$rideListLimit = $settingsSaver->generateField('publicRideListLimit', 'Public Ride List Limit');
 		$rideListLimit->setRequired(false)->setToolTip('Number of rides to show on the public schedule');
 		$homePageDaysBack = $settingsSaver->generateField('homePageDaysBack', 'Home Page Days Back');

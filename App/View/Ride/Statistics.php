@@ -4,11 +4,22 @@ namespace App\View\Ride;
 
 class Statistics
 	{
-	private \App\Table\Ride $rideTable;
+	private \App\Table\RideSignup $rideSignupTable;
 
 	public function __construct(private readonly \App\View\Page $page, private readonly string $title)
 		{
-		$this->rideTable = new \App\Table\Ride();
+		$this->rideSignupTable = new \App\Table\RideSignup();
+		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('count(ride.rideId)'), '# Number Of Club Rides');
+		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(sum(ride.mileage))'), '# Club Miles');
+		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('sum(ride.elevation)'), 'Elevation Gained');
+		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(avg(ride.averagePace),1)'), 'AVS');
+		$memberJoin = new \PHPFUI\ORM\Condition('member.memberId', new \PHPFUI\ORM\Literal('rideSignup.memberId'));
+		$this->rideSignupTable->addJoin('member', $memberJoin);
+		$rideSignupJoin = new \PHPFUI\ORM\Condition('rideSignup.rideId', new \PHPFUI\ORM\Literal('ride.rideId'));
+		$rideSignupJoin->and('ride.rideId', new \PHPFUI\ORM\Literal('rideSignup.rideId'));
+		$this->rideSignupTable->addJoin('ride', $rideSignupJoin);
+		$where = $this->rideSignupTable->getWhereCondition();
+		$where->and('ride.averagePace', 0, new \PHPFUI\ORM\Operator\GreaterThan());
 		}
 
 	public function download() : \PHPFUI\Container
@@ -21,11 +32,11 @@ class Statistics
 
 		if (! empty($_GET['start']) && ! empty($_GET['end']))
 			{
-			$this->rideTable->find($_GET);
+			$this->rideSignupTable->find($_GET);
 
-			$rides = $this->rideTable->getArrayCursor();
+			$rides = $this->rideSignupTable->getArrayCursor();
 			$input = [];
-			$sql = $this->rideTable->getSQL($input);
+			$sql = $this->rideSignupTable->getSQL($input);
 			\App\Tools\Logger::get()->debug($input, $sql);
 
 			if (\count($rides))
@@ -47,8 +58,8 @@ class Statistics
 		return $output;
 		}
 
-	public function getRideTable() : \App\Table\Ride
+	public function getRideSignupTable() : \App\Table\RideSignup
 		{
-		return $this->rideTable;
+		return $this->rideSignupTable;
 		}
 	}

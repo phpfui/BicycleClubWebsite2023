@@ -35,6 +35,62 @@ class RideSignup extends \PHPFUI\ORM\Table
 		return $this;
 		}
 
+	/**
+	 * @param array<string,array<int>|string> $parameters
+	 */
+	public function find(array $parameters) : \PHPFUI\ORM\DataObjectCursor
+		{
+		$paceJoin = new \PHPFUI\ORM\Condition('pace.paceId', new \PHPFUI\ORM\Literal('ride.paceId'));
+		$this->addJoin('pace', $paceJoin);
+
+		$condition = $this->getWhereCondition();
+
+		if (! empty($parameters['start']))
+			{
+			$condition->and('ride.rideDate', $parameters['start'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			}
+
+		if (! empty($parameters['end']))
+			{
+			$condition->and('ride.rideDate', $parameters['end'], new \PHPFUI\ORM\Operator\LessThanEqual());
+			}
+
+		if (! empty($parameters['minDistance']))
+			{
+			$condition->and('ride.mileage', $parameters['minDistance'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			}
+
+		if (! empty($parameters['maxDistance']))
+			{
+			$condition->and('ride.mileage', $parameters['maxDistance'], new \PHPFUI\ORM\Operator\LessThanEqual());
+			}
+
+		if ($parameters['startLocationId'] ?? 0)
+			{
+			$condition->and('ride.startLocationId', $parameters['startLocationId']);
+			}
+
+		if (! empty($parameters['title']))
+			{
+			$condition->and('ride.title', '%' . $parameters['title'] . '%', new \PHPFUI\ORM\Operator\Like());
+			}
+
+		if (! empty($parameters['description']))
+			{
+			$condition->and('ride.description', '%' . $parameters['description'] . '%', new \PHPFUI\ORM\Operator\Like());
+			}
+
+		if (! empty($parameters['categories']))
+			{
+			$paceTable = new \App\Table\Pace();
+			$paces = $paceTable->getPacesForCategories($parameters['categories']);
+			$condition->and('ride.paceId', $paces, new \PHPFUI\ORM\Operator\In());
+			}
+		$this->setWhere($condition);
+
+		return $this->getDataObjectCursor();
+		}
+
 	public function getAllSignedUpRiders(\App\Record\Ride $ride, bool $sortByStatus = true) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sortByStatus = $sortByStatus ? 'r.status asc,' : '';

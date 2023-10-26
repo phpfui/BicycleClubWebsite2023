@@ -17,22 +17,16 @@ class Statistics extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		if ($this->page->addHeader('Cue Sheet Statistics'))
 			{
 			$view = new \App\View\Ride\Statistics($this->page, 'Cue Sheet');
-			$rideTable = $view->getRideTable();
-			$rideTable->addSelect('cueSheet.name', 'Name');
-			$rideTable->addSelect('startLocation.name', 'Start Location');
-			$rideTable->addSelect('startLocation.link', 'Link');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('count(ride.rideId)'), '# Number Of Club Rides');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('round(sum(ride.mileage))'), '# Club Miles');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('sum(ride.elevation)'), 'Elevation Gained');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('round(avg(ride.averagePace),1)'), 'AVS');
-			$rideTable->addJoin('cueSheet');
-			$rideTable->addJoin('startLocation');
-			$rideTable->addJoin('member');
-			$rideSignupJoin = new \PHPFUI\ORM\Condition('rideSignup.rideId', new \PHPFUI\ORM\Literal('ride.rideId'));
-			$rideSignupJoin->and('rideSignup.memberId', new \PHPFUI\ORM\Literal('member.memberId'));
-			$rideTable->addJoin('rideSignup', $rideSignupJoin);
-			$rideTable->setGroupBy('cueSheet.cueSheetId');
-			$rideTable->setOrderBy('cueSheet.name');
+			$rideSignupTable = $view->getRideSignupTable();
+			$rideSignupTable->addSelect('cueSheet.name', 'Name');
+			$rideSignupTable->addSelect('startLocation.name', 'Start Location');
+			$rideSignupTable->addSelect('startLocation.link', 'Link');
+			$cueSheetJoin = new \PHPFUI\ORM\Condition('cueSheet.cueSheetId', new \PHPFUI\ORM\Literal('ride.cueSheetId'));
+			$rideSignupTable->addJoin('cueSheet', $cueSheetJoin);
+			$startLocationJoin = new \PHPFUI\ORM\Condition('startLocation.startLocationId', new \PHPFUI\ORM\Literal('ride.startLocationId'));
+			$rideSignupTable->addJoin('startLocation', $startLocationJoin);
+			$rideSignupTable->setGroupBy('cueSheet.cueSheetId');
+			$rideSignupTable->setOrderBy('cueSheet.name');
 			$this->page->addPageContent($view->download());
 			}
 		}
@@ -60,20 +54,12 @@ class Statistics extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			{
 			$view = new \App\View\Ride\Statistics($this->page, 'Rider');
 
-			$rideTable = $view->getRideTable();
-			$rideTable->addSelect('member.firstName', 'First Name');
-			$rideTable->addSelect('member.lastName', 'Last Name');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('count(ride.rideId)'), '# Number Of Club Rides');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('round(sum(ride.mileage))'), '# Club Miles');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('sum(ride.elevation)'), 'Elevation Gained');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('round(avg(ride.averagePace),1)'), 'AVS');
-			$rideTable->addJoin('member');
-			$rideSignupJoin = new \PHPFUI\ORM\Condition('rideSignup.rideId', new \PHPFUI\ORM\Literal('ride.rideId'));
-			$rideSignupJoin->and('rideSignup.memberId', new \PHPFUI\ORM\Literal('member.memberId'));
-			$rideTable->addJoin('rideSignup', $rideSignupJoin);
-			$rideTable->setOrderBy('member.lastName');
-			$rideTable->addOrderBy('member.firstName');
-			$rideTable->addGroupBy('member.memberId');
+			$rideSignupTable = $view->getRideSignupTable();
+			$rideSignupTable->addSelect('member.firstName', 'First Name');
+			$rideSignupTable->addSelect('member.lastName', 'Last Name');
+			$rideSignupTable->setOrderBy('member.lastName');
+			$rideSignupTable->addOrderBy('member.firstName');
+			$rideSignupTable->addGroupBy('member.memberId');
 
 			$this->page->addPageContent($view->download());
 			}
@@ -84,27 +70,20 @@ class Statistics extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		if ($this->page->addHeader('RWGPS Statistics'))
 			{
 			$view = new \App\View\Ride\Statistics($this->page, 'RWGPS');
-			$rideTable = $view->getRideTable();
-			$rideTable->addSelect('rwgps.title', 'RWGPS Title');
-			$rideTable->addSelect('rwgps.RWGPSId', 'RWGPS ID');
-			$rideTable->addSelect('rwgps.miles', 'Miles');
-			$rideTable->addSelect('rwgps.elevationFeet', 'Elevation Feet');
-			$rideTable->addSelect('rwgps.feetPerMile', 'Feet / Mile');
-			$rideTable->addSelect('rwgps.km', 'Km');
-			$rideTable->addSelect('rwgps.elevationMeters', 'Elevation Meters');
-			$rideTable->addSelect('rwgps.metersPerKm', 'Meters / Km');
-			$rideTable->addSelect('rwgps.percentPaved', 'Percent Paved');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('count(ride.rideId)'), '# Number Of Club Rides');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('round(sum(ride.mileage))'), '# Club Miles');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('sum(ride.elevation)'), 'Elevation Gained');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('round(avg(ride.averagePace),1)'), 'AVS');
-			$rideTable->addJoin('rwgps');
-			$rideTable->addJoin('member');
-			$rideSignupJoin = new \PHPFUI\ORM\Condition('rideSignup.rideId', new \PHPFUI\ORM\Literal('ride.rideId'));
-			$rideSignupJoin->and('rideSignup.memberId', new \PHPFUI\ORM\Literal('member.memberId'));
-			$rideTable->addJoin('rideSignup', $rideSignupJoin);
-			$rideTable->setGroupBy('rwgps.RWGPSId');
-			$rideTable->setOrderBy('rwgps.title');
+			$rideSignupTable = $view->getRideSignupTable();
+			$rideSignupTable->addSelect('RWGPS.title', 'RWGPS Title');
+			$rideSignupTable->addSelect('RWGPS.RWGPSId', 'RWGPS ID');
+			$rideSignupTable->addSelect('RWGPS.miles', 'Miles');
+			$rideSignupTable->addSelect('RWGPS.elevationFeet', 'Elevation Feet');
+			$rideSignupTable->addSelect('RWGPS.feetPerMile', 'Feet / Mile');
+			$rideSignupTable->addSelect('RWGPS.km', 'Km');
+			$rideSignupTable->addSelect('RWGPS.elevationMeters', 'Elevation Meters');
+			$rideSignupTable->addSelect('RWGPS.metersPerKm', 'Meters / Km');
+			$rideSignupTable->addSelect('RWGPS.percentPaved', 'Percent Paved');
+			$rwgpsJoin = new \PHPFUI\ORM\Condition('RWGPS.RWGPSId', new \PHPFUI\ORM\Literal('ride.RWGPSId'));
+			$rideSignupTable->addJoin('RWGPS', $rwgpsJoin);
+			$rideSignupTable->setGroupBy('RWGPS.RWGPSId');
+			$rideSignupTable->setOrderBy('RWGPS.title');
 
 			$this->page->addPageContent($view->download());
 			}
@@ -115,20 +94,13 @@ class Statistics extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		if ($this->page->addHeader('Start Location Statistics'))
 			{
 			$view = new \App\View\Ride\Statistics($this->page, 'Start Location');
-			$rideTable = $view->getRideTable();
-			$rideTable->addSelect('startLocation.name', 'Name');
-			$rideTable->addSelect('startLocation.link', 'Link');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('count(ride.rideId)'), '# Number Of Club Rides');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('round(sum(ride.mileage))'), '# Club Miles');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('sum(ride.elevation)'), 'Elevation Gained');
-			$rideTable->addSelect(new \PHPFUI\ORM\Literal('round(avg(ride.averagePace),1)'), 'AVS');
-			$rideTable->addJoin('startLocation');
-			$rideTable->addJoin('member');
-			$rideSignupJoin = new \PHPFUI\ORM\Condition('rideSignup.rideId', new \PHPFUI\ORM\Literal('ride.rideId'));
-			$rideSignupJoin->and('rideSignup.memberId', new \PHPFUI\ORM\Literal('member.memberId'));
-			$rideTable->addJoin('rideSignup', $rideSignupJoin);
-			$rideTable->setGroupBy('startLocation.startLocationId');
-			$rideTable->setOrderBy('startLocation.name');
+			$rideSignupTable = $view->getRideSignupTable();
+			$rideSignupTable->addSelect('startLocation.name', 'Name');
+			$rideSignupTable->addSelect('startLocation.link', 'Link');
+			$startLocationJoin = new \PHPFUI\ORM\Condition('startLocation.startLocationId', new \PHPFUI\ORM\Literal('ride.startLocationId'));
+			$rideSignupTable->addJoin('startLocation', $startLocationJoin);
+			$rideSignupTable->setGroupBy('startLocation.startLocationId');
+			$rideSignupTable->setOrderBy('startLocation.name');
 			$this->page->addPageContent($view->download());
 			}
 		}

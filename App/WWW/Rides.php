@@ -421,6 +421,15 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function statistics() : void
+		{
+		if ($this->page->addHeader($header = 'Ride Statistics'))
+			{
+			$landing = $this->page->mainMenu->getLandingPage($this->page, '/Rides/statistics', $header);
+			$this->page->addPageContent($landing);
+			}
+		}
+
 	public function textRide(\App\Record\Ride $ride = new \App\Record\Ride()) : void
 		{
 		if ($this->page->addHeader('Text All Signed Up Riders'))

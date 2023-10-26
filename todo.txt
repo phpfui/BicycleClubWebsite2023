@@ -18,7 +18,7 @@ Suggestion box
 BCC all web based emails to sender
 
 Attachments on club wide emails not in journal
-	put emailJournalId on attachements
+	put emailJournalId on attachments
 	Don't delete if journal item exists ->emailJournalId > 0;
 	run cron job to delete old attachments with no journal->loaded();
 	Attach in cron job

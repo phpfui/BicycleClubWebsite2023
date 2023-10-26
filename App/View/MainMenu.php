@@ -16,12 +16,19 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Rides/My/past', 'My Past Rides');
 			$this->addSub($menu, '/Rides/attendance', 'Ride Attendance');
 			$this->addSub($menu, '/Rides/schedule', 'Ride Schedule');
-			$this->addSub($menu, '/Rides/Statistics/ride', 'Ride Statistics');
-			$this->addSub($menu, '/Rides/Statistics/riders', 'Rider Statistics');
 			$this->addSub($menu, '/Rides/search', 'Search Rides');
 			$this->addSub($menu, '/Rides/My/category', 'Rides In My Category');
 //			$this->addSub($menu, '/Rides/My/statistics', 'My Ride Statistics');
 			$this->addSub($menu, '/Rides/csv', 'Download Rides.csv');
+
+			if ($statsMenu = $this->addMenu($menu, '/Rides/statistics', 'Ride Statistics'))
+				{
+				$this->addSub($statsMenu, '/Rides/Statistics/ride', 'Ride Statistics');
+				$this->addSub($statsMenu, '/Rides/Statistics/riders', 'Rider Statistics');
+				$this->addSub($statsMenu, '/Rides/Statistics/cuesheets', 'Cue Sheet Statistics');
+				$this->addSub($statsMenu, '/Rides/Statistics/startLocations', 'Start Location Statistics');
+				$this->addSub($statsMenu, '/Rides/Statistics/rwgps', 'RWGPS Statistics');
+				}
 			}
 
 		if ($menu = $this->addTopMenu('Newsletter', 'Newsletters'))

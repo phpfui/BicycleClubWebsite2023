@@ -65,9 +65,9 @@ class Calendar extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function configure() : void
 		{
-		if ($this->calendarName && $this->page->addHeader('Calendar Configuration'))
+		if ($this->calendarName && $this->page->addHeader($header = 'Calendar Configuration'))
 			{
-			$landing = $this->page->mainMenu->getLandingPage($this->page, '/Calendar/configure');
+			$landing = $this->page->mainMenu->getLandingPage($this->page, '/Calendar/configure', $header);
 			$this->page->addPageContent($landing);
 			}
 		}

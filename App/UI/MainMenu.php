@@ -81,18 +81,27 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		return $menu;
 		}
 
+	public function getActiveLink() : string
+		{
+		return $this->activeLink;
+		}
+
 	public function getActiveMenu() : string
 		{
 		return $this->activeMenu;
 		}
 
-	public function getLandingPage(\App\View\Page $page, string $section) : \App\UI\LandingPage
+	public function getLandingPage(\App\View\Page $page, string $link, string $section) : \App\UI\LandingPage
 		{
 		$landingPage = new \App\UI\LandingPage($page);
 
-		if (isset($this->theMenu[$section]))
+		$menu = $this->getMatchingMenu($this->theMenu, $section);
+
+		if ($menu)
 			{
-			foreach ($this->theMenu[$section]->getMenuItems() as $menuItem)
+			$this->setActiveLink($link);
+
+			foreach ($menu->getMenuItems() as $menuItem)
 				{
 				if ($menuItem instanceof \PHPFUI\MenuItem)
 					{
@@ -102,6 +111,22 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			}
 
 		return $landingPage;
+		}
+
+	public function getMatchingMenu(array $menuItems, string $section) : ?\PHPFUI\Menu
+		{
+		foreach ($menuItems as $name => $menuItem)
+			{
+			if ($menuItem instanceof \PHPFUI\Menu)
+				{
+				if (\str_starts_with($name, $section))
+					{
+					return $menuItem;
+					}
+				}
+			}
+
+		return null;
 		}
 
 	public function getMenuSections() : array

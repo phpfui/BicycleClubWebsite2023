@@ -421,7 +421,7 @@ class Page extends \PHPFUI\Page
 	public function landingPage() : void
 		{
 		$menu = $this->mainMenu->getActiveMenu();
-		$html = (string)($this->mainMenu->getLandingPage($this, $menu));
+		$html = (string)($this->mainMenu->getLandingPage($this, $this->mainMenu->getActiveLink(), $menu));
 
 		if (! empty($html))
 			{

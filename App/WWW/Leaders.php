@@ -114,9 +114,9 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function configure() : void
 		{
-		if ($this->page->addHeader('Leader Configuration'))
+		if ($this->page->addHeader($header = 'Leader Configuration'))
 			{
-			$landing = $this->page->mainMenu->getLandingPage($this->page, '/Leaders/configure');
+			$landing = $this->page->mainMenu->getLandingPage($this->page, '/Leaders/configure', $header);
 
 			$this->page->addPageContent($landing);
 			}

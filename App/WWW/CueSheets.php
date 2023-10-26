@@ -61,9 +61,9 @@ class CueSheets extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 
 	public function configure() : void
 		{
-		if ($this->page->addHeader('Cue Sheet Configuration'))
+		if ($this->page->addHeader($header = 'Cue Sheet Configuration'))
 			{
-			$landing = $this->page->mainMenu->getLandingPage($this->page, '/CueSheets/configure');
+			$landing = $this->page->mainMenu->getLandingPage($this->page, '/CueSheets/configure', $header);
 			$this->page->addPageContent($landing);
 			}
 		}

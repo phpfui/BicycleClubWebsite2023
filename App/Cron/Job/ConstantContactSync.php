@@ -90,8 +90,8 @@ class ConstantContactSync extends \App\Cron\BaseJob
 						{
 						$contact['list_memberships'][] = $syncList;
 						$email_address = new \PHPFUI\ConstantContact\Definition\EmailAddressPut($contact['email_address']);
-						$now = new \PHPFUI\ConstantContact\DateTime();
-						$email_address->created_at = clone $now;
+//						$now = new \PHPFUI\ConstantContact\DateTime();
+//						$email_address->created_at = clone $now;
 						$email_address->permission_to_send = 'explicit';
 						$contact['email_address'] = $email_address;
 						$contactBody = new \PHPFUI\ConstantContact\Definition\ContactPutRequest($contact);

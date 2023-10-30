@@ -452,7 +452,11 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		if ($this->page->addHeader('New Members'))
 			{
 			$today = \App\Tools\Date::today();
-			$this->page->addPageContent($this->memberView->list($this->memberTable->getNewMembers(\App\Tools\Date::toString($today - 180), \App\Tools\Date::todayString())));
+			$members = $this->memberTable->getNewMembers(\App\Tools\Date::toString($today - 180), \App\Tools\Date::todayString());
+			$tabs = new \PHPFUI\Tabs();
+			$tabs->addTab('Editable', $this->memberView->list($members), true);
+			$tabs->addTab('Name - Town', $this->memberView->htmlList($members));
+			$this->page->addPageContent($tabs);
 			}
 		}
 

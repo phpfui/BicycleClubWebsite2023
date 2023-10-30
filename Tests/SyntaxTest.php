@@ -6,7 +6,9 @@ class SyntaxTest extends \PHPFUI\PHPUnitSyntaxCoverage\Extensions
 	public function testDirectory() : void
 		{
 		$this->addSkipDirectory('makefont');
+		$this->addSkipDirectory('PHPFUI\InstaDoc\Tests');
 		$this->assertValidPHPDirectory(__DIR__ . '/../App', 'App directory has an error');
+		$this->assertValidPHPDirectory(__DIR__ . '/../PHPFUI', 'PHPFUI directory has an error');
 		$this->assertValidPHPDirectory(__DIR__ . '/../NoNameSpace', 'NoNameSpace directory has an error');
 		}
 

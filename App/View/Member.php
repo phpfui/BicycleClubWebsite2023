@@ -333,6 +333,31 @@ class Member
 		return $container;
 		}
 
+	public function htmlList(iterable $members) : string
+		{
+		$output = '';
+
+		if (empty($members))
+			{
+			return '';
+			}
+
+		foreach ($members as $member)
+			{
+			if ($member->showNothing)
+				{
+				continue;
+				}
+			$memberRecord = new \App\Record\Member($member->toArray());
+			$name = $memberRecord->fullName();
+
+			$town = $member->showNoTown ? '' : ' - ' . $member->town;
+			$output .= "{$name} {$town}<br>";
+			}
+
+		return $output;
+		}
+
 	public function list(iterable $members) : string | \PHPFUI\Table
 		{
 		if (empty($members))

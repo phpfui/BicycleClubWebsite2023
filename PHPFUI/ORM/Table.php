@@ -495,7 +495,7 @@ abstract class Table implements \Countable
 		// could just be a string, return it
 		if ($this->limit && ! $this->offset && null === $this->page)
 			{
-			return "\LIMIT {$this->limit}";
+			return "\nLIMIT {$this->limit}";
 			}
 
 		if (! $this->limit)

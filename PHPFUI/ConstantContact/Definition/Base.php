@@ -49,6 +49,11 @@ abstract class Base
 		'array' => true,
 	];
 
+	/**
+	 * @var bool $constructingFromArray set to true if we are constructing from an array so we don't type check for objects
+	 */
+	private bool $constructingFromArray = false;
+
   /**
    * @var array<string, bool> indicates which values are set to reduce data output.
    */
@@ -73,7 +78,9 @@ abstract class Base
 
 			if (! empty(static::$fields[$field]))
 				{
+				$this->constructingFromArray = true;
 				$this->{$actualField} = $value;
+				$this->constructingFromArray = false;
 				}
 			elseif (! \is_array($type) && ! isset(self::$scalars[$type]))
 				{
@@ -172,7 +179,7 @@ abstract class Base
 						}
 					}
 				}
-			elseif ($expectedType != $type)
+			elseif ($expectedType != $type && ! $this->constructingFromArray)
 				{
 				throw new \PHPFUI\ConstantContact\Exception\InvalidType(static::class . "::{$actualField} is of type {$type} but should be type {$expectedType}");
 				}

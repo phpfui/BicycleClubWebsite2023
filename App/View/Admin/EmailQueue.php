@@ -162,7 +162,7 @@ class EmailQueue
 				{
 				if ('Save' == $_POST['submit'])
 					{
-					$mailItem = new \App\Record\MailItem();
+					$mailItem = new \App\Record\MailItem((int)$_POST['mailItemId']);
 					$mailItem->setFrom($_POST);
 					$mailItem->update();
 					$this->page->redirect();

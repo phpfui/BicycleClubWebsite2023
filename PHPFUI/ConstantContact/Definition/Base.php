@@ -33,6 +33,11 @@ abstract class Base
 	 */
 	protected static array $requiredFields = [];
 
+	/**
+	 * @var bool $constructingFromArray set to true if we are constructing from an array so we don't type check for objects
+	 */
+	private bool $constructingFromArray = false;
+
   /**
    * $var array<string, mixed> the actual object data by field name.
    */
@@ -48,11 +53,6 @@ abstract class Base
 		'string' => true,
 		'array' => true,
 	];
-
-	/**
-	 * @var bool $constructingFromArray set to true if we are constructing from an array so we don't type check for objects
-	 */
-	private bool $constructingFromArray = false;
 
   /**
    * @var array<string, bool> indicates which values are set to reduce data output.

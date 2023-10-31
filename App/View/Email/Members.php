@@ -4,10 +4,6 @@ namespace App\View\Email;
 
 class Members implements \Stringable
 	{
-	private ?\App\UI\Alert $alert = null;
-
-	private ?\App\UI\Alert $fileAlert = null;
-
 	private array $parameters = [];
 
 	private string $testMessage = 'Send Test Email To You Only';
@@ -32,7 +28,6 @@ class Members implements \Stringable
 		$defaultFields['town'] = '';
 		$defaultFields['zipCodes'] = '';
 		$requiredFields = \array_merge(['submit'], \array_keys($defaultFields));
-		$hasRequiredParameters = true;
 
 		if ($_POST)
 			{
@@ -42,16 +37,15 @@ class Members implements \Stringable
 				{
 				if (! isset($_POST[$field]))
 					{
-					$this->alert = new \App\UI\Alert("Missing required field {$field}");
-					$this->alert->addClass('alert');
-					$hasRequiredParameters = false;
+					\App\Model\Session::setFlash('alert', "Missing required field {$field}");
+					$this->page->redirect();
 
-					break;
+					return;
 					}
 				}
 			}
 
-		if (\App\Model\Session::checkCSRF() && $hasRequiredParameters)
+		if (\App\Model\Session::checkCSRF())
 			{
 			$email = new \App\Tools\EMail();
 			$sender = \App\Model\Session::getSignedInMember();
@@ -78,8 +72,7 @@ class Members implements \Stringable
 					if (\is_uploaded_file($file))
 						{
 						$email->addAttachment(\file_get_contents($file), $_FILES['file']['name']);
-						$this->fileAlert = new \App\UI\Alert('If you want to resend this email, you must select the file again.  Sorry about that!');
-						$this->fileAlert->addClass('alert');
+						\App\Model\Session::setFlash('warning', 'If you want to resend this email, you must select the file again.  Sorry about that!');
 						}
 					}
 				}
@@ -124,8 +117,10 @@ class Members implements \Stringable
 			if ($_POST['submit'] == $this->testMessage)
 				{
 				$email->addToMember($sender);
+				\App\Tools\Logger::get()->debug($email);
 				$email->send();
-				$this->alert = new \App\UI\Alert('Check your inbox for a test email.  It would have been sent to ' . \count($members) . ' members');
+				\App\Model\Session::setFlash('success', 'Check your inbox for a test email.  It would have been sent to ' . \count($members) . ' members');
+				$this->page->redirect();
 				}
 			else
 				{
@@ -157,7 +152,8 @@ class Members implements \Stringable
 						$journalItem->insert();
 						}
 					}
-				$this->alert = new \App\UI\Alert('You emailed ' . \count($members) . ' club members');
+				\App\Model\Session::setFlash('success', 'You emailed ' . \count($members) . ' club members');
+				$this->page->redirect();
 				}
 			}
 		}
@@ -165,37 +161,31 @@ class Members implements \Stringable
 	public function __toString() : string
 		{
 		$form = new \PHPFUI\Form($this->page);
-
-		if ($this->alert)
-			{
-			$this->alert->setFadeout($this->page, 6000);
-			$form->add($this->alert);
-			}
 		$fieldSet = new \PHPFUI\FieldSet('Selection Criteria');
 		$categoryView = new \App\View\Categories($this->page, new \PHPFUI\Button('back'));
 		$picker = $categoryView->getMultiCategoryPicker('categories', 'Category Restriction', $this->parameters['categories'] ?? []);
 		$picker->setToolTip('Pick specific categories if you to restrict the email, optional');
 		$memberTypes = new \PHPFUI\FieldSet('Membership Types');
-		$currentMembers = new \PHPFUI\Input\CheckBoxBoolean('currentMembers', 'Current', $this->parameters['currentMembers']);
+		$currentMembers = new \PHPFUI\Input\CheckBoxBoolean('currentMembers', 'Current', $this->parameters['currentMembers'] ?? true);
 		$currentMembers->setToolTip('Check to send to current members of the club');
 		$memberTypes->add($currentMembers);
 
 		if ($this->page->isAuthorized('Email Past Members'))
 			{
 			$multiColumn = new \PHPFUI\MultiColumn();
-			$pastMembers = new \PHPFUI\Input\CheckBoxBoolean('pastMembers', 'Lapsed', $this->parameters['pastMembers']);
+			$pastMembers = new \PHPFUI\Input\CheckBoxBoolean('pastMembers', 'Lapsed', $this->parameters['pastMembers'] ?? false);
 			$pastMembers->setToolTip('Check to send to past members of the club who have not renewed.  Make sure the enter the number of months back of lapsed members.');
 			$multiColumn->add($pastMembers);
-			$months = new \PHPFUI\Input\Number('months', 'Months Lapsed', $this->parameters['months']);
+			$months = new \PHPFUI\Input\Number('months', 'Months Lapsed', $this->parameters['months'] ?? '');
 			$months->setToolTip('Lapsed members up to this number of months back emailed');
 			$multiColumn->add($months);
 			$memberTypes->add($multiColumn);
 			}
 		$multiColumn = new \PHPFUI\MultiColumn();
-		$newMembers = new \PHPFUI\Input\CheckBoxBoolean('newMembers', 'New', $this->parameters['newMembers']);
+		$newMembers = new \PHPFUI\Input\CheckBoxBoolean('newMembers', 'New', $this->parameters['newMembers'] ?? false);
 		$newMembers->setToolTip('Check to send to recently joined members.  Make sure the enter the number of months they have been a member.');
 		$multiColumn->add($newMembers);
-		$newMonths = new \PHPFUI\Input\Number('newMonths', 'Months New', $this->parameters['newMonths']);
+		$newMonths = new \PHPFUI\Input\Number('newMonths', 'Months New', $this->parameters['newMonths'] ?? '');
 		$newMonths->setToolTip('Members this number of months back and newer will be emailed');
 		$multiColumn->add($newMonths);
 		$memberTypes->add($multiColumn);
@@ -204,10 +194,10 @@ class Members implements \Stringable
 		if ($this->page->isAuthorized('Email All Members Criteria'))
 			{
 			$criteriaFieldset = new \PHPFUI\FieldSet('Other Criteria');
-			$zipCodes = new \PHPFUI\Input\Text('zipCodes', 'Limit to Zip Codes', $this->parameters['zipCodes']);
+			$zipCodes = new \PHPFUI\Input\Text('zipCodes', 'Limit to Zip Codes', $this->parameters['zipCodes'] ?? '');
 			$zipCodes->setToolTip('5 digit zip codes, comma (,) separated');
 			$criteriaFieldset->add($zipCodes);
-			$town = new \PHPFUI\Input\Text('town', 'Town', $this->parameters['town']);
+			$town = new \PHPFUI\Input\Text('town', 'Town', $this->parameters['town'] ?? '');
 			$town->setToolTip('This is an exact match');
 			$criteriaFieldset->add($town);
 			$container->add($criteriaFieldset);
@@ -218,7 +208,7 @@ class Members implements \Stringable
 			$container->add(new \PHPFUI\Input\Hidden('zipCodes'));
 			}
 		$fieldSet->add(new \PHPFUI\MultiColumn($picker, $container));
-		$from = new \PHPFUI\Input\Date($this->page, 'eventDate', 'Event Date', $this->parameters['eventDate']);
+		$from = new \PHPFUI\Input\Date($this->page, 'eventDate', 'Event Date', $this->parameters['eventDate'] ?? '');
 		$from->setMinDate(\App\Tools\Date::todayString());
 		$from->setToolTip('Please specify the date this email mentions. Example, the date of the event you are emailing about happens. This will make sure we don\'t send out an old email in the weekly journal.');
 		$from->setRequired();
@@ -237,22 +227,17 @@ class Members implements \Stringable
 		$fieldSet->add($multiColumn);
 		$form->add($fieldSet);
 		$fieldSet = new \PHPFUI\FieldSet('Email');
-		$subject = new \PHPFUI\Input\Text('subject', 'Subject', $this->parameters['subject']);
+		$subject = new \PHPFUI\Input\Text('subject', 'Subject', $this->parameters['subject'] ?? '');
 		$subject->setRequired();
 		$subject->addAttribute('placeholder', 'Email Subject');
 		$fieldSet->add($subject);
-		$message = new \PHPFUI\Input\TextArea('message', 'Message', $this->parameters['message']);
+		$message = new \PHPFUI\Input\TextArea('message', 'Message', $this->parameters['message'] ?? '');
 		$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
 		$message->addAttribute('placeholder', 'Message to all members?');
 		$message->setRequired();
 		$fieldSet->add($message);
 		$fieldSet->add(new \PHPFUI\Input\File($this->page, 'file', 'Optional file to attach'));
-		$fieldSet->add($this->fileAlert);
 		$settingTable = new \App\Table\Setting();
-//		$host = $settingTable->value('homePage');
-//		$link = $host . '/Membership/~unsubscribe~';
-//		$fullLink = \App\Tools\TextHelper::cleanUserHtml("<a href='$link'>Unsubscribe</a>");
-//		$fieldSet->add(new \App\UI\Display('Unsubscribe Link', $fullLink));
 		$form->add($fieldSet);
 		$buttonGroup = new \App\UI\CancelButtonGroup();
 		$emailAll = new \PHPFUI\Submit('Email All Members');

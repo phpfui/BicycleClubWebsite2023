@@ -278,7 +278,7 @@ class TextHelper extends \PHPFUI\TextHelper
 			{
 			$path = $image->getAttribute('src');
 
-			if (! \str_starts_with($path, 'http'))
+			if (! \str_starts_with($path, 'http') && ! \str_starts_with($path, 'data:'))
 				{
 				$path = \trim($path, ' /.');
 				$path = $root . '/' . $path;

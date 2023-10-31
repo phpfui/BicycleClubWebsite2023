@@ -78,6 +78,13 @@ class Deploy
 		$errors = new \App\Model\Errors();
 		$errors->deleteAll();
 
+		// if we have a valid release tag, send upgrade email if only upgraded by hand
+		$releaseTag = new \App\Model\ReleaseTag($target);
+		if ($releaseTag->isTag() && $releaseTag->isValid())
+			{
+			$this->sendUpgradeEmail($tag, $releaseTag->getMarketingVersion());
+			}
+
 		return $this->migrationModel->getErrors();
 		}
 
@@ -90,7 +97,7 @@ class Deploy
 	/**
 	 * @param array<string> $errors
 	 */
-	public function sendUpgradeEmail(\Gitonomy\Git\Reference\Tag $tag, string $version, string $errorMessage, array $errors) : void
+	public function sendUpgradeEmail(\Gitonomy\Git\Reference\Tag $tag, string $version, string $errorMessage = '', array $errors = []) : void
 		{
 		$email = new \App\Tools\EMail();
 		$email->setHtml();

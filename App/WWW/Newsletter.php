@@ -85,56 +85,40 @@ class Newsletter extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			else
 				{
 				$uploadName = $_FILES[$field]['name'] ?? \App\Tools\Date::todayString();
-				$values = [];
+				$time = \strtotime($uploadName);
 
-				$segment = 0;
-				$len = \strlen((string)$uploadName);
-
-				for ($i = 0; $i < $len; ++$i)
+				if ($time < \strtotime('1970-01-01'))
 					{
-					$char = $uploadName[$i];
-
-					if ($char >= '0' && $char <= '9')
+					// look for text month
+					for ($i = 1; $i <= 12; ++$i)
 						{
-						if (empty($values[$segment]))
+						$monthName = \date('M', \strtotime('2000-' . $i . '-01'));
+						$pos = \stripos($uploadName, $monthName);
+
+						if (false !== $pos)
 							{
-							$values[$segment] = '';
+							$uploadName = \substr($uploadName, $pos);
+
+							break;
 							}
-						$values[$segment] .= $char;
 						}
-					elseif (! empty($values[$segment]))
+					$pos = \strrpos($uploadName, '.');
+
+					if ($pos)
 						{
-						++$segment;
+						$uploadName = \substr($uploadName, 0, $pos);
+						}
+					$time = \strtotime($uploadName);
+
+					if ($time < \strtotime('1970-01-01'))
+						{
+						\App\Model\Session::setFlash('alert', 'File name ' . $_FILES[$field]['name'] . ' could not be parsed to a valid date, please specify a date.');
+						$this->page->redirect();
+
+						return;
 						}
 					}
-
-				$year = 0;
-
-				for ($i = 0; $i < \count($values);)
-					{
-					$int = (int)$values[$i];
-
-					if ($int >= 1900)
-						{
-						$year = $int;
-						unset($values[$i]);
-						}
-					elseif (! $int)
-						{
-						unset($values[$i]);
-						}
-					++$i;
-					}
-
-				$month = (int)\array_shift($values);
-				$day = 1;
-
-				if (\count($values))
-					{
-					$day = (int)\array_shift($values);
-					}
-
-				$date = \App\Tools\Date::makeString($year, $month, $day);
+				$date = \date('Y-m-d', $time);
 				}
 
 			$newsletter = new \App\Record\Newsletter(['date' => $date]);

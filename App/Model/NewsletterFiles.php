@@ -14,7 +14,7 @@ class NewsletterFiles extends \App\Model\File
 		$settings = new \App\Table\Setting();
 		$abbrev = $settings->value('clubAbbrev');
 		$name = $settings->value('newsletterName');
-		$file = "{$abbrev}{$name}" . \App\Tools\Date::formatString('Ym', $this->newsletter->date) . '.pdf';
+		$file = "{$abbrev} {$name} " . \App\Tools\Date::formatString('Y-m-d', $this->newsletter->date) . '.pdf';
 		$file = \str_replace(' ', '_', $file);
 		$prettyName = '';
 		$len = \strlen($file);

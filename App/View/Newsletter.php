@@ -19,7 +19,6 @@ class Newsletter
 		$fieldSet = new \PHPFUI\FieldSet('Required Settings');
 		$fieldSet->add($settingsSaver->generateField('newsletterName', 'Newsletter Name'));
 		$fieldSet->add($settingsSaver->generateField('newsletterEmail', 'Newsletter Sending Email Address', 'email'));
-		$fieldSet->add($settingsSaver->generateField('newsletterArchiveEmail', 'Newsletter Archive Email Address', 'email'));
 
 		$editor = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPicker('Newsletter Editor'));
 		$editControl = $editor->getEditControl();

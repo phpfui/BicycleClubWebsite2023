@@ -175,8 +175,8 @@ class Config implements \PHPFUI\Interfaces\NanoClass, \Stringable
 				break;
 
 			case 17:
-				$view = new \App\View\System\SlackSettings($this->page);
-				$this->page->add(new \App\View\Setup\Generic('Slack Settings', $view->edit(), $wizardBar));
+				$view = new \App\View\System\ErrorLogging($this->page);
+				$this->page->add(new \App\View\Setup\Generic('Error Logging', $view->edit(), $wizardBar));
 
 				break;
 

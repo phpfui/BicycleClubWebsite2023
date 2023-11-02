@@ -374,7 +374,7 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/System/Settings/sms', 'SMS Settings');
 			$this->addSub($menu, '/System/migrations', 'Migrations');
 			$this->addSub($menu, '/System/Settings/smtp', 'SMTP Settings');
-			$this->addSub($menu, '/System/Settings/slack', 'Slack Settings');
+			$this->addSub($menu, '/System/Settings/errors', 'Error Logging');
 			$this->addSub($menu, '/System/docs', 'PHP Documentation');
 			$this->addSub($menu, '/System/releaseNotes', 'Release Notes');
 			$this->addSub($menu, '/System/releases', 'Releases');

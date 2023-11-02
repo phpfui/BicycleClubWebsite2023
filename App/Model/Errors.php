@@ -41,6 +41,13 @@ class Errors
 		return $count;
 		}
 
+	public function getErrorEmail() : string
+		{
+		$settingTable = new \App\Table\Setting();
+
+		return $settingTable->value('ErrorEmail');
+		}
+
 	/**
 	 * @return string[]
 	 *
@@ -49,11 +56,6 @@ class Errors
 	public function getErrors(bool $delete = false) : array
 		{
 		$errors = [];
-
-		if ('https' !== $_SERVER['REQUEST_SCHEME'])
-			{
-			return $errors;
-			}
 
 		foreach ($this->files as $filename)
 			{
@@ -102,16 +104,41 @@ class Errors
 		return $settingTable->value('SlackErrorWebhook');
 		}
 
-	public function sendText(string $text) : void
+	public function sendText(string $text) : bool
 		{
 		$hook = $this->getSlackUrl();
 
-		if ($hook)
+		$_SERVER['SERVER_ADDR'] ??= '::1';
+
+		if($hook && ('127.0.0.1' != $_SERVER['SERVER_ADDR'] && '::1' != $_SERVER['SERVER_ADDR']))
 			{
 			$guzzle = new \GuzzleHttp\Client(['verify' => false, 'http_errors' => false]);
 			$client = new \Maknz\Slack\Client($hook, [], $guzzle);
 			$client->send("{$_SERVER['SERVER_NAME']}\n{$text}");
+
+			return true;
 			}
+
+		$errorEmail = $this->getErrorEmail();
+
+		if (\strlen($errorEmail) && \filter_var($errorEmail, FILTER_VALIDATE_EMAIL))
+			{
+			$email = new \App\Tools\EMail();
+			$email->setSubject("Errors from {$_SERVER['SERVER_NAME']}");
+			$email->setTo($errorEmail);
+			$email->setBody($text);
+			$email->send();
+
+			return true;
+			}
+
+		return false;
+		}
+
+	public function setErrorEmail(string $email) : void
+		{
+		$settingTable = new \App\Table\Setting();
+		$settingTable->save('ErrorEmail', $email);
 		}
 
 	public function setSlackUrl(string $webhook) : void

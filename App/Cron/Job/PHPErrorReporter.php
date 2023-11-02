@@ -9,15 +9,14 @@ class PHPErrorReporter extends \App\Cron\BaseJob
 		return 'Send any PHP Errors to Slack.';
 		}
 
-	/** @param array<string, string> $parameters */
 	public function run(array $parameters = []) : void
 		{
 		$errorModel = new \App\Model\Errors();
-		$errors = $errorModel->getErrors(true);
+		$errors = $errorModel->getErrors();
 
-		if ($errors)
+		if ($errors && $errorModel->sendText(\implode("\n", $errors)))
 			{
-			$errorModel->sendText(\implode("\n", $errors));
+			$errorModel->deleteAll();
 			}
 		}
 

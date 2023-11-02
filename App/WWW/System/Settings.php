@@ -40,20 +40,20 @@ class Settings extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function errors() : void
+		{
+		if ($this->page->addHeader('Errog Logging'))
+			{
+			$view = new \App\View\System\ErrorLogging($this->page);
+			$this->page->addPageContent($view->edit());
+			}
+		}
+
 	public function favIcon() : void
 		{
 		if ($this->page->addHeader('Set FavIcon'))
 			{
 			$view = new \App\View\System\FavIcon($this->page);
-			$this->page->addPageContent($view->edit());
-			}
-		}
-
-	public function slack() : void
-		{
-		if ($this->page->addHeader('Slack Settings'))
-			{
-			$view = new \App\View\System\SlackSettings($this->page);
 			$this->page->addPageContent($view->edit());
 			}
 		}

@@ -19,7 +19,7 @@ var error="Please correct the following errors:<ul>";for(const [key,value] of Ob
 for(const element of value){error+="<li><b>"+key+"</b>: <i>"+element+"</i></li>";}}
 error+="</ul>";$(".' . $formErrorClass . '").html(error).attr("style","display:block");}
 else if(post.record){for(const [key,value] of Object.entries(post.record))
-{var $input=$("[name=\'"+key+"\']");if($input.length)$input.val(value);}}}');
+{var $input=$("[name=\'"+key+"\']");if($input.length)$input.val(value);}};if(post.redirect){window.location.href=post.redirect;}}');
 		}
 
 	/**

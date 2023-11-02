@@ -55,46 +55,22 @@ class Forum
 
 	public function edit(\App\Record\Forum $forum) : \App\UI\ErrorFormSaver
 		{
-		$post = \App\Model\Session::getFlash('post');
-
-		if ($post)
-			{
-			$forum->setFrom($post);
-			}
-
 		if ($forum->forumId)
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \App\UI\ErrorFormSaver($this->page, $forum, $submit);
-
-			if ($form->save())
-				{
-				return $form;
-				}
+			$redirectOnAdd = '';
 			}
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add');
-			$form = new \App\UI\ErrorFormSaver($this->page, $forum);
+			$redirectOnAdd = '/Forums/manage';
+			}
 
-			if ('Add' == ($_POST['submit'] ?? '') && \App\Model\Session::checkCSRF())
-				{
-				$forum = new \App\Record\Forum();
-				$forum->setFrom($_POST);
-				$this->page->done();
+		$form = new \App\UI\ErrorFormSaver($this->page, $forum, $submit);
 
-				if (! $forum->insert())
-					{
-					\App\Model\Session::setFlash('post', $_POST);
-					$this->page->redirect();
-					}
-				else
-					{
-					$this->page->redirect('/Forums/manage');
-					}
-
-				return $form;
-				}
+		if ($form->save($redirectOnAdd))
+			{
+			return $form;
 			}
 
 		$form->add(new \PHPFUI\Input\Hidden('forumId', (string)$forum->forumId));

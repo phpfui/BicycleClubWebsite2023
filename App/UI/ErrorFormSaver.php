@@ -9,7 +9,7 @@ class ErrorFormSaver extends \App\UI\ErrorForm
 		parent::__construct($page, $submit);
 		}
 
-	public function save() : bool
+	public function save(string $redirectOnSuccess = '') : bool
 		{
 		if (! $this->isMyCallback())
 			{
@@ -32,9 +32,16 @@ class ErrorFormSaver extends \App\UI\ErrorForm
 
 			return false;
 			}
-		$this->record->update();
-		$this->page->setRawResponse(\json_encode(['response' => 'Saved', 'color' => 'lime', 'record' => $this->record->toArray(), ]));
+
+		$this->record->insertOrUpdate();
+		$response = ['response' => 'Saved', 'color' => 'lime', 'record' => $this->record->toArray(), ];
+
+		if ($redirectOnSuccess)
+			{
+			$response['redirect'] = $redirectOnSuccess;
+			}
+		$this->page->setRawResponse(\json_encode($response));
 
 		return true;
 		}
-}
+	}

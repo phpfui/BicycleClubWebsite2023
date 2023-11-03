@@ -21,71 +21,6 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		$this->settingTable = new \App\Table\Setting();
 		}
 
-	public function audit(string $type = '') : void
-		{
-		if ($this->page->addHeader('Membership Audit'))
-			{
-			switch ($type)
-				{
-				case 'noPayments':
-
-					$members = $this->memberTable->noPayments();
-					$this->page->addSubHeader('No Payments');
-					$this->page->addPageContent($this->memberView->show($members, 'Everyone has paid'));
-
-					break;
-
-
-				case 'noMembers':
-
-					$members = $this->memberTable->noMembers();
-					$this->page->addSubHeader('No Members');
-					$this->page->addPageContent($this->memberView->show($members, 'All memberships have members'));
-
-					break;
-
-
-				case 'badExpirations':
-
-					$members = $this->memberTable->badExpirations();
-					$this->page->addSubHeader('Bad Expiration Dates');
-					$this->page->addPageContent($this->memberView->show($members, 'No members with bad expirations'));
-
-					break;
-
-
-				case 'missingNames':
-
-					$members = $this->memberTable->missingNames();
-					$this->page->addSubHeader('Missing Names');
-					$this->page->addPageContent($this->memberView->show($members, 'All members have names'));
-
-					break;
-
-
-				case 'noPermissions':
-
-					$members = $this->memberTable->noPermissions();
-					$this->page->addSubHeader('No Permissions');
-					$this->page->addPageContent($this->memberView->show($members, 'All members have permissions'));
-
-					break;
-
-
-				default:
-
-					$landing = new \App\UI\LandingPage($this->page);
-					$landing->addLink('/Membership/audit/noPayments', 'Memberships with No Payments');
-					$landing->addLink('/Membership/audit/noMembers', 'Memberships with No Members');
-					$landing->addLink('/Membership/audit/badExpirations', 'Memberships with Bad Expirations (payment, but expiration not updated)');
-					$landing->addLink('/Membership/audit/missingNames', 'Memberships with Missing Names');
-					$landing->addLink('/Membership/audit/noPermissions', 'Memberships with No Permissions');
-					$this->page->addPageContent($landing);
-
-				}
-			}
-		}
-
 	public function card(string $command = 'print') : void
 		{
 		if ($this->page->isAuthorized('Membership Card'))
@@ -174,41 +109,6 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		}
 
-	public function combineMembers() : void
-		{
-		if ($this->page->addHeader('Combine Members'))
-			{
-			$view = new \App\View\Member\Combine($this->page);
-			$this->page->addPageContent($view->combine());
-			}
-		}
-
-	public function combineMemberships() : void
-		{
-		if ($this->page->addHeader('Combine Memberships'))
-			{
-			$view = new \App\View\Membership\Combine($this->page);
-			$this->page->addPageContent($view->combine());
-			}
-		}
-
-	public function configure() : void
-		{
-		if ($this->page->addHeader('Membership Configuration'))
-			{
-			$this->page->addPageContent($this->membershipView->configure());
-			}
-		}
-
-	public function confirm() : void
-		{
-		if ($this->page->addHeader('Membership Confirm'))
-			{
-			$members = $this->memberTable->getPendingMembers(\App\Tools\Date::todayString());
-			$this->page->addPageContent($this->memberView->show($members, 'No pending members found'));
-			}
-		}
-
 	public function confirmEmail(string $emailHash = '') : void
 		{
 		if ($this->page->addHeader('Confirm Additional Email'))
@@ -243,35 +143,6 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		if ($this->page->addHeader('Crop My Photo') && ($memberModel->memberInMembership($member) || $this->page->isAuthorized('Crop Member Photo')))
 			{
 			$this->page->addPageContent($this->memberView->crop($member));
-			}
-		}
-
-	public function csv() : void
-		{
-		$columns = null;
-
-		if ($this->page->addHeader('Download CSV'))
-			{
-			if (isset($_POST['type']))
-				{
-				$membershipModel = new \App\Model\Membership();
-				$csvWriter = new \App\Tools\CSV\FileWriter('members.csv');
-				$membershipModel->export($csvWriter, $_POST['start'], $_POST['end'], $_POST['type']);
-				}
-			else
-				{
-				$this->page->addPageContent($this->membershipView->csvOptions());
-				}
-			}
-		}
-
-	public function dues() : void
-		{
-		if ($this->page->addHeader('Membership Dues'))
-			{
-			$duesView = new \App\View\Membership\Dues($this->page);
-
-			$this->page->addPageContent($duesView->getForm());
 			}
 		}
 
@@ -315,46 +186,6 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		if ($this->page->addHeader('Email All Members'))
 			{
 			$this->page->addPageContent(new \App\View\Email\Members($this->page));
-			}
-		}
-
-	public function emails(string $email = '') : void
-		{
-		$emails = [
-			'newsletter' => 'Newsletter',
-			'Waiver' => 'Waiver Accepted',
-			'newPasswordEmail' => 'New Password',
-		];
-
-		if (isset($emails[$email]))
-			{
-			if ($this->page->addHeader($emails[$email] . ' Email'))
-				{
-				$this->page->addPageContent(new \App\View\Email\Settings($this->page, $email, new \App\Model\Email\Membership()));
-				}
-			}
-		else
-			{
-			if ($this->page->addHeader('Membership Emails'))
-				{
-				$landingPage = new \App\UI\LandingPage($this->page);
-
-				foreach ($emails as $link => $header)
-					{
-					$landingPage->addLink("/Membership/emails/{$link}", "{$header} Email");
-					}
-				$landingPage->addLink('/Membership/notifications', 'Membership Notifications');
-				$landingPage->sort();
-				$this->page->addPageContent($landingPage);
-				}
-			}
-		}
-
-	public function extend() : void
-		{
-		if ($this->page->addHeader('Extend Memberships'))
-			{
-			$this->page->addPageContent(new \App\View\Membership\Extend($this->page));
 			}
 		}
 
@@ -585,15 +416,6 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		}
 
-	public function qrCodes() : void
-		{
-		if ($this->page->addHeader('Membership QR Codes'))
-			{
-			$view = new \App\View\QRCodes($this->page);
-			$this->page->addPageContent($view->membership());
-			}
-		}
-
 	public function recent() : void
 		{
 		if ($this->page->addHeader('Recent Sign Ins'))
@@ -650,15 +472,6 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			{
 			$view = new \App\View\Member\Roster($this->page, '/Membership/roster');
 			$this->page->addPageContent($view->show($field, $select, $offset));
-			}
-		}
-
-	public function rosterReport() : void
-		{
-		if ($this->page->addHeader('Roster Report'))
-			{
-			$view = new \App\View\Member\Roster($this->page);
-			$this->page->addPageContent($view->report());
 			}
 		}
 

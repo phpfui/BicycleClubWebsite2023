@@ -157,33 +157,42 @@ class MainMenu extends \App\UI\MainMenu
 
 		if ($menu = $this->addTopMenu('Membership', 'Membership'))
 			{
-			$this->addSub($menu, '/Membership/editMembership/0', 'Add New Membership');
-			$this->addSub($menu, '/Membership/audit', 'Membership Audit');
 			$this->addSub($menu, '/Membership/statistics', 'Club Statistics');
 			$this->addSub($menu, '/Membership/find', 'Find Members');
 			$this->addSub($menu, '/Membership/myInfo', 'My Info');
 			$this->addSub($menu, '/Membership/myNotifications', 'My Notifications');
-			$this->addSub($menu, '/Membership/notifications', 'Membership Notifications');
 			$this->addSub($menu, '/Membership/roster', 'Club Roster');
-			$this->addSub($menu, '/Membership/rosterReport', 'Roster Report');
 			$this->addSub($menu, '/Membership/password', 'Change My Password');
-			$this->addSub($menu, '/Membership/combineMemberships', 'Combine Memberships');
-			$this->addSub($menu, '/Membership/combineMembers', 'Combine Members');
 			$this->addSub($menu, '/Membership/card', 'Membership Card');
 			$this->addSub($menu, '/Membership/emailAll', 'Email All Members');
-			$this->addSub($menu, '/Membership/subscriptions', 'Update Subscriptions');
 			$this->addSub($menu, '/Membership/minor', 'Print Minor Release');
-			$this->addSub($menu, '/Membership/configure', 'Membership Configuration');
-			$this->addSub($menu, '/Membership/dues', 'Membership Dues');
-			$this->addSub($menu, '/Membership/qrCodes', 'Membership QR Codes');
 			$this->addSub($menu, '/Membership/mom/' . \App\Tools\Date::year(\App\Tools\Date::today()), 'Member Of The Month');
-			$this->addSub($menu, '/Membership/emails', 'Membership Emails');
-			$this->addSub($menu, '/Membership/confirm', 'Membership Confirm');
 			$this->addSub($menu, '/Membership/newMembers', 'New Members');
-			$this->addSub($menu, '/Membership/csv', 'Download CSV');
 			$this->addSub($menu, '/Membership/recent', 'Recent Sign Ins');
 	//		$this->addSub($menu, '/Membership/Subscription', 'Manage My Subscription');
 			$this->addSub($menu, '/Membership/renew', 'Renew My Membership');
+
+			if ($configMenu = $this->addMenu($menu, '/Membership/Configure', 'Membership Configuration'))
+				{
+				$this->addSub($configMenu, '/Membership/Configure/emails', 'Membership Emails');
+				$this->addSub($configMenu, '/Membership/Configure/qrCodes', 'Membership QR Codes');
+				$this->addSub($configMenu, '/Membership/Configure/configure', 'Membership Configuration');
+				$this->addSub($configMenu, '/Membership/Configure/notifications', 'Membership Notifications');
+				$this->addSub($configMenu, '/Membership/Configure/dues', 'Membership Dues');
+				$this->addSub($configMenu, '/Membership/Configure/rosterReport', 'Roster Report');
+				$this->addSub($configMenu, '/Membership/Configure/csv', 'Download CSV');
+				}
+
+			if ($maintenanceMenu = $this->addMenu($menu, '/Membership/Maintenance', 'Membership Maintenance'))
+				{
+				$this->addSub($maintenanceMenu, '/Membership/Maintenance/subscriptions', 'Update Subscriptions');
+				$this->addSub($maintenanceMenu, '/Membership/Maintenance/addMembership', 'Add New Membership');
+				$this->addSub($maintenanceMenu, '/Membership/Maintenance/audit', 'Membership Audit');
+				$this->addSub($maintenanceMenu, '/Membership/Maintenance/combineMemberships', 'Combine Memberships');
+				$this->addSub($maintenanceMenu, '/Membership/Maintenance/combineMembers', 'Combine Members');
+				$this->addSub($maintenanceMenu, '/Membership/Maintenance/confirm', 'Membership Confirm');
+				$this->addSub($maintenanceMenu, '/Membership/Maintenance/extend', 'Extend Memberships');
+				}
 			}
 
 		if ($menu = $this->addTopMenu('GA', $settingTable->value('generalAdmissionName', 'General Admission')))

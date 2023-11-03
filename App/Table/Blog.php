@@ -36,19 +36,19 @@ class Blog extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getValue($sql, [$blogname]);
 		}
 
-	public static function getStoriesForBlog(string $pageName, bool $signedIn = false, int $year = 0) : \PHPFUI\ORM\DataObjectCursor
+	public static function getStoriesForBlog(\App\Record\Blog $blog, bool $signedIn = false, int $year = 0) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$today = \App\Tools\Date::todayString();
 		$sql = 'select s.*,b.blogId,bi.ranking from story s
 			inner join blogItem bi on s.storyId=bi.storyId
 			inner join blog b on b.blogId=bi.blogId
-			where b.name=? and (s.startDate<=? or s.startDate is null) and (s.endDate>=? or s.endDate is null)';
+			where b.blogId=? and (s.startDate<=? or s.startDate is null) and (s.endDate>=? or s.endDate is null)';
 
 		if (! $signedIn)
 			{
 			$sql .= ' and (s.membersOnly=0)';
 			}
-		$input = [$pageName, $today, $today, ];
+		$input = [$blog->blogId, $today, $today, ];
 
 		if ($year)
 			{

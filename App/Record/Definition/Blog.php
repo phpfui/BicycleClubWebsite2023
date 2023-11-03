@@ -7,7 +7,8 @@ namespace App\Record\Definition;
  *
  * @property int $blogId MySQL type int
  * @property \App\Record\Blog $blog related record
- * @property string $name MySQL type varchar(100)
+ * @property int $count MySQL type int
+ * @property string $name MySQL type varchar(255)
  */
 abstract class Blog extends \PHPFUI\ORM\Record
 	{
@@ -17,7 +18,8 @@ abstract class Blog extends \PHPFUI\ORM\Record
 	protected static array $fields = [
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'blogId' => ['int', 'int', 0, false, ],
-		'name' => ['varchar(100)', 'string', 100, false, ],
+		'count' => ['int', 'int', 0, false, 0, ],
+		'name' => ['varchar(255)', 'string', 255, false, '', ],
 	];
 
 	/** @var array<string> */

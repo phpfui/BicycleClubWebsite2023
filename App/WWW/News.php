@@ -27,7 +27,7 @@ class News extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$subnav = new \App\UI\YearSubNav('/News/board', $year, $earliest);
 				$this->page->addPageContent($subnav);
-				$this->page->addPageContent($this->content->getDisplayCategoryHTML('Board News', 0, $year));
+				$this->page->addPageContent($this->content->getDisplayCategoryHTML('Board News', $year));
 				}
 			else
 				{

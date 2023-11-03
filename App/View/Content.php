@@ -32,37 +32,32 @@ class Content extends \App\UI\HTMLEditor
 			}
 		}
 
-	public function getDisplayCategoryHTML(string $pageName, int $count = 5, int | string $year = 0) : \PHPFUI\Container
+	public function getDisplayCategoryHTML(string $pageName, int | string $year = 0) : \PHPFUI\Container
 		{
-		$count = (int)$count;
 		$year = (int)$year;
-		$blogTable = new \App\Table\Blog();
-		$blogTable->setWhere(new \PHPFUI\ORM\Condition('name', $pageName));
-		$cursor = $blogTable->getRecordCursor();
+		$blog = new \App\Record\Blog(['name' => $pageName]);
 
-		if (! \count($cursor))
+		if (! $blog->loaded())
 			{
-			$blog = new \App\Record\Blog();
 			$blog->setFrom(['name' => $pageName]);
 			$blog->insert();
 			}
-		else
-			{
-			$blog = $cursor->current();
-			}
+		$count = $blog->count;
+
 		$container = new \PHPFUI\Container();
-		$stories = $blogTable->getStoriesForBlog($pageName, \App\Model\Session::isSignedIn(), $year);
+		$blogTable = new \App\Table\Blog();
+		$stories = $blogTable->getStoriesForBlog($blog, \App\Model\Session::isSignedIn(), $year);
 
 		if (isset($_GET['order']) && $this->addContent)
 			{
-			$container->add($this->order($stories, $blog->blogId));
+			$container->add($this->order($stories, $blog));
 			}
 		else
 			{
 			if ($this->addContent)
 				{
 				$buttonGroup = new \PHPFUI\ButtonGroup();
-				$button = new \PHPFUI\Button('Add content to this page', "/Content/newStory/{$blog->blogId}?url=" . $this->page->getBaseURL());
+				$button = new \PHPFUI\Button('Add Content To This Page', "/Content/newStory/{$blog->blogId}?url=" . $this->page->getBaseURL());
 				$button->addClass('secondary');
 				$button->setConfirm('Are you sure you want to add a story to this page?');
 				$buttonGroup->addButton($button);
@@ -79,49 +74,6 @@ class Content extends \App\UI\HTMLEditor
 			}
 
 		return $container;
-		}
-
-	public function getStoriesHTML(iterable $stories, int $count = 0) : string
-		{
-		$output = '';
-		$next = [];
-		$i = 0;
-		$today = \App\Tools\Date::todayString();
-
-		foreach ($stories as $content)
-			{
-			if ($count && $i >= $count)
-				{
-				break;
-				}
-
-			if ((! (int)$content->startDate || ($content->startDate <= $today)) && (! (int)$content->endDate || ($content->endDate >= $today)))
-				{
-				$next[] = clone $content;
-				}
-			++$i;
-			}
-		$last = \count($next) - 1;
-
-		foreach ($next as $index => $content)
-			{
-			if ($index)
-				{
-				$output .= $this->getStorySeparatorHTML();
-				}
-
-			if ($index < $last)
-				{
-				$this->next = $next[$index + 1]['storyId'];
-				}
-			else
-				{
-				$this->next = 0;
-				}
-			$output .= $this->getStoryHTML($content);
-			}
-
-		return $output;
 		}
 
 	public function getStoryHTML(\PHPFUI\ORM\DataObject $storyData) : \PHPFUI\HTML5Element
@@ -468,18 +420,63 @@ class Content extends \App\UI\HTMLEditor
 		$modal->add($form);
 		}
 
+	private function getStoriesHTML(iterable $stories, int $count) : string
+		{
+		$output = '';
+		$next = [];
+		$i = 0;
+		$today = \App\Tools\Date::todayString();
+
+		foreach ($stories as $content)
+			{
+			if ($count && $i >= $count)
+				{
+				break;
+				}
+
+			if ((! (int)$content->startDate || ($content->startDate <= $today)) && (! (int)$content->endDate || ($content->endDate >= $today)))
+				{
+				$next[] = clone $content;
+				}
+			++$i;
+			}
+		$last = \count($next) - 1;
+
+		foreach ($next as $index => $content)
+			{
+			if ($index)
+				{
+				$output .= $this->getStorySeparatorHTML();
+				}
+
+			if ($index < $last)
+				{
+				$this->next = $next[$index + 1]['storyId'];
+				}
+			else
+				{
+				$this->next = 0;
+				}
+			$output .= $this->getStoryHTML($content);
+			}
+
+		return $output;
+		}
+
 	private function getStorySeparatorHTML() : string
 		{
 		return '<hr>';
 		}
 
-	private function order(iterable $stories, int $blogId) : \PHPFUI\Form
+	private function order(iterable $stories, \App\Record\Blog $blog) : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit('Save Order', 'action');
 		$form = new \PHPFUI\Form($this->page, $submit);
 
-		$form->add(new \PHPFUI\Input\Hidden('blogId', (string)$blogId));
+		$form->add(new \PHPFUI\Input\Hidden('blogId', (string)$blog->blogId));
 		$form->add(new \PHPFUI\SubHeader('Drag and drop stories, then press Save'));
+		$countInput = new \PHPFUI\Input\Number('count', 'Number of Stories to Display', $blog->count);
+		$countInput->setToolTip('Maximum number of stories to show, zero for all');
 
 		$table = new \PHPFUI\OrderableTable($this->page);
 		$rowId = 'storyId';
@@ -505,8 +502,10 @@ class Content extends \App\UI\HTMLEditor
 		$form->add($table);
 		$buttonGroup = new \PHPFUI\ButtonGroup();
 		$buttonGroup->addButton($submit);
-		$buttonGroup->addButton(new \PHPFUI\Button('Back to Stories', $this->page->getBaseURL()));
-		$form->add($buttonGroup);
+		$backButton = new \PHPFUI\Button('Back To Stories', $this->page->getBaseURL());
+		$backButton->addClass('secondary hollow');
+		$buttonGroup->addButton($backButton);
+		$form->add(new \PHPFUI\MultiColumn($buttonGroup, $countInput));
 
 		return $form;
 		}
@@ -585,6 +584,11 @@ class Content extends \App\UI\HTMLEditor
 					break;
 
 				case 'Save Order':
+
+					$blog = new \App\Record\Blog($_POST['blogId']);
+					$blog->count = (int)$_POST['count'];
+					$blog->update();
+
 					foreach ($_POST['storyId'] as $ranking => $storyId)
 						{
 						$blogItem = new \App\Record\BlogItem(['blogId' => $_POST['blogId'], 'storyId' => $storyId]);

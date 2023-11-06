@@ -346,8 +346,6 @@ class Page extends \PHPFUI\Page
 			$this->addSearchModal($searchIcon);
 			$titleBar->addRight($searchIcon);
 			}
-		$url = $this->isSignedIn() ? '/Rides/memberSchedule' : '/Rides/schedule';
-		$titleBar->addRight((new \PHPFUI\Button('Rides', $url))->addClass('small')->addClass('info'));
 
 		if ($this->isSignedIn())
 			{
@@ -355,9 +353,12 @@ class Page extends \PHPFUI\Page
 			}
 		else
 			{
-			$titleBar->addRight((new \PHPFUI\Button('Join', '/Join'))->addClass('small')->addClass('success'));
 			$titleBar->addRight((new \PHPFUI\Button('Sign In', '/Home'))->addClass('small'));
+			$titleBar->addRight((new \PHPFUI\Button('Join', '/Join'))->addClass('small')->addClass('success'));
 			}
+
+		$url = $this->isSignedIn() ? '/Rides/memberSchedule' : '/Rides/schedule';
+		$titleBar->addRight((new \PHPFUI\Button('Rides', $url))->addClass('small')->addClass('info'));
 
 		$div = new \PHPFUI\HTML5Element('div');
 		$stickyTitleBar = new \PHPFUI\Sticky($div);
@@ -662,15 +663,17 @@ class Page extends \PHPFUI\Page
 		$fieldSet->add($remember);
 		$form->add($fieldSet);
 		$form->setAreYouSure(false);
+
 		$buttonGroup = new \PHPFUI\ButtonGroup();
 		$buttonGroup->addButton(new \PHPFUI\Submit('Sign In', 'SignIn'));
-		$forgot = new \PHPFUI\Submit('Forgot My Password', $this->forgotPassword);
-		$forgot->addClass('alert');
-		$buttonGroup->addButton($forgot);
 
 		$joinButton = new \PHPFUI\Button('Join', $this->value('joinPage'));
 		$joinButton->addClass('success');
 		$buttonGroup->addButton($joinButton);
+
+		$forgot = new \PHPFUI\Submit('Forgot My Password', $this->forgotPassword);
+		$forgot->addClass('alert');
+		$buttonGroup->addButton($forgot);
 
 		$form->add($buttonGroup);
 		$this->done = true;

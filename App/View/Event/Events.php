@@ -508,6 +508,8 @@ class Events
 		$container->add($buttonGroup);
 
 		$this->reservationTable->setReservationsCursor($event);
+		$this->reservationTable->addGroupBy('memberId');
+
 		$view = new \App\UI\ContinuousScrollTable($this->page, $this->reservationTable);
 		$view->setRecordId('reservationId');
 

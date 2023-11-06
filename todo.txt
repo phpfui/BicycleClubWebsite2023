@@ -1,3 +1,5 @@
+<DOCTYPE=HTML> on cc email forwarding
+
 Revisit privacy policy
 
 Edit start location on day of ride

@@ -37,7 +37,6 @@ class Statistics
 			$rides = $this->rideSignupTable->getArrayCursor();
 			$input = [];
 			$sql = $this->rideSignupTable->getSQL($input);
-			\App\Tools\Logger::get()->debug($input, $sql);
 
 			if (\count($rides))
 				{

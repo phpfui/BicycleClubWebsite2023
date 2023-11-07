@@ -117,7 +117,6 @@ class Members implements \Stringable
 			if ($_POST['submit'] == $this->testMessage)
 				{
 				$email->addToMember($sender);
-				\App\Tools\Logger::get()->debug($email);
 				$email->send();
 				\App\Model\Session::setFlash('success', 'Check your inbox for a test email.  It would have been sent to ' . \count($members) . ' members');
 				$this->page->redirect();

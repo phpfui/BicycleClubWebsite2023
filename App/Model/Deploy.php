@@ -81,7 +81,7 @@ class Deploy
 		// if we have a valid release tag, send upgrade email if only upgraded by hand
 		$releaseTag = new \App\Model\ReleaseTag($target);
 
-		if ($releaseTag->isTag() && $releaseTag->isValid())
+		if ($tag && $releaseTag->isTag() && $releaseTag->isValid())
 			{
 			$this->sendUpgradeEmail($tag, $releaseTag->getMarketingVersion());
 			}

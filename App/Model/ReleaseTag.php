@@ -18,7 +18,7 @@ class ReleaseTag
 
 	public function __construct(string $tag)
 		{
-		if (! \str_contains($tag, '_') && \str_starts_with($tag, self::VERSION_PREFIX))
+		if (! \str_contains($tag, '_') && ! \str_starts_with($tag, self::VERSION_PREFIX))
 			{
 			$this->error = "{$tag} is not a valid release";
 

@@ -390,7 +390,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 				{
 				$memberModel = new \App\Model\Member();
 				$memberModel->resetPassword($member->email, (bool)$text);
-				$this->page->addPageContent("A new password was sent to {$member->fullName()}");
+				$this->page->addPageContent("A password reset email was sent to {$member->fullName()}");
 				}
 			else
 				{

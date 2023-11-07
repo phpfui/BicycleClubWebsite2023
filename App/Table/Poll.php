@@ -56,8 +56,8 @@ class Poll extends \PHPFUI\ORM\Table
 		{
 		$pollTable = new \App\Table\Poll();
 		$today = \App\Tools\Date::todayString();
-		$condition = new \PHPFUI\ORM\Condition('startDate', $today, new \PHPFUI\ORM\Operator\GreaterThanEqual());
-		$condition->and(new \PHPFUI\ORM\Condition('endDate', $today, new \PHPFUI\ORM\Operator\LessThanEqual()));
+		$condition = new \PHPFUI\ORM\Condition('startDate', $today, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$condition->and(new \PHPFUI\ORM\Condition('endDate', $today, new \PHPFUI\ORM\Operator\GreaterThanEqual()));
 		$condition->and(new \PHPFUI\ORM\Condition('required', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
 		$pollTable->setWhere($condition);
 		$pollTable->setOrderBy('startDate');

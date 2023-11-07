@@ -562,7 +562,7 @@ class Page extends \PHPFUI\Page
 			$pollModel = new \App\Model\Poll();
 			$poll = $pollModel->getRequiredPoll();
 
-			if (! $poll->empty())
+			if ($poll)
 				{
 				// this post back could save the vote
 				$pollRequired = new \App\View\PollRequired($this, $poll, $pollModel);
@@ -570,7 +570,7 @@ class Page extends \PHPFUI\Page
 				// so we want to check if it has now been saved
 				$poll = $pollModel->getRequiredPoll();
 
-				if (! $poll->empty())
+				if ($poll)
 					{
 					$this->addRequiredPage($pollRequired);
 					}

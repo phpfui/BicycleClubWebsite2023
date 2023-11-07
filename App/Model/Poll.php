@@ -11,13 +11,13 @@ class Poll
 		$this->pollTable = new \App\Table\Poll();
 		}
 
-	public function getRequiredPoll() : \App\Record\Poll
+	public function getRequiredPoll() : ?\App\Record\Poll
 		{
 		$requiredPolls = $this->pollTable->getRequiredPolls();
 
 		if (! \count($requiredPolls))
 			{
-			return new \App\Record\Poll();
+			return null;
 			}
 
 		foreach ($requiredPolls as $poll)
@@ -29,7 +29,7 @@ class Poll
 				}
 			}
 
-		return new \App\Record\Poll();
+		return null;
 		}
 
 	public function getVote(\App\Record\Poll $poll) : int
@@ -42,7 +42,7 @@ class Poll
 			}
 		$vote = new \App\Record\PollResponse($key);
 
-		return $vote->empty() ? 0 : $vote->answer;
+		return ! $vote->loaded() ? 0 : $vote->answer;
 		}
 
 	public function saveVote(\App\Record\Poll $poll, array $get) : void

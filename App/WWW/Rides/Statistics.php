@@ -31,6 +31,28 @@ class Statistics extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		}
 
+	public function leaders() : void
+		{
+		if ($this->page->addHeader('Leaders Statistics'))
+			{
+			$view = new \App\View\Ride\Statistics($this->page, 'Leader');
+
+			$rideSignupTable = $view->getRideSignupTable();
+			$rideSignupTable->addSelect('member.firstName', 'First Name');
+			$rideSignupTable->addSelect('member.lastName', 'Last Name');
+			$rideSignupTable->addSelect('membership.joined', 'Joined');
+			$membershipJoin = new \PHPFUI\ORM\Condition('member.membershipId', new \PHPFUI\ORM\Literal('membership.membershipId'));
+			$rideSignupTable->addJoin('membership', $membershipJoin);
+			$rideSignupTable->setOrderBy('member.lastName');
+			$rideSignupTable->addOrderBy('member.firstName');
+			$rideSignupTable->addGroupBy('member.memberId');
+			$where = $rideSignupTable->getWhereCondition();
+			$where->and('ride.memberId', new \PHPFUI\ORM\Literal('member.memberId'));
+
+			$this->page->addPageContent($view->download());
+			}
+		}
+
 	public function ride(int $year = 0) : void
 		{
 		if (! $year)
@@ -57,6 +79,9 @@ class Statistics extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			$rideSignupTable = $view->getRideSignupTable();
 			$rideSignupTable->addSelect('member.firstName', 'First Name');
 			$rideSignupTable->addSelect('member.lastName', 'Last Name');
+			$rideSignupTable->addSelect('membership.joined', 'Joined');
+			$membershipJoin = new \PHPFUI\ORM\Condition('member.membershipId', new \PHPFUI\ORM\Literal('membership.membershipId'));
+			$rideSignupTable->addJoin('membership', $membershipJoin);
 			$rideSignupTable->setOrderBy('member.lastName');
 			$rideSignupTable->addOrderBy('member.firstName');
 			$rideSignupTable->addGroupBy('member.memberId');

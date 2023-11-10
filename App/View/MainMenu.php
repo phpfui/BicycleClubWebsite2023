@@ -23,6 +23,7 @@ class MainMenu extends \App\UI\MainMenu
 
 			if ($statsMenu = $this->addMenu($menu, '/Rides/statistics', 'Ride Statistics'))
 				{
+				$this->addSub($statsMenu, '/Rides/Statistics/leaders', 'Leaders Statistics');
 				$this->addSub($statsMenu, '/Rides/Statistics/ride', 'Ride Statistics');
 				$this->addSub($statsMenu, '/Rides/Statistics/riders', 'Rider Statistics');
 				$this->addSub($statsMenu, '/Rides/Statistics/cuesheets', 'Cue Sheet Statistics');

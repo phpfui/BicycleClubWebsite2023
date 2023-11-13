@@ -33,7 +33,7 @@ try
 
 	$permissions = new \App\Model\Permission();
 
-	$controller = new \App\Model\Controller($permissions);
+	$controller = new \App\Model\Controller($permissions, $debugBar);
 
 	if (! $permissions->isSuperUser() && ! isset($_GET['signin']) && $maintenanceMode)
 		{
@@ -41,7 +41,7 @@ try
 		}
 	else
 		{
-		echo $controller->initDebugBar($debugBar)->run();
+		echo $controller->run();
 		}
 	}
 catch (Throwable $e)

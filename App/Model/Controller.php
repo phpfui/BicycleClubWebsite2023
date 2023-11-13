@@ -4,8 +4,6 @@ namespace App\Model;
 
 class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\NanoController
 	{
-	private ?\DebugBar\StandardDebugBar $debugBar = null;
-
 	private \App\View\Public\Footer $footer;
 
 	private \App\View\Public\Menu $publicMenu;
@@ -14,7 +12,7 @@ class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\Na
 
 	private array $routes = [];
 
-	public function __construct(private readonly \App\Model\PermissionBase $permissions)
+	public function __construct(private readonly \App\Model\PermissionBase $permissions, private ?\DebugBar\StandardDebugBar $debugBar = null)
 		{
 		$uri = $_SERVER['REQUEST_URI'] ?? '';
 		$query = \strpos((string)$uri, '?');

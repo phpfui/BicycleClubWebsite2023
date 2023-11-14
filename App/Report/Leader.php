@@ -63,7 +63,7 @@ class Leader extends \PDF_MC_Table
 		$this->addHeader('last5', 'Last 5', 'C', 15);
 		$this->addHeader('lastRide', 'Last Led', 'L', 23);
 		$this->addHeader('nextRide', 'Next Lead', 'L', 23);
-		$categories = empty($parameters['categories']) ? [0] : $parameters['categories'];
+		$categories = empty($parameters['categories']) ? [] : $parameters['categories'];
 		$paceTable = new \App\Table\Pace();
 		$paces = $paceTable->getPacesForCategories($categories);
 		$today = \App\Tools\Date::todayString();
@@ -83,9 +83,9 @@ class Leader extends \PDF_MC_Table
 
 		foreach ($rides as $ride)
 			{
-			if ($ride->unaffiliated && $ride->rideStatus <= \App\Table\Ride::STATUS_WEATHER)
+			if ($ride->unaffiliated)
 				{
-				continue;	// don't count unreported unafilliated rides
+				continue;	// don't count unafilliated rides
 				}
 
 			if ($this->lastLeader != $ride->memberId)
@@ -180,9 +180,9 @@ class Leader extends \PDF_MC_Table
 			}
 
 		// ride status reported
-		$rideStatus = \App\Table\Ride::getRideStatus($startDate, $endDate);
+		$rideStatusId = \App\Table\Ride::getRideStatus($startDate, $endDate);
 
-		foreach ($rideStatus as $status)
+		foreach ($rideStatusId as $status)
 			{
 			if ($id = $this->addLeader((int)$status['memberId']))
 				{

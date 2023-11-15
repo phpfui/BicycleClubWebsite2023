@@ -24,6 +24,7 @@ class Finance
 		}
 
 	/**
+	 * @param array<string,string> $request
 	 *
 	 * @psalm-return list<mixed>
 	 */
@@ -192,7 +193,10 @@ class Finance
 		return $form;
 		}
 
-	public function ShowMissingInvoices(iterable $missing) : \PHPFUI\Table | \PHPFUI\SubHeader
+	/**
+	 * @param array<array<string>> $missing
+	 */
+	public function showMissingInvoices(array $missing) : \PHPFUI\Table | \PHPFUI\SubHeader
 		{
 		if (! \count($missing))
 			{

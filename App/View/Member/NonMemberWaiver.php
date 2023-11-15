@@ -4,6 +4,9 @@ namespace App\View\Member;
 
 class NonMemberWaiver
 	{
+	/**
+	 * @var array<\PHPFUI\Input>
+	 */
 	private array $fields = [];
 
 	public function __construct(private readonly \App\View\Page $page)

@@ -69,7 +69,7 @@ class EmailQueue
 	/**
 	 * @param array<string,string> $mailItem
 	 */
-	private function getCount(array $mailItem)
+	private function getCount(array $mailItem) : int
 		{
 		$this->mailPieceTable->setWhere(new \PHPFUI\ORM\Condition('mailItemId', $mailItem['mailItemId']));
 		new \PHPFUI\TimedCellUpdate($this->page, 'emails-' . $mailItem['mailItemId'], $this->getTimerCount(...), 15);

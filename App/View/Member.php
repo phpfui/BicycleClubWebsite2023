@@ -215,6 +215,9 @@ class Member
 		return $tabs;
 		}
 
+	/**
+	 * @param array<string,string> $member
+	 */
 	public function getImageIcon(array $member) : ?\PHPFUI\FAIcon
 		{
 		$this->profileModel->update($member);
@@ -333,11 +336,11 @@ class Member
 		return $container;
 		}
 
-	public function htmlList(iterable $members) : string
+	public function htmlList(\PHPFUI\ORM\DataObjectCursor $members) : string
 		{
 		$output = '';
 
-		if (empty($members))
+		if (! \count($members))
 			{
 			return '';
 			}
@@ -358,9 +361,9 @@ class Member
 		return $output;
 		}
 
-	public function list(iterable $members) : string | \PHPFUI\Table
+	public function list(\PHPFUI\ORM\DataObjectCursor $members) : string | \PHPFUI\Table
 		{
-		if (empty($members))
+		if (! \count($members))
 			{
 			return '';
 			}
@@ -530,7 +533,7 @@ class Member
 		return $form;
 		}
 
-	public function show(iterable $members, string $noMembers = 'No members found') : string
+	public function show(\PHPFUI\ORM\DataObjectCursor $members, string $noMembers = 'No members found') : string
 		{
 		if (! \count($members))
 			{
@@ -659,34 +662,6 @@ class Member
 			}
 
 		return $header . $accordion;
-		}
-
-	public function showSignins(iterable $members) : \PHPFUI\Table | \PHPFUI\Header
-		{
-		if (empty($members))
-			{
-			return new \PHPFUI\Header('No Recent Signins', 3);
-			}
-		$canEdit = $this->page->isAuthorized('Edit Member');
-		$table = new \PHPFUI\Table();
-		$table->setHeaders(['Name', 'Signed In At']);
-
-		foreach ($members as $member)
-			{
-			if ($member->showNothing)
-				{
-				continue;
-				}
-			$name = $member->firstName . ' ' . $member->lastName;
-
-			if ($canEdit)
-				{
-				$name = \PHPFUI\Link::localUrl('/Membership/edit/' . $member->memberId, $name);
-				}
-			$table->addRow(['Name' => $name . ' ' . $this->getImageIcon($member->toArray()), 'Signed In At' => \date('F j, Y, g:i a', \strtotime((string)$member->lastLogin))]);
-			}
-
-		return $table;
 		}
 
 	private function addEmailModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Member $member) : void
@@ -1237,16 +1212,19 @@ class Member
 			}
 		}
 
+	/**
+	 * @param array<mixed> $detail
+	 */
 	private function splitIcons(array $detail) : \PHPFUI\Container
 		{
 		$retVal = new \PHPFUI\Container();
 
-		if (! $detail)
+		$count = \count($detail);
+
+		if (! $count)
 			{
 			return $retVal;
 			}
-
-		$count = \count($detail);
 
 		if ($count > 6)
 			{

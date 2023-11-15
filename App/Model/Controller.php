@@ -8,8 +8,14 @@ class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\Na
 
 	private \App\View\Public\Menu $publicMenu;
 
+	/**
+	 * @var array<string,string>
+	 */
 	private array $redirects = [];
 
+	/**
+	 * @var array<\stdClass|string>
+	 */
 	private array $routes = [];
 
 	public function __construct(private readonly \App\Model\PermissionBase $permissions, private ?\DebugBar\StandardDebugBar $debugBar = null)
@@ -50,7 +56,7 @@ class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\Na
 		}
 
 	/**
-	 * $callback must be an array of object and method so object can be returned by the controller::run() method.  It can not be a closure.
+	 * @param array<\stdClass|string> $callback must be an array of object and method so object can be returned by the controller::run() method.  It can not be a closure.
 	 */
 	public function addRoute(string $route, array $callback) : void
 		{

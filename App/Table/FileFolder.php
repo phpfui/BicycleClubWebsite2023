@@ -15,6 +15,9 @@ class FileFolder extends \PHPFUI\ORM\Table
 		return (int)\PHPFUI\ORM::getValue($sql, [$fileFolder->fileFolderId]) + $files;
 		}
 
+	/**
+	 * @return array<int,string>
+	 */
 	public static function getFolders(int $fileFolderId) : array
 		{
 		$folders = [];

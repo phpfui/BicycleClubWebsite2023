@@ -4,6 +4,9 @@ namespace App\UI;
 
 class State extends \PHPFUI\Input\SelectAutoComplete
 	{
+	/**
+	 * @var array<string,string>
+	 */
 	private static array $states = ['AL' => 'Alabama',
 		'AK' => 'Alaska',
 		'AZ' => 'Arizona',

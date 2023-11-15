@@ -32,6 +32,9 @@ class SignInSheetSearch implements \Stringable
 		return $button . $output;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	protected function getSearchModal(\PHPFUI\HTML5Element $modalLink, array $parameters) : \PHPFUI\Reveal
 		{
 		$this->setDefaults($parameters);
@@ -68,6 +71,9 @@ class SignInSheetSearch implements \Stringable
 		return $modal;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	protected function setDefaults(array &$parameters) : void
 		{
 		$searchFields = [];

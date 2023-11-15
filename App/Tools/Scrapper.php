@@ -4,6 +4,9 @@ namespace App\Tools;
 
 class Scrapper
 	{
+	/**
+	 * @var array<string>
+	 */
 	protected array $badLinks = [];
 
 	protected string $currentPage = '';
@@ -34,10 +37,19 @@ class Scrapper
 		'script' => ['src'],
 	];
 
+	/**
+	 * @var array<string>
+	 */
 	protected array $externalLinks = [];
 
+	/**
+	 * @var array<string>
+	 */
 	protected array $filterPages = [];
 
+	/**
+	 * @var array<string,\App\Tools\LinkInfo>
+	 */
 	protected array $links = [];
 
 	/**
@@ -50,8 +62,14 @@ class Scrapper
 
 	protected int $pageDelay = 0;
 
+	/**
+	 * @var array<string>
+	 */
 	protected array $phpErrors = [];
 
+	/**
+	 * @var array<string>
+	 */
 	protected array $skipPages = [];
 
 	/**
@@ -279,26 +297,41 @@ class Scrapper
 		return \array_keys($this->links);
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public function getAllLinks() : array
 		{
 		return [...$this->getAllInternalLinks(), ...$this->getAllExternalLinks()];
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public function getBadLinks() : array
 		{
 		return $this->badLinks;
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public function getLinkReferences(string $link) : array
 		{
 		return isset($this->links[$link]) ? $this->links[$link]->getReferences() : [];
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public function getPHPErrors() : array
 		{
 		return $this->phpErrors;
 		}
 
+	/**
+	 * @param array<string,string> $fieldValues
+	 */
 	public function login(string $page, array $fieldValues) : static
 		{
 		$result = $this->web->Process($page);

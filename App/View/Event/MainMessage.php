@@ -11,7 +11,10 @@ class MainMessage
 		$this->settingTable = new \App\Table\Setting();
 		}
 
-	public function getEditor($type, array $fields) : \PHPFUI\Form
+	/**
+	 * @param array<string> $fields
+	 */
+	public function getEditor(string $type, array $fields) : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit();
 		$form = new \PHPFUI\Form($this->page, $submit);

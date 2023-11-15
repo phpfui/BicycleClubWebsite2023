@@ -4,12 +4,18 @@ namespace App\Model;
 
 class Restore
 	{
+	/**
+	 * @var array<string>
+	 */
 	private array $errorMessages = [];
 
 	public function __construct(private readonly string $fileName)
 		{
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public function getErrors() : array
 		{
 		return $this->errorMessages;

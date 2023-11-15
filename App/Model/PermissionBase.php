@@ -45,6 +45,8 @@ class PermissionBase
 
 	/**
 	 * @param array<int,int> $permissions
+	 *
+	 * @return array<int, int> array indexed by permissionId with a value enabled (int)
 	 */
 	public function getPermissionsForGroup(string|int $group, array $permissions = []) : array
 		{
@@ -99,10 +101,16 @@ class PermissionBase
 		return true;
 		}
 
+	/**
+	 * @param array<string,string|array<int>> $parameters
+	 */
 	public function saveGroup(array $parameters) : void
 		{
 		}
 
+	/**
+	 * @param array<string,string|array<int>> $parameters
+	 */
 	public function saveMember(array $parameters) : void
 		{
 		}

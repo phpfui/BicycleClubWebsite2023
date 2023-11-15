@@ -9,6 +9,9 @@ class GABannerFile extends \App\Model\TinifyImage
 		parent::__construct('images/GA');
 		}
 
+	/**
+	 * @param array<string,mixed> $banner
+	 */
 	public static function getBanner(array $banner) : string
 		{
 		return "<img alt='{$banner['description']}' src='/images/GA/{$banner['GABannerName']}'>";

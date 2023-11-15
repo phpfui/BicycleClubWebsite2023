@@ -181,6 +181,9 @@ class DBInit extends \PHPFUI\Container
 		$this->add($wizardBar);
 		}
 
+	/**
+	 * @param array<string> $tables
+	 */
 	private function list(array $tables) : \PHPFUI\UnorderedList
 		{
 		$ul = new \PHPFUI\UnorderedList();

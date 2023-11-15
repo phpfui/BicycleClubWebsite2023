@@ -433,6 +433,9 @@ return $member->fullName();});
 		return $file;
 		}
 
+	/**
+	 * @param array<string,string> $settings
+	 */
 	private function makeField(array $settings, string $name, string | int | bool $default, string $description) : string
 		{
 		$type = \get_debug_type($default);

@@ -8,6 +8,9 @@ class Volunteer extends \PDF_MC_Table
 
 	private string $reportName = '';
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	public function __construct(private array $parameters)
 		{
 		$this->memberTable = new \App\Table\Member();

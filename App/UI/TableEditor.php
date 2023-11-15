@@ -4,6 +4,9 @@ namespace App\UI;
 
 class TableEditor
 	{
+	/**
+	 * @var array<string,string>
+	 */
 	private array $headers = ['name' => 'Name', 'shortName' => 'Short Name', 'abbrev' => 'Abbrevation', 'delete' => 'Del'];
 
 	private string $name;
@@ -17,7 +20,7 @@ class TableEditor
 		$this->name = \lcfirst($table);
 		}
 
-	public function edit()
+	public function edit() : \PHPFUI\Form | string
 		{
 		$submit = new \PHPFUI\Submit();
 		$form = new \PHPFUI\Form($this->page, $submit);
@@ -104,6 +107,9 @@ class TableEditor
 		return $form;
 		}
 
+	/**
+	 * @param array<string,string> $headers
+	 */
 	public function setHeaders(array $headers) : self
 		{
 		$this->headers = $headers;

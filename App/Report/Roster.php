@@ -4,6 +4,9 @@ namespace App\Report;
 
 class Roster
 	{
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	public function download(array $parameters) : void
 		{
 		$membershipTable = new \App\Table\Membership();

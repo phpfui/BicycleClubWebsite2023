@@ -4,6 +4,9 @@ namespace App\View;
 
 class Photo
 	{
+	/**
+	 * @var array<int,int>
+	 */
 	private array $cuts = [];
 
 	private readonly bool $deleteComments;
@@ -16,6 +19,9 @@ class Photo
 
 	private readonly \App\Table\PhotoTag $photoTagTable;
 
+	/**
+	 * @var array<string>
+	 */
 	private array $rows = [1 => 'First', 2 => 'Second', 3 => 'Third', 4 => 'Forth', 5 => 'Fifth'];
 
 	private ?\PHPFUI\Button $searchButton = null;
@@ -60,7 +66,7 @@ class Photo
 					$photo = new \App\Record\Photo($photoId);
 					$name = $photo->photo ?: $photoId;
 					}
-				$multiSelect->addOption($name, $photoId);
+				$multiSelect->addOption($name, (string)$photoId);
 				}
 			$fieldSet->add($multiSelect);
 
@@ -375,6 +381,9 @@ class Photo
 		return $navDiv;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	public function getSearchButton(array $parameters = [], bool $openOnPageLoad = true) : \PHPFUI\Button
 		{
 		if ($this->searchButton)
@@ -685,7 +694,7 @@ JS;
 		return $container;
 		}
 
-	public function listMembers(iterable $members, string $url = '') : \PHPFUI\Table
+	public function listMembers(\PHPFUI\ORM\ArrayCursor $members, string $url = '') : \PHPFUI\Table
 		{
 		$table = new \PHPFUI\Table();
 
@@ -993,6 +1002,9 @@ JS;
 		$modal->add($form);
 		}
 
+	/**
+	 * @param array<int> $photo
+	 */
 	private function getCut(array $photo) : string
 		{
 		if (! isset($this->cuts[$photo['photoId']]) && ($photo['memberId'] == $this->signedInMember || $this->movePhoto))

@@ -4,8 +4,14 @@ namespace App\Model;
 
 class SettingsSaver
 	{
+	/**
+	 * @var array<string,string>
+	 */
 	private array $currentValues = [];
 
+	/**
+	 * @var array<string,string>
+	 */
 	private array $save = [];
 
 	private readonly \App\Table\Setting $settingTable;
@@ -93,13 +99,16 @@ class SettingsSaver
 		return $this->JSONName;
 		}
 
-	public function getValue(string $index)
+	public function getValue(string $index) : string
 		{
 		$this->getValues();
 
 		return $this->currentValues[$index] ?? '';
 		}
 
+	/**
+	 * @return array<string,string>
+	 */
 	public function getValues() : array
 		{
 		if (empty($this->JSONName))
@@ -115,6 +124,9 @@ class SettingsSaver
 		return $this->currentValues;
 		}
 
+	/**
+	 * @param array<string,string> $post
+	 */
 	public function save(array $post, bool $preserveValues = false) : static
 		{
 		if (empty($this->JSONName))

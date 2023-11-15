@@ -11,6 +11,9 @@ class Settings
 		$this->settingTable = new \App\Table\Setting();
 		}
 
+	/**
+	 * @param array<string,string> $toMember
+	 */
 	public function sendSettingEmail(string $setting, array $toMember, string $subject) : void
 		{
 		$callback = function($key) use ($toMember)

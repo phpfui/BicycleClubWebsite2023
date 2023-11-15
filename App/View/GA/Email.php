@@ -4,6 +4,9 @@ namespace App\View\GA;
 
 class Email implements \Stringable
 	{
+	/**
+	 * @var array<string,string>
+	 */
 	private array $parameters = [];
 
 	private string $testMessage = 'Send Test Email To You Only';

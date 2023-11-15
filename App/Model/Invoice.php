@@ -235,7 +235,7 @@ class Invoice
 	 *
 	 * @psalm-return list<array{'Invoice Id': string, 'From Email Address': mixed, Name: mixed}>
 	 */
-	public function findMissingInvoices(iterable $invoices) : array
+	public function findMissingInvoices(\App\Tools\CSV\FileReader $invoices) : array
 		{
 		$missing = [];
 		$copyFields = ['Name', 'From Email Address', ];

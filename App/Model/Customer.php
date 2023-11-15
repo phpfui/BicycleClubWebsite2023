@@ -49,6 +49,9 @@ class Customer
 		return new \App\DB\MemberCustomer($id);
 		}
 
+	/**
+	 * @param array<string,mixed> $parameters
+	 */
 	public function save(array $parameters) : string
 		{
 		$customerNumber = $parameters['customerId'];

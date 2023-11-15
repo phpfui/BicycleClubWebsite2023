@@ -131,9 +131,9 @@ class Polls
 		return $container;
 		}
 
-	public function listPolls(iterable $polls, $default = 'No Polls Found') : \PHPFUI\Table | \PHPFUI\SubHeader
+	public function listPolls(\PHPFUI\ORM\RecordCursor $polls, string $default = 'No Polls Found') : \PHPFUI\Table | \PHPFUI\SubHeader
 		{
-		if (empty($polls))
+		if (! \count($polls))
 			{
 			return new \PHPFUI\SubHeader($default);
 			}
@@ -156,25 +156,23 @@ class Polls
 			{
 			$poll = $pollObject->toArray();
 
-			if ($poll['startDate'] > \App\Tools\Date::todayString())
+			if ($pollObject->startDate > \App\Tools\Date::todayString())
 				{
-				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '/Polls/delete/' . $poll['pollId']);
+				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '/Polls/delete/' . $pollObject->pollId);
 				$icon->setConfirm('Are you sure you want to delete this poll?');
 				$poll['del'] = $icon;
 				}
-			$poll['startDate'] = $poll['startDate'];
-			$poll['question'] = $this->minimizeQuestion($poll['question']);
-			$poll['endDate'] = $poll['endDate'];
-			$poll['voted'] = new \PHPFUI\FAIcon('fas', 'users', '/Polls/voted/' . $poll['pollId']);
-			$poll['vote'] = new \PHPFUI\FAIcon('fas', 'check-square', '/Polls/vote/' . $poll['pollId']);
-			$poll['edit'] = new \PHPFUI\FAIcon('far', 'edit', '/Polls/edit/' . $poll['pollId']);
+			$poll['question'] = $this->minimizeQuestion($pollObject->question);
+			$poll['voted'] = new \PHPFUI\FAIcon('fas', 'users', '/Polls/voted/' . $pollObject->pollId);
+			$poll['vote'] = new \PHPFUI\FAIcon('fas', 'check-square', '/Polls/vote/' . $pollObject->pollId);
+			$poll['edit'] = new \PHPFUI\FAIcon('far', 'edit', '/Polls/edit/' . $pollObject->pollId);
 			$table->addRow($poll);
 			}
 
 		return $table;
 		}
 
-	public function myVotes(\App\Table\PollResponse $pollResponseTable) //: \App\UI\ContinuousScrollTable
+	public function myVotes(\App\Table\PollResponse $pollResponseTable) : \App\UI\ContinuousScrollTable
 		{
 		$headers = ['question', 'endDate'];
 

@@ -16,6 +16,8 @@ class PermissionGroupPicker
 		}
 
 	/**
+	 * @param array<string,string> $parameters
+	 *
 	 * @return (mixed|string)[][][]
 	 *
 	 * @psalm-return array{suggestions: list<array{value: string, data: mixed}>}

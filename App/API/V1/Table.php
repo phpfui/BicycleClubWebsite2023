@@ -108,7 +108,7 @@ class Table extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 							{
 							$response[] = $this->model->getData($record, $this->model->getRequestedRelated());
 							}
-						$this->setResponse($response);
+						$this->setResponse($response); // @phpstan-ignore-line
 						}
 
 					break;

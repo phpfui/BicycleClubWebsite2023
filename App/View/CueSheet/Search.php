@@ -37,6 +37,9 @@ class Search implements \Stringable
 		return $button . $output;
 		}
 
+	/**
+	 * @param array<string,mixed> $parameters
+	 */
 	public function setCursor(array $parameters) : \App\Table\CueSheet
 		{
 		$this->cueSheetTable->setLimit(50);
@@ -76,6 +79,9 @@ class Search implements \Stringable
 		return $this->cueSheetTable;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	protected function getSearchModal(\PHPFUI\HTML5Element $modalLink, array $parameters) : \PHPFUI\Reveal
 		{
 		$this->setDefaults($parameters);
@@ -144,6 +150,9 @@ class Search implements \Stringable
 		return $modal;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	protected function setDefaults(array &$parameters) : void
 		{
 		$searchFields = [];

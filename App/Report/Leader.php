@@ -4,30 +4,54 @@ namespace App\Report;
 
 class Leader extends \PDF_MC_Table
 	{
+	/**
+	 * @var array<string,int>
+	 */
 	private array $blankRow = [];
 
+	/**
+	 * @var array<string,string>
+	 */
 	private array $columnAlign = [];
 
+	/**
+	 * @var array<string,int>
+	 */
 	private array $columnWidths = [];
 
 	private int $currentYear;
 
 	private int $firstYear;
 
+	/**
+	 * @var array<string,string>
+	 */
 	private array $headerTitles = [];
 
+	/**
+	 * @var array<int,int>
+	 */
 	private array $initRides = [];
 
 	private string $lastLead = '';
 
 	private int $lastLeader = 0;
 
+	/**
+	 * @var array<int,array<string,int>>
+	 */
 	private array $leaders = [];
 
 	private string $nextLead = '';
 
-	private array $ridesByYear;
+	/**
+	 * @var array<int,int>
+	 */
+	private array $ridesByYear = [];
 
+	/**
+	 * @var array<array<mixed>>
+	 */
 	private array $rows = [];
 
 	private static string $sort;
@@ -37,14 +61,21 @@ class Leader extends \PDF_MC_Table
 		parent::__construct();
 		}
 
+	/**
+	 * @param array<string,string> $a
+	 * @param array<string,string> $b
+	 */
 	public static function cmp(array $a, array $b) : int
 		{
 		$lhs = $a[self::$sort];
 		$rhs = $b[self::$sort];
 
-  return $lhs <=> $rhs;
+		return $lhs <=> $rhs;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	public function generateClassic(array $parameters) : void
 		{
 		self::$sort = $parameters['sort'];
@@ -122,6 +153,9 @@ class Leader extends \PDF_MC_Table
 			}
 		}
 
+	/**
+	 * @param array<string,array<int>|string> $parameters
+	 */
 	public function generatePoints(array $parameters) : void
 		{
 		$prefix = 'VolunteerReport';
@@ -245,7 +279,7 @@ class Leader extends \PDF_MC_Table
 
 			foreach ($baseRow as $key => $value)
 				{
-				$count = \is_array($leader[$key]) ? \count($leader[$key]) : $leader[$key];
+				$count = \is_array($leader[$key]) ? \count($leader[$key]) : $leader[$key]; // @phpstan-ignore-line
 				$value = (int)$count * (float)$value;
 				$total += $value;
 				$row[$key] = $value;

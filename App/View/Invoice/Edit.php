@@ -88,6 +88,9 @@ class Edit
 			}
 		}
 
+	/**
+	 * @param array<\App\Record\CartItem> $cartItems
+	 */
 	public function create(array $cartItems) : \PHPFUI\Form
 		{
 		$form = new \PHPFUI\Form($this->page);

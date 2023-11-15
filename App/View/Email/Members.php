@@ -4,6 +4,9 @@ namespace App\View\Email;
 
 class Members implements \Stringable
 	{
+	/**
+	 * @var array<string,string>
+	 */
 	private array $parameters = [];
 
 	private string $testMessage = 'Send Test Email To You Only';
@@ -146,7 +149,7 @@ class Members implements \Stringable
 						{
 						$journalItem = new \App\Record\JournalItem();
 						$journalItem->body = $_POST['message'];
-						$journalItem->memberId = $sender['memberId'];
+						$journalItem->memberId = (int)$sender['memberId'];
 						$journalItem->title = $_POST['subject'];
 						$journalItem->insert();
 						}

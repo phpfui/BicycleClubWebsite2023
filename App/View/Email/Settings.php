@@ -4,6 +4,9 @@ namespace App\View\Email;
 
 class Settings implements \Stringable
 	{
+	/**
+	 * @var array<\PHPFUI\Button>
+	 */
 	private array $buttons = [];
 
 	private readonly \App\Table\Setting $settingTable;

@@ -12,6 +12,8 @@ class CueSheetPicker
 		}
 
 	/**
+	 * @param array<string,string> $parameters
+	 *
 	 * @return (mixed|string)[][][]
 	 */
 	public function callback(array $parameters) : array

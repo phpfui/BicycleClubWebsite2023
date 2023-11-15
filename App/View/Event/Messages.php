@@ -11,7 +11,10 @@ class Messages
 		$this->settingTable = new \App\Table\Setting();
 		}
 
-	public function getEditor($type, array $fields) : string
+	/**
+	 * @param array<string> $fields
+	 */
+	public function getEditor(string $type, array $fields) : string
 		{
 		$submit = new \PHPFUI\Submit();
 		$form = new \PHPFUI\Form($this->page, $submit);
@@ -58,7 +61,7 @@ class Messages
 		return (string)$form;
 		}
 
-	private function save($type) : void
+	private function save(string $type) : void
 		{
 		foreach ($_POST as &$value)
 			{

@@ -6,7 +6,7 @@ class Reservation extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Reservation::class;
 
-	public static function getEmails($eventId, $unpaidOnly) : \PHPFUI\ORM\ArrayCursor
+	public static function getEmails(int $eventId, int $unpaidOnly) : \PHPFUI\ORM\ArrayCursor
 		{
 		$sql = 'select coalesce(nullif(p.email,""),r.reservationemail) email,p.firstName,p.lastName
 			from reservation r

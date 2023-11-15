@@ -75,7 +75,7 @@ class RiderHistory
 		return $container;
 		}
 
-	private function historyTable(iterable $rides) : \PHPFUI\Table
+	private function historyTable(\PHPFUI\ORM\DataObjectCursor $rides) : \PHPFUI\Table
 		{
 		$table = new \PHPFUI\Table();
 		$headers = ['Date', 'Status', 'Registered', 'Ride'];

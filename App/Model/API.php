@@ -255,6 +255,9 @@ class API
 		return $this->controller->getUri() . '?' . \http_build_query($get);
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public function getRequestedRelated() : array
 		{
 		return $this->related;
@@ -285,6 +288,9 @@ class API
 		return $this;
 		}
 
+	/**
+	 * @param ?array<array<string>|string> $conditions
+	 */
 	private function getCondition(?array $conditions) : \PHPFUI\ORM\Condition
 		{
 		$condition = new \PHPFUI\ORM\Condition();
@@ -298,7 +304,7 @@ class API
 			{
 			$subCondition = null;
 
-			if (\is_array($row[1]))
+			if (\is_array($row[1])) // @phpstan-ignore-line
 				{
 				$subCondition = $this->getCondition($row[1]);
 				}

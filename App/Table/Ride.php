@@ -400,6 +400,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$rwgps->RWGPSId, self::STATUS_COMPLETED, ]);
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public static function getStatusValues() : array
 		{
 		return [
@@ -586,6 +589,9 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [$memberId, \App\Tools\Date::todayString(), ]);
 		}
 
+	/**
+	 * @param array<string> $dates
+	 */
 	public static function unreportedRidesOn(array $dates) : ?\PHPFUI\ORM\RecordCursor
 		{
 		if (! $dates)

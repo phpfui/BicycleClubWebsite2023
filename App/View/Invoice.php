@@ -203,6 +203,9 @@ class Invoice
 		return $container;
 		}
 
+	/**
+	 * @param array<string,mixed> $invoice
+	 */
 	private function getCancelColumn(array $invoice) : string
 		{
 		$this->invoiceTotal += $invoice['totalPrice'];
@@ -236,6 +239,9 @@ class Invoice
 		return $date;
 		}
 
+	/**
+	 * @param array<string,string> $invoice
+	 */
 	private function getFullfillmentDate(array $invoice) : string
 		{
 		$shipDate = $this->getDate($invoice['fullfillmentDate'], 'Pending');
@@ -253,6 +259,9 @@ class Invoice
 		return $shipDate;
 		}
 
+	/**
+	 * @param array<string,string> $invoice
+	 */
 	private function getPaymentDate(array $invoice) : string
 		{
 		return $this->getDate($invoice['paymentDate'], new \PHPFUI\Link('/Store/pay/' . $invoice['invoiceId'], 'Pay Now', false));

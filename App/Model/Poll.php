@@ -45,6 +45,9 @@ class Poll
 		return ! $vote->loaded() ? 0 : $vote->answer;
 		}
 
+	/**
+	 * @param array<string,string> $get
+	 */
 	public function saveVote(\App\Record\Poll $poll, array $get) : void
 		{
 		$key = ['pollId' => $poll->pollId, 'membershipId' => \App\Model\Session::signedInMembershipId()];

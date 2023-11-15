@@ -115,6 +115,9 @@ class Reservation
 		$this->updatePrices($reservation);
 		}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function executeInvoice(\App\Record\Invoice $invoice, \App\Record\InvoiceItem $invoiceItem, \App\Record\Payment $payment) : array
 		{
 		$invoice->fullfillmentDate = \App\Tools\Date::todayString();
@@ -129,6 +132,9 @@ class Reservation
 		return $reservation->member->toArray();
 		}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getChair(int $eventId) : array
 		{
 		$event = new \App\Record\Event($eventId);
@@ -163,6 +169,9 @@ class Reservation
 		return $email;
 		}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getMergeData(\App\Record\Reservation $reservation) : array
 		{
 		$event = $reservation->event;

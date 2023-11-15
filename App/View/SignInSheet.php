@@ -102,7 +102,10 @@ JAVASCRIPT;
 		return $form;
 		}
 
-	public function listSheets(iterable $signinSheets, \App\Record\Ride $ride) : \PHPFUI\Container
+	/**
+	 * @param \PHPFUI\ORM\RecordCursor<\App\Record\SigninSheet> $signinSheets
+	 */
+	public function listSheets(\PHPFUI\ORM\RecordCursor $signinSheets, \App\Record\Ride $ride) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 		$row = new \PHPFUI\GridX();

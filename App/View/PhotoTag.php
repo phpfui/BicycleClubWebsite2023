@@ -4,6 +4,9 @@ namespace App\View;
 
 class PhotoTag extends \PHPFUI\HTML5Element
 	{
+	/**
+	 * @param array<string,string> $photoTag
+	 */
 	public function __construct(array $photoTag)
 		{
 		parent::__construct('div');

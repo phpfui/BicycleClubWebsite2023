@@ -159,6 +159,9 @@ class Categories
 		return $select;
 		}
 
+	/**
+	 * @param array<int> $selected
+	 */
 	public function getMultiCategoryPicker(string $fieldName = 'categories', string $label = '', array $selected = []) : \PHPFUI\Input\MultiSelect
 		{
 		$select = new \PHPFUI\Input\MultiSelect($fieldName, $label);

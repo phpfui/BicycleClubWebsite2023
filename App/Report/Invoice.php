@@ -22,9 +22,14 @@ class Invoice extends \FPDF
 	{
 	private int $angle = 0;
 
-	// private variables
-	private $columns;
+	/**
+	 * @var array<string,int>
+	 */
+	private array $columns = [];
 
+	/**
+	 * @var array<string,string>
+	 */
 	private array $format = [];
 
 	public function __construct()
@@ -56,6 +61,9 @@ class Invoice extends \FPDF
 		$this->MultiCell(60, 4, \App\Tools\TextHelper::unhtmlentities($address));
 		}
 
+	/**
+	 * @param array<string,int> $tab
+	 */
 	public function addCols(array $tab) : void
 		{
 		$r1 = 10;
@@ -101,17 +109,20 @@ class Invoice extends \FPDF
 		}
 
 	// Mode of payment
-	public function addInstructions($text) : void
+	public function addInstructions(string $text) : void
 		{
 		$this->addRoundedBox(10, 85, 196, 'Special Instructions', $text);
 		}
 
-	public function addInvoiceNumber($invoice) : void
+	public function addInvoiceNumber(int $invoiceId) : void
 		{
-		$this->addRoundedBox((int)\round($this->w) - 80, 17, 19, 'Invoice #', $invoice);
+		$this->addRoundedBox((int)\round($this->w) - 80, 17, 19, 'Invoice #', (string)$invoiceId);
 		}
 
-	public function addLine(int $line, array $tab)
+	/**
+	 * @param array<string,string> $tab
+	 */
+	public function addLine(int $line, array $tab) : int
 		{
 		$offset = 10;
 		$maxSize = $line;
@@ -272,7 +283,7 @@ class Invoice extends \FPDF
 		$this->SetFont('Arial', '', 10);
 		}
 
-	public function sizeOfText($text, $largeur) : int | float
+	public function sizeOfText(string $text, int $largeur) : float
 		{
 		$index = 0;
 		$nb_lines = 0;
@@ -301,7 +312,7 @@ class Invoice extends \FPDF
 		}
 
 	// Company
-	private function _Arc($x1, $y1, $x2, $y2, $x3, $y3) : void
+	private function _Arc(float $x1, float $y1, float $x2, float $y2, float $x3, float $y3) : void
 		{
 		$h = $this->h;
 		$this->_out(\sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c ', $x1 * $this->k, ($h - $y1) * $this->k, $x2 * $this->k, ($h - $y2) * $this->k, $x3 * $this->k, ($h - $y3) * $this->k));

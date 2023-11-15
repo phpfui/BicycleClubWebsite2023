@@ -8,6 +8,9 @@ class Comments
 
 	private readonly \App\Record\RideSignup $rideSignup;
 
+	/**
+	 * @var array<string,int>
+	 */
 	private array $rideSignupKey = [];
 
 	private readonly \App\Table\RideSignup $rideSignupTable;

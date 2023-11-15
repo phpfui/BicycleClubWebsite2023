@@ -4,6 +4,9 @@ namespace App\Model;
 
 class StartLocation
 	{
+	/**
+	 * @param array<string,string> $startLocation
+	 */
 	public function add(array $startLocation) : void
 		{
 		$location = new \App\Record\StartLocation();

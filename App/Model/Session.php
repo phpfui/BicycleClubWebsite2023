@@ -83,21 +83,33 @@ class Session extends \PHPFUI\Session
 		return $debug;
 		}
 
+	/**
+	 * @return array<int,int>
+	 */
 	public static function getFileCuts() : array
 		{
 		return $_SESSION['files']['cut'] ?? [];
 		}
 
+	/**
+	 * @return array<int,int>
+	 */
 	public static function getPhotoAlbum() : array
 		{
 		return $_SESSION['photos']['album'] ?? [];
 		}
 
+	/**
+	 * @return array<int,int>
+	 */
 	public static function getPhotoCuts() : array
 		{
 		return $_SESSION['photos']['cut'] ?? [];
 		}
 
+	/**
+	 * @return array<string,string>
+	 */
 	public static function getSignedInMember() : array
 		{
 		$memberTable = new \App\Table\Member();
@@ -177,6 +189,9 @@ class Session extends \PHPFUI\Session
 			}
 		}
 
+	/**
+	 * @param array<string,string> $list
+	 */
 	public static function setFlashList(string $type, array $list) : void
 		{
 		$ul = new \PHPFUI\UnorderedList();

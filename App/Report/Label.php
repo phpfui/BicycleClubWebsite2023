@@ -13,6 +13,9 @@ class Label
 		$this->settingTable = new \App\Table\Setting();
 		}
 
+	/**
+	 * @param array<string,string> $mailTo
+	 */
 	public function download(\App\Record\Invoice $invoice, array $mailTo) : void
 		{
 		$pdf = $this->generate($invoice, $mailTo);
@@ -24,6 +27,9 @@ class Label
 		return $this->settingTable->value('clubAbbrev') . "Label-{$this->name}.pdf";
 		}
 
+	/**
+	 * @param array<string,string> $mailTo
+	 */
 	private function generate(\App\Record\Invoice $invoice, array $mailTo) : \FPDF
 		{
 		$this->name = \App\Tools\TextHelper::unhtmlentities($mailTo['firstName']) . ' ' . \App\Tools\TextHelper::unhtmlentities($mailTo['lastName']);

@@ -66,7 +66,7 @@ trait PageTrait
 		return $view->publicView();
 		}
 
-	public function ClubCalendar()
+	public function ClubCalendar() : \PHPFUI\Tabs | \PHPFUI\Table
 		{
 		$abbrev = $this->settingTable->value('clubAbbrev');
 		$tabs = [$abbrev . ' Only'];
@@ -153,7 +153,7 @@ trait PageTrait
 		return $view->view($MOM, '');
 		}
 
-	public function RideSchedule()
+	public function RideSchedule() : \App\UI\Accordion | \PHPFUI\Header
 		{
 		$ridesView = new \App\View\Rides($this);
 
@@ -164,14 +164,14 @@ trait PageTrait
 		return $ridesView->schedule(\App\Table\Ride::upcomingRides($limit), showNoLeader:$showNoLeader);
 		}
 
-	public function Store()
+	public function Store() : \PHPFUI\Container
 		{
 		$storeView = new \App\View\Store($this);
 
 		return $storeView->shop(new \App\Model\Cart());
 		}
 
-	public function UpcomingClubEvents()
+	public function UpcomingClubEvents() : \App\UI\Accordion | \PHPFUI\Header
 		{
 		$view = new \App\View\Event\Events($this);
 		$eventTable = new \App\Table\Event();

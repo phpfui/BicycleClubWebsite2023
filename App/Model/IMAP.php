@@ -4,7 +4,7 @@ namespace App\Model;
 
 class IMAP implements \Countable
 	{
-	private $mbox = null;
+	private $mbox = null;	// @phpstan-ignore-line
 
 	private readonly \App\Table\Setting $settingTable;
 
@@ -79,6 +79,9 @@ class IMAP implements \Countable
 		return $connection;
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	public function getErrors() : array
 		{
 		return \imap_errors() ?: [];

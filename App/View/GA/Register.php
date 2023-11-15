@@ -54,7 +54,7 @@ class Register implements \Stringable
 
 		if ($signedInMember)
 			{
-			$members = \App\Table\Member::membersInMembership($signedInMember['membershipId']);
+			$members = \App\Table\Member::membersInMembership((int)$signedInMember['membershipId']);
 			$fieldSet = new \PHPFUI\FieldSet('Quick Add Riders In Your Membership');
 
 			foreach ($members as $member)

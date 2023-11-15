@@ -79,6 +79,9 @@ class SMS
 		return $this;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	public function setGeoLocation(array $parameters) : static
 		{
 		if (isset($parameters['latitude']) && $parameters['latitude'])

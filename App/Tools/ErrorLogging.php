@@ -33,7 +33,7 @@ class ErrorLogging
 	/**
 	 * Error handler, passes flow over the exception logger with new ErrorException.
 	 */
-	public function log_error(int $num, string $str, string $file, int $line, $context = null) : bool
+	public function log_error(int $num, string $str, string $file, int $line, mixed $context = null) : bool
 		{
 		$this->log_exception(new \ErrorException($str, 0, $num, $file, $line));
 

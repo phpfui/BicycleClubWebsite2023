@@ -20,7 +20,7 @@ class SparkPostSuppressions extends \App\Cron\BaseJob
 
 			foreach ($suppressions as $suppression)
 				{
-				$member = new \App\Record\Member(['email' => \App\Model\Member::cleanEmail($suppression['recipient'])]);
+				$member = new \App\Record\Member(['email' => \App\Model\Member::cleanEmail($suppression['recipient'])]); // @phpstan-ignore-line
 
 				if ($member->loaded())
 					{
@@ -32,18 +32,18 @@ class SparkPostSuppressions extends \App\Cron\BaseJob
 					$member->rideJournal = 0;
 					$member->update();
 
-					if ('Bounce Rule' != $suppression['source'])
+					if ('Bounce Rule' != $suppression['source']) // @phpstan-ignore-line
 						{
 						$message = $member->fullName() . ', ' . $member->email . ' has been removed from the SparkPost suppression list';
-						$deletes[] = $suppression['recipient'];
+						$deletes[] = $suppression['recipient']; // @phpstan-ignore-line
 						}
 					else
 						{
-						$message = $member->fullName() . ', ' . $member->email . ' is bouncing: ' . $suppression['description'];
+						$message = $member->fullName() . ', ' . $member->email . ' is bouncing: ' . $suppression['description']; // @phpstan-ignore-line
 						}
 					\App\Tools\Logger::get()->debug($message);
 
-					$deletes[] = $suppression['recipient'];
+					$deletes[] = $suppression['recipient']; // @phpstan-ignore-line
 					}
 				}
 			$model->deleteSuppressions($deletes);

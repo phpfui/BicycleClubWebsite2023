@@ -9,7 +9,10 @@ class Payments
 		$this->processAJAXRequest();
 		}
 
-	public function show(iterable $payments, string $noPaymentMessage = 'No payments found') : \PHPFUI\Container
+	/**
+	 * @param \PHPFUI\ORM\RecordCursor<\App\Record\Payment> $payments
+	 */
+	public function show(\PHPFUI\ORM\RecordCursor $payments, string $noPaymentMessage = 'No payments found') : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 
@@ -86,7 +89,11 @@ class Payments
 			}
 		}
 
-	private function getPaymentTable(iterable $payments, array $headers, ?\PHPFUI\AJAX $delete) : \PHPFUI\Table
+	/**
+	 * @param array<\App\Record\Payment> $payments
+	 * @param array<string,string> $headers
+	 */
+	private function getPaymentTable(array $payments, array $headers, ?\PHPFUI\AJAX $delete) : \PHPFUI\Table
 		{
 		$table = new \PHPFUI\Table();
 		$table->setRecordId('paymentId');

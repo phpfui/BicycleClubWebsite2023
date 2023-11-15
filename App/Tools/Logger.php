@@ -257,7 +257,7 @@ class Logger
 		return $this;
 		}
 
-	private function print($object) : string
+	private function print(mixed $object) : string
 		{
 		$return = \print_r($object, true);
 

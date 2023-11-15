@@ -38,7 +38,7 @@ class LandingEditor
 			}
 	}
 
-	public function menu($item) : \PHPFUI\UnorderedList | \PHPFUI\Form | \App\View\SettingEditor
+	public function menu(string $item) : \PHPFUI\UnorderedList | \PHPFUI\Form | \App\View\SettingEditor
 		{
 		switch ($item)
 			{

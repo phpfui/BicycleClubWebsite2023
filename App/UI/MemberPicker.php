@@ -6,6 +6,9 @@ class MemberPicker
 	{
 	private readonly string $name;
 
+	/**
+	 * @param array<string,string> $initialMember
+	 */
 	public function __construct(private readonly \PHPFUI\Page $page, private readonly \App\Model\MemberPickerBase $model, private string $fieldName = '', array $initialMember = [])
 		{
 		$this->model->setMember($initialMember);
@@ -13,6 +16,8 @@ class MemberPicker
 		}
 
 	/**
+	 * @param array<string,int> $parameters
+	 *
 	 * @return (mixed|string)[][][]
 	 *
 	 * @psalm-return array{suggestions: list<array{value: string, data: mixed}>}

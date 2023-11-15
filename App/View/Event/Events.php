@@ -585,7 +585,7 @@ class Events
 			}
 		}
 
-	public function show(\PHPFUI\ORM\DataObjectCursor $eventCursor, $noEventsMessage = 'There are no upcoming events') : \App\UI\Accordion | \PHPFUI\Header
+	public function show(\PHPFUI\ORM\DataObjectCursor $eventCursor, string $noEventsMessage = 'There are no upcoming events') : \App\UI\Accordion | \PHPFUI\Header
 		{
 		if (! \count($eventCursor))
 			{
@@ -793,6 +793,9 @@ JAVASCRIPT;
 		$modal->add($buttonGroup);
 		}
 
+	/**
+	 * @param array<string,string> $member
+	 */
 	private function getSignup(string $index, array $member = []) : \PHPFUI\FieldSet
 		{
 		$fieldSet = new \PHPFUI\FieldSet("Attendee {$index}");

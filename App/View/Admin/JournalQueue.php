@@ -46,6 +46,9 @@ class JournalQueue
 		return $container;
 		}
 
+	/**
+	 * @param array<string,string> $item
+	 */
 	private function getEditItemModal(array $item) : \PHPFUI\FAIcon
 		{
 		$editIcon = new \PHPFUI\FAIcon('far', 'edit', '#');

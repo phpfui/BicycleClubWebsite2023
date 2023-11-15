@@ -170,8 +170,8 @@ class GearCalculator
 	/**
 	 * Gear * 2 across (highest first) / cogs down
 	 *
-	 * param array<float> $hub1
-	 * param array<float> $hub2
+	 * @param array<float> $hub1
+	 * @param array<float> $hub2
 	 */
 	public function getDualHubCassetteTable(int $ring, array $hub1, array $hub2) : \PHPFUI\Table
 		{
@@ -218,8 +218,8 @@ class GearCalculator
 	/**
 	 * More traditional 2 x gear chart but with hubs
 	 *
-	 * param array<float> $hub1
-	 * param array<float> $hub2
+	 * @param array<float> $hub1
+	 * @param array<float> $hub2
 	 */
 	public function getDualHubTable(int $ring, int $cog, array $hub1, array $hub2) : \PHPFUI\Table
 		{
@@ -343,8 +343,8 @@ class GearCalculator
 	/**
 	 *  Dual hubs, Mulitple Chain Rings and Multiple Cogs
 	 *
-	 * param array<float> $hub1
-	 * param array<float> $hub2
+	 * @param array<float> $hub1
+	 * @param array<float> $hub2
 	 */
 	public function getRingsCassetteDualHubsTable(array $hub1, array $hub2) : \PHPFUI\Table
 		{
@@ -457,8 +457,8 @@ class GearCalculator
 	/**
 	 * Chair Rings * gears across / gears down
 	 *
-	 * param array<float> $hub1
-	 * param array<float> $hub2
+	 * @param array<float> $hub1
+	 * @param array<float> $hub2
 	 */
 	public function getRingsDualHubsTable(int $cog, array $hub1, array $hub2) : \PHPFUI\Table
 		{
@@ -740,8 +740,8 @@ class GearCalculator
 	/**
 	 * Order hubs so hub1 has fewer gears
 	 *
-	 * param array<float> $hub1
-	 * param array<float> $hub2
+	 * @param array<float> $hub1
+	 * @param array<float> $hub2
 	 */
 	private function orderHubs(array &$hub1, array &$hub2) : void
 		{

@@ -8,6 +8,9 @@ class MainMenu extends \PHPFUI\AccordionMenu
 
 	private string $currentMenu = '';
 
+	/**
+	 * @var array<string, \PHPFUI\Menu>
+	 */
 	private array $theMenu = [];
 
 	public function __construct(private readonly \App\Model\PermissionBase $permissions, private string $activeLink = '')
@@ -113,6 +116,9 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		return $landingPage;
 		}
 
+	/**
+	 * @param array<string, \PHPFUI\Menu> $menuItems
+	 */
 	public function getMatchingMenu(array $menuItems, string $section) : ?\PHPFUI\Menu
 		{
 		foreach ($menuItems as $name => $menuItem)
@@ -129,6 +135,9 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		return null;
 		}
 
+	/**
+	 * @return array<string, \PHPFUI\Menu>
+	 */
 	public function getMenuSections() : array
 		{
 		return $this->theMenu;

@@ -165,6 +165,10 @@ class Calendar
 		return $form;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 * @param array<string> $showTabs
+	 */
 	public function showCalendar(\App\Table\Calendar $calendarTable, array $parameters = [], array $showTabs = []) : \PHPFUI\Tabs | \PHPFUI\Table
 		{
 		$additionalHeaders = [];

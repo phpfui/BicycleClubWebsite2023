@@ -10,7 +10,10 @@ class ContactUs implements \Stringable
 
 	private readonly \App\Table\Setting $settingTable;
 
-	public function __construct(private \App\View\Page $page, private readonly iterable $boardMembers)
+	/**
+	 * @param \PHPFUI\ORM\RecordCursor<\App\Record\BoardMember> $boardMembers
+	 */
+	public function __construct(private \App\View\Page $page, private readonly \PHPFUI\ORM\RecordCursor $boardMembers)
 		{
 		$this->page = $page;
 		$this->settingTable = new \App\Table\Setting();
@@ -104,7 +107,7 @@ class ContactUs implements \Stringable
 
 				foreach ($this->boardMembers as $member)
 					{
-					$select->addOption($member->title . ' - ' . $member->member->fullName(), $member->memberId, $member->memberId == $selected);
+					$select->addOption($member->title . ' - ' . $member->member->fullName(), (string)$member->memberId, $member->memberId == $selected);
 					}
 				$fieldSet->add($select);
 				$subject = new \PHPFUI\Input\Text('subject', 'Subject', $post['subject'] ?? '');

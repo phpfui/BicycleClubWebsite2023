@@ -4,6 +4,9 @@ namespace App\View\Email;
 
 class Ride implements \Stringable
 	{
+	/**
+	 * @var array<int>
+	 */
 	protected $leadersOnRide = [];
 
 	protected string $title;

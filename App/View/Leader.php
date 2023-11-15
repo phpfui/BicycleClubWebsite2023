@@ -11,7 +11,7 @@ class Leader
 		$this->memberTable = new \App\Table\Member();
 		}
 
-	public function getEditControl(string $name, string $title, ?\PHPFUI\ORM\RecordCursor $leaders = null, $leaderNumber = 0) : \PHPFUI\Input\SelectAutoComplete
+	public function getEditControl(string $name, string $title, ?\PHPFUI\ORM\RecordCursor $leaders = null, int $leaderNumber = 0) : \PHPFUI\Input\SelectAutoComplete
 		{
 		$select = new \PHPFUI\Input\SelectAutoComplete($this->page, $name, $title);
 		$select->addOption('Please select a ' . $title, (string)0, 0 == $leaderNumber);

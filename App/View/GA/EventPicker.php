@@ -14,6 +14,9 @@ class EventPicker implements \Stringable
 
 	final public const TABLE = 3;
 
+	/**
+	 * @var array<int,int>
+	 */
 	private array $selected = [];
 
 	public function __construct(private readonly \App\View\Page $page, private readonly int $type = self::MULTIPLE, private readonly string $title = 'Select GA Events', private readonly string $link = '')
@@ -51,7 +54,7 @@ class EventPicker implements \Stringable
 
 				foreach ($events as $event)
 					{
-					$select->addOption($event->eventDate . ' / ' . $event->title, $event->gaEventId, $this->selected[$event->gaEventId] ?? 0);
+					$select->addOption($event->eventDate . ' / ' . $event->title, $event->gaEventId, (bool)($this->selected[$event->gaEventId] ?? 0));
 					}
 				$fieldSet->add($select);
 
@@ -59,7 +62,7 @@ class EventPicker implements \Stringable
 
 			case self::SINGLE:
 
-				$radio = new \PHPFUI\Input\RadioGroup('gaEventId', '', $this->selected[$events->current()->gaEventId ?? 0] ?? false);
+				$radio = new \PHPFUI\Input\RadioGroup('gaEventId', '', (string)($this->selected[$events->current()->gaEventId ?? 0] ?? false));
 				$radio->setSeparateRows();
 
 				foreach ($events as $event)
@@ -76,7 +79,7 @@ class EventPicker implements \Stringable
 
 				foreach ($events as $event)
 					{
-					$cb = new \PHPFUI\Input\CheckBoxBoolean("gaEventId[{$event->gaEventId}]", $event->eventDate . ' / ' . $event->title, $this->selected[$event->gaEventId] ?? 0);
+					$cb = new \PHPFUI\Input\CheckBoxBoolean("gaEventId[{$event->gaEventId}]", $event->eventDate . ' / ' . $event->title, (bool)($this->selected[$event->gaEventId] ?? 0));
 					$cb->setToolTip(\Soundasleep\Html2Text::convert($event->description ?? '', ['drop_links' => true, 'ignore_errors' => true]));
 					$multiColumn->add($cb);
 
@@ -133,7 +136,7 @@ class EventPicker implements \Stringable
 		return (string)$fieldSet;
 		}
 
-	public function publicEvents($link = '/GA/signUp') : \PHPFUI\Container
+	public function publicEvents(string $link = '/GA/signUp') : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 		$gaEventTable = new \App\Table\GaEvent();
@@ -178,7 +181,10 @@ class EventPicker implements \Stringable
 		return $container;
 		}
 
-	public function setSelected($selected) : static
+	/**
+	 * @param array<int>|int $selected
+	 */
+	public function setSelected(array | int $selected) : static
 		{
 		if (! \is_array($selected))
 			{

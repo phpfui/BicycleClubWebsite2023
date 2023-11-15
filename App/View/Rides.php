@@ -1243,6 +1243,9 @@ class Rides
 		return $reveal;
 		}
 
+	/**
+	 * @param array<int> $paceCount
+	 */
 	private function graphDropDown(string $name, array $paceCount) : \PHPFUI\DropDown
 		{
 		$span = new \PHPFUI\HTML5Element('div');

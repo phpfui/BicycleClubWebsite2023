@@ -127,9 +127,10 @@ class Volunteer
 		}
 
 	/**
+	 * @param array<array<string,string>> $members
 	 * @param array<string,array<string,string>> $files
 	 */
-	public function email($event, int $jobId, iterable $members, string $subject, string $message, $shiftInfo, array $files) : void
+	public function email(int $eventId, int $jobId, iterable $members, string $subject, string $message, bool $shiftInfo, array $files) : void
 		{
 		$email = new \App\Tools\EMail();
 		$email->setSubject($subject);
@@ -160,7 +161,7 @@ class Volunteer
 				$shiftString = '<p>You have signed up for the following shifts:<p>';
 				}
 			$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
-			$jobs = $volunteerJobShiftTable->getJobsForMember($member['memberId'], $event);
+			$jobs = $volunteerJobShiftTable->getJobsForMember((int)$member['memberId'], $eventId);
 			$hr = '';
 
 			foreach ($jobs as $job)
@@ -215,7 +216,10 @@ class Volunteer
 		return $this;
 		}
 
-	public function validateRide(\App\Record\Ride $ride, iterable $assistantLeaders) : string
+	/**
+	 * @param \PHPFUI\ORM\RecordCursor<\App\Record\Member> $assistantLeaders
+	 */
+	public function validateRide(\App\Record\Ride $ride, \PHPFUI\ORM\RecordCursor $assistantLeaders) : string
 		{
 		// rides must be posted $advanceHours hours in advance to be created
 		$rideTime = \strtotime($ride->rideDate . ' ' . $ride->startTime);

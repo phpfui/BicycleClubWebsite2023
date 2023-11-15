@@ -412,6 +412,9 @@ class TextHelper extends \PHPFUI\TextHelper
 		return "{$dom}";
 		}
 
+	/**
+	 * @param array<string,string> $links
+	 */
 	private static function replaceLinksWithDummies(string $html, array &$links) : string
 		{
 		$html = \str_replace('&nbsp;', ' ', $html); // html editor could insert this after a link, which could look like a valid url

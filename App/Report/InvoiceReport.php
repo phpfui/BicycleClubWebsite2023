@@ -4,6 +4,9 @@ namespace App\Report;
 
 class InvoiceReport
 	{
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	public function download(array $parameters) : void
 		{
 		$invoiceItem = new \App\Record\InvoiceItem();
@@ -73,7 +76,7 @@ class InvoiceReport
 			$pdf->SetDocumentTitle($settings->value('clubAbbrev') . $title . ' Report Printed On ' . \App\Tools\Date::todayString());
 			$pdf->PrintHeader();
 			}
-		$invoices = \App\Table\Invoice::getPaidByDate($shipped, $parameters['startDate'], $parameters['endDate'], $parameters['points']);
+		$invoices = \App\Table\Invoice::getPaidByDate($shipped, $parameters['startDate'], $parameters['endDate'], (int)$parameters['points']);
 		$customerModel = new \App\Model\Customer();
 
 		foreach ($invoices as $invoice)

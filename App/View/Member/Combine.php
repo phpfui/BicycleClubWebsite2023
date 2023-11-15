@@ -64,6 +64,9 @@ class Combine
 		return $form;
 		}
 
+	/**
+	 * @param array<string,string> $get
+	 */
 	private function getSelectPage(array $get) : \PHPFUI\Form
 		{
 		$members = $this->memberTable->findByName(\explode(' ', (string)$get['name']), false);

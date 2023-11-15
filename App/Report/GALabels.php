@@ -4,9 +4,17 @@ namespace App\Report;
 
 class GALabels
 	{
-	public function __construct(private array $parameters, private ?string $labelStock = '5960')
+	/**
+	 * @var array<int> $parameters
+	 */
+	private array $parameters;
+
+	/**
+	 * @param array<int,bool> $eventBools
+	 */
+	public function __construct(array $eventBools, private ?string $labelStock = '5960')
 		{
-		foreach ($this->parameters as $gaEventId => $active)
+		foreach ($eventBools as $gaEventId => $active)
 			{
 			if (! $active)
 				{
@@ -40,6 +48,9 @@ class GALabels
 		$pdf->Output("GALabels-{$now}.pdf", 'I');
 		}
 
+	/**
+	 * @return array<int>
+	 */
 	public function getEvents() : array
 		{
 		return $this->parameters;

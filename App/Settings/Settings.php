@@ -12,7 +12,9 @@ abstract class Settings
 	{
 	private string $fileName = 'NOT FOUND';
 
-	// @var array<string, mixed>
+	/**
+	 * @var array<string, mixed>
+	 */
 	private array $settings = [];
 
 	public function __construct(private string $serverName = '')
@@ -23,6 +25,11 @@ abstract class Settings
 			}
 		}
 
+	/**
+	 * @param array<mixed> $args
+	 *
+	 * @return ?string
+	 */
 	public function __call(string $name, array $args)
 		{
 		$this->load();
@@ -40,6 +47,8 @@ abstract class Settings
 	 * Allows for $object->field syntax
 	 *
 	 * Unset fields will return null
+	 *
+	 * @return ?mixed
 	 */
 	public function __get(string $field)
 		{
@@ -74,7 +83,9 @@ abstract class Settings
 		return empty($this->settings);
 		}
 
-	// @return array<string, mixed>
+	/**
+	 * @return array<string, mixed>
+	 */
 	public function getFields() : array
 		{
 		$this->load();
@@ -164,6 +175,9 @@ abstract class Settings
 		$this->settings = $this->loadFile($className);
 		}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	private function loadFile(string $fileName) : array
 		{
 		$fileName = $this->getFileName($fileName);

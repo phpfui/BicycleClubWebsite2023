@@ -4,6 +4,9 @@ namespace App\Report;
 
 class Inventory
 	{
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	public function download(array $parameters) : void
 		{
 		$pdf = new \PDF_MC_Table();

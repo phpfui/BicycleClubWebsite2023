@@ -23,6 +23,11 @@ class SparkPost
 		return null !== $this->sparkPost;
 		}
 
+	/**
+	 * @param array<string> $emailAddresses
+	 *
+	 * @return array<string,int>
+	 */
 	public function deleteSuppressions(array $emailAddresses) : array
 		{
 		$results = [];
@@ -51,6 +56,9 @@ class SparkPost
 		return $results;
 		}
 
+	/**
+	 * @return array<string,string>
+	 */
 	public function getSuppressionList() : array
 		{
 		$results = [];

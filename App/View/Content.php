@@ -420,7 +420,7 @@ class Content extends \App\UI\HTMLEditor
 		$modal->add($form);
 		}
 
-	private function getStoriesHTML(iterable $stories, int $count) : string
+	private function getStoriesHTML(\PHPFUI\ORM\DataObjectCursor $stories, int $count) : string
 		{
 		$output = '';
 		$next = [];
@@ -468,7 +468,7 @@ class Content extends \App\UI\HTMLEditor
 		return '<hr>';
 		}
 
-	private function order(iterable $stories, \App\Record\Blog $blog) : \PHPFUI\Form
+	private function order(\PHPFUI\ORM\DataObjectCursor $stories, \App\Record\Blog $blog) : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit('Save Order', 'action');
 		$form = new \PHPFUI\Form($this->page, $submit);

@@ -38,7 +38,7 @@ class DeleteRecord
 	/**
 	 * @param array<string,mixed> $row
 	 */
-	public function columnCallback(array $row)
+	public function columnCallback(array $row) : string
 		{
 		if ($this->conditional($row))
 			{

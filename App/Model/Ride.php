@@ -186,6 +186,8 @@ class Ride
 
 	/**
 	 * @param array<string,mixed> $parameters
+	 *
+	 * @return array<string,mixed>
 	 */
 	public function cleanDescription(array $parameters) : array
 		{
@@ -501,6 +503,9 @@ class Ride
 		return $message;
 		}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function getRidesChair() : array
 		{
 		$memberPicker = new \App\Model\MemberPicker('Rides Chair');
@@ -533,6 +538,8 @@ class Ride
 		}
 
 	/**
+	 * @param array<string,string> $parameters
+	 *
 	 * @return string errors found during save, empty if no errors
 	 */
 	public function save(array $parameters) : string

@@ -96,6 +96,9 @@ class GASignInSheets
 			}
 		}
 
+	/**
+	 * @return array<string,string>
+	 */
 	private function processRider(\App\Record\GaRider $rider) : array
 		{
 		$retVal = $rider->toArray();

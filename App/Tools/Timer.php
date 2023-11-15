@@ -4,6 +4,9 @@ namespace App\Tools;
 
 class Timer
 	{
+	/**
+	 * @var array<int,array<string,string>>
+	 */
 	private array $laps = [];
 
 	private float $lastLap = 0;
@@ -31,6 +34,9 @@ class Timer
 		return \number_format(($this->get_time() - $this->start), $decimals);
 		}
 
+	/**
+	 * @return array<int,array<string,string>>
+	 */
 	public function getLaps() : array
 		{
 		return $this->laps;

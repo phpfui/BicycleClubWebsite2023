@@ -4,10 +4,19 @@ namespace App\View\Member;
 
 class Search implements \Stringable
 	{
+	/**
+	 * @var array<string,string>
+	 */
 	protected $exceptions = [];
 
+	/**
+	 * @var array<string,string>
+	 */
 	protected $fields = [];
 
+	/**
+	 * @var array<string,string>
+	 */
 	protected $specialFields = [];
 
 	public function __construct(private readonly \App\View\Page $page)
@@ -81,6 +90,10 @@ class Search implements \Stringable
 		return $button . $output;
 		}
 
+	/**
+	 * @param array<string,string> $fields
+	 * @param array<string,string> $parameters
+	 */
 	protected function generateFields(array $fields, array $parameters) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
@@ -105,6 +118,9 @@ class Search implements \Stringable
 		return $container;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	protected function getSearchModal(\PHPFUI\HTML5Element $modalLink, array $parameters) : \PHPFUI\Reveal
 		{
 		$searchFields = [];
@@ -161,6 +177,8 @@ class Search implements \Stringable
 		}
 
 	/**
+	 * @param array<string,string> $searchFields
+	 * @param array<string,string> $parameters
 	 * @return (mixed|string)[]
 	 *
 	 * @psalm-return array<array-key, mixed|string>

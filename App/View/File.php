@@ -4,6 +4,9 @@ namespace App\View;
 
 class File
 	{
+	/**
+	 * @var array<int,int>
+	 */
 	private array $cuts = [];
 
 	private readonly \App\Model\FileFiles $fileFiles;
@@ -52,7 +55,7 @@ class File
 					$file = new \App\Record\File($fileId);
 					$name = $file->file ?: $fileId;
 					}
-				$multiSelect->addOption($name, $fileId);
+				$multiSelect->addOption($name, (string)$fileId);
 				}
 			$fieldSet->add($multiSelect);
 
@@ -189,6 +192,9 @@ class File
 		return $form;
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	public function getSearchButton(array $parameters = [], bool $openOnPageLoad = true) : \PHPFUI\Button
 		{
 		if ($this->searchButton)
@@ -512,6 +518,9 @@ return $member->fullName();});
 		$modal->add($form);
 		}
 
+	/**
+	 * @param array<string,int> $file
+	 */
 	private function getCut(array $file) : string
 		{
 		if (! isset($this->cuts[$file['fileId']]) && ($file['memberId'] == $this->signedInMember || $this->moveFile))

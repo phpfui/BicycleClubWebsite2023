@@ -4,7 +4,7 @@ namespace App\Report;
 
 class GARegistationSigns
 	{
-	private $pdf;
+	private \FPDF $pdf;
 
 	public function __construct(private readonly \App\Record\GaEvent $event, private readonly int $count)
 		{

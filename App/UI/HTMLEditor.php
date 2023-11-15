@@ -22,6 +22,9 @@ class HTMLEditor
 			}
 		}
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	public function makeEditable(string $id, array $parameters = []) : void
 		{
 		$this->tinyMCE->updatePage($this->page, $id);

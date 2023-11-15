@@ -4,8 +4,14 @@ namespace App\Model;
 
 class DataPurge
 	{
+	/**
+	 * @var array<string,array<\PHPFUI\ORM\Record>>
+	 */
 	private array $data = [];
 
+	/**
+	 * @var array<string,\PHPFUI\ORM\Table>
+	 */
 	private array $tables = [];
 
 	public function addAllTables() : static

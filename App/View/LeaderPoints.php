@@ -137,6 +137,9 @@ class LeaderPoints
 		return $fieldSet;
 		}
 
+	/**
+	 * @param array<string,string> $categories
+	 */
 	private function getEditFields(array $categories, \App\Model\SettingsSaver $settingsSaver) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();

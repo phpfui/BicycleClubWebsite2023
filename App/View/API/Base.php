@@ -4,8 +4,14 @@ namespace App\View\API;
 
 class Base implements \Stringable
 	{
+	/**
+	 * @var array<string,mixed>
+	 */
 	private array $meta = [];
 
+	/**
+	 * @var array<string,array<string,mixed>>
+	 */
 	private array $response = [];
 
 	public function __construct(protected \PHPFUI\Interfaces\NanoController $controller)
@@ -47,6 +53,9 @@ class Base implements \Stringable
 		return $this->log($error, 'errors');
 		}
 
+	/**
+	 * @param array<string,array<string,mixed>> $response
+	 */
 	public function setResponse(array $response) : static
 		{
 		$this->response = $response;

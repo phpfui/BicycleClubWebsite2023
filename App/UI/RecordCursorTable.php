@@ -4,6 +4,9 @@ namespace App\UI;
 
 class RecordCursorTable extends \PHPFUI\Table
 	{
+	/**
+	 * @var array<string, array<mixed>>
+	 */
 	private array $customColumns = [];
 
 	public function __construct(private readonly \PHPFUI\ORM\RecordCursor $cursor)
@@ -11,6 +14,9 @@ class RecordCursorTable extends \PHPFUI\Table
 		parent::__construct();
 		}
 
+	/**
+	 * @param array<string,string> $additionalData
+	 */
 	public function addCustomColumn(string $field, callable $callback, array $additionalData = []) : static
 		{
 		$this->customColumns[$field] = [$callback, $additionalData];

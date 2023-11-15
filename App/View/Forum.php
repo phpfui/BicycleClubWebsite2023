@@ -4,6 +4,9 @@ namespace App\View;
 
 class Forum
 	{
+	/**
+	 * @var array<int,string>
+	 */
 	protected array $subscriptionTypes;
 
 	private readonly \App\Table\ForumMessage $forumMessageTable;
@@ -510,7 +513,7 @@ class Forum
 					{
 					if ($key)
 						{
-						$select->addOption($name, $key, $key == $member['emailType']);
+						$select->addOption($name, (string)$key, $key == $member['emailType']);
 						}
 					}
 				$select->addAttribute('onchange', 'changeSubscription(' . $member['memberId'] . ', this.value)');
@@ -777,7 +780,7 @@ class Forum
 
 		foreach ($this->subscriptionTypes as $key => $name)
 			{
-			$radio->addButton($name, $key);
+			$radio->addButton($name, (string)$key);
 			}
 
 		return $radio;

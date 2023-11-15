@@ -30,6 +30,9 @@ class Page extends \PHPFUI\Page
 
 	private bool $renewing = false;
 
+	/**
+	 * @var array<string>
+	 */
 	private array $requiredPages = [];
 
 	private bool $shownSignIn = false;
@@ -189,7 +192,7 @@ class Page extends \PHPFUI\Page
 		return $this;
 		}
 
-	public function addRequiredPage($page) : static
+	public function addRequiredPage(string $page) : static
 		{
 		$this->requiredPages[] = $page;
 

@@ -37,7 +37,7 @@ class Combine
 		return '';
 		}
 
-	private function getCombinedPage(int $membershipId)
+	private function getCombinedPage(int $membershipId) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 		$container->add(new \PHPFUI\SubHeader('Combined Members'));
@@ -65,7 +65,10 @@ class Combine
 		return $form;
 		}
 
-	private function getSelectPage(array $get)
+	/**
+	 * @param array<string,string> $get
+	 */
+	private function getSelectPage(array $get) : \PHPFUI\Container | \PHPFUI\Form
 		{
 		$get['all'] = true;
 		$members = $this->memberTable->find($get);

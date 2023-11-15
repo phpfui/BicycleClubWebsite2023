@@ -10,7 +10,10 @@ class Renew
 
 	private readonly \App\Model\Member $memberModel;
 
-	private readonly iterable $members;
+	/**
+	 * @var \PHPFUI\ORM\RecordCursor<\App\Record\Member>
+	 */
+	private readonly \PHPFUI\ORM\RecordCursor $members;
 
 	private readonly \App\Table\Setting $settingTable;
 

@@ -4,6 +4,9 @@ namespace App\Model;
 
 class GeneralAdmission
 	{
+	/**
+	 * @var array<string,string>
+	 */
 	private array $chair = [];
 
 	private ?\App\Tools\EMail $email = null;
@@ -29,6 +32,9 @@ class GeneralAdmission
 			}
 		}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function executeInvoice(\App\Record\Invoice $invoice, \App\Record\InvoiceItem $invoiceItem) : array
 		{
 		$event = new \App\Record\GaEvent($invoiceItem->storeItemId);
@@ -90,6 +96,9 @@ class GeneralAdmission
 		return $rider->toArray();
 		}
 
+	/**
+	 * @return array<string,string>
+	 */
 	public function getChair(int $gaEventId) : array
 		{
 		$event = new \App\Record\GaEvent($gaEventId);

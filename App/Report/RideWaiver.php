@@ -4,12 +4,18 @@ namespace App\Report;
 
 class RideWaiver extends \Mpdf\Mpdf
 	{
+	/**
+	 * @var array<int>
+	 */
 	protected array $columns = [10, 51, 51, 30, 30, 19, ];
 
 	protected int $length = 0;
 
 	protected \PHPFUI\ORM\DataObjectCursor $riders;
 
+	/**
+	 * @var array<int>
+	 */
 	protected array $startOffset = [];
 
 	private readonly \App\Table\Setting $settingTable;
@@ -88,6 +94,9 @@ class RideWaiver extends \Mpdf\Mpdf
 			}
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	protected function format(string $label, string $value) : array
 		{
 		return ["<strong>{$label}</strong>", $value];
@@ -178,6 +187,9 @@ class RideWaiver extends \Mpdf\Mpdf
 		$this->SetX($rx);
 		}
 
+	/**
+	 * @param array<string,string> $member
+	 */
 	protected function printSignatureLine(int $i, array $member) : void
 		{
 		$height = 8;

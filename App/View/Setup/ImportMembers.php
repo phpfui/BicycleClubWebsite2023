@@ -105,6 +105,10 @@ class ImportMembers extends \PHPFUI\Container
 		$membershipModel->import($csvReader, $_POST, 'Paid' == $paidMembers);
 		}
 
+	/**
+	 * @param array<string> $importFields
+	 * @param array<string,array<mixed>> $dataFields
+	 */
 	private function getMatchFields(array $importFields, array $dataFields) : string
 		{
 		$container = new \PHPFUI\Container();

@@ -14,6 +14,9 @@ class GeoLocation
 
 	private ?\PHPFUI\Button $submit = null;
 
+	/**
+	 * @param array<string,bool|int> $options
+	 */
 	public function __construct(private readonly array $options = ['enableHighAccuracy' => true, 'timeout' => 5000, 'maximumAge' => 0])
 		{
 		}

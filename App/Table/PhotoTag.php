@@ -6,6 +6,9 @@ class PhotoTag extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\PhotoTag::class;
 
+	/**
+	 * @param array<int> $keepers
+	 */
 	public function deleteNotIn(int $photoId, array $keepers) : void
 		{
 		$sql = 'delete from photoTag where photoId=?';

@@ -16,6 +16,9 @@ class MemberWaiver extends \Mpdf\Mpdf
 		$this->settingTable = new \App\Table\Setting();
 		}
 
+	/**
+	 * @param array<string,string> $member
+	 */
 	public function generate(array $member, string $header = '', string $text = '') : void
 		{
 		$this->AddPage();
@@ -74,6 +77,9 @@ class MemberWaiver extends \Mpdf\Mpdf
 		$this->WriteHtml($settingTable->value('MinorWaiverText'));
 		}
 
+	/**
+	 * @return array<string>
+	 */
 	private function format(string $label, string $value) : array
 		{
 		return ["<strong>{$label}</strong>", $value];

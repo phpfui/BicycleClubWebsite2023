@@ -197,7 +197,7 @@ class Permissions
 				{
 				$permissionId = $permission['permissionId'];
 
-				if (isset($groupPermissions[$permissionId]) && empty($groupPermissions[$permissionId]))
+				if (isset($groupPermissions[$permissionId]) && ! \count($groupPermissions[$permissionId])) // @phpstan-ignore-line
 					{
 					$revoked = true;
 					$inRevokedGroup[] = $permission;
@@ -208,7 +208,7 @@ class Permissions
 					$notInRevokedGroup[] = $permission;
 					}
 
-				if (! $revoked && ! empty($groupPermissions[$permissionId]))
+				if (! $revoked && \count($groupPermissions[$permissionId]))	// @phpstan-ignore-line
 					{
 					$inGroup[] = $permission;
 					}
@@ -321,7 +321,10 @@ class Permissions
 		return $view;
 		}
 
-	public function getGroupName(string $fieldName, string $index, $permission, string $type) : string
+	/**
+	 * @param int | array<string,string> $permission
+	 */
+	public function getGroupName(string $fieldName, string $index, int | array $permission, string $type) : string
 		{
 		if (! \is_array($permission))
 			{
@@ -441,6 +444,10 @@ class Permissions
 		return $container;
 		}
 
+	/**
+	 * @param array<string,string> $lhs
+	 * @param array<string,string> $rhs
+	 */
 	public function permissionSort(array $lhs, array $rhs) : int
 		{
 		if (! $returnValue = \strcmp($lhs['menu'] ?? '', $rhs['menu'] ?? ''))
@@ -515,6 +522,11 @@ class Permissions
 		return $select;
 		}
 
+	/**
+	 * @param array<array<string,string>> $permissions
+	 *
+	 * @return array<int, array<string, string>>
+	 */
 	private function groupByMenu(array $permissions) : array
 		{
 		$grouped = [];
@@ -524,6 +536,6 @@ class Permissions
 			$grouped[$permission['menu'] ?: 'Global'][] = $permission;
 			}
 
-		return $grouped;
+		return $grouped;	// @phpstan-ignore-line
 		}
 	}

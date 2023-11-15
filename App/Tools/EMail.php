@@ -237,7 +237,7 @@ class EMail
 			$mail->Username = $values['SMTPUsername'];            // SMTP username
 			$mail->Password = $values['SMTPPassword'];            // SMTP password
 			$mail->SMTPSecure = $values['SMTPSecure'];            // Enable TLS encryption, `ssl` also accepted
-			$mail->Port = $values['SMTPPort'];                    // TCP port to connect to
+			$mail->Port = (int)$values['SMTPPort'];                    // TCP port to connect to
 			}
 
 		$email = $this->fromEmail;

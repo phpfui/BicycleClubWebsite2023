@@ -6,11 +6,11 @@ class PermissionGroup extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\PermissionGroup::class;
 
-	public static function getGroupPermissions($group) : \PHPFUI\ORM\DataObjectCursor
+	public static function getGroupPermissions(int $groupId) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from permissionGroup g,permission n where g.groupId=? and g.permissionId=n.permissionId order by n.menu,n.name';
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$group]);
+		return \PHPFUI\ORM::getDataObjectCursor($sql, [$groupId]);
 		}
 
 	/**

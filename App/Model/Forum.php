@@ -47,6 +47,9 @@ class Forum
 		return $this->email;
 		}
 
+	/**
+	 * @param array<string,mixed> $fields
+	 */
 	public function getMembers(\App\Record\Forum $forum, array $fields) : \PHPFUI\ORM\DataObjectCursor
 		{
 		if (isset($fields['email']))
@@ -59,6 +62,9 @@ class Forum
 		return $forumMemberTable->getMembers($forum, $fields);
 		}
 
+	/**
+	 * @return array<string,mixed>
+	 */
 	public function isAdditionalEmail(string $from, \App\Record\Forum $forum) : array
 		{
 		$additional = new \App\Record\AdditionalEmail(['email' => \App\Model\Member::cleanEmail($from), 'verified' => 1]);
@@ -92,6 +98,9 @@ class Forum
 		return $member;
 		}
 
+	/**
+	 * @param array<string,mixed> $message
+	 */
 	public function post(array $message) : int
 		{
 		$forum = new \App\Record\Forum((int)$message['forumId']);

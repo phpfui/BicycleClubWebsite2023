@@ -19,7 +19,7 @@ abstract class MemberPickerBase
 	/**
 	 * @param array<string> $names
 	 */
-	public function findByName(array $names) : iterable
+	public function findByName(array $names) : \PHPFUI\ORM\ArrayCursor
 		{
 		return $this->memberTable->findByName($names, $this->currentMember);
 		}

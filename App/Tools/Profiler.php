@@ -4,10 +4,19 @@ namespace App\Tools;
 
 class Profiler
 	{
+	/**
+	 * @var \SplStack<\App\Tools\Timer>
+	 */
 	protected \SplStack $callstack;
 
+	/**
+	 * @var array<string,int>
+	 */
 	protected array $memory = [];
 
+	/**
+	 * @var array<string,int>
+	 */
 	protected array $times = [];
 
 	private readonly \App\Tools\Logger $logger;
@@ -56,7 +65,7 @@ class Profiler
 				$this->times[$name] = 0;
 				}
 			$this->memory[$name] = $timer->getMemory();
-			$this->times[$name] += $time;
+			$this->times[$name] += (float)$time;
 
 			if (\count($this->callstack))
 				{

@@ -6,6 +6,9 @@ class Photo extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Photo::class;
 
+	/**
+	 * @param array<string,string> $parameters
+	 */
 	public function search(array $parameters = []) : static
 		{
 		$tables = [

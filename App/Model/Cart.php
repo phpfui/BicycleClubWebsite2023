@@ -454,6 +454,9 @@ class Cart
 		return false;
 		}
 
+	/**
+	 * @param array<string,int> $itemCount
+	 */
 	private function computeDiscount(\App\Record\DiscountCode $discountCode, array $itemCount) : float
 		{
 		$discount = 0.0;
@@ -491,7 +494,7 @@ class Cart
 		return $discount;
 		}
 
-	private function validateDiscountCode(\App\Record\DiscountCode $discount, $customerNumber) : int
+	private function validateDiscountCode(\App\Record\DiscountCode $discount, int $customerNumber) : int
 		{
 		if ($discount->expirationDate && \App\Tools\Date::todayString() > $discount->expirationDate)
 			{

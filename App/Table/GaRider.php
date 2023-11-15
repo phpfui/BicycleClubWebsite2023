@@ -11,7 +11,7 @@ class GaRider extends \PHPFUI\ORM\Table
 	 *
 	 * @return array<array<string,mixed>>
 	 */
-	public static function getEmailsForEvents(array $events, $pending = 0) : array
+	public static function getEmailsForEvents(array $events, int $pending = 0) : array
 		{
 		$sql = 'select email,firstName,lastName,gaRiderId,pending from gaRider where gaEventId in (';
 		$ids = [];

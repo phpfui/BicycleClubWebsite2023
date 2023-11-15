@@ -381,8 +381,11 @@ class Editor
 
 						if ($RWGPSId && ! $rwgps->loaded())
 							{
-							$rwgps->RWGPSId = $RWGPSId;
-							$rwgps->insertOrUpdate();
+							if ($this->page->isAuthorized('Add / Update RWGPS'))
+								{
+								$rwgps->RWGPSId = $RWGPSId;
+								$rwgps->insertOrUpdate();
+								}
 							}
 						$rideTable = new \App\Table\Ride();
 						$elevation = $rideTable->getRWGPSElevation($RWGPSId);
@@ -391,6 +394,9 @@ class Editor
 							{
 							$rwgps->elevationFeet = (float)$elevation;
 							}
+						$data = $rwgps->toArray();
+						$data['RWGPSId'] = \App\Model\RideWithGPS::getRouteLink($rwgps->RWGPSId);
+
 						$this->page->setRawResponse(\json_encode(['response' => $rwgps->toArray()], JSON_THROW_ON_ERROR));
 
 						break;
@@ -486,6 +492,7 @@ class Editor
 
 		$ajax = new \PHPFUI\AJAX('changeRWGPS');
 		$js = 'if(data.response.miles)$("#' . $this->mileageSelectorId . '").val(data.response.miles);';
+		$js .= '$("#' . $RWGPSId->getId() . '").val(data.response.RWGPSId);';
 		$RWGPSId->addAttribute('onchange', $ajax->execute(['RWGPSId' => 'this.value']));
 		$multiColumn = new \PHPFUI\MultiColumn($RWGPSId);
 

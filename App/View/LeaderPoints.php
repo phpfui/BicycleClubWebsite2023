@@ -193,8 +193,7 @@ class LeaderPoints
 		$categories[$prefix . 'LeadAll'] = 'All Ride Leader';
 		$categories[$prefix . 'Assist'] = 'Assistant Leader';
 		$categories[$prefix . 'Status'] = 'Ride Status Reported';
-		$categories[$prefix . 'CueSheet'] = 'Cue Sheet Submitted';
-		$categories[$prefix . 'SignIn'] = 'Sign In Sheet';
+		$categories[$prefix . 'RWGPS'] = 'RWGPS Lead';
 		$categories[$prefix . 'Volunteer'] = 'Volunteered';
 
 		return $categories;

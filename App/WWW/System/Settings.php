@@ -42,7 +42,7 @@ class Settings extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function errors() : void
 		{
-		if ($this->page->addHeader('Errog Logging'))
+		if ($this->page->addHeader('Error Logging'))
 			{
 			$view = new \App\View\System\ErrorLogging($this->page);
 			$this->page->addPageContent($view->edit());

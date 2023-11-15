@@ -1,3 +1,7 @@
+RWGPS Add Permission on add in ride
+
+RWGPS and CueSheet volunteer points
+
 <DOCTYPE=HTML> on cc email forwarding
 
 Revisit privacy policy

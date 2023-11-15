@@ -165,7 +165,7 @@ class Permission extends \App\Model\PermissionBase
 				{
 				$permissions[$permission->name] = $permission->permissionId;
 				}
-			else
+			else // delete any duplicates found
 				{
 				$permission->delete();
 				}

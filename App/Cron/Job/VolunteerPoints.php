@@ -17,11 +17,8 @@ class VolunteerPoints extends \App\Cron\BaseJob
 		// points for rides
 		$model->assignRidePoints();
 
-		// points for cuesheets
-		$model->assignCuesheetPoints();
-
-		// points for sign in sheets
-		$model->assignSignInSheetPoints();
+		// points for RWGPS lead
+		$model->assignRWGPSPoints();
 
 		// points for volunteers
 		$model->assignVolunteerPoints();

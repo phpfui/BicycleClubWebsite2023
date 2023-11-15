@@ -17,27 +17,6 @@ class Volunteer
 		$this->advanceHours = (int)$this->settingsSaver->value('AdvancePostVolunteer');
 		}
 
-	public function assignCuesheetPoints(int $daysOut = 90) : static
-		{
-		$prefix = $this->settingsSaver->getJSONName();
-		$points = (int)$this->settingsSaver->getValue($prefix . 'CueSheet');
-
-		if ($points)
-			{
-			$cueSheetTable = new \App\Table\CueSheet();
-			$approved = $cueSheetTable->getApprovedUnawarded(\App\Tools\Date::todayString(-$daysOut));
-
-			foreach ($approved as $sheet)
-				{
-				$this->addPoints($sheet, $points);
-				$sheet->pointsAwarded = $points;
-				$sheet->update();
-				}
-			}
-
-		return $this;
-		}
-
 	public function assignRidePoints(int $daysOut = 90) : static
 		{
 		$categoryTable = new \App\Table\Category();
@@ -85,22 +64,13 @@ class Volunteer
 		return $this;
 		}
 
-	public function assignSignInSheetPoints(int $daysOut = 90) : static
+	public function assignRWGPSPoints(int $daysOut = 90) : static
 		{
 		$prefix = $this->settingsSaver->getJSONName();
-		$points = (int)$this->settingsSaver->getValue($prefix . 'SignIn');
+		$points = (int)$this->settingsSaver->getValue($prefix . 'RWGPS');
 
 		if ($points)
 			{
-			$signinSheetTable = new \App\Table\SigninSheet();
-			$approved = $signinSheetTable->getApprovedUnawarded(\App\Tools\Date::todayString(-$daysOut));
-
-			foreach ($approved as $sheet)
-				{
-				$this->addPoints($sheet, $points);
-				$sheet->pointsAwarded = $points;
-				$sheet->update();
-				}
 			}
 
 		return $this;

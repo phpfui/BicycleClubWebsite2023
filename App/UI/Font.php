@@ -10,7 +10,7 @@ class Font extends \PHPFUI\Input\Select
 
 		$fonts = [];
 
-		foreach (\glob(PROJECT_ROOT . '/font/*.php') as $file)
+		foreach (\glob(PROJECT_ROOT . '/NoNameSpace/font/*.php') as $file)
 			{
 			include $file;
 			$fonts[\pathinfo((string)$file, PATHINFO_FILENAME)] = $name;

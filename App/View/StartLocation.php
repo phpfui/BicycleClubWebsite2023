@@ -96,7 +96,7 @@ class StartLocation
 		return $form;
 		}
 
-	public function getEditControl(int $value, string $name = 'startLocationId', string $title = 'Start Location') : \PHPFUI\Input\SelectAutoComplete
+	public function getEditControl(?int $value, string $name = 'startLocationId', string $title = 'Start Location') : \PHPFUI\Input\SelectAutoComplete
 		{
 		$select = new \PHPFUI\Input\SelectAutoComplete($this->page, $name, $title);
 		$locations = $this->startLocationTable->getAll(['active' => 1]);

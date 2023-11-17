@@ -397,7 +397,7 @@ class Editor
 						$data = $rwgps->toArray();
 						$data['RWGPSId'] = \App\Model\RideWithGPS::getRouteLink($rwgps->RWGPSId);
 
-						$this->page->setRawResponse(\json_encode(['response' => $rwgps->toArray()], JSON_THROW_ON_ERROR));
+						$this->page->setRawResponse(\json_encode(['response' => $data], JSON_THROW_ON_ERROR));
 
 						break;
 					}

@@ -362,33 +362,44 @@ class MainMenu extends \App\UI\MainMenu
 
 		if ($menu = $this->addTopMenu('System', 'System'))
 			{
+			if ($settingsMenu = $this->addMenu($menu, '/System/Settings', 'System Settings'))
+				{
+				$this->addSub($settingsMenu, '/System/Settings/analytics', 'Google Analytics Settings');
+				$this->addSub($settingsMenu, '/System/Settings/captcha', 'Google ReCAPTCHA');
+				$this->addSub($settingsMenu, '/System/Settings/tinify', 'Tinify API Settings');
+				$this->addSub($settingsMenu, '/System/Settings/constantContact', 'Constant Contact Settings');
+				$this->addSub($settingsMenu, '/System/Settings/sparkpost', 'SparkPost API Settings');
+				$this->addSub($settingsMenu, '/System/Settings/email', 'Email Processor Settings');
+				$this->addSub($settingsMenu, '/System/Settings/favIcon', 'Set FavIcon');
+				$this->addSub($settingsMenu, '/System/Settings/sms', 'SMS Settings');
+				$this->addSub($settingsMenu, '/System/Settings/smtp', 'SMTP Settings');
+				$this->addSub($settingsMenu, '/System/Settings/errors', 'Error Logging');
+				}
 			$this->addSub($menu, '/System/API/users', 'API Users');
-			$this->addSub($menu, '/System/Settings/analytics', 'Google Analytics Settings');
 			$this->addSub($menu, '/System/auditTrail', 'Audit Trail');
-			$this->addSub($menu, '/System/Settings/captcha', 'Google ReCAPTCHA');
-			$this->addSub($menu, '/System/Settings/tinify', 'Tinify API Settings');
-			$this->addSub($menu, '/System/Settings/constantContact', 'Constant Contact Settings');
-			$this->addSub($menu, '/System/Settings/sparkpost', 'SparkPost API Settings');
-			$this->addSub($menu, '/System/Settings/email', 'Email Processor Settings');
-			$this->addSub($menu, '/System/Settings/favIcon', 'Set FavIcon');
 			$this->addSub($menu, '/System/importSQL', 'Import SQL');
-			$this->addSub($menu, '/System/inputTest', 'Input Test');
 			$this->addSub($menu, '/System/permission', 'Permission Reloader');
-			$this->addSub($menu, '/System/inputNormal', 'Input Normal');
 			$this->addSub($menu, '/System/cron', 'Cron Jobs');
-			$this->addSub($menu, '/System/license', 'License');
-			$this->addSub($menu, '/System/pHPInfo', 'PHP Info');
-			$this->addSub($menu, '/System/debug', 'Debug Status');
 			$this->addSub($menu, '/System/redirects', 'Redirects');
-			$this->addSub($menu, '/System/sessionInfo', 'Session Info');
-			$this->addSub($menu, '/System/Settings/sms', 'SMS Settings');
-			$this->addSub($menu, '/System/migrations', 'Migrations');
-			$this->addSub($menu, '/System/Settings/smtp', 'SMTP Settings');
-			$this->addSub($menu, '/System/Settings/errors', 'Error Logging');
-			$this->addSub($menu, '/System/docs', 'PHP Documentation');
-			$this->addSub($menu, '/System/releaseNotes', 'Release Notes');
-			$this->addSub($menu, '/System/releases', 'Releases');
-			$this->addSub($menu, '/System/versions/origin/master', 'Versions');
+
+			if ($infoMenu = $this->addMenu($menu, '/System/Releases', 'System Info'))
+				{
+				$this->addSub($infoMenu, '/System/Info/debug', 'Debug Status');
+				$this->addSub($infoMenu, '/System/Info/sessionInfo', 'Session Info');
+				$this->addSub($infoMenu, '/System/Info/inputTest', 'Input Test');
+				$this->addSub($infoMenu, '/System/Info/inputNormal', 'Input Normal');
+				$this->addSub($infoMenu, '/System/Info/pHPInfo', 'PHP Info');
+				$this->addSub($infoMenu, '/System/Info/license', 'License');
+				$this->addSub($infoMenu, '/System/Info/docs', 'PHP Documentation');
+				}
+
+			if ($releaseMenu = $this->addMenu($menu, '/System/Releases', 'System Releases'))
+				{
+				$this->addSub($releaseMenu, '/System/Releases/migrations', 'Migrations');
+				$this->addSub($releaseMenu, '/System/Releases/releaseNotes', 'Release Notes');
+				$this->addSub($releaseMenu, '/System/Releases/releases', 'Releases');
+				$this->addSub($releaseMenu, '/System/Releases/versions/origin/master', 'Versions');
+				}
 			}
 		}
 	}

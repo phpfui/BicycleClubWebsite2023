@@ -12,6 +12,11 @@ class Statistics extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		$this->view = new \App\View\Rides($this->page);
 		}
 
+	public function landingPage() : void
+		{
+		$this->page->landingPage('Ride Statistics');
+		}
+
 	public function cuesheets() : void
 		{
 		if ($this->page->addHeader('Cue Sheet Statistics'))

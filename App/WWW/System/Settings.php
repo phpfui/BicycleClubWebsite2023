@@ -58,6 +58,11 @@ class Settings extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function landingPage() : void
+		{
+		$this->page->landingPage('System Settings');
+		}
+
 	public function sms() : void
 		{
 		if ($this->page->addHeader('SMS Settings'))

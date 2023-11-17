@@ -422,9 +422,9 @@ class Page extends \PHPFUI\Page
 		return \App\Model\Session::isSignedIn();
 		}
 
-	public function landingPage() : void
+	public function landingPage(string $menu = '') : void
 		{
-		$menu = $this->mainMenu->getActiveMenu();
+		$menu = $menu ?: $this->mainMenu->getActiveMenu();
 		$html = (string)($this->mainMenu->getLandingPage($this, $this->mainMenu->getActiveLink(), $menu));
 
 		if (! empty($html))

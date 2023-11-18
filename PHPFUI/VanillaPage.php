@@ -62,8 +62,6 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 	/** @var array<string, string> */
 	private array $tailScripts = [];
 
-	private ?\PHPFUI\CacheBuster $cacheBuster = null;
-
 	public function __construct()
 		{
 		parent::__construct();
@@ -85,18 +83,6 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 			$this->chrome = \strpos($client, ' Chrome/') > 0;
 			}
 		$this->body = new \PHPFUI\Container();
-		}
-
-	public function setCacheBuster(\PHPFUI\CacheBuster $buster) : static
-		{
-		$this->cacheBuster = $buster;
-
-		return $this;
-		}
-
-	public function getCacheBuster() : ?\PHPFUI\CacheBuster
-		{
-		return $this->cacheBuster;
 		}
 
 	/**
@@ -588,7 +574,6 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 		foreach ($this->tailScripts as $sha1 => $src)
 			{
 			$src = $this->getResourcePath($src);
-			$src = $this->cacheBuster ? $this->cacheBuster->fileName($src) : $src;
 			$attributes = $this->getAttributes($this->scriptAttributes[$sha1]);
 			$this->body->add("<script {$attributes} src='{$src}'></script>{$nl}");
 			}
@@ -630,7 +615,6 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 		foreach ($this->styleSheets as $sheet)
 			{
 			$sheet = $this->getResourcePath($sheet);
-			$sheet = $this->cacheBuster ? $this->cacheBuster->fileName($sheet) : $sheet;
 			$output .= "<link rel='stylesheet' href='{$sheet}'>{$nl}";
 			}
 
@@ -638,7 +622,6 @@ class VanillaPage extends \PHPFUI\Base implements \PHPFUI\Interfaces\Page
 			{
 			$src = $this->getResourcePath($src);
 			$attributes = $this->getAttributes($this->scriptAttributes[$sha1]);
-			$src = $this->cacheBuster ? $this->cacheBuster->fileName($src) : $src;
 			$output .= "<script {$attributes} src='{$src}'></script>{$nl}";
 			}
 

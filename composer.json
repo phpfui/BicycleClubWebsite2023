@@ -46,7 +46,8 @@
         "tinify/tinify": "*",
         "tinymce/tinymce": "^6.0",
         "twilio/sdk": "^7.0",
-        "zbateson/mail-mime-parser": "*"
+        "zbateson/mail-mime-parser": "*",
+        "symfony/html-sanitizer": "^6.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.0",

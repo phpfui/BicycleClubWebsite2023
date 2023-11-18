@@ -27,7 +27,7 @@ class Session extends \PHPFUI\Session
 			unset($_SESSION[$key]);
 			}
 		$params = \session_get_cookie_params();
-		\setcookie(\session_name(), '', ['expires' => 0, 'path' => (string)$params['path'], 'domain' => (string)$params['domain'], 'secure' => $params['secure'], 'httponly' => isset($params['httponly'])]);
+		\setcookie(\session_name(), '', ['expires' => 0, 'path' => (string)$params['path'], 'domain' => (string)$params['domain'], 'secure' => $params['secure'], 'httponly' => isset($params['httponly'])]); // @phpstan-ignore-line
 		\session_destroy();
 		}
 

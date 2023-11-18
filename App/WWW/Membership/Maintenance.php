@@ -18,11 +18,6 @@ class Maintenance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCl
 		$this->memberTable = new \App\Table\Member();
 		}
 
-	public function landingPage() : void
-		{
-		$this->page->landingPage('Membership Maintenance');
-		}
-
 	public function addMembership() : void
 		{
 		if ($this->page->addHeader('Add New Membership'))
@@ -137,6 +132,11 @@ class Maintenance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCl
 			{
 			$this->page->addPageContent(new \App\View\Membership\Extend($this->page));
 			}
+		}
+
+	public function landingPage() : void
+		{
+		$this->page->landingPage('Membership Maintenance');
 		}
 
 	public function subscriptions() : void

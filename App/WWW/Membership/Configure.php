@@ -6,11 +6,6 @@ class Configure extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 	{
 	private readonly \App\View\Membership $membershipView;
 
-	public function landingPage() : void
-		{
-		$this->page->landingPage('Membership Configuration');
-		}
-
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{
 		parent::__construct($controller);
@@ -84,6 +79,11 @@ class Configure extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 				$this->page->addPageContent($landingPage);
 				}
 			}
+		}
+
+	public function landingPage() : void
+		{
+		$this->page->landingPage('Membership Configuration');
 		}
 
 	public function notifications(int $id = -1, string $test = '') : void

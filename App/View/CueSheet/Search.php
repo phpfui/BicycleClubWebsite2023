@@ -110,7 +110,7 @@ class Search implements \Stringable
 		$row->add($col);
 		$fieldSet->add($row);
 		$startLocationView = new \App\View\StartLocation($this->page);
-		$fieldSet->add($startLocationView->getEditControl($parameters['startLocationId']));
+		$fieldSet->add($startLocationView->getEditControl((int)$parameters['startLocationId']));
 		$fieldSet->add(new \PHPFUI\Input\Text('name', 'Ride Name includes', $parameters['name']));
 		$fieldSet->add(new \PHPFUI\Input\Text('destination', 'Destination includes', $parameters['destination']));
 		$fieldSet->add(new \PHPFUI\Input\Text('description', 'Description includes', $parameters['description']));

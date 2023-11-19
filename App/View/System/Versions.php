@@ -37,7 +37,7 @@ class Versions
 
 			if (\str_starts_with((string)$name, 'origin/'))
 				{
-				$subnav->addTab("/System/versions/{$name}", $name, $name == $branch);
+				$subnav->addTab("/System/Releases/versions/{$name}", $name, $name == $branch);
 				}
 			}
 		$container->add($subnav);
@@ -69,7 +69,7 @@ class Versions
 				{
 				$field = \PHPFUI\Session::csrfField();
 				$csrf = \PHPFUI\Session::csrf();
-				$migrateUrl = "/System/versions/{$branch}?{$field}={$csrf}&sha1={$hash}";
+				$migrateUrl = "/System/Releases/versions/{$branch}?{$field}={$csrf}&sha1={$hash}";
 				$link = new \PHPFUI\Link($migrateUrl, $commit->getShortHash(), false);
 				$link->setConfirm('Deploy this version?');
 				$row['Commit'] = $link;

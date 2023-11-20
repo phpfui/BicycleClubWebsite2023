@@ -99,6 +99,7 @@ class Info extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$fieldSet->add(new \PHPFUI\Input\Date($this->page, 'date', 'Date', $_REQUEST['date'] ?? ''));
 			$fieldSet->add(new \PHPFUI\Input\DateTime($this->page, 'string', 'Date Time', $_REQUEST['datetime'] ?? ''));
 			$fieldSet->add(new \PHPFUI\Input\Number('number', 'Number', (float)($_REQUEST['number'] ?? '')));
+			$fieldSet->add(new \PHPFUI\Input\TextArea('textarea', 'TextArea', ($_REQUEST['textarea'] ?? '')));
 
 			$form->add($fieldSet);
 			$buttonGroup = new \PHPFUI\ButtonGroup();

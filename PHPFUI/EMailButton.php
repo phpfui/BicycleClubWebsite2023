@@ -5,7 +5,7 @@ namespace PHPFUI;
 /**
  * Makes a Button displayable in all email clients
  */
-class EMailButton extends \PHPFUI\Button
+class EMailButton extends \PHPFUI\Base
 	{
 	protected string $backgroundColor = '008cba';
 
@@ -30,9 +30,8 @@ class EMailButton extends \PHPFUI\Button
 	 *
 	 * @param string $text for button
 	 */
-	public function __construct(string $text, string $link = '')
+	public function __construct(protected string $text, protected string $link = '')
 		{
-		parent::__construct($text, $link);
 		}
 
 	/**
@@ -125,6 +124,16 @@ class EMailButton extends \PHPFUI\Button
 		$this->width = $width;
 
 		return $this;
+		}
+
+	protected function getStart() : string
+		{
+		return '';
+		}
+
+	protected function getEnd() : string
+		{
+		return '';
 		}
 
 	protected function getBody() : string

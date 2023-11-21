@@ -488,7 +488,6 @@ class Ride
 			}
 		$message .= '<br><br>';
 		$button = new \PHPFUI\EMailButton('Sign Up For This Ride', $this->homePage . '/Rides/signedUp/' . $ride->rideId);
-		$button->addClass('success');
 		$title = \App\Tools\TextHelper::unhtmlentities($ride->title);
 		$description = $this->processDescription($ride->description);
 		$rwgpsLink = '';

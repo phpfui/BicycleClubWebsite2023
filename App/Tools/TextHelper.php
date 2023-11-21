@@ -453,6 +453,6 @@ class TextHelper extends \PHPFUI\TextHelper
 				}
 			}
 
-		return "{$dom}";
+		return str_replace('<p></p>', '', "{$dom}");
 		}
 	}

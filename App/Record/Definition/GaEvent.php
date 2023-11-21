@@ -24,7 +24,7 @@ namespace App\Record\Definition;
  * @property ?string $registrar MySQL type char(50)
  * @property ?string $registrarEmail MySQL type char(50)
  * @property ?int $showPreregistration MySQL type int
- * @property ?string $signupMessage MySQL type text
+ * @property ?string $signupMessage MySQL type mediumtext
  * @property ?string $title MySQL type char(100)
  * @property ?int $volunteerDiscount MySQL type int
  * @property ?int $volunteerEvent MySQL type int
@@ -54,7 +54,7 @@ abstract class GaEvent extends \PHPFUI\ORM\Record
 		'registrar' => ['char(50)', 'string', 50, true, ],
 		'registrarEmail' => ['char(50)', 'string', 50, true, ],
 		'showPreregistration' => ['int', 'int', 0, true, ],
-		'signupMessage' => ['text', 'string', 65535, true, ],
+		'signupMessage' => ['mediumtext', 'string', 16777215, true, ],
 		'title' => ['char(100)', 'string', 100, true, ],
 		'volunteerDiscount' => ['int', 'int', 0, true, ],
 		'volunteerEvent' => ['int', 'int', 0, true, ],

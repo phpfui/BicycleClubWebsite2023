@@ -280,6 +280,7 @@ class EventEdit
 			}
 		$container->add($table);
 		$addAnswerButton = new \PHPFUI\Button('Add Answer');
+		$addAnswerButton->addClass('success');
 		$form->saveOnClick($addAnswerButton);
 		$this->addAnswerModal($event, $addAnswerButton);
 		$container->add($addAnswerButton);

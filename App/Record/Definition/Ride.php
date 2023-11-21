@@ -13,7 +13,7 @@ namespace App\Record\Definition;
  * @property ?int $cueSheetId MySQL type int
  * @property \App\Record\CueSheet $cueSheet related record
  * @property string $dateAdded MySQL type timestamp
- * @property ?string $description MySQL type text
+ * @property ?string $description MySQL type mediumtext
  * @property ?int $elevation MySQL type int
  * @property int $maxRiders MySQL type int
  * @property int $memberId MySQL type int
@@ -50,7 +50,7 @@ abstract class Ride extends \PHPFUI\ORM\Record
 		'commentsDisabled' => ['int', 'int', 0, true, 0, ],
 		'cueSheetId' => ['int', 'int', 0, true, ],
 		'dateAdded' => ['timestamp', 'string', 20, false, null, ],
-		'description' => ['text', 'string', 65535, true, ],
+		'description' => ['mediumtext', 'string', 16777215, true, ],
 		'elevation' => ['int', 'int', 0, true, ],
 		'maxRiders' => ['int', 'int', 0, false, 0, ],
 		'memberId' => ['int', 'int', 0, false, ],

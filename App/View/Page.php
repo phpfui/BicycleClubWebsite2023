@@ -357,7 +357,7 @@ class Page extends \PHPFUI\Page
 		else
 			{
 			$titleBar->addRight((new \PHPFUI\Button('Sign In', '/Home'))->addClass('small'));
-			$titleBar->addRight((new \PHPFUI\Button('Join', '/Join'))->addClass('small')->addClass('success'));
+			$titleBar->addRight((new \PHPFUI\Button('Join', $this->value('joinPage')))->addClass('small')->addClass('success'));
 			}
 
 		$url = $this->isSignedIn() ? '/Rides/memberSchedule' : '/Rides/schedule';

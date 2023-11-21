@@ -7,6 +7,7 @@ namespace App\Record\Definition;
  *
  * @property ?string $cutoffDate MySQL type date
  * @property string $date MySQL type date
+ * @property ?string $description MySQL type mediumtext
  * @property ?string $email MySQL type text
  * @property int $jobEventId MySQL type int
  * @property \App\Record\JobEvent $jobEvent related record
@@ -22,6 +23,7 @@ abstract class JobEvent extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'cutoffDate' => ['date', 'string', 10, true, ],
 		'date' => ['date', 'string', 10, false, ],
+		'description' => ['mediumtext', 'string', 16777215, true, ],
 		'email' => ['text', 'string', 65535, true, ],
 		'jobEventId' => ['int', 'int', 0, false, ],
 		'name' => ['char(100)', 'string', 100, true, ],

@@ -46,7 +46,7 @@ class Migration
 
 			$field = \PHPFUI\Session::csrfField();
 			$csrf = \PHPFUI\Session::csrf();
-			$migrateUrl = "/System/migrations/{$page}?{$field}={$csrf}&";
+			$migrateUrl = "/System/Releases/migrations/{$page}?{$field}={$csrf}&";
 
 			if ($migration->ran())
 				{

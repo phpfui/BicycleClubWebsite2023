@@ -10,6 +10,15 @@ class TextHelper extends \PHPFUI\TextHelper
 	public static string $urlRegEx = "#(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s!()\[\]{}<>'\";:.,!?]))#";
 
 	/**
+	 * @var array<string,mixed>
+	 */
+	private static array $options = [
+		'style_pass' => 1,
+		'clean_ms_char' => 2,
+		'schemes' => '*:*; src:http, https, data, blob',
+	];
+
+	/**
 	 * Truncate html text at a reasonable break point and close all
 	 * open html tags.
 	 *
@@ -181,11 +190,7 @@ class TextHelper extends \PHPFUI\TextHelper
 		{
 		$html = \App\Tools\TextHelper::unhtmlentities($html);
 
-		$options = [
-			'style_pass' => 1,
-		];
-
-		$html = \Htmlawed::filter($html, $options);
+		$html = \Htmlawed::filter($html, self::$options);
 
 		return self::fullyPathImages($html);
 		}
@@ -207,11 +212,7 @@ class TextHelper extends \PHPFUI\TextHelper
 		$html = \str_ireplace(['&apos;', '&lsquo;', '&OpenCurlyQuote;', '&rsquo;', '&rsquor;', '&CloseCurlyQuote;'], "'", $html);
 		$html = \str_ireplace('<p>&nbsp;</p>', '', $html);
 
-		$options = [
-			'style_pass' => 1,
-		];
-
-		$html = \Htmlawed::filter($html, $options);
+		$html = \Htmlawed::filter($html, self::$options);
 
 		return self::fullyPathImages($html);
 		}
@@ -278,7 +279,7 @@ class TextHelper extends \PHPFUI\TextHelper
 			{
 			$path = $image->getAttribute('src');
 
-			if (! \str_starts_with($path, 'http') && ! \str_starts_with($path, 'data:'))
+			if (! \str_starts_with($path, 'http') && ! \str_starts_with($path, 'data:') && ! \str_starts_with($path, 'blob:'))
 				{
 				$path = \trim($path, ' /.');
 				$path = $root . '/' . $path;
@@ -453,6 +454,6 @@ class TextHelper extends \PHPFUI\TextHelper
 				}
 			}
 
-		return str_replace('<p></p>', '', "{$dom}");
+		return \str_replace('<p></p>', '', "{$dom}");
 		}
 	}

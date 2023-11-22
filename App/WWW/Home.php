@@ -22,10 +22,16 @@ class Home extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$this->page->redirect('/Membership/renew');
 				}
-			elseif ($this->page->addHeader("{$member->fullName()} Home Page", 'Home Page'))
+			else
 				{
-				$view = new \App\View\Member\HomePage($this->page, \App\Model\Session::signedInMemberRecord());
-				$this->page->addPageContent($view);
+				$content = new \App\View\Content($this->page);
+				$this->page->addPageContent($content->getDisplayCategoryHTML('User Home Page Top'));
+
+				if ($this->page->addHeader("{$member->fullName()} Home Page", 'Home Page'))
+					{
+					$view = new \App\View\Member\HomePage($this->page, \App\Model\Session::signedInMemberRecord());
+					$this->page->addPageContent($view);
+					}
 				}
 			}
 		}

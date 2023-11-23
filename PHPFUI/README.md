@@ -1,95 +1,66 @@
-# PHPFUI/Translation [![Tests](https://github.com/phpfui/Translation/actions/workflows/tests.yml/badge.svg)](https://github.com/phpfui/Translation/actions?query=workflow%3Atests) [![Latest Packagist release](https://img.shields.io/packagist/v/phpfui/translation.svg)](https://packagist.org/packages/phpfui/translation) ![](https://img.shields.io/badge/PHPStan-level%206-brightgreen.svg?style=flat)
+# PHPFUI [![Tests](https://github.com/phpfui/phpfui/actions/workflows/tests.yml/badge.svg)](https://github.com/phpfui/phpfui/actions?query=workflow%3Atests) [![Latest Packagist release](https://img.shields.io/packagist/v/phpfui/phpfui.svg)](https://packagist.org/packages/phpfui/phpfui) ![](https://img.shields.io/badge/PHPStan-level%206-brightgreen.svg?style=flat)
 
-A simple, fast, and memory efficient translation system for PHP.
+PHP Wrapper for the Foundation CSS Framework
 
-Why another translation system? Simply for speed and reduced memory usage.  Just over 400 lines of code including comments, this translation system does not have high overhead like other existing systems. Since PHP is an interpreted scripting language, speed and memory usage matter.  This library attempts to solve both issues.
+**PHPFUI**, **PHP** **F**oundation **U**ser **I**nterface, is a [modern](#php-versions) PHP library that produces HTML formated for [Foundation](https://get.foundation/sites/docs/).  It does everything you need for a fully functional Foundation page, with the power of an OO language. It currently uses Foundation 6.6.
 
-## Supported Features
-* Translations stored in native PHP arrays as key => value pairs.
-* Chunked translations so only needed translations are loaded into memory.
-* Supports third party Key Value store systems like memcached.
-* Missing translation logging support for recording untranslated text.
-* Parameter substitution using :name syntax using associative arrays.
-* Pluralization including range support.
-* Unlimited locales.
-* invisible, TRANS, and RAW locales for debug support.
+> "I was surprised that people were prepared to write HTML. In my initial requirements for this thing, I had assumed, as an absolute pre-condition, that nobody would have to do HTML or deal with URLs. If you use the original World Wide Web program, you never see a URL or have to deal with HTML. You're presented with the raw information. You then input more information. So you are linking information to information--like using a word processor. That was a surprise to me--that people were prepared to painstakingly write HTML."
 
-## Chunked Translation Support
-Chunks allow you to break up translations so all translations don't end up in memory at the same time.  This is particularly useful for large projects.
+[Sir Tim Berners-Lee, inventor of the World Wide Web](http://web.archive.org/web/20050831085206/http://www.w3journal.com/3/s1.interview.html)
 
-Chunks are defined by any translation that starts with a period (.).  These are chunked translations:
-~~~
-.save
-.cancel
-.messages.notFound
-.messages.saved
-.titles.firstName
-.titles.lastName
-.person.address.city
-.person.address.state
-.person.address.postalcode
-~~~
-The first two examples are called base chunks stored in the **baseChunks.php** file in the locale root directory.  All base chunks are always loaded even if not requested, so they should only contain frequently used translations that would normally get loaded. The third through sixth chunks allow you to only load those chunks when required.  If your page does not need titles, then the .titles chunk will not be loaded.  The entire level of a chunk will be loaded at the same time.  So in the last three examples, the .person.address chunk will load when .person.address.city (or state, or postalcode) is accessed.
+Using PHPFUI for view output will produce 100% valid HTML and insulate you from future changes to Foundation, your custom HMTL layouts, CSS and JS library changes. You write to an abstract concept (I want a checkbox here), and the library will output a checkbox formatted for Foundation. You can inherit from CheckBox and add your own take on a checkbox, and when the graphic designer decides they have the most awesome checkbox ever, you simply change your CheckBox class, and it is changed on every page system wide.
 
-Any translation that does not start with a period (.) is considered a native language translation and is stored in the **native.php** file in local root directory.  All native chunks are loaded when any native chunk is loaded, except for the base locale, where they are never loaded as an optimization.  This means a base locale native translation will never be listed as missing.
-
-## File Structure
-You must specify a translation directory. Each locale you support will have its own directory within your translation directory.  Consult the **Tests/translations** directory for examples.
-
-## Locale Support
-Locales can be named anything your file system supports.  The locale is the name of the directory in the base translation directory.
-
-Generally you set the base locale, which is the language of your native translations (if you are using them).  Then you set the user's locale.  Those can be the same.
-
-#### Reserved Locales for Debugging
-* **invisible** - all translations return an empty string.
-* **TRANS** - all translations return the literal string TRANS.
-* **RAW** - returns the actual text passed in to be translated.  No other processing is done on it.
-* **''** or empty string locale - not translated but fully processed for variable substitution and pluralization.
-
-## Fallback Locale Support
-Too keep things as simple as possible, this library does not support falling back to a base locale if a translation is missing.  This can be accomplished by preprocessing each locale. Any missing translation can be filled in with a translation from another locale.  This library does not provide any support for managing translation files, as that is best left up to the developers if something custom is required. Use the **var_export** function to write translation files if you automate the process.  This will insure your translations are parseable by PHP.
+Don't write HTML by hand!
 
 ## Usage
 ```php
-namespace PHPFUI\Translation;
-// specify where the translations are located
-Translator::setTranslationDirectory(__DIR__ . '/trans');
-// set the base locale, ie. the language of any native translations (unchunked)
-Translator::setBaseLocale('EN-us');
-// set the user's locale
-Translator::setLocale('ES-us');
-// get the ES-us version of 'red'
-$translated = Translator::trans('red');
-// get chunked version of colors.
-$translated = Translator::trans('.colors.red');
+namespace PHPFUI;
+$page = new Page();
+$form = new Form($page);
+$fieldset = new FieldSet('A basic input form');
+$time = new Input\Time($page, 'time', 'Enter A Time in 15 minute increments');
+$time->setRequired();
+$date = new Input\Date($page, 'date', 'Pick A Date');
+$fieldset->add(new MultiColumn($time, $date));
+$fieldset->add(new Input\TextArea('text', 'Enter some text'));
+$fieldset->add(new Submit());
+$form->add($fieldset);
+$page->add($form);
+$page->addStyleSheet('/css/styles.css');
+echo $page;
 ```
 
-## Parameters
-You can pass parameters to substitute in the translation by passing an associate array as the second parameter:
-```php
-// translate with parameters and pluralized
-$translated = Translator::trans('.messages.recordsFound', ['count' => $found]);
-```
-Parameters in the translations should start with a colon (:).  A simple str_replace is used to translation the variables, so beware :name and :names  will probably not be replaced in the way you might expect. It is best to use unique names where possible.
+## Installation Instructions
 
-## Pluralization
-This library supports pluralization via different sections separated by the vertical bar (|) character.  If you need '|' in your text use the HTML entity **&amp;verbar;**
+~~~
+composer require phpfui/phpfui
+~~~
 
-The **count** variable (:count in the translated text) is used for determining the number of items to pluralize for.  It is not required to use :count in the translation, but you can if you desire.
+Then run **update.php** from the vendor/phpfui/phpfui directory and supply the path to your public directory / the directory for the various JS and CSS files PHPFUI uses. This will copy all required public files into your public directory. For example:
 
- * A count of 0 or less will select the first section.
- * A count higher than the last section will return the last section.
- * Other counts will select the number section, so 1 would return the 'one' section in the string 'zero|one|two'
- * You can use the [first,last] notation at the start of a section to specify a matching range for the section.
- * &ast; is a wild card for matching any count.  For example "[0]There are no brands|[1,9]There are under ten brands|[10,99]There are under 100 brands|[*]There are hundreds of brands"
- * Combine with **count** parameter - "No records found|One record found|:count records found"
+~~~
+php vendor/phpfui/phpfui/update.php public/PHPFUI
+~~~
+
+The PHPFUI library defaults to your-public-directory/PHPFUI, it can be overridden, but it is suggested to use PHPFUI to keep everything in one place. **update.php** should be run when ever you update PHPFUI.
+
+## Versioning
+Versioning will match the [Foundation versions](https://github.com/foundation/foundation-sites/releases) for Major semantic versions. PHPUI will always support the most recent version of Foundation possible for the Major version. PHPFUI Minor version will include breaking changes and may incorporate changes for the latest version of Foundation. The PHPFUI Patch version will include non breaking changes or additions.  So PHPFUI Version 6.0.0 would be the first version of the library, 6.0.1 would be the first patch of PHPFUI. Both should work with any Foundation 6.x version.  PHPFUI 6.1.0 will track PHP 7.4 - 8.1, 6.2.0 will track 8.0 - 8.2, but both will still track Foundation 6.x.  PHPFUI 7.0.0 would track Foundation 7.x series on currently supported versions of PHP.
+
+## Depreciation and Foundation changes
+Since major versions of Foundation have in the past depreciated and obsoleted things, PHPFUI will track the latest version of Foundation for class names and functionality. However, when Foundation makes a breaking change or removes something, PHPFUI will continue to support the old functionality as best as possible in the new Foundation framework. Depreciated classes will be put in the \PHPFUI\Vx namespace (where x would be the prior Major Foundation version containing that feature). So if something gets depreciated in a newer version of Foundation, you simply will need to change your code from \PHPFUI\Example to \PHPFUI\V6\Example.  The depreciated namespace will only be supported for one Major version of PHPFUI, so it is recommended you migrate off of it in a timely manor.
 
 ## Full Class Documentation
-[PHPFUI/InstaDoc](http://phpfui.com/?n=PHPFUI/Translation)
+[PHPFUI/InstaDoc](http://phpfui.com/?n=PHPFUI)
+
+## Live Examples
+Via [PHPFUI/Examples](http://phpfui.com/Examples/index.php)
+
+## Unit Testing
+Full unit testing using [phpfui/html-unit-tester](https://packagist.org/packages/phpfui/html-unit-tester)
 
 ## License
-PHPFUI/Translation is distributed under the MIT License.
+PHPFUI is distributed under the MIT License.
 
 ### PHP Versions
 This library only supports **modern** versions of PHP which still receive security updates. While we would love to support PHP from the late Ming Dynasty, the advantages of modern PHP versions far out weigh quaint notions of backward compatibility. Time to upgrade.

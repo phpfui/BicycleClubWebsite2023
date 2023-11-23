@@ -427,6 +427,7 @@ class Doc extends \PHPFUI\InstaDoc\Section\CodeCommon
 		return '';
 		}
 
+	// @phpstan-ignore-next-line
 	protected function getProperty(\ReflectionProperty $property, \ReflectionClass $class) : string
 		{
 		$property->setAccessible(true);
@@ -441,7 +442,6 @@ class Doc extends \PHPFUI\InstaDoc\Section\CodeCommon
 
 		if ($type)
 			{
-			// @phpstan-ignore-next-line
 			$info .= $this->getColor('type', $this->getClassName($type)) . ' ';
 			}
 		$info .= $this->getName($property, $this->getColor('variable', '$' . $property->getName()));

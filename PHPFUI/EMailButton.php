@@ -126,16 +126,6 @@ class EMailButton extends \PHPFUI\Base
 		return $this;
 		}
 
-	protected function getStart() : string
-		{
-		return '';
-		}
-
-	protected function getEnd() : string
-		{
-		return '';
-		}
-
 	protected function getBody() : string
 		{
 		if ($this->backgroundImage)
@@ -161,5 +151,15 @@ color:#{$this->color};display:inline-block;font-family:{$this->font};font-size:{
 font-weight:bold;line-height:{$this->height}px;text-align:center;text-decoration:none;
 width:{$this->width}px;-webkit-text-size-adjust:none;mso-hide:all;">{$this->text}</a></span>
 BUTTON;
+		}
+
+	protected function getEnd() : string
+		{
+		return '';
+		}
+
+	protected function getStart() : string
+		{
+		return '';
 		}
 	}

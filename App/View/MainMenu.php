@@ -213,6 +213,7 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Volunteer/myJobs', 'My Assignments');
 			$this->addSub($menu, '/Volunteer/events', 'Volunteer Events');
 			$this->addSub($menu, '/Volunteer/myPoints', 'My Points');
+			$this->addSub($menu, '/Volunteer/pickAJob', 'Volunteer');
 			$this->addSub($menu, '/Volunteer/pointHistory', 'Point History');
 			$this->addSub($menu, '/Volunteer/points', 'Outstanding Volunteer Points');
 			$this->addSub($menu, '/Volunteer/pointsReport', 'Volunteer Points Report');

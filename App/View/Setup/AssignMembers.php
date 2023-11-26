@@ -15,14 +15,16 @@ class AssignMembers extends \PHPFUI\Container
 
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
-		$form->add($this->generateMemberPicker('Web Master'));
-		$form->add($this->generateMemberPicker('Membership Chair'));
-		$form->add($this->generateMemberPicker('Rides Chair'));
-		$form->add($this->generateMemberPicker('Newsletter Editor'));
-		$form->add($this->generateMemberPicker('Treasurer'));
 		$form->add($this->generateMemberPicker('Banner Administrator'));
-		$form->add($this->generateMemberPicker('Store Manager'));
+		$form->add($this->generateMemberPicker('Membership Chair'));
+		$form->add($this->generateMemberPicker('Newsletter Editor'));
+		$form->add($this->generateMemberPicker('Rides Chair'));
+		$form->add($this->generateMemberPicker('RideWithGPS Coordinator'));
 		$form->add($this->generateMemberPicker('Sign In Sheet Coordinator'));
+		$form->add($this->generateMemberPicker('Store Manager'));
+		$form->add($this->generateMemberPicker('Store Shipping'));
+		$form->add($this->generateMemberPicker('Treasurer'));
+		$form->add($this->generateMemberPicker('Web Master'));
 
 		$this->add($form);
 		}

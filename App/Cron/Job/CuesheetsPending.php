@@ -21,7 +21,7 @@ class CuesheetsPending extends \App\Cron\BaseJob
 			$host = $this->controller->getSchemeHost();
 			$email->setBody("There are pending cue sheets that need to be reviewed\n\n" . "You can review them here: {$host}/CueSheets/pending");
 			$email->setSubject('Pending cue sheets need review');
-			$memberPicker = new \App\Model\MemberPicker('Web Master');
+			$memberPicker = new \App\Model\MemberPicker('Rides Chair');
 			$email->setFromMember($memberPicker->getMember());
 			$email->addToMember($memberPicker->getMember('Cue Sheet Coordinator'));
 			$email->send();

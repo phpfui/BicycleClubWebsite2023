@@ -227,6 +227,7 @@ class Renew
 
 		if (! $maxMembersOnMembership || $maxMembersOnMembership > \count($this->members))
 			{
+			// show add member button
 			$container->add($this->memberView->getAddMemberModalButton($this->membership));
 			}
 
@@ -323,7 +324,7 @@ class Renew
 
 			if ($this->additionalMemberDues)
 				{
-				$maxMembers = new \PHPFUI\Input\Select('maxMembers', 'Number of members on your membership');
+				$maxMembersField = new \PHPFUI\Input\Select('maxMembers', 'Number of members on your membership');
 
 				if (! $maxMembersOnMembership)
 					{
@@ -332,15 +333,15 @@ class Renew
 
 				for ($i = $numberMembers; $i <= $maxMembersOnMembership; ++$i)
 					{
-					$maxMembers->addOption("{$i} Member" . (($i > 1) ? 's' : ''), (string)$i, $i == $numberMembers);
+					$maxMembersField->addOption("{$i} Member" . (($i > 1) ? 's' : ''), (string)$i, $i == $numberMembers);
 					}
-				$maxMembers->addAttribute('onchange', 'updatePrice()');
-				$multiColumn->add($maxMembers);
+				$maxMembersField->addAttribute('onchange', 'updatePrice()');
+				$multiColumn->add($maxMembersField);
 				}
 			else
 				{
-				$maxMembers = new \PHPFUI\Input\Hidden('maxMembers', (string)$maxMembersOnMembership);
-				$yearlyRenewal->add($maxMembers);
+				$maxMembersField = new \PHPFUI\Input\Hidden('maxMembers', '1');
+				$yearlyRenewal->add($maxMembersField);
 				}
 			$yearlyRenewal->add($multiColumn);
 			$form->add($yearlyRenewal);
@@ -358,7 +359,7 @@ class Renew
 			$form->add($donationSet);
 
 			$yearId = $years->getId();
-			$maxMembersId = $maxMembers->getId();
+			$maxMembersId = $maxMembersField->getId();
 			$form->add($totalDisplay);
 
 			if ($confirmAndPayButton)
@@ -387,20 +388,20 @@ class Renew
 					{
 					$maxMembersOnMembership = 10;
 					}
-				$maxMembers = new \PHPFUI\Input\Select('MaxMembersSubscription', 'Number of members on your membership');
+				$maxMembersField = new \PHPFUI\Input\Select('MaxMembersSubscription', 'Number of members on your membership');
 
 				for ($i = $numberMembers; $i <= $maxMembersOnMembership; ++$i)
 					{
-					$maxMembers->addOption("{$i} Member" . (($i > 1) ? 's' : ''), (string)$i, $i == $numberMembers);
+					$maxMembersField->addOption("{$i} Member" . (($i > 1) ? 's' : ''), (string)$i, $i == $numberMembers);
 					}
-				$maxMembers->addAttribute('onchange', 'updatePrice()');
-				$maxMembersId = $maxMembers->getId();
+				$maxMembersField->addAttribute('onchange', 'updatePrice()');
+				$maxMembersId = $maxMembersField->getId();
 				}
 			else
 				{
-				$maxMembers = new \PHPFUI\Input\Hidden('maxMembers', (string)$maxMembersOnMembership);
+				$maxMembersField = new \PHPFUI\Input\Hidden('maxMembers', (string)$maxMembersOnMembership);
 				}
-			$container->add($maxMembers);
+			$container->add($maxMembersField);
 			$container->add($totalDisplay);
 			$container->add('<br>');
 			$container->add(new \PHPFUI\Button('Subscribe', '/Membership/subscription'));

@@ -191,13 +191,16 @@ class Permissions
 			$form->add($multiColumn);
 			$permissions = $this->permissionTable->getAllPermissions('menu');
 			$groupPermissions = $this->page->getPermissions()->getPermissionsForGroup($name->permissionId);
+//			echo new \PHPFUI\Debug($groupPermissions);
 			$inRevokedGroup = $notInRevokedGroup = $inGroup = $notInGroup = [];
 
 			foreach ($permissions as $permission)
 				{
 				$permissionId = $permission['permissionId'];
 
-				if (isset($groupPermissions[$permissionId]) && ! \count($groupPermissions[$permissionId])) // @phpstan-ignore-line
+				$groupPermission = $groupPermissions[$permissionId] ?? null;
+
+				if (0 === $groupPermission)
 					{
 					$revoked = true;
 					$inRevokedGroup[] = $permission;
@@ -208,7 +211,7 @@ class Permissions
 					$notInRevokedGroup[] = $permission;
 					}
 
-				if (! $revoked && \count($groupPermissions[$permissionId]))	// @phpstan-ignore-line
+				if (! $revoked && $groupPermission > 0)
 					{
 					$inGroup[] = $permission;
 					}

@@ -42,9 +42,13 @@ class HeaderContent
 
 		$buttonGroup = new \PHPFUI\ButtonGroup();
 		$buttonGroup->addButton($submit);
-		$testButton = new \PHPFUI\Button('Test');
-		$testButton->addClass('warning');
-		$buttonGroup->addButton($testButton);
+
+		if ($headerContent->headerContentId)
+			{
+			$testButton = new \PHPFUI\Button('Test', '/Content/Header/test/' . $headerContent->headerContentId);
+			$testButton->addClass('warning');
+			$buttonGroup->addButton($testButton);
+			}
 		$listButton = new \PHPFUI\Button('All Headers', $listUrl);
 		$listButton->addClass('secondary')->addClass('hollow');
 		$buttonGroup->addButton($listButton);
@@ -64,7 +68,7 @@ class HeaderContent
 			$view->addCustomColumn('del', $deleter->columnCallback(...));
 			$view->addCustomColumn('urlPath', static fn (array $row) => new \PHPFUI\Link('/Content/Header/edit/' . $row['headerContentId'], $row['urlPath'], false));
 			$view->addCustomColumn('active', static fn (array $row) => $row['active'] ? '&check;' : '');
-			$headers = ['urlPath', 'startDate', 'endDate', 'active'];
+			$headers = ['urlPath', 'name', 'startDate', 'endDate', 'active'];
 			$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, ['del']))->setSortableColumns($headers);
 			$container->add($view);
 			}
@@ -83,9 +87,11 @@ class HeaderContent
 		$container->add(new \PHPFUI\Input\Hidden('headerContentId', (string)$headerContent->headerContentId));
 		$urlPath = new \PHPFUI\Input\Text('urlPath', 'URL Path to match against', $headerContent->urlPath);
 		$urlPath->setRequired()->setToolTip('This can be a partical path to match a range of ULRs or a specific URL to match just one page');
+		$name = new \PHPFUI\Input\Text('name', 'Name for identification', $headerContent->name);
+		$name->setToolTip('Set the name for easy identification in the list view. Never shown to users');
 		$active = new \PHPFUI\Input\CheckBoxBoolean('active', 'Active', (bool)$headerContent->active);
-		$active->setToolTip('Check once you have tested the header');
-		$multiColumn = new \PHPFUI\MultiColumn($urlPath, $active);
+		$active->setToolTip('Inactive headers can still be tested but will not be displayed for users');
+		$multiColumn = new \PHPFUI\MultiColumn($urlPath, $name, $active);
 		$container->add($multiColumn);
 
 		$startDate = new \PHPFUI\Input\Date($this->page, 'startDate', 'Start Date', $headerContent->startDate);

@@ -7,10 +7,12 @@ namespace App\Record\Definition;
  *
  * @property int $active MySQL type int
  * @property ?string $content MySQL type mediumtext
- * @property ?string $css MySQL type text
+ * @property ?string $css MySQL type mediumtext
  * @property ?string $endDate MySQL type date
  * @property int $headerContentId MySQL type int
+ * @property \App\Record\HeaderContent $headerContent related record
  * @property ?string $javaScript MySQL type text
+ * @property ?string $name MySQL type varchar(100)
  * @property ?int $showDay MySQL type int
  * @property ?int $showMonth MySQL type int
  * @property ?string $startDate MySQL type date
@@ -25,10 +27,11 @@ abstract class HeaderContent extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'active' => ['int', 'int', 0, false, 0, ],
 		'content' => ['mediumtext', 'string', 16777215, true, ],
-		'css' => ['text', 'string', 65535, true, ],
+		'css' => ['mediumtext', 'string', 16777215, true, ],
 		'endDate' => ['date', 'string', 10, true, ],
 		'headerContentId' => ['int', 'int', 0, false, ],
 		'javaScript' => ['text', 'string', 65535, true, ],
+		'name' => ['varchar(100)', 'string', 100, true, ],
 		'showDay' => ['int', 'int', 0, true, ],
 		'showMonth' => ['int', 'int', 0, true, ],
 		'startDate' => ['date', 'string', 10, true, ],

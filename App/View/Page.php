@@ -22,6 +22,8 @@ class Page extends \PHPFUI\Page
 
 	private string $forgotPassword = 'forgotPassword';
 
+	private ?\App\Model\HeaderContent $headerContentModel = null;
+
 	private readonly \PHPFUI\Container $mainColumn;
 
 	private static bool $passwordReset = false;
@@ -364,7 +366,7 @@ class Page extends \PHPFUI\Page
 		$titleBar->addRight((new \PHPFUI\Button('Rides', $url))->addClass('small')->addClass('info'));
 
 		$scrollableHeader = new \App\UI\ScrollOffHeader($this, $titleBar);
-		$headerContentModel = new \App\Model\HeaderContent($this->getBaseURL());
+		$headerContentModel = $this->getHeaderContentModel();
 		$headerContent = $headerContentModel->getActiveHeaderContent();
 
 		if ($headerContent)
@@ -455,6 +457,13 @@ class Page extends \PHPFUI\Page
 		return $this;
 		}
 
+	public function setHeaderContentModel(\App\Model\HeaderContent $model) : static
+		{
+		$this->headerContentModel = $model;
+
+		return $this;
+		}
+
 	public function setPublic(bool $public = true) : static
 		{
 		$this->publicPage = $public;
@@ -520,6 +529,16 @@ class Page extends \PHPFUI\Page
 		$js = "function goToSearchSelection(){ $('#{$loadingId}').toggleClass('hide');$('#{$fieldSetId}').toggleClass('hide');window.location=$('#{$id}').val();}";
 		$this->addJavaScript($js);
 		$modal->add($form);
+		}
+
+	private function getHeaderContentModel() : \App\Model\HeaderContent
+		{
+		if (! $this->headerContentModel)
+			{
+			$this->headerContentModel = new \App\Model\HeaderContent($this->getBaseURL());
+			}
+
+		return $this->headerContentModel;
 		}
 
 	private function getMenu() : \PHPFUI\HTML5Element

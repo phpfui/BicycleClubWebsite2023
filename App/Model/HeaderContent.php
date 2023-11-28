@@ -4,6 +4,8 @@ namespace App\Model;
 
 class HeaderContent
 	{
+	private ?\App\Record\HeaderContent $testContent = null;
+
 	private int $today;
 
 	private string $todayString;
@@ -17,6 +19,11 @@ class HeaderContent
 
 	public function getActiveHeaderContent() : ?\App\Record\HeaderContent
 		{
+		if ($this->testContent)
+			{
+			return $this->testContent;
+			}
+
 		$table = new \App\Table\HeaderContent();
 		$condition = new \PHPFUI\ORM\Condition('active', 1);
 		$month = \App\Tools\Date::month($this->today);
@@ -42,6 +49,13 @@ class HeaderContent
 			}
 
 		return null;
+		}
+
+	public function setHeaderContent(\App\Record\HeaderContent $testContent) : static
+		{
+		$this->testContent = $testContent;
+
+		return $this;
 		}
 
 	private function getFieldCondition(string $field, string | int $value, \PHPFUI\ORM\Operator $operator = new \PHPFUI\ORM\Operator\Equal()) : \PHPFUI\ORM\Condition

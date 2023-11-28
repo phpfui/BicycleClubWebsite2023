@@ -21,7 +21,7 @@ class Footer implements \Stringable
 	public function __toString() : string
 		{
 		$copyright = $this->settingTable->value('clubName') . ' ' . \App\Tools\Date::format('Y');
-		$topBar = new \PHPFUI\TopBar();
+		$topBar = new \PHPFUI\TitleBar();
 		$menu = new \PHPFUI\Menu();
 		$menu->addClass('simple');
 		$byLawsFile = $this->publicPage->value('ByLawsFile');

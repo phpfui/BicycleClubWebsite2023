@@ -17,8 +17,9 @@ class Month extends \PHPFUI\Input\Select
 	public function __construct(string $name, string $label = '', ?string $value = '')
 		{
 		parent::__construct($name, $label);
+		$this->addOption('', '0', 0 == (int)$value);
 
-		for ($i = 1; $i < 13; ++$i)
+		for ($i = 1; $i <= 12; ++$i)
 			{
 			$this->addOption(\date('F', \mktime(12, 12, 12, $i, 1, 2000)), (string)$i, (int)$value == $i);
 			}

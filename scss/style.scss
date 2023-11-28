@@ -602,10 +602,6 @@ $button-shadow: $shadow-depth $shadow-depth $shadow-blur 0px rgba(0,0,0,0.6);
 	height: 100%;
 }
 
-.title-bar a {
-	color: white;
-}
-
 .button-group {
   flex-wrap: wrap;
 }
@@ -1027,3 +1023,15 @@ $slick-opacity-not-active: 0.25 !default;
 	color: green;
 }
 
+.fa-search, .fa-bars {
+  color: white;
+}
+
+[data-sticky] {
+  width: 100%;
+}
+
+header p {
+  padding: 0;
+  margin: 0;
+}

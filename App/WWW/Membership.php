@@ -435,7 +435,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 
 	public function renew() : void
 		{
-		$this->page->setRenewing();
+		$this->page->setRenewing()->turnOffBanner(); // banners can cause a crash
 
 		if ($this->page->addHeader('Renew My Membership'))
 			{

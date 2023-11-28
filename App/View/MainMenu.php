@@ -263,6 +263,7 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Content/SlideShow/list', 'Slide Shows');
 			$this->addSub($menu, '/Content/recent', 'Recent Content');
 			$this->addSub($menu, '/Content/search', 'Search Content');
+			$this->addSub($menu, '/Content/Header/list', 'Header Content');
 			$this->addSub($menu, '/Content/categories', 'Content By Category');
 			$this->addSub($menu, '/Content/orphan', 'Show Orphan Content');
 			$this->addSub($menu, '/Content/purge', 'Purge Expired Content');

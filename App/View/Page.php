@@ -285,7 +285,7 @@ class Page extends \PHPFUI\Page
 
 	public function getStart() : string
 		{
-		$this->addStyleSheet('/css/styles.css');
+		$this->addStyleSheet('/css/styles.v1.css');
 
 		if (\count($this->requiredPages))
 			{
@@ -334,13 +334,13 @@ class Page extends \PHPFUI\Page
 		$nameLocation->add($this->value('clubName') . ' - ' . $this->value('clubLocation'));
 		$title->add($nameLocation);
 
-		$link = "<a href='/Home'>{$title}</a>";
+		$link = "<a href='/Home' style='color:white;font-weight:bold;'>{$title}</a>";
 
-		$titleBar = new \PHPFUI\TitleBar($link);
+		$titleBar = new \PHPFUI\TopBar();
 		$hamburger = new \PHPFUI\FAIcon('fas', 'bars', '#');
 		$hamburger->addClass('show-for-small-only');
 		$titleBar->addLeft($hamburger);
-		$titleBar->addLeft('&nbsp;');
+		$titleBar->addLeft($link);
 
 		if ($this->isSignedIn())
 			{
@@ -363,11 +363,15 @@ class Page extends \PHPFUI\Page
 		$url = $this->isSignedIn() ? '/Rides/memberSchedule' : '/Rides/schedule';
 		$titleBar->addRight((new \PHPFUI\Button('Rides', $url))->addClass('small')->addClass('info'));
 
-		$div = new \PHPFUI\HTML5Element('div');
-		$stickyTitleBar = new \PHPFUI\Sticky($div);
-		$stickyTitleBar->add($titleBar);
-		$stickyTitleBar->addAttribute('data-options', 'marginTop:0;');
-		$content->add($stickyTitleBar);
+		$scrollableHeader = new \App\UI\ScrollOffHeader($this, $titleBar);
+		$headerContentModel = new \App\Model\HeaderContent($this->getBaseURL());
+		$headerContent = $headerContentModel->getActiveHeaderContent();
+
+		if ($headerContent)
+			{
+			$content->add($scrollableHeader->getHeader($headerContent));
+			}
+		$content->add($scrollableHeader);
 
 		$body = new \PHPFUI\HTML5Element('div');
 		$body->addClass('body-info');

@@ -217,7 +217,7 @@ class Permission extends \App\Model\PermissionBase
 	/**
 	 * @param array<int, int> $permissions array indexed by permissionId with a value enabled (int)
 	 *
-	 * @return array<int, int> array indexed by permissionId with a value enabled (int)
+	 * @return array<int> array indexed by permissionId with a value enabled (int)
 	 */
 	public function getPermissionsForGroup(string|int $group, array $permissions = []) : array
 		{

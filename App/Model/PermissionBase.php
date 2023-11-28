@@ -46,7 +46,7 @@ class PermissionBase
 	/**
 	 * @param array<int,int> $permissions
 	 *
-	 * @return array<int, int> array indexed by permissionId with a value enabled (int)
+	 * @return array<int> array indexed by permissionId with a value enabled (int)
 	 */
 	public function getPermissionsForGroup(string|int $group, array $permissions = []) : array
 		{

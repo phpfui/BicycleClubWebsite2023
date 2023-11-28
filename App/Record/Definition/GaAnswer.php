@@ -10,6 +10,7 @@ namespace App\Record\Definition;
  * @property \App\Record\GaAnswer $gaAnswer related record
  * @property int $gaEventId MySQL type int
  * @property \App\Record\GaEvent $gaEvent related record
+ * @property int $ordering MySQL type int
  */
 abstract class GaAnswer extends \PHPFUI\ORM\Record
 	{
@@ -21,6 +22,7 @@ abstract class GaAnswer extends \PHPFUI\ORM\Record
 		'answer' => ['varchar(255)', 'string', 255, true, ],
 		'gaAnswerId' => ['int', 'int', 0, false, ],
 		'gaEventId' => ['int', 'int', 0, false, ],
+		'ordering' => ['int', 'int', 0, false, 0, ],
 	];
 
 	/** @var array<string> */

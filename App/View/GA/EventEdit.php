@@ -10,6 +10,8 @@ class EventEdit
 
 	private readonly \App\Table\GaRide $gaRideTable;
 
+	private string $testText = 'Test Email';
+
 	public function __construct(private readonly \App\View\Page $page)
 		{
 		$this->gaPriceDateTable = new \App\Table\GaPriceDate();
@@ -36,9 +38,16 @@ class EventEdit
 
 		if ($form->save())
 			{
-			$this->gaRideTable->updateFromTable($_POST);
-			$this->gaPriceDateTable->updateFromTable($_POST);
-			$this->gaAnswerTable->updateFromTable($_POST);
+			$post = $_POST;
+			$order = 1;
+
+			foreach ($post['ordering'] as &$value)
+				{
+				$value = $order++;
+				}
+			$this->gaRideTable->updateFromTable($post);
+			$this->gaPriceDateTable->updateFromTable($post);
+			$this->gaAnswerTable->updateFromTable($post);
 
 			return $form;
 			}
@@ -47,7 +56,7 @@ class EventEdit
 		$tabs->addTab('Required', $this->getRequiredFields($event), true);
 		$tabs->addTab('Options', $this->getOptions($event));
 		$tabs->addTab('Description', $this->getDescription($event));
-		$tabs->addTab('Email', $this->getSignupEmail($event));
+		$tabs->addTab('Email', $this->getSignupEmail($event, $form));
 
 		if ($event->loaded())
 			{
@@ -221,7 +230,7 @@ class EventEdit
 		{
 		$container = new \PHPFUI\Container();
 
-		$pricing = $this->gaPriceDateTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId))->getRecordCursor();
+		$pricing = $this->gaPriceDateTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId))->addOrderBy('date')->getRecordCursor();
 		$table = new \PHPFUI\Table();
 		$table->setRecordId($recordId = 'gaPriceDateId');
 		$delete = new \PHPFUI\AJAX('deletePrice', 'Permanently delete this price?');
@@ -257,8 +266,8 @@ class EventEdit
 		$container = new \PHPFUI\Container();
 
 		$container->add(new \PHPFUI\Input\Text('question', 'Question to ask riders', $event->question));
-		$answers = $this->gaAnswerTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId))->getRecordCursor();
-		$table = new \PHPFUI\Table();
+		$answers = $this->gaAnswerTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId))->addOrderBy('ordering')->getRecordCursor();
+		$table = new \PHPFUI\OrderableTable($this->page);
 		$table->setRecordId($recordId = 'gaAnswerId');
 		$delete = new \PHPFUI\AJAX('deleteAnswer', 'Permanently delete this answer?');
 		$delete->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast').remove();");
@@ -268,11 +277,12 @@ class EventEdit
 
 		foreach ($answers as $answer)
 			{
-			$id = $answer->gaAnswerId;
+			$id = (string)$answer->gaAnswerId;
 			$row = $answer->toArray();
 			$row['gaAnswerId'] = $id;
 			$row['answer'] = new \PHPFUI\Input\Text("answer[{$id}]", '', $answer->answer);
 			$row['answer'] .= new \PHPFUI\Input\Hidden("gaAnswerId[{$id}]", $answer->gaAnswerId);
+			$row['answer'] .= new \PHPFUI\Input\Hidden("ordering[{$id}]", $answer->ordering);
 			$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
 			$icon->addAttribute('onclick', $delete->execute([$recordId => $id]));
 			$row['del'] = $icon;
@@ -357,7 +367,7 @@ class EventEdit
 		return $container;
 		}
 
-	private function getSignupEmail(\App\Record\GaEvent $event) : \PHPFUI\Container
+	private function getSignupEmail(\App\Record\GaEvent $event, \App\UI\ErrorFormSaver $form) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 
@@ -365,6 +375,15 @@ class EventEdit
 		$signupMessage->setToolTip('This will be sent to people who successfully register for the event.');
 		$signupMessage->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
 		$container->add($signupMessage);
+
+		if ($event->gaEventId)
+			{
+			$testButton = new \PHPFUI\Submit($this->testText);
+			$testButton->addClass('warning');
+			$container->add('<hr>');
+			$container->add($testButton);
+			$form->saveOnClick($testButton);
+			}
 
 		return $container;
 		}
@@ -433,6 +452,37 @@ class EventEdit
 					$gaAnswer = new \App\Record\GaAnswer();
 					$gaAnswer->setFrom($_POST);
 					$gaAnswer->insert();
+					$this->page->redirect();
+					}
+				elseif ($this->testText == $_POST['submit'])
+					{
+					$gaEvent = new \App\Record\GaEvent($_POST['gaEventId']);
+					$model = new \App\Model\GeneralAdmission();
+					$rider = new \App\Record\GaRider();
+					$sender = \App\Model\Session::signedInMemberRecord();
+					$membership = $sender->membership;
+					$rider->address = $membership->address;
+					$rider->comments = 'Test email comment';
+					$rider->contact = $sender->emergencyContact;
+					$rider->contactPhone = $sender->emergencyPhone;
+					$rider->email = $sender->email;
+					$rider->firstName = $sender->firstName;
+					$rider->gaEvent = $gaEvent;
+//					$rider->gaRideId
+					$rider->lastName = $sender->lastName;
+					$rider->memberId = $sender->memberId;
+					$rider->pending = 0;
+					$rider->phone = $sender->cellPhone;
+//					$rider->pricePaid =
+					$rider->prize = 0;
+					$rider->referral = 0;
+					$rider->signedUpOn = \date('Y-m-d H:i:s');
+					$rider->state = $membership->state;
+					$rider->town = $membership->town;
+					$rider->zip = $membership->zip;
+
+					$model->addRiderToEmail($gaEvent, $rider);
+					\App\Model\Session::setFlash('success', 'Check your inbox for a test email');
 					$this->page->redirect();
 					}
 				}

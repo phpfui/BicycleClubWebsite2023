@@ -10,6 +10,7 @@ class GaRider extends \App\Record\Definition\GaRider
 	public function clean() : static
 		{
 		$this->cleanEmail('email');
+		$this->email = \App\Model\Member::cleanEmail($this->email);
 		$this->cleanProperName('lastName');
 		$this->cleanProperName('firstName');
 		$this->cleanProperName('address');

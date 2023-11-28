@@ -86,7 +86,7 @@ class Search
 		$fieldSet->add($multiColumn);
 
 		$startLocationView = new \App\View\StartLocation($this->page);
-		$location = $_GET['startLocationId'] ?? 0;
+		$location = (int)($_GET['startLocationId'] ?? 0);
 		$fieldSet->add($startLocationView->getEditControl($location, 'startLocationId', 'Limit to Start Location'));
 
 		$categoryView = new \App\View\Categories($this->page);

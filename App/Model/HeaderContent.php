@@ -30,8 +30,8 @@ class HeaderContent
 		$day = \App\Tools\Date::day($this->today);
 		$condition->and($this->getFieldCondition('showDay', $day));
 		$condition->and($this->getFieldCondition('showMonth', $month));
-		$condition->and($this->getFieldCondition('startDate', $this->todayString, new \PHPFUI\ORM\Operator\GreaterThanEqual()));
-		$condition->and($this->getFieldCondition('endDate', $this->todayString, new \PHPFUI\ORM\Operator\LessThanEqual()));
+		$condition->and($this->getFieldCondition('startDate', $this->todayString, new \PHPFUI\ORM\Operator\LessThanEqual()));
+		$condition->and($this->getFieldCondition('endDate', $this->todayString, new \PHPFUI\ORM\Operator\GreaterThanEqual()));
 		$table->setWhere($condition);
 		$table->addOrderBy('showDay', 'desc');
 		$table->addOrderBy('showMonth', 'desc');

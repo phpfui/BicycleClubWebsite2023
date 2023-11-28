@@ -32,16 +32,8 @@ class GeneralAdmission
 			}
 		}
 
-	/**
-	 * @return array<string,mixed>
-	 */
-	public function executeInvoice(\App\Record\Invoice $invoice, \App\Record\InvoiceItem $invoiceItem) : array
+	public function addRiderToEmail(\App\Record\GaEvent $event, \App\Record\GaRider $rider) : void
 		{
-		$event = new \App\Record\GaEvent($invoiceItem->storeItemId);
-		$rider = new \App\Record\GaRider($invoiceItem->storeItemDetailId);
-		$rider->pending = 0;
-		$rider->pricePaid = (float)$invoiceItem->price;
-
 		if (! $this->email)
 			{
 			$this->email = new \App\Tools\EMail();
@@ -57,6 +49,19 @@ class GeneralAdmission
 		$this->message .= "Address: {$rider->address} {$rider->town}, {$rider->state} {$rider->zip}<br>";
 		$this->message .= "Phone:: {$rider->phone}<br>";
 		$this->message .= "Emergency Contact: {$rider->contact} Number: {$rider->contactPhone}<br></p>";
+		}
+
+	/**
+	 * @return array<string,mixed>
+	 */
+	public function executeInvoice(\App\Record\Invoice $invoice, \App\Record\InvoiceItem $invoiceItem) : array
+		{
+		$event = new \App\Record\GaEvent($invoiceItem->storeItemId);
+		$rider = new \App\Record\GaRider($invoiceItem->storeItemDetailId);
+		$rider->pending = 0;
+		$rider->pricePaid = (float)$invoiceItem->price;
+
+		$this->addRiderToEmail($event, $rider);
 
 		if ($event->includeMembership && empty($rider->memberId))
 			{

@@ -165,8 +165,7 @@ class Member
 		if ($this->page->isAuthorized('Edit Affiliation'))
 			{
 			$affiliation = new \PHPFUI\Input\Text('affiliation', 'Affiliation', $member->affiliation);
-			$affiliation->setToolTip('If this membership is from a bike shop, or other activity, state it here. If it is a bike shop, ' .
-					'state the discount, followed by a semicolon (;), then the web site.');
+			$affiliation->setToolTip('If this membership is from a bike shop, or other activity, state it here.');
 			$fieldSet->add($affiliation);
 			}
 

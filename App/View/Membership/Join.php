@@ -185,9 +185,21 @@ class Join
 
 		if (\App\Model\Session::checkCSRF() && isset($_POST['submit']))
 			{
-			if ('Continue' == $_POST['submit'] && $verifyCode == $code)
+			if ('Continue' == $_POST['submit'] && ($verifyCode == $code || $member->verifiedEmail >= 2))
 				{
 				$member->verifiedEmail += 1;
+				}
+			elseif ('Join' == $_POST['submit'] && ! empty($_POST['bikeShopId']))
+				{
+				$membership = $member->membership;
+				$bikeShop = new \App\Record\BikeShop($_POST['bikeShopId']);
+				$membership->affiliation = $bikeShop->fullName();
+				$membership->update();
+				\App\Model\Session::setFlash('success', 'Welcome to the ' . $this->page->value('clubName'));
+
+				$this->page->redirect('/Home');
+
+				return '';
 				}
 			elseif ('Back' == $_POST['submit'] && $member->verifiedEmail > 2)
 				{
@@ -299,8 +311,17 @@ class Join
 			$backButton->addClass('secondary');
 			$buttonGroup->addButton($backButton);
 			}
-		$submit = new \PHPFUI\Submit('Continue');
-		$submit->addClass('success');
+
+		if ($step < 9)
+			{
+			$submit = new \PHPFUI\Submit('Continue');
+			$submit->addClass('success');
+			}
+		else
+			{
+			$submit = new \PHPFUI\Submit('Join');
+			$submit->addClass('success');
+			}
 		$buttonGroup->addButton($submit);
 
 		return $buttonGroup;
@@ -325,6 +346,38 @@ class Join
 	private function getMembers(\App\Record\Member $member) : \PHPFUI\Container
 		{
 		$membership = $member->membership;
+
+		if (\str_contains($membership->affiliation, $this->page->value('FreeMembershipQR')))
+			{
+			$membership->pending = 0;
+			$membership->lastRenewed = null;
+			$membership->joined = \App\Tools\Date::todayString();
+			$membership->allowedMembers = 1;
+			$membership->update();
+
+			$normalMember = $this->settingTable->getStandardPermissionGroup('Normal Member');
+			$pendingMember = $this->settingTable->getStandardPermissionGroup('Pending Member');
+
+			\App\Table\UserPermission::addPermissionToUser($member->memberId, $normalMember->permissionId);
+			\App\Table\UserPermission::removePermissionFromUser($member->memberId, $pendingMember->permissionId);
+			$member->verifiedEmail = 9;
+			$member->update();
+
+			$container = new \PHPFUI\Container();
+			$form = new \PHPFUI\Form($this->page);
+			$fieldSet = new \PHPFUI\FieldSet('Almost Done');
+			$callout = new \PHPFUI\Callout('info');
+			$callout->add('One last thing:');
+			$fieldSet->add($callout);
+			$bikeShopPicker = new \App\UI\BikeShopPicker('bikeShopId', 'Please select the bike shop where you bought your new bike');
+			$fieldSet->add($bikeShopPicker);
+			$form->add($fieldSet);
+			$form->add($this->getButtonGroup($member->verifiedEmail));
+			$container->add($form);
+
+			return $container;
+			}
+
 		$members = \App\Table\Member::membersInMembership($member->membershipId);
 		$renewView = new \App\View\Membership\Renew($this->page, $member->membership, $this->memberView);
 		$container = $renewView->renew(true);
@@ -337,6 +390,7 @@ class Join
 			}
 		$container->addAsFirst($this->page->getFlashMessages());
 		$container->addAsFirst($this->getHeader('Confirm Amount'));
+
 
 		return $container;
 		}

@@ -20,4 +20,9 @@ class BikeShop extends \App\Record\Definition\BikeShop
 
 		return $this;
 		}
+
+	public function fullName() : string
+		{
+		return $this->name . ' - ' . $this->town . ' - ' . $this->state;
+		}
 	}

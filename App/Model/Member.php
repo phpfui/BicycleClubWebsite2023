@@ -578,19 +578,6 @@ class Member
 		return $this->createInvoice($member, 0, 1);
 		}
 
-	public function getRandomPassword() : string
-		{
-		\mt_srand();
-		$newPassword = \random_int(0, 99999);
-
-		while (\strlen($newPassword) < 5)
-			{
-			$newPassword .= \random_int(0, 9);
-			}
-
-		return 'Password-' . $newPassword;
-		}
-
 	public function getRenewInvoice(\App\Record\Member $member, int $additionalMembers, float $price, int $years, float $donation, string $dedication) : \App\Record\Invoice
 		{
 		$invoice = new \App\Record\Invoice(['memberId' => $member->memberId,

@@ -21,8 +21,13 @@ class QRCodes
 		$shop->setToolTip('This will be recorded in the "Affilate" field on the membership for tracking');
 		$pixels = new \PHPFUI\Input\Number('pixels', 'Number of Pixels for QR Code', 300);
 		$pixels->setRequired();
-		$pixels->setToolTip('Higher resolutions may print cleaner. Use smaller resolutions for the web.');
-		$fieldSet->add(new \PHPFUI\MultiColumn($shop, $pixels));
+		$pixels->setToolTip('Higher resolutions will print cleaner. Use smaller resolutions for the web.');
+		$freeText = new \PHPFUI\Input\Text('FreeMembershipQR', 'Free Membership Text', $this->page->value('FreeMembershipQR'));
+		$freeText->addAttribute('maxlength', (string)255);
+		$freeText->setRequired();
+		$freeText->setToolTip('Bike shop must contain this text if payment will not be required to join. This may be a partial string or the full string. Change it to disable existing QR codes');
+
+		$fieldSet->add(new \PHPFUI\MultiColumn($shop, $pixels, $freeText));
 		$form->add($fieldSet);
 		$form->add(new \App\UI\CancelButtonGroup(new \PHPFUI\Submit('Generate')));
 
@@ -38,6 +43,7 @@ class QRCodes
 				try
 					{
 					$settingTable = new \App\Table\Setting();
+					$settingTable->save('FreeMembershipQR', $_POST['FreeMembershipQR'] ?? '');
 					$url = $settingTable->value('homePage') . '/Join?a=' . \urlencode((string)$_POST['shop']);
 
 					$qrCode = \Endroid\QrCode\QrCode::create($url)

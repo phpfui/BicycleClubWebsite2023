@@ -80,7 +80,6 @@ class GeneralAdmission
 				{
 				$membership->expires = $event->membershipExpires;
 				}
-			$password = $memberModel->getRandomPassword();
 			$member = new \App\Record\Member();
 			$member->setFrom($rider->toArray());
 			$member->emailAnnouncements = 1;
@@ -91,7 +90,7 @@ class GeneralAdmission
 			$member->emergencyContact = $rider->contact;
 			$member->emergencyPhone = $rider->contactPhone;
 			$member->cellPhone = $rider->phone;
-			$member->password = $memberModel->hashPassword($password);
+			$member->password = $memberModel->hashPassword(\uniqid());  // will not match password for sure
 			$member->insert();
 			$memberModel->setNormalMemberPermission($member);
 			$rider->member = $member;

@@ -21,11 +21,16 @@ class Dues
 		$memberTerm = new \PHPFUI\Input\RadioGroup('MembershipTerm', 'Membership Term', $this->duesModel->MembershipTerm);
 		$memberTerm->addButton('Annual');
 		$memberTerm->addButton('12 Months');
+		$hide = 'Annual' == $this->duesModel->MembershipTerm ? 'invisible' : '';
 		$memberTerm->setRequired()->setToolTip('Annual membership terms all renew on the same month. 12 month memberships are good for 12 months from date of joining.');
 		$startMonth = new \App\UI\Month('MembershipStartMonth', 'Membership Start Month', $this->duesModel->MembershipStartMonth);
+		$startMonth->addLabelClass($hide)->addLabelClass('months');
 		$startMonth->setToolTip('For annual memberships, The month when all the memberships renew');
 		$graceMonth = new \App\UI\Month('MembershipGraceMonth', 'Membership Grace Month', $this->duesModel->MembershipGraceMonth);
+		$graceMonth->addLabelClass($hide)->addLabelClass('months');
 		$graceMonth->setToolTip('For annual memberships, if joining after this month, membership is good through the end of the next renewal period');
+
+		$this->page->addJavaScript('$("input[name=\'MembershipTerm\']").change(function(){$(".months").toggleClass("invisible")})');
 		$fieldSet->add(new \PHPFUI\MultiColumn($memberTerm, $startMonth, $graceMonth));
 
 //		$renewalType = new \PHPFUI\Input\RadioGroup('MembershipType', 'Manual', $this->duesModel->MembershipType);
@@ -46,7 +51,10 @@ class Dues
 		$maxMembersOnMembership = new \PHPFUI\Input\Number('MaxMembersOnMembership', 'Max Members On Membership', $this->duesModel->MaxMembersOnMembership);
 		$maxMembersOnMembership->setRequired(false)->setToolTip('You can limit total members on a membership, for family membership, all members above 2 are free');
 
-		$fieldSet->add(new \PHPFUI\MultiColumn($memberType, $maxMembersOnMembership));
+		$maxRenewalYears = new \PHPFUI\Input\Number('MaxRenewalYears', 'Max Years Available for Renewals', $this->duesModel->MaxRenewalYears);
+		$maxRenewalYears->setRequired(false)->setToolTip('The maximum number of years you can renew for at one time.');
+
+		$fieldSet->add(new \PHPFUI\MultiColumn($memberType, $maxMembersOnMembership, $maxRenewalYears));
 
 		$form->add($fieldSet);
 

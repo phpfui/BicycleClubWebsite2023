@@ -244,32 +244,32 @@ class Renew
 
 		if ($numberYears > 1)
 			{
-			$headers[] = 'Years';
+			$headers['Renewal Term (Years)'] = 'Renewal Term (Years)';
 			}
 
 		switch ($paidMembers)
 			{
 			case 'Unlimited':
-				$headers[] = 'Annual Dues';
+				$headers['Cost Per Year'] = 'Cost Per Year';
 
 				break;
 
 			case 'Paid':
-				$headers[] = 'Annual Dues';
+				$headers['Cost Per Year'] = 'Cost Per Year';
 
 				if (\array_sum($additionalDues))
 					{
-					$headers[] = 'Additional Member Dues';
+					$headers['Additional Member Dues'] = 'Additional Member Dues';
 					}
 
 				break;
 
 			case 'Family':
-				$headers[] = 'Annual Family (2 members) Dues';
+				$headers['Annual Family (2 members) Dues'] = 'Annual Family (2 members) Dues';
 
 				if (\array_sum($additionalDues))
 					{
-					$headers[] = 'Additional Member Dues';
+					$headers['Additional Member Dues'] = 'Additional Member Dues';
 					}
 
 				break;
@@ -284,14 +284,14 @@ class Renew
 				{
 				$years = $year + 1;
 
-				if ($years >= $numberYears)
+				if ($years >= $numberYears && $numberYears < (int)$this->duesModel->MaxRenewalYears)
 					{
 					$years = "{$years}+";
 					}
-				$row['Years'] = $years;
+				$row['Renewal Term (Years)'] = $years;
 				}
 
-			$row['Annual Dues'] = $row['Annual Family (2 members) Dues'] = '$' . \number_format((float)$amount, 2);
+			$row['Cost Per Year'] = $row['Annual Family (2 members) Dues'] = '$' . \number_format((float)$amount, 2);
 			$row['Additional Member Dues'] = '$' . \number_format((float)($additionalDues[$year] ?? 0.0), 2);
 			$table->addRow($row);
 			}
@@ -307,26 +307,21 @@ class Renew
 			$form->setAttribute('action', '/Membership/renewCheckout');
 			$multiColumn = new \PHPFUI\MultiColumn();
 			$yearlyRenewal = new \PHPFUI\FieldSet('Yearly Renewal');
-			$years = new \PHPFUI\Input\Select('years', 'Number of years to renew');
-			$years->addOption('No Years, Donation only', '0');
+			$yearsField = new \PHPFUI\Input\Select('years', 'Number of years to renew');
+			$yearsField->addOption('No Years, Donation only', '0');
 
-			if ('Paid' == $paidMembers || ('Family' == $paidMembers && 1 == $this->membership->allowedMembers && \count($this->members) > 1))
+			for ($i = 1; $i <= (int)$this->duesModel->MaxRenewalYears; ++$i)
 				{
-				$years->addOption('Add Members (no renewal)', '0');
+				$yearsField->addOption("{$i} Year" . (($i > 1) ? 's' : ''), (string)$i, 1 == $i);
 				}
+			$yearsField->addAttribute('onchange', 'updatePrice();');
+			$multiColumn->add($yearsField);
 
-			for ($i = 1; $i < 10; ++$i)
-				{
-				$years->addOption("{$i} Year" . (($i > 1) ? 's' : ''), (string)$i, 1 == $i);
-				}
-			$years->addAttribute('onchange', 'updatePrice();');
-			$multiColumn->add($years);
-
-			if ($this->additionalMemberDues)
+			if ($this->additionalMemberDues && $maxMembersOnMembership > 1)
 				{
 				$maxMembersField = new \PHPFUI\Input\Select('maxMembers', 'Number of members on your membership');
 
-				if (! $maxMembersOnMembership)
+				if (! $maxMembersOnMembership) // @phpstan-ignore-line
 					{
 					$maxMembersOnMembership = 10;
 					}
@@ -358,7 +353,7 @@ class Renew
 			$donationSet->add(new \PHPFUI\Input\Text('itemDetail', 'Donation notes or dedications', ''));
 			$form->add($donationSet);
 
-			$yearId = $years->getId();
+			$yearId = $yearsField->getId();
 			$maxMembersId = $maxMembersField->getId();
 			$form->add($totalDisplay);
 

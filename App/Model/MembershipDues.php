@@ -11,6 +11,7 @@ namespace App\Model;
  * @property string $SubscriptionDues
  * @property string $MaxMembersOnMembership
  * @property string $MaxMembersSubscription
+ * @property string $MaxRenewalYears
  * @property array $AnnualDues
  * @property array $AdditionalMemberDues
  */
@@ -26,6 +27,7 @@ class MembershipDues
 		'SubscriptionDues' => '0',
 		'MaxMembersOnMembership' => '4',
 		'MaxMembersSubscription' => '4',
+		'MaxRenewalYears' => '9',
 		'AnnualDues' => ['30'],
 		'AdditionalMemberDues' => [],
 	];

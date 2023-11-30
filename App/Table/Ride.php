@@ -88,7 +88,11 @@ class Ride extends \PHPFUI\ORM\Table
 			{
 			$paceTable = new \App\Table\Pace();
 			$paces = $paceTable->getPacesForCategories($parameters['categories']);
-			$condition->and('ride.paceId', $paces, new \PHPFUI\ORM\Operator\In());
+
+			if (\count($paces))
+				{
+				$condition->and('ride.paceId', $paces, new \PHPFUI\ORM\Operator\In());
+				}
 			}
 		$this->setWhere($condition);
 		$this->addOrderBy('rideDate');

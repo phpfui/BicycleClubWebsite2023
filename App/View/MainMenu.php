@@ -134,6 +134,8 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Leaders/assistantLeads', 'My Assistant Leads');
 			$this->addSub($menu, '/Leaders/minorWaiver', 'Minor Waiver');
 			$this->addSub($menu, '/Leaders/nonMemberWaiver', 'Non Member Waiver');
+			$this->addSub($menu, '/Leaders/nonMemberWaivers', 'Manage Non Member Waivers');
+
 
 			if ($configMenu = $this->addMenu($menu, '/Leaders/configure', 'Leader Configuration'))
 				{

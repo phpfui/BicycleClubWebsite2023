@@ -135,6 +135,7 @@ class Cart
 				$item['tax'] = '$' . \number_format($item['tax'], 2);
 				$messages = [];
 				$message = '';
+				$additionalRows = [];
 
 				switch ($item['type'])
 					{
@@ -155,17 +156,30 @@ class Cart
 							{
 							$message = '<br><span class="warning">' . \implode('<br>', $messages) . '</span>';
 							}
-						$editLink = '';
+						$editButton = new \PHPFUI\Button('Edit Rider', '/GA/updateRider/' . $item['storeItemDetailId']);
 
-						if ($this->page->isAuthorized('Edit Rider'))
-							{
-							$editLink = "<br><a href='/GA/editRider/{$item['storeItemDetailId']}'>{$item['detailLine']}</a>";
-							}
-
-						$item['description'] = "{$item['title']}<br><b>{$item['detailLine']}</b>" . $message;
+						$item['description'] = "{$item['title']}<br><b>{$item['detailLine']}</b>{$message}<br>{$editButton}";
 						$dupes[] = $item['detailLine'];
 						$item['quantity'] = 1;
 						$add = true;
+
+						$rider = new \App\Record\GaRider($item['storeItemDetailId']);
+
+						foreach ($rider->optionsSelected as $option)
+							{
+							$row = ['description' => "<b>{$option->optionName}</b>: {$option->selectionName}"];
+							$price = $option->price + $option->additionalPrice;
+
+							if ($price)
+								{
+								$subTotal += $price;
+								$row['quantity'] = 1;
+								$row['tax'] = '$0.00';
+								$row['price'] = $row['total'] = '$' . \number_format($option->price + $option->additionalPrice, 2);
+								}
+
+							$additionalRows[] = $row;
+							}
 
 						break;
 
@@ -202,6 +216,11 @@ class Cart
 					$delete->addClass('fa-2x red');
 					$item['delete'] = $delete;
 					$table->addRow($item);
+					}
+
+				foreach ($additionalRows as $row)
+					{
+					$table->addRow($row);
 					}
 				}
 			}

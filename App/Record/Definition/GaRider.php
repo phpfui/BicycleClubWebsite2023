@@ -9,15 +9,13 @@ namespace App\Record\Definition;
  * @property ?string $comments MySQL type varchar(50)
  * @property ?string $contact MySQL type varchar(50)
  * @property ?string $contactPhone MySQL type char(15)
+ * @property ?int $customerId MySQL type int
+ * @property \App\Record\Customer $customer related record
  * @property ?string $email MySQL type varchar(50)
  * @property ?int $emailAnnouncements MySQL type int
  * @property ?string $firstName MySQL type varchar(50)
  * @property int $gaEventId MySQL type int
  * @property \App\Record\GaEvent $gaEvent related record
- * @property ?int $gaIncentiveId MySQL type int
- * @property \App\Record\GaIncentive $gaIncentive related record
- * @property ?int $gaRideId MySQL type int
- * @property \App\Record\GaRide $gaRide related record
  * @property int $gaRiderId MySQL type int
  * @property \App\Record\GaRider $gaRider related record
  * @property ?string $lastName MySQL type varchar(50)
@@ -27,7 +25,6 @@ namespace App\Record\Definition;
  * @property ?string $phone MySQL type varchar(20)
  * @property ?float $pricePaid MySQL type decimal(5,2)
  * @property ?int $prize MySQL type int
- * @property ?int $referral MySQL type int
  * @property string $signedUpOn MySQL type timestamp
  * @property ?string $state MySQL type char(2)
  * @property ?string $town MySQL type varchar(50)
@@ -44,12 +41,11 @@ abstract class GaRider extends \PHPFUI\ORM\Record
 		'comments' => ['varchar(50)', 'string', 50, true, ],
 		'contact' => ['varchar(50)', 'string', 50, true, ],
 		'contactPhone' => ['char(15)', 'string', 15, true, ],
+		'customerId' => ['int', 'int', 0, true, ],
 		'email' => ['varchar(50)', 'string', 50, true, ],
 		'emailAnnouncements' => ['int', 'int', 0, true, 1, ],
 		'firstName' => ['varchar(50)', 'string', 50, true, ],
 		'gaEventId' => ['int', 'int', 0, false, ],
-		'gaIncentiveId' => ['int', 'int', 0, true, ],
-		'gaRideId' => ['int', 'int', 0, true, ],
 		'gaRiderId' => ['int', 'int', 0, false, ],
 		'lastName' => ['varchar(50)', 'string', 50, true, ],
 		'memberId' => ['int', 'int', 0, false, ],
@@ -57,7 +53,6 @@ abstract class GaRider extends \PHPFUI\ORM\Record
 		'phone' => ['varchar(20)', 'string', 20, true, '', ],
 		'pricePaid' => ['decimal(5,2)', 'float', 5, true, ],
 		'prize' => ['int', 'int', 0, true, ],
-		'referral' => ['int', 'int', 0, true, 0, ],
 		'signedUpOn' => ['timestamp', 'string', 20, false, null, ],
 		'state' => ['char(2)', 'string', 2, true, ],
 		'town' => ['varchar(50)', 'string', 50, true, ],

@@ -16,7 +16,7 @@ class Register implements \Stringable
 				{
 				$rider = $_POST;
 				$rider['gaEventId'] = $gaEventId;
-				unset($rider['gaRiderId'], $rider['pricePaid'], $rider['gaIncentiveId']);
+				unset($rider['gaRiderId'], $rider['pricePaid']);
 
 				$rider['signedUpOn'] = \date('Y-m-d H:i:s');
 				unset($rider['prize']);
@@ -40,8 +40,8 @@ class Register implements \Stringable
 			$membership['contact'] = $membership['emergencyContact'];
 			$membership['contactPhone'] = $membership['emergencyPhone'];
 			$membership['signedUpOn'] = \date('Y-m-d H:i:s');
-			$this->cartModel->addGaRider($membership);
-			$this->page->redirect();
+			$riderId = $this->cartModel->addGaRider($membership);
+			$this->page->redirect('/GA/updateRider/' . $riderId);
 
 			return;
 			}
@@ -86,9 +86,14 @@ class Register implements \Stringable
 			$buttonGroup = new \PHPFUI\ButtonGroup();
 			$checkout = new \PHPFUI\Submit('Check Out');
 			$checkout->addClass('success');
-			$continueShopping = new \PHPFUI\Button('Continue Shopping', '/Store/shop');
 			$buttonGroup->addButton($checkout);
-			$buttonGroup->addButton($continueShopping);
+			$event = new \App\Record\GaEvent($this->gaEventId);
+
+			if ($event->allowShopping)
+				{
+				$continueShopping = new \PHPFUI\Button('Continue Shopping', '/Store/shop');
+				$buttonGroup->addButton($continueShopping);
+				}
 			$cart->add($buttonGroup);
 			$container->add($cart);
 			}

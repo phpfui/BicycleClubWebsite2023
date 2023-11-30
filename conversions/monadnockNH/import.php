@@ -41,7 +41,7 @@ foreach ($groupNames as $id => $name)
 $membershipTable = new \App\CRUD\Membership();
 $memberTable = new \App\CRUD\Member();
 
-$csv = new \App\Tools\CSVReader($argv[1]);
+$csv = new \App\Tools\CSV\FileReader($argv[1]);
 
 $permissions = new \App\Model\DBPermissions();
 
@@ -51,6 +51,7 @@ foreach ($csv as $row)
 	{
 	$confirmNumber = $row['Confirmation Number'];
 	$membershipNumber = $memberships[$confirmNumber] ?? 0;
+
 	// add membership if not found
 	if (! $membershipNumber)
 		{

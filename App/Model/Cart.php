@@ -135,7 +135,7 @@ class Cart
 
 		foreach ($rider as $key => $value)
 			{
-			if ('email' != $key)
+			if ('email' != $key && ! \is_array($value))
 				{
 				$rider[$key] = \ucwords($value ?? '');
 				}
@@ -143,6 +143,16 @@ class Cart
 		$gaRider = new \App\Record\GaRider();
 		$gaRider->setFrom($rider);
 		$gaRiderId = $gaRider->insert();
+
+		foreach ($rider['gaOption'] ?? [] as $gaOptionId => $gaSelectionId)
+			{
+			$gaRiderSelection = new \App\Record\GaRiderSelection();
+			$gaRiderSelection->gaRiderId = $gaRiderId;
+			$gaRiderSelection->gaSelectionId = $gaSelectionId;
+			$gaRiderSelection->gaOptionId = $gaOptionId;
+			$gaRiderSelection->insert();
+			}
+
 		$rider['gaRiderId'] = $rider['storeItemDetailId'] = $gaRiderId;
 		$rider['storeItemId'] = $rider['gaEventId'];
 		$rider['type'] = self::TYPE_GA;
@@ -241,6 +251,16 @@ class Cart
 						}
 					$this->count += $cartItem['quantity'];
 					$this->total += $value;
+
+					if (\App\Model\Cart::TYPE_GA == $cartItem['type'])
+						{
+						$rider = new \App\Record\GaRider($cartItem['storeItemDetailId']);
+
+						foreach ($rider->optionsSelected as $option)
+							{
+							$this->total += $option->price + $option->additionalPrice;
+							}
+						}
 					}
 				elseif (! empty($cartItem['discountCodeId'])) // a discount code
 					{

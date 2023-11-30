@@ -4,19 +4,16 @@ namespace App\View\GA;
 
 class EventEdit
 	{
-	private readonly \App\Table\GaAnswer $gaAnswerTable;
+	private readonly \App\Table\GaOption $gaOptionTable;
 
 	private readonly \App\Table\GaPriceDate $gaPriceDateTable;
-
-	private readonly \App\Table\GaRide $gaRideTable;
 
 	private string $testText = 'Test Email';
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
 		$this->gaPriceDateTable = new \App\Table\GaPriceDate();
-		$this->gaAnswerTable = new \App\Table\GaAnswer();
-		$this->gaRideTable = new \App\Table\GaRide();
+		$this->gaOptionTable = new \App\Table\GaOption();
 		$this->processRequest();
 		}
 
@@ -41,28 +38,27 @@ class EventEdit
 			$post = $_POST;
 			$order = 1;
 
-			foreach ($post['ordering'] as &$value)
+			foreach ($post['ordering'] ?? [] as &$value)
 				{
 				$value = $order++;
 				}
-			$this->gaRideTable->updateFromTable($post);
 			$this->gaPriceDateTable->updateFromTable($post);
-			$this->gaAnswerTable->updateFromTable($post);
+			unset($post['price']);
+			$this->gaOptionTable->updateFromTable($post);
 
 			return $form;
 			}
 
 		$tabs = new \PHPFUI\Tabs();
 		$tabs->addTab('Required', $this->getRequiredFields($event), true);
-		$tabs->addTab('Options', $this->getOptions($event));
+		$tabs->addTab('Additional', $this->getAdditional($event));
 		$tabs->addTab('Description', $this->getDescription($event));
 		$tabs->addTab('Email', $this->getSignupEmail($event, $form));
 
 		if ($event->loaded())
 			{
-			$tabs->addTab('Route', $this->getRoute($event, $form));
 			$tabs->addTab('Pricing', $this->getPricing($event, $form));
-			$tabs->addTab('Q & A', $this->getQuestion($event, $form));
+			$tabs->addTab('Options', $this->getOptions($event, $form));
 			}
 
 		$tabObject = $tabs->getTabs();
@@ -77,44 +73,18 @@ class EventEdit
 		return $form;
 		}
 
-	public function editRoute(\App\Record\GaRide $route) : string | \PHPFUI\Form
-		{
-		$event = $route->gaEvent;
-		$submit = new \PHPFUI\Submit();
-		$form = new \PHPFUI\Form($this->page, $submit);
-
-		if ($form->isMyCallback())
-			{
-			unset($_POST['gaRideId']);
-			$route->setFrom($_POST);
-			$route->update();
-			$this->page->setResponse('Saved');
-
-			return '';
-			}
-		$form->add(new \PHPFUI\SubHeader($event->title));
-		$form->add($this->getRouteFields($route));
-		$buttonGroup = new \App\UI\CancelButtonGroup();
-		$buttonGroup->addButton($submit);
-		$editButton = new \PHPFUI\Button('Edit Event', '/GA/edit/' . $event->gaEventId);
-		$editButton->addClass('secondary');
-		$buttonGroup->addButton($editButton);
-		$form->add($buttonGroup);
-
-		return $form;
-		}
-
-	protected function addAnswerModal(\App\Record\GaEvent $event, \PHPFUI\HTML5Element $modalLink) : void
+	protected function addOptionModal(\App\Record\GaEvent $event, \PHPFUI\HTML5Element $modalLink) : void
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
 		$modalForm = new \PHPFUI\Form($this->page);
 		$modalForm->setAreYouSure(false);
-		$modalForm->add(new \PHPFUI\SubHeader('Add A Question Answer'));
+		$modal->addClass('large');
+		$modalForm->add(new \PHPFUI\SubHeader('Add An Option'));
 		$modalForm->add(new \PHPFUI\Input\Hidden('gaEventId', (string)$event->gaEventId));
-		$answer = new \PHPFUI\Input\Text('answer', 'Answer for the rider question');
-		$answer->setRequired();
-		$modalForm->add($answer);
-		$modalForm->add($modal->getButtonAndCancel(new \PHPFUI\Submit('Add Answer')));
+		$option = new \App\Record\GaOption();
+		$option->gaEvent = $event;
+		$modalForm->add($this->getOptionFields($option));
+		$modalForm->add($modal->getButtonAndCancel(new \PHPFUI\Submit('Add Option')));
 		$modal->add($modalForm);
 		}
 
@@ -136,45 +106,46 @@ class EventEdit
 		$modal->add($modalForm);
 		}
 
-	protected function addRouteModal(\App\Record\GaEvent $event, \PHPFUI\HTML5Element $modalLink) : void
+	private function getAdditional(\App\Record\GaEvent $event) : \PHPFUI\Container
 		{
-		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
-		$modalForm = new \PHPFUI\Form($this->page);
-		$modalForm->setAreYouSure(false);
-		$modalForm->add(new \PHPFUI\SubHeader('Add A Route'));
-		$ride = new \App\Record\GaRide();
-		$ride->gaEventId = $event->gaEventId;
-		$modalForm->add($this->getRouteFields($ride, $modal));
-		$modalForm->add($modal->getButtonAndCancel(new \PHPFUI\Submit('Add Route')));
-		$modal->add($modalForm);
-		}
+		$container = new \PHPFUI\Container();
+		$optionsSet = new \PHPFUI\FieldSet('Options');
 
-	protected function getRouteFields(\App\Record\GaRide $route, ?\PHPFUI\Reveal $reveal = null) : \PHPFUI\Container
-		{
-		$form = new \PHPFUI\Container();
-		$form->add(new \PHPFUI\Input\Hidden('gaEventId', (string)$route->gaEventId));
-		$distance = new \PHPFUI\Input\Number('distance', 'Distance', $route->distance);
-		$distance->addAttribute('max', (string)999)->addAttribute('min', (string)0);
-		$distance->setRequired();
-		$extraPrice = new \PHPFUI\Input\Number('extraPrice', 'Additional Fee', $route->extraPrice);
-		$extraPrice->addAttribute('max', (string)99)->addAttribute('min', (string)0);
-		$form->add(new \PHPFUI\MultiColumn($distance, $extraPrice));
-		$startTime = new \PHPFUI\Input\Time($this->page, 'startTime', 'Route Start Time', $route->startTime ?? '');
+		$maxRegistrants = new \PHPFUI\Input\Number('maxRegistrants', 'Max Registrants', $event->maxRegistrants);
+		$maxRegistrants->addAttribute('min', (string)0)->addAttribute('max', (string)99)->addAttribute('step', (string)1);
+		$maxRegistrants->setToolTip('Set to zero for unlimited registrations');
+		$optionsSet->add($maxRegistrants);
+		$dayOfRegistration = new \PHPFUI\Input\CheckBoxBoolean('dayOfRegistration', 'Day Of Registration Allowed', (bool)$event->dayOfRegistration);
+		$showPreregistration = new \PHPFUI\Input\CheckBoxBoolean('showPreregistration', 'Show Preregistration Numbers', (bool)$event->showPreregistration);
+		$allowShopping = new \PHPFUI\Input\CheckBoxBoolean('allowShopping', 'Allow Store Shopping at Checkout', (bool)$event->allowShopping);
+		$optionsSet->add(new \PHPFUI\MultiColumn($allowShopping, $dayOfRegistration, $showPreregistration));
 
-		if ($reveal)
+		$includeMembership = new \PHPFUI\Input\CheckBoxBoolean('includeMembership', 'Include Membership with Event Purchase', (bool)$event->includeMembership);
+		$membershipExpiresDate = new \PHPFUI\Input\Date($this->page, 'membershipExpires', 'Membership Expires', $event->membershipExpires);
+		$membershipExpiresDate->setToolTip('If a membership is included, this is when it will expire. Leave blank for the end of the year.');
+		$membershipMultiColumn = new \PHPFUI\MultiColumn($includeMembership, $membershipExpiresDate);
+		$otherEvent = new \PHPFUI\Input\CheckBoxBoolean('otherEvent', 'Not Signature Event', (bool)$event->otherEvent);
+		$optionsSet->add(new \PHPFUI\MultiColumn($membershipMultiColumn, $otherEvent));
+
+		$container->add($optionsSet);
+		$volunteerSet = new \PHPFUI\FieldSet('Volunteer Options');
+		$volunteerDiscount = new \PHPFUI\Input\Number('volunteerDiscount', 'Volunteer Discount', $event->volunteerDiscount);
+		$volunteerDiscount->addAttribute('max', (string)99)->addAttribute('min', (string)0);
+		$volunteerDiscount->setToolTip('If someone signs up as a volunteer, then they will receive this discount when registering');
+		$volunteerEvent = new \PHPFUI\Input\Select('volunteerEvent', 'Corresponding Volunteer Event');
+		$volunteerEvent->setToolTip('This is the volunteer event a member must volunteer for to receive a discount.');
+		$volunteerEvent->addOption('', '', 0 == (int)$event->volunteerEvent);
+		$jobEventTable = new \App\Table\JobEvent();
+		$jobs = $jobEventTable->getJobEvents();
+
+		foreach ($jobs as $job)
 			{
-			$startTime->setParentReveal($reveal);
+			$volunteerEvent->addOption($job->name, $job->jobEventId, $event->volunteerEvent == $job->jobEventId);
 			}
-		$startTime->setToolTip('The first time when riders can go out on the route.');
-		$endTime = new \PHPFUI\Input\Time($this->page, 'endTime', 'Route End Time', $route->endTime ?? '');
-		$endTime->setToolTip('The last time riders can head out on a route.');
-		$form->add(new \PHPFUI\MultiColumn($startTime, $endTime));
-		$description = new \PHPFUI\Input\TextArea('description', 'Route Description', $route->description);
-		$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
-		$form->add($description);
-		$form->add('<br>');
+		$volunteerSet->add(new \PHPFUI\MultiColumn($volunteerEvent, $volunteerDiscount));
+		$container->add($volunteerSet);
 
-		return $form;
+		return $container;
 		}
 
 	private function getDescription(\App\Record\GaEvent $event) : \PHPFUI\Container
@@ -189,39 +160,63 @@ class EventEdit
 		return $container;
 		}
 
-	private function getOptions(\App\Record\GaEvent $event) : \PHPFUI\Container
+	private function getOptionFields(\App\Record\GaOption $option) : \PHPFUI\FieldSet
+		{
+		$fieldSet = new \PHPFUI\FieldSet('Option Details');
+		$fieldSet->add(new \PHPFUI\Input\Hidden('gaOptionId', (string)$option->gaOptionId));
+		$fieldSet->add(new \PHPFUI\Input\Hidden('gaEventId', (string)$option->gaEventId));
+		$nameField = new \PHPFUI\Input\Text('optionName', 'Description', $option->optionName);
+		$nameField->setRequired()->setToolTip('Question text or description of option');
+		$fieldSet->add($nameField);
+		$required = new \PHPFUI\Input\CheckBoxBoolean('required', 'Rider must select an option', (bool)$option->required);
+		$price = new \PHPFUI\Input\Number('price', 'Optional price for this option', \number_format($option->price ?? 0, 2));
+		$fieldSet->add(new \PHPFUI\MultiColumn($required, $price));
+
+		return $fieldSet;
+		}
+
+	private function getOptions(\App\Record\GaEvent $event, \PHPFUI\Form $form) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
-		$optionsSet = new \PHPFUI\FieldSet('Options');
-		$maxRegistrants = new \PHPFUI\Input\Number('maxRegistrants', 'Max Registrants', $event->maxRegistrants);
-		$maxRegistrants->addAttribute('min', (string)0)->addAttribute('max', (string)99)->addAttribute('step', (string)1);
-		$maxRegistrants->setToolTip('Set to zero for unlimited registrations');
-		$optionsSet->add($maxRegistrants);
-		$dayOfRegistration = new \PHPFUI\Input\CheckBoxBoolean('dayOfRegistration', 'Day Of Registration Allowed', (bool)$event->dayOfRegistration);
-		$showPreregistration = new \PHPFUI\Input\CheckBoxBoolean('showPreregistration', 'Show Preregistration Numbers', (bool)$event->showPreregistration);
-		$optionsSet->add(new \PHPFUI\MultiColumn($dayOfRegistration, $showPreregistration));
-		$includeMembership = new \PHPFUI\Input\CheckBoxBoolean('includeMembership', 'Include Membership with Event Purchase', (bool)$event->includeMembership);
-		$membershipExpiresDate = new \PHPFUI\Input\Date($this->page, 'membershipExpires', 'Membership Expires', $event->membershipExpires);
-		$membershipExpiresDate->setToolTip('If a membership is included, this is when it will expire. Leave blank for the end of the year.');
-		$membershipMultiColumn = new \PHPFUI\MultiColumn($includeMembership, $membershipExpiresDate);
-		$otherEvent = new \PHPFUI\Input\CheckBoxBoolean('otherEvent', 'Not Signature Event', (bool)$event->otherEvent);
-		$optionsSet->add(new \PHPFUI\MultiColumn($membershipMultiColumn, $otherEvent));
-		$container->add($optionsSet);
-		$volunteerSet = new \PHPFUI\FieldSet('Volunteer Options');
-		$volunteerDiscount = new \PHPFUI\Input\Number('volunteerDiscount', 'Volunteer Discount', $event->volunteerDiscount);
-		$volunteerDiscount->addAttribute('max', (string)99)->addAttribute('min', (string)0);
-		$volunteerDiscount->setToolTip('If someone signs up as a volunteer, then they will receive this discount when registering');
-		$volunteerEvent = new \PHPFUI\Input\Select('volunteerEvent', 'Corresponding Volunteer Event');
-		$volunteerEvent->setToolTip('This is the volunteer event a member must volunteer for to receive a discount.');
-		$jobEventTable = new \App\Table\JobEvent();
-		$jobs = $jobEventTable->getJobEvents();
 
-		foreach ($jobs as $job)
+		$options = $this->gaOptionTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId))->addOrderBy('ordering')->getRecordCursor();
+		$table = new \PHPFUI\OrderableTable($this->page);
+		$table->setRecordId($recordId = 'gaOptionId');
+		$delete = new \PHPFUI\AJAX('deleteOption', 'Permanently delete this option and selections?');
+		$delete->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast').remove()");
+		$this->page->addJavaScript($delete->getPageJS());
+		$table->setHeaders(['optionName' => 'Description', 'edit' => 'Edit', 'Del' => 'Del']);
+
+		foreach ($options as $option)
 			{
-			$volunteerEvent->addOption($job->name, $job->jobEventId, $event->volunteerEvent == $job->jobEventId);
+			$row = $option->toArray();
+			$id = $option->gaOptionId;
+			$row['optionName'] .= new \PHPFUI\Input\Hidden("gaOptionId[{$id}]", $option->gaOptionId);
+			$row['optionName'] .= new \PHPFUI\Input\Hidden("ordering[{$id}]", $option->ordering);
+			$row['optionName'] .= new \PHPFUI\Input\Hidden("optionName[{$id}]", $option->optionName);
+
+			$opener = new \PHPFUI\FAIcon('far', 'edit');
+			$form->saveOnClick($opener);
+			$reveal = new \PHPFUI\Reveal($this->page, $opener);
+			$reveal->add(new \PHPFUI\CloseButton($reveal));
+			$reveal->addClass('large');
+			$reveal->add($this->getSelectionEditor($option));
+			$row['edit'] = $opener;
+
+			if (! \count($option->GaRiderSelectionChildren))
+				{
+				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
+				$icon->addAttribute('onclick', $delete->execute([$recordId => $id]));
+				$row['Del'] = $icon;
+				}
+			$table->addRow($row);
 			}
-		$volunteerSet->add(new \PHPFUI\MultiColumn($volunteerEvent, $volunteerDiscount));
-		$container->add($volunteerSet);
+		$container->add($table);
+		$addOptionButton = new \PHPFUI\Button('Add Option');
+		$addOptionButton->addClass('success');
+		$form->saveOnClick($addOptionButton);
+		$this->addOptionModal($event, $addOptionButton);
+		$container->add($addOptionButton);
 
 		return $container;
 		}
@@ -254,46 +249,10 @@ class EventEdit
 			}
 		$container->add($table);
 		$addPriceButton = new \PHPFUI\Button('Add Price');
+		$addPriceButton->addClass('success');
 		$form->saveOnClick($addPriceButton);
 		$this->addPriceModal($event, $addPriceButton);
 		$container->add($addPriceButton);
-
-		return $container;
-		}
-
-	private function getQuestion(\App\Record\GaEvent $event, \PHPFUI\Form $form) : \PHPFUI\Container
-		{
-		$container = new \PHPFUI\Container();
-
-		$container->add(new \PHPFUI\Input\Text('question', 'Question to ask riders', $event->question));
-		$answers = $this->gaAnswerTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId))->addOrderBy('ordering')->getRecordCursor();
-		$table = new \PHPFUI\OrderableTable($this->page);
-		$table->setRecordId($recordId = 'gaAnswerId');
-		$delete = new \PHPFUI\AJAX('deleteAnswer', 'Permanently delete this answer?');
-		$delete->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast').remove();");
-		$this->page->addJavaScript($delete->getPageJS());
-		$table->setHeaders(['answer' => 'Answer', 'del' => 'Del']);
-		$table->setWidths(['90%', '10%']);
-
-		foreach ($answers as $answer)
-			{
-			$id = (string)$answer->gaAnswerId;
-			$row = $answer->toArray();
-			$row['gaAnswerId'] = $id;
-			$row['answer'] = new \PHPFUI\Input\Text("answer[{$id}]", '', $answer->answer);
-			$row['answer'] .= new \PHPFUI\Input\Hidden("gaAnswerId[{$id}]", $answer->gaAnswerId);
-			$row['answer'] .= new \PHPFUI\Input\Hidden("ordering[{$id}]", $answer->ordering);
-			$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-			$icon->addAttribute('onclick', $delete->execute([$recordId => $id]));
-			$row['del'] = $icon;
-			$table->addRow($row);
-			}
-		$container->add($table);
-		$addAnswerButton = new \PHPFUI\Button('Add Answer');
-		$addAnswerButton->addClass('success');
-		$form->saveOnClick($addAnswerButton);
-		$this->addAnswerModal($event, $addAnswerButton);
-		$container->add($addAnswerButton);
 
 		return $container;
 		}
@@ -334,37 +293,68 @@ class EventEdit
 		return $requiredFields;
 		}
 
-	private function getRoute(\App\Record\GaEvent $event, \PHPFUI\Form $form) : \PHPFUI\Container
+	private function getSelectionEditor(\App\Record\GaOption $option = new \App\Record\GaOption()) : \PHPFUI\Form
 		{
-		$container = new \PHPFUI\Container();
-		$this->gaRideTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId))->addOrderBy('distance');
+		$form = new \PHPFUI\Form($this->page);
+		$form->add($this->getOptionFields($option));
 
-		$table = new \PHPFUI\Table();
-		$table->setRecordId($recordId = 'gaRideId');
-		$delete = new \PHPFUI\AJAX('deleteRoute', 'Permanently delete this route?');
-		$delete->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast').remove();");
-		$this->page->addJavaScript($delete->getPageJS());
-		$table->setHeaders(['distance' => 'Distance', 'startTime' => 'Start Time', 'endTime' => 'End Time',
-			'extraPrice' => 'Extra Price', 'edit' => 'Edit', 'del' => 'Del', ]);
+		$table = new \PHPFUI\OrderableTable($this->page);
+		$table->setRecordId($recordId = 'gaSelectionId');
+		$deleteSelection = new \PHPFUI\AJAX('deleteSelection', 'Permanently delete this selection?');
+		$deleteSelection->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast').remove()");
+		$this->page->addJavaScript($deleteSelection->getPageJS());
 
-		foreach ($this->gaRideTable->getRecordCursor() as $route)
+		$headers = ['selectionName' => 'Selection', 'additionalPrice' => 'Additional Price', 'del' => 'Del', ];
+		$table->setHeaders($headers);
+
+		foreach ($option->GaSelectionChildren as $selection)
 			{
-			$row = $route->toArray();
-			$id = $route->gaRideId;
-			$editIcon = new \PHPFUI\FAIcon('far', 'edit', '/GA/editRoute/' . $id);
-			$row['edit'] = $editIcon;
-			$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-			$icon->addAttribute('onclick', $delete->execute([$recordId => $id]));
-			$row['del'] = $icon;
+			$row = $selection->toArray();
+			$row['selectionName'] = new \PHPFUI\Input\Text("selectionName[{$selection->gaSelectionId}]", '', $selection->selectionName);
+			$row['selectionName'] .= new \PHPFUI\Input\Hidden("gaSelectionId[{$selection->gaSelectionId}]", (string)$selection->gaSelectionId);
+			$row['selectionName'] .= new \PHPFUI\Input\Hidden("ordering[{$selection->gaSelectionId}]", (string)$selection->ordering);
+			$row['additionalPrice'] = new \PHPFUI\Input\Number("additionalPrice[{$selection->gaSelectionId}]", '', \number_format($selection->additionalPrice ?? 0.0, 2));
+
+			if (! \count($selection->GaRiderSelectionChildren))
+				{
+				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
+				$icon->addAttribute('onclick', $deleteSelection->execute([$recordId => $selection->gaSelectionId]));
+				$row['del'] = $icon;
+				}
 			$table->addRow($row);
 			}
-		$container->add($table);
-		$addRouteButton = new \PHPFUI\Button('Add Route');
-		$form->saveOnClick($addRouteButton);
-		$this->addRouteModal($event, $addRouteButton);
-		$container->add($addRouteButton);
+		$form->add($table);
 
-		return $container;
+		$buttonGroup = new \PHPFUI\ButtonGroup();
+		$buttonGroup->addButton(new \PHPFUI\Submit('Save Option'));
+		$addSelectionButton = new \PHPFUI\Button('Add Selection');
+		$form->saveOnClick($addSelectionButton);
+		$addSelectionButton->addClass('success');
+
+		$modal = new \PHPFUI\Reveal($this->page, $addSelectionButton);
+		$modalForm = new \PHPFUI\Form($this->page);
+		$modalForm->setAreYouSure(false);
+		$modal->addClass('large');
+		$modalForm->add(new \PHPFUI\SubHeader('Add A Selection'));
+		$modalForm->add(new \PHPFUI\Input\Hidden('gaEventId', (string)$option->gaEventId));
+		$modalForm->add(new \PHPFUI\Input\Hidden('gaOptionId', (string)$option->gaOptionId));
+		$modalForm->add(new \PHPFUI\Input\Hidden('ordering', '0'));
+		$selectionName = new \PHPFUI\Input\Text('selectionName', 'Selection Name');
+		$additionalPrice = new \PHPFUI\Input\Number('additionalPrice', 'Additional Price');
+		$modalForm->add(new \PHPFUI\MultiColumn($selectionName, $additionalPrice));
+
+		$modalForm->add($modal->getButtonAndCancel(new \PHPFUI\Submit('Add Selection')));
+		$modal->add($modalForm);
+
+		$buttonGroup->addButton($addSelectionButton);
+		$closeButton = new \PHPFUI\Button('Close');
+		$closeButton->addAttribute('aria-label', 'Close')->addAttribute('data-close');
+		$closeButton->addClass('hollow')->addClass('secondary');
+
+		$buttonGroup->addButton($closeButton);
+		$form->add($buttonGroup);
+
+		return $form;
 		}
 
 	private function getSignupEmail(\App\Record\GaEvent $event, \App\UI\ErrorFormSaver $form) : \PHPFUI\Container
@@ -392,71 +382,89 @@ class EventEdit
 		{
 		if (\App\Model\Session::checkCSRF())
 			{
-			if (isset($_POST['action']))
+			$post = $_POST;
+
+			if (isset($post['action']))
 				{
-				switch ($_POST['action'])
+				switch ($post['action'])
 					{
-					case 'deleteRoute':
-
-						$gaRide = new \App\Record\GaRide((int)$_POST['gaRideId']);
-						$gaRide->delete();
-						$this->page->setResponse($_POST['gaRideId']);
-
-						break;
-
-					case 'deleteAnswer':
-						$gaAnswer = new \App\Record\GaAnswer((int)$_POST['gaAnswerId']);
-						$gaAnswer->delete();
-						$this->page->setResponse($_POST['gaAnswerId']);
-
-						break;
-
 					case 'deletePrice':
-						$gaPriceDate = new \App\Record\GaPriceDate((int)$_POST['gaPriceDateId']);
+						$gaPriceDate = new \App\Record\GaPriceDate((int)$post['gaPriceDateId']);
 						$gaPriceDate->delete();
-						$this->page->setResponse($_POST['gaPriceDateId']);
+						$this->page->setResponse($post['gaPriceDateId']);
+
+						break;
+
+					case 'deleteOption':
+						$gaOption = new \App\Record\GaOption();
+						$gaOption->gaOptionId = (int)$post['gaOptionId'];
+						$gaOption->delete();
+						$this->page->setResponse($post['gaOptionId']);
+
+						break;
+
+					case 'deleteSelection':
+						$gaSelection = new \App\Record\GaSelection();
+						$gaSelection->gaSelectionId = (int)$post['gaSelectionId'];
+						$gaSelection->delete();
+						$this->page->setResponse($post['gaSelectionId']);
 
 						break;
 
 					case 'Add':
-						unset($_POST['gaEventId']);
+						unset($post['gaEventId']);
 						$gaEvent = new \App\Record\GaEvent();
-						$gaEvent->setFrom($_POST);
+						$gaEvent->setFrom($post);
 						$gaEventId = $gaEvent->insert();
 						$this->page->redirect('/GA/edit/' . $gaEventId);
 
 						break;
 					}
 				}
-			elseif (isset($_POST['submit']))
+			elseif (isset($post['submit']))
 				{
-				if ('Add Route' == $_POST['submit'])
+				if ('Add Price' == $post['submit'])
 					{
-					unset($_POST['gaRideId']);
-					$gaRide = new \App\Record\GaRide();
-					$gaRide->setFrom($_POST);
-					$gaRide->insert();
-					$this->page->redirect();
-					}
-				elseif ('Add Price' == $_POST['submit'])
-					{
-					unset($_POST['gaPriceDateId']);
+					unset($post['gaPriceDateId']);
 					$gaPriceDate = new \App\Record\GaPriceDate();
-					$gaPriceDate->setFrom($_POST);
+					$gaPriceDate->setFrom($post);
 					$gaPriceDate->insert();
 					$this->page->redirect();
 					}
-				elseif ('Add Answer' == $_POST['submit'])
+				elseif ('Add Option' == $post['submit'])
 					{
-					unset($_POST['gaAnswerId']);
-					$gaAnswer = new \App\Record\GaAnswer();
-					$gaAnswer->setFrom($_POST);
-					$gaAnswer->insert();
+					$option = new \App\Record\GaOption();
+					$option->setFrom($post);
+					$option->insert();
 					$this->page->redirect();
 					}
-				elseif ($this->testText == $_POST['submit'])
+				elseif ('Add Selection' == $post['submit'])
 					{
-					$gaEvent = new \App\Record\GaEvent($_POST['gaEventId']);
+					$selection = new \App\Record\GaSelection();
+					$selection->setFrom($post);
+					$selection->insert();
+					$this->page->redirect();
+					}
+				elseif ('Save Option' == $post['submit'])
+					{
+					$option = new \App\Record\GaOption($post['gaOptionId']);
+					$option->optionName = $post['optionName'];
+					$option->required = (int)$post['required'];
+					$option->price = (float)$post['price'];
+					$option->update();
+					$gaSelectionTable = new \App\Table\GaSelection();
+					$ordering = 0;
+
+					foreach ($post['ordering'] as &$value)
+						{
+						$value = ++$ordering;
+						}
+					$gaSelectionTable->updateFromTable($post);
+					$this->page->redirect();
+					}
+				elseif ($this->testText == $post['submit'])
+					{
+					$gaEvent = new \App\Record\GaEvent($post['gaEventId']);
 					$model = new \App\Model\GeneralAdmission();
 					$rider = new \App\Record\GaRider();
 					$sender = \App\Model\Session::signedInMemberRecord();
@@ -468,14 +476,11 @@ class EventEdit
 					$rider->email = $sender->email;
 					$rider->firstName = $sender->firstName;
 					$rider->gaEvent = $gaEvent;
-//					$rider->gaRideId
 					$rider->lastName = $sender->lastName;
 					$rider->memberId = $sender->memberId;
 					$rider->pending = 0;
 					$rider->phone = $sender->cellPhone;
-//					$rider->pricePaid =
 					$rider->prize = 0;
-					$rider->referral = 0;
 					$rider->signedUpOn = \date('Y-m-d H:i:s');
 					$rider->state = $membership->state;
 					$rider->town = $membership->town;

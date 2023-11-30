@@ -14,6 +14,7 @@ class Statistics implements \Stringable
 		$container = new \PHPFUI\Container();
 		$gaRiderTable = new \App\Table\GaRider();
 		$gaRiderTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $this->event->gaEventId));
+		$gaRiderTable->addOrderBy('signedUpOn');
 		$members = $nonMembers = $paidRiders = $unpaidRiders = 0;
 		$routes = $incentivesClaimed = $answers = [];
 
@@ -29,30 +30,6 @@ class Statistics implements \Stringable
 					{
 					$nonMembers++;
 					}
-
-				if (! isset($answers[$rider->referral]))
-					{
-					$answers[$rider->referral] = 0;
-					}
-				++$answers[$rider->referral];
-
-				if (isset($routes[$rider->gaRideId]))
-					{
-					$routes[(int)$rider->gaRideId] += 1;
-					}
-				else
-					{
-					$routes[(int)$rider->gaRideId] = 1;
-					}
-
-				if (isset($incentivesClaimed[$rider->gaIncentiveId]))
-					{
-					$incentivesClaimed[(int)$rider->gaIncentiveId] += 1;
-					}
-				else
-					{
-					$incentivesClaimed[(int)$rider->gaIncentiveId] = 1;
-					}
 				$paidRiders++;
 				}
 			else
@@ -64,126 +41,112 @@ class Statistics implements \Stringable
 		$container->add(new \PHPFUI\Header("{$unpaidRiders} unpaid riders.", 6));
 		$container->add(new \PHPFUI\Header("{$members} club members.", 6));
 		$container->add(new \PHPFUI\Header("{$nonMembers} non members.", 6));
-		$gaIncentivesTable = new \App\Table\GaIncentive();
-		$gaIncentivesTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $this->event->gaEventId));
 
-		if (\count($gaIncentivesTable))
+		$options = $this->event->GaOptionChildren;
+		$accordion = new \PHPFUI\Accordion();
+
+		foreach ($options as $option)
 			{
-			$container->add(new \PHPFUI\SubHeader('Incentives Selected'));
-			$table = new \PHPFUI\Table();
-			$table->setHeaders(['incentive' => 'Incentive', 'number' => 'Count']);
-			$total = 0;
-
-			foreach ($incentivesClaimed as $key => $value)
-				{
-				$total += $value;
-				$incentive = new \App\Record\GaIncentive($key);
-				$description = $incentive->empty() ? 'Not Selected' : $incentive->description;
-				$table->addRow(['incentive' => $description, 'number' => $value]);
-				}
-			$table->addRow(['incentive' => '<b>Grand Total</b>', 'number' => "<b>{$total}</b>"]);
-			$container->add($table);
+			$accordion->addTab($option->optionName, $this->getOptionSummary($option));
 			}
-		$gaAnswerTable = new \App\Table\GaAnswer();
-		$gaAnswerTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $this->event->gaEventId));
+		$container->add($accordion);
 
-		if (\count($gaAnswerTable))
-			{
-			$container->add(new \PHPFUI\SubHeader($this->event->question));
-			$table = new \PHPFUI\Table();
-			$table->setHeaders(['answer' => 'Answer', 'number' => 'Count']);
-			$total = $value = 0;
-
-			foreach ($answers as $key => $value)
-				{
-				$total += $value;
-				$answer = new \App\Record\GaAnswer($key);
-
-				if (! $answer->loaded())
-					{
-					$answer->answer = 'Not Selected (member)';
-					}
-				$table->addRow(['answer' => $answer['answer'], 'number' => $value]);
-				}
-			$table->addRow(['answer' => '<b>Grand Total</b>', 'number' => "<b>{$total}</b>"]);
-			$container->add($table);
-			}
 		$container->add(new \PHPFUI\SubHeader('Sign Up Trends'));
 
-		$gaRideTable = new \App\Table\GaRide();
-		$gaRideTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $this->event->gaEventId))->addOrderBy('distance');
-		$table = new \PHPFUI\Table();
-		$table->addHeader('week', 'Week Starting');
-		$table->addHeader((string)0, 'None');
+		$headers = ['week' => 'Week Starting'];
+		$dayOfWeek = [];
 
-		foreach ($gaRideTable->getRecordCursor() as $ride)
+		for ($i = 1; $i <= 7; ++$i)
 			{
-			$table->addHeader($ride->gaRideId, $ride->distance);
+			$dow = \date('D', \strtotime(\App\Tools\Date::toString($i)));
+			$dayOfWeek["<b>{$dow}</b>"] = $dow;
 			}
-		$table->addHeader('total', 'Total');
-		$table->addHeader('cume', 'Cume');
-		$riders = $gaRiderTable->getRidersBySignup($this->event);
+
+		foreach ($dayOfWeek as $dow)
+			{
+			$headers[$dow] = $dow;
+			}
+		$headers['total'] = 'Total';
+		$headers['cume'] = 'Cume';
+
+		$table = new \PHPFUI\Table();
+		$table->setHeaders($headers);
+		$riders = $gaRiderTable->getRecordCursor();
 
 		if (\count($riders))
 			{
-
-			$baseDate = \unixtojd(\strtotime((string)$riders->current()->signedUpOn));
+			$baseDate = \App\Tools\Date::fromString(\substr($riders->current()->signedUpOn, 0, 10));
 			$baseDate += 7 - ($baseDate % 7);
 			$baseDate -= 7;
+			$rideCounts = [];
 			$rideTotals = [];
+
+			foreach ($dayOfWeek as $dow)
+				{
+				$rideCounts[$dow] = 0;
+				$rideTotals[$dow] = 0;
+				}
 			$cume = $total = 0;
 			$endDate = $baseDate + 6;
-			$rideCounts = [];
 			$date = \App\Tools\Date::today();
 
 			foreach ($riders as $rider)
 				{
-				$date = \unixtojd(\strtotime((string)$rider->signedUpOn));
+				$date = \App\Tools\Date::fromString(\substr($rider->signedUpOn, 0, 10));
 
 				if ($date > $endDate)
 					{
-					$rideCounts['week'] = \App\Tools\Date::toString($date);
+					$rideCounts['week'] = \App\Tools\Date::toString($baseDate);
 					$rideCounts['cume'] = $cume;
 					$rideCounts['total'] = $total;
 					$table->addRow($rideCounts);
 					$rideCounts = [];
+
+					foreach ($dayOfWeek as $dow)
+						{
+						$rideCounts[$dow] = 0;
+						}
 					$total = 0;
 					$baseDate += 7;
 					$endDate = $baseDate + 6;
 					}
+
+				$dow = \date('D', \strtotime($rider->signedUpOn));
+				++$rideCounts[$dow];
+				++$rideTotals[$dow];
 				$total++;
 				$cume++;
-				$gaRideId = (int)$rider->gaRideId;
-
-				if (! isset($rideCounts[$gaRideId]))
-					{
-					$rideCounts[$gaRideId] = 0;
-					}
-				$rideCounts[$gaRideId]++;
-
-				if (! isset($rideTotals[$gaRideId]))
-					{
-					$rideTotals[$gaRideId] = 0;
-					}
-				$rideTotals[$gaRideId]++;
 				}
-			$rideCounts['week'] = \App\Tools\Date::toString($date);
-			$rideCounts['cume'] = $cume;
-			$rideCounts['total'] = $total;
-			$table->addRow($rideCounts);
-			$rideTotals['week'] = 'Totals';
-			$rideTotals['cume'] = $cume;
-			$rideTotals['total'] = $cume;
-
-			foreach ($rideTotals as &$value)
-				{
-				$value = "<b>{$value}</b>";
-				}
-			unset($value);
+			$rideTotals['week'] = '<b>Day Totals</b>';
+			$table->addRow(\array_flip($dayOfWeek));
 			$table->addRow($rideTotals);
 			$container->add($table);
 			}
 
 		return (string)"{$container}";
+		}
+
+	private function getOptionSummary(\App\Record\GaOption $option) : \PHPFUI\Container
+		{
+		$table = new \PHPFUI\Table();
+		$gaRiderSelectionTable = new \App\Table\GaRiderSelection();
+		$gaRiderSelectionTable->addJoin('gaSelection');
+		$condition = new \PHPFUI\ORM\Condition('gaEventId', $option->gaEventId);
+		$condition->and(new \PHPFUI\ORM\Literal('gaSelection.gaOptionId'), $option->gaOptionId);
+		$gaRiderSelectionTable->setWhere($condition);
+		$gaRiderSelectionTable->addGroupBy(new \PHPFUI\ORM\Literal('gaSelection.gaSelectionId'));
+		$gaRiderSelectionTable->addOrderBy(new \PHPFUI\ORM\Literal('gaSelection.ordering'));
+		$gaRiderSelectionTable->addSelect('selectionName');
+		$gaRiderSelectionTable->addSelect(new \PHPFUI\ORM\Literal('count(*)'), 'count');
+
+		foreach ($gaRiderSelectionTable->getArrayCursor() as $row)
+			{
+			$table->addRow(\array_values($row));
+			}
+
+		$container = new \PHPFUI\Container();
+		$container->add($table);
+
+		return $container;
 		}
 	}

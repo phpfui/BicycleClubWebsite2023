@@ -14,7 +14,7 @@ function makeDate(string $date) : string
 	return \sprintf('%04d', (int)$year) . '-' . \sprintf('%2d', (int)$month) . '-' . \sprintf('%02d', (int)$day);
 	}
 
-$csvReader = new \App\Tools\CSVReader('Paypal Oct1_20 2022.CSV');
+$csvReader = new \App\Tools\CSV\FileReader('Paypal Oct1_20 2022.CSV');
 
 /**
  * Date

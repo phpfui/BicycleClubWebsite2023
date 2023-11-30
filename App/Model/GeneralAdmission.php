@@ -49,6 +49,20 @@ class GeneralAdmission
 		$this->message .= "Address: {$rider->address} {$rider->town}, {$rider->state} {$rider->zip}<br>";
 		$this->message .= "Phone:: {$rider->phone}<br>";
 		$this->message .= "Emergency Contact: {$rider->contact} Number: {$rider->contactPhone}<br></p>";
+		$options = $rider->optionsSelected;
+
+		if (\count($options))
+			{
+			$this->message .= '<p><strong>Rider Options Selected:</strong></p>';
+			$ul = new \PHPFUI\UnorderedList();
+
+			foreach ($options as $option)
+				{
+				$ul->addItem(new \PHPFUI\ListItem("<strong>{$option->optionName}</strong>"));
+				$ul->addItem(new \PHPFUI\ListItem($option->selectionName));
+				}
+			$this->message .= $ul;
+			}
 		}
 
 	/**

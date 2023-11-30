@@ -37,6 +37,7 @@ class Registration
 			{
 			// no record yet, setup for a post and redirect
 			$submit = new \PHPFUI\Submit('Add Event Registration', 'action');
+			$submit->addClass('success');
 			$form = new \PHPFUI\Form($this->page);
 			}
 		elseif ($reservation->pricePaid && empty($reservation->paymentId))
@@ -183,15 +184,19 @@ class Registration
 			$billing->add($multiColumn);
 			$multiColumn = new \PHPFUI\MultiColumn();
 			$address = new \PHPFUI\Input\Text('address', 'Street Address', $reservation->address);
+			$address->setRequired();
 			$multiColumn->add($address);
 			$town = new \PHPFUI\Input\Text('town', 'Town', $reservation->town);
+			$town->setRequired();
 			$multiColumn->add($town);
 			$billing->add($multiColumn);
 
 			$multiColumn = new \PHPFUI\MultiColumn();
 			$state = new \PHPFUI\Input\Text('state', 'State', $reservation->state);
+			$state->setRequired();
 			$multiColumn->add($state);
 			$zip = new \PHPFUI\Input\Zip($this->page, 'zip', 'Zip', $reservation->zip);
+			$zip->setRequired();
 			$multiColumn->add($zip);
 			$multiColumn->add(new \App\UI\Display('Price', '$' . \number_format($reservation->pricePaid, 2)));
 			$billing->add($multiColumn);

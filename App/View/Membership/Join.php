@@ -195,6 +195,8 @@ class Join
 				$bikeShop = new \App\Record\BikeShop($_POST['bikeShopId']);
 				$membership->affiliation = $bikeShop->fullName();
 				$membership->update();
+				\App\Model\Session::unregisterMember();
+				\App\Model\Session::registerMember($member);
 				\App\Model\Session::setFlash('success', 'Welcome to the ' . $this->page->value('clubName'));
 
 				$this->page->redirect('/Home');
@@ -347,7 +349,7 @@ class Join
 		{
 		$membership = $member->membership;
 
-		if (\str_contains($membership->affiliation, $this->page->value('FreeMembershipQR')))
+		if ($membership->affiliation && \str_contains($membership->affiliation, $this->page->value('FreeMembershipQR')))
 			{
 			$membership->pending = 0;
 			$membership->lastRenewed = null;

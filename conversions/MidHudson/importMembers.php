@@ -42,7 +42,7 @@ echo "Done importing\n";
 function insertMembers(string $csvName) : int
 	{
 	$memberNames = [];
-	$members = new \App\Tools\CSVReader($csvName);
+	$members = new \App\Tools\CSV\FileReader($csvName);
 	$insertedCount = 0;
 
 	foreach ($members as $row)

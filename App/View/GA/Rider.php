@@ -13,10 +13,7 @@ class Rider
 				$rider = new \App\Record\GaRider();
 				$rider->setFrom($_POST);
 				$rider->signedUpOn = \date('Y-m-d H:i:s');
-				$rider->gaRideId = 0;
 				$rider->memberId = 0;
-				$rider->referral = 0;
-				$rider->gaIncentiveId = 0;
 				$rider->prize = 0;
 
 				$id = $rider->insert();
@@ -38,7 +35,7 @@ class Rider
 			}
 		}
 
-	public function edit(\App\Record\GaRider $rider) : \App\UI\ErrorFormSaver
+	public function edit(\App\Record\GaRider $rider, ?\PHPFUI\Button $backButton = null) : \App\UI\ErrorFormSaver
 		{
 		if ($rider->loaded())
 			{
@@ -47,11 +44,24 @@ class Rider
 
 			if ($form->save())
 				{
+				if (\is_array($_POST['gaOptionId']))
+					{
+					$gaRiderSelectionTable = new \App\Table\GaRiderSelection();
+					$gaRiderSelectionTable->updateFromPost($_POST);
+					}
+
 				return $form;
 				}
 			$form->add($this->getEditFields($rider));
-			$form->add(new \PHPFUI\Input\Hidden('gaEventId', (string)$rider->gaEventId));
-			$form->add($submit);
+			$buttonGroup = new \PHPFUI\ButtonGroup();
+			$buttonGroup->addButton($submit);
+
+			if ($backButton)
+				{
+				$form->saveOnClick($backButton);
+				$buttonGroup->addButton($backButton);
+				}
+			$form->add($buttonGroup);
 
 			return $form;
 			}
@@ -81,6 +91,7 @@ class Rider
 			}
 		$container->add($this->getRiderSettings($rider, $event));
 		$container->add($this->getAddress($rider));
+		$container->add($this->getOptions($rider));
 
 		if ($this->page->isAuthorized('Add Registration'))
 			{
@@ -88,7 +99,6 @@ class Rider
 			}
 		$container->add(new \PHPFUI\Input\Hidden('gaRiderId', (string)$rider->gaRiderId));
 		$container->add(new \PHPFUI\Input\Hidden('memberId', (string)$rider->memberId));
-		$container->add(new \PHPFUI\Input\Hidden('gaRiderId', (string)$rider->gaRiderId));
 
 		return $container;
 		}
@@ -110,27 +120,14 @@ class Rider
 
 		$view->addCustomColumn('phone', static fn (array $rider) => \PHPFUI\Link::phone($rider['phone']));
 
-		$view->setHeaders(\array_merge($sortableHeaders, $otherHeaders))
-			->setSortableColumns(\array_keys($sortableHeaders));
+		$view->setHeaders(\array_merge($sortableHeaders, $otherHeaders))->setSortableColumns(\array_keys($sortableHeaders));
 		unset($sortableHeaders['pending']);
 		$view->setSearchColumns(\array_keys($sortableHeaders));
 
 		return $view;
-
-//			if (! empty($rider->contactPhone))
-//				{
-//				if (empty($rider->contact))
-//					{
-//					$rider->contact = \PHPFUI\Link::phone($rider->contactPhone);
-//					}
-//				else
-//					{
-//					$rider->contact = new \PHPFUI\ToolTip(\PHPFUI\Link::phone($rider->contactPhone, $rider->contact), $rider->contactPhone);
-//					}
-//				}
 		}
 
-	private function getAddress(\App\Record\GaRider $rider, bool $requireAllAddressFields = false) : \PHPFUI\FieldSet
+	private function getAddress(\App\Record\GaRider $rider, bool $requireAllAddressFields = true) : \PHPFUI\FieldSet
 		{
 		$fieldSet = new \PHPFUI\FieldSet('Rider Address');
 		$address = new \PHPFUI\Input\Text('address', 'Street Address', $rider->address);
@@ -166,7 +163,25 @@ class Rider
 		$member = $rider->memberId ? $thumbsUp . ' &nbsp; &nbsp; &nbsp; &nbsp; ' . $editIcon : new \PHPFUI\FAIcon('far', 'thumbs-down');
 		$fieldSet->add(new \App\UI\Display('Club Member', $member));
 
-		// add gaIncentiveId, prize
+		return $fieldSet;
+		}
+
+	private function getOptions(\App\Record\GaRider $rider) : string
+		{
+		$options = $rider->gaEvent->GaOptionChildren;
+
+		if (! \count($options))
+			{
+			return '';
+			}
+		$fieldSet = new \PHPFUI\FieldSet('Rider Options');
+
+		foreach ($options as $option)
+			{
+			$riderSelection = new \App\Record\GaRiderSelection(['gaRiderId' => $rider->gaRiderId, 'gaOptionId' => $option->gaOptionId]);
+			$fieldSet->add(new \App\View\GA\OptionPicker($option, $riderSelection->gaSelectionId ?? 0));
+			}
+
 		return $fieldSet;
 		}
 
@@ -188,27 +203,6 @@ class Rider
 		$emergencyPhone = new \App\UI\TelUSA($this->page, 'contactPhone', 'Emergency Contact Phone', $rider->contactPhone);
 		$emergencyPhone->setRequired();
 		$riderFieldset->add(new \PHPFUI\MultiColumn($emergencyContact, $emergencyPhone));
-
-		if ($event->loaded())
-			{
-			$gaAnswerTable = new \App\Table\GaAnswer();
-			$gaAnswerTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $rider->gaEventId));
-			$gaAnswerTable->addOrderBy('answer');
-			$answerCursor = $gaAnswerTable->getRecordCursor();
-
-			if (\count($answerCursor))
-				{
-				$select = new \PHPFUI\Input\Select('referral', $event->question);
-				$select->addOption('Please Select', '', 0 == $rider->referral);
-
-				foreach ($gaAnswerTable->getRecordCursor() as $answer)
-					{
-					$select->addOption($answer->answer, $answer->gaAnswerId, $rider->referral ? $rider->referral == $answer->gaAnswerId : false);
-					}
-				$select->setRequired();
-				$riderFieldset->add($select);
-				}
-			}
 
 		return $riderFieldset;
 		}

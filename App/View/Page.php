@@ -596,7 +596,7 @@ class Page extends \PHPFUI\Page
 				// so we want to check if it has now been saved
 				$poll = $pollModel->getRequiredPoll();
 
-				if ($poll && ! \App\Model\Session::hasExpired() && isset($_SESSION['expires']))
+				if ($poll && ! \App\Model\Session::signedInMembershipRecord()->pending)
 					{
 					$this->addRequiredPage($pollRequired);
 					}

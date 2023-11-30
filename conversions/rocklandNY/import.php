@@ -13,7 +13,7 @@ echo '<pre>';
 $membershipsTable = new \App\CRUD\Memberships();
 $membersTable = new \App\CRUD\Members();
 
-$csv = new \App\Tools\CSVReader('../2018-11-15 Members Rockland Bicycling Club.csv');
+$csv = new \App\Tools\CSV\FileReader('../2018-11-15 Members Rockland Bicycling Club.csv');
 
 $permissions = new \App\Model\DBPermissions();
 

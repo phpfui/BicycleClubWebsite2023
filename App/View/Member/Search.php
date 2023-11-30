@@ -145,7 +145,6 @@ class Search implements \Stringable
 
 		if ($this->page->isAuthorized('Visible Email Addresses'))
 			{
-
 			$advanced = new \PHPFUI\Container();
 			$advanced->add($this->generateFields($this->specialFields, $parameters));
 			$tabs->addTab('Advanced', $advanced);
@@ -164,11 +163,16 @@ class Search implements \Stringable
 		$state->addAttribute('size', (string)2);
 		$zip = new \PHPFUI\Input\Zip($this->page, 'membership_zip', 'Zip', $parameters['membership_zip']);
 		$extra->add(new \PHPFUI\MultiColumn($state, $zip));
-		$all = new \PHPFUI\Input\CheckBox('all', 'Past Members');
-		$extra->add($all);
 		$tabs->addTab('Extra', $extra);
 
 		$form->add($tabs);
+
+		if ($this->page->isAuthorized('Search Past Members'))
+			{
+			$form->add('<br>');
+			$form->add(new \PHPFUI\Input\CheckBox('all', 'Include Past Members'));
+			}
+
 		$submit = new \PHPFUI\Submit('Search');
 		$form->add($modal->getButtonAndCancel($submit));
 		$modal->add($form);

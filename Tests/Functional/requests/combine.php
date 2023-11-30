@@ -16,7 +16,7 @@ foreach ($directory as $file)
 
 		if (\stripos($path, '.csv'))
 			{
-			$reader = new \App\Tools\CSVReader($path);
+			$reader = new \App\Tools\CSV\FileReader($path);
 
 			foreach ($reader as $row)
 				{

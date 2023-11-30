@@ -6,20 +6,18 @@ namespace App\Record;
  * @inheritDoc
  *
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\GaRider> $GaRiderChildren
- * @property \PHPFUI\ORM\RecordCursor<\App\Record\GaRide> $GaRideChildren
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\GaPriceDate> $GaPriceDateChildren
- * @property \PHPFUI\ORM\RecordCursor<\App\Record\GaIncentive> $GaIncentiveChildren
- * @property \PHPFUI\ORM\RecordCursor<\App\Record\GaAnswer> $GaAnswerChildren
+ * @property \PHPFUI\ORM\RecordCursor<\App\Record\GaSelection> $GaSelectionChildren
+ * @property \PHPFUI\ORM\RecordCursor<\App\Record\GaOption> $GaOptionChildren
  */
 class GaEvent extends \App\Record\Definition\GaEvent
 	{
 	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
-		'GaAnswerChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaAnswer::class],
-		'GaIncentiveChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaIncentive::class],
-		'GaPriceDateChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaPriceDate::class],
-		'GaRideChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaRide::class],
+		'GaOptionChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaOption::class, 'ordering'],
+		'GaPriceDateChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaPriceDate::class, 'date'],
 		'GaRiderChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaRider::class],
+		'GaSelectionChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaSelection::class, 'ordering'],
 	];
 
 	public function clean() : static
@@ -28,7 +26,6 @@ class GaEvent extends \App\Record\Definition\GaEvent
 		$this->signupMessage = \App\Tools\TextHelper::cleanUserHtml($this->signupMessage);
 		$this->cleanProperName('incentiveName');
 		$this->cleanProperName('location');
-		$this->cleanProperName('question');
 		$this->cleanProperName('registrar');
 		$this->cleanProperName('title');
 		$this->signupMessage = \App\Tools\TextHelper::cleanUserHtml($this->signupMessage);

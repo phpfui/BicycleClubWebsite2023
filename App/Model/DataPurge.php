@@ -12,7 +12,7 @@ class DataPurge
 	/**
 	 * @var array<string,\PHPFUI\ORM\Table>
 	 */
-	private array $tables = [];
+	private array $exceptionTables = [];
 
 	public function addAllTables() : static
 		{
@@ -29,7 +29,7 @@ class DataPurge
 
 	public function addExceptionTable(\PHPFUI\ORM\Table $table) : static
 		{
-		$this->tables[$table->getTableName()] = $table;
+		$this->exceptionTables[$table->getTableName()] = $table;
 
 		return $this;
 		}
@@ -38,7 +38,7 @@ class DataPurge
 		{
 
 		// save off records in each exception table
-		foreach ($this->tables as $table)
+		foreach ($this->exceptionTables as $table)
 			{
 			$tableName = $table->getTableName();
 			$this->data[$tableName] = [];
@@ -81,7 +81,7 @@ class DataPurge
 			exit;
 			}
 
-		foreach ($this->tables as $table)
+		foreach ($this->exceptionTables as $table)
 			{
 			$tableName = $table->getTableName();
 
@@ -103,7 +103,7 @@ class DataPurge
 
 	public function removeExceptionTable(\PHPFUI\ORM\Table $table) : static
 		{
-		unset($this->tables[$table->getTableName()]);
+		unset($this->exceptionTables[$table->getTableName()]);
 
 		return $this;
 		}

@@ -44,13 +44,13 @@ class GASignInSheets
 				60, // firstName
 				45, // Emergency Phone
 				65, // Emergency Contact
-				5, ]); // Incentive ID
+			]);
 			$pdf->SetHeader(['Tag',
 				'Last',
 				'First',
 				'Emer Phone',
 				'Emergency Contact',
-				'', ]);
+			]);
 
 			$title = $titleBase = $this->event->title;
 			$lastName = $riders->current()['lastName'];
@@ -89,7 +89,7 @@ class GASignInSheets
 					$riderArray['firstName'],
 					$riderArray['contactPhone'],
 					$riderArray['contact'],
-					-1 == $rider->gaIncentiveId ? '*' : '', ]);
+				]);
 				$pdf->SetDocumentTitle($title . ' (continued)');
 				}
 			$pdf->Output('I', "Preregistration-{$this->event->gaEventId}.pdf");

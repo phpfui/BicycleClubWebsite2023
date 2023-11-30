@@ -3,10 +3,17 @@
 namespace App\Record;
 
 /**
- * @inheritDoc
+ * @property \PHPFUI\ORM\DataObjectCursor $optionsSelected
+ * @property \PHPFUI\ORM\RecordCursor<\App\Record\GaRiderSelection> $GaRiderSelectionChildren
  */
 class GaRider extends \App\Record\Definition\GaRider
 	{
+	/** @var array<string, array<string>> */
+	protected static array $virtualFields = [
+		'optionsSelected' => [\App\DB\GARiderOptions::class],
+		'GaRiderSelectionChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaRiderSelection::class],
+	];
+
 	public function clean() : static
 		{
 		$this->cleanEmail('email');

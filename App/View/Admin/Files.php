@@ -4,9 +4,18 @@ namespace App\View\Admin;
 
 class Files
 	{
+	private bool $uploadable = true;
+
 	public function __construct(private readonly \App\View\Page $page, private readonly \App\Model\File $fileModel)
 		{
 		$this->processRequest();
+		}
+
+	public function disableUpload(bool $disable = true) : static
+		{
+		$this->uploadable = ! $disable;
+
+		return $this;
 		}
 
 	public function list() : \PHPFUI\Container
@@ -55,6 +64,11 @@ class Files
 			}
 
 		$container = new \PHPFUI\Container();
+
+		if (! \count($files))
+			{
+			$container->add(new \PHPFUI\SubHeader('No waivers found'));
+			}
 		$container->add($table);
 
 		$parameters['p'] = 'PAGE';
@@ -63,9 +77,12 @@ class Files
 		$paginator->center();
 		$container->add($paginator);
 
-		$button = new \PHPFUI\Button('Upload File');
-		$this->getFileUploadModal($button);
-		$container->add(new \App\UI\CancelButtonGroup($button));
+		if ($this->uploadable)
+			{
+			$button = new \PHPFUI\Button('Upload File');
+			$this->getFileUploadModal($button);
+			$container->add(new \App\UI\CancelButtonGroup($button));
+			}
 
 		return $container;
 		}

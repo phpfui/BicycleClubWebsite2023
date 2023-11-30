@@ -40,7 +40,7 @@ class ZoHo extends \App\Cron\BaseJob
 		echo "\n\n";
 
 //		$fileName = PROJECT_ROOT . '/conversions/soundCyclistsCT/zoho/tables/Ride Library.csv';
-//		$reader = new \App\Tools\CSVReader($fileName);
+//		$reader = new \App\Tools\CSV\FileReader($fileName);
 
 		$token = $settingTable->value('zohoToken');
 		$recordId = '218933000012623003';

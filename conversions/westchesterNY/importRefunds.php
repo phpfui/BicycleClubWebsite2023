@@ -8,7 +8,7 @@ include __DIR__ . '/../../common.php';
 echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 
 $gaRiderTable = new \App\CRUD\GaRider();
-$csvReader = new \App\Tools\CSVReader('../gadonations.csv');
+$csvReader = new \App\Tools\CSV\FileReader('../gadonations.csv');
 
 $noRefunds = [];
 

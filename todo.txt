@@ -1,10 +1,8 @@
 Quick Add needs options question
 
-Add Options to email
+Home page days back customization
 
 Dedicated registration page without menus and headers
-
-Bike shop program no payment needed
 
 Google Calendar meetings not working
 

@@ -69,15 +69,6 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function editRoute(\App\Record\GaRide $gaRide = new \App\Record\GaRide()) : void
-		{
-		if ($this->page->addHeader('Edit Route'))
-			{
-			$view = new \App\View\GA\EventEdit($this->page);
-			$this->page->addPageContent($view->editRoute($gaRide));
-			}
-		}
-
 	public function email() : void
 		{
 		if ($this->page->addHeader($label = 'Email Registrants'))
@@ -142,8 +133,8 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Manage Dates'))
 			{
+			$this->page->addPageContent((new \PHPFUI\Button('Add Event', '/GA/edit/0'))->addClass('success'));
 			$this->page->addPageContent(new \App\View\GA\EventPicker($this->page, \App\View\GA\EventPicker::TABLE, 'Existing Events', '/GA/edit'));
-			$this->page->addPageContent(new \PHPFUI\Button('Add Event', '/GA/edit/0'));
 			}
 		}
 
@@ -287,9 +278,9 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function signUpMember(\App\Record\GaEvent $event = new \App\Record\GaEvent()) : void
 		{
-		if ($this->page->addHeader('GA Sign Up'))
+		if ($this->page->addHeader('Sign Up For ' . $event->title, 'GA Sign Up'))
 			{
-			$this->signUpCommon($event);
+			$this->signUpCommon($event, false);
 			}
 		}
 
@@ -337,6 +328,19 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->page->addPageContent($unsubscribe);
 		}
 
+	public function updateRider(\App\Record\GaRider $rider = new \App\Record\GaRider()) : void
+		{
+		$this->page->setPublic();
+//		if ($this->page->isAuthorized('Edit Rider') || $rider->customerId == abs($_SESSION['customerNumber']))
+
+			$this->page->addPageContent(new \PHPFUI\Header('Update Rider'));
+			$backButton = new \PHPFUI\Button('Continue Checkout', '/GA/signUp/' . $rider->gaEventId);
+			$backButton->addClass('success');
+			$view = new \App\View\GA\Rider($this->page);
+			$this->page->addPageContent($view->edit($rider, $backButton));
+
+		}
+
 	/**
 	 * @return array<string,string>
 	 */
@@ -352,11 +356,14 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		return $row;
 		}
 
-	private function signUpCommon(\App\Record\GaEvent $event = new \App\Record\GaEvent()) : void
+	private function signUpCommon(\App\Record\GaEvent $event = new \App\Record\GaEvent(), bool $showHeader = true) : void
 		{
 		if ($event->loaded())
 			{
-			$this->page->addHeader('Sign Up For ' . $event->title, 'GA Sign Up');
+			if ($showHeader)
+				{
+				$this->page->addHeader('Sign Up For ' . $event->title, 'GA Sign Up');
+				}
 			$today = \App\Tools\Date::todayString();
 			$model = new \App\Model\GeneralAdmission();
 			$datePrice = $model->getLastRegistrationDateRecord($event);

@@ -19,11 +19,8 @@ echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 //		}
 //	}
 //
-$videoTable = new \App\Table\Video();
-$videoTable->setWhere(new \PHPFUI\ORM\Condition('fileName', '%.mp4', new \PHPFUI\ORM\Operator\NotLike()));
 
-foreach ($videoTable->getRecordCursor() as $video)
+foreach (\PHPFUI\ORM\Table::getAllTables() as $table)
 	{
-	$video->fileName = $video->fileName . '.mp4';
-	$video->update();
+	echo "{$table->getTableName()}: {$table->count()}\n";
 	}

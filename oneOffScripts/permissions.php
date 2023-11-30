@@ -10,7 +10,7 @@ echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 $permissionNameTable = new \App\Table\PermissionName();
 $permissionNameTable->setWhere(new \PHPFUI\ORM\Condition('permissionId', new \PHPFUI\ORM\Operator\GreaterThan(), 10000));
 
-$stringReader = new \App\Tools\CSVReader('strings.csv');
+$stringReader = new \App\Tools\CSV\FileReader('strings.csv');
 $strings = [];
 
 foreach ($stringReader as $row)

@@ -21,7 +21,7 @@ class Dues
 		$memberTerm = new \PHPFUI\Input\RadioGroup('MembershipTerm', 'Membership Term', $this->duesModel->MembershipTerm);
 		$memberTerm->addButton('Annual');
 		$memberTerm->addButton('12 Months');
-		$hide = 'Annual' == $this->duesModel->MembershipTerm ? 'invisible' : '';
+		$hide = 'Annual' == $this->duesModel->MembershipTerm ? '' : 'invisible';
 		$memberTerm->setRequired()->setToolTip('Annual membership terms all renew on the same month. 12 month memberships are good for 12 months from date of joining.');
 		$startMonth = new \App\UI\Month('MembershipStartMonth', 'Membership Start Month', $this->duesModel->MembershipStartMonth);
 		$startMonth->addLabelClass($hide)->addLabelClass('months');

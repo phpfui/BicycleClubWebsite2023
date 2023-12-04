@@ -135,9 +135,9 @@ class Events
 
 		$timeFields = new \PHPFUI\FieldSet('Event Times');
 		$times = new \PHPFUI\MultiColumn();
-		$startTime = new \PHPFUI\Input\Text('startTime', 'Start Time', $event->startTime);
+		$startTime = new \PHPFUI\Input\Time($this->page, 'startTime', 'Start Time', $event->startTime);
 		$times->add($startTime);
-		$endTime = new \PHPFUI\Input\Text('endTime', 'End Time', $event->endTime);
+		$endTime = new \PHPFUI\Input\Time($this->page, 'endTime', 'End Time', $event->endTime);
 		$times->add($endTime);
 		$timeFields->add($times);
 

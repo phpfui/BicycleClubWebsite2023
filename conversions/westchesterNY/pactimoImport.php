@@ -88,7 +88,7 @@ function getStoreOption(string $optionName, string $options) : \App\Record\Store
 	return $storeOption;
 	}
 
-$reader = new \App\Tools\CSVReader(PROJECT_ROOT . '/conversions/westchesterNY/Pactimo_WCC_new_DA_10.06.22.csv');
+$reader = new \App\Tools\CSV\FileReader(PROJECT_ROOT . '/conversions/westchesterNY/Pactimo_WCC_new_DA_10.06.22.csv');
 
 foreach ($reader as $row)
   {

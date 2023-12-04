@@ -127,7 +127,7 @@ function makeDate(string $mdyFormat) : ?string
 	return $retVal;
 	}
 
-function getReader(string $fileName) : \App\Tools\CSVReader
+function getReader(string $fileName) : \App\Tools\CSV\FileReader
 	{
 	$fileName = PROJECT_ROOT . '/conversions/soundCyclistsCT/zoho/tables/' . $fileName;
 
@@ -138,7 +138,7 @@ function getReader(string $fileName) : \App\Tools\CSVReader
 		exit;
 		}
 
-	return new \App\Tools\CSVReader($fileName);
+	return new \App\Tools\CSV\FileReader($fileName);
 	}
 
 $dataPurger = new \App\Model\DataPurge();
@@ -163,7 +163,7 @@ $dataPurger->addExceptionTable(new \App\Table\PhotoFolder());
 $dataPurger->addExceptionTable(new \App\Table\PublicPage());
 $dataPurger->addExceptionTable(new \App\Table\Setting());
 $dataPurger->addExceptionTable(new \App\Table\Story());
-$dataPurger->addExceptionTable(new \App\Table\UserPermissions());
+$dataPurger->addExceptionTable(new \App\Table\UserPermission());
 
 $dataPurger->purge();
 
@@ -228,6 +228,9 @@ foreach ($categoryReader as $row)
 	$pace->minSpeed = $category->minSpeed;
 	$paces[$pace->pace] = $pace->insert();
 	}
+
+// GR is really GRV, but fake it out
+$paces['GR'] = 32;
 
 /**
  * Last Name
@@ -550,7 +553,7 @@ foreach ($rideReader as $rideImport)
 	$ride->insert();
 	$rideSignup = new \App\Record\RideSignup();
 	$rideSignup->member = $ride->member;
-	$rideSignup->status = \App\Record\RideSignup::DEFINITELY_RIDING;
+	$rideSignup->status = \App\Table\RideSignup::DEFINITELY_RIDING;
 	$rideSignup->insert();
 	}
 
@@ -649,8 +652,8 @@ foreach ($RWGPSIds as $rwgpsId => $startLocationId)
 $model = new \App\Model\FileFiles();
 $model->delete('*');
 
-importTreasurerReports();
-importBoardMinutes();
+\importTreasurerReports();
+\importBoardMinutes();
 
 function addCueSheetFile(\App\Record\CueSheet $cueSheet, string $file, string $path) : void
 	{
@@ -689,7 +692,7 @@ function addCueSheetFile(\App\Record\CueSheet $cueSheet, string $file, string $p
 	\copy($importFile, $destination);
 	}
 
-function importTreasurerReports()
+function importTreasurerReports() : void
 	{
 	echo "Importing Treasurer Reports\n";
 	$member = new \App\Record\Member();
@@ -824,7 +827,7 @@ function importTreasurerReports()
 		}
 	}
 
-function importBoardMinutes()
+function importBoardMinutes() : void
 	{
 	echo "Importing Board Minutes\n";
 
@@ -958,4 +961,3 @@ function importBoardMinutes()
 			}
 		}
 	}
-

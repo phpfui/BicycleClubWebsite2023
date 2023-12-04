@@ -7,7 +7,7 @@ include __DIR__ . '/../../common.php';
 
 echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 
-$csvReader = new \App\Tools\CSVReader('../leaders.csv');
+$csvReader = new \App\Tools\CSV\FileReader('../leaders.csv');
 $csvWriter = new \App\Tools\CSVWriter('../leaderLabels.csv');
 
 $headers = ['First Name', 'Last Name', 'Street Address 1', 'City', 'State', 'Zip Code', 'Country',

@@ -9,7 +9,7 @@ echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 
 echo '<pre>';
 
-$csvReader = new \App\Tools\CSVReader('../final12202017.csv');
+$csvReader = new \App\Tools\CSV\FileReader('../final12202017.csv');
 $refunds = [];
 $count = -1;
 

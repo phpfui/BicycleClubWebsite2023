@@ -52,7 +52,7 @@ class Base extends \PHPFUI\HTMLUnitTester\Extensions
 
 				if (\stripos($path, '.csv'))
 					{
-					$reader = new \App\Tools\CSVReader($path);
+					$reader = new \App\Tools\CSV\FileReader($path);
 					$parts = \pathinfo($path);
 
 					foreach ($reader as $row)

@@ -57,7 +57,7 @@ class Member extends \PHPFUI\ORM\Table
 					}
 				}
 
-			if ($categories)
+			if (\count($categories))
 				{
 				$this->addJoin('memberCategory', 'memberId');
 				$whereCondition->and('memberCategory.categoryId', $categories, new \PHPFUI\ORM\Operator\In());

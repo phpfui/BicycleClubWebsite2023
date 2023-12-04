@@ -147,6 +147,24 @@ $dataPurger->addExceptionTable(new \App\Table\Blog());
 $dataPurger->addExceptionTable(new \App\Table\Story());
 $dataPurger->addExceptionTable(new \App\Table\Permission());
 $dataPurger->addExceptionTable(new \App\Table\PermissionGroup());
+$dataPurger->addExceptionTable(new \App\Table\BikeShop());
+$dataPurger->addExceptionTable(new \App\Table\BikeShopArea());
+$dataPurger->addExceptionTable(new \App\Table\Blog());
+$dataPurger->addExceptionTable(new \App\Table\BlogItem());
+$dataPurger->addExceptionTable(new \App\Table\Category());
+$dataPurger->addExceptionTable(new \App\Table\GaEvent());
+$dataPurger->addExceptionTable(new \App\Table\GaPriceDate());
+$dataPurger->addExceptionTable(new \App\Table\HeaderContent());
+$dataPurger->addExceptionTable(new \App\Table\Pace());
+$dataPurger->addExceptionTable(new \App\Table\Permission());
+$dataPurger->addExceptionTable(new \App\Table\PermissionGroup());
+$dataPurger->addExceptionTable(new \App\Table\Photo());
+$dataPurger->addExceptionTable(new \App\Table\PhotoFolder());
+$dataPurger->addExceptionTable(new \App\Table\PublicPage());
+$dataPurger->addExceptionTable(new \App\Table\Setting());
+$dataPurger->addExceptionTable(new \App\Table\Story());
+$dataPurger->addExceptionTable(new \App\Table\UserPermissions());
+
 $dataPurger->purge();
 
 /**
@@ -381,79 +399,6 @@ foreach ($memberships as $row)
 		}
 	}
 
-/**
- * special events
- *
- * 'additionalInfo' => ['blob', 'string', 0, true, '', false, ],
- * 'checks' => ['int(1)', 'int', 1, true, 0, false, ],
- * 'directionsUrl' => ['varchar(100)', 'string', 100, true, '', false, ],
- * 'door' => ['int(1)', 'int', 1, true, 0, false, ],
- * 'endTime' => ['varchar(20)', 'string', 20, true, '', false, ],
- * 'eventDate' => ['date', 'string', 10, false, '', false, ],
- * 'eventId' => ['int(11)', 'int', 11, false, 0, true, ],
- * 'information' => ['blob', 'string', 0, true, '', false, ],
- * 'lastRegistrationDate' => ['date', 'string', 10, false, '', false, ],
- * 'location' => ['varchar(250)', 'string', 250, true, '', false, ],
- * 'maxDiscounts' => ['int(6)', 'int', 6, false, 0, false, ],
- * 'maxReservations' => ['int(6)', 'int', 6, true, 0, false, ],
- * 'membersOnly' => ['int(1)', 'int', 1, true, 0, false, ],
- * 'newMemberDate' => ['date', 'string', 10, true, '', false, ],
- * 'newMemberDiscount' => ['decimal(6,2)', 'float', 6, false, 0, false, ],
- * 'numberReservations' => ['int(2)', 'int', 2, true, 0, false, ],
- * 'organizer' => ['int(6)', 'int', 6, true, 0, false, ],
- * 'paypal' => ['int(1)', 'int', 1, true, 0, false, ],
- * 'price' => ['decimal(6,2)', 'float', 6, false, 0, false, ],
- * 'publicDate' => ['date', 'string', 10, true, '', false, ],
- * 'registrationStartDate' => ['date', 'string', 10, true, '', false, ],
- * 'startTime' => ['varchar(20)', 'string', 20, true, '', false, ],
- * 'title' => ['varchar(100)', 'string', 100, true, '', false, ],
- *
- * Event Date
- * Event Start Time
- * Event
- * Coordinator
- * Type
- * Event Description
- * URL of registration page
- * URL of registration page No Payment
- */
-//$specialEventReader = \getReader('Special Events List.csv');
-//
-//$eventTitles = [];
-//
-//foreach ($specialEventReader as $row)
-//	{
-//	$event = new \App\Record\Event();
-//
-//	$event->eventDate = \makeDate($row['Event Date']);
-//	$event->organizer = \getMember($row['Coordinator'])->memberId;
-//	$event->startTime = $row['Event Start Time'];
-//	$event->title = $row['Event'];
-//	$event->paypal = 1;
-//	$event->information = $row['Event Description'];
-//	$eventTitles[$event->title] = $event->insert();
-//	}
-//
-//$olderEventReader = \getReader('Special Events List.csv');
-//
-//foreach ($olderEventReader as $row)
-//	{
-//	$row['Title'] = $row['Title'] ?? 'Unknown';
-//	$title = $row['Title'];
-//
-//	if (isset($eventTitles[$title]) || 'Member Registration' == $title)
-//		{
-//		continue;
-//		}
-//	$event = new \App\Record\Event();
-//
-//	$event->eventDate = \makeDate($row['Event Date']);
-//	$event->title = $row['Title'];
-//	$event->paypal = 1;
-//	$event->information = $row['Event Description'];
-//	$eventTitles[$event->title] = $event->insert();
-//	}
-
 $memberTable = new \App\Table\Member();
 $eventRegistrations = \getReader('Event Reg (All Activity).csv');
 
@@ -686,7 +631,7 @@ foreach ($csvReader as $rideImport)
 
 	foreach ($fields as $fileField)
 		{
-		\addFile($cuesheet, $rideImport[$fileField], $cueSheetPath);
+		\addCueSheetFile($cuesheet, $rideImport[$fileField], $cueSheetPath);
 		}
 	}
 
@@ -700,7 +645,14 @@ foreach ($RWGPSIds as $rwgpsId => $startLocationId)
 	$rwgps->insertOrUpdate();
 	}
 
-function addFile(\App\Record\CueSheet $cueSheet, string $file, string $path) : void
+// Delete the existing files
+$model = new \App\Model\FileFiles();
+$model->delete('*');
+
+importTreasurerReports();
+importBoardMinutes();
+
+function addCueSheetFile(\App\Record\CueSheet $cueSheet, string $file, string $path) : void
 	{
 	global $files;
 
@@ -737,15 +689,273 @@ function addFile(\App\Record\CueSheet $cueSheet, string $file, string $path) : v
 	\copy($importFile, $destination);
 	}
 
+function importTreasurerReports()
+	{
+	echo "Importing Treasurer Reports\n";
+	$member = new \App\Record\Member();
+	$member->read(['firstName' => 'Edmund', 'lastName' => 'Ryan']);
 
-/*
-Warning: Undefined array key "Street address" in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 664
-Deprecated: trim(): Passing null to parameter #1 ($string) of type string is deprecated in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 664
-Warning: Undefined array key "Directions" in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 670
-Deprecated: trim(): Passing null to parameter #1 ($string) of type string is deprecated in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 670
-Warning: Undefined array key "Description" in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 697
-Warning: Undefined array key "Notes" in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 699
-Warning: Undefined array key "Last Modified Time" in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 706
-makeDate(): Argument #1 ($mdyFormat) must be of type string, null given, called in C:\websites\BicycleClubWebsite2023\conversions\soundCyclistsCT\import.php on line 706;
+	$rootFolderName = 'Treasurers Reports';
+	$rootFolder = new \App\Record\FileFolder();
+	$rootFolder->read(['fileFolder' => $rootFolderName]);
 
- */
+	if (! $rootFolder->loaded())
+		{
+		$rootFolder->fileFolder = $rootFolderName;
+		$rootFolder->parentFolderId = 0;
+		$rootFolder->insert();
+		}
+
+	$iterator = new \DirectoryIterator(__DIR__ . '/zoho/treasurers_report');
+
+	$monthNames = [];
+	$monthAbbrevs = [];
+	$monthsTrans = ['sept' => 'september', 'sept.' => 'september', 'annual' => 'december', 'septembert' => 'september'];
+
+	for ($i = 1; $i <= 12; ++$i)
+		{
+		$time = \strtotime('2020-' . $i . '-12 12:12:12');
+		$monthNames[$i] = \strtolower(\date('F', $time));
+		$monthAbbrevs[$i] = \strtolower(\date('M', $time));
+		}
+
+	$folders = [];
+	$model = new \App\Model\FileFiles();
+
+	foreach ($iterator as $item)
+		{
+		if (! $item->isDir())
+			{
+			$fileName = \strtolower($item->getFilename());
+			$parts = \explode('.', $fileName);
+			$extension = \array_pop($parts);
+			$file = \implode('_', $parts);
+			$file = \str_replace(['.', ',', '-', ], '_', $file);
+			$parts = \explode('_', $file);
+			$final = [];
+
+			foreach ($parts as $part)
+				{
+				if (! empty($part))
+					{
+					if (isset($monthsTrans[$part]))
+						{
+						$part = $monthsTrans[$part];
+						}
+
+					if ((int)$part > 0)
+						{
+						$final[] = $part;
+						}
+					elseif (\in_array($part, $monthNames))
+						{
+						$final[] = $part;
+						}
+					else
+						{
+						$key = \array_search($part, $monthAbbrevs);
+
+						if ($key)
+							{
+							$final[] = $monthNames[$key];
+							}
+						}
+					}
+
+				if (3 == \count($final))
+					{
+					break;
+					}
+				}
+
+			$year = '';
+			$finalString = '';
+			$allInts = true;
+
+			foreach ($final as $part)
+				{
+				if (! (int)$part)
+					{
+					$allInts = false;
+					}
+				}
+
+			if ($allInts)
+				{
+				$finalString = \implode('-', $final);
+				}
+			else
+				{
+				foreach ($final as $part)
+					{
+					if ((int)$part > 2000)
+						{
+						$year = $part;
+						}
+					else
+						{
+						$finalString .= $part . ' ';
+						}
+					}
+				$finalString .= $year;
+				}
+
+			$time = \strtotime($finalString);
+			echo $item->getFilename() . ' => ' . \date('Y-m-d', $time) . "\n";
+
+			$year = \date('Y', $time);
+			$fileFolder = new \App\Record\FileFolder();
+
+			if (! $fileFolder->read(['parentFolderId' => $rootFolder->fileFolderId, 'fileFolder' => $year]))
+				{
+				$fileFolder->parentFolderId = $rootFolder->fileFolderId;
+				$fileFolder->fileFolder = $year;
+				}
+			$file = new \App\Record\File();
+			$file->fileFolder = $fileFolder;
+			$file->member = $member;
+			$file->extension = '.' . $extension;
+			$file->file = 'Treasurers Report';
+			$file->fileName = \str_replace($file->extension, '', $item->getFilename());
+			$file->insert();
+			$destination = $model->getPath() . $file->fileId . $file->extension;
+			\rename($item->getPathname(), $destination);
+			}
+		}
+	}
+
+function importBoardMinutes()
+	{
+	echo "Importing Board Minutes\n";
+
+	$member = new \App\Record\Member();
+	$member->read(['firstName' => 'Edmund', 'lastName' => 'Ryan']);
+
+	$rootFolderName = 'Board Meeting Minutes';
+	$rootFolder = new \App\Record\FileFolder();
+	$rootFolder->read(['fileFolder' => $rootFolderName]);
+
+	if (! $rootFolder->loaded())
+		{
+		$rootFolder->fileFolder = $rootFolderName;
+		$rootFolder->parentFolderId = 0;
+		$rootFolder->insert();
+		}
+
+	$iterator = new \DirectoryIterator(__DIR__ . '/zoho/board_minutes');
+
+	$monthNames = [];
+	$monthAbbrevs = [];
+	$monthsTrans = ['sept' => 'september', 'sept.' => 'september', 'annual' => 'december', 'septembert' => 'september'];
+
+	for ($i = 1; $i <= 12; ++$i)
+		{
+		$time = \strtotime('2020-' . $i . '-12 12:12:12');
+		$monthNames[$i] = \strtolower(\date('F', $time));
+		$monthAbbrevs[$i] = \strtolower(\date('M', $time));
+		}
+
+	$folders = [];
+	$model = new \App\Model\FileFiles();
+
+	foreach ($iterator as $item)
+		{
+		if (! $item->isDir())
+			{
+			$fileName = \strtolower($item->getFilename());
+			$parts = \explode('.', $fileName);
+			$extension = \array_pop($parts);
+			$file = \implode('_', $parts);
+			$file = \str_replace(['.', ',', '-', ], '_', $file);
+			$parts = \explode('_', $file);
+			$final = [];
+
+			foreach ($parts as $part)
+				{
+				if (! empty($part))
+					{
+					if (isset($monthsTrans[$part]))
+						{
+						$part = $monthsTrans[$part];
+						}
+
+					if ((int)$part > 0)
+						{
+						$final[] = $part;
+						}
+					elseif (\in_array($part, $monthNames))
+						{
+						$final[] = $part;
+						}
+					else
+						{
+						$key = \array_search($part, $monthAbbrevs);
+
+						if ($key)
+							{
+							$final[] = $monthNames[$key];
+							}
+						}
+					}
+
+				if (3 == \count($final))
+					{
+					break;
+					}
+				}
+
+			$year = '';
+			$finalString = '';
+			$allInts = true;
+
+			foreach ($final as $part)
+				{
+				if (! (int)$part)
+					{
+					$allInts = false;
+					}
+				}
+
+			if ($allInts)
+				{
+				$finalString = \implode('-', $final);
+				}
+			else
+				{
+				foreach ($final as $part)
+					{
+					if ((int)$part > 2000)
+						{
+						$year = $part;
+						}
+					else
+						{
+						$finalString .= $part . ' ';
+						}
+					}
+				$finalString .= $year;
+				}
+
+			$time = \strtotime($finalString);
+			echo $item->getFilename() . ' => ' . \date('Y-m-d', $time) . "\n";
+			$year = \date('Y', $time);
+			$fileFolder = new \App\Record\FileFolder();
+
+			if (! $fileFolder->read(['parentFolderId' => $rootFolder->fileFolderId, 'fileFolder' => $year]))
+				{
+				$fileFolder->parentFolderId = $rootFolder->fileFolderId;
+				$fileFolder->fileFolder = $year;
+				}
+			$file = new \App\Record\File();
+			$file->fileFolder = $fileFolder;
+			$file->member = $member;
+			$file->extension = '.' . $extension;
+			$file->file = 'Board Meeting Minutes';
+			$file->fileName = \str_replace($file->extension, '', $item->getFilename());
+			$file->insert();
+			$destination = $model->getPath() . $file->fileId . $file->extension;
+			\rename($item->getPathname(), $destination);
+			}
+		}
+	}
+

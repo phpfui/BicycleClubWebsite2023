@@ -331,14 +331,13 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	public function updateRider(\App\Record\GaRider $rider = new \App\Record\GaRider()) : void
 		{
 		$this->page->setPublic();
-//		if ($this->page->isAuthorized('Edit Rider') || $rider->customerId == abs($_SESSION['customerNumber']))
 
+		if ($this->page->isAuthorized('Edit Rider') || $rider->customerId == \abs($_SESSION['customerNumber']))
+			{
 			$this->page->addPageContent(new \PHPFUI\Header('Update Rider'));
-			$backButton = new \PHPFUI\Button('Continue Checkout', '/GA/signUp/' . $rider->gaEventId);
-			$backButton->addClass('success');
 			$view = new \App\View\GA\Rider($this->page);
-			$this->page->addPageContent($view->edit($rider, $backButton));
-
+			$this->page->addPageContent($view->edit($rider, onSaveUrl: '/GA/signUp/' . $rider->gaEventId));
+			}
 		}
 
 	/**

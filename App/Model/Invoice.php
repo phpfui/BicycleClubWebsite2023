@@ -577,6 +577,25 @@ class Invoice
 				'Total with Shipping' => '$' . \number_format($invoiceItem->quantity * $invoiceItem->price + $invoiceItem->quantity * $invoiceItem->shipping, 2), ];
 			$size = $pdf->addLine($y, $line);
 			$y += $size + 2;
+
+			if (\App\Model\Cart::TYPE_GA == $invoiceItem->type)
+				{
+				$rider = new \App\Record\GaRider($invoiceItem->storeItemDetailId);
+
+				foreach ($rider->optionsSelected as $option)
+					{
+					$price = $option->price + $option->additionalPrice;
+					$line = ['Item Number' => '',
+						'Description' => "{$option->optionName}\n   {$option->selectionName}",
+						'Quantity' => 1,
+						'Price' => '$' . \number_format($price, 2),
+						'Total Price' => '$' . \number_format($price, 2),
+						'Shipping' => '$0.00',
+						'Total with Shipping' => '$' . \number_format($price, 2), ];
+					$size = $pdf->addLine($y, $line);
+					$y += $size + 2;
+					}
+				}
 			}
 
 		return $pdf;

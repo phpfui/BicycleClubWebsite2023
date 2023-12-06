@@ -54,14 +54,16 @@ class GeneralAdmission
 		if (\count($options))
 			{
 			$this->message .= '<p><strong>Rider Options Selected:</strong></p>';
-			$ul = new \PHPFUI\UnorderedList();
+			$ol = new \PHPFUI\OrderedList();
 
 			foreach ($options as $option)
 				{
-				$ul->addItem(new \PHPFUI\ListItem("<strong>{$option->optionName}</strong>"));
+				$ol->addItem(new \PHPFUI\ListItem("<strong>{$option->optionName}</strong>"));
+				$ul = new \PHPFUI\UnorderedList();
 				$ul->addItem(new \PHPFUI\ListItem($option->selectionName));
+				$ol->addItem(new \PHPFUI\ListItem($ul));
 				}
-			$this->message .= $ul;
+			$this->message .= $ol;
 			}
 		}
 

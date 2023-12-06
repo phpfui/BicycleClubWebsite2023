@@ -35,14 +35,14 @@ class Rider
 			}
 		}
 
-	public function edit(\App\Record\GaRider $rider, ?\PHPFUI\Button $backButton = null) : \App\UI\ErrorFormSaver
+	public function edit(\App\Record\GaRider $rider, string $onSaveUrl = '') : \App\UI\ErrorFormSaver
 		{
 		if ($rider->loaded())
 			{
 			$submit = new \PHPFUI\Submit();
 			$form = new \App\UI\ErrorFormSaver($this->page, $rider, $submit);
 
-			if ($form->save())
+			if ($form->save($onSaveUrl))
 				{
 				if (\is_array($_POST['gaOptionId']))
 					{
@@ -55,12 +55,7 @@ class Rider
 			$form->add($this->getEditFields($rider));
 			$buttonGroup = new \PHPFUI\ButtonGroup();
 			$buttonGroup->addButton($submit);
-
-			if ($backButton)
-				{
-				$form->saveOnClick($backButton);
-				$buttonGroup->addButton($backButton);
-				}
+			$form->add(new \PHPFUI\FormError());
 			$form->add($buttonGroup);
 
 			return $form;

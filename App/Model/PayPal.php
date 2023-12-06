@@ -136,7 +136,9 @@ class PayPal
 
 				foreach ($rider->optionsSelected as $option)
 					{
-					$itm = new \PHPFUI\PayPal\Item($option->optionName, 1, new \PHPFUI\PayPal\Currency($option->price + $option->additionalPrice));
+					$price = $option->price + $option->additionalPrice;
+					$itm = new \PHPFUI\PayPal\Item($option->optionName, 1, new \PHPFUI\PayPal\Currency($price));
+					$itemTotal += $price;
 					$itm->description = $option->selectionName;
 					$purchaseUnit->addItem($itm);
 					}

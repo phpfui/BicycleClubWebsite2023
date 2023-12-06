@@ -111,6 +111,10 @@ class Invoice extends \FPDF
 	// Mode of payment
 	public function addInstructions(string $text) : void
 		{
+		if (! $text)
+			{
+			return;
+			}
 		$this->addRoundedBox(10, 85, 196, 'Special Instructions', $text);
 		}
 

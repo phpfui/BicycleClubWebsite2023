@@ -61,7 +61,7 @@ class GeneralAdmission
 				$ol->addItem(new \PHPFUI\ListItem("<strong>{$option->optionName}</strong>"));
 				$ul = new \PHPFUI\UnorderedList();
 				$ul->addItem(new \PHPFUI\ListItem($option->selectionName));
-				$ol->addItem(new \PHPFUI\ListItem($ul));
+				$ol->addItem($ul);
 				}
 			$this->message .= $ol;
 			}

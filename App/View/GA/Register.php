@@ -10,17 +10,27 @@ class Register implements \Stringable
 		{
 		$this->cartModel = new \App\Model\Cart();
 
-		if (\App\Model\Session::checkCSRF() && ! empty($_POST['submit']))
+		$post = $_POST;
+
+		if (\App\Model\Session::checkCSRF() && ! empty($post['submit']))
 			{
-			if ('Add Rider' == $_POST['submit'])
+			if ('Add Rider' == $post['submit'])
 				{
-				$rider = $_POST;
+				$rider = $post;
 				$rider['gaEventId'] = $gaEventId;
 				unset($rider['gaRiderId'], $rider['pricePaid']);
 
 				$rider['signedUpOn'] = \date('Y-m-d H:i:s');
 				unset($rider['prize']);
-				$this->cartModel->addGaRider($rider);
+				$id = $this->cartModel->addGaRider($rider);
+
+				if (\is_array($post['gaOptionId']))
+					{
+					$post['gaRiderId'] = $id;
+					$gaRiderSelectionTable = new \App\Table\GaRiderSelection();
+					$gaRiderSelectionTable->updateFromPost($post);
+					}
+
 				$this->page->redirect();
 
 				return;

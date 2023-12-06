@@ -8,15 +8,25 @@ class Rider
 		{
 		if (\App\Model\Session::checkCSRF())
 			{
-			if ('Add Registration' == ($_POST['submit'] ?? ''))
+			$post = $_POST;
+
+			if ('Add Registration' == ($post['submit'] ?? ''))
 				{
 				$rider = new \App\Record\GaRider();
-				$rider->setFrom($_POST);
+				$rider->setFrom($post);
 				$rider->signedUpOn = \date('Y-m-d H:i:s');
 				$rider->memberId = 0;
 				$rider->prize = 0;
 
 				$id = $rider->insert();
+
+				if (\is_array($post['gaOptionId']))
+					{
+					$post['gaRiderId'] = $id;
+					$gaRiderSelectionTable = new \App\Table\GaRiderSelection();
+					$gaRiderSelectionTable->updateFromPost($post);
+					}
+
 				$url = $this->page->getBaseURL();
 				$pos = \strrpos($url, '/');
 
@@ -26,11 +36,11 @@ class Rider
 					}
 				$this->page->redirect($url . $id);
 				}
-			elseif ('deleteRider' == ($_POST['action'] ?? ''))
+			elseif ('deleteRider' == ($post['action'] ?? ''))
 				{
-				$rider = new \App\Record\GaRider((int)$_POST['gaRiderId']);
+				$rider = new \App\Record\GaRider((int)$post['gaRiderId']);
 				$rider->delete();
-				$this->page->setResponse($_POST['gaRiderId']);
+				$this->page->setResponse($post['gaRiderId']);
 				}
 			}
 		}

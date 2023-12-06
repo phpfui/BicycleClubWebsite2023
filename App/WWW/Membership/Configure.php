@@ -72,7 +72,7 @@ class Configure extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 
 				foreach ($emails as $link => $header)
 					{
-					$landingPage->addLink("/Membership/emails/{$link}", "{$header} Email");
+					$landingPage->addLink("/Membership/Configure/emails/{$link}", "{$header} Email");
 					}
 				$landingPage->addLink('/Membership/notifications', 'Membership Notifications');
 				$landingPage->sort();

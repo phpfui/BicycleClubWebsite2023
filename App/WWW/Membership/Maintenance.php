@@ -80,11 +80,11 @@ class Maintenance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCl
 				default:
 
 					$landing = new \App\UI\LandingPage($this->page);
-					$landing->addLink('/Membership/audit/noPayments', 'Memberships with No Payments');
-					$landing->addLink('/Membership/audit/noMembers', 'Memberships with No Members');
-					$landing->addLink('/Membership/audit/badExpirations', 'Memberships with Bad Expirations (payment, but expiration not updated)');
-					$landing->addLink('/Membership/audit/missingNames', 'Memberships with Missing Names');
-					$landing->addLink('/Membership/audit/noPermissions', 'Memberships with No Permissions');
+					$landing->addLink('/Membership/Maintenance/audit/noPayments', 'Memberships with No Payments');
+					$landing->addLink('/Membership/Maintenance/audit/noMembers', 'Memberships with No Members');
+					$landing->addLink('/Membership/Maintenance/audit/badExpirations', 'Memberships with Bad Expirations (payment, but expiration not updated)');
+					$landing->addLink('/Membership/Maintenance/audit/missingNames', 'Memberships with Missing Names');
+					$landing->addLink('/Membership/Maintenance/audit/noPermissions', 'Memberships with No Permissions');
 					$this->page->addPageContent($landing);
 
 				}

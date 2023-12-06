@@ -42,8 +42,9 @@ class Statistics implements \Stringable
 		$container->add(new \PHPFUI\Header("{$members} club members.", 6));
 		$container->add(new \PHPFUI\Header("{$nonMembers} non members.", 6));
 
+		$container->add(new \PHPFUI\SubHeader('Rider Options Selected'));
 		$options = $this->event->GaOptionChildren;
-		$accordion = new \PHPFUI\Accordion();
+		$accordion = new \App\UI\Accordion();
 
 		foreach ($options as $option)
 			{

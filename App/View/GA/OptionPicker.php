@@ -4,13 +4,20 @@ namespace App\View\GA;
 
 class OptionPicker extends \PHPFUI\Input\Select
 	{
-	public function __construct(\App\Record\GaOption $option, int $value)
+	public function __construct(\App\Record\GaOption $option, \App\Record\GaRiderSelection $riderSelection)
 		{
 		parent::__construct("gaOptionId[{$option->gaOptionId}]", $option->optionName);
 
+		if (! $riderSelection->loaded() && $option->maximumAllowed && \count($option->GaRiderSelectionChildren) >= $option->maximumAllowed)
+			{
+			$this->addOption('Sold Out', '');
+
+			return;
+			}
+
 		if (! $option->required)
 			{
-			$this->addOption('', '', 0 == $value);
+			$this->addOption('', '', 0 == $riderSelection->gaSelectionId);
 			}
 
 		foreach ($option->GaSelectionChildren as $selection)
@@ -22,7 +29,7 @@ class OptionPicker extends \PHPFUI\Input\Select
 				{
 				$label .= ' - $' . \number_format($price, 2);
 				}
-			$this->addOption($label, (string)$selection->gaSelectionId, $value == $selection->gaSelectionId);
+			$this->addOption($label, (string)$selection->gaSelectionId, $riderSelection->gaSelectionId == $selection->gaSelectionId);
 			}
 		}
 	}

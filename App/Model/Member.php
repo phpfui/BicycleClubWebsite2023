@@ -230,7 +230,9 @@ class Member
 				$class = \substr($class, 0, \strpos($class, '.'));
 				$table = new $class();
 
-				if ('member' != $table->getTableName() && \array_key_exists('memberId', $table->getFields()))
+				$tableName = $table->getTableName();
+
+				if (\array_key_exists('memberId', $table->getFields()) && ! \in_array($tableName, ['member', 'userPermission']))
 					{
 					$tables[] = $table;
 					}

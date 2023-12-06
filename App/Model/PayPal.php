@@ -129,6 +129,18 @@ class PayPal
 			$itemTotal += $item->quantity * $item->price;
 			$itm->description = \Soundasleep\Html2Text::convert($item->description ?? '', ['drop_links' => true, 'ignore_errors' => true]);
 			$purchaseUnit->addItem($itm);
+
+			if (\App\Model\Cart::TYPE_GA == $item->type)
+				{
+				$rider = new \App\Record\GaRider($item['storeItemDetailId']);
+
+				foreach ($rider->optionsSelected as $option)
+					{
+					$itm = new \PHPFUI\PayPal\Item($option->optionName, 1, new \PHPFUI\PayPal\Currency($option->price + $option->additionalPrice));
+					$itm->description = $option->selectionName;
+					$purchaseUnit->addItem($itm);
+					}
+				}
 			}
 
 		$breakdown = new \PHPFUI\PayPal\Breakdown();

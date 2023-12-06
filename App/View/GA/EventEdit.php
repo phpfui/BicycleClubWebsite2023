@@ -170,7 +170,9 @@ class EventEdit
 		$fieldSet->add($nameField);
 		$required = new \PHPFUI\Input\CheckBoxBoolean('required', 'Rider must select an option', (bool)$option->required);
 		$price = new \PHPFUI\Input\Number('price', 'Optional price for this option', \number_format($option->price ?? 0, 2));
-		$fieldSet->add(new \PHPFUI\MultiColumn($required, $price));
+		$maximumAllowed = new \PHPFUI\Input\Number('maximumAllowed', 'Number of options available', (string)$option->maximumAllowed);
+		$maximumAllowed->setToolTip('Leave zero for unlimited options available, or specify a number to limit number available for registrants');
+		$fieldSet->add(new \PHPFUI\MultiColumn($required, $price, $maximumAllowed));
 
 		return $fieldSet;
 		}
@@ -185,7 +187,7 @@ class EventEdit
 		$delete = new \PHPFUI\AJAX('deleteOption', 'Permanently delete this option and selections?');
 		$delete->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast').remove()");
 		$this->page->addJavaScript($delete->getPageJS());
-		$table->setHeaders(['optionName' => 'Description', 'edit' => 'Edit', 'Del' => 'Del']);
+		$table->setHeaders(['optionName' => 'Description', 'maximumAllowed' => 'Total Units', 'edit' => 'Edit', 'Del' => 'Del']);
 
 		foreach ($options as $option)
 			{
@@ -451,6 +453,7 @@ class EventEdit
 					$option->optionName = $post['optionName'];
 					$option->required = (int)$post['required'];
 					$option->price = (float)$post['price'];
+					$option->maximumAllowed = (int)$post['maximumAllowed'];
 					$option->update();
 					$gaSelectionTable = new \App\Table\GaSelection();
 					$ordering = 0;

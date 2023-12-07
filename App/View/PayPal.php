@@ -41,10 +41,16 @@ class PayPal
 
 	public function addPayPalTerms(\PHPFUI\Form $form, ?\PHPFUI\HTML5Element $toggleElement = null) : void
 		{
+		$paypalTerms = $this->settingTable->value('PayPalTerm');
+
+		if (! $paypalTerms)
+			{
+			return;
+			}
+
 		$form->add(new \PHPFUI\Header('You must agree to the terms below to continue.', 5));
 		$form->setAreYouSure(false);
 
-		$paypalTerms = $this->settingTable->value('PayPalTerm');
 		$paypalTerms = \str_replace("\n", '<br>', $paypalTerms);
 		$panel = new \PHPFUI\Panel($paypalTerms);
 		$panel->setCallout()->setRadius();

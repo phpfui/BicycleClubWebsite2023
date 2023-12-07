@@ -44,6 +44,6 @@ class Photo extends \App\Record\Definition\Photo
 			}
 		$fileTime = \filemtime($fileName);
 
-		return new \PHPFUI\Image('/Photo/image/' . $this->photoId . '-' . $fileTime, $this->photo ?: 'photo');
+		return new \PHPFUI\Image('/Photo/image/' . $this->photoId . '-' . $fileTime . $this->extension, $this->photo ?: 'photo');
 		}
 	}

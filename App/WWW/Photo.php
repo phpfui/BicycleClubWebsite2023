@@ -140,7 +140,8 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function image(string $id = '') : void
 		{
-		$parts = \explode('-', $id);
+		$parts = \explode('.', $id);
+		$parts = \explode('-', $parts[0]);
 		$photo = new \App\Record\Photo((int)($parts[0] ?? 0));
 
 		if (! $photo->empty() && ($photo->public || $this->page->isAuthorized('View Album Photo')))

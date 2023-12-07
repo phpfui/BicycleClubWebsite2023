@@ -165,18 +165,6 @@ class Finance
 		return $row . $button . $output;
 		}
 
-	public function PayPalSettings() : \PHPFUI\Tabs
-		{
-		$paypalModel = new \App\Model\PayPal();
-		$tabs = new \PHPFUI\Tabs();
-		$paypalView = new \App\View\PayPal($this->page, $paypalModel);
-		$tabs->addTab('Settings', $paypalView->getSettings(), true);
-		$tabs->addTab('Live', $paypalView->getEditor());
-		$tabs->addTab('Sandbox', $paypalView->getEditor('Sandbox'));
-
-		return $tabs;
-		}
-
 	public function RequestMissingInvoices() : \PHPFUI\Form
 		{
 		$form = new \PHPFUI\Form($this->page);

@@ -48,11 +48,6 @@ class PayPal
 		return $this;
 		}
 
-	public function getAccountId(string $type = '') : string
-		{
-		return $this->getSetting($type . 'AccountId');
-		}
-
 	public function getClientId(string $type = '') : string
 		{
 		return $this->getSetting($type . 'ClientId');
@@ -202,6 +197,11 @@ class PayPal
 		 return $this->getSetting($type . 'Secret');
 		 }
 
+	public function getTermsAndConditions() : string
+		{
+		return $this->settingTable->value('PayPalTerm');
+		}
+
 	/**
 	 * @return string $type type of model, Membership, Events, Store, Refunds, etc
 	 */
@@ -229,22 +229,23 @@ class PayPal
 	 */
 	public function save(array $parameters) : void
 		{
-		foreach ($parameters as $key => $value)
-			{
-			if (0 === \stripos($key, 'PayPal_'))
-				{
-				$this->settingTable->save($key, $value);
-				}
-			}
-
 		foreach (['', 'Sandbox', ] as $type)
 			{
-			foreach (['AccountId', 'ClientId', 'Secret'] as $field)
+			foreach (['ClientId', 'Secret'] as $field)
 				{
 				if (isset($parameters[$key = 'PayPal' . $type . $field]))
 					{
 					$this->settingTable->save($key, $parameters[$key]);
+					unset($parameters[$key]);
 					}
+				}
+			}
+
+		foreach ($parameters as $key => $value)
+			{
+			if (0 === \stripos($key, 'PayPal'))
+				{
+				$this->settingTable->save($key, $value);
 				}
 			}
 		}

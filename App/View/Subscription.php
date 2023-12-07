@@ -79,9 +79,8 @@ class Subscription
 			$message = '<br>You can cancel it at any time by hitting the cancel subscription button below. Please note if you cancel your ' .
 					'subscription, your membership will continue until you reach your expiration date of ' . $expiresString;
 			$fieldSet->add($message);
-			$message = '<br><br><a href="' . $this->paypalModel->getUrl() . '/cgi-bin/webscr?cmd=_subscr-find&alias=' .
-					$this->paypalModel->getAccountId() . '&switch_classic=true">' .
-					'<img src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_unsubscribe_113x26.png"></a>';
+			$message = '<br><br><a href="' . $this->paypalModel->getUrl() . '/cgi-bin/webscr?cmd=_subscr-find' . // &alias=' . $this->paypalModel->getAccountId() .
+				'&switch_classic=true"><img src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_unsubscribe_113x26.png"></a>';
 			$fieldSet->add($message);
 			}
 		else

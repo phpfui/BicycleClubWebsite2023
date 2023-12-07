@@ -39,7 +39,7 @@ class PayPal
 			}
 		}
 
-	public function addPayPalTerms(\PHPFUI\Form $form, ?\PHPFUI\HTML5Element $toggleElement = null) : void
+	public function addPayPalTerms(\PHPFUI\Form $form, \PHPFUI\HTML5Element $toggleElement) : void
 		{
 		$paypalTerms = $this->settingTable->value('PayPalTerm');
 
@@ -61,12 +61,10 @@ class PayPal
 
 		$terms->getId();
 
-		if ($toggleElement)
-			{
-			$elementId = $toggleElement->getId();
-			$dollar = '$';
-			$terms->setAttribute('onclick', "{$dollar}(\"#{$elementId}\").toggleClass(\"hide\")");
-			}
+		$toggleElement->addClass('hide');
+		$elementId = $toggleElement->getId();
+		$dollar = '$';
+		$terms->setAttribute('onclick', "{$dollar}(\"#{$elementId}\").toggleClass(\"hide\")");
 		}
 
 	/**
@@ -99,43 +97,10 @@ class PayPal
 		$checkout->setFunctionJavaScript('createOrder', "return fetch('{$createOrderUrl}',{method:'post',headers:{'content-type':'application/json'}}).then(function(res){return res.json();}).then(function(data){return data.id;})");
 		$checkout->setFunctionJavaScript('onApprove', "return fetch('{$executeUrl}',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({orderID:data.orderID})}).then(function(res){return res.json();}).then(function(details){if(details.error==='INSTRUMENT_DECLINED'){return actions.restart();}$.post('{$completedUrl}',JSON.stringify({orderID:data.orderID}),function(data){{$dollar}('#{$id}').html(data.html)})})");
 
-		$checkout->addClass('hide');
 		$this->addPayPalTerms($form, $checkout);
 		$form->add($checkout);
 
 		$form->add($buttonGroup);
-
-		return $form;
-		}
-
-	public function getEditor(string $type = '') : \PHPFUI\Form
-		{
-		$submit = new \PHPFUI\Submit('Save', "submit{$type}");
-		$form = new \PHPFUI\Form($this->page, $submit);
-
-		if ($form->isMyCallback())
-			{
-			$this->paypalModel->save($_POST);
-			$this->page->setResponse('Saved');
-			}
-		else
-			{
-			$column = new \PHPFUI\Cell(12);
-			$accountId = new \PHPFUI\Input\Text("PayPal{$type}AccountId", "PayPal {$type} Account Id", $this->paypalModel->getAccountId($type));
-			$accountId->setRequired(! $type);
-			$accountId->setToolTip('This is the PayPal Merchant Account Id. It is used for subscriptions');
-			$column->add($accountId);
-			$clientId = new \PHPFUI\Input\Text("PayPal{$type}ClientId", "Client ID for REST API associated with above {$type} Email address", $this->paypalModel->getClientId($type));
-			$clientId->setRequired(! $type);
-			$clientId->setToolTip('The Client Id is a long string of letters and numbers.');
-			$column->add($clientId);
-			$secret = new \PHPFUI\Input\PasswordEye("PayPal{$type}Secret", "Secret for REST API associated with above {$type} Email address", $this->paypalModel->getSecret($type));
-			$secret->setRequired(! $type);
-			$secret->setToolTip('The Secret is a long string of letters and numbers.');
-			$column->add($secret);
-			$form->add($column);
-			$form->add($submit);
-			}
 
 		return $form;
 		}
@@ -170,41 +135,15 @@ PAYPAL
 			}
 		else
 			{
-			$addLogoButton = new \PHPFUI\Button($this->buttonText);
-			$form->saveOnClick($addLogoButton);
-			$modal = new \PHPFUI\Reveal($this->page, $addLogoButton);
-			$submitPhoto = new \PHPFUI\Submit($this->buttonText);
-			$uploadForm = new \PHPFUI\Form($this->page);
-			$uploadForm->setAreYouSure(false);
-			$file = new \PHPFUI\Input\File($this->page, 'logo', 'Select Logo');
-			$file->setAllowedExtensions(['png', 'jpg', 'jpeg']);
-			$file->setToolTip('Logo should be clear and high quality.  It will not be resized, so make sure it meets PayPal requirements.');
-			$uploadForm->add($file);
-			$uploadForm->add($modal->getButtonAndCancel($submitPhoto));
-			$modal->add($uploadForm);
-			$photoSet = new \PHPFUI\FieldSet('Club Logo');
-			$row = new \PHPFUI\GridX();
-			$row->add("<img alt='Club Logo' src='{$this->logo}'>");
-			$photoSet->add($row);
-			$row = new \PHPFUI\GridX();
-			$row->add('&nbsp;');
-			$photoSet->add($row);
-			$photoSet->add($addLogoButton);
-			$form->add($photoSet);
-			$fieldSet = new \PHPFUI\FieldSet('PayPal Instructions');
-			$editor = new \PHPFUI\Input\TextArea('PayPal_instructions', '', $this->paypalModel->getInstructions());
-			$editor->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
-			$fieldSet->add($editor);
-			$form->add($fieldSet);
-			$fieldSet = new \PHPFUI\FieldSet('PayPal Section Settings');
-			$fieldSet->add($this->areaSetting('Membership'));
-			$fieldSet->add($this->areaSetting('Store'));
-			$fieldSet->add($this->areaSetting('Events'));
-			$fieldSet->add($this->areaSetting('General Admission'));
-			$fieldSet->add($this->areaSetting('Subscription'));
-			$fieldSet->add($this->areaSetting('Refunds'));
-			$form->add($fieldSet);
+			$tabs = new \PHPFUI\Tabs();
+			$tabs->addTab('Settings', $this->getLogoSettings($form), true);
+			$tabs->addTab('Live', $this->getAPIEditor());
+			$tabs->addTab('Sandbox', $this->getAPIEditor('Sandbox'));
+			$tabs->addTab('Terms & Conditions', $this->getTerms());
+			$tabs->addTab('User Instructions', $this->getInstructions());
+
 			$form->add($submit);
+			$form->add($tabs);
 			}
 
 		return $form;
@@ -225,5 +164,82 @@ PAYPAL
 		$row->add($columnB);
 
 		return $row;
+		}
+
+	private function getAPIEditor(string $type = '') : \PHPFUI\FieldSet
+		{
+		$column = new \PHPFUI\FieldSet($type . ' API Credentials from the Club PayPal Account');
+		$clientId = new \PHPFUI\Input\Text("PayPal{$type}ClientId", "Client ID for REST API associated with above {$type} Email address", $this->paypalModel->getClientId($type));
+		$clientId->setRequired(! $type);
+		$clientId->setToolTip('The Client Id is a long string of letters and numbers.');
+		$column->add($clientId);
+		$secret = new \PHPFUI\Input\PasswordEye("PayPal{$type}Secret", "Secret for REST API associated with above {$type} Email address", $this->paypalModel->getSecret($type));
+		$secret->setRequired(! $type);
+		$secret->setToolTip('The Secret is a long string of letters and numbers.');
+		$column->add($secret);
+
+		return $column;
+		}
+
+	private function getInstructions() : \PHPFUI\FieldSet
+		{
+		$fieldSet = new \PHPFUI\FieldSet('User Instructions');
+		$callout = new \PHPFUI\Callout('info');
+		$callout->add('These are instructions to the user when shown the PayPal buttons.  Not required but can avoid stupid user questions.');
+		$fieldSet->add($callout);
+		$editor = new \PHPFUI\Input\TextArea('PayPal_instructions', '', $this->paypalModel->getInstructions());
+		$editor->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$fieldSet->add($editor);
+
+		return $fieldSet;
+		}
+
+	private function getLogoSettings(\PHPFUI\Form $form) : \PHPFUI\Container
+		{
+		$column = new \PHPFUI\Container();
+		$addLogoButton = new \PHPFUI\Button($this->buttonText);
+		$form->saveOnClick($addLogoButton);
+		$modal = new \PHPFUI\Reveal($this->page, $addLogoButton);
+		$submitPhoto = new \PHPFUI\Submit($this->buttonText);
+		$uploadForm = new \PHPFUI\Form($this->page);
+		$uploadForm->setAreYouSure(false);
+		$file = new \PHPFUI\Input\File($this->page, 'logo', 'Select Logo');
+		$file->setAllowedExtensions(['png', 'jpg', 'jpeg']);
+		$file->setToolTip('Logo should be clear and high quality.  It will not be resized, so make sure it meets PayPal requirements.');
+		$uploadForm->add($file);
+		$uploadForm->add($modal->getButtonAndCancel($submitPhoto));
+		$modal->add($uploadForm);
+		$photoSet = new \PHPFUI\FieldSet('Club Logo');
+		$row = new \PHPFUI\GridX();
+		$row->add("<img alt='Club Logo' src='{$this->logo}'>");
+		$photoSet->add($row);
+		$row = new \PHPFUI\GridX();
+		$row->add('&nbsp;');
+		$photoSet->add($row);
+		$photoSet->add($addLogoButton);
+		$column->add($photoSet);
+		$fieldSet = new \PHPFUI\FieldSet('PayPal Section Settings');
+		$fieldSet->add($this->areaSetting('Membership'));
+		$fieldSet->add($this->areaSetting('Store'));
+		$fieldSet->add($this->areaSetting('Events'));
+		$fieldSet->add($this->areaSetting('General Admission'));
+		$fieldSet->add($this->areaSetting('Subscription'));
+		$fieldSet->add($this->areaSetting('Refunds'));
+		$column->add($fieldSet);
+
+		return $column;
+		}
+
+	private function getTerms() : \PHPFUI\FieldSet
+		{
+		$fieldSet = new \PHPFUI\FieldSet('Terms and Conditions');
+		$callout = new \PHPFUI\Callout('info');
+		$callout->add('These are the club terms and conditions for using PayPal. Not required but can help avoid PayPal charge backs if users contact the club first instead of PayPal.');
+		$fieldSet->add($callout);
+		$editor = new \PHPFUI\Input\TextArea('PayPalTerm', '', $this->paypalModel->getTermsAndConditions());
+		$editor->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$fieldSet->add($editor);
+
+		return $fieldSet;
 		}
 	}

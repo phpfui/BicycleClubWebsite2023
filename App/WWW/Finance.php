@@ -119,15 +119,9 @@ class Finance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('PayPal Settings'))
 			{
-			$this->page->addPageContent($this->view->PayPalSettings());
-			}
-		}
-
-	public function payPalTerms() : void
-		{
-		if ($this->page->addHeader('PayPal Terms and Conditions'))
-			{
-			$this->page->addPageContent(new \App\View\SettingEditor($this->page, 'PayPalTerm'));
+			$paypalModel = new \App\Model\PayPal();
+			$paypalView = new \App\View\PayPal($this->page, $paypalModel);
+			$this->page->addPageContent($paypalView->getSettings());
 			}
 		}
 

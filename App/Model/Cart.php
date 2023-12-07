@@ -35,6 +35,8 @@ class Cart
 
 	private float $shipping = 0.0;
 
+	private bool $showMenus = true;
+
 	private float $tax = 0.0;
 
 	private float $total = 0.0;
@@ -350,6 +352,11 @@ class Cart
 					// storeItemId = gaEventId;
 					// storeItemDetailId = gaRiderId
 					$event = new \App\Record\GaEvent($cartItem['storeItemId']);
+
+					if (! $event->allowShopping)
+						{
+						$this->showMenus = false;
+						}
 					$rider = new \App\Record\GaRider($cartItem['storeItemDetailId']);
 					$cartItem['title'] = $event->title;
 					$cartItem['description'] = $event->description;
@@ -403,6 +410,11 @@ class Cart
 	public function getShipping() : float
 		{
 		return $this->shipping;
+		}
+
+	public function getShowMenus() : bool
+		{
+		return $this->showMenus;
 		}
 
 	public function getTax() : float

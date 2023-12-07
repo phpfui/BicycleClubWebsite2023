@@ -6,7 +6,7 @@ class Register implements \Stringable
 	{
 	private readonly \App\Model\Cart $cartModel;
 
-	public function __construct(private readonly \App\View\Page $page, private readonly int $gaEventId = 0)
+	public function __construct(private readonly \App\View\Page $page, private \App\Record\GaEvent $gaEvent = new \App\Record\GaEvent())
 		{
 		$this->cartModel = new \App\Model\Cart();
 
@@ -17,7 +17,7 @@ class Register implements \Stringable
 			if ('Add Rider' == $post['submit'])
 				{
 				$rider = $post;
-				$rider['gaEventId'] = $gaEventId;
+				$rider['gaEventId'] = $this->gaEvent->gaEventId;
 				unset($rider['gaRiderId'], $rider['pricePaid']);
 
 				$rider['signedUpOn'] = \date('Y-m-d H:i:s');
@@ -37,11 +37,11 @@ class Register implements \Stringable
 				}
 			}
 
-		if ($gaEventId > 0 && ! empty($_GET['add']))
+		if ($this->gaEvent->gaEventId > 0 && ! empty($_GET['add']))
 			{
 			$memberTable = new \App\Table\Member();
 			$membership = $memberTable->getMembership($_GET['add']);
-			$membership['gaEventId'] = $gaEventId;
+			$membership['gaEventId'] = $this->gaEvent->gaEventId;
 
 			if (! empty($membership['cellPhone']))
 				{
@@ -70,7 +70,7 @@ class Register implements \Stringable
 			foreach ($members as $member)
 				{
 				$row = new \PHPFUI\GridX();
-				$row->add(new \PHPFUI\Button('Add ' . $member['firstName'] . ' ' . $member['lastName'], "/GA/signUp/{$this->gaEventId}?add={$member['memberId']}"));
+				$row->add(new \PHPFUI\Button('Add ' . $member['firstName'] . ' ' . $member['lastName'], "/GA/signUp/{$this->gaEvent->gaEventId}?add={$member['memberId']}"));
 				$fieldSet->add($row);
 				}
 			$container->add($fieldSet);
@@ -97,9 +97,8 @@ class Register implements \Stringable
 			$checkout = new \PHPFUI\Submit('Check Out');
 			$checkout->addClass('success');
 			$buttonGroup->addButton($checkout);
-			$event = new \App\Record\GaEvent($this->gaEventId);
 
-			if ($event->allowShopping)
+			if ($this->gaEvent->allowShopping)
 				{
 				$continueShopping = new \PHPFUI\Button('Continue Shopping', '/Store/shop');
 				$buttonGroup->addButton($continueShopping);
@@ -107,7 +106,7 @@ class Register implements \Stringable
 			$cart->add($buttonGroup);
 			$container->add($cart);
 			}
-		else
+		elseif ($this->gaEvent->allowShopping)
 			{
 			$container->add($cartView->showEmpty($this->cartModel->getCustomerNumber()));
 			}
@@ -122,7 +121,7 @@ class Register implements \Stringable
 		$modalForm->setAreYouSure(false);
 		$view = new \App\View\GA\Rider($this->page);
 		$rider = new \App\Record\GaRider();
-		$rider->gaEventId = $this->gaEventId;
+		$rider->gaEvent = $this->gaEvent;
 		$modalForm->add($view->getEditFields($rider));
 		$modalForm->add($modal->getButtonAndCancel(new \PHPFUI\Submit('Add Rider')));
 		$modal->add($modalForm);

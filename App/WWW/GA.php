@@ -153,6 +153,11 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		foreach ($events as $event)
 			{
+			if (! $event->allowShopping)
+				{
+				$this->page->setShowMenus(false);
+				}
+
 			if ($today <= $event->eventDate)
 				{
 				++$activeEvents;
@@ -273,6 +278,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	public function signUp(\App\Record\GaEvent $event = new \App\Record\GaEvent()) : void
 		{
 		$this->page->setPublic();
+		$this->page->setShowMenus((bool)$event->allowShopping);
 		$this->signUpCommon($event);
 		}
 
@@ -331,6 +337,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	public function updateRider(\App\Record\GaRider $rider = new \App\Record\GaRider()) : void
 		{
 		$this->page->setPublic();
+		$this->page->setShowMenus((bool)$rider->gaEvent->allowShopping);
 
 		if ($this->page->isAuthorized('Edit Rider') || $rider->customerId == \abs($_SESSION['customerNumber']))
 			{
@@ -388,7 +395,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				}
 			else
 				{
-				$this->page->addPageContent(new \App\View\GA\Register($this->page, $event->gaEventId));
+				$this->page->addPageContent(new \App\View\GA\Register($this->page, $event));
 				}
 			}
 		else

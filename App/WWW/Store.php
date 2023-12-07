@@ -132,6 +132,8 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		$errors = $this->customer->validate();
 
+		$this->page->setShowMenus($model->getShowMenus());
+
 		if ($errors)
 			{
 			$customerView = new \App\View\Customer($this->page, $this->customerModel);
@@ -221,17 +223,20 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function paid(int $invoiceId = 0) : void
+	public function paid(\App\Record\Invoice $invoice = new \App\Record\Invoice()) : void
 		{
 		$this->page->setPublic();
+		$this->page->setShowMenus((bool)$invoice->showMenus);
 		$this->page->addHeader('Your Order Is Complete');
-		$this->page->addSubHeader('Your Invoice Number is ' . $invoiceId);
+		$this->page->addSubHeader('Your Invoice Number is ' . $invoice->invoiceId);
 		$this->page->addPageContent('You should receive an email with your invoice shortly');
 		}
 
 	public function pay(\App\Record\Invoice $invoice = new \App\Record\Invoice(), string $paypalType = 'Store') : void
 		{
 		$this->page->setPublic();
+
+		$this->page->setShowMenus((bool)$invoice->showMenus);
 
 		if ($invoice->empty())
 			{

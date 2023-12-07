@@ -15,10 +15,8 @@ class OptionPicker extends \PHPFUI\Input\Select
 			return;
 			}
 
-		if (! $option->required)
-			{
-			$this->addOption('', '', 0 == $riderSelection->gaSelectionId);
-			}
+		$this->setRequired((bool)$option->required);
+		$this->addOption('Please Select', '');
 
 		foreach ($option->GaSelectionChildren as $selection)
 			{

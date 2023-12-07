@@ -26,6 +26,8 @@ class Page extends \PHPFUI\Page
 
 	private readonly \PHPFUI\Container $mainColumn;
 
+	private bool $noMenus = false;
+
 	private static bool $passwordReset = false;
 
 	private bool $publicPage = false;
@@ -300,6 +302,33 @@ class Page extends \PHPFUI\Page
 			$this->mainColumn->add($this->signInPage('Sign In') ?? '');
 			}
 
+		if ($this->noMenus)
+			{
+			$cell = new \PHPFUI\Cell();
+			$titleBar = new \PHPFUI\TopBar();
+			$scrollableHeader = new \App\UI\ScrollOffHeader($this, $titleBar);
+			$headerContentModel = $this->getHeaderContentModel();
+			$headerContent = $headerContentModel->getActiveHeaderContent();
+
+			if ($headerContent)
+				{
+				$this->add($scrollableHeader->getHeader($headerContent));
+				}
+			$cell->add($scrollableHeader);
+			$cell->add($this->mainColumn);
+
+			$gridX = new \PHPFUI\GridX();
+			$gridX->setMargin();
+			$gridX->add($cell);
+
+			$gridContainer = new \PHPFUI\GridContainer();
+			$gridContainer->add($gridX);
+
+			$this->add($gridContainer);
+
+			return parent::getStart();
+			}
+
 		$content = new \PHPFUI\Container();
 
 		$title = new \PHPFUI\Container();
@@ -474,6 +503,13 @@ class Page extends \PHPFUI\Page
 	public function setRenewing(bool $renewing = true) : static
 		{
 		$this->renewing = $renewing;
+
+		return $this;
+		}
+
+	public function setShowMenus(bool $showMenus = true) : static
+		{
+		$this->noMenus = ! $showMenus;
 
 		return $this;
 		}

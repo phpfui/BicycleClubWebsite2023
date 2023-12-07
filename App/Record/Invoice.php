@@ -9,6 +9,7 @@ namespace App\Record;
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\PaypalRefund> $PaypalRefundChildren
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\Payment> $PaymentChildren
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\InvoiceItem> $InvoiceItemChildren
+ * @property bool $showMenus
  */
 class Invoice extends \App\Record\Definition\Invoice
 	{
@@ -18,6 +19,7 @@ class Invoice extends \App\Record\Definition\Invoice
 		'PaymentChildren' => [\PHPFUI\ORM\Children::class, \App\Table\Payment::class],
 		'PaypalRefundChildren' => [\PHPFUI\ORM\Children::class, \App\Table\PaypalRefund::class],
 		'ReservationChildren' => [\PHPFUI\ORM\Children::class, \App\Table\Reservation::class],
+		'showMenus' => [\App\DB\InvoiceMenu::class],
 	];
 
 	public function total() : float

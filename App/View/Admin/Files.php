@@ -53,7 +53,15 @@ class Files
 			$base = \basename((string)$file);
 			$localPath = $this->fileModel->get($base);
 			$url = $this->fileModel->url($base);
-			$row['name'] = "<a href='{$url}' target='_blank'>{$base}</a>";
+
+			if ($url)
+				{
+				$row['name'] = "<a href='{$url}' target='_blank'>{$base}</a>";
+				}
+			else
+				{
+				$row['name'] = $base;
+				}
 			$crc = \crc32($base);
 			$row['base'] = $crc;
 			$row['time'] = \gmdate('Y-m-d, g:i a', \filemtime($localPath));

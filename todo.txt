@@ -1,8 +1,4 @@
-Quick Add needs options question
-
 Home page days back customization
-
-Dedicated registration page without menus and headers
 
 Google Calendar meetings not working
 

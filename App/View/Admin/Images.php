@@ -21,7 +21,17 @@ class Images
 		$this->settingTable = new \App\Table\Setting();
 		}
 
-	public function assign() : \PHPFUI\Form
+	public function getSettings() : \PHPFUI\Tabs
+		{
+		$tabs = new \PHPFUI\Tabs();
+		$tabs->addTab('Assign Images', $this->assign(), true);
+		$tabs->addTab('Upload Image', $this->upload());
+		$tabs->addTab('Manage Images', $this->manageFiles());
+
+		return $tabs;
+		}
+
+	private function assign() : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit('Save', 'assign');
 		$form = new \PHPFUI\Form($this->page, $submit);
@@ -49,16 +59,29 @@ class Images
 		return $form;
 		}
 
-	public function getSettings() : \PHPFUI\Tabs
+	private function getFilePicker(string $fieldName, string $description) : \PHPFUI\Input\Select
 		{
-		$tabs = new \PHPFUI\Tabs();
-		$tabs->addTab('Assign Images', $this->assign(), true);
-		$tabs->addTab('Upload Image', $this->upload());
+		$this->fieldsToSave[] = $fieldName;
+		$select = new \PHPFUI\Input\Select($fieldName, $description);
+		$setting = $this->settingTable->value($fieldName);
 
-		return $tabs;
+		foreach ($this->files as $file)
+			{
+			$select->addOption($file, $file, $file == $setting);
+			}
+
+		return $select;
 		}
 
-	public function upload() : \PHPFUI\Form
+	private function manageFiles() : \PHPFUI\Container
+		{
+		$fileView = new \App\View\Admin\Files($this->page, $this->model);
+		$fileView->disableUpload();
+
+		return $fileView->list();
+		}
+
+	private function upload() : \PHPFUI\Form
 		{
 		$upload = 'Upload';
 		$field = 'Image';
@@ -90,19 +113,5 @@ class Images
 			}
 
 		return $form;
-		}
-
-	private function getFilePicker(string $fieldName, string $description) : \PHPFUI\Input\Select
-		{
-		$this->fieldsToSave[] = $fieldName;
-		$select = new \PHPFUI\Input\Select($fieldName, $description);
-		$setting = $this->settingTable->value($fieldName);
-
-		foreach ($this->files as $file)
-			{
-			$select->addOption($file, $file, $file == $setting);
-			}
-
-		return $select;
 		}
 	}

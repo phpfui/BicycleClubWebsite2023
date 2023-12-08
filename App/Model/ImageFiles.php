@@ -24,4 +24,9 @@ class ImageFiles extends \App\Model\TinifyImage
 
 		return new \PHPFUI\Image("data:image/jpeg;base64,{$data}", $base);
 		}
+
+	public function url(string $filename) : string
+		{
+		return '';
+		}
 	}

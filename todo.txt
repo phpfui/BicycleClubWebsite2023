@@ -1,3 +1,7 @@
+Expand category an pace name lengths
+
+Update number of riders on ride from confirmed riders
+
 Home page days back customization
 
 Google Calendar meetings not working

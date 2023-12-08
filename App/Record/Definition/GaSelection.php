@@ -13,6 +13,7 @@ namespace App\Record\Definition;
  * @property int $gaSelectionId MySQL type int
  * @property \App\Record\GaSelection $gaSelection related record
  * @property int $ordering MySQL type int
+ * @property ?string $csvValue MySQL type varchar(20)
  * @property string $selectionName MySQL type varchar(255)
  */
 abstract class GaSelection extends \PHPFUI\ORM\Record
@@ -27,6 +28,7 @@ abstract class GaSelection extends \PHPFUI\ORM\Record
 		'gaOptionId' => ['int', 'int', 0, false, ],
 		'gaSelectionId' => ['int', 'int', 0, false, ],
 		'ordering' => ['int', 'int', 0, false, 0, ],
+		'csvValue' => ['varchar(20)', 'string', 20, true, ],
 		'selectionName' => ['varchar(255)', 'string', 255, false, ],
 	];
 

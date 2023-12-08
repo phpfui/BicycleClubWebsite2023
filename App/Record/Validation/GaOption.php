@@ -14,6 +14,7 @@ class GaOption extends \PHPFUI\ORM\Validator
 		'maximumAllowed' => ['required', 'integer'],
 		'optionName' => ['required', 'maxlength'],
 		'ordering' => ['required', 'integer'],
+		'csvField' => ['maxlength'],
 		'price' => ['number'],
 		'required' => ['required', 'integer'],
 	];

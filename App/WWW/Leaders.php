@@ -231,6 +231,12 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$waiverAttachment = $waiverReport->output('', \Mpdf\Output\Destination::STRING_RETURN);
 				$email->addAttachment($waiverAttachment, \str_replace(' ', '_', "{$club} Minor Release Waiver.pdf"));
 				$email->send();
+
+				$fileName = "{$_POST['firstName']}_{$_POST['lastName']}_" . \App\Tools\Date::todayString() . '.pdf';
+				$fileName = \preg_replace('/[^a-zA-Z0-9\.\-\_()]/', '', \str_replace(' ', '_', $fileName));
+				$fileName = PROJECT_ROOT . '/files/nonMemberWaivers/' . $fileName;
+				$waiverReport->output($fileName, \Mpdf\Output\Destination::FILE);
+
 				$callout = new \PHPFUI\Callout('success');
 				$callout->add("Thanks for signing the {$club} minor waiver.");
 				$this->page->addPageContent($callout);

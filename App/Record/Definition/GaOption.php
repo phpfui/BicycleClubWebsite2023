@@ -12,6 +12,7 @@ namespace App\Record\Definition;
  * @property int $maximumAllowed MySQL type int
  * @property string $optionName MySQL type varchar(255)
  * @property int $ordering MySQL type int
+ * @property ?string $csvField MySQL type varchar(20)
  * @property ?float $price MySQL type decimal(7,2)
  * @property int $required MySQL type int
  */
@@ -27,6 +28,7 @@ abstract class GaOption extends \PHPFUI\ORM\Record
 		'maximumAllowed' => ['int', 'int', 0, false, 0, ],
 		'optionName' => ['varchar(255)', 'string', 255, false, ],
 		'ordering' => ['int', 'int', 0, false, 0, ],
+		'csvField' => ['varchar(20)', 'string', 20, true, ],
 		'price' => ['decimal(7,2)', 'float', 7, true, ],
 		'required' => ['int', 'int', 0, false, 0, ],
 	];

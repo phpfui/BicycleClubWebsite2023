@@ -36,14 +36,19 @@ class EventEdit
 		if ($form->save())
 			{
 			$post = $_POST;
+			$this->gaPriceDateTable->updateFromTable($post);
+
 			$order = 1;
 
 			foreach ($post['ordering'] ?? [] as &$value)
 				{
 				$value = $order++;
 				}
-			$this->gaPriceDateTable->updateFromTable($post);
-			unset($post['price']);
+			unset($post['orderName'], $post['required'], $post['maximumAllowed'], $post['price'], $post['csvField']);
+
+
+
+
 			$this->gaOptionTable->updateFromTable($post);
 
 			return $form;
@@ -169,10 +174,16 @@ class EventEdit
 		$nameField->setRequired()->setToolTip('Question text or description of option');
 		$fieldSet->add($nameField);
 		$required = new \PHPFUI\Input\CheckBoxBoolean('required', 'Rider must select an option', (bool)$option->required);
+		$required->setToolTip('If not checked, rider will have the choice of leaving this option blank and not make a selection.');
 		$price = new \PHPFUI\Input\Number('price', 'Optional price for this option', \number_format($option->price ?? 0, 2));
+		$price->setToolTip('This is the base price for this option, individual selections can have an additional price.');
 		$maximumAllowed = new \PHPFUI\Input\Number('maximumAllowed', 'Number of options available', (string)$option->maximumAllowed);
 		$maximumAllowed->setToolTip('Leave zero for unlimited options available, or specify a number to limit number available for registrants');
-		$fieldSet->add(new \PHPFUI\MultiColumn($required, $price, $maximumAllowed));
+		$csvField = new \PHPFUI\Input\Text('csvField', 'CSV Output Name', $option->csvField);
+		$csvField->setToolTip('This option will be listed in CSV output as this field name.  Leave blank to not output the column.');
+		$csvField->addAttribute('maxLength', '20');
+
+		$fieldSet->add(new \PHPFUI\MultiColumn($required, $price, $maximumAllowed, $csvField));
 
 		return $fieldSet;
 		}
@@ -187,7 +198,7 @@ class EventEdit
 		$delete = new \PHPFUI\AJAX('deleteOption', 'Permanently delete this option and selections?');
 		$delete->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast').remove()");
 		$this->page->addJavaScript($delete->getPageJS());
-		$table->setHeaders(['optionName' => 'Description', 'maximumAllowed' => 'Total Units', 'edit' => 'Edit', 'Del' => 'Del']);
+		$table->setHeaders(['optionName' => 'Description', 'maximumAllowed' => 'Total Units', 'csvField' => 'CSV Field', 'edit' => 'Edit', 'Del' => 'Del']);
 
 		foreach ($options as $option)
 			{
@@ -306,7 +317,7 @@ class EventEdit
 		$deleteSelection->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast').remove()");
 		$this->page->addJavaScript($deleteSelection->getPageJS());
 
-		$headers = ['selectionName' => 'Selection', 'additionalPrice' => 'Additional Price', 'del' => 'Del', ];
+		$headers = ['selectionName' => 'Selection', 'additionalPrice' => 'Additional Price', 'csvValue' => 'CSV Value', 'del' => 'Del', ];
 		$table->setHeaders($headers);
 
 		foreach ($option->GaSelectionChildren as $selection)
@@ -316,6 +327,7 @@ class EventEdit
 			$row['selectionName'] .= new \PHPFUI\Input\Hidden("gaSelectionId[{$selection->gaSelectionId}]", (string)$selection->gaSelectionId);
 			$row['selectionName'] .= new \PHPFUI\Input\Hidden("ordering[{$selection->gaSelectionId}]", (string)$selection->ordering);
 			$row['additionalPrice'] = new \PHPFUI\Input\Number("additionalPrice[{$selection->gaSelectionId}]", '', \number_format($selection->additionalPrice ?? 0.0, 2));
+			$row['csvValue'] = new \PHPFUI\Input\Text("csvValue[{$selection->gaSelectionId}]", '', $selection->csvValue);
 
 			if (! \count($selection->GaRiderSelectionChildren))
 				{
@@ -454,6 +466,7 @@ class EventEdit
 					$option->required = (int)$post['required'];
 					$option->price = (float)$post['price'];
 					$option->maximumAllowed = (int)$post['maximumAllowed'];
+					$option->csvField = $post['csvField'];
 					$option->update();
 					$gaSelectionTable = new \App\Table\GaSelection();
 					$ordering = 0;

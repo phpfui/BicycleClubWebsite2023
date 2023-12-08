@@ -11,4 +11,14 @@ class GaSelection extends \App\Record\Definition\GaSelection
 	protected static array $virtualFields = [
 		'GaRiderSelectionChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaRiderSelection::class],
 	];
+
+	public function clean() : static
+		{
+		if ('' == $this->csvValue)
+			{
+			$this->csvValue = null;
+			}
+
+		return $this;
+		}
 	}

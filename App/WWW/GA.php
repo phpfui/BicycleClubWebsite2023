@@ -220,7 +220,11 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader($label = 'Registration Sheets'))
 			{
-			if (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
+			if (! $event->loaded())
+				{
+				$this->page->addPageContent(new \PHPFUI\SubHeader('Event Not Found'));
+				}
+			elseif (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
 				{
 				$report = new \App\Report\GASignInSheets($event, (int)$_POST['type'], (int)$_POST['tagNumber']);
 				$report->generate();
@@ -232,8 +236,8 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$form->add(new \PHPFUI\SubHeader($event->title));
 				$radio = new \PHPFUI\Input\RadioGroup('type', 'Download Type', (string)1);
 				$radio->setToolTip('You can download the riders as one list, paged by the first letter of the last name, or in CSV format');
-				$radio->addButton('Combined', (string)0);
-				$radio->addButton('Last Name', (string)1);
+				$radio->addButton('Continous', (string)0);
+				$radio->addButton('Paged On Last Name', (string)1);
 				$radio->addButton('CSV', (string)2);
 				$form->add(new \PHPFUI\MultiColumn($radio, new \PHPFUI\Input\Number('tagNumber', 'Starting Tag Number (zero for no numbers)', 1)));
 				$form->add(new \PHPFUI\Submit('Download ' . $label));

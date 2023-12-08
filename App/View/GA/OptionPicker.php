@@ -16,7 +16,7 @@ class OptionPicker extends \PHPFUI\Input\Select
 			}
 
 		$this->setRequired((bool)$option->required);
-		$this->addOption('Please Select', '');
+		$this->addOption($option->required ? 'Please Select' : '', '');
 
 		foreach ($option->GaSelectionChildren as $selection)
 			{

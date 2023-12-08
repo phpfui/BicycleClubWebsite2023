@@ -10,7 +10,7 @@ class GASignInSheets
 
 	final public const SINGLE = 0;
 
-	public function __construct(private readonly \App\Record\GaEvent $event, private readonly int $type, private int $tagNumber = 1)
+	public function __construct(private readonly \App\Record\GaEvent $event, private readonly int $type, private int $tagNumber = 0)
 		{
 		}
 
@@ -32,25 +32,46 @@ class GASignInSheets
 		else
 			{
 			$pdf = new \PDF_MC_Table();
+			$pdf->SetMargins(5, 5, 5);
 			$pdf->SetDisplayMode('fullpage');
 			$pdf->AddFont('Futura', '', 'futura.php');
 			$pdf->AddFont('Futura', 'B', 'futura.php');
-			$pdf->SetFont('Futura', '', 14);
+			$pdf->SetFont('Futura', '', 12);
 			$pdf->SetFillLines(1);
 			$pdf->SetFillColor(225);
 			$pdf->SetAutoPageBreak(true, 2);
-			$pdf->SetWidths([22, // tag number
-				60, // lastName
-				60, // firstName
-				45, // Emergency Phone
-				65, // Emergency Contact
-			]);
-			$pdf->SetHeader(['Tag',
-				'Last',
-				'First',
-				'Emer Phone',
-				'Emergency Contact',
-			]);
+			$widths = $headers = [];
+
+			if ($this->tagNumber)
+				{
+				$headers[] = 'Tag';
+				$widths[] = 15;
+				}
+
+			$headers[] = 'Last';
+			$widths[] = 40;
+			$headers[] = 'First';
+			$widths[] = 40;
+			$headers[] = 'Emer Phone';
+			$widths[] = 33;
+			$headers[] = 'Emer Contact';
+			$widths[] = 50;
+
+			$gaOptionTable = new \App\Table\GaOption();
+			$whereCondition = new \PHPFUI\ORM\Condition('gaeventId', $this->event->gaEventId);
+			$whereCondition->and(new \PHPFUI\ORM\Condition('csvField', '', new \PHPFUI\ORM\Operator\GreaterThan()));
+			$gaOptionTable->setWhere($whereCondition);
+			$gaOptionTable->addOrderBy('ordering');
+			$options = $gaOptionTable->getRecordCursor();
+
+			foreach ($options as $option)
+				{
+				$headers[] = $option->csvField;
+				$widths[] = 30;
+				}
+
+			$pdf->SetWidths($widths);
+			$pdf->SetHeader($headers);
 
 			$title = $titleBase = $this->event->title;
 			$lastName = $riders->current()['lastName'];
@@ -82,14 +103,25 @@ class GASignInSheets
 						$pdf->PrintHeader();
 						}
 					}
-				$tag = $this->tagNumber ? $this->tagNumber++ : '';
-				$rider->contactPhone = \App\Tools\TextHelper::formatPhone($rider->contactPhone);
 
-				$pdf->Row([$tag, $riderArray['lastName'],
-					$riderArray['firstName'],
-					$riderArray['contactPhone'],
-					$riderArray['contact'],
-				]);
+				$row = [];
+
+				if ($this->tagNumber)
+					{
+					$row[] = $this->tagNumber++;
+					}
+				$rider->contactPhone = \App\Tools\TextHelper::formatPhone($rider->contactPhone);
+				$row[] = $riderArray['lastName'];
+				$row[] = $riderArray['firstName'];
+				$row[] = $riderArray['contactPhone'];
+				$row[] = $riderArray['contact'];
+
+				foreach ($options as $option)
+					{
+					$row[] = $riderArray[$option->csvField];
+					}
+
+				$pdf->Row($row);
 				$pdf->SetDocumentTitle($title . ' (continued)');
 				}
 			$pdf->Output('I', "Preregistration-{$this->event->gaEventId}.pdf");
@@ -99,7 +131,7 @@ class GASignInSheets
 	/**
 	 * @return array<string,string>
 	 */
-	private function processRider(\App\Record\GaRider $rider) : array
+	private function processRider(\PHPFUI\ORM\DataObject $rider) : array
 		{
 		$retVal = $rider->toArray();
 

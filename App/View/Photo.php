@@ -245,7 +245,7 @@ class Photo
 			$publicField = new \PHPFUI\Input\CheckBoxBoolean('public', 'Allow Public Views', (bool)$photo->public);
 			$publicField->setToolTip('If checked, this photo can be accessed by anyone with the correct link');
 			$callout = new \PHPFUI\HTML5Element('b');
-			$url = $this->page->value('homePage') . '/Photo/image/' . $photo->photoId . $photo->extension;
+			$url = $this->page->value('homePage') . '/Photo/image/' . $photo->photoId;
 			$link = new \PHPFUI\Link($url, $photo->photo);
 			$link->addAttribute('target', '_blank');
 			$callout->add($link);

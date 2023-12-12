@@ -90,12 +90,15 @@ class TinifyImage extends \App\Model\File
 				$extension = 'jpeg';
 				}
 			$type .= $extension;
+			\http_response_code(200);
 			\header('Content-type: ' . $type);
 			\header('Content-Disposition: inline; filename="' . $downloadName . '"');
 			echo $data;
 
 			return '';
 			}
+
+		\http_response_code(404);
 
 		return $file;
 		}

@@ -31,7 +31,6 @@ class Migration_13 extends \PHPFUI\ORM\Migration
 			'expirngMsg' => ['Your ~clubName~  membership expires on ~expires~', 'expires', -30, -15, 0],
 			// 'subscriptionMsg',
 			'expireMsg' => ['Your ~clubName~ membership has lapsed. Renew today!', 'expires', 1, 15, 30],
-			'NMEMbody' => ['NMEMtitle', 'joined', (int)$settingTable->value('NMEMdays')],
 		];
 
 		$settingTable = new \App\Table\Setting();

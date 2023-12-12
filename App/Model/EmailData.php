@@ -15,6 +15,17 @@ class EmailData implements \App\DB\Interface\EmailData
 			{
 			$this->fields[$key] = $settingTable->value($key);
 			}
+
+		$boardMemberTable = new \App\Table\BoardMember();
+
+		foreach ($boardMemberTable->getRecordCursor() as $boardMember)
+			{
+			$member = $boardMember->member;
+			$this->fields[$boardMember->title] = $member->fullName();
+			$this->fields[$boardMember->title . 'Email'] = $member->email;
+			$this->fields[$boardMember->title . 'Cell'] = $member->cellPhone;
+			}
+
 		\ksort($this->fields);
 
 		return $this->fields;

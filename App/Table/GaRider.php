@@ -81,11 +81,11 @@ class GaRider extends \PHPFUI\ORM\Table
 			$riderSelectionJoinAlias = 'rs' . $joinNumber;
 			$onCondition = new \PHPFUI\ORM\Condition('gaRider.gaRiderId', new \PHPFUI\ORM\Literal("{$riderSelectionJoinAlias}.gaRiderId"));
 			$onCondition->and("{$riderSelectionJoinAlias}.gaOptionId", $option->gaOptionId);
-			$this->addJoin('gaRiderSelection', $onCondition, 'inner', $riderSelectionJoinAlias);
+			$this->addJoin('gaRiderSelection', $onCondition, 'left', $riderSelectionJoinAlias);
 
 			$selectionJoinAlias = 's' . $joinNumber;
 			$selectionOnCondition = new \PHPFUI\ORM\Condition("{$selectionJoinAlias}.gaSelectionId", new \PHPFUI\ORM\Literal("{$riderSelectionJoinAlias}.gaSelectionId"));
-			$this->addJoin('gaSelection', $selectionOnCondition, 'inner', $selectionJoinAlias);
+			$this->addJoin('gaSelection', $selectionOnCondition, 'left', $selectionJoinAlias);
 			++$joinNumber;
 			}
 

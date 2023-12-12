@@ -20,7 +20,7 @@ class Categories
 			{
 			$i = 0;
 			$data = $_POST;
-			$memberDefault = $data['memberDefault'];
+			$memberDefault = $data['memberDefault'] ?? 1;
 			$data['memberDefault'] = [];
 
 			foreach ($data['ordering'] ?? [] as $key => $value)
@@ -87,8 +87,7 @@ class Categories
 				$key = new \PHPFUI\Input\Hidden("categoryId[{$id}]", $id);
 				$ordering = new \PHPFUI\Input\Hidden("ordering[{$id}]", $id);
 				$cat = new \PHPFUI\Input\Text("category[{$id}]", '', $category->category);
-				$cat->addAttribute('style', 'width:3em;');
-				$cat->addAttribute('maxlength', (string)2);
+				$cat->addAttribute('maxlength', (string)20);
 				$row['category'] = $cat . $key . $ordering;
 				$minspeed = new \PHPFUI\Input\Number("minSpeed[{$id}]", '', $category->minSpeed);
 				$minspeed->addAttribute('min', (string)0)->addAttribute('max', (string)25)->addAttribute('step', (string)0.1)->addAttribute('style', 'width:5em;');

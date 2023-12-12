@@ -42,6 +42,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			else
 				{
 				$form = new \PHPFUI\Form($this->page);
+				$form->setAreYouSure(false);
 				$form->add(new \App\View\GA\EventPicker($this->page, \App\View\GA\EventPicker::MULTIPLE, 'Select Events'));
 				$form->add(new \PHPFUI\Submit('Download'));
 				$this->page->addPageContent($form);
@@ -108,6 +109,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			else
 				{
 				$form = new \PHPFUI\Form($this->page);
+				$form->setAreYouSure(false);
 				$form->add(new \App\View\GA\EventPicker($this->page, \App\View\GA\EventPicker::MULTIPLE, 'Select Events To Include In Labels'));
 				$form->add(new \App\UI\LabelStock());
 				$form->add(new \PHPFUI\Submit('Download ' . $label));
@@ -233,6 +235,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			else
 				{
 				$form = new \PHPFUI\Form($this->page);
+				$form->setAreYouSure(false);
 				$form->add(new \PHPFUI\SubHeader($event->title));
 				$radio = new \PHPFUI\Input\RadioGroup('type', 'Download Type', (string)1);
 				$radio->setToolTip('You can download the riders as one list, paged by the first letter of the last name, or in CSV format');
@@ -261,6 +264,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				else
 					{
 					$form = new \PHPFUI\Form($this->page);
+					$form->setAreYouSure(false);
 					$form->add(new \PHPFUI\SubHeader($event->title));
 					$fieldSet = new \PHPFUI\FieldSet('Enter the number of registrations signs needed');
 					$number = new \PHPFUI\Input\Number('count', 'Number of signs', 5);

@@ -93,6 +93,8 @@ abstract class File
 		\header('Content-Disposition: attachment; filename="' . $downloadName . '"');
 		\readfile($filename);
 
+		\http_response_code(200);
+
 		return '';
 		}
 

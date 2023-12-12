@@ -31,11 +31,15 @@ class Forum
 
 			if ($error)
 				{
+				\http_response_code(404);
+
 				return "File not found: {$error}";
 				}
 			}
 		else
 			{
+			\http_response_code(404);
+
 			return "{$attachment->forumAttachmentId} is not a valid attachment number.";
 			}
 

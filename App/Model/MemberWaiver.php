@@ -13,7 +13,9 @@ class MemberWaiver extends \App\Model\File
 		{
 		if (! $this->member->loaded())
 			{
-			return 'invalid member';
+			\http_response_code(404);
+
+			return 'Invalid member';
 			}
 
 		$waiverPath = $this->get($this->member->memberId . '.pdf');

@@ -72,11 +72,15 @@ class CueSheet
 
 			if ($error)
 				{
+				\http_response_code(404);
+
 				return "File not found: {$error}";
 				}
 			}
 		else
 			{
+			\http_response_code(404);
+
 			return "{$cueSheetVersion->cueSheetVersionId} is not a valid cue sheet number";
 			}
 

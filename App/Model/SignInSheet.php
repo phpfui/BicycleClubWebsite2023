@@ -49,11 +49,15 @@ class SignInSheet
 
 			if ($error)
 				{
+				\http_response_code(404);
+
 				return "File not found: {$error}";
 				}
 			}
 		else
 			{
+			\http_response_code(404);
+
 			return "{$signinSheet->signinSheetId} is not a valid sign in sheet number";
 			}
 

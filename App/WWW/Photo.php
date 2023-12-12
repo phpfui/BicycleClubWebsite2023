@@ -149,6 +149,10 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$fileModel = new \App\Model\PhotoFiles();
 			$fileModel->download($photo->photoId, $photo->extension);
 			}
+		else
+			{
+			\http_response_code(404);
+			}
 
 		exit;
 		}

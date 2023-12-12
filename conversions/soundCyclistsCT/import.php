@@ -153,8 +153,11 @@ $dataPurger->addExceptionTable(new \App\Table\Blog());
 $dataPurger->addExceptionTable(new \App\Table\BlogItem());
 $dataPurger->addExceptionTable(new \App\Table\Category());
 $dataPurger->addExceptionTable(new \App\Table\GaEvent());
+$dataPurger->addExceptionTable(new \App\Table\GaOption());
+$dataPurger->addExceptionTable(new \App\Table\GaSelection());
 $dataPurger->addExceptionTable(new \App\Table\GaPriceDate());
 $dataPurger->addExceptionTable(new \App\Table\HeaderContent());
+$dataPurger->addExceptionTable(new \App\Table\MemberNotice());
 $dataPurger->addExceptionTable(new \App\Table\Pace());
 $dataPurger->addExceptionTable(new \App\Table\Permission());
 $dataPurger->addExceptionTable(new \App\Table\PermissionGroup());
@@ -652,8 +655,8 @@ foreach ($RWGPSIds as $rwgpsId => $startLocationId)
 $model = new \App\Model\FileFiles();
 $model->delete('*');
 
-importFiles('Board Meeting Minutes', 'board_minutes');
-importFiles('Treasurers Reports', 'treasurers_report');
+\importFiles('Board Meeting Minutes', 'board_minutes');
+\importFiles('Treasurers Reports', 'treasurers_report');
 
 function addCueSheetFile(\App\Record\CueSheet $cueSheet, string $file, string $path) : void
 	{
@@ -692,7 +695,7 @@ function addCueSheetFile(\App\Record\CueSheet $cueSheet, string $file, string $p
 	\copy($importFile, $destination);
 	}
 
-function importFiles(string $title, string $directory)
+function importFiles(string $title, string $directory) : void
 	{
 	echo "Importing {$title}\n";
 	$member = new \App\Record\Member();

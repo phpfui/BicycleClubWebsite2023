@@ -92,7 +92,7 @@ class Pace
 				$key = new \PHPFUI\Input\Hidden("{$pk}[{$id}]", $id);
 				$ordering = new \PHPFUI\Input\Hidden("ordering[{$id}]", $id);
 				$rowName = new \PHPFUI\Input\Text("pace[{$id}]", '', $row['pace']);
-				$rowName->addAttribute('maxlength', (string)5);
+				$rowName->addAttribute('maxlength', (string)20);
 				$row['pace'] = $rowName . $key . $ordering;
 				$minSpeed = new \PHPFUI\Input\Number("minSpeed[{$id}]", '', $row['minSpeed']);
 				$minSpeed->addAttribute('min', (string)0)->addAttribute('max', (string)25)->addAttribute('step', (string)0.1);

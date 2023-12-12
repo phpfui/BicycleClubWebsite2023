@@ -155,9 +155,9 @@ class Member
 		return \App\Tools\Date::increment(\App\Tools\Date::makeString($expYear, $expMonth, 1), -1);
 		}
 
-	public static function cleanEmail(string $email) : string
+	public static function cleanEmail(?string $email) : string
 		{
-		$email = \strtolower(\trim($email));
+		$email = \strtolower(\trim($email ?? ''));
 
 		// Strip dots in gmail domains
 		if ($end = \strpos($email, '@gmail.com'))

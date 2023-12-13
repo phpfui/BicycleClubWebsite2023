@@ -168,40 +168,28 @@ $sql .= "\nFROM `users_field_data`\n" . $joins . "WHERE `user__roles`.`roles_tar
 
 $drupalMemberCursor = \PHPFUI\ORM::getArrayCursor($sql);
 
-$startLocationSQL = "SELECT `node_field_data`.`title` AS `name`,
-`node__field_location_address`.`field_location_address_locality` AS `town`,
-`node__field_location_address`.field_location_address_administrative_area as state,
-`node__field_location_address`.field_location_address_address_line1 as address,
-`node__field_location_address`.field_location_address_address_line2 as address2,
-node_revision__field_location_links.field_location_links_uri as `link`,
-node_revision__field_location_links.field_location_links_title As address3,
-node_revision__body.body_value as directions,
-`node_revision__field_location_address_geoloc`.field_location_address_geoloc_lat as latitude,
-`node_revision__field_location_address_geoloc`.field_location_address_geoloc_lng as longitude,
-`node_field_data`.`nid` AS `startLocationId`
-FROM `node_field_data`
-LEFT JOIN `node__field_location_address` ON node_field_data.nid = node__field_location_address.entity_id AND node__field_location_address.deleted = '0'
-left join node_revision__field_location_links on node_field_data.nid=node_revision__field_location_links.entity_id
-left join node_revision__field_location_address_geoloc on node_field_data.nid=node_revision__field_location_address_geoloc.entity_id
-left join node_revision__body on node_field_data.nid=node_revision__body.entity_id
-and node_revision__field_location_links.deleted=0
-WHERE (`node_field_data`.`status` = '1') AND (`node_field_data`.`type` IN ('starting_location'))
-ORDER BY `name` ASC";
-
-$drupalStartLocationsCursor = \PHPFUI\ORM::getArrayCursor($startLocationSQL);
-echo "Converting {$drupalStartLocationsCursor->count()} start locations\n";
-
-$permissionMapping = [
-	'administrator' => 'Super User',
-	'board_director' => 'Board Member',
-	'membership_admin' => 'Membership Chair',
-	'paid_member' => 'Normal Member',
-	'ride_admin' => 'Ride Coordinator',
-	'ride_leader_unmoderated' => 'Ride Leader',
-	'ride_report_admin' => 'Ride Chair',
-	'site_admin_assistant' => 'Super User',
-	'site_editor' => 'Content Editor',
-];
+//$startLocationSQL = "SELECT `node_field_data`.`title` AS `name`,
+//`node__field_location_address`.`field_location_address_locality` AS `town`,
+//`node__field_location_address`.field_location_address_administrative_area as state,
+//`node__field_location_address`.field_location_address_address_line1 as address,
+//`node__field_location_address`.field_location_address_address_line2 as address2,
+//node_revision__field_location_links.field_location_links_uri as `link`,
+//node_revision__field_location_links.field_location_links_title As address3,
+//node_revision__body.body_value as directions,
+//`node_revision__field_location_address_geoloc`.field_location_address_geoloc_lat as latitude,
+//`node_revision__field_location_address_geoloc`.field_location_address_geoloc_lng as longitude,
+//`node_field_data`.`nid` AS `startLocationId`
+//FROM `node_field_data`
+//LEFT JOIN `node__field_location_address` ON node_field_data.nid = node__field_location_address.entity_id AND node__field_location_address.deleted = '0'
+//left join node_revision__field_location_links on node_field_data.nid=node_revision__field_location_links.entity_id
+//left join node_revision__field_location_address_geoloc on node_field_data.nid=node_revision__field_location_address_geoloc.entity_id
+//left join node_revision__body on node_field_data.nid=node_revision__body.entity_id
+//and node_revision__field_location_links.deleted=0
+//WHERE (`node_field_data`.`status` = '1') AND (`node_field_data`.`type` IN ('starting_location'))
+//ORDER BY `name` ASC";
+//
+//$drupalStartLocationsCursor = \PHPFUI\ORM::getArrayCursor($startLocationSQL);
+//echo "Converting {$drupalStartLocationsCursor->count()} start locations\n";
 
 // need start location and ride data
 
@@ -211,27 +199,27 @@ $permissionMapping = [
 $migrate = new \PHPFUI\ORM\Migrator();
 $migrate->migrate();
 
-$startLocationTable = new \App\Table\StartLocation();
-$startLocationTable->setWhere(new \PHPFUI\ORM\Condition('startLocationId', 5, new \PHPFUI\ORM\Operator\LessThan()));
-$startLocationTable->delete();
-
-foreach ($drupalStartLocationsCursor as $startArray)
-	{
-	$startLocation = new \App\Record\StartLocation();
-
-	if ($startArray['address2'])
-		{
-		$startArray['address'] .= ', ' . $startArray['address2'];
-		}
-
-	if ($startArray['address3'])
-		{
-		$startArray['address'] .= ', ' . $startArray['address3'];
-		}
-	$startLocation->setFrom($startArray);
-	$startLocation->active = 1;
-	$startLocation->insertOrUpdate();
-	}
+//$startLocationTable = new \App\Table\StartLocation();
+//$startLocationTable->setWhere(new \PHPFUI\ORM\Condition('startLocationId', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
+//$startLocationTable->delete();
+//
+//foreach ($drupalStartLocationsCursor as $startArray)
+//	{
+//	$startLocation = new \App\Record\StartLocation();
+//
+//	if ($startArray['address2'])
+//		{
+//		$startArray['address'] .= ', ' . $startArray['address2'];
+//		}
+//
+//	if ($startArray['address3'])
+//		{
+//		$startArray['address'] .= ', ' . $startArray['address3'];
+//		}
+//	$startLocation->setFrom($startArray);
+//	$startLocation->active = 1;
+//	$startLocation->insertOrUpdate();
+//	}
 
 $memberTables = [];
 $memberTables[] = new \App\Table\AdditionalEmail();
@@ -279,6 +267,7 @@ $memberTables[] = new \App\Table\VolunteerPollResponse();
 $existingMembers = [];
 $existingMembers[] = new \App\Record\Member(['email' => 'elivote@outlook.com']);
 $existingMembers[] = new \App\Record\Member(['email' => 'fkelly12054@gmail.com']);
+$existingMembers[] = new \App\Record\Member(['email' => 'brucekwells@gmail.com']);
 $today = \App\Tools\Date::todayString();
 
 $permissions = new \App\Model\Permission();
@@ -328,27 +317,7 @@ foreach ($drupalMemberCursor as $memberArray)
 	$member->showNothing = $member->showNothing ? 0 : 1;
 	$member->verifiedEmail = 9;
 
-	$dates = [];
-	$dates[] = \App\Tools\Date::fromString($memberArray['previous_expiration_date'] ?? $today) - 365;
-	$dates[] = \App\Tools\Date::fromString($memberArray['legacy_date_changed'] ?? $today);
-	$dates[] = \App\Tools\Date::fromString($memberArray['date_paid'] ?? $today);
-	$joined = \App\Tools\Date::today();
-
-	foreach ($dates as $date)
-		{
-		$joined = \min($joined, $date);
-		}
-	$joinedString = \App\Tools\Date::toString($joined);
-
-	if (empty($membership->joined) || $membership->joined > $joinedString)
-		{
-		$memberArray['joined'] = $joinedString;
-		}
-	else
-		{
-		$memberArray['joined'] = $membership->joined;
-		}
-
+	$memberArray['joined'] = '2024-01-01';
 	$membershipId = $membership->membershipId;
 
 	$membership->setFrom($memberArray);

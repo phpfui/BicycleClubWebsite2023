@@ -64,7 +64,7 @@ class Member
 		$member['firstName'] = \ucwords((string)$member['firstName']);
 		$member['lastName'] = \ucwords((string)$member['lastName']);
 		$member['expires'] = $member['lastRenewed'] = null;
-		$defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal'];
+		$defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal', 'rideComments'];
 
 		foreach ($defaultFields as $field)
 			{

@@ -169,11 +169,11 @@ PAYPAL
 	private function getAPIEditor(string $type = '') : \PHPFUI\FieldSet
 		{
 		$column = new \PHPFUI\FieldSet($type . ' API Credentials from the Club PayPal Account');
-		$clientId = new \PHPFUI\Input\Text("PayPal{$type}ClientId", "Client ID for REST API associated with above {$type} Email address", $this->paypalModel->getClientId($type));
+		$clientId = new \PHPFUI\Input\Text("PayPal{$type}ClientId", "Client ID for REST API associated with the club {$type} PayPal account", $this->paypalModel->getClientId($type));
 		$clientId->setRequired(! $type);
 		$clientId->setToolTip('The Client Id is a long string of letters and numbers.');
 		$column->add($clientId);
-		$secret = new \PHPFUI\Input\PasswordEye("PayPal{$type}Secret", "Secret for REST API associated with above {$type} Email address", $this->paypalModel->getSecret($type));
+		$secret = new \PHPFUI\Input\PasswordEye("PayPal{$type}Secret", "Secret for REST API associated with the club {$type} PayPal account", $this->paypalModel->getSecret($type));
 		$secret->setRequired(! $type);
 		$secret->setToolTip('The Secret is a long string of letters and numbers.');
 		$column->add($secret);

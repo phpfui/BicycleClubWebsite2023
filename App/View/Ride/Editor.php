@@ -116,6 +116,17 @@ class Editor
 		if ($dayOfRide || $afterRide)
 			{
 			$rideView = new \App\View\Rides($this->page);
+
+			if (! $ride->numberOfRiders)
+				{
+				$ride->numberOfRiders = \count($ride->confirmedRiders);
+
+				if ($ride->numberOfRiders && ! $ride->rideStatus)
+					{
+					$ride->rideStatus = \App\Table\Ride::STATUS_COMPLETED;
+					}
+				}
+
 			$output->add($rideView->getRideInfo($ride));
 			$fieldSet = new \PHPFUI\FieldSet('Ride Statistics');
 			$multiColumn = new \PHPFUI\MultiColumn();

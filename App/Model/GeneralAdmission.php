@@ -97,12 +97,18 @@ class GeneralAdmission
 				$membership->expires = $event->membershipExpires;
 				}
 			$member = new \App\Record\Member();
+
 			$member->setFrom($rider->toArray());
-			$member->emailAnnouncements = 1;
+			$defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal', 'rideComments'];
+			$settingTable = new \App\Table\Setting();
+
+			foreach ($defaultFields as $field)
+				{
+				$member->{$field} = $settingTable->value($field . 'Default') ?: 0;
+				}
 			$member->membership = $membership;
-			$member->emailNewsletter = 2;
+			$member->verifiedEmail = 9;
 			$member->acceptedWaiver = null;
-			$member->rideComments = 1;
 			$member->emergencyContact = $rider->contact;
 			$member->emergencyPhone = $rider->contactPhone;
 			$member->cellPhone = $rider->phone;

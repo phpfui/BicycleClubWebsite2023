@@ -36,12 +36,13 @@ class Membership
 		$fieldSet = new \PHPFUI\FieldSet('Membership Defaults');
 		$multiColumn = new \PHPFUI\MultiColumn();
 
-		$multiColumn->add($settingsSaver->generateField('rideJournal', 'Ride Journal Emails Days', 'Number', false));
-		$multiColumn->add($settingsSaver->generateField('newRideEmail', 'New Ride Posted Emails', 'CheckBox', false));
+		$multiColumn->add($settingsSaver->generateField('rideJournalDefault', 'Ride Journal Emails Days', 'Number', false));
+		$multiColumn->add($settingsSaver->generateField('newRideEmailDefault', 'New Ride Posted Emails', 'CheckBox', false));
 		$fieldSet->add($multiColumn);
 		$multiColumn = new \PHPFUI\MultiColumn();
 		$multiColumn->add($settingsSaver->generateField('emailNewsletterDefault', 'Newsletter', 'CheckBox', false));
 		$multiColumn->add($settingsSaver->generateField('emailAnnouncementsDefault', 'Announcements', 'CheckBox', false));
+		$multiColumn->add($settingsSaver->generateField('journalDefault', 'Announcement Journal', 'CheckBox', false));
 		$multiColumn->add($settingsSaver->generateField('rideCommentsDefault', 'Ride Comments', 'CheckBox', false));
 		$fieldSet->add($multiColumn);
 

@@ -546,6 +546,7 @@ JS;
 
 		$buttonGroup = new \PHPFUI\ButtonGroup();
 		$addTagButton = new \PHPFUI\Button('Add Tag');
+		$form->saveOnClick($addTagButton);
 		$addTagButton->addClass('secondary');
 		$this->getAddTagReveal($addTagButton, $photoId);
 

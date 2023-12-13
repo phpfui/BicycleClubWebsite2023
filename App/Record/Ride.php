@@ -10,6 +10,7 @@ namespace App\Record;
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\RideIncentive> $RideIncentiveChildren
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\RideComment> $RideCommentChildren
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\AssistantLeader> $AssistantLeaderChildren
+ * @property \PHPFUI\ORM\RecordCursor<\App\Record\RideSignup> $confirmedRiders
  */
 class Ride extends \App\Record\Definition\Ride
 	{
@@ -20,6 +21,7 @@ class Ride extends \App\Record\Definition\Ride
 		'RideIncentiveChildren' => [\PHPFUI\ORM\Children::class, \App\Table\RideIncentive::class],
 		'RideSignupChildren' => [\PHPFUI\ORM\Children::class, \App\Table\RideSignup::class],
 		'SigninSheetRideChildren' => [\PHPFUI\ORM\Children::class, \App\Table\SigninSheetRide::class],
+		'confirmedRiders' => [\App\DB\ConfirmedRiders::class],
 	];
 
 	public function clean() : static

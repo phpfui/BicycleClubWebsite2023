@@ -1,6 +1,4 @@
-Expand category an pace name lengths
-
-Update number of riders on ride from confirmed riders
+Folders for videos
 
 Home page days back customization
 

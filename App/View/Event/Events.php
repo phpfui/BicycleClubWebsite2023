@@ -79,6 +79,12 @@ class Events
 			{
 			$organizer->addOption("{$member->firstName} {$member->lastName}", $member->memberId, $member->memberId == $event->organizer);
 			}
+		$memberTable->getMembersWithPermission('Assistant Event Coordinator');
+
+		foreach ($memberTable->getDataObjectCursor() as $member)
+			{
+			$organizer->addOption("{$member->firstName} {$member->lastName}", $member->memberId, $member->memberId == $event->organizer);
+			}
 		$infoFields->add($organizer);
 		$form->add($infoFields);
 

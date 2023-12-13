@@ -68,6 +68,7 @@ class PermissionBase
 		{
 		return [
 			'Event Coordinator',
+			'Assistant Event Coordinator',
 			'Normal Member',
 			'Pending Member',
 			'Ride Coordinator',

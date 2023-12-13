@@ -20,19 +20,31 @@ class SubstitutionFields
 
 		$multiColumn = new \PHPFUI\MultiColumn();
 
+		$count = \count($this->fields);
+		$perColumn = \floor($count / 3);
+		$extra = $count % 3;
+		$addedExtra = $extra-- > 0 ? 1 : 0;
+
+		$ul = new \PHPFUI\UnorderedList();
+		$multiColumn = new \PHPFUI\MultiColumn();
+		$count = 0;
+
 		foreach ($this->fields as $field => $value)
 			{
-			if (\count($multiColumn) >= 3)
+			$ul->addItem(new \PHPFUI\ListItem("~{$field}~"));
+
+			if (++$count >= $perColumn + $addedExtra)
 				{
-				$container->add($multiColumn);
-				$multiColumn = new \PHPFUI\MultiColumn();
+				$addedExtra = $extra-- > 0 ? 1 : 0;
+				$multiColumn->add($ul);
+				$count = 0;
+				$ul = new \PHPFUI\UnorderedList();
 				}
-			$multiColumn->add("~{$field}~");
 			}
 
-		while (\count($multiColumn) < 3)
+		if (\count($ul))
 			{
-			$multiColumn->add('&nbsp;');
+			$multiColumn->add($ul);
 			}
 		$container->add($multiColumn);
 

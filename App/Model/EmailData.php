@@ -21,9 +21,10 @@ class EmailData implements \App\DB\Interface\EmailData
 		foreach ($boardMemberTable->getRecordCursor() as $boardMember)
 			{
 			$member = $boardMember->member;
-			$this->fields[$boardMember->title] = $member->fullName();
-			$this->fields[$boardMember->title . 'Email'] = $member->email;
-			$this->fields[$boardMember->title . 'Cell'] = $member->cellPhone;
+			$title = \str_replace(' ', '_', $boardMember->title);
+			$this->fields[$title] = $member->fullName();
+			$this->fields[$title . 'Email'] = $member->email;
+			$this->fields[$title . 'Cell'] = $member->cellPhone;
 			}
 
 		\ksort($this->fields);

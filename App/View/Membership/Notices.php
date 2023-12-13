@@ -72,7 +72,7 @@ class Notices
 		$tabs->addTab('Email Body', $message, true);
 
 		$memberFields = new \App\Model\Email\Member();
-		$tabs->addTab('Substituions', new \App\UI\SubstitutionFields($memberFields->toArray()));
+		$tabs->addTab('Substitutions', new \App\UI\SubstitutionFields($memberFields->toArray()));
 		$form->add($tabs);
 
 		$buttonGroup = new \PHPFUI\ButtonGroup();

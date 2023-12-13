@@ -196,8 +196,9 @@ class HomePage implements \Stringable
 
 		$rideView = new \App\View\Rides($this->page);
 		$output->add(new \PHPFUI\SubHeader('Upcoming Rides'));
-		$settingTable = new \App\Table\Setting();
-		$limit = (int)$settingTable->value('publicRideListLimit');
+		$content = new \App\View\Content($this->page);
+		$output->add($content->getDisplayCategoryHTML('Ride Schedule'));
+		$limit = (int)$this->page->value('publicRideListLimit');
 		$output->add($rideView->schedule(\App\Table\Ride::upcomingRides($limit)));
 
 		return (string)$output;

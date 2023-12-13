@@ -57,7 +57,7 @@ class Content extends \App\UI\HTMLEditor
 			if ($this->addContent)
 				{
 				$buttonGroup = new \PHPFUI\ButtonGroup();
-				$button = new \PHPFUI\Button('Add Content To This Page', "/Content/newStory/{$blog->blogId}?url=" . $this->page->getBaseURL());
+				$button = new \PHPFUI\Button('Add Content Here', "/Content/newStory/{$blog->blogId}?url=" . $this->page->getBaseURL());
 				$button->addClass('secondary');
 				$button->setConfirm('Are you sure you want to add a story to this page?');
 				$buttonGroup->addButton($button);

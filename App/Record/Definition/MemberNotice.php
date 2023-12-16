@@ -13,6 +13,7 @@ namespace App\Record\Definition;
  * @property int $memberNoticeId MySQL type int
  * @property \App\Record\MemberNotice $memberNotice related record
  * @property ?int $overridePreferences MySQL type int
+ * @property int $summary MySQL type int
  * @property string $title MySQL type varchar(255)
  */
 abstract class MemberNotice extends \PHPFUI\ORM\Record
@@ -28,6 +29,7 @@ abstract class MemberNotice extends \PHPFUI\ORM\Record
 		'memberId' => ['int', 'int', 0, true, ],
 		'memberNoticeId' => ['int', 'int', 0, false, ],
 		'overridePreferences' => ['int', 'int', 0, true, 0, ],
+		'summary' => ['int', 'int', 0, false, 0, ],
 		'title' => ['varchar(255)', 'string', 255, false, ],
 	];
 

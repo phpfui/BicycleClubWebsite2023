@@ -13,6 +13,8 @@ class MemberNotices extends \App\Cron\BaseJob
 	public function run(array $parameters = []) : void
 		{
 		$memberNoticeTable = new \App\Table\MemberNotice();
+		$whereCondition = new \PHPFUI\ORM\Condition('summary', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+		$memberNoticeTable->setWhere($whereCondition);
 
 		$memberTable = new \App\Table\Member();
 		$memberTable->addJoin('membership');
@@ -20,6 +22,9 @@ class MemberNotices extends \App\Cron\BaseJob
 		foreach ($memberNoticeTable->getRecordCursor() as $notice)
 			{
 			$dayOffsets = \explode(',', $notice->dayOffsets);
+
+			$summaryTable = new \PHPFUI\Table();
+			$summaryTable->setHeaders(['Name', 'email', 'Date']);
 
 			foreach ($dayOffsets as $days)
 				{
@@ -33,16 +38,35 @@ class MemberNotices extends \App\Cron\BaseJob
 					$condition->and($notice->field, $endDate, new \PHPFUI\ORM\Operator\LessThan());
 					$memberTable->setWhere($condition);
 
-					foreach ($memberTable->getRecordCursor() as $member)
+					foreach ($memberTable->getDataObjectCursor() as $member)
 						{
 						if ($member->emailAnnouncements || $notice->overridePreferences)
 							{
-							$email = new \App\Model\Email\Notice($notice, new \App\Model\Email\Member($member));
-							$email->setToMember($member->toArray());
-							$email->bulkSend();
+							if ($notice->summary < 3)
+								{
+								$email = new \App\Model\Email\Notice($notice, new \App\Model\Email\Member($member));
+								$email->setToMember($member->toArray());
+								$email->bulkSend();
+								}
+
+							if ($notice->summary > 1)
+								{
+								$memberRecord = new \App\Record\Member($member);
+								$summaryTable->addRow(['Name' => $memberRecord->fullName(), 'email' => $member->email, 'Date' => $member[$notice->field]]);
+								}
 							}
 						}
 					}
+				}
+
+			if (\count($summaryTable))
+				{
+				$summaryEmail = new \App\Tools\EMail();
+				$summaryEmail->addToMember($notice->member->toArray());
+				$summaryEmail->setBody($summaryTable);
+				$summaryEmail->setSubject("Member Notification Summary for: {$notice->title}");
+				$summaryEmail->setHtml();
+				$summaryEmail->send();
 				}
 			}
 		}

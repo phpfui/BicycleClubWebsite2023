@@ -68,7 +68,7 @@ class Member
 
 		foreach ($defaultFields as $field)
 			{
-			$member[$field] = $this->settingTable->value($field . 'Default') ?: 0;
+			$member[$field] = (int)($this->settingTable->value($field . 'Default') ?: 0);
 			}
 		$member['acceptedWaiver'] = null;
 		$member['password'] = $this->hashPassword($member['password']);

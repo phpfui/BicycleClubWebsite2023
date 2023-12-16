@@ -104,7 +104,7 @@ class GeneralAdmission
 
 			foreach ($defaultFields as $field)
 				{
-				$member->{$field} = $settingTable->value($field . 'Default') ?: 0;
+				$member->{$field} = (int)($settingTable->value($field . 'Default') ?: 0);
 				}
 			$member->membership = $membership;
 			$member->verifiedEmail = 9;

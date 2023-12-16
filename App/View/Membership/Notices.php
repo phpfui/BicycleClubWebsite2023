@@ -4,6 +4,11 @@ namespace App\View\Membership;
 
 class Notices
 	{
+	/**
+	 * @var array<string> $summary
+	 */
+	private static array $summary = ['Off', 'Email Only', 'Email and Summary', 'Summary Only'];
+
 	public function __construct(private readonly \PHPFUI\Page $page)
 		{
 		}
@@ -41,6 +46,15 @@ class Notices
 		$title = new \PHPFUI\Input\Text('title', 'Email Subject', $notice->title ?? '');
 		$title->setToolTip('Subject does full substitutions (see Substitutions tab)')->setRequired();
 		$fieldSet->add($title);
+
+		$summaryRG = new \PHPFUI\Input\RadioGroup('summary', 'Status', (string)$notice->summary);
+
+		foreach (self::$summary as $index => $text)
+			{
+			$summaryRG->addButton($text, (string)$index);
+			}
+
+		$fieldSet->add($summaryRG);
 
 		$memberPicker = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPickerNoSave('From Member'), 'memberId', $notice->member->toArray());
 		$memberInput = $memberPicker->getEditControl()->setToolTip('Defaults to Membership Chair if blank')->setNoFreeForm(false);
@@ -105,13 +119,16 @@ class Notices
 			'field',
 		];
 
-		$table->setSearchColumns($headers)->setSortableColumns($headers);
+		$table->setSearchColumns($headers);
+		$headers[] = 'summary';
+		$table->setSortableColumns($headers);
 		$headers[] = 'Member';
 		$headers[] = 'Del';
 
 		$table->setHeaders($headers);
 		$deleter = new \App\Model\DeleteRecord($this->page, $table, $memberNoticeTable, 'Are you sure you want to permanently delete this notice email?');
 		$table->addCustomColumn('Del', $deleter->columnCallback(...));
+		$table->addCustomColumn('summary', static fn (array $row) => self::$summary[$row['summary']] ?? 'Off');
 		$table->addCustomColumn('title', static fn (array $row) => new \PHPFUI\Link('/Membership/notifications/' . $row['memberNoticeId'], $row['title'], false));
 		$table->addCustomColumn('Member', static function(array $row) {$member = new \App\Record\Member($row['memberId']);
 

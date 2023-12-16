@@ -9,11 +9,14 @@ class Settings implements \Stringable
 	 */
 	private array $buttons = [];
 
+	private \App\Model\TinyMCETextArea $htmlEditor;
+
 	private readonly \App\Table\Setting $settingTable;
 
 	public function __construct(private readonly \App\View\Page $page, private readonly string $settingName, private readonly \App\DB\Interface\EmailData $data)
 		{
 		$this->settingTable = new \App\Table\Setting();
+		$this->htmlEditor = new \App\Model\TinyMCETextArea();
 		}
 
 	public function __toString() : string
@@ -75,5 +78,12 @@ class Settings implements \Stringable
 	public function addButton(\PHPFUI\Button $button) : void
 		{
 		$this->buttons[] = $button;
+		}
+
+	public function addSetting(string $key, mixed $setting) : static
+		{
+		$this->htmlEditor->addSetting($key, $setting);
+
+		return $this;
 		}
 	}

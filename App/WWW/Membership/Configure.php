@@ -59,9 +59,17 @@ class Configure extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 
 		if (isset($emails[$email]))
 			{
-			if ($this->page->addHeader($emails[$email] . ' Email'))
+			$type = $emails[$email];
+
+			if ($this->page->addHeader($type . ' Email'))
 				{
-				$this->page->addPageContent(new \App\View\Email\Settings($this->page, $email, new \App\Model\Email\Membership()));
+				$settings = new \App\View\Email\Settings($this->page, $email, new \App\Model\Email\Membership());
+
+				if ('New Password' == $type)
+					{
+					$settings->addSetting('relative_urls', true);
+					}
+				$this->page->addPageContent($settings);
 				}
 			}
 		else

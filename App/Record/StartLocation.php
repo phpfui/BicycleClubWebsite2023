@@ -11,7 +11,7 @@ class StartLocation extends \App\Record\Definition\StartLocation
 		{
 		$this->cleanProperName('address');
 		$this->cleanProperName('town');
-		$this->cleanProperName('nearestExit');
+		$this->cleanProperName('addressExit');
 		$this->cleanUpperCase('state');
 
 		return $this;

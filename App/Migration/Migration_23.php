@@ -49,7 +49,7 @@ class Migration_23 extends \PHPFUI\ORM\Migration
 
 		$incentives = \PHPFUI\ORM::getArrayCursor('select * from gaIncentive order by gaEventId');
 		$eventId = $order = 0;
-		$option = new \App\Record\GaOption();
+		$option = new \App\Migration\GaOption();
 
 		foreach ($incentives as $incentive)
 			{
@@ -57,14 +57,16 @@ class Migration_23 extends \PHPFUI\ORM\Migration
 				{
 				$eventId = (int)$incentive['gaEventId'];
 				$order = 1;
-				$option = new \App\Record\GaOption();
+				$option = new \App\Migration\GaOption();
+				$option->unsetCSVField();
 				$option->ordering = (int)\PHPFUI\ORM::getValue('select count(*) from gaOption where gaEventId=?', [$eventId]) + 1;
 				$option->optionName = \PHPFUI\ORM::getValue('select incentiveName from gaEvent where gaEventId=?', [$eventId]);
 				$option->maximumAllowed = (int)\PHPFUI\ORM::getValue('select incentiveCount from gaEvent where gaEventId=?', [$eventId]);
 				$option->gaEventId = $eventId;
 				$option->insert();
 				}
-			$selection = new \App\Record\GaSelection();
+			$selection = new \App\Migration\GaSelection();
+			$selection->unsetCSVValue();
 			$selection->gaOption = $option;
 			$selection->gaEventId = $eventId;
 			$selection->selectionName = $incentive['description'];
@@ -83,13 +85,15 @@ class Migration_23 extends \PHPFUI\ORM\Migration
 				{
 				$eventId = (int)$ride['gaEventId'];
 				$order = 1;
-				$option = new \App\Record\GaOption();
+				$option = new \App\Migration\GaOption();
+				$option->unsetCSVField();
 				$option->ordering = (int)\PHPFUI\ORM::getValue('select count(*) from gaOption where gaEventId=?', [$eventId]) + 1;
 				$option->optionName = 'Route';
 				$option->gaEventId = $eventId;
 				$option->insert();
 				}
-			$selection = new \App\Record\GaSelection();
+			$selection = new \App\Migration\GaSelection();
+			$selection->unsetCSVValue();
 			$selection->gaOption = $option;
 			$selection->gaEventId = $eventId;
 			$selection->selectionName = $ride['distance'] . ' miles';
@@ -120,13 +124,15 @@ class Migration_23 extends \PHPFUI\ORM\Migration
 				{
 				$eventId = (int)$answer['gaEventId'];
 				$order = 1;
-				$option = new \App\Record\GaOption();
+				$option = new \App\Migration\GaOption();
+				$option->unsetCSVField();
 				$option->ordering = (int)\PHPFUI\ORM::getValue('select count(*) from gaOption where gaEventId=?', [$eventId]) + 1;
 				$option->optionName = 'Question';
 				$option->gaEventId = $eventId;
 				$option->insert();
 				}
-			$selection = new \App\Record\GaSelection();
+			$selection = new \App\Migration\GaSelection();
+			$selection->unsetCSVValue();
 			$selection->gaOption = $option;
 			$selection->gaEventId = $eventId;
 			$selection->selectionName = $answer['answer'];

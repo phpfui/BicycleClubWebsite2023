@@ -66,9 +66,9 @@ class StartLocation
 		$state->addAttribute('maxlength', '2');
 		$fieldSet->add($state);
 
-		$nearestExit = new \PHPFUI\Input\Text('nearestExit', 'Nearest Exit', $location->nearestExit);
-		$nearestExit->setToolTip('Include highway and exit number');
-		$fieldSet->add($nearestExit);
+		$addressExit = new \PHPFUI\Input\Text('addressExit', 'Address / Exit', $location->addressExit);
+		$addressExit->setToolTip('Exact Address or highway and exit number');
+		$fieldSet->add($addressExit);
 
 		$url = new \PHPFUI\Input\Url('link', 'Link to web site', $location->link);
 		$url->addAttribute('placeholder', 'http://www.');

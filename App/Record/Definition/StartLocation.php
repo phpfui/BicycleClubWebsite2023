@@ -7,12 +7,12 @@ namespace App\Record\Definition;
  *
  * @property ?int $active MySQL type tinyint
  * @property ?string $address MySQL type varchar(100)
+ * @property ?string $addressExit MySQL type varchar(255)
  * @property ?string $directions MySQL type text
  * @property ?float $latitude MySQL type decimal(10,6)
  * @property ?string $link MySQL type varchar(255)
  * @property ?float $longitude MySQL type decimal(10,6)
  * @property ?string $name MySQL type varchar(100)
- * @property ?string $nearestExit MySQL type varchar(50)
  * @property int $startLocationId MySQL type int
  * @property \App\Record\StartLocation $startLocation related record
  * @property ?string $state MySQL type varchar(2)
@@ -27,12 +27,12 @@ abstract class StartLocation extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'active' => ['tinyint', 'int', 0, true, 1, ],
 		'address' => ['varchar(100)', 'string', 100, true, '', ],
+		'addressExit' => ['varchar(255)', 'string', 255, true, ],
 		'directions' => ['text', 'string', 65535, true, ],
 		'latitude' => ['decimal(10,6)', 'float', 10, true, ],
 		'link' => ['varchar(255)', 'string', 255, true, ],
 		'longitude' => ['decimal(10,6)', 'float', 10, true, ],
 		'name' => ['varchar(100)', 'string', 100, true, ],
-		'nearestExit' => ['varchar(50)', 'string', 50, true, '', ],
 		'startLocationId' => ['int', 'int', 0, false, ],
 		'state' => ['varchar(2)', 'string', 2, true, '', ],
 		'town' => ['varchar(50)', 'string', 50, true, '', ],

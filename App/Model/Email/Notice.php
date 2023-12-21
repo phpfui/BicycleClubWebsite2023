@@ -23,9 +23,4 @@ class Notice extends \App\Tools\EMail
 			}
 		$this->setFromMember($member);
 		}
-
-	public function getBody() : string
-		{
-		return $this->body;
-		}
 	}

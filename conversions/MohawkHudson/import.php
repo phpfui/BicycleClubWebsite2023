@@ -185,7 +185,7 @@ LEFT JOIN node__field_location_address ON node_field_data.nid = node__field_loca
 left join node_revision__field_location_links on node_field_data.nid=node_revision__field_location_links.entity_id
 left join node_revision__field_location_address_geoloc on node_field_data.nid=node_revision__field_location_address_geoloc.entity_id
 left join node_revision__body on node_field_data.nid=node_revision__body.entity_id and node_revision__body.deleted=0
-WHERE (node_field_data.status = '1') AND (node_field_data.type IN ('starting_location')) and node_field_data.title like '%Bethlehem Elm Ave Park & Rid%'
+WHERE (node_field_data.status = '1') AND (node_field_data.type IN ('starting_location'))
 ORDER BY name ASC;";
 
 $drupalStartLocationsCursor = \PHPFUI\ORM::getArrayCursor($startLocationSQL);
@@ -214,7 +214,7 @@ foreach ($drupalStartLocationsCursor as $startArray)
 		{
 		$startArray['address'] .= ', ' . $startArray['address3'];
 		}
-	$startArray['directions'] = \Soundasleep\Html2Text::convert($startArray['directions'], ['drop_links' => 'href', 'ignore_errors' => true]);
+	$startArray['directions'] = \Soundasleep\Html2Text::convert($startArray['directions'] ?? '', ['drop_links' => 'href', 'ignore_errors' => true]);
 
 	$startLocation = new \App\Record\StartLocation();
 	$startLocation->setFrom($startArray);

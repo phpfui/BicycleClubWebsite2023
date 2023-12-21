@@ -12,9 +12,4 @@ class Email extends \App\Tools\EMail
 		$this->setSubject($settingTable->value($type . 'Title'));
 		$this->setHtml();
 		}
-
-	public function getBody() : string
-		{
-		return $this->body;
-		}
 	}

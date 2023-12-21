@@ -32,9 +32,13 @@ class MemberNotices extends \App\Cron\BaseJob
 
 				if ($dayInt == $days)	// eliminates non integers that evaluate to 0
 					{
-					$date = \App\Tools\Date::todayString($dayInt);
+					// positive number is number of days after the date, so 1 means we look for yesterday (today - 1)
+					// negative number is number of days before the date, so -1 we look for tomorrow (today + 1)
+					// so reverse what the user gives us
+					$dayInt = 0 - $dayInt;
+					$startDate = \App\Tools\Date::todayString($dayInt);
 					$endDate = \App\Tools\Date::todayString($dayInt + 1);
-					$condition = new \PHPFUI\ORM\Condition($notice->field, $date, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+					$condition = new \PHPFUI\ORM\Condition($notice->field, $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
 					$condition->and($notice->field, $endDate, new \PHPFUI\ORM\Operator\LessThan());
 					$memberTable->setWhere($condition);
 

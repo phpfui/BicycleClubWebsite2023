@@ -72,11 +72,12 @@ if (\file_exists($fileName))
 	$outFile = \fopen($restoredFileName, 'wb');
 
 	// Keep repeating until the end of the input file
-	while(! \gzeof($file)) {
+	while(! \gzeof($file))
+		{
 		// Read buffer-size bytes
 		// Both fwrite and gzread and binary-safe
 		\fwrite($outFile, \gzread($file, $bufferSize));
-	}
+		}
 
 	// Files are done, close files
 	\fclose($outFile);
@@ -168,28 +169,27 @@ $sql .= "\nFROM `users_field_data`\n" . $joins . "WHERE `user__roles`.`roles_tar
 
 $drupalMemberCursor = \PHPFUI\ORM::getArrayCursor($sql);
 
-//$startLocationSQL = "SELECT `node_field_data`.`title` AS `name`,
-//`node__field_location_address`.`field_location_address_locality` AS `town`,
-//`node__field_location_address`.field_location_address_administrative_area as state,
-//`node__field_location_address`.field_location_address_address_line1 as address,
-//`node__field_location_address`.field_location_address_address_line2 as address2,
-//node_revision__field_location_links.field_location_links_uri as `link`,
-//node_revision__field_location_links.field_location_links_title As address3,
-//node_revision__body.body_value as directions,
-//`node_revision__field_location_address_geoloc`.field_location_address_geoloc_lat as latitude,
-//`node_revision__field_location_address_geoloc`.field_location_address_geoloc_lng as longitude,
-//`node_field_data`.`nid` AS `startLocationId`
-//FROM `node_field_data`
-//LEFT JOIN `node__field_location_address` ON node_field_data.nid = node__field_location_address.entity_id AND node__field_location_address.deleted = '0'
-//left join node_revision__field_location_links on node_field_data.nid=node_revision__field_location_links.entity_id
-//left join node_revision__field_location_address_geoloc on node_field_data.nid=node_revision__field_location_address_geoloc.entity_id
-//left join node_revision__body on node_field_data.nid=node_revision__body.entity_id
-//and node_revision__field_location_links.deleted=0
-//WHERE (`node_field_data`.`status` = '1') AND (`node_field_data`.`type` IN ('starting_location'))
-//ORDER BY `name` ASC";
-//
-//$drupalStartLocationsCursor = \PHPFUI\ORM::getArrayCursor($startLocationSQL);
-//echo "Converting {$drupalStartLocationsCursor->count()} start locations\n";
+$startLocationSQL = "SELECT distinct node_field_data.title AS name,
+node__field_location_address.field_location_address_locality AS town,
+node__field_location_address.field_location_address_administrative_area as state,
+node__field_location_address.field_location_address_address_line1 as address,
+node__field_location_address.field_location_address_address_line2 as address2,
+node_revision__field_location_links.field_location_links_uri as link,
+node_revision__field_location_links.field_location_links_title As address3,
+node_revision__body.body_value as directions,
+node_revision__field_location_address_geoloc.field_location_address_geoloc_lat as latitude,
+node_revision__field_location_address_geoloc.field_location_address_geoloc_lng as longitude,
+node_field_data.nid AS startLocationId
+FROM node_field_data
+LEFT JOIN node__field_location_address ON node_field_data.nid = node__field_location_address.entity_id AND node__field_location_address.deleted = 0
+left join node_revision__field_location_links on node_field_data.nid=node_revision__field_location_links.entity_id
+left join node_revision__field_location_address_geoloc on node_field_data.nid=node_revision__field_location_address_geoloc.entity_id
+left join node_revision__body on node_field_data.nid=node_revision__body.entity_id and node_revision__body.deleted=0
+WHERE (node_field_data.status = '1') AND (node_field_data.type IN ('starting_location')) and node_field_data.title like '%Bethlehem Elm Ave Park & Rid%'
+ORDER BY name ASC;";
+
+$drupalStartLocationsCursor = \PHPFUI\ORM::getArrayCursor($startLocationSQL);
+echo "Converting {$drupalStartLocationsCursor->count()} start locations\n";
 
 // need start location and ride data
 
@@ -199,27 +199,28 @@ $drupalMemberCursor = \PHPFUI\ORM::getArrayCursor($sql);
 $migrate = new \PHPFUI\ORM\Migrator();
 $migrate->migrate();
 
-//$startLocationTable = new \App\Table\StartLocation();
-//$startLocationTable->setWhere(new \PHPFUI\ORM\Condition('startLocationId', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
-//$startLocationTable->delete();
-//
-//foreach ($drupalStartLocationsCursor as $startArray)
-//	{
-//	$startLocation = new \App\Record\StartLocation();
-//
-//	if ($startArray['address2'])
-//		{
-//		$startArray['address'] .= ', ' . $startArray['address2'];
-//		}
-//
-//	if ($startArray['address3'])
-//		{
-//		$startArray['address'] .= ', ' . $startArray['address3'];
-//		}
-//	$startLocation->setFrom($startArray);
-//	$startLocation->active = 1;
-//	$startLocation->insertOrUpdate();
-//	}
+$startLocationTable = new \App\Table\StartLocation();
+$startLocationTable->setWhere(new \PHPFUI\ORM\Condition('startLocationId', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
+$startLocationTable->delete();
+
+foreach ($drupalStartLocationsCursor as $startArray)
+	{
+	if ($startArray['address2'])
+		{
+		$startArray['address'] .= ', ' . $startArray['address2'];
+		}
+
+	if ($startArray['address3'])
+		{
+		$startArray['address'] .= ', ' . $startArray['address3'];
+		}
+	$startArray['directions'] = \Soundasleep\Html2Text::convert($startArray['directions'], ['drop_links' => 'href', 'ignore_errors' => true]);
+
+	$startLocation = new \App\Record\StartLocation();
+	$startLocation->setFrom($startArray);
+	$startLocation->active = 1;
+	$startLocation->insertOrUpdate();
+	}
 
 $memberTables = [];
 $memberTables[] = new \App\Table\AdditionalEmail();
@@ -339,18 +340,21 @@ echo "Converting {$permissionCursor->count()} permissions\n";
 \PHPFUI\ORM::useConnection($liveConnection);
 
 $permissionMapping = [
-	'administrator' => 'Super User',
-	'board_director' => 'Board Member',
-	'membership_admin' => 'Membership Chair',
-	'paid_member' => 'Normal Member',
-	'ride_admin' => 'Ride Coordinator',
-	'ride_leader_unmoderated' => 'Ride Leader',
-	'ride_report_admin' => 'Ride Chair',
-	'site_admin_assistant' => 'Super User',
-	'site_editor' => 'Content Editor',
+	'administrator' => ['Super User'],
+	'board_director' => ['Board Member'],
+	'membership_admin' => ['Membership Chair'],
+	'paid_member' => ['Normal Member'],
+	'ride_admin' => ['Ride Coordinator', 'Ride Leader'],
+	'ride_leader_unmoderated' => ['Ride Leader'],
+	'ride_report_admin' => ['Ride Chair'],
+	'site_admin_assistant' => ['Super User'],
+	'site_editor' => ['Content Editor'],
 ];
 
 foreach ($permissionCursor as $permissionArray)
 	{
-	$permissions->addPermissionToUser($permissionArray['entity_id'], $permissionMapping[$permissionArray['roles_target_id']] ?? 'Normal Member');
+	foreach (($permissionMapping[$permissionArray['roles_target_id']] ?? ['Normal Member']) as $permission)
+		{
+		$permissions->addPermissionToUser($permissionArray['entity_id'], $permission);
+		}
 	}

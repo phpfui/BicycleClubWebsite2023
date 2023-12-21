@@ -44,7 +44,7 @@ class MemberNotices extends \App\Cron\BaseJob
 							{
 							if ($notice->summary < 3)
 								{
-								$email = new \App\Model\Email\Notice($notice, new \App\Model\Email\Member($member));
+								$email = new \App\Model\Email\Notice($notice, new \App\Model\Email\Member(new \App\Record\Member($member)));
 								$email->setToMember($member->toArray());
 								$email->bulkSend();
 								}

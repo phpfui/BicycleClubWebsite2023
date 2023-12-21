@@ -515,7 +515,6 @@ foreach ($startLocationReader as $row)
 	$startLocation->address = $row['Street Address'];
 	$startLocation->state = $row['State'];
 	$startLocation->nearestExit = $row['Nearest Exit'];
-	$startLocation->nearestExit = $row['Nearest Exit'];
 	$startLocation->directions = $row['Directions'];
 	$startLocations[$startLocation->name] = $startLocation->insert();
 	}

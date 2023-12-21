@@ -178,20 +178,9 @@ class Permissions
 				}
 			$multiColumn = new \PHPFUI\MultiColumn($groupName);
 
-			if ($this->page->getPermissions()->isSuperUser())
-				{
-				$system = new \PHPFUI\Input\CheckBoxBoolean('system', 'System Updated', (bool)$name->system);
-				$system->setToolTip('Should be ckecked if this is a system updated permission group');
-				$multiColumn->add($system);
-				}
-			elseif ($readOnly)
-				{
-				$multiColumn->add(new \App\UI\Display('Read Only', 'True'));
-				}
 			$form->add($multiColumn);
 			$permissions = $this->permissionTable->getAllPermissions('menu');
 			$groupPermissions = $this->page->getPermissions()->getPermissionsForGroup($name->permissionId);
-//			echo new \PHPFUI\Debug($groupPermissions);
 			$inRevokedGroup = $notInRevokedGroup = $inGroup = $notInGroup = [];
 
 			foreach ($permissions as $permission)
@@ -277,7 +266,7 @@ class Permissions
 		$this->permissionTable->setWhere(new \PHPFUI\ORM\Condition('permissionId', 100000, new \PHPFUI\ORM\Operator\LessThan()));
 		$this->permissionTable->setOrderBy('name');
 
-		$searchHeaders = ['name' => 'Permission Group', 'system' => 'System Updated'];
+		$searchHeaders = ['name' => 'Permission Group', ];
 		$normalHeaders = ['members' => 'Members', 'edit' => 'Edit', 'del' => 'Del', ];
 
 		$view = new \App\UI\ContinuousScrollTable($this->page, $this->permissionTable);

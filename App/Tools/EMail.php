@@ -324,7 +324,7 @@ class EMail
 		if ($this->html)
 			{
 			$this->body = \App\Tools\TextHelper::cleanEmailHtml($this->body);
-			$mail->AltBody = \Soundasleep\Html2Text::convert($this->body, ['drop_links' => true, 'ignore_errors' => true]);
+			$mail->AltBody = \Soundasleep\Html2Text::convert($this->body, ['drop_links' => 'href', 'ignore_errors' => true]);
 			}
 		else	// a normal text message, but change new lines into html
 			{

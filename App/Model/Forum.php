@@ -148,7 +148,7 @@ class Forum
 
 			if (empty($message['textMessage']))
 				{
-				$message['textMessage'] = \Soundasleep\Html2Text::convert($message['htmlMessage'], ['drop_links' => true, 'ignore_errors' => true]);
+				$message['textMessage'] = \Soundasleep\Html2Text::convert($message['htmlMessage'], ['drop_links' => 'href', 'ignore_errors' => true]);
 				}
 			}
 		else

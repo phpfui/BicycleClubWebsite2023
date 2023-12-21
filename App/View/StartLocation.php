@@ -57,18 +57,21 @@ class StartLocation
 		$name->setRequired();
 		$fieldSet->add($name);
 
+		$address = new \PHPFUI\Input\Text('address', 'Street Address', $location->address);
+		$address->setToolTip('Street address that can be navigated to.');
+		$fieldSet->add($address);
+
 		$town = new \PHPFUI\Input\Text('town', 'Start Location Town', $location->town);
 		$town->setToolTip('Should be the location the place is generally known as.');
-		$fieldSet->add($town);
 
 		$state = new \PHPFUI\Input\Text('state', 'Start Location State', $location->state);
 		$state->setToolTip('State abbreviation');
 		$state->addAttribute('maxlength', '2');
-		$fieldSet->add($state);
+		$fieldSet->add(new \PHPFUI\MultiColumn($town, $state));
 
-		$addressExit = new \PHPFUI\Input\Text('addressExit', 'Address / Exit', $location->addressExit);
-		$addressExit->setToolTip('Exact Address or highway and exit number');
-		$fieldSet->add($addressExit);
+		$nearestExit = new \PHPFUI\Input\Text('nearestExit', 'Nearest Exit', $location->nearestExit);
+		$nearestExit->setToolTip('Include highway and exit number');
+		$fieldSet->add($nearestExit);
 
 		$url = new \PHPFUI\Input\Url('link', 'Link to web site', $location->link);
 		$url->addAttribute('placeholder', 'http://www.');
@@ -78,12 +81,20 @@ class StartLocation
 		$directions->setToolTip('More detail about the start location like directions and where to park, etc.');
 		$fieldSet->add($directions);
 
+		$multiColumn = new \PHPFUI\MultiColumn();
+
 		if ($this->page->isAuthorized('Start Location Active Editing'))
 			{
 			$active = new \PHPFUI\Input\CheckBoxBoolean('active', 'Active', (bool)$location->active);
 			$active->setToolTip('Uncheck to remove the ability to select this location.');
-			$fieldSet->add($active);
+			$multiColumn->add($active);
 			}
+		$latitude = new \PHPFUI\Input\Number('latitude', 'Latitude', $location->latitude);
+		$longitude = new \PHPFUI\Input\Number('longitude', 'Longitude', $location->longitude);
+		$multiColumn->add($latitude);
+		$multiColumn->add($longitude);
+
+		$fieldSet->add($multiColumn);
 
 		$form->add($fieldSet);
 		$cancelButton = new \PHPFUI\Button('Cancel', '/Locations/locations');
@@ -302,9 +313,18 @@ class StartLocation
 		$view->addCustomColumn('active', static fn (array $location) => $location['active'] ? '<b>&check;</b>' : '');
 		$view->addCustomColumn('link', static function(array $location)
 			{
+			if ($location['latitude'] && $location['longitude'])
+				{
+				$link = new \PHPFUI\Link("https://www.google.com/maps/dir/?api=1&destination={$location['latitude']},{$location['longitude']}", 'Directions');
+				}
+			else
+				{
+				$link = '';
+				}
+
 			$url = \parse_url($location['link'] ?? '', PHP_URL_HOST);
 
-			return $url ? new \PHPFUI\Link($location['link'], $url) : '';
+			return $url ? new \PHPFUI\Link($location['link'], $url) : $link;
 			});
 		$view->addCustomColumn('rides', static function(array $location) use ($rides)
 			{

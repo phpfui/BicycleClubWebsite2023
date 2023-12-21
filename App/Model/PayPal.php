@@ -122,7 +122,7 @@ class PayPal
 			{
 			$itm = new \PHPFUI\PayPal\Item($item->title, $item->quantity, new \PHPFUI\PayPal\Currency($item->price));
 			$itemTotal += $item->quantity * $item->price;
-			$itm->description = \Soundasleep\Html2Text::convert($item->description ?? '', ['drop_links' => true, 'ignore_errors' => true]);
+			$itm->description = \Soundasleep\Html2Text::convert($item->description ?? '', ['drop_links' => 'href', 'ignore_errors' => true]);
 			$purchaseUnit->addItem($itm);
 
 			if (\App\Model\Cart::TYPE_GA == $item->type)

@@ -39,7 +39,7 @@ class System
 
 		if (! \strlen($text) && \strlen($html))
 			{
-			$text = \Soundasleep\Html2Text::convert($html, ['drop_links' => true, 'ignore_errors' => true]);
+			$text = \Soundasleep\Html2Text::convert($html, ['drop_links' => 'href', 'ignore_errors' => true]);
 			}
 
 		if (\strlen($html))

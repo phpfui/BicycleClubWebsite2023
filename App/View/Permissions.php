@@ -354,7 +354,7 @@ class Permissions
 
 		if ($form->isMyCallback($submit))
 			{
-			foreach ($groups as $group)
+			foreach ($groups as $group => $description)
 				{
 				$this->settingTable->saveStandardPermissionGroup($group, (int)$_POST[\str_replace(' ', '', $group)]);
 				}
@@ -363,9 +363,9 @@ class Permissions
 			return $container;
 			}
 
-		foreach ($groups as $group)
+		foreach ($groups as $group => $description)
 			{
-			$form->add($this->getGroupPicker($group));
+			$form->add($this->getGroupPicker($group, $description));
 			}
 
 		$form->add($submit);
@@ -496,10 +496,11 @@ class Permissions
 		$modal->add($modalForm);
 		}
 
-	private function getGroupPicker(string $groupName) : \PHPFUI\Input\Select
+	private function getGroupPicker(string $groupName, string $description) : \PHPFUI\Input\Select
 		{
 		$current = $this->settingTable->getStandardPermissionGroup($groupName);
 		$select = new \PHPFUI\Input\Select(\str_replace(' ', '', $groupName), $groupName);
+		$select->setToolTip($description);
 
 		if (! $this->groupCursor)
 			{

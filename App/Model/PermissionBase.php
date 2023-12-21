@@ -67,13 +67,13 @@ class PermissionBase
 	public function getStandardGroups() : array
 		{
 		return [
-			'Event Coordinator',
-			'Assistant Event Coordinator',
-			'Normal Member',
-			'Pending Member',
-			'Ride Coordinator',
-			'Ride Leader',
-			'Super User',
+			'Event Coordinator' => 'Used to determine who can be listed to run an event',
+			'Assistant Event Coordinator' => 'Used to determine who can be listed to run an event',
+			'Normal Member' => 'Assigned to all new members',
+			'Pending Member' => 'Assigned to members who have not paid yet',
+			'Ride Coordinator' => 'Assistants to the Rides Chair',
+			'Ride Leader' => 'Used for identifying ride leaders',
+			'Super User' => 'God users',
 		];
 		}
 

@@ -214,7 +214,7 @@ class Ride
 				}
 			}
 
-		if (! \is_int($parameters['RWGPSId']))
+		if ($RWGPSId)
 			{
 			$parameters['RWGPSId'] = $RWGPSId;
 			}

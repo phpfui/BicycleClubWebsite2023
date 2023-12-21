@@ -27,6 +27,15 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function addByRWGPS() : void
+		{
+		if ($this->page->addHeader('Add RWGPS Ride'))
+			{
+			$view = new \App\View\Ride\Editor($this->page);
+			$this->page->addPageContent($view->addByRWGPS());
+			}
+		}
+
 	public function attendance(\App\Record\Member $member = new \App\Record\Member(), int $year = 0) : void
 		{
 		if (! $member->loaded() || ! $this->page->isAuthorized('Ride Attendance'))

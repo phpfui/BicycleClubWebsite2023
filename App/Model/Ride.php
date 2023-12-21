@@ -195,7 +195,12 @@ class Ride
 
 		if (! $RWGPSId)
 			{
-			$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($parameters['RWGPSId'] ?? '');
+			$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($parameters['RWGPSurl'] ?? '');
+			}
+
+		if (! $RWGPSId)
+			{
+			$RWGPSId = (int)($parameters['RWGPSId'] ?? 0);
 			}
 
 		if ($RWGPSId)
@@ -494,7 +499,7 @@ class Ride
 
 		if ($ride->RWGPSId)
 			{
-			$link = new \PHPFUI\Link(\App\Model\RideWithGPS::getRouteLink($ride->RWGPSId));
+			$link = new \PHPFUI\Link($ride->RWGPS->routeLink());
 			$rwgpsLink = "<p>{$link}</p>";
 			}
 		$message .= "<b>{$title}</b><p>{$description}</p>" . $rwgpsLink . '<p>Sign up for this ride now!</p><br>' . $button . $signup;
@@ -730,8 +735,10 @@ class Ride
 
 					case 'RWGPSId':
 
-						$to = \App\Model\RideWithGPS::getRouteLink((int)$parameters[$field]);
-						$from = \App\Model\RideWithGPS::getRouteLink((int)$value);
+						$toRWGPS = new \App\Record\RWGPS((int)$parameters[$field]);
+						$to = $toRWGPS->routeLink();
+						$fromRWGPS = new \App\Record\RWGPS((int)$value);
+						$from = $fromRWGPS->routeLink();
 						$name = 'Ride With GPS';
 
 						break;

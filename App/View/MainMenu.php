@@ -12,6 +12,7 @@ class MainMenu extends \App\UI\MainMenu
 			{
 			$this->addSub($menu, '/Rides/edit/0', 'Add A Ride');
 			$this->addSub($menu, '/Rides/addByCueSheet', 'Add CueSheet Ride');
+			$this->addSub($menu, '/Rides/addByRWGPS', 'Add RWGPS Ride');
 			$this->addSub($menu, '/Rides/past', 'Past Rides');
 			$this->addSub($menu, '/Rides/My/past', 'My Past Rides');
 			$this->addSub($menu, '/Rides/attendance', 'Ride Attendance');

@@ -8,6 +8,8 @@ class Editor
 
 	private readonly \PHPFUI\Input\TextArea $description;
 
+	private \PHPFUI\Input\Number $elevation;
+
 	private ?\PHPFUI\ORM\RecordCursor $leaders = null;
 
 	private string $mileageSelectorId;
@@ -22,6 +24,10 @@ class Editor
 		$this->description->htmlEditing($page, new \App\Model\TinyMCETextArea());
 		$this->rideSettingsView = new \App\View\Ride\Settings($page);
 		$this->startTimeOffset = ((int)$this->page->value('RideStartTimeOffset')) ?: 15;
+		$this->elevation = new \PHPFUI\Input\Number('elevation', 'Elevation Gain (if known)');
+		$this->elevation->setToolTip('Just how hilly was this ride?');
+		$this->elevation->addAttribute('min', (string)0)->addAttribute('max', (string)99999)->addAttribute('step', (string)10);
+
 		$this->processRequest();
 		}
 
@@ -43,6 +49,32 @@ class Editor
 		$fieldSet->add(new \PHPFUI\MultiColumn($date, $time, $category));
 		$cueSheetPicker = new \App\UI\CueSheetPicker($this->page, 'cueSheetId', 'CueSheet to create from (start typing to search)');
 		$fieldSet->add($cueSheetPicker->getEditControl());
+		$fieldSet->add(new \PHPFUI\Input\Hidden('memberId', (string)\App\Model\Session::signedInMemberId()));
+		$form->add($fieldSet);
+		$form->add($submit);
+
+		return $form;
+		}
+
+	public function addByRWGPS() : \PHPFUI\Form
+		{
+		$submit = new \PHPFUI\Submit('Add RWGPS Ride');
+		$form = new \PHPFUI\Form($this->page);
+
+		$fieldSet = new \PHPFUI\FieldSet('Required Fields');
+		$date = new \PHPFUI\Input\Date($this->page, 'rideDate', 'Date');
+		$date->setMinDate(\App\Tools\Date::todayString());
+		$date->setToolTip('The date of the ride');
+		$date->setRequired();
+
+		$time = new \PHPFUI\Input\Time($this->page, 'startTime', 'Start Time', '09:00', $this->startTimeOffset);
+		$time->setToolTip('Time the ride leaves the start location');
+		$time->setRequired();
+		$category = new \App\View\PacePicker('paceId', 'Category', 'Pace');
+		$fieldSet->add(new \PHPFUI\MultiColumn($date, $time, $category));
+
+		$rwgpsPicker = new \App\UI\RWGPSPicker($this->page, 'RWGPSId', 'RWGPS to create from (start typing to search)');
+		$fieldSet->add($rwgpsPicker->getEditControl());
 		$fieldSet->add(new \PHPFUI\Input\Hidden('memberId', (string)\App\Model\Session::signedInMemberId()));
 		$form->add($fieldSet);
 		$form->add($submit);
@@ -161,10 +193,8 @@ class Editor
 			$averagePace->addAttribute('min', (string)5)->addAttribute('max', (string)25)->addAttribute('step', (string)0.1);
 			$averagePace->setRequired($rideStarted || $afterRide);
 			$averagePace->setToolTip('This would be the group consensus of the average pace of the ride');
-			$elevation = new \PHPFUI\Input\Number('elevation', 'Elevation Gain (if known)', $ride->elevation);
-			$elevation->setToolTip('Just how hilly was this ride?');
-			$elevation->addAttribute('min', (string)0)->addAttribute('max', (string)99999)->addAttribute('step', (string)100);
-			$fieldSet->add(new \PHPFUI\MultiColumn($numRiders, $averagePace, $elevation));
+			$this->elevation->setValue((string)$ride->elevation);
+			$fieldSet->add(new \PHPFUI\MultiColumn($numRiders, $averagePace, $this->elevation));
 
 			$multiColumn = new \PHPFUI\MultiColumn();
 			$accident = new \PHPFUI\Input\CheckBoxBoolean('accident', 'Any crashes on the Ride?', (bool)$ride->accident);
@@ -337,6 +367,22 @@ class Editor
 
 						break;
 
+					case 'Add RWGPS Ride':
+
+						$parameters = $_POST;
+						$rwgps = new \App\Record\RWGPS($parameters['RWGPSId']);
+						$parameters['RWGPSId'] = $rwgps->RWGPSId;
+						$parameters['description'] = $rwgps->description;
+						$parameters['elevation'] = $rwgps->elevationFeet;
+						$parameters['mileage'] = $rwgps->miles;
+						$parameters['title'] = $rwgps->title;
+
+						$rideModel = new \App\Model\Ride();
+						$id = $rideModel->add($parameters);
+						$this->page->redirect('/Rides/edit/' . $id);
+
+						break;
+
 					case 'Opt Out':
 
 						$rideModel = new \App\Model\Ride();
@@ -387,7 +433,7 @@ class Editor
 						break;
 
 					case 'changeRWGPS':
-						$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($_POST['RWGPSId'] ?? '');
+						$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($_POST['RWGPSurl'] ?? '');
 						$rwgps = new \App\Record\RWGPS($RWGPSId);
 
 						if ($RWGPSId && ! $rwgps->loaded())
@@ -406,11 +452,36 @@ class Editor
 							$rwgps->elevationFeet = (float)$elevation;
 							}
 						$data = $rwgps->toArray();
-						$data['RWGPSId'] = \App\Model\RideWithGPS::getRouteLink($rwgps->RWGPSId);
+						$data['RWGPSId'] = $rwgps->routeLink();
 
 						$this->page->setRawResponse(\json_encode(['response' => $data], JSON_THROW_ON_ERROR));
 
 						break;
+
+					case 'changeRWGPSId':
+						$rwgps = new \App\Record\RWGPS($_POST['RWGPSId'] ?? '');
+
+						if ($rwgps->loaded())
+							{
+							$rideTable = new \App\Table\Ride();
+							$elevation = $rideTable->getRWGPSElevation($rwgps->RWGPSId);
+
+							if ($elevation > 0)
+								{
+								$rwgps->elevationFeet = (float)$elevation;
+								}
+							}
+						else
+							{
+							$rwgps->elevationFeet = 0.0;
+							}
+						$data = $rwgps->toArray();
+						$data['RWGPSId'] = $rwgps->RWGPSId;
+
+						$this->page->setRawResponse(\json_encode(['response' => $data], JSON_THROW_ON_ERROR));
+
+						break;
+
 					}
 				}
 			}
@@ -499,23 +570,34 @@ class Editor
 			$fieldSet->add($optionalColumns);
 			}
 
-		$RWGPSId = new \PHPFUI\Input\Url('RWGPSId', 'Ride With GPS Link', \App\Model\RideWithGPS::getRouteLink($ride->RWGPSId));
+		if ($this->page->isAuthorized('Add / Update RWGPS'))
+			{
+			$RWGPSId = new \PHPFUI\Input\Url('RWGPSurl', 'Ride With GPS Link', $ride->RWGPS->routeLink());
+			$ajax = new \PHPFUI\AJAX('changeRWGPS');
+			$js = 'if(data.response.miles)$("#' . $this->mileageSelectorId . '").val(data.response.miles);';
+			$js .= '$("#' . $RWGPSId->getId() . '").val(data.response.RWGPSId);';
+			$RWGPSId->addAttribute('onchange', $ajax->execute(['RWGPSurl' => 'this.value']));
+			}
+		else
+			{
+			$rwgpsPicker = new \App\UI\RWGPSPicker($this->page, 'RWGPSId', 'RWGPS (start typing to search)', $ride->RWGPS);
+			$RWGPSId = $rwgpsPicker->getEditControl();
+			$hidden = $RWGPSId->getHiddenField();
+			$ajax = new \PHPFUI\AJAX('changeRWGPSId');
+			$js = 'if(data.response.miles)$("#' . $this->mileageSelectorId . '").val(data.response.miles);';
+			$js .= '$("#' . $hidden->getId() . '").val(data.response.RWGPSId);';
+			$hidden->addAttribute('onchange', $ajax->execute(['RWGPSId' => '$("#' . $hidden->getId() . '").val()']));
+			}
 
-		$ajax = new \PHPFUI\AJAX('changeRWGPS');
-		$js = 'if(data.response.miles)$("#' . $this->mileageSelectorId . '").val(data.response.miles);';
-		$js .= '$("#' . $RWGPSId->getId() . '").val(data.response.RWGPSId);';
-		$RWGPSId->addAttribute('onchange', $ajax->execute(['RWGPSId' => 'this.value']));
 		$multiColumn = new \PHPFUI\MultiColumn($RWGPSId);
 
 		if ($showElevation)
 			{
-			$elevation = new \PHPFUI\Input\Number('elevation', 'Elevation Gain (if known)', $ride->elevation);
-			$js .= 'if(data.response.elevationFeet)$("#' . $elevation->getId() . '").val(data.response.elevationFeet);';
-			$elevation->setToolTip('Just how hilly was this ride?');
-			$elevation->addAttribute('min', (string)0)->addAttribute('max', (string)99999)->addAttribute('step', (string)100);
-			$multiColumn->add($elevation);
+			$this->elevation->setValue((string)$ride->elevation);
+			$multiColumn->add($this->elevation);
 			}
 		$fieldSet->add($multiColumn);
+		$js .= 'if(data.response.elevationFeet)$("#' . $this->elevation->getId() . '").val(data.response.elevationFeet);';
 		$ajax->addFunction('success', $js);
 		$this->page->addJavaScript($ajax->getPageJS());
 
@@ -526,6 +608,11 @@ class Editor
 		$this->cueSheetSelectorId = $cueSheet->getId();
 		$div->add($cueSheet);
 		$fieldSet->add($div);
+
+		if (! $this->page->isAuthorized('Cue Sheets'))
+			{
+			$div->addClass('hide');
+			}
 
 		$disableComments = new \PHPFUI\Input\RadioGroup('commentsDisabled', 'Ride Comments Setting:', (string)$ride->commentsDisabled);
 		$disableComments->addButton('Enabled', (string)\App\Table\Ride::COMMENTS_ENABLED);

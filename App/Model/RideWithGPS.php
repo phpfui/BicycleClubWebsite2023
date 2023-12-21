@@ -110,26 +110,6 @@ class RideWithGPS extends GPS
 		return "https://www.google.com/maps/dir/?api=1&destination={$route->latitude},{$route->longitude}";
 		}
 
-	public static function getRouteLink(?int $RWGPSId) : string
-		{
-		if (! $RWGPSId)
-			{
-			return '';
-			}
-
-		$rwgps = new \App\Record\RWGPS();
-		$type = $RWGPSId > 0 ? 'routes' : 'trips';
-		$RWGPSId = \abs($RWGPSId);
-		$query = $rwgps->query ?? '';
-
-		if ($query)
-			{
-			$query = '?' . $query;
-			}
-
-		return "https://ridewithgps.com/{$type}/{$RWGPSId}{$query}";
-		}
-
 	public static function getRWGPSIdFromLink(string $link) : int
 		{
 		$parts = \explode('/', $link);

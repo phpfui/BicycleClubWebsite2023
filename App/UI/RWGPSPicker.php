@@ -34,6 +34,8 @@ class RWGPSPicker
 				$condition->or(new \PHPFUI\ORM\Condition('town', "%{$name}%", new \PHPFUI\ORM\Operator\Like()));
 				}
 			$this->RWGPSTable->setWhere($condition);
+			$this->RWGPSTable->addOrderBy('miles');
+			$this->RWGPSTable->addOrderBy('title');
 
 			foreach ($this->RWGPSTable->getRecordCursor() as $RWGPS)
 				{
@@ -62,6 +64,6 @@ class RWGPSPicker
 			return '';
 			}
 
-		return ($RWGPS->title ?? 'No Name') . ' - ' . \number_format($RWGPS->miles ?? 0, 1) . ' Miles';
+		return ($RWGPS->title ?? 'No Name') . ($RWGPS->club ? '*' : '') . ' - ' . \number_format($RWGPS->miles ?? 0, 1) . ' Miles';
 		}
 	}

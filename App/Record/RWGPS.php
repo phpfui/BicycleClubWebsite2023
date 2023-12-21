@@ -76,6 +76,26 @@ class RWGPS extends \App\Record\Definition\RWGPS
 		return $rwgpsRating->getArrayCursor()->current();
 		}
 
+	public function routeLink() : string
+		{
+		$RWGPSId = \abs($this->RWGPSId ?? 0);
+
+		if (! $RWGPSId)
+			{
+			return '';
+			}
+
+		$type = $this->RWGPSId > 0 ? 'routes' : 'trips';
+		$query = $this->query ?? '';
+
+		if ($query)
+			{
+			$query = '?' . $query;
+			}
+
+		return "https://ridewithgps.com/{$type}/{$RWGPSId}{$query}";
+		}
+
 	public function update() : bool
 		{
 		$this->computeElevationGain();

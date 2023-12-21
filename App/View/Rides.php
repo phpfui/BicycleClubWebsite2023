@@ -350,7 +350,8 @@ class Rides
 		$RWGPSId = $ride->RWGPSId;
 		$menu = new \PHPFUI\Menu();
 		$menu->addClass('simple');
-		$rwgps = new \PHPFUI\MenuItem('RWGPS', \App\Model\RideWithGPS::getRouteLink($RWGPSId));
+		$RWGPS = $ride->RWGPS;
+		$rwgps = new \PHPFUI\MenuItem('RWGPS' . ($RWGPS->club ? '*' : ''), $RWGPS->routeLink());
 		$rwgps->getLinkObject()->addAttribute('target', '_blank');
 		$menu->addMenuItem($rwgps);
 		$route = new \App\Record\RWGPS($RWGPSId);

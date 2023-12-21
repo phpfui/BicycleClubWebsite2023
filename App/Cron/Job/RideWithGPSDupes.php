@@ -91,6 +91,6 @@ class RideWithGPSDupes extends \App\Cron\BaseJob
 
 	private function getLink(\App\Record\RWGPS $rwgps) : \PHPFUI\Link
 		{
-		return new \PHPFUI\Link(\App\Model\RideWithGPS::getRouteLink($rwgps->RWGPSId), $rwgps->title);
+		return new \PHPFUI\Link($rwgps->routeLink(), $rwgps->title);
 		}
 	}

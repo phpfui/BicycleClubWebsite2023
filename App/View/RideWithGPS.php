@@ -209,7 +209,7 @@ class RideWithGPS
 
 		if ($rwgps->loaded())
 			{
-			$idLink = new \PHPFUI\Link($this->model->getRouteLink($rwgps->RWGPSId));
+			$idLink = new \PHPFUI\Link($rwgps->routeLink());
 			$idLink->addAttribute('target', '_blank');
 			$fieldSet->add(new \App\UI\Display('Ride With GPS Link', $idLink));
 			$directionsLink = new \PHPFUI\Link($this->model->getDirectionsLink($rwgps), 'Google');

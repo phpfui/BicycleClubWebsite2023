@@ -35,7 +35,7 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 					$settingTable = new \App\Table\Setting();
 					$url = $settingTable->value('homePage');
 
-					$rwgpsLink = new \PHPFUI\Link($model->getRouteLink($updated->RWGPSId), 'RWGPS route');
+					$rwgpsLink = new \PHPFUI\Link($updated->routeLink(), 'RWGPS route');
 
 					$condition = new \PHPFUI\ORM\Condition('rideDate', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
 					$condition->and('RWGPSId', $updated->RWGPSId);

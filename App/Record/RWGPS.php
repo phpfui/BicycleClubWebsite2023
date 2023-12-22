@@ -44,6 +44,16 @@ class RWGPS extends \App\Record\Definition\RWGPS
 		return $this;
 		}
 
+	public function directionsLink() : string
+		{
+		if ($this->latitude && $this->longitude)
+			{
+			return "https://www.google.com/maps/dir/?api=1&destination={$this->latitude},{$this->longitude}";
+			}
+
+		return '';
+		}
+
 	public function getCSVReader() : \App\Tools\CSV\Reader
 		{
 		return new \App\Tools\CSV\StringReader($this->csv);

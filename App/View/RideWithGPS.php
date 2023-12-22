@@ -212,7 +212,7 @@ class RideWithGPS
 			$idLink = new \PHPFUI\Link($rwgps->routeLink());
 			$idLink->addAttribute('target', '_blank');
 			$fieldSet->add(new \App\UI\Display('Ride With GPS Link', $idLink));
-			$directionsLink = new \PHPFUI\Link($this->model->getDirectionsLink($rwgps), 'Google');
+			$directionsLink = new \PHPFUI\Link($rwgps->directionsLink(), 'Google');
 			$directionsLink->addAttribute('target', '_blank');
 			$fieldSet->add(new \App\UI\Display('Directions', $directionsLink));
 			$fieldSet->add(new \App\UI\Display('Title', $rwgps->title));
@@ -282,7 +282,7 @@ class RideWithGPS
 			{
 			$rwgpsRecord = new \App\Record\RWGPS();
 			$rwgpsRecord->setFrom($rwgps);
-			$url = \App\Model\RideWithGPS::getDirectionsLink($rwgpsRecord);
+			$url = $rwgpsRecord->directionsLink();
 
 			if (! \str_starts_with($url, 'http'))
 				{

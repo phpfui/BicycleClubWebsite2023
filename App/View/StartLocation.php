@@ -121,21 +121,94 @@ class StartLocation
 		return $select;
 		}
 
-	public function getText(int $id) : string
+	public function getLocationPicker(\App\Record\Ride $ride) : string
 		{
-		if ($id)
-			{
-			$location = new \App\Record\StartLocation($id);
-			$link = "Start location {$id} not found";
+		$location = $ride->startLocation;
+		$rwgps = $ride->RWGPS;
 
-			if (! $location->empty())
+		$rwgpsLink = $userLink = $addressLink = $coordLink = null;
+
+		$mapsLink = $rwgps->directionsLink();
+
+		if ($mapsLink)
+			{
+			$rwgpsLink = new \PHPFUI\Link($mapsLink, 'RWGPS: ' . $rwgps->title);
+			}
+
+		if ($location->loaded())
+			{
+			$userLink = $location->userLink();
+
+			if (! $userLink)
 				{
-				$link = \App\View\StartLocation::getTextFromArray($location->toArray());
+				$userLink = $location->name;
 				}
+
+			if ($location->directions)
+				{
+				$userLink = new \PHPFUI\ToolTip($userLink, $location->directions);
+				}
+
+			$coordLink = $location->coordinatesLink();
+			$addressLink = $location->addressLink();
+
+			$links = [];
+
+			if ($rwgpsLink)
+				{
+				$links[] = $rwgpsLink;
+				}
+
+			if ($coordLink)
+				{
+				$links[] = $coordLink;
+				}
+
+			if ($addressLink)
+				{
+				$links[] = $addressLink;
+				}
+
+			if (! \count($links))
+				{
+				return "{$userLink}";
+				}
+
+			$div = new \PHPFUI\HTML5Element('span');
+			$div->add("<b>{$location->name}</b>");
+
+			$reveal = new \PHPFUI\Reveal($this->page, $div);
+			$reveal->add(new \PHPFUI\Header($location->name, 4));
+			$reveal->add("<p>{$location->directions}</p>");
+
+			if ($location->nearestExit)
+				{
+				$reveal->add("<p>{$location->nearestExit}</p>");
+				}
+
+			$ul = new \PHPFUI\UnorderedList();
+
+			foreach ($links as $link)
+				{
+				$ul->addItem(new \PHPFUI\ListItem($link));
+				}
+			$reveal->add($ul);
+
+			return "{$div}";
+			}
+
+		return 'Location not found';
+		}
+
+	public function getText(\App\Record\StartLocation $location) : string
+		{
+		if ($location->loaded())
+			{
+			$link = \App\View\StartLocation::getTextFromArray($location->toArray());
 			}
 		else
 			{
-			$link = 'location not set';
+			$link = 'Location not found';
 			}
 
 		return $link;

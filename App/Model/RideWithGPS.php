@@ -100,16 +100,6 @@ class RideWithGPS extends GPS
 		return $routes;
 		}
 
-	public static function getDirectionsLink(\App\Record\RWGPS $route) : string
-		{
-		if (! self::validGeoLocation($route->toArray()))
-			{
-			return '';
-			}
-
-		return "https://www.google.com/maps/dir/?api=1&destination={$route->latitude},{$route->longitude}";
-		}
-
 	public static function getRWGPSIdFromLink(string $link) : int
 		{
 		$parts = \explode('/', $link);

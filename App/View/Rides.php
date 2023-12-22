@@ -281,7 +281,7 @@ class Rides
 
 		if ($ride->startLocationId)
 			{
-			$fieldSet->add(new \App\UI\Display('Start Location', $this->startLocationView->getText($ride->startLocationId)));
+			$fieldSet->add(new \App\UI\Display('Start Location', $this->startLocationView->getLocationPicker($ride)));
 			}
 
 		if ($ride->RWGPSId)
@@ -355,7 +355,7 @@ class Rides
 		$rwgps->getLinkObject()->addAttribute('target', '_blank');
 		$menu->addMenuItem($rwgps);
 		$route = new \App\Record\RWGPS($RWGPSId);
-		$link = \App\Model\RideWithGPS::getDirectionsLink($route);
+		$link = $route->directionsLink();
 
 		if ($link)
 			{
@@ -637,7 +637,7 @@ class Rides
 
 				if ($ride->startLocationId)
 					{
-					$link = $this->startLocationView->getText($ride->startLocationId);
+					$link = $this->startLocationView->getLocationPicker($ride);
 					$content->add("<p><b>Start:</b> {$link}</p>");
 					}
 
@@ -738,7 +738,7 @@ class Rides
 				}
 			elseif ($ride->startLocationId && $ride->unaffiliated)
 				{
-				$link = $this->startLocationView->getText($ride->startLocationId);
+				$link = $this->startLocationView->getLocationPicker($ride);
 				$content->add("<br><b>Start:</b> {$link}");
 				$content->add($this->getRWGPSMenu($ride));
 				}
@@ -1084,7 +1084,7 @@ class Rides
 		foreach ($startingLocation as $key => $rideStat)
 			{
 			$value = $rideStat['count'];
-			$table->addRow([$locations->getText($key),
+			$table->addRow([$locations->getText(new \App\Record\StartLocation($key)),
 				$value,
 				\number_format($value * 100 / \count($rides), 1),
 				$rideStat['numberOfRiders'], ]);

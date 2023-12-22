@@ -506,7 +506,7 @@ class CueSheet
 
 			if ($cuesheet->startLocationId)
 				{
-				$detail->add(new \App\UI\Display('Start Location:', $this->startLocationView->getText($cuesheet->startLocationId)));
+				$detail->add(new \App\UI\Display('Start Location:', $this->startLocationView->getText($cuesheet->startLocation)));
 				}
 			$detail->add(new \App\UI\Display('Added:', \App\Tools\Date::formatString('n/j/Y', $cuesheet->dateAdded)));
 

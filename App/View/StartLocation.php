@@ -67,7 +67,11 @@ class StartLocation
 		$state = new \PHPFUI\Input\Text('state', 'Start Location State', $location->state);
 		$state->setToolTip('State abbreviation');
 		$state->addAttribute('maxlength', '2');
-		$fieldSet->add(new \PHPFUI\MultiColumn($town, $state));
+
+		$zip = new \PHPFUI\Input\Zip($this->page, 'zip', 'Zip Code', $location->zip);
+		$zip->setToolTip('To help with navigation tools');
+
+		$fieldSet->add(new \PHPFUI\MultiColumn($town, $state, $zip));
 
 		$nearestExit = new \PHPFUI\Input\Text('nearestExit', 'Nearest Exit', $location->nearestExit);
 		$nearestExit->setToolTip('Include highway and exit number');
@@ -124,62 +128,20 @@ class StartLocation
 	public function getLocationPicker(\App\Record\Ride $ride) : string
 		{
 		$location = $ride->startLocation;
-		$rwgps = $ride->RWGPS;
-
-		$rwgpsLink = $userLink = $addressLink = $coordLink = null;
-
-		$mapsLink = $rwgps->directionsLink();
-
-		if ($mapsLink)
-			{
-			$rwgpsLink = new \PHPFUI\Link($mapsLink, 'RWGPS: ' . $rwgps->title);
-			}
 
 		if ($location->loaded())
 			{
-			$userLink = $location->userLink();
-
-			if (! $userLink)
-				{
-				$userLink = $location->name;
-				}
-
-			if ($location->directions)
-				{
-				$userLink = new \PHPFUI\ToolTip($userLink, $location->directions);
-				}
-
-			$coordLink = $location->coordinatesLink();
-			$addressLink = $location->addressLink();
-
-			$links = [];
-
-			if ($rwgpsLink)
-				{
-				$links[] = $rwgpsLink;
-				}
-
-			if ($coordLink)
-				{
-				$links[] = $coordLink;
-				}
-
-			if ($addressLink)
-				{
-				$links[] = $addressLink;
-				}
-
-			if (! \count($links))
-				{
-				return "{$userLink}";
-				}
-
-			$div = new \PHPFUI\HTML5Element('span');
+			$div = new \PHPFUI\HTML5Element('a');
 			$div->add("<b>{$location->name}</b>");
 
 			$reveal = new \PHPFUI\Reveal($this->page, $div);
 			$reveal->add(new \PHPFUI\Header($location->name, 4));
 			$reveal->add("<p>{$location->directions}</p>");
+
+			if ($location->address || $location->town)
+				{
+				$reveal->add("<p>{$location->address}<br>{$location->town} {$location->state} {$location->zip}</p>");
+				}
 
 			if ($location->nearestExit)
 				{
@@ -188,9 +150,14 @@ class StartLocation
 
 			$ul = new \PHPFUI\UnorderedList();
 
+			$links = [$location->addressLink(), $location->coordinatesLink(), $location->userLink()];
+
 			foreach ($links as $link)
 				{
-				$ul->addItem(new \PHPFUI\ListItem($link));
+				if ($link)
+					{
+					$ul->addItem(new \PHPFUI\ListItem($link));
+					}
 				}
 			$reveal->add($ul);
 

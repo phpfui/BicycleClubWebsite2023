@@ -17,6 +17,7 @@ namespace App\Record\Definition;
  * @property \App\Record\StartLocation $startLocation related record
  * @property ?string $state MySQL type varchar(2)
  * @property ?string $town MySQL type varchar(50)
+ * @property ?string $zip MySQL type varchar(10)
  */
 abstract class StartLocation extends \PHPFUI\ORM\Record
 	{
@@ -36,6 +37,7 @@ abstract class StartLocation extends \PHPFUI\ORM\Record
 		'startLocationId' => ['int', 'int', 0, false, ],
 		'state' => ['varchar(2)', 'string', 2, true, '', ],
 		'town' => ['varchar(50)', 'string', 50, true, '', ],
+		'zip' => ['varchar(10)', 'string', 10, true, '', ],
 	];
 
 	/** @var array<string> */

@@ -25,6 +25,7 @@ class StartLocation extends \App\Record\Definition\StartLocation
 		$this->cleanProperName('town');
 		$this->cleanProperName('nearestExit');
 		$this->cleanUpperCase('state');
+		$this->cleanPhone('zip', '\\-');
 
 		return $this;
 		}

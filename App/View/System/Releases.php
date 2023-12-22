@@ -57,7 +57,7 @@ class Releases
 			if (! $installed)
 				{
 				$container->add('<hr>');
-				$uri = '/System/releases?' . \http_build_query($queryParameters);
+				$uri = '/System/Releases/releases?' . \http_build_query($queryParameters);
 				$button = new \PHPFUI\Button('Deploy', $uri);
 				$button->setConfirm('Deploy this release?');
 				$container->add($button);

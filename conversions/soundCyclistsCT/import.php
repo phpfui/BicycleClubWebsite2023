@@ -142,11 +142,8 @@ function getReader(string $fileName) : \App\Tools\CSV\FileReader
 	}
 
 $dataPurger = new \App\Model\DataPurge();
-$dataPurger->addExceptionTable(new \App\Table\Setting());
+
 $dataPurger->addExceptionTable(new \App\Table\Blog());
-$dataPurger->addExceptionTable(new \App\Table\Story());
-$dataPurger->addExceptionTable(new \App\Table\Permission());
-$dataPurger->addExceptionTable(new \App\Table\PermissionGroup());
 $dataPurger->addExceptionTable(new \App\Table\BikeShop());
 $dataPurger->addExceptionTable(new \App\Table\BikeShopArea());
 $dataPurger->addExceptionTable(new \App\Table\Blog());

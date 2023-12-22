@@ -28,9 +28,9 @@ class Migration_23 extends \PHPFUI\ORM\Migration
 									gaOptionId int not null primary key auto_increment,
 									gaEventId int not null,
 									optionName varchar(255) not null,
-									ordering int not null default(0),
-									required int not null default(0),
-									maximumAllowed int not null default(0),
+									ordering int not null default 0,
+									required int not null default 0,
+									maximumAllowed int not null default 0,
 									price DECIMAL(7,2));');
 
 		$this->runSQL('create table gaSelection (
@@ -38,7 +38,7 @@ class Migration_23 extends \PHPFUI\ORM\Migration
 									gaEventId int not null,
 									gaOptionId int not null,
 									selectionName varchar(255) not null,
-									ordering int not null default(0),
+									ordering int not null default 0,
 									additionalPrice DECIMAL(7,2));');
 
 		$this->runSQL('create table gaRiderSelection (

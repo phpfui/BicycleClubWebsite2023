@@ -38,9 +38,8 @@ class DataPurge
 		{
 
 		// save off records in each exception table
-		foreach ($this->exceptionTables as $table)
+		foreach ($this->exceptionTables as $tableName => $table)
 			{
-			$tableName = $table->getTableName();
 			$this->data[$tableName] = [];
 
 			foreach ($table->getRecordCursor() as $record)
@@ -81,10 +80,8 @@ class DataPurge
 			exit;
 			}
 
-		foreach ($this->exceptionTables as $table)
+		foreach ($this->exceptionTables as $tableName => $table)
 			{
-			$tableName = $table->getTableName();
-
 			foreach ($this->data[$tableName] as $record)
 				{
 				$record->insertOrIgnore();

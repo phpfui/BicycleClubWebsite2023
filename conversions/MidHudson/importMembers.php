@@ -29,6 +29,9 @@ $dataPurger = new \App\Model\DataPurge();
 $dataPurger->addExceptionTable(new \App\Table\Setting());
 $dataPurger->addExceptionTable(new \App\Table\Blog());
 $dataPurger->addExceptionTable(new \App\Table\Story());
+$dataPurger->addExceptionTable(new \App\Table\Permission());
+$dataPurger->addExceptionTable(new \App\Table\PermissionGroup());
+$dataPurger->addExceptionTable(new \App\Table\UserPermission());
 $dataPurger->purge();
 
 foreach (\glob(__DIR__ . '/*.csv') as $file)

@@ -74,6 +74,7 @@ abstract class File
 			\ob_end_flush();
 			}
 		$stats = \stat($filename);
+		\http_response_code(200);
 		\header('Pragma: public');
 		\header('Last-Modified: ' . \date('D, d M Y H:i:s') . ' GMT');
 		\header('Cache-Control: no-store, no-cache, must-revalidate'); // HTTP/1.1
@@ -92,8 +93,6 @@ abstract class File
 			}
 		\header('Content-Disposition: attachment; filename="' . $downloadName . '"');
 		\readfile($filename);
-
-		\http_response_code(200);
 
 		return '';
 		}

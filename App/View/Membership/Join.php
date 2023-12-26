@@ -48,6 +48,16 @@ class Join
 			{
 			\App\Model\Session::setFlash('post', $_POST);
 			$fullName = $_POST['firstName'] . ' ' . $_POST['lastName'];
+
+			// is it a bot entering the same name twice?
+			if (\str_contains(\strtolower($_POST['lastName']), \strtolower($_POST['firstName'])))
+				{
+				\App\Model\Session::setFlash('alert', 'Please enter different names');
+				$this->page->redirect();
+
+				return $container;
+				}
+
 			$parts = \explode(' ', $fullName);
 			$error = false;
 

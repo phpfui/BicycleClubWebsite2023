@@ -57,7 +57,7 @@ class SparkPost
 		}
 
 	/**
-	 * @return array<string,string>
+	 * @return array<array<string,string>>
 	 */
 	public function getSuppressionList() : array
 		{

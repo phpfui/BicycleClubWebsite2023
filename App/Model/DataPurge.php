@@ -82,15 +82,13 @@ class DataPurge
 
 		foreach ($this->exceptionTables as $tableName => $table)
 			{
+			$table->delete(true);
+
 			foreach ($this->data[$tableName] as $record)
 				{
 				$record->insertOrIgnore();
 				}
 			}
-
-		$permissions = new \App\Model\Permission();
-
-		$permissions->loadStandardPermissions();
 
 		$addBruce = new \App\Cron\Job\AddBruce(new \App\Cron\Controller(5));
 		$addBruce->run();

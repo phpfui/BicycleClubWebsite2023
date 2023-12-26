@@ -65,7 +65,7 @@ class Migration_23 extends \PHPFUI\ORM\Migration
 				$option->insert();
 				}
 			$selection = new \App\Migration\GaSelection();
-			$selection->gaOption = $option;
+			$selection->gaOptionId = $option->gaOptionId;
 			$selection->gaEventId = $eventId;
 			$selection->selectionName = $incentive['description'];
 			$selection->ordering = $order++;
@@ -90,7 +90,7 @@ class Migration_23 extends \PHPFUI\ORM\Migration
 				$option->insert();
 				}
 			$selection = new \App\Migration\GaSelection();
-			$selection->gaOption = $option;
+			$selection->gaOptionId = $option->gaOptionId;
 			$selection->gaEventId = $eventId;
 			$selection->selectionName = $ride['distance'] . ' miles';
 
@@ -127,7 +127,7 @@ class Migration_23 extends \PHPFUI\ORM\Migration
 				$option->insert();
 				}
 			$selection = new \App\Migration\GaSelection();
-			$selection->gaOption = $option;
+			$selection->gaOptionId = $option->gaOptionId;
 			$selection->gaEventId = $eventId;
 			$selection->selectionName = $answer['answer'];
 			$selection->ordering = $order++;

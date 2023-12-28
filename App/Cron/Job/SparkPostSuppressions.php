@@ -40,6 +40,8 @@ class SparkPostSuppressions extends \App\Cron\BaseJob
 					else
 						{
 						$message = $member->fullName() . ', ' . $member->email . ' is bouncing: ' . $suppression['description'];
+						$member->email = '';	// bouncing, so remove email so we don't see them again.
+						$member->update();
 						}
 					\App\Tools\Logger::get()->debug($message);
 

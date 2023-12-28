@@ -240,7 +240,7 @@ class Board
 				$thumbnail = new \PHPFUI\HTML5Element('div');
 				$thumbnail->addClass('thumbnail');
 				$thumbnail->add($image);
-				$mediaObject->addSection($thumbnail, false, 'align-self-bottom');
+				$mediaObject->addSection($thumbnail, false, 'align-self-middle');
 				}
 			$header = new \PHPFUI\Header("<em>{$board->title}</em> - {$member->fullName()}", 5);
 			$mediaObject->addSection($header . $board->description, true);

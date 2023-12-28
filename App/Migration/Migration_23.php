@@ -135,7 +135,7 @@ class Migration_23 extends \PHPFUI\ORM\Migration
 			$this->runSQL("update gaRider set referral={$selection->gaSelectionId} where referral={$answer['gaAnswerId']}");
 			}
 
-		$riders = \PHPFUI\ORM::getArrayCursor('select * from garider');
+		$riders = \PHPFUI\ORM::getArrayCursor('select * from gaRider');
 
 		foreach ($riders as $rider)
 			{

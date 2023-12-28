@@ -46,6 +46,9 @@ class Membership
 		$multiColumn->add($settingsSaver->generateField('rideCommentsDefault', 'Ride Comments', 'CheckBox', false));
 		$fieldSet->add($multiColumn);
 
+		$geoLocate = new \App\UI\GeoLocate('geoLocateDefault', (int)$this->settingTable->value('geoLocateDefault'));
+		$fieldSet->add($settingsSaver->generateField('geoLocateDefault', 'Geo Locate', $geoLocate, false));
+
 		$form->add($fieldSet);
 
 		$fieldSet = new \PHPFUI\FieldSet('New Member Question');

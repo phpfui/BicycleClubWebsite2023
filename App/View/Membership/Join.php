@@ -237,10 +237,11 @@ class Join
 			0 => $this->explainLogin($member),
 			1 => $this->confirmEmail($member, $code),
 			2 => $this->getAddress($member),
-			3 => $this->getNotifications($member),
-			4 => $this->getPrivacy($member),
-			5 => $this->getMembers($member),
-			6 => $this->getPayPal($member),
+			3 => $this->getContactInfo($member),
+			4 => $this->getNotifications($member),
+			5 => $this->getPrivacy($member),
+			6 => $this->getMembers($member),
+			7 => $this->getPayPal($member),
 			default => '',
 		};
 		}
@@ -337,6 +338,24 @@ class Join
 		$buttonGroup->addButton($submit);
 
 		return $buttonGroup;
+		}
+
+	private function getContactInfo(\App\Record\Member $member) : \PHPFUI\HTML5Element
+		{
+		$output = $this->getHeader('Your Contact Information');
+		$form = new \PHPFUI\Form($this->page);
+		$form->add($this->page->getFlashMessages());
+
+		$cellPhone = new \App\UI\TelUSA($this->page, 'cellPhone', 'Cell Phone', $member->cellPhone);
+		$form->add($cellPhone);
+		$emergencyContact = new \PHPFUI\Input\Text('emergencyContact', 'Emergency Contact Name', $member->emergencyContact);
+		$form->add($emergencyContact);
+		$emergencyPhone = new \App\UI\TelUSA($this->page, 'emergencyPhone', 'Emergency Contact Phone', $member->emergencyPhone);
+		$form->add($emergencyPhone);
+		$form->add($this->getButtonGroup($member->verifiedEmail));
+		$output->add($form);
+
+		return $output;
 		}
 
 	private function getHeader(string $title) : \PHPFUI\HTML5Element

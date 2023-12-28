@@ -909,17 +909,9 @@ class Member
 		return $container;
 		}
 
-	private function getGeoLocationSelect(\App\Record\Member $member) : \PHPFUI\Container
+	private function getGeoLocationSelect(\App\Record\Member $member) : \PHPFUI\HTML5Element
 		{
-		$container = new \PHPFUI\Container();
-		$geoLocate = new \PHPFUI\Input\Select('geoLocate', 'Default to sending your geo location when sending ride texts or comments via the web site. Disable setting will not include the location option.');
-		$geoLocate->addOption('Default Off', '0', 0 == $member->geoLocate);
-		$geoLocate->addOption('Default On', '1', 1 == $member->geoLocate);
-		$geoLocate->addOption('Disabled', '2', 2 == $member->geoLocate);
-
-		$container->add($geoLocate);
-
-		return $container;
+		return new \App\UI\GeoLocate('geoLocate', $member->geoLocate);
 		}
 
 	private function getMemberSettings(\App\Record\Member $member) : \PHPFUI\Container

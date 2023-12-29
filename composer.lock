@@ -4961,16 +4961,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.43.0",
+            "version": "v3.43.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "39b5632c39ca9deb4eb7e670ba96fcf5c3a72e3c"
+                "reference": "91c0b47216aa43b09656b4d99aa9dade2f3ad8fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/39b5632c39ca9deb4eb7e670ba96fcf5c3a72e3c",
-                "reference": "39b5632c39ca9deb4eb7e670ba96fcf5c3a72e3c",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/91c0b47216aa43b09656b4d99aa9dade2f3ad8fc",
+                "reference": "91c0b47216aa43b09656b4d99aa9dade2f3ad8fc",
                 "shasum": ""
             },
             "require": {
@@ -5039,7 +5039,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.43.0"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.43.1"
             },
             "funding": [
                 {
@@ -5047,7 +5047,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-12-28T17:36:39+00:00"
+            "time": "2023-12-29T09:42:16+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -5920,12 +5920,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "60c59f79804d7487806f3c817fa4bff1fdd00b85"
+                "reference": "e8a82d0db2f549e3929863dd13d32e7596722e36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/60c59f79804d7487806f3c817fa4bff1fdd00b85",
-                "reference": "60c59f79804d7487806f3c817fa4bff1fdd00b85",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/e8a82d0db2f549e3929863dd13d32e7596722e36",
+                "reference": "e8a82d0db2f549e3929863dd13d32e7596722e36",
                 "shasum": ""
             },
             "conflict": {
@@ -6214,6 +6214,7 @@
                 "magento/magento1ee": ">=1,<1.14.4.3-dev",
                 "magento/product-community-edition": ">=2,<2.2.10|>=2.3,<2.3.2.0-patch2",
                 "maikuolan/phpmussel": ">=1,<1.6",
+                "mainwp/mainwp": "<=4.4.3.3",
                 "mantisbt/mantisbt": "<=2.25.7",
                 "marcwillmann/turn": "<0.3.3",
                 "matyhtf/framework": "<3.0.6",
@@ -6532,6 +6533,8 @@
                 "wikibase/wikibase": "<=1.39.3",
                 "wikimedia/parsoid": "<0.12.2",
                 "willdurand/js-translation-bundle": "<2.1.1",
+                "winter/wn-backend-module": "<1.2.4",
+                "winter/wn-system-module": "<1.2.4",
                 "wintercms/winter": "<1.2.3",
                 "woocommerce/woocommerce": "<6.6",
                 "wp-cli/wp-cli": "<2.5",
@@ -6631,7 +6634,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-28T06:04:40+00:00"
+            "time": "2023-12-28T23:04:19+00:00"
         },
         {
             "name": "sebastian/cli-parser",

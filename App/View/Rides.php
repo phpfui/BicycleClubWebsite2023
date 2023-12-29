@@ -541,6 +541,11 @@ class Rides
 
 		foreach ($rides as $ride)
 			{
+			if (! $ride instanceof \App\Record\Ride)
+				{
+				$ride = new \App\Record\Ride($ride);
+				}
+
 			if ($ride->rideDate != $lastDate)
 				{
 				$dateAccordion->addTab(\App\Tools\Date::formatString('l, F j, Y', $lastDate) . ' ' . \implode(', ', $rideCats), $dayAccordion, true);

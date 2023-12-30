@@ -433,19 +433,10 @@ class Editor
 						break;
 
 					case 'changeRWGPS':
-						$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($_POST['RWGPSurl'] ?? '');
-						$rwgps = new \App\Record\RWGPS($RWGPSId);
+						$rwgps = \App\Model\RideWithGPS::getRWGPSFromLink($_POST['RWGPSurl'] ?? '');
 
-						if ($RWGPSId && ! $rwgps->loaded())
-							{
-							if ($this->page->isAuthorized('Add / Update RWGPS'))
-								{
-								$rwgps->RWGPSId = $RWGPSId;
-								$rwgps->insertOrUpdate();
-								}
-							}
 						$rideTable = new \App\Table\Ride();
-						$elevation = $rideTable->getRWGPSElevation($RWGPSId);
+						$elevation = $rideTable->getRWGPSElevation($rwgps);
 
 						if ($elevation > 0)
 							{
@@ -464,7 +455,7 @@ class Editor
 						if ($rwgps->loaded())
 							{
 							$rideTable = new \App\Table\Ride();
-							$elevation = $rideTable->getRWGPSElevation($rwgps->RWGPSId);
+							$elevation = $rideTable->getRWGPSElevation($rwgps);
 
 							if ($elevation > 0)
 								{

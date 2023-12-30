@@ -100,10 +100,10 @@ class RideWithGPS extends GPS
 		return $routes;
 		}
 
-	public static function getRWGPSIdFromLink(string $link) : int
+	public static function getRWGPSFromLink(string $link) : ?\App\Record\RWGPS
 		{
 		$parts = \explode('/', $link);
-		$id = \parse_url($link);
+		$urlParts = \parse_url($link);
 		$RWGPSId = 0;
 
 		foreach ($parts as $index => $part)
@@ -133,16 +133,40 @@ class RideWithGPS extends GPS
 				}
 			}
 
-		return $RWGPSId;
+		if (! $RWGPSId)
+			{
+			return null;
+			}
+
+		$rwgps = new \App\Record\RWGPS($RWGPSId);
+		$rwgps->RWGPSId = $RWGPSId;
+
+		if (isset($urlParts['query']))
+			{
+			$rwgps->query = $urlParts['query'];
+			}
+
+		if (isset($urlParts['fragment']))
+			{
+			$rwgps->query .= '#' . $urlParts['fragment'];
+			}
+		$rwgps->insertOrUpdate();
+
+		return $rwgps;
 		}
 
 	public function scrape(\App\Record\RWGPS $rwgps) : ?\App\Record\RWGPS
 		{
-		if (! $rwgps->RWGPSId)
+		if (! $rwgps->loaded())
 			{
 			return null;
 			}
 		$url = "https://ridewithgps.com/routes/{$rwgps->RWGPSId}.json";
+
+		if ($rwgps->query)
+			{
+			$url .= '?' . $rwgps->query;
+			}
 
 		$client = new \GuzzleHttp\Client(['verify' => false, 'http_errors' => false]);
 

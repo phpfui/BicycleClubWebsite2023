@@ -16,25 +16,13 @@ class RideWithGPS
 		$this->rwgpsPicker = new \App\UI\RWGPSPicker($page, 'RWGPSAlternateId', 'Select an alternate route by title, street name or town');
 		$this->metric = 'km' == $page->value('RWGPSUnits');
 
-		$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($_POST['rwgpsUrl'] ?? '');
+		$RWGPS = \App\Model\RideWithGPS::getRWGPSFromLink($_POST['rwgpsUrl'] ?? '');
 
-		if (\App\Model\Session::checkCSRF() && ! empty($_POST['submit']) && $RWGPSId)
+		if (\App\Model\Session::checkCSRF() && ! empty($_POST['submit']) && $RWGPS)
 			{
-			$rwgpsRecord = new \App\Record\RWGPS($RWGPSId);
-
-			if ($rwgpsRecord->empty())
-				{
-				$rwgpsRecord->RWGPSId = $RWGPSId;
-				$rwgpsRecord->insert();
-				}
-
-			$rwgps = $this->model->scrape($rwgpsRecord);
-
-			if ($rwgps)
-				{
-				$rwgps->update();
-				}
-			$this->page->redirect($this->page->getBaseURL() . '/' . $RWGPSId);
+			$this->model->scrape($RWGPS);
+			$RWGPS->update();
+			$this->page->redirect($this->page->getBaseURL() . '/' . $RWGPS->RWGPSId);
 			}
 		}
 

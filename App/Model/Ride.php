@@ -195,28 +195,21 @@ class Ride
 
 		if (! $RWGPSId)
 			{
-			$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($parameters['RWGPSurl'] ?? '');
+			$RWGPS = \App\Model\RideWithGPS::getRWGPSFromLink($parameters['RWGPSurl'] ?? '');
+			}
+		else
+			{
+			$RWGPS = new \App\Record\RWGPS($RWGPSId);
 			}
 
-		if (! $RWGPSId)
+		if (! $RWGPS->loaded())
 			{
-			$RWGPSId = (int)($parameters['RWGPSId'] ?? 0);
+			$RWGPS = new \App\Record\RWGPS((int)($parameters['RWGPSId'] ?? 0));
 			}
 
-		if ($RWGPSId)
+		if ($RWGPS->loaded())
 			{
-			$rwgps = new \App\Record\RWGPS($RWGPSId);
-
-			if (! $rwgps->loaded())
-				{
-				$rwgps->RWGPSId = $RWGPSId;
-				$rwgps->insertOrUpdate();
-				}
-			}
-
-		if ($RWGPSId)
-			{
-			$parameters['RWGPSId'] = $RWGPSId;
+			$parameters['RWGPSId'] = $RWGPS->RWGPSId;
 			}
 		$parameters['description'] = \App\Tools\TextHelper::cleanUserHtml($parameters['description']);
 
@@ -834,9 +827,9 @@ class Ride
 			{
 			if (\str_contains($node->getAttribute('href'), 'ridewithgps'))
 				{
-				$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($node->getAttribute('href'));
+				$RWGPS = \App\Model\RideWithGPS::getRWGPSFromLink($node->getAttribute('href'));
 
-				if ($RWGPSId)
+				if ($RWGPS)
 					{
 					// delete the found nodes
 					$node->outertext = '';

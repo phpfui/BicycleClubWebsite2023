@@ -387,11 +387,11 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [$startDate, $endDate]);
 		}
 
-	public function getRWGPSElevation(int $RWGPSId) : int
+	public function getRWGPSElevation(\App\Record\RWGPS $RWGPS) : int
 		{
 		$sql = 'select AVG(elevation) from ride where RWGPSId = ? and elevation > 0 and rideStatus = ?';
 
-		return (int)\round((int)\PHPFUI\ORM::getValue($sql, [$RWGPSId, self::STATUS_COMPLETED, ]));
+		return (int)\round((int)\PHPFUI\ORM::getValue($sql, [$RWGPS->RWGPSId, self::STATUS_COMPLETED, ]));
 		}
 
 	/**

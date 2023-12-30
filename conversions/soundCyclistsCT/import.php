@@ -569,6 +569,7 @@ foreach ($iterator as $item)
 	}
 
 $csvReader = \getReader('Ride Library.csv');
+//Ride Name,Start location,Start Town,Miles,Other Distance,Google Map,Terrain,PDF,Excel,Word,GPS,RidewithGPS Url,Ride last led,Cue Sheet By,Revised Date
 
 $RWGPSIds = [];
 $cueSheetTable = new \App\Table\CueSheet();
@@ -593,17 +594,17 @@ foreach ($csvReader as $rideImport)
 	{
 	$dom = new \voku\helper\HtmlDomParser($rideImport['RidewithGPS Url']);
 
-	$RWGPSId = ['RWGPSId' => 0];
+	$RWGPS = null;
 
 	foreach ($dom->find('a') as $node)
 		{
 		if (false !== \strpos($node->href, 'ridewithgps'))
 			{
-			$RWGPSId = \App\Model\RideWithGPS::getRWGPSIdFromLink($node->href);
+			$RWGPS = \App\Model\RideWithGPS::getRWGPSFromLink($node->href);
 			}
 		}
 	unset($dom);
-	$RWGPSId = $RWGPSId['RWGPSId'] ?? 0;
+	$RWGPSId = $RWGPS ? $RWGPS->RWGPSId : 0;
 	$RWGPSIds[$RWGPSId] = null;
 	$startLocationName = \trim($rideImport['Start location']);
 	$startLocationId = $startLocations[$startLocationName] ?? null;
@@ -641,10 +642,9 @@ $rwgpsTable = new \App\Table\RWGPS();
 
 foreach ($RWGPSIds as $rwgpsId => $startLocationId)
 	{
-	$rwgps = new \App\Record\RWGPS();
-	$rwgps->RWGPSId = $rwgpsId;
+	$rwgps = new \App\Record\RWGPS($rwgpsId);
 	$rwgps->startLocationId = $startLocationId;
-	$rwgps->insertOrUpdate();
+	$rwgps->Update();
 	}
 
 // Delete the existing files
@@ -803,7 +803,7 @@ function importFiles(string $title, string $directory) : void
 				}
 
 			$time = \strtotime($finalString);
-			echo $item->getFilename() . ' => ' . \date('Y-m-d', $time) . "\n";
+//			echo $item->getFilename() . ' => ' . \date('Y-m-d', $time) . "\n";
 
 			$year = \date('Y', $time);
 			$fileFolder = new \App\Record\FileFolder();

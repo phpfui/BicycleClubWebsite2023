@@ -48,12 +48,13 @@ class EMail
 			$this->logger = new \App\Tools\Logger();
 			}
 		$this->settingTable = new \App\Table\Setting();
-		$this->server = \strtolower($_SERVER['SERVER_NAME'] ?? 'localhost.com');
-
-		if ('www.' == \substr($this->server, 0, 4))
+		$server = \strtolower($_SERVER['SERVER_NAME'] ?? 'localhost.com');
+		$parts = explode('.', $server);
+		while (count($parts) > 2)
 			{
-			$this->server = \substr($this->server, 4);
+			array_shift($parts);
 			}
+		$this->server = \implode('.', $parts);
 
 		if (! \str_contains($this->server, '.'))
 			{

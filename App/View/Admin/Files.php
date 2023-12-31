@@ -30,6 +30,7 @@ class Files
 		$sort = $parameters['s'] ?? 'a';
 
 		$sortableHeaders = ['name' => 'File', 'time' => 'Date/Time'];
+//		$normalHeaders = ['Download', 'Delete'];
 		$normalHeaders = ['Delete'];
 		$table->setHeaders($sortableHeaders + $normalHeaders);
 		$table->setSortableColumns(\array_keys($sortableHeaders))->setSortedColumnOrder($column, $sort);
@@ -68,6 +69,9 @@ class Files
 			$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
 			$icon->addAttribute('onclick', $delete->execute([$recordIndex => '"' . $crc . '"']));
 			$row['Delete'] = $icon;
+			$icon = new \PHPFUI\FAIcon('fas', 'file-arrow-down', '#');
+			$icon->addAttribute('onclick', $delete->execute([$recordIndex => '"' . $crc . '"']));
+			$row['Download'] = $icon;
 			$table->addRow($row);
 			}
 

@@ -134,7 +134,11 @@ class Renew
 
 			$this->page->redirect('/Membership/renew');
 			}
-		$output->add('<br>Additional Donation $' . \number_format($donation, 2));
+
+		if (! $this->duesModel->disableDonations)
+			{
+			$output->add('<br>Additional Donation $' . \number_format($donation, 2));
+			}
 		$output->add('<p><b>Total Due : $' . \number_format($unpaidBalance, 2) . '</b>');
 		$invoice = $this->memberModel->getRenewInvoice($member, $additionalMembers, $unpaidBalance, $years, $donation, $_POST['itemDetail'] ?? '');
 		$output->add($view->getCheckoutForm($invoice, $output->getId(), 'Membership Renewal'));
@@ -308,7 +312,11 @@ class Renew
 			$multiColumn = new \PHPFUI\MultiColumn();
 			$yearlyRenewal = new \PHPFUI\FieldSet('Yearly Renewal');
 			$yearsField = new \PHPFUI\Input\Select('years', 'Number of years to renew');
-			$yearsField->addOption('No Years, Donation only', '0');
+
+			if (! $this->duesModel->disableDonations)
+				{
+				$yearsField->addOption('No Years, Donation only', '0');
+				}
 
 			for ($i = 1; $i <= (int)$this->duesModel->MaxRenewalYears; ++$i)
 				{
@@ -341,17 +349,20 @@ class Renew
 			$yearlyRenewal->add($multiColumn);
 			$form->add($yearlyRenewal);
 
-			$donationSet = new \PHPFUI\FieldSet('Optional Additional Donation');
-			$multiColumn = new \PHPFUI\MultiColumn();
-			$multiColumn->add($this->settingTable->value('donationText'));
-			$donation = new \PHPFUI\Input\Text('donation', 'Donation Amount', '0');
-			$donationId = $donation->getId();
-			$donation->setToolTip('Your donation will be added to your membership dues.');
-			$donation->addAttribute('onchange', 'updatePrice()');
-			$multiColumn->add($donation);
-			$donationSet->add($multiColumn);
-			$donationSet->add(new \PHPFUI\Input\Text('itemDetail', 'Donation notes or dedications', ''));
-			$form->add($donationSet);
+			if (! $this->duesModel->disableDonations)
+				{
+				$donationSet = new \PHPFUI\FieldSet('Optional Additional Donation');
+				$multiColumn = new \PHPFUI\MultiColumn();
+				$multiColumn->add($this->settingTable->value('donationText'));
+				$donation = new \PHPFUI\Input\Text('donation', 'Donation Amount', '0');
+				$donationId = $donation->getId();
+				$donation->setToolTip('Your donation will be added to your membership dues.');
+				$donation->addAttribute('onchange', 'updatePrice()');
+				$multiColumn->add($donation);
+				$donationSet->add($multiColumn);
+				$donationSet->add(new \PHPFUI\Input\Text('itemDetail', 'Donation notes or dedications', ''));
+				$form->add($donationSet);
+				}
 
 			$yearId = $yearsField->getId();
 			$maxMembersId = $maxMembersField->getId();

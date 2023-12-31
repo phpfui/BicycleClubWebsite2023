@@ -28,6 +28,7 @@ class MembershipDues
 		'MaxMembersOnMembership' => '4',
 		'MaxMembersSubscription' => '4',
 		'MaxRenewalYears' => '9',
+		'disableDonations' => false,
 		'AnnualDues' => ['30'],
 		'AdditionalMemberDues' => [],
 	];

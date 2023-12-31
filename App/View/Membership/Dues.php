@@ -6,7 +6,7 @@ class Dues
 	{
 	private readonly \App\Model\MembershipDues $duesModel;
 
-	public function __construct(private readonly \PHPFUI\Page $page)
+	public function __construct(private readonly \App\View\Page $page)
 		{
 		$this->duesModel = new \App\Model\MembershipDues();
 		}
@@ -55,6 +55,10 @@ class Dues
 		$maxRenewalYears->setRequired(false)->setToolTip('The maximum number of years you can renew for at one time.');
 
 		$fieldSet->add(new \PHPFUI\MultiColumn($memberType, $maxMembersOnMembership, $maxRenewalYears));
+
+		$donations = new \PHPFUI\Input\CheckBoxBoolean('disableDonations', 'Disable Donations', (bool)$this->page->value('disableDonations'));
+		$donations->setToolTip('Check to disallow the optional donation field when joining or renewing');
+		$fieldSet->add($donations);
 
 		$form->add($fieldSet);
 

@@ -217,7 +217,7 @@ class SelectAutoComplete extends \PHPFUI\Input\Select
 			{
 			$this->page->addJavaScript('$("#' . $text->getId() . '").on("change", function(){$("#' . $this->hidden->getId() . '").val($(this).val()).change()})');
 			}
-		$this->page->addJavaScript("\n".'$("#' . $text->getId() . '").on("input", function(){var value=$(this).val();$("#' . $this->hidden->getId() . '").val(value).change();$("#'.$text->getId().'").val(value).change()})');
+//		$this->page->addJavaScript("\n".'$("#' . $text->getId() . '").on("input", function(){var value=$(this).val();$("#' . $this->hidden->getId() . '").val(value).change();$("#'.$text->getId().'").val(value).change()})');
 
 		$this->acFieldId = $text->getId();
 

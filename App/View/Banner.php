@@ -177,8 +177,6 @@ class Banner
 
 		if ($form->isMyCallback())
 			{
-			$settingTable->save('bannerWeeklyPrice', $_POST['bannerWeeklyPrice']);
-			$settingTable->save('bannerDailyPrice', $_POST['bannerDailyPrice']);
 			$this->page->setResponse('Saved');
 			}
 		else

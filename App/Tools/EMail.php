@@ -49,10 +49,11 @@ class EMail
 			}
 		$this->settingTable = new \App\Table\Setting();
 		$server = \strtolower($_SERVER['SERVER_NAME'] ?? 'localhost.com');
-		$parts = explode('.', $server);
-		while (count($parts) > 2)
+		$parts = \explode('.', $server);
+
+		while (\count($parts) > 2)
 			{
-			array_shift($parts);
+			\array_shift($parts);
 			}
 		$this->server = \implode('.', $parts);
 

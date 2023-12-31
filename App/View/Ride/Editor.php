@@ -435,15 +435,20 @@ class Editor
 					case 'changeRWGPS':
 						$rwgps = \App\Model\RideWithGPS::getRWGPSFromLink($_POST['RWGPSurl'] ?? '');
 
-						$rideTable = new \App\Table\Ride();
-						$elevation = $rideTable->getRWGPSElevation($rwgps);
+						$data = [];
 
-						if ($elevation > 0)
+						if ($rwgps)
 							{
-							$rwgps->elevationFeet = (float)$elevation;
+							$rideTable = new \App\Table\Ride();
+							$elevation = $rideTable->getRWGPSElevation($rwgps);
+
+							if ($elevation > 0)
+								{
+								$rwgps->elevationFeet = (float)$elevation;
+								}
+							$data = $rwgps->toArray();
+							$data['RWGPSId'] = $rwgps->routeLink();
 							}
-						$data = $rwgps->toArray();
-						$data['RWGPSId'] = $rwgps->routeLink();
 
 						$this->page->setRawResponse(\json_encode(['response' => $data], JSON_THROW_ON_ERROR));
 

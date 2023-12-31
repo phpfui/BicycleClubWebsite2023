@@ -202,7 +202,7 @@ class Ride
 			$RWGPS = new \App\Record\RWGPS($RWGPSId);
 			}
 
-		if (! $RWGPS->loaded())
+		if (! $RWGPS || ! $RWGPS->loaded())
 			{
 			$RWGPS = new \App\Record\RWGPS((int)($parameters['RWGPSId'] ?? 0));
 			}

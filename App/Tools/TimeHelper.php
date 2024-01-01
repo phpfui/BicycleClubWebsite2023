@@ -195,7 +195,7 @@ class TimeHelper
 
 	public static function toSmallTime(string $time) : string
 		{
-		return \str_replace([':00', ' ', 'M'], '', self::toString(self::fromString($time)));
+		return \str_replace([':00', ' ', 'M', 'm'], '', self::toString(self::fromString($time)));
 		}
 
 	public static function toString(int $time) : string
@@ -216,6 +216,6 @@ class TimeHelper
 			$returnValue .= $minute . ' ' . $ampm;
 			}
 
-		return $returnValue;
+		return strtolower($returnValue);
 		}
 	}

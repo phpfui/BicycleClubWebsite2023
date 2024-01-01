@@ -14,6 +14,7 @@ namespace App\Model;
  * @property string $MaxRenewalYears
  * @property array $AnnualDues
  * @property array $AdditionalMemberDues
+ * @property bool $disableDonations
  */
 class MembershipDues
 	{

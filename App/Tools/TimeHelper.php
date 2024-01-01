@@ -216,6 +216,6 @@ class TimeHelper
 			$returnValue .= $minute . ' ' . $ampm;
 			}
 
-		return strtolower($returnValue);
+		return \strtolower($returnValue);
 		}
 	}

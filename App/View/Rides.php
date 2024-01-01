@@ -570,11 +570,11 @@ class Rides
 			if ($targetPaceColumn)
 				{
 				$targetPace = new \PHPFUI\Cell(1);
-				$targetPace->add($ride->targetPace ?: '');
+				$targetPace->add($this->responsiveMileage($ride->targetPace ?: '', 1));
 				$row->add($targetPace);
 				}
 			$mileage = new \PHPFUI\Cell(1);
-			$mileage->add(\App\Tools\TextHelper::htmlentities($ride->mileage));
+			$mileage->add($this->responsiveMileage($ride->mileage));
 			$row->add($mileage);
 			$title = new \PHPFUI\Cell(5 + ! $targetPaceColumn + (int)$showNoLeader * 3);
 
@@ -1276,5 +1276,31 @@ class Rides
 		$dropDown->setHover();
 
 		return $dropDown;
+		}
+
+	private function responsiveMileage(?string $mileage, int $maxDecimals = 2) : string
+		{
+		$mileage = \App\Tools\TextHelper::htmlentities($mileage);
+
+		$floatMileage = (float)$mileage;
+
+		if ($floatMileage == $mileage)
+			{
+			$small = new \PHPFUI\HTML5Element('span');
+			$small->addClass('show-for-small-only');
+			$small->add(\number_format($floatMileage, 0));
+
+			$medium = new \PHPFUI\HTML5Element('span');
+			$medium->addClass('show-for-medium-only');
+			$medium->add(\number_format($floatMileage, \min($maxDecimals, 1)));
+
+			$large = new \PHPFUI\HTML5Element('span');
+			$large->addClass('show-for-large');
+			$large->add(\number_format($floatMileage, $maxDecimals));
+
+			return $small . $medium . $large;
+			}
+
+		return $mileage;
 		}
 	}

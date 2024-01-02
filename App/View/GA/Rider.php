@@ -20,7 +20,7 @@ class Rider
 
 				$id = $rider->insert();
 
-				if (\is_array($post['gaOptionId']))
+				if (\is_array($post['gaOptionId'] ?? false))
 					{
 					$post['gaRiderId'] = $id;
 					$gaRiderSelectionTable = new \App\Table\GaRiderSelection();

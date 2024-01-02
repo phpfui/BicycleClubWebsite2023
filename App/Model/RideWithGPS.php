@@ -186,7 +186,7 @@ class RideWithGPS extends GPS
 		if (200 != $status)
 			{
 			// 404 = not found, 403 = not public
-			if ($status >= 400 && $status < 500)
+			if ($status >= 400 && $status < 500 && $rwgps->RWGPSId)
 				{
 				$rideTable = new \App\Table\Ride();
 				$rideTable->changeRWGPSId($rwgps->RWGPSId, null);

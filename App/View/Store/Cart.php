@@ -105,14 +105,13 @@ class Cart
 		$table = new \PHPFUI\Table();
 		$table->addAttribute('width', '100%');
 		$headers = ['description' => 'Description',
-			'quantity' => 'Quantity',
+			'quantity' => 'Quan<wbr>tity',
 			'price' => 'Unit Price',
-			'tax' => 'Tax',
 			'total' => 'Total', ];
 
 		if ($editQuantities)
 			{
-			$headers['delete'] = 'Remove';
+			$headers['delete'] = 'Rem<wbr>ove';
 			$table->setRecordId('index');
 			}
 		$table->setHeaders($headers);
@@ -157,6 +156,7 @@ class Cart
 							$message = '<br><span class="warning">' . \implode('<br>', $messages) . '</span>';
 							}
 						$editButton = new \PHPFUI\Button('Edit Rider', '/GA/updateRider/' . $item['storeItemDetailId']);
+						$editButton->addClass('small');
 
 						$item['description'] = "{$item['title']}<br><b>{$item['detailLine']}</b>{$message}<br>{$editButton}";
 						$dupes[] = $item['detailLine'];

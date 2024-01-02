@@ -55,7 +55,7 @@ class ttfparser
 
 	protected $subsettedChars;
 
-	protected $subsettedGlyphs;
+	protected array $subsettedGlyphs = [];
 
 	protected $tables;
 

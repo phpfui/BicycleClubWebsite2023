@@ -558,8 +558,6 @@ function MakeDefinitionFile($file, $type, $enc, $embed, $subset, $map, $info) : 
 
 function MakeFont($fontfile, $enc = 'cp1252', $embed = true, $subset = true) : void
 	{
-	\ini_set('auto_detect_line_endings', '1');
-
 	if (! \file_exists($fontfile))
 		{
 		\Error('Font file not found: ' . $fontfile);

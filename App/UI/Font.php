@@ -4,7 +4,7 @@ namespace App\UI;
 
 class Font extends \PHPFUI\Input\Select
 	{
-	public function __construct($name = 'font', $label = 'Font')
+	public function __construct($name = 'font', $label = 'Font', string $value = '')
 		{
 		parent::__construct($name, $label);
 
@@ -20,7 +20,7 @@ class Font extends \PHPFUI\Input\Select
 
 		foreach ($fonts as $file => $font)
 			{
-			$this->addOption($font, $file);
+			$this->addOption($font, $file, $value == $file);
 			}
 		}
 	}

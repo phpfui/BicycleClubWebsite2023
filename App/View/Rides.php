@@ -565,6 +565,7 @@ class Rides
 			$row->add($time);
 			$cat = new \PHPFUI\Cell(1);
 			$categoryLetter = $this->paceTable->getPace($ride->paceId ?? 0);
+
 			if ($targetPaceColumn)
 				{
 				$categoryLetter .= '/' . $this->responsiveMileage($ride->targetPace ?: '', 1);

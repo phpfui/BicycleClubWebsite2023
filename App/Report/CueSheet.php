@@ -12,6 +12,10 @@ class CueSheet extends \FPDF
 
 	private float $firstColumn;
 
+	private string $font;
+
+	private int $fontSize;
+
 	private float $height = 0.0;
 
 	private float $lastDistance = 0.0;
@@ -33,7 +37,13 @@ class CueSheet extends \FPDF
 	public function __construct()
 		{
 		parent::__construct('P', 'mm', 'letter');
+
 		$settingTable = new \App\Table\Setting();
+		$this->fontSize = (int)$settingTable->value('CueSheetFontSize');
+		$this->font = $settingTable->value('CueSheetFont');
+		$this->AddFont($this->font, '', $this->font . '.php');
+		$this->AddFont($this->font, 'B', $this->font . '.php');
+
 		$this->units = $settingTable->value('RWGPSUnits');
 		$this->SetAutoPageBreak(false);
 		$this->width = $this->GetPageWidth();
@@ -205,13 +215,13 @@ class CueSheet extends \FPDF
 	private function newPage(string $title, string $leader = '', string $cellPhoneNumber = '') : void
 		{
 		$this->AddPage();
-		$this->SetFont('Arial', 'B', 14);
+		$this->SetFont($this->font, 'B', $this->fontSize);
 		$y = $this->margin;
 
 
 		$this->Text($this->margin, $this->topMargin, $title);
 		$this->SetXY($this->width - 51, $y);
-		$this->writeLabel('Dist', \round($this->getBigUnits($this->distance), 2) . ' ' . \substr($this->units, 0, 2));
+		$this->writeLabel('Dist', \number_format($this->getBigUnits($this->distance), 2) . ' ' . \substr($this->units, 0, 2));
 		$ascent = \number_format($this->getSmallUnits($this->ascent), 2);
 		$unit = 'Miles' == $this->units ? 'ft' : 'm';
 		$this->writeLabel(' Ele', " +{$ascent} {$unit}");
@@ -331,7 +341,7 @@ class CueSheet extends \FPDF
 			$this->SetFont('ZapfDingbats', '', 14);
 			$this->Text($turnX, $turnY, $char);
 			$this->Rotate(0);
-			$this->SetFont('Arial', '', 14);
+			$this->SetFont($this->font, '', $this->fontSize);
 			}
 
 		while ($streetContinued)
@@ -367,7 +377,7 @@ class CueSheet extends \FPDF
 
 		$maxY = $y + $height - 14;
 
-		$this->SetFont('Arial', 'B', 8);
+		$this->SetFont($this->font, 'B', 8);
 		$this->SetFillColor(204);
 
 		$header = [];
@@ -376,13 +386,13 @@ class CueSheet extends \FPDF
 		$header['gox'] = 'Go X';
 		$header['street'] = '';
 		$y += $this->printRow($x, $y, $header, 'TL', 4, 'C');
-		$this->SetFont('Arial', 'B', 8);
+		$this->SetFont($this->font, 'B', 8);
 		$header['distance'] = 'At Turn';
 		$header['gox'] = $this->units;
 		$header['street'] = 'Then Turn Onto';
 		$y += $this->printRow($x, $y, $header, 'LB', 4, 'C');
 
-		$this->SetFont('Arial', '', 14);
+		$this->SetFont($this->font, '', $this->fontSize);
 		$count = 1;
 
 		while ($y < $maxY && $reader->valid())
@@ -455,9 +465,9 @@ class CueSheet extends \FPDF
 		{
 		if (\strlen($value))
 			{
-			$this->SetFont('Arial', 'B', 8);
+			$this->SetFont($this->font, 'B', 8);
 			$this->Write(2.7, $label . ': ');
-			$this->SetFont('Arial', '');
+			$this->SetFont($this->font, '');
 			$this->Write(2.7, $value);
 			}
 		}

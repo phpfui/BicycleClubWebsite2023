@@ -178,6 +178,16 @@ class RideWithGPS
 
 		$form->add($fieldSet);
 
+		$fieldSet = new \PHPFUI\FieldSet('Cue Sheet Print Settings');
+
+		$multiColumn = new \PHPFUI\MultiColumn();
+		$fonts = new \App\UI\Font('CueSheetFont', 'Cue Sheet Font', $this->page->value('CueSheetFont'));
+		$multiColumn->add($settingsSaver->generateField('CueSheetFont', 'Cue Sheet Font', $fonts));
+
+		$multiColumn->add($settingsSaver->generateField('CueSheetFontSize', 'Cue Sheet Font Size', 'number'));
+		$fieldSet->add($multiColumn);
+		$form->add($fieldSet);
+
 		if ($form->isMyCallback())
 			{
 			$settingsSaver->save($_POST);

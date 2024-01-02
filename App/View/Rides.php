@@ -535,7 +535,7 @@ class Rides
 		$dateAccordion = new \App\UI\Accordion();
 		$dayAccordion = 0;
 		$rideCats = [];
-		$targetPaceColumn = 'Hidden' != $this->page->value('targetPaceOption');
+		$targetPaceColumn = $this->page->value('targetPaceOption');
 
 		$leaderless = $this->page->value('LeaderlessName') ?: 'Cancelled';
 
@@ -560,23 +560,22 @@ class Rides
 				}
 			$row = new \PHPFUI\GridX();
 			$row->addClass('text-center');
-			$time = new \PHPFUI\Cell(1);
+			$time = new \PHPFUI\Cell(2);
 			$time->add(\App\Tools\TimeHelper::toSmallTime($ride->startTime ?? ''));
 			$row->add($time);
 			$cat = new \PHPFUI\Cell(1);
-			$cat->add($categoryLetter = $this->paceTable->getPace($ride->paceId ?? 0));
-			$row->add($cat);
-
+			$categoryLetter = $this->paceTable->getPace($ride->paceId ?? 0);
 			if ($targetPaceColumn)
 				{
-				$targetPace = new \PHPFUI\Cell(1);
-				$targetPace->add($this->responsiveMileage($ride->targetPace ?: '', 1));
-				$row->add($targetPace);
+				$categoryLetter .= '/' . $this->responsiveMileage($ride->targetPace ?: '', 1);
 				}
+			$cat->add($categoryLetter);
+			$row->add($cat);
+
 			$mileage = new \PHPFUI\Cell(1);
 			$mileage->add($this->responsiveMileage($ride->mileage));
 			$row->add($mileage);
-			$title = new \PHPFUI\Cell(5 + ! $targetPaceColumn + (int)$showNoLeader * 3);
+			$title = new \PHPFUI\Cell(5 + (int)$showNoLeader * 3);
 
 			if ($ride->unaffiliated)
 				{

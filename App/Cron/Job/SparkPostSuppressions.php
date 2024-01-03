@@ -48,7 +48,8 @@ class SparkPostSuppressions extends \App\Cron\BaseJob
 					$deletes[] = $suppression['recipient'];
 					}
 				}
-			$model->deleteSuppressions($deletes);
+			$results = $model->deleteSuppressions($deletes);
+			$this->controller->log_normal(\print_r($results, true));
 			}
 		catch (\Exception $e)
 			{

@@ -281,7 +281,7 @@ class Rides
 
 		if ($ride->startLocationId)
 			{
-			$fieldSet->add(new \App\UI\Display('Start Location', $this->startLocationView->getLocationPicker($ride)));
+			$fieldSet->add(new \App\UI\Display('Start Location', $this->startLocationView->getLocationPicker($ride->startLocation)));
 			}
 
 		if ($ride->RWGPSId)
@@ -355,7 +355,7 @@ class Rides
 		$rwgps->getLinkObject()->addAttribute('target', '_blank');
 		$menu->addMenuItem($rwgps);
 		$route = new \App\Record\RWGPS($RWGPSId);
-		$link = $route->directionsLink();
+		$link = $route->directionsUrl();
 
 		if ($link)
 			{
@@ -642,7 +642,7 @@ class Rides
 
 				if ($ride->startLocationId)
 					{
-					$link = $this->startLocationView->getLocationPicker($ride);
+					$link = $this->startLocationView->getLocationPicker($ride->startLocation);
 					$content->add("<p><b>Start:</b> {$link}</p>");
 					}
 
@@ -743,7 +743,7 @@ class Rides
 				}
 			elseif ($ride->startLocationId && $ride->unaffiliated)
 				{
-				$link = $this->startLocationView->getLocationPicker($ride);
+				$link = $this->startLocationView->getLocationPicker($ride->startLocation);
 				$content->add("<br><b>Start:</b> {$link}");
 				$content->add($this->getRWGPSMenu($ride));
 				}

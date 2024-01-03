@@ -301,4 +301,13 @@ class Admin extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$this->page->redirect('/Admin/editWaiver');
 			}
 		}
+
+	public function roles() : void
+		{
+		if ($this->page->addHeader('Role Assignments'))
+			{
+			$assignmentView = new \App\View\Member\Assign($this->page);
+			$this->page->addPageContent($assignmentView->getForm());
+			}
+		}
 }

@@ -20,7 +20,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function addByCueSheet() : void
 		{
-		if ($this->page->addHeader('Add CueSheet Ride'))
+		if ($this->page->addHeader('Add Ride To Schedule'))
 			{
 			$view = new \App\View\Ride\Editor($this->page);
 			$this->page->addPageContent($view->addByCueSheet());

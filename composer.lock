@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba100937a7ba212b2554e986d749763b",
+    "content-hash": "f27b22463f05b43810728c93fba79332",
     "packages": [
         {
             "name": "alek13/slack",
@@ -582,6 +582,51 @@
                 "source": "https://github.com/FortAwesome/Font-Awesome"
             },
             "time": "2023-11-30T22:38:48+00:00"
+        },
+        {
+            "name": "frostybee/geobee",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/frostybee/geobee.git",
+                "reference": "a733986f8e259633830390f8b8d22d3085b70b70"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/frostybee/geobee/zipball/a733986f8e259633830390f8b8d22d3085b70b70",
+                "reference": "a733986f8e259633830390f8b8d22d3085b70b70",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Frostybee\\Geobee\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sleiman Rabah"
+                }
+            ],
+            "description": "A simple, stand-alone PHP library for calculating the distance between geographical coordinates.",
+            "homepage": "https://github.com/frostybee/geobee",
+            "keywords": [
+                "Vincenty formulae",
+                "geodesic distance",
+                "haversine"
+            ],
+            "support": {
+                "issues": "https://github.com/frostybee/geobee/issues",
+                "source": "https://github.com/frostybee/geobee/tree/v1.0.2"
+            },
+            "time": "2023-03-25T01:49:12+00:00"
         },
         {
             "name": "gitonomy/gitlib",
@@ -1491,16 +1536,16 @@
         },
         {
             "name": "laminas/laminas-validator",
-            "version": "2.45.0",
+            "version": "2.46.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-validator.git",
-                "reference": "2a60d288ffa1acb84321c85a066dcbf96da34a50"
+                "reference": "98330256f8d8a1357a93f6f7f1a987036aff6329"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/2a60d288ffa1acb84321c85a066dcbf96da34a50",
-                "reference": "2a60d288ffa1acb84321c85a066dcbf96da34a50",
+                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/98330256f8d8a1357a93f6f7f1a987036aff6329",
+                "reference": "98330256f8d8a1357a93f6f7f1a987036aff6329",
                 "shasum": ""
             },
             "require": {
@@ -1571,7 +1616,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2023-12-18T01:12:24+00:00"
+            "time": "2024-01-03T12:43:04+00:00"
         },
         {
             "name": "maximebf/debugbar",

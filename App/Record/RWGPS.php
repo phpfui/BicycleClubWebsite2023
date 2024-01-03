@@ -10,6 +10,8 @@ namespace App\Record;
  */
 class RWGPS extends \App\Record\Definition\RWGPS
 	{
+	use \App\DB\Trait\Directions;
+
 	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'alternateRoutes' => [\PHPFUI\ORM\Children::class, \App\Table\RWGPSAlternate::class],
@@ -42,16 +44,6 @@ class RWGPS extends \App\Record\Definition\RWGPS
 			}
 
 		return $this;
-		}
-
-	public function directionsLink() : string
-		{
-		if ($this->latitude && $this->longitude)
-			{
-			return "https://www.google.com/maps/dir/?api=1&destination={$this->latitude},{$this->longitude}";
-			}
-
-		return '';
 		}
 
 	public function getCSVReader() : \App\Tools\CSV\Reader

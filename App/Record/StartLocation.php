@@ -7,6 +7,8 @@ namespace App\Record;
  */
 class StartLocation extends \App\Record\Definition\StartLocation
 	{
+	use \App\DB\Trait\Directions;
+
 	public function addressLink() : ?\PHPFUI\Link
 		{
 		if ($this->address && $this->town && $this->state)
@@ -28,16 +30,6 @@ class StartLocation extends \App\Record\Definition\StartLocation
 		$this->cleanPhone('zip', '\\-');
 
 		return $this;
-		}
-
-	public function coordinatesLink() : ?\PHPFUI\Link
-		{
-		if ($this->latitude && $this->longitude)
-			{
-			return new \PHPFUI\Link("https://www.google.com/maps/?q={$this->latitude},{$this->longitude}", 'Google Maps');
-			}
-
-		return null;
 		}
 
 	public function userLink() : ?\PHPFUI\Link

@@ -10,6 +10,8 @@ class RideWithGPS
 
 	private readonly \App\UI\RWGPSPicker $rwgpsPicker;
 
+	private readonly \App\View\StartLocation $startLocationView;
+
 	public function __construct(private readonly \App\View\Page $page)
 		{
 		$this->model = new \App\Model\RideWithGPS();
@@ -24,6 +26,8 @@ class RideWithGPS
 			$RWGPS->update();
 			$this->page->redirect($this->page->getBaseURL() . '/' . $RWGPS->RWGPSId);
 			}
+
+		$this->startLocationView = new \App\View\StartLocation($page);
 		}
 
 	public function additional(\App\Record\RWGPS $rwgps) : \PHPFUI\Container
@@ -60,7 +64,24 @@ class RideWithGPS
 
 				$this->page->redirect();
 				}
+			elseif (($_POST['submit'] ?? '') == 'Save Start Location')
+				{
+				$rwgps = new \App\Record\RWGPS($_POST['RWGPSId']);
+				$rwgps->startLocationId = (int)$_POST['startLocationId'];
+				$rwgps->update();
+
+				$this->page->redirect();
+				}
 			}
+
+		$startLocationSet = new \PHPFUI\FieldSet('Start Location');
+		$submit = new \PHPFUI\Submit('Save Start Location');
+		$form = new \PHPFUI\Form($this->page);
+		$form->add(new \PHPFUI\Input\Hidden('RWGPSId', (string)$rwgps->RWGPSId));
+		$form->add($this->startLocationView->getEditControl($rwgps->startLocationId));
+		$form->add($submit);
+		$startLocationSet->add($form);
+		$container->add($startLocationSet);
 
 		$ratingSet = new \PHPFUI\FieldSet('Rating');
 		$multiColumn = new \PHPFUI\HTML5Element('div');
@@ -208,11 +229,7 @@ class RideWithGPS
 		if ($rwgps->loaded())
 			{
 			$idLink = new \PHPFUI\Link($rwgps->routeLink());
-			$idLink->addAttribute('target', '_blank');
 			$fieldSet->add(new \App\UI\Display('Ride With GPS Link', $idLink));
-			$directionsLink = new \PHPFUI\Link($rwgps->directionsLink(), 'Google');
-			$directionsLink->addAttribute('target', '_blank');
-			$fieldSet->add(new \App\UI\Display('Directions', $directionsLink));
 			$fieldSet->add(new \App\UI\Display('Title', $rwgps->title));
 			$fieldSet->add(new \App\UI\Display('Description', $rwgps->description));
 
@@ -229,6 +246,12 @@ class RideWithGPS
 			$fieldSet->add(new \App\UI\Display('Town', $rwgps->town));
 			$fieldSet->add(new \App\UI\Display('State', $rwgps->state));
 			$fieldSet->add(new \App\UI\Display('Zip', $rwgps->zip));
+
+			if ($rwgps->startLocationId)
+				{
+				$fieldSet->add(new \App\UI\Display('Start Location', $this->startLocationView->getLocationPicker($rwgps->startLocation)));
+				}
+			$fieldSet->add(new \App\UI\Display('Directions', $rwgps->coordinatesLink()));
 			$fieldSet->add(new \App\UI\Display('Club Library Route', $rwgps->club ? 'Yes' : 'Not Yet'));
 
 			if ($rwgps->lastUpdated)
@@ -280,7 +303,7 @@ class RideWithGPS
 			{
 			$rwgpsRecord = new \App\Record\RWGPS();
 			$rwgpsRecord->setFrom($rwgps);
-			$url = $rwgpsRecord->directionsLink();
+			$url = $rwgpsRecord->directionsUrl();
 
 			if (! \str_starts_with($url, 'http'))
 				{

@@ -11,7 +11,7 @@ class MainMenu extends \App\UI\MainMenu
 		if ($menu = $this->addTopMenu('Rides', 'Rides'))
 			{
 			$this->addSub($menu, '/Rides/edit/0', 'Add A Ride');
-			$this->addSub($menu, '/Rides/addByCueSheet', 'Add CueSheet Ride');
+			$this->addSub($menu, '/Rides/addByCueSheet', 'Add Ride To Schedule');
 			$this->addSub($menu, '/Rides/addByRWGPS', 'Add RWGPS Ride');
 			$this->addSub($menu, '/Rides/past', 'Past Rides');
 			$this->addSub($menu, '/Rides/My/past', 'My Past Rides');
@@ -157,6 +157,7 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Locations/locations', 'Start Locations');
 			$this->addSub($menu, '/Locations/merge', 'Merge Start Locations');
 			$this->addSub($menu, '/Locations/new', 'Add Start Location');
+//			$this->addSub($menu, '/Locations/coordinates', 'Update Coordinates');
 			}
 
 		if ($menu = $this->addTopMenu('Membership', 'Membership'))
@@ -361,6 +362,7 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Admin/config', 'Site Configuration');
 			$this->addSub($menu, '/Admin/files', 'Manage Files');
 			$this->addSub($menu, '/Admin/permissionGroupAssignment', 'Permission Group Assignments');
+			$this->addSub($menu, '/Admin/roles', 'Role Assignments');
 			$this->addSub($menu, '/Admin/passwordPolicy', 'Password Policy');
 			}
 

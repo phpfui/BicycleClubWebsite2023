@@ -125,46 +125,44 @@ class StartLocation
 		return $select;
 		}
 
-	public function getLocationPicker(\App\Record\Ride $ride) : string
+	public function getLocationPicker(\App\Record\StartLocation $location) : string
 		{
-		$location = $ride->startLocation;
-
-		if ($location->loaded())
+		if (! $location->loaded())
 			{
-			$div = new \PHPFUI\HTML5Element('a');
-			$div->add("<b>{$location->name}</b>");
-
-			$reveal = new \PHPFUI\Reveal($this->page, $div);
-			$reveal->add(new \PHPFUI\Header($location->name, 4));
-			$reveal->add("<p>{$location->directions}</p>");
-
-			if ($location->address || $location->town)
-				{
-				$reveal->add("<p>{$location->address}<br>{$location->town} {$location->state} {$location->zip}</p>");
-				}
-
-			if ($location->nearestExit)
-				{
-				$reveal->add("<p>{$location->nearestExit}</p>");
-				}
-
-			$ul = new \PHPFUI\UnorderedList();
-
-			$links = [$location->addressLink(), $location->coordinatesLink(), $location->userLink()];
-
-			foreach ($links as $link)
-				{
-				if ($link)
-					{
-					$ul->addItem(new \PHPFUI\ListItem($link));
-					}
-				}
-			$reveal->add($ul);
-
-			return "{$div}";
+			return '';
 			}
 
-		return 'Location not found';
+		$div = new \PHPFUI\HTML5Element('a');
+		$div->add("<b>{$location->name}</b>");
+
+		$reveal = new \PHPFUI\Reveal($this->page, $div);
+		$reveal->add(new \PHPFUI\Header($location->name, 4));
+		$reveal->add("<p>{$location->directions}</p>");
+
+		if ($location->address || $location->town)
+			{
+			$reveal->add("<p>{$location->address}<br>{$location->town} {$location->state} {$location->zip}</p>");
+			}
+
+		if ($location->nearestExit)
+			{
+			$reveal->add("<p>{$location->nearestExit}</p>");
+			}
+
+		$ul = new \PHPFUI\UnorderedList();
+
+		$links = [$location->addressLink(), $location->coordinatesLink(), $location->userLink()];
+
+		foreach ($links as $link)
+			{
+			if ($link)
+				{
+				$ul->addItem(new \PHPFUI\ListItem($link));
+				}
+			}
+		$reveal->add($ul);
+
+		return "{$div}";
 		}
 
 	public function getText(\App\Record\StartLocation $location) : string
@@ -335,7 +333,7 @@ class StartLocation
 		$startLocationTable = new \App\Table\StartLocation();
 
 		$searchableHeaders = ['name', 'link'];
-		$countHeaders = ['rides', 'cuesheets' => 'Cue<br>Sheets'];
+		$countHeaders = ['map' => 'Map', 'rides', 'cuesheets' => 'Cue<br>Sheets', ];
 
 		if ($this->page->isAuthorized('Delete Start Location'))
 			{
@@ -353,19 +351,21 @@ class StartLocation
 		$view->addCustomColumn('active', static fn (array $location) => $location['active'] ? '<b>&check;</b>' : '');
 		$view->addCustomColumn('link', static function(array $location)
 			{
-			if ($location['latitude'] && $location['longitude'])
-				{
-				$link = new \PHPFUI\Link("https://www.google.com/maps/dir/?api=1&destination={$location['latitude']},{$location['longitude']}", 'Directions');
-				}
-			else
-				{
-				$link = '';
-				}
-
 			$url = \parse_url($location['link'] ?? '', PHP_URL_HOST);
 
-			return $url ? new \PHPFUI\Link($location['link'], $url) : $link;
+			return $url ? new \PHPFUI\Link($location['link'], $url) : '';
 			});
+
+		$view->addCustomColumn('map', static function(array $location)
+			{
+			if ($location['latitude'] && $location['longitude'])
+				{
+				return new \PHPFUI\Link("https://www.google.com/maps/?q={$location['latitude']},{$location['longitude']}", 'Map');
+				}
+
+			return '';
+			});
+
 		$view->addCustomColumn('rides', static function(array $location) use ($rides)
 			{
 			$count = $rides[$location['startLocationId']]['count'] ?? 0;

@@ -195,7 +195,7 @@ class RideSignup extends \PHPFUI\ORM\Table
 			'Probably Riding',
 			'Possibly',
 			'Wait List',
-			'Definitely Not Riding',
+			"Can't Ride Because",
 			'Cancelled',
 		];
 		}

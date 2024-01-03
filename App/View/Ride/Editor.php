@@ -33,7 +33,7 @@ class Editor
 
 	public function addByCueSheet() : \PHPFUI\Form
 		{
-		$submit = new \PHPFUI\Submit('Add CueSheet Ride');
+		$submit = new \PHPFUI\Submit('Next');
 		$form = new \PHPFUI\Form($this->page);
 
 		$fieldSet = new \PHPFUI\FieldSet('Required Fields');
@@ -349,7 +349,7 @@ class Editor
 
 						break;
 
-					case 'Add CueSheet Ride':
+					case 'Next':
 
 						$parameters = $_POST;
 						$cueSheet = new \App\Record\CueSheet($parameters['cueSheetId']);

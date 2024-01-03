@@ -26,7 +26,7 @@ class CueSheet
 		$this->processRequest();
 		}
 
-	public function edit(\App\Record\CueSheet $cuesheet) : string
+	public function edit(\App\Record\CueSheet $cuesheet) : \PHPFUI\Form
 		{
 		if ($cuesheet->loaded())
 			{
@@ -144,6 +144,9 @@ class CueSheet
 		$fieldSet->add($name);
 		$startLocation = $this->startLocationView->getEditControl($cuesheet->startLocationId);
 		$fieldSet->add($startLocation);
+		$rwgps = new \App\UI\RWGPSPicker($this->page, 'RWGPSId', 'RWGPS Route', $cuesheet->RWGPS);
+		$fieldSet->add($rwgps->getEditControl());
+
 		$destination = new \PHPFUI\Input\Text('destination', 'Destination', $cuesheet->destination);
 		$fieldSet->add($destination);
 		$description = new \PHPFUI\Input\TextArea('description', 'Description', $cuesheet->description);

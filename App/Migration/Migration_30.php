@@ -22,6 +22,10 @@ class Migration_30 extends \PHPFUI\ORM\Migration
 		$this->setValue('CueSheetFont', 'helvetica');
 		$this->setValue('CueSheetFontSize', '14');
 
+		$permissionTable = new \App\Table\Permission();
+		$permissionTable->setWhere(new \PHPFUI\ORM\Condition('name', 'Add CueSheet Ride'));
+		$permissionTable->update(['name' => 'Add Ride To Schedule']);
+
 		return true;
 		}
 

@@ -223,7 +223,6 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$email->setSubject($club . ' Minor Waiver');
 				$email->setBody("Dear {$_POST['firstName']},<br><br>Thanks for attending a {$this->settingTable->value('clubAbbrev')} ride.  Please see the attached minor release waiver.");
 				$email->setHtml();
-				$_POST['lastName'] = '';
 				$_POST['acceptedWaiver'] = \date('Y-m-d H:i:s');
 				$waiverReport = new \App\Report\MemberWaiver();
 				$waiverReport->generate($_POST, 'In consideration of your being a minor, you have agreed to the following:<br><br>', $waiver);

@@ -37,7 +37,6 @@ class Images
 		$form = new \PHPFUI\Form($this->page, $submit);
 		$fieldSet = new \PHPFUI\FieldSet('Assign Images for each Type');
 		$fieldSet->add($this->getFilePicker('clubLogo', 'General Club Logo'));
-		$fieldSet->add($this->getFilePicker('cardLogo', 'Membership Card Logo'));
 		$fieldSet->add($this->getFilePicker('invoiceLogo', 'Invoice Logo'));
 		$fieldSet->add($this->getFilePicker('nameTagLogo', 'Name Tag Logo'));
 		$fieldSet->add($this->getFilePicker('missingProfile', 'Missing Profile Photo'));

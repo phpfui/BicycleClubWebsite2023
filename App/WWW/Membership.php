@@ -21,91 +21,27 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		$this->settingTable = new \App\Table\Setting();
 		}
 
-	public function card(string $command = 'print') : void
+	public function card() : void
 		{
 		if ($this->page->isAuthorized('Membership Card'))
 			{
-			$command = \strtolower($command);
-			$card = new \App\Report\MembershipCard();
+			$member = $this->memberTable->getMembership(\App\Model\Session::signedInMemberId());
 
-			if ('all' == $command)
-				{
-				$members = $this->memberTable->membersInMembership(\App\Model\Session::signedInMembershipId());
+			$container = new \PHPFUI\HTML5Element('span');
+			$container->addClass('text-center');
+			$container->add(new \PHPFUI\Header('Membership Card', 1));
+			$container->add(new \PHPFUI\Header('This is to confirm that', 5));
+			$container->add(new \PHPFUI\Header($member['firstName'] . ' ' . $member['lastName'], 2));
+			$container->add(new \PHPFUI\Header('is a member in good standing of the', 5));
+			$file = new \App\Model\ImageFiles();
+			$image = $file->getImg($this->settingTable->value('clubLogo'));
+			$image->addClass('float-center');
+			$container->add($image);
+			$container->add(new \PHPFUI\SubHeader($this->settingTable->value('clubName')));
+			$expires = \App\Tools\Date::formatString('F Y', $member['expires']);
+			$container->add(new \PHPFUI\Header("through {$expires}", 5));
 
-				foreach ($members as $member)
-					{
-					$card->generate($member);
-					}
-				$this->page->done();
-				}
-			elseif ('my' == $command)
-				{
-				$card->generate(\App\Model\Session::signedInMemberRecord());
-				$this->page->done();
-				}
-			elseif ('screen' == $command)
-				{
-				$member = $this->memberTable->getMembership(\App\Model\Session::signedInMemberId());
-
-				$container = new \PHPFUI\HTML5Element('span');
-				$container->addClass('text-center');
-				$container->add(new \PHPFUI\Header('Membership Card', 1));
-				$container->add(new \PHPFUI\Header('This is to confirm that', 5));
-				$container->add(new \PHPFUI\Header($member['firstName'] . ' ' . $member['lastName'], 2));
-				$container->add(new \PHPFUI\Header('is a member in good standing of the', 5));
-				$file = new \App\Model\ImageFiles();
-				$container->add($file->getImg($this->settingTable->value('clubLogo')));
-				$container->add(new \PHPFUI\SubHeader($this->settingTable->value('clubName')));
-				$expires = \App\Tools\Date::formatString('F Y', $member['expires']);
-				$container->add(new \PHPFUI\Header("through {$expires}", 5));
-
-				$this->page->addPageContent($container);
-				}
-			elseif ('print' == $command)
-				{
-				$this->page->addHeader('Print Membership Cards', 'Membership');
-				$members = $this->memberTable->membersInMembership(\App\Model\Session::signedInMembershipId());
-				$column = new \PHPFUI\Cell(12, 6, 4);
-				$url = $this->page->getBaseURL();
-
-				$buttonRow = new \PHPFUI\GridX();
-				$button = new \PHPFUI\Button('Online', "{$url}/Screen");
-				$buttonRow->add($button);
-				$column->add($buttonRow);
-
-				$i = 0;
-
-				foreach ($members as $member)
-					{
-					$buttonRow = new \PHPFUI\GridX();
-					$button = new \PHPFUI\Button('Card for ' . $member['firstName'] . ' ' . $member['lastName'], $url . "/{$i}");
-					$buttonRow->add($button);
-					$column->add($buttonRow);
-					$i += 1;
-					}
-
-				if (\count($members) > 1)
-					{
-					$buttonRow = new \PHPFUI\GridX();
-					$button = new \PHPFUI\Button('Cards for all of the above', $url . '/all');
-					$buttonRow->add($button);
-					$column->add($buttonRow);
-					}
-				$this->page->addPageContent($column);
-				}
-			else
-				{
-				$members = $this->memberTable->membersInMembership(\App\Model\Session::signedInMembershipId());
-				$index = (int)$command;
-
-				while (--$index > 0)
-					{
-					$members->next();
-					}
-
-				$card->generate($members->current());
-				$this->page->done();
-				}
+			$this->page->addPageContent($container);
 			}
 		}
 

@@ -71,7 +71,7 @@ class Leader
 		{
 		$rideSettings = new \App\View\Ride\Settings($this->page);
 		$fields = \array_merge(['DeleteRidesPastDays', 'RideEditedWarningDays', 'unaffiliatedMessage', 'RideMinutesApart', 'RideStartTimeOffset', 'RideSignupLimit', 'RideSignupLimitDefault',
-			'RequireRiderWaiver', 'NoLeadersOnPublicSchedule', 'AdvancePostVolunteer', 'PacePicker', 'LeaderForum', 'LeaderlessName'], $rideSettings->getFieldNames());
+			'RequireRiderWaiver', 'NoLeadersOnPublicSchedule', 'AdvancePostVolunteer', 'PacePicker', 'LeaderForum', 'LeaderlessName', 'RidePendingDefault'], $rideSettings->getFieldNames());
 		$container = new \PHPFUI\Container();
 		$submit = new \PHPFUI\Submit();
 		$form = new \PHPFUI\Form($this->page, $submit);
@@ -163,6 +163,12 @@ class Leader
 			$noLeader = new \PHPFUI\Input\CheckBoxBoolean($field, "Don't show leaders on public schedule", $value);
 			$noLeader->setToolTip('Checking this will remove ride leader names from the public schedule.');
 			$multiColumn->add($noLeader);
+
+			$field = 'RidePendingDefault';
+			$value = (bool)$settingTable->value($field);
+			$pending = new \PHPFUI\Input\CheckBoxBoolean($field, 'Default New Rides to Pending', $value);
+			$pending->setToolTip('Checking this will make new rides pending until approved.');
+			$multiColumn->add($pending);
 
 			$form->add($multiColumn);
 

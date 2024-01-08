@@ -47,7 +47,7 @@ class Editor
 		$time->setRequired();
 		$category = new \App\View\PacePicker('paceId', 'Category', 'Pace');
 		$fieldSet->add(new \PHPFUI\MultiColumn($date, $time, $category));
-		$cueSheetPicker = new \App\UI\CueSheetPicker($this->page, 'cueSheetId', 'CueSheet to create from (start typing to search)');
+		$cueSheetPicker = new \App\UI\CueSheetPicker($this->page, 'cueSheetId', 'Select Ride (start typing to search)');
 		$fieldSet->add($cueSheetPicker->getEditControl());
 		$fieldSet->add(new \PHPFUI\Input\Hidden('memberId', (string)\App\Model\Session::signedInMemberId()));
 		$form->add($fieldSet);
@@ -354,7 +354,7 @@ class Editor
 						$parameters = $_POST;
 						$cueSheet = new \App\Record\CueSheet($parameters['cueSheetId']);
 						$parameters['RWGPSId'] = $cueSheet->RWGPSId;
-
+						$parameters['memberId'] = \App\Model\Session::signedInMemberId();
 						$parameters['description'] = $cueSheet->description;
 						$parameters['elevation'] = $cueSheet->RWGPS->elevationFeet;
 						$parameters['mileage'] = $cueSheet->mileage;
@@ -371,6 +371,7 @@ class Editor
 
 						$parameters = $_POST;
 						$rwgps = new \App\Record\RWGPS($parameters['RWGPSId']);
+						$parameters['memberId'] = \App\Model\Session::signedInMemberId();
 						$parameters['RWGPSId'] = $rwgps->RWGPSId;
 						$parameters['description'] = $rwgps->description;
 						$parameters['elevation'] = $rwgps->elevationFeet;

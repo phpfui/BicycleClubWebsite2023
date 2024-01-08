@@ -22,6 +22,7 @@ namespace App\Record\Definition;
  * @property ?int $numberOfRiders MySQL type int
  * @property int $paceId MySQL type int
  * @property \App\Record\Pace $pace related record
+ * @property int $pending MySQL type int
  * @property int $pointsAwarded MySQL type int
  * @property ?string $regrouping MySQL type varchar(50)
  * @property ?string $releasePrinted MySQL type timestamp
@@ -57,6 +58,7 @@ abstract class Ride extends \PHPFUI\ORM\Record
 		'mileage' => ['varchar(8)', 'string', 8, true, ],
 		'numberOfRiders' => ['int', 'int', 0, true, ],
 		'paceId' => ['int', 'int', 0, false, 0, ],
+		'pending' => ['int', 'int', 0, false, 0, ],
 		'pointsAwarded' => ['int', 'int', 0, false, 0, ],
 		'regrouping' => ['varchar(50)', 'string', 50, true, '', ],
 		'releasePrinted' => ['timestamp', 'string', 20, true, ],

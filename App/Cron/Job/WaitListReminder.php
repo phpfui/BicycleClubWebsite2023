@@ -27,7 +27,9 @@ class WaitListReminder extends \App\Cron\MemberMailer
 		$startTime = $endTime - 60;
 
 		$rideTable = new \App\Table\Ride();
-		$rideTable->setWhere(new \PHPFUI\ORM\Condition('rideDate', $tomorrow));
+		$condition = new \PHPFUI\ORM\Condition('rideDate', $tomorrow);
+		$condition->and('pending', 0);
+		$rideTable->setWhere($condition);
 		$rideSignupTable = new \App\Table\RideSignup();
 
 		$title = $settingTable->value('clubAbbrev') . ' ' . $title;

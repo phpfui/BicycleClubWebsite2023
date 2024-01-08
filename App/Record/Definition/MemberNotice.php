@@ -29,7 +29,7 @@ abstract class MemberNotice extends \PHPFUI\ORM\Record
 		'memberId' => ['int', 'int', 0, true, ],
 		'memberNoticeId' => ['int', 'int', 0, false, ],
 		'overridePreferences' => ['int', 'int', 0, true, 0, ],
-		'summary' => ['int', 'int', 0, false, 0, ],
+		'summary' => ['int', 'int', 0, false, 1, ],
 		'title' => ['varchar(255)', 'string', 255, false, ],
 	];
 

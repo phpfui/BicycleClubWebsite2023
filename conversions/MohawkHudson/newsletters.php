@@ -62,7 +62,7 @@ foreach (\glob(__DIR__ . '/bikeabout/*.pdf') as $file)
 	$baseName = \basename($file);
 	$parts = \explode(' ', $baseName);
 	$date = \explode('-', $parts[0]);
-	$double = 'double' == $parts[1];
+	$double = 'double' == $parts[1] ?? '';
 	$year = (int)\array_shift($date);
 	$month = (int)\array_shift($date);
 

@@ -49,6 +49,8 @@ class Ride
 			$parameters['rideDate'] = $tomorrow;
 			}
 
+		$parameters['pending'] = (int)$this->settingTable->value('RidePendingDefault');
+
 		$errors = $this->checkForStartTimeConflicts($parameters);
 
 		if ($errors)
@@ -353,6 +355,38 @@ class Ride
 			foreach ($members as $member)
 				{
 				$email->addToMember($member);
+				}
+			$email->bulkSend();
+			}
+		}
+
+	/**
+	 * Send out pending ride notices
+	 *
+	 * @param \App\Record\Ride $ride to send out
+	 */
+	public function emailPendingRideNotice(\App\Record\Ride $ride) : void
+		{
+		$leader = $ride->member;
+		$title = $this->clubAbbrev . ' Rides Waiting to be Approved';
+
+		$message = new \PHPFUI\Link($this->settingTable->value('homePage') . '/Rides/pending', 'Approve Rides Here');
+		$message .= '<p>' . $this->getRideNoticeBody($ride, $leader);
+
+		$email = new \App\Tools\EMail();
+		$email->setSubject($title);
+		$email->setFromMember($leader->toArray());
+		$email->setBody($message);
+		$email->setHtml();
+
+		$memberTable = new \App\Table\Member();
+		$memberTable->getMembersWithPermission('Ride Coordinator');
+
+		if (\count($memberTable))
+			{
+			foreach ($memberTable->getRecordCursor() as $member)
+				{
+				$email->addToMember($member->toArray());
 				}
 			$email->bulkSend();
 			}

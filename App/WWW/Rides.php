@@ -36,6 +36,24 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function approve(\App\Record\Ride $ride = new \App\Record\Ride()) : void
+		{
+		if ($this->page->addHeader('Ride Approved', 'Approve Rides'))
+			{
+			if ($ride->loaded() && $ride->pending)
+				{
+				$this->page->addPageContent(new \PHPFUI\Header($ride->title, 5));
+				$ride->pending = 0;
+				$ride->update();
+				}
+			else
+				{
+				$this->page->addPageContent(new \PHPFUI\SubHeader('Ride Not Found'));
+				}
+			$this->page->redirect('/Rides/pending', timeout:2);
+			}
+		}
+
 	public function attendance(\App\Record\Member $member = new \App\Record\Member(), int $year = 0) : void
 		{
 		if (! $member->loaded() || ! $this->page->isAuthorized('Ride Attendance'))
@@ -273,6 +291,18 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$this->page->addPageContent('No rides found');
 				}
+			}
+		}
+
+	public function pending() : void
+		{
+		if ($this->page->addHeader('Approve Rides'))
+			{
+			$rideTable = new \App\Table\Ride();
+			$rideTable->setWhere(new \PHPFUI\ORM\Condition('pending', 1));
+			$rideTable->addOrderBy('rideDate');
+			$rideTable->addOrderBy('mileage');
+			$this->page->addPageContent($this->view->schedule($rideTable->getRecordCursor(), 'There are no pending rides'));
 			}
 		}
 

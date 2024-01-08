@@ -37,7 +37,7 @@ abstract class StartLocation extends \PHPFUI\ORM\Record
 		'startLocationId' => ['int', 'int', 0, false, ],
 		'state' => ['varchar(2)', 'string', 2, true, '', ],
 		'town' => ['varchar(50)', 'string', 50, true, '', ],
-		'zip' => ['varchar(10)', 'string', 10, true, '', ],
+		'zip' => ['varchar(10)', 'string', 10, true, ],
 	];
 
 	/** @var array<string> */

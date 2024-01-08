@@ -701,6 +701,14 @@ class Rides
 					$button->setConfirm('Have you notified all signed up riders you are deleting this ride?  It can not be undone.');
 					$bg->addButton($button);
 					}
+
+				if ($ride->pending && $this->page->isAuthorized('Approve Rides'))
+					{
+					$button = new \PHPFUI\Button('Approve', '/Rides/approve/' . $ride->rideId);
+					$button->addClass('success');
+					$bg->addButton($button);
+					}
+
 				$edit = '';
 
 				if ($ride->memberId)

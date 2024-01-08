@@ -94,6 +94,7 @@ class Ride extends \PHPFUI\ORM\Table
 				$condition->and('ride.paceId', $paces, new \PHPFUI\ORM\Operator\In());
 				}
 			}
+		$condition->and('pending', 0);
 		$this->setWhere($condition);
 		$this->addOrderBy('rideDate');
 		$this->addOrderBy('pace.ordering');
@@ -190,14 +191,14 @@ class Ride extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select * from ride
 			left join pace on pace.paceId=ride.paceId
-			where rideDate >= ? and rideDate <= ? order by rideDate asc,pace.ordering asc,startTime asc,mileage ' . $sort;
+			where rideDate >= ? and rideDate <= ? and pending=0 order by rideDate asc,pace.ordering asc,startTime asc,mileage ' . $sort;
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [\App\Tools\Date::toString($start), \App\Tools\Date::toString($end)]);
 		}
 
 	public static function getFirstRideWithCueSheet() : \App\Record\Ride
 		{
-		$sql = 'select * from ride where cueSheetId>0 and rideDate>"2000-01-01" order by rideDate limit 1';
+		$sql = 'select * from ride where cueSheetId>0 and rideDate>"2000-01-01" and pending=0 order by rideDate limit 1';
 
 		$ride = new \App\Record\Ride();
 		$ride->loadFromSQL($sql);
@@ -210,7 +211,7 @@ class Ride extends \PHPFUI\ORM\Table
 	 */
 	public static function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from ride where memberId=? and rideDate>=? and rideDate<=? order by rideDate';
+		$sql = 'select * from ride where memberId=? and rideDate>=? and rideDate<=? and pending=0 order by rideDate';
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [$memberId, $startDate, $endDate]);
 		}
@@ -237,6 +238,7 @@ class Ride extends \PHPFUI\ORM\Table
 		$condition = new \PHPFUI\ORM\Condition('rideDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
 		$condition->and(new \PHPFUI\ORM\Condition('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual()));
 		$condition->and(new \PHPFUI\ORM\Condition('memberId', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
+		$condition->and('pending', 0);
 		$condition->and($statusCondition);
 
 		if (! empty($categories) && ! \in_array(0, $categories))
@@ -260,7 +262,7 @@ class Ride extends \PHPFUI\ORM\Table
 			{
 			$sql = 'select * from ride
 					left join pace on pace.paceId=ride.paceId
-					where rideDate >= ? and ride.paceId in
+					where rideDate >= ? and pending=0 and ride.paceId in
 					(select pace.paceId from pace where categoryId in (' . \implode(',', $categories) . '))
 					order by rideDate, pace.ordering, mileage limit 10;';
 
@@ -278,7 +280,7 @@ class Ride extends \PHPFUI\ORM\Table
 		$sql = 'select ride.* from ride
 			  left join pace on pace.paceId=ride.paceId
 				left join rideSignup on rideSignup.rideId=ride.rideId
-				where ride.rideDate >= ? and ride.rideDate <= ? and rideSignup.attended=? and rideSignup.memberId=?
+				where ride.rideDate >= ? and ride.rideDate <= ? and ride.pending=0 and rideSignup.attended=? and rideSignup.memberId=?
 				order by ride.rideDate asc,pace.ordering asc,ride.startTime asc,ride.mileage ' . $sort;
 		$data = [$start, $end, \App\Table\RideSignup::CONFIRMED, \App\Model\Session::signedInMemberId()];
 
@@ -289,7 +291,7 @@ class Ride extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select ride.* from ride
 			left join rideSignup on rideSignup.rideId=ride.rideId
-			where rideSignup.attended=? and rideSignup.memberId=?
+			where rideSignup.attended=? and rideSignup.memberId=? and pending=0
 			order by ride.rideDate desc limit 1';
 
 		$input = [\App\Table\RideSignup::CONFIRMED, \App\Model\Session::signedInMemberId(), ];
@@ -304,7 +306,7 @@ class Ride extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select ride.* from ride
 			left join rideSignup on rideSignup.rideId=ride.rideId
-			where rideSignup.attended=? and rideSignup.memberId=?
+			where rideSignup.attended=? and rideSignup.memberId=? and pending=0
 			order by ride.rideDate asc limit 1';
 
 		$input = [\App\Table\RideSignup::CONFIRMED, \App\Model\Session::signedInMemberId(), ];
@@ -316,7 +318,7 @@ class Ride extends \PHPFUI\ORM\Table
 
 	public static function getNewest() : \App\Record\Ride
 		{
-		$sql = 'select * from ride order by rideDate desc limit 1';
+		$sql = 'select * from ride where pending=0 order by rideDate desc limit 1';
 
 		$ride = new \App\Record\Ride();
 		$ride->loadFromSQL($sql);
@@ -327,20 +329,20 @@ class Ride extends \PHPFUI\ORM\Table
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
 	 */
-	public function getNewlyAddedUpcomingRides(string $start, string $end = '') : \PHPFUI\ORM\RecordCursor
+	public function getNewlyAddedUpcomingRides(string $start, string $end = '', int $pending = 0) : \PHPFUI\ORM\RecordCursor
 		{
 		if (! $end)
 			{
 			$end = \date('Y-m-d H:i:s', \strtotime($start) + 3600);
 			}
-		$sql = 'select * from ride where dateAdded>=? and dateAdded<=? and rideDate < ?';
+		$sql = 'select * from ride where dateAdded>=? and dateAdded<=? and rideDate < ? and pending = ?';
 
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$start, $end, \App\Tools\Date::todayString(10)]);
+		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$start, $end, \App\Tools\Date::todayString(10), $pending]);
 		}
 
 	public static function getOldest() : \App\Record\Ride
 		{
-		$sql = 'select * from ride where rideDate>"2000-01-01" order by rideDate asc limit 1';
+		$sql = 'select * from ride where rideDate>"2000-01-01" and pending=0 order by rideDate asc limit 1';
 
 		$ride = new \App\Record\Ride();
 		$ride->loadFromSQL($sql);
@@ -354,7 +356,7 @@ class Ride extends \PHPFUI\ORM\Table
 	public static function getRidesForLocation(int $startLocationId, string $date = '') : \PHPFUI\ORM\RecordCursor
 		{
 		$data = [$startLocationId];
-		$sql = 'select * from ride where startLocationId=?';
+		$sql = 'select * from ride where startLocationId=? and pending=0';
 
 		if ($date)
 			{
@@ -372,7 +374,7 @@ class Ride extends \PHPFUI\ORM\Table
 	 */
 	public static function getRideStatus(string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from ride where rideStatus>0 and rideStatus!=3 and rideDate>=? and rideDate<=?';
+		$sql = 'select * from ride where rideStatus>0 and rideStatus!=3 and rideDate>=? and rideDate<=? and pending=0';
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [$startDate, $endDate]);
 		}
@@ -382,14 +384,14 @@ class Ride extends \PHPFUI\ORM\Table
 	 */
 	public static function getRideStatusUnawarded(string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from ride where rideDate>=? and rideDate<=? and unaffiliated=0 and ((rideStatus>0 and pointsAwarded=0) or (rideStatus=0 and pointsAwarded>0))';
+		$sql = 'select * from ride where rideDate>=? and rideDate<=? and unaffiliated=0 and pending=0 and ((rideStatus>0 and pointsAwarded=0) or (rideStatus=0 and pointsAwarded>0))';
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [$startDate, $endDate]);
 		}
 
 	public function getRWGPSElevation(\App\Record\RWGPS $RWGPS) : int
 		{
-		$sql = 'select AVG(elevation) from ride where RWGPSId = ? and elevation > 0 and rideStatus = ?';
+		$sql = 'select AVG(elevation) from ride where RWGPSId = ? and elevation > 0 and rideStatus = ? and pending=0';
 
 		return (int)\round((int)\PHPFUI\ORM::getValue($sql, [$RWGPS->RWGPSId, self::STATUS_COMPLETED, ]));
 		}
@@ -399,7 +401,7 @@ class Ride extends \PHPFUI\ORM\Table
 	 */
 	public function getRWGPSStats(\App\Record\RWGPS $rwgps) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from ride where RWGPSId = ? and elevation > 0 and rideStatus = ?';
+		$sql = 'select * from ride where RWGPSId = ? and elevation > 0 and rideStatus = ? and pending=0';
 
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$rwgps->RWGPSId, self::STATUS_COMPLETED, ]);
 		}
@@ -423,7 +425,7 @@ class Ride extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select r.* from ride r
 			left join assistantLeader al on al.rideId=r.rideId
-			where al.memberId=? and r.rideDate>2451549 order by r.rideDate desc limit 1';
+			where al.memberId=? and r.pending=0 and order by r.rideDate desc limit 1';
 		$input = [$memberId, ];
 
 		$ride = new \App\Record\Ride();
@@ -434,7 +436,7 @@ class Ride extends \PHPFUI\ORM\Table
 
 	public static function latestRideForMember(int $memberId) : \App\Record\Ride
 		{
-		$sql = 'select * from ride where memberId=? and rideDate>0 order by rideDate desc limit 1';
+		$sql = 'select * from ride where memberId=? and pending=0 order by rideDate desc limit 1';
 		$input = [$memberId, ];
 
 		$ride = new \App\Record\Ride();
@@ -447,7 +449,7 @@ class Ride extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select r.* from ride r
 			left join assistantLeader al on al.rideId=r.rideId
-			where al.memberId=? and r.rideDate>2451549 order by r.rideDate limit 1';
+			where al.memberId=? and r.pending=0 order by r.rideDate limit 1';
 		$input = [$memberId, ];
 
 		$ride = new \App\Record\Ride();
@@ -458,7 +460,7 @@ class Ride extends \PHPFUI\ORM\Table
 
 	public static function oldestRideForMember(int $memberId) : \App\Record\Ride
 		{
-		$sql = 'select * from ride where memberId=? and rideDate>2451549 order by rideDate limit 1';
+		$sql = 'select * from ride where memberId=? and pending=0 order by rideDate limit 1';
 		$input = [$memberId, ];
 
 		$ride = new \App\Record\Ride();
@@ -475,7 +477,7 @@ class Ride extends \PHPFUI\ORM\Table
 		$input = [$member->memberId];
 		$sql = 'select r.* from ride r
 			left join assistantLeader al on al.rideId=r.rideId
-			where al.memberId=? and (r.unaffiliated=0 or r.rideStatus>1) and ';
+			where al.memberId=? and (r.unaffiliated=0 or r.rideStatus>1) and r.pending=0 and ';
 
 		if ($year)
 			{
@@ -504,7 +506,7 @@ class Ride extends \PHPFUI\ORM\Table
 	public static function pastRidesForMember(\App\Record\Member $member, int $limit = 50, int $year = 0) : \PHPFUI\ORM\RecordCursor
 		{
 		$input = [$member->memberId];
-		$sql = 'select * from ride where memberId=? and (unaffiliated=0 or rideStatus>1) and ';
+		$sql = 'select * from ride where memberId=? and (unaffiliated=0 or rideStatus>1) and pending=0 and ';
 
 		if ($year)
 			{
@@ -578,7 +580,7 @@ class Ride extends \PHPFUI\ORM\Table
 	public static function unreportedRides() : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from ride r
-			where r.rideStatus=0 and r.rideStatus=0 and r.rideDate<? and r.unaffiliated=0 order by r.rideDate desc limit 50';
+			where r.rideStatus=0 and r.rideStatus=0 and r.rideDate<? and r.unaffiliated=0 and r.pending=0 order by r.rideDate desc limit 50';
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [\App\Tools\Date::todayString()]);
 		}
@@ -588,7 +590,7 @@ class Ride extends \PHPFUI\ORM\Table
 	 */
 	public static function unreportedRidesForMember(int $memberId) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from ride where memberId=? and unaffiliated=0 and rideStatus=0 and rideDate<=? and unaffiliated=0 order by rideDate desc limit 10';
+		$sql = 'select * from ride where memberId=? and unaffiliated=0 and rideStatus=0 and rideDate<=? and pending=0 and unaffiliated=0 order by rideDate desc limit 10';
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [$memberId, \App\Tools\Date::todayString(), ]);
 		}
@@ -605,7 +607,7 @@ class Ride extends \PHPFUI\ORM\Table
 		$join = \implode('","', $dates);
 		$sql = 'select * from ride r
 			left join member m on m.memberId=r.memberId
-			where r.unaffiliated=0 and r.rideStatus=0 and r.rideDate in ("' . $join . '")';
+			where r.unaffiliated=0 and r.rideStatus=0 and r.pending=0 and r.rideDate in ("' . $join . '")';
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql);
 		}
@@ -615,7 +617,7 @@ class Ride extends \PHPFUI\ORM\Table
 	 */
 	public static function upcomingRides(int $limit = 0) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from ride left join pace on pace.paceId=ride.paceId where rideDate >= ?';
+		$sql = 'select * from ride left join pace on pace.paceId=ride.paceId where rideDate >= ? and pending=0';
 		$input = [\App\Tools\Date::todayString()];
 
 		$sql .= ' order by rideDate asc,pace.ordering asc,targetPace desc,mileage desc';

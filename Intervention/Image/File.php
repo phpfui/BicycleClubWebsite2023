@@ -2,91 +2,92 @@
 
 namespace Intervention\Image;
 
-class File
+use Intervention\Image\Exceptions\NotWritableException;
+use Intervention\Image\Interfaces\FileInterface;
+use Intervention\Image\Traits\CanBuildFilePointer;
+
+class File implements FileInterface
 {
-    /**
-     * Mime type
-     *
-     * @var string
-     */
-    public $mime;
+    use CanBuildFilePointer;
 
     /**
-     * Name of directory path
+     * Create new instance
      *
-     * @var string
+     * @param  string $data
      */
-    public $dirname;
-
-    /**
-     * Basename of current file
-     *
-     * @var string
-     */
-    public $basename;
-
-    /**
-     * File extension of current file
-     *
-     * @var string
-     */
-    public $extension;
-
-    /**
-     * File name of current file
-     *
-     * @var string
-     */
-    public $filename;
-
-    /**
-     * Sets all instance properties from given path
-     *
-     * @param string $path
-     */
-    public function setFileInfoFromPath($path)
+    public function __construct(protected string $data)
     {
-        $info = pathinfo($path);
-        $this->dirname = array_key_exists('dirname', $info) ? $info['dirname'] : null;
-        $this->basename = array_key_exists('basename', $info) ? $info['basename'] : null;
-        $this->extension = array_key_exists('extension', $info) ? $info['extension'] : null;
-        $this->filename = array_key_exists('filename', $info) ? $info['filename'] : null;
-
-        if (file_exists($path) && is_file($path)) {
-            $this->mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path);
-        }
-
-        return $this;
-    }
-
-     /**
-      * Get file size
-      * 
-      * @return mixed
-      */
-    public function filesize()
-    {
-        $path = $this->basePath();
-
-        if (file_exists($path) && is_file($path)) {
-            return filesize($path);
-        }
-        
-        return false;
+        //
     }
 
     /**
-     * Get fully qualified path
+     * Save encoded image data in file system
+     *
+     * @param  string $filepath
+     * @return void
+     */
+    public function save(string $filepath): void
+    {
+        $dir = pathinfo($filepath, PATHINFO_DIRNAME);
+
+        if (!is_dir($dir)) {
+            throw new NotWritableException(
+                "Can't write image to path. Directory does not exist."
+            );
+        }
+
+        if (!is_writable($dir)) {
+            throw new NotWritableException(
+                "Can't write image to path. Directory is not writable."
+            );
+        }
+
+        // write date
+        $saved = @file_put_contents($filepath, (string) $this);
+        if ($saved === false) {
+            throw new NotWritableException(
+                "Can't write image data to path ({$filepath})."
+            );
+        }
+    }
+
+    /**
+     * Cast encoded image object to string
      *
      * @return string
      */
-    public function basePath()
+    public function toString(): string
     {
-        if ($this->dirname && $this->basename) {
-            return ($this->dirname .'/'. $this->basename);
-        }
-
-        return null;
+        return $this->data;
     }
 
+    /**
+     * Create file pointer from encoded image
+     *
+     * @return resource
+     */
+    public function toFilePointer()
+    {
+        return $this->buildFilePointer($this->toString());
+    }
+
+    /**
+     * Return byte size of encoded image
+     *
+     * @return int
+     */
+    public function size(): int
+    {
+        return mb_strlen($this->data);
+    }
+
+    /**
+     * Cast encoded image object to string
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->toString();
+    }
 }

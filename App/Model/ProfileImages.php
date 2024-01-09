@@ -12,14 +12,14 @@ class ProfileImages extends \App\Model\ThumbnailImageFiles
 	public function crop() : void
 		{
 		// create an image manager instance with favored driver
-		$manager = new \Intervention\Image\ImageManager();
+		$manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
 		$path = $this->getPhotoFilePath();
 		$member = $this->getItem();
-		$image = $manager->make($path);
+		$image = $manager->read($path);
 		$image->crop($member['profileWidth'], $member['profileHeight'], $member['profileX'], $member['profileY']);
 		$image->save($this->getCropPath());
-		// saving it twice works?
-		$image->save($this->getCropPath());
+//		// saving it twice works?
+//		$image->save($this->getCropPath());
 		}
 
 	public function cropExists() : bool

@@ -1,7 +1,5 @@
 Undefined array key 2 in /App/Model/Volunteer.php on line 49
 
-Pending ride approval
-
 New member log out and log in fix
 
 Folders for videos

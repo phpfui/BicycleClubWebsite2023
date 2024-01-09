@@ -2,141 +2,105 @@
 
 namespace Intervention\Image;
 
-use Closure;
-use Intervention\Image\Exception\MissingDependencyException;
-use Intervention\Image\Exception\NotSupportedException;
+use Intervention\Image\Interfaces\DriverInterface;
+use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
 
-class ImageManager
+final class ImageManager
 {
-    /**
-     * Config
-     *
-     * @var array
-     */
-    public $config = [
-        'driver' => 'gd'
-    ];
+    protected DriverInterface $driver;
 
-    /**
-     * Creates new instance of Image Manager
-     *
-     * @param array $config
-     */
-    public function __construct(array $config = [])
+    public function __construct(string|DriverInterface $driver)
     {
-        $this->checkRequirements();
-        $this->configure($config);
+        $this->driver = $this->resolveDriver($driver);
     }
 
     /**
-     * Overrides configuration settings
+     * Create image mangager with given driver
      *
-     * @param array $config
-     *
-     * @return self
+     * @param string|DriverInterface $driver
+     * @return ImageManager
      */
-    public function configure(array $config = [])
+    public static function withDriver(string|DriverInterface $driver): self
     {
-        $this->config = array_replace($this->config, $config);
-
-        return $this;
+        return new self(self::resolveDriver($driver));
     }
 
     /**
-     * Initiates an Image instance from different input types
+     * Create image manager with GD driver
      *
-     * @param  mixed $data
-     *
-     * @return \Intervention\Image\Image
+     * @return ImageManager
      */
-    public function make($data)
+    public static function gd(): self
     {
-        return $this->createDriver()->init($data);
+        return self::withDriver(GdDriver::class);
     }
 
     /**
-     * Creates an empty image canvas
+     * Create image manager with Imagick driver
      *
-     * @param  int   $width
-     * @param  int   $height
-     * @param  mixed $background
-     *
-     * @return \Intervention\Image\Image
+     * @return ImageManager
      */
-    public function canvas($width, $height, $background = null)
+    public static function imagick(): self
     {
-        return $this->createDriver()->newImage($width, $height, $background);
+        return self::withDriver(ImagickDriver::class);
     }
 
     /**
-     * Create new cached image and run callback
-     * (requires additional package intervention/imagecache)
+     * Create new image instance with given width & height
      *
-     * @param Closure $callback
-     * @param int     $lifetime
-     * @param boolean $returnObj
-     *
-     * @return Image
+     * @param int $width
+     * @param int $height
+     * @return ImageInterface
      */
-    public function cache(Closure $callback, $lifetime = null, $returnObj = false)
+    public function create(int $width, int $height): ImageInterface
     {
-        if (class_exists('Intervention\\Image\\ImageCache')) {
-            // create imagecache
-            $imagecache = new ImageCache($this);
+        return $this->driver->createImage($width, $height);
+    }
 
-            // run callback
-            if (is_callable($callback)) {
-                $callback($imagecache);
-            }
+    /**
+     * Create new image instance from given source which can be one of the following
+     *
+     * - Path in filesystem
+     * - File Pointer resource
+     * - SplFileInfo object
+     * - Raw binary image data
+     * - Base64 encoded image data
+     * - Data Uri
+     * - Intervention\Image\Image Instance
+     *
+     * @param mixed $input
+     * @return ImageInterface
+     */
+    public function read(mixed $input): ImageInterface
+    {
+        return $this->driver->handleInput($input);
+    }
 
-            return $imagecache->get($lifetime, $returnObj);
+    /**
+     * Create new animated image by given callback
+     *
+     * @param callable $init
+     * @return ImageInterface
+     */
+    public function animate(callable $init): ImageInterface
+    {
+        return $this->driver->createAnimation($init);
+    }
+
+    /**
+     * Return driver object
+     *
+     * @param string|DriverInterface $driver
+     * @return DriverInterface
+     */
+    private static function resolveDriver(string|DriverInterface $driver): DriverInterface
+    {
+        if (is_object($driver)) {
+            return $driver;
         }
 
-        throw new MissingDependencyException(
-            "Please install package intervention/imagecache before running this function."
-        );
-    }
-
-    /**
-     * Creates a driver instance according to config settings
-     *
-     * @return \Intervention\Image\AbstractDriver
-     */
-    private function createDriver()
-    {
-        if (is_string($this->config['driver'])) {
-            $drivername = ucfirst($this->config['driver']);
-            $driverclass = sprintf('Intervention\\Image\\%s\\Driver', $drivername);
-
-            if (class_exists($driverclass)) {
-                return new $driverclass;
-            }
-
-            throw new NotSupportedException(
-                "Driver ({$drivername}) could not be instantiated."
-            );
-        }
-
-        if ($this->config['driver'] instanceof AbstractDriver) {
-            return $this->config['driver'];
-        }
-
-        throw new NotSupportedException(
-            "Unknown driver type."
-        );
-    }
-
-    /**
-     * Check if all requirements are available
-     *
-     * @return void
-     */
-    private function checkRequirements()
-    {
-        if ( ! function_exists('finfo_buffer')) {
-            throw new MissingDependencyException(
-                "PHP Fileinfo extension must be installed/enabled to use Intervention Image."
-            );
-        }
+        return new $driver();
     }
 }

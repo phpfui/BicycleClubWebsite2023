@@ -77,7 +77,7 @@ class SparkPost
 
 			if (200 == $response->getStatusCode())
 				{
-				$results = $response->getBody()['results'];
+				$results = $response->getBodyAsJson()['results'];
 				}
 			}
 		catch (\Exception $e)

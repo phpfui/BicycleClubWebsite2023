@@ -2,369 +2,940 @@
 
 namespace Intervention\Image;
 
-use Intervention\Image\Exception\NotWritableException;
-use Intervention\Image\Exception\RuntimeException;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
+use Traversable;
+use Intervention\Image\Analyzers\ColorspaceAnalyzer;
+use Intervention\Image\Analyzers\HeightAnalyzer;
+use Intervention\Image\Analyzers\PixelColorAnalyzer;
+use Intervention\Image\Analyzers\PixelColorsAnalyzer;
+use Intervention\Image\Analyzers\ProfileAnalyzer;
+use Intervention\Image\Analyzers\ResolutionAnalyzer;
+use Intervention\Image\Analyzers\WidthAnalyzer;
+use Intervention\Image\Encoders\AutoEncoder;
+use Intervention\Image\Encoders\AvifEncoder;
+use Intervention\Image\Encoders\BmpEncoder;
+use Intervention\Image\Encoders\FileExtensionEncoder;
+use Intervention\Image\Encoders\FilePathEncoder;
+use Intervention\Image\Encoders\GifEncoder;
+use Intervention\Image\Encoders\Jpeg2000Encoder;
+use Intervention\Image\Encoders\JpegEncoder;
+use Intervention\Image\Encoders\MediaTypeEncoder;
+use Intervention\Image\Encoders\PngEncoder;
+use Intervention\Image\Encoders\TiffEncoder;
+use Intervention\Image\Encoders\WebpEncoder;
+use Intervention\Image\Exceptions\EncoderException;
+use Intervention\Image\Geometry\Factories\CircleFactory;
+use Intervention\Image\Geometry\Factories\EllipseFactory;
+use Intervention\Image\Geometry\Factories\LineFactory;
+use Intervention\Image\Geometry\Factories\PolygonFactory;
+use Intervention\Image\Geometry\Factories\RectangleFactory;
+use Intervention\Image\Geometry\Point;
+use Intervention\Image\Geometry\Rectangle;
+use Intervention\Image\Interfaces\AnalyzerInterface;
+use Intervention\Image\Interfaces\CollectionInterface;
+use Intervention\Image\Interfaces\ColorInterface;
+use Intervention\Image\Interfaces\ColorspaceInterface;
+use Intervention\Image\Interfaces\CoreInterface;
+use Intervention\Image\Interfaces\DriverInterface;
+use Intervention\Image\Interfaces\EncodedImageInterface;
+use Intervention\Image\Interfaces\EncoderInterface;
+use Intervention\Image\Interfaces\FontInterface;
+use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\Interfaces\ModifierInterface;
+use Intervention\Image\Interfaces\ProfileInterface;
+use Intervention\Image\Interfaces\ResolutionInterface;
+use Intervention\Image\Interfaces\SizeInterface;
+use Intervention\Image\Modifiers\BlurModifier;
+use Intervention\Image\Modifiers\BrightnessModifier;
+use Intervention\Image\Modifiers\ColorizeModifier;
+use Intervention\Image\Modifiers\ColorspaceModifier;
+use Intervention\Image\Modifiers\ContainModifier;
+use Intervention\Image\Modifiers\ContrastModifier;
+use Intervention\Image\Modifiers\CropModifier;
+use Intervention\Image\Modifiers\DrawEllipseModifier;
+use Intervention\Image\Modifiers\DrawLineModifier;
+use Intervention\Image\Modifiers\DrawPixelModifier;
+use Intervention\Image\Modifiers\DrawPolygonModifier;
+use Intervention\Image\Modifiers\DrawRectangleModifier;
+use Intervention\Image\Modifiers\FillModifier;
+use Intervention\Image\Modifiers\CoverDownModifier;
+use Intervention\Image\Modifiers\CoverModifier;
+use Intervention\Image\Modifiers\FlipModifier;
+use Intervention\Image\Modifiers\FlopModifier;
+use Intervention\Image\Modifiers\GammaModifier;
+use Intervention\Image\Modifiers\GreyscaleModifier;
+use Intervention\Image\Modifiers\InvertModifier;
+use Intervention\Image\Modifiers\PadModifier;
+use Intervention\Image\Modifiers\PixelateModifier;
+use Intervention\Image\Modifiers\PlaceModifier;
+use Intervention\Image\Modifiers\ProfileModifier;
+use Intervention\Image\Modifiers\ProfileRemovalModifier;
+use Intervention\Image\Modifiers\QuantizeColorsModifier;
+use Intervention\Image\Modifiers\RemoveAnimationModifier;
+use Intervention\Image\Modifiers\ResizeCanvasModifier;
+use Intervention\Image\Modifiers\ResizeCanvasRelativeModifier;
+use Intervention\Image\Modifiers\ResizeDownModifier;
+use Intervention\Image\Modifiers\ResizeModifier;
+use Intervention\Image\Modifiers\ResolutionModifier;
+use Intervention\Image\Modifiers\RotateModifier;
+use Intervention\Image\Modifiers\ScaleDownModifier;
+use Intervention\Image\Modifiers\ScaleModifier;
+use Intervention\Image\Modifiers\SharpenModifier;
+use Intervention\Image\Modifiers\TextModifier;
+use Intervention\Image\Typography\FontFactory;
 
-/**
- * @method \Intervention\Image\Image backup(string $name = 'default')                                                                                                     Backups current image state as fallback for reset method under an optional name. Overwrites older state on every call, unless a different name is passed.
- * @method \Intervention\Image\Image blur(int $amount = 1)                                                                                                            Apply a gaussian blur filter with a optional amount on the current image. Use values between 0 and 100.
- * @method \Intervention\Image\Image brightness(int $level)                                                                                                           Changes the brightness of the current image by the given level. Use values between -100 for min. brightness. 0 for no change and +100 for max. brightness.
- * @method \Intervention\Image\Image cache(\Closure $callback, int $lifetime = null, boolean $returnObj = false)                                                      Method to create a new cached image instance from a Closure callback. Pass a lifetime in minutes for the callback and decide whether you want to get an Intervention Image instance as return value or just receive the image stream.
- * @method \Intervention\Image\Image canvas(int $width, int $height, mixed $bgcolor = null)                                                                       Factory method to create a new empty image instance with given width and height. You can define a background-color optionally. By default the canvas background is transparent.
- * @method \Intervention\Image\Image circle(int $diameter, int $x, int $y, \Closure $callback = null)                                                           Draw a circle at given x, y, coordinates with given diameter. You can define the appearance of the circle by an optional closure callback.
- * @method \Intervention\Image\Image colorize(int $red, int $green, int $blue)                                                                                Change the RGB color values of the current image on the given channels red, green and blue. The input values are normalized so you have to include parameters from 100 for maximum color value. 0 for no change and -100 to take out all the certain color on the image.
- * @method \Intervention\Image\Image contrast(int $level)                                                                                                             Changes the contrast of the current image by the given level. Use values between -100 for min. contrast 0 for no change and +100 for max. contrast.
- * @method \Intervention\Image\Image crop(int $width, int $height, int $x = null, int $y = null)                                                          Cut out a rectangular part of the current image with given width and height. Define optional x,y coordinates to move the top-left corner of the cutout to a certain position.
- * @method void                      destroy()                                                                                                                            Frees memory associated with the current image instance before the PHP script ends. Normally resources are destroyed automatically after the script is finished.
- * @method \Intervention\Image\Image ellipse(int $width, int $height, int $x, int $y, \Closure $callback = null)                                          Draw a colored ellipse at given x, y, coordinates. You can define width and height and set the appearance of the circle by an optional closure callback.
- * @method mixed                     exif(string $key = null)                                                                                                             Read Exif meta data from current image.
- * @method mixed                     iptc(string $key = null)                                                                                                             Read Iptc meta data from current image.
- * @method \Intervention\Image\Image fill(mixed $filling, int $x = null, int $y = null)                                                                           Fill current image with given color or another image used as tile for filling. Pass optional x, y coordinates to start at a certain point.
- * @method \Intervention\Image\Image flip(string $mode = 'h')                                                                                                             Mirror the current image horizontally or vertically by specifying the mode.
- * @method \Intervention\Image\Image fit(int $width, int $height = null, \Closure $callback = null, string $position = 'center')                                  Combine cropping and resizing to format image in a smart way. The method will find the best fitting aspect ratio of your given width and height on the current image automatically, cut it out and resize it to the given dimension. You may pass an optional Closure callback as third parameter, to prevent possible upsizing and a custom position of the cutout as fourth parameter.
- * @method \Intervention\Image\Image gamma(float $correction)                                                                                                             Performs a gamma correction operation on the current image.
- * @method \Intervention\Image\Image greyscale()                                                                                                                          Turns image into a greyscale version.
- * @method \Intervention\Image\Image heighten(int $height, \Closure $callback = null)                                                                                 Resizes the current image to new height, constraining aspect ratio. Pass an optional Closure callback as third parameter, to apply additional constraints like preventing possible upsizing.
- * @method \Intervention\Image\Image insert(mixed $source, string $position = 'top-left', int $x = 0, int $y = 0)                                                 Paste a given image source over the current image with an optional position and a offset coordinate. This method can be used to apply another image as watermark because the transparency values are maintained.
- * @method \Intervention\Image\Image interlace(boolean $interlace = true)                                                                                                 Determine whether an image should be encoded in interlaced or standard mode by toggling interlace mode with a boolean parameter. If an JPEG image is set interlaced the image will be processed as a progressive JPEG.
- * @method \Intervention\Image\Image invert()                                                                                                                             Reverses all colors of the current image.
- * @method \Intervention\Image\Image limitColors(int $count, mixed $matte = null)                                                                                     Method converts the existing colors of the current image into a color table with a given maximum count of colors. The function preserves as much alpha channel information as possible and blends transarent pixels against a optional matte color.
- * @method \Intervention\Image\Image line(int $x1, int $y1, int $x2, int $y2, \Closure $callback = null)                                                  Draw a line from x,y point 1 to x,y point 2 on current image. Define color and/or width of line in an optional Closure callback.
- * @method \Intervention\Image\Image make(mixed $source)                                                                                                                  Universal factory method to create a new image instance from source, which can be a filepath, a GD image resource, an Imagick object or a binary image data.
- * @method \Intervention\Image\Image mask(mixed $source, boolean $mask_with_alpha)                                                                                        Apply a given image source as alpha mask to the current image to change current opacity. Mask will be resized to the current image size. By default a greyscale version of the mask is converted to alpha values, but you can set mask_with_alpha to apply the actual alpha channel. Any transparency values of the current image will be maintained.
- * @method \Intervention\Image\Image opacity(int $transparency)                                                                                                       Set the opacity in percent of the current image ranging from 100% for opaque and 0% for full transparency.
- * @method \Intervention\Image\Image orientate()                                                                                                                          This method reads the EXIF image profile setting 'Orientation' and performs a rotation on the image to display the image correctly.
- * @method mixed                     pickColor(int $x, int $y, string $format = 'array')                                                                          Pick a color at point x, y out of current image and return in optional given format.
- * @method \Intervention\Image\Image pixel(mixed $color, int $x, int $y)                                                                                          Draw a single pixel in given color on x, y position.
- * @method \Intervention\Image\Image pixelate(int $size)                                                                                                              Applies a pixelation effect to the current image with a given size of pixels.
- * @method \Intervention\Image\Image polygon(array $points, \Closure $callback = null)                                                                                    Draw a colored polygon with given points. You can define the appearance of the polygon by an optional closure callback.
- * @method \Intervention\Image\Image rectangle(int $x1, int $y1, int $x2, int $y2, \Closure $callback = null)                                             Draw a colored rectangle on current image with top-left corner on x,y point 1 and bottom-right corner at x,y point 2. Define the overall appearance of the shape by passing a Closure callback as an optional parameter.
- * @method \Intervention\Image\Image reset(string $name = 'default')                                                                                                      Resets all of the modifications to a state saved previously by backup under an optional name.
- * @method \Intervention\Image\Image resize(int $width = null, int $height = null, \Closure $callback = null)                                                                   Resizes current image based on given width and/or height. To contraint the resize command, pass an optional Closure callback as third parameter.
- * @method \Intervention\Image\Image resizeCanvas(int $width, int $height, string $anchor = 'center', boolean $relative = false, mixed $bgcolor = null)           Resize the boundaries of the current image to given width and height. An anchor can be defined to determine from what point of the image the resizing is going to happen. Set the mode to relative to add or subtract the given width or height to the actual image dimensions. You can also pass a background color for the emerging area of the image.
- * @method mixed                     response(string $format = null, int $quality = 90)                                                                               Sends HTTP response with current image in given format and quality.
- * @method \Intervention\Image\Image rotate(float $angle, mixed $bgcolor = null)                                                                                          Rotate the current image counter-clockwise by a given angle. Optionally define a background color for the uncovered zone after the rotation.
- * @method \Intervention\Image\Image sharpen(int $amount = 10)                                                                                                        Sharpen current image with an optional amount. Use values between 0 and 100.
- * @method \Intervention\Image\Image text(string $text, int $x = 0, int $y = 0, \Closure $callback = null)                                                        Write a text string to the current image at an optional x,y basepoint position. You can define more details like font-size, font-file and alignment via a callback as the fourth parameter.
- * @method \Intervention\Image\Image trim(string $base = 'top-left', array $away = array('top', 'bottom', 'left', 'right'), int $tolerance = 0, int $feather = 0) Trim away image space in given color. Define an optional base to pick a color at a certain position and borders that should be trimmed away. You can also set an optional tolerance level, to trim similar colors and add a feathering border around the trimed image.
- * @method \Intervention\Image\Image widen(int $width, \Closure $callback = null)                                                                                     Resizes the current image to new width, constraining aspect ratio. Pass an optional Closure callback as third parameter, to apply additional constraints like preventing possible upsizing.
- * @method StreamInterface           stream(string $format = null, int $quality = 90)                                                                                 Build PSR-7 compatible StreamInterface with current image in given format and quality.
- * @method ResponseInterface         psrResponse(string $format = null, int $quality = 90)                                                                            Build PSR-7 compatible ResponseInterface with current image in given format and quality.
- */
-class Image extends File
+final class Image implements ImageInterface
 {
     /**
-     * Instance of current image driver
+     * The origin from which the image was created
      *
-     * @var AbstractDriver
+     * @var Origin
      */
-    protected $driver;
+    protected Origin $origin;
 
     /**
-     * Image resource/object of current image processor
+     * Create new instance
      *
-     * @var mixed
+     * @param DriverInterface $driver
+     * @param CoreInterface $core
+     * @param CollectionInterface $exif
+     * @return void
      */
-    protected $core;
-
-    /**
-     * Array of Image resource backups of current image processor
-     *
-     * @var array
-     */
-    protected $backups = [];
-
-    /**
-     * Last image encoding result
-     *
-     * @var string
-     */
-    public $encoded = '';
-
-    /**
-     * Creates a new Image instance
-     *
-     * @param AbstractDriver $driver
-     * @param mixed  $core
-     */
-    public function __construct(AbstractDriver $driver = null, $core = null)
-    {
-        $this->driver = $driver;
-        $this->core = $core;
+    public function __construct(
+        protected DriverInterface $driver,
+        protected CoreInterface $core,
+        protected CollectionInterface $exif = new Collection()
+    ) {
+        $this->origin = new Origin();
     }
 
     /**
-     * Magic method to catch all image calls
-     * usually any AbstractCommand
+     * {@inheritdoc}
      *
-     * @param  string $name
-     * @param  Array  $arguments
-     * @return mixed
+     * @see ImageInterface::driver()
      */
-    public function __call($name, $arguments)
-    {
-        $command = $this->driver->executeCommand($this, $name, $arguments);
-        return $command->hasOutput() ? $command->getOutput() : $this;
-    }
-
-    /**
-     * Starts encoding of current image
-     *
-     * @param  string  $format
-     * @param  int     $quality
-     * @return \Intervention\Image\Image
-     */
-    public function encode($format = null, $quality = 90)
-    {
-        return $this->driver->encode($this, $format, $quality);
-    }
-
-    /**
-     * Saves encoded image in filesystem
-     *
-     * @param  string  $path
-     * @param  int     $quality
-     * @param  string  $format
-     * @return \Intervention\Image\Image
-     */
-    public function save($path = null, $quality = null, $format = null)
-    {
-        $path = is_null($path) ? $this->basePath() : $path;
-
-        if (is_null($path)) {
-            throw new NotWritableException(
-                "Can't write to undefined path."
-            );
-        }
-
-        if ($format === null) {
-            $format = pathinfo($path, PATHINFO_EXTENSION);
-        }
-
-        $data = $this->encode($format, $quality);
-        $saved = @file_put_contents($path, $data);
-
-        if ($saved === false) {
-            throw new NotWritableException(
-                "Can't write image data to path ({$path})"
-            );
-        }
-
-        // set new file info
-        $this->setFileInfoFromPath($path);
-
-        return $this;
-    }
-
-    /**
-     * Runs a given filter on current image
-     *
-     * @param  FiltersFilterInterface $filter
-     * @return \Intervention\Image\Image
-     */
-    public function filter(Filters\FilterInterface $filter)
-    {
-        return $filter->applyFilter($this);
-    }
-
-    /**
-     * Returns current image driver
-     *
-     * @return \Intervention\Image\AbstractDriver
-     */
-    public function getDriver()
+    public function driver(): DriverInterface
     {
         return $this->driver;
     }
 
     /**
-     * Sets current image driver
-     * @param AbstractDriver $driver
-     */
-    public function setDriver(AbstractDriver $driver)
-    {
-        $this->driver = $driver;
-
-        return $this;
-    }
-
-    /**
-     * Returns current image resource/obj
+     * {@inheritdoc}
      *
-     * @return mixed
+     * @see ImageInterface::core()
      */
-    public function getCore()
+    public function core(): CoreInterface
     {
         return $this->core;
     }
 
     /**
-     * Sets current image resource
+     * {@inheritdoc}
      *
-     * @param mixed $core
+     * @see ImageInterface::origin()
      */
-    public function setCore($core)
+    public function origin(): Origin
     {
-        $this->core = $core;
+        return $this->origin;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::setOrigin()
+     */
+    public function setOrigin(Origin $origin): ImageInterface
+    {
+        $this->origin = $origin;
 
         return $this;
     }
 
     /**
-     * Returns current image backup
+     * {@inheritdoc}
      *
-     * @param string $name
-     * @return mixed
+     * @see ImageInterface::count()
      */
-    public function getBackup($name = null)
+    public function count(): int
     {
-        $name = is_null($name) ? 'default' : $name;
+        return $this->core->count();
+    }
 
-        if ( ! $this->backupExists($name)) {
-            throw new RuntimeException(
-                "Backup with name ({$name}) not available. Call backup() before reset()."
-            );
+    /**
+     * Implementation of IteratorAggregate
+     *
+     * @return Traversable
+     */
+    public function getIterator(): Traversable
+    {
+        return $this->core;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::isAnimated()
+     */
+    public function isAnimated(): bool
+    {
+        return $this->count() > 1;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::removeAnimation(
+     */
+    public function removeAnimation(int|string $position = 0): ImageInterface
+    {
+        return $this->modify(new RemoveAnimationModifier($position));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::loops()
+     */
+    public function loops(): int
+    {
+        return $this->core->loops();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::setLoops()
+     */
+    public function setLoops(int $loops): ImageInterface
+    {
+        $this->core->setLoops($loops);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::exif()
+     */
+    public function exif(?string $query = null): mixed
+    {
+        return is_null($query) ? $this->exif : $this->exif->get($query);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::modify()
+     */
+    public function modify(ModifierInterface $modifier): ImageInterface
+    {
+        return $this->driver->resolve($modifier)->apply($this);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::analyze()
+     */
+    public function analyze(AnalyzerInterface $analyzer): mixed
+    {
+        return $this->driver->resolve($analyzer)->analyze($this);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::encode()
+     */
+    public function encode(EncoderInterface $encoder = new AutoEncoder()): EncodedImage
+    {
+        return $this->driver->resolve($encoder)->encode($this);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::save()
+     */
+    public function save(?string $path = null, int $quality = 75): ImageInterface
+    {
+        $path = is_null($path) ? $this->origin()->filePath() : $path;
+
+        if (is_null($path)) {
+            throw new EncoderException('Could not determine file path to save.');
         }
 
-        return $this->backups[$name];
-    }
+        try {
+            // try to determine encoding format by file extension of the path
+            $encoded = $this->encodeByPath($path, $quality);
+        } catch (EncoderException) {
+            // fallback to encoding format by media type
+            $encoded = $this->encodeByMediaType(quality: $quality);
+        }
 
-    /**
-     * Returns all backups attached to image
-     *
-     * @return array
-     */
-    public function getBackups()
-    {
-        return $this->backups;
-    }
-
-    /**
-     * Sets current image backup
-     *
-     * @param mixed  $resource
-     * @param string $name
-     * @return self
-     */
-    public function setBackup($resource, $name = null)
-    {
-        $name = is_null($name) ? 'default' : $name;
-
-        $this->backups[$name] = $resource;
+        $encoded->save($path);
 
         return $this;
     }
 
     /**
-     * Checks if named backup exists
+     * {@inheritdoc}
      *
-     * @param  string $name
-     * @return bool
+     * @see ImageInterface::width()
      */
-    private function backupExists($name)
+    public function width(): int
     {
-        return array_key_exists($name, $this->backups);
+        return $this->analyze(new WidthAnalyzer());
     }
 
     /**
-     * Checks if current image is already encoded
+     * {@inheritdoc}
      *
-     * @return boolean
+     * @see ImageInterface::height()
      */
-    public function isEncoded()
+    public function height(): int
     {
-        return ! empty($this->encoded);
+        return $this->analyze(new HeightAnalyzer());
     }
 
     /**
-     * Returns encoded image data of current image
+     * {@inheritdoc}
      *
-     * @return string
+     * @see ImageInterface::size()
      */
-    public function getEncoded()
+    public function size(): SizeInterface
     {
-        return $this->encoded;
+        return new Rectangle($this->width(), $this->height());
     }
 
     /**
-     * Sets encoded image buffer
+     * {@inheritdoc}
      *
-     * @param string $value
+     * @see ImageInterface::colorspace()
      */
-    public function setEncoded($value)
+    public function colorspace(): ColorspaceInterface
     {
-        $this->encoded = $value;
-
-        return $this;
+        return $this->analyze(new ColorspaceAnalyzer());
     }
 
     /**
-     * Calculates current image width
+     * {@inheritdoc}
      *
-     * @return int
+     * @see ImageInterface::setColorspace()
      */
-    public function getWidth()
+    public function setColorspace(string|ColorspaceInterface $colorspace): ImageInterface
     {
-        return $this->getSize()->width;
+        return $this->modify(new ColorspaceModifier($colorspace));
     }
 
     /**
-     * Alias of getWidth()
+     * {@inheritdoc}
      *
-     * @return int
+     * @see ImageInterface::resolution()
      */
-    public function width()
+    public function resolution(): ResolutionInterface
     {
-        return $this->getWidth();
+        return $this->analyze(new ResolutionAnalyzer());
     }
 
     /**
-     * Calculates current image height
+     * {@inheritdoc}
      *
-     * @return int
+     * @see ImageInterface::setResolution()
      */
-    public function getHeight()
+    public function setResolution(float $x, float $y): ImageInterface
     {
-        return $this->getSize()->height;
+        return $this->modify(new ResolutionModifier($x, $y));
     }
 
     /**
-     * Alias of getHeight
+     * {@inheritdoc}
      *
-     * @return int
+     * @see ImageInterface::pickColor()
      */
-    public function height()
+    public function pickColor(int $x, int $y, int $frame_key = 0): ColorInterface
     {
-        return $this->getHeight();
+        return $this->analyze(new PixelColorAnalyzer($x, $y, $frame_key));
     }
 
     /**
-     * Reads mime type
+     * {@inheritdoc}
      *
-     * @return string
+     * @see ImageInterface::pickColors()
      */
-    public function mime()
+    public function pickColors(int $x, int $y): CollectionInterface
     {
-        return $this->mime;
+        return $this->analyze(new PixelColorsAnalyzer($x, $y));
     }
 
     /**
-     * Returns encoded image data in string conversion
+     * {@inheritdoc}
      *
-     * @return string
+     * @see ImageInterface::profile()
      */
-    public function __toString()
+    public function profile(): ProfileInterface
     {
-        return $this->encoded;
+        return $this->analyze(new ProfileAnalyzer());
     }
 
     /**
-     * Cloning an image
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::setProfile()
      */
-    public function __clone()
+    public function setProfile(ProfileInterface $profile): ImageInterface
     {
-        $this->core = $this->driver->cloneCore($this->core);
+        return $this->modify(new ProfileModifier($profile));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::removeProfile()
+     */
+    public function removeProfile(): ImageInterface
+    {
+        return $this->modify(new ProfileRemovalModifier());
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::reduceColors()
+     */
+    public function reduceColors(int $limit, mixed $background = 'transparent'): ImageInterface
+    {
+        return $this->modify(new QuantizeColorsModifier($limit, $background));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::sharpen()
+     */
+    public function sharpen(int $amount = 10): ImageInterface
+    {
+        return $this->modify(new SharpenModifier($amount));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::invert()
+     */
+    public function invert(): ImageInterface
+    {
+        return $this->modify(new InvertModifier());
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::pixelate()
+     */
+    public function pixelate(int $size): ImageInterface
+    {
+        return $this->modify(new PixelateModifier($size));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::greyscale()
+     */
+    public function greyscale(): ImageInterface
+    {
+        return $this->modify(new GreyscaleModifier());
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::brightness()
+     */
+    public function brightness(int $level): ImageInterface
+    {
+        return $this->modify(new BrightnessModifier($level));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::contrast()
+     */
+    public function contrast(int $level): ImageInterface
+    {
+        return $this->modify(new ContrastModifier($level));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::gamma()
+     */
+    public function gamma(float $gamma): ImageInterface
+    {
+        return $this->modify(new GammaModifier($gamma));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::colorize()
+     */
+    public function colorize(int $red = 0, int $green = 0, int $blue = 0): ImageInterface
+    {
+        return $this->modify(new ColorizeModifier($red, $green, $blue));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::flip()
+     */
+    public function flip(): ImageInterface
+    {
+        return $this->modify(new FlipModifier());
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::flop()
+     */
+    public function flop(): ImageInterface
+    {
+        return $this->modify(new FlopModifier());
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::blur()
+     */
+    public function blur(int $amount = 5): ImageInterface
+    {
+        return $this->modify(new BlurModifier($amount));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::rotate()
+     */
+    public function rotate(float $angle, mixed $background = 'ffffff'): ImageInterface
+    {
+        return $this->modify(new RotateModifier($angle, $background));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::text()
+     */
+    public function text(string $text, int $x, int $y, callable|FontInterface $font): ImageInterface
+    {
+        return $this->modify(
+            new TextModifier(
+                $text,
+                new Point($x, $y),
+                call_user_func(new FontFactory($font)),
+            ),
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::resize()
+     */
+    public function resize(?int $width = null, ?int $height = null): ImageInterface
+    {
+        return $this->modify(new ResizeModifier($width, $height));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::resizeDown()
+     */
+    public function resizeDown(?int $width = null, ?int $height = null): ImageInterface
+    {
+        return $this->modify(new ResizeDownModifier($width, $height));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::scale()
+     */
+    public function scale(?int $width = null, ?int $height = null): ImageInterface
+    {
+        return $this->modify(new ScaleModifier($width, $height));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::scaleDown()
+     */
+    public function scaleDown(?int $width = null, ?int $height = null): ImageInterface
+    {
+        return $this->modify(new ScaleDownModifier($width, $height));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::cover()
+     */
+    public function cover(int $width, int $height, string $position = 'center'): ImageInterface
+    {
+        return $this->modify(new CoverModifier($width, $height, $position));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::coverDown()
+     */
+    public function coverDown(int $width, int $height, string $position = 'center'): ImageInterface
+    {
+        return $this->modify(new CoverDownModifier($width, $height, $position));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::resizeCanvas()
+     */
+    public function resizeCanvas(
+        ?int $width = null,
+        ?int $height = null,
+        mixed $background = 'ffffff',
+        string $position = 'center'
+    ): ImageInterface {
+        return $this->modify(new ResizeCanvasModifier($width, $height, $background, $position));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::resizeCanvasRelative()
+     */
+    public function resizeCanvasRelative(
+        ?int $width = null,
+        ?int $height = null,
+        mixed $background = 'ffffff',
+        string $position = 'center'
+    ): ImageInterface {
+        return $this->modify(new ResizeCanvasRelativeModifier($width, $height, $background, $position));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::padDown()
+     */
+    public function pad(
+        int $width,
+        int $height,
+        mixed $background = 'ffffff',
+        string $position = 'center'
+    ): ImageInterface {
+        return $this->modify(new PadModifier($width, $height, $background, $position));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::pad()
+     */
+    public function contain(
+        int $width,
+        int $height,
+        mixed $background = 'ffffff',
+        string $position = 'center'
+    ): ImageInterface {
+        return $this->modify(new ContainModifier($width, $height, $background, $position));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::crop()
+     */
+    public function crop(
+        int $width,
+        int $height,
+        int $offset_x = 0,
+        int $offset_y = 0,
+        string $position = 'top-left'
+    ): ImageInterface {
+        return $this->modify(new CropModifier($width, $height, $offset_x, $offset_y, $position));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::place()
+     */
+    public function place(
+        mixed $element,
+        string $position = 'top-left',
+        int $offset_x = 0,
+        int $offset_y = 0
+    ): ImageInterface {
+        return $this->modify(new PlaceModifier($element, $position, $offset_x, $offset_y));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::fill()
+     */
+    public function fill(mixed $color, ?int $x = null, ?int $y = null): ImageInterface
+    {
+        return $this->modify(
+            new FillModifier(
+                $color,
+                (is_null($x) || is_null($y)) ? null : new Point($x, $y),
+            ),
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::drawPixel()
+     */
+    public function drawPixel(int $x, int $y, mixed $color): ImageInterface
+    {
+        return $this->modify(new DrawPixelModifier(new Point($x, $y), $color));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::drawRectangle()
+     */
+    public function drawRectangle(int $x, int $y, callable|Rectangle $init): ImageInterface
+    {
+        return $this->modify(
+            new DrawRectangleModifier(
+                call_user_func(new RectangleFactory(new Point($x, $y), $init)),
+            ),
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::drawEllipse()
+     */
+    public function drawEllipse(int $x, int $y, callable $init): ImageInterface
+    {
+        return $this->modify(
+            new DrawEllipseModifier(
+                call_user_func(new EllipseFactory(new Point($x, $y), $init)),
+            ),
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::drawCircle()
+     */
+    public function drawCircle(int $x, int $y, callable $init): ImageInterface
+    {
+        return $this->modify(
+            new DrawEllipseModifier(
+                call_user_func(new CircleFactory(new Point($x, $y), $init)),
+            ),
+        );
+    }
+
+    public function drawPolygon(callable $init): ImageInterface
+    {
+        return $this->modify(
+            new DrawPolygonModifier(
+                call_user_func(new PolygonFactory($init)),
+            ),
+        );
+    }
+
+    public function drawLine(callable $init): ImageInterface
+    {
+        return $this->modify(
+            new DrawLineModifier(
+                call_user_func(new LineFactory($init)),
+            ),
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::encodeByMediaType()
+     */
+    public function encodeByMediaType(?string $type = null, int $quality = 75): EncodedImageInterface
+    {
+        return $this->encode(new MediaTypeEncoder($type, $quality));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::encodeByExtension()
+     */
+    public function encodeByExtension(?string $extension = null, int $quality = 75): EncodedImageInterface
+    {
+        return $this->encode(new FileExtensionEncoder($extension, $quality));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::encodeByPath()
+     */
+    public function encodeByPath(?string $path = null, int $quality = 75): EncodedImageInterface
+    {
+        return $this->encode(new FilePathEncoder($path, $quality));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::toJpeg()
+     */
+    public function toJpeg(int $quality = 75): EncodedImageInterface
+    {
+        return $this->encode(new JpegEncoder($quality));
+    }
+
+    /**
+     * Alias of self::toJpeg()
+     *
+     * @param int $quality
+     * @return EncodedImageInterface
+     */
+    public function toJpg(int $quality = 75): EncodedImageInterface
+    {
+        return $this->toJpeg($quality);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::toJpeg()
+     */
+    public function toJpeg2000(int $quality = 75): EncodedImageInterface
+    {
+        return $this->encode(new Jpeg2000Encoder($quality));
+    }
+
+    /**
+     * ALias of self::toJpeg2000()
+     *
+     * @param  int $quality
+     * @return EncodedImageInterface
+     */
+    public function toJp2(int $quality = 75): EncodedImageInterface
+    {
+        return $this->toJpeg2000($quality);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::toPng()
+     */
+    public function toPng(): EncodedImageInterface
+    {
+        return $this->encode(new PngEncoder());
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::toGif()
+     */
+    public function toGif(): EncodedImageInterface
+    {
+        return $this->encode(new GifEncoder());
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::toWebp()
+     */
+    public function toWebp(int $quality = 75): EncodedImageInterface
+    {
+        return $this->encode(new WebpEncoder($quality));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::toBitmap()
+     */
+    public function toBitmap(): EncodedImageInterface
+    {
+        return $this->encode(new BmpEncoder());
+    }
+
+    /**
+     * Alias if self::toBitmap()
+     *
+     * @return EncodedImageInterface
+     */
+    public function toBmp(): EncodedImageInterface
+    {
+        return $this->toBitmap();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::toAvif()
+     */
+    public function toAvif(int $quality = 75): EncodedImageInterface
+    {
+        return $this->encode(new AvifEncoder($quality));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ImageInterface::toTiff()
+     */
+    public function toTiff(int $quality = 75): EncodedImageInterface
+    {
+        return $this->encode(new TiffEncoder($quality));
+    }
+
+    /**
+     * Alias of self::toTiff()
+     *
+     * @param int $quality
+     * @return EncodedImageInterface
+     */
+    public function toTif(int $quality = 75): EncodedImageInterface
+    {
+        return $this->toTiff($quality);
+    }
+
+    /**
+     * Clone image
+     *
+     * @return void
+     */
+    public function __clone(): void
+    {
+        $this->driver = clone $this->driver;
+        $this->core = clone $this->core;
+        $this->exif = clone $this->exif;
     }
 }

@@ -1,12 +1,8 @@
-Undefined array key 2 in /App/Model/Volunteer.php on line 49
-
 New member log out and log in fix
 
 Folders for videos
 
 Home page days back customization
-
-Google Calendar meetings not working
 
 RWGPS and CueSheet volunteer points
 

@@ -12,15 +12,6 @@ class Locations extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 		$this->view = new \App\View\StartLocation($this->page);
 		}
 
-	public function cooridinates() : void
-		{
-		if ($this->page->addHeader('Update Coordinates'))
-			{
-//			$view = new \App\View\StartLocation\Coordinates($this->page);
-//			$this->page->addPageContent($view->coordinates());
-			}
-		}
-
 	public function edit(\App\Record\StartLocation $location = new \App\Record\StartLocation()) : void
 		{
 		if ($this->page->addHeader('Edit Start Location'))
@@ -33,7 +24,8 @@ class Locations extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 		{
 		if ($this->page->addHeader('Start Locations'))
 			{
-			$this->page->addPageContent($this->view->showLocations());
+			$startLocationTable = new \App\Table\StartLocation();
+			$this->page->addPageContent($this->view->showLocations($startLocationTable));
 			}
 		}
 

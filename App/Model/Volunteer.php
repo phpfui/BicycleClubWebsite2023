@@ -46,7 +46,7 @@ class Volunteer
 
 			if ($ride->rideStatus > 0 && \App\Table\Ride::STATUS_NO_LEADER != $ride->rideStatus && ! $ride->pointsAwarded)
 				{
-				$points = $statusPoints + $categoryPoints[(int)((int)$ride->paceId / 10)];
+				$points = $statusPoints + $categoryPoints[$ride->pace->categoryId];
 				$this->addPoints($ride, $points);
 				$ride->pointsAwarded = $points;
 				$ride->update();

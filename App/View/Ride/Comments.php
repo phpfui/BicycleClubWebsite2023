@@ -211,7 +211,7 @@ class Comments
 
 		if (2 !== $this->sender->geoLocate)
 			{
-			$geoLocation = new \PHPFUI\Input\CheckBoxBoolean('geoLocate', 'Include Geo Location', (bool)$this->sender->geoLocate);
+			$geoLocation = new \PHPFUI\Input\CheckBoxBoolean('geoLocate', 'Include GPS Location', (bool)$this->sender->geoLocate);
 			$geoLocation->setToolTip('Include a Google Maps link to your location in the message.');
 
 			$geoLocate = new \App\Model\GeoLocation();

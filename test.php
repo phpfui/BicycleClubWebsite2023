@@ -24,3 +24,12 @@ foreach (\PHPFUI\ORM\Table::getAllTables() as $table)
 	{
 	echo "{$table->getTableName()}: {$table->count()}\n";
 	}
+
+
+$ride = new \App\Record\Ride(23058);
+
+$model = new \App\Model\Ride();
+
+$calendar = $model->getCalendarObject($ride);
+
+file_put_contents('ride.ics', $calendar->export());

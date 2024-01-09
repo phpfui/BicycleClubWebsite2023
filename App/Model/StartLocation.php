@@ -67,25 +67,10 @@ class StartLocation
 		$rideTable->setWhere($condition);
 		$rideTable->addOrderBy('RWGPSId');
 
-//		$RWGPSIds = [];
 		$startLocations = [];
 
 		foreach ($rideTable->getRecordCursor() as $ride)
 			{
-//			if (! \array_key_exists($ride->RWGPSId, $RWGPSIds))
-//				{
-//				$RWGPSIds[$ride->RWGPSId] = [];
-//				}
-//
-//			if (! \array_key_exists($ride->startLocationId, $RWGPSIds[$ride->RWGPSId]))
-//				{
-//				$RWGPSIds[$ride->RWGPSId][$ride->startLocationId] = 1;
-//				}
-//			else
-//				{
-//				++$RWGPSIds[$ride->RWGPSId][$ride->startLocationId];
-//				}
-
 			if (! \array_key_exists($ride->startLocationId, $startLocations))
 				{
 				$startLocations[$ride->startLocationId] = [];

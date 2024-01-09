@@ -59,7 +59,7 @@ class GeoLocation
 
 		if ($this->callout)
 			{
-			$js .= "{$d}('#{$this->callout->getId()}').html('ERROR('+err.code+'):'+err.message+'. Uncheck Include GEO location to send.').removeClass('hide')";
+			$js .= "{$d}('#{$this->callout->getId()}').html('ERROR('+err.code+'):'+err.message+'. Uncheck Include GPS location to send.').removeClass('hide')";
 			}
 		$js .= '},' . \PHPFUI\TextHelper::arrayToJS($this->options) . ')}else{';
 

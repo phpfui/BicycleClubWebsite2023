@@ -158,7 +158,13 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Locations/locations', 'Start Locations');
 			$this->addSub($menu, '/Locations/merge', 'Merge Start Locations');
 			$this->addSub($menu, '/Locations/new', 'Add Start Location');
-//			$this->addSub($menu, '/Locations/coordinates', 'Update Coordinates');
+
+			if ($coordinateMenu = $this->addMenu($menu, '/Locations/Coordinates', 'Coordinates'))
+				{
+				$this->addSub($coordinateMenu, '/Locations/Coordinates/update', 'Update Coordinates');
+				$this->addSub($coordinateMenu, '/Locations/Coordinates/missing', 'Missing Coordinates');
+				$this->addSub($coordinateMenu, '/Locations/Coordinates/assigned', 'Assigned Coordinates');
+				}
 			}
 
 		if ($menu = $this->addTopMenu('Membership', 'Membership'))

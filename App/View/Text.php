@@ -141,7 +141,7 @@ class Text
 		$callout->addClass('hide');
 		$container->add($geoLocatation->setMessageElement($callout));
 
-		$geoLocation = new \PHPFUI\Input\CheckBoxBoolean('geoLocate', 'Include Geo Location', (bool)$sender->geoLocate);
+		$geoLocation = new \PHPFUI\Input\CheckBoxBoolean('geoLocate', 'Include GPS Location', (bool)$sender->geoLocate);
 		$geoLocation->setToolTip('Include a Google Maps link to your location in the message.');
 		$container->add($geoLocatation->setOptIn($geoLocation));
 

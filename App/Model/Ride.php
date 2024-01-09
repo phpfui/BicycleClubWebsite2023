@@ -338,7 +338,7 @@ class Ride
 		$email->setFromMember($leader->toArray());
 		$email->setBody($message);
 		$email->setHtml();
-		$calendar = $this->getCalendarObject($ride, $leader);
+		$calendar = $this->getCalendarObject($ride);
 
 		if ($calendar)
 			{
@@ -392,7 +392,7 @@ class Ride
 			}
 		}
 
-	public function getCalendarObject(\App\Record\Ride $ride, \App\Record\Member $leader) : ?\ICalendarOrg\ZCiCal
+	public function getCalendarObject(\App\Record\Ride $ride) : ?\ICalendarOrg\ZCiCal
 		{
 		// create the ical object
 		$icalobj = new \ICalendarOrg\ZCiCal();
@@ -412,11 +412,11 @@ class Ride
 			{
 			return null;
 			}
-		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTSTART:TZID=' . \date_default_timezone_get() . ':' . \gmdate('Ymd\THis', $startTime)));
+		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTSTART:' . \ICalendarOrg\ZDateHelper::fromUnixDateTime($startTime)));
 
 		// add end date
 		$endTime = $startTime + $this->computeDuration($ride);
-		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTEND::TZID=' . \date_default_timezone_get() . ':' . \gmdate('Ymd\THis', $endTime)));
+		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTEND:' . \ICalendarOrg\ZDateHelper::fromUnixDateTime($endTime)));
 
 		// UID is a required item in VEVENT, create unique string for this event
 		// Adding your domain to the end is a good way of creating uniqueness
@@ -426,6 +426,8 @@ class Ride
 
 		// DTSTAMP is a required item in VEVENT
 		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTSTAMP:' . \ICalendarOrg\ZDateHelper::fromSqlDateTime()));
+
+		$leader = $ride->member;
 
 		if ($leader->loaded())
 			{
@@ -446,8 +448,9 @@ class Ride
 			}
 
 		// Add description
-		$this->processDescription($ride->description) . "\nSign Up: {$uid}";
-		$description = $this->processDescription($ride->description);
+		$description = $this->processDescription($ride->description) . "\nSign Up: {$uid}";
+		$description = \Soundasleep\Html2Text::convert($description, ['drop_links' => 'href', 'ignore_errors' => true]);
+		$description = \str_replace("\n", ' ', $description);
 		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DESCRIPTION:' . \ICalendarOrg\ZCiCal::formatContent($description)));
 
 		return $icalobj;

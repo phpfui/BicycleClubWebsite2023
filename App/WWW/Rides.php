@@ -43,6 +43,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			if ($ride->loaded() && $ride->pending)
 				{
 				$this->page->addPageContent(new \PHPFUI\Header($ride->title, 5));
+				$ride->dateAdded = \date('Y-m-d H:i:s');
 				$ride->pending = 0;
 				$ride->update();
 				}

@@ -119,7 +119,7 @@ class StartLocation
 
 		foreach ($locations as $location)
 			{
-			$select->addOption($location['name'], $location['startLocationId'], $value == $location['startLocationId']);
+			$select->addOption($location['name'] ?? '', $location['startLocationId'], $value == $location['startLocationId']);
 			}
 
 		return $select;
@@ -328,10 +328,8 @@ class StartLocation
 		return $form;
 		}
 
-	public function showLocations() : \App\UI\ContinuousScrollTable
+	public function showLocations(\App\Table\StartLocation $startLocationTable) : \App\UI\ContinuousScrollTable
 		{
-		$startLocationTable = new \App\Table\StartLocation();
-
 		$searchableHeaders = ['name', 'link'];
 		$countHeaders = ['map' => 'Map', 'rides', 'cuesheets' => 'Cue<br>Sheets', ];
 

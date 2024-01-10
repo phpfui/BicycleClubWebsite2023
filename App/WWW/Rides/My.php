@@ -60,6 +60,15 @@ class My extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function pending() : void
+		{
+		if ($this->page->addHeader('My Pending Rides'))
+			{
+			$rideTable = new \App\Table\Ride();
+			$this->page->addPageContent($this->view->schedule($rideTable->getMyPendingRides(\App\Model\Session::signedInMemberRecord()), 'You have no pending rides'));
+			}
+		}
+
 	public function statistics() : void
 		{
 		if ($this->page->addHeader('My Ride Statistics'))

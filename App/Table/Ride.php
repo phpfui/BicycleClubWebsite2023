@@ -316,6 +316,19 @@ class Ride extends \PHPFUI\ORM\Table
 		return $ride;
 		}
 
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
+	public function getMyPendingRides(\App\Record\Member $member) : \PHPFUI\ORM\RecordCursor
+		{
+		$condition = new \PHPFUI\ORM\Condition('memberId', $member->memberId);
+		$condition->and('pending', 1);
+		$this->addOrderBy('rideDate');
+		$this->setWhere($condition);
+
+		return $this->getRecordCursor();
+		}
+
 	public static function getNewest() : \App\Record\Ride
 		{
 		$sql = 'select * from ride where pending=0 order by rideDate desc limit 1';

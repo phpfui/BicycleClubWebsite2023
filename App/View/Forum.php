@@ -334,7 +334,7 @@ class Forum
 		{
 		$container = new \PHPFUI\Container();
 		$fieldSet = new \PHPFUI\FieldSet('Forum Description and Guidelines');
-		$fieldSet->add(new \App\UI\Display('Email Address:', \PHPFUI\Link::email($forum->email . '@' . \strtolower((string)$_SERVER['SERVER_NAME']))));
+		$fieldSet->add(new \App\UI\Display('Email Address:', \PHPFUI\Link::email($forum->email . '@' . \emailServerName())));
 		$fieldSet->add('<hr>');
 		$fieldSet->add($forum->description);
 		$container->add($fieldSet);
@@ -545,7 +545,7 @@ class Forum
 				{
 				$count = (int)\App\Table\ForumMember::getCount($forum);
 				$forumHome = "<a href='{$this->site}/Forums/home/{$forum->forumId}'>{$forum->name}</a>";
-				$email = \PHPFUI\Link::email($forum->email . '@' . \strtolower((string)$_SERVER['SERVER_NAME']));
+				$email = \PHPFUI\Link::email($forum->email . '@' . \emailServerName());
 				$table->addRow(['Name' => $forumHome, 'email' => $email, 'Subscribers' => $count]);
 				}
 			}
@@ -582,7 +582,7 @@ class Forum
 					{
 					$text = 'Modify';
 					$class = 'warning';
-					$row['email'] = \PHPFUI\Link::email($forum->email . '@' . $_SERVER['SERVER_NAME']);
+					$row['email'] = \PHPFUI\Link::email($forum->email . '@' . \emailServerName());
 					$member->emailType = \App\Table\ForumMember::UNSUBSCRIBED;
 					}
 				else

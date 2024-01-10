@@ -27,3 +27,15 @@ if (! \defined('PROJECT_ROOT'))
 \error_reporting(E_ALL);
 \ini_set('error_log', PROJECT_ROOT . '/error.log');
 new \App\Tools\ErrorLogging();
+
+function emailServerName() : string
+	{
+	$parts = explode('.', $_SERVER['SERVER_NAME'] ?? 'localhost');
+	while(\count($parts) > 2)
+		{
+		array_shift($parts);
+		}
+
+	return strtolower(implode('.', $parts));
+	}
+

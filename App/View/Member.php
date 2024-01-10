@@ -285,13 +285,13 @@ class Member
 		{
 		$container = new \PHPFUI\Container();
 
-		$toolTip = new \PHPFUI\ToolTip("Don't show the following", 'Your personal information may still be shown to ride leaders if you sign up for a ride.');
+		$toolTip = new \PHPFUI\ToolTip('Don’t show the following in the Membership Directory', 'Your personal information may still be shown to ride leaders if you sign up for a ride.');
 		$fieldSet = new \PHPFUI\FieldSet($toolTip);
 		$fields = ['showNothing' => 'My info',
 			'showNoStreet' => 'Street',
 			'showNoTown' => 'Town, zip',
-			'showNoPhone' => 'Phone',
-			'showNoRideSignup' => 'Ride Signup', ];
+			'showNoPhone' => 'Phone', ];
+//			'showNoRideSignup' => 'Don’t Show My Name in the Ride Signup list', ];
 		$multiColumn = new \PHPFUI\MultiColumn();
 
 		foreach ($fields as $field => $title)
@@ -299,6 +299,9 @@ class Member
 			$multiColumn->add(new \PHPFUI\Input\CheckBoxBoolean($field, $title, (bool)$member[$field]));
 			}
 		$fieldSet->add($multiColumn);
+		$noRideSignup = new \PHPFUI\Input\CheckBoxBoolean('showNoRideSignup', 'Don’t Show My Name in the Ride Signup list', (bool)$member->showNoRideSignup);
+		$noRideSignup->setToolTip('Your name will not be shown in the ride signup list, but the ride leader will see your name');
+		$fieldSet->add($noRideSignup);
 		$container->add($fieldSet);
 
 		$container->add($this->getGeoLocationSelect($member));

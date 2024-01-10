@@ -28,13 +28,7 @@ class MemberPicker extends \App\Model\MemberPickerBase
 			$member['town'] = $this->settingTable->value('memberTown');
 			$member['state'] = '';
 			$member['zip'] = '';
-			$server = \strtolower((string)$_SERVER['SERVER_NAME']);
-
-			if ('www.' == \substr($server, 0, 4))
-				{
-				$server = \substr($server, 4);
-				}
-			$member['email'] = 'webmaster@' . $server;
+			$member['email'] = 'webmaster@' . \emailServerName();
 			}
 
 		return $member;

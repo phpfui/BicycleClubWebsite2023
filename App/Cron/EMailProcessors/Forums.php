@@ -27,7 +27,7 @@ class Forums
 
 		foreach ($forumTable->getRecordCursor() as $forum)
 			{
-			$emailAddress = $forum->email . '@' . $_SERVER['SERVER_NAME'];
+			$emailAddress = $forum->email . '@' . \emailServerName();
 
 			if (($to && $to->hasAddress($emailAddress)) || ($cc && $cc->hasAddress($emailAddress)))
 				{

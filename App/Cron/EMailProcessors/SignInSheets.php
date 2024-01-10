@@ -13,7 +13,7 @@ class SignInSheets
 
 	public function __construct()
 		{
-		$this->server = '@' . \strtolower($_SERVER['SERVER_NAME'] ?? 'localhost');
+		$this->server = '@' . \emailServerName();
 		}
 
 	public function process(\ZBateson\MailMimeParser\Message $message) : bool

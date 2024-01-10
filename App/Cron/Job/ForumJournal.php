@@ -39,7 +39,7 @@ class ForumJournal extends \App\Cron\BaseJob
 				$email = new \App\Tools\EMail();
 				$title = "{$clubAbbrev} {$forum->name} Daily Digest";
 				$email->setSubject($title);
-				$email->setFrom($forum->email . '@' . $_SERVER['SERVER_NAME'], $clubAbbrev . ' ' . $forum->name);
+				$email->setFrom($forum->email . '@' . \emailServerName(), $clubAbbrev . ' ' . $forum->name);
 				$body = new \PHPFUI\Container();
 				$body->add(new \PHPFUI\Header($title));
 				$ol = new \PHPFUI\OrderedList();

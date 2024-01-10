@@ -16,7 +16,7 @@ class System
 
 		foreach ($systemEmailTable->getRecordCursor() as $system)
 			{
-			$emailAddress = $system->mailbox . '@' . $_SERVER['SERVER_NAME'];
+			$emailAddress = $system->mailbox . '@' . \emailServerName();
 
 			if ($to && $to->hasAddress($emailAddress))
 				{
@@ -32,7 +32,7 @@ class System
 			}
 		$fromEmail = \App\Model\Member::cleanEmail($message->getHeaderValue('from'));
 		$fromName = $message->getHeader('from')->getPersonName();
-		$email->setFrom($fromBox . '@' . $_SERVER['SERVER_NAME'], $fromName);
+		$email->setFrom($fromBox . '@' . \emailServerName(), $fromName);
 		$email->setReplyTo($fromEmail, $fromName);
 		$text = $message->getTextContent() ?? '';
 		$html = \App\Tools\TextHelper::htmlentities($message->getHtmlContent() ?? '');

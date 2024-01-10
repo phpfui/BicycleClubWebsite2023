@@ -56,7 +56,7 @@ class SMTPSettings
 					$email = new \App\Tools\EMail(false);
 					$email->addToMember($member->toArray());
 					$email->setFromMember($member->toArray());
-					$email->setSubject('SMTP Setup test email from ' . $_SERVER['SERVER_NAME']);
+					$email->setSubject('SMTP Setup test email from ' . \emailServerName());
 					$email->setBody('Your SMTP setup is correct!');
 					$error = $email->send();
 
@@ -74,7 +74,7 @@ class SMTPSettings
 				case 'IONOS Defaults':
 					$settings = [];
 					$settings['SMTPHost'] = 'smtp.ionos.com';
-					$settings['SMTPUsername'] = '*@' . $_SERVER['SERVER_NAME'];
+					$settings['SMTPUsername'] = '*@' . \emailServerName();
 					$settings['SMTPSecure'] = 'STARTTLS';
 					$settings['SMTPPort'] = '587';
 					$settingsSaver->save($settings, true);

@@ -92,7 +92,7 @@ class Poll
 			$email->setHtml();
 			$email->setBody($message);
 			$email->setFromMember($secretary->toArray());
-			$email->addBCC('voting@' . \strtolower((string)$_SERVER['SERVER_NAME']));
+			$email->addBCC('voting@' . \emailServerName());
 			$email->addToMember($voter);
 			$email->send();
 			}

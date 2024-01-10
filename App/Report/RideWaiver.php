@@ -106,7 +106,7 @@ class RideWaiver extends \Mpdf\Mpdf
 		{
 		$this->SetFont('Arial', '', 8);
 		$this->SetY($this->y + 3);
-		$this->Cell(0, 0, 'Please scan or photograph this completed form, attach it to an email and send to: signinsheets@' . $_SERVER['SERVER_NAME'], 0, 0, 'C');
+		$this->Cell(0, 0, 'Please scan or photograph this completed form, attach it to an email and send to: signinsheets@' . \emailServerName(), 0, 0, 'C');
 		}
 
 	protected function printHeader(\App\Record\Ride $ride) : void

@@ -159,7 +159,7 @@ class Forum
 		$forumMessage = new \App\Record\ForumMessage();
 		$forumMessage->setFrom($message);
 		$insertedId = $forumMessage->insert();
-		$forumEmail = $forum['email'] . '@' . \strtolower((string)$_SERVER['SERVER_NAME']);
+		$forumEmail = $forum['email'] . '@' . \emailServerName();
 		$this->email->setSubject($emailTitle);
 		$this->email->setFromMember($message);	// message has the needed fields
 		$this->email->setReplyTo($forumEmail, $forum->name);

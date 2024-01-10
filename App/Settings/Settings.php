@@ -21,7 +21,7 @@ abstract class Settings
 		{
 		if ('' == $this->serverName)
 			{
-			$this->serverName = $_SERVER['SERVER_NAME'] ?? '';
+			$this->serverName = \emailServerName();
 			}
 		}
 

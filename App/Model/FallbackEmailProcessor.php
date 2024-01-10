@@ -53,7 +53,7 @@ class FallbackEmailProcessor
 		{
 		$settingTable = new \App\Table\Setting();
 		$abbrev = $settingTable->value('clubAbbrev');
-		$url = $_SERVER['SERVER_NAME'];
+		$url = \emailServerName();
 		$from = \App\Model\Member::cleanEmail($message->getHeaderValue('from'));
 		$title = $message->getHeaderValue('subject') ?? '';
 		$badReplies = ['Auto-Reply', 'Auto Reply', 'Automatic Reply'];

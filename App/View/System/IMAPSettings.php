@@ -73,7 +73,7 @@ class IMAPSettings
 					$settingTable->save('IMAPServer', 'imap.ionos.com');
 					$settingTable->save('IMAPPort', '993');
 					$settingTable->save('IMAPEncryption', 'ssl');
-					$settingTable->save('IMAPMailBox', '*@' . $_SERVER['SERVER_NAME']);
+					$settingTable->save('IMAPMailBox', '*@' . \emailServerName());
 					\App\Model\Session::setFlash('success', 'Reset to IONOS defaults');
 
 					break;

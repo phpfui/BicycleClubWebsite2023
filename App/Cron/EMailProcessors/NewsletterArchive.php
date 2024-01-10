@@ -65,7 +65,7 @@ class NewsletterArchive
 		$editor = new \App\Model\MemberPicker('Newsletter Editor');
 		$member = $editor->getSavedMember();
 		$mpdf->SetAuthor($member['firstName'] . ' ' . $member['lastName']);
-		$mpdf->SetCreator('webmaster@' . $_SERVER['SERVER_NAME']);
+		$mpdf->SetCreator('webmaster@' . \emailServerName());
 
 		$mpdf->WriteHTML("{$dom}");
 

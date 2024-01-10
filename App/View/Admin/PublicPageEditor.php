@@ -217,9 +217,10 @@ class PublicPageEditor
 		$fieldSet->add(new \PHPFUI\MultiColumn($homePageNotification, $banner, $blog));
 
 		$hidden = new \PHPFUI\Input\RadioGroup('hidden', 'Page Visability', (string)$publicPage->hidden);
-		$hidden->setToolTip('PUBLIC links allow third party website to link to them. NO OUTSIDE LINKS will not allow a third party page to access the link, but is still public and accessable via direct links on the website.');
+		$hidden->setToolTip('PUBLIC links allow third party website to link to them. NO OUTSIDE LINKS will not allow a third party page to access the link, but is still public and accessable via direct links on the website. MEMBERS ONLY means the link will be public, but requires members to sign in.');
 		$hidden->addButton('Public', (string)0);
 		$hidden->addButton('No Outside Links', (string)1);
+		$hidden->addButton('Member Only', (string)2);
 
 		$publicMenu = new \PHPFUI\Input\CheckBoxBoolean('publicMenu', 'Public Menu', (bool)$publicPage->publicMenu);
 		$publicMenu->setToolTip('Check to display on public menu');

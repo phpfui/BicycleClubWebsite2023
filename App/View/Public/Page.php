@@ -18,7 +18,6 @@ class Page extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 
 	public function custom() : void
 		{
-		$this->setPublic();
 		$url = \strtolower(\str_replace('/' . \App\Model\Session::csrf(), '', $this->getBaseUrl()));
 		$publicPageTable = new \App\Table\PublicPage();
 		$publicPageTable->setWhere(new \PHPFUI\ORM\Condition('url', $url . '%', new \PHPFUI\ORM\Operator\Like()));
@@ -32,6 +31,8 @@ class Page extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 			}
 
 		$publicPage = $publicPageCursor->current();
+
+		$this->setPublic(2 != $publicPage->hidden);
 
 		if ($publicPage->banner)
 			{
@@ -83,7 +84,7 @@ class Page extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 			}
 		$baseLink = $publicPage->url ?? '';
 
-		if ($publicPage->hidden)
+		if (1 == $publicPage->hidden)
 			{
 			return $baseLink . '/' . \App\Model\Session::csrf();
 			}

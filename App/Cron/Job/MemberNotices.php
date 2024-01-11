@@ -36,6 +36,7 @@ class MemberNotices extends \App\Cron\BaseJob
 					// negative number is number of days before the date, so -1 we look for tomorrow (today + 1)
 					// so reverse what the user gives us
 					$dayInt = 0 - $dayInt;
+
 					$startDate = \App\Tools\Date::todayString($dayInt);
 					$endDate = \App\Tools\Date::todayString($dayInt + 1);
 					$condition = new \PHPFUI\ORM\Condition($notice->field, $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
@@ -46,16 +47,16 @@ class MemberNotices extends \App\Cron\BaseJob
 						{
 						if ($member->emailAnnouncements || $notice->overridePreferences)
 							{
+							$memberRecord = new \App\Record\Member($member);
 							if ($notice->summary < 3)
 								{
-								$email = new \App\Model\Email\Notice($notice, new \App\Model\Email\Member(new \App\Record\Member($member)));
-								$email->setToMember($member->toArray());
+								$email = new \App\Model\Email\Notice($notice, new \App\Model\Email\Member($memberRecord));
+								$email->setToMember($memberRecord->toArray());
 								$email->bulkSend();
 								}
 
 							if ($notice->summary > 1)
 								{
-								$memberRecord = new \App\Record\Member($member);
 								$summaryTable->addRow(['Name' => $memberRecord->fullName(), 'email' => $member->email, 'Date' => $member[$notice->field]]);
 								}
 							}

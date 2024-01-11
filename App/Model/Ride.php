@@ -379,17 +379,22 @@ class Ride
 		$email->setBody($message);
 		$email->setHtml();
 
-		$memberTable = new \App\Table\Member();
-		$memberTable->getMembersWithPermission('Ride Coordinator');
-
-		if (\count($memberTable))
+		$coordinator = new \App\Record\Member((int)$this->settingTable->value('coordinator' . $ride->pace->categoryId));
+		if ($coordinator->loaded())
 			{
+			$email->addToMember($coordinator->toArray());
+			}
+		else
+			{
+			$memberTable = new \App\Table\Member();
+			$memberTable->getMembersWithPermission('Ride Coordinator');
+
 			foreach ($memberTable->getRecordCursor() as $member)
 				{
 				$email->addToMember($member->toArray());
 				}
-			$email->bulkSend();
 			}
+		$email->bulkSend();
 		}
 
 	public function getCalendarObject(\App\Record\Ride $ride) : ?\ICalendarOrg\ZCiCal

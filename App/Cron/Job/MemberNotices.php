@@ -48,6 +48,7 @@ class MemberNotices extends \App\Cron\BaseJob
 						if ($member->emailAnnouncements || $notice->overridePreferences)
 							{
 							$memberRecord = new \App\Record\Member($member);
+
 							if ($notice->summary < 3)
 								{
 								$email = new \App\Model\Email\Notice($notice, new \App\Model\Email\Member($memberRecord));

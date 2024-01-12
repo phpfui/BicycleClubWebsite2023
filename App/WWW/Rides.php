@@ -164,8 +164,20 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	public function edit(\App\Record\Ride $ride = new \App\Record\Ride()) : void
 		{
 		$afterRide = $ride->rideDate && $ride->rideDate < \App\Tools\Date::todayString();
+		$canAddRide = false;
+		$addPermissions = ['Add A Ride', 'Add RWGPS Ride', 'Add Ride To Schedule'];
 
-		if (! $ride->memberId && $this->page->isAuthorized('Add A Ride') && ! $afterRide)
+		foreach ($addPermissions as $permission)
+			{
+			if ($this->page->isAuthorized($permission))
+				{
+				$canAddRide = true;
+
+				break;
+				}
+			}
+
+		if (! $ride->memberId && $canAddRide && ! $afterRide)
 			{
 			$ride->memberId = \App\Model\Session::signedInMemberId();
 			}
@@ -173,15 +185,15 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if (! $ride->loaded())
 			{
-			$this->page->addHeader('Add A Ride');
+			$this->page->addHeader('Add A Ride', override:$canAddRide);
 			}
 		elseif ($afterRide)
 			{
-			$this->page->addHeader('Update Ride Status', '', $myride);
+			$this->page->addHeader('Update Ride Status', override:$myride);
 			}
 		else
 			{
-			$this->page->addHeader('Edit Ride', '', $myride);
+			$this->page->addHeader('Edit Ride', override:$myride);
 			}
 		$view = new \App\View\Ride\Editor($this->page);
 		$this->page->addPageContent($view->edit($ride, $afterRide));

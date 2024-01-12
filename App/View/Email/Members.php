@@ -113,7 +113,7 @@ class Members implements \Stringable
 				$_POST['currentMembers'],
 				($this->page->isAuthorized('Email Past Members') && $_POST['pastMembers']) ? (int)($_POST['months']) : 0,
 				$_POST['newMembers'] ? (int)($_POST['newMonths']) : 0,
-				$_POST['categories'] ?? [0],
+				$_POST['categories'] ?? $defaultFields['categories'],
 				$extra
 			);
 

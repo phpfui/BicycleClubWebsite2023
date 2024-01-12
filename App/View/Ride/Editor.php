@@ -98,6 +98,7 @@ class Editor
 			{
 			$submit = new \PHPFUI\Submit('Add');
 			$form = new \PHPFUI\Form($this->page);
+			$ride->setFrom($_GET);
 			$ride->rideId = 0;
 			}
 
@@ -360,10 +361,9 @@ class Editor
 						$parameters['mileage'] = $cueSheet->mileage;
 						$parameters['startLocationId'] = $cueSheet->startLocationId;
 						$parameters['title'] = $cueSheet->name;
+						$parameters = $this->cleanParameters($parameters);
 
-						$rideModel = new \App\Model\Ride();
-						$id = $rideModel->add($parameters);
-						$this->page->redirect('/Rides/edit/' . $id);
+						$this->page->redirect('/Rides/edit/0?' . \http_build_query($parameters));
 
 						break;
 
@@ -377,10 +377,9 @@ class Editor
 						$parameters['elevation'] = $rwgps->elevationFeet;
 						$parameters['mileage'] = $rwgps->miles;
 						$parameters['title'] = $rwgps->title;
+						$parameters = $this->cleanParameters($parameters);
 
-						$rideModel = new \App\Model\Ride();
-						$id = $rideModel->add($parameters);
-						$this->page->redirect('/Rides/edit/' . $id);
+						$this->page->redirect('/Rides/edit/0?' . \http_build_query($parameters));
 
 						break;
 
@@ -482,6 +481,26 @@ class Editor
 					}
 				}
 			}
+		}
+
+	/**
+	 * @param array<string,string> $parameters
+	 *
+	 * @return array<string,string>
+	 */
+	private function cleanParameters(array $parameters) : array
+		{
+		unset($parameters['submit'], $parameters['csrf']);
+
+		foreach ($parameters as $key => $value)
+			{
+			if (\str_ends_with($key, 'Text'))
+				{
+				unset($parameters[$key]);
+				}
+			}
+
+		return $parameters;
 		}
 
 	private function getAssistantModal(\App\Record\Ride $ride, \PHPFUI\HTML5Element $modalLink) : void

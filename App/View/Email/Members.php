@@ -16,7 +16,6 @@ class Members implements \Stringable
 		$this->parameters = \App\Model\Session::getFlash('post') ?? [];
 		$defaultFields = [];
 		$defaultFields['currentMembers'] = 1;
-		$defaultFields['categories'] = [0];
 
 		if ($this->page->isAuthorized('Email Past Members'))
 			{
@@ -31,6 +30,7 @@ class Members implements \Stringable
 		$defaultFields['town'] = '';
 		$defaultFields['zipCodes'] = '';
 		$requiredFields = \array_merge(['submit'], \array_keys($defaultFields));
+		$defaultFields['categories'] = [0];
 
 		if ($_POST)
 			{
@@ -113,7 +113,7 @@ class Members implements \Stringable
 				$_POST['currentMembers'],
 				($this->page->isAuthorized('Email Past Members') && $_POST['pastMembers']) ? (int)($_POST['months']) : 0,
 				$_POST['newMembers'] ? (int)($_POST['newMonths']) : 0,
-				$_POST['categories'],
+				$_POST['categories'] ?? [0],
 				$extra
 			);
 

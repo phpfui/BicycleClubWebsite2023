@@ -380,6 +380,7 @@ class Ride
 		$email->setHtml();
 
 		$coordinator = new \App\Record\Member((int)$this->settingTable->value('coordinator' . $ride->pace->categoryId));
+
 		if ($coordinator->loaded())
 			{
 			$email->addToMember($coordinator->toArray());

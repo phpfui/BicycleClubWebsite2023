@@ -23,6 +23,7 @@ class PendingRideNotification extends \App\Cron\BaseJob
 
 		$model = new \App\Model\Ride();
 		$rideTable = new \App\Table\Ride();
+
 		$rides = $rideTable->getNewlyAddedUpcomingRides($startTime, pending:1);
 		$todayString = \App\Tools\Date::toString($today);
 

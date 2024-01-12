@@ -348,9 +348,11 @@ class Ride extends \PHPFUI\ORM\Table
 			{
 			$end = \date('Y-m-d H:i:s', \strtotime($start) + 3600);
 			}
-		$sql = 'select * from ride where dateAdded>=? and dateAdded<=? and rideDate < ? and pending = ?';
+		$sql = 'select * from ride where dateAdded>=? and dateAdded<=? and pending = ?';
 
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$start, $end, \App\Tools\Date::todayString(10), $pending]);
+		$input = [$start, $end, $pending];
+
+		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, $input);
 		}
 
 	public static function getOldest() : \App\Record\Ride

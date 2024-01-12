@@ -379,7 +379,7 @@ class Ride
 		$email->setBody($message);
 		$email->setHtml();
 
-		$coordinator = new \App\Record\Member((int)$this->settingTable->value('coordinator' . $ride->pace->categoryId));
+		$coordinator = $ride->pace->category->coordinator;
 
 		if ($coordinator->loaded())
 			{

@@ -133,7 +133,7 @@ trait PageTrait
 				{
 				$speed = "up to {$category['maxSpeed']}";
 				}
-			$coordinator = new \App\Record\Member($category['coordinator']);
+			$coordinator = $category->coordinator;
 			$table->addRow(['level' => "<H3>{$category['category']}</H3>",
 				'speed' => $speed,
 				'coordinator' => $coordinator->fullName(),

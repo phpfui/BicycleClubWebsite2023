@@ -38,14 +38,14 @@ class Coordinators
 
 			foreach ($categories as $categoryRecord)
 				{
-				$categoryRecord->coordinator = (int)$_POST['coordinator' . $categoryRecord->categoryId];
+				$categoryRecord->coordinatorId = (int)$_POST['coordinator' . $categoryRecord->categoryId];
 				$categoryRecord->update();
 
-				if (! $categoryRecord->coordinator)
+				if (! $categoryRecord->coordinatorId)
 					{
 					continue;
 					}
-				$userPermission->memberId = $categoryRecord->coordinator;
+				$userPermission->memberId = $categoryRecord->coordinatorId;
 				$userPermission->revoked = 0;
 				$userPermission->permissionGroup = $coordinatorPermission->permissionId;
 				$userPermission->insertOrUpdate();
@@ -66,7 +66,7 @@ class Coordinators
 			foreach ($categories as $category)
 				{
 				$id = $category->categoryId;
-				$editControl = $leaderView->getEditControl("coordinator{$id}", '', $leaders, $category->coordinator);
+				$editControl = $leaderView->getEditControl("coordinator{$id}", '', $leaders, $category->coordinatorId);
 
 				if ($leaderId)
 					{

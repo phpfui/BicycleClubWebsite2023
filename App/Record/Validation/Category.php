@@ -7,7 +7,7 @@ class Category extends \PHPFUI\ORM\Validator
 	/** @var array<string, array<string>> */
 	public static array $validators = [
 		'category' => ['maxlength'],
-		'coordinator' => ['required', 'integer'],
+		'coordinatorId' => ['required', 'integer'],
 		'description' => ['maxlength'],
 		'maxSpeed' => ['maxlength'],
 		'memberDefault' => ['required', 'integer'],

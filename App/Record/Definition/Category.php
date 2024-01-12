@@ -7,7 +7,7 @@ namespace App\Record\Definition;
  *
  * @property string $category MySQL type varchar(20)
  * @property int $categoryId MySQL type int
- * @property int $coordinator MySQL type int
+ * @property ?int $coordinatorId MySQL type int
  * @property ?string $description MySQL type varchar(100)
  * @property ?string $maxSpeed MySQL type varchar(5)
  * @property int $memberDefault MySQL type tinyint(1)
@@ -23,7 +23,7 @@ abstract class Category extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'category' => ['varchar(20)', 'string', 20, false, ],
 		'categoryId' => ['int', 'int', 0, false, ],
-		'coordinator' => ['int', 'int', 0, false, 0, ],
+		'coordinatorId' => ['int', 'int', 0, true, ],
 		'description' => ['varchar(100)', 'string', 100, true, ],
 		'maxSpeed' => ['varchar(5)', 'string', 5, true, ],
 		'memberDefault' => ['tinyint(1)', 'int', 1, false, 0, ],

@@ -70,12 +70,138 @@ class Leader
 	public function getSettings(\PHPFUI\Button $backButton) : \PHPFUI\Container
 		{
 		$rideSettings = new \App\View\Ride\Settings($this->page);
-		$fields = \array_merge(['DeleteRidesPastDays', 'RideEditedWarningDays', 'unaffiliatedMessage', 'RideMinutesApart', 'RideStartTimeOffset', 'RideSignupLimit', 'RideSignupLimitDefault',
-			'RequireRiderWaiver', 'NoLeadersOnPublicSchedule', 'AdvancePostVolunteer', 'PacePicker', 'LeaderForum', 'LeaderlessName', 'RidePendingDefault'], $rideSettings->getFieldNames());
+		$fields = $rideSettings->getFieldNames();
 		$container = new \PHPFUI\Container();
 		$submit = new \PHPFUI\Submit();
 		$form = new \PHPFUI\Form($this->page, $submit);
 		$settingTable = new \App\Table\Setting();
+
+		$multiColumn = new \PHPFUI\MultiColumn();
+		$fields[] = $field = 'DeleteRidesPastDays';
+		$value = (int)$settingTable->value($field);
+		$deleteDays = new \PHPFUI\Input\Number($field, 'Delete Ride Days Back Restriction', $value);
+		$deleteDays->addAttribute('step', (string)1)->addAttribute('min', (string)0);
+		$deleteDays->setToolTip('Restrict leaders from deletings rides this number of days back. The idea is you don\'t want
+			 rides deleted right before they are due to be lead since people have made plans. Leaders should opt out
+			 of the ride, which will notify all signed up riders and allow someone else to lead the ride.
+			 Zero means a leader can not delete a ride listed for today.
+			 One would mean the leader can not delete a ride listed for tomorrow.
+			 Negative numbers would allow a leader to delete rides that many days in the past.');
+		$multiColumn->add($deleteDays);
+
+		$fields[] = $field = 'RideEditedWarningDays';
+		$value = (int)$settingTable->value($field);
+		$warningDays = new \PHPFUI\Input\Number($field, 'Ride Edit Warning Days', $value);
+		$warningDays->addAttribute('step', (string)1)->addAttribute('min', (string)0);
+		$warningDays->setToolTip('The number of days in advance of the ride that leaders will receive updates that the ride has been edited.
+														Zero is off, 1 would be the ride is edited the day before.');
+		$multiColumn->add($warningDays);
+		$form->add($multiColumn);
+
+		$multiColumn = new \PHPFUI\MultiColumn();
+		$offsetField = 'RideStartTimeOffset';
+		$offsetValue = ((int)$settingTable->value($offsetField)) ?: 15;
+
+		$fields[] = $field = 'RideMinutesApart';
+		$value = (int)$settingTable->value($field);
+		$minutesApart = new \PHPFUI\Input\Number($field, 'Ride Departure Minutes Apart', $value);
+		$minutesApart->addAttribute('step', (string)$offsetValue)->addAttribute('min', (string)0)->addAttribute('max', (string)120);
+		$minutesApart->setToolTip('The number of minutes rides must be separated that leave from the same start location. Zero is off, 30 would mandate a 1/2 hour separation of departure times.');
+		$multiColumn->add($minutesApart);
+
+		$startTimeOffset = new \PHPFUI\Input\Number($offsetField, 'Ride Start Time Offset', $offsetValue);
+		$startTimeOffset->addAttribute('step', (string)1)->addAttribute('min', (string)0)->addAttribute('max', (string)15);
+		$startTimeOffset->setToolTip('The number of minute increments for the ride start times.');
+		$multiColumn->add($startTimeOffset);
+
+		$form->add($multiColumn);
+
+		$multiColumn = new \PHPFUI\MultiColumn();
+		$fields[] = $field = 'RideSignupLimit';
+		$value = (int)$settingTable->value($field);
+		$signupLimit = new \PHPFUI\Input\Number($field, 'Rider Signup Limit', $value);
+		$signupLimit->addAttribute('step', (string)1)->addAttribute('min', (string)0);
+		$signupLimit->setToolTip('This limits the number of riders that can sign up for a ride. Additional riders signing up after the ride is full will be waitlisted. Zero is no limit.');
+		$multiColumn->add($signupLimit);
+
+		$fields[] = $field = 'RideSignupLimitDefault';
+		$value = (int)$settingTable->value($field);
+		$signupLimit = new \PHPFUI\Input\Number($field, 'Rider Signup Limit Default', $value);
+		$signupLimit->addAttribute('step', (string)1)->addAttribute('min', (string)0);
+		$signupLimit->setToolTip('This is the default rider limit if there is no rider limit. Leaders are free to change this on each ride.');
+		$multiColumn->add($signupLimit);
+		$form->add($multiColumn);
+
+		$multiColumn = new \PHPFUI\MultiColumn();
+		$fields[] = $field = 'RequireRiderWaiver';
+		$value = (bool)$settingTable->value($field);
+		$requireWaiver = new \PHPFUI\Input\CheckBoxBoolean($field, 'Require Rider Waiver', $value);
+		$requireWaiver->setToolTip('Checking this will require rider to agree to the waiver on sign up.');
+		$multiColumn->add($requireWaiver);
+
+		$fields[] = $field = 'NoLeadersOnPublicSchedule';
+		$value = (bool)$settingTable->value($field);
+		$noLeader = new \PHPFUI\Input\CheckBoxBoolean($field, "Don't show leaders on public schedule", $value);
+		$noLeader->setToolTip('Checking this will remove ride leader names from the public schedule.');
+		$multiColumn->add($noLeader);
+		$form->add($multiColumn);
+
+		$multiColumn = new \PHPFUI\MultiColumn();
+		$fields[] = $field = 'RidePendingDefault';
+		$value = (bool)$settingTable->value($field);
+		$pending = new \PHPFUI\Input\CheckBoxBoolean($field, 'Default New Rides to Pending', $value);
+		$pending->setToolTip('Checking this will make new rides pending until approved.');
+		$multiColumn->add($pending);
+
+		$fields[] = $field = 'RideDescriptionEms';
+		$value = (int)$settingTable->value($field);
+		$editorHeight = new \PHPFUI\Input\Number($field, 'Ride Description Height', $value);
+		$editorHeight->addAttribute('min', '13');
+		$editorHeight->setToolTip('Description editor height in EMs. 13 is the minimum.');
+		$multiColumn->add($editorHeight);
+
+		$form->add($multiColumn);
+
+		$multiColumn = new \PHPFUI\MultiColumn();
+		$fields[] = $field = 'AdvancePostVolunteer';
+		$value = (int)$settingTable->value($field);
+		$hoursBefore = new \PHPFUI\Input\Number($field, 'Volunteer Credit Advance Posting Hours', $value);
+		$hoursBefore->addAttribute('step', (string)1)->addAttribute('min', (string)0);
+		$hoursBefore->setToolTip('Rides posted within this number of hours of the ride start will not qualify for leader points. Zero is all ride qualify.');
+		$multiColumn->add($hoursBefore);
+
+		$fields[] = $field = 'LeaderlessName';
+		$value = $settingTable->value($field);
+		$leaderless = new \PHPFUI\Input\Text($field, 'Leaderless Name', $value);
+		$leaderless->setToolTip('Use this name for leaderless rides in the ride schedule.');
+		$multiColumn->add($leaderless);
+
+		$form->add($multiColumn);
+
+		$fields[] = $field = 'PacePicker';
+		$value = $settingTable->value($field);
+		$pacePicker = new \PHPFUI\Input\RadioGroup($field, 'Category Picker Type', $value);
+		$pacePicker->addButton('Combined Category/Pace Picker', (string)0);
+		$pacePicker->addButton('Separate Category and Pace Picker', (string)1);
+		$pacePicker->setToolTip('The combined picker will show one long list, the separate pickers show only the paces for the chosen category.');
+
+		$fields[] = $field = 'LeaderForum';
+		$value = (int)$settingTable->value($field);
+		$forumPicker = new \App\View\Forum\Picker($field, $value, 'Leader Forum');
+		$forumPicker->setToolTip('All leaders will be added to this forum. Leave blank for no leader forum.');
+		$form->add(new \PHPFUI\MultiColumn($pacePicker, $forumPicker));
+
+		$fieldSet = new \PHPFUI\FieldSet('Optional / Required Field Settings');
+		$fieldSet->add($rideSettings->getOptionalFieldsConfiguration());
+		$form->add($fieldSet);
+
+		$fields[] = $field = 'unaffiliatedMessage';
+		$value = $settingTable->value($field);
+		$textArea = new \PHPFUI\Input\TextArea($field, 'Ride Schedule Unaffiliated Message', $value);
+		$textArea->setToolTip('This message will be displayed at the end of the ride schedule if any rides listed are unaffiliated, but will not otherwise appear.');
+		$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea(['height' => '"13em"']));
+		$form->add($textArea);
+		$form->add('<br>');
 
 		if ($form->isMyCallback())
 			{
@@ -94,124 +220,6 @@ class Leader
 			$cuesheetCoordinatorEmail = $incentivesChair->getEditControl();
 			$cuesheetCoordinatorEmail->setToolTip('This address will be used to email pending sign in sheets.');
 			$container->add(new \PHPFUI\MultiColumn($chairEmail, $cuesheetCoordinatorEmail));
-
-			$multiColumn = new \PHPFUI\MultiColumn();
-			$field = 'DeleteRidesPastDays';
-			$value = (int)$settingTable->value($field);
-			$deleteDays = new \PHPFUI\Input\Number($field, 'Delete Ride Days Back Restriction', $value);
-			$deleteDays->addAttribute('step', (string)1)->addAttribute('min', (string)0);
-			$deleteDays->setToolTip('Restrict leaders from deletings rides this number of days back. The idea is you don\'t want
-         rides deleted right before they are due to be lead since people have made plans. Leaders should opt out
-         of the ride, which will notify all signed up riders and allow someone else to lead the ride.
-         Zero means a leader can not delete a ride listed for today.
-         One would mean the leader can not delete a ride listed for tomorrow.
-         Negative numbers would allow a leader to delete rides that many days in the past.');
-			$multiColumn->add($deleteDays);
-
-			$field = 'RideEditedWarningDays';
-			$value = (int)$settingTable->value($field);
-			$warningDays = new \PHPFUI\Input\Number($field, 'Ride Edit Warning Days', $value);
-			$warningDays->addAttribute('step', (string)1)->addAttribute('min', (string)0);
-			$warningDays->setToolTip('The number of days in advance of the ride that leaders will receive updates that the ride has been edited.
-															Zero is off, 1 would be the ride is edited the day before.');
-			$multiColumn->add($warningDays);
-			$form->add($multiColumn);
-
-			$multiColumn = new \PHPFUI\MultiColumn();
-			$offsetField = 'RideStartTimeOffset';
-			$offsetValue = ((int)$settingTable->value($offsetField)) ?: 15;
-
-			$field = 'RideMinutesApart';
-			$value = (int)$settingTable->value($field);
-			$minutesApart = new \PHPFUI\Input\Number($field, 'Ride Departure Minutes Apart', $value);
-			$minutesApart->addAttribute('step', (string)$offsetValue)->addAttribute('min', (string)0)->addAttribute('max', (string)120);
-			$minutesApart->setToolTip('The number of minutes rides must be separated that leave from the same start location. Zero is off, 30 would mandate a 1/2 hour separation of departure times.');
-			$multiColumn->add($minutesApart);
-
-			$startTimeOffset = new \PHPFUI\Input\Number($offsetField, 'Ride Start Time Offset', $offsetValue);
-			$startTimeOffset->addAttribute('step', (string)1)->addAttribute('min', (string)0)->addAttribute('max', (string)15);
-			$startTimeOffset->setToolTip('The number of minute increments for the ride start times.');
-			$multiColumn->add($startTimeOffset);
-
-			$form->add($multiColumn);
-
-			$multiColumn = new \PHPFUI\MultiColumn();
-			$field = 'RideSignupLimit';
-			$value = (int)$settingTable->value($field);
-			$signupLimit = new \PHPFUI\Input\Number($field, 'Rider Signup Limit', $value);
-			$signupLimit->addAttribute('step', (string)1)->addAttribute('min', (string)0);
-			$signupLimit->setToolTip('This limits the number of riders that can sign up for a ride. Additional riders signing up after the ride is full will be waitlisted. Zero is no limit.');
-			$multiColumn->add($signupLimit);
-
-			$field = 'RideSignupLimitDefault';
-			$value = (int)$settingTable->value($field);
-			$signupLimit = new \PHPFUI\Input\Number($field, 'Rider Signup Limit Default', $value);
-			$signupLimit->addAttribute('step', (string)1)->addAttribute('min', (string)0);
-			$signupLimit->setToolTip('This is the default rider limit if there is no rider limit. Leaders are free to change this on each ride.');
-			$multiColumn->add($signupLimit);
-			$form->add($multiColumn);
-
-			$multiColumn = new \PHPFUI\MultiColumn();
-			$field = 'RequireRiderWaiver';
-			$value = (bool)$settingTable->value($field);
-			$requireWaiver = new \PHPFUI\Input\CheckBoxBoolean($field, 'Require Rider Waiver', $value);
-			$requireWaiver->setToolTip('Checking this will require rider to agree to the waiver on sign up.');
-			$multiColumn->add($requireWaiver);
-
-			$field = 'NoLeadersOnPublicSchedule';
-			$value = (bool)$settingTable->value($field);
-			$noLeader = new \PHPFUI\Input\CheckBoxBoolean($field, "Don't show leaders on public schedule", $value);
-			$noLeader->setToolTip('Checking this will remove ride leader names from the public schedule.');
-			$multiColumn->add($noLeader);
-
-			$field = 'RidePendingDefault';
-			$value = (bool)$settingTable->value($field);
-			$pending = new \PHPFUI\Input\CheckBoxBoolean($field, 'Default New Rides to Pending', $value);
-			$pending->setToolTip('Checking this will make new rides pending until approved.');
-			$multiColumn->add($pending);
-
-			$form->add($multiColumn);
-
-			$multiColumn = new \PHPFUI\MultiColumn();
-			$field = 'AdvancePostVolunteer';
-			$value = (int)$settingTable->value($field);
-			$hoursBefore = new \PHPFUI\Input\Number($field, 'Volunteer Credit Advance Posting Hours', $value);
-			$hoursBefore->addAttribute('step', (string)1)->addAttribute('min', (string)0);
-			$hoursBefore->setToolTip('Rides posted within this number of hours of the ride start will not qualify for leader points. Zero is all ride qualify.');
-			$multiColumn->add($hoursBefore);
-
-			$field = 'LeaderlessName';
-			$value = $settingTable->value($field);
-			$leaderless = new \PHPFUI\Input\Text($field, 'Leaderless Name', $value);
-			$leaderless->setToolTip('Use this name for leaderless rides in the ride schedule.');
-			$multiColumn->add($leaderless);
-
-			$form->add($multiColumn);
-
-			$field = 'PacePicker';
-			$value = $settingTable->value($field);
-			$pacePicker = new \PHPFUI\Input\RadioGroup($field, 'Category Picker Type', $value);
-			$pacePicker->addButton('Combined Category/Pace Picker', (string)0);
-			$pacePicker->addButton('Separate Category and Pace Picker', (string)1);
-			$pacePicker->setToolTip('The combined picker will show one long list, the separate pickers show only the paces for the chosen category.');
-
-			$field = 'LeaderForum';
-			$value = (int)$settingTable->value($field);
-			$forumPicker = new \App\View\Forum\Picker($field, $value, 'Leader Forum');
-			$forumPicker->setToolTip('All leaders will be added to this forum. Leave blank for no leader forum.');
-			$form->add(new \PHPFUI\MultiColumn($pacePicker, $forumPicker));
-
-			$fieldSet = new \PHPFUI\FieldSet('Optional / Required Field Settings');
-			$fieldSet->add($rideSettings->getOptionalFieldsConfiguration());
-			$form->add($fieldSet);
-
-			$field = 'unaffiliatedMessage';
-			$value = $settingTable->value($field);
-			$textArea = new \PHPFUI\Input\TextArea($field, 'Ride Schedule Unaffiliated Message', $value);
-			$textArea->setToolTip('This message will be displayed at the end of the ride schedule if any rides listed are unaffiliated, but will not otherwise appear.');
-			$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
-			$form->add($textArea);
-			$form->add('<br>');
 
 			$buttonGroup = new \App\UI\CancelButtonGroup();
 			$buttonGroup->addButton($submit);

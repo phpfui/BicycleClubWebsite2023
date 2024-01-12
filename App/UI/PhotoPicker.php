@@ -67,7 +67,7 @@ class PhotoPicker
 		$value = $this->initial->photo;
 		$control = new \PHPFUI\Input\AutoComplete($this->page, $this->callback(...), 'text', $this->fieldName, $this->label, $value);
 		$hidden = $control->getHiddenField();
-		$hidden->setValue((string)($this->initial->photoId ?? 0));
+		$hidden->setValue((string)($this->initial->photoId ?? ''));
 		$control->setNoFreeForm();
 
 		return $control;

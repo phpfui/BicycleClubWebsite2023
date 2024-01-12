@@ -27,6 +27,14 @@ class TinyMCEInline implements \PHPFUI\Interfaces\HTMLEditor
 		'image_advtab' => true,
 	];
 
+	/**
+	 * @param array<string,mixed> $parameters
+	 */
+	public function __construct(array $parameters = [])
+		{
+		$this->options = \array_merge($this->options, $parameters);
+		}
+
 	public function addOption(string $option, mixed $value) : static
 		{
 		$this->options[$option] = $value;

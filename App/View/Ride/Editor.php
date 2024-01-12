@@ -21,7 +21,15 @@ class Editor
 	public function __construct(private readonly \App\View\Page $page)
 		{
 		$this->description = new \PHPFUI\Input\TextArea('description', 'Description');
-		$this->description->htmlEditing($page, new \App\Model\TinyMCETextArea());
+		$textArea = new \App\Model\TinyMCETextArea();
+		$ems = (int)$this->page->value('RideDescriptionEms');
+
+		if ($ems < 13)
+			{
+			$ems = 30;
+			}
+		$textArea->addSetting('height', '"' . $ems . 'em"');
+		$this->description->htmlEditing($page, $textArea);
 		$this->rideSettingsView = new \App\View\Ride\Settings($page);
 		$this->startTimeOffset = ((int)$this->page->value('RideStartTimeOffset')) ?: 15;
 		$this->elevation = new \PHPFUI\Input\Number('elevation', 'Elevation Gain (if known)');
@@ -48,7 +56,9 @@ class Editor
 		$category = new \App\View\PacePicker('paceId', 'Category', 'Pace');
 		$fieldSet->add(new \PHPFUI\MultiColumn($date, $time, $category));
 		$cueSheetPicker = new \App\UI\CueSheetPicker($this->page, 'cueSheetId', 'Select Ride (start typing to search)');
-		$fieldSet->add($cueSheetPicker->getEditControl());
+		$picker = $cueSheetPicker->getEditControl();
+		$picker->setRequired();
+		$fieldSet->add($picker);
 		$fieldSet->add(new \PHPFUI\Input\Hidden('memberId', (string)\App\Model\Session::signedInMemberId()));
 		$form->add($fieldSet);
 		$form->add($submit);
@@ -346,7 +356,16 @@ class Editor
 								$rideSignupModel->copyWaitList($clonedRide);
 								}
 							}
-						$this->page->redirect('/Rides/edit/' . $id);
+						$addedRide = new \App\Record\Ride($id);
+
+						if ($addedRide->pending)
+							{
+							$this->page->redirect('/Rides/My/pending');
+							}
+						else
+							{
+							$this->page->redirect('/Rides/edit/' . $id);
+							}
 
 						break;
 

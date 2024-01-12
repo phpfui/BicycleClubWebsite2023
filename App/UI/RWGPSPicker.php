@@ -51,7 +51,7 @@ class RWGPSPicker
 		$value = $this->getText($this->initial);
 		$control = new \PHPFUI\Input\AutoComplete($this->page, $this->callback(...), 'text', $this->fieldName, $this->label, $value);
 		$hidden = $control->getHiddenField();
-		$hidden->setValue((string)($this->initial->RWGPSId ?? 0));
+		$hidden->setValue((string)($this->initial->RWGPSId ?? ''));
 		$control->setNoFreeForm();
 
 		return $control;

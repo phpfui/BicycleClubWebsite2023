@@ -21,6 +21,14 @@ class TinyMCETextArea implements \PHPFUI\Interfaces\HTMLEditor
 		'valid_elements' => '"*[*]"',
 	];
 
+	/**
+	 * @param array<string,mixed> $parameters
+	 */
+	public function __construct(array $parameters = [])
+		{
+		self::$settings = \array_merge(self::$settings, $parameters);
+		}
+
 	public static function addSetting(string $key, mixed $setting) : void
 		{
 		self::$settings[$key] = $setting;

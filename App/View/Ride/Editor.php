@@ -84,7 +84,9 @@ class Editor
 		$fieldSet->add(new \PHPFUI\MultiColumn($date, $time, $category));
 
 		$rwgpsPicker = new \App\UI\RWGPSPicker($this->page, 'RWGPSId', 'RWGPS to create from (start typing to search)');
-		$fieldSet->add($rwgpsPicker->getEditControl());
+		$picker = $rwgpsPicker->getEditControl();
+		$picker->setRequired();
+		$fieldSet->add($picker);
 		$fieldSet->add(new \PHPFUI\Input\Hidden('memberId', (string)\App\Model\Session::signedInMemberId()));
 		$form->add($fieldSet);
 		$form->add($submit);

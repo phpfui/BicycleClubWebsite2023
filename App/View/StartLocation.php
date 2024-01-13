@@ -6,7 +6,7 @@ class StartLocation
 	{
 	private readonly \App\Table\StartLocation $startLocationTable;
 
-	public function __construct(private readonly \App\View\Page $page)
+	public function __construct(private readonly \PHPFUI\Page $page)
 		{
 		$this->startLocationTable = new \App\Table\StartLocation();
 		$this->processAJAXRequest();

@@ -6,7 +6,7 @@ class Leader
 	{
 	private readonly \App\Table\Member $memberTable;
 
-	public function __construct(private readonly \App\View\Page $page)
+	public function __construct(private readonly \PHPFUI\Page $page)
 		{
 		$this->memberTable = new \App\Table\Member();
 		}
@@ -315,7 +315,7 @@ class Leader
 		return '';
 		}
 
-	public function pendingLeaders() : \PHPFUI\Container
+	public function pendingLeaders(\App\Model\PermissionBase $permissions) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 
@@ -325,7 +325,7 @@ class Leader
 				{
 				case 'approveLeader':
 
-					$leaderPermission = $this->page->getPermissions()->getPermissionId('Ride Leader');
+					$leaderPermission = $permissions->getPermissionId('Ride Leader');
 					$userPermission = new \App\Record\UserPermission();
 
 					if (! empty($_POST['memberId']))

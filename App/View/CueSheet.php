@@ -16,7 +16,7 @@ class CueSheet
 
 	private readonly \App\View\StartLocation $startLocationView;
 
-	public function __construct(private readonly \App\View\Page $page)
+	public function __construct(private readonly \PHPFUI\Page $page)
 		{
 		$this->cueSheetTable = new \App\Table\CueSheet();
 		$this->cueSheetVersionTable = new \App\Table\CueSheetVersion();

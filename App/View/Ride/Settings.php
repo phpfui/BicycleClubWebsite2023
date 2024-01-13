@@ -15,7 +15,7 @@ class Settings
 
 	private readonly \App\Table\Setting $settingTable;
 
-	public function __construct(private readonly \App\View\Page $page)
+	public function __construct(private readonly \PHPFUI\Page $page)
 		{
 		$this->settingTable = new \App\Table\Setting();
 		}

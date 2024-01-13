@@ -371,7 +371,9 @@ class Ride
 		$title = $this->clubAbbrev . ' Rides Waiting to be Approved';
 
 		$message = new \PHPFUI\Link($this->settingTable->value('homePage') . '/Rides/pending', 'Approve Rides Here');
-		$message .= '<p>' . $this->getRideNoticeBody($ride, $leader);
+
+		$view = new \App\View\Ride\Info(new \PHPFUI\Page());
+		$message .= '<p>' . $view->getRideInfo($ride);
 
 		$email = new \App\Tools\EMail();
 		$email->setSubject($title);

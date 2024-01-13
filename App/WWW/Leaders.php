@@ -358,7 +358,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Pending Leaders'))
 			{
-			$this->page->addPageContent($this->view->pendingLeaders());
+			$this->page->addPageContent($this->view->pendingLeaders($this->page->getPermissions()));
 			}
 		}
 

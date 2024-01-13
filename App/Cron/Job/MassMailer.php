@@ -12,6 +12,10 @@ class MassMailer extends \App\Cron\BaseJob
 	/** @param array<string, string> $parameters */
 	public function run(array $parameters = []) : void
 		{
+		$SMTPSettings = new \App\Model\SettingsSaver('SMTP');
+		$values = $SMTPSettings->getValues();
+		$limit = (int)($values['SMTPLimit'] ?? 0);
+
 		$mailItemTable = new \App\Table\MailItem();
 
 		foreach ($mailItemTable->getRecordCursor() as $mailItem)
@@ -80,7 +84,7 @@ class MassMailer extends \App\Cron\BaseJob
 					}
 				$sent += 1;
 
-				if ($this->controller->timedOut())
+				if ($this->controller->timedOut() || ($limit && $sent >= $limit))
 					{
 					return;
 					}

@@ -39,8 +39,9 @@ class SMTPSettings
 		$fieldSet->add($settingsSaver->generateField('SMTPUsername', 'Username'));
 		$fieldSet->add($settingsSaver->generateField('SMTPPassword', 'Password', 'PasswordEye'));
 		$fieldSet->add($settingsSaver->generateField('SMTPSecure', 'SMTPSecure (tls or ssl)'));
-		$fieldSet->add($settingsSaver->generateField('SMTPPort', 'Port', 'number'));
+		$fieldSet->add($settingsSaver->generateField('SMTPPort', 'Port', 'Number'));
 		$fieldSet->add($settingsSaver->generateField('SMTPLog', 'Log Emails to Slack', 'CheckBox'));
+		$fieldSet->add($settingsSaver->generateField('SMTPLimit', 'Limit emails to send at one time (0 is unlimited)', 'Number'));
 		$form->add($fieldSet);
 
 		if ($form->isMyCallback())
@@ -77,6 +78,7 @@ class SMTPSettings
 					$settings['SMTPUsername'] = '*@' . \emailServerName();
 					$settings['SMTPSecure'] = 'STARTTLS';
 					$settings['SMTPPort'] = '587';
+					$settings['SMTPLimit'] = '50';
 					$settingsSaver->save($settings, true);
 					\App\Model\Session::setFlash('success', 'Reset to IONOS defaults');
 

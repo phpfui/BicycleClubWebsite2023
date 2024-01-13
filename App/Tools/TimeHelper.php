@@ -7,7 +7,7 @@ namespace App\Tools;
  */
 class TimeHelper
 	{
-	public static function fromString(string $timeString) : int
+	public static function fromString(?string $timeString) : int
 		{
 		if (empty($timeString))
 			{
@@ -193,7 +193,7 @@ class TimeHelper
 		return $returnValue;
 		}
 
-	public static function toSmallTime(string $time) : string
+	public static function toSmallTime(?string $time) : string
 		{
 		return \str_replace([':00', ' ', 'M', 'm'], '', self::toString(self::fromString($time)));
 		}

@@ -15,6 +15,7 @@ class MassMailer extends \App\Cron\BaseJob
 		$SMTPSettings = new \App\Model\SettingsSaver('SMTP');
 		$values = $SMTPSettings->getValues();
 		$limit = (int)($values['SMTPLimit'] ?? 0);
+		$totalSent = 0;
 
 		$mailItemTable = new \App\Table\MailItem();
 
@@ -84,7 +85,7 @@ class MassMailer extends \App\Cron\BaseJob
 					}
 				$sent += 1;
 
-				if ($this->controller->timedOut() || ($limit && $sent >= $limit))
+				if ($this->controller->timedOut() || ($limit && ++$totalSent >= $limit))
 					{
 					return;
 					}

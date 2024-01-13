@@ -110,7 +110,15 @@ class Editor
 			{
 			$submit = new \PHPFUI\Submit('Add');
 			$form = new \PHPFUI\Form($this->page);
-			$ride->setFrom($_GET);
+			$get = $_GET;
+			foreach ($get as $key => $value)
+				{
+				if (str_ends_with($key, 'Id'))
+					{
+					$get[$key] = (int)$value;
+					}
+				}
+			$ride->setFrom($get);
 			$ride->rideId = 0;
 			}
 

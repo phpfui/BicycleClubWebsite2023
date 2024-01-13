@@ -146,7 +146,7 @@ class CueSheet extends \FPDF
 		return $this->generateFromRWGPS($ride->RWGPS, $ride->title, $leader, $cellPhoneNumber);
 		}
 
-	public function generateFromRWGPS(\App\Record\RWGPS $rwgps, string $title = '', string $leader = '', string $cellPhoneNumber = '') : static
+	public function generateFromRWGPS(\App\Record\RWGPS $rwgps, ?string $title = '', string $leader = '', string $cellPhoneNumber = '') : static
 		{
 		if (! $rwgps->loaded())
 			{

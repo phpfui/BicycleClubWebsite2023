@@ -78,7 +78,7 @@ class SMTPSettings
 					$settings['SMTPUsername'] = '*@' . \emailServerName();
 					$settings['SMTPSecure'] = 'STARTTLS';
 					$settings['SMTPPort'] = '587';
-					$settings['SMTPLimit'] = '50';
+					$settings['SMTPLimit'] = '5';
 					$settingsSaver->save($settings, true);
 					\App\Model\Session::setFlash('success', 'Reset to IONOS defaults');
 

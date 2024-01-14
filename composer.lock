@@ -2555,12 +2555,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ConstantContact.git",
-                "reference": "69721a7df04c1a1719b1735165ee817199191a89"
+                "reference": "fb6d8047c8bca5d988a79e01329b720e78b2b496"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ConstantContact/zipball/69721a7df04c1a1719b1735165ee817199191a89",
-                "reference": "69721a7df04c1a1719b1735165ee817199191a89",
+                "url": "https://api.github.com/repos/phpfui/ConstantContact/zipball/fb6d8047c8bca5d988a79e01329b720e78b2b496",
+                "reference": "fb6d8047c8bca5d988a79e01329b720e78b2b496",
                 "shasum": ""
             },
             "require": {
@@ -2575,7 +2575,7 @@
                 "phpstan/phpstan": "^1.8",
                 "phpunit/phpunit": "<11.0",
                 "roave/security-advisories": "dev-latest",
-                "symfony/yaml": "^5.3"
+                "symfony/yaml": "^6.0"
             },
             "default-branch": true,
             "type": "library",
@@ -2606,9 +2606,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ConstantContact/issues",
-                "source": "https://github.com/phpfui/ConstantContact/tree/main"
+                "source": "https://github.com/phpfui/ConstantContact/tree/V24.1.0"
             },
-            "time": "2023-12-12T02:02:29+00:00"
+            "time": "2024-01-14T18:37:00+00:00"
         },
         {
             "name": "phpfui/icalendar",

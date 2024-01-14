@@ -44,7 +44,7 @@ class Search implements \Stringable
 		{
 		$this->cueSheetTable->setLimit(50);
 		$this->cueSheetTable->addOrderBy($parameters['sort'] ?? 'Mileage', $parameters['order'] ?? 'A');
-		$condition = new \PHPFUI\ORM\Condition();
+		$condition = new \PHPFUI\ORM\Condition('pending', 0);
 
 		foreach (['destination', 'description', 'name'] as $field)
 			{

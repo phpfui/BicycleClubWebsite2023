@@ -440,7 +440,7 @@ class Ride extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select r.* from ride r
 			left join assistantLeader al on al.rideId=r.rideId
-			where al.memberId=? and r.pending=0 and order by r.rideDate desc limit 1';
+			where al.memberId=? and r.pending=0 order by r.rideDate desc limit 1';
 		$input = [$memberId, ];
 
 		$ride = new \App\Record\Ride();

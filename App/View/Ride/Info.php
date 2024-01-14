@@ -149,9 +149,14 @@ class Info
 		return $fieldSet;
 		}
 
-	public function getRideInfoEmail(\App\Record\Ride $ride) : \PHPFUI\FieldSet
+	public function getRideInfoEmail(\App\Record\Ride $ride) : \PHPFUI\Container
 		{
+		$container = new \PHPFUI\Container();
+		$style = new \PHPFUI\HTML5Element('style');
+		$style->add('table tr:nth-child(odd) {background-color: #f2f2f2;} table td,table th {padding: .5em;} table tr td:first-child {font-weight: bold;}');
+		$container->add($style);
 		$fieldSet = new \PHPFUI\FieldSet('Ride Information');
+		$container->add($fieldSet);
 		$table = new \PHPFUI\Table();
 
 		if ($ride->dateAdded)
@@ -260,6 +265,6 @@ class Info
 
 		$fieldSet->add($table);
 
-		return $fieldSet;
+		return $container;
 		}
 	}

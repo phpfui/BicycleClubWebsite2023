@@ -591,7 +591,7 @@ class Rides
 					$button = new \PHPFUI\Button('Leader Stats', '/Leaders/stats/' . $ride->memberId);
 					$button->addClass('info');
 					$bg->addButton($button);
-					$title = "Your {$categoryLetter} ride on " . \App\Tools\Date::formatString('M j', $ride->rideDate);
+					$title = "Your {$this->paceTable->getPace($ride->paceId ?? 0)} ride on " . \App\Tools\Date::formatString('M j', $ride->rideDate);
 					$button = new \PHPFUI\Button('Contact', '/Membership/email/' . $ride->memberId . '?title=' . \urlencode($title));
 					$bg->addButton($button);
 					}

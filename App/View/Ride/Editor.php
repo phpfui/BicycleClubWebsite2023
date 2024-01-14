@@ -370,6 +370,8 @@ class Editor
 
 						if ($addedRide->pending)
 							{
+							$model = new \App\Model\Ride();
+							$model->emailPendingRideNotice($addedRide);
 							$this->page->redirect('/Rides/My/pending');
 							}
 						else

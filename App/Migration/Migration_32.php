@@ -6,7 +6,7 @@ class Migration_32 extends \PHPFUI\ORM\Migration
 	{
 	public function description() : string
 		{
-		return 'Add category.coordinator to coordinatorId';
+		return 'Change category.coordinator to coordinatorId';
 		}
 
 	public function down() : bool

@@ -21,6 +21,7 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Rides/search', 'Search Rides');
 			$this->addSub($menu, '/Rides/My/category', 'Rides In My Category');
 			$this->addSub($menu, '/Rides/pending', 'Approve Rides');
+			$this->addSub($menu, '/Rides/allPending', 'Approve All Rides');
 //			$this->addSub($menu, '/Rides/My/statistics', 'My Ride Statistics');
 			$this->addSub($menu, '/Rides/csv', 'Download Rides.csv');
 

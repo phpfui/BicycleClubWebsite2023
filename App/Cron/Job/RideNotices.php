@@ -20,7 +20,10 @@ class RideNotices extends \App\Cron\BaseJob
 
 		foreach ($advanceRides as $ride)
 			{
-			$rideDescriptions[$ride->rideId] = $model->getRideNoticeBody($ride);
+			if ($ride->pending == 0)
+				{
+				$rideDescriptions[$ride->rideId] = $model->getRideNoticeBody($ride);
+				}
 			}
 
 		$rideChair = $model->getRidesChair();
@@ -40,6 +43,11 @@ class RideNotices extends \App\Cron\BaseJob
 
 			foreach ($advanceRides as $ride)
 				{
+				if ($ride->pending)
+					{
+					continue;
+					}
+
 				$daysOut = \App\Tools\Date::fromString($ride->rideDate) - $today;
 
 				if ($daysOut >= 0 && $member['rideJournal'] >= $daysOut && $paceTable->getCategoryIdFromPaceId($ride->paceId) == $member['categoryId'])

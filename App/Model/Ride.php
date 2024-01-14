@@ -370,10 +370,10 @@ class Ride
 		$leader = $ride->member;
 		$title = $this->clubAbbrev . ' Rides Waiting to be Approved';
 
-		$message = new \PHPFUI\Link($this->settingTable->value('homePage') . '/Rides/pending', 'Approve Rides Here');
+		$message = new \PHPFUI\EMailButton('Approve Ride', $this->settingTable->value('homePage') . '/Rides/pending');
 
 		$view = new \App\View\Ride\Info(new \PHPFUI\Page());
-		$message .= '<p>' . $view->getRideInfo($ride);
+		$message .= '<p>' . $view->getRideInfoEmail($ride);
 
 		$email = new \App\Tools\EMail();
 		$email->setSubject($title);
@@ -397,6 +397,28 @@ class Ride
 				$email->addToMember($member->toArray());
 				}
 			}
+		$email->bulkSend();
+		}
+
+	/**
+	 * Send out approved ride notice
+	 *
+	 * @param \App\Record\Ride $ride to send out
+	 */
+	public function emailRideApproved(\App\Record\Ride $ride) : void
+		{
+		$leader = $ride->member;
+		$title = $this->clubAbbrev . ' You ride was approved';
+
+		$view = new \App\View\Ride\Info(new \PHPFUI\Page());
+		$message = $view->getRideInfoEmail($ride);
+
+		$email = new \App\Tools\EMail();
+		$email->setSubject($title);
+		$email->setFromMember(\App\Model\Session::getSignedInMember());
+		$email->setBody($message);
+		$email->setHtml();
+		$email->addToMember($leader->toArray());
 		$email->bulkSend();
 		}
 

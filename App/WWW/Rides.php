@@ -46,6 +46,8 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$ride->dateAdded = \date('Y-m-d H:i:s');
 				$ride->pending = 0;
 				$ride->update();
+				$model = new \App\Model\Ride();
+				$model->emailRideApproved($ride);
 				}
 			else
 				{
@@ -307,12 +309,28 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function allPending() : void
+		{
+		if ($this->page->addHeader('Approve All Rides'))
+			{
+			$rideTable = new \App\Table\Ride();
+			$rideTable->setWhere(new \PHPFUI\ORM\Condition('pending', 1));
+			$rideTable->addOrderBy('rideDate');
+			$rideTable->addOrderBy('mileage');
+			$this->page->addPageContent($this->view->schedule($rideTable->getRecordCursor(), 'There are no pending rides'));
+			}
+		}
+
 	public function pending() : void
 		{
 		if ($this->page->addHeader('Approve Rides'))
 			{
 			$rideTable = new \App\Table\Ride();
-			$rideTable->setWhere(new \PHPFUI\ORM\Condition('pending', 1));
+			$rideTable->addJoin('pace');
+			$rideTable->addJoin('category', new \PHPFUI\ORM\Condition('category.categoryId', new \PHPFUI\ORM\Field('pace.categoryId')));
+			$where = new \PHPFUI\ORM\Condition('pending', 1);
+			$where->and('category.coordinatorId', \App\Model\Session::signedInMemberId());
+			$rideTable->setWhere($where);
 			$rideTable->addOrderBy('rideDate');
 			$rideTable->addOrderBy('mileage');
 			$this->page->addPageContent($this->view->schedule($rideTable->getRecordCursor(), 'There are no pending rides'));

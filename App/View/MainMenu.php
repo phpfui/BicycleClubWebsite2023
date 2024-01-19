@@ -27,7 +27,7 @@ class MainMenu extends \App\UI\MainMenu
 
 			if ($statsMenu = $this->addMenu($menu, '/Rides/statistics', 'Ride Statistics'))
 				{
-				$this->addSub($statsMenu, '/Rides/Statistics/leaders', 'Leaders Statistics');
+				$this->addSub($statsMenu, '/Rides/Statistics/leaders', 'Ride Leader Statistics');
 				$this->addSub($statsMenu, '/Rides/Statistics/ride', 'Ride Statistics');
 				$this->addSub($statsMenu, '/Rides/Statistics/riders', 'Rider Statistics');
 				$this->addSub($statsMenu, '/Rides/Statistics/cuesheets', 'Cue Sheet Statistics');
@@ -123,16 +123,16 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Events/upcoming', 'Upcoming Events');
 			}
 
-		if ($menu = $this->addTopMenu('Leaders', 'Leaders'))
+		if ($menu = $this->addTopMenu('Leaders', 'Ride Leaders'))
 			{
 			$this->addSub($menu, '/Leaders/crashReport', 'Crash Report');
-			$this->addSub($menu, '/Leaders/pending', 'Approve Pending Leaders');
+			$this->addSub($menu, '/Leaders/pending', 'Approve Pending Ride Leaders');
 			$this->addSub($menu, '/Leaders/apply', 'Become A Ride Leader');
-			$this->addSub($menu, '/Leaders/email', 'Email All Leaders');
-			$this->addSub($menu, '/Leaders/report', 'Leader Report');
+			$this->addSub($menu, '/Leaders/email', 'Email All Ride Leaders');
+			$this->addSub($menu, '/Leaders/report', 'Ride Leader Report');
 			$this->addSub($menu, '/Leaders/pastRides', 'My Past Leads');
 			$this->addSub($menu, '/Leaders/myRides', 'My Upcoming Leads');
-			$this->addSub($menu, '/Leaders/show', 'Leaders By Name');
+			$this->addSub($menu, '/Leaders/show', 'Ride Leaders By Name');
 			$this->addSub($menu, '/Leaders/unreported', 'My Unreported Leads');
 			$this->addSub($menu, '/Leaders/allUnreported', 'All Unreported Rides');
 			$this->addSub($menu, '/Leaders/assistantLeads', 'My Assistant Leads');
@@ -140,14 +140,13 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Leaders/nonMemberWaiver', 'Non Member Waiver');
 			$this->addSub($menu, '/Leaders/nonMemberWaivers', 'Manage Non Member Waivers');
 
-
-			if ($configMenu = $this->addMenu($menu, '/Leaders/configure', 'Leader Configuration'))
+			if ($configMenu = $this->addMenu($menu, '/Leaders/configure', 'Ride Leader Configuration'))
 				{
 				$this->addSub($configMenu, '/Leaders/settings', 'Ride Settings');
 		//		$this->addSub($configMenu, '/Leaders/pace/0', 'All Pace');
 				$this->addSub($configMenu, '/Leaders/categories', 'Edit Categories');
 				$this->addSub($configMenu, '/Leaders/coordinators', 'Ride Coordinators');
-				$this->addSub($configMenu, '/Leaders/newLeader', 'New Leader Email');
+				$this->addSub($configMenu, '/Leaders/newLeader', 'New Ride Leader Email');
 				$this->addSub($configMenu, '/Leaders/newRiderEmail', 'New Rider Email');
 				$this->addSub($configMenu, '/Leaders/rideStatus', 'Request Ride Status Email');
 				$this->addSub($configMenu, '/Leaders/waitListEmail', 'Wait List Email');

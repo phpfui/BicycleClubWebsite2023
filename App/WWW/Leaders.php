@@ -15,7 +15,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		parent::__construct($controller);
 		$this->view = new \App\View\Leader($this->page);
 		$this->settingTable = new \App\Table\Setting();
-		$this->backButton = new \PHPFUI\Button('Leader Configuration', '/Leaders/configure');
+		$this->backButton = new \PHPFUI\Button('Ride Leader Configuration', '/Leaders/configure');
 		$this->backButton->addClass('hollow');
 		}
 
@@ -114,7 +114,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function configure() : void
 		{
-		if ($this->page->addHeader($header = 'Leader Configuration'))
+		if ($this->page->addHeader($header = 'Ride Leader Configuration'))
 			{
 			$landing = $this->page->mainMenu->getLandingPage($this->page, '/Leaders/configure', $header);
 
@@ -168,7 +168,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function email() : void
 		{
-		if ($this->page->addHeader('Email All Leaders'))
+		if ($this->page->addHeader('Email All Ride Leaders'))
 			{
 			$this->page->addPageContent(new \App\View\Email\Leaders($this->page));
 			}
@@ -270,7 +270,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function newLeader() : void
 		{
-		if ($this->page->addHeader('New Leader Email'))
+		if ($this->page->addHeader('New Ride Leader Email'))
 			{
 			$editor = new \App\View\Email\Settings($this->page, 'newLeader', new \App\Model\Email\Leader());
 			$editor->addButton($this->backButton);
@@ -356,7 +356,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function pending() : void
 		{
-		if ($this->page->addHeader('Pending Leaders'))
+		if ($this->page->addHeader('Pending Ride Leaders'))
 			{
 			$this->page->addPageContent($this->view->pendingLeaders($this->page->getPermissions()));
 			}
@@ -364,7 +364,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function report() : void
 		{
-		if ($this->page->addHeader($title = 'Leader Report'))
+		if ($this->page->addHeader($title = 'Ride Leader Report'))
 			{
 			if ((isset($_POST['pdf']) || isset($_POST['csv'])) && \App\Model\Session::checkCSRF())
 				{
@@ -399,7 +399,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function show() : void
 		{
-		if ($this->page->addHeader('Show Leaders'))
+		if ($this->page->addHeader('Show Ride Leaders'))
 			{
 			$memberTable = new \App\Table\Member();
 			$memberTable->addJoin('membership');
@@ -457,7 +457,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function stats(\App\Record\Member $leader = new \App\Record\Member()) : void
 		{
-		if ($this->page->addHeader('Leader Stats'))
+		if ($this->page->addHeader('Ride Leader Stats'))
 			{
 			$this->page->addPageContent($this->view->getStats($this->page, $leader));
 			}

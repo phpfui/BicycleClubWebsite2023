@@ -32,7 +32,7 @@ class AccidentReport
 				$alert->setFadeout($page);
 				$form->add($alert);
 				}
-			$fieldSet = new \PHPFUI\FieldSet('Email to Leader Reporting an Crash');
+			$fieldSet = new \PHPFUI\FieldSet('Email to Ride Leader Reporting an Crash');
 			$textarea = new \PHPFUI\Input\TextArea(self::MAIL, '', $settings->value(self::MAIL));
 			$textarea->htmlEditing($page, new \App\Model\TinyMCETextArea());
 			$textarea->setRequired();

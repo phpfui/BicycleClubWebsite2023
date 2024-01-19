@@ -581,7 +581,7 @@ class Editor
 				$delete->addFunction('success', "$('#{$index}-'+data.response).css('background-color','red').hide('fast').remove()");
 				$this->page->addJavaScript($delete->getPageJS());
 				$table = new \PHPFUI\Table();
-				$table->setHeaders(['name' => 'Assistant Leaders', 'del' => 'Del']);
+				$table->setHeaders(['name' => 'Assistant Ride Leaders', 'del' => 'Del']);
 				$table->setRecordId('memberId');
 
 				foreach ($assistants as $assistant)

@@ -1,16 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Intervention\Image\Drivers\Gd\Modifiers;
 
-use Intervention\Image\Drivers\Gd\SpecializedModifier;
+use Intervention\Image\Drivers\DriverSpecialized;
+use Intervention\Image\Drivers\Gd\Cloner;
 use Intervention\Image\Exceptions\InputException;
 use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\Interfaces\ModifierInterface;
 
 /**
  * @property int $limit
  * @property mixed $background
  */
-class QuantizeColorsModifier extends SpecializedModifier
+class QuantizeColorsModifier extends DriverSpecialized implements ModifierInterface
 {
     public function apply(ImageInterface $image): ImageInterface
     {
@@ -33,10 +37,7 @@ class QuantizeColorsModifier extends SpecializedModifier
 
         foreach ($image as $frame) {
             // create new image for color quantization
-            $reduced = imagecreatetruecolor($width, $height);
-
-            // retain resolution
-            $this->copyResolution($frame->native(), $reduced);
+            $reduced = Cloner::cloneEmpty($frame->native(), background: $image->blendingColor());
 
             // fill with background
             imagefill($reduced, 0, 0, $background);

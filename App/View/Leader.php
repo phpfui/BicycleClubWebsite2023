@@ -81,7 +81,7 @@ class Leader
 		$value = (int)$settingTable->value($field);
 		$deleteDays = new \PHPFUI\Input\Number($field, 'Delete Ride Days Back Restriction', $value);
 		$deleteDays->addAttribute('step', (string)1)->addAttribute('min', (string)0);
-		$deleteDays->setToolTip('Restrict leaders from deletings rides this number of days back. The idea is you don\'t want
+		$deleteDays->setToolTip('Restrict ride leaders from deletings rides this number of days back. The idea is you don\'t want
 			 rides deleted right before they are due to be lead since people have made plans. Leaders should opt out
 			 of the ride, which will notify all signed up riders and allow someone else to lead the ride.
 			 Zero means a leader can not delete a ride listed for today.
@@ -128,7 +128,7 @@ class Leader
 		$value = (int)$settingTable->value($field);
 		$signupLimit = new \PHPFUI\Input\Number($field, 'Rider Signup Limit Default', $value);
 		$signupLimit->addAttribute('step', (string)1)->addAttribute('min', (string)0);
-		$signupLimit->setToolTip('This is the default rider limit if there is no rider limit. Leaders are free to change this on each ride.');
+		$signupLimit->setToolTip('This is the default rider limit if there is no rider limit. Ride Leaders are free to change this on each ride.');
 		$multiColumn->add($signupLimit);
 		$form->add($multiColumn);
 

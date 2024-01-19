@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Intervention\Image\Drivers\Gd\Decoders;
 
 use Intervention\Image\Drivers\AbstractDecoder;
@@ -41,7 +43,6 @@ class BinaryImageDecoder extends AbstractDecoder implements DecoderInterface
         if (!imageistruecolor($gd)) {
             imagepalettetotruecolor($gd);
         }
-
         imagesavealpha($gd, true);
 
         // build image instance

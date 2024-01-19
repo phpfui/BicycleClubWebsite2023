@@ -38,7 +38,7 @@ class Statistics extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 
 	public function leaders() : void
 		{
-		if ($this->page->addHeader('Leaders Statistics'))
+		if ($this->page->addHeader('Ride Leader Statistics'))
 			{
 			$view = new \App\View\Ride\Statistics($this->page, 'Leader');
 

@@ -588,7 +588,7 @@ class Rides
 
 				if ($ride->memberId)
 					{
-					$button = new \PHPFUI\Button('Leader Stats', '/Leaders/stats/' . $ride->memberId);
+					$button = new \PHPFUI\Button('Ride Leader Stats', '/Leaders/stats/' . $ride->memberId);
 					$button->addClass('info');
 					$bg->addButton($button);
 					$title = "Your {$this->paceTable->getPace($ride->paceId ?? 0)} ride on " . \App\Tools\Date::formatString('M j', $ride->rideDate);

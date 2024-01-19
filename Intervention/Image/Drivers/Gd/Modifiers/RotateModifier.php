@@ -1,22 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Intervention\Image\Drivers\Gd\Modifiers;
 
 use Intervention\Image\Colors\Rgb\Channels\Blue;
 use Intervention\Image\Colors\Rgb\Channels\Green;
 use Intervention\Image\Colors\Rgb\Channels\Red;
-use Intervention\Image\Drivers\Gd\SpecializedModifier;
+use Intervention\Image\Drivers\DriverSpecialized;
+use Intervention\Image\Drivers\Gd\Cloner;
 use Intervention\Image\Geometry\Rectangle;
 use Intervention\Image\Interfaces\ColorInterface;
 use Intervention\Image\Interfaces\FrameInterface;
 use Intervention\Image\Interfaces\ImageInterface;
-use Intervention\Image\Modifiers\FillModifier;
+use Intervention\Image\Interfaces\ModifierInterface;
 
 /**
  * @method mixed rotationAngle()
  * @property mixed $background
  */
-class RotateModifier extends SpecializedModifier
+class RotateModifier extends DriverSpecialized implements ModifierInterface
 {
     public function apply(ImageInterface $image): ImageInterface
     {
@@ -74,15 +77,7 @@ class RotateModifier extends SpecializedModifier
             ->rotate($this->rotationAngle() * -1);
 
         // create new gd image
-        $modified = $this->driver()->createImage(
-            imagesx($rotated),
-            imagesy($rotated)
-        )->modify(new FillModifier($background))
-            ->core()
-            ->native();
-
-        // retain resolution
-        $this->copyResolution($frame->native(), $modified);
+        $modified = Cloner::cloneEmpty($frame->native(), $container, $background);
 
         // draw the cutout on new gd image to have a transparent
         // background where the rotated image will be placed

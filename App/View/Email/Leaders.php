@@ -4,7 +4,7 @@ namespace App\View\Email;
 
 class Leaders implements \Stringable
 	{
-	private string $emailText = 'Email All Leaders';
+	private string $emailText = 'Email All Ride Leaders';
 
 	private string $testText = 'Sent Test Email';
 

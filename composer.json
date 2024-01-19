@@ -46,9 +46,9 @@
         "tinymce/tinymce": "^6.0",
         "twilio/sdk": "^7.0",
         "zbateson/mail-mime-parser": "*",
-        "frostybee/geobee": "^1.0",
         "php-http/discovery": "^1.19",
-        "php-http/message": "^1.16"
+        "php-http/message": "^1.16",
+        "kwn/number-to-words": "^2.8"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.0",

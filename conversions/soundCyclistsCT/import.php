@@ -491,7 +491,6 @@ foreach ($eventRegistrations as $row)
  */
 $memberTable = new \App\Table\Member();
 
-$startLocations = [];
 $startLocationTable = new \App\Table\StartLocation();
 $startLocationTable->delete(true);
 

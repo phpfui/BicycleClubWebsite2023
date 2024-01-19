@@ -316,11 +316,11 @@ class Permissions
 	/**
 	 * @param int | array<string,string> $permission
 	 */
-	public function getGroupName(string $fieldName, string $index, int | array $permission, string $type) : string
+	public function getGroupName(string $fieldName, string $index, int | array | null $permission, string $type) : string
 		{
 		if (! \is_array($permission))
 			{
-			$permissionName = new \App\Record\Permission($permission);
+			$permissionName = new \App\Record\Permission((int)$permission);
 			$permission = $permissionName->toArray();
 			}
 		$menu = $permission['menu'] ?? '';

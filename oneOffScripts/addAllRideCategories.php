@@ -19,6 +19,7 @@ foreach ($memberTable->getRecordCursor() as $member)
 	$records = [];
 	$record = new \App\Record\MemberCategory();
 	$record->member = $member;
+
 	foreach ($categoryCursor as $category)
 		{
 		$record->category = $category;
@@ -26,4 +27,3 @@ foreach ($memberTable->getRecordCursor() as $member)
 		}
 	$memberCategoryTable->insert($records, 'ignore ');
 	}
-

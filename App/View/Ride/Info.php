@@ -57,7 +57,7 @@ class Info
 			}
 		$fieldSet->add(new \App\UI\Display('Category', $this->paceTable->getPace($ride->paceId)));
 
-		if ($ride->targetPace)
+		if ($ride->targetPace > 0.0)
 			{
 			$fieldSet->add(new \App\UI\Display('Target Pace', $ride->targetPace));
 			}
@@ -195,7 +195,7 @@ class Info
 			}
 		$table->addRow(['Category', $this->paceTable->getPace($ride->paceId)]);
 
-		if ($ride->targetPace)
+		if ($ride->targetPace > 0.0)
 			{
 			$table->addRow(['Target Pace', $ride->targetPace]);
 			}

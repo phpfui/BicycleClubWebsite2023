@@ -11,10 +11,8 @@ parameters:
 		- commonbase.php
 		- www/index.php
 	scanDirectories:
-		- conversions
 		- oneOffScripts
 		- NoNameSpace
-		- PHPFUI
 	ignoreErrors:
 		-
 			message: '#Call to an undefined method PHPFUI\\Page::isAuthorized\(\)#'

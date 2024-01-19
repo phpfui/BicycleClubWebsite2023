@@ -20,7 +20,7 @@ class RideNotices extends \App\Cron\BaseJob
 
 		foreach ($advanceRides as $ride)
 			{
-			if ($ride->pending == 0)
+			if (0 == $ride->pending)
 				{
 				$rideDescriptions[$ride->rideId] = $model->getRideNoticeBody($ride);
 				}

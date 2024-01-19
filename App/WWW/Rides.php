@@ -36,6 +36,18 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function allPending() : void
+		{
+		if ($this->page->addHeader('Approve All Rides'))
+			{
+			$rideTable = new \App\Table\Ride();
+			$rideTable->setWhere(new \PHPFUI\ORM\Condition('pending', 1));
+			$rideTable->addOrderBy('rideDate');
+			$rideTable->addOrderBy('mileage');
+			$this->page->addPageContent($this->view->schedule($rideTable->getRecordCursor(), 'There are no pending rides'));
+			}
+		}
+
 	public function approve(\App\Record\Ride $ride = new \App\Record\Ride()) : void
 		{
 		if ($this->page->addHeader('Ride Approved', 'Approve Rides'))
@@ -306,18 +318,6 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$this->page->addPageContent('No rides found');
 				}
-			}
-		}
-
-	public function allPending() : void
-		{
-		if ($this->page->addHeader('Approve All Rides'))
-			{
-			$rideTable = new \App\Table\Ride();
-			$rideTable->setWhere(new \PHPFUI\ORM\Condition('pending', 1));
-			$rideTable->addOrderBy('rideDate');
-			$rideTable->addOrderBy('mileage');
-			$this->page->addPageContent($this->view->schedule($rideTable->getRecordCursor(), 'There are no pending rides'));
 			}
 		}
 

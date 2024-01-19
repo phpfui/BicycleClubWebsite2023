@@ -589,7 +589,7 @@ class Content extends \App\UI\HTMLEditor
 					$blog->count = (int)$_POST['count'];
 					$blog->update();
 
-					foreach ($_POST['storyId'] as $ranking => $storyId)
+					foreach ($_POST['storyId'] ?? [] as $ranking => $storyId)
 						{
 						$blogItem = new \App\Record\BlogItem(['blogId' => $_POST['blogId'], 'storyId' => $storyId]);
 						$blogItem->ranking = $ranking + 1;

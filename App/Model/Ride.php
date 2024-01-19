@@ -520,7 +520,7 @@ class Ride
 			. 'On <b>' . \App\Tools\Date::formatString('l, F j', $ride->rideDate) . '</b> starting at <b>' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '</b><br>'
 			. "{$ride->mileage} miles at a " . $this->getPace($ride->paceId) . ' pace.';
 
-		if ($ride->targetPace)
+		if ($ride->targetPace > 0.0)
 			{
 			$message .= ' Targeted average: ' . \number_format($ride->targetPace, 1);
 			}

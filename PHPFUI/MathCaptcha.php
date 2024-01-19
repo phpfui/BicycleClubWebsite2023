@@ -68,7 +68,22 @@ class MathCaptcha extends \PHPFUI\MultiColumn implements \PHPFUI\Interfaces\Capt
 
 			$op = $type ? \current($this->operators) : \key($this->operators);
 
-			$message = new \PHPFUI\HTML5Element(\random_int(0, 1) ? 'strong' : 'b');
+			$bold = ['strong', 'b', ];
+			$message = new \PHPFUI\HTML5Element($bold[\random_int(0, count($bold) - 1)]);
+
+			if (class_exists(\NumberToWords\NumberToWords::class))
+				{
+				$numberToWords = new \NumberToWords\NumberToWords();
+				$numberTransformer = $numberToWords->getNumberTransformer('en');
+				if (\random_int(0, 1))
+					{
+					$first = $numberTransformer->toWords($first);
+					}
+				if (\random_int(0, 1))
+					{
+					$second = $numberTransformer->toWords($second);
+					}
+				}
 			$message->add("Please Solve: {$first} {$op} {$second} = ");
 			$message->addClass('float-right hide');
 			$answers[$message->getId()] = $answer;

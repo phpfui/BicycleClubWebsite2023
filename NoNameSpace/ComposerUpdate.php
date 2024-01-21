@@ -206,21 +206,12 @@ class ComposerUpdate
 
 		foreach ($installed['packages'] as $install)
 			{
-			$use = true;
-
 			foreach ($this->ignored as $ignore)
 				{
 				if (false !== \str_starts_with($install['name'], $ignore))
 					{
-					$use = false;
-
-					break;
+					continue 2;
 					}
-				}
-
-			if (! $use)
-				{
-				continue;
 				}
 
 			if (isset($install['autoload']))
@@ -264,9 +255,62 @@ class ComposerUpdate
 					{
 					foreach ($autoload['classmap'] as $file)
 						{
-						$from = 'vendor/' . $install['name'] . '/' . $file;
-						$to = $this->noNameSpaceDir . $file;
-						\copy(\str_replace('\\', '/', $from), \str_replace('\\', '/', $to));
+						$fromDir = 'vendor/' . $install['name'] . '/' . $file;
+
+						if (\is_file($fromDir))
+							{
+							$phpFile = \file_get_contents($fromDir);
+							$namespacePos = \strpos($phpFile, 'namespace');
+
+							if (false !== $namespacePos)
+								{
+								$namespacePos += 10;
+								$semicolin = \strpos($phpFile, ';', $namespacePos);
+								$namespace = \trim(\substr($phpFile, $namespacePos, $semicolin - $namespacePos));
+								$targetDir = \str_replace('\\', '/', $namespace) . '/';
+								}
+							else
+								{
+								$targetDir = \str_replace('\\', '/', $this->noNameSpaceDir);
+								}
+							$classPos = \strpos($phpFile, 'class ');
+
+							if (false === $classPos)
+								{
+								continue;
+								}
+							$parts = \explode(' ', \substr($phpFile, $classPos + 6));
+							$className = \array_shift($parts);
+							$parts = \explode("\n", $className);
+							$className = \array_shift($parts) . '.php';
+							$sourceFile = \str_replace('\\', '/', $fromDir);
+							\copy($sourceFile, $targetDir . $className);
+
+							continue;
+							}
+						$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($fromDir));
+
+						foreach ($iterator as $file)
+							{
+							$fileName = \strtolower($file->getFilename());
+
+							if ($file->isFile() && \str_ends_with($fileName, '.php'))
+								{
+								$phpFile = \file_get_contents($file->getPathname());
+								$namespacePos = \strpos($phpFile, 'namespace') + 10;
+								$semicolin = \strpos($phpFile, ';', $namespacePos);
+								$namespace = \trim(\substr($phpFile, $namespacePos, $semicolin - $namespacePos));
+								$sourceFile = \str_replace('\\', '/', $file->getPathname());
+								$targetDir = \str_replace('\\', '/', $namespace);
+
+								if (! \is_dir($targetDir))
+									{
+									\mkdir($targetDir, recursive:true);
+									}
+								$targetFile = $targetDir . '/' . $file->getFilename();
+								\copy($sourceFile, $targetFile);
+								}
+							}
 						}
 					}
 				}

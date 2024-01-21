@@ -48,7 +48,6 @@ $updater->deleteNamespace('HighlightUtilities');
 $updater->deleteNamespace('Highlight\Highlight');
 $updater->deleteNamespace('Highlight\HighlightUtilities');
 $updater->deleteNamespace('HighlightUtilities');
-$updater->deleteNamespace('cebe\markdown\tests');
 $updater->deleteNamespace('Sample');
 $updater->deleteFileInNamespace('NoNameSpace', 'fpdf.php');
 $updater->deleteFileInNamespace('Laminas\ServiceManager', 'autoload.php');

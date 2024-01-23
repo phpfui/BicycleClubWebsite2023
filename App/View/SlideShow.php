@@ -179,9 +179,14 @@ class SlideShow
 
 		if ($slideShow->slideShowId)
 			{
+			$copyIcon = new \PHPFUI\FAIcon('far', 'clipboard');
+			$text = $this->getInsertionText($slideShow->slideShowId);
+			$callout = new \PHPFUI\HTML5Element('span');
+			$callout->add('Copied!');
+			$callout->addClass('callout success small');
+			$this->page->addCopyToClipboard($text, $copyIcon, $callout);
 			$fieldSet = new \PHPFUI\FieldSet('Content');
-			$contentLink = new \App\UI\Display('Insertion Text', $this->getInsertionText($slideShow->slideShowId));
-			$fieldSet->add($contentLink);
+			$fieldSet->add(new \PHPFUI\MultiColumn('<b>Insertion Text</b>', $text, $copyIcon, $callout));
 			$form->add($fieldSet);
 			}
 

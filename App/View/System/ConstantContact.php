@@ -92,10 +92,9 @@ class ConstantContact
 		$ol->addItem(new \PHPFUI\ListItem('Hit the yellow New Application button and give it a name. You can call it <b>Membership Website</b> or something similar.'));
 		$ol->addItem(new \PHPFUI\ListItem('On the next page, get the <b>API Key</b> and <b>Secret</b> and save it below.'));
 		$homePage = $settingTable->value('homePage');
-		$ol->addItem(new \PHPFUI\ListItem("Add a <b>Redirect URI</b> to {$homePage}/System/Settings/constantContact/token"));
-		$ol->addItem(new \PHPFUI\ListItem('Set the <b>App Logo URL</b> to an image you uploaded from here.'));
-		$ol->addItem(new \PHPFUI\ListItem('Set the app description and the name to something like "Membership website automatic sync" These are really comment fields so you know what this app is used for.'));
-		$ol->addItem(new \PHPFUI\ListItem('Hit the <i>Save</i> button below, then the <i>Authorize</i> button.'));
+		$ol->addItem(new \PHPFUI\ListItem("Add a <b>Redirect URI</b> to <b>{$homePage}/System/Settings/constantContact/token</b>"));
+		$ol->addItem(new \PHPFUI\ListItem('Set the <b>App Logo URL</b> to an image you uploaded to this site in the Photos section.'));
+		$ol->addItem(new \PHPFUI\ListItem('Set the app description and the name to something like <b>"Membership website automatic sync"</b> These are really comment fields so you know what this app is used for.'));
 		$ol->addItem(new \PHPFUI\ListItem('You may be asked to log into Constant Contact.  Then accept the requested permissions.'));
 		$ol->addItem(new \PHPFUI\ListItem('You should now see a big light green box at the top of the page saying <span class="success">"Constant Contact is authorized"</span>.'));
 		$ol->addItem(new \PHPFUI\ListItem('Select the Constant Contact list you want to sync and hit <i>Save</i>.'));

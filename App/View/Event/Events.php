@@ -347,13 +347,13 @@ class Events
 			$url = $page->value('homePage') . '/Events/signUp/' . $event['eventId'];
 			$link = new \PHPFUI\Link($url, 'Sign up for ' . $event['title']);
 
-			$copyIcon = new \PHPFUI\FAIcon('far', 'clipboard');
+			$copyIcon = new \PHPFUI\FAIcon('far', 'copy');
 			$callout = new \PHPFUI\HTML5Element('span');
 			$callout->add('Copied!');
 			$callout->addClass('callout success small');
 			$page->addCopyToClipboard("{$link}", $copyIcon, $callout);
 
-			$plainCopyIcon = new \PHPFUI\FAIcon('far', 'clipboard');
+			$plainCopyIcon = new \PHPFUI\FAIcon('far', 'copy');
 			$plainCallout = new \PHPFUI\HTML5Element('span');
 			$plainCallout->add('Copied!');
 			$plainCallout->addClass('callout success small');

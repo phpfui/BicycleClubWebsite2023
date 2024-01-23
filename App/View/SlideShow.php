@@ -179,7 +179,7 @@ class SlideShow
 
 		if ($slideShow->slideShowId)
 			{
-			$copyIcon = new \PHPFUI\FAIcon('far', 'clipboard');
+			$copyIcon = new \PHPFUI\FAIcon('far', 'copy');
 			$text = $this->getInsertionText($slideShow->slideShowId);
 			$callout = new \PHPFUI\HTML5Element('span');
 			$callout->add('Copied!');

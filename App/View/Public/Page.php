@@ -41,7 +41,7 @@ class Page extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 
 		if ($publicPage->header)
 			{
-			$this->addHeader($publicPage->name);
+			$this->addHeader($publicPage->name, banner:$publicPage->banner);
 			}
 
 		if ($publicPage->blog)

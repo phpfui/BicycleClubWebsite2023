@@ -137,9 +137,12 @@ class Page extends \PHPFUI\Page
 		$this->bannerOff = true;
 		}
 
-	public function addHeader(string $header, string $permission = '', bool $override = false) : bool
+	public function addHeader(string $header, string $permission = '', bool $override = false, bool $banner = true) : bool
 		{
-		$this->addBanners();
+		if ($banner)
+			{
+			$this->addBanners();
+			}
 		$show = true;
 
 		if (! $this->isPublic())

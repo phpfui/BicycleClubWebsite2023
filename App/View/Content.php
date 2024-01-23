@@ -135,7 +135,7 @@ class Content extends \App\UI\HTMLEditor
 
 		$view = new \App\View\SlideShow($this->page);
 
-		while ($pos = (int)\strpos($storyText, $view->getInsertionText()))
+		while (($pos = \strpos($storyText, $view->getInsertionText())) !== false)
 			{
 			$endShow = (int)\strpos($storyText, '~', $pos + 1);
 			$show = \substr($storyText, $pos, $endShow - $pos + 1);
@@ -740,7 +740,7 @@ class Content extends \App\UI\HTMLEditor
 				$reveal->add($close);
 				$row['View'] = $view;
 
-				$copyIcon = new \PHPFUI\FAIcon('far', 'clipboard');
+				$copyIcon = new \PHPFUI\FAIcon('far', 'copy');
 				$url = $this->page->getSchemeHost() . '/images/content/' . $file;
 				$this->page->addCopyToClipboard($url, $copyIcon, $callout);
 				$row['Copy'] = $copyIcon;

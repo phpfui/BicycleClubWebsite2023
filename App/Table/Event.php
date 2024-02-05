@@ -16,10 +16,9 @@ class Event extends \PHPFUI\ORM\Table
 
 	public static function getAvailableForMember(\App\Record\Member $member) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select *,e.eventId from event e left join reservation r on r.eventId=e.eventId left join member m on m.memberId=r.memberId
-			where e.eventDate>=? and (e.publicDate=0 or e.publicDate<=?) and (r.memberId!=? or r.memberId is null) group by eventDate order by eventDate';
+		$sql = 'select * from event e where eventDate>=? and publicDate<=? and ? not in (select memberId from reservation where eventId=e.eventId) group by eventDate order by eventDate';
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString(), \App\Tools\Date::todayString(), $member->memberId]);
+		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString(), \App\Tools\Date::todayString(), $member->memberId, ]);
 		}
 
 	public static function getFirst(int $memberId = 0) : string

@@ -348,10 +348,10 @@ class Registration
 				}
 
 			$buttonGroup = new \PHPFUI\ButtonGroup();
-			$buttonGroup->addButton($submit);
 
 			if ($reservation->reservationId && $this->canAddAttendee && $personCount < $event->numberReservations)
 				{
+				$buttonGroup->addButton($submit);
 				$add = new \PHPFUI\Button('Add Attendee');
 				$add->addClass('warning');
 				$form->add(new \PHPFUI\Input\Hidden('reservationId', (string)$reservation->reservationId));
@@ -378,7 +378,7 @@ class Registration
 
 			if ($reservation->reservationId)
 				{
-				$cancelButton = new \PHPFUI\Button('Cancel', '/Events/cancelUnpaid/' . $reservation->reservationId);
+				$cancelButton = new \PHPFUI\Button('Cancel My Reservation', '/Events/cancelUnpaid/' . $reservation->reservationId);
 				}
 			else
 				{

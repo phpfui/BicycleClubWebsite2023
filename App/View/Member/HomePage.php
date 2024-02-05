@@ -75,7 +75,7 @@ class HomePage implements \Stringable
 
 				$reservation = new \App\Record\Reservation(['eventId' => $event['eventId'], 'memberId' => \App\Model\Session::signedInMemberId()]);
 
-				if (! $reservation->loaded() || ($event['price'] && ! $reservation->paymentId))
+				if (! $reservation->loaded() || ((float)$event['price'] > 0.0 && ! $reservation->paymentId))
 					{
 					$event['status'] = new \PHPFUI\Button('Sign Up', '/Events/signup/' . $event['eventId']);
 					}
@@ -87,7 +87,7 @@ class HomePage implements \Stringable
 				}
 			$output->add($table);
 			$daysOut = $first - $today;
-			$order[] = ['priority' => $daysOut, 'html' => $output, 'li' => 'Upcoming Events'];
+			$order[] = ['priority' => $daysOut, 'html' => $output, ];
 			}
 
 		// open polls
@@ -149,7 +149,7 @@ class HomePage implements \Stringable
 
 		foreach ($order as $item)
 			{
-			if ($item['priority'] > $daysCutoff)
+			if ($item['priority'] > $daysCutoff || ! isset($item['li']))
 				{
 				continue;
 				}

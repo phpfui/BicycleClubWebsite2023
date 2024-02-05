@@ -126,15 +126,15 @@ class MainMenu extends \App\UI\MainMenu
 		if ($menu = $this->addTopMenu('Leaders', 'Ride Leaders'))
 			{
 			$this->addSub($menu, '/Leaders/crashReport', 'Crash Report');
-			$this->addSub($menu, '/Leaders/pending', 'Approve Pending Ride Leaders');
+			$this->addSub($menu, '/Leaders/pending', 'Pending Ride Leaders');
 			$this->addSub($menu, '/Leaders/apply', 'Become A Ride Leader');
 			$this->addSub($menu, '/Leaders/email', 'Email All Ride Leaders');
 			$this->addSub($menu, '/Leaders/report', 'Ride Leader Report');
 			$this->addSub($menu, '/Leaders/pastRides', 'My Past Leads');
 			$this->addSub($menu, '/Leaders/myRides', 'My Upcoming Leads');
-			$this->addSub($menu, '/Leaders/show', 'Ride Leaders By Name');
+			$this->addSub($menu, '/Leaders/show', 'Show Ride Leaders');
 			$this->addSub($menu, '/Leaders/unreported', 'My Unreported Leads');
-			$this->addSub($menu, '/Leaders/allUnreported', 'All Unreported Rides');
+			$this->addSub($menu, '/Leaders/allUnreported', 'All Unreported Leads');
 			$this->addSub($menu, '/Leaders/assistantLeads', 'My Assistant Leads');
 			$this->addSub($menu, '/Leaders/minorWaiver', 'Minor Waiver');
 			$this->addSub($menu, '/Leaders/nonMemberWaiver', 'Non Member Waiver');

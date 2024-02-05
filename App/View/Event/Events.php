@@ -672,6 +672,7 @@ class Events
 			$reservation->reservationemail = $customer->email;
 			$reservation->eventId = $this->event->eventId;
 			$reservation->memberId = $memberId;
+			$reservation->signedUpAt = \date('Y-m-d H:i:s');  // this should default, but does not
 			$reservation->insert();
 
 			$count = (int)($_POST['currentReservations'] ?? 1);

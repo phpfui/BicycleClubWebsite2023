@@ -26,6 +26,11 @@ class Ride extends \App\Record\Definition\Ride
 
 	public function clean() : static
 		{
+		if (null === $this->title)
+			{
+			$this->title = '';
+			}
+
 		if ($this->averagePace)
 			{
 			$this->averagePace = \round($this->averagePace, 1);

@@ -289,7 +289,6 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$container->add($view->getPayPalLogo());
 				$owe = '<p>You owe $' . $unpaidBalance . ' to complete this reservation.';
 				$container->add($owe);
-				$reservation->signedUpAt = '';
 				$reservation->update();
 				$container->add($view->getCheckoutForm($invoice, $container->getId(), 'Event Reservation'));
 				$this->page->addPageContent($container);
@@ -317,6 +316,7 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$participantCursor = $this->reservationTable->getArrayCursor();
 				$table = new \PHPFUI\Table();
 				$attending = 0;
+				$userSignedUp = false;
 
 				foreach ($participantCursor as $participant)
 					{
@@ -325,10 +325,19 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 						++$attending;
 						$table->addRow(['name' => $participant['firstName'] . ' ' . $participant['lastName']]);
 						}
+
+					if ($participant['memberId'] == \App\Model\Session::signedInMemberId())
+						{
+						$userSignedUp = true;
+						}
 					}
 				$table->addRow(['name' => '<b>Total Attending:</b> ' . $attending]);
 				$this->page->addPageContent($table);
-				$this->page->addPageContent(new \PHPFUI\Button('Register Now', '/Events/signUp/' . $event->eventId));
+
+				if (! $userSignedUp)
+					{
+					$this->page->addPageContent(new \PHPFUI\Button('Register Now', '/Events/signUp/' . $event->eventId));
+					}
 				}
 			else
 				{

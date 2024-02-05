@@ -70,15 +70,10 @@ class Categories
 				}
 			$table->setHeaders($headers);
 
-			$add = null;
-
-			if ($count < 10)
-				{
-				$add = new \PHPFUI\Button('Add Category');
-				$add->addClass('info');
-				$form->saveOnClick($add);
-				$this->addCategoryModal($add);
-				}
+			$add = new \PHPFUI\Button('Add Category');
+			$add->addClass('info');
+			$form->saveOnClick($add);
+			$this->addCategoryModal($add);
 
 			foreach ($this->categoryTable->getRecordCursor() as $category)
 				{
@@ -109,11 +104,7 @@ class Categories
 			$form->add($table);
 			$buttonGroup = new \PHPFUI\ButtonGroup();
 			$buttonGroup->addButton($submit);
-
-			if ($add)
-				{
-				$buttonGroup->addButton($add);
-				}
+			$buttonGroup->addButton($add);
 
 			if ($this->backButton)
 				{

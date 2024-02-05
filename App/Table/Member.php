@@ -64,6 +64,12 @@ class Member extends \PHPFUI\ORM\Table
 				}
 			}
 
+		if (isset($parameters['memberId']))
+			{
+			$parameters['member:memberId'] = $parameters['memberId'];
+			unset($parameters['memberId']);
+			}
+
 		return parent::addFind($parameters);
 		}
 
@@ -318,7 +324,7 @@ class Member extends \PHPFUI\ORM\Table
 	 */
 	public function getNewRideInterests(int $categoryId) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'SELECT m.firstName,m.lastName,m.email,m.memberId from member m left join memberCategory c on m.memberId=c.memberId ' .
+		$sql = 'SELECT distinct m.firstName,m.lastName,m.email,m.memberId from member m left join memberCategory c on m.memberId=c.memberId ' .
 			'left join membership s on s.membershipId=m.membershipId ' .
 			'where m.newRideEmail and c.categoryId=? and m.email like "%@%" and s.expires>=?';
 

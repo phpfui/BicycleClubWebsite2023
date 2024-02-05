@@ -318,15 +318,18 @@ class Ride
 		{
 		$daysInAdvance = \App\Tools\Date::fromString($ride->rideDate) - \App\Tools\Date::today();
 
-		$week = 'this ';
-
-		if ($daysInAdvance >= 7)
+		if ($daysInAdvance > 7)
 			{
-			$week = 'next ';
+			$week = 'on ' . \App\Tools\Date::formatString('l, F j, Y', $ride->rideDate);
 			}
+		else
+			{
+			$week = 'this ' . \App\Tools\Date::formatString('l, F j, Y', $ride->rideDate);
+			}
+		$week .= ' at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime);
+
 		$leader = $ride->member;
-		$title = $this->clubAbbrev . ' Reminder: ' . $this->getPace($ride->paceId) . ' ride ' . $week .
-			\App\Tools\Date::formatString('l', $ride->rideDate);
+		$title = $this->clubAbbrev . ' Reminder: ' . $this->getPace($ride->paceId) . ' ride ' . $week;
 
 		$message = $this->getRideNoticeBody($ride, $leader);
 
@@ -545,7 +548,7 @@ class Ride
 			{
 			$message .= "Led by <b>{$leader->fullName()}</b> " . \PHPFUI\Link::email($leader->email);
 
-			if (\strlen($leader->phone) >= 7)
+			if (\strlen($leader->phone ?? '') >= 7)
 				{
 				$message .= ' Phone: ' . \PHPFUI\Link::phone($leader->phone);
 				}

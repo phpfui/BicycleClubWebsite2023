@@ -20,6 +20,8 @@ class Rides
 
 	private readonly \App\View\StartLocation $startLocationView;
 
+	private bool $approvingRides = false;
+
 	public function __construct(private readonly \App\View\Page $page)
 		{
 		$this->leader = new \App\View\Leader($page);
@@ -31,6 +33,13 @@ class Rides
 		$this->smsModel = new \App\Model\SMS();
 
 		$this->deletePastDays = (int)$this->page->value('DeleteRidesPastDays');
+		}
+
+	public function approvingRides() : self
+		{
+		$this->approvingRides = true;
+
+		return $this;
 		}
 
 	/**
@@ -526,7 +535,14 @@ class Rides
 				$bg = new \PHPFUI\ButtonGroup();
 				$bg->addClass('round');
 
-				if ($this->page->isAuthorized('Ride Sign Up') && ! $ride->unaffiliated && \App\Table\Ride::STATUS_WEATHER != $ride->rideStatus)
+				if ($ride->pending && $this->page->isAuthorized('Approve Rides'))
+					{
+					$button = new \PHPFUI\Button('Approve', '/Rides/approve/' . $ride->rideId);
+					$button->addClass('success');
+					$bg->addButton($button);
+					}
+
+				if ($this->page->isAuthorized('Ride Sign Up') && ! $ride->unaffiliated && ! $this->approvingRides && \App\Table\Ride::STATUS_WEATHER != $ride->rideStatus)
 					{
 					if ($ride->rideDate >= $today)
 						{
@@ -537,6 +553,14 @@ class Rides
 						{
 						$button = new \PHPFUI\Button('Signed Up', '/Rides/signedup/' . $ride->rideId);
 						}
+					$bg->addButton($button);
+					}
+
+				if ($this->canDelete($ride))
+					{
+					$button = new \PHPFUI\Button('Del', '/Rides/delete/' . $ride->rideId);
+					$button->addClass('alert');
+					$button->setConfirm('Have you notified all signed up riders you are deleting this ride?  It can not be undone.');
 					$bg->addButton($button);
 					}
 
@@ -569,21 +593,6 @@ class Rides
 					$bg->addButton($button);
 					}
 
-				if ($this->canDelete($ride))
-					{
-					$button = new \PHPFUI\Button('Del', '/Rides/delete/' . $ride->rideId);
-					$button->addClass('alert');
-					$button->setConfirm('Have you notified all signed up riders you are deleting this ride?  It can not be undone.');
-					$bg->addButton($button);
-					}
-
-				if ($ride->pending && $this->page->isAuthorized('Approve Rides'))
-					{
-					$button = new \PHPFUI\Button('Approve', '/Rides/approve/' . $ride->rideId);
-					$button->addClass('success');
-					$bg->addButton($button);
-					}
-
 				$edit = '';
 
 				if ($ride->memberId)
@@ -613,7 +622,7 @@ class Rides
 					$bg->addButton($button);
 					}
 
-				if ($this->page->isAuthorized('Add A Ride'))
+				if ($this->page->isAuthorized('Add A Ride') && ! $this->approvingRides)
 					{
 					$button = new \PHPFUI\Button('Repeat Ride');
 					$button->addClass('secondary');

@@ -44,7 +44,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$rideTable->setWhere(new \PHPFUI\ORM\Condition('pending', 1));
 			$rideTable->addOrderBy('rideDate');
 			$rideTable->addOrderBy('mileage');
-			$this->page->addPageContent($this->view->schedule($rideTable->getRecordCursor(), 'There are no pending rides'));
+			$this->page->addPageContent($this->view->approvingRides()->schedule($rideTable->getRecordCursor(), 'There are no pending rides'));
 			}
 		}
 
@@ -333,7 +333,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$rideTable->setWhere($where);
 			$rideTable->addOrderBy('rideDate');
 			$rideTable->addOrderBy('mileage');
-			$this->page->addPageContent($this->view->schedule($rideTable->getRecordCursor(), 'There are no pending rides'));
+			$this->page->addPageContent($this->view->approvingRides()->schedule($rideTable->getRecordCursor(), 'There are no pending rides'));
 			}
 		}
 

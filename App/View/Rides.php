@@ -4,6 +4,8 @@ namespace App\View;
 
 class Rides
 	{
+	private bool $approvingRides = false;
+
 	private readonly \App\Table\CueSheetVersion $cueSheetVersionTable;
 
 	private readonly \App\View\CueSheet $cueSheetView;
@@ -19,8 +21,6 @@ class Rides
 	private readonly \App\Model\SMS $smsModel;
 
 	private readonly \App\View\StartLocation $startLocationView;
-
-	private bool $approvingRides = false;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
@@ -300,6 +300,7 @@ class Rides
 		$fieldSet->add($row);
 		$fieldSet->add('<strong><hr></strong>');
 		$emailMember = $this->page->isAuthorized('Email Member');
+		$rideAttendance = $this->page->isAuthorized('Ride Attendance');
 		$waiver = $this->page->isAuthorized('Download Rider Waiver');
 		$textMember = $this->page->isAuthorized('Text Member') && $this->smsModel->enabled();
 
@@ -309,7 +310,7 @@ class Rides
 		$row->add($nameColumn);
 
 		$editColumn = new \PHPFUI\Cell(4);
-		$editColumn->add('<strong>Select A Contact Action</strong>');
+		$editColumn->add('<strong>Select An Action</strong>');
 		$row->add($editColumn);
 		$fieldSet->add($row);
 
@@ -380,6 +381,11 @@ class Rides
 				if ($waiver || $rider->memberId == \App\Model\Session::signedInMemberId())
 					{
 					$select->addOption('Download Waiver', "/Rides/riderWaiver/{$ride->rideId}/{$rider->memberId}");
+					}
+
+				if ($rideAttendance)
+					{
+					$select->addOption('Ride Attendance', '/Rides/attendance/' . $rider->memberId);
 					}
 
 				if ($editSignups)

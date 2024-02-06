@@ -225,7 +225,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$email->setHtml();
 				$_POST['acceptedWaiver'] = \date('Y-m-d H:i:s');
 				$waiverReport = new \App\Report\MemberWaiver();
-				$waiverReport->generate($_POST, 'In consideration of your being a minor, you have agreed to the following:<br><br>', $waiver);
+				$waiverReport->generate($_POST, 'In consideration of your being a minor, you have agreed to the following:<br><br>');
 				$waiverReport->generateMinorRelease();
 				$waiverAttachment = $waiverReport->output('', \Mpdf\Output\Destination::STRING_RETURN);
 				$email->addAttachment($waiverAttachment, \str_replace(' ', '_', "{$club} Minor Release Waiver.pdf"));

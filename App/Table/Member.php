@@ -64,12 +64,6 @@ class Member extends \PHPFUI\ORM\Table
 				}
 			}
 
-		if (isset($parameters['memberId']))
-			{
-			$parameters['member:memberId'] = $parameters['memberId'];
-			unset($parameters['memberId']);
-			}
-
 		return parent::addFind($parameters);
 		}
 

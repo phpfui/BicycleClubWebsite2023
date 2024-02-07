@@ -8,8 +8,6 @@ class RideSignup extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'attended' => ['integer'],
 		'comments' => ['maxlength'],
-		'firstRide' => ['integer'],
-		'firstRideInCategory' => ['integer'],
 		'rideComments' => ['integer'],
 		'signedUpTime' => ['required', 'datetime'],
 		'status' => ['integer'],

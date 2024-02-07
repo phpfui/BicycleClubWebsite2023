@@ -258,7 +258,7 @@ class EMail
 			$email = \substr((string)$email, 0, $pos);
 			}
 		$email = self::cleanEmail($email);
-		$mail->From = \App\Tools\TextHelper::unhtmlentities("{$email}@{$this->server}");
+		$mail->From = \App\Tools\TextHelper::unhtmlentities($email . '@' . \emailServerName());
 		$this->fromName = \App\Tools\TextHelper::unhtmlentities($this->fromName ? $this->via() : 'Web Master');
 		$mail->FromName = $this->fromName;
 

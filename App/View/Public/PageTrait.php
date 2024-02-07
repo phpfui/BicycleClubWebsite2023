@@ -153,6 +153,13 @@ trait PageTrait
 		return $view->view($MOM, '');
 		}
 
+	public function Newsletters(int $year = 0) : \PHPFUI\Container
+		{
+		$view = new \App\View\Newsletter($this);
+
+		return $view->display($year);
+		}
+
 	public function RideSchedule() : \App\UI\Accordion | \PHPFUI\Header
 		{
 		$ridesView = new \App\View\Rides($this);

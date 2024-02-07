@@ -1,8 +1,8 @@
 <?php
 
-namespace App\View;
+namespace App\View\Leader;
 
-class LeaderPoints
+class Points
 	{
 	public function __construct(private readonly \App\View\Page $page)
 		{

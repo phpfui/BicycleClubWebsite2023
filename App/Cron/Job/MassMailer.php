@@ -32,7 +32,7 @@ class MassMailer extends \App\Cron\BaseJob
 				$mail->setDomain($mailItem->domain);
 				}
 			$sender = $mailItem->member;
-			$email = $mailItem->fromEmail ?? $sender->email ?? 'webmaster';
+			$email = $mailItem->fromEmail ?? $sender->email ?? 'webmaster@' . \emailServerName();
 			$name = $mailItem->fromName ?? $sender->fromName ?? 'Web Master';
 			$mail->setFrom($email, $name);
 			$mail->setSubject($mailItem->title);

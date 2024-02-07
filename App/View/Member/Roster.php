@@ -21,10 +21,21 @@ class Roster
 			return $form;
 			}
 
+		$reportType = new \PHPFUI\Input\RadioGroup('reportType', 'Report Filter Type');
+		$reportType->addButton('All Members', 'all');
+		$reportType->addButton('Membership Expiration Date', 'expires');
+		$reportType->addButton('Member Joined Date', 'joined');
+		$reportType->setRequired();
+		$form->add($reportType);
+
+		$includeRides = new \PHPFUI\Input\CheckBoxBoolean('includeRides', 'Include Ride History');
+		$form->add('<br>');
+		$form->add($includeRides);
+
 		$fieldSet = new \PHPFUI\FieldSet('Limit Roster By Dates');
-		$startDate = new \PHPFUI\Input\Date($this->page, 'startDate', 'Joined');
+		$startDate = new \PHPFUI\Input\Date($this->page, 'startDate', 'Start');
 		$startDate->setRequired();
-		$endDate = new \PHPFUI\Input\Date($this->page, 'endDate', 'Lapsed');
+		$endDate = new \PHPFUI\Input\Date($this->page, 'endDate', 'End');
 		$endDate->setRequired();
 		$fieldSet->add(new \PHPFUI\MultiColumn($startDate, $endDate));
 		$form->add($fieldSet);

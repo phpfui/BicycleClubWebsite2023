@@ -33,7 +33,7 @@ class Missing extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 		$email = new \App\Tools\EMail();
 		$email->setHtml();
 		$email->setSubject('Missing errror on ' . $_SERVER['SERVER_NAME']);
-		$webMaster = $this->settingTable->value('webMaster');
+		$webMaster = $this->settingTable->value('webMaster') ?: 'webmaster@' . \emailServerName();
 		$email->setFrom($webMaster, 'Web Master');
 		$email->setTo($webMaster, 'Web Master');
 

@@ -411,6 +411,15 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		}
 
+	public function rosterReport() : void
+		{
+		if ($this->page->addHeader('Roster Report'))
+			{
+			$view = new \App\View\Member\Roster($this->page);
+			$this->page->addPageContent($view->report());
+			}
+		}
+
 	public function show(int $memberId = 0) : void
 		{
 		if ($this->page->addHeader('Show Member') && $memberId)

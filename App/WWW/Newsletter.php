@@ -4,47 +4,18 @@ namespace App\WWW;
 
 class Newsletter extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
-	private readonly \App\Table\Newsletter $newsletterTable;
-
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{
 		parent::__construct($controller);
-		$this->newsletterTable = new \App\Table\Newsletter();
 		}
 
 	public function all(int $year = 0) : void
 		{
 		if ($this->page->addHeader('Newsletters'))
 			{
-			$first = $this->newsletterTable->getFirst();
+			$view = new \App\View\Newsletter($this->page);
 
-			if ($first->empty())
-				{
-				$this->page->addPageContent(new \PHPFUI\SubHeader('No Newsletters found'));
-
-				return;
-				}
-			$earliest = (int)\App\Tools\Date::formatString('Y', $first->date);
-			$latest = $this->newsletterTable->getLatest();
-			$start = (int)\App\Tools\Date::formatString('Y', $latest->date);
-
-			if (! $year)
-				{
-				$year = $start;
-				}
-
-			$yearNav = new \App\UI\YearSubNav('/Newsletter/all', $year, $earliest);
-			$this->page->addPageContent($yearNav);
-
-			$currentButtons = [];
-			$newsletters = $this->newsletterTable->getAllByYear($year);
-
-			foreach ($newsletters as $newsletter)
-				{
-				$month = \App\Tools\Date::formatString('M', $newsletter->date);
-				$currentButtons[$month][$newsletter->date] = $newsletter->newsletterId;
-				}
-			$this->page->addPageContent($this->renderButtons($currentButtons));
+			$this->page->addPageContent($view->display($year));
 			}
 		}
 
@@ -197,34 +168,5 @@ class Newsletter extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			$form->add(new \App\UI\CancelButtonGroup(new \PHPFUI\Submit()));
 			$this->page->addPageContent($form);
 			}
-		}
-
-	/**
-	 * @param array<string, array<int|string, mixed>> $buttons
-	 */
-	private function renderButtons(array $buttons) : \PHPFUI\GridX
-		{
-		$row = new \PHPFUI\GridX();
-
-		foreach ($buttons as $month => $monthButtons)
-			{
-			if (1 == (\is_countable($monthButtons) ? \count($monthButtons) : 0)) // @phpstan-ignore-line
-				{
-				$button = new \PHPFUI\Button($month, '/Newsletter/download/' . \current($monthButtons));
-				$button->addAttribute('style', 'margin-right:.25em;');
-				}
-			else
-				{
-				$button = new \PHPFUI\DropDownButton($month);
-
-				foreach ($monthButtons as $date => $id)
-					{
-					$button->addLink('/Newsletter/download/' . $id, \App\Tools\Date::formatString('D M j Y', $date));
-					}
-				}
-			$row->add($button);
-			}
-
-		return $row;
 		}
 	}

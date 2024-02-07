@@ -7,8 +7,6 @@ namespace App\Record\Definition;
  *
  * @property ?int $attended MySQL type int
  * @property ?string $comments MySQL type varchar(200)
- * @property ?int $firstRide MySQL type int
- * @property ?int $firstRideInCategory MySQL type int
  * @property int $memberId MySQL type int
  * @property \App\Record\Member $member related record
  * @property ?int $rideComments MySQL type int
@@ -26,8 +24,6 @@ abstract class RideSignup extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'attended' => ['int', 'int', 0, true, 0, ],
 		'comments' => ['varchar(200)', 'string', 200, true, ],
-		'firstRide' => ['int', 'int', 0, true, ],
-		'firstRideInCategory' => ['int', 'int', 0, true, ],
 		'memberId' => ['int', 'int', 0, false, ],
 		'rideComments' => ['int', 'int', 0, true, 1, ],
 		'rideId' => ['int', 'int', 0, false, ],

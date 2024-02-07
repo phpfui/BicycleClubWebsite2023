@@ -44,14 +44,6 @@ class Membership extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$date]);
 		}
 
-	public function getMembershipsActive(string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
-		{
-		$sql = 'select * from membership s left join member m on m.membershipId=s.membershipId
-				where s.joined>=? and s.expires<=? and s.expires>"1900-01-01" order by lastname,firstName';
-
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$startDate, $endDate]);
-		}
-
 	public static function getMembershipsLastNames(int $membershipId) : string
 		{
 		$lastNames = [];

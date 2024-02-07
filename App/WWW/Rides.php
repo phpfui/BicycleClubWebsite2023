@@ -89,7 +89,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function clone(\App\Record\Ride $ride = new \App\Record\Ride()) : void
 		{
-		if ($ride->loaded() && $ride->rideDate >= \App\Tools\Date::todayString() && $this->page->addHeader('Clone As Leader'))
+		if ($this->page->addHeader('Clone As Leader') && $ride->canClone())
 			{
 			$view = new \App\View\Ride\Editor($this->page);
 			$ride->rideId = 0;
@@ -452,7 +452,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$buttonGroup->addButton($textAll);
 				}
 
-			if ($ride->rideDate >= \App\Tools\Date::todayString() && $this->page->isAuthorized('Clone As Leader'))
+			if ($this->page->isAuthorized('Clone As Leader') && $ride->canClone())
 				{
 				$cloneButton = new \PHPFUI\Button('Clone As Leader', '/Rides/clone/' . $ride->rideId);
 				$dollar = '$';

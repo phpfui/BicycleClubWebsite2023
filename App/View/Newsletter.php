@@ -8,6 +8,43 @@ class Newsletter
 		{
 		}
 
+	public function display(int $year) : \PHPFUI\Container
+		{
+		$newsletterTable = new \App\Table\Newsletter();
+		$container = new \PHPFUI\Container();
+		$first = $newsletterTable->getFirst();
+
+		if ($first->empty())
+			{
+			$container->add(new \PHPFUI\SubHeader('No Newsletters found'));
+
+			return $container;
+			}
+		$earliest = (int)\App\Tools\Date::formatString('Y', $first->date);
+		$latest = $newsletterTable->getLatest();
+		$start = (int)\App\Tools\Date::formatString('Y', $latest->date);
+
+		if (! $year)
+			{
+			$year = $start;
+			}
+
+		$yearNav = new \App\UI\YearSubNav('/Newsletter/all', $year, $earliest);
+		$container->add($yearNav);
+
+		$currentButtons = [];
+		$newsletters = $newsletterTable->getAllByYear($year);
+
+		foreach ($newsletters as $newsletter)
+			{
+			$month = \App\Tools\Date::formatString('M', $newsletter->date);
+			$currentButtons[$month][$newsletter->date] = $newsletter->newsletterId;
+			}
+		$container->add($this->renderButtons($currentButtons));
+
+		return $container;
+		}
+
 	public function Settings() : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
@@ -38,5 +75,34 @@ class Newsletter
 		$container->add($form);
 
 		return $container;
+		}
+
+	/**
+	 * @param array<string, array<int|string, mixed>> $buttons
+	 */
+	private function renderButtons(array $buttons) : \PHPFUI\GridX
+		{
+		$row = new \PHPFUI\GridX();
+
+		foreach ($buttons as $month => $monthButtons)
+			{
+			if (1 == (\is_countable($monthButtons) ? \count($monthButtons) : 0)) // @phpstan-ignore-line
+				{
+				$button = new \PHPFUI\Button($month, '/Newsletter/download/' . \current($monthButtons));
+				$button->addAttribute('style', 'margin-right:.25em;');
+				}
+			else
+				{
+				$button = new \PHPFUI\DropDownButton($month);
+
+				foreach ($monthButtons as $date => $id)
+					{
+					$button->addLink('/Newsletter/download/' . $id, \App\Tools\Date::formatString('D M j Y', $date));
+					}
+				}
+			$row->add($button);
+			}
+
+		return $row;
 		}
 	}

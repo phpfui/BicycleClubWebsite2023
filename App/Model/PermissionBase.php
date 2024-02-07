@@ -92,6 +92,11 @@ class PermissionBase
 		return true;
 		}
 
+	public function memberHasPermission(\App\Record\Member $member, \App\Record\Permission $permission) : bool
+		{
+		return true;
+		}
+
 	public function removePermissionFromUser(int $user, string $permission) : bool
 		{
 		return true;

@@ -111,13 +111,6 @@ class Signup
 		$rideComments = new \PHPFUI\Input\CheckBoxBoolean('rideComments', 'Subscribe to Ride Comments', (bool)$rider->rideComments);
 		$rideComments->setToolTip('If you check this box, you will receive ride comment updates via email. You can comment on a ride at any time reguardless of this setting. You can also turn this on or off on each comment you post.');
 		$fieldSet->add($rideComments);
-		$additional = new \PHPFUI\FieldSet('Additional information for the ride leader:');
-		$firstClubRide = new \PHPFUI\Input\CheckBoxBoolean('firstRide', 'First ride with the club?', $rider->firstRide ?? false);
-		$additional->add($firstClubRide);
-		$firstLevelRide = new \PHPFUI\Input\CheckBoxBoolean('firstRideInCategory', 'First ride in category?', $rider->firstRideInCategory ?? false);
-		$additional->add($firstLevelRide);
-		$fieldSet->add($additional);
-		$form->add($fieldSet);
 
 		if ($newSignup && $this->settingTable->value('RequireRiderWaiver'))
 			{

@@ -391,6 +391,13 @@ class Permission extends \App\Model\PermissionBase
 		$this->generatePermissionLoader();
 		}
 
+	public function memberHasPermission(\App\Record\Member $member, \App\Record\Permission $permission) : bool
+		{
+		$userPermission = new \App\Record\UserPermission(['memberId' => $member->memberId, 'permissionGroup' => $permission->permissionId]);
+
+		return $userPermission->loaded() && ! $userPermission->revoked;
+		}
+
 	public function removePermissionFromUser(int $memberId, string $permissionName) : bool
 		{
 		$permission = $this->getPermissionId($permissionName);

@@ -52,7 +52,7 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 						$email->setBody($html);
 						$email->setHtml();
 
-						foreach ($ride->RideSignupChildren as $rider)
+						foreach ($ride->rideSignups as $rider)
 							{
 							$email->addBCCMember($rider->member->toArray());
 							}

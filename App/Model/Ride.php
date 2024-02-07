@@ -128,6 +128,11 @@ class Ride
 			{
 			$email->addToMember($rider->toArray());
 			}
+
+		$memberPicker = new \App\Model\MemberPicker('Rides Chair');
+		$email->addToMember($memberPicker->getMember());
+		$email->addToMember($ride->pace->category->coordinator->toArray());
+
 		$email->bulkSend();
 		$this->deleteSignup($ride, $leader);
 

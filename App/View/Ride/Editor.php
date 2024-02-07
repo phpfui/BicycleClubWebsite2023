@@ -546,6 +546,12 @@ class Editor
 		$memberPickerModel = new \App\Model\MemberPickerNoSave('Assistant Leader');
 		$memberPicker = new \App\UI\MemberPicker($this->page, $memberPickerModel, 'memberId');
 		$form->add($memberPicker->getEditControl());
+		$assistantLeaderTypeSelect = new \App\UI\AssistantLeaderTypeSelect();
+
+		if ($assistantLeaderTypeSelect->count())
+			{
+			$form->add($assistantLeaderTypeSelect);
+			}
 		$form->add($modal->getButtonAndCancel($submit));
 		$modal->add($form);
 		}
@@ -573,7 +579,7 @@ class Editor
 
 		if ($ride->rideId)
 			{
-			$assistants = \App\Table\AssistantLeader::getForRide($ride);
+			$assistants = $ride->assistantLeaders;
 
 			if (\count($assistants))
 				{
@@ -582,13 +588,14 @@ class Editor
 				$delete->addFunction('success', "$('#{$index}-'+data.response).css('background-color','red').hide('fast').remove()");
 				$this->page->addJavaScript($delete->getPageJS());
 				$table = new \PHPFUI\Table();
-				$table->setHeaders(['name' => 'Assistant Ride Leaders', 'del' => 'Del']);
+				$table->setHeaders(['leader' => 'Assistant Ride Leaders', 'name' => 'Type', 'del' => 'Del']);
 				$table->setRecordId('memberId');
 
 				foreach ($assistants as $assistant)
 					{
 					$row = $assistant->toArray();
-					$row['name'] = $assistant->fullName();
+					$row['leader'] = $assistant->member->fullName();
+					$row['name'] = $assistant->assistantLeaderType->name;
 					$trash = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
 					$trash->addAttribute('onclick', $delete->execute([$index => $assistant->memberId, 'rideId' => $ride->rideId]));
 					$row['del'] = $trash;

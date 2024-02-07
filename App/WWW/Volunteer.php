@@ -198,7 +198,7 @@ class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 				}
 			else
 				{
-				$view = new \App\View\LeaderPoints($this->page);
+				$view = new \App\View\Leader\Points($this->page);
 				$this->page->addPageContent($view->Finance());
 				}
 			}
@@ -250,7 +250,7 @@ class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 					if ($ride->loaded())
 						{
 						$model = new \App\Model\Volunteer();
-						$assistantLeaders = \App\Table\AssistantLeader::getForRide($ride);
+						$assistantLeaders = $ride->assistantLeaders;
 						$error = $model->validateRide($ride, $assistantLeaders);
 
 						if ($error)
@@ -284,7 +284,7 @@ class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 				}
 			else
 				{
-				$view = new \App\View\LeaderPoints($this->page);
+				$view = new \App\View\Leader\Points($this->page);
 				$this->page->addPageContent($view->reportSettings());
 				}
 			}
@@ -294,7 +294,7 @@ class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 		{
 		if ($this->page->addHeader($title = 'Volunteer Points Settings'))
 			{
-			$view = new \App\View\LeaderPoints($this->page);
+			$view = new \App\View\Leader\Points($this->page);
 			$this->page->addPageContent($view->pointSettings());
 			}
 		}

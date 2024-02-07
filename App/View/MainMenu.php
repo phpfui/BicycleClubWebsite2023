@@ -142,6 +142,7 @@ class MainMenu extends \App\UI\MainMenu
 
 			if ($configMenu = $this->addMenu($menu, '/Leaders/configure', 'Ride Leader Configuration'))
 				{
+				$this->addSub($configMenu, '/Leaders/assistantTypes', 'Assistant Leader Types');
 				$this->addSub($configMenu, '/Leaders/settings', 'Ride Settings');
 		//		$this->addSub($configMenu, '/Leaders/pace/0', 'All Pace');
 				$this->addSub($configMenu, '/Leaders/categories', 'Edit Categories');
@@ -184,6 +185,7 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Membership/recent', 'Recent Sign Ins');
 	//		$this->addSub($menu, '/Membership/Subscription', 'Manage My Subscription');
 			$this->addSub($menu, '/Membership/renew', 'Renew My Membership');
+			$this->addSub($menu, '/Membership/rosterReport', 'Roster Report');
 
 			if ($configMenu = $this->addMenu($menu, '/Membership/Configure', 'Membership Configuration'))
 				{
@@ -192,7 +194,6 @@ class MainMenu extends \App\UI\MainMenu
 				$this->addSub($configMenu, '/Membership/Configure/configure', 'Membership Configuration');
 				$this->addSub($configMenu, '/Membership/Configure/notifications', 'Membership Notifications');
 				$this->addSub($configMenu, '/Membership/Configure/dues', 'Membership Dues');
-				$this->addSub($configMenu, '/Membership/Configure/rosterReport', 'Roster Report');
 				$this->addSub($configMenu, '/Membership/Configure/csv', 'Download CSV');
 				}
 

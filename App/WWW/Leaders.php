@@ -89,6 +89,14 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function assistantTypes() : void
+		{
+		if ($this->page->addHeader('Assistant Leader Types'))
+			{
+			$this->page->addPageContent(new \App\View\Leader\AssistantTypes($this->page));
+			}
+		}
+
 	public function assists(\App\Record\Member $member = new \App\Record\Member()) : void
 		{
 		if ($this->page->addHeader('Assistant Leads'))
@@ -507,6 +515,9 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		);
 		$this->page->addPageContent($yearSubNav);
 
+		$assistantLeaderTypeView = new \App\View\Leader\AssistantTypes($this->page);
+
+		$this->page->addPageContent($assistantLeaderTypeView->stats($leader, $year));
 
 		$rides = \App\Table\Ride::pastRidesForAssistant($leader, 0, $year);
 		$view = new \App\View\Rides($this->page);

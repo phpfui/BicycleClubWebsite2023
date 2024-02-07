@@ -12,9 +12,9 @@ class Rides
 
 	private int $deletePastDays = 0;
 
-	private readonly Leader $leader;
+	private readonly \App\View\Leader $leader;
 
-	private readonly Member $memberView;
+	private readonly \App\View\Member $memberView;
 
 	private readonly \App\Table\Pace $paceTable;
 
@@ -139,9 +139,7 @@ class Rides
 					{
 					$rideData->status = \App\Table\RideSignup::DEFINITELY_RIDING;
 					$rideData->comments = '';
-					$rideData->firstRide = 0;
 					$rideData->attended = \App\Table\RideSignup::CONFIRMED;
-					$rideData->firstRideInCategory = 0;
 					$rideData->ride = $ride;
 					$rideData->memberId = (int)$_POST['memberId'];
 					$rideData->insert();
@@ -262,6 +260,8 @@ class Rides
 
 	public function getSignedUpRidersView(\App\Record\Ride $ride, bool $editSignups, bool $showComments = false, ?\PHPFUI\Button $signup = null) : \PHPFUI\FieldSet
 		{
+		$settingTable = new \App\Table\Setting();
+		$rideLeaderPermission = $settingTable->getStandardPermissionGroup('Ride Leader');
 		$model = new \App\Model\RideSignup($ride, \App\Model\Session::signedInMemberRecord());
 		$model->notifyWaitList();
 		$signupLimit = $model->getRiderSignupLimit();
@@ -269,6 +269,9 @@ class Rides
 		$riders = $rideSignupTable->getAllSignedUpRiders($ride);
 		$fieldSet = new \PHPFUI\FieldSet('Confirmed Riders');
 		$statusArray = $rideSignupTable->getRiderStatus();
+
+		$rideModel = new \App\Model\Ride();
+		$isLeader = $rideModel->isLeaderOrAssistant($ride);
 		$counts = [];
 
 		foreach ($riders as $rider)
@@ -305,9 +308,16 @@ class Rides
 		$textMember = $this->page->isAuthorized('Text Member') && $this->smsModel->enabled();
 
 		$row = new \PHPFUI\GridX();
-		$nameColumn = new \PHPFUI\Cell(8);
+		$nameColumn = new \PHPFUI\Cell(8 - (int)$isLeader);
 		$nameColumn->add('<strong>Rider Name</strong>');
 		$row->add($nameColumn);
+
+		if ($isLeader)
+			{
+			$leaderColumn = new \PHPFUI\Cell(1);
+			$leaderColumn->add('<strong>Leader</strong>');
+			$row->add($leaderColumn);
+			}
 
 		$editColumn = new \PHPFUI\Cell(4);
 		$editColumn->add('<strong>Select An Action</strong>');
@@ -320,7 +330,7 @@ class Rides
 		foreach ($riders as $rider)
 			{
 			$row = new \PHPFUI\GridX();
-			$nameColumn = new \PHPFUI\Cell(8);
+			$nameColumn = new \PHPFUI\Cell(8 - (int)$isLeader);
 
 			if (\App\Table\RideSignup::UNKNOWN == $rider->attended)
 				{
@@ -348,6 +358,18 @@ class Rides
 				$image = $this->memberView->getImageIcon($rider->toArray());
 				$nameColumn->add("<b>{$rider->firstName} {$rider->lastName}</b> {$image}<br>{$status}");
 				$row->add($nameColumn);
+				}
+
+			if ($isLeader)
+				{
+				$leaderColumn = new \PHPFUI\Cell(1);
+				$userPermission = new \App\Record\UserPermission(['memberId' => $rider->memberId, 'permissionGroup' => $rideLeaderPermission->permissionId]);
+
+				if ($userPermission->loaded() && ! $userPermission->revoked)
+					{
+					$leaderColumn->add('&check;');
+					}
+				$row->add($leaderColumn);
 				}
 
 			$selectColumn = new \PHPFUI\Cell(4);
@@ -562,14 +584,6 @@ class Rides
 					$bg->addButton($button);
 					}
 
-				if ($this->canDelete($ride))
-					{
-					$button = new \PHPFUI\Button('Del', '/Rides/delete/' . $ride->rideId);
-					$button->addClass('alert');
-					$button->setConfirm('Have you notified all signed up riders you are deleting this ride?  It can not be undone.');
-					$bg->addButton($button);
-					}
-
 				if (! empty($ride->cueSheetId))
 					{
 					$button = new \PHPFUI\DropDownButton('Cue ' . $ride->cueSheetId);
@@ -633,6 +647,14 @@ class Rides
 					$button = new \PHPFUI\Button('Repeat Ride');
 					$button->addClass('secondary');
 					$this->getRepeatRideModal($ride, $button);
+					$bg->addButton($button);
+					}
+
+				if ($this->canDelete($ride))
+					{
+					$button = new \PHPFUI\Button('Del', '/Rides/delete/' . $ride->rideId);
+					$button->addClass('alert');
+					$button->setConfirm('Have you notified all signed up riders you are deleting this ride?  It can not be undone.');
 					$bg->addButton($button);
 					}
 

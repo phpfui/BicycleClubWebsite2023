@@ -37,7 +37,7 @@ class Volunteer
 
 		foreach ($rides as $ride)
 			{
-			$assistantLeaders = \App\Table\AssistantLeader::getForRide($ride);
+			$assistantLeaders = $ride->assistantLeaders;
 
 			if ($this->validateRide($ride, $assistantLeaders))
 				{
@@ -50,14 +50,14 @@ class Volunteer
 				$this->addPoints($ride, $points);
 				$ride->pointsAwarded = $points;
 				$ride->update();
-				$this->addAssistantLeaderPoints($assistantLeaders, $assistPoints);
+				$this->addAssistantLeaderPoints($assistantLeaders, $assistPoints, 1);
 				}
 			elseif (! $ride->rideStatus && $ride->pointsAwarded)
 				{
 				$this->addPoints($ride, 0 - $ride->pointsAwarded);
 				$ride->pointsAwarded = 0;
 				$ride->update();
-				$this->addAssistantLeaderPoints($assistantLeaders, 0 - $assistPoints);
+				$this->addAssistantLeaderPoints($assistantLeaders, $assistPoints, -1);
 				}
 			}
 
@@ -217,7 +217,7 @@ class Volunteer
 		}
 
 	/**
-	 * @param \PHPFUI\ORM\RecordCursor<\App\Record\Member> $assistantLeaders
+	 * @param \PHPFUI\ORM\RecordCursor<\App\Record\AssistantLeader> $assistantLeaders
 	 */
 	public function validateRide(\App\Record\Ride $ride, \PHPFUI\ORM\RecordCursor $assistantLeaders) : string
 		{
@@ -247,11 +247,14 @@ class Volunteer
 		return '';
 		}
 
-	private function addAssistantLeaderPoints(\PHPFUI\ORM\RecordCursor $assistantLeaders, int $assistPoints) : void
+	/**
+	 * @param \PHPFUI\ORM\RecordCursor<\App\Record\AssistantLeader> $assistantLeaders
+	 */
+	private function addAssistantLeaderPoints(\PHPFUI\ORM\RecordCursor $assistantLeaders, int $defaultAssistPoints, int $sign) : void
 		{
 		foreach ($assistantLeaders as $leader)
 			{
-			$this->addPoints($leader, $assistPoints);
+			$this->addPoints($leader->member, ($leader->assistantLeaderType->volunteerPoints ?: $defaultAssistPoints) * $sign);
 			}
 		}
 

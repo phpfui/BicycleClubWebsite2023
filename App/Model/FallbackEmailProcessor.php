@@ -112,7 +112,7 @@ class FallbackEmailProcessor
 				}
 			$body .= $ul;
 			$body .= '<br>You probably replied to the sender address. Please reply to the Reply To address.<br>Thank you.<br><br>' .
-				'If you have additional questions, please email our ' . \PHPFUI\Link::email('webmaster@' . $url, 'Web Master', 'Email issue');
+				'If you have additional questions, please email our ' . \PHPFUI\Link::email('webmaster@' . \emailServerName(), 'Web Master', 'Email issue');
 			$email->setBody($body);
 			$email->setHtml();
 			$email->send();

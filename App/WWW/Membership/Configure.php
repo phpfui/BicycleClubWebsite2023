@@ -133,13 +133,4 @@ class Configure extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 			$this->page->addPageContent($view->membership());
 			}
 		}
-
-	public function rosterReport() : void
-		{
-		if ($this->page->addHeader('Roster Report'))
-			{
-			$view = new \App\View\Member\Roster($this->page);
-			$this->page->addPageContent($view->report());
-			}
-		}
 	}

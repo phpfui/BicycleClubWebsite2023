@@ -1,8 +1,6 @@
+Move delete buttons to end of button groups
+
 View waivers (and minor waivers)
-
-Assistant Leader types
-
-Assistant Leader reporting
 
 New member log out and log in fix
 
@@ -19,9 +17,6 @@ Revisit privacy policy
 Edit start location on day of ride
 
 edit email queue may lose html formatting
-
-Gear Calculator
-	Percent difference
 
 Signed up riders over the limit
 

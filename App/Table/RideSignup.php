@@ -207,11 +207,11 @@ class RideSignup extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$member->memberId, $startDate, $endDate]);
 		}
 
-	public static function getSignedUpByPermmissionId(int $rideId, int $permissionId) : \PHPFUI\ORM\DataObjectCursor
+	public static function getSignedUpByPermmission(\App\Record\Ride $ride, \App\Record\Permission $permission) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'SELECT * FROM member m left join userPermission u on u.memberId = m.memberId left join rideSignup r on r.memberId=m.memberId WHERE u.permissionGroup = ? and r.rideId = ?';
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$permissionId, $rideId]);
+		return \PHPFUI\ORM::getDataObjectCursor($sql, [$permission->permissionId, $ride->rideId]);
 		}
 
 	public function getSignedUpRiders(int $rideId, string $order = 'r.signedUpTime') : \PHPFUI\ORM\DataObjectCursor

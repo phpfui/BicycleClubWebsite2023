@@ -221,16 +221,24 @@ class RideSignup
 			}
 		$title = $this->settingTable->value('newRiderEmailTitle');
 
-		if ($leader->loaded() && $title && $fields['firstRide'])
+		if ($leader->loaded() && $title)
 			{
-			$email = new \App\Tools\EMail();
-			$email->setSubject($title);
-			$message = \App\Tools\TextHelper::processText($this->settingTable->value('newRiderEmail'), $this->member->toArray());
-			$email->setBody($message);
-			$email->setToMember($this->member->toArray());
-			$email->setFromMember($this->ride->member->toArray());
-			$email->setHtml();
-			$email->send();
+			$rideSignupTable = new \App\Table\RideSignup();
+			$condition = new \PHPFUI\ORM\Condition('memberId', $this->member->memberId);
+			$condition->and('attended', \App\Table\RideSignup::CONFIRMED);
+			$rideSignupTable->setWhere($condition);
+
+			if (! $rideSignupTable->count())
+				{
+				$email = new \App\Tools\EMail();
+				$email->setSubject($title);
+				$message = \App\Tools\TextHelper::processText($this->settingTable->value('newRiderEmail'), $this->member->toArray());
+				$email->setBody($message);
+				$email->setToMember($this->member->toArray());
+				$email->setFromMember($this->ride->member->toArray());
+				$email->setHtml();
+				$email->send();
+				}
 			}
 
 		$this->notifyWaitList();

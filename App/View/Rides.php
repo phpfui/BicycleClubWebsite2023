@@ -458,7 +458,7 @@ class Rides
 
 			if ($targetPaceColumn && $ride->targetPace > 0.0)
 				{
-				$categoryLetter .= '/' . $this->responsiveMileage($ride->targetPace ?: '', 1);
+				$categoryLetter .= '/' . \str_replace('.0', '', \number_format($ride->targetPace, 1));
 				}
 			$cat->add($categoryLetter);
 			$row->add($cat);

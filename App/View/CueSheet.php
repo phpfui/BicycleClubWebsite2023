@@ -214,7 +214,7 @@ class CueSheet
 
 		if (\count($cuesheets))
 			{
-			$select->addOption('Choose a cue sheet ...', (string)0, 0 == $cueSheetId);
+			$select->addOption("Choose a {$title} ...", (string)0, 0 == $cueSheetId);
 
 			foreach ($cuesheets as $cuesheet)
 				{
@@ -227,9 +227,9 @@ class CueSheet
 		else
 			{
 			$location = new \App\Record\StartLocation($startLocation);
-			$select->addOption('There are no cue sheets for ' . $location->name, (string)0);
+			$select->addOption("There are no {$title} for {$location->name}", '0');
 			}
-		$select->setToolTip('Cue sheets are only available for matching ride start locations.  If you don\'t see a cue sheet here, you may not have the right start location');
+		$select->setToolTip("{$title} are only available for matching ride start locations.  If you don't see a {$title} here, you may not have the right start location");
 
 		return $select;
 		}

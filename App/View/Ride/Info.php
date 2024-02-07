@@ -8,6 +8,8 @@ class Info
 
 	private \App\Table\Pace $paceTable;
 
+	private readonly \App\Table\Setting $settingTable;
+
 	private readonly \App\View\StartLocation $startLocationView;
 
 	public function __construct(private readonly \PHPFUI\Page $page)
@@ -15,6 +17,7 @@ class Info
 		$this->paceTable = new \App\Table\Pace();
 		$this->startLocationView = new \App\View\StartLocation($this->page);
 		$this->leader = new \App\View\Leader($this->page);
+		$this->settingTable = new \App\Table\Setting();
 		}
 
 	public function getRideInfo(\App\Record\Ride $ride, string $rwgpsMenu = '') : \PHPFUI\FieldSet
@@ -102,7 +105,7 @@ class Info
 		if ($ride->cueSheetId)
 			{
 			$cueSheetView = new \App\View\CueSheet($this->page);
-			$fieldSet->add(new \App\UI\Display('Cue Sheet', $ride->cueSheet->getFullNameLink()));
+			$fieldSet->add(new \App\UI\Display($this->settingTable->value('cueSheetFieldName'), $ride->cueSheet->getFullNameLink()));
 			}
 
 		if ($ride->memberId)

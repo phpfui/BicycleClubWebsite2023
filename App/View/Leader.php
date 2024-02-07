@@ -163,6 +163,20 @@ class Leader
 		$form->add($multiColumn);
 
 		$multiColumn = new \PHPFUI\MultiColumn();
+		$fields[] = $field = 'signupNotifications';
+		$value = (bool)$settingTable->value($field);
+		$signupNotifications = new \PHPFUI\Input\CheckBoxBoolean($field, 'Default Ride Signup Notifications', $value);
+		$signupNotifications->setToolTip('Check to default ride signup notification on for newly added rides.');
+		$multiColumn->add($signupNotifications);
+
+		$fields[] = $field = 'cueSheetFieldName';
+		$value = $settingTable->value($field);
+		$cueSheetFieldName = new \PHPFUI\Input\Text($field, 'Cue Sheet Field Name', $value);
+		$cueSheetFieldName->setToolTip('You can change the name of the Cue Sheet field in the ride editor.');
+		$multiColumn->add($cueSheetFieldName);
+		$form->add($multiColumn);
+
+		$multiColumn = new \PHPFUI\MultiColumn();
 		$fields[] = $field = 'AdvancePostVolunteer';
 		$value = (int)$settingTable->value($field);
 		$hoursBefore = new \PHPFUI\Input\Number($field, 'Volunteer Credit Advance Posting Hours', $value);

@@ -55,7 +55,7 @@ class Editor
 		$time->setRequired();
 		$category = new \App\View\PacePicker('paceId', 'Category', 'Pace');
 		$fieldSet->add(new \PHPFUI\MultiColumn($date, $time, $category));
-		$cueSheetPicker = new \App\UI\CueSheetPicker($this->page, 'cueSheetId', 'Select Ride (start typing to search)');
+		$cueSheetPicker = new \App\UI\CueSheetPicker($this->page, 'cueSheetId', "Select {$this->page->value('cueSheetFieldName')} (start typing to search)");
 		$picker = $cueSheetPicker->getEditControl();
 		$picker->setRequired();
 		$fieldSet->add($picker);
@@ -120,6 +120,7 @@ class Editor
 					}
 				}
 			$ride->setFrom($get);
+			$ride->signupNotifications = (int)$this->page->value('signupNotifications');
 			$ride->rideId = 0;
 			}
 
@@ -451,7 +452,7 @@ class Editor
 					{
 					case 'changeStartLocation':
 						$cueSheetView = new \App\View\CueSheet($this->page);
-						$cueSheet = $cueSheetView->getEditControl('cueSheetId', 'Cue Sheet', (int)$_POST['startLocationId']);
+						$cueSheet = $cueSheetView->getEditControl('cueSheetId', $this->page->value('cueSheetFieldName'), (int)$_POST['startLocationId']);
 						$this->page->setResponse($cueSheet);
 
 						break;
@@ -652,7 +653,7 @@ class Editor
 		$div = new \PHPFUI\HTML5Element('div');
 		$div->setId('cuesheet');
 		$cueSheetView = new \App\View\CueSheet($this->page);
-		$cueSheet = $cueSheetView->getEditControl('cueSheetId', 'Cue Sheet', $ride->startLocationId ?? 0, $ride->cueSheetId ?? 0);
+		$cueSheet = $cueSheetView->getEditControl('cueSheetId', $this->page->value('cueSheetFieldName'), $ride->startLocationId ?? 0, $ride->cueSheetId ?? 0);
 		$this->cueSheetSelectorId = $cueSheet->getId();
 		$div->add($cueSheet);
 		$fieldSet->add($div);
@@ -669,7 +670,7 @@ class Editor
 		$disableComments->setToolTip('You can disable or hide comments. If comments are disabled, no more comments can be posted.');
 		$fieldSet->add($disableComments);
 
-		$signupNotifications = new \PHPFUI\Input\CheckBoxBoolean('signupNotifications', 'Email Rider signup changes', (bool)$ride->signupNotifications);
+		$signupNotifications = new \PHPFUI\Input\CheckBoxBoolean('signupNotifications', 'Email Rider Signup Changes', (bool)$ride->signupNotifications);
 		$signupNotifications->setToolTip('You will be sent an email every time a rider changes their ride signup status.');
 		$multiColumn = new \PHPFUI\MultiColumn($signupNotifications);
 

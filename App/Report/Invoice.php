@@ -109,7 +109,7 @@ class Invoice extends \FPDF
 		}
 
 	// Mode of payment
-	public function addInstructions(string $text) : void
+	public function addInstructions(?string $text) : void
 		{
 		if (! $text)
 			{

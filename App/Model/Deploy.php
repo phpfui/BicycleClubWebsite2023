@@ -67,13 +67,6 @@ class Deploy
 			}
 		$this->migrationModel->migrate();
 
-		// if we are targeting a migration, then we are on a release, so update standard permissions
-//		if ($newMigration) // commenting out for now, thinking migrations are better way to do thisd
-//			{
-//			$permissionModel = new \App\Model\Permission();
-//			$permissionModel->loadStandardPermissions();
-//			}
-
 		// delete errors since we could get a deploy error and have to rerun
 		$errors = new \App\Model\Errors();
 		$errors->deleteAll();
@@ -113,7 +106,12 @@ class Deploy
 		if ($errorMessage || $errors)
 			{
 			$email->setSubject($_SERVER['SERVER_NAME'] . ' failed to update to release ' . $version);
-			$email->setBody($errorMessage . '<hr><pre>' . \print_r($errors, true) . '</pre>');
+
+			if (\count($errors))
+				{
+				$errorMessage .= '<hr><pre>' . \print_r($errors, true) . '</pre>';
+				}
+			$email->setBody($errorMessage);
 			}
 		else
 			{

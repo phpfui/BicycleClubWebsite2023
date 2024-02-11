@@ -20,7 +20,7 @@ class Signup
 			$this->member = \App\Model\Session::signedInMemberRecord();
 			}
 
-		if (\App\Model\Session::checkCSRF() && 'Save' == ($_POST['submit'] ?? ''))
+		if (\App\Model\Session::checkCSRF() && 'Save' == ($_POST['submit'] ?? '') && isset($_POST['memberId']))
 			{
 			$model = new \App\Model\RideSignup($ride, new \App\Record\Member((int)$_POST['memberId']));
 			$model->updateSignup($_POST);

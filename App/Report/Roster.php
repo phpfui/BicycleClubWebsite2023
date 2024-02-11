@@ -114,7 +114,7 @@ class Roster
 
 				foreach ($rideTable->getDataObjectCursor() as $ride)
 					{
-					$row = [$name, $ride->title, $ride->pace->pace, $ride->member->fullName(), $ride->rideDate, $status[$ride->status], $attended[$ride->attended]];
+					$row = [$name, $ride->title, $ride->pace->pace, $ride->member->fullName(), $ride->rideDate, $status[$ride->status] ?? '', $attended[$ride->attended] ?? ''];
 
 					if (! $csv)
 						{

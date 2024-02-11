@@ -182,7 +182,7 @@ class RideSignup
 			}
 		unset($fields['rideComments']);
 
-		if (\App\Table\RideSignup::DEFINITELY_RIDING == $fields['status'] && $this->signupLimit)
+		if (\App\Table\RideSignup::DEFINITELY_RIDING == ($fields['status'] ?? -1) && $this->signupLimit)
 			{
 			$this->rideSignupTable->deleteOtherSignedUpRides($this->ride, $this->member);
 			}

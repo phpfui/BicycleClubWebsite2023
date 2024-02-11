@@ -324,7 +324,7 @@ class Member
 
 		$journal = new \PHPFUI\Input\Number('rideJournal', 'Ride Journal Days In Advance', $member->rideJournal);
 		$journal->addAttribute('min', (string)0)->addAttribute('max', (string)9);
-		$journal->setToolTip('Number of days in advance to receive an email of the upcoming rides in your category');
+		$journal->setToolTip('Number of days in advance to receive an email of the upcoming rides in your category. Zero for off.');
 		$newRides = new \PHPFUI\Input\CheckBoxBoolean('newRideEmail', 'New Ride Posted Email', (bool)$member->newRideEmail);
 		$newRides->setToolTip('Get an email when a ride is added in your categories');
 		$filter = new \PHPFUI\Input\CheckBoxBoolean('rideScheduleFilter', 'Display Ride Schedule Filter', $this->page->isAuthorized('Ride Schedule Filter'));

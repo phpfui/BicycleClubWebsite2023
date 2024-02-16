@@ -42,7 +42,7 @@ class AccidentReport
 		$location = new \App\Record\StartLocation((int)$ride->startLocationId);
 		$leaderLine = '<p>You are receiving this email since you indicated there was an accient on the following ride:<P>';
 		$detail = $ride->title . '<br>' .
-				\App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' starting at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '<br>' .
+				\App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '<br>' .
 				$ride->mileage . ' miles at a ' . $paceTable->getPace($ride->paceId) . ' pace<br>' .
 				'Starting from ' . $location->name . ',<p>' . $ride->description . '<p>' .
 				'Leader: ' . $leader->fullName() . ' ' . $leader->phone . ' ' . $leader->email . '<p>';

@@ -173,6 +173,7 @@ class Content extends \App\UI\HTMLEditor
 				$this->page->addJavaScript($getContent->getPageJS());
 				$this->page->addJavaScript($saveContent->getPageJS());
 				$csrf = \App\Model\Session::csrf('"');
+				$saveContentJS = $saveContent->execute(['id' => '"' . $id . '"', 'csrf' => $csrf, 'body' => '$("#' . $id . '").html()']);
 				$editItem = new \PHPFUI\MenuItem('Edit', '#');
 				$icon = new \PHPFUI\FAIcon('far', 'edit');
 				$iconId = $icon->getId();
@@ -180,22 +181,23 @@ class Content extends \App\UI\HTMLEditor
 				$editId = $editItem->getId();
 				$js = 'var editId=$("#' . $editId . '"),textId=editId.find("span"),iconId=$("#' . $iconId . '");' .
 					'if(iconId.hasClass("fa-edit")){textId.html("Save ");iconId.removeClass("fa-edit");' .
-					'iconId.addClass("fa-save");' . $this->tinyMCE->getActivateCode($this->page, $id) .
-					$getContent->execute(['id' => '"' . $id . '"', 'csrf' => $csrf]) .
-					'}else{var color=$("#' . $settingsItem->getId() . '").css("background-color");' .
-					$saveContent->execute(['id' => '"' . $id . '"', 'csrf' => $csrf, 'body' => '$("#' . $id . '").html()']) .
+					'iconId.addClass("fa-save");' . $this->tinyMCE->getActivateCode($this->page, $id) . $getContent->execute(['id' => '"' . $id . '"', 'csrf' => $csrf]) .
+					'}else{var color=$("#' . $settingsItem->getId() . '").css("background-color");' . $saveContentJS .
 					'textId.html("Saved");editId.css("background-color","lime");setTimeout(function(){textId.html("Save ");' .
 					'editId.css("background-color",color)},2000)};return false;';
 				$editItem->addAttribute('onclick', $js);
 				$iconBar->addMenuItem($editItem);
+				$settingsItem->addAttribute('onclick', $saveContentJS);
 				$iconBar->addMenuItem($settingsItem);
 
 				$imagesButton = new \PHPFUI\MenuItem('Images', '#');
+				$imagesButton->addAttribute('onclick', $saveContentJS);
 				$imagesButton->setIcon(new \PHPFUI\FAIcon('far', 'images'));
 				$this->showImages($story, $imagesButton);
 				$iconBar->addMenuItem($imagesButton);
 
 				$javaScriptButton = new \PHPFUI\MenuItem('Script', '#');
+				$javaScriptButton->addAttribute('onclick', $saveContentJS);
 				$javaScriptButton->setIcon(new \PHPFUI\FAIcon('fab', 'js-square'));
 				$this->editJavaScript($story, $javaScriptButton);
 				$iconBar->addMenuItem($javaScriptButton);

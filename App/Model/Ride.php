@@ -111,7 +111,7 @@ class Ride
 		$location = $ride->startLocation;
 		$locationLink = ! $location->empty() ? new \PHPFUI\Link($location->link, \App\Tools\TextHelper::unhtmlentities($location->name)) : '';
 		$message = "You are receiving this email since you signed up for the following ride:<p><b>{$ride->title}</b><br>" .
-			\App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' starting at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '<br>' .
+			\App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '<br>' .
 			"{$ride->mileage} miles at a " . $this->getPace($ride->paceId) .
 			" pace.<br>Starting from {$locationLink}<p>{$leaderMessage}<p>Your leader {$leader->fullName()}<br>" .
 			"{$phoneLink} {$cellLink}<br>{$emailLink}<br>has decided not to lead the ride.  " .
@@ -525,7 +525,7 @@ class Ride
 			}
 
 		$message = '<a href="' . $this->homePage . '">' . $this->clubName . '</a> would like to remind you of an upcoming ride:<br><br>'
-			. 'On <b>' . \App\Tools\Date::formatString('l, F j', $ride->rideDate) . '</b> starting at <b>' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '</b><br>'
+			. 'On <b>' . \App\Tools\Date::formatString('l, F j', $ride->rideDate) . '</b> at <b>' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '</b><br>'
 			. "{$ride->mileage} miles at a " . $this->getPace($ride->paceId) . ' pace.';
 
 		if ($ride->targetPace > 0.0)

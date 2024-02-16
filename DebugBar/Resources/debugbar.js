@@ -537,7 +537,8 @@ if (typeof(PhpDebugBar) == 'undefined') {
             });
 
             // select box for data sets
-            this.$datasets = $('<select />').addClass(csscls('datasets-switcher')).appendTo(this.$headerRight);
+            this.$datasets = $('<select />').addClass(csscls('datasets-switcher')).attr('name', 'datasets-switcher')
+                .appendTo(this.$headerRight);
             this.$datasets.change(function() {
                 self.dataChangeHandler(self.datasets[this.value]);
                 self.showTab();
@@ -1174,6 +1175,9 @@ if (typeof(PhpDebugBar) == 'undefined') {
 
                 promise.then(function (response) {
                     self.handle(response);
+                }).catch(function(reason) {
+                    // Fetch request failed or aborted via AbortController.abort().
+                    // Catch is required to not trigger React's error handler.
                 });
 
                 return promise;

@@ -1,5 +1,3 @@
-List options in CSV download and
-
 Move delete buttons to end of button groups
 
 View waivers (and minor waivers)

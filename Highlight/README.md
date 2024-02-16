@@ -1,12 +1,10 @@
 # highlight.php
 
-[![Unit Tests](https://github.com/scrivo/highlight.php/workflows/Unit%20Tests/badge.svg?branch=master)](https://github.com/scrivo/highlight.php/actions?query=workflow%3A%22Unit+Tests%22+branch%3Amaster)
+[![Unit Tests](https://github.com/scrivo/highlight.php/workflows/Unit%20Tests/badge.svg?branch=9.18)](https://github.com/scrivo/highlight.php/actions?query=workflow%3A%22Unit+Tests%22+branch%3A9.18)
 [![Latest Packagist release](https://img.shields.io/packagist/v/scrivo/highlight.php.svg)](https://packagist.org/packages/scrivo/highlight.php)
 [![Monthly downloads on Packagist](https://img.shields.io/packagist/dm/scrivo/highlight.php.svg)](https://packagist.org/packages/scrivo/highlight.php/stats)
 
 *highlight.php* is a server-side syntax highlighter written in PHP that currently supports 185 languages. It's a port of [highlight.js](http://www.highlightjs.org) by Ivan Sagalaev that makes full use of the language and style definitions of the original JavaScript project.
-
-> This is the README for highlight.php v10, which is currently under development. The latest stable release is the [9.18.x series](https://github.com/scrivo/highlight.php/tree/9.18).
 
 [TOC]: # "## Table of Contents"
 
@@ -92,7 +90,16 @@ echo "</code></pre>";
 
 #### Default Languages
 
-If no autodetect languages are set in the highlighter, then every language will be used and cause significant performance issues.
+In version 9.x of this project, the following languages are the default auto-detected languages:
+
+- XML
+- JSON
+- JavaScript
+- CSS
+- PHP
+- HTTP
+
+These default languages are considered "legacy behavior" and will be removed in version 10.x of this library to match highlight.js behavior; the new default behavior in 10.x will be to use *every* language.
 
 ### Stylesheets
 
@@ -104,14 +111,14 @@ The core of the project is loyal port of **highlight.js** and is available under
 
 Available functions:
 
-- [`getAvailableStyleSheets(bool $filePaths = false): string[]`](src/HighlightUtilities/Functions.php#L40-L53)
-- [`getStyleSheet(string $name): false|string`](src/HighlightUtilities/Functions.php#L101-L114)
-- [`getStyleSheetFolder(): string`](src/HighlightUtilities/Functions.php#L122-L130)
-- [`getStyleSheetPath(string $name): string`](src/HighlightUtilities/Functions.php#L172-L184)
-- [`getLanguagesFolder(): string`](src/HighlightUtilities/Functions.php#L136-L144)
-- [`getLanguageDefinitionPath(string $name): string`](src/HighlightUtilities/Functions.php#L150-L160)
-- [`getThemeBackgroundColor(string $name): float[]`](src/HighlightUtilities/Functions.php#L80-L93)
-- [`splitCodeIntoArray(string $html): false|string[]`](src/HighlightUtilities/Functions.php#L199-L210)
+- [`getAvailableStyleSheets(bool $filePaths = false): string[]`](HighlightUtilities/functions.php#L35-L48)
+- [`getLanguagesFolder(): string`](HighlightUtilities/functions.php#L156-L164)
+- [`getLanguageDefinitionPath(string $name): string`](HighlightUtilities/functions.php#L170-L182)
+- [`getStyleSheet(string $name): false|string`](HighlightUtilities/functions.php#L94-L107)
+- [`getStyleSheetFolder(): string`](HighlightUtilities/functions.php#L115-L123)
+- [`getStyleSheetPath(string $name): string`](HighlightUtilities/functions.php#L131-L143)
+- [`getThemeBackgroundColor(string $name): float[]`](HighlightUtilities/functions.php#L75-L88)
+- [`splitCodeIntoArray(string $html): false|string[]`](HighlightUtilities/functions.php#L194-L205)
 
 ## Versioning
 

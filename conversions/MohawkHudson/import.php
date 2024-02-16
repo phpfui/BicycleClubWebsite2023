@@ -83,6 +83,10 @@ $membershipTable = new \App\Table\Membership();
 echo 'Current number of members in DB ' . \count($memberTable) . "\n";
 echo 'Current number of memberships in DB ' . \count($membershipTable) . "\n";
 
+$categoryTable = new \App\Table\Category();
+$categoryCursor = $categoryTable->getRecordCursor();
+$memberCategories = [];
+
 $memberCursor = new \App\Tools\CSV\FileReader('mbrs to be loaded into DB 2024-02-13.csv');
 
 $count = 0;
@@ -144,6 +148,15 @@ foreach ($memberCursor as $memberArray)
 	$membership->pending = 0;
 	$member->membership = $membership;
 	$member->insert();
+
+	foreach ($categoryCursor as $category)
+		{
+		$mc = new \App\Record\MemberCategory();
+		$mc->member = $member;
+		$mc->category = $category;
+		$memberCategories[] = $mc;
+		}
+
 	$permissions->addPermissionToUser($member->memberId, 'Normal Member');
 	$email = new \App\Tools\EMail();
 	$email->setHtml(true);
@@ -174,6 +187,9 @@ MHCC Board of Directors
 
 	$email->bulkSend();
 	}
+
+$memberCategoryTable = new \App\Table\MemberCategory();
+$memberCategoryTable->insert($memberCategories, 'ignore ');
 
 echo "Imported {$count} members\n";
 echo 'Current number of members in DB ' . \count($memberTable) . "\n";

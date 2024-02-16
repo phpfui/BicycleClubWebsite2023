@@ -81,29 +81,11 @@ if (typeof(PhpDebugBar) == 'undefined') {
         // incorrectly positioned - most noticeable when line numbers are shown.
         var codeElement = $('<code />').text(code + '\n').appendTo(pre);
 
-        // Add a span with a special class if we are supposed to highlight a line.  highlight.js will
-        // still correctly format code even with existing markup in it.
-        if ($.isNumeric(highlightedLine)) {
-            if ($.isNumeric(firstLineNumber)) {
-                highlightedLine = highlightedLine - firstLineNumber + 1;
-            }
-            codeElement.html(function (index, html) {
-                var currentLine = 1;
-                return html.replace(/^.*$/gm, function(line) {
-                    if (currentLine++ == highlightedLine) {
-                        return '<span class="' + csscls('highlighted-line') + '">' + line + '</span>';
-                    } else {
-                        return line;
-                    }
-                });
-            });
-        }
-
         // Format the code
         if (lang) {
-            pre.addClass("language-" + lang);
+            codeElement.addClass("language-" + lang);
         }
-        highlight(pre);
+        highlight(codeElement).removeClass('hljs');
 
         // Show line numbers in a list
         if ($.isNumeric(firstLineNumber)) {
@@ -111,7 +93,12 @@ if (typeof(PhpDebugBar) == 'undefined') {
             var $lineNumbers = $('<ul />').prependTo(pre);
             pre.children().addClass(csscls('numbered-code'));
             for (var i = firstLineNumber; i < firstLineNumber + lineCount; i++) {
-                $('<li />').text(i).appendTo($lineNumbers);
+                var li = $('<li />').text(i).appendTo($lineNumbers);
+
+                // Add a span with a special class if we are supposed to highlight a line.
+                if (highlightedLine === i) {
+                    li.addClass(csscls('highlighted-line')).append('<span>&nbsp;</span>');
+                }
             }
         }
 
@@ -340,7 +327,19 @@ if (typeof(PhpDebugBar) == 'undefined') {
                         });
                     }
                 }
-
+                if (value.xdebug_link) {
+                    var header = $('<span />').addClass(csscls('filename')).text(value.xdebug_link.filename + ( value.xdebug_link.line ? "#" + value.xdebug_link.line : ''));
+                    if (value.xdebug_link) {
+                        if (value.xdebug_link.ajax) {
+                            $('<a title="' + value.xdebug_link.url + '"></a>').on('click', function () {
+                                $.ajax(value.xdebug_link.url);
+                            }).addClass(csscls('editor-link')).appendTo(header);
+                        } else {
+                            $('<a href="' + value.xdebug_link.url + '"></a>').addClass(csscls('editor-link')).appendTo(header);
+                        }
+                    }
+                    header.appendTo(li);
+                }
                 if (value.collector) {
                     $('<span />').addClass(csscls('collector')).text(value.collector).prependTo(li);
                 }
@@ -353,7 +352,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
             this.$list.$el.appendTo(this.$el);
             this.$toolbar = $('<div><i class="phpdebugbar-fa phpdebugbar-fa-search"></i></div>').addClass(csscls('toolbar')).appendTo(this.$el);
 
-            $('<input type="text" aria-label="Search" placeholder="Search" />')
+            $('<input type="text" name="search" aria-label="Search" placeholder="Search" />')
                 .on('change', function() { self.set('search', this.value); })
                 .appendTo(this.$toolbar);
 
@@ -433,8 +432,10 @@ if (typeof(PhpDebugBar) == 'undefined') {
                 var formatDuration = function(seconds) {
                     if (seconds < 0.001)
                         return (seconds * 1000000).toFixed() + 'μs';
-                    else if (seconds < 1)
+                    else if (seconds < 0.1)
                         return (seconds * 1000).toFixed(2) + 'ms';
+                    else if (seconds < 1)
+                        return (seconds * 1000).toFixed() + 'ms';
                     return (seconds).toFixed(2) +  's';
                 };
 
@@ -566,7 +567,8 @@ if (typeof(PhpDebugBar) == 'undefined') {
                     $('<span />').addClass(csscls('type')).text(e.type).appendTo(li);
                 }
                 if (e.surrounding_lines) {
-                    var pre = createCodeBlock(e.surrounding_lines.join(""), 'php').addClass(csscls('file')).appendTo(li);
+                    var startLine = (e.line - 3) <= 0 ? 1 : e.line - 3;
+                    var pre = createCodeBlock(e.surrounding_lines.join(""), 'php', startLine, e.line).addClass(csscls('file')).appendTo(li);
                     if (!e.stack_trace_html) {
                         // This click event makes the var-dumper hard to use.
                         li.click(function () {

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ce7aa255a3e2ffdf4fbe50a08101fe9",
+    "content-hash": "2280ce8d987188be9609e7c7d53a6227",
     "packages": [
         {
             "name": "alek13/slack",
@@ -1212,16 +1212,16 @@
         },
         {
             "name": "intervention/image",
-            "version": "3.3.3",
+            "version": "3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Intervention/image.git",
-                "reference": "ad8058f5be94110d72d44958a5e5f4a0705c7471"
+                "reference": "fe1b0e2e64157133322974c28b44c25c2770a0c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Intervention/image/zipball/ad8058f5be94110d72d44958a5e5f4a0705c7471",
-                "reference": "ad8058f5be94110d72d44958a5e5f4a0705c7471",
+                "url": "https://api.github.com/repos/Intervention/image/zipball/fe1b0e2e64157133322974c28b44c25c2770a0c5",
+                "reference": "fe1b0e2e64157133322974c28b44c25c2770a0c5",
                 "shasum": ""
             },
             "require": {
@@ -1268,7 +1268,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Intervention/image/issues",
-                "source": "https://github.com/Intervention/image/tree/3.3.3"
+                "source": "https://github.com/Intervention/image/tree/3.4.0"
             },
             "funding": [
                 {
@@ -1280,7 +1280,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-02-02T15:08:10+00:00"
+            "time": "2024-02-14T15:11:21+00:00"
         },
         {
             "name": "kwn/number-to-words",
@@ -1878,16 +1878,16 @@
         },
         {
             "name": "maximebf/debugbar",
-            "version": "dev-master",
+            "version": "v1.20.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/maximebf/php-debugbar.git",
-                "reference": "8db056271d855c2f08b66c71b5373b44ccb8f7ed"
+                "reference": "484625c23a4fa4f303617f29fcacd42951c9c01d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/8db056271d855c2f08b66c71b5373b44ccb8f7ed",
-                "reference": "8db056271d855c2f08b66c71b5373b44ccb8f7ed",
+                "url": "https://api.github.com/repos/maximebf/php-debugbar/zipball/484625c23a4fa4f303617f29fcacd42951c9c01d",
+                "reference": "484625c23a4fa4f303617f29fcacd42951c9c01d",
                 "shasum": ""
             },
             "require": {
@@ -1904,11 +1904,10 @@
                 "monolog/monolog": "Log using Monolog",
                 "predis/predis": "Redis storage"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.18-dev"
+                    "dev-master": "1.20-dev"
                 }
             },
             "autoload": {
@@ -1939,9 +1938,9 @@
             ],
             "support": {
                 "issues": "https://github.com/maximebf/php-debugbar/issues",
-                "source": "https://github.com/maximebf/php-debugbar/tree/master"
+                "source": "https://github.com/maximebf/php-debugbar/tree/v1.20.2"
             },
-            "time": "2024-01-25T18:41:03+00:00"
+            "time": "2024-02-15T10:49:09+00:00"
         },
         {
             "name": "mpdf/mpdf",
@@ -2325,16 +2324,16 @@
         },
         {
             "name": "nxp/math-executor",
-            "version": "v2.3.5",
+            "version": "v2.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/neonxp/MathExecutor.git",
-                "reference": "a1f86abc0b4896f287f7851573e5965682b1f2ab"
+                "reference": "dca855e25f8ba6ab019c2fe9bd8065d4713d00de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/neonxp/MathExecutor/zipball/a1f86abc0b4896f287f7851573e5965682b1f2ab",
-                "reference": "a1f86abc0b4896f287f7851573e5965682b1f2ab",
+                "url": "https://api.github.com/repos/neonxp/MathExecutor/zipball/dca855e25f8ba6ab019c2fe9bd8065d4713d00de",
+                "reference": "dca855e25f8ba6ab019c2fe9bd8065d4713d00de",
                 "shasum": ""
             },
             "require": {
@@ -2377,9 +2376,9 @@
             ],
             "support": {
                 "issues": "https://github.com/neonxp/MathExecutor/issues",
-                "source": "https://github.com/neonxp/MathExecutor/tree/v2.3.5"
+                "source": "https://github.com/neonxp/MathExecutor/tree/v2.3.6"
             },
-            "time": "2023-11-23T15:38:20+00:00"
+            "time": "2024-02-15T22:51:27+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -2919,7 +2918,7 @@
         },
         {
             "name": "phpfui/constantcontact",
-            "version": "dev-main",
+            "version": "V24.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ConstantContact.git",
@@ -2945,7 +2944,6 @@
                 "roave/security-advisories": "dev-latest",
                 "symfony/yaml": "^6.0"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -3884,43 +3882,39 @@
         },
         {
             "name": "scrivo/highlight.php",
-            "version": "dev-master",
+            "version": "v9.18.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/scrivo/highlight.php.git",
-                "reference": "d1c6b0956a2b0d3efc137e4d8c5bf5c5e220bac1"
+                "reference": "850f4b44697a2552e892ffe71490ba2733c2fc6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scrivo/highlight.php/zipball/d1c6b0956a2b0d3efc137e4d8c5bf5c5e220bac1",
-                "reference": "d1c6b0956a2b0d3efc137e4d8c5bf5c5e220bac1",
+                "url": "https://api.github.com/repos/scrivo/highlight.php/zipball/850f4b44697a2552e892ffe71490ba2733c2fc6e",
+                "reference": "850f4b44697a2552e892ffe71490ba2733c2fc6e",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "ext-mbstring": "*",
-                "php": ">=5.6"
+                "php": ">=5.4"
             },
             "require-dev": {
-                "bamarni/composer-bin-plugin": "^1.8",
-                "php": ">=8.0",
-                "phpbench/phpbench": "^1.0",
-                "phpunit/phpunit": "^5.7",
+                "phpunit/phpunit": "^4.8|^5.7",
                 "sabberworm/php-css-parser": "^8.3",
-                "symfony/finder": "^4.4",
-                "symfony/var-dumper": "^4.4"
+                "symfony/finder": "^2.8|^3.4|^5.4",
+                "symfony/var-dumper": "^2.8|^3.4|^5.4"
             },
-            "default-branch": true,
+            "suggest": {
+                "ext-mbstring": "Allows highlighting code with unicode characters and supports language with unicode keywords"
+            },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "10.0-dev"
-                }
-            },
             "autoload": {
-                "psr-4": {
-                    "Highlight\\": "src/Highlight",
-                    "HighlightUtilities\\": "src/HighlightUtilities"
+                "files": [
+                    "HighlightUtilities/functions.php"
+                ],
+                "psr-0": {
+                    "Highlight\\": "",
+                    "HighlightUtilities\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -3962,7 +3956,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-05-15T07:13:13+00:00"
+            "time": "2022-12-17T21:53:22+00:00"
         },
         {
             "name": "setasign/fpdf",
@@ -5863,16 +5857,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.57",
+            "version": "1.10.58",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "1627b1d03446904aaa77593f370c5201d2ecc34e"
+                "reference": "a23518379ec4defd9e47cbf81019526861623ec2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/1627b1d03446904aaa77593f370c5201d2ecc34e",
-                "reference": "1627b1d03446904aaa77593f370c5201d2ecc34e",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/a23518379ec4defd9e47cbf81019526861623ec2",
+                "reference": "a23518379ec4defd9e47cbf81019526861623ec2",
                 "shasum": ""
             },
             "require": {
@@ -5921,7 +5915,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-24T11:51:34+00:00"
+            "time": "2024-02-12T20:02:57+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -6398,12 +6392,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "feb85d42c6880b348e404115e011ae2201f49bba"
+                "reference": "3e513f303c13a625befa037a23b5d1ac9bde2a52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/feb85d42c6880b348e404115e011ae2201f49bba",
-                "reference": "feb85d42c6880b348e404115e011ae2201f49bba",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/3e513f303c13a625befa037a23b5d1ac9bde2a52",
+                "reference": "3e513f303c13a625befa037a23b5d1ac9bde2a52",
                 "shasum": ""
             },
             "conflict": {
@@ -6507,7 +6501,7 @@
                 "dbrisinajumi/d2files": "<1",
                 "dcat/laravel-admin": "<=2.1.3.0-beta",
                 "derhansen/fe_change_pwd": "<2.0.5|>=3,<3.0.3",
-                "derhansen/sf_event_mgt": "<4.3.1|>=5,<5.1.1",
+                "derhansen/sf_event_mgt": "<4.3.1|>=5,<5.1.1|>=7,<7.4",
                 "desperado/xml-bundle": "<=0.1.7",
                 "directmailteam/direct-mail": "<6.0.3|>=7,<7.0.3|>=8,<9.5.2",
                 "doctrine/annotations": "<1.2.7",
@@ -6522,7 +6516,7 @@
                 "dolibarr/dolibarr": "<18.0.2",
                 "dompdf/dompdf": "<2.0.4",
                 "doublethreedigital/guest-entries": "<3.1.2",
-                "drupal/core": "<9.5.11|>=10,<10.0.11|>=10.1,<10.1.4",
+                "drupal/core": ">=6,<6.38|>=7,<7.96|>=8,<10.1.8|>=10.2,<10.2.2",
                 "drupal/drupal": ">=5,<5.11|>=6,<6.38|>=7,<7.80|>=8,<8.9.16|>=9,<9.1.12|>=9.2,<9.2.4",
                 "duncanmcclean/guest-entries": "<3.1.2",
                 "dweeves/magmi": "<=0.7.24",
@@ -6593,7 +6587,7 @@
                 "funadmin/funadmin": "<=3.2|>=3.3.2,<=3.3.3",
                 "gaoming13/wechat-php-sdk": "<=1.10.2",
                 "genix/cms": "<=1.1.11",
-                "getgrav/grav": "<=1.7.42.1",
+                "getgrav/grav": "<1.7.44",
                 "getkirby/cms": "<3.5.8.3-dev|>=3.6,<3.6.6.3-dev|>=3.7,<3.7.5.2-dev|>=3.8,<3.8.4.1-dev|>=3.9,<3.9.6",
                 "getkirby/kirby": "<=2.5.12",
                 "getkirby/panel": "<2.5.14",
@@ -6688,7 +6682,7 @@
                 "liftkit/database": "<2.13.2",
                 "limesurvey/limesurvey": "<3.27.19",
                 "livehelperchat/livehelperchat": "<=3.91",
-                "livewire/livewire": ">2.2.4,<2.2.6|>=3,<3.0.4",
+                "livewire/livewire": ">2.2.4,<2.2.6",
                 "lms/routes": "<2.1.1",
                 "localizationteam/l10nmgr": "<7.4|>=8,<8.7|>=9,<9.2",
                 "luyadev/yii-helpers": "<1.2.1",
@@ -6811,7 +6805,7 @@
                 "pimcore/ecommerce-framework-bundle": "<1.0.10",
                 "pimcore/perspective-editor": "<1.5.1",
                 "pimcore/pimcore": "<11.1.1",
-                "pixelfed/pixelfed": "<=0.11.4",
+                "pixelfed/pixelfed": "<0.11.11",
                 "plotly/plotly.js": "<2.25.2",
                 "pocketmine/bedrock-protocol": "<8.0.2",
                 "pocketmine/pocketmine-mp": "<=4.23|>=5,<5.3.1",
@@ -6989,14 +6983,13 @@
                 "twig/twig": "<1.44.7|>=2,<2.15.3|>=3,<3.4.3",
                 "typo3/cms": "<9.5.29|>=10,<10.4.35|>=11,<11.5.23|>=12,<12.2",
                 "typo3/cms-backend": "<4.1.14|>=4.2,<4.2.15|>=4.3,<4.3.7|>=4.4,<4.4.4|>=7,<=7.6.50|>=8,<=8.7.39|>=9,<=9.5.24|>=10,<=10.4.13|>=11,<=11.1",
-                "typo3/cms-core": "<8.7.55|>=9,<9.5.44|>=10,<10.4.41|>=11,<11.5.33|>=12,<12.4.8",
+                "typo3/cms-core": "<=8.7.56|>=9,<=9.5.45|>=10,<=10.4.42|>=11,<=11.5.34|>=12,<=12.4.10|==13",
                 "typo3/cms-extbase": "<6.2.24|>=7,<7.6.8|==8.1.1",
                 "typo3/cms-fluid": "<4.3.4|>=4.4,<4.4.1",
                 "typo3/cms-form": ">=8,<=8.7.39|>=9,<=9.5.24|>=10,<=10.4.13|>=11,<=11.1",
                 "typo3/cms-frontend": "<4.3.9|>=4.4,<4.4.5",
                 "typo3/cms-install": "<4.1.14|>=4.2,<4.2.16|>=4.3,<4.3.9|>=4.4,<4.4.5|>=12.2,<12.4.8",
                 "typo3/cms-rte-ckeditor": ">=9.5,<9.5.42|>=10,<10.4.39|>=11,<11.5.30",
-                "typo3/cms-saltedpasswords": "<0.2.13",
                 "typo3/flow": ">=1,<1.0.4|>=1.1,<1.1.1|>=2,<2.0.1|>=2.3,<2.3.16|>=3,<3.0.12|>=3.1,<3.1.10|>=3.2,<3.2.13|>=3.3,<3.3.13|>=4,<4.0.6",
                 "typo3/html-sanitizer": ">=1,<=1.5.2|>=2,<=2.1.3",
                 "typo3/neos": ">=1.1,<1.1.3|>=1.2,<1.2.13|>=2,<2.0.4|>=2.3,<2.3.99|>=3,<3.0.20|>=3.1,<3.1.18|>=3.2,<3.2.14|>=3.3,<3.3.23|>=4,<4.0.17|>=4.1,<4.1.16|>=4.2,<4.2.12|>=4.3,<4.3.3",
@@ -7053,6 +7046,7 @@
                 "yikesinc/yikes-inc-easy-mailchimp-extender": "<6.8.6",
                 "yoast-seo-for-typo3/yoast_seo": "<7.2.3",
                 "yourls/yourls": "<=1.8.2",
+                "yuan1994/tpadmin": "<=1.3.12",
                 "zencart/zencart": "<=1.5.7.0-beta",
                 "zendesk/zendesk_api_client_php": "<2.2.11",
                 "zendframework/zend-cache": ">=2.4,<2.4.8|>=2.5,<2.5.3",
@@ -7127,7 +7121,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-02-09T23:04:23+00:00"
+            "time": "2024-02-16T21:04:04+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -9085,9 +9079,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "maximebf/debugbar": 20,
-        "phpfui/constantcontact": 20,
-        "scrivo/highlight.php": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,

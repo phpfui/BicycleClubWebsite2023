@@ -15,6 +15,7 @@ backup
 .DS_Store
 /public/*.csv
 /public/.htaccess
+/Highlight/.php-cs-fixer.dist.php
 backup.zip
 CHANGELOG.md
 CONTRIBUTING.md

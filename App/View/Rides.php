@@ -446,7 +446,6 @@ class Rides
 		$lastDate = $rides->current()->rideDate;
 		$dateAccordion = new \App\UI\Accordion();
 		$dayAccordion = 0;
-		$rideCats = [];
 		$targetPaceColumn = $this->page->value('targetPaceOption');
 
 		$leaderless = $this->page->value('LeaderlessName') ?: 'Cancelled';
@@ -460,8 +459,7 @@ class Rides
 
 			if ($ride->rideDate != $lastDate)
 				{
-				$dateAccordion->addTab(\App\Tools\Date::formatString('l, F j, Y', $lastDate) . ' ' . \implode(', ', $rideCats), $dayAccordion, true);
-				$rideCats = [];
+				$dateAccordion->addTab(\App\Tools\Date::formatString('l, F j, Y', $lastDate), $dayAccordion, true)->addClass('ride-date-header');
 				$dayAccordion = 0;
 				$lastDate = $ride->rideDate;
 				}
@@ -667,9 +665,9 @@ class Rides
 				$content->add("<br><b>Start:</b> {$link}");
 				$content->add($this->getRWGPSMenu($ride));
 				}
-			$dayAccordion->addTab($row, $content)->addClass('cat-All cat-' . $this->paceTable->getCategoryIdFromPaceId($ride->paceId));
+			$dayAccordion->addTab($row, $content)->addClass('ride-header');
 			}
-		$dateAccordion->addTab(\App\Tools\Date::formatString('l, F j, Y', $lastDate) . ' ' . \implode(', ', $rideCats), $dayAccordion . $unaffiliated, true);
+		$dateAccordion->addTab(\App\Tools\Date::formatString('l, F j, Y', $lastDate), $dayAccordion . $unaffiliated, true)->addClass('ride-date-header');
 
 		return $dateAccordion;
 		}

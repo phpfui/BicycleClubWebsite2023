@@ -143,7 +143,6 @@ foreach ($memberCursor as $memberArray)
 		{
 		$memberArray['address'] .= ' ' . $memberArray['street2'];
 		}
-	$memberArray['address'] .= ' ' . $memberArray['street2'];
 	$membership->setFrom($memberArray);
 	$membership->pending = 0;
 	$member->membership = $membership;

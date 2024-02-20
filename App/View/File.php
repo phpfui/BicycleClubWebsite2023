@@ -33,7 +33,7 @@ class File
 
 		$cuts = \App\Model\Session::getFileCuts();
 
-		if ($fileFolderId && $cuts)
+		if ($cuts)
 			{
 			$form = new \PHPFUI\Form($this->page);
 			$form->setAreYouSure(false);
@@ -49,13 +49,22 @@ class File
 					{
 					$fileFolder = new \App\Record\FileFolder(0 - $fileId);
 					$name = $fileFolder->fileFolder;
+					$multiSelect->addOption('Folder: ' . $name, (string)$fileId);
 					}
 				else
 					{
 					$file = new \App\Record\File($fileId);
 					$name = $file->file ?: $fileId;
+
+					if ($fileFolderId)
+						{
+						$multiSelect->addOption('File: ' . $name, (string)$fileId);
+						}
+					else
+						{
+						$multiSelect->addOption('Paste Disabled: ' . $name, disabled:true);
+						}
 					}
-				$multiSelect->addOption($name, (string)$fileId);
 				}
 			$fieldSet->add($multiSelect);
 
@@ -317,11 +326,8 @@ return $member->fullName();});
 		{
 		$container = new \PHPFUI\Table();
 
-		if (! $parentFolder->loaded())
-			{
-			$container->setHeaders(['Folder', 'Cut' => 'Cut/Del']);
-			$container->addColumnAttribute('Cut', ['class' => 'float-right']);
-			}
+		$container->setHeaders(['Folder', 'Cut' => 'Cut/Del']);
+		$container->addColumnAttribute('Cut', ['class' => 'float-right']);
 		$buttonGroup = new \PHPFUI\HTML5Element('div');
 		$buttonGroup->addClass('clearfix');
 
@@ -367,7 +373,7 @@ return $member->fullName();});
 				}
 			}
 
-		if ($parentFolder->loaded() && ($this->moveFile || $this->moveFolder))
+		if ($this->moveFile || $this->moveFolder)
 			{
 			$cutButton = new \PHPFUI\Submit('Cut');
 			$cutButton->addClass('alert');
@@ -394,7 +400,7 @@ return $member->fullName();});
 				{
 				$row['Cut'] = new \PHPFUI\FAIcon('fas', 'trash-alt', '/File/deleteFolder/' . $folder->fileFolderId);
 				}
-			elseif ($parentFolder->loaded() && (! isset($cuts[0 - $folder->fileFolderId]) && $this->moveFolder))
+			elseif (! isset($cuts[0 - $folder->fileFolderId]) && $this->moveFolder)
 				{
 				$cb = new \PHPFUI\Input\CheckBox('cutFolder[]', '', $folder->fileFolderId);
 				$row['Cut'] = $cb;

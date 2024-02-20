@@ -44,7 +44,7 @@ class Photo
 
 		$cuts = \App\Model\Session::getPhotoCuts();
 
-		if ($photoFolderId && $cuts)
+		if ($cuts)
 			{
 			$form = new \PHPFUI\Form($this->page);
 			$form->setAreYouSure(false);
@@ -60,13 +60,22 @@ class Photo
 					{
 					$photoFolder = new \App\Record\PhotoFolder(0 - $photoId);
 					$name = $photoFolder->photoFolder;
+					$multiSelect->addOption('Folder: ' . $name, (string)$photoId);
 					}
 				else
 					{
 					$photo = new \App\Record\Photo($photoId);
 					$name = $photo->photo ?: $photoId;
+
+					if ($photoFolderId)
+						{
+						$multiSelect->addOption('Photo: ' . $name, (string)$photoId);
+						}
+					else
+						{
+						$multiSelect->addOption('Paste Disabled: ' . $name, disabled:true);
+						}
 					}
-				$multiSelect->addOption($name, (string)$photoId);
 				}
 			$fieldSet->add($multiSelect);
 
@@ -606,11 +615,9 @@ JS;
 		{
 		$container = new \PHPFUI\Table();
 
-		if ($parentFolder->loaded())
-			{
-			$container->setHeaders(['Folder', 'Cut' => 'Cut &nbsp; &nbsp; &nbsp;']);
-			$container->addColumnAttribute('Cut', ['class' => 'float-right']);
-			}
+		$container->setHeaders(['Folder', 'Cut' => 'Cut &nbsp; &nbsp; &nbsp;']);
+		$container->addColumnAttribute('Cut', ['class' => 'float-right']);
+
 		$buttonGroup = new \PHPFUI\HTML5Element('div');
 		$buttonGroup->addClass('clearfix');
 
@@ -656,7 +663,7 @@ JS;
 				}
 			}
 
-		if ($parentFolder->loaded() && ($this->movePhoto || $this->moveFolder))
+		if ($this->movePhoto || $this->moveFolder)
 			{
 			$cutButton = new \PHPFUI\Submit('Cut');
 			$cutButton->addClass('alert');
@@ -683,7 +690,7 @@ JS;
 				{
 				$row['Cut'] = new \PHPFUI\FAIcon('fas', 'trash-alt', '/Photo/deleteFolder/' . $folder->photoFolderId);
 				}
-			elseif ($parentFolder->loaded() && (! isset($cuts[0 - $folder->photoFolderId]) && $this->moveFolder))
+			elseif (! isset($cuts[0 - $folder->photoFolderId]) && $this->moveFolder)
 				{
 				$cb = new \PHPFUI\Input\CheckBox('cutFolder[]', '', $folder->photoFolderId);
 				$row['Cut'] = $cb;

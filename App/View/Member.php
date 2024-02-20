@@ -243,7 +243,8 @@ class Member
 			{
 			$multiColumn = new \PHPFUI\MultiColumn();
 			$multiColumn->add(new \PHPFUI\Input\Date($this->page, 'joined', 'Member Since', $membership->joined));
-			$expires = new \PHPFUI\Input\MonthYear($this->page, 'expires', 'Membership Expires', $membership->expires);
+			$expires = $membership->expires ?? \App\Tools\Date::toString(\App\Tools\Date::endOfMonth(\App\Tools\Date::today()));
+			$expires = new \PHPFUI\Input\MonthYear($this->page, 'expires', 'Membership Expires', $expires);
 			$expires->setDay(0); // end of month
 			$multiColumn->add($expires);
 			$fieldSet->add($multiColumn);
@@ -578,7 +579,7 @@ class Member
 				{
 				continue;
 				}
-			$id = isset($memberArray['memberId']) && $member->memberId ? $member->memberId : 0 - ($member->membershipId ?? 0);
+			$id = isset($memberArray['memberId']) && $member->memberId ? $member->memberId : 0 - ($memberObject->membershipId ?? 0);
 			$memberArray['category'] = \App\Table\MemberCategory::getRideCategoryStringForMember($id);
 			$row = new \PHPFUI\GridX();
 
@@ -645,9 +646,9 @@ class Member
 					{
 					$detail[] = new \PHPFUI\FAIcon('far', 'edit', "/Membership/edit/{$id}");
 					}
-				elseif ($id < 0)
+				elseif ($id <= 0)
 					{
-					$detail[] = new \PHPFUI\FAIcon('far', 'edit', "/Membership/editMembership/{$member->membershipId}");
+					$detail[] = new \PHPFUI\FAIcon('far', 'edit', "/Membership/editMembership/{$memberObject->membershipId}");
 					}
 				}
 

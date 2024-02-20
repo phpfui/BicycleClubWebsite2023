@@ -50,6 +50,7 @@ $membershipCursor = $membershipTable->getRecordCursor();
 foreach ($membershipCursor as $membership)
 	{
 	$skip = true;
+
 	foreach ($membership->MemberChildren as $member)
 		{
 		if (! $skip)
@@ -63,4 +64,3 @@ foreach ($membershipCursor as $membership)
 		$skip = false;
 		}
 	}
-

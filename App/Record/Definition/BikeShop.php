@@ -13,7 +13,7 @@ namespace App\Record\Definition;
  * @property ?string $contact MySQL type varchar(255)
  * @property ?string $email MySQL type varchar(100)
  * @property ?string $name MySQL type varchar(255)
- * @property ?string $notes MySQL type varchar(255)
+ * @property ?string $notes MySQL type text
  * @property ?string $phone MySQL type varchar(20)
  * @property ?string $state MySQL type char(2)
  * @property ?string $town MySQL type varchar(50)
@@ -33,7 +33,7 @@ abstract class BikeShop extends \PHPFUI\ORM\Record
 		'contact' => ['varchar(255)', 'string', 255, true, '', ],
 		'email' => ['varchar(100)', 'string', 100, true, '', ],
 		'name' => ['varchar(255)', 'string', 255, true, '', ],
-		'notes' => ['varchar(255)', 'string', 255, true, '', ],
+		'notes' => ['text', 'string', 65535, true, ],
 		'phone' => ['varchar(20)', 'string', 20, true, '', ],
 		'state' => ['char(2)', 'string', 2, true, '', ],
 		'town' => ['varchar(50)', 'string', 50, true, '', ],

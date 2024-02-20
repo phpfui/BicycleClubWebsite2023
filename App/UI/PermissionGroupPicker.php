@@ -50,9 +50,9 @@ class PermissionGroupPicker
 		{
 		$value = $this->initial->name ?? '';
 		$control = new \PHPFUI\Input\AutoComplete($this->page, $this->callback(...), 'text', $this->fieldName, $this->label, $value);
+		$control->addAutoCompleteOption('minChars', 1)->addAutoCompleteOption('autoSelectFirst', false);
 		$hidden = $control->getHiddenField();
 		$hidden->setValue((string)($this->initial->permissionId ?? ''));
-		$control->setNoFreeForm();
 
 		return $control;
 		}

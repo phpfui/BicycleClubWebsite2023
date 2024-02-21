@@ -87,9 +87,6 @@ class DBInit extends \PHPFUI\Container
 					{
 					\PHPFUI\Session::setFlash('alert', \print_r($errors, true));
 					}
-
-				$permissionModel = new \App\Model\Permission();
-				$permissionModel->loadStandardPermissions();
 				}
 
 			$this->page->redirect('/Config/wizard/' . $settings->stage);

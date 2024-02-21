@@ -393,7 +393,7 @@ class Photo
 	/**
 	 * @param array<string,string> $parameters
 	 */
-	public function getSearchButton(array $parameters = [], bool $openOnPageLoad = true) : \PHPFUI\Button
+	public function getSearchButton(\App\Table\Photo $photoTable, array $parameters = [], bool $openOnPageLoad = true) : \PHPFUI\Button
 		{
 		if ($this->searchButton)
 			{
@@ -411,7 +411,7 @@ class Photo
 			$modal->showOnPageLoad();
 			}
 
-		if (! empty($parameters) && $openOnPageLoad)
+		if (! \count($photoTable) && $openOnPageLoad)
 			{
 			$callout = new \PHPFUI\Callout('alert');
 			$callout->addClass('small');

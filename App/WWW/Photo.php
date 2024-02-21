@@ -42,8 +42,11 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$form->setAttribute('action', '/Photo/cut');
 			$form->add($this->view->listFolders($this->folderTable, $photoFolder));
 
-			$this->table->setWhere(new \PHPFUI\ORM\Condition('photoFolderId', $photoFolder->photoFolderId));
-			$form->add($this->view->listPhotos($this->table, true));
+			if ($photoFolder->loaded())
+				{
+				$this->table->setWhere(new \PHPFUI\ORM\Condition('photoFolderId', $photoFolder->photoFolderId));
+				$form->add($this->view->listPhotos($this->table, true));
+				}
 			$this->page->addPageContent($form);
 			}
 		}
@@ -270,17 +273,20 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('Find Photos'))
 			{
-			if (empty($_GET))
+			$showSearch = true;
+
+			if (($_GET['submit'] ?? '') == 'Search')
 				{
-				$photos = [];
-				}
-			else
-				{
+				$showSearch = false;
 				$this->table->search($_GET);
 				}
-			$this->page->addPageContent($this->view->getSearchButton($_GET, ! $this->table->count()));
-			$this->page->addPageContent($this->view->listPhotos($this->table));
-			$this->page->addPageContent($this->view->getSearchButton());
+			$this->page->addPageContent($this->view->getSearchButton($this->table, $_GET, $showSearch));
+
+			if (! $showSearch)
+				{
+				$this->page->addPageContent($this->view->listPhotos($this->table));
+				$this->page->addPageContent($this->view->getSearchButton($this->table, $_GET, $showSearch));
+				}
 			}
 		}
 

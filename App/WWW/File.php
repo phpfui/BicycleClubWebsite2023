@@ -39,8 +39,11 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$form->setAttribute('action', '/File/cut');
 			$form->add($this->view->listFolders($this->folderTable, $fileFolder));
 
-			$this->table->setWhere(new \PHPFUI\ORM\Condition('fileFolderId', $fileFolder->fileFolderId));
-			$form->add($this->view->listFiles($this->table, true, $fileFolder->fileFolderId));
+			if ($fileFolder->loaded())
+				{
+				$this->table->setWhere(new \PHPFUI\ORM\Condition('fileFolderId', $fileFolder->fileFolderId));
+				$form->add($this->view->listFiles($this->table, true, $fileFolder->fileFolderId));
+				}
 			$this->page->addPageContent($form);
 			}
 		}
@@ -132,13 +135,22 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function download(\App\Record\File $file = new \App\Record\File()) : void
 		{
-		if (! $file->loaded() || ! $this->view->hasPermission($file))
+		if (! $file->loaded())
 			{
 			$this->page->addPageContent(new \PHPFUI\SubHeader('File not found'));
 			\http_response_code(404);
 
 			return;
 			}
+
+		if (! $this->view->hasPermission($file))
+			{
+			$this->page->addPageContent(new \PHPFUI\SubHeader('File Restricted'));
+			\http_response_code(401);
+
+			return;
+			}
+
 		$fileModel = new \App\Model\FileFiles();
 		$fileModel->download($file->fileId, $file->extension, $file->fileName . $file->extension);
 
@@ -254,14 +266,21 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('Find Files'))
 			{
+			$showSearch = true;
+
 			// need to check if in permissioned folder
-			if (! empty($_GET))
+			if (($_GET['submit'] ?? '') == 'Search')
 				{
+				$showSearch = false;
 				$this->table->search($_GET);
 				}
-			$this->page->addPageContent($this->view->getSearchButton($_GET, ! empty($_GET)));
-			$this->page->addPageContent($this->view->listFiles($this->table));
-			$this->page->addPageContent($this->view->getSearchButton());
+			$this->page->addPageContent($this->view->getSearchButton($this->table, $_GET, $showSearch));
+
+			if (! $showSearch)
+				{
+				$this->page->addPageContent($this->view->listFiles($this->table));
+				$this->page->addPageContent($this->view->getSearchButton($this->table, $_GET, $showSearch));
+				}
 			}
 		}
 

@@ -9,6 +9,8 @@ class File
 	 */
 	private array $cuts = [];
 
+	private static bool $editFile = false;
+
 	private readonly \App\Model\FileFiles $fileFiles;
 
 	private bool $moveFile = false;
@@ -24,6 +26,7 @@ class File
 		$this->fileFiles = new \App\Model\FileFiles();
 		$this->signedInMember = \App\Model\Session::signedInMemberId();
 		$this->moveFile = $page->isAuthorized('Move File');
+		self::$editFile = $page->isAuthorized('Edit File');
 		$this->moveFolder = $page->isAuthorized('Move Folder');
 		}
 
@@ -204,7 +207,7 @@ class File
 	/**
 	 * @param array<string,string> $parameters
 	 */
-	public function getSearchButton(array $parameters = [], bool $openOnPageLoad = true) : \PHPFUI\Button
+	public function getSearchButton(\App\Table\File $fileTable, array $parameters = [], bool $openOnPageLoad = true) : \PHPFUI\Button
 		{
 		if ($this->searchButton)
 			{
@@ -222,7 +225,7 @@ class File
 			$modal->showOnPageLoad();
 			}
 
-		if (! empty($parameters) && $openOnPageLoad)
+		if (! \count($fileTable) && $openOnPageLoad)
 			{
 			$callout = new \PHPFUI\Callout('alert');
 			$callout->addClass('small');
@@ -302,7 +305,7 @@ class File
 		$this->cuts = \App\Model\Session::getFileCuts();
 
 		$view->addCustomColumn('uploaded', static fn (array $file) => \date('Y-m-d', \strtotime((string)$file['uploaded'])));
-		$view->addCustomColumn('file', static fn (array $file) => new \PHPFUI\Link('/File/edit/' . $file['fileId'], $file['file'], false));
+		$view->addCustomColumn('file', static fn (array $file) => self::$editFile ? new \PHPFUI\Link('/File/edit/' . $file['fileId'], $file['file'], false) : $file['file']);
 		$view->addCustomColumn('fileName', static fn (array $file) => new \PHPFUI\Link('/File/download/' . $file['fileId'], $file['fileName'], false));
 		$view->addCustomColumn('member', static function(array $file) { $member = new \App\Record\Member($file['memberId']);
 

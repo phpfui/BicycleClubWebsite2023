@@ -95,6 +95,8 @@ class FallbackEmailProcessor
 
 		foreach ($addresses as $address)
 			{
+			$address = \strtolower($address);
+
 			if (! isset($validAddresses[$address]))
 				{
 				$invalidAddresses[] = $address;

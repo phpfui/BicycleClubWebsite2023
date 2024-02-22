@@ -7,7 +7,8 @@ class System
 	public function process(\ZBateson\MailMimeParser\Message $message) : bool
 		{
 		$tempFiles = [];
-		$to = $message->getHeader('to');
+		$to = $message->getHeader('To');
+		$cc = $message->getHeader('Cc');
 		$found = false;
 		$email = new \App\Tools\EMail();
 		$fromBox = 'webmaster';
@@ -18,7 +19,7 @@ class System
 			{
 			$emailAddress = $system->mailbox . '@' . \emailServerName();
 
-			if ($to && $to->hasAddress($emailAddress))
+			if (($to && $to->hasAddress($emailAddress)) || ($cc && $cc->hasAddress($emailAddress)))
 				{
 				$fromBox = $system->mailbox;
 				$email->addTo($system->email, $system->name);

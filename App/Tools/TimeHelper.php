@@ -173,24 +173,17 @@ class TimeHelper
 			}
 		}
 
-	public static function toMilitary(int $time) : string
+	public static function toMilitary(int $time) : ?string
 		{
-		$returnValue = '';
-
-		if ($time >= 0)
+		if ($time < 0)
 			{
-			$hour = \floor($time / 60);
-			$minute = $time % 60;
-			$returnValue = $hour . ':';
-
-			if ($minute < 10)
-				{
-				$returnValue .= '0';
-				}
-			$returnValue .= $minute;
+			return null;
 			}
 
-		return $returnValue;
+		$hour = \floor($time / 60);
+		$minute = $time % 60;
+
+		return \sprintf('%02d:%02d:00', $hour, $minute);
 		}
 
 	public static function toSmallTime(?string $time) : string

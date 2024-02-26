@@ -14,6 +14,8 @@ class RideNotices extends \App\Cron\BaseJob
 		{
 		$today = $this->controller->runningAtJD();
 		$model = new \App\Model\Ride();
+		$todayString = \App\Tools\Date::toString($today);
+		$nowString = \date('h:i:00');
 		$advanceRides = \App\Table\Ride::getDateRange($today, $today + 6);
 
 		$rideDescriptions = [];
@@ -48,6 +50,10 @@ class RideNotices extends \App\Cron\BaseJob
 					continue;
 					}
 
+				if ($ride->rideDate == $todayString && $ride->startTime <= $nowString)
+					{
+					continue;
+					}
 				$daysOut = \App\Tools\Date::fromString($ride->rideDate) - $today;
 
 				if ($daysOut >= 0 && $member['rideJournal'] >= $daysOut && $paceTable->getCategoryIdFromPaceId($ride->paceId) == $member['categoryId'])

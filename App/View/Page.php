@@ -292,7 +292,7 @@ class Page extends \PHPFUI\Page
 
 	public function getStart() : string
 		{
-		$this->addStyleSheet('/css/styles.v1.css');
+		$this->addStyleSheet('/css/styles.v2.css');
 
 		if (\count($this->requiredPages))
 			{

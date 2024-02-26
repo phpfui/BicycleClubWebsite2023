@@ -16,7 +16,7 @@ class Config implements \PHPFUI\Interfaces\NanoClass, \Stringable
 		$this->page = new \App\View\Setup\Page();
 		$this->page->addCSS('body { margin: 1em}')->setPageName($this->title);
 		\header('Access-Control-Allow-Origin: ' . $this->page->getSchemeHost());
-		$this->page->addStyleSheet('/css/styles.v1.css');
+		$this->page->addStyleSheet('/css/styles.v2.css');
 		$this->settings = new \App\Settings\DB();
 
 		if (! $this->settings->empty() && ! $this->settings->setup)

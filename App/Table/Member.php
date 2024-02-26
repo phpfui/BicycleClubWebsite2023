@@ -8,7 +8,7 @@ class Member extends \PHPFUI\ORM\Table
 
 	public function badExpirations() : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectFields() . ' left join payment p on p.membershipId=m.membershipId WHERE p.amount=30.00 and p.paymentType=3 and p.dateReceived>=s.expires-60 and s.expires>? order by s.expires';
+		$sql = self::getSelectedFields() . ' left join payment p on p.membershipId=m.membershipId WHERE p.amount=30.00 and p.paymentType=3 and p.dateReceived>=s.expires-60 and s.expires>? order by s.expires';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString(-366)]);
 		}
@@ -308,7 +308,7 @@ class Member extends \PHPFUI\ORM\Table
 
 	public static function getNewMembers(string $start, string $end) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectFields() . ' where s.expires>? and s.joined>=? and s.joined<? order by s.joined desc';
+		$sql = self::getSelectedFields() . ' where s.expires>? and s.joined>=? and s.joined<? order by s.joined desc';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$start, $start, $end, ]);
 		}
@@ -334,7 +334,7 @@ class Member extends \PHPFUI\ORM\Table
 
 	public function getPendingMembers(string $date) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectFields() . ' where s.pending>0 and s.joined<=?';
+		$sql = self::getSelectedFields() . ' where s.pending>0 and s.joined<=?';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$date]);
 		}
@@ -379,7 +379,7 @@ class Member extends \PHPFUI\ORM\Table
 
 	public function missingNames() : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectFields() . " where s.pending=0 and s.expires>=? and m.firstName<='' or m.lastName<=''";
+		$sql = self::getSelectedFields() . " where s.pending=0 and s.expires>=? and m.firstName<='' or m.lastName<=''";
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString()]);
 		}
@@ -393,14 +393,14 @@ class Member extends \PHPFUI\ORM\Table
 
 	public function noPayments() : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectFields() . ' where s.expires>=? and s.pending=0 and s.membershipId NOT IN (SELECT membershipId from payment)';
+		$sql = self::getSelectedFields() . ' where s.expires>=? and s.pending=0 and s.membershipId NOT IN (SELECT membershipId from payment)';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString()]);
 		}
 
 	public function noPermissions() : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectFields() . ' WHERE m.memberId NOT IN (SELECT memberId from userPermission)';
+		$sql = self::getSelectedFields() . ' WHERE m.memberId NOT IN (SELECT memberId from userPermission)';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql);
 		}
@@ -414,7 +414,7 @@ class Member extends \PHPFUI\ORM\Table
 
 	public static function recentSignIns() : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectFields() . ' where acceptedWaiver>"2000" order by lastLogin desc limit 25';
+		$sql = self::getSelectedFields() . ' where acceptedWaiver>"2000" order by lastLogin desc limit 25';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql);
 		}
@@ -426,7 +426,7 @@ class Member extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::execute($sql, [$difference, $memberId]);
 		}
 
-	private static function getSelectFields(string $countRows = '') : string
+	private static function getSelectedFields(string $countRows = '') : string
 		{
 		return 'select ' . $countRows . ' m.*,s.*,concat(m.firstName," ",m.lastName) memberName from member m left join membership s on s.membershipId=m.membershipId ';
 		}

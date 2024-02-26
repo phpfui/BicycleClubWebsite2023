@@ -184,7 +184,7 @@ class Invoice extends \PHPFUI\ORM\Table
 
 	public static function getPaidByDate(int $shipped, string $startDate = '', string $endDate = '', int $points = 0) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = self::getSelectFields();
+		$sql = self::getSelectedFields() ;
 		$sql .= 'where i.paymentDate>"1000-01-01"';
 
 		if ($shipped)
@@ -312,7 +312,7 @@ class Invoice extends \PHPFUI\ORM\Table
 		return $this;
 		}
 
-	private static function getSelectFields() : string
+	private static function getSelectedFields() : string
 		{
 		return 'select i.*,m.firstName,m.lastName,m.email,concat(m.firstName," ",m.lastName) name from invoice i left join member m on i.memberId=m.memberId ';
 		}

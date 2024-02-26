@@ -40,7 +40,7 @@ class CueSheet extends \PHPFUI\ORM\Table
 
 	public static function getCueSheetsForLocation(int $location) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectFields() . ' where c.startLocationId=? order by c.mileage, c.name';
+		$sql = self::getSelectedFields() . ' where c.startLocationId=? order by c.mileage, c.name';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$location]);
 		}
@@ -54,7 +54,7 @@ class CueSheet extends \PHPFUI\ORM\Table
 
 	public static function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectFields() . ' where c.pending!=0 and c.memberId=? and c.dateAdded>=? and c.dateAdded<=? order by c.dateAdded desc';
+		$sql = self::getSelectedFields() . ' where c.pending!=0 and c.memberId=? and c.dateAdded>=? and c.dateAdded<=? order by c.dateAdded desc';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId, $startDate, $endDate]);
 		}
@@ -85,7 +85,7 @@ class CueSheet extends \PHPFUI\ORM\Table
 		return $this;
 		}
 
-	private static function getSelectFields() : string
+	private static function getSelectedFields() : string
 		{
 		return 'select c.*,concat(m.firstName," ",m.lastName) memberName,s.name locationName
 			from cueSheet c

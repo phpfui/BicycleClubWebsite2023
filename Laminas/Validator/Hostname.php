@@ -193,7 +193,6 @@ class Hostname extends AbstractValidator
         'baby',
         'baidu',
         'banamex',
-        'bananarepublic',
         'band',
         'bank',
         'bar',
@@ -358,7 +357,6 @@ class Hostname extends AbstractValidator
         'college',
         'cologne',
         'com',
-        'comcast',
         'commbank',
         'community',
         'company',
@@ -952,7 +950,6 @@ class Hostname extends AbstractValidator
         'okinawa',
         'olayan',
         'olayangroup',
-        'oldnavy',
         'ollo',
         'om',
         'omega',
@@ -1373,7 +1370,6 @@ class Hostname extends AbstractValidator
         'wtf',
         'xbox',
         'xerox',
-        'xfinity',
         'xihuan',
         'xin',
         'कॉम',
@@ -2210,7 +2206,7 @@ class Hostname extends AbstractValidator
         $index = 0;
         $char  = 0x80;
 
-        for ($indexe = $separator ? $separator + 1 : 0; $indexe < $lengthe; ++$lengthd) {
+        for ($indexe = $separator !== false ? $separator + 1 : 0; $indexe < $lengthe; ++$lengthd) {
             for ($oldIndex = $index, $pos = 1, $key = 36; 1; $key += 36) {
                 if (! isset($encoded[$indexe])) {
                     break 2;

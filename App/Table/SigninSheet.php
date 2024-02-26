@@ -8,7 +8,7 @@ class SigninSheet extends \PHPFUI\ORM\Table
 
 	public static function fromMember(int $memberId) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectFields() . ' where s.memberId=? order by s.dateAdded desc';
+		$sql = self::getSelectedFields() . ' where s.memberId=? order by s.dateAdded desc';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId]);
 		}
@@ -39,13 +39,6 @@ class SigninSheet extends \PHPFUI\ORM\Table
 		$sql = 'select * from signinSheet where pending!=0 and memberId=? and dateAdded>=? and dateAdded<=? order by dateAdded desc';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId, $startDate, $endDate]);
-		}
-
-	public static function getSelectFields() : string
-		{
-		return 'select s.*,r.* from signinSheet s
-				left outer join signinSheetRide sr on sr.signinSheetId=s.signinSheetId
-				left outer join ride r on r.rideId=sr.rideId ';
 		}
 
 	/**
@@ -95,5 +88,12 @@ class SigninSheet extends \PHPFUI\ORM\Table
 			}
 
 		return $returnValue;
+		}
+
+	private static function getSelectedFields() : string
+		{
+		return 'select s.*,r.* from signinSheet s
+				left outer join signinSheetRide sr on sr.signinSheetId=s.signinSheetId
+				left outer join ride r on r.rideId=sr.rideId ';
 		}
 	}

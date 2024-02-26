@@ -8,7 +8,7 @@ class ForumMessage extends \PHPFUI\ORM\Table
 
 	public function getNextMessage(\App\Record\ForumMessage $message) : \App\Record\ForumMessage
 		{
-		$sql = $this->getSelectFields() . ' where fm.forumId=? and fm.forumMessageId>? limit 1';
+		$sql = $this->getSelectedFields() . ' where fm.forumId=? and fm.forumMessageId>? limit 1';
 		$input = [$message->forumId, $message->forumMessageId];
 
 		$forumMessage = new \App\Record\ForumMessage();
@@ -19,7 +19,7 @@ class ForumMessage extends \PHPFUI\ORM\Table
 
 	public function getPreviousMessage(\App\Record\ForumMessage $message) : \App\Record\ForumMessage
 		{
-		$sql = $this->getSelectFields() . ' where fm.forumId=? and fm.forumMessageId<? order by fm.forumMessageId desc limit 1';
+		$sql = $this->getSelectedFields() . ' where fm.forumId=? and fm.forumMessageId<? order by fm.forumMessageId desc limit 1';
 		$input = [$message->forumId, $message->forumMessageId];
 
 		$forumMessage = new \App\Record\ForumMessage();
@@ -28,7 +28,7 @@ class ForumMessage extends \PHPFUI\ORM\Table
 		return $forumMessage;
 		}
 
-	private function getSelectFields() : string
+	private function getSelectedFields() : string
 		{
 		return 'select * from forumMessage fm left join forum f on f.forumId=fm.forumId ';
 		}

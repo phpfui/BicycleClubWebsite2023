@@ -17,7 +17,7 @@ class Membership
 	/**
 	 * @return int number of members exported
 	 */
-	public function export(\App\Tools\CSV\FileWriter $csvWriter, string $startDate = '1980-1-1', string $endDate = '2222-2-2', string $type = 'full') : int
+	public function export(\App\Tools\CSV\FileWriter $csvWriter, string $startDate = '1980-01-01', string $endDate = '2222-02-02', string $type = 'full') : int
 		{
 		$members = $this->memberTable->getAllMembers($startDate, $endDate);
 
@@ -30,7 +30,7 @@ class Membership
 			$keys = [];
 			}
 
-		foreach (['password', 'profileX', 'profileY', 'profileWidth', 'profileHeight', 'loginAttempts'] as $key)
+		foreach (['password', 'passwordReset', 'passwordResetExpires', 'profileX', 'profileY', 'profileWidth', 'profileHeight', 'loginAttempts'] as $key)
 			{
 			unset($keys[$key]);
 			}
@@ -63,7 +63,7 @@ class Membership
 				break;
 			}
 
-		$csvWriter->outputRow($columns);
+		\ksort($columns);
 		$columns = \array_flip($columns);
 		$count = 0;
 
@@ -84,7 +84,9 @@ class Membership
 				continue;
 				}
 			$member['category'] = \App\Table\MemberCategory::getRideCategoryStringForMember((int)$member['memberId']);
-			$csvWriter->outputRow(\array_intersect_key($member, $columns));
+			$row = \array_intersect_key($member, $columns);
+			\ksort($row);
+			$csvWriter->outputRow($row);
 			++$count;
 			}
 

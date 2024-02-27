@@ -133,11 +133,12 @@ class Roster
 					{
 					foreach ($member as $key => $value)
 						{
-						if (\str_contains($key, 'password'))
+						if (\str_contains($key, 'password') || \str_contains($key, 'profile'))
 							{
-							unset($member['key']);
+							unset($member[$key]);
 							}
 						}
+					\ksort($member);
 					$csvWriter->outputRow($member);
 					}
 				else

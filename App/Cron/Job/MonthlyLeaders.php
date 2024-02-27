@@ -40,6 +40,7 @@ class MonthlyLeaders extends \App\Cron\BaseJob
 			}
 		$file = new \App\Tools\TempFile('monthlyLeaders');
 		$csv = new \App\Tools\CSV\FileWriter($file, download:false);
+		$csv->addHeaderRow(false);
 		$range = $startDate . ' through ' . $endDate;
 		$csv->outputRow(['Full Name', 'First Name', 'Last Name', 'Total Rides', 'Dates Led ' . $range]);
 

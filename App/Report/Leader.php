@@ -304,6 +304,7 @@ class Leader extends \PDF_MC_Table
 	public function outputCSV() : void
 		{
 		$csv = new \App\Tools\CSV\FileWriter(\str_replace(' ', '', $this->reportName) . '.csv');
+		$csv->addHeaderRow(false);
 		$csv->outputRow($this->headerTitles);
 
 		foreach ($this->rows as $row)

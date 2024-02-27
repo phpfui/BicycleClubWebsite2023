@@ -31,7 +31,7 @@ abstract class Writer
 	 */
 	public function addHeaderRow(bool $headerRow = true) : static
 		{
-		$this->headerRow = true;
+		$this->headerRow = $headerRow;
 
 		return $this;
 		}

@@ -87,7 +87,7 @@ class CueSheet extends \PHPFUI\ORM\Table
 
 	private static function getSelectedFields() : string
 		{
-		return 'select c.*,concat(m.firstName," ",m.lastName) memberName,s.name locationName
+		return 'select c.*,s.name as locationName
 			from cueSheet c
 			left join member m on c.memberId=m.memberId
 			left join startLocation s on s.startLocationId=c.startLocationId ';

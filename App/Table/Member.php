@@ -8,9 +8,9 @@ class Member extends \PHPFUI\ORM\Table
 
 	public function badExpirations() : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectedFields() . ' left join payment p on p.membershipId=m.membershipId WHERE p.amount=30.00 and p.paymentType=3 and p.dateReceived>=s.expires-60 and s.expires>? order by s.expires';
+		$sql = self::getSelectedFields() . ' WHERE s.expires is null';
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString(-366)]);
+		return \PHPFUI\ORM::getDataObjectCursor($sql);
 		}
 
 	public static function currentMemberCount() : int
@@ -260,7 +260,7 @@ class Member extends \PHPFUI\ORM\Table
 
 	public function getMembershipCursor(int $memberId) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select *,concat(firstName, " ", lastName) as memberName from member m left join membership s on m.membershipId=s.membershipId where m.memberId=?';
+		$sql = 'select * from member m left join membership s on m.membershipId=s.membershipId where m.memberId=?';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId]);
 		}
@@ -372,7 +372,7 @@ class Member extends \PHPFUI\ORM\Table
 	 */
 	public static function membersInMembership(int $membershipId) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'SELECT *,concat(m.firstName," ",m.lastName) memberName FROM member m,membership s where s.membershipId=m.membershipId and s.membershipId=?';
+		$sql = 'SELECT * FROM member m,membership s where s.membershipId=m.membershipId and s.membershipId=?';
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Member(), $sql, [$membershipId]);
 		}
@@ -426,8 +426,8 @@ class Member extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::execute($sql, [$difference, $memberId]);
 		}
 
-	private static function getSelectedFields(string $countRows = '') : string
+	private static function getSelectedFields() : string
 		{
-		return 'select ' . $countRows . ' m.*,s.*,concat(m.firstName," ",m.lastName) memberName from member m left join membership s on s.membershipId=m.membershipId ';
+		return 'select m.*,s.* from member m left join membership s on s.membershipId=m.membershipId ';
 		}
 	}

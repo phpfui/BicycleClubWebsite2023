@@ -40,7 +40,6 @@ class Statistics
 			if (\count($rides))
 				{
 				$writer = new \App\Tools\CSV\FileWriter(\str_replace(' ', '_', $this->title . ' Statistics.csv'));
-				$writer->addHeaderRow();
 
 				foreach ($rides as $rider)
 					{

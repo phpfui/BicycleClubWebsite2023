@@ -185,7 +185,6 @@ class Permission extends \App\Model\PermissionBase
 	public function generateStandardPermissions() : void
 		{
 		$csvWriter = new \App\Tools\CSV\FileWriter(PROJECT_ROOT . '/files/standardPermissions.csv', download:false);
-		$csvWriter->addHeaderRow();
 
 		$permissionGroupTable = new \App\Table\PermissionGroup();
 		$permissionGroupTable->addSelect('groupName.name', 'permissionGroup');

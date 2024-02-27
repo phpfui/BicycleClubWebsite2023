@@ -107,7 +107,6 @@ class Finance
 			{
 			$filename = 'invoicePayments' . $start . '-' . $end . '.tsv';
 			$csvWriter = new \App\Tools\CSV\FileWriter($filename, separator:"\t");
-			$csvWriter->addHeaderRow();
 
 			foreach ($items as $item)
 				{
@@ -130,6 +129,7 @@ class Finance
 			{
 			$filename = 'storePayments' . $start . '-' . $end . '.tsv';
 			$csvWriter = new \App\Tools\CSV\FileWriter($filename, separator:"\t");
+			$csvWriter->addHeaderRow(false);
 
 			if ($request['fullDetails'])
 				{
@@ -238,8 +238,8 @@ class Finance
 		if ('CSV' == $request['downloadType'])
 			{
 			$csvWriter = new \App\Tools\CSV\FileWriter($filename . '.csv');
+			$csvWriter->addHeaderRow(false);
 			$csvWriter->outputRow($fields);
-
 
 			foreach ($result as $member)
 				{
@@ -311,6 +311,7 @@ class Finance
 			{
 			$filename = 'taxesCollected' . \App\Tools\Date::formatString('ymd', $start) . '-' . \App\Tools\Date::formatString('ymd', $end) . '.csv';
 			$csvWriter = new \App\Tools\CSV\FileWriter($filename);
+			$csvWriter->addHeaderRow(false);
 			$csvWriter->outputRow(['Order Date', 'Gross Sale', 'Shipping', 'Sales Tax', 'Total Sale', 'PayPal Paid',
 				'Volunteer Points', 'ZipCode', 'State', ]);
 			$customerModel = new \App\Model\Customer();

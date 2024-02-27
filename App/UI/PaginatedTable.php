@@ -410,7 +410,6 @@ class PaginatedTable extends \PHPFUI\SortableTable
 				}
 
 			$csvWriter = new \App\Tools\CSV\FileWriter($fileName);
-			$csvWriter->addHeaderRow();
 
 			$this->dataTable->setLimit(0);
 

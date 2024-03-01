@@ -189,21 +189,6 @@ class Session extends \PHPFUI\Session
 			}
 		}
 
-	/**
-	 * @param array<string,string> $list
-	 */
-	public static function setFlashList(string $type, array $list) : void
-		{
-		$ul = new \PHPFUI\UnorderedList();
-
-		foreach ($list as $item)
-			{
-			$ul->addItem(new \PHPFUI\ListItem($item));
-			}
-
-		\PHPFUI\Session::setFlash($type, $ul);
-		}
-
 	public static function setSignedInMemberId(int $memberId) : void
 		{
 		$_SESSION['memberId'] = $memberId;

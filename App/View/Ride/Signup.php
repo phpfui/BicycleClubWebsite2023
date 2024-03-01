@@ -124,7 +124,7 @@ class Signup
 			$modal->add('<hr>');
 			$modal->add(new \PHPFUI\CloseButton($modal));
 			$modal->add(new \PHPFUI\Cancel('Close'));
-			$waiver = new \PHPFUI\Input\CheckBoxBoolean('agreeToWaiver', 'You must agree to the ' . $waiverLink);
+			$waiver = new \PHPFUI\Input\CheckBoxBoolean('agreedToWaiver', 'You must agree to the ' . $waiverLink);
 			$waiver->setRequired();
 			$form->add($waiver);
 			}

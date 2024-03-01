@@ -24,6 +24,7 @@ namespace App\Record\Definition;
  * @property ?string $title MySQL type char(100)
  * @property ?int $volunteerDiscount MySQL type int
  * @property ?int $volunteerEvent MySQL type int
+ * @property ?string $waiver MySQL type mediumtext
  */
 abstract class GaEvent extends \PHPFUI\ORM\Record
 	{
@@ -50,6 +51,7 @@ abstract class GaEvent extends \PHPFUI\ORM\Record
 		'title' => ['char(100)', 'string', 100, true, ],
 		'volunteerDiscount' => ['int', 'int', 0, true, ],
 		'volunteerEvent' => ['int', 'int', 0, true, ],
+		'waiver' => ['mediumtext', 'string', 16777215, true, ],
 	];
 
 	/** @var array<string> */

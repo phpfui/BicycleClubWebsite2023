@@ -78,6 +78,15 @@ class GeneralAdmission
 		$rider->pricePaid = (float)$invoiceItem->price;
 
 		$this->addRiderToEmail($event, $rider);
+		$gaWaiver = new \App\Report\GAWaiver();
+
+		if ($gaWaiver->generate($rider))
+			{
+			$fileName = "Rider-{$rider->fullName()}-{$event->gaEventId}-{$rider->gaRiderId}-Waiver.pdf";
+			$fileName = PROJECT_ROOT . '/files/GAWaivers/' . \str_replace(' ', '_', $fileName);
+			$gaWaiver->output('F', $fileName);
+			$this->email->addAttachment($fileName, \str_replace(' ', '_', $event->title . ' Waiver for ' . $rider->fullName() . '.pdf'));
+			}
 
 		if ($event->includeMembership && empty($rider->memberId))
 			{

@@ -33,7 +33,7 @@ namespace App\Record\Definition;
  * @property ?int $signupNotifications MySQL type tinyint
  * @property ?int $startLocationId MySQL type int
  * @property \App\Record\StartLocation $startLocation related record
- * @property ?string $startTime MySQL type varchar(8)
+ * @property ?string $startTime MySQL type time
  * @property ?float $targetPace MySQL type decimal(3,1)
  * @property ?string $title MySQL type varchar(100)
  * @property ?int $unaffiliated MySQL type int
@@ -67,7 +67,7 @@ abstract class Ride extends \PHPFUI\ORM\Record
 		'rideStatus' => ['int', 'int', 0, true, 0, ],
 		'signupNotifications' => ['tinyint', 'int', 0, true, 1, ],
 		'startLocationId' => ['int', 'int', 0, true, ],
-		'startTime' => ['varchar(8)', 'string', 8, true, ],
+		'startTime' => ['time', 'string', 0, true, ],
 		'targetPace' => ['decimal(3,1)', 'float', 3, true, ],
 		'title' => ['varchar(100)', 'string', 100, true, ],
 		'unaffiliated' => ['int', 'int', 0, true, 0, ],

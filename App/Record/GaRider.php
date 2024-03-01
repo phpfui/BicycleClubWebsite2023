@@ -29,4 +29,9 @@ class GaRider extends \App\Record\Definition\GaRider
 
 		return $this;
 		}
+
+	public function fullName() : string
+		{
+		return $this->firstName . ' ' . $this->lastName;
+		}
 	}

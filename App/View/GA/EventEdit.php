@@ -59,6 +59,7 @@ class EventEdit
 		$tabs->addTab('Additional', $this->getAdditional($event));
 		$tabs->addTab('Description', $this->getDescription($event));
 		$tabs->addTab('Email', $this->getSignupEmail($event, $form));
+		$tabs->addTab('Waiver', $this->getWaiver($event, $form));
 
 		if ($event->loaded())
 			{
@@ -388,6 +389,18 @@ class EventEdit
 			$container->add($testButton);
 			$form->saveOnClick($testButton);
 			}
+
+		return $container;
+		}
+
+	private function getWaiver(\App\Record\GaEvent $event, \App\UI\ErrorFormSaver $form) : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+
+		$signupMessage = new \PHPFUI\Input\TextArea('waiver', 'Rider Waiver', \str_replace("\n", '<br>', $event->waiver ?? ''));
+		$signupMessage->setToolTip('Riders must agree to this waiver to continue registration.');
+		$signupMessage->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$container->add($signupMessage);
 
 		return $container;
 		}

@@ -10,7 +10,13 @@ class Customer
 			{
 			if ('Save' == ($_POST['submit'] ?? ''))
 				{
-				$this->customerModel->save($_POST);
+				$post = $_POST;
+
+				if (isset($post['stateText']) && empty($post['state']))
+					{
+					$post['state'] = $post['stateText'];
+					}
+				$this->customerModel->save($post);
 				$page->redirect();
 				}
 			}

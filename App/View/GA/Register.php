@@ -22,7 +22,21 @@ class Register implements \Stringable
 
 				$rider['signedUpOn'] = \date('Y-m-d H:i:s');
 				unset($rider['prize']);
+
+				if (isset($rider['stateText']) && empty($rider['state']))
+					{
+					$rider['state'] = $rider['stateText'];
+					}
+
 				$id = $this->cartModel->addGaRider($rider);
+
+				// validation error
+				if (! $id)
+					{
+					\App\Model\Session::setFlash('validation', $rider);
+
+					return;
+					}
 
 				if (\is_array($post['gaOptionId']))
 					{
@@ -77,6 +91,14 @@ class Register implements \Stringable
 			}
 		$this->cartModel->compute(0);
 
+		$rider = new \App\Record\GaRider();
+		$oldFields = \App\Model\Session::getFlash('validation');
+
+		if ($oldFields)
+			{
+			$rider->setFrom($oldFields);
+			}
+
 		if ($this->cartModel->getCount())
 			{
 			$addRider = new \PHPFUI\Button('Add Another Rider');
@@ -86,7 +108,7 @@ class Register implements \Stringable
 			$addRider = new \PHPFUI\Button('Add Rider');
 			}
 		$addRider->addClass('warning');
-		$this->addRiderModal($addRider);
+		$this->addRiderModal($addRider, $rider);
 		$container->add($addRider);
 		$cartView = new \App\View\Store\Cart($this->page, $this->cartModel);
 		$cart = $cartView->show(new \PHPFUI\Form($this->page), true);
@@ -114,14 +136,52 @@ class Register implements \Stringable
 		return (string)$container;
 		}
 
-	protected function addRiderModal(\PHPFUI\HTML5Element $modalLink) : void
+	protected function addRiderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\GaRider $rider) : void
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+
+		if (! $rider->empty())
+			{
+			$modal->showOnPageLoad();
+			}
 		$modalForm = new \PHPFUI\Form($this->page);
 		$modalForm->setAreYouSure(false);
 		$view = new \App\View\GA\Rider($this->page);
-		$rider = new \App\Record\GaRider();
 		$rider->gaEvent = $this->gaEvent;
+
+		$message = \App\Model\Session::getFlash('alert');
+
+		if ($message)
+			{
+			$callout = new \PHPFUI\Callout('alert');
+			$callout->addAttribute('data-closable');
+
+			if (\is_array($message))
+				{
+				$ul = new \PHPFUI\UnorderedList();
+
+				foreach ($message as $field => $error)
+					{
+					if (\is_array($error))
+						{
+						foreach ($error as $validationError)
+							{
+							$ul->addItem(new \PHPFUI\ListItem("<b>{$field}</b>: <i>{$validationError}</i>"));
+							}
+						}
+					else
+						{
+						$ul->addItem(new \PHPFUI\ListItem($error));
+						}
+					}
+				$callout->add($ul);
+				}
+			else
+				{
+				$callout->add($message);
+				}
+			$modalForm->add($callout);
+			}
 		$modalForm->add($view->getEditFields($rider));
 		$modalForm->add($modal->getButtonAndCancel(new \PHPFUI\Submit('Add Rider')));
 		$modal->add($modalForm);

@@ -697,41 +697,47 @@ class Member
 
 		if ($form->isMyCallback())
 			{
-			$_POST['membershipId'] = $membership->membershipId;
+			$post = $_POST;
+			$post['membershipId'] = $membership->membershipId;
 
 			if (! $this->page->isAuthorized('Edit Affiliation'))
 				{
-				unset($_POST['affiliation']);
+				unset($post['affiliation']);
 				}
-			unset($_POST['lastRenewed'], $_POST['pending']);
+			unset($post['lastRenewed'], $post['pending']);
+
+			if (isset($post['stateText']) && empty($post['state']))
+				{
+				$post['state'] = $post['stateText'];
+				}
 
 			if (! $this->page->isAuthorized('Edit Membership Dates'))
 				{
-				unset($_POST['joined'], $_POST['expires']);
+				unset($post['joined'], $post['expires']);
 				}
 
 			if ($canAddPayment)
 				{
-				if (! empty($_POST['paymentNumber']) && ! empty($_POST['paymentDate']) && ! empty($_POST['paymentAmount']))
+				if (! empty($post['paymentNumber']) && ! empty($post['paymentDate']) && ! empty($post['paymentAmount']))
 					{
 					$payment = new \App\Record\Payment();
-					$payment->paymentType = (int)$_POST['paymentType'];
-					$payment->amount = (float)$_POST['paymentAmount'];
+					$payment->paymentType = (int)$post['paymentType'];
+					$payment->amount = (float)$post['paymentAmount'];
 					$payment->membership = $membership;
 					$payment->dateReceived = \date('Y-m-d');
-					$payment->paymentNumber = $_POST['paymentNumber'];
-					$payment->paymentDated = $_POST['paymentDate'];
+					$payment->paymentNumber = $post['paymentNumber'];
+					$payment->paymentDated = $post['paymentDate'];
 					$payment->enteringMemberNumber = \App\Model\Session::signedInMemberId();
 					$payment->insert();
-					$_POST['lastRenewed'] = \date('Y-m-d');
-					$_POST['pending'] = 0;
+					$post['lastRenewed'] = \date('Y-m-d');
+					$post['pending'] = 0;
 					}
 				}
 			else
 				{
-				unset($_POST['allowedMembers']);
+				unset($post['allowedMembers']);
 				}
-			$membership->setFrom($_POST);
+			$membership->setFrom($post);
 			$membership->update();
 			$this->page->setResponse('Saved');
 			}

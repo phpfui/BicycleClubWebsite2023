@@ -75,7 +75,7 @@ class DBInit extends \PHPFUI\Container
 
 			if (! $restore->run())
 				{
-				\App\Model\Session::setFlashList('alert', $restore->getErrors());
+				\App\Model\Session::setFlash('alert', $restore->getErrors());
 				}
 			else
 				{

@@ -52,6 +52,11 @@ class Rider
 			$submit = new \PHPFUI\Submit();
 			$form = new \App\UI\ErrorFormSaver($this->page, $rider, $submit);
 
+			if (! $this->page->isAuthorized('Add Registration'))
+				{
+				unset($_POST['pricePaid'], $_POST['pending']);
+				}
+
 			if ($form->save($onSaveUrl))
 				{
 				if (\is_array($_POST['gaOptionId']))
@@ -96,6 +101,11 @@ class Rider
 			}
 		$container->add($this->getRiderSettings($rider, $event));
 		$container->add($this->getAddress($rider));
+
+		if (! $this->page->isAuthorized('Add Registration'))
+			{
+			$container->add($this->getWaiver($event->waiver, $rider));
+			}
 		$container->add($this->getOptions($rider));
 
 		if ($this->page->isAuthorized('Add Registration'))
@@ -210,5 +220,28 @@ class Rider
 		$riderFieldset->add(new \PHPFUI\MultiColumn($emergencyContact, $emergencyPhone));
 
 		return $riderFieldset;
+		}
+
+	private function getWaiver(?string $waiver, \App\Record\GaRider $rider) : string
+		{
+		if (! $waiver)
+			{
+			return '';
+			}
+		$fieldSet = new \PHPFUI\FieldSet('Rider Waiver');
+		$clubName = $this->page->value('clubName');
+		$waiverLink = new \PHPFUI\Link('#', $clubName . ' Waiver');
+		$modal = new \PHPFUI\Reveal($this->page, $waiverLink);
+		$modal->addClass('large');
+		$modal->add('<h3>I Agree To The Following</h3>');
+		$modal->add($waiver);
+		$modal->add('<hr>');
+		$modal->add(new \PHPFUI\CloseButton($modal));
+		$modal->add(new \PHPFUI\Cancel('Close'));
+		$waiver = new \PHPFUI\Input\CheckBoxBoolean('agreedToWaiver', 'You must agree to the ' . $waiverLink, (bool)$rider->agreedToWaiver);
+		$waiver->setRequired();
+		$fieldSet->add($waiver);
+
+		return "{$fieldSet}";
 		}
 	}

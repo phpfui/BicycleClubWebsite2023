@@ -144,6 +144,15 @@ class Cart
 			}
 		$gaRider = new \App\Record\GaRider();
 		$gaRider->setFrom($rider);
+		$errors = $gaRider->validate();
+
+		if ($errors)
+			{
+			\App\Model\Session::setFlash('alert', $errors);
+
+			return 0;
+			}
+
 		$gaRiderId = $gaRider->insert();
 
 		foreach ($rider['gaOption'] ?? [] as $gaOptionId => $gaSelectionId)

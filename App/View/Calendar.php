@@ -4,11 +4,14 @@ namespace App\View;
 
 class Calendar
 	{
+	private readonly \League\CommonMark\GithubFlavoredMarkdownConverter $markDownParser;
+
 	private readonly \App\Model\Calendar $model;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
 		$this->model = new \App\Model\Calendar();
+		$this->markDownParser = new \League\CommonMark\GithubFlavoredMarkdownConverter(['html_input' => 'strip', 'allow_unsafe_links' => false, ]);
 		$this->processRequest();
 		}
 
@@ -73,7 +76,8 @@ class Calendar
 		$select->setToolTip('Please select a state.  You should not add it to the location.  This is so we can provide state by state listings if we want.');
 		$fieldSet->add(new \PHPFUI\MultiColumn($location, $select));
 		$description = new \PHPFUI\Input\TextArea('description', 'Description', $calendar->description);
-		$description->setToolTip('This is a free form text field which should describe your event. You are free to put any information in this field.');
+		$description->htmlEditing($this->page, new \App\Model\MDTextAreaEditor());
+		$description->setToolTip('This is a free form text field which should describe your event. You are free to put any information in this field. You can use MarkDown for formatting.');
 		$description->setRequired();
 		$fieldSet->add($description);
 
@@ -198,8 +202,8 @@ class Calendar
 
 		foreach ($calendarTable->getRecordCursor() as $item)
 			{
-			$item->description = \str_replace("\n", '<br>', $item->description ?? '');
-			$description = ['eventDate' => \App\Tools\TextHelper::addLinks($item->description)];
+			$html = $this->markDownParser->convert($item->description ?? '');
+			$description = ['eventDate' => $item->description = "{$html}"];
 			$all->addRow($this->getCalendarItem($item));
 			$all->addRow($description, $spanCols);
 

@@ -30,6 +30,11 @@ class Calendar
 			$id = 0;
 			}
 
+		if (($_POST['startTime'] ?? '') == '')
+			{
+			$_POST['startTime'] = null;
+			}
+
 		if ($form->save())
 			{
 			if ($publicEditor)

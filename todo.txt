@@ -1,3 +1,7 @@
+Schedule font size
+
+Default category
+
 Move delete buttons to end of button groups
 
 View waivers (and minor waivers)

@@ -88,7 +88,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
         highlight(codeElement).removeClass('hljs');
 
         // Show line numbers in a list
-        if ($.isNumeric(firstLineNumber)) {
+        if (!isNaN(parseFloat(firstLineNumber))) {
             var lineCount = code.split('\n').length;
             var $lineNumbers = $('<ul />').prependTo(pre);
             pre.children().addClass(csscls('numbered-code'));
@@ -218,7 +218,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
         itemRenderer: function(dt, dd, key, value) {
             $('<span />').attr('title', key).text(key).appendTo(dt);
 
-            var v = value;
+            var v = value && value.value || value;
             if (v && v.length > 100) {
                 v = v.substr(0, 100) + "...";
             }
@@ -251,7 +251,21 @@ if (typeof(PhpDebugBar) == 'undefined') {
 
         itemRenderer: function(dt, dd, key, value) {
             $('<span />').attr('title', $('<i />').html(key || '').text()).html(key || '').appendTo(dt);
-            dd.html(value);
+            dd.html(value && value.value || value);
+
+            if (value && value.xdebug_link) {
+                var header = $('<span />').addClass(csscls('filename')).text(value.xdebug_link.filename + ( value.xdebug_link.line ? "#" + value.xdebug_link.line : ''));
+                if (value.xdebug_link) {
+                    if (value.xdebug_link.ajax) {
+                        $('<a title="' + value.xdebug_link.url + '"></a>').on('click', function () {
+                            $.ajax(value.xdebug_link.url);
+                        }).addClass(csscls('editor-link')).appendTo(header);
+                    } else {
+                        $('<a href="' + value.xdebug_link.url + '"></a>').addClass(csscls('editor-link')).appendTo(header);
+                    }
+                }
+                header.appendTo(dd);
+            }
         }
 
     });
@@ -318,6 +332,9 @@ if (typeof(PhpDebugBar) == 'undefined') {
                             prettyVal = null;
                         }
                         li.css('cursor', 'pointer').click(function () {
+                            if (window.getSelection().type == "Range") {
+                                return''
+                            }
                             if (val.hasClass(csscls('pretty'))) {
                                 val.text(m).removeClass(csscls('pretty'));
                             } else {
@@ -486,7 +503,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
                         this.$el.append(li);
 
                         if (measure.params && !$.isEmptyObject(measure.params)) {
-                            var table = $('<table><tr><th colspan="2">Params</th></tr></table>').addClass(csscls('params')).appendTo(li);
+                            var table = $('<table><tr><th colspan="2">Params</th></tr></table>').hide().addClass(csscls('params')).appendTo(li);
                             for (var key in measure.params) {
                                 if (typeof measure.params[key] !== 'function') {
                                     table.append('<tr><td class="' + csscls('name') + '">' + key + '</td><td class="' + csscls('value') +

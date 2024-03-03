@@ -665,7 +665,7 @@ class Rides
 				$content->add("<br><b>Start:</b> {$link}");
 				$content->add($this->getRWGPSMenu($ride));
 				}
-			$dayAccordion->addTab($row, $content)->addClass('ride-header');
+			$dayAccordion->addTab($row, $content)->addClass('ride-header cat-All cat-' . $this->paceTable->getCategoryIdFromPaceId($ride->paceId));
 			}
 		$dateAccordion->addTab(\App\Tools\Date::formatString('l, F j, Y', $lastDate), $dayAccordion . $unaffiliated, true)->addClass('ride-date-header');
 

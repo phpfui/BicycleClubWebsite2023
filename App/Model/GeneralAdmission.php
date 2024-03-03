@@ -84,7 +84,7 @@ class GeneralAdmission
 			{
 			$fileName = "Rider-{$rider->fullName()}-{$event->gaEventId}-{$rider->gaRiderId}-Waiver.pdf";
 			$fileName = PROJECT_ROOT . '/files/GAWaivers/' . \str_replace(' ', '_', $fileName);
-			$gaWaiver->output('F', $fileName);
+			$gaWaiver->output($fileName, 'F');
 			$this->email->addAttachment($fileName, \str_replace(' ', '_', $event->title . ' Waiver for ' . $rider->fullName() . '.pdf'));
 			}
 

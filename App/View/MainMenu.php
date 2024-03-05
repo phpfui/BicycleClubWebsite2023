@@ -17,7 +17,7 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Rides/My/past', 'My Past Rides');
 			$this->addSub($menu, '/Rides/My/pending', 'My Pending Rides');
 			$this->addSub($menu, '/Rides/attendance', 'Ride Attendance');
-			$this->addSub($menu, '/Rides/schedule', 'Ride Schedule');
+			$this->addSub($menu, '/Rides/memberSchedule', 'Ride Schedule');
 			$this->addSub($menu, '/Rides/search', 'Search Rides');
 			$this->addSub($menu, '/Rides/My/category', 'Rides In My Category');
 			$this->addSub($menu, '/Rides/pending', 'Approve Rides');

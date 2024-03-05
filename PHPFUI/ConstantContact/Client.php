@@ -96,7 +96,6 @@ class Client
 			}
 		$url = $this->oauth2URL . '?' . \http_build_query($params);
 		\curl_setopt($ch, CURLOPT_URL, $url);
-		\curl_setopt($ch, CURLOPT_POSTFIELDS, \json_encode(['client_id' => $this->clientAPIKey, 'client_secret' => $this->clientSecret, 'code' => $parameters['code']]));
 
 		$this->setAuthorization($ch);
 

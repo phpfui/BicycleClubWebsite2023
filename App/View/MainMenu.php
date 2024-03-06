@@ -144,7 +144,8 @@ class MainMenu extends \App\UI\MainMenu
 				{
 				$this->addSub($configMenu, '/Leaders/assistantTypes', 'Assistant Leader Types');
 				$this->addSub($configMenu, '/Leaders/settings', 'Ride Settings');
-		//		$this->addSub($configMenu, '/Leaders/pace/0', 'All Pace');
+				$this->addSub($configMenu, '/Leaders/pace/0', 'All Pace');
+				$this->addSub($configMenu, '/Leaders/regroupingPolicy', 'Regrouping Policy');
 				$this->addSub($configMenu, '/Leaders/categories', 'Edit Categories');
 				$this->addSub($configMenu, '/Leaders/coordinators', 'Ride Coordinators');
 				$this->addSub($configMenu, '/Leaders/newLeader', 'New Ride Leader Email');

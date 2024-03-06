@@ -9,6 +9,7 @@ class Categories
 	public function __construct(private readonly \PHPFUI\Page $page, private readonly ?\PHPFUI\Button $backButton = null)
 		{
 		$this->categoryTable = new \App\Table\Category();
+		$this->categoryTable->setOrderBy('ordering');
 		}
 
 	public function edit() : \PHPFUI\Form

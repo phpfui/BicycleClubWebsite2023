@@ -33,7 +33,7 @@ class Pace
 				$_POST['ordering'][$key] = ++$i;
 				}
 			$this->paceTable->updateFromTable($_POST);
-			$this->paceTable->reorderPace($_POST['categoryId']);
+			$this->paceTable->reorderPace((int)$_POST['categoryId']);
 			$this->page->setResponse('Saved');
 			}
 		elseif (isset($_GET['action']) && \App\Model\Session::checkCSRF())
@@ -63,7 +63,7 @@ class Pace
 			{
 			$table = new \PHPFUI\OrderableTable($this->page);
 			$table->setRecordId($pk = $this->paceTable->getPrimaryKeys()[0]);
-			$paces = $this->paceTable->getPaceOrder($category->categoryId);
+			$paces = $this->paceTable->getPaceOrder($category->categoryId ?? 0);
 			$url = '?csrf=' . \App\Model\Session::csrf();
 			$count = $total = \count($paces);
 
@@ -116,7 +116,7 @@ class Pace
 			$buttonGroup->addButton($submit);
 
 			// @phpstan-ignore-next-line
-			if ($add && $category->loaded())
+			if ($add)
 				{
 				$buttonGroup->addButton($add);
 				}

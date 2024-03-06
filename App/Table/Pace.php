@@ -6,20 +6,6 @@ class Pace extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Pace::class;
 
-	/** @var array<int, array<string,string>> */
-	private array $paces = [];
-
-	public function __construct()
-		{
-		parent::__construct();
-		$paces = \PHPFUI\ORM::getRows('select * from pace order by ordering');
-
-		foreach ($paces as $pace)
-			{
-			$this->paces[$pace['paceId']] = $pace;
-			}
-		}
-
 	public function getCategoryIdFromPaceId(?int $paceId) : int
 		{
 		return $this->paces[$paceId]['categoryId'] ?? 0;
@@ -40,7 +26,16 @@ class Pace extends \PHPFUI\ORM\Table
 	/** @return array<int, array<string,string>> */
 	public function getPaces() : array
 		{
-		return $this->paces;
+		$paces = \PHPFUI\ORM::getRows('select pace.* from pace left join category on category.categoryId=pace.categoryId order by category.ordering,pace.ordering');
+
+		$orderedPaces = [];
+
+		foreach ($paces as $pace)
+			{
+			$orderedPaces[(int)$pace['paceId']] = $pace;
+			}
+
+		return $orderedPaces;
 		}
 
 	/**
@@ -52,7 +47,7 @@ class Pace extends \PHPFUI\ORM\Table
 		{
 		$paces = [];
 
-		foreach ($this->paces as $pace)
+		foreach ($this->getPaces() as $pace)
 			{
 			if (\in_array($pace['categoryId'], $categories))
 				{

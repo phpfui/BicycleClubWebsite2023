@@ -80,21 +80,10 @@ class Settings
 				return $targetPace;
 
 			case 'regroupingOption':
-				$rideTable = new \App\Table\Ride();
-				$rideTable->addSelect('regrouping')->setDistinct()->setLimit(50)->addOrderBy('rideId', 'desc');
-				$choices = $rideTable->getArrayCursor();
-				$regrouping = new \PHPFUI\Input\SelectAutoComplete($this->page, 'regrouping', 'Regrouping Policy', true);
-				$regrouping->setToolTip('Select an existing policy or enter your own.');
-				$regrouping->addOption($ride->regrouping ?? '', $ride->regrouping ?? '', true);
-				$regrouping->setRequired();
 
-				foreach ($choices as $option)
-					{
-					$value = $option['regrouping'];
-					$regrouping->addOption($value, $value, $value == $ride->regrouping);
-					}
+				$select = new \App\UI\RegroupPolicy($this->page, $ride->regrouping);
 
-				return $regrouping;
+				return $select->getControl();
 			}
 
 		return null;

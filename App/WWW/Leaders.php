@@ -370,6 +370,15 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function regroupingPolicy() : void
+		{
+		if ($this->page->addHeader('Regrouping Policy'))
+			{
+			$view = new \App\UI\RegroupPolicy($this->page);
+			$this->page->addPageContent($view->edit());
+			}
+		}
+
 	public function report() : void
 		{
 		if ($this->page->addHeader($title = 'Ride Leader Report'))

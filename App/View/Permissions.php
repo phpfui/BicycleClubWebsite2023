@@ -272,8 +272,8 @@ class Permissions
 		$view = new \App\UI\ContinuousScrollTable($this->page, $this->permissionTable);
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $this->permissionTable, 'Are you sure you want to permanently delete this permission group?');
 		$view->addCustomColumn('del', $deleter->columnCallback(...));
-		new \App\Model\EditIcon($view, $this->permissionTable, '/Admin/groupEdit/');
-		$view->addCustomColumn('members', static fn (array $permission) => new \PHPFUI\FAIcon('fas', 'users', '/Admin/groupMembers/' . $permission['permissionId']));
+		new \App\Model\EditIcon($view, $this->permissionTable, '/Admin/Permission/groupEdit/');
+		$view->addCustomColumn('members', static fn (array $permission) => new \PHPFUI\FAIcon('fas', 'users', '/Admin/Permission/groupMembers/' . $permission['permissionId']));
 //		$view->addCustomColumn('system', static function(array $permission) { return $permission['system'] ? 'Yes' : 'No';});
 
 		$view->setHeaders(\array_merge($searchHeaders, $normalHeaders));
@@ -282,7 +282,7 @@ class Permissions
 
 		if ($this->page->isAuthorized('Add Permission Group'))
 			{
-			$add = new \PHPFUI\Button('Add Permission Group', '/Admin/addGroup');
+			$add = new \PHPFUI\Button('Add Permission Group', '/Admin/Permission/addGroup');
 			$container->add($add);
 			$container->add($view);
 			$container->add($add);
@@ -299,8 +299,9 @@ class Permissions
 		{
 		$permissionTable = new \App\Table\Permission();
 		$view = new \App\UI\ContinuousScrollTable($this->page, $permissionTable);
-		$view->addCustomColumn('members', static fn (array $row) => new \PHPFUI\FAIcon('fas', 'users', '/Admin/permissionMembers/' . $row['permissionId']));
-		$headers = ['name' => 'Permission Name', 'menu' => 'Menu', 'members' => 'Members'];
+		$view->addCustomColumn('members', static fn (array $row) => new \PHPFUI\FAIcon('fas', 'user', '/Admin/Permission/permissionMembers/' . $row['permissionId']));
+		$view->addCustomColumn('groups', static fn (array $row) => new \PHPFUI\FAIcon('fas', 'users', '/Admin/Permission/groupsWithPermission/' . $row['permissionId']));
+		$headers = ['name' => 'Permission Name', 'menu' => 'Menu', 'members' => 'Members', 'groups' => 'Groups'];
 
 		if ($this->page->isAuthorized('Delete Permission'))
 			{
@@ -370,6 +371,33 @@ class Permissions
 
 		$form->add($submit);
 		$container->add($form);
+
+		return $container;
+		}
+
+	public function groupsWithPermission(\App\Record\Permission $permission) : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+
+		if ($permission->loaded())
+			{
+			$permissionGroupTable = new \App\Table\PermissionGroup();
+			$permissionGroupTable->setWhere(new \PHPFUI\ORM\Condition('permissionGroup.permissionId', $permission->permissionId));
+			$permissionGroupTable->addJoin('permission', new \PHPFUI\ORM\Condition('groupId', new \PHPFUI\ORM\Field('permission.permissionId')));
+
+			$headers = ['name'];
+
+			$view = new \App\UI\ContinuousScrollTable($this->page, $permissionGroupTable);
+			new \App\Model\EditIcon($view, $permissionGroupTable, '/Admin/Permission/groupEdit/');
+
+			$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, ['edit', ]))->setSortableColumns($headers);
+
+			$container->add($view);
+			}
+		else
+			{
+			$container->add(new \PHPFUI\SubHeader('Permission Not Found'));
+			}
 
 		return $container;
 		}
@@ -475,7 +503,7 @@ class Permissions
 				case 'Add':
 
 					$permission = $this->permissionModel->addGroup();
-					$this->page->redirect('/Admin/groupEdit/' . $permission->permissionId);
+					$this->page->redirect('/Admin/Permission/groupEdit/' . $permission->permissionId);
 
 					break;
 

@@ -358,11 +358,8 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Admin/bikeShopAreas', 'Bike Shop Areas');
 			$this->addSub($menu, '/Admin/bikeShopList', 'Bike Shop Maintenance');
 			$this->addSub($menu, '/Admin/board', 'Board Members');
-			$this->addSub($menu, '/Admin/myPermissions', 'My Permissions');
 			$this->addSub($menu, '/Admin/images', 'System Images');
-			$this->addSub($menu, '/Admin/permissions', 'Permissions');
 			$this->addSub($menu, '/Admin/publicPage', 'Public Pages');
-			$this->addSub($menu, '/Admin/permissionGroups', 'Permission Groups');
 			$this->addSub($menu, '/Admin/clubEmails', 'Club Email Addresses');
 			$this->addSub($menu, '/Admin/emailQueue', 'Email Queue');
 			$this->addSub($menu, '/Admin/editWaiver', 'Waiver Editor');
@@ -370,9 +367,16 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Admin/blackList', 'Email Blacklist');
 			$this->addSub($menu, '/Admin/config', 'Site Configuration');
 			$this->addSub($menu, '/Admin/files', 'Manage Files');
-			$this->addSub($menu, '/Admin/permissionGroupAssignment', 'Permission Group Assignments');
 			$this->addSub($menu, '/Admin/roles', 'Role Assignments');
 			$this->addSub($menu, '/Admin/passwordPolicy', 'Password Policy');
+
+			if ($permissionMenu = $this->addMenu($menu, '/Admin/Permission', 'Permissions'))
+				{
+				$this->addSub($permissionMenu, '/Admin/Permission/myPermissions', 'My Permissions');
+				$this->addSub($permissionMenu, '/Admin/Permission/permissions', 'Permissions');
+				$this->addSub($permissionMenu, '/Admin/Permission/permissionGroups', 'Permission Groups');
+				$this->addSub($permissionMenu, '/Admin/Permission/permissionGroupAssignment', 'Permission Group Assignments');
+				}
 			}
 
 		if ($menu = $this->addTopMenu('System', 'System'))

@@ -18,6 +18,7 @@ class Assign
 
 		$form->setAreYouSure(false);
 		$form->add($this->generateMemberPicker('Banner Administrator'));
+		$form->add($this->generateMemberPicker('Calendar Coordinator'));
 		$form->add($this->generateMemberPicker('Membership Chair'));
 		$form->add($this->generateMemberPicker('Newsletter Editor'));
 		$form->add($this->generateMemberPicker('Rides Chair'));

@@ -36,7 +36,7 @@ class ConstantContact
 		if ('download' == $authorize)
 			{
 			$contactsAPI = new \PHPFUI\ConstantContact\V3\Contacts($client);
-			$response = $contactsAPI->get(lists:$currentList);
+			$response = $contactsAPI->get(lists:$currentList, limit:500);
 
 			if (! $contactsAPI->success())
 				{
@@ -44,13 +44,23 @@ class ConstantContact
 				}
 
 			$csvWriter = new \App\Tools\CSV\FileWriter('ConstantContactAddresses.csv');
+			$dups = [];
 
 			do
 				{
 				foreach ($response['contacts'] ?? [] as $row)
 					{
+					$contactId = $row['contact_id'];
+
+					// remove dups, in case of API issues
+					if (\array_key_exists($contactId, $dups))
+						{
+						continue;
+						}
+					$dups[$contactId] = true;
 					// flatten address
 					$row = \array_merge($row, $row['email_address']);
+					$row['email_address'] = $row['email_address']['address'];
 					$row = $this->flatten($row, 'phone_numbers');
 					$row = $this->flatten($row, 'street_addresses');
 
@@ -156,6 +166,8 @@ class ConstantContact
 
 		if (! $error)
 			{
+			$callout = null;
+
 			$listFieldSet = new \PHPFUI\FieldSet('Membership Sync List');
 			$listFieldSet->add('This list will be synced with member\'s email preferences set in the web site.');
 			$listSelect = new \PHPFUI\Input\Select($name, 'Constant Contact Mailing List');
@@ -167,7 +179,10 @@ class ConstantContact
 
 				if (! $contactListsAPI->success())
 					{
-					\App\Tools\Logger::get()->debug($contactListsAPI->getStatusCode(), $contactListsAPI->getLastError());
+					$callout = new \PHPFUI\Callout('alert');
+					$callout->add(new \PHPFUI\Header('Constant Contact Error - Please wait', 5));
+					$callout->add('<pre>' . \print_r($contactListsAPI->getLastError(), true) . '</pre>');
+					$listFieldSet->add($callout);
 					}
 
 				do
@@ -184,8 +199,16 @@ class ConstantContact
 				{
 				\App\Tools\Logger::get()->debug($e);
 				}
-			$listFieldSet->add($settingsSaver->generateField($name, '', $listSelect, false));
-			$form->add($listFieldSet);
+
+			if ($callout)
+				{
+				$form->add($callout);
+				}
+			else
+				{
+				$listFieldSet->add($settingsSaver->generateField($name, '', $listSelect, false));
+				$form->add($listFieldSet);
+				}
 			}
 
 		if ($form->isMyCallback())

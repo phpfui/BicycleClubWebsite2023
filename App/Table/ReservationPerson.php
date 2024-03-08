@@ -8,7 +8,7 @@ class ReservationPerson extends \PHPFUI\ORM\Table
 
 	public static function getNamesAlpha(\App\Record\Event $event) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'SELECT * FROM reservationPerson p left join reservation r on r.reservationId=p.reservationId where p.eventId=? and r.signedUpAt>"2000" order by p.lastName,p.firstName';
+		$sql = 'SELECT * FROM reservation r left join reservationPerson p on r.reservationId=p.reservationId where r.eventId=? order by p.lastName,p.firstName';
 
 		return \PHPFUI\ORM::getArrayCursor($sql, [$event->eventId]);
 		}

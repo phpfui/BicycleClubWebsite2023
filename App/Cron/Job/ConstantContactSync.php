@@ -104,6 +104,23 @@ class ConstantContactSync extends \App\Cron\BaseJob
 							'postal_code' => $member['zip'],
 							'country' => 'USA', ])];
 
+						$numbers = [];
+
+						if ($member['phone'])
+							{
+							$numbers[] = new \PHPFUI\ConstantContact\Definition\PhoneNumberPut(['phone_number' => $member['phone'], 'kind' => 'home']);
+							}
+
+						if ($member['cellPhone'])
+							{
+							$numbers[] = new \PHPFUI\ConstantContact\Definition\PhoneNumberPut(['phone_number' => $member['cellPhone'], 'kind' => 'mobile']);
+							}
+
+						if ($numbers)
+							{
+							$contactBody->phone_numbers = $numbers;
+							}
+
 						$contactClient->put($contact['contact_id'], $contactBody);
 
 						if (! $contactClient->success())

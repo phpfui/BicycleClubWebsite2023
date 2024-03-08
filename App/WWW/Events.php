@@ -457,7 +457,8 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				foreach ($participantCursor as $participant)
 					{
 					$name = $participant['firstName'] . ' ' . $participant['lastName'];
-					$Price = $PaymentReceived = $PaymentType = $PaymentNumber = '';
+					$Price = 0.0;
+					$PaymentReceived = $PaymentType = $PaymentNumber = '';
 					++$total;
 
 					if ($event->price > 0)

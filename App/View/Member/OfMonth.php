@@ -34,7 +34,7 @@ class OfMonth
 			return $form;
 			}
 
-		if ($memberOfMonth->month < '2000')
+		if ($memberOfMonth->month < '2000-01-01')
 			{
 			$memberOfMonth->month = \App\Tools\Date::todayString();
 			}

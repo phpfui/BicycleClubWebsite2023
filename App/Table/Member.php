@@ -414,7 +414,7 @@ class Member extends \PHPFUI\ORM\Table
 
 	public static function recentSignIns() : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectedFields() . ' where acceptedWaiver>"2000" order by lastLogin desc limit 25';
+		$sql = self::getSelectedFields() . ' where acceptedWaiver is not null order by lastLogin desc limit 25';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql);
 		}

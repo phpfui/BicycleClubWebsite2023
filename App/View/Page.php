@@ -338,8 +338,11 @@ class Page extends \PHPFUI\Page
 		$abbrev = new \PHPFUI\HTML5Element('span');
 		$abbrev->addClass('show-for-small-only');
 
+		$homeURL = '/';
+
 		if ($this->isSignedIn())
 			{
+			$homeURL .= 'Home';
 			$abbrev->add($this->value('boardName'));
 			}
 		else
@@ -368,7 +371,7 @@ class Page extends \PHPFUI\Page
 		$nameLocation->add($this->value('clubName') . ' - ' . $this->value('clubLocation'));
 		$title->add($nameLocation);
 
-		$link = "<a href='/Home' style='color:white;font-weight:bold;'>{$title}</a>";
+		$link = "<a href='{$homeURL}' style='color:white;font-weight:bold;'>{$title}</a>";
 
 		$titleBar = new \PHPFUI\TopBar();
 		$hamburger = new \PHPFUI\FAIcon('fas', 'bars', '#');

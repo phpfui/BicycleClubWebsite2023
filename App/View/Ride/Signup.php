@@ -33,7 +33,7 @@ class Signup
 		$form = new \PHPFUI\Form($this->page);
 		$fieldSet = new \PHPFUI\FieldSet('Sign Up For Ride ' . $this->ride->title);
 
-		if ($this->ride->releasePrinted > '2000-00-00')
+		if ($this->ride->releasePrinted > '2000-01-01')
 			{
 			$alert = new \PHPFUI\Callout('warning');
 			$alert->add('The <b>Ride Sign In Sheet</b> was printed on ' . \App\Tools\Date::formatString('n/j/Y \a\\t g:i a', $this->ride->releasePrinted) . '. You may not be listed.');

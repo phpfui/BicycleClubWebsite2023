@@ -30,7 +30,48 @@ class ConstantContact
 			$client->refreshToken = $refreshToken;
 			}
 
-		if ('deauth' == $authorize)
+		$name = 'ConstantContactSyncList';
+		$currentList = $settingTable->value($name);
+
+		if ('download' == $authorize)
+			{
+			$contactsAPI = new \PHPFUI\ConstantContact\V3\Contacts($client);
+			$response = $contactsAPI->get(lists:$currentList);
+
+			if (! $contactsAPI->success())
+				{
+				\App\Tools\Logger::get()->debug($contactsAPI->getStatusCode(), $contactsAPI->getLastError());
+				}
+
+			$csvWriter = new \App\Tools\CSV\FileWriter('ConstantContactAddresses.csv');
+
+			do
+				{
+				foreach ($response['contacts'] ?? [] as $row)
+					{
+					// flatten address
+					$row = \array_merge($row, $row['email_address']);
+					$row = $this->flatten($row, 'phone_numbers');
+					$row = $this->flatten($row, 'street_addresses');
+
+					// remove any arrays that may be there
+					foreach ($row as $key => $value)
+						{
+						if (\is_array($value))
+							{
+							unset($row[$key]);
+							}
+						}
+					$csvWriter->outputRow($row);
+					}
+				$response = $contactsAPI->next();
+				}
+			while ($response);
+			$this->page->redirect('/System/Settings/constantContact');
+
+			return $form;
+			}
+		elseif ('deauth' == $authorize)
 			{
 			$settingTable->save('ConstantContactToken', '');
 			$settingTable->save('ConstantContactRefreshToken', '');
@@ -106,9 +147,9 @@ class ConstantContact
 		$fields['APIKey'] = 'Client Id / API Key (leave blank to turn off)';
 		$fields['Secret'] = 'Secret';
 
-		foreach ($fields as $name => $text)
+		foreach ($fields as $field => $text)
 			{
-			$versionFieldSet->add($settingsSaver->generateField('ConstantContact' . $name, $text, 'text', false));
+			$versionFieldSet->add($settingsSaver->generateField('ConstantContact' . $field, $text, 'text', false));
 			}
 		$fieldSet->add($versionFieldSet);
 		$form->add($fieldSet);
@@ -117,8 +158,6 @@ class ConstantContact
 			{
 			$listFieldSet = new \PHPFUI\FieldSet('Membership Sync List');
 			$listFieldSet->add('This list will be synced with member\'s email preferences set in the web site.');
-			$name = 'ConstantContactSyncList';
-			$currentList = $settingTable->value($name);
 			$listSelect = new \PHPFUI\Input\Select($name, 'Constant Contact Mailing List');
 
 			try
@@ -164,12 +203,42 @@ class ConstantContact
 				}
 			else
 				{
+				$buttonGroup = new \App\UI\CancelButtonGroup($submit);
+				$download = new \PHPFUI\Button('Download Contacts', '/System/Settings/constantContact/download');
+				$download->addClass('success');
+				$buttonGroup->addButton($download);
+
 				$deauthorize = new \PHPFUI\Button('Deauthorize', '/System/Settings/constantContact/deauth');
 				$deauthorize->addClass('alert');
-				$form->add(new \App\UI\CancelButtonGroup($submit, $deauthorize));
+				$buttonGroup->addButton($deauthorize);
+				$form->add($buttonGroup);
 				}
 			}
 
 		return $form;
+		}
+
+	/**
+	 * @param array<string, string|array<string,string>> $input
+	 *
+	 * @return array<string, string|array<string,string>>
+	 */
+	private function flatten(array $input, string $index) : array
+		{
+		$suffixes = ['', '2', '3', ];
+		$data = $input;
+
+		foreach ($input[$index] ?? [] as $row)
+			{
+			unset($row['created_at'], $row['updated_at']);	// @phpstan-ignore-line
+			$suffix = \array_shift($suffixes);
+
+			foreach ($row as $key => $value)
+				{
+				$data[$key . $suffix] = $value;
+				}
+			}
+
+		return $data;
 		}
 	}

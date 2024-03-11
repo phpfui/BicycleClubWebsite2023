@@ -77,7 +77,7 @@ class ConstantContact
 				$response = $contactsAPI->next();
 				}
 			while ($response);
-			$this->page->redirect('/System/Settings/constantContact');
+			exit;
 
 			return $form;
 			}

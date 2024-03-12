@@ -77,7 +77,7 @@ class ConstantContact
 				$response = $contactsAPI->next();
 				}
 			while ($response);
-			exit;
+			$this->page->done();
 
 			return $form;
 			}

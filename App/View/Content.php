@@ -546,8 +546,18 @@ class Content extends \App\UI\HTMLEditor
 
 					if (\file_exists($photo->getFullPath()))
 						{
+						$fileName = $photo->getFullPath();
+
+						if (\is_file($fileName))
+							{
+							[$width, $height, $type, $attr] = \getimagesize($fileName);
+							}
+						else
+							{
+							$width = $height = 0;
+							}
 						$fieldset->add($photo->getImage());
-						[$width, $height, $type, $attr] = \getimagesize($photo->getFullPath());
+
 						$sizeSet = new \PHPFUI\FieldSet('Current Size (Enter a smaller width if desired)');
 
 						$widthHidden = new \PHPFUI\Input\Hidden('widthHidden', (string)$width);

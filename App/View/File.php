@@ -466,7 +466,7 @@ return $member->fullName();});
 				{
 				$file->extension = $this->fileFiles->getExtension();
 
-				$file->fileName = \substr($this->fileFiles->getUploadName(), 0, \strpos($this->fileFiles->getUploadName(), '.'));
+				$file->fileName = \substr($this->fileFiles->getUploadName(), 0, \strrpos($this->fileFiles->getUploadName(), '.'));
 
 				if (empty($file->file))
 					{

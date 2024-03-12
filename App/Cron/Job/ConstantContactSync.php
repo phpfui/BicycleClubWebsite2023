@@ -89,6 +89,7 @@ class ConstantContactSync extends \App\Cron\BaseJob
 					if (! $synced)  // add to correct list and update address and phone numbers
 						{
 						$contact['list_memberships'][] = $syncList;
+						unset($contact['email_address']);
 						$contactBody = new \PHPFUI\ConstantContact\Definition\ContactPutRequest($contact);
 						$contactBody->update_source = 'Account';
 						$member = $subscribed[$email];

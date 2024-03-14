@@ -73,58 +73,58 @@ class ConstantContactSync extends \App\Cron\BaseJob
 						}
 					}
 
-				if (isset($subscribed[$email]))
-					{
-					// If they are not on the list provided, then add them to the list provided
-					$synced = false;
-
-					foreach ($contact['list_memberships'] ?? [] as $contactList)
-						{
-						if ($contactList == $syncList)
-							{
-							$synced = true;
-							}
-						}
-
-					if (! $synced)  // add to correct list and update address and phone numbers
-						{
-						$contact['list_memberships'][] = $syncList;
-						$contactBody = new \PHPFUI\ConstantContact\Definition\ContactPutRequest($contact);
-						$contactBody->update_source = 'Account';
-						$member = $subscribed[$email];
-						$contactBody->street_addresses = [new \PHPFUI\ConstantContact\Definition\StreetAddressPut([
-							'kind' => 'home',
-							'street' => $member['address'],
-							'city' => $member['town'],
-							'state' => $member['state'],
-							'postal_code' => $member['zip'],
-							'country' => 'USA', ])];
-
-						$numbers = [];
-
-						if ($member['phone'])
-							{
-							$numbers[] = new \PHPFUI\ConstantContact\Definition\PhoneNumberPut(['phone_number' => $member['phone'], 'kind' => 'home']);
-							}
-
-						if ($member['cellPhone'])
-							{
-							$numbers[] = new \PHPFUI\ConstantContact\Definition\PhoneNumberPut(['phone_number' => $member['cellPhone'], 'kind' => 'mobile']);
-							}
-
-						if ($numbers)
-							{
-							$contactBody->phone_numbers = $numbers;
-							}
-
-						$contactClient->put($contact['contact_id'], $contactBody);
-
-						if (! $contactClient->success())
-							{
-							\App\Tools\Logger::get()->debug($contactClient->getStatusCode(), $contactClient->getLastError());
-							}
-						}
-					}
+//				if (isset($subscribed[$email]))
+//					{
+//					// If they are not on the list provided, then add them to the list provided
+//					$synced = false;
+//
+//					foreach ($contact['list_memberships'] ?? [] as $contactList)
+//						{
+//						if ($contactList == $syncList)
+//							{
+//							$synced = true;
+//							}
+//						}
+//
+//					if (! $synced)  // add to correct list and update address and phone numbers
+//						{
+//						$contact['list_memberships'][] = $syncList;
+//						$contactBody = new \PHPFUI\ConstantContact\Definition\ContactPutRequest($contact);
+//						$contactBody->update_source = 'Account';
+//						$member = $subscribed[$email];
+//						$contactBody->street_addresses = [new \PHPFUI\ConstantContact\Definition\StreetAddressPut([
+//							'kind' => 'home',
+//							'street' => $member['address'],
+//							'city' => $member['town'],
+//							'state' => $member['state'],
+//							'postal_code' => $member['zip'],
+//							'country' => 'USA', ])];
+//
+//						$numbers = [];
+//
+//						if ($member['phone'])
+//							{
+//							$numbers[] = new \PHPFUI\ConstantContact\Definition\PhoneNumberPut(['phone_number' => $member['phone'], 'kind' => 'home']);
+//							}
+//
+//						if ($member['cellPhone'])
+//							{
+//							$numbers[] = new \PHPFUI\ConstantContact\Definition\PhoneNumberPut(['phone_number' => $member['cellPhone'], 'kind' => 'mobile']);
+//							}
+//
+//						if ($numbers)
+//							{
+//							$contactBody->phone_numbers = $numbers;
+//							}
+//
+//						$contactClient->put($contact['contact_id'], $contactBody);
+//
+//						if (! $contactClient->success())
+//							{
+//							\App\Tools\Logger::get()->debug($contactClient->getStatusCode(), $contactClient->getLastError());
+//							}
+//						}
+//					}
 
 				if ($email)
 					{

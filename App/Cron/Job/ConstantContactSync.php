@@ -50,7 +50,7 @@ class ConstantContactSync extends \App\Cron\BaseJob
 
 		// Get all current Constant Contact users
 		$syncList = $settingTable->value('ConstantContactSyncList');
-		$list = $contactsClient->get(status: 'all', limit: 500);
+		$list = $contactsClient->get(status: 'all', limit: 500, lists:$syncList);
 
 		do
 			{
@@ -89,7 +89,6 @@ class ConstantContactSync extends \App\Cron\BaseJob
 					if (! $synced)  // add to correct list and update address and phone numbers
 						{
 						$contact['list_memberships'][] = $syncList;
-						unset($contact['email_address']);
 						$contactBody = new \PHPFUI\ConstantContact\Definition\ContactPutRequest($contact);
 						$contactBody->update_source = 'Account';
 						$member = $subscribed[$email];

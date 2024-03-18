@@ -4,6 +4,8 @@ namespace App\UI;
 
 class MemberPicker
 	{
+	private bool $hidePrivateMembers = false;
+
 	private readonly string $name;
 
 	/**
@@ -32,8 +34,10 @@ class MemberPicker
 
 			foreach ($this->model->findByName($names) as $row)
 				{
-				$returnValue[] = ['value' => $this->getText($row),
-					'data' => $row['memberId'], ];
+				if (! $this->hidePrivateMembers || empty($row['showNothing']))
+					{
+					$returnValue[] = ['value' => $this->getText($row), 'data' => $row['memberId'], ];
+					}
 				}
 			}
 		else
@@ -42,6 +46,13 @@ class MemberPicker
 			}
 
 		return ['suggestions' => $returnValue];
+		}
+
+	public function dontShowPrivateMembers(bool $hidePrivateMembers = true) : static
+		{
+		$this->hidePrivateMembers = $hidePrivateMembers;
+
+		return $this;
 		}
 
 	public function getEditControl() : \PHPFUI\Input\AutoComplete

@@ -139,6 +139,7 @@ class Search implements \Stringable
 
 		$basic = new \PHPFUI\Container();
 		$memberPicker = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPickerNoSave('Member Name'), 'memberId');
+		$memberPicker->dontShowPrivateMembers(! $this->page->isAuthorized('Search Includes Private Members'));
 		$basic->add($memberPicker->getEditControl());
 		$basic->add($this->generateFields($this->fields, $parameters));
 		$tabs->addTab('Basic', $basic, true);

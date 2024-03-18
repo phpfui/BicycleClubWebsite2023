@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Intervention\Image\Drivers\Gd;
 
 use GdImage;
+use Intervention\Image\Exceptions\ColorException;
 use Intervention\Image\Geometry\Rectangle;
 use Intervention\Image\Image;
 use Intervention\Image\Interfaces\DriverInterface;
@@ -31,7 +32,6 @@ class Frame implements FrameInterface
         protected int $offset_left = 0,
         protected int $offset_top = 0
     ) {
-        //
     }
 
     /**
@@ -180,6 +180,7 @@ class Frame implements FrameInterface
     /**
      * This workaround helps cloning GdImages which is currently not possible.
      *
+     * @throws ColorException
      * @return void
      */
     public function __clone(): void

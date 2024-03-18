@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Intervention\Image\Interfaces;
 
+use Intervention\Image\Exceptions\DriverException;
+use Intervention\Image\Exceptions\NotSupportedException;
+use Intervention\Image\Exceptions\RuntimeException;
+
 interface DriverInterface
 {
     /**
@@ -17,6 +21,7 @@ interface DriverInterface
      * Resolve given object into a specialized version for the current driver
      *
      * @param object $object
+     * @throws NotSupportedException
      * @return ModifierInterface|AnalyzerInterface|EncoderInterface|DecoderInterface
      */
     public function specialize(object $object): ModifierInterface|AnalyzerInterface|EncoderInterface|DecoderInterface;
@@ -34,6 +39,7 @@ interface DriverInterface
      *
      * @param int $width
      * @param int $height
+     * @throws RuntimeException
      * @return ImageInterface
      */
     public function createImage(int $width, int $height): ImageInterface;
@@ -51,6 +57,7 @@ interface DriverInterface
      *
      * @param mixed $input
      * @param array $decoders
+     * @throws RuntimeException
      * @return ImageInterface|ColorInterface
      */
     public function handleInput(mixed $input, array $decoders = []): ImageInterface|ColorInterface;
@@ -74,7 +81,7 @@ interface DriverInterface
      * Check whether all requirements for operating the driver are met and
      * throw exception if the check fails.
      *
-     * @throws \Intervention\Image\Exceptions\RuntimeException
+     * @throws DriverException
      * @return void
      */
     public function checkHealth(): void;

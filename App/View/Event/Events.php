@@ -243,7 +243,7 @@ class Events
 			}
 
 		$price = \App\Model\Event::getActualPrice($event);
-		$price = $price ? '$' . \number_format($price, 2) : 'FREE! Reservations encouraged!';
+		$price = $price ? '$' . \number_format($price, 2) : 'FREE! Reservation required.';
 
 		$fieldSet->add(new \App\UI\Display('Price', $price));
 
@@ -257,8 +257,8 @@ class Events
 				}
 			$fieldSet->add(new \App\UI\Display('Currently Attending', $attending));
 			}
-		$fieldSet->add(new \App\UI\Display('Start Time', $event->startTime));
-		$fieldSet->add(new \App\UI\Display('End Time', $event->endTime));
+		$fieldSet->add(new \App\UI\Display('Start Time', \App\Tools\TimeHelper::toSmallTime($event->startTime)));
+		$fieldSet->add(new \App\UI\Display('End Time', \App\Tools\TimeHelper::toSmallTime($event->endTime)));
 
 		if ($event->information)
 			{

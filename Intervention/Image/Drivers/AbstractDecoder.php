@@ -7,6 +7,7 @@ namespace Intervention\Image\Drivers;
 use Exception;
 use Intervention\Image\Collection;
 use Intervention\Image\Exceptions\DecoderException;
+use Intervention\Image\Exceptions\RuntimeException;
 use Intervention\Image\Interfaces\CollectionInterface;
 use Intervention\Image\Interfaces\ColorInterface;
 use Intervention\Image\Interfaces\DecoderInterface;
@@ -25,8 +26,8 @@ abstract class AbstractDecoder extends DriverSpecialized implements DecoderInter
      * Try to decode given input to image or color object
      *
      * @param mixed $input
+     * @throws RuntimeException
      * @return ImageInterface|ColorInterface
-     * @throws DecoderException
      */
     final public function handle(mixed $input): ImageInterface|ColorInterface
     {
@@ -65,6 +66,33 @@ abstract class AbstractDecoder extends DriverSpecialized implements DecoderInter
             "/^47494638(37|39)61/",
             strtoupper(substr(bin2hex($input), 0, 32))
         );
+    }
+
+    /**
+     * Determine if given input is a path to an existing regular file
+     *
+     * @param mixed $input
+     * @return bool
+     */
+    protected function isFile(mixed $input): bool
+    {
+        if (!is_string($input)) {
+            return false;
+        }
+
+        if (strlen($input) > PHP_MAXPATHLEN) {
+            return false;
+        }
+
+        try {
+            if (!@is_file($input)) {
+                return false;
+            }
+        } catch (Exception) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

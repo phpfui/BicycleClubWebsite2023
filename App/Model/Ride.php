@@ -238,7 +238,7 @@ class Ride
 			return $seconds;
 			}
 		$count = 0;
-		$rides = $this->rideTable->pastRidesForMember($ride->member, 0);
+		$rides = $this->rideTable->pastRidesForMember($ride->member, 10);
 		$average = 0.0;
 
 		foreach ($rides as $pastRide)
@@ -262,10 +262,16 @@ class Ride
 
 		if (! $average || ! $count)
 			{
-			return $seconds;
+			$average = (float)$ride->targetPace;
+
+			if (! $average)
+				{
+				return $seconds;
+				}
+			$count = 1;
 			}
 		$average /= $count;
-		$seconds = (int)((float)$mileage / $average * 3600 + 30 * 60);
+		$seconds = (int)((float)$mileage / $average * 3600 + 20 * 60);
 
 		return $seconds;
 		}

@@ -47,11 +47,15 @@ class Info
 		if ($ride->startTime)
 			{
 			$fieldSet->add(new \App\UI\Display('Time', \App\Tools\TimeHelper::toSmallTime($ride->startTime)));
-			$model = new \App\Model\Ride();
-			$seconds = $model->computeDuration($ride);
-			$start = \App\Tools\TimeHelper::fromString($ride->startTime);
-			$end = (int)($start + ($seconds / 60));
-			$fieldSet->add(new \App\UI\Display('Estimated End Time', \App\Tools\TimeHelper::toString($end)));
+
+			if ($this->page->isAuthorized('Show Estimated Ride End Time'))
+				{
+				$model = new \App\Model\Ride();
+				$seconds = $model->computeDuration($ride);
+				$start = \App\Tools\TimeHelper::fromString($ride->startTime);
+				$end = (int)($start + ($seconds / 60));
+				$fieldSet->add(new \App\UI\Display('Estimated End Time', \App\Tools\TimeHelper::toString($end)));
+				}
 			}
 
 		if ($ride->title)

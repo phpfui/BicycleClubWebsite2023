@@ -72,7 +72,7 @@ class Member extends \PHPFUI\ORM\Table
 	 */
 	public function findByName(array $names, bool $currentMembers = true) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select m.firstName,m.lastName,m.memberId,m.email,s.* from member m left join membership s on m.membershipId=s.membershipId where ';
+		$sql = 'select m.firstName,m.lastName,m.memberId,m.email,m.showNothing,s.* from member m left join membership s on m.membershipId=s.membershipId where ';
 		$input = [];
 
 		foreach ($names as $key => $name)

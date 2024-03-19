@@ -6,6 +6,13 @@ class Member extends \PHPFUI\ORM\Table
 {
 	protected static string $className = '\\' . \App\Record\Member::class;
 
+	public function abandoned() : \PHPFUI\ORM\DataObjectCursor
+		{
+		$sql = self::getSelectedFields() . ' where s.expires is null and s.pending=1 and verifiedEmail<9';
+
+		return \PHPFUI\ORM::getDataObjectCursor($sql);
+		}
+
 	public function badExpirations() : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = self::getSelectedFields() . ' WHERE s.expires is null';

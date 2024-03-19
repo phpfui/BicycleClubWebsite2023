@@ -39,8 +39,20 @@ class MemberNotices extends \App\Cron\BaseJob
 
 					$startDate = \App\Tools\Date::todayString($dayInt);
 					$endDate = \App\Tools\Date::todayString($dayInt + 1);
-					$condition = new \PHPFUI\ORM\Condition($notice->field, $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
-					$condition->and($notice->field, $endDate, new \PHPFUI\ORM\Operator\LessThan());
+
+					if ('abandoned' == $notice->field)
+						{
+						$condition = new \PHPFUI\ORM\Condition('member.verifiedEmail', 9, new \PHPFUI\ORM\Operator\LessThan());
+						$condition->and('member.verifiedEmail', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+						$condition->and('membership.expires', null, new \PHPFUI\ORM\Operator\IsNull());
+						$condition->and('member.lastLogin', $startDate . ' 00:00:00', new \PHPFUI\ORM\Operator\GreaterThanEqual());
+						$condition->and('member.lastLogin', $endDate . ' 00:00:00', new \PHPFUI\ORM\Operator\LessThan());
+						}
+					else
+						{
+						$condition = new \PHPFUI\ORM\Condition($notice->field, $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+						$condition->and($notice->field, $endDate, new \PHPFUI\ORM\Operator\LessThan());
+						}
 					$memberTable->setWhere($condition);
 
 					foreach ($memberTable->getDataObjectCursor() as $member)

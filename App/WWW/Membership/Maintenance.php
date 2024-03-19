@@ -32,6 +32,14 @@ class Maintenance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCl
 			{
 			switch ($type)
 				{
+				case 'abandoned':
+
+					$members = $this->memberTable->abandoned();
+					$this->page->addSubHeader('Abandoned Member Signups');
+					$this->page->addPageContent($this->memberView->show($members, 'No Abandoned Members'));
+
+					break;
+
 				case 'noPayments':
 
 					$members = $this->memberTable->noPayments();
@@ -39,7 +47,6 @@ class Maintenance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCl
 					$this->page->addPageContent($this->memberView->show($members, 'Everyone has paid'));
 
 					break;
-
 
 				case 'noMembers':
 
@@ -49,7 +56,6 @@ class Maintenance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCl
 
 					break;
 
-
 				case 'badExpirations':
 
 					$members = $this->memberTable->badExpirations();
@@ -57,7 +63,6 @@ class Maintenance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCl
 					$this->page->addPageContent($this->memberView->show($members, 'No members with bad expirations'));
 
 					break;
-
 
 				case 'missingNames':
 
@@ -67,7 +72,6 @@ class Maintenance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCl
 
 					break;
 
-
 				case 'noPermissions':
 
 					$members = $this->memberTable->noPermissions();
@@ -75,7 +79,6 @@ class Maintenance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCl
 					$this->page->addPageContent($this->memberView->show($members, 'All members have permissions'));
 
 					break;
-
 
 				default:
 
@@ -85,6 +88,7 @@ class Maintenance extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCl
 					$landing->addLink('/Membership/Maintenance/audit/badExpirations', 'Memberships with Bad Expirations');
 					$landing->addLink('/Membership/Maintenance/audit/missingNames', 'Memberships with Missing Names');
 					$landing->addLink('/Membership/Maintenance/audit/noPermissions', 'Memberships with No Permissions');
+					$landing->addLink('/Membership/Maintenance/audit/abandoned', 'Abandoned Member Signups');
 					$this->page->addPageContent($landing);
 
 				}

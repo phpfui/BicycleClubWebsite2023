@@ -4,15 +4,6 @@ namespace App\WWW\Admin;
 
 class Permission extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
-	public function addGroup() : void
-		{
-		if ($this->page->addHeader('Add Permission Group'))
-			{
-			$permission = $this->page->getPermissions()->addGroup();
-			$this->page->redirect('/Admin/Permission/groupEdit/' . $permission->permissionId);
-			}
-		}
-
 	public function groupEdit(\App\Record\Permission $permission = new \App\Record\Permission()) : void
 		{
 		if ($permission->loaded() && $this->page->addHeader('Edit Permission Group'))

@@ -13,6 +13,12 @@ class Home extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($member->loaded())
 			{
+			if ($member->verifiedEmail < 9 && $member->membership->expires > \App\Tools\Date::todayString())
+				{
+				$member->verifiedEmail = 9;
+				$member->update();
+				}
+
 			if ($member->verifiedEmail < 9)
 				{
 				$joinView = new \App\View\Membership\Join($this->page);

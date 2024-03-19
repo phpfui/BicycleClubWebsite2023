@@ -63,7 +63,7 @@ class Notices
 		$overridePreferences->setToolTip('This should only be checked for membership renewal reasons.');
 		$fieldSet->add(new \PHPFUI\MultiColumn($memberInput, $overridePreferences));
 
-		$fieldChoices = ['lastLogin', 'acceptedWaiver', 'expires', 'joined', 'lastRenewed', 'renews'];
+		$fieldChoices = ['lastLogin', 'acceptedWaiver', 'expires', 'joined', 'lastRenewed', 'renews', 'abandoned'];
 		$fields = new \PHPFUI\Input\Select('field', 'Date Field');
 
 		foreach ($fieldChoices as $field)

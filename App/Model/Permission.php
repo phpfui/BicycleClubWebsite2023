@@ -46,12 +46,12 @@ class Permission extends \App\Model\PermissionBase
 			}
 		}
 
-	public function addGroup() : \App\Record\Permission
+	public function addGroup(string $name = 'New Permission Group Name') : \App\Record\Permission
 		{
 		$permissionTable = new \App\Table\Permission();
 		$permission = new \App\Record\Permission();
 		$permission->permissionId = $permissionTable->getNextGroupId();
-		$permission->name = 'New Permission Group Name';
+		$permission->name = $name;
 		$permission->menu = 'Permission Group';
 		$permission->insert();
 

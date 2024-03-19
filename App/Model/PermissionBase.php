@@ -4,7 +4,7 @@ namespace App\Model;
 
 class PermissionBase
 	{
-	public function addGroup() : \App\Record\Permission
+	public function addGroup(string $name = '') : \App\Record\Permission
 		{
 		return new \App\Record\Permission();
 		}

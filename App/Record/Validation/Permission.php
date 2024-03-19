@@ -7,8 +7,8 @@ class Permission extends \PHPFUI\ORM\Validator
 	/** @var array<string, array<string>> */
 	public static array $validators = [
 		'menu' => ['maxlength'],
-		'name' => ['required', 'maxlength'],
 		'system' => ['required', 'integer'],
+		'name' => ['required', 'maxlength', 'unique'],
 	];
 
 	public function __construct(\App\Record\Permission $record)

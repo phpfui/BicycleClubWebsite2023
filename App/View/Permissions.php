@@ -23,6 +23,18 @@ class Permissions
 		$this->processAJAXRequest();
 		}
 
+	/**
+	 * @return array<string, string>
+	 */
+	public function addPermissionGroup(\App\Record\Permission $permission) : array
+		{
+		$permissionAdded = $this->permissionModel->addGroup($permission->name);
+		$redirect = '/Admin/Permission/groupEdit/' . $permissionAdded->permissionId;
+		$response = ['response' => 'Saved', 'color' => 'lime', 'record' => $permissionAdded->toArray(), 'redirect' => $redirect];
+
+		return $response;
+		}
+
 	public function editMember(\App\Record\Member $member) : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit();
@@ -282,10 +294,11 @@ class Permissions
 
 		if ($this->page->isAuthorized('Add Permission Group'))
 			{
-			$add = new \PHPFUI\Button('Add Permission Group', '/Admin/Permission/addGroup');
-			$container->add($add);
+			$addGroupButton = new \PHPFUI\Button('Add Permission Group');
+			$this->addGroupReveal($addGroupButton);
+			$container->add($addGroupButton);
 			$container->add($view);
-			$container->add($add);
+			$container->add($addGroupButton);
 			}
 		else
 			{
@@ -499,16 +512,28 @@ class Permissions
 
 					break;
 
-
-				case 'Add':
-
-					$permission = $this->permissionModel->addGroup();
-					$this->page->redirect('/Admin/Permission/groupEdit/' . $permission->permissionId);
-
-					break;
-
 				}
 			}
+		}
+
+	private function addGroupReveal(\PHPFUI\HTML5Element $button) : void
+		{
+		$modal = new \PHPFUI\Reveal($this->page, $button);
+		$submit = new \PHPFUI\Submit('Add Permission Group');
+		$form = new \App\UI\ErrorFormSaver($this->page, new \App\Record\Permission(), $submit);
+		$form->setSaveRecordCallback([$this, 'addPermissionGroup']);
+
+		if ($form->save())
+			{
+			}
+		$form->setAreYouSure(false);
+		$fieldSet = new \PHPFUI\FieldSet('New Permision Group Name');
+		$fieldSet->add(new \PHPFUI\Input\Text('name', 'Permission Group Name'));
+		$fieldSet->add(new \PHPFUI\Input\Hidden('menu', 'Permission Group'));
+		$fieldSet->add(new \PHPFUI\Input\Hidden('system', '0'));
+		$form->add($fieldSet);
+		$form->add($submit);
+		$modal->add($form);
 		}
 
 	private function getAddMemberModal(\PHPFUI\HTML5Element $add) : void

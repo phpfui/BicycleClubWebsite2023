@@ -1,4 +1,10 @@
-Schedule font size
+Rest stop info on ride
+
+Better stats on start locations, like rides from location, etc.
+
+Filter leaders by category
+
+Remove RWGPS members who do not renew
 
 Default category
 

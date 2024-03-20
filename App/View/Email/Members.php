@@ -164,8 +164,7 @@ class Members implements \Stringable
 		{
 		$form = new \PHPFUI\Form($this->page);
 		$fieldSet = new \PHPFUI\FieldSet('Selection Criteria');
-		$categoryView = new \App\View\Categories($this->page, new \PHPFUI\Button('back'));
-		$picker = $categoryView->getMultiCategoryPicker('categories', 'Category Restriction', $this->parameters['categories'] ?? []);
+		$picker = new \App\UI\MultiCategoryPicker('categories', 'Category Restriction', $this->parameters['categories'] ?? []);
 		$picker->setToolTip('Pick specific categories if you to restrict the email, optional');
 		$memberTypes = new \PHPFUI\FieldSet('Membership Types');
 		$currentMembers = new \PHPFUI\Input\CheckBoxBoolean('currentMembers', 'Current', $this->parameters['currentMembers'] ?? true);

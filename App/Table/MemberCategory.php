@@ -33,7 +33,7 @@ class MemberCategory extends \PHPFUI\ORM\Table
 
 	public static function getRideCategoryStringForMember(int $memberId) : string
 		{
-		$sql = 'select group_concat(category) from category c left join memberCategory mc on mc.categoryId = c.categoryId where mc.memberId=?';
+		$sql = 'select group_concat(category) from category c left join memberCategory mc on mc.categoryId = c.categoryId where mc.memberId=? order by ordering';
 
 		return \PHPFUI\ORM::getValue($sql, [$memberId]);
 		}

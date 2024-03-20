@@ -117,26 +117,6 @@ class Categories
 		return $form;
 		}
 
-	public static function getCategoryLabel(\App\Record\Category $category) : string
-		{
-		$label = $category->category ?? 'All';
-
-		if ((int)($category->minSpeed) && (int)($category->maxSpeed))
-			{
-			$label .= " ({$category->minSpeed}-{$category->maxSpeed})";
-			}
-		elseif ($category->minSpeed)
-			{
-			$label .= " ({$category->minSpeed}+)";
-			}
-		elseif ($category->maxSpeed)
-			{
-			$label .= " (<{$category->maxSpeed})";
-			}
-
-		return $label;
-		}
-
 	public function getCategoryPicker(string $fieldName = 'category', string $label = '', int $selected = 0) : \PHPFUI\Input\Select
 		{
 		$select = new \PHPFUI\Input\Select($fieldName, $label);
@@ -144,25 +124,7 @@ class Categories
 
 		foreach ($this->categoryTable->getRecordCursor() as $category)
 			{
-			$select->addOption(static::getCategoryLabel($category), $category->categoryId, $category->categoryId == $selected);
-			}
-
-		return $select;
-		}
-
-	/**
-	 * @param array<int> $selected
-	 */
-	public function getMultiCategoryPicker(string $fieldName = 'categories', string $label = '', array $selected = []) : \PHPFUI\Input\MultiSelect
-		{
-		$select = new \PHPFUI\Input\MultiSelect($fieldName, $label);
-		$select->selectAll();
-		$select->setColumns(2);
-		$select->addOption('All', (string)0, \in_array(0, $selected));
-
-		foreach ($this->categoryTable->getRecordCursor() as $category)
-			{
-			$select->addOption(static::getCategoryLabel($category), $category->categoryId, \in_array($category->categoryId, $selected));
+			$select->addOption($category->label(), $category->categoryId, $category->categoryId == $selected);
 			}
 
 		return $select;

@@ -89,9 +89,8 @@ class Search
 		$location = (int)($_GET['startLocationId'] ?? 0);
 		$fieldSet->add($startLocationView->getEditControl($location, 'startLocationId', 'Limit to Start Location'));
 
-		$categoryView = new \App\View\Categories($this->page);
 		$categories = $_GET['categories'] ?? [];
-		$multiPicker = $categoryView->getMultiCategoryPicker('categories', 'Limit to Categories', $categories);
+		$multiPicker = new \App\UI\MultiCategoryPicker('categories', 'Limit to Categories', $categories);
 		$multiPicker->setColumns(2);
 		$fieldSet->add($multiPicker);
 

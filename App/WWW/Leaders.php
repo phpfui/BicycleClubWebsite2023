@@ -418,57 +418,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Show Ride Leaders'))
 			{
-			$memberTable = new \App\Table\Member();
-			$memberTable->addJoin('membership');
-			$memberTable->addJoin('userPermission', new \PHPFUI\ORM\Condition('userPermission.memberId', new \PHPFUI\ORM\Field('member.memberId')));
-			$condition = new \PHPFUI\ORM\Condition('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
-			$permissionGroupId = $this->page->getPermissions()->getPermissionId('Ride Leader');
-			$condition->and('userPermission.permissionGroup', $permissionGroupId);
-			$memberTable->setWhere($condition);
-			$table = new \App\UI\ContinuousScrollTable($this->page, $memberTable);
-			$table->setSortColumn('lastName');
-
-			$headers = [
-				'firstName',
-				'lastName',
-				'categories',
-				'upcoming',
-				'past',
-				'phone',
-			];
-
-			if ($this->page->isAuthorized('Email Member'))
-				{
-				$headers[] = 'email';
-				}
-
-			$fields = ['firstName', 'lastName'];
-			$table->setSearchColumns($fields)->setSortableColumns($fields)->setHeaders($headers);
-
-			$table->addCustomColumn('upcoming', static fn (array $leader) => new \PHPFUI\Link('/Leaders/leaderUpcoming/' . $leader['memberId'], 'Upcoming', false));
-			$table->addCustomColumn('past', static fn (array $leader) => new \PHPFUI\Link('/Leaders/leaderYear/' . $leader['memberId'], 'Past', false));
-			$table->addCustomColumn('first', static fn (array $leader) => new \PHPFUI\Link('/Leaders/stats/' . $leader['memberId'], $leader['firstName'], false));
-			$table->addCustomColumn('last', static fn (array $leader) => new \PHPFUI\Link('/Leaders/stats/' . $leader['memberId'], $leader['lastName'], false));
-			$table->addCustomColumn('email', static fn (array $leader) => new \PHPFUI\FAIcon('far', 'envelope', '/Leaders/emailLeader/' . $leader['memberId']));
-			$table->addCustomColumn('phone', static function(array $leader)
-				{
-				$phone = $leader['phone'];
-
-				if (\strlen((string)$leader['cellPhone']) >= 7)
-					{
-					$phone = $leader['cellPhone'];
-					}
-
-				if (! $phone)
-					{
-					return '';
-					}
-
-				return \PHPFUI\Link::phone($phone);
-				});
-			$table->addCustomColumn('categories', static fn (array $leader) => \App\Table\MemberCategory::getRideCategoryStringForMember($leader['memberId']));
-
-			$this->page->addPageContent($table);
+			$this->page->addPageContent($this->view->show($_GET, $this->page->getPermissions()->getPermissionId('Ride Leader')));
 			}
 		}
 

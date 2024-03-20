@@ -314,9 +314,8 @@ class Member
 		{
 		$container = new \PHPFUI\Container();
 
-		$categoryView = new \App\View\Categories($this->page);
 		$categories = \App\Table\MemberCategory::getRideCategoriesForMember($member->memberId);
-		$picker = $categoryView->getMultiCategoryPicker('categories', 'Ride Category Interests', $categories);
+		$picker = new \App\UI\MultiCategoryPicker('categories', 'Ride Category Interests', $categories);
 		$picker->setToolTip('You must specify your categories interests below to receive ride reminder emails');
 
 		$toolTip = new \PHPFUI\ToolTip('Ride Reminder Settings', 'You sign up for Ride Reminder emails here.');

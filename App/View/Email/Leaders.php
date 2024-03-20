@@ -57,8 +57,7 @@ class Leaders implements \Stringable
 
 		$form = new \PHPFUI\Form($this->page);
 		$fieldSet = new \PHPFUI\FieldSet('Selection Criteria');
-		$categoryView = new \App\View\Categories($this->page, new \PHPFUI\Button('back'));
-		$picker = $categoryView->getMultiCategoryPicker('categories', 'Category Restriction', $post['categories'] ?? []);
+		$picker = new \App\UI\MultiCategoryPicker('categories', 'Category Restriction', $post['categories'] ?? []);
 		$picker->setToolTip('Pick specific categories if you to restrict the email, optional');
 		$columna = new \PHPFUI\Cell(12, 6);
 		$columna->add($picker);

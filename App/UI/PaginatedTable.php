@@ -161,7 +161,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 
 		foreach ($_GET as $name => $value)
 			{
-			if (\strlen((string)$value) && \str_starts_with($name, 's_'))
+			if (! \is_array($value) && \strlen((string)$value) && \str_starts_with($name, 's_'))
 				{
 				$fieldName = \substr($name, 2);
 

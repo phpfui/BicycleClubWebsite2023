@@ -152,13 +152,12 @@ class Search implements \Stringable
 			}
 
 		$extra = new \PHPFUI\Container();
-		$categoryView = new \App\View\Categories($this->page);
 
 		if (! \is_array($parameters['categories']))
 			{
 			$parameters['categories'] = [];
 			}
-		$picker = $categoryView->getMultiCategoryPicker('categories', 'Member Ride Categories', $parameters['categories']);
+		$picker = new \App\UI\MultiCategoryPicker('categories', 'Member Ride Categories', $parameters['categories']);
 		$extra->add($picker);
 		$state = new \PHPFUI\Input\Text('membership_state', 'State', $parameters['membership_state']);
 		$state->addAttribute('size', (string)2);

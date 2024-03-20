@@ -43,8 +43,7 @@ class Leader
 		$form->addAttribute('target', '_blank');
 		$row = new \PHPFUI\GridX();
 		$column = new \PHPFUI\Cell(12, 6, 4);
-		$categoryView = new \App\View\Categories($this->page, new \PHPFUI\Button('back'));
-		$picker = $categoryView->getMultiCategoryPicker('categories', 'Category Restriction');
+		$picker = new \App\UI\MultiCategoryPicker('categories', 'Category Restriction');
 		$picker->setToolTip('Pick specific categories if you to filter the report to specific categories');
 		$column->add($picker);
 		$radio = new \PHPFUI\Input\RadioGroup('sort', '', 'leader');
@@ -431,6 +430,119 @@ class Leader
 			}
 
 		return $container;
+		}
+
+	/**
+	 * @param array<string,string|array<int>> $parameters
+	 */
+	public function show(array $parameters, int $permissionGroupId) : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+		$filterButton = new \PHPFUI\Button('Filter');
+		$this->addFilterReveal($parameters, $filterButton);
+		$gridx = new \PHPFUI\GridX();
+		$gridx->setMargin();
+		$cell = new \PHPFUI\Cell(2);
+		$cell->add($filterButton);
+		$gridx->add($cell);
+
+		if (\count($parameters['categories'] ?? []))
+			{
+			$cell = new \PHPFUI\Cell();
+			$cell->setAuto();
+			$categoryTable = new \App\Table\Category();
+			$categoryTable->addSelect(new \PHPFUI\ORM\Literal('group_concat(category) as categories'));
+			$categoryTable->addOrderBy('ordering');
+			$categoryTable->setWhere(new \PHPFUI\ORM\Condition('categoryId', $parameters['categories'] ?? [], new \PHPFUI\ORM\Operator\In()));
+			$dataObjectCursor = $categoryTable->getDataObjectCursor();
+			$cell->add('<b>Filter:</b> ' . $dataObjectCursor->current()['categories']);
+			$gridx->add($cell);
+			}
+		$container->add($gridx);
+		$memberTable = new \App\Table\Member();
+		$memberTable->addJoin('membership');
+		$memberTable->addJoin('userPermission', new \PHPFUI\ORM\Condition('userPermission.memberId', new \PHPFUI\ORM\Field('member.memberId')));
+		$condition = new \PHPFUI\ORM\Condition('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('userPermission.permissionGroup', $permissionGroupId);
+
+		if (\count($parameters['categories'] ?? []))
+			{
+			$memberTable->addJoin('memberCategory', 'memberId');
+			$categoryCondition = new \PHPFUI\ORM\Condition();
+
+			foreach ($parameters['categories'] as $category)
+				{
+				$categoryCondition->or('categoryId', $category);
+				}
+			$condition->and($categoryCondition);
+			}
+		$memberTable->setWhere($condition);
+		$input = [];
+		$sql = $memberTable->getSelectSQL($input);
+		$table = new \App\UI\ContinuousScrollTable($this->page, $memberTable);
+		$table->setSortColumn('lastName');
+
+		$headers = [
+			'firstName',
+			'lastName',
+			'categories',
+			'upcoming',
+			'past',
+			'phone',
+		];
+
+		if ($this->page->isAuthorized('Email Member'))
+			{
+			$headers[] = 'email';
+			}
+
+		$fields = ['firstName', 'lastName'];
+		$table->setSearchColumns($fields)->setSortableColumns($fields)->setHeaders($headers);
+
+		$table->addCustomColumn('upcoming', static fn (array $leader) => new \PHPFUI\Link('/Leaders/leaderUpcoming/' . $leader['memberId'], 'Upcoming', false));
+		$table->addCustomColumn('past', static fn (array $leader) => new \PHPFUI\Link('/Leaders/leaderYear/' . $leader['memberId'], 'Past', false));
+		$table->addCustomColumn('first', static fn (array $leader) => new \PHPFUI\Link('/Leaders/stats/' . $leader['memberId'], $leader['firstName'], false));
+		$table->addCustomColumn('last', static fn (array $leader) => new \PHPFUI\Link('/Leaders/stats/' . $leader['memberId'], $leader['lastName'], false));
+		$table->addCustomColumn('email', static fn (array $leader) => new \PHPFUI\FAIcon('far', 'envelope', '/Leaders/emailLeader/' . $leader['memberId']));
+		$table->addCustomColumn('phone', static function(array $leader)
+			{
+			$phone = $leader['phone'];
+
+			if (\strlen((string)$leader['cellPhone']) >= 7)
+				{
+				$phone = $leader['cellPhone'];
+				}
+
+			if (! $phone)
+				{
+				return '';
+				}
+
+			return \PHPFUI\Link::phone($phone);
+			});
+		$table->addCustomColumn('categories', static fn (array $leader) => \App\Table\MemberCategory::getRideCategoryStringForMember($leader['memberId']));
+
+		$container->add($table);
+
+		return $container;
+		}
+
+	/**
+	 * @param array<string,string> $parameters
+	 */
+	private function addFilterReveal(array $parameters, \PHPFUI\HTML5Element $button) : void
+		{
+		$modal = new \PHPFUI\Reveal($this->page, $button);
+		$submit = new \PHPFUI\Submit('Set Filter');
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAttribute('method', 'get');
+		$form->setAreYouSure(false);
+		$fieldSet = new \PHPFUI\FieldSet('Select Categories to filter on');
+		$picker = new \App\UI\MultiCategoryPicker('categories', 'Category Restriction', $parameters['categories'] ?? []);
+		$fieldSet->add($picker);
+		$form->add($fieldSet);
+		$form->add($submit);
+		$modal->add($form);
 		}
 
 	private function formatRow(string $label, int $value) : \PHPFUI\GridX

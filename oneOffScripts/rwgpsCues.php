@@ -7,9 +7,15 @@ include __DIR__ . '/../common.php';
 
 echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 
-$sql = 'select c.mileage,c.startLocation startLocationNumber,sl.name startLocation,v.link RWGPSId from cuesheetversion v left join cuesheets c on c.id=v.id left join startlocations sl on sl.id=c.startLocation where v.link like "%ridewithgps.com%"';
+echo "\nGet all cue sheets with RWGPS routes\n";
+
+$sql = 'select c.mileage,c.startLocationId,sl.name startLocation,v.link RWGPSId
+	from cuesheetversion v
+	left join cuesheet c on c.cueSheetId=v.cueSheetVersionId
+	left join startlocation sl on sl.startLocationId=c.startLocationId
+	where v.link like "%ridewithgps.com%"';
 $rides = \PHPFUI\ORM::getArrayCursor($sql, []);
-$csvWriter = new \App\Tools\CSVWriter('rideWithGPS_Cues.csv');
+$csvWriter = new \App\Tools\CSV\FileWriter('rideWithGPS_Cues.csv', false);
 $first = true;
 $RWGPSIds = [];
 

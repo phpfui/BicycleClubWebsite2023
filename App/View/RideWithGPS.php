@@ -175,6 +175,29 @@ class RideWithGPS
 		return $form;
 		}
 
+	public function byStartLocation(\App\Record\StartLocation $startLocation) : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+		$container->add(new \PHPFUI\SubHeader($startLocation->name));
+
+		$RWGPSTable = new \App\Table\RWGPS();
+		$RWGPSTable->setDistinct();
+		$condition = new \PHPFUI\ORM\Condition('startLocationId', $startLocation->startLocationId);
+
+		if ($startLocation->latitude)
+			{
+			$formula = new \PHPFUI\ORM\Literal("ST_Distance_Sphere(point({$startLocation->longitude}, {$startLocation->latitude}), point(RWGPS.longitude, RWGPS.latitude))");
+			$condition->or($formula, 1000, new \PHPFUI\ORM\Operator\LessThanEqual());
+			}
+		$RWGPSTable->setWhere($condition);
+		$input = [];
+		\App\Tools\Logger::get()->debug($RWGPSTable->getSelectSQL($input));
+
+		$container->add($this->list($RWGPSTable));
+
+		return $container;
+		}
+
 	public function edit() : \PHPFUI\Form
 		{
 		$submit = new \PHPFUI\Submit();

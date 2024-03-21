@@ -331,7 +331,17 @@ class StartLocation
 	public function showLocations(\App\Table\StartLocation $startLocationTable) : \App\UI\ContinuousScrollTable
 		{
 		$searchableHeaders = ['name', 'link'];
-		$countHeaders = ['map' => 'Map', 'rides', 'cuesheets' => 'Cue<br>Sheets', ];
+		$countHeaders = ['map' => 'Map', 'rides', ];
+
+		if ($this->page->isAuthorized('Cue Sheets'))
+			{
+			$countHeaders['cuesheets'] = 'Cue<br>Sheets';
+			}
+
+		if ($this->page->isAuthorized('RWGPS Routes for Location'))
+			{
+			$countHeaders[] = 'RWGPS';
+			}
 
 		if ($this->page->isAuthorized('Delete Start Location'))
 			{
@@ -358,7 +368,7 @@ class StartLocation
 			{
 			if ($location['latitude'] && $location['longitude'])
 				{
-				return new \PHPFUI\Link("https://www.google.com/maps/?q={$location['latitude']},{$location['longitude']}", 'Map');
+				return new \PHPFUI\FAIcon('fas', 'location-dot', "https://www.google.com/maps/?q={$location['latitude']},{$location['longitude']}");
 				}
 
 			return '';
@@ -374,6 +384,11 @@ class StartLocation
 				}
 
 			return new \PHPFUI\Link('/Rides/forLocation/' . $location['startLocationId'], (string)$count, false);
+			});
+
+		$view->addCustomColumn('RWGPS', static function(array $location)
+			{
+			return new \PHPFUI\FAIcon('fas', 'location-crosshairs', '/RWGPS/forLocation/' . $location['startLocationId']);
 			});
 
 		$view->addCustomColumn('cuesheets', static function(array $location) use ($cuesheets)

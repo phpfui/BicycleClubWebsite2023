@@ -56,6 +56,20 @@ class RWGPS extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function forLocation(\App\Record\StartLocation $startLocation = new \App\Record\StartLocation()) : void
+		{
+		if ($this->page->addHeader('RWGPS Routes for Location'))
+			{
+			if (! $startLocation->loaded())
+				{
+				$this->page->addPageContent(new \PHPFUI\SubHeader('Start Location not found'));
+
+				return;
+				}
+			$this->page->addPageContent($this->view->byStartLocation($startLocation));
+			}
+		}
+
 	public function settings() : void
 		{
 		if ($this->page->addHeader('RideWithGPS Settings'))

@@ -1,7 +1,5 @@
 Rest stop info on ride
 
-Better stats on start locations, like rides from location, etc.
-
 Remove RWGPS members who do not renew
 
 Default category

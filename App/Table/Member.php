@@ -46,7 +46,7 @@ class Member extends \PHPFUI\ORM\Table
 
 		foreach ($parameters as $field => $value)
 			{
-			if (\str_starts_with($field, 'membership_'))
+			if (\strlen($value) && \str_starts_with($field, 'membership_'))
 				{
 				$whereCondition->and(\str_replace('_', '.', $field), '%' . $value . '%', new \PHPFUI\ORM\Operator\Like());
 				}

@@ -370,12 +370,13 @@ class Member
 			return '';
 			}
 		$canEdit = $this->page->isAuthorized('Edit Member');
+		$showAll = $this->page->isAuthorized('Show All Members');
 		$table = new \PHPFUI\Table();
 		$table->setHeaders(['Name', 'Town', 'Joined', 'email']);
 
 		foreach ($members as $member)
 			{
-			if ($member->showNothing)
+			if ($member->showNothing && ! $showAll)
 				{
 				continue;
 				}
@@ -574,7 +575,7 @@ class Member
 				}
 			$member = new \App\Record\Member($memberArray);
 
-			if ((! $canEdit && $member->showNothing && ! $showAll))
+			if (! $canEdit && $member->showNothing && ! $showAll)
 				{
 				continue;
 				}

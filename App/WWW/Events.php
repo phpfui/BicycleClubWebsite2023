@@ -45,8 +45,22 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		if ($reservation->memberId == \App\Model\Session::signedInMemberId() && ! $reservation->paymentId && ! $reservation->invoiceId)
 			{
 			$reservation->delete();
+			$this->page->redirect('/Events');
 			}
-		$this->page->redirect('/Events');
+		else
+			{
+			$this->page->addPageContent(new \PHPFUI\Header('This reservation can not be cancelled'));
+
+			if ($reservation->memberId != \App\Model\Session::signedInMemberId())
+				{
+				$this->page->addPageContent(new \PHPFUI\SubHeader("You can not cancel another person's reservation"));
+				}
+			elseif ($reservation->paymentId || $reservation->invoiceId)
+				{
+				$this->page->addPageContent(new \PHPFUI\SubHeader('This reservation has an associated payment'));
+				$this->page->addPageContent(new \PHPFUI\Header('Please contact the event organizer to request a refund', 5));
+				}
+			}
 		}
 
 	public function checks(\App\Record\Invoice $invoice = new \App\Record\Invoice()) : void

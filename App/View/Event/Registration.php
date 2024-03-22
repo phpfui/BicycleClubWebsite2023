@@ -102,7 +102,6 @@ class Registration
 
 					break;
 
-
 				case 'Add Payment':
 					if ($this->canAddPayment)
 						{
@@ -124,7 +123,8 @@ class Registration
 					$_POST['eventId'] = $eventId;
 					$reservation = new \App\Record\Reservation();
 					$reservation->setFrom($_POST);
-					$reservation->memberId = 0;
+					$reservation->signedUpAt = \date('Y-m-d H:i:s');  // this should default, but does not
+					$reservation->memberId = \App\Model\Session::signedInMemberId();
 					$person = new \App\Record\ReservationPerson();
 					$person->eventId = $eventId;
 					$person->reservation = $reservation;
@@ -137,7 +137,6 @@ class Registration
 
 					break;
 
-
 				case 'deleteAttendee':
 
 					if ($this->canDeleteAttendee)
@@ -147,7 +146,6 @@ class Registration
 					$this->page->redirect($this->page->getBaseURL());
 
 					break;
-
 
 				case 'Add Attendee':
 
@@ -163,7 +161,6 @@ class Registration
 
 					break;
 
-
 				default:
 
 					$this->page->redirect();
@@ -172,94 +169,99 @@ class Registration
 			}
 		else
 			{
-			$billing = new \PHPFUI\FieldSet('Billing Information');
-			$multiColumn = new \PHPFUI\MultiColumn();
-			$firstName = new \PHPFUI\Input\Text('reservationFirstName', 'First Name', $reservation->reservationFirstName);
-			$firstName->setRequired();
-			$multiColumn->add($firstName);
-			$lastName = new \PHPFUI\Input\Text('reservationLastName', 'Last Name', $reservation->reservationLastName);
-			$lastName->setRequired();
-			$multiColumn->add($lastName);
-
-			$billing->add($multiColumn);
-			$multiColumn = new \PHPFUI\MultiColumn();
-			$address = new \PHPFUI\Input\Text('address', 'Street Address', $reservation->address);
-			$address->setRequired();
-			$multiColumn->add($address);
-			$town = new \PHPFUI\Input\Text('town', 'Town', $reservation->town);
-			$town->setRequired();
-			$multiColumn->add($town);
-			$billing->add($multiColumn);
-
-			$multiColumn = new \PHPFUI\MultiColumn();
-			$state = new \PHPFUI\Input\Text('state', 'State', $reservation->state);
-			$state->setRequired();
-			$multiColumn->add($state);
-			$zip = new \PHPFUI\Input\Zip($this->page, 'zip', 'Zip', $reservation->zip);
-			$zip->setRequired();
-			$multiColumn->add($zip);
-			$multiColumn->add(new \App\UI\Display('Price', '$' . \number_format($reservation->pricePaid, 2)));
-			$billing->add($multiColumn);
-			$billing->add(new \App\UI\TelUSA($this->page, 'phone', 'Phone', $reservation->phone));
-			$email = new \PHPFUI\Input\Email('reservationemail', 'email', $reservation->reservationemail);
-			$billing->add($email);
-			$billing->add(new \PHPFUI\Input\Text('comments', 'Comments to the organizer', $reservation->comments));
-			$form->add($billing);
-
-			$payment = $reservation->payment;
-			$form->add(new \PHPFUI\Input\Hidden('paymentId', (string)$payment->paymentId));
-
-			if ($required && $event->price)
-				{
-				$address->setRequired();
-				$town->setRequired();
-				$state->setRequired();
-				$zip->setRequired();
-				$email->setRequired();
-				}
-
 			$paymentInfo = new \PHPFUI\FieldSet('Payment Information');
-			$mustPay = true;
+			$mustPay = false;
 
-			if ($this->canAddPayment)
+			if ($event->price)
 				{
-				if ($reservation->pricePaid > 0)
+				$billing = new \PHPFUI\FieldSet('Billing Information');
+				$multiColumn = new \PHPFUI\MultiColumn();
+				$firstName = new \PHPFUI\Input\Text('reservationFirstName', 'First Name', $reservation->reservationFirstName);
+				$firstName->setRequired();
+				$multiColumn->add($firstName);
+				$lastName = new \PHPFUI\Input\Text('reservationLastName', 'Last Name', $reservation->reservationLastName);
+				$lastName->setRequired();
+				$multiColumn->add($lastName);
+
+				$billing->add($multiColumn);
+				$multiColumn = new \PHPFUI\MultiColumn();
+				$address = new \PHPFUI\Input\Text('address', 'Street Address', $reservation->address);
+				$address->setRequired();
+				$multiColumn->add($address);
+				$town = new \PHPFUI\Input\Text('town', 'Town', $reservation->town);
+				$town->setRequired();
+				$multiColumn->add($town);
+				$billing->add($multiColumn);
+
+				$multiColumn = new \PHPFUI\MultiColumn();
+				$state = new \PHPFUI\Input\Text('state', 'State', $reservation->state);
+				$state->setRequired();
+				$multiColumn->add($state);
+				$zip = new \PHPFUI\Input\Zip($this->page, 'zip', 'Zip', $reservation->zip);
+				$zip->setRequired();
+				$multiColumn->add($zip);
+				$multiColumn->add(new \App\UI\Display('Price', '$' . \number_format($reservation->pricePaid, 2)));
+				$billing->add($multiColumn);
+				$billing->add(new \App\UI\TelUSA($this->page, 'phone', 'Phone', $reservation->phone));
+				$email = new \PHPFUI\Input\Email('reservationemail', 'email', $reservation->reservationemail);
+				$billing->add($email);
+				$billing->add(new \PHPFUI\Input\Text('comments', 'Comments to the organizer', $reservation->comments));
+				$form->add($billing);
+
+				$payment = $reservation->payment;
+				$form->add(new \PHPFUI\Input\Hidden('paymentId', (string)$payment->paymentId));
+
+				if ($required && $event->price)
 					{
-					if ($reservation->paymentId)
+					$address->setRequired();
+					$town->setRequired();
+					$state->setRequired();
+					$zip->setRequired();
+					$email->setRequired();
+					}
+
+				$mustPay = true;
+
+				if ($this->canAddPayment)
+					{
+					if ($reservation->pricePaid > 0)
 						{
-						$paymentInfo->add($this->getPaymentFields($payment, $reservation->paymentId > 0));
+						if ($reservation->paymentId)
+							{
+							$paymentInfo->add($this->getPaymentFields($payment, $reservation->paymentId > 0));
+							}
+						else
+							{
+							$addPaymentButton = new \PHPFUI\Button('Add Payment');
+							$addPaymentButton->addClass('success');
+							$paymentInfo->add($addPaymentButton);
+
+							$reveal = new \PHPFUI\Reveal($this->page, $addPaymentButton);
+							$submitPayment = new \PHPFUI\Submit('Add Payment', 'action');
+
+							$revealForm = new \PHPFUI\Form($this->page);
+							$revealForm->add(new \App\UI\Display('Total Owed', '$' . \number_format($reservation->pricePaid, 2)));
+							$revealForm->add($this->getPaymentFields($payment, (bool)$reservation->paymentId));
+							$revealForm->add($reveal->getButtonAndCancel($submitPayment));
+							$fieldSet = new \PHPFUI\FieldSet('Add Payment Information');
+							$fieldSet->add($revealForm);
+							$reveal->add($fieldSet);
+							}
 						}
 					else
 						{
-						$addPaymentButton = new \PHPFUI\Button('Add Payment');
-						$addPaymentButton->addClass('success');
-						$paymentInfo->add($addPaymentButton);
-
-						$reveal = new \PHPFUI\Reveal($this->page, $addPaymentButton);
-						$submit = new \PHPFUI\Submit('Add Payment', 'action');
-
-						$revealForm = new \PHPFUI\Form($this->page);
-						$revealForm->add(new \App\UI\Display('Total Owed', '$' . \number_format($reservation->pricePaid, 2)));
-						$revealForm->add($this->getPaymentFields($payment, (bool)$reservation->paymentId));
-						$revealForm->add($reveal->getButtonAndCancel($submit));
-						$fieldSet = new \PHPFUI\FieldSet('Add Payment Information');
-						$fieldSet->add($revealForm);
-						$reveal->add($fieldSet);
+						$mustPay = false;
+						$paymentInfo->add('This event is free, no payment required.');
 						}
 					}
 				else
 					{
 					$mustPay = false;
-					$paymentInfo->add('This event is free, no payment required.');
-					}
-				}
-			else
-				{
-				$mustPay = false;
 
-				if ($reservation->paymentId)
-					{
-					$paymentInfo->add($this->getPaymentFields($payment, $reservation->paymentId > 0));
+					if ($reservation->paymentId)
+						{
+						$paymentInfo->add($this->getPaymentFields($payment, $reservation->paymentId > 0));
+						}
 					}
 				}
 
@@ -348,10 +350,10 @@ class Registration
 				}
 
 			$buttonGroup = new \PHPFUI\ButtonGroup();
+			$buttonGroup->addButton($submit);
 
 			if ($reservation->reservationId && $this->canAddAttendee && $personCount < $event->numberReservations)
 				{
-				$buttonGroup->addButton($submit);
 				$add = new \PHPFUI\Button('Add Attendee');
 				$add->addClass('warning');
 				$form->add(new \PHPFUI\Input\Hidden('reservationId', (string)$reservation->reservationId));

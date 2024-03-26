@@ -10,7 +10,7 @@ class Settings
 		'restStopOption' => 'Rest Stop',
 		'maxRidersOption' => 'Rider Limit',
 		'targetPaceOption' => 'Target Pace',
-		];
+	];
 
 	/** @var array<string> */
 	private array $optionalTypes = ['Hidden', 'Visible', 'Required'];

@@ -351,6 +351,17 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function riders(\App\Record\Ride $ride = new \App\Record\Ride()) : void
+		{
+		if ($ride->loaded() && $this->canPrintSigninSheet($ride))
+			{
+			$waiver = new \App\Report\RideWaiver();
+			$waiver->generateRiders($ride);
+			$waiver->Output("Riders-{$ride->rideDate}-{$ride->rideId}.pdf", 'I');
+			$this->page->done();
+			}
+		}
+
 	public function riderWaiver(\App\Record\Ride $ride = new \App\Record\Ride(), \App\Record\Member $member = new \App\Record\Member()) : void
 		{
 		if ($ride->loaded() && ($this->page->isAuthorized('Download Rider Waiver') || $member->loaded() && $member->memberId == \App\Model\Session::signedInMemberId()))
@@ -433,7 +444,9 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			if ($this->canPrintSigninSheet($ride))
 				{
-				$print = new \PHPFUI\Button('Print Sign In', '/Rides/waiver/' . $ride->rideId);
+				$print = new \PHPFUI\DropDownButton('Print Sign In');
+				$print->addLink('/Rides/riders/' . $ride->rideId, 'Riders Only');
+				$print->addLink('/Rides/waiver/' . $ride->rideId, 'With Waiver');
 				$print->addClass('info');
 				$buttonGroup->addButton($print);
 				}

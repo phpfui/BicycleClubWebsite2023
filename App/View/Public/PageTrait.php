@@ -113,6 +113,7 @@ trait PageTrait
 		$table = new \PHPFUI\Table();
 		$boardMemberTable = new \App\Table\BoardMember();
 		$ridesChair = $boardMemberTable->getBoardMember('Rides Chair');
+
 		if ($ridesChair)
 			{
 			$ridesChair = ' or ' . $ridesChair;

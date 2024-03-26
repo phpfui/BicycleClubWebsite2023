@@ -35,6 +35,30 @@ class RideWaiver extends \Mpdf\Mpdf
 			}
 		}
 
+	public function generateRiders(\App\Record\Ride $ride) : void
+		{
+		$memberTable = new \App\Table\Member();
+		$memberTable->addJoin('rideSignup', 'memberId');
+		$memberTable->addOrderBy('firstName');
+		$memberTable->addOrderBy('lastName');
+		$memberTable->setWhere(new \PHPFUI\ORM\Condition('rideId', $ride->rideId));
+		$this->AddPage();
+		$this->SetMargins(12, 12, 5);
+
+		$status = \App\Table\RideSignup::getRiderStatus();
+
+		$table = new \PHPFUI\Table();
+		$table->setHeaders(['firstName' => 'First Name', 'lastName' => 'Last Name', 'status' => 'Signuped As', 'cellPhone' => 'Rider Cell', 'emergencyContact' => 'Contact', 'emergencyPhone' => 'Contact Phone']);
+
+		foreach ($memberTable->getArrayCursor() as $rider)
+			{
+			$rider['status'] = $status[$rider['status']];
+			$table->addRow($rider);
+			}
+		$this->WriteHTML(new \PHPFUI\Header("Signed Up Riders for {$ride->title} on {$ride->rideDate}", 4));
+		$this->WriteHTML("{$table}");
+		}
+
 	public function generateRideSignupWaiver(\App\Record\Member $member, \App\Record\Ride $ride) : void
 		{
 		$rideSignup = new \App\Record\RideSignup(['rideId' => $ride->rideId, 'memberId' => $member->memberId]);

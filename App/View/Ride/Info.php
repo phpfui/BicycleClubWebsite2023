@@ -84,6 +84,11 @@ class Info
 			$fieldSet->add(new \App\UI\Display('Regrouping Policy', $ride->regrouping));
 			}
 
+		if ($ride->restStop)
+			{
+			$fieldSet->add(new \App\UI\Display('Rest Stop', $ride->restStop));
+			}
+
 		if ($ride->elevation)
 			{
 			$fieldSet->add(new \App\UI\Display('Elevation Gain', $ride->elevation . ' feet'));

@@ -112,7 +112,12 @@ trait PageTrait
 		$container = new \PHPFUI\Container();
 		$table = new \PHPFUI\Table();
 		$boardMemberTable = new \App\Table\BoardMember();
-		$container->add('<p>If you are thinking about volunteering to be a ride leader, contact one of the ride coordinators listed below or ' . $boardMemberTable->getBoardMember('Rides Chair') . ' who can authorize you to use the <a href="/Leaders"><strong>Ride Leader Functions</strong></a>. </p>');
+		$ridesChair = $boardMemberTable->getBoardMember('Rides Chair');
+		if ($ridesChair)
+			{
+			$ridesChair = ' or ' . $ridesChair;
+			}
+		$container->add('<p>If you are thinking about volunteering to be a ride leader, contact one of the ride coordinators listed below' . $ridesChair . ' who can authorize you to use the <a href="/Leaders"><strong>Ride Leader Functions</strong></a>. </p>');
 		$table->setHeaders(['level' => 'Ride Level',
 			'coordinator' => 'Coordinator',
 			'speed' => 'Average Speed',

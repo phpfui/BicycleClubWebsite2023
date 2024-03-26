@@ -27,9 +27,12 @@ class BoardMember extends \PHPFUI\ORM\Table
 			$output = \str_replace('~LAST~', $pos->lastName, $output);
 			$output = \str_replace('~POSITION~', $position, $output);
 			$csrf = \App\Model\Session::csrf();
-			$output = \str_replace('~URL~', "/ContactUs/{$csrf}?id={$pos->memberId}", $output);
-
-			return $output;
+			$publicPage = new \App\Record\PublicPage(['method' => 'ContactUs']);
+			if (! $publicPage->loaded())
+				{
+				return '';
+				}
+			return \str_replace('~URL~', $publicPage->url . "/{$csrf}?id={$pos->memberId}", $output);
 			}
 
 		return $position;

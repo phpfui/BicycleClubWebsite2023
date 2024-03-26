@@ -47,7 +47,7 @@ abstract class RWGPS extends \PHPFUI\ORM\Record
 		'feetPerMile' => ['decimal(5,1)', 'float', 5, false, 0, ],
 		'km' => ['decimal(4,2)', 'float', 4, true, ],
 		'lastSynced' => ['timestamp', 'string', 20, true, ],
-		'lastUpdated' => ['timestamp', 'string', 20, true, ],
+		'lastUpdated' => ['timestamp', 'string', 20, true, null, ],
 		'latitude' => ['decimal(10,6)', 'float', 10, true, ],
 		'longitude' => ['decimal(10,6)', 'float', 10, true, ],
 		'metersPerKm' => ['decimal(5,2)', 'float', 5, true, ],

@@ -7,8 +7,10 @@ class Settings
 	/** @var array<string,string> */
 	private array $optionalFields = [
 		'regroupingOption' => 'Regrouping Policy',
+		'restStopOption' => 'Rest Stop',
+		'maxRidersOption' => 'Rider Limit',
 		'targetPaceOption' => 'Target Pace',
-		'maxRidersOption' => 'Rider Limit'];
+		];
 
 	/** @var array<string> */
 	private array $optionalTypes = ['Hidden', 'Visible', 'Required'];
@@ -74,10 +76,17 @@ class Settings
 			case 'targetPaceOption':
 				$targetPace = new \PHPFUI\Input\Number('targetPace', 'Expected Target Pace', ! $ride->targetPace ? '0' : $ride->targetPace);
 				$targetPace->addAttribute('min', '0')->addAttribute('max', '25')->addAttribute('step', (string)0.1);
-				$targetPace->setRequired();
 				$targetPace->setToolTip('This should be a more specific number within the ride category pace range');
 
 				return $targetPace;
+
+			case 'restStopOption':
+
+				$restStop = new \PHPFUI\Input\Text('restStop', 'Rest Stop', $ride->restStop ?? '');
+				$restStop->addAttribute('maxlength', '70');
+				$restStop->setToolTip('The planned rest stop');
+
+				return $restStop;
 
 			case 'regroupingOption':
 

@@ -26,6 +26,7 @@ namespace App\Record\Definition;
  * @property int $pointsAwarded MySQL type int
  * @property ?string $regrouping MySQL type varchar(50)
  * @property ?string $releasePrinted MySQL type timestamp
+ * @property ?string $restStop MySQL type varchar(70)
  * @property string $rideDate MySQL type date
  * @property int $rideId MySQL type int
  * @property \App\Record\Ride $ride related record
@@ -62,6 +63,7 @@ abstract class Ride extends \PHPFUI\ORM\Record
 		'pointsAwarded' => ['int', 'int', 0, false, 0, ],
 		'regrouping' => ['varchar(50)', 'string', 50, true, '', ],
 		'releasePrinted' => ['timestamp', 'string', 20, true, ],
+		'restStop' => ['varchar(70)', 'string', 70, true, ],
 		'rideDate' => ['date', 'string', 10, false, ],
 		'rideId' => ['int', 'int', 0, false, ],
 		'rideStatus' => ['int', 'int', 0, true, 0, ],

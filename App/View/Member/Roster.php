@@ -160,7 +160,7 @@ class Roster
 
 			if ('categoryId' == $field)
 				{
-				$memberTable->addJoin('memberCategory', 'memberId');
+				$memberTable->addJoin('memberCategory');
 				}
 
 			$where->and(new \PHPFUI\ORM\Condition('member.showNothing', 0));

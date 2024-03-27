@@ -232,6 +232,14 @@ class RideWithGPS
 		$fieldSet->add($multiColumn);
 		$form->add($fieldSet);
 
+		$fieldSet = new \PHPFUI\FieldSet('API Settings');
+		$multiColumn = new \PHPFUI\MultiColumn();
+		$multiColumn->add($settingsSaver->generateField('RideWithGPSEmail', 'Email Address', 'email', required:false));
+		$multiColumn->add($settingsSaver->generateField('RideWithGPSPassword', 'Password', 'password', required:false));
+		$multiColumn->add($settingsSaver->generateField('RideWithGPSAPIkey', 'API Key', required:false));
+		$fieldSet->add($multiColumn);
+		$form->add($fieldSet);
+
 		if ($form->isMyCallback())
 			{
 			$settingsSaver->save($_POST);

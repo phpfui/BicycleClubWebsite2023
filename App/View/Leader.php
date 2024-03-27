@@ -467,7 +467,7 @@ class Leader
 
 		if (\count($parameters['categories'] ?? []))
 			{
-			$memberTable->addJoin('memberCategory', 'memberId');
+			$memberTable->addJoin('memberCategory');
 			$categoryCondition = new \PHPFUI\ORM\Condition();
 
 			foreach ($parameters['categories'] as $category)

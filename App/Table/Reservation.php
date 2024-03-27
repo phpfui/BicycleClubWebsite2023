@@ -36,7 +36,7 @@ class Reservation extends \PHPFUI\ORM\Table
 	public function setReservationsCursor(\App\Record\Event $event) : static
 		{
 		$this->setWhere(new \PHPFUI\ORM\Condition('reservation.eventId', $event->eventId));
-		$this->addJoin('reservationPerson', 'reservationId');
+		$this->addJoin('reservationPerson');
 		$this->addJoin('payment');
 
 		return $this;

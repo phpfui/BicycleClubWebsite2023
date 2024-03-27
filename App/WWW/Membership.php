@@ -357,7 +357,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		if ($this->page->addHeader('Recent Sign Ins'))
 			{
 			$memberTable = new \App\Table\Member();
-			$memberTable->addJoin('membership', 'membershipId');
+			$memberTable->addJoin('membership');
 			$memberTable->addOrderBy('lastLogin', 'DESC');
 			$memberTable->getWhereCondition()->and('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
 			$memberTable->setLimit(50);

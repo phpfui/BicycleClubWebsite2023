@@ -66,7 +66,7 @@ class Member extends \PHPFUI\ORM\Table
 
 			if (\count($categories))
 				{
-				$this->addJoin('memberCategory', 'memberId');
+				$this->addJoin('memberCategory');
 				$whereCondition->and('memberCategory.categoryId', $categories, new \PHPFUI\ORM\Operator\In());
 				}
 			}
@@ -297,8 +297,8 @@ class Member extends \PHPFUI\ORM\Table
 
 	public function getMembersWithPermissionId(int $permissionId) : static
 		{
-		$this->addJoin('userPermission', 'memberId');
-		$this->addJoin('membership', 'membershipId');
+		$this->addJoin('userPermission');
+		$this->addJoin('membership');
 		$condition = new \PHPFUI\ORM\Condition('permissionGroup', $permissionId);
 		$condition->and('expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
 		$this->setWhere($condition);

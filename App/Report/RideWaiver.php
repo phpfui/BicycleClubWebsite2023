@@ -38,7 +38,7 @@ class RideWaiver extends \Mpdf\Mpdf
 	public function generateRiders(\App\Record\Ride $ride) : void
 		{
 		$memberTable = new \App\Table\Member();
-		$memberTable->addJoin('rideSignup', 'memberId');
+		$memberTable->addJoin('rideSignup');
 		$memberTable->addOrderBy('firstName');
 		$memberTable->addOrderBy('lastName');
 		$memberTable->setWhere(new \PHPFUI\ORM\Condition('rideId', $ride->rideId));

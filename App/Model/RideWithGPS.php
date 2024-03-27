@@ -4,7 +4,17 @@ namespace App\Model;
 
 class RideWithGPS extends GPS
 	{
+	private string $apiKey = '';
+
+	private string $authToken = '';
+
+	private string $baseUri = 'https://ridewithgps.com';
+
+	private ?\GuzzleHttp\Client $client = null;
+
 	private readonly string $clubId;
+
+	private \App\Table\Setting $settingTable;
 
 	/** @var array<string,string> */
 	private array $states = [
@@ -64,8 +74,63 @@ class RideWithGPS extends GPS
 
 	public function __construct()
 		{
-		$settingTable = new \App\Table\Setting();
-		$this->clubId = $settingTable->value('RideWithGPSClubId');
+		$this->settingTable = new \App\Table\Setting();
+		$this->clubId = $this->settingTable->value('RideWithGPSClubId');
+		}
+
+	public function getAuthToken() : string
+		{
+		if ($this->authToken)
+			{
+			return $this->authToken;
+			}
+
+		$this->apiKey = $this->settingTable->value('RideWithGPSAPIkey');
+
+		$parameters = ['email' => $this->settingTable->value('RideWithGPSEmail'),
+			'password' => $this->settingTable->value('RideWithGPSPassword'),
+			'apikey' => $this->apiKey,
+		];
+		$url = $this->baseUri . '/users/current.json?' . \http_build_query($parameters);
+		$results = \json_decode(\file_get_contents($url), true);
+
+		return $this->authToken = ($results['user']['auth_token'] ?? '');
+		}
+
+	/**
+	 * @return array<string, array<string,string>> indexed by email address containing id,first_name,last_name,display_name
+	 */
+	public function getClubMembers() : array
+		{
+		$url = "/clubs/{$this->clubId}/table_members.json";
+		$client = $this->getGuzzleClient();
+
+		try
+			{
+			$response = $client->get($url);
+			}
+		catch (\Throwable $e)
+			{
+			\App\Tools\Logger::get()->debug($url);
+
+			return [];
+			}
+
+		$results = \json_decode($response->getBody()->getContents(), true);
+		$members = [];
+
+		foreach ($results as $memberData)
+			{
+			if (1 == $memberData['active'])
+				{
+				$email = $memberData['user']['real_email'];
+				unset($memberData['user']['real_email']);
+				$memberData['user']['id'] = $memberData['id'];
+				$members[$email] = $memberData['user'];
+				}
+			}
+
+		return $members;
 		}
 
 	/**
@@ -82,7 +147,7 @@ class RideWithGPS extends GPS
 
 		$offset = 50;
 		$limit = 50;
-		$url = "https://ridewithgps.com/clubs/{$this->clubId}/routes.json";
+		$url = "{$this->baseUri}/clubs/{$this->clubId}/routes.json";
 		$results = \json_decode(\file_get_contents($url), true);
 		$count = $results['results_count'] ?? 0;
 
@@ -155,20 +220,48 @@ class RideWithGPS extends GPS
 		return $rwgps;
 		}
 
+	/**
+	 * To set a user as inactive:
+	 * POST https://ridewithgps.com/clubs/1/update_member_field.json (form-data content type)
+	 * club_member_id=<member_id>&field=active&value=0
+	 *
+	 * @param array<string, string> $member
+	 */
+	public function removeMember(array $member) : bool
+		{
+		$url = "/clubs/{$this->clubId}/update_member_field.json";
+		$formData = ['club_member_id' => $member['id'], 'field' => 'active', 'value' => 0];
+
+		$client = $this->getGuzzleClient();
+
+		try
+			{
+			$response = $client->request('POST', $url, ['form_params' => $formData, ]);
+			}
+		catch (\Throwable $e)
+			{
+			\App\Tools\Logger::get()->debug($formData, $url);
+
+			return false;
+			}
+
+		return 200 == $response->getStatusCode();
+		}
+
 	public function scrape(\App\Record\RWGPS $rwgps) : ?\App\Record\RWGPS
 		{
 		if (! $rwgps->loaded())
 			{
 			return null;
 			}
-		$url = "https://ridewithgps.com/routes/{$rwgps->RWGPSId}.json";
+		$url = "/routes/{$rwgps->RWGPSId}.json";
 
 		if ($rwgps->query)
 			{
 			$url .= '?' . $rwgps->query;
 			}
 
-		$client = new \GuzzleHttp\Client(['verify' => false, 'http_errors' => false]);
+		$client = $this->getGuzzleClient();
 
 		try
 			{
@@ -270,5 +363,30 @@ class RideWithGPS extends GPS
 			\rewind($stream);
 			$rwgps->csv = \stream_get_contents($stream);
 			}
+		}
+
+	private function getGuzzleClient() : \GuzzleHttp\Client
+		{
+		if (! $this->client)
+			{
+			if (! $this->getAuthToken())
+				{
+				throw new \Exception('Can not get RWGPS Auth Token, check settings');
+				}
+
+			$this->client = new \GuzzleHttp\Client([
+				'verify' => false,
+				'http_errors' => false,
+				'base_uri' => $this->baseUri,
+				'headers' => [
+					'Accept' => 'application/json',
+					'x-rwgps-api-version' => '2',
+					'x-rwgps-api-key' => $this->apiKey,
+					'x-rwgps-auth-token' => $this->authToken,
+				],
+			]);
+			}
+
+		return $this->client;
 		}
 	}

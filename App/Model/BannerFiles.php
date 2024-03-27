@@ -44,7 +44,7 @@ class BannerFiles extends \App\Model\TinifyImage
 		$actual = \number_format($actual, 2);
 		$proportion = \App\Model\BannerFiles::PROPORTION;
 
-		if ($diff > 0.01 || $diff < -0.01)
+		if ($diff > 0.05 || $diff < -0.05)
 			{
 			return "Banner proportions must be {$proportion}:1, not {$actual}:1";
 			}

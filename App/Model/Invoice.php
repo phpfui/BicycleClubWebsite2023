@@ -719,7 +719,7 @@ class Invoice
 
 		if (! empty($parameters['text']))
 			{
-			$invoiceTable->addJoin('invoiceItem', 'invoiceId');
+			$invoiceTable->addJoin('invoiceItem');
 			$invoiceTable->setDistinct();
 			$textCondition = new \PHPFUI\ORM\Condition('invoiceItem.title', '%' . $parameters['text'] . '%', new \PHPFUI\ORM\Operator\Like());
 			$textCondition->or('invoiceItem.description', '%' . $parameters['text'] . '%', new \PHPFUI\ORM\Operator\Like());

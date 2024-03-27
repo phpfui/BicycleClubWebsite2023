@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fa49d5ec46bb93f951ead8a7c8af9022",
+    "content-hash": "f6c9eca2376ad8a5332a614a374c4bbd",
     "packages": [
         {
             "name": "alek13/slack",
@@ -2433,16 +2433,16 @@
         },
         {
             "name": "php-http/discovery",
-            "version": "1.19.2",
+            "version": "1.19.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/discovery.git",
-                "reference": "61e1a1eb69c92741f5896d9e05fb8e9d7e8bb0cb"
+                "reference": "0700efda8d7526335132360167315fdab3aeb599"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/discovery/zipball/61e1a1eb69c92741f5896d9e05fb8e9d7e8bb0cb",
-                "reference": "61e1a1eb69c92741f5896d9e05fb8e9d7e8bb0cb",
+                "url": "https://api.github.com/repos/php-http/discovery/zipball/0700efda8d7526335132360167315fdab3aeb599",
+                "reference": "0700efda8d7526335132360167315fdab3aeb599",
                 "shasum": ""
             },
             "require": {
@@ -2466,7 +2466,8 @@
                 "php-http/httplug": "^1.0 || ^2.0",
                 "php-http/message-factory": "^1.0",
                 "phpspec/phpspec": "^5.1 || ^6.1 || ^7.3",
-                "symfony/phpunit-bridge": "^6.2"
+                "sebastian/comparator": "^3.0.5 || ^4.0.8",
+                "symfony/phpunit-bridge": "^6.4.4 || ^7.0.1"
             },
             "type": "composer-plugin",
             "extra": {
@@ -2505,9 +2506,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-http/discovery/issues",
-                "source": "https://github.com/php-http/discovery/tree/1.19.2"
+                "source": "https://github.com/php-http/discovery/tree/1.19.4"
             },
-            "time": "2023-11-30T16:49:05+00:00"
+            "time": "2024-03-29T13:00:05+00:00"
         },
         {
             "name": "php-http/guzzle7-adapter",
@@ -3110,16 +3111,16 @@
         },
         {
             "name": "phpfui/orm",
-            "version": "V1.6.2",
+            "version": "V1.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ORM.git",
-                "reference": "a7363558a07ca5601fb0fafad1d5883c19efbf0e"
+                "reference": "ca6d7b8681472ac029d35cf5fb074b6ec9317279"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ORM/zipball/a7363558a07ca5601fb0fafad1d5883c19efbf0e",
-                "reference": "a7363558a07ca5601fb0fafad1d5883c19efbf0e",
+                "url": "https://api.github.com/repos/phpfui/ORM/zipball/ca6d7b8681472ac029d35cf5fb074b6ec9317279",
+                "reference": "ca6d7b8681472ac029d35cf5fb074b6ec9317279",
                 "shasum": ""
             },
             "require": {
@@ -3167,9 +3168,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ORM/issues",
-                "source": "https://github.com/phpfui/ORM/tree/V1.6.2"
+                "source": "https://github.com/phpfui/ORM/tree/V1.6.3"
             },
-            "time": "2024-03-05T20:11:00+00:00"
+            "time": "2024-03-29T15:29:50+00:00"
         },
         {
             "name": "phpfui/phpfui",
@@ -5871,16 +5872,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.65",
+            "version": "1.10.66",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "3c657d057a0b7ecae19cb12db446bbc99d8839c6"
+                "reference": "94779c987e4ebd620025d9e5fdd23323903950bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/3c657d057a0b7ecae19cb12db446bbc99d8839c6",
-                "reference": "3c657d057a0b7ecae19cb12db446bbc99d8839c6",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/94779c987e4ebd620025d9e5fdd23323903950bd",
+                "reference": "94779c987e4ebd620025d9e5fdd23323903950bd",
                 "shasum": ""
             },
             "require": {
@@ -5929,7 +5930,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-03-23T10:30:26+00:00"
+            "time": "2024-03-28T16:17:31+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -6256,16 +6257,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.0.8",
+            "version": "11.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "48ea58408879a9aad630022186398364051482fc"
+                "reference": "591bbfe416400385527d5086b346b92c06de404b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/48ea58408879a9aad630022186398364051482fc",
-                "reference": "48ea58408879a9aad630022186398364051482fc",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/591bbfe416400385527d5086b346b92c06de404b",
+                "reference": "591bbfe416400385527d5086b346b92c06de404b",
                 "shasum": ""
             },
             "require": {
@@ -6336,7 +6337,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.0.8"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.0.9"
             },
             "funding": [
                 {
@@ -6352,7 +6353,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-03-22T04:21:01+00:00"
+            "time": "2024-03-28T10:09:42+00:00"
         },
         {
             "name": "rexxars/html-validator",
@@ -6407,12 +6408,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "a2c33d8cc3719997b91b628eec3570d725cebf7e"
+                "reference": "f3cae247c87c28eca23eef2285698ec394367f56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/a2c33d8cc3719997b91b628eec3570d725cebf7e",
-                "reference": "a2c33d8cc3719997b91b628eec3570d725cebf7e",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/f3cae247c87c28eca23eef2285698ec394367f56",
+                "reference": "f3cae247c87c28eca23eef2285698ec394367f56",
                 "shasum": ""
             },
             "conflict": {
@@ -6491,7 +6492,7 @@
                 "cockpit-hq/cockpit": "<=2.6.3|==2.7",
                 "codeception/codeception": "<3.1.3|>=4,<4.1.22",
                 "codeigniter/framework": "<3.1.9",
-                "codeigniter4/framework": "<=4.4.2",
+                "codeigniter4/framework": "<4.4.7",
                 "codeigniter4/shield": "<1.0.0.0-beta8",
                 "codiad/codiad": "<=2.8.4",
                 "composer/composer": "<1.10.27|>=2,<2.2.23|>=2.3,<2.7",
@@ -7142,7 +7143,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-03-26T22:04:37+00:00"
+            "time": "2024-03-29T17:05:01+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -9116,5 +9117,5 @@
         "php": ">=8.2 <8.4"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }

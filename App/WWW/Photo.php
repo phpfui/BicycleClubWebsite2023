@@ -173,7 +173,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$this->page->addPageContent($this->getMember($member));
 				}
-			$this->table->addJoin('photoTag', 'photoId');
+			$this->table->addJoin('photoTag');
 			$this->table->setWhere(new \PHPFUI\ORM\Condition('photoTag.memberId', $member->memberId));
 			$this->page->addPageContent($this->view->listPhotos($this->table));
 			}

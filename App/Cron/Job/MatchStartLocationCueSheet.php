@@ -15,7 +15,7 @@ class MatchStartLocationCueSheet extends \App\Cron\BaseJob
 		try
 			{
 			$rideTable = new \App\Table\Ride();
-			$rideTable->addJoin('cueSheet', 'cueSheetId');
+			$rideTable->addJoin('cueSheet');
 			$where = new \PHPFUI\ORM\Condition('ride.cueSheetId', 0, new \PHPFUI\ORM\Operator\GreaterThan());
 			$where->and('ride.startLocationId', 0, new \PHPFUI\ORM\Operator\GreaterThan());
 			$noCuesheetCondition = new \PHPFUI\ORM\Condition('cueSheet.startLocationId', operator:new \PHPFUI\ORM\Operator\IsNull());

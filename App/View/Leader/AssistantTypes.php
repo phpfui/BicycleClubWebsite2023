@@ -108,8 +108,8 @@ class AssistantTypes implements \Stringable
 		$fieldSet = new \PHPFUI\FieldSet("Assistant Leader Statistics for {$member->fullName()} in {$year}");
 
 		$assistantLeaderTable = new \App\Table\AssistantLeader();
-		$assistantLeaderTable->addJoin('assistantLeaderType', 'assistantLeaderTypeId');
-		$assistantLeaderTable->addJoin('ride', 'rideId');
+		$assistantLeaderTable->addJoin('assistantLeaderType');
+		$assistantLeaderTable->addJoin('ride');
 		$condition = new \PHPFUI\ORM\Condition('assistantLeader.memberId', $member->memberId);
 		$condition->and('ride.rideDate', "{$year}-01-01", new \PHPFUI\ORM\Operator\GreaterThanEqual());
 		$condition->and('ride.rideDate', "{$year}-12-31", new \PHPFUI\ORM\Operator\LessThanEqual());

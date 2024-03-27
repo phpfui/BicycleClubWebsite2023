@@ -69,7 +69,7 @@ class Roster
 			}
 
 		$membershipTable = new \App\Table\Membership();
-		$membershipTable->addJoin('member', 'membershipId');
+		$membershipTable->addJoin('member');
 		$membershipTable->addOrderBy('lastName')->addOrderBy('firstName');
 		$condition = new \PHPFUI\ORM\Condition();
 
@@ -90,7 +90,7 @@ class Roster
 				{
 				$name = "{$member['firstName']} {$member['lastName']}";
 				$rideTable = new \App\Table\Ride();
-				$rideTable->addJoin('rideSignup', 'rideId');
+				$rideTable->addJoin('rideSignup');
 				$condition = new \PHPFUI\ORM\Condition('rideDate', $parameters['startDate'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
 				$condition->and('rideDate', $parameters['endDate'], new \PHPFUI\ORM\Operator\LessThanEqual());
 				$condition->and('rideSignup.memberId', $member['memberId']);

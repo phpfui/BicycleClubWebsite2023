@@ -25,7 +25,7 @@ class Photo extends \PHPFUI\ORM\Table
 				{
 				if ('photo' != $name)
 					{
-					$this->addJoin($name, 'photoId');
+					$this->addJoin($name);
 					}
 				$condition->and($name, '%' . $parameters[$name] . '%', new \PHPFUI\ORM\Operator\Like());
 				}

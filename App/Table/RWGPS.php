@@ -46,7 +46,7 @@ class RWGPS extends \PHPFUI\ORM\Table
 			$endDate = \App\Tools\Date::toString(\App\Tools\Date::fromString($startDate) + 30);
 			}
 
-		$this->addJoin('ride', 'RWGPSId');
+		$this->addJoin('ride');
 		$this->setOrderBy('rideDate');
 		$condition = new \PHPFUI\ORM\Condition('rideDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
 		$condition->and('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());

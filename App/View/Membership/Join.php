@@ -378,11 +378,15 @@ class Join
 		{
 		$membership = $member->membership;
 
-		if ($membership->affiliation && \str_contains($membership->affiliation, $this->page->value('FreeMembershipQR')))
+		$freeText = $this->page->value('FreeMembershipQR');
+
+		if ($membership->affiliation && $freeText && \str_contains($membership->affiliation, $freeText))
 			{
 			$membership->pending = 0;
 			$membership->lastRenewed = null;
 			$membership->joined = \App\Tools\Date::todayString();
+			$year = (int)\date('Y');
+			$membership->expires = "{$year}-12-31";
 			$membership->allowedMembers = 1;
 			$membership->update();
 

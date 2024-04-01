@@ -147,7 +147,7 @@ class RideWithGPS extends GPS
 
 		$offset = 50;
 		$limit = 50;
-		$url = "{$this->baseUri}/clubs/{$this->clubId}/routes.json";
+		$url = "https://ridewithgps.com/clubs/{$this->clubId}/routes.json";
 		$results = \json_decode(\file_get_contents($url), true);
 		$count = $results['results_count'] ?? 0;
 
@@ -254,14 +254,14 @@ class RideWithGPS extends GPS
 			{
 			return null;
 			}
-		$url = "{$this->baseUri}/routes/{$rwgps->RWGPSId}.json";
+		$url = "https://ridewithgps.com/routes/{$rwgps->RWGPSId}.json";
 
 		if ($rwgps->query)
 			{
 			$url .= '?' . $rwgps->query;
 			}
 
-		$client = $this->getGuzzleClient();
+		$client = new \GuzzleHttp\Client(['verify' => false, 'http_errors' => false]);
 
 		try
 			{

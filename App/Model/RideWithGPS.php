@@ -102,7 +102,7 @@ class RideWithGPS extends GPS
 	 */
 	public function getClubMembers() : array
 		{
-		$url = "/clubs/{$this->clubId}/table_members.json";
+		$url = "{$this->baseUri}/clubs/{$this->clubId}/table_members.json";
 		$client = $this->getGuzzleClient();
 
 		try
@@ -229,7 +229,7 @@ class RideWithGPS extends GPS
 	 */
 	public function removeMember(array $member) : bool
 		{
-		$url = "/clubs/{$this->clubId}/update_member_field.json";
+		$url = "{$this->baseUri}/clubs/{$this->clubId}/update_member_field.json";
 		$formData = ['club_member_id' => $member['id'], 'field' => 'active', 'value' => 0];
 
 		$client = $this->getGuzzleClient();
@@ -254,7 +254,7 @@ class RideWithGPS extends GPS
 			{
 			return null;
 			}
-		$url = "/routes/{$rwgps->RWGPSId}.json";
+		$url = "{$this->baseUri}/routes/{$rwgps->RWGPSId}.json";
 
 		if ($rwgps->query)
 			{
@@ -377,7 +377,6 @@ class RideWithGPS extends GPS
 			$this->client = new \GuzzleHttp\Client([
 				'verify' => false,
 				'http_errors' => false,
-				'base_uri' => $this->baseUri,
 				'headers' => [
 					'Accept' => 'application/json',
 					'x-rwgps-api-version' => '2',

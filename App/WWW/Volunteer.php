@@ -323,7 +323,7 @@ class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 			if (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
 				{
 				$report = new \App\Report\Volunteer($_POST);
-				$report->generate($jobEvent->jobEventId);
+				$report->generate($jobEvent);
 				$this->page->done();
 				}
 			else

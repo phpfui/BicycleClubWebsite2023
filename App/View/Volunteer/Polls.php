@@ -56,7 +56,7 @@ class Polls implements \Stringable
 			$form->add(new \PHPFUI\SubHeader($this->jobEvent->name));
 			$form->add(new \App\View\Volunteer\Menu($this->jobEvent, 'Polls'));
 			$volunteerPollTable = new \App\Table\VolunteerPoll();
-			$polls = $volunteerPollTable->getPolls($this->jobEvent->jobEventId);
+			$polls = $volunteerPollTable->getPolls($this->jobEvent);
 			$form->saveOnClick($add);
 			$delete = new \PHPFUI\AJAX('deletePoll', 'Permanently delete this poll?');
 			$delete->addFunction('success', '$("#volunteerPollId-"+data.response).css("background-color","red").hide("fast").remove()');

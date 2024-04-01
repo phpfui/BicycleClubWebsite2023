@@ -14,7 +14,7 @@ class Customer
 
 				if (isset($post['stateText']) && empty($post['state']))
 					{
-					$post['state'] = $post['stateText'];
+					$post['state'] = \App\UI\State::getAbbrevation($post['stateText']);
 					}
 				$this->customerModel->save($post);
 				$page->redirect();

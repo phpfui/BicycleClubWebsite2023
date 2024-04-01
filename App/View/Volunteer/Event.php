@@ -93,7 +93,7 @@ class Event
 		{
 		if (\App\Model\Session::checkCSRF() && isset($_POST['copy'], $_POST['action']) && 'Copy' == $_POST['action'])
 			{
-			$this->jobEventTable->copy((int)$_POST['copy'], $_POST['name'], $_POST['date']);
+			$this->jobEventTable->copy(new \App\Record\JobEvent((int)$_POST['copy']), $_POST['name'], $_POST['date']);
 			$this->page->redirect();
 			}
 		elseif (\App\Model\Session::checkCSRF() && isset($_POST['action']))

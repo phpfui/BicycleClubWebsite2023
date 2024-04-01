@@ -57,7 +57,7 @@ class Jobs
 			$form->add(new \App\View\Volunteer\Menu($jobEvent, 'Jobs'));
 
 			$jobTable = new \App\Table\Job();
-			$jobs = $jobTable->getJobs($jobEvent->jobEventId);
+			$jobs = $jobTable->getJobs($jobEvent);
 			$form->saveOnClick($add);
 			$delete = new \PHPFUI\AJAX('deleteJob', 'Permanently delete this job and all associated shifts?');
 			$delete->addFunction('success', '$("#jobId-"+data.response).css("background-color","red").hide("fast").remove()');

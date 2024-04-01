@@ -135,7 +135,7 @@ class Signup implements \Stringable
 				}
 			$form->add($fieldSet);
 			$volunteerPollTable = new \App\Table\VolunteerPoll();
-			$polls = $volunteerPollTable->getPolls($this->job->jobEventId);
+			$polls = $volunteerPollTable->getPolls($this->job->jobEvent);
 
 			if (\count($polls))
 				{

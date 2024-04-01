@@ -49,7 +49,7 @@ class Reports
 		$form->add($fieldSet);
 
 		$pollTable = new \App\Table\VolunteerPoll();
-		$polls = $pollTable->getPolls($jobEvent->jobEventId);
+		$polls = $pollTable->getPolls($jobEvent);
 
 		if (\count($polls))
 			{

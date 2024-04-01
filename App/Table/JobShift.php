@@ -6,16 +6,6 @@ class JobShift extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\JobShift::class;
 
-	public function deleteAll(int $jobShiftId) : bool
-		{
-		$sql = 'delete from volunteerJobShift where jobShiftId = ?';
-		\PHPFUI\ORM::execute($sql, [$jobShiftId]);
-		$sql = 'delete from jobShift where jobShiftId = ?';
-		\PHPFUI\ORM::execute($sql, [$jobShiftId]);
-
-		return true;
-		}
-
 	public function getAvailableJobShifts(int $jobId) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'SELECT js.* FROM jobShift js WHERE js.jobId=? and COALESCE((SELECT count(*) FROM volunteerJobShift v where v.jobId=? and v.jobShiftId=js.jobShiftId group by v.jobShiftId),0) < js.needed group by js.jobShiftId order by js.startTime';

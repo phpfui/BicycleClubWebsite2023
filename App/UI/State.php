@@ -7,7 +7,8 @@ class State extends \PHPFUI\Input\SelectAutoComplete
 	/**
 	 * @var array<string,string>
 	 */
-	private static array $states = ['AL' => 'Alabama',
+	private static array $states = [
+		'AL' => 'Alabama',
 		'AK' => 'Alaska',
 		'AZ' => 'Arizona',
 		'AR' => 'Arkansas',
@@ -57,7 +58,8 @@ class State extends \PHPFUI\Input\SelectAutoComplete
 		'WA' => 'Washington',
 		'WV' => 'West Virginia',
 		'WI' => 'Wisconsin',
-		'WY' => 'Wyoming', ];
+		'WY' => 'Wyoming',
+	];
 
 	public function __construct(\PHPFUI\Page $page, string $name, string $title, string $value = '')
 		{
@@ -69,5 +71,25 @@ class State extends \PHPFUI\Input\SelectAutoComplete
 			{
 			$this->addOption($abbrev . ' ' . $state, $abbrev, $value == $abbrev);
 			}
+		}
+
+	public static function getAbbrevation(string $state) : string
+		{
+		if (\strlen($state) <= 2)
+			{
+			return \strtoupper($state);
+			}
+
+		$state = \ucwords($state);
+
+		foreach (self::$states as $abbrev => $name)
+			{
+			if ($name == $state)
+				{
+				return $abbrev;
+				}
+			}
+
+		return $state;
 		}
 	}

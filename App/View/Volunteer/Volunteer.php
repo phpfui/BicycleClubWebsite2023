@@ -35,7 +35,7 @@ class Volunteer
 		if (! $jobEvent->empty())
 			{
 			$jobTable = new \App\Table\Job();
-			$jobs = $jobTable->getJobs($jobEvent->jobEventId);
+			$jobs = $jobTable->getJobs($jobEvent);
 			$table = new \PHPFUI\Table();
 			$table->addHeader('date', 'Date');
 			$table->addHeader('title', 'Job');

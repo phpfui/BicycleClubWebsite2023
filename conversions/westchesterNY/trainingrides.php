@@ -68,7 +68,7 @@ foreach ($routeArray as $routeKey => $route)
 			}
 		$now = \time();
 		$jd -= $offset * 900;
-		$time = \gmdate('g:ia', $jd);
+		$time = \gmdate('G:s:00', $jd);
 		$sunsetString = \gmdate('g:ia', $sunset);
 		$daylight = \App\Tools\TimeHelper::fromString($sunsetString) - \App\Tools\TimeHelper::fromString($time);
 		$daylightString = (int)($daylight / 60) . ':' . \sprintf('%02d', (int)($daylight % 60));

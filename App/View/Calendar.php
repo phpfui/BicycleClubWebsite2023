@@ -35,6 +35,11 @@ class Calendar
 			$_POST['startTime'] = null;
 			}
 
+		if (isset($_POST['stateText']) && empty($_POST['state']))
+			{
+			$_POST['state'] = \App\UI\State::getAbbrevation($_POST['stateText']);
+			}
+
 		if ($form->save())
 			{
 			if ($publicEditor)
@@ -67,7 +72,7 @@ class Calendar
 		$date->setMinDate(\App\Tools\Date::todayString());
 		$date->setRequired();
 		$date->setToolTip('This is the start date of the event. It is the first day of a multiday event. Your listing will be displayed on this date, but not after.');
-		$calendar->eventDays = \max(1, $calendar->eventDays);
+		$calendar->eventDays = \max(1, (int)$calendar->eventDays);
 		$days = new \PHPFUI\Input\Number('eventDays', 'Number Of Days', $calendar->eventDays);
 		$days->addAttribute('max', (string)99)->addAttribute('min', (string)0);
 		$days->setRequired();
@@ -277,7 +282,8 @@ class Calendar
 			if (isset($_POST['submit']) && 'Add' == $_POST['submit'])
 				{
 				$calendar = new \App\Record\Calendar();
-				$calendar->setFrom($_POST);
+				$post = $_POST;
+				$calendar->setFrom($post);
 				$id = $calendar->insert();
 				$url = $this->page->getBaseURL();
 				$pos = \strrpos($url, '/');

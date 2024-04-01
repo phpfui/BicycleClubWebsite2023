@@ -708,7 +708,7 @@ class Member
 
 			if (isset($post['stateText']) && empty($post['state']))
 				{
-				$post['state'] = $post['stateText'];
+				$post['state'] = \App\UI\State::getAbbrevation($post['stateText']);
 				}
 
 			if (! $this->page->isAuthorized('Edit Membership Dates'))
@@ -1117,12 +1117,14 @@ class Member
 		{
 		if (\App\Model\Session::checkCSRF())
 			{
-			if (isset($_POST['action']))
+			$post = $_POST;
+
+			if (isset($post['action']))
 				{
-				switch ($_POST['action'])
+				switch ($post['action'])
 					{
 					case 'deleteImage':
-						$memberId = (int)($_POST['memberId'] ?? 0);
+						$memberId = (int)($post['memberId'] ?? 0);
 
 						if ($memberId)
 							{
@@ -1134,31 +1136,31 @@ class Member
 							$member->update();
 							$this->profileModel->delete((string)$memberId);
 							}
-						$this->page->setResponse($_POST['deleteId']);
+						$this->page->setResponse($post['deleteId']);
 
 						break;
 
 					case 'deleteEmail':
 						$key = 'additionalEmailId';
-						$additionalEmail = new \App\Record\AdditionalEmail($_POST[$key]);
+						$additionalEmail = new \App\Record\AdditionalEmail($post[$key]);
 						$additionalEmail->delete();
-						$this->page->setResponse($_POST[$key]);
+						$this->page->setResponse($post[$key]);
 
 						break;
 
 					case 'Add Email':
-						$_POST['verified'] = 0;
-						$email = \App\Model\Member::cleanEmail($_POST['email'] ?? '');
+						$post['verified'] = 0;
+						$email = \App\Model\Member::cleanEmail($post['email'] ?? '');
 
-						if (! empty($_POST['memberId']) && \filter_var($email, FILTER_VALIDATE_EMAIL))
+						if (! empty($post['memberId']) && \filter_var($email, FILTER_VALIDATE_EMAIL))
 							{
 							$member = new \App\Record\Member(['email' => $email]);
 
 							if ($member->empty())
 								{
-								$_POST['email'] = $email;
+								$post['email'] = $email;
 								$additionalEmail = new \App\Record\AdditionalEmail();
-								$additionalEmail->setFrom($_POST);
+								$additionalEmail->setFrom($post);
 								$additionalEmail->insert();
 								}
 							}
@@ -1167,7 +1169,7 @@ class Member
 						break;
 
 					case 'deleteMember':
-						$memberId = (int)$_POST['memberId'];
+						$memberId = (int)$post['memberId'];
 
 						if ($memberId > 0)
 							{
@@ -1193,20 +1195,25 @@ class Member
 						break;
 
 					case $this->addMemberButtonText:
-						$this->memberModel->addMemberToMembership($_POST);
+						$this->memberModel->addMemberToMembership($post);
 						$this->page->redirect();
 
 						break;
 					}
 				}
-			elseif (isset($_POST['submit-M0']))
+			elseif (isset($post['submit-M0']))
 				{
-				unset($_POST['expires']);
-				$_POST['pending'] = 0;
-				$_POST['joined'] = \date('Y-m-d');
-				unset($_POST['lastRenewed']);
+				unset($post['expires']);
+				$post['pending'] = 0;
+				$post['joined'] = \date('Y-m-d');
+				unset($post['lastRenewed']);
 				$membership = new \App\Record\Membership();
-				$membership->setFrom($_POST);
+
+				if (isset($post['stateText']) && empty($post['state']))
+					{
+					$post['state'] = \App\UI\State::getAbbrevation($post['stateText']);
+					}
+				$membership->setFrom($post);
 				$id = $membership->insert();
 				$this->page->redirect("/Membership/editMembership/{$id}");
 				}
@@ -1267,25 +1274,26 @@ class Member
 
 		if ($form->isMyCallback())
 			{
-			$_POST['memberId'] = $memberId;
-			unset($_POST['membershipId'], $_POST['lastLogin'], $_POST['password'], $_POST['pending'], $_POST['pendingLeader'], $_POST['acceptedWaiver']);
+			$post = $_POST;
+			$post['memberId'] = $memberId;
+			unset($post['membershipId'], $post['lastLogin'], $post['password'], $post['pending'], $post['pendingLeader'], $post['acceptedWaiver']);
 
 			if (! $this->page->isAuthorized('Edit Volunteer Points'))
 				{
-				unset($_POST['volunteerPoints']);
+				unset($post['volunteerPoints']);
 				}
 
 			if (! $this->page->isAuthorized('Edit Member Deceased'))
 				{
-				unset($_POST['deceased']);
+				unset($post['deceased']);
 				}
 
 			if (! $this->page->isAuthorized('Member Admin Tab'))
 				{
-				unset($_POST['expires'], $_POST['subscriptionId'], $_POST['allowedMembers'], $_POST['joined'], $_POST['lastRenewed'], $_POST['renews']);
+				unset($post['expires'], $post['subscriptionId'], $post['allowedMembers'], $post['joined'], $post['lastRenewed'], $post['renews']);
 				}
 
-			$this->memberModel->saveFromPost($_POST);
+			$this->memberModel->saveFromPost($post);
 			$this->page->setResponse('Saved');
 			}
 		else

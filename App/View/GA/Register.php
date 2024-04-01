@@ -25,7 +25,7 @@ class Register implements \Stringable
 
 				if (isset($rider['stateText']) && empty($rider['state']))
 					{
-					$rider['state'] = $rider['stateText'];
+					$rider['state'] = \App\UI\State::getAbbrevation($rider['stateText']);
 					}
 
 				$id = $this->cartModel->addGaRider($rider);

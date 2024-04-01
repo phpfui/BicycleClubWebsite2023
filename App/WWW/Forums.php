@@ -54,12 +54,11 @@ class Forums extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function edit(int $forumId = 0) : void
+	public function edit(\App\Record\Forum $forum = new \App\Record\Forum()) : void
 		{
-		$header = ($forumId ? 'Edit' : 'Add') . ' Forum';
-		$forum = new \App\Record\Forum($forumId);
+		$header = ($forum->forumId ? 'Edit' : 'Add') . ' Forum';
 
-		if (! $forumId || $forum->loaded())
+		if (! $forum->forumId || $forum->loaded())
 			{
 			$moderator = $this->page->isAuthorized($forum->name . ' Edit');
 

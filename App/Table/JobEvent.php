@@ -6,13 +6,11 @@ class JobEvent extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\JobEvent::class;
 
-	public function copy(int $fromId, string $title, string $toDate) : void
+	public function copy(\App\Record\JobEvent $fromJobEvent, string $title, string $toDate) : void
 		{
-		$fromJobEvent = new \App\Record\JobEvent($fromId);
 		$dateDiff = \App\Tools\Date::diff($fromJobEvent->date, $toDate);
 
-		$newJobEvent = new \App\Record\JobEvent();
-		$newJobEvent->setFrom($fromJobEvent->toArray());
+		$newJobEvent = clone $fromJobEvent;
 		$newJobEvent->cutoffDate = \App\Tools\Date::increment($fromJobEvent->cutoffDate, $dateDiff);
 		$newJobEvent->name = $title;
 		$newJobEvent->date = $toDate;
@@ -22,7 +20,7 @@ class JobEvent extends \PHPFUI\ORM\Table
 
 		$jobShiftTable = new \App\Table\JobShift();
 		$jobTable = new \App\Table\Job();
-		$jobs = $jobTable->getJobs($fromId);
+		$jobs = $jobTable->getJobs($fromJobEvent);
 
 		foreach ($jobs as $jobObject)
 			{
@@ -43,7 +41,7 @@ class JobEvent extends \PHPFUI\ORM\Table
 			}
 		$volunteerPollTable = new \App\Table\VolunteerPoll();
 		$volunteerPollAnswerTable = new \App\Table\VolunteerPollAnswer();
-		$polls = $volunteerPollTable->getPolls($fromId);
+		$polls = $volunteerPollTable->getPolls($fromJobEvent);
 
 		foreach ($polls as $pollObject)
 			{
@@ -60,30 +58,6 @@ class JobEvent extends \PHPFUI\ORM\Table
 				$newVolunteerPollAnswer->insert();
 				}
 			}
-		}
-
-	public function deleteAll(int $id) : bool
-		{
-		if (! $id)
-			{
-			throw new \Exception('Required id not passed into ' . __METHOD__);
-			}
-		$sql = 'delete from volunteerPollResponse where volunteerPollId in (select volunteerPollId from volunteerPoll where jobEventId=?)';
-		\PHPFUI\ORM::execute($sql, [$id]);
-		$sql = 'delete from volunteerPollAnswer where volunteerPollId in (select volunteerPollId from volunteerPoll where jobEventId=?)';
-		\PHPFUI\ORM::execute($sql, [$id]);
-		$sql = 'delete from volunteerPoll where jobEventId=?';
-		\PHPFUI\ORM::execute($sql, [$id]);
-		$sql = 'delete from volunteerJobShift where jobId in (select jobId from job where jobEventId=?)';
-		\PHPFUI\ORM::execute($sql, [$id]);
-		$sql = 'delete from jobShift where jobId in (select jobId from job where jobEventId=?)';
-		\PHPFUI\ORM::execute($sql, [$id]);
-		$sql = 'delete from job where jobEventId=?';
-		\PHPFUI\ORM::execute($sql, [$id]);
-		$sql = 'delete from jobEvent where jobEventId=?';
-		\PHPFUI\ORM::execute($sql, [$id]);
-
-		return true;
 		}
 
 	public function getJobEvents(string $date = '1000-01-01') : \PHPFUI\ORM\DataObjectCursor

@@ -34,10 +34,10 @@ class Volunteer extends \PDF_MC_Table
 		$this->Output($this->reportName, 'I');
 		}
 
-	public function generate(int $jobEventId) : void
+	public function generate(\App\Record\JobEvent $jobEvent) : void
 		{
 		$this->pollReports();
-		$this->volunteerReports($jobEventId);
+		$this->volunteerReports($jobEvent);
 		}
 
 	public function generateVolunteerHistory() : void
@@ -186,7 +186,7 @@ class Volunteer extends \PDF_MC_Table
 		$this->reportName = "JobReport-{$now}.pdf";
 		}
 
-	public function volunteerReports(int $jobEventId) : void
+	public function volunteerReports(\App\Record\JobEvent $jobEvent) : void
 		{
 		$header = $newPage = false;
 		$jobTable = new \App\Table\Job();
@@ -198,7 +198,7 @@ class Volunteer extends \PDF_MC_Table
 		$multiple = (int)($this->parameters['multiple']);
 		$this->SetHeader([]);
 
-		$jobs = $jobTable->getJobs($jobEventId);
+		$jobs = $jobTable->getJobs($jobEvent);
 
 		if (\count($jobs) && ($details || $needed || $current || $multiple))
 			{

@@ -2451,7 +2451,7 @@ CREATE TABLE `setting` (
 LOCK TABLES `setting` WRITE;
 /*!40000 ALTER TABLE `setting` DISABLE KEYS */;
 SET autocommit=0;
-INSERT INTO `setting` VALUES ('calendarName',''),('clubLocation',''),('homePageDaysBack','45'),('maxRidersOption','Visible'),('regroupingOption','Required'),('targetPaceOption','Required');
+INSERT INTO `setting` VALUES ('calendarName',''),('clubLocation',''),('RideEditedWarningDays','14'),('cueSheetFieldName','Cue Sheet'),('homePageDaysBack','45'),('maxRidersOption','Visible'),('regroupingOption','Required'),('targetPaceOption','Required');
 /*!40000 ALTER TABLE `setting` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;

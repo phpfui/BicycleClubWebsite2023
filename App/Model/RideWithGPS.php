@@ -87,6 +87,11 @@ class RideWithGPS extends GPS
 
 		$this->apiKey = $this->settingTable->value('RideWithGPSAPIkey');
 
+		if (! $this->apiKey)
+			{
+			return '';
+			}
+
 		$parameters = ['email' => $this->settingTable->value('RideWithGPSEmail'),
 			'password' => $this->settingTable->value('RideWithGPSPassword'),
 			'apikey' => $this->apiKey,

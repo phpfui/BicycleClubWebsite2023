@@ -20,7 +20,7 @@ class Display extends \PHPFUI\GridX
 	 * @param string $label shown to user
 	 * @param string | int $text or value of the field
 	 */
-	public function __construct(private string $label, string | float | int $text)
+	public function __construct(private string $label, string | float | int | null $text)
 		{
 		$this->text = (string)$text;
 		parent::__construct();

@@ -92,8 +92,7 @@ class Leader
 		$value = (int)$settingTable->value($field);
 		$warningDays = new \PHPFUI\Input\Number($field, 'Ride Edit Warning Days', $value);
 		$warningDays->addAttribute('step', (string)1)->addAttribute('min', (string)0);
-		$warningDays->setToolTip('The number of days in advance of the ride that leaders will receive updates that the ride has been edited.
-														Zero is off, 1 would be the ride is edited the day before.');
+		$warningDays->setToolTip('The number of days in advance of the ride that riders will receive updates that the ride has been edited. Zero is off, 1 would be the ride is edited the day before.');
 		$multiColumn->add($warningDays);
 		$form->add($multiColumn);
 

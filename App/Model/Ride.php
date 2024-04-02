@@ -421,7 +421,7 @@ class Ride
 	public function emailRideApproved(\App\Record\Ride $ride) : void
 		{
 		$leader = $ride->member;
-		$title = $this->clubAbbrev . ' You ride was approved';
+		$title = $this->clubAbbrev . ' Your ride was approved';
 
 		$view = new \App\View\Ride\Info(new \PHPFUI\Page());
 		$message = $view->getRideInfoEmail($ride);

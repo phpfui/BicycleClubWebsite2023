@@ -348,9 +348,10 @@ class Ride extends \PHPFUI\ORM\Table
 			{
 			$end = \date('Y-m-d H:i:s', \strtotime($start) + 3600);
 			}
-		$sql = 'select * from ride where dateAdded>=? and dateAdded<=? and pending = ?';
+		$rideDate = \date('Y-m-d', \strtotime($start) + 14 * 24 * 3600);
+		$sql = 'select * from ride where dateAdded>=? and dateAdded<=? and pending = ? and rideDate <= ?';
 
-		$input = [$start, $end, $pending];
+		$input = [$start, $end, $pending, $rideDate];
 
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, $input);
 		}

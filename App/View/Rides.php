@@ -315,7 +315,7 @@ class Rides
 		if ($isLeader)
 			{
 			$leaderColumn = new \PHPFUI\Cell(1);
-			$leaderColumn->add('<strong>Leader</strong>');
+			$leaderColumn->add('<strong>Ldr</strong>');
 			$row->add($leaderColumn);
 			}
 
@@ -470,10 +470,10 @@ class Rides
 				}
 			$row = new \PHPFUI\GridX();
 			$row->addClass('text-center');
-			$time = new \PHPFUI\Cell(2);
+			$time = new \PHPFUI\Cell(1);
 			$time->add(\App\Tools\TimeHelper::toSmallTime($ride->startTime ?? ''));
 			$row->add($time);
-			$cat = new \PHPFUI\Cell(1);
+			$cat = new \PHPFUI\Cell(2);
 			$categoryLetter = $this->paceTable->getPace($ride->paceId ?? 0);
 
 			if ($targetPaceColumn && $ride->targetPace > 0.0)

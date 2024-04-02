@@ -233,6 +233,12 @@ class RideWithGPS
 		$form->add($fieldSet);
 
 		$fieldSet = new \PHPFUI\FieldSet('API Settings');
+		$callout = new \PHPFUI\Callout('info');
+		$link = new \PHPFUI\Link('https://ridewithgps.com/api', 'More information to set up the API is here.');
+		$link->addAttribute('_target', 'blank');
+		$callout->add('If you enter RWGPS API info, the system will remove club members from the club RWGPS account who do not renew their membership. ');
+		$callout->add($link);
+		$fieldSet->add($callout);
 		$multiColumn = new \PHPFUI\MultiColumn();
 		$multiColumn->add($settingsSaver->generateField('RideWithGPSEmail', 'Email Address', 'email', required:false));
 		$multiColumn->add($settingsSaver->generateField('RideWithGPSPassword', 'Password', 'password', required:false));

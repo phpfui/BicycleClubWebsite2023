@@ -82,7 +82,7 @@ class Cron
 			{
 			if (! $this->controller->timedOut())
 				{
-				$this->controller->log_low('Running: ' . $class);
+				$this->controller->log_minor('Running: ' . $class);
 				$cronObject = new $class($this->controller);
 
 				try

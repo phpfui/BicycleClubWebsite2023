@@ -75,7 +75,7 @@ class Poll
 
 			if ($secretary->empty())
 				{
-				$memberPicker = new \App\Model\MemberPicker('Membership Chair');
+				$memberPicker = new \App\Model\MemberPicker('Web Master');
 				$secretary = $memberPicker->getMember();
 				}
 			$title = $settingTable->value('clubAbbrev') . ' Vote Confirmation';

@@ -50,7 +50,7 @@ class EmailJournal extends \App\Cron\BaseJob
 			$email = new \App\Tools\EMail();
 			$email->setBody($html);
 			$email->setHtml();
-			$memberPicker = new \App\Model\MemberPicker('Membership Chair');
+			$memberPicker = new \App\Model\MemberPicker('Web Master');
 			$email->setFromMember($memberPicker->getMember());
 			$email->setSubject($title);
 

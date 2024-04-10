@@ -39,12 +39,9 @@ class SparkPost
 
 		foreach ($emailAddresses as $email)
 			{
-			$parameters = [];
-			$parameters['recipient'] = $email;
-
 			try
 				{
-				$response = $this->sparkPost->request('DELETE', 'suppression-list', $parameters);
+				$response = $this->sparkPost->request('DELETE', 'suppression-list/' . $email);
 				$results[$email] = $response->getStatusCode();
 				}
 			catch (\Exception $e)

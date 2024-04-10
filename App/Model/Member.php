@@ -773,7 +773,7 @@ class Member
 			$email->setBody($body);
 			$email->setHtml();
 			$email->addTo($member->email);
-			$memberPicker = new \App\Model\MemberPicker('Membership Chair');
+			$memberPicker = new \App\Model\MemberPicker('Web Master');
 			$membershipChair = $memberPicker->getMember();
 			$email->setFromMember($membershipChair);
 			$email->send();

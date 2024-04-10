@@ -43,13 +43,15 @@ class SparkPostSuppressions extends \App\Cron\BaseJob
 						$member->email = '';	// bouncing, so remove email so we don't see them again.
 						$member->update();
 						}
-					\App\Tools\Logger::get()->debug($message);
-
 					$deletes[] = $suppression['recipient'];
 					}
 				}
 			$results = $model->deleteSuppressions($deletes);
-			$this->controller->log_normal(\print_r($results, true));
+
+			if (\count($results))
+				{
+				$this->controller->log_important('SparkPost suppressions removed: ' . \print_r($results, true));
+				}
 			}
 		catch (\Exception $e)
 			{

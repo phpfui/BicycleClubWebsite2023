@@ -1,3 +1,7 @@
+GA signup including membership should not add duplicate email address
+
+GA Signup start reg date
+
 Default category
 
 Move delete buttons to end of button groups

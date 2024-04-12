@@ -351,16 +351,16 @@ class Cart
 
 				case 'Confirm Order And Pay':
 					$invoiceModel = new \App\Model\Invoice();
-					$invoiceId = $invoiceModel->generateFromCart($this->model);
+					$invoice = $invoiceModel->generateFromCart($this->model);
 					$paypalType = $invoiceModel->getPayPalType();
-					$redirect = '/Store/pay/' . $invoiceId . '/' . $paypalType;
+					$redirect = '/Store/pay/' . $invoice->invoiceId . '/' . $paypalType;
 
 					break;
 
 				case 'Confirm Order':
 					$invoiceModel = new \App\Model\Invoice();
-					$invoiceId = $invoiceModel->generateFromCart($this->model);
-					$redirect = '/Store/paid/' . $invoiceId;
+					$invoice = $invoiceModel->generateFromCart($this->model);
+					$redirect = '/Store/paid/' . $invoice->invoiceId;
 
 					break;
 

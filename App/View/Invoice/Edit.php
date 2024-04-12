@@ -40,8 +40,8 @@ class Edit
 				$cartModel = new \App\Model\Cart();
 				$cartModel->setMemberId($cartItem->memberId);
 				$cartModel->compute($volunteerPoints);
-				$invoiceId = $invoiceModel->generateFromCart($cartModel);
-				$this->page->redirect('/Store/Invoice/pay/' . $invoiceId);
+				$invoice = $invoiceModel->generateFromCart($cartModel);
+				$this->page->redirect('/Store/Invoice/pay/' . $invoice->invoiceId);
 				}
 			elseif (($_POST['submit'] ?? '') == 'Add Store Item')
 				{

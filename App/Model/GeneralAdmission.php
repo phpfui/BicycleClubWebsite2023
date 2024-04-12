@@ -88,43 +88,70 @@ class GeneralAdmission
 			$this->email->addAttachment($fileName, \str_replace(' ', '_', $event->title . ' Waiver for ' . $rider->fullName() . '.pdf'));
 			}
 
-		if ($event->includeMembership && empty($rider->memberId))
+		$includeMembership = $event->includeMembership;
+
+		if (\App\Enum\GeneralAdmission\IncludeMembership::NO != $includeMembership)
 			{
-			$memberModel = new \App\Model\Member();
-			$membership = new \App\Record\Membership();
-			$membership->setFrom($rider->toArray());
-			$membership->pending = 0;
-			$membership->joined = \App\Tools\Date::todayString();
-			$membership->affiliation = $event->title;
+			$today = \App\Tools\Date::todayString();
+			$goodThrough = empty($event->membershipExpires) ? \App\Tools\Date::makeString(\date('Y'), 12, 31) : $event->membershipExpires;
+			$existingMember = new \App\Record\Member(['email' => $rider->email]);
 
-			if (empty($event->membershipExpires))
+			if ($existingMember->loaded())
 				{
-				$membership->expires = \App\Tools\Date::makeString(\date('Y'), 12, 31);
-				}
-			else
-				{
-				$membership->expires = $event->membershipExpires;
-				}
-			$member = new \App\Record\Member();
+				$rider->member = $existingMember;
+				$membership = $existingMember->membership;
 
-			$member->setFrom($rider->toArray());
-			$defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal', 'rideComments', 'geoLocate'];
-			$settingTable = new \App\Table\Setting();
+				switch ($includeMembership)
+					{
+					case \App\Enum\GeneralAdmission\IncludeMembership::EXTEND_MEMBERSHIP:
+						if ($membership->expires < $goodThrough)
+							{
+							$membership->expires = $goodThrough;
+							$membership->update();
+							}
 
-			foreach ($defaultFields as $field)
-				{
-				$member->{$field} = (int)($settingTable->value($field . 'Default') ?: 0);
+						break;
+
+					case \App\Enum\GeneralAdmission\IncludeMembership::RENEW_MEMBERSHIP:
+						if ($membership->expires < $today)
+							{
+							$membership->expires = $goodThrough;
+							$membership->update();
+							}
+
+						break;
+					}
 				}
-			$member->membership = $membership;
-			$member->verifiedEmail = 9;
-			$member->acceptedWaiver = null;
-			$member->emergencyContact = $rider->contact;
-			$member->emergencyPhone = $rider->contactPhone;
-			$member->cellPhone = $rider->phone;
-			$member->password = $memberModel->hashPassword(\uniqid());  // will not match password for sure
-			$member->insert();
-			$memberModel->setNormalMemberPermission($member);
-			$rider->member = $member;
+			elseif (\App\Enum\GeneralAdmission\IncludeMembership::NEW_MEMBERS_ONLY == $includeMembership)
+				{
+				$memberModel = new \App\Model\Member();
+				$membership = new \App\Record\Membership();
+				$membership->setFrom($rider->toArray());
+				$membership->pending = 0;
+				$membership->joined = \App\Tools\Date::todayString();
+				$membership->affiliation = $event->title;
+				$membership->expires = $goodThrough;
+				$member = new \App\Record\Member();
+
+				$member->setFrom($rider->toArray());
+				$defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal', 'rideComments', 'geoLocate'];
+				$settingTable = new \App\Table\Setting();
+
+				foreach ($defaultFields as $field)
+					{
+					$member->{$field} = (int)($settingTable->value($field . 'Default') ?: 0);
+					}
+				$member->membership = $membership;
+				$member->verifiedEmail = 9;
+				$member->acceptedWaiver = null;
+				$member->emergencyContact = $rider->contact;
+				$member->emergencyPhone = $rider->contactPhone;
+				$member->cellPhone = $rider->phone;
+				$member->password = $memberModel->hashPassword(\uniqid());  // will not match password for sure
+				$member->insert();
+				$memberModel->setNormalMemberPermission($member);
+				$rider->member = $member;
+				}
 			}
 		$rider->update();
 

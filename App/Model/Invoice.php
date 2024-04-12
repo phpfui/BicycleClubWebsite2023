@@ -264,11 +264,9 @@ class Invoice
 		return $missing;
 		}
 
-	/**
-	 * @return int generated invoiceId
-	 */
-	public function generateFromCart(\App\Model\Cart $cartModel) : int
+	public function generateFromCart(\App\Model\Cart $cartModel) : \App\Record\Invoice
 		{
+		$invoice = new \App\Record\Invoice();
 		$pointsEarned = $pointsUsed = 0;
 		$customerNumber = $cartModel->getCustomerNumber();
 		$member = $this->customerModel->read($cartModel->getCustomerNumber());
@@ -296,7 +294,6 @@ class Invoice
 				}
 			}
 		$invoiceUpdates = [];
-		$invoiceId = 0;
 		$cartItems = $cartModel->getItems();
 		$taxCalculator = new \App\Model\TaxCalculator();
 
@@ -327,7 +324,7 @@ class Invoice
 			$invoice->paypalPaid = 0.0;
 			$invoice->fullfillmentDate = null;
 			$invoice->instructions = $instructions;
-			$invoiceId = $invoice->insert();
+			$invoice->insert();
 			$invoiceUpdates['fullfillmentDate'] = \App\Tools\Date::todayString();
 
 			foreach ($cartItems as $cartItem)
@@ -366,7 +363,7 @@ class Invoice
 
 							$shipping = (float)$cartItem['shipping'];
 							$invoiceItem = new \App\Record\InvoiceItem();
-							$invoiceItem->invoiceId = $invoiceId;
+							$invoiceItem->invoice = $invoice;
 							$invoiceItem->storeItemId = $cartItem['storeItemId'];
 							$invoiceItem->storeItemDetailId = $cartItem['storeItemDetailId'];
 							$invoiceItem->title = $storeItem->title;
@@ -404,7 +401,7 @@ class Invoice
 						$price = $this->gaModel->getPrice($event, $rider);
 						$date = $event->eventDate;
 						$invoiceItem = new \App\Record\InvoiceItem();
-						$invoiceItem->invoiceId = $invoiceId;
+						$invoiceItem->invoice = $invoice;
 						$invoiceItem->storeItemId = $cartItem['storeItemId'];
 						$invoiceItem->storeItemDetailId = $cartItem['storeItemDetailId'];
 						$invoiceItem->title = $event->title . ' Registration ' . $date;
@@ -446,27 +443,26 @@ class Invoice
 			if ($invoiceUpdates)
 				{
 				$invoice->setFrom($invoiceUpdates);
-				$invoice->invoiceId = $invoiceId;
 				$invoice->update();
 				}
 
 			if (\PHPFUI\ORM::getLastErrors())
 				{
 				\PHPFUI\ORM::rollBack();
-				$invoiceId = 0;
+				$invoice = new \App\Record\Invoice();
 				}
 			else
 				{
 				\PHPFUI\ORM::commit();
 				}
 
-			if ($invoiceId && $balanceDue <= 0.0)
+			if ($invoice->invoiceId && $balanceDue <= 0.0)
 				{
 				$this->execute($invoice);
 				}
 			}
 
-		return $invoiceId;
+		return $invoice;
 		}
 
 	public function generatePDF(\App\Record\Invoice $invoice) : \App\Report\Invoice

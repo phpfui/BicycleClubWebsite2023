@@ -124,14 +124,18 @@ class EventEdit
 		$dayOfRegistration = new \PHPFUI\Input\CheckBoxBoolean('dayOfRegistration', 'Day Of Registration Allowed', (bool)$event->dayOfRegistration);
 		$showPreregistration = new \PHPFUI\Input\CheckBoxBoolean('showPreregistration', 'Show Preregistration Numbers', (bool)$event->showPreregistration);
 		$allowShopping = new \PHPFUI\Input\CheckBoxBoolean('allowShopping', 'Allow Store Shopping at Checkout', (bool)$event->allowShopping);
-		$optionsSet->add(new \PHPFUI\MultiColumn($allowShopping, $dayOfRegistration, $showPreregistration));
+		$otherEvent = new \PHPFUI\Input\CheckBoxBoolean('otherEvent', 'Not Signature Event', (bool)$event->otherEvent);
+		$optionsSet->add(new \PHPFUI\MultiColumn($allowShopping, $dayOfRegistration, $showPreregistration, $otherEvent));
 
-		$includeMembership = new \PHPFUI\Input\CheckBoxBoolean('includeMembership', 'Include Membership with Event Purchase', (bool)$event->includeMembership);
+		$includeMembership = new \PHPFUI\Input\RadioGroupEnum('includeMembership', 'Include Membership with Event Purchase', $event->includeMembership);
+		$includeMembership->setToolTip('All options other than "No" add / update a membership.
+			 "New Members Only" will not extend memberships for existing members.
+			 "Extend" will make sure membership is good through expires date.
+			 "Renew" will update lapsed members to new expiration date.');
+
 		$membershipExpiresDate = new \PHPFUI\Input\Date($this->page, 'membershipExpires', 'Membership Expires', $event->membershipExpires);
 		$membershipExpiresDate->setToolTip('If a membership is included, this is when it will expire. Leave blank for the end of the year.');
-		$membershipMultiColumn = new \PHPFUI\MultiColumn($includeMembership, $membershipExpiresDate);
-		$otherEvent = new \PHPFUI\Input\CheckBoxBoolean('otherEvent', 'Not Signature Event', (bool)$event->otherEvent);
-		$optionsSet->add(new \PHPFUI\MultiColumn($membershipMultiColumn, $otherEvent));
+		$optionsSet->add(new \PHPFUI\MultiColumn($includeMembership, $membershipExpiresDate));
 
 		$container->add($optionsSet);
 		$volunteerSet = new \PHPFUI\FieldSet('Volunteer Options');

@@ -98,10 +98,20 @@ class GitHooks
 	private function preCommit() : string
 		{
 		// run php-cs-fixer
-		$files = \implode(' ', $this->getPHPFiles());
-		$command = "vendor\\bin\\php-cs-fixer fix --config=.php-cs-fixer.dist.php {$files}";
+		$files = $this->getPHPFiles();
+
+		foreach ($files as $index => $file)
+			{
+			if (\str_contains($file, 'Enum'))
+				{
+				unset($files[$index]);
+				}
+			}
+
+		$fileString = \implode(' ', $files);
+		$command = "vendor\\bin\\php-cs-fixer fix --config=.php-cs-fixer.dist.php {$fileString}";
 		$this->runShellCommand($command);
-		$this->runShellCommand("git add {$files}");
+		$this->runShellCommand("git add {$fileString}");
 
 		return '';
 		}

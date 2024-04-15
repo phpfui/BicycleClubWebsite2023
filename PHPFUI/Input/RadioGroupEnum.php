@@ -14,6 +14,7 @@ class RadioGroupEnum extends \PHPFUI\Input\RadioGroup implements \Countable
 	public function __construct(string $name, string $label, $enum)
 		{
 		parent::__construct($name, $label, $enum->value);
+
 		foreach ($enum::cases() as $properties)
 			{
 			$parts = \explode('_', $properties->name);
@@ -21,4 +22,3 @@ class RadioGroupEnum extends \PHPFUI\Input\RadioGroup implements \Countable
 			}
 		}
 	}
-

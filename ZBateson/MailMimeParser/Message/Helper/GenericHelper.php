@@ -60,7 +60,7 @@ class GenericHelper extends AbstractHelper
      * An exception is made for the obsolete Content-Return header, which isn't
      * isn't a MIME content field and so isn't removed.
      */
-    public function removeHeaderContentsAndContent(IMimePart $part) : self
+    public function removeContentHeadersAndContent(IMimePart $part) : self
     {
         foreach ($part->getAllHeaders() as $header) {
             if ($this->isMimeContentField($header)) {
@@ -81,7 +81,7 @@ class GenericHelper extends AbstractHelper
      *
      * @param bool $move
      */
-    public function copyHeaderContentsAndContent(IMimePart $from, IMimePart $to, $move = false)
+    public function copyContentHeadersAndContent(IMimePart $from, IMimePart $to, $move = false)
     {
         $this->copyHeader($from, $to, HeaderConsts::CONTENT_TYPE, 'text/plain; charset=utf-8');
         if ($from->getHeader(HeaderConsts::CONTENT_TYPE) === null) {
@@ -98,7 +98,7 @@ class GenericHelper extends AbstractHelper
             $to->attachContentStream($from->getContentStream(), MailMimeParser::DEFAULT_CHARSET);
         }
         if ($move) {
-            $this->removeHeaderContentsAndContent($from);
+            $this->removeContentHeadersAndContent($from);
         }
     }
 
@@ -112,7 +112,7 @@ class GenericHelper extends AbstractHelper
     public function createNewContentPartFrom(IMimePart $part)
     {
         $mime = $this->mimePartFactory->newInstance();
-        $this->copyHeaderContentsAndContent($part, $mime, true);
+        $this->copyContentHeadersAndContent($part, $mime, true);
         return $mime;
     }
 
@@ -125,7 +125,7 @@ class GenericHelper extends AbstractHelper
      */
     public function movePartContentAndChildren(IMimePart $from, IMimePart $to)
     {
-        $this->copyHeaderContentsAndContent($from, $to, true);
+        $this->copyContentHeadersAndContent($from, $to, true);
         if ($from->getChildCount() > 0) {
             foreach ($from->getChildIterator() as $child) {
                 $from->removePart($child);

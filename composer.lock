@@ -2929,16 +2929,16 @@
         },
         {
             "name": "phpfui/constantcontact",
-            "version": "V24.3.1",
+            "version": "V24.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ConstantContact.git",
-                "reference": "c423f743e7630d2b85652d8247670e8200dc3b2d"
+                "reference": "90fc8413c557036359478cc75e1926bbc18c5c99"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ConstantContact/zipball/c423f743e7630d2b85652d8247670e8200dc3b2d",
-                "reference": "c423f743e7630d2b85652d8247670e8200dc3b2d",
+                "url": "https://api.github.com/repos/phpfui/ConstantContact/zipball/90fc8413c557036359478cc75e1926bbc18c5c99",
+                "reference": "90fc8413c557036359478cc75e1926bbc18c5c99",
                 "shasum": ""
             },
             "require": {
@@ -2983,9 +2983,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ConstantContact/issues",
-                "source": "https://github.com/phpfui/ConstantContact/tree/V24.3.1"
+                "source": "https://github.com/phpfui/ConstantContact/tree/V24.4.0"
             },
-            "time": "2024-03-08T18:10:00+00:00"
+            "time": "2024-04-16T05:11:19+00:00"
         },
         {
             "name": "phpfui/icalendar",
@@ -3120,16 +3120,16 @@
         },
         {
             "name": "phpfui/orm",
-            "version": "V1.6.3",
+            "version": "V1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ORM.git",
-                "reference": "ca6d7b8681472ac029d35cf5fb074b6ec9317279"
+                "reference": "db9728dd6f6d54f8b55c2ff4a7380be989c299bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ORM/zipball/ca6d7b8681472ac029d35cf5fb074b6ec9317279",
-                "reference": "ca6d7b8681472ac029d35cf5fb074b6ec9317279",
+                "url": "https://api.github.com/repos/phpfui/ORM/zipball/db9728dd6f6d54f8b55c2ff4a7380be989c299bc",
+                "reference": "db9728dd6f6d54f8b55c2ff4a7380be989c299bc",
                 "shasum": ""
             },
             "require": {
@@ -3177,22 +3177,22 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ORM/issues",
-                "source": "https://github.com/phpfui/ORM/tree/V1.6.3"
+                "source": "https://github.com/phpfui/ORM/tree/V1.7.0"
             },
-            "time": "2024-03-29T15:29:50+00:00"
+            "time": "2024-04-16T00:48:27+00:00"
         },
         {
             "name": "phpfui/phpfui",
-            "version": "V6.2.20",
+            "version": "V6.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/phpfui.git",
-                "reference": "28ad628027a5fab606e3116bfb12f926a5289aea"
+                "reference": "026f4d2ffd054f48c3a136bdd454d5180b718241"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/phpfui/zipball/28ad628027a5fab606e3116bfb12f926a5289aea",
-                "reference": "28ad628027a5fab606e3116bfb12f926a5289aea",
+                "url": "https://api.github.com/repos/phpfui/phpfui/zipball/026f4d2ffd054f48c3a136bdd454d5180b718241",
+                "reference": "026f4d2ffd054f48c3a136bdd454d5180b718241",
                 "shasum": ""
             },
             "require": {
@@ -3200,7 +3200,7 @@
                 "fortawesome/font-awesome": "^5 | ^6",
                 "google/recaptcha": "^1.2",
                 "igorescobar/jquery-mask-plugin": "^1.14",
-                "php": ">=8.0 <8.4",
+                "php": ">=8.1 <8.4",
                 "zurb/foundation": "^6.6"
             },
             "require-dev": {
@@ -3209,7 +3209,7 @@
                 "phpfui/html-unit-tester": "^1.0",
                 "phpfui/phpunit-syntax-coverage": "^1.0",
                 "phpstan/phpstan": "^1.8",
-                "phpunit/phpunit": "<11.0",
+                "phpunit/phpunit": "^10.5|^11.0",
                 "roave/security-advisories": "dev-latest"
             },
             "suggest": {
@@ -3247,9 +3247,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/phpfui/issues",
-                "source": "https://github.com/phpfui/phpfui/tree/V6.2.20"
+                "source": "https://github.com/phpfui/phpfui/tree/V6.3.0"
             },
-            "time": "2024-03-02T20:37:25+00:00"
+            "time": "2024-04-15T21:12:41+00:00"
         },
         {
             "name": "phpfui/translation",
@@ -5882,16 +5882,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.66",
+            "version": "1.10.67",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "94779c987e4ebd620025d9e5fdd23323903950bd"
+                "reference": "16ddbe776f10da6a95ebd25de7c1dbed397dc493"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/94779c987e4ebd620025d9e5fdd23323903950bd",
-                "reference": "94779c987e4ebd620025d9e5fdd23323903950bd",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/16ddbe776f10da6a95ebd25de7c1dbed397dc493",
+                "reference": "16ddbe776f10da6a95ebd25de7c1dbed397dc493",
                 "shasum": ""
             },
             "require": {
@@ -5934,13 +5934,9 @@
                 {
                     "url": "https://github.com/phpstan",
                     "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/phpstan/phpstan",
-                    "type": "tidelift"
                 }
             ],
-            "time": "2024-03-28T16:17:31+00:00"
+            "time": "2024-04-16T07:22:02+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -6418,12 +6414,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "1b43da6199cab7867f06b52454a256efa743f170"
+                "reference": "26c93a86d619bca3122e9c2d5be82578ba5ef843"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/1b43da6199cab7867f06b52454a256efa743f170",
-                "reference": "1b43da6199cab7867f06b52454a256efa743f170",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/26c93a86d619bca3122e9c2d5be82578ba5ef843",
+                "reference": "26c93a86d619bca3122e9c2d5be82578ba5ef843",
                 "shasum": ""
             },
             "conflict": {
@@ -6994,7 +6990,7 @@
                 "t3s/content-consent": "<1.0.3|>=2,<2.0.2",
                 "tastyigniter/tastyigniter": "<3.3",
                 "tcg/voyager": "<=1.4",
-                "tecnickcom/tcpdf": "<6.2.22",
+                "tecnickcom/tcpdf": "<6.7.4",
                 "terminal42/contao-tablelookupwizard": "<3.3.5",
                 "thelia/backoffice-default-template": ">=2.1,<2.1.2",
                 "thelia/thelia": ">=2.1,<2.1.3",
@@ -7158,7 +7154,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-04-12T22:04:12+00:00"
+            "time": "2024-04-15T19:04:12+00:00"
         },
         {
             "name": "sebastian/cli-parser",

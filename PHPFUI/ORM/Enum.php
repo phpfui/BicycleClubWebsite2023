@@ -19,6 +19,15 @@ class Enum extends \PHPFUI\ORM\VirtualField
 	 */
 	public function setValue(mixed $value, array $parameters) : void
 		{
-		$this->currentRecord->offsetSet($fieldName, $value->value);
+		$enum = $parameters[0];
+
+		if ($value instanceof $enum)
+			{
+			$this->currentRecord->offsetSet($this->fieldName, $value->value);
+
+			return;
+			}
+
+		throw new \PHPFUI\ORM\Exception('You can not assign a variable of type ' . \get_debug_type($value) . ' to an enum type of ' . $enum);
 		}
 	}

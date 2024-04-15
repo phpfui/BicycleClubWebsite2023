@@ -754,7 +754,8 @@ class CueSheet
 				switch ($_POST['action'])
 					{
 					case 'deleteCueSheet':
-						$this->model->delete($_POST['cueSheetId']);
+						$cueSheet = new \App\Record\CueSheet($_POST['cueSheetId']);
+						$this->model->delete($cueSheet);
 						$this->page->setResponse($_POST['tab']);
 
 						break;

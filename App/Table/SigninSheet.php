@@ -48,7 +48,7 @@ class SigninSheet extends \PHPFUI\ORM\Table
 		{
 		$condition = $this->getWhereCondition();
 		$this->addJoin('signinSheetRide', 'signinSheetId');
-		$this->addJoin('ride');
+		$this->addJoin('ride', new \PHPFUI\ORM\Condition('ride.rideId', new \PHPFUI\ORM\Field('signinSheetRide.rideId')));
 		$returnValue = false;
 
 		if (! empty($parameters['MemberName']))

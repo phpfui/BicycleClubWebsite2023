@@ -122,7 +122,7 @@ class GeneralAdmission
 						break;
 					}
 				}
-			elseif (\App\Enum\GeneralAdmission\IncludeMembership::NEW_MEMBERS_ONLY == $includeMembership)
+			else // if (\App\Enum\GeneralAdmission\IncludeMembership::NEW_MEMBERS_ONLY == $includeMembership)
 				{
 				$memberModel = new \App\Model\Member();
 				$membership = new \App\Record\Membership();

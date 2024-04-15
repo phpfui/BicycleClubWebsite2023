@@ -4,14 +4,16 @@ namespace App\View\System;
 
 class Debug
 	{
+	private \App\Table\Setting $settingTable;
+
 	public function __construct(private readonly \App\View\Page $page)
 		{
+		$this->settingTable = new \App\Table\Setting();
 		}
 
 	public function Home() : \PHPFUI\Form
 		{
 		$form = new \PHPFUI\Form($this->page);
-		$settingTable = new \App\Table\Setting();
 
 		if (! empty($_POST))
 			{
@@ -33,7 +35,12 @@ class Debug
 					}
 				elseif (\strpos((string)$name, 'Maintenance Mode'))
 					{
-					$settingTable->save('maintenanceMode', $valueNum);
+					$this->settingTable->save('maintenanceMode', $valueNum);
+					$message = \str_replace('ctivate ', 'ctivated ', (string)$name);
+					}
+				elseif (\strpos((string)$name, 'Test Mode'))
+					{
+					$this->settingTable->save('TestMode', $valueNum);
 					$message = \str_replace('ctivate ', 'ctivated ', (string)$name);
 					}
 				else
@@ -100,13 +107,8 @@ class Debug
 
 			$form->add($this->getDebugButton('Debug Bar', \App\Model\Session::DEBUG_BAR));
 			$form->add($this->getDebugButton('Readable HTML', \App\Model\Session::DEBUG_HTML));
-
-			$status = (int)$settingTable->value('maintenanceMode');
-			$statusText = $status ? 'On' : 'Off';
-			$form->add(new \PHPFUI\SubHeader("Maintenance Mode is {$statusText}"));
-			$statusText = $status ? 'Deactivate' : 'Activate';
-			$submit = new \PHPFUI\Submit("{$statusText} Maintenance Mode", (string)($status ? 0 : 1));
-			$form->add($submit);
+			$form->add($this->getModeButton('Maintenance'));
+			$form->add($this->getModeButton('Test'));
 
 			$form->add('<hr>');
 			$form->add(new \PHPFUI\SubHeader('Error Reporting'));
@@ -158,6 +160,19 @@ class Debug
 		$statusText = $status & $flag ? 'Off' : 'On';
 		$submit = new \PHPFUI\Submit("Turn {$type} {$statusText}", (string)$flag);
 		$container->add($submit);
+
+		return $container;
+		}
+
+	private function getModeButton(string $type) : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+
+		$status = (int)$this->settingTable->value($type . 'Mode');
+		$statusText = $status ? 'On' : 'Off';
+		$container->add(new \PHPFUI\SubHeader($type . " Mode is {$statusText}"));
+		$statusText = $status ? 'Deactivate' : 'Activate';
+		$container->add(new \PHPFUI\Submit("{$statusText} {$type} Mode", (string)($status ? 0 : 1)));
 
 		return $container;
 		}

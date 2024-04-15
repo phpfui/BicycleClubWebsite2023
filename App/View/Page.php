@@ -106,6 +106,13 @@ class Page extends \PHPFUI\Page
 				$this->addHeadJavaScript($js);
 				}
 			}
+
+		if ($this->value('TestMode'))
+			{
+			$testCallout = new \PHPFUI\Callout('alert');
+			$testCallout->add('<b>This site is in <i>TEST MODE</i>. Do not use except for testing.</b>');
+			$this->mainColumn->add("{$testCallout}");
+			}
 		}
 
 	public function addBanners() : void

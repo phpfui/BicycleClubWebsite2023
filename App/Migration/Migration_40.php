@@ -11,14 +11,14 @@ class Migration_40 extends \PHPFUI\ORM\Migration
 
 	public function down() : bool
 		{
-		$this->alterColumn('cuesheet', 'terrainId', 'int', 'terrain');
+		$this->alterColumn('cueSheet', 'terrainId', 'int', 'terrain');
 
 		return $this->dropTable('terrain');
 		}
 
 	public function up() : bool
 		{
-		$this->alterColumn('cuesheet', 'terrain', 'int', 'terrainId');
+		$this->alterColumn('cueSheet', 'terrain', 'int', 'terrainId');
 
 		$this->runSQL('CREATE TABLE `terrain` (`terrainId` int NOT NULL AUTO_INCREMENT,`name` varchar(70) DEFAULT "",PRIMARY KEY (`terrainId`))');
 

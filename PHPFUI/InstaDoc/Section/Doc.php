@@ -277,7 +277,7 @@ class Doc extends \PHPFUI\InstaDoc\Section\CodeCommon
 
 		if (\method_exists($constant, 'isReadOnly') && $constant->isReadOnly())
 			{
-			$type .= $this->getColor('keyword', 'readonly');
+			$type .= ' ' . $this->getColor('keyword', 'readonly');
 			}
 
 		return $type;

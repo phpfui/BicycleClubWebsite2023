@@ -9,6 +9,7 @@ class CueSheetPicker
 	public function __construct(private readonly \PHPFUI\Page $page, private readonly string $fieldName, private readonly string $label = '', private readonly \App\Record\CueSheet $initial = new \App\Record\CueSheet())
 		{
 		$this->cueSheetTable = new \App\Table\CueSheet();
+		$this->cueSheetTable->addOrderBy('name');
 		}
 
 	/**

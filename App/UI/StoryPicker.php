@@ -9,6 +9,7 @@ class StoryPicker
 	public function __construct(private readonly \PHPFUI\Page $page, private readonly string $fieldName, private readonly string $label = '', private readonly \App\Record\Story $initial = new \App\Record\Story())
 		{
 		$this->storyTable = new \App\Table\Story();
+		$this->storyTable->addOrderBy('headline');
 		}
 
 	/**

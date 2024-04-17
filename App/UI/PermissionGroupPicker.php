@@ -10,9 +10,7 @@ class PermissionGroupPicker
 		{
 		$this->permissionGroupTable = new \App\Table\PermissionGroup();
 		$this->permissionGroupTable->addJoin('permission', new \PHPFUI\ORM\Condition('groupId', new \PHPFUI\ORM\Field('permission.permissionId')));
-		$this->permissionGroupTable->addSelect('groupId');
-		$this->permissionGroupTable->addSelect('name');
-		$this->permissionGroupTable->setDistinct();
+		$this->permissionGroupTable->addSelect('groupId')->addSelect('name')->addOrderBy('name')->setDistinct();
 		}
 
 	/**

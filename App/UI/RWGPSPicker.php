@@ -9,6 +9,7 @@ class RWGPSPicker
 	public function __construct(private readonly \PHPFUI\Page $page, private readonly string $fieldName, private readonly string $label = '', private readonly \App\Record\RWGPS $initial = new \App\Record\RWGPS())
 		{
 		$this->RWGPSTable = new \App\Table\RWGPS();
+		$this->RWGPSTable->addOrderBy('title');
 		}
 
 	/**

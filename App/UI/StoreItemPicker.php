@@ -9,6 +9,7 @@ class StoreItemPicker
 	public function __construct(private readonly \PHPFUI\Page $page, private readonly string $fieldName, private readonly string $label = '', private readonly \App\Record\StoreItem $initial = new \App\Record\StoreItem())
 		{
 		$this->storeItemTable = new \App\Table\StoreItem();
+		$this->storeItemTable->addOrderBy('title');
 		}
 
 	/**

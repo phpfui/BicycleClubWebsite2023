@@ -14,6 +14,7 @@ abstract class MemberPickerBase
 	public function __construct(protected string $name = '')
 		{
 		$this->memberTable = new \App\Table\Member();
+		$this->memberTable->addOrderBy('firstName')->addOrderBy('lastName');
 		}
 
 	/**

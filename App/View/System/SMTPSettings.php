@@ -15,6 +15,8 @@ class SMTPSettings
 
 		$member = \App\Model\Session::signedInMemberRecord();
 
+		$form = new \PHPFUI\Form($this->page, $submit);
+
 		if ($member->email)
 			{
 			$testButton = new \PHPFUI\Submit('Test', 'action');
@@ -22,12 +24,12 @@ class SMTPSettings
 			$buttonGroup->addButton($testButton);
 			}
 		$defaults = new \PHPFUI\Submit('IONOS Defaults', 'action');
+		$defaults->addAttribute('onclick', '$(\'#' . $form->getId() . '\').foundation(\'disableValidation\');');
 		$defaults->addClass('secondary');
 		$defaults->setConfirm('Are you sure you want to reset to the IONOS defaults?');
 		$buttonGroup->addButton($defaults);
 
 		$settingsSaver = new \App\Model\SettingsSaver('SMTP');
-		$form = new \PHPFUI\Form($this->page, $submit);
 		$fieldSet = new \PHPFUI\FieldSet('SMTP Server Settings');
 		$link = new \PHPFUI\Link('https://app.sparkpost.com', 'SparkPost');
 		$fieldSet->add("You need to set up an SMTP server to send emails. Leave the Host field blank to use the local server's email settings, or use a separately hosted SMTP server.
@@ -36,12 +38,12 @@ class SMTPSettings
 		$host = $settingsSaver->generateField('SMTPHost', 'Host (leave blank for local email server)');
 		$host->setRequired(false);
 		$fieldSet->add($host);
-		$fieldSet->add($settingsSaver->generateField('SMTPUsername', 'Username'));
-		$fieldSet->add($settingsSaver->generateField('SMTPPassword', 'Password', 'PasswordEye'));
-		$fieldSet->add($settingsSaver->generateField('SMTPSecure', 'SMTPSecure (tls or ssl)'));
-		$fieldSet->add($settingsSaver->generateField('SMTPPort', 'Port', 'Number'));
-		$fieldSet->add($settingsSaver->generateField('SMTPLog', 'Log Emails to Slack', 'CheckBox'));
-		$fieldSet->add($settingsSaver->generateField('SMTPLimit', 'Limit emails to send at one time (0 is unlimited)', 'Number'));
+		$fieldSet->add($settingsSaver->generateField('SMTPUsername', 'Username', required:false));
+		$fieldSet->add($settingsSaver->generateField('SMTPPassword', 'Password', 'PasswordEye', required:false));
+		$fieldSet->add($settingsSaver->generateField('SMTPSecure', 'SMTPSecure (tls or ssl)', required:false));
+		$fieldSet->add($settingsSaver->generateField('SMTPPort', 'Port', 'Number', required:false));
+		$fieldSet->add($settingsSaver->generateField('SMTPLog', 'Log Emails to Slack', 'CheckBox', required:false));
+		$fieldSet->add($settingsSaver->generateField('SMTPLimit', 'Limit emails to send at one time (0 is unlimited)', 'Number', required:false));
 		$form->add($fieldSet);
 
 		if ($form->isMyCallback())

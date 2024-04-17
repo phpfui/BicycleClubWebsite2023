@@ -83,11 +83,11 @@ class ImportMembers extends \PHPFUI\Container
 
 		if (\file_exists($this->importModel->getFileName()))
 			{
-			$form->add($this->importWidget($wizardBar, $separator ?? ',', $totalMembers));
+			$form->add($this->importWidget($form, $wizardBar, $separator ?? ',', $totalMembers));
 			}
 		else
 			{
-			$form->add($this->uploadWidget($wizardBar));
+			$form->add($this->uploadWidget($form, $wizardBar));
 			}
 
 		$form->setAreYouSure(false);
@@ -157,7 +157,7 @@ class ImportMembers extends \PHPFUI\Container
 		return $container;
 		}
 
-	private function importWidget(\App\View\Setup\WizardBar $wizardBar, string $separator, int $count) : string
+	private function importWidget(\PHPFUI\Form $form, \App\View\Setup\WizardBar $wizardBar, string $separator, int $count) : string
 		{
 		$csvReader = new \App\Tools\CSV\FileReader($this->importModel->getFileName(), true, $separator);
 		$headers = \array_keys($csvReader->current());
@@ -173,23 +173,27 @@ class ImportMembers extends \PHPFUI\Container
 
 		$importButton = new \PHPFUI\Submit('Import Members', 'action');
 		$importButton->addClass('success');
+		$importButton->addAttribute('form', $form->getId());
+
 		$wizardBar->addButton($importButton);
 
 		if ($count)
 			{
 			$exportButton = new \PHPFUI\Button('Export Members', $this->page->getBaseURL() . '?export');
 			$exportButton->addClass('warning');
+			$exportButton->addAttribute('form', $form->getId());
 			$wizardBar->addButton($exportButton);
 			}
 
 		$deleteButton = new \PHPFUI\Button('Delete Members', $this->page->getBaseURL() . '?delete');
 		$deleteButton->addClass('alert');
+		$deleteButton->addAttribute('form', $form->getId());
 		$wizardBar->addButton($deleteButton);
 
 		return $container;
 		}
 
-	private function uploadWidget(\App\View\Setup\WizardBar $wizardBar) : string
+	private function uploadWidget(\PHPFUI\Form $form, \App\View\Setup\WizardBar $wizardBar) : string
 		{
 		$fieldSet = new \PHPFUI\FieldSet('File To Upload');
 		$callout = new \PHPFUI\Callout('info');
@@ -219,6 +223,7 @@ class ImportMembers extends \PHPFUI\Container
 
 		$submit = new \PHPFUI\Submit('Upload', 'action');
 		$submit->addClass('success');
+		$submit->addAttribute('form', $form->getId());
 		$wizardBar->addButton($submit);
 
 		return $fieldSet;

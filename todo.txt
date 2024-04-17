@@ -1,8 +1,10 @@
-GA signup including membership should not add duplicate email address
+email server settings defaults don't work in setup wizard (required fields are not set).
 
-GA Signup start reg date
+Terrain levels for cuesheets
 
-Default category
+Days to notifiy for home page
+
+Default category																																																								`
 
 Move delete buttons to end of button groups
 

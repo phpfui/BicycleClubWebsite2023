@@ -25,22 +25,22 @@ class IMAPSettings
 		$form = new \PHPFUI\Form($this->page, $submit);
 		$fieldSet = new \PHPFUI\FieldSet('Email Processor Settings');
 		$fieldSet->add('The website needs to read emails to the club. You must provide <b>IMAP credentials</b> for a global account that receives all emails going to your domain. The website will direct those to the correct people.');
-		$server = $this->settingsSaver->generateField('IMAPServer', 'IMAP Server Name (leave blank to turn off)', 'text', false);
+		$server = $this->settingsSaver->generateField('IMAPServer', 'IMAP Server Name (leave blank to turn off)', 'text', required:false);
 		$server->setToolTip('Get the server name from your ISP.  Generally domain:port enclosed in {}.');
 		$fieldSet->add($server);
 		$port = $this->settingsSaver->generateField('IMAPPort', 'IMAP Port Number', 'number', false);
 		$port->setToolTip('Port number is generally 143	(default for no encryption), 993 (TLS/SSL encryption) or 465 (implicit SSL encryption)');
 		$fieldSet->add($port);
-		$encryption = $this->settingsSaver->generateField('IMAPEncryption', 'IMAP Encryption', 'text', false);
+		$encryption = $this->settingsSaver->generateField('IMAPEncryption', 'IMAP Encryption', 'text', required:false);
 		$encryption->setToolTip('Generally ssl or tls, leave blank for none.');
 		$fieldSet->add($encryption);
-		$folder = $this->settingsSaver->generateField('IMAPFolder', 'IMAP Folder', 'text', false);
+		$folder = $this->settingsSaver->generateField('IMAPFolder', 'IMAP Folder', 'text', required:false);
 		$folder->setToolTip('Folder to read emails from (leave blank for none)');
 		$fieldSet->add($folder);
-		$mailbox = $this->settingsSaver->generateField('IMAPMailBox', 'IMAP Mail Box');
+		$mailbox = $this->settingsSaver->generateField('IMAPMailBox', 'IMAP Mail Box', required:false);
 		$mailbox->setToolTip('This should be a catch all mailbox.');
 		$fieldSet->add($mailbox);
-		$fieldSet->add($this->settingsSaver->generateField('IMAPPassword', 'IMAP Mail Box Password', 'PasswordEye'));
+		$fieldSet->add($this->settingsSaver->generateField('IMAPPassword', 'IMAP Mail Box Password', 'PasswordEye', required:false));
 		$form->add($fieldSet);
 
 		if ($form->isMyCallback())

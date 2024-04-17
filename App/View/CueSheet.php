@@ -159,7 +159,7 @@ class CueSheet
 		$mileage = new \PHPFUI\Input\Number('mileage', 'Mileage', $cuesheet->mileage);
 		$mileage->addAttribute('max', (string)999)->addAttribute('min', (string)0);
 		$mileage->setRequired();
-		$terrain = $this->getTerrainEditControl($cuesheet->terrain ?? 0);
+		$terrain = $this->getTerrainEditControl($cuesheet->terrainId ?? 0);
 		$terrain->setRequired();
 
 		if (empty($cuesheet->elevation))
@@ -256,7 +256,7 @@ class CueSheet
 		return "/CueSheets/downloadRevision/{$versionId}";
 		}
 
-	public function getTerrainEditControl(int $value, string $name = 'terrain', string $label = 'Terrain', bool $multiselect = false) : \PHPFUI\Input\Select
+	public function getTerrainEditControl(int $value, string $name = 'terrainId', string $label = 'Terrain', bool $multiselect = false) : \PHPFUI\Input\Select
 		{
 		if ($multiselect)
 			{
@@ -267,14 +267,13 @@ class CueSheet
 			$select = new \PHPFUI\Input\Select($name, $label);
 			}
 
-		$cueSheet = new \App\Record\CueSheet();
+		$terrainTable = new \App\Table\Terrain();
+		$terrainTable->addOrderBy('terrainId');
 
-		foreach ($cueSheet->allTerrains() as $key => $label)
+		foreach ($terrainTable->getRecordCursor() as $terrain)
 			{
-			if (! empty($label))
-				{
-				$select->addOption($label, $key, $key == $value);
-				}
+			$key = $terrain->terrainId;
+			$select->addOption($terrain->name, $key, $key == $value);
 			}
 
 		return $select;

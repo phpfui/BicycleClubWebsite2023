@@ -18,7 +18,7 @@ class CueSheet extends \PHPFUI\ORM\Validator
 		'pointsAwarded' => ['required', 'integer'],
 		'revisionDate' => ['date'],
 		'startLocationId' => ['integer'],
-		'terrain' => ['integer'],
+		'terrainId' => ['integer'],
 	];
 
 	public function __construct(\App\Record\CueSheet $record)

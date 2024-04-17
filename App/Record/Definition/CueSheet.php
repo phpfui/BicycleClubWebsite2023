@@ -22,7 +22,8 @@ namespace App\Record\Definition;
  * @property ?string $revisionDate MySQL type date
  * @property ?int $startLocationId MySQL type int
  * @property \App\Record\StartLocation $startLocation related record
- * @property ?int $terrain MySQL type int
+ * @property ?int $terrainId MySQL type int
+ * @property \App\Record\Terrain $terrain related record
  */
 abstract class CueSheet extends \PHPFUI\ORM\Record
 	{
@@ -44,7 +45,7 @@ abstract class CueSheet extends \PHPFUI\ORM\Record
 		'pointsAwarded' => ['int', 'int', 0, false, 0, ],
 		'revisionDate' => ['date', 'string', 10, true, ],
 		'startLocationId' => ['int', 'int', 0, true, ],
-		'terrain' => ['int', 'int', 0, true, ],
+		'terrainId' => ['int', 'int', 0, true, ],
 	];
 
 	/** @var array<string> */

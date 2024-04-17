@@ -84,6 +84,7 @@ class MainMenu extends \App\UI\MainMenu
 
 			if ($configMenu = $this->addMenu($menu, '/CueSheets/configure', 'Cue Sheet Configuration'))
 				{
+				$this->addSub($configMenu, '/CueSheets/terrain', 'Cuesheet Terrain');
 				$this->addSub($configMenu, '/CueSheets/acceptEmail', 'Accept Cue Sheet Email');
 				$this->addSub($configMenu, '/CueSheets/rejectEmail', 'Reject Cue Sheet Email');
 				$this->addSub($configMenu, '/CueSheets/coordinator', 'Cue Sheet Coordinator');

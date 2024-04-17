@@ -14,21 +14,6 @@ class CueSheet extends \App\Record\Definition\CueSheet
 		'CueSheetVersionChildren' => [\PHPFUI\ORM\Children::class, \App\Table\CueSheetVersion::class],
 	];
 
-	/** @var array<string> */
-	private static array $terrainNames = ['',
-		'Flat',
-		'Rolling',
-		'Mod Hilly',
-		'Hilly',
-		'Mountainous',
-		'Oh My God!', ];
-
-	/** @return  array<string> */
-	public function allTerrains() : array
-		{
-		return self::$terrainNames;
-		}
-
 	public function getFullNameLink() : string
 		{
 		$settingTable = new \App\Table\Setting();
@@ -39,6 +24,13 @@ class CueSheet extends \App\Record\Definition\CueSheet
 
 	public function terrain() : string
 		{
-		return self::$terrainNames[$this->terrain] ?? '';
+		$terrain = new \App\Record\Terrain($this->terrainId);
+
+		if (! $terrain->loaded())
+			{
+			return '';
+			}
+
+		return $terrain->name;
 		}
 	}

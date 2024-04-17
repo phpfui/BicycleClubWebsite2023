@@ -1,7 +1,3 @@
-email server settings defaults don't work in setup wizard (required fields are not set).
-
-Terrain levels for cuesheets
-
 Days to notifiy for home page
 
 Default category																																																								`

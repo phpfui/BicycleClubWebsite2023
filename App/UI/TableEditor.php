@@ -11,12 +11,15 @@ class TableEditor
 
 	private string $name;
 
+	private ?\PHPFUI\ORM\Table $relatedTable = null;
+
 	private \PHPFUI\ORM\Table $table;
 
-	public function __construct(private \App\View\Page $page, string $table)
+	public function __construct(private \App\View\Page $page, string $table, string $orderBy = 'name')
 		{
 		$class = "\\App\\Table\\{$table}";
 		$this->table = new $class();
+		$this->table->addOrderBy($orderBy);
 		$this->name = \lcfirst($table);
 		}
 
@@ -59,7 +62,7 @@ class TableEditor
 		else
 			{
 			$recordId = $this->name . 'Id';
-			$types = $this->table->addOrderBy('name')->getArrayCursor();
+			$types = $this->table->getArrayCursor();
 			$delete = new \PHPFUI\AJAX('deleteRecord', 'Permanently delete this?');
 			$delete->addFunction('success', '$("#' . $recordId . '-"+data.response).css("background-color","red").hide("fast").remove()');
 			$this->page->addJavaScript($delete->getPageJS());
@@ -84,9 +87,21 @@ class TableEditor
 					{
 					$row['abbrev'] = new \PHPFUI\Input\Text("abbrev[{$id}]", '', $row['abbrev']);
 					}
-				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-				$icon->addAttribute('onclick', $delete->execute([$recordId => $id]));
-				$row['delete'] = $icon;
+				$deleteable = true;
+
+				if ($this->relatedTable)
+					{
+					$primaryKey = $this->table->getPrimaryKeys()[0];
+					$this->relatedTable->setWhere(new \PHPFUI\ORM\Condition($primaryKey, $row[$primaryKey]));
+					$deleteable = 0 == $this->relatedTable->count();
+					}
+
+				if ($deleteable)
+					{
+					$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
+					$icon->addAttribute('onclick', $delete->execute([$recordId => $id]));
+					$row['delete'] = $icon;
+					}
 				$table->addRow($row);
 				}
 
@@ -113,6 +128,13 @@ class TableEditor
 	public function setHeaders(array $headers) : self
 		{
 		$this->headers = $headers;
+
+		return $this;
+		}
+
+	public function setRelatedTable(\PHPFUI\ORM\Table $relatedTable) : self
+		{
+		$this->relatedTable = $relatedTable;
 
 		return $this;
 		}

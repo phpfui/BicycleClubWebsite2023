@@ -70,9 +70,9 @@ class Search implements \Stringable
 				}
 			}
 
-		if (! empty($parameters['terrain']) && \is_array($parameters['terrain']))
+		if (! empty($parameters['terrainId']) && \is_array($parameters['terrainId']))
 			{
-			$condition->and('terrain', $parameters['terrain'], new \PHPFUI\ORM\Operator\In());
+			$condition->and('terrainId', $parameters['terrainId'], new \PHPFUI\ORM\Operator\In());
 			}
 		$this->cueSheetTable->setWhere($condition);
 
@@ -104,8 +104,8 @@ class Search implements \Stringable
 		$row->add($col);
 		$col = new \PHPFUI\Cell(6);
 		$cuesheetView = new \App\View\CueSheet($this->page);
-		$terrain = $cuesheetView->getTerrainEditControl(0, 'terrain', 'Terrain (Select one or more)', true);
-		$terrain->select($parameters['terrain']);
+		$terrain = $cuesheetView->getTerrainEditControl(0, 'terrainId', 'Terrain (Select one or more)', true);
+		$terrain->select($parameters['terrainId']);
 		$col->add($terrain);
 		$row->add($col);
 		$fieldSet->add($row);
@@ -126,7 +126,7 @@ class Search implements \Stringable
 		$sortOptions['revisionDate'] = 'Revision Date';
 		$sortOptions['name'] = 'CueSheet Name';
 		$sortOptions['startLocationId'] = 'Start Location';
-		$sortOptions['terrain'] = 'Terrain';
+		$sortOptions['terrainId'] = 'Terrain';
 
 		foreach ($sortOptions as $value => $label)
 			{
@@ -163,7 +163,7 @@ class Search implements \Stringable
 		$searchFields['destination'] = '';
 		$searchFields['description'] = '';
 		$searchFields['name'] = '';
-		$searchFields['terrain'] = [];
+		$searchFields['terrainId'] = [];
 		$searchFields['sort'] = 'mileage';
 		$searchFields['order'] = 'A';
 

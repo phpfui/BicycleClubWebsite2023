@@ -19,7 +19,6 @@ class Forum
 		{
 		$this->model = new \App\Model\Forum();
 		$this->forumMessageTable = new \App\Table\ForumMessage();
-		$this->subscriptionTypes = \App\Table\ForumMember::getSubscriptionTypes();
 		$settingTable = new \App\Table\Setting();
 
 		if (\str_contains($_SERVER['SERVER_NAME'] ?? '', '.'))
@@ -472,7 +471,7 @@ class Forum
 
 			if ($forumMember->loaded())
 				{
-				$forumMember->emailType = (int)$_POST['emailType'];
+				$forumMember->emailType = \App\Enum\Forum\SubscriptionType::from((int)$_POST['emailType']);
 				$forumMember->update();
 				$this->page->setResponse('Saved');
 				}
@@ -565,6 +564,7 @@ class Forum
 			$table->setRecordId('forumId');
 			$table->setHeaders(['name' => 'Public Name',
 				'email' => 'email Address',
+				'emailType' => 'Subscription Type',
 				'action' => 'Join / Modify',
 			]);
 
@@ -583,12 +583,13 @@ class Forum
 					$text = 'Modify';
 					$class = 'warning';
 					$row['email'] = \PHPFUI\Link::email($forum->email . '@' . \emailServerName());
-					$member->emailType = \App\Table\ForumMember::UNSUBSCRIBED;
+					$row['emailType'] = $member->emailType->name();
+					$member->emailType = \App\Enum\Forum\SubscriptionType::UNSUBSCRIBE;
 					}
 				else
 					{
 					$member->forumId = $forum->forumId;
-					$member->emailType = \App\Table\ForumMember::INDIVIDUAL;
+					$member->emailType = \App\Enum\Forum\SubscriptionType::INDIVIDUAL_EMAILS;
 					$text = 'Join';
 					$class = 'success';
 					$row['email'] = '';
@@ -657,7 +658,7 @@ class Forum
 		$form->add(new \PHPFUI\Input\Hidden('forumId', (string)$forum->forumId));
 		$memberPicker = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPickerNoSave('Enter member name to add'), 'memberId');
 		$form->add($memberPicker->getEditControl());
-		$form->add($this->getSubscriptionRadio(0));
+		$form->add($this->getSubscriptionRadio(\App\Enum\Forum\SubscriptionType::UNSUBSCRIBE));
 		$submit = new \PHPFUI\Submit('Add Member', 'action');
 		$form->add($modal->getButtonAndCancel($submit));
 		$modal->add($form);
@@ -762,7 +763,7 @@ class Forum
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
 		$form->add(new \PHPFUI\Input\Hidden('forumId', (string)$member->forumId));
-		$radio = $this->getSubscriptionRadio($member->emailType ?? 0);
+		$radio = $this->getSubscriptionRadio($member->emailType);
 		$form->add($radio);
 		$form->add('<br>');
 		$submit = new \PHPFUI\Submit('Save', 'action');
@@ -772,16 +773,11 @@ class Forum
 		return $modal;
 		}
 
-	private function getSubscriptionRadio(int $initialValue, string $fieldPostfix = '') : \PHPFUI\Input\RadioGroup
+	private function getSubscriptionRadio(\App\Enum\Forum\SubscriptionType $initialValue, string $fieldPostfix = '') : \PHPFUI\Input\RadioGroupEnum
 		{
-		$radio = new \PHPFUI\Input\RadioGroup('emailType' . $fieldPostfix, 'Subscription Type', (string)$initialValue);
+		$radio = new \PHPFUI\Input\RadioGroupEnum('emailType' . $fieldPostfix, 'Subscription Type', $initialValue);
 		$radio->setToolTip('Members can always view forums on the web, but can not send email to the group unless subscribed.');
 		$radio->setSeparateRows();
-
-		foreach ($this->subscriptionTypes as $key => $name)
-			{
-			$radio->addButton($name, (string)$key);
-			}
 
 		return $radio;
 		}
@@ -854,7 +850,7 @@ class Forum
 						$forumMember = new \App\Record\ForumMember();
 						$forumMember->setFrom($_POST);
 
-						if (! $forumMember->emailType)
+						if (! $forumMember->emailType->value)
 							{
 							$forumMember->delete();
 							$this->page->redirect('/Forums/my');

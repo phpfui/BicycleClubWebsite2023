@@ -41,7 +41,7 @@ class LeaderForum extends \App\Cron\BaseJob
 			}
 
 		$forumMember = new \App\Record\ForumMember();
-		$forumMember->emailType = \App\Table\ForumMember::INDIVIDUAL;
+		$forumMember->emailType = \App\Enum\Forum\SubscriptionType::INDIVIDUAL_EMAILS;
 		$forumMember->forumId = $leaderForum;
 
 		// add new members

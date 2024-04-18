@@ -4,14 +4,6 @@ namespace App\Table;
 
 class ForumMember extends \PHPFUI\ORM\Table
 	{
-	final public const DAILY = 3;
-
-	final public const INDIVIDUAL = 2;
-
-	final public const UNSUBSCRIBED = 0;
-
-	final public const VIEW = 1;
-
 	protected static string $className = '\\' . \App\Record\ForumMember::class;
 
 	public static function getCount(\App\Record\Forum $forum) : int
@@ -27,12 +19,12 @@ class ForumMember extends \PHPFUI\ORM\Table
 
 	public function getDigestMembers(\App\Record\Forum $forum) : \PHPFUI\ORM\DataObjectCursor
 		{
-		return $this->getMembers($forum, ['emailType' => self::DAILY]);
+		return $this->getMembers($forum, ['emailType' => \App\Enum\Forum\SubscriptionType::DAILY_DIGEST_EMAIL]);
 		}
 
 	public function getEmailMembers(\App\Record\Forum $forum) : \PHPFUI\ORM\DataObjectCursor
 		{
-		return $this->getMembers($forum, ['emailType' => self::INDIVIDUAL]);
+		return $this->getMembers($forum, ['emailType' => \App\Enum\Forum\SubscriptionType::INDIVIDUAL_EMAILS]);
 		}
 
 	/**
@@ -43,19 +35,6 @@ class ForumMember extends \PHPFUI\ORM\Table
 		$this->setMembersQuery($forum, $additionalWhere);
 
 		return $this->getDataObjectCursor();
-		}
-
-	/**
-	 * @return array<int,string>
-	 */
-	public static function getSubscriptionTypes() : array
-		{
-		return [
-			self::UNSUBSCRIBED => 'Unsubscribe',
-			self::VIEW => 'Subscription - View On Web',
-			self::INDIVIDUAL => 'Subscription - Individual Emails',
-			self::DAILY => 'Subscription - Daily Digest Email',
-		];
 		}
 
 	/**

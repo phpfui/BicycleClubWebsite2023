@@ -4,6 +4,8 @@ namespace App\Enum\GeneralAdmission;
 
 enum EventPicker
 	{
+	use \App\Enum\Name;
+
 	case LINK;
 	case MULTIPLE;
 	case SINGLE;

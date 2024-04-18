@@ -72,7 +72,7 @@ class Email implements \Stringable
 		{
 		$form = new \PHPFUI\Form($this->page);
 
-		$picker = new \App\View\GA\EventPicker($this->page, \App\View\GA\EventPicker::MULTIPLE, 'Email Riders In These Events');
+		$picker = new \App\View\GA\EventPicker($this->page, \App\Enum\GeneralAdmission\EventPicker::MULTIPLE, 'Email Riders In These Events');
 		$picker->setSelected($this->parameters['gaEventId'] ?? []);
 
 		$form->add($picker);

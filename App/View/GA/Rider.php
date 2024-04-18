@@ -79,7 +79,7 @@ class Rider
 		$rider = new \App\Record\GaRider();
 		$submit = new \PHPFUI\Submit('Add Registration');
 		$form = new \App\UI\ErrorFormSaver($this->page, $rider);
-		$form->add(new \App\View\GA\EventPicker($this->page, \App\View\GA\EventPicker::SINGLE_SELECT, 'Select Event'));
+		$form->add(new \App\View\GA\EventPicker($this->page, \App\Enum\GeneralAdmission\EventPicker::SINGLE_SELECT, 'Select Event'));
 		$form->add($this->getEditFields($rider));
 		$form->add($submit);
 		$form->add(new \PHPFUI\FormError());

@@ -42,7 +42,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$form = new \PHPFUI\Form($this->page);
 				$form->setAreYouSure(false);
-				$form->add(new \App\View\GA\EventPicker($this->page, \App\View\GA\EventPicker::MULTIPLE, 'Select Events'));
+				$form->add(new \App\View\GA\EventPicker($this->page, \App\Enum\GeneralAdmission\EventPicker::MULTIPLE, 'Select Events'));
 				$form->add(new \PHPFUI\Submit('Download'));
 				$this->page->addPageContent($form);
 				}
@@ -109,7 +109,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$form = new \PHPFUI\Form($this->page);
 				$form->setAreYouSure(false);
-				$form->add(new \App\View\GA\EventPicker($this->page, \App\View\GA\EventPicker::MULTIPLE, 'Select Events To Include In Labels'));
+				$form->add(new \App\View\GA\EventPicker($this->page, \App\Enum\GeneralAdmission\EventPicker::MULTIPLE, 'Select Events To Include In Labels'));
 				$form->add(new \App\UI\LabelStock());
 				$form->add(new \PHPFUI\Submit('Download ' . $label));
 				$this->page->addPageContent($form);
@@ -135,7 +135,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		if ($this->page->addHeader('Manage Dates'))
 			{
 			$this->page->addPageContent((new \PHPFUI\Button('Add Event', '/GA/edit/0'))->addClass('success'));
-			$this->page->addPageContent(new \App\View\GA\EventPicker($this->page, \App\View\GA\EventPicker::TABLE, 'Existing Events', '/GA/edit'));
+			$this->page->addPageContent(new \App\View\GA\EventPicker($this->page, \App\Enum\GeneralAdmission\EventPicker::TABLE, 'Existing Events', '/GA/edit'));
 			}
 		}
 
@@ -277,7 +277,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				}
 			else
 				{
-				$this->page->addPageContent(new \App\View\GA\EventPicker($this->page, \App\View\GA\EventPicker::LINK, 'Click A GA Event for ' . $label, '/GA/signs'));
+				$this->page->addPageContent(new \App\View\GA\EventPicker($this->page, \App\Enum\GeneralAdmission\EventPicker::LINK, 'Click A GA Event for ' . $label, '/GA/signs'));
 				}
 			}
 		}

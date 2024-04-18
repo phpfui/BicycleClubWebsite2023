@@ -4,22 +4,12 @@ namespace App\View\GA;
 
 class EventPicker implements \Stringable
 	{
-	final public const LINK = 0;
-
-	final public const MULTIPLE = 2;
-
-	final public const SINGLE = 1;
-
-	final public const SINGLE_SELECT = 4;
-
-	final public const TABLE = 3;
-
 	/**
 	 * @var array<int,int>
 	 */
 	private array $selected = [];
 
-	public function __construct(private readonly \App\View\Page $page, private readonly int $type = self::MULTIPLE, private readonly string $title = 'Select GA Events', private readonly string $link = '')
+	public function __construct(private readonly \App\View\Page $page, private \App\Enum\GeneralAdmission\EventPicker $type = \App\Enum\GeneralAdmission\EventPicker::MULTIPLE, private readonly string $title = 'Select GA Events', private readonly string $link = '')
 		{
 		if (\App\Model\Session::checkCSRF())
 			{
@@ -48,7 +38,7 @@ class EventPicker implements \Stringable
 
 		switch ($this->type)
 			{
-			case self::SINGLE_SELECT:
+			case \App\Enum\GeneralAdmission\EventPicker::SINGLE_SELECT:
 
 				$select = new \PHPFUI\Input\Select('gaEventId');
 
@@ -60,7 +50,7 @@ class EventPicker implements \Stringable
 
 				break;
 
-			case self::SINGLE:
+			case \App\Enum\GeneralAdmission\EventPicker::SINGLE:
 
 				$radio = new \PHPFUI\Input\RadioGroup('gaEventId', '', (string)($this->selected[$events->current()->gaEventId ?? 0] ?? false));
 				$radio->setSeparateRows();
@@ -73,7 +63,7 @@ class EventPicker implements \Stringable
 
 				break;
 
-			case self::MULTIPLE:
+			case \App\Enum\GeneralAdmission\EventPicker::MULTIPLE:
 
 				$multiColumn = new \PHPFUI\MultiColumn();
 
@@ -97,7 +87,7 @@ class EventPicker implements \Stringable
 
 				break;
 
-			case self::LINK:
+			case \App\Enum\GeneralAdmission\EventPicker::LINK:
 
 				$ul = new \PHPFUI\UnorderedList();
 
@@ -110,7 +100,7 @@ class EventPicker implements \Stringable
 
 				break;
 
-			case self::TABLE:
+			case \App\Enum\GeneralAdmission\EventPicker::TABLE:
 
 					$searchableHeaders = ['eventDate' => 'Date', 'title' => 'Title', ];
 					$countHeaders = ['stats' => 'Stats', 'sheets' => 'Sign In Sheets', 'signs' => 'Pre Reg Signs', 'del' => 'Del'];

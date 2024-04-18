@@ -21,16 +21,4 @@ class CueSheet extends \App\Record\Definition\CueSheet
 
 		return "<a href='{$base}/CueSheets/download/{$this->cueSheetId}'>#{$this->cueSheetId} {$this->name}</a>";
 		}
-
-	public function terrain() : string
-		{
-		$terrain = new \App\Record\Terrain($this->terrainId);
-
-		if (! $terrain->loaded())
-			{
-			return '';
-			}
-
-		return $terrain->name;
-		}
 	}

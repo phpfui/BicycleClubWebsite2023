@@ -499,7 +499,7 @@ class CueSheet
 			$detail = new \PHPFUI\HTML5Element('div');
 			$detail->add($cuesheet->description);
 			$detail->add(new \App\UI\Display('Cue Sheet Number:', $cuesheet->cueSheetId));
-			$detail->add(new \App\UI\Display('Terrain:', $cuesheet->terrain()));
+			$detail->add(new \App\UI\Display('Terrain:', $cuesheet->terrain->name));
 
 			if ($cuesheet->elevation)
 				{

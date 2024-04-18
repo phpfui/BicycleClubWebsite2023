@@ -20,7 +20,7 @@ class CueSheet extends \App\Model\EmailData
 		$this->fields['startLocation'] = $startLocation->name;
 		$this->fields['firstName'] = $member->firstName;
 		$this->fields['lastName'] = $member->lastName;
-		$this->fields['terrain'] = $cuesheet->terrain();
+		$this->fields['terrain'] = $cuesheet->terrain->name;
 		$this->fields['downloadLink'] = $cuesheet->getFullNameLink();
 		}
 	}

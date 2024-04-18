@@ -670,10 +670,7 @@ class Editor
 			$div->addClass('hide');
 			}
 
-		$disableComments = new \PHPFUI\Input\RadioGroup('commentsDisabled', 'Ride Comments Setting:', (string)$ride->commentsDisabled);
-		$disableComments->addButton('Enabled', (string)\App\Table\Ride::COMMENTS_ENABLED);
-		$disableComments->addButton('Disabled', (string)\App\Table\Ride::COMMENTS_DISABLED);
-		$disableComments->addButton('Disabled and Hidden', (string)\App\Table\Ride::COMMENTS_HIDDEN);
+		$disableComments = new \PHPFUI\Input\RadioGroupEnum('commentsDisabled', 'Ride Comments Setting:', $ride->commentsDisabled);
 		$disableComments->setToolTip('You can disable or hide comments. If comments are disabled, no more comments can be posted.');
 		$fieldSet->add($disableComments);
 

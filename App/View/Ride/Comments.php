@@ -33,7 +33,7 @@ class Comments
 
 	public function getRideComments() : string | \PHPFUI\Container
 		{
-		if (\App\Table\Ride::COMMENTS_HIDDEN == $this->ride->commentsDisabled)
+		if (\App\Enum\Ride\Comments::DISABLED_AND_HIDDEN == $this->ride->commentsDisabled)
 			{
 			return '';
 			}
@@ -149,7 +149,7 @@ class Comments
 
 		$fieldSet = new \PHPFUI\FieldSet('Ride Comments');
 
-		if (\App\Table\Ride::COMMENTS_ENABLED == $this->ride->commentsDisabled)
+		if (\App\Enum\Ride\Comments::ENABLED == $this->ride->commentsDisabled)
 			{
 			$add = new \PHPFUI\Button('Add Comment');
 			$fieldSet->add($add);

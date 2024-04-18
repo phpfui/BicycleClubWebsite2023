@@ -4,12 +4,6 @@ namespace App\Table;
 
 class Ride extends \PHPFUI\ORM\Table
 	{
-	final public const COMMENTS_DISABLED = 1;
-
-	final public const COMMENTS_ENABLED = 0;
-
-	final public const COMMENTS_HIDDEN = 2;
-
 	final public const STATUS_COMPLETED = 5;
 
 	final public const STATUS_CUT_SHORT = 4;

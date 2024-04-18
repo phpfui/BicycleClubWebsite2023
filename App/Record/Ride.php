@@ -12,6 +12,7 @@ namespace App\Record;
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\AssistantLeader> $assistantLeaders
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\RideSignup> $confirmedRiders
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\RideSignup> $waitList
+ * @property \App\Enum\Ride\Comments $commentsDisabled
  */
 class Ride extends \App\Record\Definition\Ride
 	{
@@ -24,6 +25,7 @@ class Ride extends \App\Record\Definition\Ride
 		'rideSignups' => [\PHPFUI\ORM\Children::class, \App\Table\RideSignup::class],
 		'SigninSheetRideChildren' => [\PHPFUI\ORM\Children::class, \App\Table\SigninSheetRide::class],
 		'confirmedRiders' => [\App\DB\ConfirmedRiders::class],
+		'commentsDisabled' => [\PHPFUI\ORM\Enum::class, \App\Enum\Ride\Comments::class],
 	];
 
 	public function canClone() : bool

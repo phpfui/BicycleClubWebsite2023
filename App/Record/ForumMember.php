@@ -12,5 +12,4 @@ class ForumMember extends \App\Record\Definition\ForumMember
 	protected static array $virtualFields = [
 		'emailType' => [\PHPFUI\ORM\Enum::class, \App\Enum\Forum\SubscriptionType::class],
 	];
-
 	}

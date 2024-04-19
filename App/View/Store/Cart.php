@@ -138,7 +138,7 @@ class Cart
 
 				switch ($item['type'])
 					{
-					case \App\Model\Cart::TYPE_GA:
+					case \App\Enum\Store\Type::GENERAL_ADMISSION:
 						$warnings = $this->gaModel->getWarningMessages($item['storeItemDetailId']);
 
 						if ($warnings)
@@ -183,8 +183,8 @@ class Cart
 
 						break;
 
-					case \App\Model\Cart::TYPE_STORE:
-					case \App\Model\Cart::TYPE_ORDER:
+					case \App\Enum\Store\Type::STORE:
+					case \App\Enum\Store\Type::ORDER:
 						$detail = $item['detailLine'] ?? $item['optionsSelected'];
 						$item['description'] = "<a href='/Store/item/{$item['storeItemId']}'>{$item['title']}</a><br>{$detail}";
 
@@ -198,13 +198,13 @@ class Cart
 
 						break;
 
-					case \App\Model\Cart::TYPE_EVENT:
+					case \App\Enum\Store\Type::EVENT:
 						break;
 
-					case \App\Model\Cart::TYPE_MEMBERSHIP:
+					case \App\Enum\Store\Type::MEMBERSHIP:
 						break;
 
-					case \App\Model\Cart::TYPE_DISCOUNT_CODE:
+					case \App\Enum\Store\Type::DISCOUNT_CODE:
 						break;
 					}
 

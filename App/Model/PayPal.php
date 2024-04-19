@@ -125,7 +125,7 @@ class PayPal
 			$itm->description = \Soundasleep\Html2Text::convert($item->description ?? '', ['drop_links' => 'href', 'ignore_errors' => true]);
 			$purchaseUnit->addItem($itm);
 
-			if (\App\Model\Cart::TYPE_GA == $item->type)
+			if (\App\Enum\Store\Type::GENERAL_ADMISSION == $item->type)
 				{
 				$rider = new \App\Record\GaRider($item['storeItemDetailId']);
 

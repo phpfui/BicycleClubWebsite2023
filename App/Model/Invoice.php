@@ -49,7 +49,7 @@ class Invoice
 				{
 				switch ($invoiceItem->type)
 					{
-					case \App\Model\Cart::TYPE_STORE:
+					case \App\Enum\Store\Type::STORE:
 						$storeItemDetail = new \App\Record\StoreItemDetail(['storeItemId' => $invoiceItem->storeItemId,
 							'storeItemDetailId' => $invoiceItem->storeItemDetailId, ]);
 
@@ -61,17 +61,17 @@ class Invoice
 
 						break;
 
-					case \App\Model\Cart::TYPE_GA:
+					case \App\Enum\Store\Type::GENERAL_ADMISSION:
 						$this->gaModel->setRiderPending($invoiceItem->storeItemDetailId, 1);
 
 						break;
 
-					case \App\Model\Cart::TYPE_DISCOUNT_CODE:
-					case \App\Model\Cart::TYPE_MEMBERSHIP:
+					case \App\Enum\Store\Type::DISCOUNT_CODE:
+					case \App\Enum\Store\Type::MEMBERSHIP:
 						// nothing to do!
 						break;
 
-					case \App\Model\Cart::TYPE_EVENT:
+					case \App\Enum\Store\Type::EVENT:
 						// remove the reservation from the event
 						$this->reservationModel->delete(new \App\Record\Reservation($invoiceItem->storeItemDetailId));
 
@@ -97,7 +97,7 @@ class Invoice
 				{
 				switch ($invoiceItem->type)
 					{
-					case \App\Model\Cart::TYPE_ORDER:
+					case \App\Enum\Store\Type::ORDER:
 						$storeItem = $invoiceItem->storeItem;
 						$invoice->fullfillmentDate = null;
 						// add into storeOrder table
@@ -112,7 +112,7 @@ class Invoice
 
 						break;
 
-					case \App\Model\Cart::TYPE_STORE:
+					case \App\Enum\Store\Type::STORE:
 						$storeItem = $invoiceItem->storeItem;
 
 						if (! $storeItem->empty())
@@ -127,7 +127,7 @@ class Invoice
 						// nothing else to do here, items already taken out of inventory, if not paid, we will restore them elsewhere.
 						break;
 
-					case \App\Model\Cart::TYPE_GA:
+					case \App\Enum\Store\Type::GENERAL_ADMISSION:
 						// $event = new \App\Record\GaEvent($cartItem['storeItemId']);
 						// $rider = new \App\Record\GaRider($cartItem['storeItemDetailId']);
 						$affectedMembers[] = $this->gaModel->executeInvoice($invoice, $invoiceItem);
@@ -135,17 +135,17 @@ class Invoice
 
 						break;
 
-					case \App\Model\Cart::TYPE_DISCOUNT_CODE:
+					case \App\Enum\Store\Type::DISCOUNT_CODE:
 						// nothing to do here!
 						break;
 
-					case \App\Model\Cart::TYPE_MEMBERSHIP:
+					case \App\Enum\Store\Type::MEMBERSHIP:
 						$affectedMembers[] = $this->memberModel->executeInvoice($invoice, $invoiceItem, $payment);
 						$chairs['Membership Chair'] = 1;
 
 						break;
 
-					case \App\Model\Cart::TYPE_EVENT:
+					case \App\Enum\Store\Type::EVENT:
 						$affectedMembers[] = $this->reservationModel->executeInvoice($invoice, $invoiceItem, $payment);
 						$chairs[] = $this->reservationModel->getChair($invoiceItem->storeItemId);
 
@@ -338,11 +338,11 @@ class Invoice
 				$tax = $taxCalculator->compute($cartItem);
 				$invoice->totalTax += $tax;
 
-				switch ($cartItem['type'])
+				switch (\App\Enum\Store\Type::from((int)$cartItem['type']))
 					{
-					case \App\Model\Cart::TYPE_STORE:
-					case \App\Model\Cart::TYPE_ORDER:
-					case \App\Model\Cart::TYPE_MEMBERSHIP:
+					case \App\Enum\Store\Type::STORE:
+					case \App\Enum\Store\Type::ORDER:
+					case \App\Enum\Store\Type::MEMBERSHIP:
 						$storeItem = new \App\Record\StoreItem($cartItem['storeItemId']);
 
 						if ($storeItem->loaded())
@@ -384,7 +384,7 @@ class Invoice
 							$invoiceItem->tax = $tax;
 							$invoiceItem->insertOrUpdate();
 
-							if (\App\Model\Cart::TYPE_STORE == $cartItem['type'])
+							if (\App\Enum\Store\Type::STORE == $cartItem['type'])
 								{
 								// remove from inventory
 								$storeItemDetail->quantity = $storeItemDetail->quantity - (int)$cartItem['quantity'];
@@ -394,7 +394,7 @@ class Invoice
 
 						break;
 
-					case \App\Model\Cart::TYPE_GA:
+					case \App\Enum\Store\Type::GENERAL_ADMISSION:
 						unset($invoiceUpdates['fullfillmentDate']);
 						$event = new \App\Record\GaEvent($cartItem['storeItemId']);
 						$rider = new \App\Record\GaRider($cartItem['storeItemDetailId']);
@@ -417,12 +417,12 @@ class Invoice
 
 						break;
 
-					case \App\Model\Cart::TYPE_DISCOUNT_CODE:
+					case \App\Enum\Store\Type::DISCOUNT_CODE:
 						$invoiceUpdates['discountCodeId'] = $cartItem['discountCodeId'];
 
 						break;
 
-					case \App\Model\Cart::TYPE_EVENT:
+					case \App\Enum\Store\Type::EVENT:
 						break;
 					}
 				}
@@ -574,7 +574,7 @@ class Invoice
 			$size = $pdf->addLine($y, $line);
 			$y += $size + 2;
 
-			if (\App\Model\Cart::TYPE_GA == $invoiceItem->type)
+			if (\App\Enum\Store\Type::GENERAL_ADMISSION == $invoiceItem->type)
 				{
 				$rider = new \App\Record\GaRider($invoiceItem->storeItemDetailId);
 
@@ -616,27 +616,27 @@ class Invoice
 			{
 			switch ($invoiceItem->type)
 				{
-				case \App\Model\Cart::TYPE_ORDER:
-				case \App\Model\Cart::TYPE_STORE:
+				case \App\Enum\Store\Type::ORDER:
+				case \App\Enum\Store\Type::STORE:
 					$chairs['Store Shipping'] = 1;
 
 					break;
 
-				case \App\Model\Cart::TYPE_GA:
+				case \App\Enum\Store\Type::GENERAL_ADMISSION:
 					$chairs[] = $this->gaModel->getChair($invoiceItem->storeItemId);
 
 					break;
 
-				case \App\Model\Cart::TYPE_DISCOUNT_CODE:
+				case \App\Enum\Store\Type::DISCOUNT_CODE:
 					// nothing to do here!
 					break;
 
-				case \App\Model\Cart::TYPE_MEMBERSHIP:
+				case \App\Enum\Store\Type::MEMBERSHIP:
 					$chairs['Membership Chair'] = 1;
 
 					break;
 
-				case \App\Model\Cart::TYPE_EVENT:
+				case \App\Enum\Store\Type::EVENT:
 					$chairs[] = $this->reservationModel->getChair($invoiceItem->storeItemId);
 
 					break;

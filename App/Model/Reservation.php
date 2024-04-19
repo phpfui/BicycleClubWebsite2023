@@ -55,7 +55,7 @@ class Reservation
 			}
 		$invoiceItem->detailLine = \implode(',', $names);
 		$invoiceItem->quantity = \count($attendees);
-		$invoiceItem->type = \App\Model\Cart::TYPE_EVENT;
+		$invoiceItem->type = \App\Enum\Store\Type::EVENT;
 		$invoiceItem->shipping = 0.0;
 		$invoiceItem->tax = 0.0;
 		$invoiceItem->price = $event->price;
@@ -79,7 +79,7 @@ class Reservation
 			$invoiceItem->description = '';
 			$invoiceItem->detailLine = \array_shift($names);
 			$invoiceItem->quantity = 1;
-			$invoiceItem->type = \App\Model\Cart::TYPE_MEMBERSHIP;
+			$invoiceItem->type = \App\Enum\Store\Type::MEMBERSHIP;
 			$invoiceItem->shipping = 0.0;
 			$invoiceItem->tax = 0.0;
 			$invoiceItem->price = $price;

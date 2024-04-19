@@ -993,7 +993,7 @@ class Member
 			$invoiceItem->price = (float)\number_format($annualDues / $years, 2);
 			$invoiceItem->shipping = 0.0;
 			$invoiceItem->quantity = $years;
-			$invoiceItem->type = \App\Model\Cart::TYPE_MEMBERSHIP;
+			$invoiceItem->type = \App\Enum\Store\Type::MEMBERSHIP;
 			$invoiceItem->tax = 0.0;
 			$invoiceItem->insert();
 			}
@@ -1016,7 +1016,7 @@ class Member
 			$invoiceItem->storeItemId = 1;
 			$invoiceItem->detailLine = '';
 			$invoiceItem->shipping = 0.0;
-			$invoiceItem->type = \App\Model\Cart::TYPE_MEMBERSHIP;
+			$invoiceItem->type = \App\Enum\Store\Type::MEMBERSHIP;
 			$invoiceItem->tax = 0.0;
 
 			$invoiceItem->storeItemDetailId = self::ADDITIONAL_MEMBERSHIP;
@@ -1039,7 +1039,7 @@ class Member
 			$invoiceItem->price = $donation;
 			$invoiceItem->shipping = 0.0;
 			$invoiceItem->quantity = 1;
-			$invoiceItem->type = \App\Model\Cart::TYPE_MEMBERSHIP;
+			$invoiceItem->type = \App\Enum\Store\Type::MEMBERSHIP;
 			$invoiceItem->tax = 0.0;
 			$invoiceItem->insert();
 			}

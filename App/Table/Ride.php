@@ -548,7 +548,7 @@ class Ride extends \PHPFUI\ORM\Table
 		$this->addJoin('invoiceItem', new \PHPFUI\ORM\Condition('invoice.invoiceId', new \PHPFUI\ORM\Field('invoiceItem.invoiceId')));
 		$whereCondition = new \PHPFUI\ORM\Condition('rideDate', $rideDate);
 		$whereCondition->and(new \PHPFUI\ORM\Condition('fullfillmentDate', null, new \PHPFUI\ORM\Operator\IsNull()));
-		$whereCondition->and(new \PHPFUI\ORM\Condition('type', \App\Model\Cart::TYPE_ORDER));
+		$whereCondition->and(new \PHPFUI\ORM\Condition('type', \App\Enum\Store\Type::ORDER));
 		$this->setWhere($whereCondition);
 		$this->addOrderBy('ride.title');
 		$this->addOrderBy('member.lastName');

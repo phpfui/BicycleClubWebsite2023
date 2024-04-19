@@ -51,7 +51,7 @@ class Edit
 				$cartItem->storeItemDetailId = (int)$_POST['storeItemDetailId'];
 				$cartItem->memberId = (int)$_POST['memberId'];
 				$cartItem->quantity = (int)$_POST['quantity'];
-				$cartItem->type = \App\Model\Cart::TYPE_STORE;
+				$cartItem->type = \App\Enum\Store\Type::STORE;
 				$cartItem->dateAdded = $_POST['dateAdded'];
 				$cartItem->cartItemId = \mt_rand();
 				$items[] = $cartItem;

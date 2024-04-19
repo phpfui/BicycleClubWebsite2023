@@ -4,18 +4,6 @@ namespace App\Model;
 
 class Cart
 	{
-	final public const TYPE_DISCOUNT_CODE = 2;
-
-	final public const TYPE_EVENT = 3;
-
-	final public const TYPE_GA = 1;
-
-	final public const TYPE_MEMBERSHIP = 4;
-
-	final public const TYPE_ORDER = 5;
-
-	final public const TYPE_STORE = 0;
-
 	private bool $computed = false;
 
 	private int $count = 0;
@@ -105,13 +93,13 @@ class Cart
 			if (isset($request['optionsSelected']))
 				{
 				$cartItem->optionsSelected = $request['optionsSelected'];
-				$cartItem->type = \App\Model\Cart::TYPE_ORDER;
+				$cartItem->type = \App\Enum\Store\Type::ORDER;
 				}
 
 			if (isset($request['storeItemDetailId']))
 				{
 				$cartItem->storeItemDetailId = (int)$request['storeItemDetailId'];
-				$cartItem->type = \App\Model\Cart::TYPE_STORE;
+				$cartItem->type = \App\Enum\Store\Type::STORE;
 				}
 
 			if (isset($request['quantity']))
@@ -166,7 +154,7 @@ class Cart
 
 		$rider['gaRiderId'] = $rider['storeItemDetailId'] = $gaRiderId;
 		$rider['storeItemId'] = $rider['gaEventId'];
-		$rider['type'] = self::TYPE_GA;
+		$rider['type'] = \App\Enum\Store\Type::GENERAL_ADMISSION;
 		$rider['quantity'] = 1;
 		$rider['discountCodeId'] = 0;
 		$rider['dateAdded'] = \App\Tools\Date::todayString();
@@ -195,7 +183,7 @@ class Cart
 
 			foreach ($cartItems as $cartItem)
 				{
-				if (\App\Model\Cart::TYPE_STORE == $cartItem['type']) // type 0, has inventory
+				if (\App\Enum\Store\Type::STORE->value == $cartItem['type']) // type 0, has inventory
 					{
 					$key = ['storeItemId' => $cartItem['storeItemId'],
 						'storeItemDetailId' => $cartItem['storeItemDetailId'], ];
@@ -263,7 +251,7 @@ class Cart
 					$this->count += $cartItem['quantity'];
 					$this->total += $value;
 
-					if (\App\Model\Cart::TYPE_GA == $cartItem['type'])
+					if (\App\Enum\Store\Type::GENERAL_ADMISSION->value == $cartItem['type'])
 						{
 						$rider = new \App\Record\GaRider($cartItem['storeItemDetailId']);
 
@@ -283,10 +271,10 @@ class Cart
 
 	public function delete(\App\Record\CartItem $cartItem) : bool
 		{
-		if (self::TYPE_EVENT == $cartItem->type)
+		if (\App\Enum\Store\Type::EVENT == $cartItem->type)
 			{
 			}
-		elseif (self::TYPE_GA == $cartItem->type)
+		elseif (\App\Enum\Store\Type::GENERAL_ADMISSION == $cartItem->type)
 			{
 			$gaRider = new \App\Record\GaRider();
 			$gaRider->gaRiderId = $cartItem->storeItemDetailId;
@@ -356,7 +344,7 @@ class Cart
 
 				$pickupTotal = $shipping = $items = $points = $noShipping = 0;
 
-				if (\App\Model\Cart::TYPE_GA == $cartItem['type'])
+				if (\App\Enum\Store\Type::GENERAL_ADMISSION->value == $cartItem['type'])
 					{
 					// storeItemId = gaEventId;
 					// storeItemDetailId = gaRiderId
@@ -377,11 +365,11 @@ class Cart
 					$cartItem['noShipping'] = 1;
 					$items = 1;
 					}
-				elseif (\App\Model\Cart::TYPE_DISCOUNT_CODE == $cartItem['type'])
+				elseif (\App\Enum\Store\Type::DISCOUNT_CODE->value == $cartItem['type'])
 					{
 					// nothing to do here!
 					}
-				elseif (\in_array($cartItem['type'], [\App\Model\Cart::TYPE_STORE, \App\Model\Cart::TYPE_MEMBERSHIP, \App\Model\Cart::TYPE_ORDER]))
+				elseif (\in_array($cartItem['type'], [\App\Enum\Store\Type::STORE->value, \App\Enum\Store\Type::MEMBERSHIP->value, \App\Enum\Store\Type::ORDER->value]))
 					{
 					$storeItem = new \App\Record\StoreItem($cartItem['storeItemId']);
 
@@ -485,7 +473,7 @@ class Cart
 			$cartItem = new \App\Record\CartItem();
 			$cartItem->memberId = $this->memberId;
 			$cartItem->discountCode = $discount;
-			$cartItem->type = 2;
+			$cartItem->type = \App\Enum\Store\Type::DISCOUNT_CODE;
 			$cartItem->dateAdded = \App\Tools\Date::todayString();
 			$cartItem->insert();
 

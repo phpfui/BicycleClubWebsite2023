@@ -345,27 +345,27 @@ class Finance
 
 		if ($request['store'] ?? 0)
 			{
-			$typeArray[] = \App\Model\Cart::TYPE_STORE;
+			$typeArray[] = \App\Enum\Store\Type::STORE->value;
 			}
 
 		if ($request['PE'] ?? 0)
 			{
-			$typeArray[] = \App\Model\Cart::TYPE_GA;
+			$typeArray[] = \App\Enum\Store\Type::GENERAL_ADMISSION->value;
 			}
 
 		if ($request['membership'] ?? 0)
 			{
-			$typeArray[] = \App\Model\Cart::TYPE_MEMBERSHIP;
+			$typeArray[] = \App\Enum\Store\Type::MEMBERSHIP->value;
 			}
 
 		if ($request['discount'] ?? 0)
 			{
-			$typeArray[] = \App\Model\Cart::TYPE_DISCOUNT_CODE;
+			$typeArray[] = \App\Enum\Store\Type::DISCOUNT_CODE->value;
 			}
 
 		if ($request['club'] ?? 0)
 			{
-			$typeArray[] = \App\Model\Cart::TYPE_EVENT;
+			$typeArray[] = \App\Enum\Store\Type::EVENT->value;
 			}
 
 		return $typeArray;

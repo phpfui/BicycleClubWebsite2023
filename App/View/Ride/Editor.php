@@ -156,7 +156,7 @@ class Editor
 
 		$form->add(new \PHPFUI\Input\Hidden('rideId', (string)$ride->rideId));
 
-		if (! $ride->memberId && $this->page->isAuthorized('Add A Ride') && ! $afterRide)
+		if (! $ride->memberId && \App\Model\Ride::canAddRide($this->page->getPermissions()) && ! $afterRide)
 			{
 			$ride->memberId = \App\Model\Session::signedInMemberId();
 			}

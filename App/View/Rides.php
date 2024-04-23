@@ -623,7 +623,9 @@ class Rides
 					$bg->addButton($button);
 					}
 
-				if (! $ride->memberId && $this->page->isAuthorized('Add A Ride') && $ride->rideDate >= $today)
+				$canAddRide = \App\Model\Ride::canAddRide($this->page->getPermissions());
+
+				if (! $ride->memberId && $canAddRide && $ride->rideDate >= $today)
 					{
 					$edit = 'Lead It!';
 					}
@@ -640,7 +642,7 @@ class Rides
 					$bg->addButton($button);
 					}
 
-				if ($this->page->isAuthorized('Add A Ride') && ! $this->approvingRides)
+				if ($canAddRide && ! $this->approvingRides)
 					{
 					$button = new \PHPFUI\Button('Repeat Ride');
 					$button->addClass('secondary');

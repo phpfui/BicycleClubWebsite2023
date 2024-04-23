@@ -33,7 +33,7 @@ class Ride
 		$this->homePage = \rtrim($this->settingTable->value('homePage'), '/');
 		$this->clubName = $this->settingTable->value('clubName');
 		$this->clubAbbrev = $this->settingTable->value('clubAbbrev');
-	}
+		}
 
 	/**
 	 * @param array<string,mixed> $parameters
@@ -95,6 +95,21 @@ class Ride
 
 			$rideSignup->insertOrUpdate();
 			}
+		}
+
+	public static function canAddRide(\App\Model\PermissionBase $permissions) : bool
+		{
+		$addPermissions = ['Add A Ride', 'Add RWGPS Ride', 'Add Ride To Schedule'];
+
+		foreach ($addPermissions as $permission)
+			{
+			if ($permissions->isAuthorized($permission))
+				{
+				return true;
+				}
+			}
+
+		return false;
 		}
 
 	public function cancel(\App\Record\Ride $ride, string $leaderMessage) : void

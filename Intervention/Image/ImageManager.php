@@ -25,7 +25,7 @@ final class ImageManager
     }
 
     /**
-     * Create image mangager with given driver
+     * Create image manager with given driver
      *
      * @link https://image.intervention.io/v3/basics/image-manager
      * @param string|DriverInterface $driver
@@ -122,6 +122,16 @@ final class ImageManager
     public function animate(callable $init): ImageInterface
     {
         return $this->driver->createAnimation($init);
+    }
+
+    /**
+     * Return currently used driver
+     *
+     * @return DriverInterface
+     */
+    public function driver(): DriverInterface
+    {
+        return $this->driver;
     }
 
     /**

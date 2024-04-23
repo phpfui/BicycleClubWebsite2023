@@ -9,4 +9,3 @@ trait Name
 		return \ucwords(\strtolower(\str_replace('_', ' ', $this->name)));
 		}
 	}
-

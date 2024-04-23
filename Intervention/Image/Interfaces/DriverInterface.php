@@ -7,6 +7,9 @@ namespace Intervention\Image\Interfaces;
 use Intervention\Image\Exceptions\DriverException;
 use Intervention\Image\Exceptions\NotSupportedException;
 use Intervention\Image\Exceptions\RuntimeException;
+use Intervention\Image\FileExtension;
+use Intervention\Image\Format;
+use Intervention\Image\MediaType;
 
 interface DriverInterface
 {
@@ -20,19 +23,21 @@ interface DriverInterface
     /**
      * Resolve given object into a specialized version for the current driver
      *
-     * @param object $object
+     * @param ModifierInterface|AnalyzerInterface|EncoderInterface|DecoderInterface $object
      * @throws NotSupportedException
      * @return ModifierInterface|AnalyzerInterface|EncoderInterface|DecoderInterface
      */
-    public function specialize(object $object): ModifierInterface|AnalyzerInterface|EncoderInterface|DecoderInterface;
+    public function specialize(
+        ModifierInterface|AnalyzerInterface|EncoderInterface|DecoderInterface $object
+    ): ModifierInterface|AnalyzerInterface|EncoderInterface|DecoderInterface;
 
     /**
      * Resolve array of classnames or objects into their specialized version for the current driver
      *
-     * @param array $specializables
+     * @param array $objects
      * @return array
      */
-    public function specializeMultiple(array $specializables): array;
+    public function specializeMultiple(array $objects): array;
 
     /**
      * Create new image instance with the current driver in given dimensions
@@ -85,4 +90,13 @@ interface DriverInterface
      * @return void
      */
     public function checkHealth(): void;
+
+    /**
+     * Check if the current driver supports the given format and if the
+     * underlying PHP extension was built with support for the format.
+     *
+     * @param string|Format|FileExtension|MediaType $identifier
+     * @return bool
+     */
+    public function supports(string|Format|FileExtension|MediaType $identifier): bool;
 }

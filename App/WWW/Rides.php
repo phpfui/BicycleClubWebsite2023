@@ -178,18 +178,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	public function edit(\App\Record\Ride $ride = new \App\Record\Ride()) : void
 		{
 		$afterRide = $ride->rideDate && $ride->rideDate < \App\Tools\Date::todayString();
-		$canAddRide = false;
-		$addPermissions = ['Add A Ride', 'Add RWGPS Ride', 'Add Ride To Schedule'];
-
-		foreach ($addPermissions as $permission)
-			{
-			if ($this->page->isAuthorized($permission))
-				{
-				$canAddRide = true;
-
-				break;
-				}
-			}
+		$canAddRide = \App\Model\Ride::canAddRide($this->page->getPermissions());
 
 		if (! $ride->memberId && $canAddRide && ! $afterRide)
 			{

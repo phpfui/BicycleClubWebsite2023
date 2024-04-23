@@ -12,4 +12,3 @@ enum EventPicker
 	case SINGLE_SELECT;
 	case TABLE;
 	}
-

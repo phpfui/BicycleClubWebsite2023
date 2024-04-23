@@ -140,7 +140,7 @@ class CueSheet extends \FPDF
 		if ($member->loaded())
 			{
 			$leader = $member->fullName();
-			$cellPhoneNumber = $member->cellPhone;
+			$cellPhoneNumber = $member->cellPhone ?? '';
 			}
 
 		return $this->generateFromRWGPS($ride->RWGPS, $ride->title, $leader, $cellPhoneNumber);

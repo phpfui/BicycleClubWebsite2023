@@ -152,21 +152,21 @@ class Cart
 			$gaRiderSelection->insert();
 			}
 
-		$rider['gaRiderId'] = $rider['storeItemDetailId'] = $gaRiderId;
-		$rider['storeItemId'] = $rider['gaEventId'];
-		$rider['type'] = \App\Enum\Store\Type::GENERAL_ADMISSION;
-		$rider['quantity'] = 1;
-		$rider['discountCodeId'] = 0;
-		$rider['dateAdded'] = \App\Tools\Date::todayString();
-
 		if (! $this->memberId)
 			{
 			$this->memberId = $this->customerModel->getNewNumber();
 			}
-		$rider['memberId'] = $this->memberId;
 
 		$cartItem = new \App\Record\CartItem();
 		$cartItem->setFrom($rider);
+		$cartItem->storeItemDetailId = $gaRiderId;
+		$cartItem->storeItemId = $rider['gaEventId'];
+		$cartItem->memberId = $this->memberId;
+		$cartItem->type = \App\Enum\Store\Type::GENERAL_ADMISSION;
+		$cartItem->quantity = 1;
+		$cartItem->discountCodeId = 0;
+		$cartItem->dateAdded = \App\Tools\Date::todayString();
+
 		$cartItem->insert();
 
 		return $gaRiderId;

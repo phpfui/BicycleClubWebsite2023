@@ -384,7 +384,7 @@ class Invoice
 							$invoiceItem->tax = $tax;
 							$invoiceItem->insertOrUpdate();
 
-							if (\App\Enum\Store\Type::STORE == $cartItem['type'])
+							if (\App\Enum\Store\Type::STORE->value == $cartItem['type'])
 								{
 								// remove from inventory
 								$storeItemDetail->quantity = $storeItemDetail->quantity - (int)$cartItem['quantity'];

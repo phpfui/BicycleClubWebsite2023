@@ -379,7 +379,7 @@ class Events
 		if (! $invoice->empty() && $invoice->memberId == \App\Model\Session::getCustomerNumber())
 			{
 			$container = new \PHPFUI\Container();
-			$invoiceItem = new \App\Record\InvoiceItem(['invoiceId' => $invoice->invoiceId, 'type' => \App\Enum\Store\Type::EVENT]);
+			$invoiceItem = new \App\Record\InvoiceItem(['invoiceId' => $invoice->invoiceId, 'type' => \App\Enum\Store\Type::EVENT->value]);
 			$this->setEvent(new \App\Record\Event($invoiceItem->storeItemId));
 			$reservation = new \App\Record\Reservation($invoiceItem->storeItemDetailId);
 

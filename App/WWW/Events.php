@@ -278,7 +278,7 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		else
 			{
-			$invoiceItem = new \App\Record\InvoiceItem(['invoiceId' => $invoice->invoiceId, 'type' => \App\Enum\Store\Type::EVENT]);
+			$invoiceItem = new \App\Record\InvoiceItem(['invoiceId' => $invoice->invoiceId, 'type' => \App\Enum\Store\Type::EVENT->value]);
 			$reservation = new \App\Record\Reservation($invoiceItem->storeItemDetailId);
 
 			$customerModel = new \App\Model\Customer();

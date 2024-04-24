@@ -136,7 +136,7 @@ class Cart
 				$message = '';
 				$additionalRows = [];
 
-				switch ($item['type'])
+				switch (\App\Enum\Store\Type::from($item['type']))
 					{
 					case \App\Enum\Store\Type::GENERAL_ADMISSION:
 						$warnings = $this->gaModel->getWarningMessages($item['storeItemDetailId']);

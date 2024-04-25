@@ -18,7 +18,6 @@ class PublicPage extends \PHPFUI\ORM\Validator
 		'publicMenu' => ['required', 'integer'],
 		'sequence' => ['integer'],
 		'url' => ['maxlength', 'starts_with:/', 'unique'],
-		'redirectUrl' => ['maxlength', 'url'],
 	];
 
 	public function __construct(\App\Record\PublicPage $record)

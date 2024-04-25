@@ -32,7 +32,7 @@ class Page extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 
 		$publicPage = $publicPageCursor->current();
 
-		$this->setPublic(2 != $publicPage->hidden);
+		$this->setPublic(\App\Enum\Admin\PublicPageVisibility::MEMBER_ONLY != $publicPage->hidden);
 
 		if ($publicPage->banner)
 			{
@@ -78,13 +78,9 @@ class Page extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 
 	public function getUniqueLink(\App\Record\PublicPage $publicPage) : string
 		{
-		if ($publicPage->redirectUrl)
-			{
-			return $publicPage->redirectUrl;
-			}
 		$baseLink = $publicPage->url ?? '';
 
-		if (1 == $publicPage->hidden)
+		if (\App\Enum\Admin\PublicPageVisibility::NO_OUTSIDE_LINKS == $publicPage->hidden)
 			{
 			return $baseLink . '/' . \App\Model\Session::csrf();
 			}

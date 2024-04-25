@@ -204,9 +204,7 @@ class PublicPageEditor
 		$url = new \PHPFUI\Input\Text('url', 'URL of the page', $publicPage->url);
 		$url->setToolTip('The URL relative to the root domain.  Should start with a /.');
 		$url->setRequired();
-		$redirect = new \PHPFUI\Input\Url('redirectUrl', 'Redirect to this URL', $publicPage->redirectUrl);
-		$redirect->setToolTip('If set, redirect to this URL');
-		$fieldSet->add(new \PHPFUI\MultiColumn($url, $redirect));
+		$fieldSet->add(new \PHPFUI\MultiColumn($url));
 
 		$homePageNotification = new \PHPFUI\Input\CheckBoxBoolean(' homePageNotification', 'Home Page Notification', (bool)$publicPage->homePageNotification);
 		$homePageNotification->setToolTip('Latest content headline will be listed on the user Home page');
@@ -216,11 +214,8 @@ class PublicPageEditor
 		$blog->setToolTip('Check to display content at top of page (named as the header)');
 		$fieldSet->add(new \PHPFUI\MultiColumn($homePageNotification, $banner, $blog));
 
-		$hidden = new \PHPFUI\Input\RadioGroup('hidden', 'Page Visability', (string)$publicPage->hidden);
+		$hidden = new \PHPFUI\Input\RadioGroupEnum('hidden', 'Page Visability', $publicPage->hidden);
 		$hidden->setToolTip('PUBLIC links allow third party website to link to them. NO OUTSIDE LINKS will not allow a third party page to access the link, but is still public and accessable via direct links on the website. MEMBERS ONLY means the link will be public, but requires members to sign in.');
-		$hidden->addButton('Public', (string)0);
-		$hidden->addButton('No Outside Links', (string)1);
-		$hidden->addButton('Member Only', (string)2);
 
 		$publicMenu = new \PHPFUI\Input\CheckBoxBoolean('publicMenu', 'Public Menu', (bool)$publicPage->publicMenu);
 		$publicMenu->setToolTip('Check to display on public menu');

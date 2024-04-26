@@ -19,7 +19,7 @@ class Redirects implements \Stringable
 
 		if ($form->isMyCallback())
 			{
-			$errors = $this->redirectTable->validateFromTable($_POST); // @phpstan-ignore-line
+			$errors = $this->redirectTable->validateFromTable($_POST);
 
 			if ($errors)
 				{

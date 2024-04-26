@@ -1107,7 +1107,7 @@ abstract class Table implements \Countable
 						}
 					}
 				$record->setFrom($data);
-				$errors = array_merge($errors, $record->validate());
+				$errors = \array_merge($errors, $record->validate());
 				}
 			}
 

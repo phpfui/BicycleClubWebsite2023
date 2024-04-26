@@ -1,4 +1,8 @@
-Default category																																																								`
+Adding more members while joining
+
+Make RWGPS links private
+
+Default category
 
 Move delete buttons to end of button groups
 

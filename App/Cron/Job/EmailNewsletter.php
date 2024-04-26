@@ -30,7 +30,7 @@ class EmailNewsletter extends \App\Cron\BaseJob
 				$email->setSubject("The {$date} {$abbrev} {$name} is now available");
 				$memberPicker = new \App\Model\MemberPicker('Newsletter Editor');
 				$email->setFromMember($memberPicker->getMember());
-				$fileModel = new \App\Model\NewsletterFiles($newsletter->toArray());
+				$fileModel = new \App\Model\NewsletterFiles($newsletter);
 				$emailAttached = clone $email;
 				$emailAttached->addAttachment($fileModel->get($newsletter->newsletterId . '.pdf'), $fileModel->getPrettyFileName());
 				$members = \App\Table\Member::getNewsletterMembers($today);

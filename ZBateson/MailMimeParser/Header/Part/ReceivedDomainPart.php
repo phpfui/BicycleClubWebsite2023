@@ -7,6 +7,7 @@
 
 namespace ZBateson\MailMimeParser\Header\Part;
 
+use Psr\Log\LoggerInterface;
 use ZBateson\MbWrapper\MbWrapper;
 
 /**
@@ -34,31 +35,39 @@ class ReceivedDomainPart extends ReceivedPart
     /**
      * @var string The name used to identify the server in the EHLO line.
      */
-    protected $ehloName;
+    protected ?string $ehloName = null;
 
     /**
      * @var string The hostname.
      */
-    protected $hostname;
+    protected ?string $hostname = null;
 
     /**
      * @var string The address.
      */
-    protected $address;
+    protected ?string $address = null;
 
     /**
-     *
-     * @param string $name
-     * @param string $value
-     * @param string $ehloName
-     * @param string $hostname
-     * @param string $address
+     * @param HeaderPart[] $children
      */
-    public function __construct(MbWrapper $charsetConverter, $name, $value, $ehloName = null, $hostname = null, $address = null) {
-        parent::__construct($charsetConverter, $name, $value);
-        $this->ehloName = $ehloName;
-        $this->hostname = $hostname;
-        $this->address = $address;
+    public function __construct(
+        LoggerInterface $logger,
+        MbWrapper $charsetConverter,
+        string $name,
+        array $children
+    ) {
+        parent::__construct($logger, $charsetConverter, $name, $children);
+
+        $this->ehloName = ($this->value !== '') ? $this->value : null;
+        $cps = $this->getComments();
+        $commentPart = (!empty($cps)) ? $cps[0] : null;
+
+        $pattern = '~^(\[(IPv[64])?(?P<addr1>[a-f\d\.\:]+)\])?\s*(helo=)?(?P<name>[a-z0-9\-]+[a-z0-9\-\.]+)?\s*(\[(IPv[64])?(?P<addr2>[a-f\d\.\:]+)\])?$~i';
+        if ($commentPart !== null && \preg_match($pattern, $commentPart->getComment(), $matches)) {
+            $this->value .= ' (' . $commentPart->getComment() . ')';
+            $this->hostname = (!empty($matches['name'])) ? $matches['name'] : null;
+            $this->address = (!empty($matches['addr1'])) ? $matches['addr1'] : ((!empty($matches['addr2'])) ? $matches['addr2'] : null);
+        }
     }
 
     /**
@@ -68,10 +77,8 @@ class ReceivedDomainPart extends ReceivedPart
      * Note that this is not necessarily the name used in the EHLO line to an
      * SMTP server, since implementations differ so much, not much can be
      * guaranteed except the position it was parsed in.
-     *
-     * @return string|null The name
      */
-    public function getEhloName()
+    public function getEhloName() : ?string
     {
         return $this->ehloName;
     }
@@ -79,10 +86,8 @@ class ReceivedDomainPart extends ReceivedPart
     /**
      * Returns the hostname of the server, or whatever string in the hostname
      * position when parsing (but never an address).
-     *
-     * @return string|null
      */
-    public function getHostname()
+    public function getHostname() : ?string
     {
         return $this->hostname;
     }
@@ -90,7 +95,6 @@ class ReceivedDomainPart extends ReceivedPart
     /**
      * Returns the address of the server, or whatever string that looks like an
      * address in the address position when parsing (but never a hostname).
-     *
      */
     public function getAddress() : ?string
     {

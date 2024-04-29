@@ -7,6 +7,7 @@
 
 namespace ZBateson\MailMimeParser\Header\Part;
 
+use Psr\Log\LoggerInterface;
 use ZBateson\MailMimeParser\Header\IHeaderPart;
 use ZBateson\MbWrapper\MbWrapper;
 
@@ -21,14 +22,13 @@ class HeaderPartFactory
      * @var MbWrapper $charsetConverter passed to IHeaderPart constructors
      *      for converting strings in IHeaderPart::convertEncoding
      */
-    protected $charsetConverter;
+    protected MbWrapper $charsetConverter;
 
-    /**
-     * Sets up dependencies.
-     *
-     */
-    public function __construct(MbWrapper $charsetConverter)
+    protected LoggerInterface $logger;
+
+    public function __construct(LoggerInterface $logger, MbWrapper $charsetConverter)
     {
+        $this->logger = $logger;
         $this->charsetConverter = $charsetConverter;
     }
 
@@ -36,152 +36,141 @@ class HeaderPartFactory
      * Creates and returns a default IHeaderPart for this factory, allowing
      * subclass factories for specialized IHeaderParts.
      *
-     * The default implementation returns a new Token.
-     *
-     * @return IHeaderPart
+     * The default implementation returns a new Token
      */
-    public function newInstance(string $value)
+    public function newInstance(string $value) : IHeaderPart
     {
         return $this->newToken($value);
     }
 
     /**
      * Initializes and returns a new Token.
-     *
-     * @return Token
      */
-    public function newToken(string $value)
+    public function newToken(string $value, bool $isLiteral = false, bool $preserveSpaces = false) : Token
     {
-        return new Token($this->charsetConverter, $value);
+        return new Token($this->logger, $this->charsetConverter, $value, $isLiteral, $preserveSpaces);
     }
 
     /**
-     * Instantiates and returns a SplitParameterToken with the given name.
-     *
-     * @param string $name
-     * @return SplitParameterToken
+     * Initializes and returns a new SubjectToken.
      */
-    public function newSplitParameterToken($name)
+    public function newSubjectToken(string $value) : SubjectToken
     {
-        return new SplitParameterToken($this->charsetConverter, $name);
+        return new SubjectToken($this->logger, $this->charsetConverter, $value);
     }
 
     /**
-     * Initializes and returns a new LiteralPart.
-     *
-     * @param string $value
-     * @return LiteralPart
+     * Initializes and returns a new MimeToken.
      */
-    public function newLiteralPart($value)
+    public function newMimeToken(string $value) : MimeToken
     {
-        return new LiteralPart($this->charsetConverter, $value);
+        return new MimeToken($this->logger, $this->charsetConverter, $value);
     }
 
     /**
-     * Initializes and returns a new MimeLiteralPart.
+     * Initializes and returns a new ContainerPart.
      *
-     * @param string $value
-     * @return MimeLiteralPart
+     * @param HeaderPart[] $children
      */
-    public function newMimeLiteralPart($value)
+    public function newContainerPart(array $children) : ContainerPart
     {
-        return new MimeLiteralPart($this->charsetConverter, $value);
+        return new ContainerPart($this->logger, $this->charsetConverter, $children);
+    }
+
+    /**
+     * Instantiates and returns a SplitParameterPart.
+     *
+     * @param ParameterPart[] $children
+     */
+    public function newSplitParameterPart(array $children) : SplitParameterPart
+    {
+        return new SplitParameterPart($this->logger, $this->charsetConverter, $this, $children);
+    }
+
+    /**
+     * Initializes and returns a new QuotedLiteralPart.
+     *
+     * @param HeaderPart[] $parts
+     */
+    public function newQuotedLiteralPart(array $parts) : QuotedLiteralPart
+    {
+        return new QuotedLiteralPart($this->logger, $this->charsetConverter, $parts);
     }
 
     /**
      * Initializes and returns a new CommentPart.
      *
-     * @param string $value
-     * @return CommentPart
+     * @param HeaderPart[] $children
      */
-    public function newCommentPart($value)
+    public function newCommentPart(array $children) : CommentPart
     {
-        return new CommentPart($this->charsetConverter, $value);
+        return new CommentPart($this->logger, $this->charsetConverter, $this, $children);
     }
 
     /**
      * Initializes and returns a new AddressPart.
      *
-     * @param string $name
-     * @param string $email
-     * @return AddressPart
+     * @param HeaderPart[] $nameParts
+     * @param HeaderPart[] $emailParts
      */
-    public function newAddressPart($name, $email)
+    public function newAddress(array $nameParts, array $emailParts) : AddressPart
     {
-        return new AddressPart($this->charsetConverter, $name, $email);
+        return new AddressPart($this->logger, $this->charsetConverter, $nameParts, $emailParts);
     }
 
     /**
      * Initializes and returns a new AddressGroupPart
      *
-     * @param string $name
-     * @return AddressGroupPart
+     * @param HeaderPart[] $nameParts
+     * @param AddressPart[]|AddressGroupPart[] $addressesAndGroups
      */
-    public function newAddressGroupPart(array $addresses, $name = '')
+    public function newAddressGroupPart(array $nameParts, array $addressesAndGroups) : AddressGroupPart
     {
-        return new AddressGroupPart($this->charsetConverter, $addresses, $name);
+        return new AddressGroupPart($this->logger, $this->charsetConverter, $nameParts, $addressesAndGroups);
     }
 
     /**
      * Initializes and returns a new DatePart
      *
-     * @param string $value
-     * @return DatePart
+     * @param HeaderPart[] $children
      */
-    public function newDatePart($value)
+    public function newDatePart(array $children) : DatePart
     {
-        return new DatePart($this->charsetConverter, $value);
+        return new DatePart($this->logger, $this->charsetConverter, $children);
     }
 
     /**
      * Initializes and returns a new ParameterPart.
      *
-     * @param string $name
-     * @param string $value
-     * @param string $language
-     * @return ParameterPart
+     * @param HeaderPart[] $nameParts
      */
-    public function newParameterPart($name, $value, $language = null)
+    public function newParameterPart(array $nameParts, ContainerPart $valuePart) : ParameterPart
     {
-        return new ParameterPart($this->charsetConverter, $name, $value, $language);
+        return new ParameterPart($this->logger, $this->charsetConverter, $nameParts, $valuePart);
     }
 
     /**
      * Initializes and returns a new ReceivedPart.
      *
-     * @param string $name
-     * @param string $value
-     * @return ReceivedPart
+     * @param HeaderPart[] $children
      */
-    public function newReceivedPart($name, $value)
+    public function newReceivedPart(string $name, array $children) : ReceivedPart
     {
-        return new ReceivedPart($this->charsetConverter, $name, $value);
+        return new ReceivedPart($this->logger, $this->charsetConverter, $name, $children);
     }
 
     /**
      * Initializes and returns a new ReceivedDomainPart.
      *
-     * @param string $name
-     * @param string $value
-     * @param string $ehloName
-     * @param string $hostName
-     * @param string $hostAddress
-     * @return ReceivedDomainPart
+     * @param HeaderPart[] $children
      */
-    public function newReceivedDomainPart(
-        $name,
-        $value,
-        $ehloName = null,
-        $hostName = null,
-        $hostAddress = null
-    ) {
+    public function newReceivedDomainPart(string $name, array $children) : ReceivedDomainPart
+    {
         return new ReceivedDomainPart(
+            $this->logger,
             $this->charsetConverter,
             $name,
-            $value,
-            $ehloName,
-            $hostName,
-            $hostAddress
+            $children
         );
     }
 }

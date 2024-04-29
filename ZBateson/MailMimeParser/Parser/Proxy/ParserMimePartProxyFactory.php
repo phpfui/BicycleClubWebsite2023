@@ -7,9 +7,10 @@
 
 namespace ZBateson\MailMimeParser\Parser\Proxy;
 
+use Psr\Log\LoggerInterface;
 use ZBateson\MailMimeParser\Message\Factory\PartHeaderContainerFactory;
 use ZBateson\MailMimeParser\Message\MimePart;
-use ZBateson\MailMimeParser\Parser\IParser;
+use ZBateson\MailMimeParser\Parser\IParserService;
 use ZBateson\MailMimeParser\Parser\Part\ParserPartChildrenContainerFactory;
 use ZBateson\MailMimeParser\Parser\Part\ParserPartStreamContainerFactory;
 use ZBateson\MailMimeParser\Parser\PartBuilder;
@@ -23,32 +24,24 @@ use ZBateson\MailMimeParser\Stream\StreamFactory;
  */
 class ParserMimePartProxyFactory extends ParserPartProxyFactory
 {
-    /**
-     * @var StreamFactory the StreamFactory instance
-     */
-    protected $streamFactory;
+    protected LoggerInterface $logger;
 
-    /**
-     * @var ParserPartStreamContainerFactory
-     */
-    protected $parserPartStreamContainerFactory;
+    protected StreamFactory $streamFactory;
 
-    /**
-     * @var PartHeaderContainerFactory
-     */
-    protected $partHeaderContainerFactory;
+    protected ParserPartStreamContainerFactory $parserPartStreamContainerFactory;
 
-    /**
-     * @var ParserPartChildrenContainerFactory
-     */
-    protected $parserPartChildrenContainerFactory;
+    protected PartHeaderContainerFactory $partHeaderContainerFactory;
+
+    protected ParserPartChildrenContainerFactory $parserPartChildrenContainerFactory;
 
     public function __construct(
+        LoggerInterface $logger,
         StreamFactory $sdf,
         PartHeaderContainerFactory $phcf,
         ParserPartStreamContainerFactory $pscf,
         ParserPartChildrenContainerFactory $ppccf
     ) {
+        $this->logger = $logger;
         $this->streamFactory = $sdf;
         $this->partHeaderContainerFactory = $phcf;
         $this->parserPartStreamContainerFactory = $pscf;
@@ -59,10 +52,8 @@ class ParserMimePartProxyFactory extends ParserPartProxyFactory
      * Constructs a new ParserMimePartProxy wrapping an IMimePart object that
      * will dynamically parse a message's content and parts as they're
      * requested.
-     *
-     * @return ParserMimePartProxy
      */
-    public function newInstance(PartBuilder $partBuilder, IParser $parser)
+    public function newInstance(PartBuilder $partBuilder, IParserService $parser) : ParserMimePartProxy
     {
         $parserProxy = new ParserMimePartProxy($partBuilder, $parser);
 
@@ -72,6 +63,7 @@ class ParserMimePartProxyFactory extends ParserPartProxyFactory
 
         $part = new MimePart(
             $partBuilder->getParent()->getPart(),
+            $this->logger,
             $streamContainer,
             $headerContainer,
             $childrenContainer

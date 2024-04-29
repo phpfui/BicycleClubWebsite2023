@@ -7,6 +7,7 @@
 
 namespace ZBateson\MailMimeParser\Header\Part;
 
+use Psr\Log\LoggerInterface;
 use ZBateson\MbWrapper\MbWrapper;
 
 /**
@@ -19,18 +20,18 @@ use ZBateson\MbWrapper\MbWrapper;
  *
  * @author Zaahid Bateson
  */
-class ReceivedPart extends ParameterPart
+class ReceivedPart extends NameValuePart
 {
     /**
-     * Constructor.
-     *
-     * @param string $name
-     * @param string $value
+     * @param HeaderPart[] $children
      */
-    public function __construct(MbWrapper $charsetConverter, $name, $value) {
-        parent::__construct($charsetConverter, '', '');
-        // can't be mime-encoded
-        $this->name = \trim($name);
-        $this->value = $value ? \trim($value) : $value;
+    public function __construct(
+        LoggerInterface $logger,
+        MbWrapper $charsetConverter,
+        string $name,
+        array $children
+    ) {
+        parent::__construct($logger, $charsetConverter, [], $children);
+        $this->name = $name;
     }
 }

@@ -7,8 +7,17 @@
 
 namespace ZBateson\MailMimeParser\Header;
 
-use ZBateson\MailMimeParser\Header\Consumer\ConsumerService;
-use ZBateson\MailMimeParser\Header\Part\MimeLiteralPartFactory;
+use Psr\Log\LoggerInterface;
+use ReflectionClass;
+use ZBateson\MailMimeParser\Header\Consumer\AddressBaseConsumerService;
+use ZBateson\MailMimeParser\Header\Consumer\DateConsumerService;
+use ZBateson\MailMimeParser\Header\Consumer\GenericConsumerMimeLiteralPartService;
+use ZBateson\MailMimeParser\Header\Consumer\IConsumerService;
+use ZBateson\MailMimeParser\Header\Consumer\IdBaseConsumerService;
+use ZBateson\MailMimeParser\Header\Consumer\ParameterConsumerService;
+use ZBateson\MailMimeParser\Header\Consumer\ReceivedConsumerService;
+use ZBateson\MailMimeParser\Header\Consumer\SubjectConsumerService;
+use ZBateson\MailMimeParser\Header\Part\MimeTokenPartFactory;
 
 /**
  * Constructs various IHeader types depending on the type of header passed.
@@ -32,22 +41,23 @@ use ZBateson\MailMimeParser\Header\Part\MimeLiteralPartFactory;
  */
 class HeaderFactory
 {
-    /**
-     * @var ConsumerService the passed ConsumerService providing
-     *      AbstractConsumer singletons.
-     */
-    protected $consumerService;
+    protected LoggerInterface $logger;
 
     /**
-     * @var MimeLiteralPartFactory for mime decoding.
+     * @var IConsumerService[] array of available consumer service classes
      */
-    protected $mimeLiteralPartFactory;
+    protected array $consumerServices;
+
+    /**
+     * @var MimeTokenPartFactory for mime decoding.
+     */
+    protected MimeTokenPartFactory $mimeTokenPartFactory;
 
     /**
      * @var string[][] maps IHeader types to headers.
      */
     protected $types = [
-        \ZBateson\MailMimeParser\Header\AddressHeader::class => [
+        AddressHeader::class => [
             'from',
             'to',
             'cc',
@@ -62,7 +72,7 @@ class HeaderFactory
             'returnpath',
             'deliveredto',
         ],
-        \ZBateson\MailMimeParser\Header\DateHeader::class => [
+        DateHeader::class => [
             'date',
             'resentdate',
             'deliverydate',
@@ -70,7 +80,7 @@ class HeaderFactory
             'expirydate',
             'replyby',
         ],
-        \ZBateson\MailMimeParser\Header\ParameterHeader::class => [
+        ParameterHeader::class => [
             'contenttype',
             'contentdisposition',
             'receivedspf',
@@ -78,16 +88,16 @@ class HeaderFactory
             'dkimsignature',
             'autocrypt',
         ],
-        \ZBateson\MailMimeParser\Header\SubjectHeader::class => [
+        SubjectHeader::class => [
             'subject',
         ],
-        \ZBateson\MailMimeParser\Header\IdHeader::class => [
+        IdHeader::class => [
             'messageid',
             'contentid',
             'inreplyto',
             'references'
         ],
-        \ZBateson\MailMimeParser\Header\ReceivedHeader::class => [
+        ReceivedHeader::class => [
             'received'
         ]
     ];
@@ -96,16 +106,30 @@ class HeaderFactory
      * @var string Defines the generic IHeader type to use for headers that
      *      aren't mapped in $types
      */
-    protected $genericType = \ZBateson\MailMimeParser\Header\GenericHeader::class;
+    protected $genericType = GenericHeader::class;
 
-    /**
-     * Instantiates member variables with the passed objects.
-     *
-     */
-    public function __construct(ConsumerService $consumerService, MimeLiteralPartFactory $mimeLiteralPartFactory)
-    {
-        $this->consumerService = $consumerService;
-        $this->mimeLiteralPartFactory = $mimeLiteralPartFactory;
+    public function __construct(
+        LoggerInterface $logger,
+        MimeTokenPartFactory $mimeTokenPartFactory,
+        AddressBaseConsumerService $addressBaseConsumerService,
+        DateConsumerService $dateConsumerService,
+        GenericConsumerMimeLiteralPartService $genericConsumerMimeLiteralPartService,
+        IdBaseConsumerService $idBaseConsumerService,
+        ParameterConsumerService $parameterConsumerService,
+        ReceivedConsumerService $receivedConsumerService,
+        SubjectConsumerService $subjectConsumerService
+    ) {
+        $this->logger = $logger;
+        $this->mimeTokenPartFactory = $mimeTokenPartFactory;
+        $this->consumerServices = [
+            AddressBaseConsumerService::class => $addressBaseConsumerService,
+            DateConsumerService::class => $dateConsumerService,
+            GenericConsumerMimeLiteralPartService::class => $genericConsumerMimeLiteralPartService,
+            IdBaseConsumerService::class => $idBaseConsumerService,
+            ParameterConsumerService::class => $parameterConsumerService,
+            ReceivedConsumerService::class => $receivedConsumerService,
+            SubjectConsumerService::class => $subjectConsumerService
+        ];
     }
 
     /**
@@ -147,30 +171,43 @@ class HeaderFactory
      * @param string $value The header value.
      * @return IHeader The created header object.
      */
-    public function newInstance(string $name, string $value)
+    public function newInstance(string $name, string $value) : IHeader
     {
         $class = $this->getClassFor($name);
+        $this->logger->debug(
+            'Creating {class} for header with name "{name}" and value "{value}"',
+            ['class' => $class, 'name' => $name, 'value' => $value]
+        );
         return $this->newInstanceOf($name, $value, $class);
     }
 
     /**
-     * Creates an IHeader instance for the passed header name and value, and
-     * returns it.
+     * Creates an IHeader instance for the passed header name and value using
+     * the passed IHeader class, and returns it.
      *
      * @param string $name The header name.
      * @param string $value The header value.
+     * @param string $iHeaderClass The class to use for header creation
      * @return IHeader The created header object.
      */
     public function newInstanceOf(string $name, string $value, string $iHeaderClass) : IHeader
     {
-        if (\is_a($iHeaderClass, 'ZBateson\MailMimeParser\Header\MimeEncodedHeader', true)) {
+        $ref = new ReflectionClass($iHeaderClass);
+        $params = $ref->getConstructor()->getParameters();
+        if ($ref->isSubclassOf(MimeEncodedHeader::class)) {
             return new $iHeaderClass(
-                $this->mimeLiteralPartFactory,
-                $this->consumerService,
                 $name,
-                $value
+                $value,
+                $this->logger,
+                $this->mimeTokenPartFactory,
+                $this->consumerServices[$params[4]->getType()->getName()]
             );
         }
-        return new $iHeaderClass($this->consumerService, $name, $value);
+        return new $iHeaderClass(
+            $name,
+            $value,
+            $this->logger,
+            $this->consumerServices[$params[3]->getType()->getName()]
+        );
     }
 }

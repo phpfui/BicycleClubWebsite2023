@@ -7,42 +7,60 @@
 
 namespace ZBateson\MailMimeParser\Header\Part;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+use ZBateson\MailMimeParser\ErrorBag;
 use ZBateson\MailMimeParser\Header\IHeaderPart;
 use ZBateson\MbWrapper\MbWrapper;
+use ZBateson\MbWrapper\UnsupportedCharsetException;
 
 /**
  * Abstract base class representing a single part of a parsed header.
  *
  * @author Zaahid Bateson
  */
-abstract class HeaderPart implements IHeaderPart
+abstract class HeaderPart extends ErrorBag implements IHeaderPart
 {
     /**
-     * @var string the value of the part
+     * @var string the representative value of the part after any conversion or
+     *      processing has been done on it (e.g. removing new lines, converting,
+     *      whatever else).
      */
-    protected $value;
+    protected string $value;
 
     /**
      * @var MbWrapper $charsetConverter the charset converter used for
      *      converting strings in HeaderPart::convertEncoding
      */
-    protected $charsetConverter;
+    protected MbWrapper $charsetConverter;
 
     /**
-     * Sets up dependencies.
-     *
+     * @var bool set to true to ignore spaces before this part
      */
-    public function __construct(MbWrapper $charsetConverter)
+    protected bool $canIgnoreSpacesBefore = false;
+
+    /**
+     * @var bool set to true to ignore spaces after this part
+     */
+    protected bool $canIgnoreSpacesAfter = false;
+
+    /**
+     * True if the part is a space token
+     */
+    protected bool $isSpace = false;
+
+    public function __construct(LoggerInterface $logger, MbWrapper $charsetConverter, string $value)
     {
+        parent::__construct($logger);
         $this->charsetConverter = $charsetConverter;
+        $this->value = $value;
     }
 
     /**
-     * Returns the part's value.
-     *
-     * @return ?string the value of the part
+     * Returns the part's representative value after any necessary processing
+     * has been performed.  For the raw value, call getRawValue().
      */
-    public function getValue() : ?string
+    public function getValue() : string
     {
         return $this->value;
     }
@@ -55,28 +73,6 @@ abstract class HeaderPart implements IHeaderPart
     public function __toString() : string
     {
         return $this->value;
-    }
-
-    /**
-     * Returns true if spaces before this part should be ignored.  True is only
-     * returned for MimeLiterals if the part begins with a mime-encoded string,
-     * Tokens if the Token's value is a single space, and for CommentParts.
-     *
-     */
-    public function ignoreSpacesBefore() : bool
-    {
-        return false;
-    }
-
-    /**
-     * Returns true if spaces after this part should be ignored.  True is only
-     * returned for MimeLiterals if the part ends with a mime-encoded string
-     * Tokens if the Token's value is a single space, and for CommentParts.
-     *
-     */
-    public function ignoreSpacesAfter() : bool
-    {
-        return false;
     }
 
     /**
@@ -94,9 +90,27 @@ abstract class HeaderPart implements IHeaderPart
             // mime header part decoding will force it.  This is necessary for
             // UTF-7 because mb_check_encoding will return true
             if ($force || !($this->charsetConverter->checkEncoding($str, 'UTF-8'))) {
-                return $this->charsetConverter->convert($str, $from, 'UTF-8');
+                try {
+                    return $this->charsetConverter->convert($str, $from, 'UTF-8');
+                } catch (UnsupportedCharsetException $ce) {
+                    $this->addError('Unable to convert charset', LogLevel::ERROR, $ce);
+                    return $this->charsetConverter->convert($str, 'ISO-8859-1', 'UTF-8');
+                }
             }
         }
         return $str;
+    }
+
+    public function getComments() : array
+    {
+        return [];
+    }
+
+    /**
+     * Default implementation returns an empty array.
+     */
+    protected function getErrorBagChildren() : array
+    {
+        return [];
     }
 }

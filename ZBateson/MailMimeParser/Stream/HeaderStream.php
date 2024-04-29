@@ -9,10 +9,10 @@ namespace ZBateson\MailMimeParser\Stream;
 
 use ArrayIterator;
 use GuzzleHttp\Psr7;
-use GuzzleHttp\Psr7\StreamDecoratorTrait;
 use Psr\Http\Message\StreamInterface;
 use SplObserver;
 use SplSubject;
+use Traversable;
 use ZBateson\MailMimeParser\Header\HeaderConsts;
 use ZBateson\MailMimeParser\Message\IMessagePart;
 use ZBateson\MailMimeParser\Message\IMimePart;
@@ -27,27 +27,26 @@ use ZBateson\MailMimeParser\Message\IMimePart;
  *
  * @author Zaahid Bateson
  */
-#[\AllowDynamicProperties]
-class HeaderStream implements SplObserver, StreamInterface
+class HeaderStream extends MessagePartStreamDecorator implements SplObserver, StreamInterface
 {
-    use StreamDecoratorTrait;
-
     /**
      * @var IMessagePart the part to read from.
      */
-    protected $part;
+    protected IMessagePart $part;
 
     public function __construct(IMessagePart $part)
     {
-        $this->part = $part;
+        parent::__construct($part);
         $part->attach($this);
+
+        // unsetting the property forces the first access to go through
+        // __get().
+        unset($this->stream);
     }
 
     public function __destruct()
     {
-        if ($this->part !== null) {
-            $this->part->detach($this);
-        }
+        $this->part->detach($this);
     }
 
     public function update(SplSubject $subject) : void
@@ -62,9 +61,8 @@ class HeaderStream implements SplObserver, StreamInterface
      *
      * If the part is not a MimePart, Content-Type, Content-Disposition and
      * Content-Transfer-Encoding headers are generated manually.
-     *
      */
-    private function getPartHeadersIterator() : \Iterator
+    private function getPartHeadersIterator() : Traversable
     {
         if ($this->part instanceof IMimePart) {
             return $this->part->getRawHeaderIterator();
@@ -81,7 +79,7 @@ class HeaderStream implements SplObserver, StreamInterface
     /**
      * Writes out headers for $this->part and follows them with an empty line.
      */
-    public function writePartHeadersTo(StreamInterface $stream) : self
+    public function writePartHeadersTo(StreamInterface $stream) : static
     {
         foreach ($this->getPartHeadersIterator() as $header) {
             $stream->write("{$header[0]}: {$header[1]}\r\n");
@@ -92,7 +90,6 @@ class HeaderStream implements SplObserver, StreamInterface
 
     /**
      * Creates the underlying stream lazily when required.
-     *
      */
     protected function createStream() : StreamInterface
     {

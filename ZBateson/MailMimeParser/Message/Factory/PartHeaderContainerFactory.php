@@ -7,6 +7,7 @@
 
 namespace ZBateson\MailMimeParser\Message\Factory;
 
+use Psr\Log\LoggerInterface;
 use ZBateson\MailMimeParser\Header\HeaderFactory;
 use ZBateson\MailMimeParser\Message\PartHeaderContainer;
 
@@ -17,27 +18,28 @@ use ZBateson\MailMimeParser\Message\PartHeaderContainer;
  */
 class PartHeaderContainerFactory
 {
+    protected LoggerInterface $logger;
+
     /**
      * @var HeaderFactory the HeaderFactory passed to HeaderContainer instances.
      */
-    protected $headerFactory;
+    protected HeaderFactory $headerFactory;
 
     /**
      * Constructor
      *
      */
-    public function __construct(HeaderFactory $headerFactory)
+    public function __construct(LoggerInterface $logger, HeaderFactory $headerFactory)
     {
+        $this->logger = $logger;
         $this->headerFactory = $headerFactory;
     }
 
     /**
      * Creates and returns a PartHeaderContainer.
-     *
-     * @return PartHeaderContainer
      */
-    public function newInstance(?PartHeaderContainer $from = null)
+    public function newInstance(?PartHeaderContainer $from = null) : PartHeaderContainer
     {
-        return new PartHeaderContainer($this->headerFactory, $from);
+        return new PartHeaderContainer($this->logger, $this->headerFactory, $from);
     }
 }

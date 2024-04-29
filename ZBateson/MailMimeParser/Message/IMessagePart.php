@@ -9,6 +9,7 @@ namespace ZBateson\MailMimeParser\Message;
 
 use Psr\Http\Message\StreamInterface;
 use SplSubject;
+use ZBateson\MailMimeParser\IErrorBag;
 use ZBateson\MailMimeParser\MailMimeParser;
 
 /**
@@ -23,14 +24,12 @@ use ZBateson\MailMimeParser\MailMimeParser;
  *
  * @author Zaahid Bateson
  */
-interface IMessagePart extends SplSubject
+interface IMessagePart extends IErrorBag, SplSubject
 {
     /**
      * Returns this part's parent.
-     *
-     * @return IMimePart the parent part
      */
-    public function getParent();
+    public function getParent() : ?IMimePart;
 
     /**
      * Returns true if the part contains a 'body' (content).
@@ -74,7 +73,7 @@ interface IMessagePart extends SplSubject
      * Returns the content transfer encoding used to encode the content on this
      * part, or the value of $default if not defined.
      *
-     * @param $default Optional default value to return if not
+     * @param ?string $default Optional default value to return if not
      *        applicable/defined
      * @return string|null the transfer encoding defined for the part.
      */
@@ -121,7 +120,7 @@ interface IMessagePart extends SplSubject
      * @param bool $onlyIfNoCharset if true, $charsetOverride is used only if
      *        getCharset returns null.
      */
-    public function setCharsetOverride(string $charsetOverride, bool $onlyIfNoCharset = false);
+    public function setCharsetOverride(string $charsetOverride, bool $onlyIfNoCharset = false) : static;
 
     /**
      * Returns the StreamInterface for the part's content or null if the part
@@ -166,7 +165,7 @@ interface IMessagePart extends SplSubject
      * @param string $charset Optional charset for the returned stream.
      * @return StreamInterface|null the stream
      */
-    public function getContentStream(string $charset = MailMimeParser::DEFAULT_CHARSET);
+    public function getContentStream(string $charset = MailMimeParser::DEFAULT_CHARSET) : ?StreamInterface;
 
     /**
      * Returns the raw data stream for the current part, if it exists, or null
@@ -191,7 +190,7 @@ interface IMessagePart extends SplSubject
      * @see IMessagePart::saveContent() to save the binary contents to file.
      * @return StreamInterface|null the stream
      */
-    public function getBinaryContentStream();
+    public function getBinaryContentStream() : ?StreamInterface;
 
     /**
      * Returns a resource handle for the content's raw data stream, or null if
@@ -204,7 +203,7 @@ interface IMessagePart extends SplSubject
      * @see IMessagePart::saveContent() to save the binary contents to file.
      * @return resource|null the resource
      */
-    public function getBinaryContentResourceHandle();
+    public function getBinaryContentResourceHandle() : mixed;
 
     /**
      * Saves the binary content of the stream to the passed file, resource or
@@ -230,7 +229,7 @@ interface IMessagePart extends SplSubject
      *      a resource handle.
      * @param string|resource|StreamInterface $filenameResourceOrStream
      */
-    public function saveContent($filenameResourceOrStream);
+    public function saveContent($filenameResourceOrStream) : static;
 
     /**
      * Shortcut to reading stream content and assigning it to a string.  Returns
@@ -240,7 +239,7 @@ interface IMessagePart extends SplSubject
      *
      * @see IMessagePart::getContentStream()
      * @param string $charset the target charset for the returned string
-     * @return string|null the content
+     * @return ?string the content
      */
     public function getContent(string $charset = MailMimeParser::DEFAULT_CHARSET) : ?string;
 
@@ -255,7 +254,7 @@ interface IMessagePart extends SplSubject
      * @param StreamInterface $stream the content
      * @param string $streamCharset the charset of $stream
      */
-    public function attachContentStream(StreamInterface $stream, string $streamCharset = MailMimeParser::DEFAULT_CHARSET);
+    public function attachContentStream(StreamInterface $stream, string $streamCharset = MailMimeParser::DEFAULT_CHARSET) : static;
 
     /**
      * Detaches the content stream.
@@ -263,7 +262,7 @@ interface IMessagePart extends SplSubject
      * @see IMessagePart::getContentStream() to get the content stream.
      * @see IMessagePart::attachContentStream() to attach a content stream.
      */
-    public function detachContentStream();
+    public function detachContentStream() : static;
 
     /**
      * Sets the content of the part to the passed string, resource, or stream.
@@ -274,7 +273,7 @@ interface IMessagePart extends SplSubject
      * @param string|resource|StreamInterface $resource the content.
      * @param string $resourceCharset the charset of the passed $resource.
      */
-    public function setContent($resource, string $resourceCharset = MailMimeParser::DEFAULT_CHARSET);
+    public function setContent($resource, string $resourceCharset = MailMimeParser::DEFAULT_CHARSET) : static;
 
     /**
      * Returns a resource handle for the string representation of this part,
@@ -304,7 +303,7 @@ interface IMessagePart extends SplSubject
      *      Psr7 stream.
      * @return resource the resource handle containing the part.
      */
-    public function getResourceHandle();
+    public function getResourceHandle() : mixed;
 
     /**
      * Returns a Psr7 StreamInterface for the string representation of this
@@ -332,7 +331,7 @@ interface IMessagePart extends SplSubject
      *      Psr7 stream.
      * @return StreamInterface the stream containing the part.
      */
-    public function getStream();
+    public function getStream() : StreamInterface;
 
     /**
      * Writes a string representation of this part, including its headers,
@@ -368,7 +367,7 @@ interface IMessagePart extends SplSubject
      * @param string $filemode Optional filemode to open a file in (if
      *        $filenameResourceOrStream is a string)
      */
-    public function save($filenameResourceOrStream, string $filemode = 'w+');
+    public function save(mixed $filenameResourceOrStream, string $filemode = 'w+') : static;
 
     /**
      * Returns the message/part as a string, containing its headers, content and

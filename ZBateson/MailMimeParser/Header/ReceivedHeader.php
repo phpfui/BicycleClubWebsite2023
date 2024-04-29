@@ -8,10 +8,10 @@
 namespace ZBateson\MailMimeParser\Header;
 
 use DateTime;
-use ZBateson\MailMimeParser\Header\Consumer\AbstractConsumer;
-use ZBateson\MailMimeParser\Header\Consumer\ConsumerService;
-use ZBateson\MailMimeParser\Header\Part\CommentPart;
+use Psr\Log\LoggerInterface;
+use ZBateson\MailMimeParser\Header\Consumer\ReceivedConsumerService;
 use ZBateson\MailMimeParser\Header\Part\DatePart;
+use ZBateson\MailMimeParser\MailMimeParser;
 
 /**
  * Represents a Received header.
@@ -81,42 +81,28 @@ use ZBateson\MailMimeParser\Header\Part\DatePart;
 class ReceivedHeader extends ParameterHeader
 {
     /**
-     * @var string[] an array of comments in the header.
-     */
-    protected $comments = [];
-
-    /**
      * @var DateTime the date/time stamp in the header.
      */
-    protected $date = null;
+    private ?DateTime $date = null;
 
     /**
-     * Returns a ReceivedConsumer.
-     *
-     * @return Consumer\AbstractConsumer
+     * @var bool set to true once $date has been looked for
      */
-    protected function getConsumer(ConsumerService $consumerService)
-    {
-        return $consumerService->getReceivedConsumer();
-    }
+    private bool $dateSet = false;
 
-    /**
-     * Overridden to assign comments to $this->comments, and the DateTime to
-     * $this->date.
-     *
-     * @return static
-     */
-    protected function setParseHeaderValue(AbstractConsumer $consumer)
-    {
-        parent::setParseHeaderValue($consumer);
-        foreach ($this->parts as $part) {
-            if ($part instanceof CommentPart) {
-                $this->comments[] = $part->getComment();
-            } elseif ($part instanceof DatePart) {
-                $this->date = $part->getDateTime();
-            }
-        }
-        return $this;
+    public function __construct(
+        string $name,
+        string $value,
+        ?LoggerInterface $logger = null,
+        ?ReceivedConsumerService $consumerService = null
+    ) {
+        $di = MailMimeParser::getGlobalContainer();
+        AbstractHeader::__construct(
+            $logger ?? $di->get(LoggerInterface::class),
+            $consumerService ?? $di->get(ReceivedConsumerService::class),
+            $name,
+            $value
+        );
     }
 
     /**
@@ -137,9 +123,9 @@ class ReceivedHeader extends ParameterHeader
      * exists in this position is returned -- be it contains spaces, or invalid
      * characters, etc...
      *
-     * @return string|null The 'FROM' name.
+     * @return ?string The 'FROM' name.
      */
-    public function getFromName()
+    public function getFromName() : ?string
     {
         return (isset($this->parameters['from'])) ?
             $this->parameters['from']->getEhloName() : null;
@@ -154,9 +140,9 @@ class ReceivedHeader extends ParameterHeader
      * not be valid.  More details on how the value is parsed and extracted can
      * be found in the class description for {@see ReceivedHeader}.
      *
-     * @return string|null The 'FROM' hostname.
+     * @return ?string The 'FROM' hostname.
      */
-    public function getFromHostname()
+    public function getFromHostname() : ?string
     {
         return (isset($this->parameters['from'])) ?
             $this->parameters['from']->getHostname() : null;
@@ -171,9 +157,9 @@ class ReceivedHeader extends ParameterHeader
      * not be valid.  More details on how the value is parsed and extracted can
      * be found in the class description for {@see ReceivedHeader}.
      *
-     * @return string|null The 'FROM' address.
+     * @return ?string The 'FROM' address.
      */
-    public function getFromAddress()
+    public function getFromAddress() : ?string
     {
         return (isset($this->parameters['from'])) ?
             $this->parameters['from']->getAddress() : null;
@@ -188,9 +174,9 @@ class ReceivedHeader extends ParameterHeader
      * exists in this position is returned -- be it contains spaces, or invalid
      * characters, etc...
      *
-     * @return string|null The 'BY' name.
+     * @return ?string The 'BY' name.
      */
-    public function getByName()
+    public function getByName() : ?string
     {
         return (isset($this->parameters['by'])) ?
             $this->parameters['by']->getEhloName() : null;
@@ -205,9 +191,9 @@ class ReceivedHeader extends ParameterHeader
      * not be valid.  More details on how the value is parsed and extracted can
      * be found in the class description for {@see ReceivedHeader}.
      *
-     * @return string|null The 'BY' hostname.
+     * @return ?string The 'BY' hostname.
      */
-    public function getByHostname()
+    public function getByHostname() : ?string
     {
         return (isset($this->parameters['by'])) ?
             $this->parameters['by']->getHostname() : null;
@@ -222,33 +208,28 @@ class ReceivedHeader extends ParameterHeader
      * not be valid.  More details on how the value is parsed and extracted can
      * be found in the class description for {@see ReceivedHeader}.
      *
-     * @return string|null The 'BY' address.
+     * @return ?string The 'BY' address.
      */
-    public function getByAddress()
+    public function getByAddress() : ?string
     {
         return (isset($this->parameters['by'])) ?
             $this->parameters['by']->getAddress() : null;
     }
 
     /**
-     * Returns an array of comments parsed from the header.  If there are no
-     * comments in the header, an empty array is returned.
-     *
-     * @return string[]
-     */
-    public function getComments()
-    {
-        return $this->comments;
-    }
-
-    /**
      * Returns the date/time stamp for the received header if set, or null
      * otherwise.
-     *
-     * @return \DateTime|null
      */
-    public function getDateTime()
+    public function getDateTime() : ?DateTime
     {
+        if ($this->dateSet === false) {
+            foreach ($this->parts as $part) {
+                if ($part instanceof DatePart) {
+                    $this->date = $part->getDateTime();
+                }
+            }
+            $this->dateSet = true;
+        }
         return $this->date;
     }
 }

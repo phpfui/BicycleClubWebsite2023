@@ -9,7 +9,6 @@ namespace ZBateson\MailMimeParser\Stream;
 
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Psr7\AppendStream;
-use GuzzleHttp\Psr7\StreamDecoratorTrait;
 use Psr\Http\Message\StreamInterface;
 use SplObserver;
 use SplSubject;
@@ -17,45 +16,54 @@ use ZBateson\MailMimeParser\Header\HeaderConsts;
 use ZBateson\MailMimeParser\MailMimeParser;
 use ZBateson\MailMimeParser\Message\IMessagePart;
 use ZBateson\MailMimeParser\Message\IMimePart;
+use ZBateson\MbWrapper\UnsupportedCharsetException;
 
 /**
  * Provides a readable stream for a MessagePart.
  *
  * @author Zaahid Bateson
  */
-#[\AllowDynamicProperties]
-class MessagePartStream implements SplObserver, StreamInterface
+class MessagePartStream extends MessagePartStreamDecorator implements SplObserver, StreamInterface
 {
-    use StreamDecoratorTrait;
-
     /**
      * @var StreamFactory For creating needed stream decorators.
      */
-    protected $streamFactory;
+    protected StreamFactory $streamFactory;
 
     /**
      * @var IMessagePart The part to read from.
      */
-    protected $part;
-
-    protected $appendStream = null;
+    protected IMessagePart $part;
 
     /**
-     * Constructor
-     *
+     * @var bool if false, saving a content stream with an unsupported charset
+     *      will be written in the default charset, otherwise the stream will be
+     *      created with the unsupported charset, and an exception will be
+     *      thrown when read from.
      */
-    public function __construct(StreamFactory $sdf, IMessagePart $part)
+    protected bool $throwExceptionReadingPartContentFromUnsupportedCharsets;
+
+    /**
+     * @var ?AppendStream
+     */
+    protected ?AppendStream $appendStream = null;
+
+    public function __construct(StreamFactory $sdf, IMessagePart $part, bool $throwExceptionReadingPartContentFromUnsupportedCharsets)
     {
+        parent::__construct($part);
         $this->streamFactory = $sdf;
         $this->part = $part;
+        $this->throwExceptionReadingPartContentFromUnsupportedCharsets = $throwExceptionReadingPartContentFromUnsupportedCharsets;
         $part->attach($this);
+
+        // unsetting the property forces the first access to go through
+        // __get().
+        unset($this->stream);
     }
 
     public function __destruct()
     {
-        if ($this->part !== null) {
-            $this->part->detach($this);
-        }
+        $this->part->detach($this);
     }
 
     public function update(SplSubject $subject) : void
@@ -72,12 +80,25 @@ class MessagePartStream implements SplObserver, StreamInterface
      *
      * If the current attached IMessagePart doesn't specify a charset, $stream
      * is returned as-is.
-     *
      */
     private function getCharsetDecoratorForStream(StreamInterface $stream) : StreamInterface
     {
         $charset = $this->part->getCharset();
         if (!empty($charset)) {
+            if (!$this->throwExceptionReadingPartContentFromUnsupportedCharsets) {
+                $test = $this->streamFactory->newCharsetStream(
+                    Psr7\Utils::streamFor(),
+                    $charset,
+                    MailMimeParser::DEFAULT_CHARSET
+                );
+                try {
+                    $test->write('t');
+                } catch (UnsupportedCharsetException $e) {
+                    return $stream;
+                } finally {
+                    $test->close();
+                }
+            }
             $stream = $this->streamFactory->newCharsetStream(
                 $stream,
                 $charset,
@@ -85,59 +106,6 @@ class MessagePartStream implements SplObserver, StreamInterface
             );
         }
         return $stream;
-    }
-
-    /**
-     * Attaches and returns a transfer encoding stream decorator to the passed
-     * $stream.
-     *
-     * The attached stream decorator is based on the attached part's returned
-     * value from MessagePart::getContentTransferEncoding, using one of the
-     * following stream decorators as appropriate:
-     *
-     * o QuotedPrintableStream
-     * o Base64Stream
-     * o UUStream
-     *
-     */
-    private function getTransferEncodingDecoratorForStream(StreamInterface $stream) : StreamInterface
-    {
-        $encoding = $this->part->getContentTransferEncoding();
-        $decorator = null;
-        switch ($encoding) {
-            case 'quoted-printable':
-                $decorator = $this->streamFactory->newQuotedPrintableStream($stream);
-                break;
-            case 'base64':
-                $decorator = $this->streamFactory->newBase64Stream(
-                    $this->streamFactory->newChunkSplitStream($stream)
-                );
-                break;
-            case 'x-uuencode':
-                $decorator = $this->streamFactory->newUUStream($stream);
-                $decorator->setFilename($this->part->getFilename());
-                break;
-            default:
-                return $stream;
-        }
-        return $decorator;
-    }
-
-    /**
-     * Writes out the content portion of the attached mime part to the passed
-     * $stream.
-     */
-    private function writePartContentTo(StreamInterface $stream) : self
-    {
-        $contentStream = $this->part->getContentStream();
-        if ($contentStream !== null) {
-            $copyStream = $this->streamFactory->newNonClosingStream($stream);
-            $es = $this->getTransferEncodingDecoratorForStream($copyStream);
-            $cs = $this->getCharsetDecoratorForStream($es);
-            Psr7\Utils::copyToStream($contentStream, $cs);
-            $cs->close();
-        }
-        return $this;
     }
 
     /**
@@ -180,10 +148,25 @@ class MessagePartStream implements SplObserver, StreamInterface
      */
     protected function getStreamsArray() : array
     {
-        $content = Psr7\Utils::streamFor();
-        $this->writePartContentTo($content);
-        $content->rewind();
-        $streams = [$this->streamFactory->newHeaderStream($this->part), $content];
+        $contentStream = $this->part->getContentStream();
+        if ($contentStream !== null) {
+            // wrapping in a SeekingLimitStream because the underlying
+            // ContentStream could be rewound, etc...
+            $contentStream = $this->streamFactory->newDecoratedCachingStream(
+                $this->streamFactory->newSeekingStream($contentStream),
+                function($stream) {
+                    $es = $this->streamFactory->getTransferEncodingDecoratedStream(
+                        $stream,
+                        $this->part->getContentTransferEncoding(),
+                        $this->part->getFilename()
+                    );
+                    $cs = $this->getCharsetDecoratorForStream($es);
+                    return $cs;
+                }
+            );
+        }
+
+        $streams = [$this->streamFactory->newHeaderStream($this->part), $contentStream ?: Psr7\Utils::streamFor()];
 
         if ($this->part instanceof IMimePart && $this->part->getChildCount() > 0) {
             $streams = \array_merge($streams, $this->getBoundaryAndChildStreams($this->part));
@@ -194,7 +177,6 @@ class MessagePartStream implements SplObserver, StreamInterface
 
     /**
      * Creates the underlying stream lazily when required.
-     *
      */
     protected function createStream() : StreamInterface
     {

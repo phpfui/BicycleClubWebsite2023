@@ -7,6 +7,7 @@
 
 namespace ZBateson\MailMimeParser\Message;
 
+use Psr\Log\LoggerInterface;
 use ZBateson\MailMimeParser\MailMimeParser;
 
 /**
@@ -19,23 +20,24 @@ class UUEncodedPart extends NonMimePart implements IUUEncodedPart
     /**
      * @var int the unix file permission
      */
-    protected $mode = null;
+    protected ?int $mode = null;
 
     /**
      * @var string the name of the file in the uuencoding 'header'.
      */
-    protected $filename = null;
+    protected ?string $filename = null;
 
-    public function __construct(?int $mode = null, ?string $filename = null, ?IMimePart $parent = null, ?PartStreamContainer $streamContainer = null)
-    {
-        if ($streamContainer === null) {
-            $di = MailMimeParser::getDependencyContainer();
-            $streamContainer = $di[\ZBateson\MailMimeParser\Message\PartStreamContainer::class];
-            $streamFactory = $di[\ZBateson\MailMimeParser\Stream\StreamFactory::class];
-            $streamContainer->setStream($streamFactory->newMessagePartStream($this));
-        }
+    public function __construct(
+        ?int $mode = null,
+        ?string $filename = null,
+        ?IMimePart $parent = null,
+        ?LoggerInterface $logger = null,
+        ?PartStreamContainer $streamContainer = null
+    ) {
+        $di = MailMimeParser::getGlobalContainer();
         parent::__construct(
-            $streamContainer,
+            $logger ?? $di->get(LoggerInterface::class),
+            $streamContainer ?? $di->get(PartStreamContainer::class),
             $parent
         );
         $this->mode = $mode;
@@ -45,18 +47,13 @@ class UUEncodedPart extends NonMimePart implements IUUEncodedPart
     /**
      * Returns the filename included in the uuencoded 'begin' line for this
      * part.
-     *
-     * @return string
      */
     public function getFilename() : ?string
     {
         return $this->filename;
     }
 
-    /**
-     * @return static
-     */
-    public function setFilename(string $filename)
+    public function setFilename(string $filename) : static
     {
         $this->filename = $filename;
         $this->notify();
@@ -79,8 +76,6 @@ class UUEncodedPart extends NonMimePart implements IUUEncodedPart
 
     /**
      * Returns 'application/octet-stream'.
-     *
-     * @return string
      */
     public function getContentType(string $default = 'application/octet-stream') : ?string
     {
@@ -116,10 +111,7 @@ class UUEncodedPart extends NonMimePart implements IUUEncodedPart
         return $this->mode;
     }
 
-    /**
-     * @return static
-     */
-    public function setUnixFileMode(int $mode)
+    public function setUnixFileMode(int $mode) : static
     {
         $this->mode = $mode;
         $this->notify();

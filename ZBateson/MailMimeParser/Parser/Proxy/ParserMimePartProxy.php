@@ -7,7 +7,9 @@
 
 namespace ZBateson\MailMimeParser\Parser\Proxy;
 
+use Psr\Log\LogLevel;
 use ZBateson\MailMimeParser\Header\HeaderConsts;
+use ZBateson\MailMimeParser\Header\ParameterHeader;
 use ZBateson\MailMimeParser\Message\IMessagePart;
 
 /**
@@ -21,43 +23,53 @@ class ParserMimePartProxy extends ParserPartProxy
      * @var bool set to true once the end boundary of the currently-parsed
      *      part is found.
      */
-    protected $endBoundaryFound = false;
+    protected bool $endBoundaryFound = false;
 
     /**
      * @var bool set to true once a boundary belonging to this parent's part
      *      is found.
      */
-    protected $parentBoundaryFound = false;
-
-    /**
-     * @var bool|null|string FALSE if not queried for in the content-type
-     *      header of this part, NULL if the current part does not have a
-     *      boundary, and otherwise contains the value of the boundary parameter
-     *      of the content-type header if the part contains one.
-     */
-    protected $mimeBoundary = false;
+    protected bool $parentBoundaryFound = false;
 
     /**
      * @var bool true once all children of this part have been parsed.
      */
-    protected $allChildrenParsed = false;
+    protected bool $allChildrenParsed = false;
+
+    /**
+     * @var ParserPartProxy[] Array of all parsed children.
+     */
+    protected array $children = [];
 
     /**
      * @var ParserPartProxy[] Parsed children used as a 'first-in-first-out'
      *      stack as children are parsed.
      */
-    protected $children = [];
+    protected array $childrenStack = [];
 
     /**
      * @var ParserPartProxy Reference to the last child added to this part.
      */
-    protected $lastAddedChild = null;
+    protected ?ParserPartProxy $lastAddedChild = null;
+
+    /**
+     * @var ?string NULL if the current part does not have a boundary, and
+     *      otherwise contains the value of the boundary parameter of the
+     *      content-type header if the part contains one.
+     */
+    private ?string $mimeBoundary = null;
+
+    /**
+     * @var bool FALSE if not queried for in the content-type header of this
+     *      part and set in $mimeBoundary.
+     */
+    private bool $mimeBoundaryQueried = false;
 
     /**
      * Ensures that the last child added to this part is fully parsed (content
      * and children).
      */
-    protected function ensureLastChildParsed() : self
+    protected function ensureLastChildParsed() : static
     {
         if ($this->lastAddedChild !== null) {
             $this->lastAddedChild->parseAll();
@@ -69,7 +81,7 @@ class ParserMimePartProxy extends ParserPartProxy
      * Parses the next child of this part and adds it to the 'stack' of
      * children.
      */
-    protected function parseNextChild() : self
+    protected function parseNextChild() : static
     {
         if ($this->allChildrenParsed) {
             return $this;
@@ -79,6 +91,7 @@ class ParserMimePartProxy extends ParserPartProxy
         $next = $this->parser->parseNextChild($this);
         if ($next !== null) {
             $this->children[] = $next;
+            $this->childrenStack[] = $next;
             $this->lastAddedChild = $next;
         } else {
             $this->allChildrenParsed = true;
@@ -91,22 +104,21 @@ class ParserMimePartProxy extends ParserPartProxy
      * 'stack' of children, attempting to parse a new one if the stack is empty,
      * and returning null if there are no more children.
      *
-     * @return IMessagePart|null the child part.
+     * @return ?IMessagePart the child part.
      */
-    public function popNextChild()
+    public function popNextChild() : ?IMessagePart
     {
-        if (empty($this->children)) {
+        if (empty($this->childrenStack)) {
             $this->parseNextChild();
         }
-        $proxy = \array_shift($this->children);
+        $proxy = \array_shift($this->childrenStack);
         return ($proxy !== null) ? $proxy->getPart() : null;
     }
 
     /**
      * Parses all content and children for this part.
-     * @return static
      */
-    public function parseAll()
+    public function parseAll() : static
     {
         $this->parseContent();
         while (!$this->allChildrenParsed) {
@@ -118,10 +130,8 @@ class ParserMimePartProxy extends ParserPartProxy
     /**
      * Returns a ParameterHeader representing the parsed Content-Type header for
      * this part.
-     *
-     * @return ?\ZBateson\MailMimeParser\Header\IHeader
      */
-    public function getContentType()
+    public function getContentType() : ?ParameterHeader
     {
         return $this->getHeaderContainer()->get(HeaderConsts::CONTENT_TYPE);
     }
@@ -130,12 +140,11 @@ class ParserMimePartProxy extends ParserPartProxy
      * Returns the parsed boundary parameter of the Content-Type header if set
      * for a multipart message part.
      *
-     * @return string
      */
-    public function getMimeBoundary()
+    public function getMimeBoundary() : ?string
     {
-        if ($this->mimeBoundary === false) {
-            $this->mimeBoundary = null;
+        if ($this->mimeBoundaryQueried === false) {
+            $this->mimeBoundaryQueried = true;
             $contentType = $this->getContentType();
             if ($contentType !== null) {
                 $this->mimeBoundary = $contentType->getValueFor('boundary');
@@ -150,10 +159,8 @@ class ParserMimePartProxy extends ParserPartProxy
      *
      * If the passed $line is the ending boundary for the current part,
      * $this->isEndBoundaryFound will return true after.
-     *
-     * @return bool
      */
-    public function setEndBoundaryFound(string $line)
+    public function setEndBoundaryFound(string $line) : bool
     {
         $boundary = $this->getMimeBoundary();
         if ($this->getParent() !== null && $this->getParent()->setEndBoundaryFound($line)) {
@@ -195,9 +202,8 @@ class ParserMimePartProxy extends ParserPartProxy
      * flag used by isParentBoundaryFound() to true on this part and all parent
      * parts.
      *
-     * @return static
      */
-    public function setEof() : self
+    public function setEof() : static
     {
         $this->parentBoundaryFound = true;
         if ($this->getParent() !== null) {
@@ -211,11 +217,15 @@ class ParserMimePartProxy extends ParserPartProxy
      * if the passed end pos is before the start pos (can happen if a mime
      * end boundary doesn't have an empty line before the next parent start
      * boundary).
-     *
-     * @return static
      */
-    public function setStreamPartAndContentEndPos(int $streamContentEndPos)
+    public function setStreamPartAndContentEndPos(int $streamContentEndPos) : static
     {
+        // check if we're expecting a boundary and didn't find one
+        if (!$this->endBoundaryFound && !$this->parentBoundaryFound) {
+            if (!empty($this->mimeBoundary) || ($this->getParent() !== null && !empty($this->getParent()->mimeBoundary))) {
+                $this->addError('End boundary for part not found', LogLevel::WARNING);
+            }
+        }
         $start = $this->getStreamContentStartPos();
         if ($streamContentEndPos - $start < 0) {
             parent::setStreamPartAndContentEndPos($start);
@@ -234,10 +244,8 @@ class ParserMimePartProxy extends ParserPartProxy
      * ParserMimePartProxy simply calls setLastLineEndingLength on its parent,
      * which must eventually reach a ParserMessageProxy which actually stores
      * the length.
-     *
-     * @return static
      */
-    public function setLastLineEndingLength(int $length)
+    public function setLastLineEndingLength(int $length) : static
     {
         $this->getParent()->setLastLineEndingLength($length);
         return $this;
@@ -257,5 +265,22 @@ class ParserMimePartProxy extends ParserPartProxy
     public function getLastLineEndingLength() : int
     {
         return $this->getParent()->getLastLineEndingLength();
+    }
+
+    /**
+     * Returns the last part that was added.
+     */
+    public function getLastAddedChild() : ?ParserPartProxy
+    {
+        return $this->lastAddedChild;
+    }
+
+    /**
+     * Returns the added child at the provided index, useful for looking at
+     * previously parsed children.
+     */
+    public function getAddedChildAt(int $index) : ?ParserPartProxy
+    {
+        return $this->children[$index] ?? null;
     }
 }

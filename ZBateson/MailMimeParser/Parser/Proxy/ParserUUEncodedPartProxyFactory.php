@@ -7,8 +7,9 @@
 
 namespace ZBateson\MailMimeParser\Parser\Proxy;
 
+use Psr\Log\LoggerInterface;
 use ZBateson\MailMimeParser\Message\UUEncodedPart;
-use ZBateson\MailMimeParser\Parser\IParser;
+use ZBateson\MailMimeParser\Parser\IParserService;
 use ZBateson\MailMimeParser\Parser\Part\ParserPartStreamContainerFactory;
 use ZBateson\MailMimeParser\Parser\PartBuilder;
 use ZBateson\MailMimeParser\Stream\StreamFactory;
@@ -21,28 +22,26 @@ use ZBateson\MailMimeParser\Stream\StreamFactory;
  */
 class ParserUUEncodedPartProxyFactory extends ParserPartProxyFactory
 {
-    /**
-     * @var StreamFactory the StreamFactory instance
-     */
-    protected $streamFactory;
+    protected LoggerInterface $logger;
 
-    /**
-     * @var ParserPartStreamContainerFactory
-     */
-    protected $parserPartStreamContainerFactory;
+    protected StreamFactory $streamFactory;
 
-    public function __construct(StreamFactory $sdf, ParserPartStreamContainerFactory $parserPartStreamContainerFactory)
-    {
+    protected ParserPartStreamContainerFactory $parserPartStreamContainerFactory;
+
+    public function __construct(
+        LoggerInterface $logger,
+        StreamFactory $sdf,
+        ParserPartStreamContainerFactory $parserPartStreamContainerFactory
+    ) {
+        $this->logger = $logger;
         $this->streamFactory = $sdf;
         $this->parserPartStreamContainerFactory = $parserPartStreamContainerFactory;
     }
 
     /**
      * Constructs a new ParserUUEncodedPartProxy wrapping an IUUEncoded object.
-     *
-     * @return ParserPartProxy
      */
-    public function newInstance(PartBuilder $partBuilder, IParser $parser)
+    public function newInstance(PartBuilder $partBuilder, IParserService $parser) : ParserUUEncodedPartProxy
     {
         $parserProxy = new ParserUUEncodedPartProxy($partBuilder, $parser);
         $streamContainer = $this->parserPartStreamContainerFactory->newInstance($parserProxy);
@@ -51,6 +50,7 @@ class ParserUUEncodedPartProxyFactory extends ParserPartProxyFactory
             $parserProxy->getUnixFileMode(),
             $parserProxy->getFileName(),
             $partBuilder->getParent()->getPart(),
+            $this->logger,
             $streamContainer
         );
         $parserProxy->setPart($part);

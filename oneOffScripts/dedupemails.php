@@ -45,6 +45,7 @@ foreach ($emails as $email => $memberships)
 		{
 		++$count;
 		echo "\n{$email}\n";
+		\sort($memberships);
 
 		foreach ($memberships as $email => $membershipId)
 			{
@@ -64,16 +65,32 @@ foreach ($emails as $email => $memberships)
 				$maxMembership = $membership;
 				}
 			}
-		$maxMembership->joined = $minMembership->joined;
-		$maxMembership->update();
 
-		foreach ($minMembership->MemberChildren as $member)
+		if ($minMembership->joined)
 			{
-			$member->email = '';
-			$member->update();
+			$maxMembership->joined = $minMembership->joined;
+			$maxMembership->update();
 			}
 
-		echo "Expires: {$membership->expires}, Joined: {$membership->joined} Members on membership: {$membership->MemberChildren->count()}\n";
+		if ($maxMembership->membershipId != $minMembership->membershipId)
+			{
+			foreach ($minMembership->MemberChildren as $member)
+				{
+				$member->email = '';
+				$member->update();
+				}
+			echo "Max Id: {$maxMembership->membershipId} Max Expires: {$maxMembership->expires}, Joined: {$maxMembership->joined} Members on membership: {$maxMembership->MemberChildren->count()}\n";
+			echo "Min Id: {$minMembership->membershipId} Min Expires: {$minMembership->expires}, Joined: {$minMembership->joined} Members on membership: {$minMembership->MemberChildren->count()}\n";
+			}
+		else
+			{
+			echo "membershipId: {$membership->membershipId} Expires: {$membership->expires}, Joined: {$membership->joined} Members on membership: {$membership->MemberChildren->count()}\n";
+
+			foreach ($membership->MemberChildren as $member)
+				{
+				\print_r($member->toArray());
+				}
+			}
 		}
 	}
 

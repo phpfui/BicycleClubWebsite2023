@@ -2,6 +2,8 @@
 
 namespace App\Cron\Job;
 
+include PROJECT_ROOT . '/DI\functions.php';
+
 class MailProcessor extends \App\Cron\BaseJob
 	{
 	public function getDescription() : string

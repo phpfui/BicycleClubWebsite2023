@@ -2,6 +2,8 @@
 
 namespace App\Cron\EMailProcessors;
 
+include PROJECT_ROOT . '/DI\functions.php';
+
 class Forums
 	{
 	/**

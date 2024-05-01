@@ -2,8 +2,6 @@
 
 namespace App\Cron\EMailProcessors;
 
-include PROJECT_ROOT . '/DI/functions.php';
-
 class System
 	{
 	public function process(\ZBateson\MailMimeParser\Message $message) : bool

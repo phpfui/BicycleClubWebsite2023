@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-include PROJECT_ROOT . '/DI\functions.php';
+include PROJECT_ROOT . '/DI/functions.php';
 
 class FallbackEmailProcessor
   {

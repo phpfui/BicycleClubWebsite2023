@@ -7,10 +7,19 @@ class StartLocation
 	/**
 	 * @param array<string,string> $startLocation
 	 */
-	public function add(array $startLocation) : void
+	public function add(array $startLocation) : bool
 		{
 		$location = new \App\Record\StartLocation();
 		$location->setFrom($startLocation);
+		$errors = $location->validate();
+
+		if ($errors)
+			{
+			\App\Model\Session::setFlash('alert', $errors);
+
+			return false;
+			}
+
 		$id = $location->insert();
 		$author = \App\Model\Session::getSignedInMember();
 		$settingTable = new \App\Table\Setting();
@@ -25,6 +34,8 @@ class StartLocation
 		$email->addToMember($memberPicker->getMember());
 		$email->setFromMember($author);
 		$email->send();
+
+		return true;
 		}
 
 	public function computeCoordinates(bool $overwriteStartLocations = false, bool $updateRWGPS = false) : void

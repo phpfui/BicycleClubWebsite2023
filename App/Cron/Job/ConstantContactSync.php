@@ -46,7 +46,6 @@ class ConstantContactSync extends \App\Cron\BaseJob
 			}
 
 		$contactsClient = new \PHPFUI\ConstantContact\V3\Contacts($client);
-		$contactClient = new \PHPFUI\ConstantContact\V3\Contact($client);
 
 		// Get all current Constant Contact users
 		$syncList = $settingTable->value('ConstantContactSyncList');
@@ -72,59 +71,6 @@ class ConstantContactSync extends \App\Cron\BaseJob
 							}
 						}
 					}
-
-//				if (isset($subscribed[$email]))
-//					{
-//					// If they are not on the list provided, then add them to the list provided
-//					$synced = false;
-//
-//					foreach ($contact['list_memberships'] ?? [] as $contactList)
-//						{
-//						if ($contactList == $syncList)
-//							{
-//							$synced = true;
-//							}
-//						}
-//
-//					if (! $synced)  // add to correct list and update address and phone numbers
-//						{
-//						$contact['list_memberships'][] = $syncList;
-//						$contactBody = new \PHPFUI\ConstantContact\Definition\ContactPutRequest($contact);
-//						$contactBody->update_source = 'Account';
-//						$member = $subscribed[$email];
-//						$contactBody->street_addresses = [new \PHPFUI\ConstantContact\Definition\StreetAddressPut([
-//							'kind' => 'home',
-//							'street' => $member['address'],
-//							'city' => $member['town'],
-//							'state' => $member['state'],
-//							'postal_code' => $member['zip'],
-//							'country' => 'USA', ])];
-//
-//						$numbers = [];
-//
-//						if ($member['phone'])
-//							{
-//							$numbers[] = new \PHPFUI\ConstantContact\Definition\PhoneNumberPut(['phone_number' => $member['phone'], 'kind' => 'home']);
-//							}
-//
-//						if ($member['cellPhone'])
-//							{
-//							$numbers[] = new \PHPFUI\ConstantContact\Definition\PhoneNumberPut(['phone_number' => $member['cellPhone'], 'kind' => 'mobile']);
-//							}
-//
-//						if ($numbers)
-//							{
-//							$contactBody->phone_numbers = $numbers;
-//							}
-//
-//						$contactClient->put($contact['contact_id'], $contactBody);
-//
-//						if (! $contactClient->success())
-//							{
-//							\App\Tools\Logger::get()->debug($contactClient->getStatusCode(), $contactClient->getLastError());
-//							}
-//						}
-//					}
 
 				if ($email)
 					{
@@ -176,8 +122,30 @@ class ConstantContactSync extends \App\Cron\BaseJob
 
 			if (! $contactsClient->success())
 				{
-				\App\Tools\Logger::get()->debug($contactsClient->getStatusCode(), $contactsClient->getLastError());
-				\App\Tools\Logger::get()->debug($contactBody->getData());
+				if (409 == $contactsClient->getStatusCode())
+					{
+					$updateClient = new \PHPFUI\ConstantContact\V3\Contacts\SignUpForm($client);
+					$contactBody = new \PHPFUI\ConstantContact\Definition\ContactCreateOrUpdateInput();
+					$contactBody->email_address = $member['email'];
+					$contactBody->first_name = $member['firstName'];
+					$contactBody->last_name = $member['lastName'];
+					$contactBody->phone_number = $member['cellPhone'];
+					$contactBody->list_memberships = [new \PHPFUI\ConstantContact\UUID($syncList)];
+					$street_address = new \PHPFUI\ConstantContact\Definition\StreetAddress();
+					$street_address->kind = 'home';
+					$street_address->street = $member['address'];
+					$street_address->city = $member['town'];
+					$street_address->state = $member['state'];
+					$street_address->postal_code = $member['zip'];
+					$street_address->country = 'USA';
+					$contactBody->street_address = $street_address;
+					$updateClient->post($contactBody);
+					}
+				else
+					{
+					\App\Tools\Logger::get()->debug($contactsClient->getStatusCode(), $contactsClient->getLastError());
+					\App\Tools\Logger::get()->debug($contactBody->getData());
+					}
 				}
 			}
 		}

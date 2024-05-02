@@ -7,6 +7,7 @@
 
 namespace ZBateson\MailMimeParser\Header\Part;
 
+use Psr\Log\LoggerInterface;
 use ZBateson\MbWrapper\MbWrapper;
 
 /**
@@ -23,41 +24,43 @@ use ZBateson\MbWrapper\MbWrapper;
 class Token extends HeaderPart
 {
     /**
-     * Initializes a token.
-     *
-     * @param string $value the token's value
+     * @var string the raw value of the part.
      */
-    public function __construct(MbWrapper $charsetConverter, $value)
-    {
-        parent::__construct($charsetConverter);
-        $this->value = $value;
+    protected string $rawValue;
+
+    public function __construct(
+        LoggerInterface $logger,
+        MbWrapper $charsetConverter,
+        string $value,
+        bool $isLiteral = false,
+        bool $preserveSpaces = false
+    ) {
+        parent::__construct($logger, $charsetConverter, $value);
+        $this->rawValue = $value;
+        if (!$isLiteral) {
+            $this->value = \preg_replace(['/(\r|\n)+(\s)/', '/(\r|\n)+/'], ['$2', ' '], $value);
+            if (!$preserveSpaces) {
+                $this->value = \preg_replace('/^\s+$/m', ' ', $this->value);
+            }
+        }
+        $this->isSpace = ($this->value === '' || (!$isLiteral && \preg_match('/^\s*$/m', $this->value) === 1));
+        $this->canIgnoreSpacesBefore = $this->canIgnoreSpacesAfter = $this->isSpace;
     }
 
     /**
-     * Returns true if the value of the token is equal to a single space.
-     *
-     * @return bool
+     * Returns the part's representative value after any necessary processing
+     * has been performed.  For the raw value, call getRawValue().
      */
-    public function isSpace()
+    public function getValue() : string
     {
-        return (\preg_match('/^\s+$/', $this->value) === 1);
+        return $this->convertEncoding($this->value);
     }
 
     /**
-     * Returns true if the value is a space.
-     *
+     * Returns the part's raw value.
      */
-    public function ignoreSpacesBefore() : bool
+    public function getRawValue() : string
     {
-        return $this->isSpace();
-    }
-
-    /**
-     * Returns true if the value is a space.
-     *
-     */
-    public function ignoreSpacesAfter() : bool
-    {
-        return $this->isSpace();
+        return $this->rawValue;
     }
 }

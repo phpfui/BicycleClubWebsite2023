@@ -17,13 +17,16 @@ class StartLocation
 		if (isset($_POST['submit']) && 'Add' == $_POST['submit'] && \App\Model\Session::checkCSRF())
 			{
 			$model = new \App\Model\StartLocation();
-			$model->add($_POST);
-			$firstChar = $_POST['name'][0];
-			$firstChar = \is_numeric($firstChar) ? '0-9' : $firstChar;
-			$this->page->redirect("/Locations/locations/{$firstChar}");
-			$this->page->done();
 
-			return true;
+			if ($model->add($_POST))
+				{
+				$firstChar = $_POST['name'][0];
+				$firstChar = \is_numeric($firstChar) ? '0-9' : $firstChar;
+				$this->page->redirect("/Locations/locations/{$firstChar}");
+				$this->page->done();
+
+				return true;
+				}
 			}
 
 		return false;

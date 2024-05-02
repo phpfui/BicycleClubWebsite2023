@@ -290,7 +290,13 @@ class Doc extends \PHPFUI\InstaDoc\Section\CodeCommon
 		 * $attributes = $this->getAttributes($constant);
 		 */
 		$docBlock = $this->getDocBlock($constant);
-		$info = $this->getAccess($constant) . ' ' . $this->getColor('constant', $this->getColor('constant', $this->getName($constant, $name, true))) . ' = ' . $this->getValueString($value);
+		$info = $this->getAccess($constant) . ' ' . $this->getColor('constant', $this->getColor('constant', $this->getName($constant, $name, true)));
+		$valueString = $this->getValueString($value);
+
+		if (\strlen($valueString))
+			{
+			$info .= ' = ' . $valueString;
+			}
 		$info .= $this->getComments($docBlock);
 
 		return $info;

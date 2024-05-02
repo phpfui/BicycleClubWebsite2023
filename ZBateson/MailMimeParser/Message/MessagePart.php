@@ -10,49 +10,56 @@ namespace ZBateson\MailMimeParser\Message;
 use GuzzleHttp\Psr7\StreamWrapper;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\StreamInterface;
+use Psr\Log\LoggerInterface;
 use SplObjectStorage;
 use SplObserver;
+use ZBateson\MailMimeParser\ErrorBag;
 use ZBateson\MailMimeParser\MailMimeParser;
+use ZBateson\MailMimeParser\Stream\MessagePartStreamDecorator;
 
 /**
  * Most basic representation of a single part of an email.
  *
  * @author Zaahid Bateson
  */
-abstract class MessagePart implements IMessagePart
+abstract class MessagePart extends ErrorBag implements IMessagePart
 {
     /**
      * @var ?IMimePart parent part
      */
-    protected $parent;
+    protected ?IMimePart $parent;
 
     /**
      * @var PartStreamContainer holds 'stream' and 'content stream'.
      */
-    protected $partStreamContainer;
+    protected PartStreamContainer $partStreamContainer;
 
     /**
      * @var ?string can be used to set an override for content's charset in cases
      *      where a user knows the charset on the content is not what it claims
      *      to be.
      */
-    protected $charsetOverride;
+    protected ?string $charsetOverride = null;
 
     /**
      * @var bool set to true when a user attaches a stream manually, it's
      *      assumed to already be decoded or to have relevant transfer encoding
      *      decorators attached already.
      */
-    protected $ignoreTransferEncoding;
+    protected bool $ignoreTransferEncoding = false;
 
     /**
      * @var SplObjectStorage attached observers that need to be notified of
      *      modifications to this part.
      */
-    protected $observers;
+    protected SplObjectStorage $observers;
 
-    public function __construct(PartStreamContainer $streamContainer, ?IMimePart $parent = null)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        PartStreamContainer $streamContainer,
+        ?IMimePart $parent = null
+    ) {
+        parent::__construct($logger);
         $this->partStreamContainer = $streamContainer;
         $this->parent = $parent;
         $this->observers = new SplObjectStorage();
@@ -78,7 +85,7 @@ abstract class MessagePart implements IMessagePart
         }
     }
 
-    public function getParent()
+    public function getParent() : ?IMimePart
     {
         return $this->parent;
     }
@@ -93,10 +100,7 @@ abstract class MessagePart implements IMessagePart
         return null;
     }
 
-    /**
-     * @return static
-     */
-    public function setCharsetOverride(string $charsetOverride, bool $onlyIfNoCharset = false)
+    public function setCharsetOverride(string $charsetOverride, bool $onlyIfNoCharset = false) : static
     {
         if (!$onlyIfNoCharset || $this->getCharset() === null) {
             $this->charsetOverride = $charsetOverride;
@@ -104,12 +108,13 @@ abstract class MessagePart implements IMessagePart
         return $this;
     }
 
-    public function getContentStream(string $charset = MailMimeParser::DEFAULT_CHARSET)
+    public function getContentStream(string $charset = MailMimeParser::DEFAULT_CHARSET) : ?MessagePartStreamDecorator
     {
         if ($this->hasContent()) {
             $tr = ($this->ignoreTransferEncoding) ? '' : $this->getContentTransferEncoding();
             $ch = $this->charsetOverride ?? $this->getCharset();
             return $this->partStreamContainer->getContentStream(
+                $this,
                 $tr,
                 $ch,
                 $charset
@@ -118,16 +123,16 @@ abstract class MessagePart implements IMessagePart
         return null;
     }
 
-    public function getBinaryContentStream()
+    public function getBinaryContentStream() : ?MessagePartStreamDecorator
     {
         if ($this->hasContent()) {
             $tr = ($this->ignoreTransferEncoding) ? '' : $this->getContentTransferEncoding();
-            return $this->partStreamContainer->getBinaryContentStream($tr);
+            return $this->partStreamContainer->getBinaryContentStream($this, $tr);
         }
         return null;
     }
 
-    public function getBinaryContentResourceHandle()
+    public function getBinaryContentResourceHandle() : mixed
     {
         $stream = $this->getBinaryContentStream();
         if ($stream !== null) {
@@ -136,7 +141,7 @@ abstract class MessagePart implements IMessagePart
         return null;
     }
 
-    public function saveContent($filenameResourceOrStream) : self
+    public function saveContent($filenameResourceOrStream) : static
     {
         $resourceOrStream = $filenameResourceOrStream;
         if (\is_string($filenameResourceOrStream)) {
@@ -164,10 +169,7 @@ abstract class MessagePart implements IMessagePart
         return null;
     }
 
-    /**
-     * @return static
-     */
-    public function attachContentStream(StreamInterface $stream, string $streamCharset = MailMimeParser::DEFAULT_CHARSET)
+    public function attachContentStream(StreamInterface $stream, string $streamCharset = MailMimeParser::DEFAULT_CHARSET) : static
     {
         $ch = $this->charsetOverride ?? $this->getCharset();
         if ($ch !== null && $streamCharset !== $ch) {
@@ -179,20 +181,14 @@ abstract class MessagePart implements IMessagePart
         return $this;
     }
 
-    /**
-     * @return static
-     */
-    public function detachContentStream()
+    public function detachContentStream() : static
     {
         $this->partStreamContainer->setContentStream(null);
         $this->notify();
         return $this;
     }
 
-    /**
-     * @return static
-     */
-    public function setContent($resource, string $charset = MailMimeParser::DEFAULT_CHARSET)
+    public function setContent($resource, string $charset = MailMimeParser::DEFAULT_CHARSET) : static
     {
         $stream = Utils::streamFor($resource);
         $this->attachContentStream($stream, $charset);
@@ -200,20 +196,17 @@ abstract class MessagePart implements IMessagePart
         return $this;
     }
 
-    public function getResourceHandle()
+    public function getResourceHandle() : mixed
     {
         return StreamWrapper::getResource($this->getStream());
     }
 
-    public function getStream()
+    public function getStream() : StreamInterface
     {
         return $this->partStreamContainer->getStream();
     }
 
-    /**
-     * @return static
-     */
-    public function save($filenameResourceOrStream, string $filemode = 'w+')
+    public function save($filenameResourceOrStream, string $filemode = 'w+') : static
     {
         $resourceOrStream = $filenameResourceOrStream;
         if (\is_string($filenameResourceOrStream)) {
@@ -237,5 +230,24 @@ abstract class MessagePart implements IMessagePart
     public function __toString() : string
     {
         return $this->getStream()->getContents();
+    }
+
+    public function getErrorLoggingContextName() : string
+    {
+        $params = '';
+        if (!empty($this->getContentId())) {
+            $params .= ', content-id=' . $this->getContentId();
+        }
+        $params .= ', content-type=' . $this->getContentType();
+        $nsClass = static::class;
+        $class = \substr($nsClass, (\strrpos($nsClass, '\\') ?? -1) + 1);
+        return $class . '(' . \spl_object_id($this) . $params . ')';
+    }
+
+    protected function getErrorBagChildren() : array
+    {
+        return [
+            $this->partStreamContainer
+        ];
     }
 }

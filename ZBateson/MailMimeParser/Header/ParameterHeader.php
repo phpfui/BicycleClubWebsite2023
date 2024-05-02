@@ -7,9 +7,11 @@
 
 namespace ZBateson\MailMimeParser\Header;
 
-use ZBateson\MailMimeParser\Header\Consumer\AbstractConsumer;
-use ZBateson\MailMimeParser\Header\Consumer\ConsumerService;
-use ZBateson\MailMimeParser\Header\Part\ParameterPart;
+use Psr\Log\LoggerInterface;
+use ZBateson\MailMimeParser\Header\Consumer\IConsumerService;
+use ZBateson\MailMimeParser\Header\Consumer\ParameterConsumerService;
+use ZBateson\MailMimeParser\Header\Part\NameValuePart;
+use ZBateson\MailMimeParser\MailMimeParser;
 
 /**
  * Represents a header containing an optional main value part and subsequent
@@ -37,34 +39,35 @@ class ParameterHeader extends AbstractHeader
      * @var ParameterPart[] key map of lower-case parameter names and associated
      *      ParameterParts.
      */
-    protected $parameters = [];
+    protected array $parameters = [];
 
-    /**
-     * Returns a ParameterConsumer.
-     *
-     * @return Consumer\AbstractConsumer
-     */
-    protected function getConsumer(ConsumerService $consumerService)
-    {
-        return $consumerService->getParameterConsumer();
+    public function __construct(
+        string $name,
+        string $value,
+        ?LoggerInterface $logger = null,
+        ?ParameterConsumerService $consumerService = null
+    ) {
+        $di = MailMimeParser::getGlobalContainer();
+        parent::__construct(
+            $logger ?? $di->get(LoggerInterface::class),
+            $consumerService ?? $di->get(ParameterConsumerService::class),
+            $name,
+            $value
+        );
     }
 
     /**
      * Overridden to assign ParameterParts to a map of lower-case parameter
      * names to ParameterParts.
-     *
-     *
-     * @return static
      */
-    protected function setParseHeaderValue(AbstractConsumer $consumer)
+    protected function parseHeaderValue(IConsumerService $consumer, string $value) : void
     {
-        parent::setParseHeaderValue($consumer);
+        parent::parseHeaderValue($consumer, $value);
         foreach ($this->parts as $part) {
-            if ($part instanceof ParameterPart) {
+            if ($part instanceof NameValuePart) {
                 $this->parameters[\strtolower($part->getName())] = $part;
             }
         }
-        return $this;
     }
 
     /**

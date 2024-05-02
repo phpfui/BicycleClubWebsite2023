@@ -7,7 +7,7 @@
 
 namespace ZBateson\MailMimeParser\Header\Part;
 
-use ZBateson\MbWrapper\MbWrapper;
+use Psr\Log\LogLevel;
 
 /**
  * Holds a single address or name/address pair.
@@ -21,24 +21,21 @@ use ZBateson\MbWrapper\MbWrapper;
  *
  * @author Zaahid Bateson
  */
-class AddressPart extends ParameterPart
+class AddressPart extends NameValuePart
 {
-    /**
-     * Performs mime-decoding and initializes the address' name and email.
-     *
-     * The passed $name may be mime-encoded.  $email is stripped of any
-     * whitespace.
-     *
-     */
-    public function __construct(MbWrapper $charsetConverter, string $name, string $email)
+    protected function getValueFromParts(array $parts) : string
     {
-        parent::__construct(
-            $charsetConverter,
-            $name,
-            ''
-        );
-        // can't be mime-encoded
-        $this->value = $this->convertEncoding($email);
+        return \implode('', \array_map(
+            function($p) {
+                if ($p instanceof AddressPart) {
+                    return $p->getValue();
+                } elseif ($p instanceof QuotedLiteralPart && $p->getValue() !== '') {
+                    return '"' . \preg_replace('/(["\\\])/', '\\\$1', $p->getValue()) . '"';
+                }
+                return \preg_replace('/\s+/', '', $p->getValue());
+            },
+            $parts
+        ));
     }
 
     /**
@@ -49,5 +46,12 @@ class AddressPart extends ParameterPart
     public function getEmail() : string
     {
         return $this->value;
+    }
+
+    protected function validate() : void
+    {
+        if (empty($this->value)) {
+            $this->addError('Address doesn\'t contain an email address', LogLevel::ERROR);
+        }
     }
 }

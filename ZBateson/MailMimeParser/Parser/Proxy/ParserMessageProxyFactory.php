@@ -8,11 +8,12 @@
 
 namespace ZBateson\MailMimeParser\Parser\Proxy;
 
+use Psr\Log\LoggerInterface;
 use ZBateson\MailMimeParser\Message;
 use ZBateson\MailMimeParser\Message\Factory\PartHeaderContainerFactory;
 use ZBateson\MailMimeParser\Message\Helper\MultipartHelper;
 use ZBateson\MailMimeParser\Message\Helper\PrivacyHelper;
-use ZBateson\MailMimeParser\Parser\IParser;
+use ZBateson\MailMimeParser\Parser\IParserService;
 use ZBateson\MailMimeParser\Parser\Part\ParserPartChildrenContainerFactory;
 use ZBateson\MailMimeParser\Parser\Part\ParserPartStreamContainerFactory;
 use ZBateson\MailMimeParser\Parser\PartBuilder;
@@ -26,17 +27,12 @@ use ZBateson\MailMimeParser\Stream\StreamFactory;
  */
 class ParserMessageProxyFactory extends ParserMimePartProxyFactory
 {
-    /**
-     * @var MultipartHelper
-     */
-    protected $multipartHelper;
+    protected MultipartHelper $multipartHelper;
 
-    /**
-     * @var PrivacyHelper
-     */
-    protected $privacyHelper;
+    protected PrivacyHelper $privacyHelper;
 
     public function __construct(
+        LoggerInterface $logger,
         StreamFactory $sdf,
         PartHeaderContainerFactory $phcf,
         ParserPartStreamContainerFactory $pscf,
@@ -44,7 +40,7 @@ class ParserMessageProxyFactory extends ParserMimePartProxyFactory
         MultipartHelper $multipartHelper,
         PrivacyHelper $privacyHelper
     ) {
-        parent::__construct($sdf, $phcf, $pscf, $ppccf);
+        parent::__construct($logger, $sdf, $phcf, $pscf, $ppccf);
         $this->multipartHelper = $multipartHelper;
         $this->privacyHelper = $privacyHelper;
     }
@@ -52,10 +48,8 @@ class ParserMessageProxyFactory extends ParserMimePartProxyFactory
     /**
      * Constructs a new ParserMessageProxy wrapping an IMessage object that will
      * dynamically parse a message's content and parts as they're requested.
-     *
-     * @return ParserMessageProxy
      */
-    public function newInstance(PartBuilder $partBuilder, IParser $parser)
+    public function newInstance(PartBuilder $partBuilder, IParserService $parser) : ParserMessageProxy
     {
         $parserProxy = new ParserMessageProxy($partBuilder, $parser);
 
@@ -64,6 +58,7 @@ class ParserMessageProxyFactory extends ParserMimePartProxyFactory
         $childrenContainer = $this->parserPartChildrenContainerFactory->newInstance($parserProxy);
 
         $message = new Message(
+            $this->logger,
             $streamContainer,
             $headerContainer,
             $childrenContainer,

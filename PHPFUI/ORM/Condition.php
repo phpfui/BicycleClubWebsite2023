@@ -211,7 +211,7 @@ class Condition implements \Countable, \Stringable
 	private function add(string $logical, string | \PHPFUI\ORM\Condition | \PHPFUI\ORM\Literal $condition, \PHPFUI\ORM\Operator $operator, mixed $value) : static
 		{
 		// convert enum to the backed type
-		if (\enum_exists($value::class))
+		if (\is_object($value) && \enum_exists($value::class))
 			{
 			$value = $value->value;
 			}

@@ -7,7 +7,11 @@
 
 namespace ZBateson\MailMimeParser\Header;
 
-use ZBateson\MailMimeParser\Header\Consumer\ConsumerService;
+use Psr\Log\LoggerInterface;
+use ZBateson\MailMimeParser\Header\Consumer\IdBaseConsumerService;
+use ZBateson\MailMimeParser\Header\Part\CommentPart;
+use ZBateson\MailMimeParser\Header\Part\MimeTokenPartFactory;
+use ZBateson\MailMimeParser\MailMimeParser;
 
 /**
  * Represents a Content-ID, Message-ID, In-Reply-To or References header.
@@ -20,14 +24,21 @@ use ZBateson\MailMimeParser\Header\Consumer\ConsumerService;
  */
 class IdHeader extends MimeEncodedHeader
 {
-    /**
-     * Returns an IdBaseConsumer.
-     *
-     * @return Consumer\AbstractConsumer
-     */
-    protected function getConsumer(ConsumerService $consumerService)
-    {
-        return $consumerService->getIdBaseConsumer();
+    public function __construct(
+        string $name,
+        string $value,
+        ?LoggerInterface $logger = null,
+        ?MimeTokenPartFactory $mimeTokenPartFactory = null,
+        ?IdBaseConsumerService $consumerService = null
+    ) {
+        $di = MailMimeParser::getGlobalContainer();
+        parent::__construct(
+            $logger ?? $di->get(LoggerInterface::class),
+            $mimeTokenPartFactory ?? $di->get(MimeTokenPartFactory::class),
+            $consumerService ?? $di->get(IdBaseConsumerService::class),
+            $name,
+            $value
+        );
     }
 
     /**
@@ -48,6 +59,13 @@ class IdHeader extends MimeEncodedHeader
      */
     public function getIds() : array
     {
-        return $this->parts;
+        return \array_values(\array_map(
+            function($p) {
+                return $p->getValue();
+            },
+            \array_filter($this->parts, function($p) {
+                return !($p instanceof CommentPart);
+            })
+        ));
     }
 }

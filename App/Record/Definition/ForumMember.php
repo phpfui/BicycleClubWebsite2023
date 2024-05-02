@@ -18,7 +18,7 @@ abstract class ForumMember extends \PHPFUI\ORM\Record
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'emailType' => ['int', 'int', 0, true, ],
+		'emailType' => ['int', 'int', 0, true, 0, ],
 		'forumId' => ['int', 'int', 0, false, 0, ],
 		'memberId' => ['int', 'int', 0, false, ],
 	];

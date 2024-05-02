@@ -7,6 +7,8 @@
 
 namespace ZBateson\MailMimeParser\Message;
 
+use Psr\Log\LoggerInterface;
+use Traversable;
 use ZBateson\MailMimeParser\Header\HeaderConsts;
 use ZBateson\MailMimeParser\Header\IHeader;
 use ZBateson\MailMimeParser\Header\ParameterHeader;
@@ -25,32 +27,23 @@ class MimePart extends MultiPart implements IMimePart
     /**
      * @var PartHeaderContainer Container for this part's headers.
      */
-    protected $headerContainer;
+    protected PartHeaderContainer $headerContainer;
 
     public function __construct(
         ?IMimePart $parent = null,
+        ?LoggerInterface $logger = null,
         ?PartStreamContainer $streamContainer = null,
         ?PartHeaderContainer $headerContainer = null,
         ?PartChildrenContainer $partChildrenContainer = null
     ) {
-        $setStream = false;
-        $di = MailMimeParser::getDependencyContainer();
-        if ($streamContainer === null || $headerContainer === null || $partChildrenContainer === null) {
-            $headerContainer = $di[\ZBateson\MailMimeParser\Message\PartHeaderContainer::class];
-            $streamContainer = $di[\ZBateson\MailMimeParser\Message\PartStreamContainer::class];
-            $partChildrenContainer = $di[\ZBateson\MailMimeParser\Message\PartChildrenContainer::class];
-            $setStream = true;
-        }
+        $di = MailMimeParser::getGlobalContainer();
         parent::__construct(
-            $parent,
-            $streamContainer,
-            $partChildrenContainer
+            $logger ?? $di->get(LoggerInterface::class),
+            $streamContainer ?? $di->get(PartStreamContainer::class),
+            $partChildrenContainer ?? $di->get(PartChildrenContainer::class),
+            $parent
         );
-        if ($setStream) {
-            $streamFactory = $di[\ZBateson\MailMimeParser\Stream\StreamFactory::class];
-            $streamContainer->setStream($streamFactory->newMessagePartStream($this));
-        }
-        $this->headerContainer = $headerContainer;
+        $this->headerContainer = $headerContainer ?? $di->get(PartHeaderContainer::class);
     }
 
     /**
@@ -83,7 +76,7 @@ class MimePart extends MultiPart implements IMimePart
         return true;
     }
 
-    public function isMultiPart()
+    public function isMultiPart() : bool
     {
         // casting to bool, preg_match returns 1 for true
         return (bool) (\preg_match(
@@ -217,10 +210,8 @@ class MimePart extends MultiPart implements IMimePart
     /**
      * Returns true if this part's parent is an IMessage, and is the same part
      * returned by {@see IMessage::getSignaturePart()}.
-     *
-     * @return bool
      */
-    public function isSignaturePart()
+    public function isSignaturePart() : bool
     {
         if ($this->parent === null || !$this->parent instanceof IMessage) {
             return false;
@@ -228,7 +219,7 @@ class MimePart extends MultiPart implements IMimePart
         return $this->parent->getSignaturePart() === $this;
     }
 
-    public function getHeader($name, $offset = 0)
+    public function getHeader(string $name, int $offset = 0) : ?IHeader
     {
         return $this->headerContainer->get($name, $offset);
     }
@@ -238,27 +229,27 @@ class MimePart extends MultiPart implements IMimePart
         return $this->headerContainer->getAs($name, $iHeaderClass, $offset);
     }
 
-    public function getAllHeaders()
+    public function getAllHeaders() : array
     {
         return $this->headerContainer->getHeaderObjects();
     }
 
-    public function getAllHeadersByName($name)
+    public function getAllHeadersByName(string $name) : array
     {
         return $this->headerContainer->getAll($name);
     }
 
-    public function getRawHeaders()
+    public function getRawHeaders() : array
     {
         return $this->headerContainer->getHeaders();
     }
 
-    public function getRawHeaderIterator()
+    public function getRawHeaderIterator() : Traversable
     {
         return $this->headerContainer->getIterator();
     }
 
-    public function getHeaderValue($name, $defaultValue = null)
+    public function getHeaderValue(string $name, ?string $defaultValue = null) : ?string
     {
         $header = $this->getHeader($name);
         if ($header !== null) {
@@ -267,7 +258,7 @@ class MimePart extends MultiPart implements IMimePart
         return $defaultValue;
     }
 
-    public function getHeaderParameter($header, $param, $defaultValue = null)
+    public function getHeaderParameter(string $header, string $param, ?string $defaultValue = null) : ?string
     {
         $obj = $this->getHeader($header);
         if ($obj && $obj instanceof ParameterHeader) {
@@ -276,43 +267,36 @@ class MimePart extends MultiPart implements IMimePart
         return $defaultValue;
     }
 
-    /**
-     * @return static
-     */
-    public function setRawHeader(string $name, ?string $value, int $offset = 0)
+    public function setRawHeader(string $name, ?string $value, int $offset = 0) : static
     {
         $this->headerContainer->set($name, $value, $offset);
         $this->notify();
         return $this;
     }
 
-    /**
-     * @return static
-     */
-    public function addRawHeader(string $name, string $value)
+    public function addRawHeader(string $name, string $value) : static
     {
         $this->headerContainer->add($name, $value);
         $this->notify();
         return $this;
     }
 
-    /**
-     * @return static
-     */
-    public function removeHeader(string $name)
+    public function removeHeader(string $name) : static
     {
         $this->headerContainer->removeAll($name);
         $this->notify();
         return $this;
     }
 
-    /**
-     * @return static
-     */
-    public function removeSingleHeader(string $name, int $offset = 0)
+    public function removeSingleHeader(string $name, int $offset = 0) : static
     {
         $this->headerContainer->remove($name, $offset);
         $this->notify();
         return $this;
+    }
+
+    public function getErrorBagChildren() : array
+    {
+        return \array_merge(parent::getErrorBagChildren(), [$this->headerContainer]);
     }
 }

@@ -219,7 +219,11 @@ class ComposerUpdate
 				$autoload = $install['autoload'];
 				$sourceDir = '';
 
-				if (! empty($autoload['psr-4']))
+				if (! empty($autoload['files']))
+					{
+					echo "WARNING: Package {$install['name']} contains an autoload files section (" . \implode(',', $autoload['files']) . ")\n";
+					}
+				elseif (! empty($autoload['psr-4']))
 					{
 					foreach ($autoload['psr-4'] as $destDir => $sourceDir)
 						{

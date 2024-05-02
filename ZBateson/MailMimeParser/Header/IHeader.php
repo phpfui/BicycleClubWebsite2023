@@ -7,6 +7,8 @@
 
 namespace ZBateson\MailMimeParser\Header;
 
+use ZBateson\MailMimeParser\IErrorBag;
+
 /**
  * A mime email header line consisting of a name and value.
  *
@@ -17,22 +19,41 @@ namespace ZBateson\MailMimeParser\Header;
  *
  * @author Zaahid Bateson
  */
-interface IHeader
+interface IHeader extends IErrorBag
 {
     /**
      * Returns an array of IHeaderPart objects the header's value has been
-     * parsed into.
+     * parsed into, excluding any
+     * {@see \ZBateson\MailMimeParser\Header\Part\CommentPart}s.
+     *
+     * To retrieve all parts /including/ CommentParts, {@see getAllParts()}.
      *
      * @return IHeaderPart[] The array of parts.
      */
     public function getParts() : array;
 
     /**
+     * Returns an array of all IHeaderPart objects the header's value has been
+     * parsed into, including any CommentParts.
+     *
+     * @return IHeaderPart[] The array of parts.
+     */
+    public function getAllParts() : array;
+
+    /**
+     * Returns an array of comments parsed from the header.  If there are no
+     * comments in the header, an empty array is returned.
+     *
+     * @return string[]
+     */
+    public function getComments() : array;
+
+    /**
      * Returns the parsed 'value' of the header.
      *
      * For headers that contain multiple parts, like address headers (To, From)
      * or parameter headers (Content-Type), the 'value' is the value of the
-     * first parsed part.
+     * first parsed part that isn't a comment.
      *
      * @return string The value
      */

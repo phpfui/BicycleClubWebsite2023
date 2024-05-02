@@ -7,8 +7,10 @@
 
 namespace ZBateson\MailMimeParser\Parser\Part;
 
+use Psr\Log\LoggerInterface;
 use ZBateson\MailMimeParser\Parser\Proxy\ParserPartProxy;
 use ZBateson\MailMimeParser\Stream\StreamFactory;
+use ZBateson\MbWrapper\MbWrapper;
 
 /**
  * Creates ParserPartStreamContainer instances.
@@ -17,18 +19,34 @@ use ZBateson\MailMimeParser\Stream\StreamFactory;
  */
 class ParserPartStreamContainerFactory
 {
-    /**
-     * @var StreamFactory
-     */
-    protected $streamFactory;
+    protected LoggerInterface $logger;
 
-    public function __construct(StreamFactory $streamFactory)
-    {
+    protected StreamFactory $streamFactory;
+
+    protected MbWrapper $mbWrapper;
+
+    protected bool $throwExceptionReadingPartContentFromUnsupportedCharsets;
+
+    public function __construct(
+        LoggerInterface $logger,
+        StreamFactory $streamFactory,
+        MbWrapper $mbWrapper,
+        bool $throwExceptionReadingPartContentFromUnsupportedCharsets
+    ) {
+        $this->logger = $logger;
         $this->streamFactory = $streamFactory;
+        $this->mbWrapper = $mbWrapper;
+        $this->throwExceptionReadingPartContentFromUnsupportedCharsets = $throwExceptionReadingPartContentFromUnsupportedCharsets;
     }
 
-    public function newInstance(ParserPartProxy $parserProxy)
+    public function newInstance(ParserPartProxy $parserProxy) : ParserPartStreamContainer
     {
-        return new ParserPartStreamContainer($this->streamFactory, $parserProxy);
+        return new ParserPartStreamContainer(
+            $this->logger,
+            $this->streamFactory,
+            $this->mbWrapper,
+            $this->throwExceptionReadingPartContentFromUnsupportedCharsets,
+            $parserProxy
+        );
     }
 }

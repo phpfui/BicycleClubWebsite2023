@@ -8,11 +8,15 @@
 namespace ZBateson\MailMimeParser\Parser\Part;
 
 use Psr\Http\Message\StreamInterface;
+use Psr\Log\LoggerInterface;
 use SplObserver;
 use SplSubject;
+use ZBateson\MailMimeParser\Message\IMessagePart;
 use ZBateson\MailMimeParser\Message\PartStreamContainer;
 use ZBateson\MailMimeParser\Parser\Proxy\ParserPartProxy;
+use ZBateson\MailMimeParser\Stream\MessagePartStreamDecorator;
 use ZBateson\MailMimeParser\Stream\StreamFactory;
+use ZBateson\MbWrapper\MbWrapper;
 
 /**
  * A part stream container that proxies requests for content streams to a parser
@@ -34,34 +38,34 @@ class ParserPartStreamContainer extends PartStreamContainer implements SplObserv
     /**
      * @var ParserPartProxy The parser proxy to ferry requests to on-demand.
      */
-    protected $parserProxy;
+    protected ParserPartProxy $parserProxy;
 
     /**
-     * @var StreamInterface the original stream for a parsed message, used when
-     *      the message hasn't changed
+     * @var MessagePartStreamDecorator the original stream for a parsed message,
+     *      wrapped in a MessagePartStreamDecorator, and used when the message
+     *      hasn't changed
      */
-    protected $parsedStream;
-
-    /**
-     * @var bool true if the stream should be detached when this container is
-     *      destroyed (thereby not closing the stream).
-     */
-    protected $detachParsedStream = false;
+    protected ?MessagePartStreamDecorator $parsedStream = null;
 
     /**
      * @var bool set to true if the part's been updated since it was created.
      */
-    protected $partUpdated = false;
+    protected bool $partUpdated = false;
 
     /**
      * @var bool false if the content for the part represented by this container
      *      has not yet been requested from the parser.
      */
-    protected $contentParseRequested = false;
+    protected bool $contentParseRequested = false;
 
-    public function __construct(StreamFactory $streamFactory, ParserPartProxy $parserProxy)
-    {
-        parent::__construct($streamFactory);
+    public function __construct(
+        LoggerInterface $logger,
+        StreamFactory $streamFactory,
+        MbWrapper $mbWrapper,
+        bool $throwExceptionReadingPartContentFromUnsupportedCharsets,
+        ParserPartProxy $parserProxy
+    ) {
+        parent::__construct($logger, $streamFactory, $mbWrapper, $throwExceptionReadingPartContentFromUnsupportedCharsets);
         $this->parserProxy = $parserProxy;
     }
 
@@ -76,7 +80,7 @@ class ParserPartStreamContainer extends PartStreamContainer implements SplObserv
      * Requests content from the parser if not previously requested, and calls
      * PartStreamContainer::setContentStream().
      */
-    protected function requestParsedContentStream() : self
+    protected function requestParsedContentStream() : static
     {
         if (!$this->contentParseRequested) {
             $this->contentParseRequested = true;
@@ -93,12 +97,15 @@ class ParserPartStreamContainer extends PartStreamContainer implements SplObserv
      * $this->parsedStream to the original parsed stream (or a limited part of
      * it corresponding to the current part this stream container belongs to).
      */
-    protected function requestParsedStream() : self
+    protected function requestParsedStream() : static
     {
         if ($this->parsedStream === null) {
             $this->parserProxy->parseAll();
-            $this->parsedStream = $this->streamFactory->getLimitedPartStream(
-                $this->parserProxy
+            $this->parsedStream = $this->streamFactory->newDecoratedMessagePartStream(
+                $this->parserProxy->getPart(),
+                $this->streamFactory->getLimitedPartStream(
+                    $this->parserProxy
+                )
             );
             if ($this->parsedStream !== null) {
                 $this->detachParsedStream = ($this->parsedStream->getMetadata('mmp-detached-stream') === true);
@@ -113,19 +120,19 @@ class ParserPartStreamContainer extends PartStreamContainer implements SplObserv
         return parent::hasContent();
     }
 
-    public function getContentStream(?string $transferEncoding, ?string $fromCharset, ?string $toCharset)
+    public function getContentStream(IMessagePart $part, ?string $transferEncoding, ?string $fromCharset, ?string $toCharset) : ?MessagePartStreamDecorator
     {
         $this->requestParsedContentStream();
-        return parent::getContentStream($transferEncoding, $fromCharset, $toCharset);
+        return parent::getContentStream($part, $transferEncoding, $fromCharset, $toCharset);
     }
 
-    public function getBinaryContentStream(?string $transferEncoding = null) : ?StreamInterface
+    public function getBinaryContentStream(IMessagePart $part, ?string $transferEncoding = null) : ?MessagePartStreamDecorator
     {
         $this->requestParsedContentStream();
-        return parent::getBinaryContentStream($transferEncoding);
+        return parent::getBinaryContentStream($part, $transferEncoding);
     }
 
-    public function setContentStream(?StreamInterface $contentStream = null) : self
+    public function setContentStream(?StreamInterface $contentStream = null) : static
     {
         // has to be overridden because requestParsedContentStream calls
         // parent::setContentStream as well, so needs to be parsed before
@@ -135,7 +142,7 @@ class ParserPartStreamContainer extends PartStreamContainer implements SplObserv
         return $this;
     }
 
-    public function getStream()
+    public function getStream() : MessagePartStreamDecorator
     {
         $this->requestParsedStream();
         if (!$this->partUpdated) {

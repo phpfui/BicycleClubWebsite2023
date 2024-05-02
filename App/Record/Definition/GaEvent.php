@@ -38,7 +38,7 @@ abstract class GaEvent extends \PHPFUI\ORM\Record
 		'description' => ['text', 'string', 65535, true, ],
 		'eventDate' => ['date', 'string', 10, false, ],
 		'gaEventId' => ['int', 'int', 0, false, ],
-		'includeMembership' => ['int', 'int', 0, true, ],
+		'includeMembership' => ['int', 'int', 0, true, 0, ],
 		'lastRegistrationDate' => ['date', 'string', 10, false, ],
 		'location' => ['char(100)', 'string', 100, true, ],
 		'maxRegistrants' => ['int', 'int', 0, true, ],

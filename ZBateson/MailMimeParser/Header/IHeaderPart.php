@@ -7,6 +7,9 @@
 
 namespace ZBateson\MailMimeParser\Header;
 
+use Stringable;
+use ZBateson\MailMimeParser\IErrorBag;
+
 /**
  * Represents a single parsed part of a header line's value.
  *
@@ -15,7 +18,7 @@ namespace ZBateson\MailMimeParser\Header;
  *
  * @author Zaahid Bateson
  */
-interface IHeaderPart
+interface IHeaderPart extends IErrorBag, Stringable
 {
     /**
      * Returns the part's value.
@@ -25,9 +28,9 @@ interface IHeaderPart
     public function getValue() : ?string;
 
     /**
-     * Returns the value of the part (which is a string).
+     * Returns any CommentParts under this part container.
      *
-     * @return string The value
+     * @return CommentPart[]
      */
-    public function __toString() : string;
+    public function getComments() : array;
 }

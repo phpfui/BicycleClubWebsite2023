@@ -7,10 +7,11 @@
 
 namespace ZBateson\MailMimeParser\Header;
 
-use ZBateson\MailMimeParser\Header\Consumer\AbstractConsumer;
-use ZBateson\MailMimeParser\Header\Consumer\ConsumerService;
+use Psr\Log\LoggerInterface;
+use ZBateson\MailMimeParser\Header\Consumer\AddressBaseConsumerService;
 use ZBateson\MailMimeParser\Header\Part\AddressGroupPart;
 use ZBateson\MailMimeParser\Header\Part\AddressPart;
+use ZBateson\MailMimeParser\MailMimeParser;
 
 /**
  * A header containing one or more email addresses and/or groups of addresses.
@@ -30,31 +31,37 @@ class AddressHeader extends AbstractHeader
      * @var AddressPart[] array of addresses, included all addresses contained
      *      in groups.
      */
-    protected $addresses = [];
+    protected array $addresses = [];
 
     /**
      * @var AddressGroupPart[] array of address groups (lists).
      */
-    protected $groups = [];
+    protected array $groups = [];
 
-    /**
-     * Returns an AddressBaseConsumer.
-     *
-     * @return \ZBateson\MailMimeParser\Header\Consumer\AbstractConsumer
-     */
-    protected function getConsumer(ConsumerService $consumerService)
-    {
-        return $consumerService->getAddressBaseConsumer();
+    public function __construct(
+        string $name,
+        string $value,
+        ?LoggerInterface $logger = null,
+        ?AddressBaseConsumerService $consumerService = null
+    ) {
+        $di = MailMimeParser::getGlobalContainer();
+        parent::__construct(
+            $logger ?? $di->get(LoggerInterface::class),
+            $consumerService ?? $di->get(AddressBaseConsumerService::class),
+            $name,
+            $value
+        );
     }
 
     /**
-     * Overridden to extract all addresses into addresses array.
+     * Filters $this->allParts into the parts required by $this->parts
+     * and assignes it.
      *
-     * @return static
+     * The AbstractHeader::filterAndAssignToParts method filters out CommentParts.
      */
-    protected function setParseHeaderValue(AbstractConsumer $consumer)
+    protected function filterAndAssignToParts() : void
     {
-        parent::setParseHeaderValue($consumer);
+        parent::filterAndAssignToParts();
         foreach ($this->parts as $part) {
             if ($part instanceof AddressPart) {
                 $this->addresses[] = $part;
@@ -63,7 +70,6 @@ class AddressHeader extends AbstractHeader
                 $this->groups[] = $part;
             }
         }
-        return $this;
     }
 
     /**
@@ -110,19 +116,22 @@ class AddressHeader extends AbstractHeader
      */
     public function getEmail() : ?string
     {
-        return $this->getValue();
+        if (!empty($this->addresses)) {
+            return $this->addresses[0]->getEmail();
+        }
+        return null;
     }
 
     /**
      * Returns the name associated with the first email address to complement
-     * getValue()/getEmail() if one is set, or null if not.
+     * getEmail() if one is set, or null if not.
      *
      * @return string|null The person name.
      */
     public function getPersonName() : ?string
     {
-        if (!empty($this->parts)) {
-            return $this->parts[0]->getName();
+        if (!empty($this->addresses)) {
+            return $this->addresses[0]->getName();
         }
         return null;
     }

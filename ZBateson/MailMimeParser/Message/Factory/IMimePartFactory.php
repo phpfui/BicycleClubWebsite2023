@@ -7,6 +7,8 @@
 
 namespace ZBateson\MailMimeParser\Message\Factory;
 
+use Psr\Log\LoggerInterface;
+use ZBateson\MailMimeParser\Message\IMimePart;
 use ZBateson\MailMimeParser\Message\MimePart;
 use ZBateson\MailMimeParser\Stream\StreamFactory;
 
@@ -17,38 +19,32 @@ use ZBateson\MailMimeParser\Stream\StreamFactory;
  */
 class IMimePartFactory extends IMessagePartFactory
 {
-    /**
-     * @var PartHeaderContainerFactory
-     */
-    protected $partHeaderContainerFactory;
+    protected PartHeaderContainerFactory $partHeaderContainerFactory;
 
-    /**
-     * @var PartChildrenContainerFactory
-     */
-    protected $partChildrenContainerFactory;
+    protected PartChildrenContainerFactory $partChildrenContainerFactory;
 
     public function __construct(
+        LoggerInterface $logger,
         StreamFactory $streamFactory,
         PartStreamContainerFactory $partStreamContainerFactory,
         PartHeaderContainerFactory $partHeaderContainerFactory,
         PartChildrenContainerFactory $partChildrenContainerFactory
     ) {
-        parent::__construct($streamFactory, $partStreamContainerFactory);
+        parent::__construct($logger, $streamFactory, $partStreamContainerFactory);
         $this->partHeaderContainerFactory = $partHeaderContainerFactory;
         $this->partChildrenContainerFactory = $partChildrenContainerFactory;
     }
 
     /**
      * Constructs a new IMimePart object and returns it
-     *
-     * @return \ZBateson\MailMimeParser\Message\IMimePart
      */
-    public function newInstance()
+    public function newInstance(?IMimePart $parent = null) : IMimePart
     {
         $streamContainer = $this->partStreamContainerFactory->newInstance();
         $headerContainer = $this->partHeaderContainerFactory->newInstance();
         $part = new MimePart(
-            null,
+            $parent,
+            $this->logger,
             $streamContainer,
             $headerContainer,
             $this->partChildrenContainerFactory->newInstance()

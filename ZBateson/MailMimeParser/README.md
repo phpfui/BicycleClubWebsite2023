@@ -28,39 +28,23 @@ A huge thank you to [all my sponsors](https://github.com/sponsors/zbateson). <3
 
 If this project's helped you, please consider [sponsoring me](https://github.com/sponsors/zbateson).
 
-## Php 5.4-7.0 Support Dropped
+## Php 7 Support Dropped
 
-As of mail-mime-parser 2.3.0, support for php 5.4, 5.5, 5.6 and 7.0 has been dropped.
+As of mail-mime-parser 3.0, support for php 7 has been dropped.
 
-## Removal Notice (since 2.0.0)
+## New in 3.0
 
-`getContentResourceHandle`, `getTextResourceHandle`, and `getHtmlResourceHandle` have all been deprecated in 1.2.1 and removed in 2.0.0. fread() will only return a single byte of a multibyte char, and so will cause potentially unexpected results/warnings in some cases, and psr7 streams should be used instead. Note that `getBinaryContentResourceHandle` and `getResourceHandle` are still available.
+Most changes in 3.0 are 'backend' changes, for example switching to PHP-DI for dependency injection, and basic usage should not be affected.
 
-## Change in 2.0
+The header class method 'getAllParts' includes comment parts in 3.0.
 
-Upgrade to 2.0 to take advantage of the new on-demand parser which parses parts of a message as they're requested.  This means reading only the headers from a larger message is as fast as a smaller message because the whole message is no longer parsed (similarly reading just the content and not a message's large attachments is also much faster.)
+Error, validation, and logging support has been added.
 
-Because of the on-demand parsing, starting in 2.0, the passed resource handle or stream must remain open while the returned message object is still in use.
-
-Old code:
-```php
-$handle = fopen('file.mime', 'r');
-$message = $mailParser->parse($handle);         // returned `Message`
-fclose($handle);
-```
-
-New code:
-```php
-// attaches the resource handle to the returned `IMessage` if the second parameter
-// is true.  The resource handle is closed when the IMessage is destroyed.
-$message = $mailParser->parse(fopen('file.mime', 'r'), true);
-```
-
-For a more complete list of changes, please visit the [2.0 Upgrade Guide](https://mail-mime-parser.org/upgrade-2.0).
+For a more complete list of changes, please visit the [3.0 Upgrade Guide](https://mail-mime-parser.org/upgrade-3.0) and the [Usage Guide](https://mail-mime-parser.org/).
 
 ## Requirements
 
-MailMimeParser requires PHP 7.1 or newer.  Tested on PHP 7.1, 7.2, 7.3, 7.4, 8.0, 8.1 and 8.2.
+MailMimeParser requires PHP 8.0 or newer.  Tested on PHP 8.0, 8.1, 8.2 and 8.3.
 
 ## Usage
 
@@ -88,11 +72,11 @@ echo $message->getHeaderValue(HeaderConsts::FROM);     // user@example.com
 echo $message
     ->getHeader(HeaderConsts::FROM)                    // AddressHeader
     ->getPersonName();                                 // Person Name
-echo $message->getHeaderValue(HeaderConsts::SUBJECT);  // The email's subject
+echo $message->getSubject();                           // The email's subject
 echo $message
     ->getHeader(HeaderConsts::TO)                      // also AddressHeader
     ->getAddresses()[0]                                // AddressPart
-    ->getName();                                       // Person Name
+    ->getPersonName();                                 // Person Name
 echo $message
     ->getHeader(HeaderConsts::CC)                      // also AddressHeader
     ->getAddresses()[0]                                // AddressPart
@@ -128,12 +112,13 @@ fclose($handle);
 ## Documentation
 
 * [Usage Guide](https://mail-mime-parser.org/)
-* [API Reference](https://mail-mime-parser.org/api/2.2)
+* [API Reference](https://mail-mime-parser.org/api/3.0)
 
-## Upgrading to 1.x or 2.x
+## Upgrade guides
 
 * [1.x Upgrade Guide](https://mail-mime-parser.org/upgrade-1.0)
 * [2.x Upgrade Guide](https://mail-mime-parser.org/upgrade-2.0)
+* [3.x Upgrade Guide](https://mail-mime-parser.org/upgrade-3.0)
 
 ## License
 

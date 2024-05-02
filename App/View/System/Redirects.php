@@ -15,12 +15,22 @@ class Redirects implements \Stringable
 		{
 		$output = '';
 		$submit = new \PHPFUI\Submit();
-		$form = new \PHPFUI\Form($this->page, $submit);
+		$form = new \App\UI\ErrorForm($this->page, $submit);
 
 		if ($form->isMyCallback())
 			{
-			$this->redirectTable->updateFromTable($_POST);
-			$this->page->setResponse('Saved');
+			$errors = $this->redirectTable->validateFromTable($_POST);
+
+			if ($errors)
+				{
+				\App\Model\Session::setFlash('alert', $errors);
+				$this->page->setRawResponse(\json_encode(['response' => 'Error!', 'color' => 'red', 'errors' => $errors, ]));
+				}
+			else
+				{
+				$this->redirectTable->updateFromTable($_POST);
+				$this->page->setResponse('Saved');
+				}
 			}
 		elseif (\App\Model\Session::checkCSRF() && isset($_POST['action']))
 			{
@@ -39,7 +49,16 @@ class Redirects implements \Stringable
 
 					$redirect = new \App\Record\Redirect();
 					$redirect->setFrom($_POST);
-					$redirect->insert();
+					$errors = $redirect->validate();
+
+					if ($errors)
+						{
+						\App\Model\Session::setFlash('alert', $errors);
+						}
+					else
+						{
+						$redirect->insert();
+						}
 					$this->page->redirect();
 
 					break;

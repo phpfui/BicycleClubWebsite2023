@@ -7,7 +7,7 @@
 
 namespace ZBateson\MailMimeParser\Parser\Proxy;
 
-use ZBateson\MailMimeParser\Parser\IParser;
+use ZBateson\MailMimeParser\Parser\IParserService;
 use ZBateson\MailMimeParser\Parser\PartBuilder;
 
 /**
@@ -20,7 +20,6 @@ abstract class ParserPartProxyFactory
     /**
      * Constructs a new ParserPartProxy wrapping an IMessagePart object.
      *
-     * @return ParserPartProxy
      */
-    abstract public function newInstance(PartBuilder $partBuilder, IParser $parser);
+    abstract public function newInstance(PartBuilder $partBuilder, IParserService $parser) : ParserPartProxy;
 }

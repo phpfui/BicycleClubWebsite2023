@@ -7,6 +7,7 @@
 
 namespace ZBateson\MailMimeParser\Message;
 
+use Traversable;
 use ZBateson\MailMimeParser\Header\IHeader;
 
 /**
@@ -20,17 +21,13 @@ interface IMimePart extends IMultiPart
 {
     /**
      * Returns true if this part's content type matches multipart/*
-     *
-     * @return bool
      */
-    public function isMultiPart();
+    public function isMultiPart() : bool;
 
     /**
      * Returns true if this part is the 'signature' part of a signed message.
-     *
-     * @return bool
      */
-    public function isSignaturePart();
+    public function isSignaturePart() : bool;
 
     /**
      * Returns the IHeader object for the header with the given $name.
@@ -61,9 +58,9 @@ interface IMimePart extends IMultiPart
      * @param string $name The name of the header to retrieve.
      * @param int $offset Optional offset if there are multiple headers with the
      *        given name.
-     * @return \ZBateson\MailMimeParser\Header\IHeader|null the header object
+     * @return ?IHeader the header object if it exists, or null if not
      */
-    public function getHeader($name, $offset = 0);
+    public function getHeader(string $name, int $offset = 0) : ?IHeader;
 
     /**
      * Returns the IHeader object for the header with the given $name, using the
@@ -90,7 +87,6 @@ interface IMimePart extends IMultiPart
      * @see IMimePart::getRawHeaderIterator() to retrieve an iterator traversing
      *      a two-dimensional string[] array of raw headers.
      * @param string $name The name of the header to retrieve.
-     * @param
      * @param int $offset Optional offset if there are multiple headers with the
      *        given name.
      * @return ?IHeader the header object
@@ -111,10 +107,9 @@ interface IMimePart extends IMultiPart
      *      array of raw headers in this part.
      * @see IMimePart::getRawHeaderIterator() to retrieve an iterator traversing
      *      a two-dimensional string[] array of raw headers.
-     * @return \ZBateson\MailMimeParser\Header\IHeader[] an array of header
-     *         objects
+     * @return IHeader[] an array of header objects
      */
-    public function getAllHeaders();
+    public function getAllHeaders() : array;
 
     /**
      * Returns an array of headers that match the passed name.
@@ -130,11 +125,9 @@ interface IMimePart extends IMultiPart
      *      array of raw headers in this part.
      * @see IMimePart::getRawHeaderIterator() to retrieve an iterator traversing
      *      a two-dimensional string[] array of raw headers.
-     * @param string $name
-     * @return \ZBateson\MailMimeParser\Header\IHeader[] an array of header
-     *         objects
+     * @return IHeader[] an array of header objects
      */
-    public function getAllHeadersByName($name);
+    public function getAllHeadersByName(string $name) : array;
 
     /**
      * Returns a two dimensional string array of all headers for the mime part
@@ -157,7 +150,7 @@ interface IMimePart extends IMultiPart
      *      the returned two-dimensional array
      * @return string[][] an array of raw headers
      */
-    public function getRawHeaders();
+    public function getRawHeaders() : array;
 
     /**
      * Returns an iterator to all headers in this part.  Each returned element
@@ -177,9 +170,9 @@ interface IMimePart extends IMultiPart
      *      with a certain name.
      * @see IMimePart::getRawHeaders() to retrieve the array the returned
      *      iterator iterates over.
-     * @return \Iterator an iterator for raw headers
+     * @return Traversable<array<string>> an iterator for raw headers
      */
-    public function getRawHeaderIterator();
+    public function getRawHeaderIterator() : Traversable;
 
     /**
      * Returns the string value for the header with the given $name, or null if
@@ -199,11 +192,11 @@ interface IMimePart extends IMultiPart
      * @see IMimePart::getRawHeaderIterator() to retrieve an iterator instead of
      *      the returned two-dimensional array
      * @param string $name The name of the header
-     * @param string $defaultValue Optional default value to return if the
+     * @param ?string $defaultValue Optional default value to return if the
      *        header doesn't exist on this part.
      * @return string|null the value of the header
      */
-    public function getHeaderValue($name, $defaultValue = null);
+    public function getHeaderValue(string $name, ?string $defaultValue = null) : ?string;
 
     /**
      * Returns the value of the parameter named $param on a header with the
@@ -228,11 +221,11 @@ interface IMimePart extends IMultiPart
      *      the returned two-dimensional array
      * @param string $header The name of the header.
      * @param string $param The name of the parameter.
-     * @param string $defaultValue Optional default value to return if the
+     * @param ?string $defaultValue Optional default value to return if the
      *        parameter doesn't exist.
      * @return string|null The value of the parameter.
      */
-    public function getHeaderParameter($header, $param, $defaultValue = null);
+    public function getHeaderParameter(string $header, string $param, ?string $defaultValue = null) : ?string;
 
     /**
      * Adds a header with the given $name and $value.  An optional $offset may
@@ -271,7 +264,7 @@ interface IMimePart extends IMultiPart
      * @param int $offset An optional offset, defaulting to '0' and therefore
      *        overriding the first header of the given $name if one exists.
      */
-    public function setRawHeader(string $name, ?string $value, int $offset = 0);
+    public function setRawHeader(string $name, ?string $value, int $offset = 0) : static;
 
     /**
      * Adds a header with the given $name and $value.
@@ -297,7 +290,7 @@ interface IMimePart extends IMultiPart
      * @param string $name The name of the header
      * @param string $value The raw value of the header.
      */
-    public function addRawHeader(string $name, string $value);
+    public function addRawHeader(string $name, string $value) : static;
 
     /**
      * Removes all headers from this part with the passed name.
@@ -310,7 +303,7 @@ interface IMimePart extends IMultiPart
      *      one with the passed name exists.
      * @param string $name The name of the header(s) to remove.
      */
-    public function removeHeader(string $name);
+    public function removeHeader(string $name) : static;
 
     /**
      * Removes a single header with the passed name (in cases where more than
@@ -326,5 +319,5 @@ interface IMimePart extends IMultiPart
      * @param int $offset Optional offset of the header to remove (defaults to
      *        0 -- the first header).
      */
-    public function removeSingleHeader(string $name, int $offset = 0);
+    public function removeSingleHeader(string $name, int $offset = 0) : static;
 }

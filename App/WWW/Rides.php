@@ -234,16 +234,19 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function memberSchedule() : void
 		{
-		$content = new \App\View\Content($this->page);
-		$this->page->addPageContent($content->getDisplayCategoryHTML('Ride Schedule'));
-		$categories = [];
-
-		if ($this->page->isAuthorized('Ride Schedule Filter'))
+		if ($this->page->addHeader('Ride Schedule'))
 			{
-			$categories = \App\Table\MemberCategory::getRideCategoriesForMember(\App\Model\Session::signedInMemberId());
-			$this->page->addPageContent($this->view->categorySelector($categories));
+			$content = new \App\View\Content($this->page);
+			$this->page->addPageContent($content->getDisplayCategoryHTML('Ride Schedule'));
+			$categories = [];
+
+			if ($this->page->isAuthorized('Ride Schedule Filter'))
+				{
+				$categories = \App\Table\MemberCategory::getRideCategoriesForMember(\App\Model\Session::signedInMemberId());
+				$this->page->addPageContent($this->view->categorySelector($categories));
+				}
+			$this->page->addPageContent($this->view->schedule(\App\Table\Ride::upcomingRides()));
 			}
-		$this->page->addPageContent($this->view->schedule(\App\Table\Ride::upcomingRides()));
 		}
 
 	public function optOut(\App\Record\Ride $ride = new \App\Record\Ride()) : void

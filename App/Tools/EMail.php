@@ -227,12 +227,12 @@ class EMail
 			}
 		else
 			{
-			$mail->SMTPAuth = true;                               // Enable SMTP authentication
-			$mail->Host = $values['SMTPHost'];                    // Specify main and backup SMTP servers
-			$mail->Username = $values['SMTPUsername'];            // SMTP username
-			$mail->Password = $values['SMTPPassword'];            // SMTP password
-			$mail->SMTPSecure = $values['SMTPSecure'];            // Enable TLS encryption, `ssl` also accepted
-			$mail->Port = (int)$values['SMTPPort'];                    // TCP port to connect to
+			$mail->SMTPAuth = true;                    // Enable SMTP authentication
+			$mail->Host = $values['SMTPHost'];         // Specify main and backup SMTP servers
+			$mail->Username = $values['SMTPUsername']; // SMTP username
+			$mail->Password = $values['SMTPPassword']; // SMTP password
+			$mail->SMTPSecure = $values['SMTPSecure']; // Enable TLS encryption, `ssl` also accepted
+			$mail->Port = (int)$values['SMTPPort'];    // TCP port to connect to
 			}
 
 		$email = $this->fromEmail;

@@ -40,7 +40,7 @@ class AccidentReport
 			}
 		$email->setSubject($topic);
 		$location = new \App\Record\StartLocation((int)$ride->startLocationId);
-		$leaderLine = '<p>You are receiving this email since you indicated there was an accient on the following ride:<P>';
+		$leaderLine = '<p>You are receiving this email since you indicated there was an accident on the following ride:<P>';
 		$detail = $ride->title . '<br>' .
 				\App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '<br>' .
 				$ride->mileage . ' miles at a ' . $paceTable->getPace($ride->paceId) . ' pace<br>' .
@@ -49,7 +49,7 @@ class AccidentReport
 		$body = $settings->value(\App\View\AccidentReport::MAIL);
 		$email->setBody($body . $leaderLine . $detail);
 		$email->setHtml();
-		$email->addAttachment(PUBLIC_ROOT . 'pdf/' . $selectedFile, $selectedFile);
+		$email->addAttachment(PROJECT_ROOT . '/www' . $selectedFile, $selectedFile);
 
 		if (! $test)
 			{

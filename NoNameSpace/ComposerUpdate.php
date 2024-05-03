@@ -221,7 +221,8 @@ class ComposerUpdate
 
 				if (! empty($autoload['files']))
 					{
-					echo "WARNING: Package {$install['name']} contains an autoload files section (" . \implode(',', $autoload['files']) . ")\n";
+					$files = \str_replace('/', '\\', "vendor\\{$install['name']}\\" . \implode(',', $autoload['files']));
+					echo "WARNING: Package {$install['name']} contains an autoload files section ({$files})\n";
 					}
 				elseif (! empty($autoload['psr-4']))
 					{

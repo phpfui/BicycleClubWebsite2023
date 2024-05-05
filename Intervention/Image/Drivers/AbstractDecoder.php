@@ -100,7 +100,7 @@ abstract class AbstractDecoder implements DecoderInterface
      * data or a file path.
      *
      * @param string $path_or_data
-     * @return CollectionInterface
+     * @return CollectionInterface<string, mixed>
      */
     protected function extractExifData(string $path_or_data): CollectionInterface
     {
@@ -156,10 +156,18 @@ abstract class AbstractDecoder implements DecoderInterface
 
         return new class ($matches, $result)
         {
-            private $matches;
-            private $result;
+            /**
+             * @var array<mixed>
+             */
+            private array $matches;
+            private int|false $result;
 
-            public function __construct($matches, $result)
+            /**
+             * @param array<mixed> $matches
+             * @param int|false $result
+             * @return void
+             */
+            public function __construct(array $matches, int|false $result)
             {
                 $this->matches = $matches;
                 $this->result = $result;

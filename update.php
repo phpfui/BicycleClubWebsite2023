@@ -15,11 +15,11 @@ else
 
 include 'commonbase.php';
 
+$updater = new ComposerUpdate();
+
 \exec($composer . ' update');
 
 // Localize files
-$updater = new ComposerUpdate();
-
 $updater->setIgnoredRepos([
 	'components',
 	'doctrine',

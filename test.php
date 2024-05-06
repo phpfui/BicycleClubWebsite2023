@@ -7,11 +7,17 @@ include 'common.php';
 
 echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 
-$type = \App\Enum\Store\Type::EVENT;
+$qrCode = \Endroid\QrCode\QrCode::create('https://www.westchestercycleclub.org/velodefemmes')
+	->setEncoding(new \Endroid\QrCode\Encoding\Encoding('UTF-8'))
+	->setErrorCorrectionLevel(\Endroid\QrCode\ErrorCorrectionLevel::High)
+	->setSize(1200)
+	->setMargin(10)
+	->setRoundBlockSizeMode(\Endroid\QrCode\RoundBlockSizeMode::Margin)
+	->setForegroundColor(new \Endroid\QrCode\Color\Color(0, 0, 0))
+	->setBackgroundColor(new \Endroid\QrCode\Color\Color(255, 255, 255));
 
-if (enum_exists($type::class))
-	{
-	echo "Enum\n";
-	echo $type->name . "\n";
-	echo $type->value . "\n";
-	}
+$writer = new \Endroid\QrCode\Writer\PngWriter();
+$result = $writer->write($qrCode);
+file_put_contents('velodefemmesQR.png', $result->getString());
+
+

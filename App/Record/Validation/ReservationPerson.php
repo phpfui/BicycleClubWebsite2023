@@ -10,6 +10,7 @@ class ReservationPerson extends \PHPFUI\ORM\Validator
 		'eventId' => ['integer'],
 		'firstName' => ['maxlength'],
 		'lastName' => ['maxlength'],
+		'comments' => ['maxlength'],
 		'reservationId' => ['integer'],
 	];
 

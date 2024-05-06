@@ -192,9 +192,20 @@ class Events
 
 		$tabs->addTab('Pricing', $pricingFields);
 
+		$informationTab = new \PHPFUI\Container();
+		$infoFieldSet = new \PHPFUI\FieldSet('Reservation Comments');
+		$commentTitle = new \PHPFUI\Input\Text('commentTitle', 'Comment Title', $event->commentTitle);
+		$commentTitle->setToolTip('Leave blank to disable registrants from adding comments');
+		$infoFieldSet->add($commentTitle);
+		$showRegistered = new \PHPFUI\Input\CheckBoxBoolean('showRegistered', 'Show registered people to other registrants', (bool)$event->showRegistered);
+		$showComments = new \PHPFUI\Input\CheckBoxBoolean('showComments', 'Show Comments to other registrants', (bool)$event->showComments);
+		$infoFieldSet->add(new \PHPFUI\MultiColumn($showRegistered, $showComments));
+		$informationTab->add($infoFieldSet);
+
 		$information = new \PHPFUI\Input\TextArea('information', 'General Information', \str_replace("\n", '<div></div>', $event->information ?? ''));
 		$information->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
-		$tabs->addTab('General Information', $information);
+		$informationTab->add($information);
+		$tabs->addTab('General Information', $informationTab);
 
 		$location = new \PHPFUI\Input\TextArea('location', 'Location of Venue', \str_replace("\n", '<div></div>', $event->location ?? ''));
 		$location->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
@@ -644,7 +655,7 @@ class Events
 				$buttonGroup->addButton($button);
 				}
 
-			if ($this->page->isAuthorized('Currently Registered') && $today >= $event->registrationStartDate)
+			if ($this->page->isAuthorized('Currently Registered') && $today >= $event->registrationStartDate && $event->showRegistered)
 				{
 				$coming = new \PHPFUI\Button("Who's Coming?", '/Events/registered/' . $event->eventId);
 				$buttonGroup->addButton($coming->addClass('secondary'));
@@ -820,6 +831,12 @@ JAVASCRIPT;
 		$email = new \PHPFUI\Input\Email("email[{$index}]", 'email', $value);
 		$email->setId("EM{$index}")->setRequired();
 		$fieldSet->add($email);
+
+		if ($this->event->commentTitle)
+			{
+			$comment = new \PHPFUI\Input\Text("comment[{$index}]", $this->event->commentTitle, $member['comment'] ?? '');
+			$fieldSet->add($comment);
+			}
 
 		return $fieldSet;
 		}

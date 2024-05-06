@@ -40,7 +40,6 @@ class Reservation
 		$invoice->totalShipping = 0.0;
 		$invoice->discount = 0.0;
 		$invoice->paypalPaid = 0.0;
-		$invoice->instructions = $reservation->comments;
 		$reservation->invoice = $invoice;
 		$reservation->update();
 		$invoiceItem = new \App\Record\InvoiceItem();

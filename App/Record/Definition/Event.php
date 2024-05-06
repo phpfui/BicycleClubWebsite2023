@@ -7,6 +7,7 @@ namespace App\Record\Definition;
  *
  * @property ?string $additionalInfo MySQL type blob
  * @property ?int $checks MySQL type int
+ * @property string $commentTitle MySQL type varchar(255)
  * @property ?string $directionsUrl MySQL type varchar(100)
  * @property ?int $door MySQL type int
  * @property ?string $endTime MySQL type varchar(20)
@@ -27,6 +28,8 @@ namespace App\Record\Definition;
  * @property float $price MySQL type decimal(6,2)
  * @property ?string $publicDate MySQL type date
  * @property ?string $registrationStartDate MySQL type date
+ * @property int $showComments MySQL type tinyint(1)
+ * @property int $showRegistered MySQL type tinyint(1)
  * @property ?string $startTime MySQL type varchar(20)
  * @property ?string $title MySQL type varchar(100)
  */
@@ -39,6 +42,7 @@ abstract class Event extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'additionalInfo' => ['blob', 'string', 0, true, ],
 		'checks' => ['int', 'int', 0, true, ],
+		'commentTitle' => ['varchar(255)', 'string', 255, false, '', ],
 		'directionsUrl' => ['varchar(100)', 'string', 100, true, ],
 		'door' => ['int', 'int', 0, true, ],
 		'endTime' => ['varchar(20)', 'string', 20, true, ],
@@ -58,6 +62,8 @@ abstract class Event extends \PHPFUI\ORM\Record
 		'price' => ['decimal(6,2)', 'float', 6, false, 0, ],
 		'publicDate' => ['date', 'string', 10, true, ],
 		'registrationStartDate' => ['date', 'string', 10, true, ],
+		'showComments' => ['tinyint(1)', 'int', 1, false, 0, ],
+		'showRegistered' => ['tinyint(1)', 'int', 1, false, 1, ],
 		'startTime' => ['varchar(20)', 'string', 20, true, ],
 		'title' => ['varchar(100)', 'string', 100, true, ],
 	];

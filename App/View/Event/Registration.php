@@ -131,6 +131,7 @@ class Registration
 					$person->email = $_POST['reservationemail'];
 					$person->firstName = $_POST['reservationFirstName'];
 					$person->lastName = $_POST['reservationLastName'];
+					$person->comments = $_POST['comments'] ?? '';
 					$person->insert();
 					$this->reservationModel->updatePrices($reservation);
 					$this->page->redirect('/Events/attendees/' . $eventId);
@@ -205,7 +206,6 @@ class Registration
 				$billing->add(new \App\UI\TelUSA($this->page, 'phone', 'Phone', $reservation->phone));
 				$email = new \PHPFUI\Input\Email('reservationemail', 'email', $reservation->reservationemail);
 				$billing->add($email);
-				$billing->add(new \PHPFUI\Input\Text('comments', 'Comments to the organizer', $reservation->comments));
 				$form->add($billing);
 
 				$payment = $reservation->payment;
@@ -313,6 +313,19 @@ class Registration
 					}
 
 				$table->addRow($row);
+
+				if ($event->commentTitle)
+					{
+					if ($event->showComments)
+						{
+						$info = 'This will be shown to all registrants';
+						}
+					else
+						{
+						$info = 'This will only be shown to the organizer';
+						}
+					$table->addRow(['firstName' => new \PHPFUI\Input\Text("comments[{$id}]", $event->commentTitle, $record->comments), 'email' => $info], [2]);
+					}
 				}
 
 			$form->add($table);
@@ -380,7 +393,7 @@ class Registration
 
 			if ($reservation->reservationId)
 				{
-				$cancelButton = new \PHPFUI\Button('Cancel My Reservation', '/Events/cancelUnpaid/' . $reservation->reservationId);
+				$cancelButton = new \PHPFUI\Button('Cancel This Reservation', '/Events/cancelUnpaid/' . $reservation->reservationId);
 				}
 			else
 				{

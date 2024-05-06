@@ -29,18 +29,22 @@ class RideWithGPSRemoveLapsed extends \App\Cron\BaseJob
 			{
 			if (\array_key_exists($member->email, $clubMembers))
 				{
+				if (! $clubMembers[$member->email]['active'])
+					{
+					$rwgpsModel->updateMember($clubMembers[$member->email], active:true);
+					}
 				unset($clubMembers[$member->email]);
 				}
 			}
 
 		foreach ($clubMembers as $clubMember)
 			{
-			$rwgpsModel->removeMember($clubMember);
+			$rwgpsModel->updateMember($clubMember);
 			}
 		}
 
 	public function willRun() : bool
 		{
-		return 27 == $this->controller->runningAtDay() && $this->controller->runAt(5, 20);
+		return $this->controller->runAt(5, 20);
 		}
 	}

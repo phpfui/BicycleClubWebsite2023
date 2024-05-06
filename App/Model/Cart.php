@@ -144,6 +144,12 @@ class Cart
 			}
 		$gaRider = new \App\Record\GaRider();
 		$gaRider->setFrom($rider);
+
+		if (! $this->memberId)
+			{
+			$this->memberId = $this->customerModel->getNewNumber();
+			}
+		$gaRider->customerId = $this->memberId;
 		$errors = $gaRider->validate();
 
 		if ($errors)
@@ -171,10 +177,6 @@ class Cart
 		$rider['discountCodeId'] = 0;
 		$rider['dateAdded'] = \App\Tools\Date::todayString();
 
-		if (! $this->memberId)
-			{
-			$this->memberId = $this->customerModel->getNewNumber();
-			}
 		$rider['memberId'] = $this->memberId;
 
 		$cartItem = new \App\Record\CartItem();

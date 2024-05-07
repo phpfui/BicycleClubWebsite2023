@@ -648,6 +648,32 @@ class Member
 			}
 		}
 
+	public static function replace(\App\Record\Member $old, \App\Record\Member $replaceWith) : void
+		{
+		foreach (\PHPFUI\ORM\Table::getAllTables() as $table)
+			{
+			if ('member' == $table->getTableName())
+				{
+				continue;
+				}
+			$fields = $table->getFields();
+
+			if (\array_key_exists('memberId', $fields))
+				{
+				$table->setWhere(new \PHPFUI\ORM\Condition('memberId', $old->memberId));
+
+				try
+					{
+					$table->update(['memberId' => $replaceWith->memberId]);
+					}
+				catch (\Exception $e)
+					{
+					$table->delete();
+					}
+				}
+			}
+		}
+
 	public function resetPassword(string $email, bool $text = false) : void
 		{
 		$member = new \App\Record\Member(['email' => static::cleanEmail($email)]);

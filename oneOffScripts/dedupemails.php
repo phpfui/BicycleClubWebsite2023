@@ -2,6 +2,7 @@
 
 // set the server name which determains which db to use
 $_SERVER['SERVER_NAME'] = $argv[1] ?? 'localhost';
+$doit = isset($argv[2]);
 
 include __DIR__ . '/../common.php';
 
@@ -9,7 +10,8 @@ echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 
 $memberTable = new \App\Table\Member();
 $memberTable->addOrderBy('email');
-$memberTable->addOrderBy('password', 'desc');
+$memberTable->addOrderBy('lastLogin', 'desc');
+$memberTable->addOrderBy('memberId');
 
 $emails = [];
 
@@ -31,9 +33,14 @@ foreach ($memberTable->getRecordCursor() as $member)
 		{
 		$emails[$email][] = $member->membershipId;
 		}
-	else // more than one email address in a membership, remove the shortest password (old or not set)
+	else // more than one email address in a membership, remove the older login
 		{
-		$member->delete();
+		echo "{$email} ({$member->fullName()}) has duplicates in membership {$member->membershipId}\n";
+
+		if ($doit)
+			{
+			$member->delete();
+			}
 		}
 	}
 
@@ -55,7 +62,7 @@ foreach ($emails as $email => $memberships)
 
 		foreach ($memberships as $email => $membership)
 			{
-			if (null == $minMembership || $minMembership->expires > $membership->expires)
+			if (null == $minMembership || $minMembership->expires >= $membership->expires)
 				{
 				$minMembership = $membership;
 				}
@@ -66,30 +73,43 @@ foreach ($emails as $email => $memberships)
 				}
 			}
 
-		if ($minMembership->joined)
+		if ($minMembership->joined && $maxMembership->joined > $minMembership->joined)
 			{
+			echo "Membership updated from latest {$maxMembership->joined} to older {$minMembership->joined}\n";
 			$maxMembership->joined = $minMembership->joined;
-			$maxMembership->update();
+
+			if ($doit)
+				{
+				$maxMembership->update();
+				}
 			}
 
 		if ($maxMembership->membershipId != $minMembership->membershipId)
 			{
+			echo "Delete Membership {$minMembership->joined} to {$minMembership->expires}\n";
+
+			if (\abs($minMembership->membershipId - $maxMembership->membershipId) < 10)
+				{
+				echo "Delete duplicate added Membership {$minMembership->membershipId} count={$minMembership->MemberChildren->count()} keep: {$maxMembership->membershipId} count={$maxMembership->MemberChildren->count()} \n";
+				}
+
+			if (! $doit)
+				{
+				continue;
+				}
+
 			foreach ($minMembership->MemberChildren as $member)
 				{
-				$member->email = '';
-				$member->update();
-				}
-			echo "Max Id: {$maxMembership->membershipId} Max Expires: {$maxMembership->expires}, Joined: {$maxMembership->joined} Members on membership: {$maxMembership->MemberChildren->count()}\n";
-			echo "Min Id: {$minMembership->membershipId} Min Expires: {$minMembership->expires}, Joined: {$minMembership->joined} Members on membership: {$minMembership->MemberChildren->count()}\n";
-			}
-		else
-			{
-			echo "membershipId: {$membership->membershipId} Expires: {$membership->expires}, Joined: {$membership->joined} Members on membership: {$membership->MemberChildren->count()}\n";
+				$oldMember = new \App\Record\Member(['membershipId' => $minMembership->membershipId, 'email' => $email]);
+				$goodMember = new \App\Record\Member(['membershipId' => $maxMembership->membershipId, 'email' => $email]);
 
-			foreach ($membership->MemberChildren as $member)
-				{
-				\print_r($member->toArray());
+				if ($oldMember->memberId != $goodMember)
+					{
+					\App\Model\Member::replace($oldMember, $goodMember);
+					$oldMember->delete();
+					}
 				}
+			$minMembership->delete();
 			}
 		}
 	}

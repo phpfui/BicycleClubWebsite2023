@@ -415,16 +415,16 @@
         },
         {
             "name": "endroid/qr-code",
-            "version": "5.0.8",
+            "version": "5.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/endroid/qr-code.git",
-                "reference": "cb6b31a7aa99df9c6c2dc09a5fa2aaa617f6e5bb"
+                "reference": "3dcdfab4c9122874f3915d8bf80a43b9df11852d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/endroid/qr-code/zipball/cb6b31a7aa99df9c6c2dc09a5fa2aaa617f6e5bb",
-                "reference": "cb6b31a7aa99df9c6c2dc09a5fa2aaa617f6e5bb",
+                "url": "https://api.github.com/repos/endroid/qr-code/zipball/3dcdfab4c9122874f3915d8bf80a43b9df11852d",
+                "reference": "3dcdfab4c9122874f3915d8bf80a43b9df11852d",
                 "shasum": ""
             },
             "require": {
@@ -475,7 +475,7 @@
             ],
             "support": {
                 "issues": "https://github.com/endroid/qr-code/issues",
-                "source": "https://github.com/endroid/qr-code/tree/5.0.8"
+                "source": "https://github.com/endroid/qr-code/tree/5.0.9"
             },
             "funding": [
                 {
@@ -483,7 +483,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-04-19T08:36:52+00:00"
+            "time": "2024-05-08T08:09:28+00:00"
         },
         {
             "name": "flowjs/flow-php-server",
@@ -3305,16 +3305,16 @@
         },
         {
             "name": "phpfui/orm",
-            "version": "V1.7.1",
+            "version": "V1.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ORM.git",
-                "reference": "7115995833ae41395380021062ab12247d0fa488"
+                "reference": "294803f5ff575065edc8e0bbde8ecd894ec750e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ORM/zipball/7115995833ae41395380021062ab12247d0fa488",
-                "reference": "7115995833ae41395380021062ab12247d0fa488",
+                "url": "https://api.github.com/repos/phpfui/ORM/zipball/294803f5ff575065edc8e0bbde8ecd894ec750e2",
+                "reference": "294803f5ff575065edc8e0bbde8ecd894ec750e2",
                 "shasum": ""
             },
             "require": {
@@ -3362,9 +3362,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ORM/issues",
-                "source": "https://github.com/phpfui/ORM/tree/V1.7.1"
+                "source": "https://github.com/phpfui/ORM/tree/V1.7.2"
             },
-            "time": "2024-04-26T02:47:33+00:00"
+            "time": "2024-05-08T15:40:37+00:00"
         },
         {
             "name": "phpfui/phpfui",
@@ -4905,16 +4905,16 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "7.0.1",
+            "version": "7.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "863759766e2397d1f639c63d006680a9e8ba6233"
+                "reference": "05a2ae86f455231d1734f2442664b6891ec4d8dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/863759766e2397d1f639c63d006680a9e8ba6233",
-                "reference": "863759766e2397d1f639c63d006680a9e8ba6233",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/05a2ae86f455231d1734f2442664b6891ec4d8dd",
+                "reference": "05a2ae86f455231d1734f2442664b6891ec4d8dd",
                 "shasum": ""
             },
             "type": "component",
@@ -4958,9 +4958,9 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/7.0.1"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/7.1.0"
             },
-            "time": "2024-04-10T07:29:34+00:00"
+            "time": "2024-05-08T05:24:56+00:00"
         },
         {
             "name": "twilio/sdk",
@@ -6547,12 +6547,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "7e41e89915991a80d38f5cecb3ab3def0f4749b7"
+                "reference": "99ba3993d1441627081b78b6a844776fc9ef264f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/7e41e89915991a80d38f5cecb3ab3def0f4749b7",
-                "reference": "7e41e89915991a80d38f5cecb3ab3def0f4749b7",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/99ba3993d1441627081b78b6a844776fc9ef264f",
+                "reference": "99ba3993d1441627081b78b6a844776fc9ef264f",
                 "shasum": ""
             },
             "conflict": {
@@ -6999,7 +6999,7 @@
                 "pimcore/demo": "<10.3",
                 "pimcore/ecommerce-framework-bundle": "<1.0.10",
                 "pimcore/perspective-editor": "<1.5.1",
-                "pimcore/pimcore": "<11.2.3",
+                "pimcore/pimcore": "<11.1.6.5-dev|>=11.2,<11.2.3",
                 "pixelfed/pixelfed": "<0.11.11",
                 "plotly/plotly.js": "<2.25.2",
                 "pocketmine/bedrock-protocol": "<8.0.2",
@@ -7331,7 +7331,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-05-07T20:04:15+00:00"
+            "time": "2024-05-08T14:04:15+00:00"
         },
         {
             "name": "sebastian/cli-parser",

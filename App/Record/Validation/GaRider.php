@@ -14,7 +14,7 @@ class GaRider extends \PHPFUI\ORM\Validator
 		'contact' => ['maxlength', 'required'],
 		'contactPhone' => ['maxlength', 'required'],
 		'customerId' => ['integer'],
-		'email' => ['maxlength', 'required', 'unique:gaEventId'],
+		'email' => ['maxlength', 'required', ],
 		'emailAnnouncements' => ['integer'],
 		'firstName' => ['maxlength', 'required'],
 		'gaEventId' => ['integer'],

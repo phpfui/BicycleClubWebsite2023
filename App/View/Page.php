@@ -10,6 +10,8 @@ class Page extends \PHPFUI\Page
 
 	protected \App\Table\Setting $settingTable;
 
+	private static bool $attemptedSignin = false;
+
 	private bool $bannerOff = false;
 
 	private readonly \App\Tools\Cookies $cookies;
@@ -29,8 +31,6 @@ class Page extends \PHPFUI\Page
 	private bool $noMenus = false;
 
 	private static bool $passwordReset = false;
-
-	private static bool $attemptedSignin = false;
 
 	private bool $publicPage = false;
 

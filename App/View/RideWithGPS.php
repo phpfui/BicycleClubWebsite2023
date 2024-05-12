@@ -191,7 +191,6 @@ class RideWithGPS
 			}
 		$RWGPSTable->setWhere($condition);
 		$input = [];
-		\App\Tools\Logger::get()->debug($RWGPSTable->getSelectSQL($input));
 
 		$container->add($this->list($RWGPSTable));
 

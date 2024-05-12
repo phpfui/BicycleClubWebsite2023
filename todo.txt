@@ -1,9 +1,5 @@
 Embeded images in ride description not going into ride journal correctly.
 
-White list forums
-
-Spacing on email all members
-
 renwals not asking for payment
 
 Adding more members while joining

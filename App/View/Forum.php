@@ -193,7 +193,7 @@ class Forum
 			$multiColumn->add(new \PHPFUI\FAIcon('far', 'edit', $this->site . '/Forums/editMessage/' . $message->forumMessageId));
 			}
 
-		if ($deleteId)
+		if ($deleteId && $this->page->isAuthorized('Delete Forum Message'))
 			{
 			$delete = new \PHPFUI\AJAX('deleteMessage', 'Permanently delete this message?');
 			$delete->addFunction('success', '$("#"+data.response).css("background-color","red").hide("fast").remove()');

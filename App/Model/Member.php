@@ -812,13 +812,9 @@ class Member
 		\App\Table\UserPermission::addPermissionToUser($member->memberId, $permission->permissionId);
 		}
 
-	/**
-	 * @return array<string,string> error messsages
-	 */
-	public function signInMember(string $email, string $password) : array
+	public function signInMember(string $email, string $password) : string
 		{
-		$returnValue = [];
-		$message = 'Invalid email address or password.';
+		$errorMessage = 'Invalid email address or password.';
 		$email = static::cleanEmail($email);
 		$password = \trim($password);
 
@@ -834,6 +830,7 @@ class Member
 					{
 					$loginAttempts = [];
 					}
+
 				$recentAttempts = [\time()];
 
 				foreach($loginAttempts as $attempt)
@@ -861,12 +858,13 @@ class Member
 							$member->password = $this->hashPassword($password);
 							}
 						\App\Model\Session::registerMember($member);
-						$returnValue = $member->toArray();
+						$member->update();
+						$errorMessage = '';
 						}
 					}
 				else
 					{
-					$message = 'Too many login attempts. Please wait to try again.';
+					$errorMessage = 'Too many login attempts. Please wait to try again.';
 					}
 				// save the last 20 login attempts max
 				$member->loginAttempts = \json_encode(\array_slice($recentAttempts, 0, 20), JSON_THROW_ON_ERROR);
@@ -874,13 +872,12 @@ class Member
 				}
 			}
 
-		if (! $returnValue)
+		if ($errorMessage)
 			{
-			$returnValue['error'] = $message;
 			\App\Model\Session::unregisterMember();
 			}
 
-		return $returnValue;
+		return $errorMessage;
 		}
 
 	public function signWaiver(\App\Record\Member $member) : void

@@ -70,8 +70,7 @@ class Debug
 							break;
 
 						case 'PHPWarning':
-							// @phpstan-ignore-next-line
-							++$array['generatedWarning'];
+							++$array['generatedWarning']; // @phpstan-ignore variable.undefined
 							$message = 'Generated PHP warning';
 
 							break;
@@ -80,8 +79,7 @@ class Debug
 							$message = 'Generated PHP Error';
 							// send before we crash
 							\App\Model\Session::setFlash('success', $message);
-							// @phpstan-ignore-next-line
-							$error = new \Unknown\Error();
+							$error = new \Unknown\Error(); // @phpstan-ignore class.notFound
 
 							break;
 						}

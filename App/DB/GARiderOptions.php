@@ -2,6 +2,9 @@
 
 namespace App\DB;
 
+/**
+ * @property \App\Record\GaRider $currentRecord
+ */
 class GARiderOptions extends \PHPFUI\ORM\VirtualField
 	{
 	/**
@@ -10,7 +13,6 @@ class GARiderOptions extends \PHPFUI\ORM\VirtualField
 	public function getValue(array $parameters) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$table = new \App\Table\GaRiderSelection();
-		// @phpstan-ignore-next-line
 		$condition = new \PHPFUI\ORM\Condition('GaRiderId', $this->currentRecord->gaRiderId);
 		$table->setWhere($condition);
 		$table->addJoin('gaOption');

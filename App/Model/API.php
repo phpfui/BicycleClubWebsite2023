@@ -289,7 +289,7 @@ class API
 		}
 
 	/**
-	 * @param ?array<array<string>|string> $conditions
+	 * @param ?array<int,array<string>|string> $conditions
 	 */
 	private function getCondition(?array $conditions) : \PHPFUI\ORM\Condition
 		{
@@ -304,7 +304,7 @@ class API
 			{
 			$subCondition = null;
 
-			if (\is_array($row[1])) // @phpstan-ignore-line
+			if (\is_array($row[1])) // @phpstan-ignore function.impossibleType
 				{
 				$subCondition = $this->getCondition($row[1]);
 				}

@@ -103,7 +103,7 @@ JAVASCRIPT;
 		}
 
 	/**
-	 * @param \PHPFUI\ORM\RecordCursor<\App\Record\SigninSheet> $signinSheets
+	 * @param \PHPFUI\ORM\RecordCursor<\App\Record\SigninSheetRide> $signinSheets
 	 */
 	public function listSheets(\PHPFUI\ORM\RecordCursor $signinSheets, \App\Record\Ride $ride) : \PHPFUI\Container
 		{

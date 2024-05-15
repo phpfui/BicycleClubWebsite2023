@@ -12,7 +12,7 @@ namespace App\Record\Definition;
  * @property ?int $rideComments MySQL type int
  * @property int $rideId MySQL type int
  * @property \App\Record\Ride $ride related record
- * @property string $signedUpTime MySQL type timestamp
+ * @property ?string $signedUpTime MySQL type timestamp
  * @property ?int $status MySQL type int
  */
 abstract class RideSignup extends \PHPFUI\ORM\Record
@@ -27,7 +27,7 @@ abstract class RideSignup extends \PHPFUI\ORM\Record
 		'memberId' => ['int', 'int', 0, false, ],
 		'rideComments' => ['int', 'int', 0, true, 1, ],
 		'rideId' => ['int', 'int', 0, false, ],
-		'signedUpTime' => ['timestamp', 'string', 20, false, null, ],
+		'signedUpTime' => ['timestamp', 'string', 20, true, null, ],
 		'status' => ['int', 'int', 0, true, ],
 	];
 

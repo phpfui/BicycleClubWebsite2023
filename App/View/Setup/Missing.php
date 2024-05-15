@@ -6,8 +6,7 @@ class Missing extends \PHPFUI\Page implements \PHPFUI\Interfaces\NanoClass
 	{
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{
-		// @phpstan-ignore-next-line
-		parent::__construct($controller);
+		parent::__construct($controller); // @phpstan-ignore arguments.count
 		$message = $_SERVER['REQUEST_URI'] . ' is MISSING!';
 		$this->setPageName($message);
 

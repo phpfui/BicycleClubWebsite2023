@@ -10,8 +10,7 @@ class Config implements \PHPFUI\Interfaces\NanoClass, \Stringable
 
 	private string $title = 'Bicycle Club Website Setup';
 
-	// @phpstan-ignore-next-line
-	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
+	public function __construct(\PHPFUI\Interfaces\NanoController $controller) // @phpstan-ignore constructor.unusedParameter
 		{
 		$this->page = new \App\View\Setup\Page();
 		$this->page->addCSS('body { margin: 1em}')->setPageName($this->title);
@@ -35,7 +34,7 @@ class Config implements \PHPFUI\Interfaces\NanoClass, \Stringable
 
 	public function landingPage() : void
 		{
-		$this->page->add(new \App\View\Setup\Start($this->page, $this->getWizardBar(0)));
+		$this->page->add(new \App\View\Setup\Start($this->getWizardBar(0)));
 		}
 
 	public function wizard(string $direction = '') : void
@@ -77,7 +76,7 @@ class Config implements \PHPFUI\Interfaces\NanoClass, \Stringable
 		switch ($stage)
 			{
 			case 0:
-				$this->page->add(new \App\View\Setup\Start($this->page, $wizardBar));
+				$this->page->add(new \App\View\Setup\Start($wizardBar));
 
 				break;
 

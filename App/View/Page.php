@@ -633,8 +633,7 @@ class Page extends \PHPFUI\Page
 				{
 				$waiverView = new \App\View\Admin\Waiver($this);
 
-				// @phpstan-ignore-next-line
-				if (! \App\Model\Session::signedWaiver())
+				if (! \App\Model\Session::signedWaiver()) // @phpstan-ignore booleanNot.alwaysTrue
 					{
 					$this->addRequiredPage($waiverView);
 					}

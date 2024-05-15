@@ -61,7 +61,7 @@ class Cron
 
 				for ($i = 0; $i < $minutesInDay; $i += $this->controller->getInterval())
 					{
-					if ($cronObject->willRun())	// @phpstan-ignore-line
+					if ($cronObject->willRun())	// @phpstan-ignore if.alwaysTrue
 						{
 						++$runCount;
 						}

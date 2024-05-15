@@ -4,8 +4,7 @@ namespace App\View\System;
 
 class Versions
 	{
-	// @phpstan-ignore-next-line
-	public function __construct(\App\View\Page $page, private readonly \Gitonomy\Git\Repository $model)
+	public function __construct(private readonly \Gitonomy\Git\Repository $model)
 		{
 		}
 

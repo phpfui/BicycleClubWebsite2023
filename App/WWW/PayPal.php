@@ -76,24 +76,19 @@ class PayPal extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$response = $client->execute($request);
 		$result = $response->result;
 
-		// @phpstan-ignore-next-line
-		if ($result->id != $json['orderID'])
+		if ($result->id != $json['orderID']) // @phpstan-ignore property.nonObject
 			{
 			$this->logger->debug(__METHOD__ . ' orderID mismatch');
 			}
-		// @phpstan-ignore-next-line
-		elseif ($result->purchase_units[0]->invoice_id != $invoice->invoiceId)
+		elseif ($result->purchase_units[0]->invoice_id != $invoice->invoiceId) // @phpstan-ignore property.nonObject
 			{
 			$this->logger->debug(__METHOD__ . ' invoiceId mismatch');
 			}
 		else
 			{
-			// @phpstan-ignore-next-line
-			$txn = $result->purchase_units[0]->payments->captures[0]->id;
-			// @phpstan-ignore-next-line
-			$status = $result->purchase_units[0]->payments->captures[0]->status;
-			// @phpstan-ignore-next-line
-			$payment_amount = $result->purchase_units[0]->payments->captures[0]->amount->value;
+			$txn = $result->purchase_units[0]->payments->captures[0]->id; // @phpstan-ignore property.nonObject
+			$status = $result->purchase_units[0]->payments->captures[0]->status; // @phpstan-ignore property.nonObject
+			$payment_amount = $result->purchase_units[0]->payments->captures[0]->amount->value; // @phpstan-ignore property.nonObject
 			$invoiceModel = new \App\Model\Invoice();
 			$invoiceModel->executePayment($invoice, $txn, $payment_amount);
 			}
@@ -105,8 +100,7 @@ class PayPal extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$model = new \App\Model\PayPal($paypalType);
 		$response = $model->createOrderRequest($invoice, $description);
-		// @phpstan-ignore-next-line
-		$_SESSION['PayPalId'] = $response->result->id;
+		$_SESSION['PayPalId'] = $response->result->id; // @phpstan-ignore property.nonObject
 		$this->page->setRawResponse(\json_encode($response->result, JSON_PRETTY_PRINT));
 		}
 

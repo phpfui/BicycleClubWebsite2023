@@ -253,12 +253,15 @@ class ConstantContact
 
 		foreach ($input[$index] ?? [] as $row)
 			{
-			unset($row['created_at'], $row['updated_at']);	// @phpstan-ignore-line
-			$suffix = \array_shift($suffixes);
-
-			foreach ($row as $key => $value)
+			if (! \is_string($row))
 				{
-				$data[$key . $suffix] = $value;
+				unset($row['created_at'], $row['updated_at']);
+				$suffix = \array_shift($suffixes);
+
+				foreach ($row as $key => $value)
+					{
+					$data[$key . $suffix] = $value;
+					}
 				}
 			}
 

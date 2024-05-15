@@ -357,8 +357,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 
 		$paginator = new \PHPFUI\Pagination($this->pageNumber, $lastPage, $this->getUrl());
 
-		// @phpstan-ignore-next-line
-		if (! $this->continuousScroll)
+		if (! $this->continuousScroll) // @phpstan-ignore booleanNot.alwaysTrue
 			{
 			$paginator->alwaysShow($this->alwaysShowPaginator);
 			}
@@ -383,8 +382,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 		$limitSelectCell = new \PHPFUI\Cell();
 		$limitSelectCell->addClass('auto');
 
-		// @phpstan-ignore-next-line
-		if (! $this->continuousScroll && $this->showLimitSelect)
+		if (! $this->continuousScroll && $this->showLimitSelect) // @phpstan-ignore booleanNot.alwaysTrue
 			{
 			$limitSelectCell->add($limitSelect);
 			}
@@ -493,8 +491,7 @@ intersectionObserver.observe(document.querySelector('#{$footerId}'));";
 		$name = \array_pop($parts);
 		$permission = "Download {$name} CSV File";
 
-		// @phpstan-ignore-next-line
-		return $this->page->isAuthorized($permission);
+		return $this->page->isAuthorized($permission); // @phpstan-ignore method.notFound
 		}
 
 	private function fillTable() : void

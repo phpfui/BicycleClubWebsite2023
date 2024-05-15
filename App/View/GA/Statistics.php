@@ -4,8 +4,7 @@ namespace App\View\GA;
 
 class Statistics implements \Stringable
 	{
-	// @phpstan-ignore-next-line
-	public function __construct(\App\View\Page $page, private readonly \App\Record\GaEvent $event)
+	public function __construct(\App\View\Page $page, private readonly \App\Record\GaEvent $event) // @phpstan-ignore constructor.unusedParameter
 		{
 		}
 

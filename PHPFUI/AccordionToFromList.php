@@ -13,8 +13,8 @@ namespace PHPFUI;
 class AccordionToFromList extends \PHPFUI\ToFromList
 	{
 	/**
-	 * @param array<int, array<string, string>> $inGroup
-	 * @param array<int, array<string, string>> $notInGroup
+	 * @param array<string, array<string, string>> $inGroup
+	 * @param array<string, array<string, string>> $notInGroup
 	 */
 	public function __construct(\PHPFUI\Interfaces\Page $page, string $name, array $inGroup, array $notInGroup, string $callbackIndex, $callback)
 		{

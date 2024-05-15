@@ -266,8 +266,7 @@ class TextHelper extends \PHPFUI\TextHelper
 		$dom = new \voku\helper\HtmlDomParser($html);
 		$images = $dom->find('img');
 
-		// @phpstan-ignore-next-line
-		if (! \count($images))
+		if (0 === \count($images)) // @phpstan-ignore argument.type
 			{
 			return $html;
 			}

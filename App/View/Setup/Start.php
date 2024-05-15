@@ -4,8 +4,7 @@ namespace App\View\Setup;
 
 class Start extends \PHPFUI\Container
 	{
-	// @phpstan-ignore-next-line
-	public function __construct(\PHPFUI\Page $page, \App\View\Setup\WizardBar $wizardBar)
+	public function __construct(\App\View\Setup\WizardBar $wizardBar)
 		{
 		$this->add(new \PHPFUI\Header('Welcome to the setup wizard', 4));
 		$loaded = \get_loaded_extensions();

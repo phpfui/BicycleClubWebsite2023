@@ -7,7 +7,7 @@ class DeleteRecord
 	/** @var ?callable */
 	private $conditionalCallBack = null;
 
-	private readonly \PHPFUI\AJAX $delete; // @phpstan-ignore-line
+	private readonly \PHPFUI\AJAX $delete;
 
 	/** @var array<string> */
 	private array $primaryKeys;
@@ -17,6 +17,7 @@ class DeleteRecord
 		$this->primaryKeys = $dbTable->getPrimaryKeys();
 		$primaryKey = \implode('_', $this->primaryKeys);
 		$functionName = 'delete_' . \ucfirst($primaryKey);
+		$this->delete = new \PHPFUI\AJAX($functionName, $message);
 
 		if (\PHPFUI\Session::checkCSRF() && ($_POST['action'] ?? '') == $functionName)
 			{
@@ -30,7 +31,6 @@ class DeleteRecord
 			}
 
 		$table->setRecordId($primaryKey);
-		$this->delete = new \PHPFUI\AJAX($functionName, $message);
 		$this->delete->addFunction('success', '$("#' . $primaryKey . '-"+data.response).css("background-color","red").hide("fast").remove()');
 		$page->addJavaScript($this->delete->getPageJS());
 		}

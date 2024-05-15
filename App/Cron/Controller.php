@@ -137,8 +137,7 @@ class Controller
 	 */
 	public function log($priority, $message) : static
 		{
-		// @phpstan-ignore-next-line
-		if ($this->logger && $priority <= $this->logLevel)
+		if ($this->logger && $priority <= $this->logLevel) // @phpstan-ignore booleanAnd.leftAlwaysTrue
 			{
 			\call_user_func($this->logger, $message);
 			}

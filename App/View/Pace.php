@@ -15,7 +15,6 @@ class Pace
 		{
 		$submit = new \PHPFUI\Submit();
 		$form = new \PHPFUI\Form($this->page, $submit);
-		$add = false;
 
 		if (empty($category->category))
 			{
@@ -115,11 +114,7 @@ class Pace
 			$buttonGroup = new \App\UI\CancelButtonGroup();
 			$buttonGroup->addButton($submit);
 
-			// @phpstan-ignore-next-line
-			if ($add)
-				{
-				$buttonGroup->addButton($add);
-				}
+			$buttonGroup->addButton($add);
 			$editCategories = new \PHPFUI\Button('Categories', '/Leaders/categories');
 			$editCategories->addClass('secondary');
 			$buttonGroup->addButton($editCategories);

@@ -31,7 +31,7 @@ class SettingsSaver
 	/**
 	 * @param \PHPFUI\Input\Tel|\PHPFUI\Input\TextArea|string $type
 	 */
-	public function generateField(string $name, string $label, string | \PHPFUI\Input $type = 'text', bool $required = true) : \PHPFUI\Input
+	public function generateField(string $name, string $label, string | \PHPFUI\Input | \PHPFUI\Input\Hidden $type = 'text', bool $required = true) : \PHPFUI\Input
 		{
 		if ($this->JSONName)
 			{
@@ -47,8 +47,7 @@ class SettingsSaver
 			{
 			$input = $type;
 
-			// @phpstan-ignore-next-line
-			if (! ($type instanceof \PHPFUI\Input\Hidden))
+			if (! $type instanceof \PHPFUI\Input\Hidden) // @phpstan-ignore-line
 				{
 				$input->setValue($value);
 				}

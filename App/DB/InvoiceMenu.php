@@ -2,6 +2,9 @@
 
 namespace App\DB;
 
+/**
+ * @property \App\Record\Invoice $currentRecord
+ */
 class InvoiceMenu extends \PHPFUI\ORM\VirtualField
 	{
 	/**
@@ -12,7 +15,7 @@ class InvoiceMenu extends \PHPFUI\ORM\VirtualField
 		$table = new \App\Table\GaEvent();
 		$on = new \PHPFUI\ORM\Condition('gaEventId', new \PHPFUI\ORM\Literal('invoiceItem.storeItemId'));
 		$table->addJoin('invoiceItem', $on);
-		$table->setWhere(new \PHPFUI\ORM\Condition('invoiceItem.invoiceId', $this->currentRecord->invoiceId));	// @phpstan-ignore-line
+		$table->setWhere(new \PHPFUI\ORM\Condition('invoiceItem.invoiceId', $this->currentRecord->invoiceId));
 
 		$showMenu = true;
 

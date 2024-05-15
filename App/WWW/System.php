@@ -41,7 +41,6 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$errorModel = new \App\Model\Errors();
 		// clear the error log
 		$errorModel->deleteAll();
-		// @phpstan-ignore-next-line
 		\file_get_contents($this->page->getSchemeHost() . '/System/memoryHog');  // create a memory error
 		\sleep(1);	// wait to make sure the error log is written
 		$errors = $errorModel->getErrors(true);
@@ -68,7 +67,7 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$memoryHog = [];
 
-		// @phpstan-ignore-next-line
+		// @phpstan-ignore while.alwaysTrue
 		while (1)
 			{
 			$memoryHog[] = \array_fill(0, 1000, 1);  // produce an out of memory error

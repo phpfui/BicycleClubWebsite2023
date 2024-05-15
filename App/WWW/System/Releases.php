@@ -106,7 +106,7 @@ class Releases extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$branch = $origin . '/' . $branch;
 				}
 			$repo->run('fetch');
-			$view = new \App\View\System\Versions($this->page, $repo);
+			$view = new \App\View\System\Versions($repo);
 			$this->page->addPageContent($view->list($branch));
 			}
 		}

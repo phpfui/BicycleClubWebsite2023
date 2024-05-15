@@ -8,8 +8,7 @@ class WWWBase implements \Stringable
 
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{
-		// @phpstan-ignore-next-line
-		$this->page = new \App\View\Page($controller);
+		$this->page = new \App\View\Page($controller); // @phpstan-ignore argument.type
 		}
 
 	public function __toString() : string

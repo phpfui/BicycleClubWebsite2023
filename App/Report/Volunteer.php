@@ -188,7 +188,6 @@ class Volunteer extends \PDF_MC_Table
 
 	public function volunteerReports(\App\Record\JobEvent $jobEvent) : void
 		{
-		$header = $newPage = false;
 		$jobTable = new \App\Table\Job();
 		$jobShiftTable = new \App\Table\JobShift();
 		$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
@@ -202,15 +201,10 @@ class Volunteer extends \PDF_MC_Table
 
 		if (\count($jobs) && ($details || $needed || $current || $multiple))
 			{
-			// @phpstan-ignore-next-line
-			if (! $header)
-				{
-				$newPage = true;
-				$this->AddPage('P', 'Letter');
-				$this->SetDocumentTitle('Volunteer Job Assignments Printed On ' . \App\Tools\Date::todayString());
-				$this->PrintHeader();
-				}
-			$header = true;
+			$newPage = true;
+			$this->AddPage('P', 'Letter');
+			$this->SetDocumentTitle('Volunteer Job Assignments Printed On ' . \App\Tools\Date::todayString());
+			$this->PrintHeader();
 
 			foreach ($jobs as $job)
 				{

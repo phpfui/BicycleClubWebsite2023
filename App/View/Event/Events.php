@@ -698,6 +698,11 @@ class Events
 					$reservationPerson->firstName = $_POST['firstName'][$i];
 					$reservationPerson->lastName = $_POST['lastName'][$i];
 					$reservationPerson->email = $_POST['email'][$i];
+
+					if (isset($_POST['comments'][$i]))
+						{
+						$reservationPerson->comments = $_POST['comments'][$i];
+						}
 					$reservationPerson->insert();
 					}
 				}
@@ -834,7 +839,7 @@ JAVASCRIPT;
 
 		if ($this->event->commentTitle)
 			{
-			$comment = new \PHPFUI\Input\Text("comment[{$index}]", $this->event->commentTitle, $member['comment'] ?? '');
+			$comment = new \PHPFUI\Input\Text("comments[{$index}]", $this->event->commentTitle, $member['comments'] ?? '');
 			$fieldSet->add($comment);
 			}
 

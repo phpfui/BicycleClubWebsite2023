@@ -52,7 +52,7 @@ class Email implements \Stringable
 
 			if ($_POST['submit'] == $this->testMessage)
 				{
-				$riderData = new \App\Model\Email\GaRider();
+				$riderData = new \App\Model\Email\GaRider($_POST['gaEventId']);
 				$email->setBody(\App\Tools\TextHelper::processText($clean, $riderData->toArray()) . $appendMessage);
 				$email->setToMember($sender);
 				$email->send();
@@ -62,7 +62,7 @@ class Email implements \Stringable
 				{
 				foreach ($riders as $rider)
 					{
-					$riderData = new \App\Model\Email\GaRider($rider);
+					$riderData = new \App\Model\Email\GaRider($_POST['gaEventId'], $rider);
 					$email->setBody(\App\Tools\TextHelper::processText($clean, $riderData->toArray()) . $appendMessage);
 					$email->setToMember($rider->toArray());
 					$email->bulkSend();
@@ -100,8 +100,10 @@ class Email implements \Stringable
 
 		$tabs->addTab('Attachment', new \PHPFUI\Input\File($this->page, 'file', 'Optional file to attach'));
 
-		$riderFields = new \App\Model\Email\GaRider();
-		$tabs->addTab('Substitutions', new \App\UI\SubstitutionFields($riderFields->toArray()));
+		$riderFields = new \App\Model\Email\GaRider($this->parameters['gaEventId'] ?? []);
+		$info = new \PHPFUI\Callout('info');
+		$info->add('To see the event specific fields, you must first send a test email with the correct event selected on the first tab');
+		$tabs->addTab('Substitutions', new \App\UI\SubstitutionFields($riderFields->toArray()) . $info);
 		$form->add($tabs);
 		$form->add('<br>');
 

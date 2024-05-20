@@ -27,11 +27,10 @@ class Email implements \Stringable
 			$email->setHtml();
 			$settings = new \App\Table\Setting();
 			$link = $settings->value('homePage');
-			$message = \App\Tools\TextHelper::cleanUserHtml($_POST['message']) . "<p>This email was sent from <a href='{$link}'>{$link}</a> by {$name} {$emailAddress}</p>";
+			$appendMessage = "<p>This email was sent from <a href='{$link}'>{$link}</a> by {$name} {$emailAddress}</p>";
 			$settingTable = new \App\Table\Setting();
 			$server = $settingTable->value('homePage');
-			$message .= "<p><a href='{$server}/GA/~unsubscribe~'>You may Unsubscribe Here</a></p>";
-			$email->setBody($message);
+			$appendMessage .= "<p><a href='{$server}/GA/~unsubscribe~'>You may Unsubscribe Here</a></p>";
 
 			if (isset($_FILES['file']))
 				{
@@ -47,21 +46,27 @@ class Email implements \Stringable
 					}
 				}
 			$email->setHtml();
-			$riders = \App\Table\GaRider::getEmailsForEvents($_POST['gaEventId'], $_POST['pending']);
+			$clean = \App\Tools\TextHelper::cleanUserHtml($_POST['message']);
+			$gaRiderTable = new \App\Table\GaRider();
+			$riders = $gaRiderTable->getEmailsForEvents($_POST['gaEventId'], (int)($_POST['pending'] ?? 0));
 
 			if ($_POST['submit'] == $this->testMessage)
 				{
-				$email->addToMember($sender);
-				$email->bulkSend();
-				\App\Model\Session::setFlash('success', 'Check your inbox for a test email after 5 minutes.  It would have been sent to ' . \count($riders) . ' riders');
+				$riderData = new \App\Model\Email\GaRider();
+				$email->setBody(\App\Tools\TextHelper::processText($clean, $riderData->toArray()) . $appendMessage);
+				$email->setToMember($sender);
+				$email->send();
+				\App\Model\Session::setFlash('success', 'Check your inbox for a test email.  It would have been sent to ' . \count($riders) . ' riders');
 				}
 			else
 				{
 				foreach ($riders as $rider)
 					{
-					$email->addBCC($rider['email'], $rider['firstName'] . ' ' . $rider['lastName'], $rider['gaRiderId'] ?? 0);
+					$riderData = new \App\Model\Email\GaRider($rider);
+					$email->setBody(\App\Tools\TextHelper::processText($clean, $riderData->toArray()) . $appendMessage);
+					$email->setToMember($rider->toArray());
+					$email->bulkSend();
 					}
-				$email->bulkSend();
 				\App\Model\Session::setFlash('success', 'You emailed ' . \count($riders) . ' riders.');
 				}
 			$this->page->redirect();
@@ -72,26 +77,36 @@ class Email implements \Stringable
 		{
 		$form = new \PHPFUI\Form($this->page);
 
+		$tabs = new \PHPFUI\Tabs();
+
 		$picker = new \App\View\GA\EventPicker($this->page, \App\Enum\GeneralAdmission\EventPicker::MULTIPLE, 'Email Riders In These Events');
 		$picker->setSelected($this->parameters['gaEventId'] ?? []);
+		$tabs->addTab('Select Events', $picker, true);
 
-		$form->add($picker);
-
-		$fieldSet = new \PHPFUI\FieldSet('Email Content');
+		$fieldSet = new \PHPFUI\Container();
 		$subject = new \PHPFUI\Input\Text('subject', 'Subject', $this->parameters['subject'] ?? '');
 		$subject->setRequired();
 		$subject->addAttribute('placeholder', 'Email Subject');
 		$fieldSet->add($subject);
+		$pending = new \PHPFUI\Input\CheckBoxBoolean('pending', 'Just Send to Unpaid Riders');
+		$pending->setToolTip('If checked, the email will only go to riders who have signed up, but not paid. Otherwise it only goes to paid riders.');
+		$fieldSet->add($pending);
 		$message = new \PHPFUI\Input\TextArea('message', 'Message', $this->parameters['message'] ?? '');
 		$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
 		$message->addAttribute('placeholder', 'Message to all riders');
 		$message->setRequired();
 		$fieldSet->add($message);
-		$fieldSet->add(new \PHPFUI\Input\File($this->page, 'file', 'Optional file to attach'));
-		$pending = new \PHPFUI\Input\CheckBoxBoolean('pending', 'Just Send to Unpaid Riders');
-		$pending->setToolTip('If checked, the email will only go to riders who have signed up, but not paid. Otherwise it only goes to paid riders.');
-		$fieldSet->add($pending);
-		$form->add($fieldSet);
+		$tabs->addTab('Email Content', $fieldSet);
+
+		$tabs->addTab('Attachment', new \PHPFUI\Input\File($this->page, 'file', 'Optional file to attach'));
+
+		$riderFields = new \App\Model\Email\GaRider();
+		$tabs->addTab('Substitutions', new \App\UI\SubstitutionFields($riderFields->toArray()));
+		$form->add($tabs);
+		$form->add('<br>');
+
+		$form->add(new \PHPFUI\FormError('Please fill out the required fields in the <b>Email Content</b> tab'));
+
 		$buttonGroup = new \App\UI\CancelButtonGroup();
 		$emailAll = new \PHPFUI\Submit('Email All Riders');
 		$emailAll->setConfirm('Are you sure you want to email all riders?');

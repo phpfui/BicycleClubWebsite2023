@@ -58,7 +58,7 @@ class Reservation
 		$invoiceItem->shipping = 0.0;
 		$invoiceItem->tax = 0.0;
 		$invoiceItem->price = $event->price;
-		$invoiceItem->storeItemId = $reservation->eventId;
+		$invoiceItem->storeItemId = (int)$reservation->eventId;
 		$invoiceItem->storeItemDetailId = $reservation->reservationId;
 		$invoiceItem->insert();
 

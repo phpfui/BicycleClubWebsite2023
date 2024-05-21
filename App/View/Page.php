@@ -391,7 +391,7 @@ class Page extends \PHPFUI\Page
 		if ($this->isSignedIn())
 			{
 			$searchIcon = new \PHPFUI\FAIcon('fas', 'search');
-			$searchIcon->addClass('hide-for-small-only');
+//			$searchIcon->addClass('hide-for-small-only');
 			$this->addSearchModal($searchIcon);
 			$titleBar->addRight($searchIcon);
 			}

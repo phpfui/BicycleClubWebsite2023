@@ -364,7 +364,7 @@ class Invoice
 							$shipping = (float)$cartItem['shipping'];
 							$invoiceItem = new \App\Record\InvoiceItem();
 							$invoiceItem->invoice = $invoice;
-							$invoiceItem->storeItemId = $cartItem['storeItemId'];
+							$invoiceItem->storeItemId = (int)$cartItem['storeItemId'];
 							$invoiceItem->storeItemDetailId = $cartItem['storeItemDetailId'];
 							$invoiceItem->title = $storeItem->title;
 							$invoiceItem->description = $storeItem->description;
@@ -402,7 +402,7 @@ class Invoice
 						$date = $event->eventDate;
 						$invoiceItem = new \App\Record\InvoiceItem();
 						$invoiceItem->invoice = $invoice;
-						$invoiceItem->storeItemId = $cartItem['storeItemId'];
+						$invoiceItem->storeItemId = (int)$cartItem['storeItemId'];
 						$invoiceItem->storeItemDetailId = $cartItem['storeItemDetailId'];
 						$invoiceItem->title = $event->title . ' Registration ' . $date;
 						$invoiceItem->description = $date;

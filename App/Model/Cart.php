@@ -160,7 +160,7 @@ class Cart
 		$cartItem = new \App\Record\CartItem();
 		$cartItem->setFrom($rider);
 		$cartItem->storeItemDetailId = $gaRiderId;
-		$cartItem->storeItemId = $rider['gaEventId'];
+		$cartItem->storeItemId = (int)$rider['gaEventId'];
 		$cartItem->memberId = $this->memberId;
 		$cartItem->type = \App\Enum\Store\Type::GENERAL_ADMISSION;
 		$cartItem->quantity = 1;

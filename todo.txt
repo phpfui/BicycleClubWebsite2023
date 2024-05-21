@@ -1,14 +1,6 @@
-Embeded images in ride description not going into ride journal correctly.
-
-renwals not asking for payment
-
-Adding more members while joining
-
 Make RWGPS links private
 
 Default category
-
-Move delete buttons to end of button groups
 
 View waivers (and minor waivers)
 

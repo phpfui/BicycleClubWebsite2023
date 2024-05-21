@@ -9,14 +9,14 @@ class GaRider extends \App\Model\EmailData
 	 */
 	public function __construct(array $gaEventIds, \App\Record\GaRider $rider = new \App\Record\GaRider())
 		{
+		$ids = [];
+
 		if ($rider->empty())
 			{
 			$gaRiderTable = new \App\Table\GaRider();
 
 			if (\count($gaEventIds))
 				{
-				$ids = [];
-
 				foreach ($gaEventIds as $eventId => $value)
 					{
 					if ($value)
@@ -30,7 +30,21 @@ class GaRider extends \App\Model\EmailData
 			$gaRiderTable->setLimit(1);
 			$rider = $gaRiderTable->getRecordCursor()->current();
 			}
+
 		$this->fields = $rider->toArray();
+
+		// set blank values by default
+		if (\count($ids))
+			{
+			$gaOptionTable = new \App\Table\GaOption();
+			$gaOptionTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $ids, new \PHPFUI\ORM\Operator\In()));
+
+			foreach ($gaOptionTable->getRecordCursor() as $gaOption)
+				{
+				$this->fields[$gaOption->optionName] = '';
+				}
+			}
+
 		$options = $rider->optionsSelected;
 
 		foreach ($options as $option)

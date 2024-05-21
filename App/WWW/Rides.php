@@ -550,7 +550,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					if ($this->page->addHeader('Print Sign In Sheet'))
 						{
 						$view = new \App\View\SignInSheet($this->page);
-						$this->page->addPageContent($view->listSheets($signInSheets, $ride)); // @phpstan-ignore-line
+						$this->page->addPageContent($view->listSheets($signInSheets, $ride));
 						}
 					}
 				else

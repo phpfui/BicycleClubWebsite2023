@@ -4,7 +4,7 @@ namespace App\View;
 
 class Unsubscribe implements \Stringable
 	{
-	public function __construct(private readonly \App\View\Page $page, private readonly string $subheader, private readonly \PHPFUI\ORM\Record $record, private string $email)
+	public function __construct(private readonly \App\View\Page $page, private readonly string $subheader, private readonly \App\Record\Member | \App\Record\GaRider $record, private string $email)
 		{
 		$this->email = \strtolower($email);
 		}
@@ -31,8 +31,7 @@ class Unsubscribe implements \Stringable
 
 		if ($form->isMyCallback())
 			{
-			// @phpstan-ignore-next-line
-			$this->record->emailAnnouncements = 0 == $unsubscribe ? 1 : 0;
+			$this->record->emailAnnouncements = $unsubscribe ? 0 : 1;
 			$this->record->update();
 			$this->page->setResponse('Thank you. You have been ' . $type . 'd.');
 			}

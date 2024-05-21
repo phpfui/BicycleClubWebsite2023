@@ -9,11 +9,10 @@ class GaRider extends \PHPFUI\ORM\Table
 	/**
 	 * @param array<int> $events
 	 *
-	 * @return array<array<string,mixed>>
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\GaRider>
 	 */
-	public static function getEmailsForEvents(array $events, int $pending = 0) : array
+	public function getEmailsForEvents(array $events, int $pending = 0) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select email,firstName,lastName,gaRiderId,pending from gaRider where gaEventId in (';
 		$ids = [];
 
 		foreach ($events as $gaEventId => $value)
@@ -28,20 +27,18 @@ class GaRider extends \PHPFUI\ORM\Table
 			{
 			$ids[] = 0;
 			}
-		$sql .= \implode(',', $ids);
-		$sql = $sql . ') group by email order by email, pending desc';
-		$result = \PHPFUI\ORM::getArrayCursor($sql);
-		$retVal = [];
+		$condition = new \PHPFUI\ORM\Condition('gaEventId', $ids, new \PHPFUI\ORM\Operator\In());
 
-		foreach ($result as $rider)
+		if ($pending)
 			{
-			if ($pending == $rider['pending'])
-				{
-				$retVal[] = $rider;
-				}
+			$condition->and('pending', $pending);
 			}
+		$this->setWhere($condition);
+		$this->addGroupBy('email');
+		$this->addOrderBy('email');
+		$this->addOrderBy('pending', 'desc');
 
-		return $retVal;
+		return $this->getRecordCursor();
 		}
 
 	/**

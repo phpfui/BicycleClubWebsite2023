@@ -4,16 +4,12 @@ namespace App\View\Public;
 
 class Footer implements \Stringable
 	{
-	private readonly \App\View\Public\Page $publicPage; // @phpstan-ignore-line
+	private readonly \App\View\Public\Page $publicPage;
 
-	private readonly \App\Table\Setting $settingTable; // @phpstan-ignore-line
+	private readonly \App\Table\Setting $settingTable;
 
 	public function __construct(\App\Model\Controller $controller)
 		{
-		if (! \PHPFUI\ORM::pdo())
-			{
-			return;
-			}
 		$this->settingTable = new \App\Table\Setting();
 		$this->publicPage = new \App\View\Public\Page($controller);
 		}

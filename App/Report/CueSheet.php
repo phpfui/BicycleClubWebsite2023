@@ -155,6 +155,13 @@ class CueSheet extends \FPDF
 			return $this;
 			}
 
+		if (! $rwgps->csv)
+			{
+			$this->newPage('Route has no turn information. Probably a recording.');
+
+			return $this;
+			}
+
 		$title = $title ?: $rwgps->title;
 		$this->ascent = $rwgps->elevationMeters;
 

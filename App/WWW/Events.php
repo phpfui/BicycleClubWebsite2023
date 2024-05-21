@@ -134,8 +134,15 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Edit Reservation'))
 			{
-			$view = new \App\View\Event\Registration($this->page);
-			$this->page->addPageContent($view->edit($reservation));
+			if (! $reservation->loaded())
+				{
+				$this->page->addPageContent(new \PHPFUI\SubHeader('Event not found'));
+				}
+			else
+				{
+				$view = new \App\View\Event\Registration($this->page);
+				$this->page->addPageContent($view->edit($reservation, $reservation->event));
+				}
 			}
 		}
 
@@ -322,13 +329,20 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Currently Registered'))
 			{
-			if ($event->loaded())
+			if ($event->loaded() && $event->showRegistered)
 				{
 				$this->page->addPageContent(new \PHPFUI\SubHeader($event->title));
 				$this->reservationTable->setReservationsCursor($event);
 				$this->reservationTable->addOrderBy('lastName')->addOrderBy('firstName');
 				$participantCursor = $this->reservationTable->getArrayCursor();
 				$table = new \PHPFUI\Table();
+				$table->addHeader('name', 'Name');
+
+				if ($event->showComments)
+					{
+					$table->addHeader('comments', $event->commentTitle);
+					}
+
 				$attending = 0;
 				$userSignedUp = false;
 
@@ -337,7 +351,13 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					if (! $event->price || ($event->price && $participant['paymentId']))
 						{
 						++$attending;
-						$table->addRow(['name' => $participant['firstName'] . ' ' . $participant['lastName']]);
+						$row = ['name' => $participant['firstName'] . ' ' . $participant['lastName']];
+
+						if ($event->showComments)
+							{
+							$row['comments'] = $participant['comments'];
+							}
+						$table->addRow($row);
 						}
 
 					if ($participant['memberId'] == \App\Model\Session::signedInMemberId())
@@ -345,7 +365,13 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 						$userSignedUp = true;
 						}
 					}
-				$table->addRow(['name' => '<b>Total Attending:</b> ' . $attending]);
+				$row = ['name' => '<b>Total Attending:</b> ' . $attending];
+
+				if ($event->showComments)
+					{
+					$row['comments'] = '';
+					}
+				$table->addRow($row);
 				$this->page->addPageContent($table);
 
 				if (! $userSignedUp)

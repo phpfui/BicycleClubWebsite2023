@@ -24,8 +24,7 @@ class Menu extends \PHPFUI\Menu implements \PHPFUI\Interfaces\NanoClass
 
 		foreach ($redirectTable->getRecordCursor() as $redirect)
 			{
-			// @phpstan-ignore-next-line
-			$this->controller->addRedirect($redirect->originalUrl, $redirect->redirectUrl);
+			$this->controller->addRedirect($redirect->originalUrl, $redirect->redirectUrl); // @phpstan-ignore method.notFound
 			}
 		}
 
@@ -48,7 +47,6 @@ class Menu extends \PHPFUI\Menu implements \PHPFUI\Interfaces\NanoClass
 			$link = \substr($link, 0, $query);
 			}
 
-		// @phpstan-ignore-next-line
-		$this->controller->addRoute($link, [$this->publicPage, 'custom']);
+		$this->controller->addRoute($link, [$this->publicPage, 'custom']); // @phpstan-ignore method.notFound
 		}
 	}

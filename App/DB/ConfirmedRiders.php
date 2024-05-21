@@ -2,6 +2,9 @@
 
 namespace App\DB;
 
+/**
+ * @property \App\Record\Ride $currentRecord
+ */
 class ConfirmedRiders extends \PHPFUI\ORM\VirtualField
 	{
 	/**
@@ -10,7 +13,6 @@ class ConfirmedRiders extends \PHPFUI\ORM\VirtualField
 	public function getValue(array $parameters) : \PHPFUI\ORM\RecordCursor
 		{
 		$table = new \App\Table\RideSignup();
-		// @phpstan-ignore-next-line
 		$condition = new \PHPFUI\ORM\Condition('rideId', $this->currentRecord->rideId);
 		$condition->and('attended', \App\Table\RideSignup::CONFIRMED);
 		$table->setWhere($condition);

@@ -229,7 +229,7 @@ class Renew
 
 		$maxMembersOnMembership = (int)$this->duesModel->MaxMembersOnMembership;
 
-		if (! $maxMembersOnMembership || $maxMembersOnMembership > \count($this->members))
+		if (0 === $maxMembersOnMembership || $maxMembersOnMembership > \count($this->members))
 			{
 			// show add member button
 			$container->add($this->memberView->getAddMemberModalButton($this->membership));
@@ -329,7 +329,7 @@ class Renew
 				{
 				$maxMembersField = new \PHPFUI\Input\Select('maxMembers', 'Number of members on your membership');
 
-				if (! $maxMembersOnMembership) // @phpstan-ignore-line
+				if (0 !== $maxMembersOnMembership)
 					{
 					$maxMembersOnMembership = 10;
 					}
@@ -390,7 +390,7 @@ class Renew
 
 			if ($this->additionalMemberDues)
 				{
-				if (! $maxMembersOnMembership)
+				if (0 === $maxMembersOnMembership)
 					{
 					$maxMembersOnMembership = 10;
 					}

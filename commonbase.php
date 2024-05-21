@@ -35,6 +35,10 @@ function emailServerName() : string
 		{
 		array_shift($parts);
 		}
+	if (count($parts) == 1)
+		{
+		$parts[] = 'example';
+		}
 
 	return strtolower(implode('.', $parts));
 	}

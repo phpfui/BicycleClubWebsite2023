@@ -109,9 +109,9 @@ class Forum
 		{
 		$forum = new \App\Record\Forum((int)$message['forumId']);
 		$forumMemberTable = new \App\Table\ForumMember();
-		$members = $forumMemberTable->getMembers($forum);
+		$members = $forumMemberTable->getEmailMembers($forum);
 
-		if (! $forum->loaded() || $forum->closed || ! \count($members))
+		if (! $forum->loaded() || $forum->closed)
 			{
 			return 0;	// not found, closed or no members
 			}

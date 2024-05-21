@@ -86,7 +86,14 @@ class Newsletter
 
 		foreach ($buttons as $month => $monthButtons)
 			{
-			if (1 == (\is_countable($monthButtons) ? \count($monthButtons) : 0)) // @phpstan-ignore-line
+			$count = 1;
+
+			if (\is_countable($monthButtons))
+				{
+				$count = \count($monthButtons);
+				}
+
+			if (1 === $count)
 				{
 				$button = new \PHPFUI\Button($month, '/Newsletter/download/' . \current($monthButtons));
 				$button->addAttribute('style', 'margin-right:.25em;');

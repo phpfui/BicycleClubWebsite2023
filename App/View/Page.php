@@ -10,6 +10,8 @@ class Page extends \PHPFUI\Page
 
 	protected \App\Table\Setting $settingTable;
 
+	private static bool $attemptedSignin = false;
+
 	private bool $bannerOff = false;
 
 	private readonly \App\Tools\Cookies $cookies;
@@ -631,8 +633,7 @@ class Page extends \PHPFUI\Page
 				{
 				$waiverView = new \App\View\Admin\Waiver($this);
 
-				// @phpstan-ignore-next-line
-				if (! \App\Model\Session::signedWaiver())
+				if (! \App\Model\Session::signedWaiver()) // @phpstan-ignore booleanNot.alwaysTrue
 					{
 					$this->addRequiredPage($waiverView);
 					}
@@ -659,7 +660,7 @@ class Page extends \PHPFUI\Page
 
 		if (\App\Model\Session::checkCSRF())
 			{
-			if (isset($_POST['SignIn'], $_POST['email'], $_POST['password']))
+			if (! self::$attemptedSignin && isset($_POST['SignIn'], $_POST['email'], $_POST['password']))
 				{
 				$email = \App\Model\Member::cleanEmail($_POST['email']);
 				$passwd = $_POST['password'];
@@ -675,11 +676,12 @@ class Page extends \PHPFUI\Page
 					$this->cookies->set('Member', $email, true);
 					$this->cookies->set('Password', $passwd, true);
 					}
-				$member = $memberModel->signInMember($email, $passwd);
+				$errors = $memberModel->signInMember($email, $passwd);
+				self::$attemptedSignin = true;
 
-				if (isset($member['error']))
+				if ($errors)
 					{
-					\App\Model\Session::setFlash('alert', $member['error']);
+					\App\Model\Session::setFlash('alert', $errors);
 					}
 				$this->redirect('', $_SERVER['QUERY_STRING']);
 				}

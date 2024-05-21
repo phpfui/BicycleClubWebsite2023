@@ -122,8 +122,8 @@ class Permissions
 			$allowedToFromList = new \PHPFUI\AccordionToFromList(
 				$this->page,
 				'additionalIds',
-				$this->groupByMenu($additional),
-				$this->groupByMenu($notAdditional),
+				$this->groupByMenu($additional),  // @phpstan-ignore-line
+				$this->groupByMenu($notAdditional),  // @phpstan-ignore-line
 				$index,
 				$callback
 			);
@@ -135,8 +135,8 @@ class Permissions
 			$revokedToFromList = new \PHPFUI\AccordionToFromList(
 				$this->page,
 				'revokedIds',
-				$this->groupByMenu($inRevoked),
-				$this->groupByMenu($notInRevoked),
+				$this->groupByMenu($inRevoked),  // @phpstan-ignore-line
+				$this->groupByMenu($notInRevoked),  // @phpstan-ignore-line
 				$index,
 				$callback
 			);
@@ -226,8 +226,8 @@ class Permissions
 			$allowedToFromList = new \PHPFUI\AccordionToFromList(
 				$this->page,
 				'permissionId',
-				$this->groupByMenu($inGroup),
-				$this->groupByMenu($notInGroup),
+				$this->groupByMenu($inGroup),  // @phpstan-ignore-line
+				$this->groupByMenu($notInGroup),  // @phpstan-ignore-line
 				$index,
 				$callback
 			);
@@ -244,8 +244,8 @@ class Permissions
 			$revokedToFromList = new \PHPFUI\AccordionToFromList(
 				$this->page,
 				'revokedIds',
-				$this->groupByMenu($inRevokedGroup),
-				$this->groupByMenu($notInRevokedGroup),
+				$this->groupByMenu($inRevokedGroup),  // @phpstan-ignore-line
+				$this->groupByMenu($notInRevokedGroup),  // @phpstan-ignore-line
 				$index,
 				$callback
 			);
@@ -571,7 +571,7 @@ class Permissions
 	/**
 	 * @param array<array<string,string>> $permissions
 	 *
-	 * @return array<int, array<string, string>>
+	 * @return array<string, array<array<string, string>>>
 	 */
 	private function groupByMenu(array $permissions) : array
 		{
@@ -582,6 +582,6 @@ class Permissions
 			$grouped[$permission['menu'] ?: 'Global'][] = $permission;
 			}
 
-		return $grouped;	// @phpstan-ignore-line
+		return $grouped;
 		}
 	}

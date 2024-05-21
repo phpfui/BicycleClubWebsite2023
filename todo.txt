@@ -1,3 +1,7 @@
+Embeded images in ride description not going into ride journal correctly.
+
+renwals not asking for payment
+
 Adding more members while joining
 
 Make RWGPS links private

@@ -11,7 +11,6 @@ class PublicPage extends \PHPFUI\ORM\Validator
 		'blogAfter' => ['maxlength'],
 		'footerMenu' => ['required', 'integer'],
 		'header' => ['integer'],
-		'hidden' => ['integer'],
 		'homePageNotification' => ['required', 'integer'],
 		'method' => ['maxlength'],
 		'name' => ['maxlength'],

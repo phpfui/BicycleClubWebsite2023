@@ -11,7 +11,7 @@ class Member extends \PHPFUI\ORM\Validator
 		'cellPhone' => ['maxlength'],
 		'deceased' => ['integer'],
 		'discountCount' => ['integer'],
-		'email' => ['required', 'maxlength', 'email'],
+		'email' => ['required', 'maxlength', 'email', 'unique'],
 		'emailAnnouncements' => ['integer'],
 		'emailNewsletter' => ['integer'],
 		'emergencyContact' => ['maxlength'],

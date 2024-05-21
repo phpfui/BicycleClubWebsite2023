@@ -11,7 +11,7 @@ class RadioGroupEnum extends \PHPFUI\Input\RadioGroup implements \Countable
 	 * @param string $label optional
 	 * @param $enum initial value from the supplied enum
 	 */
-	public function __construct(string $name, string $label, $enum)
+	public function __construct(string $name, string $label, $enum)	// @phpstan-ignore-line
 		{
 		parent::__construct($name, $label, $enum->value);
 

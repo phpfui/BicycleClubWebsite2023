@@ -6,7 +6,7 @@ class Cart
 	{
 	private readonly \App\Model\GeneralAdmission $gaModel;
 
-	public function __construct(private readonly \App\View\Page $page, private readonly \App\Model\Cart $model)
+	public function __construct(private readonly \App\View\Page $page, private readonly \App\Model\Cart $cartModel)
 		{
 		$this->gaModel = new \App\Model\GeneralAdmission();
 		$this->processRequest($_GET);
@@ -18,7 +18,7 @@ class Cart
 		$form = new \PHPFUI\Form($this->page);
 		$form->add(new \PHPFUI\Header('Check Out'));
 
-		if ($this->model->getCount())
+		if ($this->cartModel->getCount())
 			{
 			$this->show($form, false);
 			$alert = new \App\UI\Alert('Your order will not be complete until you receive email confirmation of your payment.');
@@ -41,7 +41,7 @@ class Cart
 			$form->add(new \PHPFUI\Button('Edit Address Information', '/Store/address'));
 			$form->add('<hr>');
 			$form->add(new \PHPFUI\SubHeader('Payment Information'));
-			$totalOwed = $this->model->getGrandTotal();
+			$totalOwed = $this->cartModel->getGrandTotal();
 
 			$submitText = 'Confirm Order';
 
@@ -58,7 +58,7 @@ class Cart
 			$fieldSet = new \PHPFUI\FieldSet('Discount Code');
 			$row = new \PHPFUI\GridX();
 			$cola = new \PHPFUI\Cell(6);
-			$discountCode = $this->model->getDiscountCode();
+			$discountCode = $this->cartModel->getDiscountCode();
 			$colb = new \PHPFUI\Cell(6);
 
 			if ($discountCode->empty())
@@ -118,16 +118,16 @@ class Cart
 		$index = $subTotal = 0;
 		$dupes = [];
 
-		$this->model->check();
+		$this->cartModel->check();
 
-		foreach ($this->model->getItems() as $item)
+		foreach ($this->cartModel->getItems() as $item)
 			{
 			if (! empty($item['quantity']))
 				{
 				$item['index'] = ++$index;
 				$add = false;
 				$item['price'] = (float)($item['price'] ?? 0.0);
-				$item['quantity'] = (int)($item['quantity'] ?? 0);	// @phpstan-ignore-line
+				$item['quantity'] = (int)($item['quantity'] ?? 0);	// @phpstan-ignore nullCoalesce.offset
 				$subTotal += $item['price'] * $item['quantity'];
 				$item['total'] = '$' . \number_format($item['price'] * $item['quantity'] + $item['tax'], 2);
 				$item['price'] = '$' . \number_format($item['price'], 2);
@@ -227,25 +227,25 @@ class Cart
 		$cart->add($table);
 		$cart->add($this->summaryLine('<b>SubTotal</b>', '$' . \number_format($subTotal, 2)));
 
-		if ($this->model->getVolunteerPoints())
+		if ($this->cartModel->getVolunteerPoints())
 			{
-			$cart->add($this->summaryLine('<b>Available Points</b>', '$' . $this->model->getVolunteerPoints()));
+			$cart->add($this->summaryLine('<b>Available Points</b>', '$' . $this->cartModel->getVolunteerPoints()));
 			}
 
-		if ($this->model->getPayableByPoints() > 0.0 && $this->model->getVolunteerPoints() > 0)
+		if ($this->cartModel->getPayableByPoints() > 0.0 && $this->cartModel->getVolunteerPoints() > 0)
 			{
-			$cart->add($this->summaryLine('<b>Payable By Points</b>', '$' . \number_format($this->model->getPayableByPoints(), 2)));
-			$cart->add($this->summaryLine('<b>Applied Points</b>', '-$' . \number_format(\min($this->model->getPayableByPoints(), $this->model->getVolunteerPoints()), 2)));
+			$cart->add($this->summaryLine('<b>Payable By Points</b>', '$' . \number_format($this->cartModel->getPayableByPoints(), 2)));
+			$cart->add($this->summaryLine('<b>Applied Points</b>', '-$' . \number_format(\min($this->cartModel->getPayableByPoints(), $this->cartModel->getVolunteerPoints()), 2)));
 			}
-		$cart->add($this->summaryLine('<b>Shipping</b>', '$' . \number_format($this->model->getShipping(), 2)));
-		$cart->add($this->summaryLine('<b>Tax</b>', '$' . \number_format($this->model->getTax(), 2)));
+		$cart->add($this->summaryLine('<b>Shipping</b>', '$' . \number_format($this->cartModel->getShipping(), 2)));
+		$cart->add($this->summaryLine('<b>Tax</b>', '$' . \number_format($this->cartModel->getTax(), 2)));
 
-		if (0.00 != ($discount = $this->model->getDiscount()))
+		if (0.00 != ($discount = $this->cartModel->getDiscount()))
 			{
 			$cart->add($this->summaryLine('<b>Discount</b>', '-$' . \number_format($discount, 2)));
 			}
 		$cart->add($this->summaryLine('<hr>', '<hr>'));
-		$cart->add($this->summaryLine('<b>Grand Total</b>', '$' . \number_format($this->model->getGrandTotal(), 2)));
+		$cart->add($this->summaryLine('<b>Grand Total</b>', '$' . \number_format($this->cartModel->getGrandTotal(), 2)));
 
 		return $cart;
 		}
@@ -274,9 +274,9 @@ class Cart
 
 	public function status() : string | \App\UI\Alert
 		{
-		$this->model->compute();
-		$value = '$' . \number_format($this->model->getTotal(), 2);
-		$count = $this->model->getCount();
+		$this->cartModel->compute();
+		$value = '$' . \number_format($this->cartModel->getTotal(), 2);
+		$count = $this->cartModel->getCount();
 
 		if (! $count)
 			{
@@ -309,7 +309,7 @@ class Cart
 		{
 		if ('delete' == ($parameters['action'] ?? ''))
 			{
-			$this->model->delete(new \App\Record\CartItem((int)$parameters['cartItemId']));
+			$this->cartModel->delete(new \App\Record\CartItem((int)$parameters['cartItemId']));
 			$this->page->redirect();
 			}
 		elseif (isset($parameters['submit']) && \App\Model\Session::checkCSRF())
@@ -323,7 +323,7 @@ class Cart
 
 					if (isset($parameters['quantity']))
 						{
-						$this->model->updateCartQuantities($parameters['quantity']);
+						$this->cartModel->updateCartQuantities($parameters['quantity']);
 						}
 
 					break;
@@ -333,9 +333,9 @@ class Cart
 
 					if (isset($parameters['quantity']))
 						{
-						$this->model->updateCartQuantities($parameters['quantity']);
+						$this->cartModel->updateCartQuantities($parameters['quantity']);
 						}
-					$this->model->check();
+					$this->cartModel->check();
 
 					break;
 
@@ -344,14 +344,14 @@ class Cart
 
 					if (isset($parameters['quantity']))
 						{
-						$this->model->updateCartQuantities($parameters['quantity']);
+						$this->cartModel->updateCartQuantities($parameters['quantity']);
 						}
 
 					break;
 
 				case 'Confirm Order And Pay':
 					$invoiceModel = new \App\Model\Invoice();
-					$invoice = $invoiceModel->generateFromCart($this->model);
+					$invoice = $invoiceModel->generateFromCart($this->cartModel);
 					$paypalType = $invoiceModel->getPayPalType();
 					$redirect = '/Store/pay/' . $invoice->invoiceId . '/' . $paypalType;
 
@@ -359,7 +359,7 @@ class Cart
 
 				case 'Confirm Order':
 					$invoiceModel = new \App\Model\Invoice();
-					$invoice = $invoiceModel->generateFromCart($this->model);
+					$invoice = $invoiceModel->generateFromCart($this->cartModel);
 					$redirect = '/Store/paid/' . $invoice->invoiceId;
 
 					break;
@@ -372,7 +372,7 @@ class Cart
 				case 'Apply':
 					$redirect = '/Store/checkout/';
 
-					if (! $this->model->updateDiscount($parameters['discountCode']) && $parameters['discountCode'])
+					if (! $this->cartModel->updateDiscount($parameters['discountCode']) && $parameters['discountCode'])
 						{
 						$redirect .= '/' . $parameters['discountCode'];
 						}

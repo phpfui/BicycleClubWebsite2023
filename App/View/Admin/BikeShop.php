@@ -4,10 +4,12 @@ namespace App\View\Admin;
 
 class BikeShop
 	{
-	private readonly \PHPFUI\Input\Select $area; // @phpstan-ignore-line
+	private readonly \PHPFUI\Input\Select $area;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
+		$this->area = new \PHPFUI\Input\Select('bikeShopAreaId', 'Bike Shop Area');
+
 		if (\App\Model\Session::checkCSRF())
 			{
 			switch ($_POST['action'] ?? '')
@@ -31,7 +33,6 @@ class BikeShop
 
 		$bikeShopAreaTable = new \App\Table\BikeShopArea();
 		$bikeShopAreaTable->addOrderBy('area');
-		$this->area = new \PHPFUI\Input\Select('bikeShopAreaId', 'Bike Shop Area');
 
 		foreach ($bikeShopAreaTable->getRecordCursor() as $bikeShopArea)
 			{

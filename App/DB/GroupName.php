@@ -2,6 +2,9 @@
 
 namespace App\DB;
 
+/**
+ * @property \App\Record\PermissionGroup $currentRecord
+ */
 class GroupName extends \PHPFUI\ORM\VirtualField
 	{
 	/**
@@ -9,7 +12,7 @@ class GroupName extends \PHPFUI\ORM\VirtualField
 	 */
 	public function getValue(array $parameters) : string
 		{
-		$permission = new \App\Record\Permission($this->currentRecord->groupId);	// @phpstan-ignore-line
+		$permission = new \App\Record\Permission($this->currentRecord->groupId);
 
 		return $permission->name;
 		}

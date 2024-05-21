@@ -7,7 +7,6 @@ class Reservation extends \PHPFUI\ORM\Validator
 	/** @var array<string, array<string>> */
 	public static array $validators = [
 		'address' => ['maxlength'],
-		'comments' => ['maxlength'],
 		'eventId' => ['integer'],
 		'invoiceId' => ['integer'],
 		'memberId' => ['required', 'integer'],

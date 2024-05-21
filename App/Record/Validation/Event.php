@@ -25,6 +25,8 @@ class Event extends \PHPFUI\ORM\Validator
 		'publicDate' => ['date', 'lte_field:registrationStartDate', 'lte_field:eventDate'],
 		'registrationStartDate' => ['date', 'lte_field:lastRegistrationDate', 'lte_field:eventDate'],
 		'startTime' => ['maxlength', 'lt_field:endTime'],
+		'commentTitle' => ['maxlength'],
+		'showComments' => ['integer'],
 		'title' => ['maxlength'],
 	];
 

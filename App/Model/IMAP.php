@@ -4,7 +4,7 @@ namespace App\Model;
 
 class IMAP implements \Countable
 	{
-	private $mbox = null;	// @phpstan-ignore-line
+	private $mbox = null; // @phpstan-ignore missingType.property
 
 	private readonly \App\Table\Setting $settingTable;
 

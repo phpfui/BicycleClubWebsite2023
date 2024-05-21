@@ -126,13 +126,11 @@ class RideWithGPS extends GPS
 
 		foreach ($results as $memberData)
 			{
-			if (1 == $memberData['active'])
-				{
-				$email = $memberData['user']['real_email'];
-				unset($memberData['user']['real_email']);
-				$memberData['user']['id'] = $memberData['id'];
-				$members[$email] = $memberData['user'];
-				}
+			$email = $memberData['user']['real_email'];
+			unset($memberData['user']['real_email']);
+			$memberData['user']['id'] = $memberData['id'];
+			$memberData['user']['active'] = $memberData['active'] ? 1 : 0;
+			$members[$email] = $memberData['user'];
 			}
 
 		return $members;
@@ -223,34 +221,6 @@ class RideWithGPS extends GPS
 		$rwgps->insertOrUpdate();
 
 		return $rwgps;
-		}
-
-	/**
-	 * To set a user as inactive:
-	 * POST https://ridewithgps.com/clubs/1/update_member_field.json (form-data content type)
-	 * club_member_id=<member_id>&field=active&value=0
-	 *
-	 * @param array<string, string> $member
-	 */
-	public function removeMember(array $member) : bool
-		{
-		$url = "{$this->baseUri}/clubs/{$this->clubId}/update_member_field.json";
-		$formData = ['club_member_id' => $member['id'], 'field' => 'active', 'value' => 0];
-
-		$client = $this->getGuzzleClient();
-
-		try
-			{
-			$response = $client->request('POST', $url, ['form_params' => $formData, ]);
-			}
-		catch (\Throwable $e)
-			{
-			\App\Tools\Logger::get()->debug($formData, $url);
-
-			return false;
-			}
-
-		return 200 == $response->getStatusCode();
 		}
 
 	public function scrape(\App\Record\RWGPS $rwgps) : ?\App\Record\RWGPS
@@ -368,6 +338,34 @@ class RideWithGPS extends GPS
 			\rewind($stream);
 			$rwgps->csv = \stream_get_contents($stream);
 			}
+		}
+
+	/**
+	 * To set a user as inactive:
+	 * POST https://ridewithgps.com/clubs/1/update_member_field.json (form-data content type)
+	 * club_member_id=<member_id>&field=active&value=0
+	 *
+	 * @param array<string, string> $member
+	 */
+	public function updateMember(array $member, bool $active = false) : bool
+		{
+		$url = "{$this->baseUri}/clubs/{$this->clubId}/update_member_field.json";
+		$formData = ['club_member_id' => $member['id'], 'field' => 'active', 'value' => $active ? 1 : 0];
+
+		$client = $this->getGuzzleClient();
+
+		try
+			{
+			$response = $client->request('POST', $url, ['form_params' => $formData, ]);
+			}
+		catch (\Throwable $e)
+			{
+			\App\Tools\Logger::get()->debug($formData, $url);
+
+			return false;
+			}
+
+		return 200 == $response->getStatusCode();
 		}
 
 	private function getGuzzleClient() : \GuzzleHttp\Client

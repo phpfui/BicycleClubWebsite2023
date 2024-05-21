@@ -410,7 +410,7 @@ class Invoice
 						$invoiceItem->price = $price;
 						$invoiceItem->shipping = 0.0;
 						$invoiceItem->quantity = 1;
-						$invoiceItem->type = $cartItem['type'];
+						$invoiceItem->type = \App\Enum\Store\Type::from($cartItem['type']);
 						$invoiceItem->tax = $tax;
 						$invoiceItem->insert();
 						$this->paypalType = 'General_Admission';

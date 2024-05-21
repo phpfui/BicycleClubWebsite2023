@@ -4,11 +4,6 @@ namespace App\View;
 
 class Forum
 	{
-	/**
-	 * @var array<int,string>
-	 */
-	protected array $subscriptionTypes;
-
 	private readonly \App\Table\ForumMessage $forumMessageTable;
 
 	private readonly \App\Model\Forum $model;
@@ -198,7 +193,7 @@ class Forum
 			$multiColumn->add(new \PHPFUI\FAIcon('far', 'edit', $this->site . '/Forums/editMessage/' . $message->forumMessageId));
 			}
 
-		if ($deleteId)
+		if ($deleteId && $this->page->isAuthorized('Delete Forum Message'))
 			{
 			$delete = new \PHPFUI\AJAX('deleteMessage', 'Permanently delete this message?');
 			$delete->addFunction('success', '$("#"+data.response).css("background-color","red").hide("fast").remove()');
@@ -503,18 +498,9 @@ class Forum
 			$deleter = new \App\Model\DeleteRecord($this->page, $table, $forumMemberTable, 'Are you sure you want to delete this member from the forum?');
 			$table->addCustomColumn('delete', $deleter->columnCallback(...));
 			$table->addCustomColumn('forumId_memberId', static fn (array $member) => $member['forumId'] . '_' . $member['memberId']);
-			$that = $this;
-			$table->addCustomColumn('setting', static function(array $member) use ($that)
+			$table->addCustomColumn('setting', static function(array $member)
 				{
-				$select = new \PHPFUI\Input\Select("emailType[{$member['memberId']}]");
-
-				foreach ($that->subscriptionTypes as $key => $name)
-					{
-					if ($key)
-						{
-						$select->addOption($name, (string)$key, $key == $member['emailType']);
-						}
-					}
+				$select = new \PHPFUI\Input\SelectEnum("emailType[{$member['memberId']}]", '', \App\Enum\Forum\SubscriptionType::from((int)$member['emailType']));
 				$select->addAttribute('onchange', 'changeSubscription(' . $member['memberId'] . ', this.value)');
 
 				return $select;

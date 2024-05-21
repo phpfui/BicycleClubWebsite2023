@@ -27,7 +27,7 @@ class Session extends \PHPFUI\Session
 			unset($_SESSION[$key]);
 			}
 		$params = \session_get_cookie_params();
-		\setcookie(\session_name(), '', ['expires' => 0, 'path' => (string)$params['path'], 'domain' => (string)$params['domain'], 'secure' => $params['secure'], 'httponly' => isset($params['httponly'])]); // @phpstan-ignore-line
+		\setcookie(\session_name(), '', ['expires' => 0, 'path' => (string)$params['path'], 'domain' => (string)$params['domain'], 'secure' => $params['secure'], 'httponly' => isset($params['httponly'])]); // @phpstan-ignore isset.offset
 		\session_destroy();
 		}
 
@@ -216,7 +216,7 @@ class Session extends \PHPFUI\Session
 
 	public static function signedWaiver() : bool
 		{
-		return isset($_SESSION['acceptedWaiver']) ? $_SESSION['acceptedWaiver'] > \date('Y-m-d H:i:s', \time() - (365 * 86400)) : false;
+		return isset($_SESSION['acceptedWaiver']) ? ($_SESSION['acceptedWaiver'] > \date('Y-m-d H:i:s', \time() - (365 * 86400))) : false;
 		}
 
 	public static function signWaiver() : string

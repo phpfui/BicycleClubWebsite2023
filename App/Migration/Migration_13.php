@@ -46,7 +46,7 @@ class Migration_13 extends \PHPFUI\ORM\Migration
 				{
 				$memberNotice->title = $betterTitle;
 				}
-			$memberNotice->field = \array_shift($fields); // @phpstan-ignore-line
+			$memberNotice->field = \array_shift($fields); // @phpstan-ignore assign.propertyType
 			$memberNotice->dayOffsets = \implode(',', $fields);
 			$memberNotice->memberId = $membershipChair;
 			$memberNotice->insert();

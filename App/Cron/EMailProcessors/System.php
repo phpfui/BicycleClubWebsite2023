@@ -75,7 +75,7 @@ class System
 
 				$fileName = \str_replace(' ', '_', $fileName);
 				$fileName = \preg_replace('/[^a-zA-Z0-9\.\-\_()]/', '', $fileName);
-				$extIndex = \strrpos($fileName, '.');
+				$extIndex = (int)\strrpos($fileName, '.');
 				$ext = '';
 
 				if ($extIndex++)

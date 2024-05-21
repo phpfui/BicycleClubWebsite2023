@@ -65,7 +65,15 @@ class Register implements \Stringable
 			$membership['contactPhone'] = $membership['emergencyPhone'];
 			$membership['signedUpOn'] = \date('Y-m-d H:i:s');
 			$riderId = $this->cartModel->addGaRider($membership);
-			$this->page->redirect('/GA/updateRider/' . $riderId);
+
+			if ($riderId)
+				{
+				$this->page->redirect('/GA/updateRider/' . $riderId);
+				}
+			else
+				{
+				$this->page->redirect($this->page->getBaseURL());
+				}
 
 			return;
 			}

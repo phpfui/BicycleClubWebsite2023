@@ -279,7 +279,7 @@ class Leader extends \PDF_MC_Table
 
 			foreach ($baseRow as $key => $value)
 				{
-				$count = \is_array($leader[$key]) ? \count($leader[$key]) : $leader[$key]; // @phpstan-ignore-line
+				$count = \is_array($leader[$key]) ? \count($leader[$key]) : $leader[$key]; // @phpstan-ignore function.impossibleType
 				$value = (int)$count * (float)$value;
 				$total += $value;
 				$row[$key] = $value;

@@ -300,6 +300,10 @@ class RideWithGPS extends GPS
 		$rwgps->title = $data['name'];
 		$rwgps->longitude = $data['first_lng'];
 		$rwgps->latitude = $data['first_lat'];
+		if (isset($data['privacy_code']))
+			{
+			$rwgps->query = 'privacy_code=' . $data['privacy_code'];
+			}
 		$rwgps->percentPaved = 100 - (int)$data['unpaved_pct'];
 		$updated_at = (int)$data['updated_at'];
 

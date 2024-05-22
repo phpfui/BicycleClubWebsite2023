@@ -4905,16 +4905,16 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "7.1.0",
+            "version": "7.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "05a2ae86f455231d1734f2442664b6891ec4d8dd"
+                "reference": "f671e05aca24ac73298ae4922b34607b634d59f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/05a2ae86f455231d1734f2442664b6891ec4d8dd",
-                "reference": "05a2ae86f455231d1734f2442664b6891ec4d8dd",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/f671e05aca24ac73298ae4922b34607b634d59f4",
+                "reference": "f671e05aca24ac73298ae4922b34607b634d59f4",
                 "shasum": ""
             },
             "type": "component",
@@ -4958,9 +4958,9 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/7.1.0"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/7.1.1"
             },
-            "time": "2024-05-08T05:24:56+00:00"
+            "time": "2024-05-22T08:18:50+00:00"
         },
         {
             "name": "twilio/sdk",

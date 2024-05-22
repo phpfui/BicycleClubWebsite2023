@@ -4,7 +4,6 @@ namespace App\UI;
 
 class PaidSelect extends \PHPFUI\Input\RadioGroup
 	{
-
 	public function __construct(string $name = 'paid', string $label = 'Paid / Unpaid', ?string $value = '1')
 		{
 		parent::__construct($name, $label, $value);
@@ -14,4 +13,3 @@ class PaidSelect extends \PHPFUI\Input\RadioGroup
 		$this->setToolTip('You can select Paid / Unpaid or Both for download');
 		}
 	}
-

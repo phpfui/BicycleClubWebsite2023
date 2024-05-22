@@ -6,7 +6,7 @@ class GARegistationSigns
 	{
 	private \FPDF $pdf;
 
-	public function __construct(private readonly \App\Record\GaEvent $event, private readonly int $count)
+	public function __construct(private readonly \App\Record\GaEvent $event, private readonly int $count, private readonly int $paid = 1)
 		{
 		}
 
@@ -15,7 +15,7 @@ class GARegistationSigns
 		$this->pdf = new \FPDF('L', 'mm', 'Letter');
 		$this->pdf->SetDisplayMode('fullpage');
 		$gaRiderTable = new \App\Table\GaRider();
-		$riders = $gaRiderTable->getPaidRiderCursor($this->event);
+		$riders = $gaRiderTable->getRiderCursor($this->event, $this->paid);
 		$perSign = \round(\count($riders) / $this->count);
 		$first = $last = '';
 		$count = 0;

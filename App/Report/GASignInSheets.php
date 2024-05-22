@@ -10,14 +10,14 @@ class GASignInSheets
 
 	final public const SINGLE = 0;
 
-	public function __construct(private readonly \App\Record\GaEvent $event, private readonly int $type, private int $tagNumber = 0)
+	public function __construct(private readonly \App\Record\GaEvent $event, private readonly int $type, private readonly int $paid, private int $tagNumber = 0)
 		{
 		}
 
 	public function generate() : void
 		{
 		$gaRiderTable = new \App\Table\GaRider();
-		$riders = $gaRiderTable->getPaidRiderCursor($this->event);
+		$riders = $gaRiderTable->getRiderCursor($this->event, $this->paid);
 
 		if (self::CSV == $this->type)
 			{

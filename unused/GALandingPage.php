@@ -11,7 +11,7 @@ class GALandingPage extends \App\UI\HTMLEditor implements \Stringable
 	public function __construct(\App\View\Page $page)
 		{
 		$attributes = [];
-  $this->settingTable = new \App\Table\Setting();
+		$this->settingTable = new \App\Table\Setting();
 		parent::__construct($page, true);
 		$page->addStyleSheet('/slick/slick.css');
 		$page->addStyleSheet('/slick/slick-theme.css');

@@ -59,7 +59,7 @@ class GaRider extends \PHPFUI\ORM\Table
 		return $this->getRecordCursor();
 		}
 
-	public function getPaidRiderCursor(\App\Record\GaEvent $event) : \PHPFUI\ORM\DataObjectCursor
+	public function getRiderCursor(\App\Record\GaEvent $event, int $paid = 1) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$gaOptionTable = new \App\Table\GaOption();
 		$whereCondition = new \PHPFUI\ORM\Condition('gaeventId', $event->gaEventId);
@@ -87,7 +87,15 @@ class GaRider extends \PHPFUI\ORM\Table
 			}
 
 		$condition = new \PHPFUI\ORM\Condition('gaRider.gaEventId', $event->gaEventId);
-		$condition->and(new \PHPFUI\ORM\Condition('pending', 0));
+
+		if (0 === $paid)
+			{
+			$condition->and(new \PHPFUI\ORM\Condition('pending', 1));
+			}
+		elseif (1 === $paid)
+			{
+			$condition->and(new \PHPFUI\ORM\Condition('pending', 0));
+			}
 		$this->setWhere($condition);
 		$this->addOrderBy('lastName')->addOrderBy('firstName');
 

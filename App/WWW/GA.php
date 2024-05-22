@@ -41,6 +41,10 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			else
 				{
 				$form = new \PHPFUI\Form($this->page);
+				$link = new \PHPFUI\Link('/GA/manage', 'specific events', false);
+				$infoBox = new \PHPFUI\Callout('info');
+				$infoBox->add("Use this registant download for general information. See {$link} for options details that vary between events.");
+				$form->add($infoBox);
 				$form->setAreYouSure(false);
 				$form->add(new \App\View\GA\EventPicker($this->page, \App\Enum\GeneralAdmission\EventPicker::MULTIPLE, 'Select Events'));
 				$form->add(new \PHPFUI\Submit('Download'));
@@ -227,7 +231,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				}
 			elseif (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
 				{
-				$report = new \App\Report\GASignInSheets($event, (int)$_POST['type'], (int)$_POST['tagNumber']);
+				$report = new \App\Report\GASignInSheets($event, (int)$_POST['type'], (int)$_POST['paid'], (int)$_POST['tagNumber']);
 				$report->generate();
 				$this->page->done();
 				}
@@ -236,12 +240,14 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$form = new \PHPFUI\Form($this->page);
 				$form->setAreYouSure(false);
 				$form->add(new \PHPFUI\SubHeader($event->title));
-				$radio = new \PHPFUI\Input\RadioGroup('type', 'Download Type', (string)1);
-				$radio->setToolTip('You can download the riders as one list, paged by the first letter of the last name, or in CSV format');
-				$radio->addButton('Continous', (string)0);
-				$radio->addButton('Paged On Last Name', (string)1);
-				$radio->addButton('CSV', (string)2);
-				$form->add(new \PHPFUI\MultiColumn($radio, new \PHPFUI\Input\Number('tagNumber', 'Starting Tag Number (zero for no numbers)', 1)));
+				$type = new \PHPFUI\Input\RadioGroup('type', 'Download Type', (string)1);
+				$type->setToolTip('You can download the riders as one list, paged by the first letter of the last name, or in CSV format');
+				$type->addButton('Continous', (string)0);
+				$type->addButton('Paged On Last Name', (string)1);
+				$type->addButton('CSV', (string)2);
+				$form->add(new \PHPFUI\MultiColumn($type, new \PHPFUI\Input\Number('tagNumber', 'Starting Tag Number (zero for no numbers)', 1)));
+				$form->add(new \App\UI\PaidSelect());
+				$form->add('<br>');
 				$form->add(new \PHPFUI\Submit('Download ' . $label));
 				$this->page->addPageContent($form);
 				}
@@ -256,7 +262,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				if (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
 					{
-					$report = new \App\Report\GARegistationSigns($event, (int)$_POST['count']);
+					$report = new \App\Report\GARegistationSigns($event, (int)$_POST['count'], (int)$_POST['paid']);
 					$report->generate();
 					$this->page->done();
 					}
@@ -265,12 +271,12 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					$form = new \PHPFUI\Form($this->page);
 					$form->setAreYouSure(false);
 					$form->add(new \PHPFUI\SubHeader($event->title));
-					$fieldSet = new \PHPFUI\FieldSet('Enter the number of registrations signs needed');
-					$number = new \PHPFUI\Input\Number('count', 'Number of signs', 5);
+					$number = new \PHPFUI\Input\Number('count', 'Number of registrations signs needed', 5);
 					$number->addAttribute('max', (string)99);
 					$number->setRequired();
-					$fieldSet->add($number);
-					$form->add($fieldSet);
+					$form->add($number);
+					$form->add(new \App\UI\PaidSelect());
+					$form->add('<br>');
 					$form->add(new \PHPFUI\Submit('Download ' . $label));
 					$this->page->addPageContent($form);
 					}

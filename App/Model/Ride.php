@@ -217,7 +217,8 @@ class Ride
 
 		if (! $RWGPSId)
 			{
-			$RWGPS = \App\Model\RideWithGPS::getRWGPSFromLink($parameters['RWGPSurl'] ?? '');
+			$rwgpsModel = new \App\Model\RideWithGPS();
+			$RWGPS = $rwgpsModel->getRWGPSFromLink($parameters['RWGPSurl'] ?? '');
 			}
 		else
 			{
@@ -922,11 +923,12 @@ class Ride
 
 		$dom = new \voku\helper\HtmlDomParser($description);
 
+		$rwgpsModel = new \App\Model\RideWithGPS();
 		foreach ($dom->find('a') as $node)
 			{
 			if (\str_contains($node->getAttribute('href'), 'ridewithgps'))
 				{
-				$RWGPS = \App\Model\RideWithGPS::getRWGPSFromLink($node->getAttribute('href'));
+				$RWGPS = $rwgpsModel->getRWGPSFromLink($node->getAttribute('href'));
 
 				if ($RWGPS)
 					{

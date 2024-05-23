@@ -18,12 +18,11 @@ class RideWithGPS
 		$this->rwgpsPicker = new \App\UI\RWGPSPicker($page, 'RWGPSAlternateId', 'Select an alternate route by title, street name or town');
 		$this->metric = 'km' == $page->value('RWGPSUnits');
 
-		$RWGPS = \App\Model\RideWithGPS::getRWGPSFromLink($_POST['rwgpsUrl'] ?? '');
+		$RWGPS = $this->model->getRWGPSFromLink($_POST['rwgpsUrl'] ?? '');
 
 		if (\App\Model\Session::checkCSRF() && ! empty($_POST['submit']) && $RWGPS)
 			{
-			$this->model->scrape($RWGPS);
-			$RWGPS->update();
+			$RWGPS->insertOrUpdate();
 			$this->page->redirect($this->page->getBaseURL() . '/' . $RWGPS->RWGPSId);
 			}
 
@@ -294,9 +293,11 @@ class RideWithGPS
 				{
 				$fieldSet->add(new \App\UI\Display('Last Updated', $rwgps->lastUpdated));
 				}
-
-			$link = new \PHPFUI\Link('/RWGPS/cueSheetRWGPS/' . $rwgps->RWGPSId, 'Download', false);
-			$fieldSet->add(new \App\UI\Display('Cue Sheet', $link));
+			if ($rwgps->csv)
+				{
+				$link = new \PHPFUI\Link('/RWGPS/cueSheetRWGPS/' . $rwgps->RWGPSId, 'Download', false);
+				$fieldSet->add(new \App\UI\Display('Cue Sheet', $link));
+				}
 			}
 		else
 			{

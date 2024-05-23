@@ -466,7 +466,8 @@ class Editor
 						break;
 
 					case 'changeRWGPS':
-						$rwgps = \App\Model\RideWithGPS::getRWGPSFromLink($_POST['RWGPSurl'] ?? '');
+						$rwgpsModel = new \App\Model\RideWithGPS();
+						$rwgps = $rwgpsModel->getRWGPSFromLink($_POST['RWGPSurl'] ?? '');
 
 						$data = [];
 

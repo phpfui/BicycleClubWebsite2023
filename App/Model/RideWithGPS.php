@@ -168,7 +168,7 @@ class RideWithGPS extends GPS
 		return $routes;
 		}
 
-	public static function getRWGPSFromLink(string $link) : ?\App\Record\RWGPS
+	public function getRWGPSFromLink(string $link) : ?\App\Record\RWGPS
 		{
 		$parts = \explode('/', $link);
 		$urlParts = \parse_url($link);
@@ -190,7 +190,7 @@ class RideWithGPS extends GPS
 					break;
 					}
 				}
-			elseif ('trips' == $part) // https://ridewithgps.com/trips/180103017
+			elseif ('trips' == $part)
 				{
 				if (\count($parts) > $index + 1)
 					{
@@ -208,6 +208,7 @@ class RideWithGPS extends GPS
 
 		$rwgps = new \App\Record\RWGPS($RWGPSId);
 		$rwgps->RWGPSId = $RWGPSId;
+		$this->scrape($rwgps, true);
 
 		if (isset($urlParts['query']))
 			{
@@ -230,8 +231,8 @@ class RideWithGPS extends GPS
 			return null;
 			}
 		$type = ($rwgps->RWGPSId > 0) ? 'routes' : 'trips';
-		$url = "{$this->baseUri}/{$type}/{$rwgps->RWGPSId}.json?" . $this->queryString;
-
+		$id = \abs($rwgps->RWGPSId);
+		$url = "{$this->baseUri}/{$type}/{$id}.json";
 		$client = new \GuzzleHttp\Client(['verify' => false, 'http_errors' => false]);
 
 		try
@@ -301,7 +302,7 @@ class RideWithGPS extends GPS
 			{
 			$rwgps->query = 'privacy_code=' . $data['privacy_code'];
 			}
-		$rwgps->percentPaved = 100 - (int)$data['unpaved_pct'];
+		$rwgps->percentPaved = 100 - (int)($data['unpaved_pct'] ?? 0);
 		$updated_at = (int)$data['updated_at'];
 
 		if ($data['updated_at'] == $updated_at)
@@ -314,7 +315,7 @@ class RideWithGPS extends GPS
 			}
 		$rwgps->lastSynced = \date('Y-m-d H:i:s');
 
-		$rwgps->csv = $data['has_course_points'] ? '' : null;
+		$rwgps->csv = $data['has_course_points'] ?? '';
 
 		if (\count($data['course_points'] ?? []))
 			{

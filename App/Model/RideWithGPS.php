@@ -190,7 +190,7 @@ class RideWithGPS extends GPS
 					break;
 					}
 				}
-			elseif ('trips' == $part)
+			elseif ('trips' == $part) // https://ridewithgps.com/trips/180103017
 				{
 				if (\count($parts) > $index + 1)
 					{
@@ -229,7 +229,8 @@ class RideWithGPS extends GPS
 			{
 			return null;
 			}
-		$url = "{$this->baseUri}/routes/{$rwgps->RWGPSId}.json?" . $this->queryString;
+		$type = ($rwgps->RWGPSId > 0) ? 'routes' : 'trips';
+		$url = "{$this->baseUri}/{$type}/{$rwgps->RWGPSId}.json?" . $this->queryString;
 
 		$client = new \GuzzleHttp\Client(['verify' => false, 'http_errors' => false]);
 

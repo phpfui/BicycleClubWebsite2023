@@ -16,39 +16,22 @@ class RideWithGPSAddClubRides extends \App\Cron\BaseJob
 
 		$routes = $model->getClubRoutes();
 
-		if (\count($routes))
+		foreach ($routes as $ride)
 			{
-			$rwgpsTable = new \App\Table\RWGPS();
-			$rwgpsTable->setWhere(new \PHPFUI\ORM\Condition('RWGPSId', \array_keys($routes), new \PHPFUI\ORM\Operator\In()));
-			$rwgpsTable->update(['club' => 1]);
+			$record = new \App\Record\RWGPS($ride['id']);
 
-			$rwgpsTable->setWhere(new \PHPFUI\ORM\Condition('club', 1));
-			$rwgpsTable->addSelect('RWGPSId');
-
-			foreach ($rwgpsTable->getArrayCursor() as $row)
+			if (! $record->loaded())
 				{
-				unset($routes[(int)$row['RWGPSId']]);
+				$record = $model->scrape($record, true);
+
+				if ($record)
+					{
+					$record->club = 1;
+					$record->clean();
+					$record->computeElevationGain();
+					$record->insertOrUpdate();
+					}
 				}
-
-			if (! \count($routes))
-				{
-				return;
-				}
-
-			$rwgpsTable->setWhere();
-			$newRows = [];
-
-			foreach ($routes as $ride)
-				{
-				$record = new \App\Record\RWGPS();
-				$model->updateFromData($record, $ride);
-				$record->club = 1;
-				$record->clean();
-				$record->computeElevationGain();
-				$newRows[] = $record;
-				}
-
-			$rwgpsTable->insertOrIgnore($newRows);
 			}
 		}
 

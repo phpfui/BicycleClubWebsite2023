@@ -14,7 +14,7 @@ class RideWithGPS extends GPS
 
 	private readonly string $clubId;
 
-	private \App\Table\Setting $settingTable;
+	private readonly string $queryString;
 
 	/** @var array<string,string> */
 	private array $states = [
@@ -74,8 +74,14 @@ class RideWithGPS extends GPS
 
 	public function __construct()
 		{
-		$this->settingTable = new \App\Table\Setting();
-		$this->clubId = $this->settingTable->value('RideWithGPSClubId');
+		$settingTable = new \App\Table\Setting();
+		$this->clubId = $settingTable->value('RideWithGPSClubId');
+		$this->apiKey = $settingTable->value('RideWithGPSAPIkey');
+		$this->queryString = \http_build_query(
+			['email' => $settingTable->value('RideWithGPSEmail'),
+				'password' => $settingTable->value('RideWithGPSPassword'),
+				'apikey' => $this->apiKey, ]
+		);
 		}
 
 	public function getAuthToken() : string
@@ -85,18 +91,12 @@ class RideWithGPS extends GPS
 			return $this->authToken;
 			}
 
-		$this->apiKey = $this->settingTable->value('RideWithGPSAPIkey');
-
 		if (! $this->apiKey)
 			{
 			return '';
 			}
 
-		$parameters = ['email' => $this->settingTable->value('RideWithGPSEmail'),
-			'password' => $this->settingTable->value('RideWithGPSPassword'),
-			'apikey' => $this->apiKey,
-		];
-		$url = $this->baseUri . '/users/current.json?' . \http_build_query($parameters);
+		$url = $this->baseUri . '/users/current.json?' . $this->queryString;
 		$results = \json_decode(\file_get_contents($url), true);
 
 		return $this->authToken = ($results['user']['auth_token'] ?? '');
@@ -107,8 +107,8 @@ class RideWithGPS extends GPS
 	 */
 	public function getClubMembers() : array
 		{
-		$url = "{$this->baseUri}/clubs/{$this->clubId}/table_members.json";
 		$client = $this->getGuzzleClient();
+		$url = "{$this->baseUri}/clubs/{$this->clubId}/table_members.json?" . $this->queryString;
 
 		try
 			{
@@ -150,7 +150,7 @@ class RideWithGPS extends GPS
 
 		$offset = 50;
 		$limit = 50;
-		$url = "https://ridewithgps.com/clubs/{$this->clubId}/routes.json";
+		$url = $this->baseUri . "/clubs/{$this->clubId}/routes.json?" . $this->queryString;
 		$results = \json_decode(\file_get_contents($url), true);
 		$count = $results['results_count'] ?? 0;
 
@@ -223,18 +223,13 @@ class RideWithGPS extends GPS
 		return $rwgps;
 		}
 
-	public function scrape(\App\Record\RWGPS $rwgps) : ?\App\Record\RWGPS
+	public function scrape(\App\Record\RWGPS $rwgps, bool $alwaysScrape = false) : ?\App\Record\RWGPS
 		{
-		if (! $rwgps->loaded())
+		if (! $alwaysScrape && ! $rwgps->loaded())
 			{
 			return null;
 			}
-		$url = "https://ridewithgps.com/routes/{$rwgps->RWGPSId}.json";
-
-		if ($rwgps->query)
-			{
-			$url .= '?' . $rwgps->query;
-			}
+		$url = "{$this->baseUri}/routes/{$rwgps->RWGPSId}.json?" . $this->queryString;
 
 		$client = new \GuzzleHttp\Client(['verify' => false, 'http_errors' => false]);
 
@@ -300,6 +295,7 @@ class RideWithGPS extends GPS
 		$rwgps->title = $data['name'];
 		$rwgps->longitude = $data['first_lng'];
 		$rwgps->latitude = $data['first_lat'];
+
 		if (isset($data['privacy_code']))
 			{
 			$rwgps->query = 'privacy_code=' . $data['privacy_code'];

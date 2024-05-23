@@ -62,7 +62,7 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 				}
 			}
 
-		$rides = $rwgpsTable->getOldest(20);
+		$rides = $rwgpsTable->getOldest(200);
 
 		foreach ($rides as $rwgps)
 			{

@@ -315,9 +315,9 @@ class RideWithGPS extends GPS
 			}
 		$rwgps->lastSynced = \date('Y-m-d H:i:s');
 
-		$rwgps->csv = $data['has_course_points'] ?? '';
+		$rwgps->csv = null;
 
-		if (\count($data['course_points'] ?? []))
+		if (! empty($data['has_course_points']) && \count($data['course_points'] ?? []))
 			{
 			$stream = \fopen('php://memory', 'r+');
 			$header = false;

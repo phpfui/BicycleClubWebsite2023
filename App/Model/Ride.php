@@ -924,6 +924,7 @@ class Ride
 		$dom = new \voku\helper\HtmlDomParser($description);
 
 		$rwgpsModel = new \App\Model\RideWithGPS();
+
 		foreach ($dom->find('a') as $node)
 			{
 			if (\str_contains($node->getAttribute('href'), 'ridewithgps'))

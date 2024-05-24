@@ -352,7 +352,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->page->setPublic();
 		$this->page->setShowMenus((bool)$rider->gaEvent->allowShopping);
 
-		if ($this->page->isAuthorized('Edit Rider') || $rider->customerId == \abs($_SESSION['customerNumber'] ?? 0))
+		if ($this->page->isAuthorized('Edit Rider') || $rider->memberId == \abs($_SESSION['customerNumber'] ?? 0))
 			{
 			$this->page->addPageContent(new \PHPFUI\Header('Update Rider'));
 			$view = new \App\View\GA\Rider($this->page);

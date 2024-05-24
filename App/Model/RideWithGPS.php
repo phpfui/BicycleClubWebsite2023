@@ -338,7 +338,12 @@ class RideWithGPS extends GPS
 				\fputcsv($stream, $row);
 				}
 			\rewind($stream);
-			$rwgps->csv = \stream_get_contents($stream) ? : '';
+			$csv = \stream_get_contents($stream);
+
+			if (\is_string($csv))
+				{
+				$rwgps->csv = $csv;
+				}
 			}
 		}
 

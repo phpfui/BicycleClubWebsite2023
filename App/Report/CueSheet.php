@@ -155,7 +155,7 @@ class CueSheet extends \FPDF
 			return $this;
 			}
 
-		if (! $rwgps->csv)
+		if (! \strlen($rwgps->csv ?? ''))
 			{
 			$this->newPage('Route has no turn information. Probably a recording.');
 

@@ -294,7 +294,7 @@ class RideWithGPS
 				$fieldSet->add(new \App\UI\Display('Last Updated', $rwgps->lastUpdated));
 				}
 
-			if ($rwgps->csv)
+			if (\strlen($rwgps->csv ?? ''))
 				{
 				$link = new \PHPFUI\Link('/RWGPS/cueSheetRWGPS/' . $rwgps->RWGPSId, 'Download', false);
 				$fieldSet->add(new \App\UI\Display('Cue Sheet', $link));

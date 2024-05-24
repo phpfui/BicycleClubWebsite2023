@@ -338,7 +338,7 @@ class RideWithGPS extends GPS
 				\fputcsv($stream, $row);
 				}
 			\rewind($stream);
-			$rwgps->csv = \stream_get_contents($stream);
+			$rwgps->csv = \stream_get_contents($stream) ? : '';
 			}
 		}
 

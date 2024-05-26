@@ -124,6 +124,15 @@ class Admin extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function homePage() : void
+		{
+		if ($this->page->addHeader('Home Page Configuration'))
+			{
+			$view = new \App\View\Admin\HomePage($this->page);
+			$this->page->addPageContent($view);
+			}
+		}
+
 	public function images() : void
 		{
 		if ($this->page->addHeader('System Images'))

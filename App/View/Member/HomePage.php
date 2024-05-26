@@ -23,7 +23,7 @@ class HomePage implements \Stringable
 		if (! $ride->empty())
 			{
 			$daysOut = \App\Tools\Date::fromString($ride['rideDate']) - $today;
-			$order[] = ['priority' => $daysOut, 'link' => '/Rides/My/category', 'li' => 'Upcoming rides in your categories'];
+			$order[] = ['priority' => $daysOut, 'category' => \App\Enum\HomeNotification::RIDE->value, 'link' => '/Rides/My/category', 'li' => 'Upcoming rides in your categories'];
 			}
 
 		// new newsletter
@@ -33,7 +33,7 @@ class HomePage implements \Stringable
 		if ($newsletter->loaded())
 			{
 			$daysOut = $today - \App\Tools\Date::fromString($newsletter->dateAdded);
-			$order[] = ['priority' => $daysOut, 'li' => \App\Tools\Date::formatString('F Y', $newsletter->date) . ' Newsletter published on ' . $newsletter->dateAdded,
+			$order[] = ['priority' => $daysOut, 'category' => \App\Enum\HomeNotification::NEWSLETTER->value, 'li' => \App\Tools\Date::formatString('F Y', $newsletter->date) . ' Newsletter published on ' . $newsletter->dateAdded,
 				'link' => '/Newsletter/download/' . $newsletter->newsletterId, ];
 			}
 
@@ -48,7 +48,7 @@ class HomePage implements \Stringable
 			if ($daysOut <= 31)
 				{
 				$year = (int)$MOM->month;
-				$order[] = ['priority' => $daysOut, 'li' => \App\Tools\Date::formatString('F Y', $MOM->month) . ' Member Of The Month', 'link' => "/Membership/mom/{$year}/{$MOM->memberOfMonthId}"];
+				$order[] = ['priority' => $daysOut, 'category' => \App\Enum\HomeNotification::MEMBER_OF_MONTH->value, 'li' => \App\Tools\Date::formatString('F Y', $MOM->month) . ' Member Of The Month', 'link' => "/Membership/mom/{$year}/{$MOM->memberOfMonthId}"];
 				}
 			}
 
@@ -87,7 +87,7 @@ class HomePage implements \Stringable
 				}
 			$output->add($table);
 			$daysOut = $first - $today;
-			$order[] = ['priority' => $daysOut, 'html' => $output, ];
+			$order[] = ['priority' => $daysOut, 'html' => $output, 'category' => \App\Enum\HomeNotification::EVENT->value, ];
 			}
 
 		// open polls
@@ -99,7 +99,7 @@ class HomePage implements \Stringable
 			$output->add(new \PHPFUI\Header('Open Polls', 4));
 			$view = new \App\View\Polls($this->page);
 			$output->add($view->listPolls($polls));
-			$order[] = ['priority' => 0, 'html' => $output, 'li' => 'Member Poll Closing Soon'];
+			$order[] = ['priority' => 0, 'category' => \App\Enum\HomeNotification::POLL->value, 'html' => $output, 'li' => 'Member Poll Closing Soon'];
 			}
 
 		// new cuesheet added
@@ -110,7 +110,7 @@ class HomePage implements \Stringable
 			{
 			$cuesheet = $cueSheetTable->getRecordCursor()->current();
 			$daysOut = $today - \App\Tools\Date::fromString($cuesheet->dateAdded);
-			$order[] = ['priority' => $daysOut, 'li' => 'New Cuesheet from ' . $cuesheet->dateAdded, 'link' => '/CueSheets/recent'];
+			$order[] = ['priority' => $daysOut, 'category' => \App\Enum\HomeNotification::CUESHEET->value, 'li' => 'New Cuesheet from ' . $cuesheet->dateAdded, 'link' => '/CueSheets/recent'];
 			}
 
 		// Volunteer events
@@ -121,7 +121,7 @@ class HomePage implements \Stringable
 			{
 			$event = $events->current();
 			$daysOut = \App\Tools\Date::diff(\App\Tools\Date::todayString(), $event->cutoffDate);
-			$order[] = ['priority' => $daysOut, 'li' => 'Volunteer for ' . $event->name, 'link' => '/Volunteer/pickAJob/' . $event->jobEventId];
+			$order[] = ['priority' => $daysOut, 'category' => \App\Enum\HomeNotification::VOLUNTEER->value, 'li' => 'Volunteer for ' . $event->name, 'link' => '/Volunteer/pickAJob/' . $event->jobEventId];
 			}
 
 		// Public Page Content
@@ -135,7 +135,7 @@ class HomePage implements \Stringable
 
 			if ($daysOut <= 14)
 				{
-				$order[] = ['priority' => $daysOut, 'li' => "<b>{$page->name}:</b> {$story['headline']}", 'link' => $page->url];
+				$order[] = ['priority' => $daysOut, 'category' => \App\Enum\HomeNotification::CONTENT->value, 'li' => "<b>{$page->name}:</b> {$story['headline']}", 'link' => $page->url];
 				}
 			}
 
@@ -145,11 +145,9 @@ class HomePage implements \Stringable
 		$ol = new \PHPFUI\UnorderedList();
 		$counter = 0;
 
-		$daysCutoff = (int)$this->page->value('homePageDaysBack');
-
 		foreach ($order as $item)
 			{
-			if ($item['priority'] > $daysCutoff || ! isset($item['li']))
+			if ($item['priority'] > $this->getDaysCutoff($item['category']) || ! isset($item['li']))
 				{
 				continue;
 				}
@@ -169,16 +167,18 @@ class HomePage implements \Stringable
 			$ol->addItem($listItem);
 			}
 
-		if (\count($ol))
+		$header = $this->page->value('HomePageHome_Page_Header');
+
+		if ($header && \count($ol))
 			{
-			$output->add(new \PHPFUI\SubHeader("What's Happening"));
+			$output->add(new \PHPFUI\SubHeader($header));
 			$output->add($ol);
 			}
 		$counter = 0;
 
 		foreach ($order as $item)
 			{
-			if ($item['priority'] > $daysCutoff)
+			if ($item['priority'] > $this->getDaysCutoff($item['category']))
 				{
 				continue;
 				}
@@ -194,13 +194,18 @@ class HomePage implements \Stringable
 		$content = new \App\View\Content($this->page);
 		$output->add($content->getDisplayCategoryHTML('User Home Page'));
 
-		$rideView = new \App\View\Rides($this->page);
-		$output->add(new \PHPFUI\SubHeader('Upcoming Rides'));
-		$content = new \App\View\Content($this->page);
-		$output->add($content->getDisplayCategoryHTML('Ride Schedule'));
-		$limit = (int)$this->page->value('publicRideListLimit');
-		$output->add($rideView->schedule(\App\Table\Ride::upcomingRides($limit)));
+		if ($this->getDaysCutoff(\App\Enum\HomeNotification::RIDE->value) >= 0)
+			{
+			$rideView = new \App\View\Rides($this->page);
+			$limit = (int)$this->page->value('publicRideListLimit');
+			$output->add($rideView->schedule(\App\Table\Ride::upcomingRides($limit)));
+			}
 
 		return (string)$output;
+		}
+
+	private function getDaysCutoff(int $value) : int
+		{
+		return (int)$this->page->value(\App\Enum\HomeNotification::from($value)->getSettingName());
 		}
 	}

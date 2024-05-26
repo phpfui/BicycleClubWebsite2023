@@ -27,12 +27,10 @@ class Configuration
 		$necc = $settingsSaver->generateField('calendarName', 'Cycling Calendar Name');
 		$necc->setRequired(false)->setToolTip('Leave blank to disable');
 		$fieldSet->add($necc);
-		$fieldSet->add($settingsSaver->addInput(new \App\UI\PublicFilePicker('ByLawsFile', 'By Laws File for Footer')));
+		$byLawsFolder = $settingsSaver->addInput(new \App\UI\PublicFilePicker('ByLawsFile', 'By Laws File for Footer'));
 		$rideListLimit = $settingsSaver->generateField('publicRideListLimit', 'Public Ride List Limit');
 		$rideListLimit->setRequired(false)->setToolTip('Number of rides to show on the public schedule');
-		$homePageDaysBack = $settingsSaver->generateField('homePageDaysBack', 'Home Page Days Back');
-		$homePageDaysBack->setRequired(false)->setToolTip('Number of days back to show What\'s Happening on user home page');
-		$fieldSet->add(new \PHPFUI\MultiColumn($rideListLimit, $homePageDaysBack));
+		$fieldSet->add(new \PHPFUI\MultiColumn($byLawsFolder, $rideListLimit));
 		$fieldSet->add($this->generateMemberPicker('Treasurer'));
 		$fieldSet->add($this->generateMemberPicker('Web Master'));
 		$form->add($fieldSet);

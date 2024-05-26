@@ -363,6 +363,7 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Admin/images', 'System Images');
 			$this->addSub($menu, '/Admin/publicPage', 'Public Pages');
 			$this->addSub($menu, '/Admin/clubEmails', 'Club Email Addresses');
+			$this->addSub($menu, '/Admin/homePage', 'Home Page Configuration');
 			$this->addSub($menu, '/Admin/emailQueue', 'Email Queue');
 			$this->addSub($menu, '/Admin/editWaiver', 'Waiver Editor');
 			$this->addSub($menu, '/Admin/journalQueue', 'Journal Queue');

@@ -50,6 +50,11 @@ class Ride extends \App\Record\Definition\Ride
 			$this->targetPace = \round($this->targetPace, 1);
 			}
 
+		if (\is_numeric($this->mileage))
+			{
+			$this->mileage = \str_replace('.0', '', \number_format((float)$this->mileage, 1));
+			}
+
 		return $this;
 		}
 	}

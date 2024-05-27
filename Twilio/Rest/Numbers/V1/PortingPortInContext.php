@@ -60,6 +60,25 @@ class PortingPortInContext extends InstanceContext
 
 
     /**
+     * Fetch the PortingPortInInstance
+     *
+     * @return PortingPortInInstance Fetched PortingPortInInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): PortingPortInInstance
+    {
+
+        $payload = $this->version->fetch('GET', $this->uri, [], []);
+
+        return new PortingPortInInstance(
+            $this->version,
+            $payload,
+            $this->solution['portInRequestSid']
+        );
+    }
+
+
+    /**
      * Provide a friendly representation
      *
      * @return string Machine friendly representation

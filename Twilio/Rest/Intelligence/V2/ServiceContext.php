@@ -100,8 +100,6 @@ class ServiceContext extends InstanceContext
                 Serialize::booleanToString($options['dataLogging']),
             'FriendlyName' =>
                 $options['friendlyName'],
-            'LanguageCode' =>
-                $options['languageCode'],
             'UniqueName' =>
                 $options['uniqueName'],
             'AutoRedaction' =>

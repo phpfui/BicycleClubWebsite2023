@@ -208,7 +208,6 @@ class RideWithGPS extends GPS
 
 		$rwgps = new \App\Record\RWGPS($RWGPSId);
 		$rwgps->RWGPSId = $RWGPSId;
-		$this->scrape($rwgps, true);
 
 		if (isset($urlParts['query']))
 			{
@@ -219,6 +218,9 @@ class RideWithGPS extends GPS
 			{
 			$rwgps->query .= '#' . $urlParts['fragment'];
 			}
+		$this->scrape($rwgps, true);
+
+
 		$rwgps->insertOrUpdate();
 
 		return $rwgps;
@@ -233,7 +235,7 @@ class RideWithGPS extends GPS
 		$type = ($rwgps->RWGPSId > 0) ? 'routes' : 'trips';
 		$id = \abs($rwgps->RWGPSId);
 		$url = "{$this->baseUri}/{$type}/{$id}.json";
-		$client = new \GuzzleHttp\Client(['verify' => false, 'http_errors' => false]);
+		$client = $this->getGuzzleClient();
 
 		try
 			{
@@ -274,10 +276,19 @@ class RideWithGPS extends GPS
 		}
 
 	/**
-	 * @param array<string,mixed> $data
+	 * @param array<string,mixed> $original
 	 */
-	public function updateFromData(\App\Record\RWGPS $rwgps, array $data) : void
+	public function updateFromData(\App\Record\RWGPS $rwgps, array $original) : void
 		{
+		if (isset($original['type']))
+			{
+			$data = $original[$original['type']];
+			}
+		else
+			{
+			$data = $original;
+			}
+
 		$rwgps->RWGPSId = $data['id'];
 		$rwgps->town = $data['locality'];
 		$state = \App\Tools\TextHelper::properCase($data['administrative_area'] ?? '');

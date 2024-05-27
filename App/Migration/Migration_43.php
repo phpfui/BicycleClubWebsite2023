@@ -18,6 +18,7 @@ class Migration_43 extends \PHPFUI\ORM\Migration
 		{
 		$settingTable = new \App\Table\Setting();
 		$value = (int)$settingTable->value('homePageDaysBack');
+
 		foreach (\App\Enum\HomeNotification::cases() as $case)
 			{
 			$name = $case->getSettingName();

@@ -122,7 +122,7 @@ class Rider
 		{
 		$gaRiderTable->addJoin('gaEvent');
 		$view = new \App\UI\ContinuousScrollTable($this->page, $gaRiderTable);
-		$sortableHeaders = ['eventDate' => 'Event Date', 'title' => 'Event', 'firstName' => 'First Name', 'lastName' => 'Last Name', 'town' => 'Town', 'phone' => 'Cell',
+		$sortableHeaders = ['eventDate' => 'Event Date', 'title' => 'Event', 'firstName' => 'First Name', 'lastName' => 'Last Name', 'email' => 'EMail', 'phone' => 'Cell',
 			'contact' => 'Contact', 'pending' => 'Paid', ];
 
 		$otherHeaders = ['edit' => 'Edit', 'del' => 'Del', ];

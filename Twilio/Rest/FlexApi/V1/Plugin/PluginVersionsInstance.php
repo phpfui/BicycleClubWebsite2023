@@ -34,6 +34,7 @@ use Twilio\Deserialize;
  * @property string|null $changelog
  * @property bool|null $private
  * @property bool|null $archived
+ * @property bool|null $validated
  * @property \DateTime|null $dateCreated
  * @property string|null $url
  */
@@ -61,6 +62,7 @@ class PluginVersionsInstance extends InstanceResource
             'changelog' => Values::array_get($payload, 'changelog'),
             'private' => Values::array_get($payload, 'private'),
             'archived' => Values::array_get($payload, 'archived'),
+            'validated' => Values::array_get($payload, 'validated'),
             'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
             'url' => Values::array_get($payload, 'url'),
         ];

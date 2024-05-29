@@ -27,6 +27,6 @@ else if(post.record){for(const [key,value] of Object.entries(post.record))
 	 */
 	public function returnErrors(array $errors) : string
 		{
-		return \json_encode(['response' => 'Error!', 'color' => 'red', 'errors' => $errors, ]);
+		return \json_encode(['response' => 'Errors Found!', 'color' => 'red', 'errors' => $errors, ]);
 		}
 	}

@@ -162,8 +162,10 @@ class Ride
 
 	/**
 	 * @param array<string,mixed> $parameters
+	 *
+	 * @return array<string, string>
 	 */
-	public function checkForStartTimeConflicts(array $parameters) : string
+	public function checkForStartTimeConflicts(array $parameters) : array
 		{
 		$ride = new \App\Record\Ride();
 		$ride->setFrom($parameters);
@@ -172,7 +174,7 @@ class Ride
 
 		if (! $minutesApart || empty($ride->startLocationId) || empty($ride->startTime) || empty($ride->rideDate))
 			{
-			return \count($errors) ? "{$errors}" : '';
+			return [];
 			}
 		$startTimes = [];
 
@@ -197,13 +199,15 @@ class Ride
 				}
 			}
 
-		if (\count($errors))
+		if (! \count($errors))
 			{
-			$ride->startTime = \App\Tools\TimeHelper::toMilitary($startTimes[\count($startTimes) - 1] + $minutesApart);
-			$errors->addItem(new \PHPFUI\ListItem('Start time reset to ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime)));
+			return [];
 			}
 
-		return \count($errors) ? "{$errors}" : '';
+		$ride->startTime = \App\Tools\TimeHelper::toMilitary($startTimes[\count($startTimes) - 1] + $minutesApart);
+		$errors->addItem(new \PHPFUI\ListItem('Start time reset to ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime)));
+
+		return ['startTime' => "{$errors}"];
 		}
 
 	/**
@@ -637,12 +641,33 @@ class Ride
 	/**
 	 * @param array<string,string> $parameters
 	 *
-	 * @return string errors found during save, empty if no errors
+	 * @return array<string, string> errors found during save, empty if no errors
 	 */
-	public function save(array $parameters) : string
+	public function save(array $parameters) : array
 		{
 		$parameters = $this->cleanProtectedFields($parameters);
 		$parameters = $this->cleanDescription($parameters);
+
+		// if the ride status is not yet, but they have an average pace and riders
+		if (empty($parameters['rideStatus']) && ! empty($parameters['averagePace']) && ! empty($parameters['numberOfRiders']))
+			{
+			$parameters['rideStatus'] = \App\Table\Ride::STATUS_COMPLETED;  // then set the status to completed
+			}
+
+		if (! empty($parameters['memberId']))
+			{
+			$ride = new \App\Record\Ride($parameters['rideId']);
+
+			if (\App\Table\Ride::STATUS_NO_LEADER == $ride->rideStatus) // was cancelled, but now has leader
+				{
+				$parameters['rideStatus'] = \App\Table\Ride::STATUS_NOT_YET;
+				}
+			}
+		else
+			{
+			$parameters['rideStatus'] = \App\Table\Ride::STATUS_NO_LEADER;
+			}
+		$errors = $this->checkForStartTimeConflicts($parameters);
 
 		$differences = $this->getDifferences($parameters);
 		$warningDays = (int)$this->settingTable->value('RideEditedWarningDays');
@@ -686,36 +711,22 @@ class Ride
 				}
 			}
 
-		// if the ride status is not yet, but they have an average pace and riders
-		if (empty($parameters['rideStatus']) && ! empty($parameters['averagePace']) && ! empty($parameters['numberOfRiders']))
-			{
-			$parameters['rideStatus'] = \App\Table\Ride::STATUS_COMPLETED;  // then set the status to completed
-			}
-
-		if (! empty($parameters['memberId']))
-			{
-			$ride = new \App\Record\Ride($parameters['rideId']);
-
-			if (\App\Table\Ride::STATUS_NO_LEADER == $ride->rideStatus) // was cancelled, but now has leader
-				{
-				$parameters['rideStatus'] = \App\Table\Ride::STATUS_NOT_YET;
-				}
-			}
-		else
-			{
-			$parameters['rideStatus'] = \App\Table\Ride::STATUS_NO_LEADER;
-			}
-		$error = $this->checkForStartTimeConflicts($parameters);
-
 		$ride = new \App\Record\Ride($parameters['rideId']);
 		$ride->setFrom($parameters);
+		$errors = \array_merge($ride->validate(), $errors);
+
+		if ($errors)
+			{
+			return $errors;
+			}
+
 		$ride->update();
 
 		// leader can't be on another ride
 		$this->rideSignupTable->deleteOtherSignedUpRides($ride, $ride->member);
 		$this->addLeaderSignups($ride);
 
-		return $error;
+		return [];
 		}
 
 	/**

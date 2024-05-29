@@ -21,7 +21,7 @@ abstract class Settings
 		{
 		if ('' == $this->serverName)
 			{
-			$this->serverName = \emailServerName();
+			$this->serverName = \str_replace('.example', '', \emailServerName());
 			}
 		}
 

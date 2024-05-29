@@ -103,13 +103,12 @@ class Editor
 		if ($ride->rideId)
 			{
 			$submit = new \PHPFUI\Submit();
-			$form = new \PHPFUI\Form($this->page, $submit, 'showErrors');
-			$this->page->addJavaScript('function showErrors(data){if(data.error&&data.error.length){$("#' . $errorCallout->getId() . '").html(data.error).removeClass("hide")}else{$("#' . $errorCallout->getId() . '").addClass("hide")}}');
+			$form = new \App\UI\ErrorForm($this->page, $submit);
 			}
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add');
-			$form = new \PHPFUI\Form($this->page);
+			$form = new \App\UI\ErrorForm($this->page);
 			$get = $_GET;
 
 			foreach ($get as $key => $value)
@@ -137,7 +136,7 @@ class Editor
 
 			if ($errors)
 				{
-				$this->page->setRawResponse(\json_encode(['response' => 'Saved', 'color' => 'lime', 'error' => $errors], JSON_THROW_ON_ERROR));
+				$this->page->setRawResponse(\json_encode(['response' => 'Errors Found!', 'color' => 'red', 'errors' => $errors], JSON_THROW_ON_ERROR));
 				}
 			else
 				{

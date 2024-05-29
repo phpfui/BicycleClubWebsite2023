@@ -1,3 +1,5 @@
+Test General Admission paid and free options
+
 Default category
 
 New member log out and log in fix

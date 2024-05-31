@@ -3305,16 +3305,16 @@
         },
         {
             "name": "phpfui/orm",
-            "version": "V1.7.2",
+            "version": "V1.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ORM.git",
-                "reference": "294803f5ff575065edc8e0bbde8ecd894ec750e2"
+                "reference": "9d9a0dc3951014f2cb2e0ce6d114ecb59d059acd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ORM/zipball/294803f5ff575065edc8e0bbde8ecd894ec750e2",
-                "reference": "294803f5ff575065edc8e0bbde8ecd894ec750e2",
+                "url": "https://api.github.com/repos/phpfui/ORM/zipball/9d9a0dc3951014f2cb2e0ce6d114ecb59d059acd",
+                "reference": "9d9a0dc3951014f2cb2e0ce6d114ecb59d059acd",
                 "shasum": ""
             },
             "require": {
@@ -3362,9 +3362,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ORM/issues",
-                "source": "https://github.com/phpfui/ORM/tree/V1.7.2"
+                "source": "https://github.com/phpfui/ORM/tree/V1.7.3"
             },
-            "time": "2024-05-08T15:40:37+00:00"
+            "time": "2024-05-31T19:13:43+00:00"
         },
         {
             "name": "phpfui/phpfui",

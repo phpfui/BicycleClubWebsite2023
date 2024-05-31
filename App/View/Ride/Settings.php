@@ -74,7 +74,7 @@ class Settings
 				return null;
 
 			case 'targetPaceOption':
-				$targetPace = new \PHPFUI\Input\Number('targetPace', 'Expected Target Pace', ! $ride->targetPace ? '0' : $ride->targetPace);
+				$targetPace = new \PHPFUI\Input\Number('targetPace', 'Expected Target Pace', ! $ride->targetPace ? '' : $ride->targetPace);
 				$targetPace->addAttribute('min', '0')->addAttribute('max', '25')->addAttribute('step', (string)0.1);
 				$targetPace->setToolTip('This should be a more specific number within the ride category pace range');
 

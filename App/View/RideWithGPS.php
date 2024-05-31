@@ -12,8 +12,11 @@ class RideWithGPS
 
 	private readonly \App\View\StartLocation $startLocationView;
 
+	private readonly string $saveLocationButtonName;
+
 	public function __construct(private readonly \App\View\Page $page)
 		{
+		$this->saveLocationButtonName = 'Save Start Location';
 		$this->model = new \App\Model\RideWithGPS();
 		$this->rwgpsPicker = new \App\UI\RWGPSPicker($page, 'RWGPSAlternateId', 'Select an alternate route by title, street name or town');
 		$this->metric = 'km' == $page->value('RWGPSUnits');
@@ -63,7 +66,7 @@ class RideWithGPS
 
 				$this->page->redirect();
 				}
-			elseif (($_POST['submit'] ?? '') == 'Save Start Location')
+			elseif (($_POST['submit'] ?? '') == $this->saveLocationButtonName)
 				{
 				$rwgps = new \App\Record\RWGPS($_POST['RWGPSId']);
 				$rwgps->startLocationId = (int)$_POST['startLocationId'];
@@ -73,14 +76,17 @@ class RideWithGPS
 				}
 			}
 
-		$startLocationSet = new \PHPFUI\FieldSet('Start Location');
-		$submit = new \PHPFUI\Submit('Save Start Location');
-		$form = new \PHPFUI\Form($this->page);
-		$form->add(new \PHPFUI\Input\Hidden('RWGPSId', (string)$rwgps->RWGPSId));
-		$form->add($this->startLocationView->getEditControl($rwgps->startLocationId));
-		$form->add($submit);
-		$startLocationSet->add($form);
-		$container->add($startLocationSet);
+		if ($this->page->isAuthorized($this->saveLocationButtonName))
+			{
+			$startLocationSet = new \PHPFUI\FieldSet('Start Location');
+			$submit = new \PHPFUI\Submit($this->saveLocationButtonName);
+			$form = new \PHPFUI\Form($this->page);
+			$form->add(new \PHPFUI\Input\Hidden('RWGPSId', (string)$rwgps->RWGPSId));
+			$form->add($this->startLocationView->getEditControl($rwgps->startLocationId));
+			$form->add($submit);
+			$startLocationSet->add($form);
+			$container->add($startLocationSet);
+			}
 
 		$ratingSet = new \PHPFUI\FieldSet('Rating');
 		$multiColumn = new \PHPFUI\HTML5Element('div');

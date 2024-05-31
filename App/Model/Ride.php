@@ -37,8 +37,10 @@ class Ride
 
 	/**
 	 * @param array<string,mixed> $parameters
+	 *
+	 * @return int | array<string,array<string>> returning an array means there are errors in the ride and it was not added.  Array is list of errors.
 	 */
-	public function add(array $parameters) : int
+	public function add(array $parameters) : int | array
 		{
 		$parameters = $this->cleanProtectedFields($parameters);
 		$parameters = $this->cleanDescription($parameters);
@@ -64,6 +66,13 @@ class Ride
 			}
 		$ride = new \App\Record\Ride();
 		$ride->setFrom($parameters);
+		$ride->dateAdded = \date('Y-m-d H:i:s');
+		$errors = $ride->validate();
+
+		if ($errors)
+			{
+			return $errors;
+			}
 		$id = $ride->insert();
 		$this->rideSignupTable->deleteOtherSignedUpRides($ride, $ride->member);
 		$this->addLeaderSignups($ride);

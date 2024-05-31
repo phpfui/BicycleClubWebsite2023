@@ -108,7 +108,7 @@ class Editor
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add');
-			$form = new \App\UI\ErrorForm($this->page);
+			$form = new \App\UI\ErrorForm($this->page, $submit);
 			$get = $_GET;
 
 			foreach ($get as $key => $value)
@@ -125,13 +125,64 @@ class Editor
 
 		if ($form->isMyCallback())
 			{
+			$rideModel = new \App\Model\Ride();
+
+			if (! $ride->rideId)
+				{
+				$post = $_POST;
+
+				$id = $rideModel->add($post);
+
+				if (\is_array($id))
+					{
+					$this->page->setRawResponse(\json_encode(['response' => 'Errors Found!', 'color' => 'red', 'errors' => $id], JSON_THROW_ON_ERROR));
+
+					return $output;
+					}
+
+				$url = $this->page->getBaseURL();
+
+				if (\stripos($url, 'clone'))
+					{
+					$pos = \strrpos($url, '/');
+
+					if ($pos > 0)
+						{
+						$clonedRide = new \App\Record\Ride((int)\substr($url, $pos + 1));
+						$leader = \App\Model\Session::signedInMemberRecord();
+						// process the wait list since we may have taken the new leader off the old ride
+						$clonedRideSignupModel = new \App\Model\RideSignup($clonedRide, $leader);
+						$clonedRideSignupModel->notifyWaitList();
+						// copy the waitlist to the new ride
+						$rideSignupModel = new \App\Model\RideSignup(new \App\Record\Ride($id), $leader);
+						$rideSignupModel->copyWaitList($clonedRide);
+						}
+					}
+				$addedRide = new \App\Record\Ride($id);
+
+				$response = ['response' => 'Saved', 'color' => 'lime', 'record' => $addedRide->toArray(), ];
+
+				if ($addedRide->pending)
+					{
+					$model = new \App\Model\Ride();
+					$model->emailPendingRideNotice($addedRide);
+					$response['redirect'] = '/Rides/My/pending';
+					}
+				else
+					{
+					$response['redirect'] = '/Rides/edit/' . $id;
+					}
+				$this->page->setRawResponse(\json_encode($response));
+
+				return $output;
+				}
+
 			$_POST['rideId'] = $ride->rideId;
 
 			if (! empty($_POST['accident']))
 				{
 				\App\Model\AccidentReport::report($ride);
 				}
-			$rideModel = new \App\Model\Ride();
 			$errors = $rideModel->save($_POST);
 
 			if ($errors)
@@ -345,43 +396,6 @@ class Editor
 				{
 				switch ($_POST['submit'])
 					{
-					case 'Add':
-
-						$rideModel = new \App\Model\Ride();
-						$id = $rideModel->add($_POST);
-						$url = $this->page->getBaseURL();
-
-						if (\stripos($url, 'clone'))
-							{
-							$pos = \strrpos($url, '/');
-
-							if ($pos > 0)
-								{
-								$clonedRide = new \App\Record\Ride((int)\substr($url, $pos + 1));
-								$leader = new \App\Record\Member((int)$_POST['memberId']);
-								// process the wait list since we may have taken the new leader off the old ride
-								$clonedRideSignupModel = new \App\Model\RideSignup($clonedRide, $leader);
-								$clonedRideSignupModel->notifyWaitList();
-								// copy the waitlist to the new ride
-								$rideSignupModel = new \App\Model\RideSignup(new \App\Record\Ride($id), $leader);
-								$rideSignupModel->copyWaitList($clonedRide);
-								}
-							}
-						$addedRide = new \App\Record\Ride($id);
-
-						if ($addedRide->pending)
-							{
-							$model = new \App\Model\Ride();
-							$model->emailPendingRideNotice($addedRide);
-							$this->page->redirect('/Rides/My/pending');
-							}
-						else
-							{
-							$this->page->redirect('/Rides/edit/' . $id);
-							}
-
-						break;
-
 					case 'Next':
 
 						$parameters = $_POST;

@@ -10,9 +10,9 @@ class RideWithGPS
 
 	private readonly \App\UI\RWGPSPicker $rwgpsPicker;
 
-	private readonly \App\View\StartLocation $startLocationView;
-
 	private readonly string $saveLocationButtonName;
+
+	private readonly \App\View\StartLocation $startLocationView;
 
 	public function __construct(private readonly \App\View\Page $page)
 		{

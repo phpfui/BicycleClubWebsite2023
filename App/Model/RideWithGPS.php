@@ -170,6 +170,10 @@ class RideWithGPS extends GPS
 
 	public function getRWGPSFromLink(string $link) : ?\App\Record\RWGPS
 		{
+		if (! \strlen($link))
+			{
+			return null;
+			}
 		$parts = \explode('/', $link);
 		$urlParts = \parse_url($link);
 		$RWGPSId = 0;

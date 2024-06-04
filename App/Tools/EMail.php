@@ -331,21 +331,28 @@ class EMail
 		$mail->isHTML($this->html);
 		$error = '';
 
+		$mail->send();
+
 		if (! empty($values['SMTPLog']))
 			{
-			$message = "To:{$firstTo}/{$mail->Subject} From:{$mail->FromName}";
-			$this->log($message, 'email logged');
+			$auditTrail = new \App\Record\AuditTrail();
+			$auditTrail->memberId = $this->fromMember['memberId'];
+			$auditTrail->additional = \implode(',', \array_keys(\array_merge($this->to, $this->cc, $this->bcc)));
+			$auditTrail->statement = $this->subject;
+			$auditTrail->input = $this->body;
+			$auditTrail->insert();
 			}
-
-		$mail->send();
 
 		if ($mail->isError())
 			{
-			$error = $mail->ErrorInfo;
-			$this->log($error, 'email failed');
-			$this->log($this->subject, 'Subject');
-			$this->log($this->body, 'body');
+			$auditTrail = new \App\Record\AuditTrail();
+			$auditTrail->memberId = $this->fromMember['memberId'];
+			$auditTrail->additional = \implode(',', \array_keys(\array_merge($this->to, $this->cc, $this->bcc)));
+			$auditTrail->statement = $this->subject;
+			$auditTrail->input = $mail->ErrorInfo;
+			$auditTrail->insert();
 			}
+
 
 		return $error;
 		}
@@ -455,16 +462,6 @@ class EMail
 			$data = ['name' => $name, 'memberId' => $memberId];
 
 			$list[$email] = $data;
-			}
-
-		return $this;
-		}
-
-	private function log(string $var, string $message) : static
-		{
-		if ($this->logger)
-			{
-			$this->logger->debug($var, $message);
 			}
 
 		return $this;

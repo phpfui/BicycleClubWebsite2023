@@ -42,7 +42,8 @@ class SMTPSettings
 		$fieldSet->add($settingsSaver->generateField('SMTPPassword', 'Password', 'PasswordEye', required:false));
 		$fieldSet->add($settingsSaver->generateField('SMTPSecure', 'SMTPSecure (tls or ssl)', required:false));
 		$fieldSet->add($settingsSaver->generateField('SMTPPort', 'Port', 'Number', required:false));
-		$fieldSet->add($settingsSaver->generateField('SMTPLog', 'Log Emails to Slack', 'CheckBox', required:false));
+		$link = new \PHPFUI\Link('/System/auditTrail', 'Audit Trail', false);
+		$fieldSet->add($settingsSaver->generateField('SMTPLog', "Log Emails to {$link}", 'CheckBox', required:false));
 		$fieldSet->add($settingsSaver->generateField('SMTPLimit', 'Limit emails to send at one time (0 is unlimited)', 'Number', required:false));
 		$form->add($fieldSet);
 

@@ -336,7 +336,7 @@ class EMail
 		if (! empty($values['SMTPLog']))
 			{
 			$auditTrail = new \App\Record\AuditTrail();
-			$auditTrail->memberId = $this->fromMember['memberId'];
+			$auditTrail->memberId = (int)($this->fromMember['memberId'] ?? 0);
 			$auditTrail->additional = \implode(',', \array_keys(\array_merge($this->to, $this->cc, $this->bcc)));
 			$auditTrail->statement = $this->subject;
 			$auditTrail->input = $this->body;
@@ -346,7 +346,7 @@ class EMail
 		if ($mail->isError())
 			{
 			$auditTrail = new \App\Record\AuditTrail();
-			$auditTrail->memberId = $this->fromMember['memberId'];
+			$auditTrail->memberId = (int)($this->fromMember['memberId'] ?? 0);
 			$auditTrail->additional = \implode(',', \array_keys(\array_merge($this->to, $this->cc, $this->bcc)));
 			$auditTrail->statement = $this->subject;
 			$auditTrail->input = $mail->ErrorInfo;

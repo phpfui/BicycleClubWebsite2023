@@ -108,6 +108,10 @@ class RideWithGPS extends GPS
 	public function getClubMembers() : array
 		{
 		$client = $this->getGuzzleClient();
+		if (! $client)
+			{
+			return [];
+			}
 		$url = "{$this->baseUri}/clubs/{$this->clubId}/table_members.json?" . $this->queryString;
 
 		try
@@ -240,6 +244,10 @@ class RideWithGPS extends GPS
 		$id = \abs($rwgps->RWGPSId);
 		$url = "{$this->baseUri}/{$type}/{$id}.json";
 		$client = $this->getGuzzleClient();
+		if (! $client)
+			{
+			return null;
+			}
 
 		try
 			{
@@ -375,6 +383,10 @@ class RideWithGPS extends GPS
 		$formData = ['club_member_id' => $member['id'], 'field' => 'active', 'value' => $active ? 1 : 0];
 
 		$client = $this->getGuzzleClient();
+		if (! $client)
+			{
+			return false;
+			}
 
 		try
 			{
@@ -390,13 +402,14 @@ class RideWithGPS extends GPS
 		return 200 == $response->getStatusCode();
 		}
 
-	private function getGuzzleClient() : \GuzzleHttp\Client
+	private function getGuzzleClient() : ?\GuzzleHttp\Client
 		{
 		if (! $this->client)
 			{
 			if (! $this->getAuthToken())
 				{
-				throw new \Exception('Can not get RWGPS Auth Token, check settings');
+				\App\Tools\Logger::get()->debug('Can not get RWGPS Auth Token, check settings');
+				return null;
 				}
 
 			$this->client = new \GuzzleHttp\Client([

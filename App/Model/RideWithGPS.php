@@ -108,6 +108,7 @@ class RideWithGPS extends GPS
 	public function getClubMembers() : array
 		{
 		$client = $this->getGuzzleClient();
+
 		if (! $client)
 			{
 			return [];
@@ -244,6 +245,7 @@ class RideWithGPS extends GPS
 		$id = \abs($rwgps->RWGPSId);
 		$url = "{$this->baseUri}/{$type}/{$id}.json";
 		$client = $this->getGuzzleClient();
+
 		if (! $client)
 			{
 			return null;
@@ -383,6 +385,7 @@ class RideWithGPS extends GPS
 		$formData = ['club_member_id' => $member['id'], 'field' => 'active', 'value' => $active ? 1 : 0];
 
 		$client = $this->getGuzzleClient();
+
 		if (! $client)
 			{
 			return false;
@@ -409,6 +412,7 @@ class RideWithGPS extends GPS
 			if (! $this->getAuthToken())
 				{
 				\App\Tools\Logger::get()->debug('Can not get RWGPS Auth Token, check settings');
+
 				return null;
 				}
 

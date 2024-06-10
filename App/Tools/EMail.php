@@ -339,7 +339,7 @@ class EMail
 			$auditTrail->memberId = (int)($this->fromMember['memberId'] ?? 0);
 			$auditTrail->additional = \implode(',', \array_keys(\array_merge($this->to, $this->cc, $this->bcc)));
 			$auditTrail->statement = $this->subject;
-			$auditTrail->input = $this->body;
+			$auditTrail->input = \substr(\Soundasleep\Html2Text::convert($this->body, ['drop_links' => 'href', 'ignore_errors' => true]), 0, 80);
 			$auditTrail->insert();
 			}
 

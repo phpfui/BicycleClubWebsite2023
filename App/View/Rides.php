@@ -1122,7 +1122,7 @@ class Rides
 				{
 				$cloning->rideDate = $startDate;
 				$cloning->memberId = 0;
-				$id = $rideModel->add($cloning->toArray());
+				$id = $rideModel->add($cloning->toArray(), true);
 				$date = \App\Tools\Date::formatString('D M j, Y', $startDate);
 				$returnValue .= "<p><a href='/Rides/edit/{$id}' target=_blank>{$date}</a>";
 				$startDate = \App\Tools\Date::increment($startDate, (int)($_POST['cloneDayInterval']));

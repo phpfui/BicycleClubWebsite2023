@@ -496,8 +496,8 @@ class Member
 						{
 						$membership->expires = \App\Tools\Date::toString(\App\Tools\Date::endOfMonth(\App\Tools\Date::today()));
 						}
+					$membership->expires = static::addYears($membership->expires, $invoiceItem->quantity);
 					}
-				$membership->expires = static::addYears($membership->expires, $invoiceItem->quantity);
 				$membership->update();
 
 				// set all members to have normal member privledge

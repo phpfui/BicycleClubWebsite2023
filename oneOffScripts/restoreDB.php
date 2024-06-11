@@ -124,6 +124,9 @@ else
 	echo "Backup restored with no errors\n";
 	}
 
+$settingTable = new \App\Table\Setting();
+$settingTable->save('TestMode', 1);
+
 // generage correct permission loader php file
 $permissions = new \App\Model\Permission();
 $permissions->generatePermissionLoader();

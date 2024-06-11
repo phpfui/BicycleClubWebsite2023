@@ -15,8 +15,8 @@ namespace App\Record\Definition;
  * @property ?float $elevationMeters MySQL type decimal(8,0)
  * @property float $feetPerMile MySQL type decimal(5,1)
  * @property ?float $km MySQL type decimal(4,2)
- * @property ?string $lastSynced MySQL type timestamp
- * @property ?string $lastUpdated MySQL type timestamp
+ * @property string $lastSynced MySQL type timestamp
+ * @property string $lastUpdated MySQL type timestamp
  * @property ?float $latitude MySQL type decimal(10,6)
  * @property ?float $longitude MySQL type decimal(10,6)
  * @property ?float $metersPerKm MySQL type decimal(5,2)
@@ -46,8 +46,8 @@ abstract class RWGPS extends \PHPFUI\ORM\Record
 		'elevationMeters' => ['decimal(8,0)', 'float', 8, true, ],
 		'feetPerMile' => ['decimal(5,1)', 'float', 5, false, 0, ],
 		'km' => ['decimal(4,2)', 'float', 4, true, ],
-		'lastSynced' => ['timestamp', 'string', 20, true, ],
-		'lastUpdated' => ['timestamp', 'string', 20, true, null, ],
+		'lastSynced' => ['timestamp', 'string', 20, false, '0000-00-00 00:00:00', ],
+		'lastUpdated' => ['timestamp', 'string', 20, false, null, ],
 		'latitude' => ['decimal(10,6)', 'float', 10, true, ],
 		'longitude' => ['decimal(10,6)', 'float', 10, true, ],
 		'metersPerKm' => ['decimal(5,2)', 'float', 5, true, ],

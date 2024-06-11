@@ -40,7 +40,7 @@ class Ride
 	 *
 	 * @return int | array<string,array<string>> returning an array means there are errors in the ride and it was not added.  Array is list of errors.
 	 */
-	public function add(array $parameters) : int | array
+	public function add(array $parameters, bool $alwaysAdd = false) : int | array
 		{
 		$parameters = $this->cleanProtectedFields($parameters);
 		$parameters = $this->cleanDescription($parameters);
@@ -69,7 +69,7 @@ class Ride
 		$ride->dateAdded = \date('Y-m-d H:i:s');
 		$errors = $ride->validate();
 
-		if ($errors)
+		if (! $alwaysAdd && $errors)
 			{
 			return $errors;
 			}

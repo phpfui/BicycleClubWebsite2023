@@ -1043,7 +1043,7 @@ class Member
 			$invoiceItem->tax = 0.0;
 
 			$invoiceItem->storeItemDetailId = self::ADDITIONAL_MEMBERSHIP;
-			$invoiceItem->price = (float)\number_format($additionalMemberDues / $years, 2);
+			$invoiceItem->price = (float)\number_format($additionalMemberDues / $years / $additionalMembers, 2);
 			$invoiceItem->quantity = $additionalMembers;
 			$invoiceItem->title = self::MEMBERSHIP_ADDITIONAL_TITLE;
 			$invoiceItem->description = 'One 12 Month Membership for an additional household member';

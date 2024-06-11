@@ -90,12 +90,13 @@ class Renew
 		if ($additionalMembers && $this->additionalMemberDues)
 			{
 			$output->add('<br>Additional members are $' . $this->duesModel->getAdditionalMemberPriceByYear($years) . ' per year.');
-			$output->add("<br>You have {$additionalMembers} additional member");
+			$text = "<br>You have {$additionalMembers} additional member";
 
 			if ($additionalMembers > 1)
 				{
-				$output->add('s');
+				$text .= 's';
 				}
+			$output->add($text);
 			}
 
 		if ('Family' == $paidMembers && $additionalMembers > 0)

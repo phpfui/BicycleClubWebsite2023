@@ -65,7 +65,7 @@ class Page extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 
 		if (! $boardMember->empty() && $csrf == \App\Model\Session::csrf())
 			{
-			$this->addPageContent(new \App\View\Email\Member($this, $boardMember->member));
+			$this->addPageContent(new \App\View\Email\Member($this, $boardMember->member, 'Board Member'));
 			}
 		else
 			{

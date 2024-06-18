@@ -4,45 +4,62 @@ namespace App\View\Email;
 
 class Member implements \Stringable
 	{
-	protected string $contactName;
+	private ?\App\UI\Captcha $captcha = null;
 
-	protected string $title;
+	private string $name;
 
-	public function __construct(private \App\View\Page $page, \App\Record\Member $member)
+	private readonly int $signedInMemberId;
+
+	public function __construct(private \App\View\Page $page, \App\Record\Member $member, string $title = '')
 		{
-		$this->page = $page;
+		$this->captcha = new \App\UI\Captcha($this->page, ! $this->page->isSignedIn());
+		$this->signedInMemberId = \App\Model\Session::signedInMemberId();
 
 		if ($member->loaded())
 			{
-			$this->contactName = \App\Tools\TextHelper::unhtmlentities($member->fullName());
-			$this->title = $this->contactName;
+			if ($this->signedInMemberId)
+				{
+				$this->name = \App\Tools\TextHelper::unhtmlentities($member->fullName());
+				}
+			else
+				{
+				$this->name = $title ?: 'Club Member';
+				}
 
 			if (\App\Model\Session::checkCSRF() && isset($_POST['submit']))
 				{
-				$settings = new \App\Table\Setting();
-				$link = $settings->value('homePage');
-				$email = new \App\Tools\EMail();
-				$email->setSubject($_POST['subject'] ?? 'No Subject');
-				$email->addToMember($member->toArray());
-
-				if (! empty($_POST['memberId']))
+				if ($this->captcha->valid())
 					{
-					$member = new \App\Record\Member((int)$_POST['memberId']);
-					$name = $member->fullName();
-					$emailAddress = $member->email;
-					$phone = $member->phone;
-					$email->setFromMember($member->toArray());
+					$settings = new \App\Table\Setting();
+					$link = $settings->value('homePage');
+					$email = new \App\Tools\EMail();
+					$email->setSubject($_POST['subject'] ?? 'No Subject');
+					$email->addToMember($member->toArray());
+
+					if ($this->signedInMemberId)
+						{
+						$member = new \App\Record\Member($this->signedInMemberId);
+						$name = $member->fullName();
+						$emailAddress = $member->email;
+						$phone = $member->phone;
+						$email->setFromMember($member->toArray());
+						}
+					else
+						{
+						$name = $_POST['name'];
+						$emailAddress = $_POST['email'];
+						$phone = $_POST['phone'];
+						$email->setFrom($emailAddress, $name);
+						}
+					$email->setBody(\App\Tools\TextHelper::cleanUserHtml($_POST['message']) . "\n\nThis email was sent from {$link} by {$name}\n{$emailAddress}\n{$phone}");
+					$email->send();
+					$this->page->redirect('', 'sent');
 					}
 				else
 					{
-					$name = $_POST['name'];
-					$emailAddress = $_POST['email'];
-					$phone = $_POST['phone'];
-					$email->setFrom($emailAddress, $name);
+					\App\Model\Session::setFlash('alert', 'You appear to be a robot');
+					$this->page->redirect();
 					}
-				$email->setBody(\App\Tools\TextHelper::cleanUserHtml($_POST['message']) . "\n\nThis email was sent from {$link} by {$name}\n{$emailAddress}\n{$phone}");
-				$email->send();
-				$this->page->redirect('', 'sent');
 				}
 			}
 		}
@@ -53,17 +70,15 @@ class Member implements \Stringable
 
 		if (isset($_GET['sent']))
 			{
-			$container->add(new \PHPFUI\SubHeader($this->title));
-			$container->add(new \App\UI\Alert("Thanks for contacting {$this->contactName}, they should get back to you shortly."));
+			$container->add(new \PHPFUI\SubHeader($this->name));
+			$container->add(new \App\UI\Alert("Thanks for contacting {$this->name}, they should get back to you shortly."));
 			}
-		elseif ($this->title)
+		elseif ($this->name)
 			{
 			$form = new \PHPFUI\Form($this->page);
-			$signedInMember = \App\Model\Session::signedInMemberId();
-			$form->add("<h2>{$this->title}</h2>");
-			$form->add(new \PHPFUI\Input\Hidden('memberId', (string)$signedInMember));
+			$form->add(new \PHPFUI\Header($this->name, 4));
 
-			if (! $signedInMember)
+			if (! $this->signedInMemberId)
 				{
 				$fieldSet = new \PHPFUI\FieldSet('Your Information');
 				$name = new \PHPFUI\Input\Text('name', 'Name');
@@ -95,7 +110,8 @@ class Member implements \Stringable
 			$message->setRequired();
 			$fieldSet->add($message);
 			$form->add($fieldSet);
-			$form->add(new \PHPFUI\Submit('Email ' . $this->title));
+			$form->add($this->captcha);
+			$form->add(new \PHPFUI\Submit('Email ' . $this->name));
 			$container->add($form);
 			}
 		else

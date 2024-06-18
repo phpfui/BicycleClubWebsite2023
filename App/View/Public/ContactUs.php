@@ -4,21 +4,14 @@ namespace App\View\Public;
 
 class ContactUs implements \Stringable
 	{
-	private ?\PHPFUI\ReCAPTCHA $captcha = null;
-
-	private readonly \PHPFUI\MathCaptcha $mathCaptcha;
-
-	private readonly \App\Table\Setting $settingTable;
+	private readonly \App\UI\Captcha $captcha;
 
 	/**
 	 * @param \PHPFUI\ORM\RecordCursor<\App\Record\BoardMember> $boardMembers
 	 */
 	public function __construct(private \App\View\Page $page, private readonly \PHPFUI\ORM\RecordCursor $boardMembers)
 		{
-		$this->page = $page;
-		$this->settingTable = new \App\Table\Setting();
-		$this->captcha = new \PHPFUI\ReCAPTCHA($this->page, $this->settingTable->value('ReCAPTCHAPublicKey'), $this->settingTable->value('ReCAPTCHAPrivateKey'));
-		$this->mathCaptcha = new \PHPFUI\MathCaptcha($this->page);
+		$this->captcha = new \App\UI\Captcha($this->page);
 		}
 
 	public function __toString() : string
@@ -33,9 +26,8 @@ class ContactUs implements \Stringable
 			{
 			\App\Model\Session::setFlash('post', $_POST);
 
-			if ((! $this->captcha || $this->captcha->isValid()) && $this->mathCaptcha->isValid())
+			if ($this->captcha->valid())
 				{
-				$settings = new \App\Table\Setting();
 				$link = $settings->value('homePage');
 				$email = new \App\Tools\EMail();
 				$email->setSubject($_POST['subject']);
@@ -122,10 +114,7 @@ class ContactUs implements \Stringable
 				$fieldSet->add($message);
 				$form->add($fieldSet);
 
-				$prove = new \PHPFUI\FieldSet('Please prove you are a human');
-				$prove->add($this->mathCaptcha);
-				$prove->add($this->captcha);
-				$form->add($prove);
+				$form->add($this->captcha);
 				$form->add(new \PHPFUI\Submit('Send!'));
 				}
 			}

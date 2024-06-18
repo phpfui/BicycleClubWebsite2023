@@ -104,6 +104,8 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 
 	public function email(\App\Record\Member $member = new \App\Record\Member()) : void
 		{
+		$this->page->setPublic();
+
 		if ($this->page->addHeader('Email Member'))
 			{
 			if ($member->loaded() && $member->email)

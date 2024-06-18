@@ -186,7 +186,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Email Leader'))
 			{
-			$this->page->addPageContent(new \App\View\Email\Member($this->page, $leader));
+			$this->page->addPageContent(new \App\View\Email\Member($this->page, $leader, 'Ride Leader'));
 			}
 		}
 

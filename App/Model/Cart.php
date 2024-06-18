@@ -225,18 +225,18 @@ class Cart
 
 	public function compute(int $volunteerPoints = 0) : void
 		{
+		$discountCode = null;
+
 		if (! $this->computed)
 			{
 			$this->volunteerPoints = $volunteerPoints;
 			$this->computed = true;
 			$this->zero();
-			$itemCount = [];
 
 			foreach ($this->getItems() as $cartItem)
 				{
 				if (! empty($cartItem['quantity']))
 					{
-					$itemCount[$cartItem['storeItemId'] . '-' . ($cartItem['storeItemDetailId'] ?? 0)] = $cartItem['quantity'];
 					$value = (float)($cartItem['price'] * $cartItem['quantity']);
 
 					if ($cartItem['payByPoints'])
@@ -263,10 +263,88 @@ class Cart
 					}
 				elseif (! empty($cartItem['discountCodeId'])) // a discount code
 					{
-					$this->discount = $this->computeDiscount(new \App\Record\DiscountCode($cartItem['discountCodeId']), $itemCount);
+					$discountCode = new \App\Record\DiscountCode($cartItem['discountCodeId']);
 					}
 				}
 			}
+		$this->discount = $discountCode ? $this->computeDiscount($discountCode) : 0.0;
+		}
+
+	public function computeDiscount(\App\Record\DiscountCode $discountCode) : float
+		{
+		$this->discountCode = $discountCode;
+		$discount = 0.0;
+
+		if ($discountCode->empty())
+			{
+			return $discount;
+			}
+
+		$eligibleCount = 1;
+		$eligibleItemNumbers = [];
+
+		if ($discountCode->validItemNumbers)
+			{
+			$eligibleItemNumbers = \explode(',', $discountCode->validItemNumbers);
+			$eligibleCount = 0;
+			}
+
+		$itemCount = [];
+
+		foreach ($this->getItems() as $cartItem)
+			{
+			if (! empty($cartItem['quantity']))
+				{
+				$id = $cartItem['storeItemId'] . '-' . ($cartItem['storeItemDetailId'] ?? 0);
+
+				if (! isset($itemCount[$id]))
+					{
+					$itemCount[$id] = 0;
+					}
+				$itemCount[$id] += $cartItem['quantity'];
+				}
+			}
+
+		foreach ($eligibleItemNumbers as $eligibleItemNumber)
+			{
+			foreach ($itemCount as $itemNumber => $count)
+				{
+				$eligibleParts = \explode('-', $eligibleItemNumber);
+				/** @noinspection PhpUnusedLocalVariableInspection */
+				[$itemId, $detailId] = \explode('-', $itemNumber);
+
+				if ($itemNumber == $eligibleItemNumber || $itemId == $eligibleItemNumber || ($itemId == $eligibleParts[0] && 1 == \count($eligibleParts)))
+					{
+					$eligibleCount += $count;
+					}
+				}
+			}
+
+		if ($discountCode->cashOnly)
+			{
+			$discountableAmount = $this->getCashAmount();
+			}
+		else // discount on whole price
+			{
+			$discountableAmount = $this->total;
+			}
+
+		if (\App\Enum\Store\DiscountType::PERCENT_OFF == $discountCode->type) // @phpstan-ignore-line
+			{
+			$discount = $discountableAmount * (float)$discountCode->discount / 100;
+			}
+		else
+			{
+			$numberDiscounts = \min($eligibleCount, \max($discountCode->repeatCount, 1));
+			$discount = $numberDiscounts * (float)$discountCode->discount;
+
+			if ($discount > $discountableAmount)
+				{
+				$discount = $discountableAmount;
+				}
+			}
+
+		return $discount;
 		}
 
 	public function delete(\App\Record\CartItem $cartItem) : bool
@@ -282,6 +360,24 @@ class Cart
 			}
 
 		return $cartItem->delete();
+		}
+
+	public function getCashAmount() : float
+		{
+		$appliedPoints = 0;
+
+		if ($this->volunteerPoints)
+			{
+			$appliedPoints = \min($this->payableByPoints, $this->volunteerPoints);
+			}
+		$total = $this->total - $appliedPoints;
+
+		if ($total < 0.0)
+			{
+			$total = 0.0;
+			}
+
+		return $total;
 		}
 
 	public function getCount() : int
@@ -481,46 +577,6 @@ class Cart
 			}
 
 		return false;
-		}
-
-	/**
-	 * @param array<string,int> $itemCount
-	 */
-	private function computeDiscount(\App\Record\DiscountCode $discountCode, array $itemCount) : float
-		{
-		$discount = 0.0;
-		$this->discountCode = $discountCode;
-
-		if (! $discountCode->empty())
-			{
-			$eligibleCount = 1;
-			$eligibleItemNumbers = [];
-
-			if ($discountCode->validItemNumbers)
-				{
-				$eligibleItemNumbers = \explode(',', $discountCode->validItemNumbers);
-				$eligibleCount = 0;
-				}
-
-			foreach ($eligibleItemNumbers as $eligibleItemNumber)
-				{
-				foreach ($itemCount as $itemNumber => $count)
-					{
-					$eligibleParts = \explode('-', $eligibleItemNumber);
-					/** @noinspection PhpUnusedLocalVariableInspection */
-					[$itemId, $detailId] = \explode('-', $itemNumber);
-
-					if ($itemNumber == $eligibleItemNumber || $itemId == $eligibleItemNumber || ($itemId == $eligibleParts[0] && 1 == \count($eligibleParts)))
-						{
-						$eligibleCount += $count;
-						}
-					}
-				}
-			$numberDiscounts = \min($eligibleCount, \max($discountCode->repeatCount, 1));
-			$discount = $numberDiscounts * (float)$discountCode->discount;
-			}
-
-		return $discount;
 		}
 
 	private function validateDiscountCode(\App\Record\DiscountCode $discount, int $customerNumber) : int

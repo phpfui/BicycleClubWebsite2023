@@ -29,7 +29,7 @@ class Invoice extends \App\Record\Definition\Invoice
 
 	public function unpaidBalance() : float
 		{
-		return ($this->totalPrice + $this->totalTax + $this->totalShipping) - $this->paypalPaid - $this->pointsUsed - $this->paidByCheck;
+		return ($this->totalPrice + $this->totalTax + $this->totalShipping) - $this->paypalPaid - $this->pointsUsed - $this->paidByCheck - $this->discount;
 		}
 
 	public function update() : bool

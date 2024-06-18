@@ -338,7 +338,9 @@ class Invoice
 				$tax = $taxCalculator->compute($cartItem);
 				$invoice->totalTax += $tax;
 
-				switch (\App\Enum\Store\Type::from((int)$cartItem['type']))
+				$type = \App\Enum\Store\Type::from((int)$cartItem['type']);
+
+				switch ($type)
 					{
 					case \App\Enum\Store\Type::STORE:
 					case \App\Enum\Store\Type::ORDER:
@@ -365,7 +367,7 @@ class Invoice
 							$invoiceItem = new \App\Record\InvoiceItem();
 							$invoiceItem->invoice = $invoice;
 							$invoiceItem->storeItemId = (int)$cartItem['storeItemId'];
-							$invoiceItem->storeItemDetailId = $cartItem['storeItemDetailId'];
+							$invoiceItem->storeItemDetailId = (int)$cartItem['storeItemDetailId'];
 							$invoiceItem->title = $storeItem->title;
 							$invoiceItem->description = $storeItem->description;
 
@@ -380,8 +382,9 @@ class Invoice
 							$invoiceItem->price = (float)$storeItem->price;
 							$invoiceItem->shipping = (float)$storeItem->shipping;
 							$invoiceItem->quantity = (int)$cartItem['quantity'];
-							$invoiceItem->type = $cartItem['type'];
+							$invoiceItem->type = $type;
 							$invoiceItem->tax = $tax;
+
 							$invoiceItem->insertOrUpdate();
 
 							if (\App\Enum\Store\Type::STORE->value == $cartItem['type'])
@@ -403,14 +406,14 @@ class Invoice
 						$invoiceItem = new \App\Record\InvoiceItem();
 						$invoiceItem->invoice = $invoice;
 						$invoiceItem->storeItemId = (int)$cartItem['storeItemId'];
-						$invoiceItem->storeItemDetailId = $cartItem['storeItemDetailId'];
+						$invoiceItem->storeItemDetailId = (int)$cartItem['storeItemDetailId'];
 						$invoiceItem->title = $event->title . ' Registration ' . $date;
 						$invoiceItem->description = $date;
 						$invoiceItem->detailLine = $rider->firstName . ' ' . $rider->lastName;
 						$invoiceItem->price = $price;
 						$invoiceItem->shipping = 0.0;
 						$invoiceItem->quantity = 1;
-						$invoiceItem->type = \App\Enum\Store\Type::from($cartItem['type']);
+						$invoiceItem->type = $type;
 						$invoiceItem->tax = $tax;
 						$invoiceItem->insert();
 						$this->paypalType = 'General_Admission';
@@ -418,7 +421,6 @@ class Invoice
 						break;
 
 					case \App\Enum\Store\Type::DISCOUNT_CODE:
-						$invoiceUpdates['discountCodeId'] = $cartItem['discountCodeId'];
 
 						break;
 

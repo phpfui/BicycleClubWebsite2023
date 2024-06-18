@@ -29,6 +29,7 @@ class Ride extends \PHPFUI\ORM\Validator
 		'targetPace' => ['number', 'minvalue:5', 'maxvalue:25'],
 		'title' => ['maxlength'],
 		'unaffiliated' => ['integer'],
+		'restStop' => ['maxlength'],
 	];
 
 	public function __construct(\App\Record\Ride $record)

@@ -476,6 +476,7 @@ class Member
 					if ($startMonth < $graceMonth)
 						{
 						// we are renewing before grace period, set expire last year, then increment later
+						++$year;
 						if ($currentMonth >= $graceMonth)
 							{
 							++$year;

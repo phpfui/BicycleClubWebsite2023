@@ -528,6 +528,9 @@ class Rides
 				$content->prepend($status);
 				}
 
+			$bg = new \PHPFUI\ButtonGroup();
+			$bg->addClass('round');
+
 			if ($this->page->isSignedIn())
 				{
 				if ($ride->rideDate < $today && $ride->rideStatus > 0 && \App\Table\Ride::STATUS_NO_LEADER != $ride->rideStatus)
@@ -557,9 +560,6 @@ class Rides
 					}
 
 				$content->add($this->getRWGPSMenu($ride));
-
-				$bg = new \PHPFUI\ButtonGroup();
-				$bg->addClass('round');
 
 				if ($ride->pending && $this->page->isAuthorized('Approve Rides'))
 					{
@@ -618,9 +618,6 @@ class Rides
 					$button = new \PHPFUI\Button('Ride Leader Stats', '/Leaders/stats/' . $ride->memberId);
 					$button->addClass('info');
 					$bg->addButton($button);
-					$title = "Your {$this->paceTable->getPace($ride->paceId ?? 0)} ride on " . \App\Tools\Date::formatString('M j', $ride->rideDate);
-					$button = new \PHPFUI\Button('Contact', '/Membership/email/' . $ride->memberId . '?title=' . \urlencode($title));
-					$bg->addButton($button);
 					}
 
 				$canAddRide = \App\Model\Ride::canAddRide($this->page->getPermissions());
@@ -657,9 +654,6 @@ class Rides
 					$button->setConfirm('Have you notified all signed up riders you are deleting this ride?  It can not be undone.');
 					$bg->addButton($button);
 					}
-
-				$bg->addButtonClass('small');
-				$content->add($bg);
 				}
 			elseif ($ride->startLocationId && $ride->unaffiliated)
 				{
@@ -667,6 +661,20 @@ class Rides
 				$content->add("<br><b>Start:</b> {$link}");
 				$content->add($this->getRWGPSMenu($ride));
 				}
+
+			if ($ride->memberId)
+				{
+				$title = "Your {$this->paceTable->getPace($ride->paceId ?? 0)} ride on " . \App\Tools\Date::formatString('M j', $ride->rideDate);
+				$button = new \PHPFUI\Button('Contact Leader', '/Membership/email/' . $ride->memberId . '?title=' . \urlencode($title));
+				$bg->addButton($button);
+				}
+
+			if (\count($bg))
+				{
+				$bg->addButtonClass('small');
+				$content->add($bg);
+				}
+
 			$dayAccordion->addTab($row, $content)->addClass('ride-header cat-All cat-' . $this->paceTable->getCategoryIdFromPaceId($ride->paceId));
 			}
 		$dateAccordion->addTab(\App\Tools\Date::formatString('l, F j, Y', $lastDate), $dayAccordion . $unaffiliated, true)->addClass('ride-date-header');

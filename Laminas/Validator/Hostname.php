@@ -46,6 +46,7 @@ use function substr;
  *    useTldCheck?: bool,
  *    ipValidator?: null|ValidatorInterface,
  * }
+ * @final
  */
 class Hostname extends AbstractValidator
 {
@@ -899,7 +900,6 @@ class Hostname extends AbstractValidator
         'nab',
         'nagoya',
         'name',
-        'natura',
         'navy',
         'nba',
         'nc',

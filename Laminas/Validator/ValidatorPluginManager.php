@@ -17,6 +17,7 @@ use function sprintf;
 /**
  * @psalm-import-type ServiceManagerConfiguration from ServiceManager
  * @extends AbstractPluginManager<ValidatorInterface>
+ * @final
  */
 class ValidatorPluginManager extends AbstractPluginManager
 {
@@ -375,6 +376,7 @@ class ValidatorPluginManager extends AbstractPluginManager
         GreaterThan::class               => InvokableFactory::class,
         Hex::class                       => InvokableFactory::class,
         Hostname::class                  => InvokableFactory::class,
+        HostWithPublicIPv4Address::class => InvokableFactory::class,
         Iban::class                      => InvokableFactory::class,
         Identical::class                 => InvokableFactory::class,
         InArray::class                   => InvokableFactory::class,

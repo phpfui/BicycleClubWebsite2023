@@ -238,10 +238,10 @@ class RideWithGPS
 
 		$fieldSet = new \PHPFUI\FieldSet('API Settings');
 		$callout = new \PHPFUI\Callout('info');
-		$link = new \PHPFUI\Link('https://ridewithgps.com/api', 'More information to set up the API is here.');
+		$link = new \PHPFUI\Link('https://ridewithgps.com/settings/developers', 'this link');
 		$link->addAttribute('_target', 'blank');
 		$callout->add('If you enter RWGPS API info, the system will remove club members from the club RWGPS account who do not renew their membership. ');
-		$callout->add($link);
+		$callout->add('Sign into your club RWGPS account, then follow ' . $link . '  to get an API key.');
 		$fieldSet->add($callout);
 		$multiColumn = new \PHPFUI\MultiColumn();
 		$multiColumn->add($settingsSaver->generateField('RideWithGPSEmail', 'Email Address', 'email', required:false));

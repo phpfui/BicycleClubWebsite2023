@@ -487,7 +487,7 @@ class Invoice
 			$pdf->addClient((string)$member->memberId);
 			}
 		$pdf->addClientAddress("Ship To:\n" . $member->firstName . ' ' . $member->lastName . "\n" . $member->address . "\n" . $member->town . ', ' . $member->state . ' ' . $member->zip);
-		$pdf->addTotals($invoice->totalPrice, $invoice->totalTax, $invoice->totalShipping, $invoice->paypalPaid, $invoice->pointsUsed);
+		$pdf->addTotals($invoice);
 		$payment = '';
 
 		if ($invoice->paypalPaid > 0)

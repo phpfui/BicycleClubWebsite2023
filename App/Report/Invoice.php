@@ -55,9 +55,9 @@ class Invoice extends \FPDF
 
 	public function addClientAddress(string $address) : void
 		{
-		$r1 = $this->w - 80;
-		$y1 = 30;
-		$this->SetXY($r1, $y1);
+		$x = $this->w - 80;
+		$y = 30;
+		$this->SetXY($x, $y);
 		$this->MultiCell(60, 4, \App\Tools\TextHelper::unhtmlentities($address));
 		}
 
@@ -66,14 +66,14 @@ class Invoice extends \FPDF
 	 */
 	public function addCols(array $tab) : void
 		{
-		$r1 = 10;
-		$r2 = $this->w - ($r1 * 2);
-		$y1 = 100;
-		$y2 = $this->h - 50 - $y1;
-		$this->SetXY($r1, $y1);
-		$this->Rect($r1, $y1, $r2, $y2, 'D');
-		$this->Line($r1, $y1 + 6, $r1 + $r2, $y1 + 6);
-		$colX = $r1;
+		$x = 10;
+		$width = $this->w - ($x * 2);
+		$y = 100;
+		$height = $this->h - 50 - $y;
+		$this->SetXY($x, $y);
+		$this->Rect($x, $y, $width, $height, 'D');
+		$this->Line($x, $y + 6, $x + $width, $y + 6);
+		$colX = $x;
 		$this->columns = $tab;
 		$i = 0;
 		$this->SetFont('Arial', 'B', 10);
@@ -81,13 +81,13 @@ class Invoice extends \FPDF
 		foreach ($tab as $lib => $pos)
 			{
 			++$i;
-			$this->SetXY($colX, $y1 + 2);
+			$this->SetXY($colX, $y + 2);
 			$this->Cell($pos, 1, $lib, 0, 0, 'C');
 			$colX += $pos;
 
 			if ($i < \count($tab)) // don't print the last column line, off by a bit
 				{
-				$this->Line($colX, $y1, $colX, $y1 + $y2);
+				$this->Line($colX, $y, $colX, $y + $height);
 				}
 			}
 		}
@@ -171,62 +171,72 @@ class Invoice extends \FPDF
 		}
 
 	// add a line to the invoice/estimate
-	public function addTotals(?float $total, ?float $tax, ?float $shipping, ?float $cash, ?int $points = 0) : void
+	public function addTotals(\App\Record\Invoice $invoice) : void
 		{
-		$grandtotal = $total + $tax + $shipping;
-		$r1 = (int)($this->w - 80);
-		$r2 = $r1 + 70;
-		$y1 = (int)($this->h - 40);
-		$y2 = $y1 + 30;
-		$this->RoundedRect($r1, $y1, ($r2 - $r1), ($y2 - $y1), 2.5, 'D');
-		$y1++;
-		$this->SetXY($r1, $y1);
+		$x = (int)($this->w - 80);
+		$width = $x + 70;
+		$y = (int)($this->h - 47);
+		$height = $y + 35;
+		$this->RoundedRect($x, $y, ($width - $x), ($height - $y), 2.5, 'D');
+		$y++;
+		$this->SetXY($x, $y);
 		$this->SetFont('Arial', 'B', 10);
 		$this->Cell(50, 4, 'Total', 0, 0, 'L');
 		$this->SetFont('Arial', '', 10);
-		$this->Cell(20, 4, '$' . \number_format($total ?? 0.0, 2), 0, 0, 'R');
-		$y1 += 4;
-		$this->SetXY($r1, $y1);
+		$this->Cell(20, 4, '$' . \number_format($invoice->totalPrice ?? 0.0, 2), 0, 0, 'R');
+		$y += 4;
+		$this->SetXY($x, $y);
 		$this->SetFont('Arial', 'B', 10);
 		$this->Cell(50, 4, 'Shipping', 0, 0, 'L');
 		$this->SetFont('Arial', '', 10);
-		$this->Cell(20, 4, '$' . \number_format($shipping ?? 0.0, 2), 0, 0, 'R');
-		$y1 += 4;
-		$this->SetXY($r1, $y1);
+		$this->Cell(20, 4, '$' . \number_format($invoice->totalShipping ?? 0.0, 2), 0, 0, 'R');
+		$y += 4;
+		$this->SetXY($x, $y);
 		$this->SetFont('Arial', 'B', 10);
 		$this->Cell(50, 4, 'Tax', 0, 0, 'L');
 		$this->SetFont('Arial', '', 10);
-		$this->Cell(20, 4, '$' . \number_format($tax ?? 0, 2), 0, 0, 'R');
-		$y1 += 4;
-		$this->SetXY($r1, $y1);
+		$this->Cell(20, 4, '$' . \number_format($invoice->totalTax ?? 0, 2), 0, 0, 'R');
+		$y += 4;
+		$this->SetXY($x, $y);
 		$this->SetFont('Arial', 'B', 10);
 		$this->Cell(50, 4, 'Grand Total', 0, 0, 'L');
 		$this->SetFont('Arial', '', 10);
-		$this->Cell(20, 4, '$' . \number_format($grandtotal, 2), 0, 0, 'R');
-		$y1 += 4;
-		$this->SetXY($r1, $y1);
+		$this->Cell(20, 4, '$' . \number_format($invoice->total(), 2), 0, 0, 'R');
+		$y += 4;
+		$this->SetXY($x, $y);
 		$this->SetFont('Arial', 'B', 10);
 		$this->Cell(50, 4, 'Paid In Cash', 0, 0, 'L');
 		$this->SetFont('Arial', '', 10);
-		$this->Cell(20, 4, '$' . \number_format($cash ?? 0.0, 2), 0, 0, 'R');
-		$y1 += 4;
+		$this->Cell(20, 4, '$' . \number_format($invoice->paypalPaid ?? 0.0, 2), 0, 0, 'R');
+		$y += 4;
 
-		if ($points)
+		if ($invoice->pointsUsed)
 			{
-			$this->SetXY($r1, $y1);
+			$this->SetXY($x, $y);
 			$this->SetFont('Arial', 'B', 10);
 			$this->Cell(50, 4, 'Volunteer Points Redeemed', 0, 0, 'L');
 			$this->SetFont('Arial', '', 10);
-			$this->Cell(20, 4, '$' . \number_format($points, 2), 0, 0, 'R');
-			$y1 += 4;
+			$this->Cell(20, 4, '$' . \number_format($invoice->pointsUsed, 2), 0, 0, 'R');
+			$y += 4;
 			}
-		$this->SetXY($r1, $y1);
+
+		if ($invoice->discount)
+			{
+			$this->SetXY($x, $y);
+			$this->SetFont('Arial', 'B', 10);
+			$this->Cell(50, 4, 'Discount', 0, 0, 'L');
+			$this->SetFont('Arial', '', 10);
+			$this->Cell(20, 4, '$' . \number_format($invoice->discount, 2), 0, 0, 'R');
+			$y += 4;
+			}
+
+		$this->SetXY($x, $y);
 		$this->SetFont('Arial', 'B', 10);
 		$this->Cell(50, 4, 'Net Due', 0, 0, 'L');
 		$this->SetFont('Arial', '', 10);
-		$due = $grandtotal - $cash - $points;
+		$due = $invoice->unpaidBalance();
 
-		if ($due <= 0)
+		if ($due <= 0.0)
 			{
 			$due = 0;
 			$this->addWatermark('PAID IN FULL');
@@ -237,8 +247,8 @@ class Invoice extends \FPDF
 	public function addVendor(string $name, string $address, string $image = '') : void
 		{
 		$x1 = 10;
-		$y1 = 8;
-		$this->SetXY($x1, $y1);
+		$y = 8;
+		$this->SetXY($x1, $y);
 
 		if ($image && \file_exists($image) && ! \is_dir($image))
 			{
@@ -263,14 +273,14 @@ class Invoice extends \FPDF
 					$height = $maxHeight;
 					}
 				$this->Image($image, null, null, $width, $height);
-				$y1 += $height + 2;
-				$this->SetXY($x1, $y1);
+				$y += $height + 2;
+				$this->SetXY($x1, $y);
 				}
 			}
 		$this->SetFont('Arial', 'B', 12);
 		$length = $this->GetStringWidth($name);
 		$this->Cell($length, 2, $name);
-		$this->SetXY($x1, $y1 + 4);
+		$this->SetXY($x1, $y + 4);
 		$this->SetFont('Arial', '', 10);
 		$length = $this->GetStringWidth($address) + 1;
 		$this->MultiCell($length, 4, $address);
@@ -316,25 +326,25 @@ class Invoice extends \FPDF
 		}
 
 	// Company
-	private function _Arc(float $x1, float $y1, float $x2, float $y2, float $x3, float $y3) : void
+	private function _Arc(float $x1, float $y, float $x2, float $y2, float $x3, float $y3) : void
 		{
 		$h = $this->h;
-		$this->_out(\sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c ', $x1 * $this->k, ($h - $y1) * $this->k, $x2 * $this->k, ($h - $y2) * $this->k, $x3 * $this->k, ($h - $y3) * $this->k));
+		$this->_out(\sprintf('%.2F %.2F %.2F %.2F %.2F %.2F c ', $x1 * $this->k, ($h - $y) * $this->k, $x2 * $this->k, ($h - $y2) * $this->k, $x3 * $this->k, ($h - $y3) * $this->k));
 		}
 
 	private function addRoundedBox(?int $column, int $row, int $length, ?string $title, ?string $text) : void
 		{
-		$r1 = (int)$column;
-		$r2 = $r1 + $length;
-		$y1 = $row;
-		$y2 = $y1 + 10;
-		$mid = $y1 + (($y2 - $y1) / 2);
-		$this->RoundedRect($r1, $y1, ($r2 - $r1), ($y2 - $y1), 2.5, 'D');
-		$this->Line($r1, $mid, $r2, $mid);
-		$this->SetXY($r1 + ($r2 - $r1) / 2 - 5, $y1 + 1);
+		$x = (int)$column;
+		$width = $x + $length;
+		$y = $row;
+		$height = $y + 10;
+		$mid = $y + (($height - $y) / 2);
+		$this->RoundedRect($x, $y, ($width - $x), ($height - $y), 2.5, 'D');
+		$this->Line($x, $mid, $width, $mid);
+		$this->SetXY($x + ($width - $x) / 2 - 5, $y + 1);
 		$this->SetFont('Arial', 'B', 10);
 		$this->Cell(10, 4, $title ?? '', 0, 0, 'C');
-		$this->SetXY($r1 + ($r2 - $r1) / 2 - 5, $y1 + 5);
+		$this->SetXY($x + ($width - $x) / 2 - 5, $y + 5);
 		$this->SetFont('Arial', '', 10);
 		$this->Cell(10, 5, $text ?? '', 0, 0, 'C');
 		}

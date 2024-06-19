@@ -24,12 +24,12 @@ class Invoice extends \App\Record\Definition\Invoice
 
 	public function total() : float
 		{
-		return $this->totalPrice + $this->totalTax + $this->totalShipping;
+		return round($this->totalPrice + $this->totalTax + $this->totalShipping, 2);
 		}
 
 	public function unpaidBalance() : float
 		{
-		return ($this->totalPrice + $this->totalTax + $this->totalShipping) - $this->paypalPaid - $this->pointsUsed - $this->paidByCheck - $this->discount;
+		return round(($this->totalPrice + $this->totalTax + $this->totalShipping) - $this->paypalPaid - $this->pointsUsed - $this->paidByCheck - $this->discount, 2);
 		}
 
 	public function update() : bool

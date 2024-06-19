@@ -53,6 +53,7 @@ class Ride
 
 		$parameters['pending'] = (int)$this->settingTable->value('RidePendingDefault');
 
+
 		$errors = $this->checkForStartTimeConflicts($parameters);
 
 		if ($errors)
@@ -74,8 +75,13 @@ class Ride
 			return $errors;
 			}
 		$id = $ride->insert();
+
 		$this->rideSignupTable->deleteOtherSignedUpRides($ride, $ride->member);
 		$this->addLeaderSignups($ride);
+		if ($parameters['pending'])
+			{
+			$this->emailPendingRideNotice($ride);
+			}
 
 		return $id;
 		}
@@ -407,7 +413,7 @@ class Ride
 	 *
 	 * @param \App\Record\Ride $ride to send out
 	 */
-	public function emailPendingRideNotice(\App\Record\Ride $ride) : void
+	private function emailPendingRideNotice(\App\Record\Ride $ride) : void
 		{
 		$leader = $ride->member;
 		$title = $this->clubAbbrev . ' Rides Waiting to be Approved';

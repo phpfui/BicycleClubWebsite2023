@@ -295,9 +295,9 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$customer = $reservation->toArray();
 				$customer['customerId'] = $customerId;
-				$customer['firstName'] = $reservation['reservationFirstName'];
-				$customer['lastName'] = $reservation['reservationLastName'];
-				$customer['email'] = $reservation['reservationemail'];
+				$customer['firstName'] = $reservation->reservationFirstName;
+				$customer['lastName'] = $reservation->reservationLastName;
+				$customer['email'] = $reservation->reservationemail;
 				// update customer info with reservation address info
 				$customerModel->save($customer);
 				}

@@ -197,9 +197,10 @@ class Events
 		$commentTitle = new \PHPFUI\Input\Text('commentTitle', 'Comment Title', $event->commentTitle);
 		$commentTitle->setToolTip('Leave blank to disable registrants from adding comments');
 		$infoFieldSet->add($commentTitle);
+		$requireComment = new \PHPFUI\Input\CheckBoxBoolean('requireComment', 'Require comment', (bool)$event->requireComment);
 		$showRegistered = new \PHPFUI\Input\CheckBoxBoolean('showRegistered', 'Show registered people to other registrants', (bool)$event->showRegistered);
 		$showComments = new \PHPFUI\Input\CheckBoxBoolean('showComments', 'Show Comments to other registrants', (bool)$event->showComments);
-		$infoFieldSet->add(new \PHPFUI\MultiColumn($showRegistered, $showComments));
+		$infoFieldSet->add(new \PHPFUI\MultiColumn($requireComment, $showRegistered, $showComments));
 		$informationTab->add($infoFieldSet);
 
 		$information = new \PHPFUI\Input\TextArea('information', 'General Information', \str_replace("\n", '<div></div>', $event->information ?? ''));
@@ -840,6 +841,7 @@ JAVASCRIPT;
 		if ($this->event->commentTitle)
 			{
 			$comment = new \PHPFUI\Input\Text("comments[{$index}]", $this->event->commentTitle, $member['comments'] ?? '');
+			$comment->setRequired((bool)$this->event->requireComment);
 			$fieldSet->add($comment);
 			}
 

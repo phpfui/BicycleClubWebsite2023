@@ -28,6 +28,7 @@ namespace App\Record\Definition;
  * @property float $price MySQL type decimal(6,2)
  * @property ?string $publicDate MySQL type date
  * @property ?string $registrationStartDate MySQL type date
+ * @property int $requireComment MySQL type int
  * @property int $showComments MySQL type tinyint(1)
  * @property int $showRegistered MySQL type tinyint(1)
  * @property ?string $startTime MySQL type varchar(20)
@@ -62,6 +63,7 @@ abstract class Event extends \PHPFUI\ORM\Record
 		'price' => ['decimal(6,2)', 'float', 6, false, 0, ],
 		'publicDate' => ['date', 'string', 10, true, ],
 		'registrationStartDate' => ['date', 'string', 10, true, ],
+		'requireComment' => ['int', 'int', 0, false, 0, ],
 		'showComments' => ['tinyint(1)', 'int', 1, false, 0, ],
 		'showRegistered' => ['tinyint(1)', 'int', 1, false, 1, ],
 		'startTime' => ['varchar(20)', 'string', 20, true, ],

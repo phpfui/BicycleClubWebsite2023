@@ -11,7 +11,7 @@ namespace App\Record\Definition;
  * @property string $eventDate MySQL type date
  * @property int $gaEventId MySQL type int
  * @property \App\Record\GaEvent $gaEvent related record
- * @property ?int $includeMembership MySQL type int
+ * @property int $includeMembership MySQL type int
  * @property string $lastRegistrationDate MySQL type date
  * @property ?string $location MySQL type char(100)
  * @property ?int $maxRegistrants MySQL type int
@@ -38,7 +38,7 @@ abstract class GaEvent extends \PHPFUI\ORM\Record
 		'description' => ['text', 'string', 65535, true, ],
 		'eventDate' => ['date', 'string', 10, false, ],
 		'gaEventId' => ['int', 'int', 0, false, ],
-		'includeMembership' => ['int', 'int', 0, true, 0, ],
+		'includeMembership' => ['int', 'int', 0, false, 0, ],
 		'lastRegistrationDate' => ['date', 'string', 10, false, ],
 		'location' => ['char(100)', 'string', 100, true, ],
 		'maxRegistrants' => ['int', 'int', 0, true, ],

@@ -58,6 +58,7 @@ class Registration
 			$this->canAddAttendee = ! $selfEditing;
 			$this->canDeleteAttendee = ! $selfEditing;
 			}
+		$form->setAreYouSure(false);
 
 		if (! $reservation->paymentId)
 			{
@@ -171,41 +172,36 @@ class Registration
 		else
 			{
 			$paymentInfo = new \PHPFUI\FieldSet('Payment Information');
+
 			$mustPay = false;
 
 			if ($event->price)
 				{
 				$billing = new \PHPFUI\FieldSet('Billing Information');
-				$multiColumn = new \PHPFUI\MultiColumn();
 				$firstName = new \PHPFUI\Input\Text('reservationFirstName', 'First Name', $reservation->reservationFirstName);
 				$firstName->setRequired();
-				$multiColumn->add($firstName);
 				$lastName = new \PHPFUI\Input\Text('reservationLastName', 'Last Name', $reservation->reservationLastName);
 				$lastName->setRequired();
-				$multiColumn->add($lastName);
+				$billing->add(new \PHPFUI\MultiColumn($firstName, $lastName));
 
-				$billing->add($multiColumn);
-				$multiColumn = new \PHPFUI\MultiColumn();
 				$address = new \PHPFUI\Input\Text('address', 'Street Address', $reservation->address);
 				$address->setRequired();
-				$multiColumn->add($address);
 				$town = new \PHPFUI\Input\Text('town', 'Town', $reservation->town);
 				$town->setRequired();
-				$multiColumn->add($town);
-				$billing->add($multiColumn);
+				$billing->add(new \PHPFUI\MultiColumn($address, $town));
 
-				$multiColumn = new \PHPFUI\MultiColumn();
 				$state = new \PHPFUI\Input\Text('state', 'State', $reservation->state);
 				$state->setRequired();
-				$multiColumn->add($state);
 				$zip = new \PHPFUI\Input\Zip($this->page, 'zip', 'Zip', $reservation->zip);
 				$zip->setRequired();
-				$multiColumn->add($zip);
-				$multiColumn->add(new \App\UI\Display('Price', '$' . \number_format($reservation->pricePaid, 2)));
-				$billing->add($multiColumn);
-				$billing->add(new \App\UI\TelUSA($this->page, 'phone', 'Phone', $reservation->phone));
+				$price = new \App\UI\Display('Price', '$' . \number_format($reservation->pricePaid, 2));
+				$billing->add(new \PHPFUI\MultiColumn($state, $zip, $price));
+
+				$tel = new \App\UI\TelUSA($this->page, 'phone', 'Phone', $reservation->phone);
 				$email = new \PHPFUI\Input\Email('reservationemail', 'email', $reservation->reservationemail);
-				$billing->add($email);
+				$email->setRequired();
+				$billing->add(new \PHPFUI\MultiColumn($email, $tel));
+
 				$form->add($billing);
 
 				$payment = $reservation->payment;
@@ -248,11 +244,6 @@ class Registration
 							$reveal->add($fieldSet);
 							}
 						}
-					else
-						{
-						$mustPay = false;
-						$paymentInfo->add('This event is free, no payment required.');
-						}
 					}
 				else
 					{
@@ -263,6 +254,14 @@ class Registration
 						$paymentInfo->add($this->getPaymentFields($payment, $reservation->paymentId > 0));
 						}
 					}
+				}
+			else
+				{
+				$mustPay = false;
+				$paymentInfo->add('This event is free, no payment required.');
+				$paymentInfo->add(new \PHPFUI\Input\Hidden('reservationFirstName', $reservation->reservationFirstName));
+				$paymentInfo->add(new \PHPFUI\Input\Hidden('reservationLastName', $reservation->reservationLastName));
+				$paymentInfo->add(new \PHPFUI\Input\Hidden('reservationemail', $reservation->reservationemail));
 				}
 
 			$reservationPersonTable = new \App\Table\ReservationPerson();
@@ -276,10 +275,7 @@ class Registration
 
 			$personCount = \count($reservationPersonTable);
 
-			if ($personCount && \count($paymentInfo) > 1)
-				{
-				$form->add($paymentInfo);
-				}
+			$form->add($paymentInfo);
 
 			$table = new \PHPFUI\Table();
 			$table->setRecordId($this->recordId);
@@ -324,7 +320,9 @@ class Registration
 						{
 						$info = 'This will only be shown to the organizer';
 						}
-					$table->addRow(['firstName' => new \PHPFUI\Input\Text("comments[{$id}]", $event->commentTitle, $record->comments), 'email' => $info], [2]);
+					$comment = new \PHPFUI\Input\Text("comments[{$id}]", $event->commentTitle, $record->comments);
+					$comment->setRequired((bool)$event->requireComment);
+					$table->addRow(['firstName' => $comment, 'email' => $info], [2]);
 					}
 				}
 
@@ -363,7 +361,6 @@ class Registration
 				}
 
 			$buttonGroup = new \PHPFUI\ButtonGroup();
-			$buttonGroup->addButton($submit);
 
 			if ($reservation->reservationId && $this->canAddAttendee && $personCount < $event->numberReservations)
 				{
@@ -389,6 +386,10 @@ class Registration
 					$confirm->addClass('success');
 					$buttonGroup->addButton($confirm);
 					}
+				}
+			else
+				{
+				$buttonGroup->addButton($submit);
 				}
 
 			if ($reservation->reservationId)

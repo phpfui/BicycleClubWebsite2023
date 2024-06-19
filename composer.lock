@@ -1604,16 +1604,16 @@
         },
         {
             "name": "laminas/laminas-validator",
-            "version": "2.58.0",
+            "version": "2.59.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-validator.git",
-                "reference": "9d5a8cfb22713282fe6d632dcf0dee131366d743"
+                "reference": "1ea93397469ddf2d5989706b8d85ab1806b6c5e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/9d5a8cfb22713282fe6d632dcf0dee131366d743",
-                "reference": "9d5a8cfb22713282fe6d632dcf0dee131366d743",
+                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/1ea93397469ddf2d5989706b8d85ab1806b6c5e9",
+                "reference": "1ea93397469ddf2d5989706b8d85ab1806b6c5e9",
                 "shasum": ""
             },
             "require": {
@@ -1684,7 +1684,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2024-06-17T08:52:30+00:00"
+            "time": "2024-06-19T14:26:44+00:00"
         },
         {
             "name": "laravel/serializable-closure",
@@ -4906,16 +4906,16 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "7.1.2",
+            "version": "7.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "c587e0ce032898f6528ffc8374f1ebe3011b9158"
+                "reference": "ca4b8ce34f4d4f4c1485da90a4247886c4e45335"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/c587e0ce032898f6528ffc8374f1ebe3011b9158",
-                "reference": "c587e0ce032898f6528ffc8374f1ebe3011b9158",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/ca4b8ce34f4d4f4c1485da90a4247886c4e45335",
+                "reference": "ca4b8ce34f4d4f4c1485da90a4247886c4e45335",
                 "shasum": ""
             },
             "type": "component",
@@ -4959,9 +4959,9 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/7.1.2"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/7.2.0"
             },
-            "time": "2024-06-05T05:16:22+00:00"
+            "time": "2024-06-19T06:08:58+00:00"
         },
         {
             "name": "twilio/sdk",
@@ -6579,16 +6579,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.2.2",
+            "version": "11.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "3e1843a58adc9c433ee6170bdee7d615f7ccc20b"
+                "reference": "8475044fbb0af57c8daea06bcfe21e2785401f97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3e1843a58adc9c433ee6170bdee7d615f7ccc20b",
-                "reference": "3e1843a58adc9c433ee6170bdee7d615f7ccc20b",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8475044fbb0af57c8daea06bcfe21e2785401f97",
+                "reference": "8475044fbb0af57c8daea06bcfe21e2785401f97",
                 "shasum": ""
             },
             "require": {
@@ -6612,7 +6612,7 @@
                 "sebastian/comparator": "^6.0",
                 "sebastian/diff": "^6.0",
                 "sebastian/environment": "^7.0",
-                "sebastian/exporter": "^6.0",
+                "sebastian/exporter": "^6.1.2",
                 "sebastian/global-state": "^7.0",
                 "sebastian/object-enumerator": "^6.0",
                 "sebastian/type": "^5.0",
@@ -6659,7 +6659,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.2.2"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.2.3"
             },
             "funding": [
                 {
@@ -6675,7 +6675,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-15T09:14:53+00:00"
+            "time": "2024-06-19T05:31:11+00:00"
         },
         {
             "name": "react/cache",
@@ -7260,12 +7260,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "a36c08c63614a0da558615424f8b37b3216416b6"
+                "reference": "5b38ec8e0b7fdca1e7b95173a15d3cac3a482d1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/a36c08c63614a0da558615424f8b37b3216416b6",
-                "reference": "a36c08c63614a0da558615424f8b37b3216416b6",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/5b38ec8e0b7fdca1e7b95173a15d3cac3a482d1f",
+                "reference": "5b38ec8e0b7fdca1e7b95173a15d3cac3a482d1f",
                 "shasum": ""
             },
             "conflict": {
@@ -7618,7 +7618,7 @@
                 "mojo42/jirafeau": "<4.4",
                 "mongodb/mongodb": ">=1,<1.9.2",
                 "monolog/monolog": ">=1.8,<1.12",
-                "moodle/moodle": "<4.3.4",
+                "moodle/moodle": "<4.3.5|>=4.4.0.0-beta,<4.4.1",
                 "mos/cimage": "<0.7.19",
                 "movim/moxl": ">=0.8,<=0.10",
                 "movingbytes/social-network": "<=1.2.1",
@@ -7890,7 +7890,7 @@
                 "thorsten/phpmyfaq": "<3.2.2",
                 "tikiwiki/tiki-manager": "<=17.1",
                 "timber/timber": ">=0.16.6,<1.23.1|>=1.24,<1.24.1|>=2,<2.1",
-                "tinymce/tinymce": "<7",
+                "tinymce/tinymce": "<7.2",
                 "tinymighty/wiki-seo": "<1.2.2",
                 "titon/framework": "<9.9.99",
                 "tobiasbg/tablepress": "<=2.0.0.0-RC1",
@@ -8055,7 +8055,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-17T23:04:35+00:00"
+            "time": "2024-06-19T16:05:03+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -8495,16 +8495,16 @@
         },
         {
             "name": "sebastian/exporter",
-            "version": "6.0.3",
+            "version": "6.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/exporter.git",
-                "reference": "1d978d75456094ec0c67692bca1d4662d5ce9c9f"
+                "reference": "507d2333cbc4e6ea248fbda2d45ee1511e03da13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/exporter/zipball/1d978d75456094ec0c67692bca1d4662d5ce9c9f",
-                "reference": "1d978d75456094ec0c67692bca1d4662d5ce9c9f",
+                "url": "https://api.github.com/repos/sebastianbergmann/exporter/zipball/507d2333cbc4e6ea248fbda2d45ee1511e03da13",
+                "reference": "507d2333cbc4e6ea248fbda2d45ee1511e03da13",
                 "shasum": ""
             },
             "require": {
@@ -8561,7 +8561,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/exporter/issues",
                 "security": "https://github.com/sebastianbergmann/exporter/security/policy",
-                "source": "https://github.com/sebastianbergmann/exporter/tree/6.0.3"
+                "source": "https://github.com/sebastianbergmann/exporter/tree/6.1.2"
             },
             "funding": [
                 {
@@ -8569,7 +8569,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-06-17T07:48:18+00:00"
+            "time": "2024-06-18T11:19:56+00:00"
         },
         {
             "name": "sebastian/global-state",

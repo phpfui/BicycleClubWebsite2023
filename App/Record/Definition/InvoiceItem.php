@@ -18,7 +18,7 @@ namespace App\Record\Definition;
  * @property \App\Record\StoreItem $storeItem related record
  * @property ?float $tax MySQL type decimal(7,2)
  * @property ?string $title MySQL type char(100)
- * @property ?int $type MySQL type int
+ * @property int $type MySQL type int
  */
 abstract class InvoiceItem extends \PHPFUI\ORM\Record
 	{
@@ -37,7 +37,7 @@ abstract class InvoiceItem extends \PHPFUI\ORM\Record
 		'storeItemId' => ['int', 'int', 0, false, ],
 		'tax' => ['decimal(7,2)', 'float', 7, true, ],
 		'title' => ['char(100)', 'string', 100, true, ],
-		'type' => ['int', 'int', 0, true, ],
+		'type' => ['int', 'int', 0, false, 0, ],
 	];
 
 	/** @var array<string> */

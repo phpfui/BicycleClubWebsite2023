@@ -9,7 +9,7 @@ namespace App\Record\Definition;
  * @property \App\Record\RWGPS $RWGPS related record
  * @property ?int $accident MySQL type int
  * @property ?float $averagePace MySQL type float
- * @property ?int $commentsDisabled MySQL type int
+ * @property int $commentsDisabled MySQL type int
  * @property ?int $cueSheetId MySQL type int
  * @property \App\Record\CueSheet $cueSheet related record
  * @property string $dateAdded MySQL type timestamp
@@ -49,7 +49,7 @@ abstract class Ride extends \PHPFUI\ORM\Record
 		'RWGPSId' => ['int', 'int', 0, true, ],
 		'accident' => ['int', 'int', 0, true, ],
 		'averagePace' => ['float', 'float', 0, true, ],
-		'commentsDisabled' => ['int', 'int', 0, true, 0, ],
+		'commentsDisabled' => ['int', 'int', 0, false, 0, ],
 		'cueSheetId' => ['int', 'int', 0, true, ],
 		'dateAdded' => ['timestamp', 'string', 20, false, null, ],
 		'description' => ['mediumtext', 'string', 16777215, true, ],

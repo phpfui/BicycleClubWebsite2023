@@ -10,7 +10,7 @@ namespace App\Record\Definition;
  * @property ?string $blogAfter MySQL type varchar(100)
  * @property int $footerMenu MySQL type tinyint
  * @property ?int $header MySQL type tinyint(1)
- * @property ?int $hidden MySQL type tinyint(1)
+ * @property int $hidden MySQL type int
  * @property int $homePageNotification MySQL type tinyint
  * @property ?string $method MySQL type varchar(200)
  * @property ?string $name MySQL type varchar(200)
@@ -32,7 +32,7 @@ abstract class PublicPage extends \PHPFUI\ORM\Record
 		'blogAfter' => ['varchar(100)', 'string', 100, true, ],
 		'footerMenu' => ['tinyint', 'int', 0, false, 0, ],
 		'header' => ['tinyint(1)', 'int', 1, true, 0, ],
-		'hidden' => ['tinyint(1)', 'int', 1, true, 0, ],
+		'hidden' => ['int', 'int', 0, false, 0, ],
 		'homePageNotification' => ['tinyint', 'int', 0, false, 0, ],
 		'method' => ['varchar(200)', 'string', 200, true, ],
 		'name' => ['varchar(200)', 'string', 200, true, ],

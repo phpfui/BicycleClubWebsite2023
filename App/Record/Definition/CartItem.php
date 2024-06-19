@@ -18,7 +18,7 @@ namespace App\Record\Definition;
  * @property \App\Record\StoreItemDetail $storeItemDetail related record
  * @property ?int $storeItemId MySQL type int
  * @property \App\Record\StoreItem $storeItem related record
- * @property ?int $type MySQL type int
+ * @property int $type MySQL type int
  */
 abstract class CartItem extends \PHPFUI\ORM\Record
 	{
@@ -35,7 +35,7 @@ abstract class CartItem extends \PHPFUI\ORM\Record
 		'quantity' => ['int', 'int', 0, true, ],
 		'storeItemDetailId' => ['int', 'int', 0, true, ],
 		'storeItemId' => ['int', 'int', 0, true, ],
-		'type' => ['int', 'int', 0, true, ],
+		'type' => ['int', 'int', 0, false, 0, ],
 	];
 
 	/** @var array<string> */

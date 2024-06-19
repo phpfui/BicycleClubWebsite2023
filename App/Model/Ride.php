@@ -78,6 +78,7 @@ class Ride
 
 		$this->rideSignupTable->deleteOtherSignedUpRides($ride, $ride->member);
 		$this->addLeaderSignups($ride);
+
 		if ($parameters['pending'])
 			{
 			$this->emailPendingRideNotice($ride);
@@ -409,46 +410,6 @@ class Ride
 		}
 
 	/**
-	 * Send out pending ride notices
-	 *
-	 * @param \App\Record\Ride $ride to send out
-	 */
-	private function emailPendingRideNotice(\App\Record\Ride $ride) : void
-		{
-		$leader = $ride->member;
-		$title = $this->clubAbbrev . ' Rides Waiting to be Approved';
-
-		$message = new \PHPFUI\EMailButton('Approve Ride', $this->settingTable->value('homePage') . '/Rides/pending');
-
-		$view = new \App\View\Ride\Info(new \PHPFUI\Page());
-		$message .= '<p>' . $view->getRideInfoEmail($ride);
-
-		$email = new \App\Tools\EMail();
-		$email->setSubject($title);
-		$email->setFromMember($leader->toArray());
-		$email->setBody($message);
-		$email->setHtml();
-
-		$coordinator = $ride->pace->category->coordinator;
-
-		if ($coordinator->loaded())
-			{
-			$email->addToMember($coordinator->toArray());
-			}
-		else
-			{
-			$memberTable = new \App\Table\Member();
-			$memberTable->getMembersWithPermission('Ride Coordinator');
-
-			foreach ($memberTable->getRecordCursor() as $member)
-				{
-				$email->addToMember($member->toArray());
-				}
-			}
-		$email->bulkSend();
-		}
-
-	/**
 	 * Send out approved ride notice
 	 *
 	 * @param \App\Record\Ride $ride to send out
@@ -757,6 +718,46 @@ class Ride
 			}
 
 		return $parameters;
+		}
+
+	/**
+	 * Send out pending ride notices
+	 *
+	 * @param \App\Record\Ride $ride to send out
+	 */
+	private function emailPendingRideNotice(\App\Record\Ride $ride) : void
+		{
+		$leader = $ride->member;
+		$title = $this->clubAbbrev . ' Rides Waiting to be Approved';
+
+		$message = new \PHPFUI\EMailButton('Approve Ride', $this->settingTable->value('homePage') . '/Rides/pending');
+
+		$view = new \App\View\Ride\Info(new \PHPFUI\Page());
+		$message .= '<p>' . $view->getRideInfoEmail($ride);
+
+		$email = new \App\Tools\EMail();
+		$email->setSubject($title);
+		$email->setFromMember($leader->toArray());
+		$email->setBody($message);
+		$email->setHtml();
+
+		$coordinator = $ride->pace->category->coordinator;
+
+		if ($coordinator->loaded())
+			{
+			$email->addToMember($coordinator->toArray());
+			}
+		else
+			{
+			$memberTable = new \App\Table\Member();
+			$memberTable->getMembersWithPermission('Ride Coordinator');
+
+			foreach ($memberTable->getRecordCursor() as $member)
+				{
+				$email->addToMember($member->toArray());
+				}
+			}
+		$email->bulkSend();
 		}
 
 	private function getCueSheet(int $cueSheetId) : string

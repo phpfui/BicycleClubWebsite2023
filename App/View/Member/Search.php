@@ -176,7 +176,7 @@ class Search implements \Stringable
 
 		if ($dontShowPastMembers)
 			{
-			$form->add('<b>Note:</b> Members with privacy settings are not shown<br><br>');
+			$form->add('<b>Note:</b> Members with privacy settings enabled are not shown.<br><br>');
 			}
 
 		$submit = new \PHPFUI\Submit('Search');

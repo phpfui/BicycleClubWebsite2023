@@ -139,7 +139,8 @@ class Search implements \Stringable
 
 		$basic = new \PHPFUI\Container();
 		$memberPicker = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPickerNoSave('Member Name'), 'memberId');
-		$memberPicker->dontShowPrivateMembers(! $this->page->isAuthorized('Search Includes Private Members'));
+		$dontShowPastMembers = ! $this->page->isAuthorized('Search Includes Private Members');
+		$memberPicker->dontShowPrivateMembers($dontShowPastMembers);
 		$basic->add($memberPicker->getEditControl());
 		$basic->add($this->generateFields($this->fields, $parameters));
 		$tabs->addTab('Basic', $basic, true);
@@ -171,6 +172,11 @@ class Search implements \Stringable
 			{
 			$form->add('<br>');
 			$form->add(new \PHPFUI\Input\CheckBox('all', 'Include Past Members'));
+			}
+
+		if ($dontShowPastMembers)
+			{
+			$form->add('<b>Note:</b> Members with privacy settings are not shown<br><br>');
 			}
 
 		$submit = new \PHPFUI\Submit('Search');

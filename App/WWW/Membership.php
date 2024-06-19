@@ -408,6 +408,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		{
 		if ($this->page->addHeader('Club Roster'))
 			{
+			$this->page->addPageContent(new \PHPFUI\Header('Members with privacy setting enabled are not shown', 6));
 			$view = new \App\View\Member\Roster($this->page, '/Membership/roster');
 			$this->page->addPageContent($view->show($field, $select, $offset));
 			}

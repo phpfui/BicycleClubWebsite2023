@@ -18,7 +18,7 @@ class FileFolder extends \PHPFUI\ORM\Table
 	/**
 	 * @return array<int,string>
 	 */
-	public static function getFolders(int $fileFolderId) : array
+	public static function getParentFolders(int $fileFolderId) : array
 		{
 		$folders = [];
 

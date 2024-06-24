@@ -38,7 +38,7 @@ class Photo
 		$this->moveFolder = $page->isAuthorized('Move Folder');
 		}
 
-	public function clipboard(int $photoFolderId) : \PHPFUI\Container
+	public function clipboard(int $folderId) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 
@@ -49,7 +49,7 @@ class Photo
 			$form = new \PHPFUI\Form($this->page);
 			$form->setAreYouSure(false);
 			$form->setAttribute('action', '/Photo/paste');
-			$form->add(new \PHPFUI\Input\Hidden('photoFolderId', (string)$photoFolderId));
+			$form->add(new \PHPFUI\Input\Hidden('folderId', (string)$folderId));
 			$fieldSet = new \PHPFUI\FieldSet('Pasteable Items');
 			$multiSelect = new \PHPFUI\Input\MultiSelect('paste');
 			$multiSelect->selectAll();
@@ -58,8 +58,8 @@ class Photo
 				{
 				if ($photoId < 0)
 					{
-					$photoFolder = new \App\Record\PhotoFolder(0 - $photoId);
-					$name = $photoFolder->photoFolder;
+					$folder = new \App\Record\Folder(0 - $photoId);
+					$name = $folder->name;
 					$multiSelect->addOption('Folder: ' . $name, (string)$photoId);
 					}
 				else
@@ -67,7 +67,7 @@ class Photo
 					$photo = new \App\Record\Photo($photoId);
 					$name = $photo->photo ?: $photoId;
 
-					if ($photoFolderId)
+					if ($folderId)
 						{
 						$multiSelect->addOption('Photo: ' . $name, (string)$photoId);
 						}
@@ -95,21 +95,21 @@ class Photo
 	 *
 	 * @param string $url should be / terminated, folderId will be appended
 	 */
-	public function getBreadCrumbs(string $url, int $photoFolderId, int $photoId = 0) : \PHPFUI\BreadCrumbs
+	public function getBreadCrumbs(string $url, int $folderId, int $photoId = 0) : \PHPFUI\BreadCrumbs
 		{
 		$breadCrumbs = new \PHPFUI\BreadCrumbs();
 
-		$folders = \App\Table\PhotoFolder::getFolders($photoFolderId);
+		$folders = \App\Table\Folder::getParentFolders($folderId);
 
 		$breadCrumbs->addCrumb('All', '/Photo/browse');
 
-		foreach ($folders as $folderId => $name)
+		foreach ($folders as $id => $name)
 			{
 			$link = '';
 
-			if ($folderId != $photoFolderId || $photoId)
+			if ($folderId != $id || $photoId)
 				{
-				$link = $url . $folderId;
+				$link = $url . $id;
 				}
 			$breadCrumbs->addCrumb($name, $link);
 			}
@@ -569,7 +569,7 @@ JS;
 		return $form;
 		}
 
-	public function hasPermission(\App\Record\Photo | \App\Record\PhotoFolder $file) : bool
+	public function hasPermission(\App\Record\Photo | \App\Record\Folder $file) : bool
 		{
 		if ($file instanceof \App\Record\Photo)
 			{
@@ -589,7 +589,7 @@ JS;
 				}
 
 			// user must have permissions all the way up
-			$parentFolder = $file->photoFolder;
+			$parentFolder = $file->name;
 			}
 		else
 			{
@@ -611,7 +611,7 @@ JS;
 		return true;
 		}
 
-	public function listFolders(\App\Table\PhotoFolder $folders, \App\Record\PhotoFolder $parentFolder) : \PHPFUI\Table
+	public function listFolders(\App\Table\Folder $folders, \App\Record\Folder $parentFolder) : \PHPFUI\Table
 		{
 		$container = new \PHPFUI\Table();
 
@@ -675,7 +675,8 @@ JS;
 
 		$cuts = \App\Model\Session::getPhotoCuts();
 
-		$photoFolderTable = new \App\Table\PhotoFolder();
+		$folderTable = new \App\Table\Folder();
+		$folderTable->setWhere(new \PHPFUI\ORM\Condition('folderType', \App\Enum\FolderType::PHOTO));
 
 		foreach($folders->getRecordCursor() as $folder)
 			{
@@ -684,15 +685,15 @@ JS;
 				continue;
 				}
 			$row = [];
-			$row['Folder'] = new \PHPFUI\Link('/Photo/browse/' . $folder->photoFolderId, $folder->photoFolder, false);
+			$row['Folder'] = new \PHPFUI\Link('/Photo/browse/' . $folder->folderId, $folder->name, false);
 
-			if (! $photoFolderTable->folderCount($folder))
+			if (! $folderTable->folderCount($folder))
 				{
-				$row['Cut'] = new \PHPFUI\FAIcon('fas', 'trash-alt', '/Photo/deleteFolder/' . $folder->photoFolderId);
+				$row['Cut'] = new \PHPFUI\FAIcon('fas', 'trash-alt', '/Photo/deleteFolder/' . $folder->folderId);
 				}
-			elseif (! isset($cuts[0 - $folder->photoFolderId]) && $this->moveFolder)
+			elseif (! isset($cuts[0 - $folder->folderId]) && $this->moveFolder)
 				{
-				$cb = new \PHPFUI\Input\CheckBox('cutFolder[]', '', $folder->photoFolderId);
+				$cb = new \PHPFUI\Input\CheckBox('cutFolder[]', '', $folder->folderId);
 				$row['Cut'] = $cb;
 				}
 
@@ -821,15 +822,15 @@ JS;
 		return $container;
 		}
 
-	private function addEditFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\PhotoFolder $photoFolder) : void
+	private function addEditFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Folder $folder) : void
 		{
 		$submit = new \PHPFUI\Submit();
 
 		if (\App\Model\Session::checkCSRF() && $submit->submitted($_POST))
 			{
-			unset($_POST['photoFolderId']);
-			$photoFolder->setFrom($_POST);
-			$photoFolder->update();
+			unset($_POST['folderId']);
+			$folder->setFrom($_POST);
+			$folder->update();
 			$this->page->redirect();
 			}
 
@@ -838,13 +839,13 @@ JS;
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
 		$fieldSet = new \PHPFUI\FieldSet('Edit Photo Folder');
-		$hidden = new \PHPFUI\Input\Hidden('photoFolderId', (string)$photoFolder->photoFolderId);
+		$hidden = new \PHPFUI\Input\Hidden('folderId', (string)$folder->folderId);
 		$fieldSet->add($hidden);
-		$folderName = new \PHPFUI\Input\Text('photoFolder', 'Folder Name', $photoFolder->photoFolder);
+		$folderName = new \PHPFUI\Input\Text('name', 'Folder Name', $folder->name);
 		$folderName->setRequired();
 		$fieldSet->add($folderName);
 
-		$permissionGroupPicker = new \App\UI\PermissionGroupPicker($this->page, 'permissionId', 'Optional Permission Group Restriction', $photoFolder->permission);
+		$permissionGroupPicker = new \App\UI\PermissionGroupPicker($this->page, 'permissionId', 'Optional Permission Group Restriction', $folder->permission);
 		$fieldSet->add($permissionGroupPicker->getEditControl());
 
 		$form->add($fieldSet);
@@ -852,16 +853,16 @@ JS;
 		$modal->add($form);
 		}
 
-	private function addFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\PhotoFolder $parentFolder) : void
+	private function addFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Folder $parentFolder) : void
 		{
 		$permission = 'Add Photo Folder';
 		$submit = new \PHPFUI\Submit($permission);
 
 		if (\App\Model\Session::checkCSRF() && $submit->submitted($_POST))
 			{
-			$photoFolder = new \App\Record\PhotoFolder();
-			$photoFolder->setFrom($_POST);
-			$photoFolder->insert();
+			$folder = new \App\Record\Folder();
+			$folder->setFrom($_POST);
+			$folder->insert();
 			$this->page->redirect();
 			}
 
@@ -870,9 +871,9 @@ JS;
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
 		$fieldSet = new \PHPFUI\FieldSet('New Folder Name');
-		$hidden = new \PHPFUI\Input\Hidden('parentFolderId', (string)$parentFolder->photoFolderId);
+		$hidden = new \PHPFUI\Input\Hidden('parentFolderId', (string)$parentFolder->folderId);
 		$fieldSet->add($hidden);
-		$folderName = new \PHPFUI\Input\Text('photoFolder', 'New Folder Name');
+		$folderName = new \PHPFUI\Input\Text('name', 'New Folder Name');
 		$folderName->setRequired();
 		$fieldSet->add($folderName);
 
@@ -884,7 +885,7 @@ JS;
 		$modal->add($form);
 		}
 
-	private function addPhotoModal(\PHPFUI\HTML5Element $modalLink, \App\Record\PhotoFolder $photoFolder) : void
+	private function addPhotoModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Folder $folder) : void
 		{
 		$submit = new \PHPFUI\Submit('Add Photo');
 
@@ -899,7 +900,7 @@ JS;
 
 			$photo = new \App\Record\Photo();
 			$photo->setFrom([
-				'photoFolderId' => $photoFolder->photoFolderId,
+				'folderId' => $folder->folderId,
 				'photo' => $_POST['photo'] ?? '',
 				'memberId' => $this->signedInMember,
 				'public' => $_POST['public'] ?? 0,

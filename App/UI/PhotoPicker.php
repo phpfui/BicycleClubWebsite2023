@@ -4,14 +4,14 @@ namespace App\UI;
 
 class PhotoPicker
 	{
-	private readonly \App\Table\PhotoFolder $photoFolderTable;
+	private readonly \App\Table\Folder $folderTable;
 
 	private readonly \App\Table\Photo $photoTable;
 
 	public function __construct(private readonly \PHPFUI\Page $page, private readonly string $fieldName, private readonly string $label = '', private readonly \App\Record\Photo $initial = new \App\Record\Photo())
 		{
 		$this->photoTable = new \App\Table\Photo();
-		$this->photoFolderTable = new \App\Table\PhotoFolder();
+		$this->folderTable = new \App\Table\Folder();
 		}
 
 	/**
@@ -46,13 +46,15 @@ class PhotoPicker
 
 			foreach ($names as $name)
 				{
-				$condition->or(new \PHPFUI\ORM\Condition('photoFolder', "%{$name}%", new \PHPFUI\ORM\Operator\Like()));
+				$condition->or(new \PHPFUI\ORM\Condition('name', "%{$name}%", new \PHPFUI\ORM\Operator\Like()));
 				}
-			$this->photoFolderTable->setWhere($condition);
+			$folderTypeCondition = new \PHPFUI\ORM\Condition('folderType', \App\Enum\FolderType::PHOTO);
+			$folderTypeCondition->and($condition);
+			$this->folderTable->setWhere($folderTypeCondition);
 
-			foreach ($this->photoFolderTable->getRecordCursor() as $folder)
+			foreach ($this->folderTable->getRecordCursor() as $folder)
 				{
-				foreach ($folder->PhotoChildren as $photo)
+				foreach ($folder->photoChildren as $photo)
 					{
 					$returnValue[] = ['value' => \str_replace(['&quot;', '"'], '', $photo->photo), 'data' => $photo->photoId];
 					}

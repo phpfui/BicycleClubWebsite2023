@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Record;
+namespace App\DB\Migration;
 
 /**
  * @inheritDoc
@@ -8,7 +8,7 @@ namespace App\Record;
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\Photo> $PhotoChildren
  * @property \App\Record\PhotoFolder $parentFolder
  */
-class PhotoFolder extends \App\Record\Definition\PhotoFolder
+class PhotoFolder extends \App\DB\Migration\Definition\PhotoFolder
 	{
 	/** @var array<string, array<string>> */
 	 protected static array $virtualFields = [

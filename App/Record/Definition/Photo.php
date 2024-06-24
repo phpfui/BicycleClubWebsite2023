@@ -9,8 +9,8 @@ namespace App\Record\Definition;
  * @property ?int $memberId MySQL type int
  * @property \App\Record\Member $member related record
  * @property string $photo MySQL type varchar(255)
- * @property int $photoFolderId MySQL type int
- * @property \App\Record\PhotoFolder $photoFolder related record
+ * @property int $folderId MySQL type int
+ * @property \App\Record\Folder $folder related record
  * @property int $photoId MySQL type int
  * @property int $public MySQL type int
  * @property ?string $taken MySQL type datetime
@@ -27,7 +27,7 @@ abstract class Photo extends \PHPFUI\ORM\Record
 		'extension' => ['varchar(10)', 'string', 10, false, '', ],
 		'memberId' => ['int', 'int', 0, true, ],
 		'photo' => ['varchar(255)', 'string', 255, false, '', ],
-		'photoFolderId' => ['int', 'int', 0, false, ],
+		'folderId' => ['int', 'int', 0, false, ],
 		'photoId' => ['int', 'int', 0, false, ],
 		'public' => ['int', 'int', 0, false, 0, ],
 		'taken' => ['datetime', 'string', 20, true, ],

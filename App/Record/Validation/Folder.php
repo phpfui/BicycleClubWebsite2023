@@ -2,15 +2,15 @@
 
 namespace App\Record\Validation;
 
-class PhotoFolder extends \PHPFUI\ORM\Validator
+class Folder extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, array<string>> */
 	public static array $validators = [
 		'parentFolderId' => ['integer'],
-		'photoFolder' => ['required', 'maxlength'],
+		'name' => ['required', 'maxlength'],
 	];
 
-	public function __construct(\App\Record\PhotoFolder $record)
+	public function __construct(\App\Record\Folder $record)
 		{
 		parent::__construct($record);
 		}

@@ -9,7 +9,7 @@ class Photo extends \PHPFUI\ORM\Validator
 		'extension' => ['required', 'maxlength'],
 		'memberId' => ['integer'],
 		'photo' => ['required', 'maxlength'],
-		'photoFolderId' => ['required', 'integer'],
+		'folderId' => ['required', 'integer'],
 		'public' => ['required', 'integer'],
 		'taken' => ['datetime'],
 		'thumbnail' => ['required', 'integer'],

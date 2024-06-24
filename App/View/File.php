@@ -134,7 +134,7 @@ class File
 		{
 		$breadCrumbs = new \PHPFUI\BreadCrumbs();
 
-		$folders = \App\Table\FileFolder::getFolders($fileFolderId);
+		$folders = \App\Table\FileFolder::getParentFolders($fileFolderId);
 
 		$breadCrumbs->addCrumb('All', '/File/browse');
 

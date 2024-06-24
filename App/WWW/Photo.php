@@ -4,7 +4,7 @@ namespace App\WWW;
 
 class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
-	private readonly \App\Table\PhotoFolder $folderTable;
+	private readonly \App\Table\Folder $folderTable;
 
 	private readonly \App\Table\PhotoTag $photoTagTable;
 
@@ -17,34 +17,34 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		parent::__construct($controller);
 		$this->table = new \App\Table\Photo();
 		$this->photoTagTable = new \App\Table\PhotoTag();
-		$this->folderTable = new \App\Table\PhotoFolder();
+		$this->folderTable = new \App\Table\Folder();
 		$this->view = new \App\View\Photo($this->page);
 		}
 
-	public function browse(\App\Record\PhotoFolder $photoFolder = new \App\Record\PhotoFolder()) : void
+	public function browse(\App\Record\Folder $folder = new \App\Record\Folder()) : void
 		{
 		$this->page->turnOffBanner();
 
-		if (! $this->view->hasPermission($photoFolder))
+		if (! $this->view->hasPermission($folder))
 			{
 			$this->page->addPageContent(new \PHPFUI\SubHeader('Folder Not Found'));
 			}
 		elseif ($this->page->addHeader('Browse Photos'))
 			{
-			$photoFolder->photoFolderId ??= 0;
+			$folder->folderId ??= 0;
 
-			$this->page->addPageContent($this->view->getBreadCrumbs('/Photo/browse/', $photoFolder->photoFolderId));
+			$this->page->addPageContent($this->view->getBreadCrumbs('/Photo/browse/', $folder->folderId));
 
-			$this->folderTable->setWhere(new \PHPFUI\ORM\Condition('parentFolderId', $photoFolder->photoFolderId))->setOrderBy('photoFolder');
-			$this->page->addPageContent($this->view->clipboard($photoFolder->photoFolderId));
+			$this->folderTable->setWhere(new \PHPFUI\ORM\Condition('parentFolderId', $folder->folderId))->setOrderBy('name');
+			$this->page->addPageContent($this->view->clipboard($folder->folderId));
 			$form = new \PHPFUI\Form($this->page);
 			$form->setAreYouSure(false);
 			$form->setAttribute('action', '/Photo/cut');
-			$form->add($this->view->listFolders($this->folderTable, $photoFolder));
+			$form->add($this->view->listFolders($this->folderTable, $folder));
 
-			if ($photoFolder->loaded())
+			if ($folder->loaded())
 				{
-				$this->table->setWhere(new \PHPFUI\ORM\Condition('photoFolderId', $photoFolder->photoFolderId));
+				$this->table->setWhere(new \PHPFUI\ORM\Condition('folderId', $folder->folderId));
 				$form->add($this->view->listPhotos($this->table, true));
 				}
 			$this->page->addPageContent($form);
@@ -69,13 +69,13 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					}
 				}
 
-			foreach ($_POST['cutFolder'] ?? [] as $photoFolderId)
+			foreach ($_POST['cutFolder'] ?? [] as $folderId)
 				{
-				$photoFolder = new \App\Record\PhotoFolder($photoFolderId);
+				$folder = new \App\Record\Folder($folderId);
 
-				if (! $photoFolder->empty() && $this->page->isAuthorized('Move Folder'))
+				if (! $folder->empty() && $this->page->isAuthorized('Move Folder'))
 					{
-					$photos[] = 0 - $photoFolderId;
+					$photos[] = 0 - $folderId;
 					}
 				}
 
@@ -106,7 +106,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if (! $photo->empty() && ($photo->memberId == \App\Model\Session::signedInMemberId() || $this->page->isAuthorized('Delete Photo')))
 			{
-			$url = '/Photo/browse/' . $photo->photoFolderId;
+			$url = '/Photo/browse/' . $photo->folderId;
 			$photo->delete();
 			\App\Model\Session::setFlash('success', 'Photo deleted.');
 			$this->page->redirect($url);
@@ -117,21 +117,21 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function deleteFolder(\App\Record\PhotoFolder $photoFolder = new \App\Record\PhotoFolder()) : void
+	public function deleteFolder(\App\Record\Folder $folder = new \App\Record\Folder()) : void
 		{
 		$url = '';
 
-		if (! $photoFolder->empty() && $this->page->isAuthorized('Delete Photo Folder'))
+		if (! $folder->empty() && $this->page->isAuthorized('Delete Photo Folder'))
 			{
-			if (! $this->folderTable->folderCount($photoFolder))
+			if (! $this->folderTable->folderCount($folder))
 				{
-				\App\Model\Session::setFlash('success', "Folder {$photoFolder->photoFolder} deleted.");
-				$url = '/Photo/browse/' . $photoFolder->parentFolderId;
-				$photoFolder->delete();
+				\App\Model\Session::setFlash('success', "Folder {$folder->name} deleted.");
+				$url = '/Photo/browse/' . $folder->parentFolderId;
+				$folder->delete();
 				}
 			else
 				{
-				\App\Model\Session::setFlash('alert', "Folder {$photoFolder->photoFolder} is not empty.");
+				\App\Model\Session::setFlash('alert', "Folder {$folder->name} is not empty.");
 				}
 			}
 		else
@@ -213,7 +213,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	public function paste() : void
 		{
 		$url = $_SERVER['HTTP_REFERER'] ?? '';
-		$photoFolderId = (int)($_POST['photoFolderId'] ?? 0);
+		$folderId = (int)($_POST['folderId'] ?? 0);
 
 		if ($url && \App\Model\Session::checkCSRF())
 			{
@@ -239,26 +239,26 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					if ($photoId > 0)
 						{
 						$photo = new \App\Record\Photo($photoId);
-						$photo->photoFolderId = $photoFolderId;
+						$photo->folderId = $folderId;
 						$photo->update();
 						}
 					else
 						{
-						$photoFolder = new \App\Record\PhotoFolder(0 - $photoId);
-						$originalPhotoFolderId = $photoFolder->photoFolderId;
-						$photoFolder->parentFolderId = $photoFolderId;
-						$photoFolder->update();
+						$folder = new \App\Record\Folder(0 - $photoId);
+						$originalfolderId = $folder->folderId;
+						$folder->parentFolderId = $folderId;
+						$folder->update();
 
 						// loop through folders till we find root, if we find ourselves, then reset us to be parent of root.
-						while ($photoFolder->parentFolderId)
+						while ($folder->parentFolderId)
 							{
-							if ($originalPhotoFolderId == $photoFolder->parentFolderId)
+							if ($originalfolderId == $folder->parentFolderId)
 								{
 								// infinite loop, set parent to root
-								$photoFolder->parentFolderId = 0;
-								$photoFolder->update();
+								$folder->parentFolderId = 0;
+								$folder->update();
 								}
-							$photoFolder = new \App\Record\PhotoFolder($photoFolder->parentFolderId);
+							$folder = new \App\Record\Folder($folder->parentFolderId);
 							}
 						}
 					}
@@ -319,7 +319,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('View Photo'))
 			{
-			$this->page->addPageContent($this->view->getBreadCrumbs('/Photo/browse/', $photo->photoFolderId, $photo->photoId));
+			$this->page->addPageContent($this->view->getBreadCrumbs('/Photo/browse/', $photo->folderId, $photo->photoId));
 			$this->page->addPageContent($this->view->getImage($photo));
 			$this->page->addPageContent($this->view->getInfo($photo));
 

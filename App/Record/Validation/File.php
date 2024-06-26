@@ -8,7 +8,7 @@ class File extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'extension' => ['required', 'maxlength'],
 		'file' => ['required', 'maxlength'],
-		'fileFolderId' => ['required', 'integer'],
+		'folderId' => ['required', 'integer'],
 		'fileName' => ['required', 'maxlength'],
 		'memberId' => ['integer'],
 		'public' => ['required', 'integer'],

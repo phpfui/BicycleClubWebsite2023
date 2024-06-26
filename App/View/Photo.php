@@ -2,7 +2,7 @@
 
 namespace App\View;
 
-class Photo
+class Photo extends \App\View\Folder
 	{
 	/**
 	 * @var array<int,int>
@@ -65,7 +65,7 @@ class Photo
 				else
 					{
 					$photo = new \App\Record\Photo($photoId);
-					$name = $photo->photo ?: $photoId;
+					$name = $photo->description ?: $photoId;
 
 					if ($folderId)
 						{
@@ -88,39 +88,6 @@ class Photo
 			}
 
 		return $container;
-		}
-
-	/**
-	 * Get standard folder breadcrumbs
-	 *
-	 * @param string $url should be / terminated, folderId will be appended
-	 */
-	public function getBreadCrumbs(string $url, int $folderId, int $photoId = 0) : \PHPFUI\BreadCrumbs
-		{
-		$breadCrumbs = new \PHPFUI\BreadCrumbs();
-
-		$folders = \App\Table\Folder::getParentFolders($folderId);
-
-		$breadCrumbs->addCrumb('All', '/Photo/browse');
-
-		foreach ($folders as $id => $name)
-			{
-			$link = '';
-
-			if ($folderId != $id || $photoId)
-				{
-				$link = $url . $id;
-				}
-			$breadCrumbs->addCrumb($name, $link);
-			}
-
-		if ($photoId)
-			{
-			$photo = new \App\Record\Photo($photoId);
-			$breadCrumbs->addCrumb($photo->photo);
-			}
-
-		return $breadCrumbs;
 		}
 
 	public function getComments(\App\Record\Photo $photo) : \PHPFUI\Container
@@ -231,7 +198,7 @@ class Photo
 
 			if ($form->isMyCallback())
 				{
-				$photo->photo = $_POST['photo'];
+				$photo->description = $_POST['description'];
 				$photo->public = (int)$_POST['public'];
 				$photo->update();
 				$this->page->setResponse('Saved');
@@ -242,7 +209,7 @@ class Photo
 			$gridX = new \PHPFUI\GridX();
 			$gridX->addClass('align-middle');
 			$cell = new \PHPFUI\Cell(10, 11);
-			$description = new \PHPFUI\Input\Text('photo', 'Photo Caption', $photo->photo);
+			$description = new \PHPFUI\Input\Text('description', 'Photo Caption', $photo->description);
 			$cell->add($description);
 			$gridX->add($cell);
 			$buttonCell = new \PHPFUI\Cell(2, 1);
@@ -423,7 +390,7 @@ class Photo
 		$form->setAttribute('method', 'get');
 
 		$searchFields = [
-			'photo' => 'Caption',
+			'description' => 'Caption',
 			'photoTag' => 'Tag',
 			'photoComment' => 'Comment',
 		];
@@ -589,7 +556,7 @@ JS;
 				}
 
 			// user must have permissions all the way up
-			$parentFolder = $file->name;
+			$parentFolder = $file->description;
 			}
 		else
 			{
@@ -744,16 +711,16 @@ JS;
 		$view->addCustomColumn('uploaded', static fn (array $photo) => \date('Y-m-d', \strtotime((string)$photo['uploaded'])));
 		$view->addCustomColumn('taken', static fn (array $photo) => $photo['taken'] ? \date('D M j, Y, g:i a', \strtotime((string)$photo['taken'])) : '');
 		$view->addCustomColumn(
-			'photo',
+			'description',
 			static function(array $photo)
 			{
-			$name = empty($photo['photo']) ? $photo['photoId'] : $photo['photo'];
+			$name = empty($photo['description']) ? $photo['photoId'] : $photo['description'];
 
 			return new \PHPFUI\Link('/Photo/view/' . $photo['photoId'], $name, false);
 			}
 		);
 
-		$headers = ['photo', 'taken', 'uploaded'];
+		$headers = ['description' => 'Caption', 'taken', 'uploaded'];
 		$normalHeaders = [];
 
 		if ($allowCut)
@@ -901,7 +868,7 @@ JS;
 			$photo = new \App\Record\Photo();
 			$photo->setFrom([
 				'folderId' => $folder->folderId,
-				'photo' => $_POST['photo'] ?? '',
+				'description' => $_POST['description'] ?? '',
 				'memberId' => $this->signedInMember,
 				'public' => $_POST['public'] ?? 0,
 			]);
@@ -912,9 +879,9 @@ JS;
 				{
 				$photo->extension = $this->photoFiles->getExtension();
 
-				if (empty($photo->photo))
+				if (empty($photo->description))
 					{
-					$photo->photo = \substr($this->photoFiles->getUploadName(), 0, \strpos($this->photoFiles->getUploadName(), '.'));
+					$photo->description = \substr($this->photoFiles->getUploadName(), 0, \strpos($this->photoFiles->getUploadName(), '.'));
 					}
 				$info = $this->photoFiles->getInformation($photoId, $photo->extension);
 
@@ -943,7 +910,7 @@ JS;
 		$publicField = new \PHPFUI\Input\CheckBoxBoolean('public', 'Allow Public Views');
 		$publicField->setToolTip('If checked, this photo can be accessed by anyone with the correct link');
 		$fieldSet->add($publicField);
-		$caption = new \PHPFUI\Input\Text('photo', 'Photo Caption');
+		$caption = new \PHPFUI\Input\Text('description', 'Photo Caption');
 		$caption->setToolTip('This caption will also be shown in the folder list view.');
 		$fieldSet->add($caption);
 		$file = new \PHPFUI\Input\File($this->page, 'file', 'Photo To Add');

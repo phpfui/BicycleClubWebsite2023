@@ -18,6 +18,7 @@ class Migration_47 extends \PHPFUI\ORM\Migration
 		$this->dropColumn('photoFolder', 'folderType');
 		$this->alterColumn('photoFolder', 'name', "varchar(255) NOT NULL DEFAULT ''", 'photoFolder');
 		$this->alterColumn('photo', 'folderId', 'int not null', 'photoFolderId');
+		$this->alterColumn('photo', 'description', 'varchar(255)', 'photo');
 		$this->executeAlters();
 		$this->addIndex('photoFolder', 'photoFolderId');
 
@@ -33,6 +34,7 @@ class Migration_47 extends \PHPFUI\ORM\Migration
 		$this->addColumn('folder', 'folderType', 'int not null default "0"');
 		$this->alterColumn('folder', 'photoFolder', "varchar(255) NOT NULL DEFAULT ''", 'name');
 		$this->alterColumn('photo', 'photoFolderId', 'int not null', 'folderId');
+		$this->alterColumn('photo', 'photo', 'varchar(255)', 'description');
 		$this->executeAlters();
 		$this->addIndex('folder', 'folderId');
 

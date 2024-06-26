@@ -66,7 +66,7 @@ class PhotoPicker
 
 	public function getEditControl() : \PHPFUI\Input\AutoComplete
 		{
-		$value = $this->initial->photo;
+		$value = $this->initial->description;
 		$control = new \PHPFUI\Input\AutoComplete($this->page, $this->callback(...), 'text', $this->fieldName, $this->label, $value);
 		$hidden = $control->getHiddenField();
 		$hidden->setValue((string)($this->initial->photoId ?? ''));

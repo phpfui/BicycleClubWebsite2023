@@ -4,7 +4,7 @@ namespace App\WWW;
 
 class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
-	private readonly \App\Table\FileFolder $folderTable;
+	private readonly \App\Table\Folder $folderTable;
 
 	private readonly \App\Table\File $table;
 
@@ -14,35 +14,37 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		parent::__construct($controller);
 		$this->table = new \App\Table\File();
-		$this->folderTable = new \App\Table\FileFolder();
+		$this->folderTable = new \App\Table\Folder();
 		$this->view = new \App\View\File($this->page);
 		}
 
-	public function browse(\App\Record\FileFolder $fileFolder = new \App\Record\FileFolder()) : void
+	public function browse(\App\Record\Folder $folder = new \App\Record\Folder()) : void
 		{
 		$this->page->turnOffBanner();
 
-		if (! $this->view->hasPermission($fileFolder))
+		if (! $this->view->hasPermission($folder) || ($folder->loaded() && \App\Enum\FolderType::FILE != $folder->folderType))
 			{
 			$this->page->addPageContent(new \PHPFUI\SubHeader('Folder Not Found'));
 			}
 		elseif ($this->page->addHeader('Browse Files'))
 			{
-			$fileFolder->fileFolderId ??= 0;
+			$folder->folderId ??= 0;
 
-			$this->page->addPageContent($this->view->getBreadCrumbs('/File/browse/', $fileFolder->fileFolderId));
+			$this->page->addPageContent($this->view->getBreadCrumbs('/File/browse', $folder));
 
-			$this->folderTable->setWhere(new \PHPFUI\ORM\Condition('parentFolderId', $fileFolder->fileFolderId))->addOrderBy('fileFolder');
-			$this->page->addPageContent($this->view->clipboard($fileFolder->fileFolderId));
+			$condition = new \PHPFUI\ORM\Condition('folderType', \App\Enum\FolderType::FILE->value);
+			$condition->and('parentFolderId', (int)$folder->folderId);
+			$this->folderTable->setWhere($condition)->addOrderBy('name');
+			$this->page->addPageContent($this->view->clipboard($folder->folderId));
 			$form = new \PHPFUI\Form($this->page);
 			$form->setAreYouSure(false);
 			$form->setAttribute('action', '/File/cut');
-			$form->add($this->view->listFolders($this->folderTable, $fileFolder));
+			$form->add($this->view->listFolders($this->folderTable, $folder));
 
-			if ($fileFolder->loaded())
+			if ($folder->loaded())
 				{
-				$this->table->setWhere(new \PHPFUI\ORM\Condition('fileFolderId', $fileFolder->fileFolderId));
-				$form->add($this->view->listFiles($this->table, true, $fileFolder->fileFolderId));
+				$this->table->setWhere(new \PHPFUI\ORM\Condition('folderId', $folder->folderId));
+				$form->add($this->view->listFiles($this->table, true, $folder->folderId));
 				}
 			$this->page->addPageContent($form);
 			}
@@ -66,13 +68,13 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					}
 				}
 
-			foreach ($_POST['cutFolder'] ?? [] as $fileFolderId)
+			foreach ($_POST['cutFolder'] ?? [] as $folderId)
 				{
-				$fileFolder = new \App\Record\FileFolder($fileFolderId);
+				$folder = new \App\Record\Folder($folderId);
 
-				if (! $fileFolder->empty() && $this->page->isAuthorized('Move Folder'))
+				if (! $folder->empty() && $this->page->isAuthorized('Move Folder'))
 					{
-					$files[] = 0 - $fileFolderId;
+					$files[] = 0 - $folderId;
 					}
 				}
 
@@ -98,7 +100,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if (! $file->empty() && ($file->memberId == \App\Model\Session::signedInMemberId() || $this->page->isAuthorized('Delete File')))
 			{
-			$url = '/File/browse/' . $file->fileFolderId;
+			$url = '/File/browse/' . $file->folderId;
 			$file->delete();
 			\App\Model\Session::setFlash('success', 'File deleted.');
 			$this->page->redirect($url);
@@ -109,21 +111,21 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function deleteFolder(\App\Record\FileFolder $fileFolder = new \App\Record\FileFolder()) : void
+	public function deleteFolder(\App\Record\Folder $folder = new \App\Record\Folder()) : void
 		{
 		$url = '';
 
-		if (! $fileFolder->empty() && $this->page->isAuthorized('Delete File Folder'))
+		if (! $folder->empty() && $this->page->isAuthorized('Delete File Folder'))
 			{
-			if (! $this->folderTable->folderCount($fileFolder))
+			if (! $this->folderTable->folderCount($folder))
 				{
-				\App\Model\Session::setFlash('success', "Folder {$fileFolder->fileFolder} deleted.");
-				$url = '/File/browse/' . $fileFolder->parentFolderId;
-				$fileFolder->delete();
+				\App\Model\Session::setFlash('success', "Folder {$folder->name} deleted.");
+				$url = '/File/browse/' . $folder->parentFolderId;
+				$folder->delete();
 				}
 			else
 				{
-				\App\Model\Session::setFlash('alert', "Folder {$fileFolder->fileFolder} is not empty.");
+				\App\Model\Session::setFlash('alert', "Folder {$folder->name} is not empty.");
 				}
 			}
 		else
@@ -206,7 +208,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	public function paste() : void
 		{
 		$url = $_SERVER['HTTP_REFERER'] ?? '';
-		$fileFolderId = (int)($_POST['fileFolderId'] ?? 0);
+		$folderId = (int)($_POST['folderId'] ?? 0);
 
 		if ($url && \App\Model\Session::checkCSRF())
 			{
@@ -232,26 +234,26 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					if ($fileId > 0)
 						{
 						$file = new \App\Record\File($fileId);
-						$file->fileFolderId = $fileFolderId;
+						$file->folderId = $folderId;
 						$file->update();
 						}
 					else
 						{
-						$fileFolder = new \App\Record\FileFolder(0 - $fileId);
-						$originalFileFolderId = $fileFolder->fileFolderId;
-						$fileFolder->parentFolderId = $fileFolderId;
-						$fileFolder->update();
+						$folder = new \App\Record\Folder(0 - $fileId);
+						$originalfolderId = $folder->folderId;
+						$folder->parentFolderId = $folderId;
+						$folder->update();
 
 						// loop through folders till we find root, if we find ourselves, then reset us to be parent of root.
-						while ($fileFolder->parentFolderId)
+						while ($folder->parentFolderId)
 							{
-							if ($originalFileFolderId == $fileFolder->parentFolderId)
+							if ($originalfolderId == $folder->parentFolderId)
 								{
 								// infinite loop, set parent to root
-								$fileFolder->parentFolderId = 0;
-								$fileFolder->update();
+								$folder->parentFolderId = 0;
+								$folder->update();
 								}
-							$fileFolder = $fileFolder->parentFolder;
+							$folder = $folder->parentFolder;
 							}
 						}
 					}

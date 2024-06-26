@@ -10,7 +10,7 @@ class FileFolder extends \PHPFUI\ORM\Validator
 		'parentFolderId' => ['integer'],
 	];
 
-	public function __construct(\App\Record\FileFolder $record)
+	public function __construct(\App\Record\Folder $record)
 		{
 		parent::__construct($record);
 		}

@@ -33,7 +33,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			{
 			$folder->folderId ??= 0;
 
-			$this->page->addPageContent($this->view->getBreadCrumbs('/Photo/browse/', $folder->folderId));
+			$this->page->addPageContent($this->view->getBreadCrumbs('/Photo/browse', $folder));
 
 			$this->folderTable->setWhere(new \PHPFUI\ORM\Condition('parentFolderId', $folder->folderId))->setOrderBy('name');
 			$this->page->addPageContent($this->view->clipboard($folder->folderId));
@@ -319,7 +319,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('View Photo'))
 			{
-			$this->page->addPageContent($this->view->getBreadCrumbs('/Photo/browse/', $photo->folderId, $photo->photoId));
+			$this->page->addPageContent($this->view->getBreadCrumbs('/Photo/browse', $photo->folder, $photo));
 			$this->page->addPageContent($this->view->getImage($photo));
 			$this->page->addPageContent($this->view->getInfo($photo));
 

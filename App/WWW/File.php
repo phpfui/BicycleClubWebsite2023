@@ -35,7 +35,11 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$condition = new \PHPFUI\ORM\Condition('folderType', \App\Enum\FolderType::FILE->value);
 			$condition->and('parentFolderId', (int)$folder->folderId);
 			$this->folderTable->setWhere($condition)->addOrderBy('name');
-			$this->page->addPageContent($this->view->clipboard($folder->folderId));
+			$this->page->addPageContent($this->view->clipboard(
+				$folder	/**
+	 * @return array<int,int>
+	 */
+			));
 			$form = new \PHPFUI\Form($this->page);
 			$form->setAreYouSure(false);
 			$form->setAttribute('action', '/File/cut');
@@ -269,6 +273,11 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		if ($this->page->addHeader('Find Files'))
 			{
 			$showSearch = true;
+			$searchFields = [
+				'description' => 'Description',
+				'fileName' => 'File Name',
+				'extension' => 'Extension',
+			];
 
 			// need to check if in permissioned folder
 			if (($_GET['submit'] ?? '') == 'Search')
@@ -276,12 +285,12 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$showSearch = false;
 				$this->table->search($_GET);
 				}
-			$this->page->addPageContent($this->view->getSearchButton($this->table, $_GET, $showSearch));
+			$this->page->addPageContent($this->view->getSearchButton($this->table->count(), $searchFields, $_GET, $showSearch));
 
 			if (! $showSearch)
 				{
 				$this->page->addPageContent($this->view->listFiles($this->table));
-				$this->page->addPageContent($this->view->getSearchButton($this->table, $_GET, $showSearch));
+				$this->page->addPageContent($this->view->getSearchButton($this->table->count(), $searchFields, $_GET, $showSearch));
 				}
 			}
 		}

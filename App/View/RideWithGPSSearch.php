@@ -113,6 +113,9 @@ class RideWithGPSSearch implements \Stringable
 			}
 
 		$fieldSet->add(new \PHPFUI\MultiColumn(new \PHPFUI\Input\Text('town', 'Starting Town', $parameters['town']), new \PHPFUI\Input\CheckBoxBoolean('club', 'Club Routes Only', $parameters['club'])));
+		$startLocation = new \App\View\StartLocation($this->page);
+		$fieldSet->add($startLocation->getEditControl($parameters['startLocationId']));
+		$fieldSet->add(new \PHPFUI\Input\Text('title', 'Title includes', $parameters['title']));
 		$fieldSet->add(new \PHPFUI\Input\Text('title', 'Title includes', $parameters['title']));
 		$fieldSet->add(new \PHPFUI\Input\Text('description', 'Description includes', $parameters['description']));
 		$fieldSet->add(new \PHPFUI\Input\Text('csv', 'Road Name', $parameters['csv']));
@@ -154,6 +157,7 @@ class RideWithGPSSearch implements \Stringable
 			$searchFields['feetPerMile_min'] = 1;
 			$searchFields['feetPerMile_max'] = 100;
 			}
+		$searchFields['startLocationId'] = 0;
 		$searchFields['club'] = 0;
 		$searchFields['town'] = '';
 		$searchFields['title'] = '';
@@ -215,6 +219,11 @@ class RideWithGPSSearch implements \Stringable
 		if (! empty($parameters['title']))
 			{
 			$condition->and('RWGPS.title', '%' . $parameters['title'] . '%', new \PHPFUI\ORM\Operator\Like());
+			}
+
+		if (! empty($parameters['startLocationId']))
+			{
+			$condition->and('RWGPS.startLocationId', $parameters['startLocationId']);
 			}
 
 		if (! empty($parameters['description']))

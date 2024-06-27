@@ -71,6 +71,14 @@ class Session extends \PHPFUI\Session
 		return $_SESSION['customerNumber'] ?? 0;
 		}
 
+	/**
+	 * @return array<int,int>
+	 */
+	public static function getCuts(string $type) : array
+		{
+		return $_SESSION[$type]['cut'] ?? [];
+		}
+
 	public static function getDebugging(int $flags = 0) : int
 		{
 		$debug = $_SESSION['debugging'] ?? 0;
@@ -86,25 +94,9 @@ class Session extends \PHPFUI\Session
 	/**
 	 * @return array<int,int>
 	 */
-	public static function getFileCuts() : array
-		{
-		return $_SESSION['files']['cut'] ?? [];
-		}
-
-	/**
-	 * @return array<int,int>
-	 */
 	public static function getPhotoAlbum() : array
 		{
 		return $_SESSION['photos']['album'] ?? [];
-		}
-
-	/**
-	 * @return array<int,int>
-	 */
-	public static function getPhotoCuts() : array
-		{
-		return $_SESSION['photos']['cut'] ?? [];
 		}
 
 	/**

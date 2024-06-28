@@ -335,9 +335,6 @@ class Invoice
 					continue;
 					}
 
-				$tax = $taxCalculator->compute($cartItem);
-				$invoice->totalTax += $tax;
-
 				$type = \App\Enum\Store\Type::from((int)$cartItem['type']);
 
 				switch ($type)
@@ -383,6 +380,23 @@ class Invoice
 							$invoiceItem->shipping = (float)$storeItem->shipping;
 							$invoiceItem->quantity = (int)$cartItem['quantity'];
 							$invoiceItem->type = $type;
+
+							$volunteerPoints = 0.0;
+
+							if ($storeItem->payByPoints && $pointsUsed > 0.0)
+								{
+								$grossPrice = $invoiceItem->price * $invoiceItem->quantity;
+								$volunteerPoints = \min($pointsUsed, $grossPrice);
+								$pointsUsed -= $grossPrice;
+
+								if ($pointsUsed < 0.0)
+									{
+									$pointsUsed = 0.0;
+									}
+								}
+
+							$tax = $taxCalculator->compute($cartItem, $volunteerPoints);
+							$invoice->totalTax += $tax;
 							$invoiceItem->tax = $tax;
 
 							$invoiceItem->insertOrUpdate();
@@ -414,6 +428,10 @@ class Invoice
 						$invoiceItem->shipping = 0.0;
 						$invoiceItem->quantity = 1;
 						$invoiceItem->type = $type;
+
+						$tax = $taxCalculator->compute($cartItem, 0.0);
+						$invoice->totalTax += $tax;
+
 						$invoiceItem->tax = $tax;
 						$invoiceItem->insert();
 						$this->paypalType = 'General_Admission';

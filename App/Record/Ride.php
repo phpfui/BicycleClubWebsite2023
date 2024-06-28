@@ -55,6 +55,8 @@ class Ride extends \App\Record\Definition\Ride
 			$this->mileage = \str_replace('.0', '', \number_format((float)$this->mileage, 1));
 			}
 
+		$this->elevation = (int)$this->elevation;
+
 		return $this;
 		}
 	}

@@ -4,8 +4,25 @@ namespace App\View\Finance;
 
 class Tax
 	{
+	private \App\Record\CartItem $cartItem;
+
+	private \App\Record\Member $member;
+
+	private \App\Record\Membership $membership;
+
+	private \App\Record\StoreItem $storeItem;
+
 	public function __construct(private readonly \App\View\Page $page)
 		{
+		$this->member = \App\Model\Session::signedInMemberRecord();
+		$this->membership = $this->member->membership;
+		$cartItemTable = new \App\Table\CartItem();
+		$cartItemTable->addJoin('storeItem');
+		$condition = new \PHPFUI\ORM\Condition('memberId', $this->member->memberId);
+		$condition->and('taxable', 1);
+		$cartItemTable->setWhere($condition);
+		$this->cartItem = $cartItemTable->getRecordCursor()->current();
+		$this->storeItem = $this->cartItem->storeItem;
 		}
 
 	public function edit(\App\Record\Ziptax $zipTax) : \App\UI\ErrorFormSaver
@@ -89,26 +106,16 @@ class Tax
 			{
 			try
 				{
-				// find a taxable item in the store
-				$storeItemTable = new \App\Table\StoreItem();
-				$storeItemTable->setWhere(new \PHPFUI\ORM\Condition('taxable', 1));
-				$storeItem = $storeItemTable->getRecordCursor()->current();
-
-				if (! $storeItem->loaded())
+				if (! $this->storeItem->loaded())
 					{
-					\App\Model\Session::setFlash('alert', 'You have no taxable items in your store.');
+					\App\Model\Session::setFlash('alert', 'You have no taxable items in your shopping cart. Please add a taxable item.');
 					$this->page->redirect();
 
 					return $form;
 					}
-				$cartItem = new \App\Record\CartItem();
-				$cartItem->memberId = \App\Model\Session::signedInMemberId();
-				$cartItem->storeItem = $storeItem;
-				$cartItem->quantity = 1;
 				$taxCalculator = new \App\Model\TaxCalculator();
-				$taxCalculator->compute($cartItem->toArray());
-				$cartLink = new \PHPFUI\Link('/Store/cart', 'Shopping Cart.', false);
-				\App\Model\Session::setFlash('success', 'Your forumula has no syntax errors. You may have computational errors. Please test in the ' . $cartLink);
+				$tax = $taxCalculator->compute($this->cartItem->toArray(), (float)$this->member->volunteerPoints);
+				\App\Model\Session::setFlash('success', 'Your forumula has no syntax errors. Computed tax: <b>$' . \number_format($tax, 2) . '</b>');
 				}
 			catch (\Exception $e)
 				{
@@ -140,6 +147,12 @@ class Tax
 		$fieldSet->add($callout);
 		$instructions .= $fieldSet;
 
+		$fieldSet = new \PHPFUI\FieldSet('Example with Volunteer Points Subtracted');
+		$callout = new \PHPFUI\Callout('info');
+		$callout->add('$price * $quantity * $taxRate / 100.00 - $payByPoints * $volunteerPoints');
+		$fieldSet->add($callout);
+		$instructions .= $fieldSet;
+
 		$fieldSet = new \PHPFUI\FieldSet('Example New York State Sales Tax Example');
 		$fieldSet->add('In NY, clothing under $110 is exempt from 4% state sales tax but still subject to local taxes.');
 		$nysCallout = new \PHPFUI\Callout('info');
@@ -148,10 +161,10 @@ class Tax
 		$instructions .= $fieldSet;
 
 		$tabs->addTab('Instructions', $instructions, true);
-		$this->addTab(new \App\Record\Member(), $tabs);
-		$this->addTab(new \App\Record\Membership(), $tabs);
-		$this->addTab(new \App\Record\CartItem(), $tabs);
-		$this->addTab(new \App\Record\StoreItem(), $tabs);
+		$this->addTab($this->member, $tabs);
+		$this->addTab($this->membership, $tabs);
+		$this->addTab($this->cartItem, $tabs);
+		$this->addTab($this->storeItem, $tabs);
 		$form->add($tabs);
 
 		$salesTaxFormulaInput = new \PHPFUI\Input\Text($salesTaxFormulaField, 'Sales Tax Formula', $salesTaxFormula);
@@ -200,37 +213,48 @@ class Tax
 		return $container;
 		}
 
-	private function addTab(\PHPFUI\ORM\Record $record, \PHPFUI\Tabs $tabs) : \PHPFUI\Tabs
+	/**
+	 * @param array<string,mixed> $fields
+	 */
+	private function addArrayTab(string $name, array $fields, \PHPFUI\Tabs $tabs) : \PHPFUI\Tabs
 		{
-		$name = \PHPFUI\TextHelper::capitalSplit($record->getTableName());
-		$fields = \array_keys($record->getFields());
-		\sort($fields);
-		$columns = 4;
-		$lines = (int)(\count($fields) / $columns);
+		unset($fields['password']);
+		\ksort($fields);
+
 		$table = new \PHPFUI\Table();
-		$current = 0;
+		$rows = [];
+		$numColumns = 3;
+		$column = 0;
+		$lines = (int)(\count($fields) + 1) / $numColumns;
+		$line = 0;
 
-		for ($line = 0; $line <= $lines; ++$line)
+		foreach ($fields as $field => $value)
 			{
-			$row = [];
+			$rows[$line++][$column] = '<b>$' . $field . '</b> ' . $value;
 
-			for ($column = 0; $column < $columns; ++$column)
+			if ($line >= $lines)
 				{
-				if ($field = ($fields[$current] ?? ''))
-					{
-					$row[$column] = '<b>$' . $field . '</b> ' . $current;
-					}
-				else
-					{
-					$row[$column] = '&nbsp;';
-					}
-				$current += $lines + 1;
+				++$column;
+				$line = 0;
 				}
-			$current = $line + 1;
+			}
+
+		while ($line < $lines)
+			{
+			$rows[$line++][$column] = '&nbsp;';
+			}
+
+		foreach ($rows as $row)
+			{
 			$table->addRow($row);
 			}
 		$tabs->addTab($name, $table);
 
 		return $tabs;
+		}
+
+	private function addTab(\PHPFUI\ORM\Record $record, \PHPFUI\Tabs $tabs) : \PHPFUI\Tabs
+		{
+		return $this->addArrayTab(\PHPFUI\TextHelper::capitalSplit($record->getTableName()), $record->toArray(), $tabs);
 		}
 	}

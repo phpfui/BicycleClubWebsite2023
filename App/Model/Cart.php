@@ -434,7 +434,7 @@ class Cart
 				{
 				$cartItemRecord = new \App\Record\CartItem();
 				$cartItemRecord->setFrom($cartItem);
-				$tax = $taxCalculator->compute($cartItemRecord->toArray());
+				$tax = $taxCalculator->compute($cartItemRecord->toArray(), 0.0);
 				$this->tax += $tax;
 				$cartItem['tax'] = $tax;
 

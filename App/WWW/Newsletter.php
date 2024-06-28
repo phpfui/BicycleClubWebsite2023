@@ -21,6 +21,13 @@ class Newsletter extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 
 	public function download(\App\Record\Newsletter $newsletter = new \App\Record\Newsletter()) : void
 		{
+		if (! $newsletter->loaded())
+			{
+			$this->page->addPageContent(new \PHPFUI\SubHeader('Newsletter not found'));
+
+			return;
+			}
+
 		$file = new \App\Model\NewsletterFiles($newsletter);
 
 		try
@@ -30,7 +37,7 @@ class Newsletter extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		catch (\Exception $e)
 			{
-			$this->page->addPageContent('<h1>' . $e->getMessage() . '</h1>');
+			$this->page->addPageContent(new \PHPFUI\SubHeader($e->getMessage()));
 			}
 		}
 

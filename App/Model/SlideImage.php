@@ -14,7 +14,7 @@ class SlideImage extends \App\Model\ThumbnailImageFiles
 		if ($this->item['photoId'])
 			{
 			$photo = new \App\Record\Photo($this->item['photoId']);
-			$photo->photo = $this->item['caption'];
+			$photo->description = $this->item['caption'];
 
 			return $photo->getImage();
 			}

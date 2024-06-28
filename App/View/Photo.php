@@ -185,11 +185,11 @@ class Photo extends \App\View\Folder
 
 			$container->add($form);
 			}
-		elseif ($photo->photo)
+		elseif ($photo->description)
 			{
 			$titleGrid = new \PHPFUI\HTML5Element('p');
 			$titleGrid->addClass('text-center');
-			$titleGrid->add($photo->photo);
+			$titleGrid->add($photo->description);
 			$container->add($titleGrid);
 			}
 

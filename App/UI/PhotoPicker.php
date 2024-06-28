@@ -39,7 +39,7 @@ class PhotoPicker
 
 			foreach ($this->photoTable->getRecordCursor() as $photo)
 				{
-				$returnValue[] = ['value' => \str_replace(['&quot;', '"'], '', $photo->photo), 'data' => $photo->photoId];
+				$returnValue[] = ['value' => \str_replace(['&quot;', '"'], '', $photo->description), 'data' => $photo->photoId];
 				}
 
 			$condition = new \PHPFUI\ORM\Condition();
@@ -56,7 +56,7 @@ class PhotoPicker
 				{
 				foreach ($folder->photoChildren as $photo)
 					{
-					$returnValue[] = ['value' => \str_replace(['&quot;', '"'], '', $photo->photo), 'data' => $photo->photoId];
+					$returnValue[] = ['value' => \str_replace(['&quot;', '"'], '', $photo->description), 'data' => $photo->photoId];
 					}
 				}
 			}

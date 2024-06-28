@@ -7,5 +7,5 @@ namespace App\Settings;
  * @method string getPassword()
  */
 class TestAPI extends \App\Settings\Settings
-  {
-  }
+	{
+	}

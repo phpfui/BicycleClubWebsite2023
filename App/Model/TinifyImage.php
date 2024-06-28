@@ -203,12 +203,12 @@ class TinifyImage extends \App\Model\File
 		$img = null;
 
 		$img = match ($type) {
-	  1 => @\imagecreatefromgif($filepath),
-	  2 => @\imagecreatefromjpeg($filepath),
-	  3 => @\imagecreatefrompng($filepath),
-	  6 => @\imagecreatefrombmp($filepath),
-	  default => $img,
-  };
+			1 => @\imagecreatefromgif($filepath),
+			2 => @\imagecreatefromjpeg($filepath),
+			3 => @\imagecreatefrompng($filepath),
+			6 => @\imagecreatefrombmp($filepath),
+			default => $img,
+		};
 
 		return $img;
 		}

@@ -135,7 +135,7 @@ class Members implements \Stringable
 					$email->bulkSend();
 					}
 
-				if (empty($_POST['allMembers']))    // don't add to the journal if emailing all members
+				if (empty($_POST['allMembers'])) // don't add to the journal if emailing all members
 					{
 					$index = 1;
 					$nextJournal = \App\Tools\Date::todayString($index);

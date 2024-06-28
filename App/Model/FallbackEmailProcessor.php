@@ -3,7 +3,7 @@
 namespace App\Model;
 
 class FallbackEmailProcessor
-  {
+	{
   /**
    * @return array<string>
    */

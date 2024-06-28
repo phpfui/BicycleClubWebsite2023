@@ -201,99 +201,99 @@ class SlideShow
 		$addPhotoButton = new \PHPFUI\Button('Add Photo');
 		$addPhotoButton->addClass('success');
 
-	 if ($slide->loaded())
-		 {
-		 $submit = new \PHPFUI\Submit();
-		 $form = new \App\UI\ErrorFormSaver($this->page, $slide, $submit);
-		 $form->saveOnClick($addPhotoButton);
-		 }
-	 else
-		 {
-		 $submit = new \PHPFUI\Submit('Add Slide', 'action');
-		 $submit->addClass('success');
-		 $form = new \App\UI\ErrorFormSaver($this->page, $slide);
-		 }
+		if ($slide->loaded())
+			{
+			$submit = new \PHPFUI\Submit();
+			$form = new \App\UI\ErrorFormSaver($this->page, $slide, $submit);
+			$form->saveOnClick($addPhotoButton);
+			}
+		else
+			{
+			$submit = new \PHPFUI\Submit('Add Slide', 'action');
+			$submit->addClass('success');
+			$form = new \App\UI\ErrorFormSaver($this->page, $slide);
+			}
 
-	 $slide->slideShowId = $slideShow->slideShowId;
+		$slide->slideShowId = $slideShow->slideShowId;
 
-	 if ($form->save())
-		 {
-		 return $form;
-		 }
+		if ($form->save())
+			{
+			return $form;
+			}
 
-	 $fieldSet = new \PHPFUI\FieldSet('Slide Details');
-	 $caption = new \PHPFUI\Input\Text('caption', 'Slide Show Caption', $slide->caption);
-	 $caption->setRequired();
-	 $caption->setToolTip("The caption is required to describe the photo, but you don't have to show it.");
-	 $fieldSet->add($caption);
-	 $fieldSet->add(new \PHPFUI\Input\Hidden('slideShowId', (string)$slideShow->slideShowId));
-   $fieldSet->add(new \PHPFUI\Input\CheckBoxBoolean('showCaption', 'Show the caption', (bool)$slide->showCaption));
-	 $form->add($fieldSet);
+		$fieldSet = new \PHPFUI\FieldSet('Slide Details');
+		$caption = new \PHPFUI\Input\Text('caption', 'Slide Show Caption', $slide->caption);
+		$caption->setRequired();
+		$caption->setToolTip("The caption is required to describe the photo, but you don't have to show it.");
+		$fieldSet->add($caption);
+		$fieldSet->add(new \PHPFUI\Input\Hidden('slideShowId', (string)$slideShow->slideShowId));
+		$fieldSet->add(new \PHPFUI\Input\CheckBoxBoolean('showCaption', 'Show the caption', (bool)$slide->showCaption));
+		$form->add($fieldSet);
 
-	 $url = new \PHPFUI\Input\Text('url', 'Click URL', $slide->url);
-	 $url->setToolTip('User will be taken to this URL if they click on this slide');
-	 $fieldSet->add($url);
+		$url = new \PHPFUI\Input\Text('url', 'Click URL', $slide->url);
+		$url->setToolTip('User will be taken to this URL if they click on this slide');
+		$fieldSet->add($url);
 
-	 $photoSet = new \PHPFUI\FieldSet('Photo');
+		$photoSet = new \PHPFUI\FieldSet('Photo');
 
-	 $modal = new \PHPFUI\Reveal($this->page, $addPhotoButton);
-	 $submitPhoto = new \PHPFUI\Submit('Add Photo', 'action');
-	 $uploadForm = new \PHPFUI\Form($this->page);
-	 $uploadForm->setAreYouSure(false);
-	 $slideIdField = new \PHPFUI\Input\Hidden('slideId', (string)$slide->slideId);
-	 $uploadForm->add($slideIdField);
-	 $photoPicker = new \App\UI\PhotoPicker($this->page, 'photoId', 'Select Photo From Library');
-	 $uploadForm->add($photoPicker->getEditControl());
-	 $uploadForm->add($this->getFileInput());
-	 $uploadForm->add($modal->getButtonAndCancel($submitPhoto));
-	 $modal->add($uploadForm);
+		$modal = new \PHPFUI\Reveal($this->page, $addPhotoButton);
+		$submitPhoto = new \PHPFUI\Submit('Add Photo', 'action');
+		$uploadForm = new \PHPFUI\Form($this->page);
+		$uploadForm->setAreYouSure(false);
+		$slideIdField = new \PHPFUI\Input\Hidden('slideId', (string)$slide->slideId);
+		$uploadForm->add($slideIdField);
+		$photoPicker = new \App\UI\PhotoPicker($this->page, 'photoId', 'Select Photo From Library');
+		$uploadForm->add($photoPicker->getEditControl());
+		$uploadForm->add($this->getFileInput());
+		$uploadForm->add($modal->getButtonAndCancel($submitPhoto));
+		$modal->add($uploadForm);
 
-	 // slide has photo
-	 if ($slide->photoId || ! empty($slide->extension))
-		 {
-		 $deleteSpan = new \PHPFUI\HTML5Element('span');
-		 $row = new \PHPFUI\GridX();
-		 $imageModel = new \App\Model\SlideImage($slide);
-		 $row->add($imageModel->getImg());
-		 $deleteSpan->add($row);
-		 $photoId = new \PHPFUI\Input\Hidden('photoId', (string)$slide->photoId);
-		 $deletePhoto = new \PHPFUI\AJAX('deletePhoto', 'Are you sure you want to delete this photo? You will be able to add a new one after it is deleted.');
-		 $deletePhoto->addFunction('success', '$("#' . $deleteSpan->getId() . '").css("background-color","red").hide("fast");$("#' . $addPhotoButton->getId() . '").removeClass("hide").show();$("#' . $photoId->getId() . '").val(0);');
-		 $this->page->addJavaScript($deletePhoto->getPageJS());
-		 $this->page->addJavaScript('$("#' . $addPhotoButton->getId() . '").hide()');
-		 $deleteButton = new \PHPFUI\Button('Delete', '#');
-		 $deleteButton->addClass('alert');
-		 $deleteButton->addAttribute('onclick', $deletePhoto->execute(['slideId' => $slide->slideId]));
-		 $row = new \PHPFUI\GridX();
-		 $row->add($deleteButton);
-		 $deleteSpan->add($row);
-		 $photoSet->add($deleteSpan);
-		 $addPhotoButton->addClass('hide');
-		 $photoSet->add($addPhotoButton);
-		 $photoSet->add($photoId);
-		 }
-	 // slide exists, but no photo
-	 elseif ($slide->loaded())
-		 {
-		 $photoSet->add($addPhotoButton);
-		 }
-	 // no slide, so show upload control on this page, not in modal
-	 else
-		 {
-		 $photoSet->add($photoPicker->getEditControl());
-		 $photoSet->add($this->getFileInput());
-		 }
+		// slide has photo
+		if ($slide->photoId || ! empty($slide->extension))
+			{
+			$deleteSpan = new \PHPFUI\HTML5Element('span');
+			$row = new \PHPFUI\GridX();
+			$imageModel = new \App\Model\SlideImage($slide);
+			$row->add($imageModel->getImg());
+			$deleteSpan->add($row);
+			$photoId = new \PHPFUI\Input\Hidden('photoId', (string)$slide->photoId);
+			$deletePhoto = new \PHPFUI\AJAX('deletePhoto', 'Are you sure you want to delete this photo? You will be able to add a new one after it is deleted.');
+			$deletePhoto->addFunction('success', '$("#' . $deleteSpan->getId() . '").css("background-color","red").hide("fast");$("#' . $addPhotoButton->getId() . '").removeClass("hide").show();$("#' . $photoId->getId() . '").val(0);');
+			$this->page->addJavaScript($deletePhoto->getPageJS());
+			$this->page->addJavaScript('$("#' . $addPhotoButton->getId() . '").hide()');
+			$deleteButton = new \PHPFUI\Button('Delete', '#');
+			$deleteButton->addClass('alert');
+			$deleteButton->addAttribute('onclick', $deletePhoto->execute(['slideId' => $slide->slideId]));
+			$row = new \PHPFUI\GridX();
+			$row->add($deleteButton);
+			$deleteSpan->add($row);
+			$photoSet->add($deleteSpan);
+			$addPhotoButton->addClass('hide');
+			$photoSet->add($addPhotoButton);
+			$photoSet->add($photoId);
+			}
+		// slide exists, but no photo
+		elseif ($slide->loaded())
+			{
+			$photoSet->add($addPhotoButton);
+			}
+		// no slide, so show upload control on this page, not in modal
+		else
+			{
+			$photoSet->add($photoPicker->getEditControl());
+			$photoSet->add($this->getFileInput());
+			}
 
-	 $form->add($photoSet);
-   $buttonGroup = new \PHPFUI\ButtonGroup();
-   $buttonGroup->addButton($submit);
-	 $backButton = new \PHPFUI\Button('Edit Show', '/Content/SlideShow/edit/' . $slideShow->slideShowId);
-	 $backButton->addClass('secondary');
-	 $buttonGroup->addButton($backButton);
-	 $form->add($buttonGroup);
+		$form->add($photoSet);
+		$buttonGroup = new \PHPFUI\ButtonGroup();
+		$buttonGroup->addButton($submit);
+		$backButton = new \PHPFUI\Button('Edit Show', '/Content/SlideShow/edit/' . $slideShow->slideShowId);
+		$backButton->addClass('secondary');
+		$buttonGroup->addButton($backButton);
+		$form->add($buttonGroup);
 
-	 return $form;
-	 }
+		return $form;
+	}
 
 	public function getInsertionText(?int $slideShowId = 0) : string
 		{
@@ -305,7 +305,7 @@ class SlideShow
 			}
 
 		return $start;
-		}
+	}
 
 	public function list(\App\Table\SlideShow $slideShowTable) : \PHPFUI\Container
 		{

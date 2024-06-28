@@ -121,7 +121,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if (! $folder->empty() && $this->page->isAuthorized('Delete File Folder'))
 			{
-			if (! $this->folderTable->folderCount($folder))
+			if (! $folder->childCount())
 				{
 				\App\Model\Session::setFlash('success', "Folder {$folder->name} deleted.");
 				$url = '/File/browse/' . $folder->parentFolderId;

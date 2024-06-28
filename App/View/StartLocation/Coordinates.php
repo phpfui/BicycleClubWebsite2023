@@ -3,32 +3,32 @@
 namespace App\View\StartLocation;
 
 class Coordinates
-  {
+	{
 	public function __construct(private \App\View\Page $page)
 		{
 		}
 
 	public function assigned() : \App\UI\ContinuousScrollTable
-	 {
-	 $startLocationTable = new \App\Table\StartLocation();
-	 $condition = new \PHPFUI\ORM\Condition('latitude', null, new \PHPFUI\ORM\Operator\IsNotNull());
-	 $condition->and(new \PHPFUI\ORM\Condition('longitude', null, new \PHPFUI\ORM\Operator\IsNotNull()));
-	 $startLocationTable->setWhere($condition);
-	 $view = new \App\View\StartLocation($this->page);
+		{
+		$startLocationTable = new \App\Table\StartLocation();
+		$condition = new \PHPFUI\ORM\Condition('latitude', null, new \PHPFUI\ORM\Operator\IsNotNull());
+		$condition->and(new \PHPFUI\ORM\Condition('longitude', null, new \PHPFUI\ORM\Operator\IsNotNull()));
+		$startLocationTable->setWhere($condition);
+		$view = new \App\View\StartLocation($this->page);
 
-	 return $view->showLocations($startLocationTable);
-	 }
+		return $view->showLocations($startLocationTable);
+		}
 
 	public function missing() : \App\UI\ContinuousScrollTable
-	 {
-	 $startLocationTable = new \App\Table\StartLocation();
-	 $condition = new \PHPFUI\ORM\Condition('latitude', null, new \PHPFUI\ORM\Operator\IsNull());
-	 $condition->or(new \PHPFUI\ORM\Condition('longitude', null, new \PHPFUI\ORM\Operator\IsNull()));
-	 $startLocationTable->setWhere($condition);
-	 $view = new \App\View\StartLocation($this->page);
+		{
+		$startLocationTable = new \App\Table\StartLocation();
+		$condition = new \PHPFUI\ORM\Condition('latitude', null, new \PHPFUI\ORM\Operator\IsNull());
+		$condition->or(new \PHPFUI\ORM\Condition('longitude', null, new \PHPFUI\ORM\Operator\IsNull()));
+		$startLocationTable->setWhere($condition);
+		$view = new \App\View\StartLocation($this->page);
 
-	 return $view->showLocations($startLocationTable);
-	 }
+		return $view->showLocations($startLocationTable);
+		}
 
 	public function update() : \PHPFUI\Container
 		{
@@ -75,4 +75,4 @@ class Coordinates
 
 		return $container;
 		}
-  }
+	}

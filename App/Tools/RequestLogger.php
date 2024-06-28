@@ -7,7 +7,7 @@ class RequestLogger
 	public function __construct()
 		{
 	  if (isset($_SERVER['REQUEST_URI']))
-		  {
+			{
 			$parts = \parse_url((string)$_SERVER['REQUEST_URI']);
 			$server = $_SERVER;
 			$server['REQUEST_URI'] = $parts['path'] ?? '';
@@ -17,6 +17,6 @@ class RequestLogger
 			$httpRequest = new \App\Record\HttpRequest();
 			$httpRequest->setFrom($server);
 			$httpRequest->insert();
-		  }
+			}
 		}
 	}

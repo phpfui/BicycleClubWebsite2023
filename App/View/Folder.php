@@ -292,7 +292,7 @@ abstract class Folder
 			$row = [];
 			$row['Folder'] = new \PHPFUI\Link('/' . $this->className . '/browse/' . $folder->folderId, $folder->name, false);
 
-			if (! $folderTable->folderCount($folder))
+			if (! $folder->childCount())
 				{
 				$row['Cut'] = new \PHPFUI\FAIcon('fas', 'trash-alt', '/' . $this->className . '/deleteFolder/' . $folder->folderId);
 				}

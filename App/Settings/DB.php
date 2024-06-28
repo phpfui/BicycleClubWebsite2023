@@ -26,7 +26,7 @@ namespace App\Settings;
  * @method string getCollation()
  */
 class DB extends \App\Settings\Settings
-  {
+	{
 	private string $error = '';
 
 	public function getConnectionString() : string

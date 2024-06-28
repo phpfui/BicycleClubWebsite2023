@@ -218,7 +218,7 @@ class EMail
 		$values = $SMTPSettings->getValues();
 
 		$mail = new \App\Tools\MyMailer();
-		$mail->isSMTP();                                      // Set mailer to use SMTP
+		$mail->isSMTP();                             // Set mailer to use SMTP
 
 		if (! $this->useSMTPServer || empty($values['SMTPHost']) || 'localhost' == ($_SERVER['HTTP_HOST'] ?? 'localhost') || '::1' == ($_SERVER['SERVER_ADDR'] ?? ''))
 			{

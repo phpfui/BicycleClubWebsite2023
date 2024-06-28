@@ -125,7 +125,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if (! $folder->empty() && $this->page->isAuthorized('Delete Photo Folder'))
 			{
-			if (! $this->folderTable->folderCount($folder))
+			if (! $folder->childCount())
 				{
 				\App\Model\Session::setFlash('success', "Folder {$folder->name} deleted.");
 				$url = '/Photo/browse/' . $folder->parentFolderId;

@@ -10,11 +10,11 @@ namespace App\Record\Definition;
  * @property int $forumMessageId MySQL type int
  * @property \App\Record\ForumMessage $forumMessage related record
  * @property ?string $htmlMessage MySQL type mediumtext
- * @property ?string $lastEdited MySQL type timestamp
+ * @property ?string $lastEdited MySQL type datetime
  * @property ?int $lastEditorId MySQL type int
  * @property int $memberId MySQL type int
  * @property \App\Record\Member $member related record
- * @property string $posted MySQL type timestamp
+ * @property string $posted MySQL type datetime
  * @property ?string $textMessage MySQL type text
  * @property ?string $title MySQL type varchar(255)
  */
@@ -28,10 +28,10 @@ abstract class ForumMessage extends \PHPFUI\ORM\Record
 		'forumId' => ['int', 'int', 0, true, ],
 		'forumMessageId' => ['int', 'int', 0, false, ],
 		'htmlMessage' => ['mediumtext', 'string', 16777215, true, ],
-		'lastEdited' => ['timestamp', 'string', 20, true, ],
+		'lastEdited' => ['datetime', 'string', 20, true, ],
 		'lastEditorId' => ['int', 'int', 0, true, ],
 		'memberId' => ['int', 'int', 0, false, ],
-		'posted' => ['timestamp', 'string', 20, false, null, ],
+		'posted' => ['datetime', 'string', 20, false, null, ],
 		'textMessage' => ['text', 'string', 65535, true, ],
 		'title' => ['varchar(255)', 'string', 255, true, ],
 	];

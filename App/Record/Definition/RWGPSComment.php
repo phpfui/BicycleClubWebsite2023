@@ -9,7 +9,7 @@ namespace App\Record\Definition;
  * @property \App\Record\RWGPS $RWGPS related record
  * @property ?string $comment MySQL type text
  * @property string $comments MySQL type varchar(255)
- * @property string $lastEdited MySQL type timestamp
+ * @property string $lastEdited MySQL type datetime
  * @property int $memberId MySQL type int
  * @property \App\Record\Member $member related record
  */
@@ -23,7 +23,7 @@ abstract class RWGPSComment extends \PHPFUI\ORM\Record
 		'RWGPSId' => ['int', 'int', 0, false, ],
 		'comment' => ['text', 'string', 65535, true, ],
 		'comments' => ['varchar(255)', 'string', 255, false, ],
-		'lastEdited' => ['timestamp', 'string', 20, false, null, ],
+		'lastEdited' => ['datetime', 'string', 20, false, null, ],
 		'memberId' => ['int', 'int', 0, false, ],
 	];
 

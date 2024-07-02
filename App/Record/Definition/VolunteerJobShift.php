@@ -14,7 +14,7 @@ namespace App\Record\Definition;
  * @property \App\Record\Member $member related record
  * @property string $notes MySQL type varchar(255)
  * @property ?int $shiftLeader MySQL type int
- * @property string $signedUpDate MySQL type timestamp
+ * @property string $signedUpDate MySQL type datetime
  * @property int $volunteerJobShiftId MySQL type int
  * @property \App\Record\VolunteerJobShift $volunteerJobShift related record
  * @property int $worked MySQL type tinyint
@@ -32,7 +32,7 @@ abstract class VolunteerJobShift extends \PHPFUI\ORM\Record
 		'memberId' => ['int', 'int', 0, false, ],
 		'notes' => ['varchar(255)', 'string', 255, false, '', ],
 		'shiftLeader' => ['int', 'int', 0, true, ],
-		'signedUpDate' => ['timestamp', 'string', 20, false, null, ],
+		'signedUpDate' => ['datetime', 'string', 20, false, null, ],
 		'volunteerJobShiftId' => ['int', 'int', 0, false, ],
 		'worked' => ['tinyint', 'int', 0, false, 0, ],
 	];

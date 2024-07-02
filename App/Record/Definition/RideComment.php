@@ -14,7 +14,7 @@ namespace App\Record\Definition;
  * @property \App\Record\RideComment $rideComment related record
  * @property ?int $rideId MySQL type int
  * @property \App\Record\Ride $ride related record
- * @property string $time MySQL type timestamp
+ * @property string $time MySQL type datetime
  */
 abstract class RideComment extends \PHPFUI\ORM\Record
 	{
@@ -29,7 +29,7 @@ abstract class RideComment extends \PHPFUI\ORM\Record
 		'memberId' => ['int', 'int', 0, false, ],
 		'rideCommentId' => ['int', 'int', 0, false, ],
 		'rideId' => ['int', 'int', 0, true, 0, ],
-		'time' => ['timestamp', 'string', 20, false, null, ],
+		'time' => ['datetime', 'string', 20, false, null, ],
 	];
 
 	/** @var array<string> */

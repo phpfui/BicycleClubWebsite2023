@@ -9,7 +9,7 @@ namespace App\Record\Definition;
  * @property ?int $editor MySQL type int
  * @property ?string $fileName MySQL type varchar(255)
  * @property ?int $hits MySQL type int
- * @property string $lastEdited MySQL type timestamp
+ * @property string $lastEdited MySQL type datetime
  * @property int $public MySQL type int
  * @property string $title MySQL type varchar(255)
  * @property string $videoDate MySQL type date
@@ -29,7 +29,7 @@ abstract class Video extends \PHPFUI\ORM\Record
 		'editor' => ['int', 'int', 0, true, ],
 		'fileName' => ['varchar(255)', 'string', 255, true, ],
 		'hits' => ['int', 'int', 0, true, ],
-		'lastEdited' => ['timestamp', 'string', 20, false, null, ],
+		'lastEdited' => ['datetime', 'string', 20, false, null, ],
 		'public' => ['int', 'int', 0, false, 0, ],
 		'title' => ['varchar(255)', 'string', 255, false, ],
 		'videoDate' => ['date', 'string', 10, false, ],

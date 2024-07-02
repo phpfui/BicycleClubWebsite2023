@@ -12,7 +12,7 @@ namespace App\Record\Definition;
  * @property int $memberId MySQL type int
  * @property \App\Record\Member $member related record
  * @property ?string $statement MySQL type text
- * @property string $time MySQL type timestamp
+ * @property string $time MySQL type datetime
  */
 abstract class AuditTrail extends \PHPFUI\ORM\Record
 	{
@@ -26,7 +26,7 @@ abstract class AuditTrail extends \PHPFUI\ORM\Record
 		'input' => ['text', 'string', 65535, true, ],
 		'memberId' => ['int', 'int', 0, false, ],
 		'statement' => ['text', 'string', 65535, true, ],
-		'time' => ['timestamp', 'string', 20, false, null, ],
+		'time' => ['datetime', 'string', 20, false, null, ],
 	];
 
 	/** @var array<string> */

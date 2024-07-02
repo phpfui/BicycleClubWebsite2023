@@ -21,7 +21,7 @@ namespace App\Record\Definition;
  * @property \App\Record\Reservation $reservation related record
  * @property ?string $reservationLastName MySQL type varchar(50)
  * @property ?string $reservationemail MySQL type varchar(50)
- * @property string $signedUpAt MySQL type timestamp
+ * @property string $signedUpAt MySQL type datetime
  * @property ?string $state MySQL type char(2)
  * @property ?string $town MySQL type varchar(50)
  * @property ?string $zip MySQL type varchar(10)
@@ -44,7 +44,7 @@ abstract class Reservation extends \PHPFUI\ORM\Record
 		'reservationId' => ['int', 'int', 0, false, ],
 		'reservationLastName' => ['varchar(50)', 'string', 50, true, ],
 		'reservationemail' => ['varchar(50)', 'string', 50, true, ],
-		'signedUpAt' => ['timestamp', 'string', 20, false, null, ],
+		'signedUpAt' => ['datetime', 'string', 20, false, null, ],
 		'state' => ['char(2)', 'string', 2, true, ],
 		'town' => ['varchar(50)', 'string', 50, true, ],
 		'zip' => ['varchar(10)', 'string', 10, true, ],

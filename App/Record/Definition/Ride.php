@@ -12,7 +12,7 @@ namespace App\Record\Definition;
  * @property int $commentsDisabled MySQL type int
  * @property ?int $cueSheetId MySQL type int
  * @property \App\Record\CueSheet $cueSheet related record
- * @property string $dateAdded MySQL type timestamp
+ * @property string $dateAdded MySQL type datetime
  * @property ?string $description MySQL type mediumtext
  * @property ?int $elevation MySQL type int
  * @property int $maxRiders MySQL type int
@@ -25,7 +25,7 @@ namespace App\Record\Definition;
  * @property int $pending MySQL type int
  * @property int $pointsAwarded MySQL type int
  * @property ?string $regrouping MySQL type varchar(50)
- * @property ?string $releasePrinted MySQL type timestamp
+ * @property ?string $releasePrinted MySQL type datetime
  * @property ?string $restStop MySQL type varchar(70)
  * @property string $rideDate MySQL type date
  * @property int $rideId MySQL type int
@@ -51,7 +51,7 @@ abstract class Ride extends \PHPFUI\ORM\Record
 		'averagePace' => ['float', 'float', 0, true, ],
 		'commentsDisabled' => ['int', 'int', 0, false, 0, ],
 		'cueSheetId' => ['int', 'int', 0, true, ],
-		'dateAdded' => ['timestamp', 'string', 20, false, null, ],
+		'dateAdded' => ['datetime', 'string', 20, false, null, ],
 		'description' => ['mediumtext', 'string', 16777215, true, ],
 		'elevation' => ['int', 'int', 0, true, ],
 		'maxRiders' => ['int', 'int', 0, false, 0, ],
@@ -62,7 +62,7 @@ abstract class Ride extends \PHPFUI\ORM\Record
 		'pending' => ['int', 'int', 0, false, 0, ],
 		'pointsAwarded' => ['int', 'int', 0, false, 0, ],
 		'regrouping' => ['varchar(50)', 'string', 50, true, '', ],
-		'releasePrinted' => ['timestamp', 'string', 20, true, ],
+		'releasePrinted' => ['datetime', 'string', 20, true, ],
 		'restStop' => ['varchar(70)', 'string', 70, true, ],
 		'rideDate' => ['date', 'string', 10, false, ],
 		'rideId' => ['int', 'int', 0, false, ],

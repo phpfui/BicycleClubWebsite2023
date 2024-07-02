@@ -9,7 +9,7 @@ namespace App\Record\Definition;
  * @property int $memberId MySQL type int
  * @property \App\Record\Member $member related record
  * @property ?int $oldLeaderPoints MySQL type int
- * @property string $time MySQL type timestamp
+ * @property string $time MySQL type datetime
  * @property int $volunteerPoints MySQL type int
  */
 abstract class PointHistory extends \PHPFUI\ORM\Record
@@ -22,7 +22,7 @@ abstract class PointHistory extends \PHPFUI\ORM\Record
 		'editorId' => ['int', 'int', 0, true, ],
 		'memberId' => ['int', 'int', 0, false, ],
 		'oldLeaderPoints' => ['int', 'int', 0, true, 0, ],
-		'time' => ['timestamp', 'string', 20, false, null, ],
+		'time' => ['datetime', 'string', 20, false, null, ],
 		'volunteerPoints' => ['int', 'int', 0, false, 0, ],
 	];
 

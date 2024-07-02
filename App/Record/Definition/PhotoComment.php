@@ -11,7 +11,7 @@ namespace App\Record\Definition;
  * @property int $photoCommentId MySQL type int
  * @property int $photoId MySQL type int
  * @property \App\Record\Photo $photo related record
- * @property string $timestamp MySQL type timestamp
+ * @property string $timestamp MySQL type datetime
  */
 abstract class PhotoComment extends \PHPFUI\ORM\Record
 	{
@@ -24,7 +24,7 @@ abstract class PhotoComment extends \PHPFUI\ORM\Record
 		'photoComment' => ['varchar(255)', 'string', 255, false, '', ],
 		'photoCommentId' => ['int', 'int', 0, false, ],
 		'photoId' => ['int', 'int', 0, false, ],
-		'timestamp' => ['timestamp', 'string', 20, false, null, ],
+		'timestamp' => ['datetime', 'string', 20, false, null, ],
 	];
 
 	/** @var array<string> */

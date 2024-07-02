@@ -15,7 +15,7 @@ namespace App\Record\Definition;
  * @property ?int $memberId MySQL type int
  * @property \App\Record\Member $member related record
  * @property int $public MySQL type int
- * @property ?string $uploaded MySQL type timestamp
+ * @property ?string $uploaded MySQL type datetime
  */
 abstract class File extends \PHPFUI\ORM\Record
 	{
@@ -31,7 +31,7 @@ abstract class File extends \PHPFUI\ORM\Record
 		'folderId' => ['int', 'int', 0, false, ],
 		'memberId' => ['int', 'int', 0, true, ],
 		'public' => ['int', 'int', 0, false, 0, ],
-		'uploaded' => ['timestamp', 'string', 20, true, null, ],
+		'uploaded' => ['datetime', 'string', 20, true, null, ],
 	];
 
 	/** @var array<string> */

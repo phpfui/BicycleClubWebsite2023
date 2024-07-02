@@ -10,7 +10,7 @@ namespace App\Record\Definition;
  * @property \App\Record\JournalItem $journalItem related record
  * @property ?int $memberId MySQL type int
  * @property \App\Record\Member $member related record
- * @property string $timeSent MySQL type timestamp
+ * @property string $timeSent MySQL type datetime
  * @property ?string $title MySQL type char(100)
  */
 abstract class JournalItem extends \PHPFUI\ORM\Record
@@ -23,7 +23,7 @@ abstract class JournalItem extends \PHPFUI\ORM\Record
 		'body' => ['mediumtext', 'string', 16777215, true, ],
 		'journalItemId' => ['int', 'int', 0, false, ],
 		'memberId' => ['int', 'int', 0, true, ],
-		'timeSent' => ['timestamp', 'string', 20, false, null, ],
+		'timeSent' => ['datetime', 'string', 20, false, null, ],
 		'title' => ['char(100)', 'string', 100, true, ],
 	];
 

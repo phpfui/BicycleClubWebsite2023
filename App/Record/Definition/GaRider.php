@@ -26,7 +26,7 @@ namespace App\Record\Definition;
  * @property ?string $phone MySQL type varchar(20)
  * @property ?float $pricePaid MySQL type decimal(5,2)
  * @property ?int $prize MySQL type int
- * @property string $signedUpOn MySQL type timestamp
+ * @property string $signedUpOn MySQL type datetime
  * @property ?string $state MySQL type char(2)
  * @property ?string $town MySQL type varchar(50)
  * @property ?string $zip MySQL type varchar(10)
@@ -55,7 +55,7 @@ abstract class GaRider extends \PHPFUI\ORM\Record
 		'phone' => ['varchar(20)', 'string', 20, true, '', ],
 		'pricePaid' => ['decimal(5,2)', 'float', 5, true, ],
 		'prize' => ['int', 'int', 0, true, ],
-		'signedUpOn' => ['timestamp', 'string', 20, false, null, ],
+		'signedUpOn' => ['datetime', 'string', 20, false, null, ],
 		'state' => ['char(2)', 'string', 2, true, ],
 		'town' => ['varchar(50)', 'string', 50, true, ],
 		'zip' => ['varchar(10)', 'string', 10, true, ],

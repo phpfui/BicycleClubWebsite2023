@@ -16,7 +16,7 @@ namespace App\Record\Definition;
  * @property int $public MySQL type int
  * @property ?string $taken MySQL type datetime
  * @property int $thumbnail MySQL type int
- * @property string $uploaded MySQL type timestamp
+ * @property string $uploaded MySQL type datetime
  */
 abstract class Photo extends \PHPFUI\ORM\Record
 	{
@@ -33,7 +33,7 @@ abstract class Photo extends \PHPFUI\ORM\Record
 		'public' => ['int', 'int', 0, false, 0, ],
 		'taken' => ['datetime', 'string', 20, true, ],
 		'thumbnail' => ['int', 'int', 0, false, 0, ],
-		'uploaded' => ['timestamp', 'string', 20, false, null, ],
+		'uploaded' => ['datetime', 'string', 20, false, null, ],
 	];
 
 	/** @var array<string> */

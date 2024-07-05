@@ -8,5 +8,6 @@ enum FolderType : int
 
 	case FILE = 1;
 	case PHOTO = 0;
+	case STORE = 2;
 	case VIDEO = 3;
 	}

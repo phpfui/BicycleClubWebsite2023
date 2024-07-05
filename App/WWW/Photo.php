@@ -326,7 +326,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('View Photo'))
 			{
-			$this->page->addPageContent($this->view->getBreadCrumbs('/Photo/browse', $photo->folder, $photo));
+			$this->page->addPageContent($this->view->getBreadCrumbs('/Photo/browse', $photo->folder, true));
 			$this->page->addPageContent($this->view->getImage($photo));
 			$this->page->addPageContent($this->view->getInfo($photo));
 

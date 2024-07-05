@@ -156,12 +156,19 @@ class Edit
 			}
 		else
 			{
+			$form->add(\App\View\Folder::getBreadCrumbs('/Store/Inventory/manage', $storeItem->folder, true));
+
 			$infoSet = new \PHPFUI\FieldSet('Item Number ' . $storeItem->storeItemId . ' Information');
 			$storeItemfield = new \PHPFUI\Input\Hidden('storeItemId', (string)$storeItem->storeItemId);
 			$infoSet->add($storeItemfield);
 			$title = new \PHPFUI\Input\Text('title', 'Item Title', $storeItem->title);
 			$title->setRequired()->setToolTip('The title should not be ambigious and suscinct. You can describe and specify sizes later, so this should not include any details');
 			$infoSet->add($title);
+
+			$folder = $storeItem->folder;
+			$folder->folderType = \App\Enum\FolderType::STORE;
+			$infoSet->add(new \App\UI\FolderPicker($folder));
+
 			$this->description->setValue($storeItem->description ?? '');
 			$this->description->setRequired()->setToolTip('Please provide a good description with any details as to fit (if clothing) or other details buyers may need to know.  More is better here.');
 			$infoSet->add($this->description);

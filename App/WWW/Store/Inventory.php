@@ -12,12 +12,16 @@ class Inventory extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 		$this->storeView = new \App\View\Store($this->page);
 		}
 
-	public function manage() : void
+	public function manage(\App\Record\Folder $folder = new \App\Record\Folder()) : void
 		{
 		if ($this->page->addHeader('Manage Inventory'))
 			{
 			$storeItemTable = new \App\Table\StoreItem();
-			$this->page->addPageContent($this->storeView->showInventory($storeItemTable));
+			if ($folder->loaded())
+				{
+				$storeItemTable->setWhere(new \PHPFUI\ORM\Condition('folderId', $folder->folderId));
+				}
+			$this->page->addPageContent($this->storeView->showInventory($storeItemTable, $folder));
 			}
 		}
 

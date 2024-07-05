@@ -2,7 +2,7 @@
 
 namespace App\View;
 
-class Store
+class Store extends \App\View\Folder
 	{
 	private readonly \App\Model\StoreImages $imageModel;
 
@@ -10,8 +10,10 @@ class Store
 
 	private int $thumbnailSize;
 
-	public function __construct(private readonly \App\View\Page $page)
+	public function __construct(\App\View\Page $page)
 		{
+		parent::__construct($page, __CLASS__);
+		$this->setItemName('Store Item')->setBrowseSection('Inventory/manage');
 		$this->settingTable = new \App\Table\Setting();
 		$this->thumbnailSize = (int)$this->settingTable->value('thumbnailSize');
 		$this->imageModel = new \App\Model\StoreImages();
@@ -319,15 +321,34 @@ class Store
 		return $container;
 		}
 
-	public function showInventory(\App\Table\StoreItem $storeItemTable) : \PHPFUI\Container
+	public function showInventory(\App\Table\StoreItem $storeItemTable, \App\Record\Folder $folder = new \App\Record\Folder()) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
+
+		$this->page->addPageContent($this->getBreadCrumbs('/Store/Inventory/manage', $folder));
+
+		if ($folder->loaded())
+			{
+			$storeItemTable->setWhere(new \PHPFUI\ORM\Condition('folderId', $folder->folderId));
+			}
 
 		if (! \count($storeItemTable))
 			{
 			$container->add(new \PHPFUI\SubHeader('No Inventory Found'));
 
 			return $container;
+			}
+
+		$condition = new \PHPFUI\ORM\Condition('folderType', \App\Enum\FolderType::STORE->value);
+		$condition->and('parentFolderId', (int)$folder->folderId);
+		$folderTable = new \App\Table\Folder();
+		$folderTable->setWhere($condition)->addOrderBy('name');
+//		$container->add($this->view->clipboard($folder));
+		$container->add($this->listFolders($folderTable, $folder, 'Store Item'));
+
+		if ($folder->loaded())
+			{
+			$storeItemTable->setWhere(new \PHPFUI\ORM\Condition('folderId', $folder->folderId));
 			}
 
 		$headers = ['title' => 'Item', 'price' => 'Price', 'storeItemId' => 'Item Id',
@@ -349,5 +370,9 @@ class Store
 		$container->add($view);
 
 		return $container;
+		}
+
+	protected function addModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Folder $folder) : void
+		{
 		}
 	}

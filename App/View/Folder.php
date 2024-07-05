@@ -4,6 +4,8 @@ namespace App\View;
 
 abstract class Folder
 	{
+	protected string $browseSection = 'browse';
+
 	protected readonly string $className;
 
 	/**
@@ -11,13 +13,15 @@ abstract class Folder
 	 */
 	protected array $cuts = [];
 
-	protected readonly bool $editItem;
+	protected bool $editItem;
 
 	protected \App\Enum\FolderType $folderType = \App\Enum\FolderType::PHOTO;
 
-	protected readonly bool $moveFolder;
+	protected string $itemName;
 
-	protected readonly bool $moveItem;
+	protected bool $moveFolder;
+
+	protected bool $moveItem;
 
 	protected ?\PHPFUI\Button $searchButton = null;
 
@@ -29,16 +33,20 @@ abstract class Folder
 		{
 		$parts = \explode('\\', $className);
 		$this->className = \array_pop($parts);
+		$this->setItemName($this->className);
+		$this->itemName = $this->className;
 		$this->type = \strtolower($this->className);
 		$this->signedInMember = \App\Model\Session::signedInMemberId();
-		$this->moveItem = $page->isAuthorized('Move ' . $this->type);
-		$this->editItem = $page->isAuthorized('Edit ' . $this->type);
-		$this->moveFolder = $page->isAuthorized("Move {$this->type} Folder");
 
 		switch ($this->className)
 			{
 			case 'File':
 				$this->folderType = \App\Enum\FolderType::FILE;
+
+				break;
+
+			case 'Store':
+				$this->folderType = \App\Enum\FolderType::STORE;
 
 				break;
 
@@ -107,11 +115,11 @@ abstract class Folder
 	 *
 	 * @param string $url / and $folder->folderId will be appended
 	 */
-	public function getBreadCrumbs(string $url, \App\Record\Folder $folder, ?\App\Record\Photo $photo = null) : \PHPFUI\BreadCrumbs
+	public static function getBreadCrumbs(string $url, \App\Record\Folder $folder, bool $linkLast = false) : \PHPFUI\BreadCrumbs
 		{
 		$breadCrumbs = new \PHPFUI\BreadCrumbs();
 
-		$folders = \App\Table\Folder::getParentFolders($folder->folderId);
+		$folders = \App\Table\Folder::getParentFolders($folder->folderId ?? 0);
 
 		$breadCrumbs->addCrumb('All', $url);
 
@@ -119,14 +127,14 @@ abstract class Folder
 			{
 			$link = '';
 
-			if ($folder->folderId != $folderId || $photo)
+			if ($folder->folderId != $folderId || $linkLast)
 				{
 				$link = $url . '/' . $folderId;
 				}
 			$breadCrumbs->addCrumb($name, $link);
 			}
 
-		if ($photo)
+		if ($linkLast)
 			{
 			$breadCrumbs->addCrumb('');
 			}
@@ -221,7 +229,7 @@ abstract class Folder
 		return true;
 		}
 
-	public function listFolders(\App\Table\Folder $folderTable, \App\Record\Folder $parentFolder) : \PHPFUI\Table
+	public function listFolders(\App\Table\Folder $folderTable, \App\Record\Folder $parentFolder, string $addButtonName = '') : \PHPFUI\Table
 		{
 		$container = new \PHPFUI\Table();
 
@@ -240,11 +248,13 @@ abstract class Folder
 			$buttonGroup->add($addFolderButton);
 			}
 
+		$addButtonName = $addButtonName ?: $this->className;
+
 		if ($parentFolder->loaded())
 			{
-			if ($this->page->isAuthorized('Add ' . $this->className))
+			if ($this->page->isAuthorized('Add ' . $addButtonName))
 				{
-				$addFileButton = new \PHPFUI\Button('Add ' . $this->className);
+				$addFileButton = new \PHPFUI\Button('Add ' . $addButtonName);
 				$addFileButton->addClass('success');
 				$this->addModal($addFileButton, $parentFolder);
 				$buttonGroup->add($addFileButton);
@@ -262,11 +272,11 @@ abstract class Folder
 			}
 		else
 			{
-			if ($this->page->isAuthorized('Add ' . $this->className))
+			if ($this->page->isAuthorized('Add ' . $addButtonName))
 				{
-				$addFileButton = new \PHPFUI\Button('Add ' . $this->className);
+				$addFileButton = new \PHPFUI\Button('Add ' . $addButtonName);
 				$addFileButton->addClass('success');
-				$addFileButton->setConfirm('You can only add ' . $this->type . 's to folders. Create or choose a folder first');
+				$addFileButton->setConfirm('You can only add ' . $addButtonName . 's to folders. Create or choose a folder first');
 				$buttonGroup->add($addFileButton);
 				}
 			}
@@ -290,7 +300,7 @@ abstract class Folder
 				continue;
 				}
 			$row = [];
-			$row['Folder'] = new \PHPFUI\Link('/' . $this->className . '/browse/' . $folder->folderId, $folder->name, false);
+			$row['Folder'] = new \PHPFUI\Link('/' . $this->className . '/' . $this->browseSection . '/' . $folder->folderId, $folder->name, false);
 
 			if (! $folder->childCount())
 				{
@@ -306,6 +316,23 @@ abstract class Folder
 			}
 
 		return $container;
+		}
+
+	public function setBrowseSection(string $section) : self
+		{
+		$this->browseSection = $section;
+
+		return $this ;
+		}
+
+	public function setItemName(string $itemName) : self
+		{
+		$this->itemName = $itemName;
+		$this->moveItem = $this->page->isAuthorized('Move ' . $this->itemName);
+		$this->editItem = $this->page->isAuthorized('Edit ' . $this->itemName);
+		$this->moveFolder = $this->page->isAuthorized("Move {$this->itemName} Folder");
+
+		return $this;
 		}
 
 	protected function addEditFolderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Folder $folder) : void

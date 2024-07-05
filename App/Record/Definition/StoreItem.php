@@ -7,10 +7,10 @@ namespace App\Record\Definition;
  *
  * @property int $active MySQL type int
  * @property ?int $clothing MySQL type int
- * @property ?string $cut MySQL type char(1)
  * @property ?string $description MySQL type text
+ * @property ?int $folderId MySQL type int
+ * @property \App\Record\Folder $folder related record
  * @property ?int $noShipping MySQL type int
- * @property ?int $parent MySQL type int
  * @property ?int $payByPoints MySQL type int
  * @property ?string $pickupZip MySQL type char(5)
  * @property int $pointsOnly MySQL type int
@@ -20,7 +20,6 @@ namespace App\Record\Definition;
  * @property \App\Record\StoreItem $storeItem related record
  * @property ?int $taxable MySQL type int
  * @property ?string $title MySQL type char(100)
- * @property int $type MySQL type int
  */
 abstract class StoreItem extends \PHPFUI\ORM\Record
 	{
@@ -31,10 +30,9 @@ abstract class StoreItem extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'active' => ['int', 'int', 0, false, 0, ],
 		'clothing' => ['int', 'int', 0, true, ],
-		'cut' => ['char(1)', 'string', 1, true, ],
 		'description' => ['text', 'string', 65535, true, ],
+		'folderId' => ['int', 'int', 0, true, ],
 		'noShipping' => ['int', 'int', 0, true, ],
-		'parent' => ['int', 'int', 0, true, ],
 		'payByPoints' => ['int', 'int', 0, true, ],
 		'pickupZip' => ['char(5)', 'string', 5, true, ],
 		'pointsOnly' => ['int', 'int', 0, false, 0, ],
@@ -43,7 +41,6 @@ abstract class StoreItem extends \PHPFUI\ORM\Record
 		'storeItemId' => ['int', 'int', 0, false, ],
 		'taxable' => ['int', 'int', 0, true, ],
 		'title' => ['char(100)', 'string', 100, true, ],
-		'type' => ['int', 'int', 0, false, 0, ],
 	];
 
 	/** @var array<string> */

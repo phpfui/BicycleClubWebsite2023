@@ -17,6 +17,7 @@ class Inventory extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 		if ($this->page->addHeader('Manage Inventory'))
 			{
 			$storeItemTable = new \App\Table\StoreItem();
+
 			if ($folder->loaded())
 				{
 				$storeItemTable->setWhere(new \PHPFUI\ORM\Condition('folderId', $folder->folderId));

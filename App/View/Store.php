@@ -275,7 +275,8 @@ class Store extends \App\View\Folder
 			}
 		else
 			{
-			$items = \App\Table\StoreItem::byTitle(\App\Model\Session::getSignedInMember()['volunteerPoints'] ?? 0, true);
+			$storeItemTable = new \App\Table\StoreItem();
+			$items = $storeItemTable->byTitle((\App\Model\Session::getSignedInMember()['volunteerPoints'] ?? 0) > 0, true);
 			$cartView = new \App\View\Store\Cart($this->page, $cart);
 			$container->add($cartView->status());
 			$container->add(new \PHPFUI\Header('Shop'));

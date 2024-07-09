@@ -121,26 +121,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function deleteFolder(\App\Record\Folder $folder = new \App\Record\Folder()) : void
 		{
-		$url = '';
-
-		if (! $folder->empty() && $this->page->isAuthorized('Delete Photo Folder'))
-			{
-			if (! $folder->childCount())
-				{
-				\App\Model\Session::setFlash('success', "Folder {$folder->name} deleted.");
-				$url = '/Photo/browse/' . $folder->parentFolderId;
-				$folder->delete();
-				}
-			else
-				{
-				\App\Model\Session::setFlash('alert', "Folder {$folder->name} is not empty.");
-				}
-			}
-		else
-			{
-			\App\Model\Session::setFlash('alert', 'Folder not found.');
-			}
-		$this->page->redirect($url);
+		$this->view->deleteFolder('/Photo/browse/', $folder);
 		}
 
 	public function image(string $id = '') : void

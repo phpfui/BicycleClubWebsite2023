@@ -704,7 +704,6 @@ class Member
 				{
 				unset($post['affiliation']);
 				}
-			unset($post['lastRenewed'], $post['pending']);
 
 			if (isset($post['stateText']) && empty($post['state']))
 				{
@@ -713,7 +712,7 @@ class Member
 
 			if (! $this->page->isAuthorized('Edit Membership Dates'))
 				{
-				unset($post['joined'], $post['expires']);
+				unset($post['joined'], $post['expires'], $post['pending'], $post['lastRenewed']);
 				}
 
 			if ($canAddPayment)

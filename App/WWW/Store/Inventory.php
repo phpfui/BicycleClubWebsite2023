@@ -18,10 +18,7 @@ class Inventory extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 			{
 			$storeItemTable = new \App\Table\StoreItem();
 
-			if ($folder->loaded())
-				{
-				$storeItemTable->setWhere(new \PHPFUI\ORM\Condition('folderId', $folder->folderId));
-				}
+			$storeItemTable->setWhere(new \PHPFUI\ORM\Condition('folderId', (int)$folder->folderId));
 			$this->page->addPageContent($this->storeView->showInventory($storeItemTable, $folder));
 			}
 		}

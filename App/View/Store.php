@@ -13,6 +13,7 @@ class Store extends \App\View\Folder
 	public function __construct(\App\View\Page $page)
 		{
 		parent::__construct($page, __CLASS__);
+		$this->allowCuts = false;
 		$this->setItemName('Store Item')->setBrowseSection('Inventory/manage');
 		$this->settingTable = new \App\Table\Setting();
 		$this->thumbnailSize = (int)$this->settingTable->value('thumbnailSize');
@@ -181,6 +182,7 @@ class Store extends \App\View\Folder
 		$cartView = new \App\View\Store\Cart($this->page, $cartModel);
 		$form->add($cartView->status());
 		$form->add(new \PHPFUI\Input\Hidden('storeItemId', (string)$storeItem->storeItemId));
+		$form->add(\App\View\Folder::getBreadCrumbs('/Store/shop', $storeItem->folder, true));
 		$form->add("<h2>{$storeItem->title}</h2>");
 		$form->add($this->imageModel->getProductGallery($this->page));
 		$row = new \PHPFUI\GridX();
@@ -261,7 +263,7 @@ class Store extends \App\View\Folder
 		return $form;
 		}
 
-	public function Shop(\App\Model\Cart $cart) : \PHPFUI\Container
+	public function Shop(\App\Model\Cart $cart, \App\Record\Folder $folder = new \App\Record\Folder()) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 		$closed = $this->settingTable->value('storeClosedMessage');
@@ -276,10 +278,34 @@ class Store extends \App\View\Folder
 		else
 			{
 			$storeItemTable = new \App\Table\StoreItem();
-			$items = $storeItemTable->byTitle((\App\Model\Session::getSignedInMember()['volunteerPoints'] ?? 0) > 0, true);
+			$items = $storeItemTable->byTitle((\App\Model\Session::getSignedInMember()['volunteerPoints'] ?? 0) > 0, activeOnly:true, folder:$folder);
 			$cartView = new \App\View\Store\Cart($this->page, $cart);
 			$container->add($cartView->status());
 			$container->add(new \PHPFUI\Header('Shop'));
+			$container->add(\App\View\Folder::getBreadCrumbs('/Store/shop', $folder));
+
+			$folderTable = new \App\Table\Folder();
+			$folderCondition = new \PHPFUI\ORM\Condition('parentFolderId', (int)$folder->folderId);
+			$folderCondition->and('folderType', \App\Enum\FolderType::STORE);
+			$folderTable->setWhere($folderCondition);
+			$folderTable->addOrderBy('name');
+			$menu = new \PHPFUI\Menu();
+			$menu->addClass('expanded align-center');
+
+			foreach ($folderTable->getRecordCursor() as $folderMenu)
+				{
+				if ($folderMenu->storeItemChildren->count())
+					{
+					$menu->addMenuItem(new \PHPFUI\MenuItem($folderMenu->name, '/Store/shop/' . $folderMenu->folderId));
+					}
+				}
+
+			if (\count($menu))
+				{
+				$container->add($menu);
+				$container->add('<hr>');
+				}
+
 			$count = 0;
 
 			$storePhotoTable = new \App\Table\StorePhoto();
@@ -328,29 +354,19 @@ class Store extends \App\View\Folder
 
 		$this->page->addPageContent($this->getBreadCrumbs('/Store/Inventory/manage', $folder));
 
-		if ($folder->loaded())
-			{
-			$storeItemTable->setWhere(new \PHPFUI\ORM\Condition('folderId', $folder->folderId));
-			}
+		$condition = new \PHPFUI\ORM\Condition('folderId', (int)$folder->folderId);
 
-		if (! \count($storeItemTable))
+		if (! $folder->loaded())
 			{
-			$container->add(new \PHPFUI\SubHeader('No Inventory Found'));
-
-			return $container;
+			$condition->or('folderId', null);
 			}
+		$storeItemTable->setWhere($condition);
 
 		$condition = new \PHPFUI\ORM\Condition('folderType', \App\Enum\FolderType::STORE->value);
 		$condition->and('parentFolderId', (int)$folder->folderId);
 		$folderTable = new \App\Table\Folder();
 		$folderTable->setWhere($condition)->addOrderBy('name');
-//		$container->add($this->view->clipboard($folder));
-		$container->add($this->listFolders($folderTable, $folder, 'Store Item'));
-
-		if ($folder->loaded())
-			{
-			$storeItemTable->setWhere(new \PHPFUI\ORM\Condition('folderId', $folder->folderId));
-			}
+		$container->add($this->listFolders($folderTable, $folder, null));
 
 		$headers = ['title' => 'Item', 'price' => 'Price', 'storeItemId' => 'Item Id',
 			'active' => 'Active', 'del' => 'Delete', ];

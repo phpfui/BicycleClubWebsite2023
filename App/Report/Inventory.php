@@ -55,7 +55,8 @@ class Inventory
 			{
 			$title = ' Out Of Stock Inventory';
 			}
-		$result = \App\Table\StoreItem::byTitle(1);
+		$storeItemTable = new \App\Table\StoreItem();
+		$result = $storeItemTable->byTitle(true);
 		$grandTotal = 0;
 		$settings = new \App\Table\Setting();
 

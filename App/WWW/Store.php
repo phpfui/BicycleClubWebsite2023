@@ -159,6 +159,11 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function deleteFolder(\App\Record\Folder $folder = new \App\Record\Folder()) : void
+		{
+		$this->storeView->deleteFolder('/Store/Inventory/manage/', $folder);
+		}
+
 	public function edit(\App\Record\StoreItem $storeItem = new \App\Record\StoreItem()) : void
 		{
 		if ($this->page->addHeader('Edit Store Item'))
@@ -347,10 +352,10 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function shop() : void
+	public function shop(\App\Record\Folder $folder = new \App\Record\Folder()) : void
 		{
 		$this->page->setPublic();
-		$this->page->addPageContent($this->storeView->shop(new \App\Model\Cart()));
+		$this->page->addPageContent($this->storeView->shop(new \App\Model\Cart(), $folder));
 		}
 
 	public function upload() : void

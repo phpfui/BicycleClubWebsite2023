@@ -117,26 +117,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function deleteFolder(\App\Record\Folder $folder = new \App\Record\Folder()) : void
 		{
-		$url = '';
-
-		if (! $folder->empty() && $this->page->isAuthorized('Delete File Folder'))
-			{
-			if (! $folder->childCount())
-				{
-				\App\Model\Session::setFlash('success', "Folder {$folder->name} deleted.");
-				$url = '/File/browse/' . $folder->parentFolderId;
-				$folder->delete();
-				}
-			else
-				{
-				\App\Model\Session::setFlash('alert', "Folder {$folder->name} is not empty.");
-				}
-			}
-		else
-			{
-			\App\Model\Session::setFlash('alert', 'Folder not found.');
-			}
-		$this->page->redirect($url);
+		$this->view->deleteFolder('/File/browse/', $folder);
 		}
 
 	public function download(\App\Record\File $file = new \App\Record\File()) : void

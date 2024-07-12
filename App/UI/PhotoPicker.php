@@ -33,7 +33,7 @@ class PhotoPicker
 
 			foreach ($names as $name)
 				{
-				$condition->or(new \PHPFUI\ORM\Condition('photo', "%{$name}%", new \PHPFUI\ORM\Operator\Like()));
+				$condition->or(new \PHPFUI\ORM\Condition('description', "%{$name}%", new \PHPFUI\ORM\Operator\Like()));
 				}
 			$this->photoTable->setWhere($condition);
 

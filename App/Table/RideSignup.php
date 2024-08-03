@@ -190,13 +190,13 @@ class RideSignup extends \PHPFUI\ORM\Table
 	public static function getRiderStatus() : array
 		{
 		return [
-			'Remove From Ride',
-			'Definitely Riding',
-			'Probably Riding',
-			'Possibly',
-			'Wait List',
-			"Can't Ride Because",
-			'Cancelled',
+			self::REMOVE => 'Remove From Ride',
+			self::DEFINITELY_RIDING => 'Definitely Riding',
+			self::PROBABLY_RIDING => 'Probably Riding',
+			self::POSSIBLY_RIDING => 'Possibly',
+			self::WAIT_LIST => 'Wait List',
+			self::DEFINITELY_NOT_RIDING => "Can't Ride Because",
+			self::CANCELLED => 'Cancelled',
 		];
 		}
 

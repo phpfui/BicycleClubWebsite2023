@@ -16,9 +16,9 @@ class ComposerUpdate
 
 	public function __construct()
 		{
-		$installed = \json_decode(\file_get_contents($this->vendorDir . '../composer.lock'), true);
+		$installed = @\json_decode(\file_get_contents($this->vendorDir . '../composer.lock'), true);
 
-		foreach ($installed['packages'] as $install)
+		foreach (($installed['packages'] ?? []) as $install)
 			{
 			$packageName = $install['name'];
 
@@ -223,9 +223,9 @@ class ComposerUpdate
 
 	public function update() : void
 		{
-		$installed = \json_decode(\file_get_contents($this->vendorDir . '../composer.lock'), true);
+		$installed = @\json_decode(\file_get_contents($this->vendorDir . '../composer.lock'), true);
 
-		foreach ($installed['packages'] as $install)
+		foreach (($installed['packages'] ?? []) as $install)
 			{
 			$packageName = $install['name'];
 

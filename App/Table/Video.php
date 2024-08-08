@@ -13,7 +13,7 @@ class Video extends \PHPFUI\ORM\Table
 		{
 		$condition = new \PHPFUI\ORM\Condition();
 
-		$fields = ['title', 'description', 'fileName'];
+		$fields = ['title', 'description'];
 
 		foreach ($fields as $name)
 			{

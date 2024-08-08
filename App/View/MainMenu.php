@@ -238,10 +238,8 @@ class MainMenu extends \App\UI\MainMenu
 
 		if ($menu = $this->addTopMenu('Video', 'Videos'))
 			{
-			$this->addSub($menu, '/Video/addVideo', 'Add Video');
-			$this->addSub($menu, '/Video/types', 'Video Types');
 			$this->addSub($menu, '/Video/search', 'Find Videos');
-			$this->addSub($menu, '/Video/all', 'All Videos');
+			$this->addSub($menu, '/Video/browse', 'Browse Videos');
 			}
 
 		if ($menu = $this->addTopMenu('Store', 'Store'))

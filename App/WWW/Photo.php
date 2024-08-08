@@ -83,7 +83,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			foreach ($photos as $photoId)
 				{
-				\App\Model\Session::photoCut($photoId);
+				$this->view->cut($photoId);
 				}
 
 			if (\count($photos))
@@ -215,7 +215,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			foreach ($pastes as $photoId)
 				{
-				\App\Model\Session::photoCut($photoId, false);
+				$this->view->cut($photoId, false);
 
 				if ($paste)
 					{

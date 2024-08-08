@@ -122,6 +122,13 @@ abstract class Folder
 		return $container;
 		}
 
+	public function cut(int $id, bool $add = true) : static
+		{
+		\App\Model\Session::cut($this->type, $id, $add);
+
+		return $this;
+		}
+
 	public function deleteFolder(string $url, \App\Record\Folder $folder = new \App\Record\Folder()) : void
 		{
 		if (! $folder->empty() && $this->page->isAuthorized("Delete {$this->itemName} Folder"))

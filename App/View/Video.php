@@ -2,147 +2,25 @@
 
 namespace App\View;
 
-class Video
+class Video extends \App\View\Folder
 	{
-	public function __construct(private \App\View\Page $page)
+	private readonly \PHPFUI\ButtonGroup $buttonGroup;
+
+	private static bool $editFile = false;
+
+	public function __construct(\App\View\Page $page)
 		{
-		$this->processRequest();
-		}
-
-	public function accordionList(\PHPFUI\ORM\ArrayCursor $videos) : \PHPFUI\Accordion
-		{
-		$accordion = new \PHPFUI\Accordion();
-
-		foreach ($videos as $video)
-			{
-			$container = new \PHPFUI\Container();
-			$container->add(\PHPFUI\TextHelper::unhtmlentities($video['description']));
-			$buttonGroup = new \PHPFUI\ButtonGroup();
-			$buttonGroup->addButton(new \PHPFUI\Button('View', '/Video/view/' . $video['videoId']));
-
-			if ($this->page->isAuthorized('Edit Video'))
-				{
-				$editButton = new \PHPFUI\Button('Edit', '/Video/edit/' . $video['videoId']);
-				$editButton->addClass('secondary');
-				$buttonGroup->addButton($editButton);
-				}
-
-			$container->add($buttonGroup);
-			$row = new \PHPFUI\GridX();
-			$title = new \PHPFUI\Cell(6);
-			$title->add($video['title']);
-			$row->add($title);
-			$type = new \PHPFUI\Cell(3);
-			$videoType = new \App\Record\VideoType($video['videoTypeId']);
-			$type->add($videoType->name);
-			$row->add($type);
-			$date = new \PHPFUI\Cell(2);
-			$date->add($video['videoDate']);
-			$row->add($date);
-			$hits = new \PHPFUI\Cell(1);
-			$hits->add("{$video['hits']} Views");
-			$row->add($hits);
-			$accordion->addTab($row, $container);
-			}
-
-		return $accordion;
+		parent::__construct($page, __CLASS__);
+		self::$editFile = $page->isAuthorized('Edit Video');
+		$this->buttonGroup = new \PHPFUI\ButtonGroup();
 		}
 
 	public function edit(\App\Record\Video $video) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
+		$container->add(\App\View\Folder::getBreadCrumbs('/Video/browse', $video->folder, true));
 
-		if ($video->lastEdited || $video->editor || $video->fileName || $video->hits)
-			{
-			$fieldSet = new \PHPFUI\FieldSet('Information');
-
-			if ($video->lastEdited)
-				{
-				$fieldSet->add(new \App\UI\Display('Last Edited', $video->lastEdited));
-				}
-
-			if ($video->editor)
-				{
-				$member = new \App\Record\Member($video->editor);
-				$fieldSet->add(new \App\UI\Display('Last Edited By', $member->fullName()));
-				}
-
-			if ($video->fileName)
-				{
-				$fieldSet->add(new \App\UI\Display('File Name', $video->fileName));
-				}
-
-			if ($video->hits)
-				{
-				$fieldSet->add(new \App\UI\Display('Times Viewed', $video->hits));
-				}
-			$container->add($fieldSet);
-			}
-
-		$fieldSet = new \PHPFUI\FieldSet();
-		$title = new \PHPFUI\Input\Text('title', 'Video Title', $video->title);
-		$title->setRequired();
-		$fieldSet->add($title);
-
-		$description = new \PHPFUI\Input\TextArea('description', 'Description', \PHPFUI\TextHelper::unhtmlentities($video->description));
-		$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
-		$description->setRequired();
-		$fieldSet->add($description);
-
-		$videoDate = new \PHPFUI\Input\Date($this->page, 'videoDate', 'Date Video Recorded', $video->videoDate);
-		$videoDate->setRequired();
-
-		$videoType = new \PHPFUI\Input\Select('videoTypeId', 'Video Type');
-
-		$videoTypeTable = new \App\Table\VideoType();
-		$videoType->addOption('None', '0');
-
-		foreach ($videoTypeTable->getRecordCursor() as $type)
-			{
-			$videoType->addOption($type->name, $type->videoTypeId);
-			}
-		$videoType->select((string)$video->videoTypeId);
-
-		$public = new \PHPFUI\Input\CheckBoxBoolean('public', 'Publicly Viewable', (bool)$video->public);
-
-		$fieldSet->add(new \PHPFUI\MultiColumn($videoDate, $videoType, $public));
-
-		if ($video->videoId)
-			{
-			$submit = new \PHPFUI\Submit('Save');
-			$form = new \PHPFUI\Form($this->page, $submit);
-			}
-		else
-			{
-			$submit = new \PHPFUI\Submit('Add');
-			$form = new \PHPFUI\Form($this->page);
-			}
-
-		if ($form->isMyCallback())
-			{
-			$_POST['editor'] = \App\Model\Session::signedInMemberId();
-			$_POST['lastEdited'] = \date('Y-m-d H:i:s');
-			$video->setFrom($_POST);
-			$video->update();
-			$this->page->setResponse('Saved');
-
-			return $container;
-			}
-		elseif ('Add' == ($_POST['submit'] ?? '') && \App\Model\Session::checkCSRF())
-			{
-			$video = new \App\Record\Video();
-			$video->setFrom($_POST);
-			$id = $video->insert();
-			$this->page->done();
-			$this->page->redirect('/Video/edit/' . $id);
-
-			return $container;
-			}
-
-		$form->add($fieldSet);
-		$buttonGroup = new \PHPFUI\ButtonGroup();
-		$buttonGroup->addButton($submit);
-		$form->add($buttonGroup);
+		$form = $this->geteditform($video);
 		$container->add($form);
 
 		if (! empty($video->videoId))
@@ -155,7 +33,7 @@ class Video
 				$deleteVideo = new \PHPFUI\Button('Delete Video', '/Video/deleteFile/' . $video->videoId);
 				$deleteVideo->setConfirm('Are you sure you want to delete the video, it can not be undone?');
 				$deleteVideo->addClass('alert');
-				$buttonGroup->addButton($deleteVideo);
+				$this->buttonGroup->addButton($deleteVideo);
 				}
 			else
 				{
@@ -179,13 +57,86 @@ class Video
 		return $container;
 		}
 
+	public function getEditForm(\App\Record\Video $video) : \PHPFUI\Form
+		{
+		if ($video->videoId)
+			{
+			$submit = new \PHPFUI\Submit('Save');
+			$form = new \PHPFUI\Form($this->page, $submit);
+			}
+		else
+			{
+			$submit = new \PHPFUI\Submit('Add Video');
+			$form = new \PHPFUI\Form($this->page);
+			}
+
+		if ($form->isMyCallback())
+			{
+			$_POST['lastEdited'] = \date('Y-m-d H:i:s');
+			$video->setFrom($_POST);
+			$video->update();
+			$this->page->setResponse('Saved');
+
+			return $form;
+			}
+
+		if ($video->lastEdited || $video->memberId || $video->fileName || $video->hits)
+			{
+			$fieldSet = new \PHPFUI\FieldSet('Information');
+
+			if ($video->lastEdited)
+				{
+				$fieldSet->add(new \App\UI\Display('Last Edited', $video->lastEdited));
+				}
+
+			if ($video->memberId)
+				{
+				$fieldSet->add(new \App\UI\Display('Uploaded By', $video->member->fullName()));
+				}
+
+			if ($video->fileName)
+				{
+				$fieldSet->add(new \App\UI\Display('File Name', $video->fileName));
+				}
+
+			if ($video->hits)
+				{
+				$fieldSet->add(new \App\UI\Display('Times Viewed', $video->hits));
+				}
+			$form->add($fieldSet);
+			}
+
+		$fieldSet = new \PHPFUI\FieldSet();
+		$title = new \PHPFUI\Input\Text('title', 'Video Title', $video->title);
+		$title->setRequired();
+		$fieldSet->add($title);
+
+		$description = new \PHPFUI\Input\TextArea('description', 'Description', \PHPFUI\TextHelper::unhtmlentities($video->description));
+		$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$description->setRequired();
+		$fieldSet->add($description);
+
+		$videoDate = new \PHPFUI\Input\Date($this->page, 'videoDate', 'Date Video Recorded', $video->videoDate);
+		$videoDate->setRequired();
+
+		$public = new \PHPFUI\Input\CheckBoxBoolean('public', 'Publicly Viewable', (bool)$video->public);
+
+		$fieldSet->add(new \PHPFUI\MultiColumn($videoDate, $public));
+
+		$form->add($fieldSet);
+		$this->buttonGroup->addButton($submit);
+		$form->add($this->buttonGroup);
+
+		return $form;
+		}
+
 	public function getPlayer(?string $fileName) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 
 		if (! $fileName || ! \file_exists($_SERVER['DOCUMENT_ROOT'] . '/video/' . $fileName))
 			{
-			$container->add(new \PHPFUI\SubHeader('Video was not found on the server'));
+			$container->add(new \PHPFUI\SubHeader('Video was not found on the server ' . $fileName));
 
 			return $container;
 			}
@@ -212,63 +163,31 @@ class Video
 		return $container;
 		}
 
-	public function list() : \App\UI\ContinuousScrollTable
+	public function list(\App\Table\Video $videoTable, bool $allowCut = false, int $folderId = 0) : \App\UI\ContinuousScrollTable
 		{
-		$videoTable = new \App\Table\Video();
-		$videoTable->addJoin('videoType');
-
-		if (! \App\Model\Session::isSignedIn())
-			{
-			$videoTable->setWhere(new \PHPFUI\ORM\Condition('public', 1));
-			}
-
 		$view = new \App\UI\ContinuousScrollTable($this->page, $videoTable);
-
-		$view->addCustomColumn('title', static function(array $video) {
-			$span = new \PHPFUI\HTML5Element('span');
-			$span->add($video['title']);
-			$panel = new \PHPFUI\HTML5Element('div');
-			$panel->add(\htmlspecialchars_decode($video['description']));
-			$title = new \PHPFUI\DropDown($span, $panel);
-			$title->setHover();
-
-			return new \PHPFUI\Link('/Video/view/' . $video['videoId'], $title, false);
-			});
-
-		$view->addCustomColumn('edit', static function(array $video) {
-			return new \PHPFUI\FAIcon('far', 'edit', '/Video/edit/' . $video['videoId']);
-			});
-
-		$view->addCustomColumn('DL', static function(array $video) {
-			$icon = new \PHPFUI\FAIcon('fas', 'download');
-			$link = new \PHPFUI\Link('/video/' . $video['fileName'], $icon, false);
-			$link->setAttribute('download');
-
-			return $link;
-			});
-
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $videoTable, 'Are you sure you want to permanently delete this video?');
-		$view->addCustomColumn('description', static function(array $row) {return new \PHPFUI\Link('/Video/edit/' . $row['videoId'], $row['title'], false);});
 		$view->addCustomColumn('del', $deleter->columnCallback(...));
-		$headers = ['title' => 'Title', 'videoDate' => 'Date', 'hits' => 'Views', 'videoType.name' => 'Type'];
-		$editControls = [];
 
-		if ($this->page->isAuthorized('Edit Video'))
+		$this->cuts = $this->getCuts();
+
+		$view->addCustomColumn('videoDate', static fn (array $file) => $file['videoDate']);
+		$view->addCustomColumn('view', static fn (array $file) => new \PHPFUI\Link('/Video/view/' . $file['videoId'], $file['title'], false));
+		$view->addCustomColumn('video', static fn (array $file) => self::$editFile ? new \PHPFUI\Link('/Video/edit/' . $file['videoId'], $file['description'], false) : $file['description']);
+		$view->addCustomColumn('member', static function(array $file) { $member = new \App\Record\Member($file['memberId']);
+
+return $member->fullName();});
+
+		$headers = ['view' => 'View', 'video' => 'Description', 'videoDate' => 'Date', 'hits' => 'Views'];
+		$normalHeaders = ['member', 'del'];
+
+		if ($allowCut)
 			{
-			$editControls[] = 'edit';
+			$normalHeaders[] = 'cut';
+			$view->addCustomColumn('cut', $this->getCut(...));
 			}
 
-		if ($this->page->isAuthorized('Download Video'))
-			{
-			$editControls[] = 'DL';
-			}
-
-		if ($this->page->isAuthorized('Delete Video'))
-			{
-			$editControls[] = 'del';
-			}
-		$view->setHeaders(\array_merge($headers, $editControls))->setSortableColumns(\array_keys($headers));
-		$view->setSearchColumns(['title', 'videoDate', 'hits']);
+		$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, $normalHeaders))->setSortableColumns(\array_keys($headers));
 
 		return $view;
 		}
@@ -284,30 +203,32 @@ class Video
 		$p = new \PHPFUI\HTML5Element('p');
 		$p->add(\PHPFUI\TextHelper::unhtmlentities($video->description));
 		$container->add($p);
-		$videos = new \PHPFUI\Button('All Videos', '/Videos/All');
+		$videos = new \PHPFUI\Button('Browse Videos', '/Videos/browse');
 
 		return $container;
 		}
 
-	protected function processRequest() : void
+	protected function addModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Folder $folder) : void
 		{
-		if (\App\Model\Session::checkCSRF())
+		if ('Add Video' == ($_POST['submit'] ?? '') && \App\Model\Session::checkCSRF())
 			{
-			if (isset($_POST['action']))
-				{
-				switch ($_POST['action'])
-					{
-					case 'deleteVideo':
-						$video = new \App\Record\Video((int)$_POST['videoId']);
-						$fileName = $_SERVER['DOCUMENT_ROOT'] . '/video/' . $video->fileName;
-						$video->delete();
+			$video = new \App\Record\Video();
+			$video->setFrom($_POST);
+			$video->folderId = $folder->folderId;
+			$video->memberId = $this->signedInMember;
+			$this->page->done();
+			$this->page->redirect('/Video/edit/' . $video->insert());
 
-						\App\Tools\File::unlink($fileName);
-						$this->page->setResponse($_POST['videoId']);
-
-						break;
-					}
-				}
+			return;
 			}
+
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$modal->addClass('large');
+		$fieldSet = new \PHPFUI\FieldSet('Add Video To This Folder');
+		$form = $this->getEditForm(new \App\Record\Video());
+		$form->setAreYouSure(false);
+		$this->buttonGroup->addButton($modal->getCloseButton());
+		$fieldSet->add($form);
+		$modal->add($fieldSet);
 		}
 	}

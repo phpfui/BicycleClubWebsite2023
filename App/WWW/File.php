@@ -84,7 +84,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			foreach ($files as $fileId)
 				{
-				\App\Model\Session::fileCut($fileId);
+				$this->view->cut($fileId);
 				}
 
 			if (\count($files))
@@ -212,7 +212,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			foreach ($pastes as $fileId)
 				{
-				\App\Model\Session::fileCut($fileId, false);
+				$this->view->cut($fileId, false);
 
 				if ($paste)
 					{

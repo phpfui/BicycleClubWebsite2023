@@ -62,6 +62,7 @@ $updater->deleteFileInNamespace('Clue\StreamFilter', 'functions_include.php');
 $updater->deleteFileInNamespace('Clue\StreamFilter', 'functions.php');
 
 // update the public files
+\exec($php . ' vendor/phpfui/phpfui/update.php www/PHPFUI');
 \exec($php . ' vendor/phpfui/instadoc/install.php www/PHPFUI');
 
 $source = __DIR__ . '/vendor/phpfui/orm/translations';

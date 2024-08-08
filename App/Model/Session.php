@@ -12,12 +12,24 @@ class Session extends \PHPFUI\Session
 
 	public static function addPhotoToAlbum(int $photoId) : void
 		{
-		$_SESSION['photos']['album'][] = $photoId;
+		$_SESSION['photoAlbum'][] = $photoId;
 		}
 
 	public static function clearPhotoAlbum() : void
 		{
-		unset($_SESSION['photos']['album']);
+		unset($_SESSION['photoAlbum']);
+		}
+
+	public static function cut(string $type, int $id, bool $add = true) : void
+		{
+		if ($add)
+			{
+			$_SESSION['cuts'][$type][$id] = true;
+			}
+		else
+			{
+			unset($_SESSION['cuts'][$type][$id]);
+			}
 		}
 
 	public static function destroy() : void
@@ -34,18 +46,6 @@ class Session extends \PHPFUI\Session
 	public static function expires() : int
 		{
 		return (int)$_SESSION['expires'];
-		}
-
-	public static function fileCut(int $photoId, bool $add = true) : void
-		{
-		if ($add)
-			{
-			$_SESSION['files']['cut'][$photoId] = true;
-			}
-		else
-			{
-			unset($_SESSION['files']['cut'][$photoId]);
-			}
 		}
 
 	/**
@@ -76,7 +76,7 @@ class Session extends \PHPFUI\Session
 	 */
 	public static function getCuts(string $type) : array
 		{
-		return $_SESSION[$type]['cut'] ?? [];
+		return $_SESSION['cuts'][$type] ?? [];
 		}
 
 	public static function getDebugging(int $flags = 0) : int
@@ -96,7 +96,7 @@ class Session extends \PHPFUI\Session
 	 */
 	public static function getPhotoAlbum() : array
 		{
-		return $_SESSION['photos']['album'] ?? [];
+		return $_SESSION['photosAlbum'] ?? [];
 		}
 
 	/**
@@ -117,18 +117,6 @@ class Session extends \PHPFUI\Session
 	public static function isSignedIn() : bool
 		{
 		return ! empty($_SESSION['membershipId']);
-		}
-
-	public static function photoCut(int $photoId, bool $add = true) : void
-		{
-		if ($add)
-			{
-			$_SESSION['photos']['cut'][$photoId] = true;
-			}
-		else
-			{
-			unset($_SESSION['photos']['cut'][$photoId]);
-			}
 		}
 
 	public static function registerMember(\App\Record\Member $member) : void
@@ -219,6 +207,6 @@ class Session extends \PHPFUI\Session
 	public static function unregisterMember() : void
 		{
 		$_SESSION['acceptedWaiver'] = $_SESSION['expires'] = $_SESSION['memberId'] = $_SESSION['membershipId'] = 0;
-		unset($_SESSION['userPermissions'], $_SESSION['photos'], $_SESSION['files']);
+		unset($_SESSION['userPermissions'], $_SESSION['photoAlbum'], $_SESSION['cuts']);
 		}
 	}

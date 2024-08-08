@@ -18,10 +18,9 @@ class VideoSearch
 			{
 			$view = new \App\View\Video($this->page);
 			$videoTable = new \App\Table\Video();
-			$videos = $videoTable->search($_GET)->getArrayCursor();
-			$output = $view->accordionList($videos);
+			$output = $view->list($videoTable->search($_GET));
 
-			if (\count($videos))
+			if (\count($videoTable))
 				{
 				$output .= $button;
 				}

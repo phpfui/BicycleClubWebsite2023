@@ -16,10 +16,10 @@ namespace App\Record\Definition;
  * @property int $memberId MySQL type int
  * @property \App\Record\Member $member related record
  * @property string $orderDate MySQL type date
- * @property ?int $paidByCheck MySQL type int
+ * @property int $paidByCheck MySQL type int
  * @property ?string $paymentDate MySQL type date
  * @property ?float $paypalPaid MySQL type decimal(7,2)
- * @property ?string $paypaltx MySQL type varchar(50)
+ * @property string $paypaltx MySQL type varchar(50)
  * @property ?int $pointsUsed MySQL type int
  * @property ?float $totalPrice MySQL type decimal(7,2)
  * @property ?float $totalShipping MySQL type decimal(7,2)
@@ -40,10 +40,10 @@ abstract class Invoice extends \PHPFUI\ORM\Record
 		'invoiceId' => ['int', 'int', 0, false, ],
 		'memberId' => ['int', 'int', 0, false, ],
 		'orderDate' => ['date', 'string', 10, false, ],
-		'paidByCheck' => ['int', 'int', 0, true, 0, ],
+		'paidByCheck' => ['int', 'int', 0, false, 0, ],
 		'paymentDate' => ['date', 'string', 10, true, ],
 		'paypalPaid' => ['decimal(7,2)', 'float', 7, true, ],
-		'paypaltx' => ['varchar(50)', 'string', 50, true, ],
+		'paypaltx' => ['varchar(50)', 'string', 50, false, '', ],
 		'pointsUsed' => ['int', 'int', 0, true, ],
 		'totalPrice' => ['decimal(7,2)', 'float', 7, true, ],
 		'totalShipping' => ['decimal(7,2)', 'float', 7, true, ],

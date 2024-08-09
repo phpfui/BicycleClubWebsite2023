@@ -8,7 +8,7 @@ namespace App\Record\Definition;
  * @property ?string $answer MySQL type varchar(100)
  * @property int $volunteerPollAnswerId MySQL type int
  * @property \App\Record\VolunteerPollAnswer $volunteerPollAnswer related record
- * @property ?int $volunteerPollId MySQL type int
+ * @property int $volunteerPollId MySQL type int
  * @property \App\Record\VolunteerPoll $volunteerPoll related record
  */
 abstract class VolunteerPollAnswer extends \PHPFUI\ORM\Record
@@ -18,9 +18,9 @@ abstract class VolunteerPollAnswer extends \PHPFUI\ORM\Record
 	/** @var array<string, array<mixed>> */
 	protected static array $fields = [
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'answer' => ['varchar(100)', 'string', 100, true, ],
+		'answer' => ['varchar(100)', 'string', 100, true, '', ],
 		'volunteerPollAnswerId' => ['int', 'int', 0, false, ],
-		'volunteerPollId' => ['int', 'int', 0, true, ],
+		'volunteerPollId' => ['int', 'int', 0, false, ],
 	];
 
 	/** @var array<string> */

@@ -15,7 +15,7 @@ class Migration_48 extends \PHPFUI\ORM\Migration
 		$this->alterColumn('file', 'description', 'varchar(255)', 'file');
 		$this->executeAlters();
 
-		$this->runSQL("CREATE TABLE filefolder (
+		$this->runSQL("CREATE TABLE fileFolder (
 			fileFolderId int NOT NULL AUTO_INCREMENT,
 			fileFolder varchar(255) NOT NULL DEFAULT '',
 			parentFolderId int DEFAULT '0',

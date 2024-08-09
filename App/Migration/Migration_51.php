@@ -32,6 +32,10 @@ class Migration_51 extends \PHPFUI\ORM\Migration
 
 		foreach ($videos as $video)
 			{
+			if (! $video->fileName)
+				{
+				continue;
+				}
 			$parts = \explode('.', $video->fileName);
 			$fileName = $video->videoId . '.' . \uniqid(more_entropy:true) . '.' . \array_pop($parts);
 			$this->runSQL('update `video` set fileName=? where videoId=?', [$fileName, $video->videoId]);

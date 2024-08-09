@@ -178,11 +178,17 @@ class SMS
 
 	public function textRide(\App\Record\Ride $ride) : static
 		{
-		$riders = $this->rideSignupTable->getAllSignedUpRiders($ride);
+		$comment = 'Via Text: ' . $this->body;
+
+		// was it already sent?
+		$rideComment = new \App\Record\RideComment(['rideId' => $ride->rideId, 'comment' => $comment]);
+		if ($rideComment->loaded())	// was it already sent?
+			{
+			return $this;
+			}
 
 		// add to ride comment table for posterity
-		$rideComment = new \App\Record\RideComment();
-		$rideComment->comment = 'Via Text: ' . $this->body;
+		$rideComment->comment = $comment;
 		$rideComment->time = \date('Y-m-d H:i:s');
 		$rideComment->latitude = $this->latitude;
 		$rideComment->longitude = $this->longitude;
@@ -190,7 +196,7 @@ class SMS
 		$rideComment->member = $this->fromMember;
 		$rideComment->insert();
 
-		foreach ($riders as $rider)
+		foreach ($this->rideSignupTable->getAllSignedUpRiders($ride) as $rider)
 			{
 			if (\App\Table\RideSignup::NO_SHOW != $rider['attended'])
 				{

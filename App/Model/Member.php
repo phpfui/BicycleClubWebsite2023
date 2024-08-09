@@ -983,7 +983,7 @@ class Member
 
 	public function verifyPassword(string $passwordToVerify, \App\Record\Member $member) : bool
 		{
-		return \password_verify($passwordToVerify, $member->password);
+		return \password_verify($passwordToVerify, $member->password ?? \uniqid());
 		}
 
 	private function createInvoice(\App\Record\Member $member, int $additionalMembers, int $years, float $donation = 0.0, string $dedication = '') : \App\Record\Invoice

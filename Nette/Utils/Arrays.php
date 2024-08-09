@@ -98,7 +98,7 @@ class Arrays
 	 */
 	public static function getKeyOffset(array $array, string|int $key): ?int
 	{
-		return Cast::falseToNull(array_search(self::toKey($key), array_keys($array), strict: true));
+		return Helpers::falseToNull(array_search(self::toKey($key), array_keys($array), strict: true));
 	}
 
 

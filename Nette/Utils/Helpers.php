@@ -43,7 +43,9 @@ class Helpers
 	}
 
 
-	/** use Cast::falseToNull() */
+	/**
+	 * Converts false to null, does not change other values.
+	 */
 	public static function falseToNull(mixed $value): mixed
 	{
 		return $value === false ? null : $value;

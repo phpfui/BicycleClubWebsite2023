@@ -48,6 +48,7 @@
         "tinify/tinify": "*",
         "tinymce/tinymce": "^7.0",
         "twilio/sdk": "^8.0",
+        "phpfui/common": "dev-main",
         "zbateson/mail-mime-parser": "^3.0"
     },
     "require-dev": {
@@ -62,5 +63,11 @@
         "allow-plugins": {
             "php-http/discovery": true
         }
-    }
+    },
+    "repositories": [
+        {
+        "type": "vcs",
+        "url": "https://github.com/phpfui/common"
+        }
+    ]
 }

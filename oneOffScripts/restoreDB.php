@@ -1,17 +1,21 @@
 <?php
 
-function help(string $message = '') : void
+function help(string $message = '', bool $exit = true) : void
 	{
 	if ($message)
 		{
 		echo "Error: {$message}\n\n";
 		}
-	echo "RestoreDB db <filename.gz> - Restore a datebase from a .gz file\n\n";
-	echo "db is required database to restore into\n";
-	echo "filename.gz is file to restore, default: backup.gz\n";
-	echo "-help, -? for this text\n";
 
-	exit;
+	if ($exit)
+		{
+		echo "RestoreDB db <filename.gz> - Restore a datebase from a .gz file\n\n";
+		echo "db is required database to restore into\n";
+		echo "filename.gz is file to restore, default: backup.gz\n";
+		echo "-help, -? for this text\n";
+
+		exit;
+		}
 	}
 
 $help = ['-help', '-?'];
@@ -60,6 +64,17 @@ if (! \file_exists($fileName))
 
 echo 'Backup is dated ' . \date('F d Y H:i:s.', \filemtime($fileName)) . "\n";
 
+// echo 'ZipArchive::ER_EXISTS ' . ZipArchive::ER_EXISTS ."\n";
+// echo 'ZipArchive::ER_INCONS ' . ZipArchive::ER_INCONS ."\n";
+// echo 'ZipArchive::ER_INVAL ' . ZipArchive::ER_INVAL ."\n";
+// echo 'ZipArchive::ER_MEMORY ' . ZipArchive::ER_MEMORY ."\n";
+// echo 'ZipArchive::ER_NOENT ' . ZipArchive::ER_NOENT ."\n";
+// echo 'ZipArchive::ER_NOZIP ' . ZipArchive::ER_NOZIP ."\n";
+// echo 'ZipArchive::ER_OPEN ' . ZipArchive::ER_OPEN ."\n";
+// echo 'ZipArchive::ER_READ ' . ZipArchive::ER_READ ."\n";
+// echo 'ZipArchive::ER_SEEK ' . ZipArchive::ER_SEEK ."\n";
+
+/*
 if (\str_contains($fileName, '.gz'))
 	{
 	// Raising this value may increase performance
@@ -96,15 +111,16 @@ elseif (\str_contains($fileName, '.zip'))
 		}
 	else
 		{
-		\help("Error unzipping file {$fileName}: {$status}");
+		\help("Error unzipping file {$fileName}: {$status}", false);
 		}
 	}
+ */
 
 $restoredFileName = "backup.{$db}.sql";
 $cleaner = new \PHPFUI\ORM\Tool\CleanBackup($baseFileName, $restoredFileName);
 $cleaner->run();
 
-echo "Restoring backup\n";
+echo "Restoring file: {$restoredFileName}\n";
 
 $restore = new \App\Model\Restore($restoredFileName);
 $restore->run();

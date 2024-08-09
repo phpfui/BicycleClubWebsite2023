@@ -19,7 +19,7 @@ abstract class BlogItem extends \PHPFUI\ORM\Record
 	protected static array $fields = [
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'blogId' => ['int', 'int', 0, false, ],
-		'ranking' => ['int', 'int', 0, false, ],
+		'ranking' => ['int', 'int', 0, false, 0, ],
 		'storyId' => ['int', 'int', 0, false, ],
 	];
 

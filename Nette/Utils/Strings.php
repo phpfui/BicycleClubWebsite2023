@@ -521,7 +521,7 @@ class Strings
 			}
 		}
 
-		return Cast::falseToNull($pos);
+		return Helpers::falseToNull($pos);
 	}
 
 

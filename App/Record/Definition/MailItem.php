@@ -7,8 +7,8 @@ namespace App\Record\Definition;
  *
  * @property ?string $body MySQL type mediumtext
  * @property ?string $domain MySQL type varchar(30)
- * @property ?string $fromEmail MySQL type varchar(100)
- * @property ?string $fromName MySQL type varchar(100)
+ * @property ?string $fromEmail MySQL type varchar(255)
+ * @property ?string $fromName MySQL type varchar(255)
  * @property ?int $html MySQL type int
  * @property int $mailItemId MySQL type int
  * @property \App\Record\MailItem $mailItem related record
@@ -28,8 +28,8 @@ abstract class MailItem extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'body' => ['mediumtext', 'string', 16777215, true, ],
 		'domain' => ['varchar(30)', 'string', 30, true, '', ],
-		'fromEmail' => ['varchar(100)', 'string', 100, true, '', ],
-		'fromName' => ['varchar(100)', 'string', 100, true, '', ],
+		'fromEmail' => ['varchar(255)', 'string', 255, true, '', ],
+		'fromName' => ['varchar(255)', 'string', 255, true, '', ],
 		'html' => ['int', 'int', 0, true, 0, ],
 		'mailItemId' => ['int', 'int', 0, false, ],
 		'memberId' => ['int', 'int', 0, true, ],

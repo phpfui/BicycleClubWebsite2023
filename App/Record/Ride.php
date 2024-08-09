@@ -7,7 +7,6 @@ namespace App\Record;
  *
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\SigninSheetRide> $SigninSheetRideChildren
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\RideSignup> $rideSignups
- * @property \PHPFUI\ORM\RecordCursor<\App\Record\RideIncentive> $RideIncentiveChildren
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\RideComment> $RideCommentChildren
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\AssistantLeader> $assistantLeaders
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\RideSignup> $confirmedRiders
@@ -20,7 +19,6 @@ class Ride extends \App\Record\Definition\Ride
 	protected static array $virtualFields = [
 		'assistantLeaders' => [\PHPFUI\ORM\Children::class, \App\Table\AssistantLeader::class],
 		'RideCommentChildren' => [\PHPFUI\ORM\Children::class, \App\Table\RideComment::class],
-		'RideIncentiveChildren' => [\PHPFUI\ORM\Children::class, \App\Table\RideIncentive::class],
 		'waitList' => [\App\DB\RideWaitList::class],
 		'rideSignups' => [\PHPFUI\ORM\Children::class, \App\Table\RideSignup::class],
 		'SigninSheetRideChildren' => [\PHPFUI\ORM\Children::class, \App\Table\SigninSheetRide::class],

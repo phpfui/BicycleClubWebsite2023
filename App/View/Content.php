@@ -520,9 +520,9 @@ class Content extends \App\UI\HTMLEditor
 				{
 				case 'Add and Copy':
 					$photo = new \App\Record\Photo($_POST['photoId']);
-					$storyFileName = $_POST['fileName'];
-					$widthHidden = (int)$_POST['widthHidden'];
-					$width = (int)$_POST['width'];
+					$storyFileName = $_POST['fileName'] ?? 'unknown';
+					$widthHidden = (int)($_POST['widthHidden'] ?? 0);
+					$width = (int)($_POST['width'] ?? 0);
 					$contentFileModel = new \App\Model\ContentFiles();
 					$storyImageFullPath = $contentFileModel->get($storyFileName);
 

@@ -52,6 +52,8 @@ class Migration_53 extends \PHPFUI\ORM\Migration
 
 		$this->alterColumn('invoiceItem', 'type', 'int not null default "0"');
 
+		$this->alterColumn('journalItem', 'timeSent', 'datetime NOT NULL DEFAULT CURRENT_TIMESTAMP');
+
 		$this->alterColumn('mailAttachment', 'prettyName', 'varchar(255) default ""');
 
 		$this->alterColumn('mailItem', 'fromEmail', 'varchar(255) default ""');
@@ -69,6 +71,11 @@ class Migration_53 extends \PHPFUI\ORM\Migration
 
 		$this->alterColumn('volunteerPollAnswer', 'volunteerPollId', 'int not null');
 		$this->alterColumn('volunteerPollAnswer', 'answer', "varchar(100) default ''");
+
+		$this->dropTable('httpRequest');
+		$this->dropTable('incentive');
+		$this->dropTable('rideIncentive');
+		$this->dropTable('videoType');
 
 		return true;
 		}

@@ -182,6 +182,7 @@ class SMS
 
 		// was it already sent?
 		$rideComment = new \App\Record\RideComment(['rideId' => $ride->rideId, 'comment' => $comment]);
+
 		if ($rideComment->loaded())	// was it already sent?
 			{
 			return $this;

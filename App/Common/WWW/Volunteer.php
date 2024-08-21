@@ -1,6 +1,6 @@
 <?php
 
-namespace App\WWW;
+namespace App\Common\WWW;
 
 class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{

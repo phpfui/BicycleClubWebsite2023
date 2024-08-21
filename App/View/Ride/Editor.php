@@ -94,7 +94,7 @@ class Editor
 		return $form;
 		}
 
-	public function edit(\App\Record\Ride $ride, bool $afterRide = false) : \PHPFUI\Container
+	public function edit(\App\Record\Ride $ride) : \PHPFUI\Container
 		{
 		$output = new \PHPFUI\Container();
 		$errorCallout = new \PHPFUI\Callout('alert');
@@ -197,10 +197,9 @@ class Editor
 
 		if (empty($ride->startTime))
 			{
-			$ride->startTime = '9:00 AM';
+			$ride->startTime = '09:00:00';
 			}
-		$dayOfRide = $ride->rideDate == \App\Tools\Date::todayString();
-		$rideStarted = \App\Tools\TimeHelper::fromString(\date('g:i a')) >= \App\Tools\TimeHelper::fromString($ride->startTime);
+		$afterRide = 0 != $ride->rideId && $ride->rideDate . ' ' . $ride->startTime < \date('Y-m-d H:i:s');
 
 		$form->add(new \PHPFUI\Input\Hidden('rideId', (string)$ride->rideId));
 
@@ -216,7 +215,7 @@ class Editor
 			$ride->memberId = \App\Model\Session::signedInMemberId();
 			}
 
-		if ($dayOfRide || $afterRide)
+		if ($afterRide)
 			{
 			$rideView = new \App\View\Rides($this->page);
 
@@ -243,7 +242,7 @@ class Editor
 			$mileage->addAttribute('max', (string)999)->addAttribute('min', (string)0);
 			$this->mileageSelectorId = $mileage->getId();
 			$mileage->setToolTip('Actual mileage for the ride');
-			$mileage->setRequired($rideStarted || $afterRide);
+			$mileage->setRequired($afterRide);
 			$multiColumn->add($mileage);
 			$status = new \PHPFUI\Input\Select('rideStatus', 'Ride Status');
 			$status->setToolTip('This helps us judge how many rides are actually led');
@@ -259,10 +258,10 @@ class Editor
 			$numRiders = new \PHPFUI\Input\Number('numberOfRiders', 'Number Of Riders', $ride->numberOfRiders);
 			$numRiders->setToolTip('This helps us judge the number of active members');
 			$numRiders->addAttribute('min', (string)0)->addAttribute('max', (string)99)->addAttribute('step', (string)1);
-			$numRiders->setRequired($rideStarted || $afterRide);
+			$numRiders->setRequired($afterRide);
 			$averagePace = new \PHPFUI\Input\Number('averagePace', 'Average Pace (if known)', $ride->averagePace);
 			$averagePace->addAttribute('min', (string)5)->addAttribute('max', (string)25)->addAttribute('step', (string)0.1);
-			$averagePace->setRequired($rideStarted || $afterRide);
+			$averagePace->setRequired($afterRide);
 			$averagePace->setToolTip('This would be the group consensus of the average pace of the ride');
 			$this->elevation->setValue((string)$ride->elevation);
 			$fieldSet->add(new \PHPFUI\MultiColumn($numRiders, $averagePace, $this->elevation));
@@ -273,15 +272,8 @@ class Editor
 			$accident->setConfirm('Are you sure you want to report an accident on this ride?');
 
 			$multiColumn->add('<br>' . $accident);
-
-			if (! $rideStarted && ! $afterRide)
-				{
-				$time = new \PHPFUI\Input\Time($this->page, 'startTime', 'Start Time', $ride->startTime, $this->startTimeOffset);
-				$time->setToolTip('Time the ride leaves the start location');
-				$time->setRequired();
-				$multiColumn->add($time);
-				}
 			$fieldSet->add($multiColumn);
+
 			$form->add($fieldSet);
 			$form->add($this->getLeaderFieldSet($ride, $form));
 			$form->add($this->getOptionalInfo($ride, false));

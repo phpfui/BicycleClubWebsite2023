@@ -199,7 +199,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$this->page->addHeader('Edit Ride', override:$myride);
 			}
 		$view = new \App\View\Ride\Editor($this->page);
-		$this->page->addPageContent($view->edit($ride, $afterRide));
+		$this->page->addPageContent($view->edit($ride));
 		}
 
 	public function emailRide(\App\Record\Ride $ride = new \App\Record\Ride()) : void

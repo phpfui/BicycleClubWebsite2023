@@ -1,5 +1,3 @@
-Double text sent when done from website
-
 Test General Admission paid and free options
 
 Default category

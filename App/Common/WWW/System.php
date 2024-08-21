@@ -1,6 +1,6 @@
 <?php
 
-namespace App\WWW;
+namespace App\Common\WWW;
 
 class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{

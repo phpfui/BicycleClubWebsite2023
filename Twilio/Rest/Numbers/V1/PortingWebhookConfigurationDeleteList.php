@@ -40,7 +40,7 @@ class PortingWebhookConfigurationDeleteList extends ListResource
     /**
      * Constructs a PortingWebhookConfigurationDeleteContext
      *
-     * @param string $webhookType The of the webhook type of the configuration to be deleted
+     * @param string $webhookType The webhook type for the configuration to be delete. `PORT_IN`, `PORT_OUT`
      */
     public function getContext(
         string $webhookType

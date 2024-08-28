@@ -736,27 +736,27 @@ class Invoice
 		if (! empty($parameters['text']))
 			{
 			$invoiceTable->addJoin('invoiceItem');
-			$invoiceTable->setDistinct();
 			$textCondition = new \PHPFUI\ORM\Condition('invoiceItem.title', '%' . $parameters['text'] . '%', new \PHPFUI\ORM\Operator\Like());
 			$textCondition->or('invoiceItem.description', '%' . $parameters['text'] . '%', new \PHPFUI\ORM\Operator\Like());
 			$textCondition->or('invoiceItem.detailLine', '%' . $parameters['text'] . '%', new \PHPFUI\ORM\Operator\Like());
 			$condition->and($textCondition);
 			}
 
-		if (! empty($parameters['orderDate_from']))
+		if (! empty($parameters['startDate']))
 			{
-			$condition->and('orderDate', $parameters['orderDate_from'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			$condition->and('orderDate', $parameters['startDate'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
 			}
 
-		if (! empty($parameters['orderDate_through']))
+		if (! empty($parameters['endDate']))
 			{
-			$condition->and('orderDate', $parameters['orderDate_through'], new \PHPFUI\ORM\Operator\LessThanEqual());
+			$condition->and('orderDate', $parameters['endDate'], new \PHPFUI\ORM\Operator\LessThanEqual());
 			}
 
 		if (! empty($parameters['paypaltx']))
 			{
 			$condition->and('paypaltx', $parameters['paypaltx']);
 			}
+		$invoiceTable->setDistinct();
 		$invoiceTable->setWhere($condition);
 
 		return $invoiceTable;

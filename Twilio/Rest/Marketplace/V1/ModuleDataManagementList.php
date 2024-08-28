@@ -40,7 +40,7 @@ class ModuleDataManagementList extends ListResource
     /**
      * Constructs a ModuleDataManagementContext
      *
-     * @param string $sid 
+     * @param string $sid The unique identifier of a Listing.
      */
     public function getContext(
         string $sid

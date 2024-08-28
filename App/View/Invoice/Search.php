@@ -51,8 +51,8 @@ class Search implements \Stringable
 		$invoiceId->addAttribute('max', (string)9_999_999)->addAttribute('min', (string)0);
 		$name = new \PHPFUI\Input\Text('name', 'Member Name Includes', $parameters['name']);
 		$text = new \PHPFUI\Input\Text('text', 'Invoice Contains Phrase', $parameters['text']);
-		$startDate = new \PHPFUI\Input\Date($this->page, 'orderDate_from', 'Order Date From', $parameters['orderDate_from']);
-		$endDate = new \PHPFUI\Input\Date($this->page, 'orderDate_through', 'Order Date Through', $parameters['orderDate_through']);
+		$startDate = new \PHPFUI\Input\Date($this->page, 'startDate', 'Order Date From', $parameters['startDate']);
+		$endDate = new \PHPFUI\Input\Date($this->page, 'endDate', 'Order Date Through', $parameters['endDate']);
 		$transactionId = new \PHPFUI\Input\Text('paypaltx', 'PayPal Transaction Id', $parameters['paypaltx']);
 		$fieldSet->add(new \PHPFUI\MultiColumn($invoiceId, $transactionId));
 		$fieldSet->add(new \PHPFUI\MultiColumn($text, $name));
@@ -82,8 +82,8 @@ class Search implements \Stringable
 		$defaults['shipped'] = '0';
 		$defaults['paypaltx'] = '';
 		$defaults['text'] = '';
-		$defaults['orderDate_through'] = '';
-		$defaults['orderDate_from'] = '';
+		$defaults['startDate'] = '';
+		$defaults['endDate'] = '';
 
 		foreach ($defaults as $key => $value)
 			{

@@ -42,7 +42,7 @@ class PortingPortabilityInstance extends InstanceResource
      *
      * @param Version $version Version that contains the resource
      * @param mixed[] $payload The response payload
-     * @param string $phoneNumber The phone number which portability is to be checked. Phone numbers are in E.164 format (e.g. +16175551212).
+     * @param string $phoneNumber Phone number to check portability in e164 format.
      */
     public function __construct(Version $version, array $payload, string $phoneNumber = null)
     {

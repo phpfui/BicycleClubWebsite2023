@@ -696,6 +696,7 @@ class Invoice
 	public function getInvoiceTable(array $parameters) : \App\Table\Invoice
 		{
 		$invoiceTable = new \App\Table\Invoice();
+		$invoiceTable->setSelectFields('invoice.*,member.*');
 		$invoiceTable->addJoin('member');
 		$condition = new \PHPFUI\ORM\Condition();
 

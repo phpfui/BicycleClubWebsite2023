@@ -64,7 +64,7 @@ class Condition implements \Countable, \Stringable
 						{
 						$escapedField = '`' . \str_replace('.', '`.`', (string)$field) . '`';
 						}
-					$retVal .= "{$first}{$escapedField}{$operator} ";
+					$retVal .= " {$first}{$escapedField}{$operator} ";
 					$first = ' ';
 
 					if (\is_array($value))
@@ -92,7 +92,7 @@ class Condition implements \Countable, \Stringable
 					}
 				elseif (\is_object($value))
 					{
-					$retVal .= "{$first}{$field}{$operator} {$value}";
+					$retVal .= " {$first}{$field}{$operator} {$value}";
 					$first = ' ';
 					}
 				else

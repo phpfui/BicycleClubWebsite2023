@@ -16,6 +16,9 @@ class Orders
 
 			foreach ($view->getArrayCursor() as $row)
 				{
+				$row['firstName'] = $row['firstName'] ?? $row['customer_firstName'];
+				$row['lastName'] = $row['lastName'] ?? $row['customer_lastName'];
+
 				if ('Stock' == $_POST['labelType'])
 					{
 					$text = "{$row['firstName']} {$row['lastName']}\n\n";
@@ -67,6 +70,14 @@ class Orders
 
 			return $link;
 			});
+		$view->addCustomColumn('firstName', static function(array $storeOrder)
+			{
+			return $storeOrder['firstName'] ?? $storeOrder['customer_firstName'];
+			});
+		$view->addCustomColumn('lastName', static function(array $storeOrder)
+			{
+			return $storeOrder['lastName'] ?? $storeOrder['customer_lastName'];
+			});
 		$view->setSearchColumns($headers)->setSortableColumns(\array_keys($headers))->setHeaders($headers);
 		$labelButton = new \PHPFUI\Button('Labels');
 		$labelButton->addClass('secondary');
@@ -96,6 +107,7 @@ class Orders
 		$storeOrderTable->addJoin('storeItem');
 		$storeOrderTable->addJoin('member');
 		$storeOrderTable->addJoin('membership', new \PHPFUI\ORM\Condition('member.membershipId', new \PHPFUI\ORM\Field('membership.membershipId')));
+		$storeOrderTable->addJoin('customer', new \PHPFUI\ORM\Condition('customer.customerId', new \PHPFUI\ORM\Literal('0 - storeOrder.memberId')), 'LEFT OUTER');
 
 		return $storeOrderTable;
 		}

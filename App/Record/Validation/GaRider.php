@@ -10,6 +10,7 @@ class GaRider extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'address' => ['maxlength', 'required'],
+		'agreedToWaiver' => ['integer'],
 		'comments' => ['maxlength'],
 		'contact' => ['maxlength', 'required'],
 		'contactPhone' => ['maxlength', 'required'],
@@ -17,10 +18,10 @@ class GaRider extends \PHPFUI\ORM\Validator
 		'email' => ['maxlength', 'required', 'unique:email,gaEventId'],
 		'emailAnnouncements' => ['integer'],
 		'firstName' => ['maxlength', 'required'],
-		'gaEventId' => ['integer'],
-		'gaRiderId' => ['integer'],
 		'lastName' => ['maxlength', 'required'],
-		'memberId' => ['integer'],
+		'gaEventId' => ['required', 'integer'],
+		'gaRiderId' => ['required', 'integer'],
+		'memberId' => ['required', 'integer'],
 		'pending' => ['required', 'integer'],
 		'phone' => ['maxlength', 'required'],
 		'pricePaid' => ['number'],

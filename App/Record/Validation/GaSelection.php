@@ -10,11 +10,11 @@ class GaSelection extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'additionalPrice' => ['number'],
+		'csvValue' => ['maxlength'],
 		'gaEventId' => ['required', 'integer'],
 		'gaOptionId' => ['required', 'integer'],
 		'gaSelectionId' => ['required', 'integer'],
 		'ordering' => ['required', 'integer'],
 		'selectionName' => ['required', 'maxlength'],
-		'csvValue' => ['maxlength'],
 	];
 	}

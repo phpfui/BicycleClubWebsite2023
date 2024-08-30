@@ -10,9 +10,12 @@ class MemberNotice extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'body' => ['maxlength', 'required'],
-		'dayOffsets' => ['required'],
+		'dayOffsets' => ['required', 'maxlength'],
 		'field' => ['required', 'maxlength'],
 		'memberId' => ['integer'],
+		'memberNoticeId' => ['required', 'integer'],
+		'overridePreferences' => ['integer'],
+		'summary' => ['required', 'integer'],
 		'title' => ['required', 'maxlength'],
 	];
 	}

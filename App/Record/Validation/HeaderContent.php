@@ -9,11 +9,13 @@ class HeaderContent extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, string[]> */
 	public static array $validators = [
+		'active' => ['required', 'integer'],
 		'content' => ['maxlength'],
 		'css' => ['maxlength'],
 		'endDate' => ['maxlength', 'date'],
 		'headerContentId' => ['required', 'integer'],
 		'javaScript' => ['maxlength'],
+		'name' => ['maxlength'],
 		'showDay' => ['integer'],
 		'showMonth' => ['integer'],
 		'startDate' => ['maxlength', 'date'],

@@ -44,7 +44,7 @@ $baseFileName = $fileName = $argv[2] ?? 'backup';
 
 if (! \str_contains($baseFileName, '.'))
 	{
-	foreach (['.zip', '.gz', '.sql'] as $extension)
+	foreach (['.gz', '.zip', '.sql'] as $extension)
 		{
 		$fullFileName = $baseFileName . $extension;
 
@@ -62,19 +62,8 @@ if (! \file_exists($fileName))
 	\help("Backup file {$fileName} was not found");
 	}
 
-echo 'Backup is dated ' . \date('F d Y H:i:s.', \filemtime($fileName)) . "\n";
+echo $fileName . ': Backup is dated ' . \date('F d Y H:i:s.', \filemtime($fileName)) . "\n";
 
-// echo 'ZipArchive::ER_EXISTS ' . ZipArchive::ER_EXISTS ."\n";
-// echo 'ZipArchive::ER_INCONS ' . ZipArchive::ER_INCONS ."\n";
-// echo 'ZipArchive::ER_INVAL ' . ZipArchive::ER_INVAL ."\n";
-// echo 'ZipArchive::ER_MEMORY ' . ZipArchive::ER_MEMORY ."\n";
-// echo 'ZipArchive::ER_NOENT ' . ZipArchive::ER_NOENT ."\n";
-// echo 'ZipArchive::ER_NOZIP ' . ZipArchive::ER_NOZIP ."\n";
-// echo 'ZipArchive::ER_OPEN ' . ZipArchive::ER_OPEN ."\n";
-// echo 'ZipArchive::ER_READ ' . ZipArchive::ER_READ ."\n";
-// echo 'ZipArchive::ER_SEEK ' . ZipArchive::ER_SEEK ."\n";
-
-/*
 if (\str_contains($fileName, '.gz'))
 	{
 	// Raising this value may increase performance
@@ -83,6 +72,11 @@ if (\str_contains($fileName, '.gz'))
 
 	// Open our files (in binary mode)
 	$file = \gzopen($fileName, 'rb');
+
+	if (false === $file)
+		{
+		\help("Error unzipping file: {$fileName}", false);
+		}
 	$outFile = \fopen($outFileName, 'wb');
 
 	// Keep repeating until the end of the input file
@@ -111,10 +105,20 @@ elseif (\str_contains($fileName, '.zip'))
 		}
 	else
 		{
+		echo 'ZipArchive::ER_EXISTS ' . ZipArchive::ER_EXISTS . "\n";
+		echo 'ZipArchive::ER_INCONS ' . ZipArchive::ER_INCONS . "\n";
+		echo 'ZipArchive::ER_INVAL ' . ZipArchive::ER_INVAL . "\n";
+		echo 'ZipArchive::ER_MEMORY ' . ZipArchive::ER_MEMORY . "\n";
+		echo 'ZipArchive::ER_NOENT ' . ZipArchive::ER_NOENT . "\n";
+		echo 'ZipArchive::ER_NOZIP ' . ZipArchive::ER_NOZIP . "\n";
+		echo 'ZipArchive::ER_OPEN ' . ZipArchive::ER_OPEN . "\n";
+		echo 'ZipArchive::ER_READ ' . ZipArchive::ER_READ . "\n";
+		echo 'ZipArchive::ER_SEEK ' . ZipArchive::ER_SEEK . "\n";
 		\help("Error unzipping file {$fileName}: {$status}", false);
 		}
 	}
- */
+
+echo "Restoring from file: {$baseFileName}\n";
 
 $restoredFileName = "backup.{$db}.sql";
 $cleaner = new \PHPFUI\ORM\Tool\CleanBackup($baseFileName, $restoredFileName);

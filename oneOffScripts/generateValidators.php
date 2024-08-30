@@ -24,11 +24,9 @@ foreach ($tables as $table)
 	{
 	if ($generator->generate($table))
 		{
-		echo "{$table}\n";
+//		echo "{$table}\n";
 		}
 	}
-
-\system('codestyle');
 
 $tableObjects = \PHPFUI\ORM\Table::getAllTables();
 
@@ -43,4 +41,7 @@ foreach ($tableObjects as $name => $table)
 	$contents = \str_replace(\strtolower($table->getTableName()), \lcfirst($class), $contents);
 	$contents = \str_replace("'rWGPS", "'RWGPS", $contents);
 	\file_put_contents($phpFile, $contents);
+	\rename($phpFile, $phpFile);
 	}
+
+\system('codestyle');

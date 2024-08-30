@@ -14,6 +14,7 @@ class GaEvent extends \PHPFUI\ORM\Validator
 		'description' => ['maxlength'],
 		'eventDate' => ['required', 'maxlength', 'date'],
 		'gaEventId' => ['required', 'integer'],
+		'includeMembership' => ['required', 'integer'],
 		'lastRegistrationDate' => ['required', 'maxlength', 'date'],
 		'location' => ['maxlength'],
 		'maxRegistrants' => ['integer'],
@@ -26,5 +27,6 @@ class GaEvent extends \PHPFUI\ORM\Validator
 		'title' => ['maxlength'],
 		'volunteerDiscount' => ['integer'],
 		'volunteerEvent' => ['integer'],
+		'waiver' => ['maxlength'],
 	];
 	}

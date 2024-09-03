@@ -11,6 +11,5 @@ class Redirect extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'originalUrl' => ['required', 'maxlength', '!starts_with:/'],
 		'redirectUrl' => ['required', 'maxlength', '!starts_with:/'],
-		'redirectUrl' => ['required', 'maxlength'],
 	];
 	}

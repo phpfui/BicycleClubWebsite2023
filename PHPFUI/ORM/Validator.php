@@ -88,7 +88,6 @@ namespace PHPFUI\ORM;
  * ```php
  * class Event extends \PHPFUI\ORM\Validator
  *   {
- *   /** @var array<string, array<string>> */
  *   public static array $validators = [
  *     'endTime' => ['maxlength', 'gt_field:startTime'],
  *     'lastRegistrationDate' => ['required', 'date', 'lte_field:eventDate'],

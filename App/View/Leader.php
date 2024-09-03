@@ -190,6 +190,18 @@ class Leader
 
 		$form->add($multiColumn);
 
+		$multiColumn = new \PHPFUI\MultiColumn();
+		$fields[] = $field = 'RideStatusHourOffset';
+		$value = (int)$settingTable->value($field);
+		$rideStatusRequestHourOffset = new \PHPFUI\Input\Number($field, 'Ride Status Request Email Hour Offset', $value);
+		$rideStatusRequestHourOffset->addAttribute('step', (string)1)->addAttribute('min', (string)0);
+		$rideStatusRequestHourOffset->setToolTip('The email request for Ride Status will be sent this number of hours after the start of the ride.');
+		$multiColumn->add($rideStatusRequestHourOffset);
+
+		$multiColumn->add('&nbsp;');
+
+		$form->add($multiColumn);
+
 		$fields[] = $field = 'PacePicker';
 		$value = $settingTable->value($field);
 		$pacePicker = new \PHPFUI\Input\RadioGroup($field, 'Category Picker Type', $value);

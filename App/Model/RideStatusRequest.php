@@ -11,13 +11,20 @@ class RideStatusRequest
 	/** @var array<string,mixed> */
 	private readonly array $sender;
 
+	private readonly \App\Table\Setting $settingTable;
+
 	public function __construct()
 		{
-		$settingTable = new \App\Table\Setting();
-		$this->abbrev = $settingTable->value('clubAbbrev');
-		$this->request = $settingTable->value('requestSta');
+		$this->settingTable = new \App\Table\Setting();
+		$this->abbrev = $this->settingTable->value('clubAbbrev');
+		$this->request = $this->settingTable->value('requestSta');
 		$memberPicker = new \App\Model\MemberPicker('Rides Chair');
 		$this->sender = $memberPicker->getMember();
+		}
+
+	public function getHourOffset() : int
+		{
+		return (int)$this->settingTable->value('RideStatusHourOffset');
 		}
 
 	public function send(\App\Record\Ride $ride) : void

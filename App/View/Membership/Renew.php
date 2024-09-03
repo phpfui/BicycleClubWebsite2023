@@ -25,9 +25,9 @@ class Renew
 		$this->members = \App\Table\Member::membersInMembership($membership->membershipId);
 		$this->additionalMemberDues = \array_sum($this->duesModel->AdditionalMemberDues);
 
-		if (isset($_GET['delete']))
+		if (isset($_GET['deleteMember']))
 			{
-			$delete = (int)($_GET['delete']);
+			$delete = (int)($_GET['deleteMember']);
 
 			if ($delete != \App\Model\Session::signedInMemberId())
 				{
@@ -214,7 +214,7 @@ class Renew
 				if ($member['memberId'] != \App\Model\Session::signedInMemberId())
 					{
 					$url = $this->page->getBaseURL();
-					$delete = new \PHPFUI\FAIcon('far', 'trash-alt', $url . '?delete=' . $member['memberId']);
+					$delete = new \PHPFUI\FAIcon('far', 'trash-alt', $url . '?deleteMember=' . $member['memberId']);
 					$delete->setConfirm('Are you sure you want to remove this member from your membership?');
 					}
 				else

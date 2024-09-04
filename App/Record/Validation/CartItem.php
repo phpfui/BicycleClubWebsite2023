@@ -17,6 +17,5 @@ class CartItem extends \PHPFUI\ORM\Validator
 		'quantity' => ['integer'],
 		'storeItemDetailId' => ['integer'],
 		'storeItemId' => ['integer'],
-		'type' => ['required', 'integer'],
 	];
 	}

@@ -17,7 +17,6 @@ class DiscountCode extends \PHPFUI\ORM\Validator
 		'maximumUses' => ['integer'],
 		'repeatCount' => ['integer'],
 		'startDate' => ['required', 'date', 'lte_field:expirationDate'],
-		'type' => ['required', 'integer'],
 		'validItemNumbers' => ['maxlength'],
 	];
 	}

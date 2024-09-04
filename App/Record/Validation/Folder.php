@@ -10,7 +10,6 @@ class Folder extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'folderId' => ['required', 'integer'],
-		'folderType' => ['required', 'integer'],
 		'name' => ['required', 'maxlength'],
 		'parentFolderId' => ['integer'],
 		'permissionId' => ['integer'],

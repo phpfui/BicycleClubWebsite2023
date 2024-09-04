@@ -12,7 +12,6 @@ class Ride extends \PHPFUI\ORM\Validator
 		'RWGPSId' => ['integer'],
 		'accident' => ['integer'],
 		'averagePace' => ['number'],
-		'commentsDisabled' => ['required', 'integer'],
 		'cueSheetId' => ['integer'],
 		'dateAdded' => ['required', 'maxlength', 'datetime'],
 		'description' => ['maxlength'],

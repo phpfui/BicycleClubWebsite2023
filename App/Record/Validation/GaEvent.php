@@ -14,7 +14,6 @@ class GaEvent extends \PHPFUI\ORM\Validator
 		'description' => ['maxlength'],
 		'eventDate' => ['required', 'maxlength', 'date'],
 		'gaEventId' => ['required', 'integer'],
-		'includeMembership' => ['required', 'integer'],
 		'lastRegistrationDate' => ['required', 'maxlength', 'date'],
 		'location' => ['maxlength'],
 		'maxRegistrants' => ['integer'],

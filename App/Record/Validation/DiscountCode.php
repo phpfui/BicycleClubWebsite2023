@@ -11,14 +11,13 @@ class DiscountCode extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'cashOnly' => ['required', 'integer'],
 		'description' => ['maxlength'],
-		'discount' => ['required', 'number'],
-		'discountCode' => ['maxlength'],
 		'discountCodeId' => ['integer'],
-		'expirationDate' => ['required', 'maxlength', 'date'],
+		'discount' => ['number', 'required', 'minvalue:1'],
+		'discountCode' => ['maxlength', 'required'],
+		'expirationDate' => ['required', 'date', 'gte_field:startDate'],
 		'maximumUses' => ['integer'],
 		'repeatCount' => ['integer'],
-		'startDate' => ['required', 'maxlength', 'date'],
-		'type' => ['required', 'integer'],
+		'startDate' => ['required', 'date', 'lte_field:expirationDate'],
 		'validItemNumbers' => ['maxlength'],
 	];
 	}

@@ -12,7 +12,6 @@ class Ride extends \PHPFUI\ORM\Validator
 		'RWGPSId' => ['integer'],
 		'accident' => ['integer'],
 		'averagePace' => ['number'],
-		'commentsDisabled' => ['required', 'integer'],
 		'cueSheetId' => ['integer'],
 		'dateAdded' => ['required', 'maxlength', 'datetime'],
 		'description' => ['maxlength'],
@@ -32,8 +31,8 @@ class Ride extends \PHPFUI\ORM\Validator
 		'rideStatus' => ['integer'],
 		'signupNotifications' => ['integer'],
 		'startLocationId' => ['integer'],
+		'targetPace' => ['number', 'minvalue:5', 'maxvalue:25'],
 		'startTime' => ['time'],
-		'targetPace' => ['number'],
 		'title' => ['maxlength'],
 		'unaffiliated' => ['integer'],
 	];

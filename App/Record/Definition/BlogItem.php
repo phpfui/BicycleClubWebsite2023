@@ -7,7 +7,7 @@ namespace App\Record\Definition;
  *
  * @property int $blogId MySQL type int
  * @property \App\Record\Blog $blog related record
- * @property int $ranking MySQL type int
+ * @property ?int $ranking MySQL type int
  * @property int $storyId MySQL type int
  * @property \App\Record\Story $story related record
  */
@@ -19,7 +19,7 @@ abstract class BlogItem extends \PHPFUI\ORM\Record
 	protected static array $fields = [
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'blogId' => ['int', 'int', 0, false, ],
-		'ranking' => ['int', 'int', 0, false, 0, ],
+		'ranking' => ['int', 'int', 0, true, 0, ],
 		'storyId' => ['int', 'int', 0, false, ],
 	];
 

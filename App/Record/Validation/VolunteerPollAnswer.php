@@ -10,7 +10,7 @@ class VolunteerPollAnswer extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'answer' => ['maxlength'],
-		'volunteerPollAnswerId' => ['required', 'integer'],
+		'volunteerPollAnswerId' => ['integer'],
 		'volunteerPollId' => ['required', 'integer'],
 	];
 	}

@@ -14,6 +14,6 @@ class SigninSheet extends \PHPFUI\ORM\Validator
 		'memberId' => ['required', 'integer'],
 		'pending' => ['integer'],
 		'pointsAwarded' => ['required', 'integer'],
-		'signinSheetId' => ['required', 'integer'],
+		'signinSheetId' => ['integer'],
 	];
 	}

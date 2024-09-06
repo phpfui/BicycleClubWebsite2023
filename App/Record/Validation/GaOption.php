@@ -11,7 +11,7 @@ class GaOption extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'csvField' => ['maxlength'],
 		'gaEventId' => ['required', 'integer'],
-		'gaOptionId' => ['required', 'integer'],
+		'gaOptionId' => ['integer'],
 		'maximumAllowed' => ['required', 'integer'],
 		'optionName' => ['required', 'maxlength'],
 		'ordering' => ['required', 'integer'],

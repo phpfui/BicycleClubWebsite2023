@@ -14,7 +14,7 @@ class PhotoTag extends \PHPFUI\ORM\Validator
 		'memberId' => ['integer'],
 		'photoId' => ['required', 'integer'],
 		'photoTag' => ['required', 'maxlength'],
-		'photoTagId' => ['required', 'integer'],
+		'photoTagId' => ['integer'],
 		'taggerId' => ['required', 'integer'],
 	];
 	}

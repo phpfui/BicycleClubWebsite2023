@@ -12,7 +12,7 @@ class Job extends \PHPFUI\ORM\Validator
 		'date' => ['required', 'maxlength', 'date'],
 		'description' => ['maxlength'],
 		'jobEventId' => ['integer'],
-		'jobId' => ['required', 'integer'],
+		'jobId' => ['integer'],
 		'location' => ['maxlength'],
 		'organizer' => ['integer'],
 		'title' => ['maxlength', 'required'],

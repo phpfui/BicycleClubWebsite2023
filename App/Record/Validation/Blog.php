@@ -9,7 +9,7 @@ class Blog extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, string[]> */
 	public static array $validators = [
-		'blogId' => ['required', 'integer'],
+		'blogId' => ['integer'],
 		'count' => ['required', 'integer'],
 		'name' => ['required', 'maxlength'],
 	];

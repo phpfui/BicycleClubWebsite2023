@@ -11,6 +11,6 @@ class VolunteerPoll extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'jobEventId' => ['required', 'integer'],
 		'question' => ['maxlength'],
-		'volunteerPollId' => ['required', 'integer'],
+		'volunteerPollId' => ['integer'],
 	];
 	}

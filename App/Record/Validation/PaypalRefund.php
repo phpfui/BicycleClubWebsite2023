@@ -13,7 +13,7 @@ class PaypalRefund extends \PHPFUI\ORM\Validator
 		'createdDate' => ['required', 'maxlength', 'date'],
 		'createdMemberNumber' => ['integer'],
 		'invoiceId' => ['integer'],
-		'paypalRefundId' => ['required', 'integer'],
+		'paypalRefundId' => ['integer'],
 		'paypaltx' => ['maxlength'],
 		'refundOnDate' => ['maxlength', 'date'],
 		'refundedDate' => ['maxlength', 'date'],

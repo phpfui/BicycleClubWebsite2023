@@ -11,6 +11,6 @@ class StoreOption extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'optionName' => ['required', 'maxlength'],
 		'optionValues' => ['required', 'maxlength'],
-		'storeOptionId' => ['required', 'integer'],
+		'storeOptionId' => ['integer'],
 	];
 	}

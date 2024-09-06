@@ -12,6 +12,6 @@ class SystemEmail extends \PHPFUI\ORM\Validator
 		'email' => ['maxlength'],
 		'mailbox' => ['maxlength'],
 		'name' => ['maxlength'],
-		'systemEmailId' => ['required', 'integer'],
+		'systemEmailId' => ['integer'],
 	];
 	}

@@ -16,7 +16,7 @@ class Event extends \PHPFUI\ORM\Validator
 		'commentTitle' => ['required', 'maxlength'],
 		'door' => ['required', 'integer'],
 		'eventDate' => ['required', 'maxlength', 'date'],
-		'eventId' => ['required', 'integer'],
+		'eventId' => ['integer'],
 		'location' => ['maxlength'],
 		'maxDiscounts' => ['required', 'integer'],
 		'newMemberDiscount' => ['required', 'number', 'lte_field:price'],

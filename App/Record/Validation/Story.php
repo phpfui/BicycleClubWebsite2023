@@ -22,7 +22,7 @@ class Story extends \PHPFUI\ORM\Validator
 		'onTop' => ['integer'],
 		'showFull' => ['integer'],
 		'startDate' => ['date', 'gte_field:date', 'lte_field:endDate'],
-		'storyId' => ['required', 'integer'],
+		'storyId' => ['integer'],
 		'subhead' => ['maxlength'],
 	];
 	}

@@ -9,6 +9,7 @@ class ForumMember extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, string[]> */
 	public static array $validators = [
+		'emailType' => ['required', 'integer'],
 		'forumId' => ['required', 'integer'],
 		'memberId' => ['required', 'integer'],
 	];

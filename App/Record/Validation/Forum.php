@@ -14,7 +14,7 @@ class Forum extends \PHPFUI\ORM\Validator
 		'description' => ['maxlength', 'required'],
 		'email' => ['maxlength', 'required', 'unique'],
 		'name' => ['maxlength', 'required', 'unique'],
-		'forumId' => ['required', 'integer'],
+		'forumId' => ['integer'],
 		'whiteList' => ['maxlength'],
 	];
 	}

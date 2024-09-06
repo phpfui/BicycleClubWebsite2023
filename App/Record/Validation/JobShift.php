@@ -11,7 +11,7 @@ class JobShift extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'endTime' => ['required', 'time'],
 		'jobId' => ['integer'],
-		'jobShiftId' => ['required', 'integer'],
+		'jobShiftId' => ['integer'],
 		'needed' => ['integer'],
 		'startTime' => ['required', 'time'],
 	];

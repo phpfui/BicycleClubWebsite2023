@@ -14,12 +14,13 @@ class PublicPage extends \PHPFUI\ORM\Validator
 		'blogAfter' => ['maxlength'],
 		'footerMenu' => ['required', 'integer'],
 		'header' => ['integer'],
+		'hidden' => ['integer'],
 		'homePageNotification' => ['required', 'integer'],
 		'method' => ['maxlength'],
 		'name' => ['maxlength'],
 		'publicMenu' => ['required', 'integer'],
-		'publicPageId' => ['required', 'integer'],
+		'publicPageId' => ['integer'],
 		'sequence' => ['integer'],
-		'url' => ['maxlength', 'starts_with:/', 'unique'],
+		'url' => ['maxlength'],
 	];
 	}

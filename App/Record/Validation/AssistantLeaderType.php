@@ -9,7 +9,7 @@ class AssistantLeaderType extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, string[]> */
 	public static array $validators = [
-		'assistantLeaderTypeId' => ['required', 'integer'],
+		'assistantLeaderTypeId' => ['integer'],
 		'name' => ['required', 'maxlength'],
 		'volunteerPoints' => ['required', 'integer'],
 	];

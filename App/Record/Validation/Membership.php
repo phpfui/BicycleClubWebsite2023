@@ -16,7 +16,7 @@ class Membership extends \PHPFUI\ORM\Validator
 		'expires' => ['maxlength', 'date'],
 		'joined' => ['maxlength', 'date'],
 		'lastRenewed' => ['maxlength', 'date'],
-		'membershipId' => ['required', 'integer'],
+		'membershipId' => ['integer'],
 		'pending' => ['required', 'integer'],
 		'renews' => ['maxlength', 'date'],
 		'subscriptionId' => ['maxlength'],

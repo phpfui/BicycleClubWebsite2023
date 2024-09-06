@@ -10,6 +10,6 @@ class Terrain extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'name' => ['maxlength'],
-		'terrainId' => ['required', 'integer'],
+		'terrainId' => ['integer'],
 	];
 	}

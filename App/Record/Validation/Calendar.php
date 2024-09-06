@@ -10,7 +10,7 @@ class Calendar extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'description' => ['maxlength', 'required'],
-		'calendarId' => ['required', 'integer'],
+		'calendarId' => ['integer'],
 		'distances' => ['maxlength'],
 		'eventDays' => ['integer', 'required'],
 		'eventDate' => ['required', 'maxlength', 'date'],

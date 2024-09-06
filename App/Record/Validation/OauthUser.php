@@ -11,7 +11,7 @@ class OauthUser extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'lastLogin' => ['maxlength', 'datetime'],
 		'memberId' => ['required', 'integer'],
-		'oauthUserId' => ['required', 'integer'],
+		'oauthUserId' => ['integer'],
 		'password' => ['maxlength'],
 		'permissions' => ['maxlength'],
 		'userName' => ['maxlength', 'required'],

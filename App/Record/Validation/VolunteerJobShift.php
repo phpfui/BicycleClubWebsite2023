@@ -16,7 +16,7 @@ class VolunteerJobShift extends \PHPFUI\ORM\Validator
 		'notes' => ['required', 'maxlength'],
 		'shiftLeader' => ['integer'],
 		'signedUpDate' => ['required', 'maxlength', 'datetime'],
-		'volunteerJobShiftId' => ['required', 'integer'],
+		'volunteerJobShiftId' => ['integer'],
 		'worked' => ['required', 'integer'],
 	];
 	}

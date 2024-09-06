@@ -10,7 +10,7 @@ class ForumAttachment extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'fileName' => ['maxlength'],
-		'forumAttachmentId' => ['required', 'integer'],
+		'forumAttachmentId' => ['integer'],
 		'forumId' => ['integer'],
 		'forumMessageId' => ['integer'],
 	];

@@ -13,7 +13,7 @@ class MemberNotice extends \PHPFUI\ORM\Validator
 		'dayOffsets' => ['required', 'maxlength'],
 		'field' => ['required', 'maxlength'],
 		'memberId' => ['integer'],
-		'memberNoticeId' => ['required', 'integer'],
+		'memberNoticeId' => ['integer'],
 		'overridePreferences' => ['integer'],
 		'summary' => ['required', 'integer'],
 		'title' => ['required', 'maxlength'],

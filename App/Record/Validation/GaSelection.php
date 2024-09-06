@@ -13,7 +13,7 @@ class GaSelection extends \PHPFUI\ORM\Validator
 		'csvValue' => ['maxlength'],
 		'gaEventId' => ['required', 'integer'],
 		'gaOptionId' => ['required', 'integer'],
-		'gaSelectionId' => ['required', 'integer'],
+		'gaSelectionId' => ['integer'],
 		'ordering' => ['required', 'integer'],
 		'selectionName' => ['required', 'maxlength'],
 	];

@@ -27,7 +27,7 @@ class Member extends \PHPFUI\ORM\Validator
 		'lastName' => ['required', 'maxlength'],
 		'license' => ['maxlength'],
 		'loginAttempts' => ['maxlength'],
-		'memberId' => ['required', 'integer'],
+		'memberId' => ['integer'],
 		'membershipId' => ['integer'],
 		'newRideEmail' => ['required', 'integer'],
 		'password' => ['maxlength'],

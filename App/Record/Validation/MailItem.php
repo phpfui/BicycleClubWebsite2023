@@ -14,7 +14,7 @@ class MailItem extends \PHPFUI\ORM\Validator
 		'fromEmail' => ['maxlength', 'email'],
 		'fromName' => ['maxlength'],
 		'html' => ['integer'],
-		'mailItemId' => ['required', 'integer'],
+		'mailItemId' => ['integer'],
 		'memberId' => ['integer'],
 		'paused' => ['integer'],
 		'replyTo' => ['maxlength', 'email'],

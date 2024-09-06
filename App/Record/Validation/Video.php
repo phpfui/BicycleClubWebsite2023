@@ -19,6 +19,6 @@ class Video extends \PHPFUI\ORM\Validator
 		'public' => ['required', 'integer'],
 		'title' => ['required', 'maxlength'],
 		'videoDate' => ['required', 'maxlength', 'date'],
-		'videoId' => ['required', 'integer'],
+		'videoId' => ['integer'],
 	];
 	}

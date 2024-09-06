@@ -11,7 +11,7 @@ class PhotoComment extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'memberId' => ['required', 'integer'],
 		'photoComment' => ['required', 'maxlength'],
-		'photoCommentId' => ['required', 'integer'],
+		'photoCommentId' => ['integer'],
 		'photoId' => ['required', 'integer'],
 		'timestamp' => ['required', 'maxlength', 'datetime'],
 	];

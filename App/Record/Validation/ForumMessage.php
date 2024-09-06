@@ -10,7 +10,7 @@ class ForumMessage extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'forumId' => ['integer'],
-		'forumMessageId' => ['required', 'integer'],
+		'forumMessageId' => ['integer'],
 		'htmlMessage' => ['maxlength'],
 		'lastEdited' => ['maxlength', 'datetime'],
 		'lastEditorId' => ['integer'],

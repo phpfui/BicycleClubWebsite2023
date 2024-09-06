@@ -10,7 +10,7 @@ class Permission extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'menu' => ['maxlength'],
-		'permissionId' => ['required', 'integer'],
+		'permissionId' => ['integer'],
 		'system' => ['required', 'integer'],
 		'name' => ['required', 'maxlength', 'unique'],
 	];

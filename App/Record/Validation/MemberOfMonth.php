@@ -12,7 +12,7 @@ class MemberOfMonth extends \PHPFUI\ORM\Validator
 		'bio' => ['maxlength'],
 		'fileNameExt' => ['maxlength'],
 		'memberId' => ['required', 'integer'],
-		'memberOfMonthId' => ['required', 'integer'],
+		'memberOfMonthId' => ['integer'],
 		'month' => ['required', 'maxlength', 'date'],
 	];
 	}

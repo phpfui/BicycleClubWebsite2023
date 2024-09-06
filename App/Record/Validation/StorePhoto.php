@@ -13,6 +13,6 @@ class StorePhoto extends \PHPFUI\ORM\Validator
 		'filename' => ['maxlength'],
 		'sequence' => ['required', 'integer'],
 		'storeItemId' => ['required', 'integer'],
-		'storePhotoId' => ['required', 'integer'],
+		'storePhotoId' => ['integer'],
 	];
 	}

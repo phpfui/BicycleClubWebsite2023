@@ -13,7 +13,7 @@ class Poll extends \PHPFUI\ORM\Validator
 		'endDate' => ['required', 'date', 'gte_field:startDate'],
 		'memberId' => ['integer'],
 		'membershipOnly' => ['integer'],
-		'pollId' => ['required', 'integer'],
+		'pollId' => ['integer'],
 		'question' => ['maxlength'],
 		'required' => ['integer'],
 		'startDate' => ['required', 'date', 'lte_field:endDate'],

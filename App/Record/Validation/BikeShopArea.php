@@ -10,7 +10,7 @@ class BikeShopArea extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'area' => ['maxlength'],
-		'bikeShopAreaId' => ['required', 'integer'],
+		'bikeShopAreaId' => ['integer'],
 		'state' => ['maxlength'],
 	];
 	}

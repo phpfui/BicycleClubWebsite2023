@@ -9,7 +9,7 @@ class MailAttachment extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, string[]> */
 	public static array $validators = [
-		'mailAttachmentId' => ['required', 'integer'],
+		'mailAttachmentId' => ['integer'],
 		'mailItemId' => ['required', 'integer'],
 		'prettyName' => ['maxlength'],
 	];

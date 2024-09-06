@@ -15,7 +15,7 @@ class StoreOrder extends \PHPFUI\ORM\Validator
 		'optionsSelected' => ['required', 'maxlength'],
 		'quantity' => ['required', 'integer'],
 		'storeItemId' => ['required', 'integer'],
-		'storeOrderId' => ['required', 'integer'],
+		'storeOrderId' => ['integer'],
 		'updated' => ['maxlength', 'datetime'],
 	];
 	}

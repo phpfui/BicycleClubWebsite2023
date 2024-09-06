@@ -10,7 +10,7 @@ class AuditTrail extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'additional' => ['maxlength'],
-		'auditTrailId' => ['required', 'integer'],
+		'auditTrailId' => ['integer'],
 		'input' => ['maxlength'],
 		'memberId' => ['required', 'integer'],
 		'statement' => ['maxlength'],

@@ -17,7 +17,7 @@ class SlideShow extends \PHPFUI\ORM\Validator
 		'startDate' => ['date', 'lte_field:endDate'],
 		'name' => ['maxlength'],
 		'settings' => ['maxlength'],
-		'slideShowId' => ['required', 'integer'],
+		'slideShowId' => ['integer'],
 		'updated' => ['maxlength', 'datetime'],
 		'width' => ['required', 'integer'],
 	];

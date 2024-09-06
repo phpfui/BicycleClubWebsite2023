@@ -9,7 +9,7 @@ class Banner extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, string[]> */
 	public static array $validators = [
-		'bannerId' => ['required', 'integer'],
+		'bannerId' => ['integer'],
 		'css' => ['maxlength'],
 		'description' => ['maxlength'],
 		'endDate' => ['required', 'date', 'gte_field:startDate'],

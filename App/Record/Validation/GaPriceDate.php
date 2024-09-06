@@ -11,7 +11,7 @@ class GaPriceDate extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'date' => ['required', 'maxlength', 'date'],
 		'gaEventId' => ['required', 'integer'],
-		'gaPriceDateId' => ['required', 'integer'],
+		'gaPriceDateId' => ['integer'],
 		'price' => ['number'],
 	];
 	}

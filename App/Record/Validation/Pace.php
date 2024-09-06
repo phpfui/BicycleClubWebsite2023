@@ -15,6 +15,6 @@ class Pace extends \PHPFUI\ORM\Validator
 		'minSpeed' => ['maxlength'],
 		'ordering' => ['required', 'integer'],
 		'pace' => ['maxlength'],
-		'paceId' => ['required', 'integer'],
+		'paceId' => ['integer'],
 	];
 	}

@@ -14,7 +14,7 @@ class Invoice extends \PHPFUI\ORM\Validator
 		'errors' => ['maxlength'],
 		'fullfillmentDate' => ['maxlength', 'date'],
 		'instructions' => ['maxlength'],
-		'invoiceId' => ['required', 'integer'],
+		'invoiceId' => ['integer'],
 		'memberId' => ['required', 'integer'],
 		'orderDate' => ['required', 'maxlength', 'date'],
 		'paidByCheck' => ['required', 'integer'],

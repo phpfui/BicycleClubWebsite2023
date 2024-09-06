@@ -13,7 +13,7 @@ class RideComment extends \PHPFUI\ORM\Validator
 		'latitude' => ['number'],
 		'longitude' => ['number'],
 		'memberId' => ['required', 'integer'],
-		'rideCommentId' => ['required', 'integer'],
+		'rideCommentId' => ['integer'],
 		'rideId' => ['integer'],
 		'time' => ['required', 'maxlength', 'datetime'],
 	];

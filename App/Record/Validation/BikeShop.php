@@ -11,7 +11,7 @@ class BikeShop extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'address' => ['maxlength', 'required'],
 		'bikeShopAreaId' => ['integer'],
-		'bikeShopId' => ['required', 'integer'],
+		'bikeShopId' => ['integer'],
 		'contact' => ['maxlength'],
 		'email' => ['maxlength', 'email'],
 		'name' => ['maxlength', 'required'],

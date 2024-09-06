@@ -13,7 +13,7 @@ class HeaderContent extends \PHPFUI\ORM\Validator
 		'content' => ['maxlength'],
 		'css' => ['maxlength'],
 		'endDate' => ['maxlength', 'date'],
-		'headerContentId' => ['required', 'integer'],
+		'headerContentId' => ['integer'],
 		'javaScript' => ['maxlength'],
 		'name' => ['maxlength'],
 		'showDay' => ['integer'],

@@ -19,5 +19,6 @@ class InvoiceItem extends \PHPFUI\ORM\Validator
 		'storeItemId' => ['required', 'integer'],
 		'tax' => ['number'],
 		'title' => ['maxlength'],
+		'type' => ['required', 'integer'],
 	];
 	}

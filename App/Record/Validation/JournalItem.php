@@ -10,7 +10,7 @@ class JournalItem extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'body' => ['maxlength'],
-		'journalItemId' => ['required', 'integer'],
+		'journalItemId' => ['integer'],
 		'memberId' => ['integer'],
 		'timeSent' => ['required', 'maxlength', 'datetime'],
 		'title' => ['maxlength'],

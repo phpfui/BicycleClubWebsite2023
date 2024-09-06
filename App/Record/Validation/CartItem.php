@@ -9,7 +9,7 @@ class CartItem extends \PHPFUI\ORM\Validator
 	{
 	/** @var array<string, string[]> */
 	public static array $validators = [
-		'cartItemId' => ['required', 'integer'],
+		'cartItemId' => ['integer'],
 		'dateAdded' => ['required', 'maxlength', 'date'],
 		'discountCodeId' => ['integer'],
 		'memberId' => ['required', 'integer'],
@@ -17,5 +17,6 @@ class CartItem extends \PHPFUI\ORM\Validator
 		'quantity' => ['integer'],
 		'storeItemDetailId' => ['integer'],
 		'storeItemId' => ['integer'],
+		'type' => ['required', 'integer'],
 	];
 	}

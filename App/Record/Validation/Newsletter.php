@@ -12,7 +12,7 @@ class Newsletter extends \PHPFUI\ORM\Validator
 		'date' => ['required', 'maxlength', 'date'],
 		'dateAdded' => ['required', 'maxlength', 'date'],
 		'html' => ['maxlength'],
-		'newsletterId' => ['required', 'integer'],
+		'newsletterId' => ['integer'],
 		'size' => ['integer'],
 	];
 	}

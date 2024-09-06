@@ -15,7 +15,7 @@ class Payment extends \PHPFUI\ORM\Validator
 		'invoiceId' => ['integer'],
 		'membershipId' => ['integer'],
 		'paymentDated' => ['maxlength', 'date'],
-		'paymentId' => ['required', 'integer'],
+		'paymentId' => ['integer'],
 		'paymentNumber' => ['maxlength'],
 		'paymentType' => ['integer'],
 	];

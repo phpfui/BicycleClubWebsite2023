@@ -16,7 +16,7 @@ class Slide extends \PHPFUI\ORM\Validator
 		'photoId' => ['integer'],
 		'sequence' => ['required', 'integer'],
 		'showCaption' => ['required', 'integer'],
-		'slideId' => ['required', 'integer'],
+		'slideId' => ['integer'],
 		'slideShowId' => ['required', 'integer'],
 		'url' => ['maxlength', 'website|istarts_with:/'],
 		'updated' => ['maxlength', 'datetime'],

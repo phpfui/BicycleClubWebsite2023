@@ -11,7 +11,7 @@ class OauthToken extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'client' => ['maxlength'],
 		'expires' => ['required', 'maxlength', 'datetime'],
-		'oauthTokenId' => ['required', 'integer'],
+		'oauthTokenId' => ['integer'],
 		'oauthUserId' => ['integer'],
 		'scopes' => ['maxlength'],
 		'token' => ['maxlength'],

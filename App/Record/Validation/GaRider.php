@@ -20,7 +20,7 @@ class GaRider extends \PHPFUI\ORM\Validator
 		'firstName' => ['maxlength', 'required'],
 		'lastName' => ['maxlength', 'required'],
 		'gaEventId' => ['required', 'integer'],
-		'gaRiderId' => ['required', 'integer'],
+		'gaRiderId' => ['integer'],
 		'memberId' => ['required', 'integer'],
 		'pending' => ['required', 'integer'],
 		'phone' => ['maxlength', 'required'],

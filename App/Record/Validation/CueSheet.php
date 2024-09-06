@@ -10,7 +10,7 @@ class CueSheet extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'RWGPSId' => ['integer'],
-		'cueSheetId' => ['required', 'integer'],
+		'cueSheetId' => ['integer'],
 		'dateAdded' => ['required', 'maxlength', 'date'],
 		'description' => ['maxlength'],
 		'destination' => ['maxlength'],

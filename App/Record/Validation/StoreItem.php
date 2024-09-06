@@ -19,7 +19,7 @@ class StoreItem extends \PHPFUI\ORM\Validator
 		'pointsOnly' => ['required', 'integer'],
 		'price' => ['number'],
 		'shipping' => ['number'],
-		'storeItemId' => ['required', 'integer'],
+		'storeItemId' => ['integer'],
 		'taxable' => ['integer'],
 		'title' => ['maxlength'],
 	];

@@ -17,7 +17,7 @@ class StartLocation extends \PHPFUI\ORM\Validator
 		'longitude' => ['number'],
 		'name' => ['maxlength', 'required'],
 		'nearestExit' => ['maxlength'],
-		'startLocationId' => ['required', 'integer'],
+		'startLocationId' => ['integer'],
 		'state' => ['maxlength'],
 		'town' => ['maxlength'],
 		'zip' => ['maxlength'],

@@ -11,7 +11,7 @@ class MailPiece extends \PHPFUI\ORM\Validator
 	public static array $validators = [
 		'email' => ['maxlength', 'email'],
 		'mailItemId' => ['required', 'integer'],
-		'mailPieceId' => ['required', 'integer'],
+		'mailPieceId' => ['integer'],
 		'memberId' => ['integer'],
 		'name' => ['maxlength'],
 	];

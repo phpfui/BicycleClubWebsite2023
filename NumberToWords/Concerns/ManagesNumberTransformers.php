@@ -39,6 +39,7 @@ trait ManagesNumberTransformers
         'ru' => Transformer\RussianNumberTransformer::class,
         'sk' => Transformer\SlovakNumberTransformer::class,
         'sv' => Transformer\SwedishNumberTransformer::class,
+        'sw' => Transformer\SwahiliNumberTransformer::class,
         'tk' => Transformer\TurkmenNumberTransformer::class,
         'tr' => Transformer\TurkishNumberTransformer::class,
         'ua' => Transformer\UkrainianNumberTransformer::class,

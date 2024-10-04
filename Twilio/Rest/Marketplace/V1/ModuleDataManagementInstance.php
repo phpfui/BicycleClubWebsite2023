@@ -33,6 +33,7 @@ use Twilio\Version;
  * @property array|null $moduleInfo
  * @property array|null $documentation
  * @property array|null $configuration
+ * @property array|null $pricing
  */
 class ModuleDataManagementInstance extends InstanceResource
 {
@@ -57,6 +58,7 @@ class ModuleDataManagementInstance extends InstanceResource
             'moduleInfo' => Values::array_get($payload, 'module_info'),
             'documentation' => Values::array_get($payload, 'documentation'),
             'configuration' => Values::array_get($payload, 'configuration'),
+            'pricing' => Values::array_get($payload, 'pricing'),
         ];
 
         $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];

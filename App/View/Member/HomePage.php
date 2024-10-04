@@ -147,14 +147,14 @@ class HomePage implements \Stringable
 
 		foreach ($order as $item)
 			{
-			if ($item['priority'] > $this->getDaysCutoff($item['category']) || ! isset($item['li']))
+			if ($item['priority'] > $this->getDaysCutoff($item['category']) || empty($item['li']))
 				{
 				continue;
 				}
 			++$counter;
 			$contents = "<a href='";
 
-			if (isset($item['link']))
+			if (! empty($item['link']))
 				{
 				$contents .= $item['link'];
 				}
@@ -176,7 +176,7 @@ class HomePage implements \Stringable
 			}
 		$counter = 0;
 
-		foreach ($order as $item)
+		foreach ($order as $item)	// @phpstan-ignore-line
 			{
 			if ($item['priority'] > $this->getDaysCutoff($item['category']))
 				{
@@ -184,7 +184,7 @@ class HomePage implements \Stringable
 				}
 			++$counter;
 
-			if (isset($item['html']))
+			if (! empty($item['html']))
 				{
 				$output->add("<a name='{$counter}'></a>");
 				$output->add($item['html']);

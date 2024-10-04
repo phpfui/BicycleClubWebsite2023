@@ -142,7 +142,7 @@ class CueSheet
 		$name = new \PHPFUI\Input\Text('name', 'Cue Sheet Name', $cuesheet->name);
 		$name->setRequired();
 		$fieldSet->add($name);
-		$startLocation = $this->startLocationView->getEditControl($cuesheet->startLocationId);
+		$startLocation = $this->startLocationView->getEditControl((int)$cuesheet->startLocationId);
 		$fieldSet->add($startLocation);
 		$rwgps = new \App\UI\RWGPSPicker($this->page, 'RWGPSId', 'RWGPS Route', $cuesheet->RWGPS);
 		$fieldSet->add($rwgps->getEditControl());

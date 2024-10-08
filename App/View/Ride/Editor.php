@@ -338,10 +338,10 @@ class Editor
 
 		if ($ride->rideDate >= $today && $ride->memberId && $ride->rideId)
 			{
-			$button = new \PHPFUI\Button('Opt Out');
+			$button = new \PHPFUI\Button('Cancel Ride');
 			$button->addClass('alert');
 			$form->saveOnClick($button);
-			$this->getOptOutModal($ride, $button);
+			$this->getCancelRideModal($ride, $button);
 			$buttonGroup->addButton($button);
 			}
 
@@ -359,14 +359,14 @@ class Editor
 		return $output;
 		}
 
-	protected function getOptOutModal(\App\Record\Ride $ride, \PHPFUI\HTML5Element $modalLink) : void
+	protected function getCancelRideModal(\App\Record\Ride $ride, \PHPFUI\HTML5Element $modalLink) : void
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
-		$submit = new \PHPFUI\Submit('Opt Out');
+		$submit = new \PHPFUI\Submit('Cancel Ride');
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
 		$form->add(new \PHPFUI\Input\Hidden('rideId', (string)$ride->rideId));
-		$form->add(new \PHPFUI\Panel('When you opt out of leading a ride, the following happen:
+		$form->add(new \PHPFUI\Panel('When you cancel leading a ride, the following happen:
                               <ul><li>The ride is marked as "Leader Not Coming"</li>
                               <li>All signed up riders are emailed</li>
                               <li>Someone else can step up and volunteer to lead the ride</li></ul>'));
@@ -419,7 +419,7 @@ class Editor
 
 						break;
 
-					case 'Opt Out':
+					case 'Cancel Ride':
 
 						$rideModel = new \App\Model\Ride();
 						$ride = new \App\Record\Ride((int)$_POST['rideId']);

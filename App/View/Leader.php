@@ -479,17 +479,10 @@ class Leader
 		if (\count($parameters['categories'] ?? []))
 			{
 			$memberTable->addJoin('memberCategory');
-			$categoryCondition = new \PHPFUI\ORM\Condition();
-
-			foreach ($parameters['categories'] as $category)
-				{
-				$categoryCondition->or('categoryId', $category);
-				}
-			$condition->and($categoryCondition);
+			$condition->and('categoryId', $parameters['categories'], new \PHPFUI\ORM\Operator\In());
 			}
 		$memberTable->setWhere($condition);
-		$input = [];
-		$sql = $memberTable->getSelectSQL($input);
+		$memberTable->addGroupBy('member.memberId');
 		$table = new \App\UI\ContinuousScrollTable($this->page, $memberTable);
 		$table->setSortColumn('lastName');
 

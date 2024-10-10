@@ -50,7 +50,7 @@ class SparkPostSuppressions extends \App\Cron\BaseJob
 
 			if (\count($results))
 				{
-				$this->controller->log_important('SparkPost suppressions removed: ' . \print_r($results, true));
+				$this->controller->log_normal('SparkPost suppressions removed: ' . \print_r($results, true));
 				}
 			}
 		catch (\Exception $e)

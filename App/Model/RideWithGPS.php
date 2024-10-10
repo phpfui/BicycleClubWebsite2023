@@ -97,7 +97,14 @@ class RideWithGPS extends GPS
 			}
 
 		$url = $this->baseUri . '/users/current.json?' . $this->queryString;
-		$results = \json_decode(\file_get_contents($url), true);
+		$json = \file_get_contents($url);
+
+		if (false === $json)
+			{
+			return '';
+			}
+
+		$results = \json_decode($json, true);
 
 		return $this->authToken = ($results['user']['auth_token'] ?? '');
 		}
@@ -156,7 +163,14 @@ class RideWithGPS extends GPS
 		$offset = 50;
 		$limit = 50;
 		$url = $this->baseUri . "/clubs/{$this->clubId}/routes.json?" . $this->queryString;
-		$results = \json_decode(\file_get_contents($url), true);
+		$json = \file_get_contents($url);
+
+		if (false === $json)
+			{
+			return $routes;
+			}
+
+		$results = \json_decode($json, true);
 		$count = $results['results_count'] ?? 0;
 
 		while (\count($routes) < $count)
@@ -166,6 +180,12 @@ class RideWithGPS extends GPS
 				$routes[(int)$result['id']] = $result;
 				}
 			$result = \file_get_contents($url . '?' . \http_build_query(['offset' => $offset, 'limit' => $limit]));
+
+			if (false === $result)
+				{
+				break;
+				}
+
 			$results = \json_decode($result, true);
 			$offset += $limit;
 			}

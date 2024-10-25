@@ -122,8 +122,8 @@ class Reservation
 		$invoice->fullfillmentDate = \App\Tools\Date::todayString();
 		$invoice->update();
 		$reservation = new \App\Record\Reservation($invoiceItem->storeItemDetailId);
-		$reservation->invoiceId = $invoice->invoiceId;
-		$reservation->paymentId = $payment->paymentId;
+		$reservation->invoice = $invoice;
+		$reservation->payment = $payment;
 		$reservation->update();
 		$this->getEmail('paypal', $reservation)->send();
 		$this->incrementNewMemberDiscountCount($reservation);
@@ -189,6 +189,13 @@ class Reservation
 			}
 		$data['signedUpAt'] ??= \date('Y-m-d H:i:s');
 		$data['eventDate'] = \App\Tools\Date::formatString('l F j, Y', $data['eventDate'] ?? \App\Tools\Date::todayString());
+		foreach ($data as $field => $value)
+			{
+			if (\str_ends_with($field, 'Time'))
+				{
+				$data[$field] = \App\Tools\TimeHelper::toSmallTime($data[$field]);
+				}
+			}
 
 		return $data;
 		}

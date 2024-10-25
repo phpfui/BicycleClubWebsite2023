@@ -208,7 +208,7 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					{
 					$organizerFields['organizer_' . $field] = 1;
 					}
-				$fields = \array_keys(\array_merge($memberFields, $membershipFields, $eventsFields, $reservationFields, $organizerFields));
+				$fields = \array_merge($memberFields, $membershipFields, $eventsFields, $reservationFields, $organizerFields);
 
 				if ('Event' === $type)
 					{

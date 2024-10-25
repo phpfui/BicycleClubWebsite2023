@@ -12,7 +12,7 @@ class MainMessage
 		}
 
 	/**
-	 * @param array<string> $fields
+	 * @param array<string, mixed> $fields
 	 */
 	public function getEditor(string $type, array $fields) : \PHPFUI\Form
 		{

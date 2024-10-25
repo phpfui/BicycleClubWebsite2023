@@ -12,7 +12,7 @@ class Messages
 		}
 
 	/**
-	 * @param array<string> $fields
+	 * @param array<string, mixed> $fields
 	 */
 	public function getEditor(string $type, array $fields) : string
 		{

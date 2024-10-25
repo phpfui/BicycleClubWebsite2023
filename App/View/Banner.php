@@ -253,7 +253,7 @@ class Banner
 		$submitBanner = new \PHPFUI\Submit('Save', 'action');
 		$uploadForm = new \PHPFUI\Form($this->page);
 		$uploadForm->add(new \PHPFUI\SubHeader('Edit HTML and CSS'));
-		$html = new \PHPFUI\Input\TextArea('html', 'Banner HTML', $banner->html ?? '');
+		$html = new \PHPFUI\Input\TextArea('html', 'Banner HTML', \htmlspecialchars_decode($banner->html ?? ''));
 		$uploadForm->add($html);
 		$css = new \PHPFUI\Input\TextArea('css', 'Banner CSS', $banner->css ?? '');
 		$uploadForm->add($css);

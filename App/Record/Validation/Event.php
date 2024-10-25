@@ -13,7 +13,7 @@ class Event extends \PHPFUI\ORM\Validator
 		'endTime' => ['maxlength', 'gt_field:startTime'],
 		'lastRegistrationDate' => ['required', 'date', 'lte_field:eventDate'],
 		'checks' => ['required', 'integer'],
-		'commentTitle' => ['required', 'maxlength'],
+		'commentTitle' => ['maxlength'],
 		'door' => ['required', 'integer'],
 		'eventDate' => ['required', 'maxlength', 'date'],
 		'eventId' => ['integer'],

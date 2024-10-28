@@ -172,13 +172,13 @@ class Video extends \App\View\Folder
 		$this->cuts = $this->getCuts();
 
 		$view->addCustomColumn('videoDate', static fn (array $file) => $file['videoDate']);
-		$view->addCustomColumn('view', static fn (array $file) => new \PHPFUI\Link('/Video/view/' . $file['videoId'], $file['title'], false));
-		$view->addCustomColumn('video', static fn (array $file) => self::$editFile ? new \PHPFUI\Link('/Video/edit/' . $file['videoId'], $file['description'], false) : $file['description']);
+		$view->addCustomColumn('title', static fn (array $file) => new \PHPFUI\Link('/Video/view/' . $file['videoId'], $file['title'], false));
+		$view->addCustomColumn('description', static fn (array $file) => self::$editFile ? new \PHPFUI\Link('/Video/edit/' . $file['videoId'], $file['description'], false) : $file['description']);
 		$view->addCustomColumn('member', static function(array $file) { $member = new \App\Record\Member($file['memberId']);
 
 return $member->fullName();});
 
-		$headers = ['view' => 'View', 'video' => 'Description', 'videoDate' => 'Date', 'hits' => 'Views'];
+		$sortHeaders = ['title' => 'View', 'description' => 'Description', 'videoDate' => 'Date', 'hits' => 'Views'];
 		$normalHeaders = ['member', 'del'];
 
 		if ($allowCut)
@@ -187,7 +187,7 @@ return $member->fullName();});
 			$view->addCustomColumn('cut', $this->getCut(...));
 			}
 
-		$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, $normalHeaders))->setSortableColumns(\array_keys($headers));
+		$view->setSearchColumns($sortHeaders)->setHeaders(\array_merge($sortHeaders, $normalHeaders))->setSortableColumns(\array_keys($sortHeaders));
 
 		return $view;
 		}

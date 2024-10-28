@@ -189,6 +189,7 @@ class Reservation
 			}
 		$data['signedUpAt'] ??= \date('Y-m-d H:i:s');
 		$data['eventDate'] = \App\Tools\Date::formatString('l F j, Y', $data['eventDate'] ?? \App\Tools\Date::todayString());
+
 		foreach ($data as $field => $value)
 			{
 			if (\str_ends_with($field, 'Time'))

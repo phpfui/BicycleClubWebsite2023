@@ -382,8 +382,33 @@ a.dev:hover {
 			$banner->url = $host . '/Holiday/newYearsDay';
 			$banner->description = $name;
 			$banner->pending = 0;
-			$banner->html = '';
-			$banner->css = '';
+			$banner->html = '<div id="btn">Click Me</div>';
+			$banner->css = '.slick-slide {background-color:black;}
+				#btn {
+					background-color:blue;
+					width:100px;
+					height:50px;
+					text-align: center;
+					color:#fff;
+					line-height: 50px;
+					display: block;
+					text-transform: uppercase;
+					margin:100px auto;
+					cursor: pointer;
+					border: 0 solid;
+					box-shadow: inset 0px 0px 25px rgba(255,255,255, 0);
+					outline: 5px solid ;
+					outline-color: rgba(255,255,25,0.7);
+					outline-offset: 0px;
+					transition: all 1250ms cubic-bezier(.19, 1, .18, .98);
+				}
+				#btn:hover {
+					border: 1px solid ;
+					box-shadow: inset 0 0 25px (255,255,255, .5);
+					outline-color:rgba(255,255,255, 0);
+					outline-offset: 15px;
+					text-shadow: 1px 1px 2px lightgray;
+				}';
 			$banner->insert();
 			}
 		$this->updateBanner($banner, 1, 1);
@@ -435,7 +460,7 @@ a.dev:hover {
 }';
 			$banner->insert();
 			}
-		$this->updateBanner($banner, 1, 1);
+		$this->updateBanner($banner, 7, 4);
 
 		$name = 'Happy Halloween';
 		$banner = new \App\Record\Banner(['description' => $name]);

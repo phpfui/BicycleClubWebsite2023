@@ -50,11 +50,7 @@ class Video extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$condition = new \PHPFUI\ORM\Condition('folderType', \App\Enum\FolderType::VIDEO);
 			$condition->and('parentFolderId', (int)$folder->folderId);
 			$this->folderTable->setWhere($condition)->addOrderBy('name');
-			$this->page->addPageContent($this->view->clipboard(
-				$folder	/**
-	 * @return array<int,int>
-	 */
-			));
+			$this->page->addPageContent($this->view->clipboard($folder));
 			$form = new \PHPFUI\Form($this->page);
 			$form->setAreYouSure(false);
 			$form->setAttribute('action', '/Video/cut');

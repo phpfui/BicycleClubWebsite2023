@@ -92,8 +92,8 @@ class DiffParser extends ParserBase
             $oldName = $oldName === '/dev/null' ? null : substr($oldName, 2);
             $newName = $newName === '/dev/null' ? null : substr($newName, 2);
 
-            $oldIndex = $oldIndex !== null ?: '';
-            $newIndex = $newIndex !== null ?: '';
+            $oldIndex = $oldIndex === null ? '' : $oldIndex;
+            $newIndex = $newIndex === null ? '' : $newIndex;
             $oldIndex = preg_match('/^0+$/', $oldIndex) ? null : $oldIndex;
             $newIndex = preg_match('/^0+$/', $newIndex) ? null : $newIndex;
             $file = new File($oldName, $newName, $oldMode, $newMode, $oldIndex, $newIndex, $isBinary);
@@ -102,9 +102,9 @@ class DiffParser extends ParserBase
             while ($this->expects('@@ ')) {
                 $vars = $this->consumeRegexp('/-(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))?/');
                 $rangeOldStart = (int) $vars[1];
-                $rangeOldCount = (int) $vars[2];
+                $rangeOldCount = (int) ($vars[2] ?? 1);
                 $rangeNewStart = (int) $vars[3];
-                $rangeNewCount = isset($vars[4]) ? (int) $vars[4] : (int) $vars[2]; // @todo Ici, t'as pris un gros raccourci mon loulou
+                $rangeNewCount = (int) ($vars[4] ?? 1);
                 $this->consume(' @@');
                 $this->consumeTo("\n");
                 $this->consumeNewLine();

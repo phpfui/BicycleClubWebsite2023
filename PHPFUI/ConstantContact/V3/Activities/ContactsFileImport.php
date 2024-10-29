@@ -39,4 +39,10 @@ You can also use custom fields as column headings. Enter the custom field name p
 
 		return $this->doPost(['file' => $file, 'list_ids' => $list_ids, ]);
 		}
+
+	public function postReturnSchema(string $file, array $list_ids) : \PHPFUI\ConstantContact\Definition\ActivityImport
+		{
+		return new \PHPFUI\ConstantContact\Definition\ActivityImport($this->post($file, $list_ids));
+		}
+
 	}

@@ -28,6 +28,12 @@ class ContactCustomFields extends \PHPFUI\ConstantContact\Base
 		return $this->doGet(['limit' => $limit, ]);
 		}
 
+	public function getReturnSchema(?int $limit = null) : \PHPFUI\ConstantContact\Definition\CustomFields
+		{
+		return new \PHPFUI\ConstantContact\Definition\CustomFields($this->get($limit));
+		}
+
+
 	/**
 	 * POST (create) a custom_field
 	 *
@@ -41,4 +47,10 @@ class ContactCustomFields extends \PHPFUI\ConstantContact\Base
 
 		return $this->doPost(['body' => $body->getData(), ]);
 		}
+
+	public function postReturnSchema(\PHPFUI\ConstantContact\Definition\CustomFieldInput $body) : \PHPFUI\ConstantContact\Definition\CustomFieldResource
+		{
+		return new \PHPFUI\ConstantContact\Definition\CustomFieldResource($this->post($body));
+		}
+
 	}

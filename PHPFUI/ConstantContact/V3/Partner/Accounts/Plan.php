@@ -33,6 +33,12 @@ class Plan extends \PHPFUI\ConstantContact\Base
 		return $this->doGet(['encoded_account_id' => $encoded_account_id, ]);
 		}
 
+	public function getReturnSchema(string $encoded_account_id) : \PHPFUI\ConstantContact\Definition\PlanTiersObject
+		{
+		return new \PHPFUI\ConstantContact\Definition\PlanTiersObject($this->get($encoded_account_id));
+		}
+
+
 	/**
 	 * PUT (update) Billing Plan Details for a Client Account
 	 *
@@ -82,4 +88,10 @@ class Plan extends \PHPFUI\ConstantContact\Base
 
 		return $this->doPut(['encoded_account_id' => $encoded_account_id, 'body' => $body->getData(), ]);
 		}
+
+	public function putReturnSchema(string $encoded_account_id, ?\PHPFUI\ConstantContact\Definition\PlanInfo $body = null) : \PHPFUI\ConstantContact\Definition\PlanTiersObject
+		{
+		return new \PHPFUI\ConstantContact\Definition\PlanTiersObject($this->put($encoded_account_id, $body));
+		}
+
 	}

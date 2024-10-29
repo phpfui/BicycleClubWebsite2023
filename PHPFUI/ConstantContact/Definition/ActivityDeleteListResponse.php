@@ -19,7 +19,7 @@ namespace PHPFUI\ConstantContact\Definition;
  * @property \PHPFUI\ConstantContact\DateTime $updated_at Date and time that the request status was updated, in ISO-8601 format.
  * @property int $percent_done Job completion percentage
  * @property array $activity_errors Array of messages describing the errors that occurred.
- * @property \PHPFUI\ConstantContact\Definition\Link $_links
+ * @property \PHPFUI\ConstantContact\Definition\Links $_links
  */
 class ActivityDeleteListResponse extends \PHPFUI\ConstantContact\Definition\Base
 	{
@@ -30,7 +30,7 @@ class ActivityDeleteListResponse extends \PHPFUI\ConstantContact\Definition\Base
 		'updated_at' => '\PHPFUI\ConstantContact\DateTime',
 		'percent_done' => 'int',
 		'activity_errors' => 'array',
-		'_links' => '\PHPFUI\ConstantContact\Definition\Link',
+		'_links' => '\PHPFUI\ConstantContact\Definition\Links',
 
 	];
 	}

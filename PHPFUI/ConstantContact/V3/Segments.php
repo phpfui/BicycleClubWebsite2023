@@ -29,6 +29,12 @@ class Segments extends \PHPFUI\ConstantContact\Base
 		return $this->doGet(['limit' => $limit, 'sort_by' => $sort_by, ]);
 		}
 
+	public function getReturnSchema(?string $limit = null, ?string $sort_by = null) : \PHPFUI\ConstantContact\Definition\SegmentsDTO
+		{
+		return new \PHPFUI\ConstantContact\Definition\SegmentsDTO($this->get($limit, $sort_by));
+		}
+
+
 	/**
 	 * POST (create) a Segment
 	 *
@@ -66,4 +72,10 @@ class Segments extends \PHPFUI\ConstantContact\Base
 
 		return $this->doPost(['body' => $body->getData(), ]);
 		}
+
+	public function postReturnSchema(\PHPFUI\ConstantContact\Definition\SegmentData $body) : \PHPFUI\ConstantContact\Definition\SegmentDetail
+		{
+		return new \PHPFUI\ConstantContact\Definition\SegmentDetail($this->post($body));
+		}
+
 	}

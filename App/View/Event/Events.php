@@ -565,7 +565,7 @@ class Events
 				return "<i>{$participant['reservationLastName']}</i>";
 				}
 
-			return $participant['firstName'];
+			return $participant['lastName'];
 			});
 
 		$delete = new \PHPFUI\AJAX('deleteReservation', 'Permanently delete this reservation?');

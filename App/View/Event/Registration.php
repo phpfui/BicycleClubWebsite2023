@@ -332,7 +332,7 @@ class Registration
 				{
 				$settingTable = new \App\Table\Setting();
 
-				if (\App\Table\Event::FREE_MEMBERSHIP == $event->membersOnly)
+				if (\App\Enum\Event\MembersOnly::FREE_MEMBERSHIP == $event->membersOnly)
 					{	// includes membership
 
 					$fieldSet = new \PHPFUI\FieldSet('Free Membership Included');
@@ -344,7 +344,7 @@ class Registration
 					$alert->setCallOut();
 					$form->add($alert);
 					}
-				elseif (\App\Table\Event::PAID_MEMBERSHIP == $event->membersOnly)
+				elseif (\App\Enum\Event\MembersOnly::PAID_MEMBERSHIP == $event->membersOnly)
 					{	// requires membership
 
 					$fieldSet = new \PHPFUI\FieldSet('Membership Is Required');

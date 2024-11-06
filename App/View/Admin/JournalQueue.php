@@ -20,9 +20,8 @@ class JournalQueue
 			$view = new \App\UI\ContinuousScrollTable($this->page, $journalItemTable);
 			$record = $journalItemTable->getRecord();
 
-			$record->addDisplayTransform('memberId', $this->getMember(...));
-
 			$deleter = new \App\Model\DeleteRecord($this->page, $view, $journalItemTable, 'Permanently delete this email from the next journal email?');
+			$view->addCustomColumn('memberId', $this->getMember(...));
 			$view->addCustomColumn('del', $deleter->columnCallback(...));
 			$view->addCustomColumn('edit', $this->getEditItemModal(...));
 
@@ -68,8 +67,13 @@ class JournalQueue
 		return $editIcon;
 		}
 
-	private function getMember(int $memberId) : string
+	/**
+	 * @param array<string, mixed> $item
+	 */
+	private function getMember(array $item) : string
 		{
+		$memberId = $item['memberId'];
+
 		if (! $memberId)
 			{
 			return 'Web Master';

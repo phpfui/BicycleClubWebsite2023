@@ -34,15 +34,17 @@ class ContactsFileImport extends \PHPFUI\ConstantContact\Base
 You can also use custom fields as column headings. Enter the custom field name prefixed with `cf:` as the column heading. For example, use `cf:first_name` as the header name if you have a custom field named "first_name". The custom field must already exist in the Constant Contact account you are using. Depending on the custom field data type, you can enter dates or strings as the value of the custom field. Each contact can contain up to 25 different custom fields.
 	 * @param array $list_ids Specify which contact lists you are adding all imported contacts to as an array of up to 50 contact `list_id` values.
 	 */
-	public function post(string $file, array $list_ids) : array
+	public function post(string $file, array $list_ids) : ?array
 		{
 
 		return $this->doPost(['file' => $file, 'list_ids' => $list_ids, ]);
 		}
 
-	public function postReturnSchema(string $file, array $list_ids) : \PHPFUI\ConstantContact\Definition\ActivityImport
+	public function postTyped(string $file, array $list_ids) : ?\PHPFUI\ConstantContact\Definition\ActivityImport
 		{
-		return new \PHPFUI\ConstantContact\Definition\ActivityImport($this->post($file, $list_ids));
+		$data = $this->post($file, $list_ids);
+
+		return $data ? new \PHPFUI\ConstantContact\Definition\ActivityImport($data) : null;
 		}
 
 	}

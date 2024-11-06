@@ -27,15 +27,17 @@ class Plan extends \PHPFUI\ConstantContact\Base
 	 *
 	 * @param string $encoded_account_id Specify the client's unique `encoded_account_id`.
 	 */
-	public function get(string $encoded_account_id) : array
+	public function get(string $encoded_account_id) : ?array
 		{
 
 		return $this->doGet(['encoded_account_id' => $encoded_account_id, ]);
 		}
 
-	public function getReturnSchema(string $encoded_account_id) : \PHPFUI\ConstantContact\Definition\PlanTiersObject
+	public function getTyped(string $encoded_account_id) : ?\PHPFUI\ConstantContact\Definition\PlanTiersObject
 		{
-		return new \PHPFUI\ConstantContact\Definition\PlanTiersObject($this->get($encoded_account_id));
+		$data = $this->get($encoded_account_id);
+
+		return $data ? new \PHPFUI\ConstantContact\Definition\PlanTiersObject($data) : null;
 		}
 
 
@@ -83,15 +85,17 @@ class Plan extends \PHPFUI\ConstantContact\Base
 
 `billing_day_of _month`:   Updates the day of month in which to bill the client account. This property is required if a client account is not set up to use single billing.      
 	 */
-	public function put(string $encoded_account_id, ?\PHPFUI\ConstantContact\Definition\PlanInfo $body = null) : array
+	public function put(string $encoded_account_id, ?\PHPFUI\ConstantContact\Definition\PlanInfo $body = null) : ?array
 		{
 
 		return $this->doPut(['encoded_account_id' => $encoded_account_id, 'body' => $body->getData(), ]);
 		}
 
-	public function putReturnSchema(string $encoded_account_id, ?\PHPFUI\ConstantContact\Definition\PlanInfo $body = null) : \PHPFUI\ConstantContact\Definition\PlanTiersObject
+	public function putTyped(string $encoded_account_id, ?\PHPFUI\ConstantContact\Definition\PlanInfo $body = null) : ?\PHPFUI\ConstantContact\Definition\PlanTiersObject
 		{
-		return new \PHPFUI\ConstantContact\Definition\PlanTiersObject($this->put($encoded_account_id, $body));
+		$data = $this->put($encoded_account_id, $body);
+
+		return $data ? new \PHPFUI\ConstantContact\Definition\PlanTiersObject($data) : null;
 		}
 
 	}

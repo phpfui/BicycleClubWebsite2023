@@ -14,6 +14,16 @@ class Reservation extends \App\Record\Definition\Reservation
 		'ReservationPersonChildren' => [\PHPFUI\ORM\Children::class, \App\Table\ReservationPerson::class],
 	];
 
+	public function clean() : static
+		{
+		if (0 === $this->paymentId)
+			{
+			$this->paymentId = null;
+			}
+
+		return $this;
+		}
+
 	public function delete() : bool
 		{
 		$payment = $this->payment;

@@ -262,9 +262,6 @@ class Content extends \App\UI\HTMLEditor
 		{
 		$view = new \App\UI\ContinuousScrollTable($this->page, $storyTable);
 		$record = $storyTable->getRecord();
-		$record->addDisplayTransform('startDate', $record->blankDate(...));
-		$record->addDisplayTransform('endDate', $record->blankDate(...));
-		$record->addDisplayTransform('lastEdited', $record->blankDate(...));
 		$view->addCustomColumn('headline', static fn (array $row) => new \PHPFUI\Link('/Content/view/' . $row['storyId'], $row['headline'], false));
 		$view->addCustomColumn('Editor', static function(array $row)
 			{
@@ -307,7 +304,6 @@ class Content extends \App\UI\HTMLEditor
 
 		$view = new \App\UI\ContinuousScrollTable($this->page, $storyTable);
 		$record = $storyTable->getRecord();
-		$record->addDisplayTransform('lastEdited', $record->blankDate(...));
 		$view->addCustomColumn('headline', static fn (array $row) => new \PHPFUI\Link('/Content/view/' . $row['storyId'], $row['headline'], false));
 		$view->addCustomColumn('Editor', static function(array $row)
 			{

@@ -154,12 +154,8 @@ class Events
 		$tabs->addTab('Dates', $container, true);
 
 		$pricingFields = new \PHPFUI\FieldSet('Pricing');
-		$membersOnly = new \PHPFUI\Input\RadioGroup('membersOnly', 'Membership Requirements', (string)$event->membersOnly);
+		$membersOnly = new \PHPFUI\Input\RadioGroupEnum('membersOnly', 'Membership Requirements', $event->membersOnly);
 		$membersOnly->setSeparateRows(false);
-		$membersOnly->addButton('Public', (string)\App\Table\Event::PUBLIC);
-		$membersOnly->addButton('Members Only', (string)\App\Table\Event::MEMBERS_ONLY);
-		$membersOnly->addButton('Include Membership', (string)\App\Table\Event::FREE_MEMBERSHIP);
-		$membersOnly->addButton('Charge Membership', (string)\App\Table\Event::PAID_MEMBERSHIP);
 		$membersOnly->setToolTip('Select membership requirement: Public (no membership needed), Members Only (must be an existing member), Include (free) membership, Charge (for a new) Membership.');
 		$pricingFields->add($membersOnly);
 		$price = new \PHPFUI\Input\Number('price', 'Price', $event->price);
@@ -540,7 +536,7 @@ class Events
 		$editColumn = new \App\Model\EditIcon($view, $this->reservationTable, '/Events/editReservation/');
 		$view->addCustomColumn('reservationemail', static function(array $participant)
 			{
-			if ($participant['memberId'] > 0)
+			if ($participant['memberId'] > 0 && $participant['email'])
 				{
 				return "<a href='/Membership/email/{$participant['memberId']}'>{$participant['email']}</a>";
 				}
@@ -550,6 +546,26 @@ class Events
 				}
 
 			return '';
+			});
+
+		$view->addCustomColumn('firstName', static function(array $participant)
+			{
+			if (empty($participant['firstName']))
+				{
+				return "<i>{$participant['reservationFirstName']}</i>";
+				}
+
+			return $participant['firstName'];
+			});
+
+		$view->addCustomColumn('lastName', static function(array $participant)
+			{
+			if (empty($participant['lastName']))
+				{
+				return "<i>{$participant['reservationLastName']}</i>";
+				}
+
+			return $participant['firstName'];
 			});
 
 		$delete = new \PHPFUI\AJAX('deleteReservation', 'Permanently delete this reservation?');
@@ -562,7 +578,7 @@ class Events
 			$participant['pricePaid'] = (float)$participant['pricePaid'];
 			$amount = '$' . \number_format($participant['pricePaid'], 2);
 
-			if ($participant['pricePaid'] > 0.0 && ! $participant['paymentId'])
+			if ($participant['pricePaid'] > 0.0 && empty($participant['paymentId']))
 				{
 				$amount .= ' Due (' . $paymentTypes[$participant['paymentType'] ?? 0] . ')';
 				}
@@ -596,7 +612,7 @@ class Events
 		{
 		$this->event = clone $event;
 
-		if (! isset($this->event->membersOnly) || 1 != $this->event->membersOnly)
+		if (! isset($this->event->membersOnly) || \App\Enum\Event\MembersOnly::MEMBERS_ONLY != $this->event->membersOnly)
 			{
 			$this->page->setPublic();
 			}

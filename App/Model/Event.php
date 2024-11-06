@@ -35,9 +35,9 @@ class Event
 	public static function newMemberDiscountQualified(\App\Record\Event $event) : bool
 		{
 		// check for member discounts
-		if ($event->membersOnly)
+		if (\App\Enum\Event\MembersOnly::PUBLIC != $event->membersOnly)
 			{
-			if (1 == $event->membersOnly)
+			if (\App\Enum\Event\MembersOnly::MEMBERS_ONLY == $event->membersOnly)
 				{
 				// current member, see if they qualify for a discount
 				$member = \App\Model\Session::signedInMemberRecord();

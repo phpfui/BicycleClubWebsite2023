@@ -21,18 +21,24 @@ class NonOpenerResends extends \PHPFUI\ConstantContact\Base
 	 *
 	 * @param string $campaign_activity_id The unique ID for the primary email campaign activity.
 	 */
-	public function get(string $campaign_activity_id) : array
+	public function get(string $campaign_activity_id) : ?array
 		{
 
 		return $this->doGet(['campaign_activity_id' => $campaign_activity_id, ]);
 		}
 	/**
-	 * @return array<\PHPFUI\ConstantContact\Definition\ResendToNonOpeners>
+	 * @return ?array<\PHPFUI\ConstantContact\Definition\ResendToNonOpeners>
 	 */
-	public function getReturnSchema(string $campaign_activity_id) : array
+	public function getTyped(string $campaign_activity_id) : ?array
 		{
+		$data = $this->get($campaign_activity_id);
+		if (is_null($data))
+			{
+			return null;
+			}
+
 		$array = [];
-		foreach ($this->get($campaign_activity_id) as $object)
+		foreach ($data as $object)
 			{
 			$array[] = new \PHPFUI\ConstantContact\Definition\ResendToNonOpeners($object);
 			}
@@ -62,15 +68,17 @@ class NonOpenerResends extends \PHPFUI\ConstantContact\Base
 	 * @param string $campaign_activity_id The unique ID for the primary email campaign activity.
 	 * @param \PHPFUI\ConstantContact\Definition\ResendToNonOpenersInput $resend_schedule A JSON request body that specifies when to resend the campaign activity to non-openers.
 	 */
-	public function post(string $campaign_activity_id, \PHPFUI\ConstantContact\Definition\ResendToNonOpenersInput $resend_schedule) : array
+	public function post(string $campaign_activity_id, \PHPFUI\ConstantContact\Definition\ResendToNonOpenersInput $resend_schedule) : ?array
 		{
 
 		return $this->doPost(['campaign_activity_id' => $campaign_activity_id, 'resend_schedule' => $resend_schedule->getData(), ]);
 		}
 
-	public function postReturnSchema(string $campaign_activity_id, \PHPFUI\ConstantContact\Definition\ResendToNonOpenersInput $resend_schedule) : \PHPFUI\ConstantContact\Definition\ResendToNonOpenersObject
+	public function postTyped(string $campaign_activity_id, \PHPFUI\ConstantContact\Definition\ResendToNonOpenersInput $resend_schedule) : ?\PHPFUI\ConstantContact\Definition\ResendToNonOpenersObject
 		{
-		return new \PHPFUI\ConstantContact\Definition\ResendToNonOpenersObject($this->post($campaign_activity_id, $resend_schedule));
+		$data = $this->post($campaign_activity_id, $resend_schedule);
+
+		return $data ? new \PHPFUI\ConstantContact\Definition\ResendToNonOpenersObject($data) : null;
 		}
 
 	}

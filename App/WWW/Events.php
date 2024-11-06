@@ -47,19 +47,22 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$reservation->delete();
 			$this->page->redirect('/Events');
 			}
-		else
+		elseif ($reservation->memberId != \App\Model\Session::signedInMemberId())
 			{
 			$this->page->addPageContent(new \PHPFUI\Header('This reservation can not be cancelled'));
-
-			if ($reservation->memberId != \App\Model\Session::signedInMemberId())
-				{
-				$this->page->addPageContent(new \PHPFUI\SubHeader("You can not cancel another person's reservation"));
-				}
-			elseif ($reservation->paymentId || $reservation->invoiceId)
-				{
-				$this->page->addPageContent(new \PHPFUI\SubHeader('This reservation has an associated payment'));
-				$this->page->addPageContent(new \PHPFUI\Header('Please contact the event organizer to request a refund', 5));
-				}
+			$this->page->addPageContent(new \PHPFUI\SubHeader("You can not cancel another person's reservation"));
+			}
+		elseif ($reservation->paymentId)
+			{
+			$this->page->addPageContent(new \PHPFUI\Header('This reservation can not be cancelled'));
+			$this->page->addPageContent(new \PHPFUI\SubHeader('This reservation has an associated payment'));
+			$this->page->addPageContent(new \PHPFUI\Header('Please contact the event organizer to request a refund', 5));
+			}
+		else // corrent signed in member, invoice but no payment, cancel
+			{
+			$invoiceModel = new \App\Model\Invoice();
+			$invoiceModel->delete($reservation->invoice);
+			$this->page->redirect('/Events');
 			}
 		}
 
@@ -391,7 +394,7 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		// view will set the page to public if need be.
 		$this->view->setEvent($event);
 
-		if (! $event->empty() && $event->membersOnly)
+		if (! $event->empty() && \App\Enum\Event\MembersOnly::MEMBERS_ONLY != $event->membersOnly)
 			{
 			$this->page->setPublic(false);
 			}

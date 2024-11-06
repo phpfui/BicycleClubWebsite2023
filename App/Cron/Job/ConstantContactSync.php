@@ -53,7 +53,7 @@ class ConstantContactSync extends \App\Cron\BaseJob
 
 		do
 			{
-			foreach ($list['contacts'] as $contact)
+			foreach ($list['contacts'] ?? [] as $contact)
 				{
 				$email = \trim(\strtolower($contact['email_address']['address'] ?? ''));
 

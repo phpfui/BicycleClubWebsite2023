@@ -75,8 +75,8 @@ class NameTags implements \Stringable
 
 		foreach ($members as $member)
 			{
-			$first = \App\Tools\TextHelper::unhtmlentities($member['firstName']);
-			$last = \App\Tools\TextHelper::unhtmlentities($member['lastName']);
+			$first = \App\Tools\TextHelper::unhtmlentities($member->firstName ?? $member->reservationFirstName);
+			$last = \App\Tools\TextHelper::unhtmlentities($member->lastName ?? $member->reservationLastName);
 
 			if ($firstLast)
 				{
@@ -98,8 +98,8 @@ class NameTags implements \Stringable
 
 		foreach ($members as $member)
 			{
-			$first = \App\Tools\TextHelper::unhtmlentities($member['firstName']);
-			$last = \App\Tools\TextHelper::unhtmlentities($member['lastName']);
+			$first = \App\Tools\TextHelper::unhtmlentities($member->firstName ?? $member->reservationFirstName);
+			$last = \App\Tools\TextHelper::unhtmlentities($member->lastName ?? $member->reservationLastName);
 
 			if ($firstLast)
 				{

@@ -6,19 +6,19 @@ namespace PHPFUI\ConstantContact\Definition;
 
 /**
  * @property int $sends The total number of unique sends.
+ * @property int $delivers The total number of SMS delivered.
+ * @property int $opens The total number of unique opens.
  * @property int $clicks The total number of unique clicks.
  * @property int $optouts The total number of unique opt-outs (unsubscribes).
- * @property int $delivers The total number of SMS delivered.
- * @property int $bounces The total number of unique bounces.
  */
 class UniqueSmsCounts extends \PHPFUI\ConstantContact\Definition\Base
 	{
 	protected static array $fields = [
 		'sends' => 'int',
+		'delivers' => 'int',
+		'opens' => 'int',
 		'clicks' => 'int',
 		'optouts' => 'int',
-		'delivers' => 'int',
-		'bounces' => 'int',
 
 	];
 	}

@@ -509,11 +509,6 @@ intersectionObserver.observe(document.querySelector('#{$footerId}'));";
 			++$count;
 			$displayRow = $row;
 
-			foreach ($row as $field => $value)
-				{
-				$displayRow[$field] = $this->dataTable->displayTransform($field, $value);
-				}
-
 			foreach ($this->customColumns as $field => $callbackInfo)
 				{
 				$displayRow[$field] = $callbackInfo[0]($row, $callbackInfo[1]);

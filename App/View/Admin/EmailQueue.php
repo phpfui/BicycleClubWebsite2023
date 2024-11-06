@@ -28,10 +28,9 @@ class EmailQueue
 			$view = new \App\UI\ContinuousScrollTable($this->page, $mailItemTable);
 			$record = $mailItemTable->getRecord();
 
-			$record->addDisplayTransform('memberId', $this->getMember(...));
-
 			$deleter = new \App\Model\DeleteRecord($this->page, $view, $mailItemTable, 'Are you sure you want to permanently delete this email?');
 			$view->addCustomColumn('del', $deleter->columnCallback(...));
+			$view->addCustomColumn('memberId', $this->getMember(...));
 			$view->addCustomColumn('edit', $this->getEditItemModal(...));
 			$view->addCustomColumn('paused', $this->getPauseControl(...));
 			$view->addCustomColumn('emails', $this->getCount(...));
@@ -103,8 +102,13 @@ class EmailQueue
 		return $editIcon;
 		}
 
-	private function getMember(?int $memberId) : string
+	/**
+	 * @param array<string, mixed> $item
+	 */
+	private function getMember(array $item) : string
 		{
+		$memberId = $item['memberId'];
+
 		if (! $memberId)
 			{
 			return 'Web Master';

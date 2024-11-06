@@ -62,7 +62,7 @@ class Reservation
 		$invoiceItem->storeItemDetailId = $reservation->reservationId;
 		$invoiceItem->insert();
 
-		if (! \App\Model\Session::isSignedIn() && $event->membersOnly >= \App\Table\Event::FREE_MEMBERSHIP)
+		if (! \App\Model\Session::isSignedIn() && (\App\Enum\Event\MembersOnly::FREE_MEMBERSHIP == $event->membersOnly || \App\Enum\Event\MembersOnly::PAID_MEMBERSHIP == $event->membersOnly))
 			{
 			$invoiceItem = new \App\Record\InvoiceItem();
 			$invoiceItem->invoice = $invoice;
@@ -71,7 +71,7 @@ class Reservation
 
 			$duesModel = new \App\Model\MembershipDues();
 
-			if (\App\Table\Event::PAID_MEMBERSHIP == $event->membersOnly)
+			if (\App\Enum\Event\MembersOnly::PAID_MEMBERSHIP == $event->membersOnly)
 				{
 				$price = $duesModel->getMembershipPrice($attendees->count());
 				}
@@ -274,7 +274,8 @@ class Reservation
 		{
 		$persons = $reservation->ReservationPersonChildren;
 		$price = 0.0;
-		$event = new \App\Record\Event(['membersOnly' => 0]);
+		$event = new \App\Record\Event();
+		$event->membersOnly = \App\Enum\Event\MembersOnly::PUBLIC;
 
 		$personCount = \count($persons);
 
@@ -286,7 +287,7 @@ class Reservation
 			}
 		$price *= $personCount;
 
-		if (! \App\Model\Session::isSignedIn() && \App\Table\Event::PAID_MEMBERSHIP == $event->membersOnly)
+		if (! \App\Model\Session::isSignedIn() && \App\Enum\Event\MembersOnly::PAID_MEMBERSHIP == $event->membersOnly)
 			{
 			$duesModel = new \App\Model\MembershipDues();
 			$price += (float)$duesModel->getMembershipPrice($personCount);

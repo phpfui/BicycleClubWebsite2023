@@ -8,7 +8,7 @@ namespace PHPFUI\ConstantContact\Definition;
  * @property \PHPFUI\ConstantContact\UUID $campaign_id The ID that uniquely identifies the campaign.
  * @property string $campaign_name The name to associate with this campaign.
  * @property \PHPFUI\ConstantContact\DateTime $last_sent_date The date that the campaign was last sent.
- * @property \PHPFUI\ConstantContact\Definition\UniqueSmsCounts $unique_counts Aggregate counts for email tracking metrics unique across contacts and channels
+ * @property \PHPFUI\ConstantContact\Definition\UniqueSmsCounts $unique_counts The total number of times each unique contact interacted with a tracked SMS campaign activity.
  * @property string $campaign_type The campaign type.
  */
 class BulkCampaignSummary extends \PHPFUI\ConstantContact\Definition\Base

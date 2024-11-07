@@ -8,18 +8,18 @@ class Reservation extends \PHPFUI\ORM\Table
 
 	public static function getEmails(int $eventId, int $unpaidOnly) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select coalesce(nullif(p.email,""),r.reservationemail) email,coalesce(p.firstName,r.reservationFirstName) firstName,coalesce(p.lastName,r.reservationLastName) lastName
+		$sql = 'select coalesce(p.email,r.reservationemail) email,coalesce(p.firstName,r.reservationFirstName) firstName,coalesce(p.lastName,r.reservationLastName) lastName
 			from reservation r
-			left join reservationPerson p on p.reservationId=r.reservationId
+			left outer join reservationPerson p on p.reservationId=r.reservationId
 			where r.eventId=?';
 
 		if (1 == $unpaidOnly)
 			{
-			$sql .= ' and r.paymentId is not null';
+			$sql .= ' and r.paymentId>0';
 			}
 		elseif (2 == $unpaidOnly)
 			{
-			$sql .= ' and r.paymentId is null';
+			$sql .= ' and (r.paymentId is null or r.paymentId=0)';
 			}
 
 		return \PHPFUI\ORM::getArrayCursor($sql, [$eventId]);

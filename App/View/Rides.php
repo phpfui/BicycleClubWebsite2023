@@ -425,7 +425,7 @@ class Rides
 			$row->add($selectColumn);
 			$fieldSet->add($row);
 
-			if ($showComments && isset($rider->comments))
+			if ($showComments && ! empty($rider->comments))
 				{
 				$row = new \PHPFUI\GridX();
 				$row->add(\App\Tools\TextHelper::addLinks($rider->comments));

@@ -21,7 +21,6 @@ class Event extends \PHPFUI\ORM\Validator
 		'maxDiscounts' => ['required', 'integer'],
 		'newMemberDiscount' => ['required', 'number', 'lte_field:price'],
 		'maxReservations' => ['required', 'integer'],
-		'membersOnly' => ['required', 'integer'],
 		'newMemberDate' => ['maxlength', 'date'],
 		'numberReservations' => ['integer'],
 		'organizer' => ['integer'],

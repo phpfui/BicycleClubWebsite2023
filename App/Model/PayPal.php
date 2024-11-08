@@ -24,21 +24,22 @@ class PayPal
 		$this->sandbox = $type ? $this->settingTable->value('PayPal_' . $type) : '';
 		}
 
-	public function createOrderRequest(\App\Record\Invoice $invoice, string $description = 'Store') : \PayPalHttp\HttpResponse
+	public function createOrderRequest(\App\Record\Invoice $invoice, string $description = 'Store') : ?\PayPalHttp\HttpResponse
 		{
 		$request = new \PayPalCheckoutSdk\Orders\OrdersCreateRequest();
 		$request->prefer('return=representation');
 		$order = $this->getOrder($invoice, $description);
 		$request->body = ['error' => 'Invalid InvoiceId'];
 
-		if ($order)
+		if (! $order)
 			{
-			$request->body = $order->getData();
+			return null;
 			}
-		$client = $this->getPayPalClient();
-		$response = $client->execute($request);
 
-		return $response;
+		$request->body = $order->getData();
+		$client = $this->getPayPalClient();
+
+		return $client->execute($request);
 		}
 
 	public function enableSandbox() : static

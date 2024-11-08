@@ -100,6 +100,12 @@ class PayPal extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$model = new \App\Model\PayPal($paypalType);
 		$response = $model->createOrderRequest($invoice, $description);
+
+		if (! $response)
+			{
+			return;
+			}
+
 		$_SESSION['PayPalId'] = $response->result->id; // @phpstan-ignore property.nonObject
 		$this->page->setRawResponse(\json_encode($response->result, JSON_PRETTY_PRINT));
 		}

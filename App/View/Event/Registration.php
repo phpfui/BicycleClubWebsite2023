@@ -247,8 +247,6 @@ class Registration
 					}
 				else
 					{
-					$mustPay = false;
-
 					if ($reservation->paymentId)
 						{
 						$paymentInfo->add($this->getPaymentFields($payment, $reservation->paymentId > 0));

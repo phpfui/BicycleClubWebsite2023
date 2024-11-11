@@ -5,7 +5,7 @@ namespace PHPFUI\ConstantContact\Definition;
 abstract class Base
 	{
 	/**
-	 * @var array indexed by field name containing field type.
+	 * @var array<string, string | array> $fields indexed by field name containing field type.
 	 *
 	 * Valid types are:
 	 * - bool
@@ -13,7 +13,7 @@ abstract class Base
 	 * - int
 	 * - string
 	 * - FQN (fully qualified name) PHP class
-	 * - array&lt;FQN&gt;
+	 * - array<FQN>
 	 * - array of case sensitive string or integer enums
 	 */
 	protected static array $fields = [];
@@ -183,6 +183,13 @@ abstract class Base
 				{
 				throw new \PHPFUI\ConstantContact\Exception\InvalidType(static::class . "::{$actualField} is of type {$type} but should be type {$expectedType}");
 				}
+			elseif (\str_starts_with($expectedType, 'PHPFUI'))
+				{
+				if (\is_array($value))
+					{
+					$value = new $expectedType($value);
+					}
+				}
 			}
 
 		if (isset(static::$minLength[$field]))
@@ -266,10 +273,6 @@ abstract class Base
 					}
 				elseif (\is_array($value))
 					{
-					if (! \count($value))
-						{
-						continue;
-						}
 					$result[$field] = [];
 
 					foreach ($value as $name => $item)

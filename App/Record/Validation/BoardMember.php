@@ -10,7 +10,7 @@ class BoardMember extends \PHPFUI\ORM\Validator
 	/** @var array<string, string[]> */
 	public static array $validators = [
 		'description' => ['maxlength'],
-		'extension' => ['required', 'maxlength'],
+		'extension' => ['maxlength'],
 		'memberId' => ['required', 'integer'],
 		'rank' => ['integer'],
 		'title' => ['maxlength', 'required'],

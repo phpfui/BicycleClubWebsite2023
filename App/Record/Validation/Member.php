@@ -19,7 +19,7 @@ class Member extends \PHPFUI\ORM\Validator
 		'emailNewsletter' => ['required', 'integer'],
 		'emergencyContact' => ['maxlength'],
 		'emergencyPhone' => ['maxlength'],
-		'extension' => ['required', 'maxlength'],
+		'extension' => ['maxlength'],
 		'firstName' => ['required', 'maxlength'],
 		'geoLocate' => ['required', 'integer'],
 		'journal' => ['required', 'integer'],

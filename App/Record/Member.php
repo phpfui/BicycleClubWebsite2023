@@ -22,6 +22,10 @@ class Member extends \App\Record\Definition\Member
 			{
 			$this->email = '';
 			}
+		if (null === $this->extension)
+			{
+			$this->extension = '';
+			}
 		$this->cleanEmail('email');
 		$this->email = \App\Model\Member::cleanEmail($this->email);
 		$this->cleanProperName('lastName');

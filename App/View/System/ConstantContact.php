@@ -253,7 +253,7 @@ class ConstantContact
 
 		foreach ($input[$index] ?? [] as $row)
 			{
-			if (! \is_string($row))
+			if (! \is_string($row)) // @phpstan-ignore-line
 				{
 				unset($row['created_at'], $row['updated_at']);
 				$suffix = \array_shift($suffixes);

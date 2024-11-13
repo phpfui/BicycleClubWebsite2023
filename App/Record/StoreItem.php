@@ -7,7 +7,7 @@ namespace App\Record;
  *
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\StoreItemOption> $StoreItemOptionChildren
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\StoreItemDetail> $StoreItemDetailChildren
- * @property \PHPFUI\ORM\RecordCursor<\App\Record\StorePhotoOption> $storePhotoChildren
+ * @property \PHPFUI\ORM\RecordCursor<\App\Record\StorePhoto> $storePhotoChildren
  */
 class StoreItem extends \App\Record\Definition\StoreItem
 	{

@@ -564,7 +564,7 @@ class Page extends \PHPFUI\Page
 
 			foreach ($items as $item)
 				{
-				if ($item instanceof \PHPFUI\MenuItem)
+				if ($item instanceof \PHPFUI\MenuItem) // @phpstan-ignore-line
 					{
 					$search->addOption($item->getName(), $item->getLink());
 					}

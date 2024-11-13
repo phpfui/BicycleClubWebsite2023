@@ -147,7 +147,7 @@ class TimeHelper
 		{
 		if (-1 != $time)
 			{
-			$hour = \floor($time / 60);
+			$hour = (int)\floor($time / 60);
 			$minute = $time % 60;
 
 			if ($hour > 11)

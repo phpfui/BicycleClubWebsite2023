@@ -112,7 +112,7 @@ class RideWithGPSSearch implements \Stringable
 			$fieldSet->add($this->getRangeSlider('feetPerMile', $parameters, 0, 150));
 			}
 
-		$fieldSet->add(new \PHPFUI\MultiColumn(new \PHPFUI\Input\Text('town', 'Starting Town', $parameters['town']), new \PHPFUI\Input\CheckBoxBoolean('club', 'Club Routes Only', $parameters['club'])));
+		$fieldSet->add(new \PHPFUI\MultiColumn(new \PHPFUI\Input\Text('town', 'Starting Town', $parameters['town']), new \PHPFUI\Input\CheckBoxBoolean('club', 'Club Routes Only', (bool)$parameters['club'])));
 		$startLocation = new \App\View\StartLocation($this->page);
 		$fieldSet->add($startLocation->getEditControl((int)$parameters['startLocationId']));
 		$fieldSet->add(new \PHPFUI\Input\Text('title', 'Title includes', $parameters['title']));
@@ -136,7 +136,7 @@ class RideWithGPSSearch implements \Stringable
 		}
 
 	/**
-	 * @param array<string,string> &$parameters
+	 * @param array<string,string|int> &$parameters
 	 */
 	protected function setDefaults(array &$parameters) : void
 		{

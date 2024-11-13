@@ -24,7 +24,7 @@ class Permissions
 		}
 
 	/**
-	 * @return array<string, string>
+	 * @return array<string, string|array<mixed>>
 	 */
 	public function addPermissionGroup(\App\Record\Permission $permission) : array
 		{
@@ -521,7 +521,7 @@ class Permissions
 		$modal = new \PHPFUI\Reveal($this->page, $button);
 		$submit = new \PHPFUI\Submit('Add Permission Group');
 		$form = new \App\UI\ErrorFormSaver($this->page, new \App\Record\Permission(), $submit);
-		$form->setSaveRecordCallback([$this, 'addPermissionGroup']);
+		$form->setSaveRecordCallback([$this, 'addPermissionGroup']);  // @phpstan-ignore-line
 
 		if ($form->save())
 			{

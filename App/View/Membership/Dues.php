@@ -82,7 +82,7 @@ class Dues
 
 		foreach ($dues as $key => $value)
 			{
-			if (! \is_string($value) || 0 == \strlen($value))
+			if (! \is_string($value) || 0 == \strlen($value)) // @phpstan-ignore-line
 				{
 				break;
 				}

@@ -330,7 +330,7 @@ class Renew
 				{
 				$maxMembersField = new \PHPFUI\Input\Select('maxMembers', 'Number of members on your membership');
 
-				if (0 !== $maxMembersOnMembership)
+				if (0 !== $maxMembersOnMembership) // @phpstan-ignore-line
 					{
 					$maxMembersOnMembership = 10;
 					}

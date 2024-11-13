@@ -5,7 +5,7 @@ namespace App\Report;
 class Leader extends \PDF_MC_Table
 	{
 	/**
-	 * @var array<string,int>
+	 * @var array<string,int|array<int,int>>
 	 */
 	private array $blankRow = [];
 

@@ -4,7 +4,7 @@ namespace App\Model;
 
 class MDTextAreaEditor implements \PHPFUI\Interfaces\HTMLEditor
 	{
-	/** @var array<string,bool|string> */
+	/** @var array<string,mixed> */
 	private array $options = [
 		'toolbar' => ['"bold"', '"italic"', '"strikethrough"', '"heading"', '"quote"', '"unordered-list"', '"ordered-list"', '"link"', '"table"', '"horizontal-rule"', '"clean-block"',  '"undo"', '"redo"',
 			'"preview"', '"side-by-side"', '"fullscreen"', '"guide"', ],

@@ -103,7 +103,7 @@ class EventPicker implements \Stringable
 			case \App\Enum\GeneralAdmission\EventPicker::TABLE:
 
 					$searchableHeaders = ['eventDate' => 'Date', 'title' => 'Title', ];
-					$countHeaders = ['stats' => 'Stats', 'sheets' => 'Sign In Sheets', 'signs' => 'Pre Reg Signs', 'del' => 'Del'];
+					$countHeaders = ['stats' => 'Stats', 'sheets' => 'Sign In Sheets', 'signs' => 'Pre Reg Signs', 'copy' => 'Copy', 'del' => 'Del'];
 
 					$view = new \App\UI\ContinuousScrollTable($this->page, $gaEventTable);
 					$view->setRecordId('gaEventId');
@@ -114,6 +114,7 @@ class EventPicker implements \Stringable
 					$view->addCustomColumn('stats', static fn (array $event) => (string)new \PHPFUI\FAIcon('fas', 'chart-bar', '/GA/statistics/' . $event['gaEventId']));
 					$view->addCustomColumn('signs', static fn (array $event) => (string)new \PHPFUI\FAIcon('fas', 'sign-hanging', '/GA/signs/' . $event['gaEventId']));
 					$view->addCustomColumn('sheets', static fn (array $event) => (string)new \PHPFUI\FAIcon('fas', 'file-signature', '/GA/signIn/' . $event['gaEventId']));
+					$view->addCustomColumn('copy', static fn (array $event) => (string)new \PHPFUI\FAIcon('fas', 'copy', '/GA/copy/' . $event['gaEventId']));
 
 					$view->setSearchColumns($searchableHeaders)->setSortableColumns(\array_keys($searchableHeaders));
 					$view->setHeaders(\array_merge($searchableHeaders, $countHeaders));

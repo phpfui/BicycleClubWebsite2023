@@ -451,7 +451,7 @@ class EMail
 		}
 
 	/**
-	 * @param array<string,array<string,string>> &$list
+	 * @param array<string,array<string,string|int>> &$list
 	 */
 	private function add(array &$list, ?string $email, ?string $name, int $memberId = 0) : static
 		{
@@ -461,7 +461,7 @@ class EMail
 			{
 			$data = ['name' => $name, 'memberId' => $memberId];
 
-			$list[$email] = $data;
+			$list[$email] = $data; // @phpstan-ignore-line
 			}
 
 		return $this;

@@ -35,6 +35,7 @@ class EmailQueue
 			$view->addCustomColumn('paused', $this->getPauseControl(...));
 			$view->addCustomColumn('emails', $this->getCount(...));
 
+			/** @var array<int|string, string> $headers */
 			$headers = [
 				'memberId' => 'Sender',
 				'title',

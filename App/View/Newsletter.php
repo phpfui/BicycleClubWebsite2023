@@ -86,12 +86,7 @@ class Newsletter
 
 		foreach ($buttons as $month => $monthButtons)
 			{
-			$count = 1;
-
-			if (\is_countable($monthButtons))
-				{
-				$count = \count($monthButtons);
-				}
+			$count = \count($monthButtons);
 
 			if (1 === $count)
 				{

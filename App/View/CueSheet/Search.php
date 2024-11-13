@@ -151,7 +151,7 @@ class Search implements \Stringable
 		}
 
 	/**
-	 * @param array<string,string> $parameters
+	 * @param array<string,string|array<string>> $parameters
 	 */
 	protected function setDefaults(array &$parameters) : void
 		{

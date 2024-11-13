@@ -233,7 +233,8 @@ class Ride
 	 */
 	public function cleanDescription(array $parameters) : array
 		{
-		$RWGPSId = $this->stripRideWithGPS($parameters['description']);
+		$description = $parameters['description'] ?? '';
+		$RWGPSId = $this->stripRideWithGPS($description);
 
 		if (! $RWGPSId)
 			{
@@ -254,7 +255,7 @@ class Ride
 			{
 			$parameters['RWGPSId'] = $RWGPS->RWGPSId;
 			}
-		$parameters['description'] = \App\Tools\TextHelper::cleanUserHtml($parameters['description']);
+		$parameters['description'] = \App\Tools\TextHelper::cleanUserHtml($description);
 
 		return $parameters;
 		}
@@ -930,9 +931,9 @@ class Ride
 	/**
 	 * Removes the RWGPS link and returns it as an int. Modifies passed in string
 	 */
-	private function stripRideWithGPS(?string &$description) : int
+	private function stripRideWithGPS(string &$description) : int
 		{
-		if (null === $description)
+		if (! $description)
 			{
 			$description = '';
 

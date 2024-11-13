@@ -12,13 +12,13 @@ namespace App\Model;
  * @property string $MaxMembersOnMembership
  * @property string $MaxMembersSubscription
  * @property string $MaxRenewalYears
- * @property array $AnnualDues
- * @property array $AdditionalMemberDues
+ * @property array<string> $AnnualDues
+ * @property array<float> $AdditionalMemberDues
  * @property bool $disableDonations
  */
 class MembershipDues
 	{
-	/** @var array<string,string|array<string|float>> */
+	/** @var array<string,string|list<string>|float|bool> */
 	private array $fields = [
 		'MembershipTerm' => '12 Months',
 		'MembershipStartMonth' => '1',

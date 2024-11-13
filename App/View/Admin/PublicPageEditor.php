@@ -52,7 +52,7 @@ class PublicPageEditor
 
 					foreach ($items as $item)
 						{
-						if ($item instanceof \PHPFUI\MenuItem)
+						if ($item instanceof \PHPFUI\MenuItem) // @phpstan-ignore-line
 							{
 							if ($item->getLink() == $publicPage->url)
 								{

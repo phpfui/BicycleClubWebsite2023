@@ -4,7 +4,7 @@ namespace App\Model;
 
 class TinyMCEInline implements \PHPFUI\Interfaces\HTMLEditor
 	{
-	/** @var array<string,bool|string> */
+	/** @var array<string,bool|string|list<string>> */
 	private array $options = [
 		'inline' => true,
 		'menubar' => true,

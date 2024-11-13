@@ -275,7 +275,7 @@ class Banner
 		$callout->add("Banner must be at least {$width} pixels wide and have an aspect ratio of {$proportion}:1.");
 		$uploadForm->add($callout);
 		$file = new \PHPFUI\Input\File($this->page, $field, 'Select Banner');
-		$file->setAllowedExtensions(['png', 'jpg', 'jpeg']);
+		$file->setAllowedExtensions(['png', 'jpg', 'jpeg', 'gif']);
 		$file->setToolTip('Banner should be in the right proportions.');
 		$uploadForm->add($file);
 		$uploadForm->add($modal->getButtonAndCancel($submitBanner));

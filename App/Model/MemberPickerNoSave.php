@@ -14,7 +14,7 @@ class MemberPickerNoSave extends \App\Model\MemberPickerBase
 	 */
 	public function getMember(string $title = '', bool $returnSomeone = true) : array
 		{
-		if (\is_array($this->member) && ! empty($this->member))
+		if (empty($this->member))
 			{
 			return $this->member;
 			}

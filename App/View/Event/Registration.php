@@ -274,7 +274,7 @@ class Registration
 
 			$personCount = \count($reservationPersonTable);
 
-			if (count($paymentInfo) > 1)
+			if (\count($paymentInfo) > 1)
 				{
 				$form->add($paymentInfo);
 				}

@@ -27,10 +27,7 @@ class ReCAPTCHA
 			{
 			$versionFieldSet = new \PHPFUI\FieldSet('ReCAPTCHA ' . $version);
 
-			if ('V2' == $version) // @phpstan-ignore if.alwaysTrue
-				{
-				$version = '';
-				}
+			$version = '';
 
 			foreach ($fields as $name => $text)
 				{

@@ -27,7 +27,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 
 	private int $pageNumber = 0;
 
-	/** @var array<string,string> */
+	/** @var array<string,int|string> */
 	private array $parameters = [];
 
 	/** @var array<string,\App\UI\SearchField|\PHPFUI\Input\Input> */
@@ -194,7 +194,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 		}
 
 	/**
-	 * @param ?array<string,string> $parameters
+	 * @param ?array<string,string|int> $parameters
 	 */
 	public function getUrl(?array $parameters = null) : string
 		{
@@ -232,7 +232,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 				$key = $value;
 				$value = $this->dataTable->translate($value);
 				}
-			elseif (\is_string($key) && $value instanceof \PHPFUI\Input\Input)
+			elseif ($value instanceof \PHPFUI\Input\Input)
 				{
 				$value = $this->dataTable->translate($key);
 				}

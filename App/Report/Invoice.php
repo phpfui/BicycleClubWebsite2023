@@ -124,7 +124,7 @@ class Invoice extends \FPDF
 		}
 
 	/**
-	 * @param array<string,string> $tab
+	 * @param array<string,int|string|null> $tab
 	 */
 	public function addLine(int $line, array $tab) : int
 		{

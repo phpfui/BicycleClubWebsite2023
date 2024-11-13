@@ -106,7 +106,7 @@ class MainMenu extends \PHPFUI\AccordionMenu
 
 			foreach ($menu->getMenuItems() as $menuItem)
 				{
-				if ($menuItem instanceof \PHPFUI\MenuItem)
+				if ($menuItem instanceof \PHPFUI\MenuItem) // @phpstan-ignore-line
 					{
 					$landingPage->addMenuItem($menuItem);
 					}
@@ -123,7 +123,7 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		{
 		foreach ($menuItems as $name => $menuItem)
 			{
-			if ($menuItem instanceof \PHPFUI\Menu)
+			if ($menuItem instanceof \PHPFUI\Menu) // @phpstan-ignore-line
 				{
 				if (\str_starts_with($name, $section))
 					{

@@ -5,8 +5,8 @@ namespace App\Record;
 /**
  * @inheritDoc
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\RWGPSAlternate> $alternateRoutes
- * @property \PHPFUI\ORM\RecordCursor<\App\Record\RWGPSComments> $comments
- * @property \PHPFUI\ORM\RecordCursor<\App\Record\RWGPSRatings> $ratings
+ * @property \PHPFUI\ORM\RecordCursor<\App\Record\RWGPSComment> $comments
+ * @property \PHPFUI\ORM\RecordCursor<\App\Record\RWGPSRating> $ratings
  */
 class RWGPS extends \App\Record\Definition\RWGPS
 	{

@@ -22,6 +22,7 @@ class Member extends \App\Record\Definition\Member
 			{
 			$this->email = '';
 			}
+
 		if (null === $this->extension)
 			{
 			$this->extension = '';

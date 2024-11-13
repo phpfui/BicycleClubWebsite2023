@@ -1696,16 +1696,16 @@
         },
         {
             "name": "laravel/serializable-closure",
-            "version": "v1.3.5",
+            "version": "v1.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/serializable-closure.git",
-                "reference": "1dc4a3dbfa2b7628a3114e43e32120cce7cdda9c"
+                "reference": "f865a58ea3a0107c336b7045104c75243fa59d96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/1dc4a3dbfa2b7628a3114e43e32120cce7cdda9c",
-                "reference": "1dc4a3dbfa2b7628a3114e43e32120cce7cdda9c",
+                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/f865a58ea3a0107c336b7045104c75243fa59d96",
+                "reference": "f865a58ea3a0107c336b7045104c75243fa59d96",
                 "shasum": ""
             },
             "require": {
@@ -1753,7 +1753,7 @@
                 "issues": "https://github.com/laravel/serializable-closure/issues",
                 "source": "https://github.com/laravel/serializable-closure"
             },
-            "time": "2024-09-23T13:33:08+00:00"
+            "time": "2024-11-11T17:06:04+00:00"
         },
         {
             "name": "league/commonmark",
@@ -3219,12 +3219,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ConstantContact.git",
-                "reference": "5bff968bd72f5469c232e851c1a9b0c8f9700aed"
+                "reference": "ff2494cb1dba34e9367c423762562635b45b9c31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ConstantContact/zipball/5bff968bd72f5469c232e851c1a9b0c8f9700aed",
-                "reference": "5bff968bd72f5469c232e851c1a9b0c8f9700aed",
+                "url": "https://api.github.com/repos/phpfui/ConstantContact/zipball/ff2494cb1dba34e9367c423762562635b45b9c31",
+                "reference": "ff2494cb1dba34e9367c423762562635b45b9c31",
                 "shasum": ""
             },
             "require": {
@@ -3235,6 +3235,7 @@
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.0",
                 "gitonomy/gitlib": ">=1.2",
+                "graham-campbell/guzzle-factory": "^7.0",
                 "phpfui/phpunit-syntax-coverage": "^1.0",
                 "phpstan/phpstan": "^2.0",
                 "phpunit/phpunit": "<12.0",
@@ -3272,7 +3273,7 @@
                 "issues": "https://github.com/phpfui/ConstantContact/issues",
                 "source": "https://github.com/phpfui/ConstantContact/tree/main"
             },
-            "time": "2024-11-12T14:37:10+00:00"
+            "time": "2024-11-12T22:12:19+00:00"
         },
         {
             "name": "phpfui/icalendar",
@@ -5577,16 +5578,16 @@
         },
         {
             "name": "composer/pcre",
-            "version": "3.3.1",
+            "version": "3.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/pcre.git",
-                "reference": "63aaeac21d7e775ff9bc9d45021e1745c97521c4"
+                "reference": "b2bed4734f0cc156ee1fe9c0da2550420d99a21e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/pcre/zipball/63aaeac21d7e775ff9bc9d45021e1745c97521c4",
-                "reference": "63aaeac21d7e775ff9bc9d45021e1745c97521c4",
+                "url": "https://api.github.com/repos/composer/pcre/zipball/b2bed4734f0cc156ee1fe9c0da2550420d99a21e",
+                "reference": "b2bed4734f0cc156ee1fe9c0da2550420d99a21e",
                 "shasum": ""
             },
             "require": {
@@ -5596,8 +5597,8 @@
                 "phpstan/phpstan": "<1.11.10"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.11.10",
-                "phpstan/phpstan-strict-rules": "^1.1",
+                "phpstan/phpstan": "^1.12 || ^2",
+                "phpstan/phpstan-strict-rules": "^1 || ^2",
                 "phpunit/phpunit": "^8 || ^9"
             },
             "type": "library",
@@ -5636,7 +5637,7 @@
             ],
             "support": {
                 "issues": "https://github.com/composer/pcre/issues",
-                "source": "https://github.com/composer/pcre/tree/3.3.1"
+                "source": "https://github.com/composer/pcre/tree/3.3.2"
             },
             "funding": [
                 {
@@ -5652,7 +5653,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-27T18:44:43+00:00"
+            "time": "2024-11-12T16:29:46+00:00"
         },
         {
             "name": "composer/semver",
@@ -7369,12 +7370,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "e63317470a1b96346be224a68f9e64567e1001c3"
+                "reference": "bf0a2bc01eb100833e274608a292352c8636d326"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/e63317470a1b96346be224a68f9e64567e1001c3",
-                "reference": "e63317470a1b96346be224a68f9e64567e1001c3",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/bf0a2bc01eb100833e274608a292352c8636d326",
+                "reference": "bf0a2bc01eb100833e274608a292352c8636d326",
                 "shasum": ""
             },
             "conflict": {
@@ -7751,7 +7752,7 @@
                 "mojo42/jirafeau": "<4.4",
                 "mongodb/mongodb": ">=1,<1.9.2",
                 "monolog/monolog": ">=1.8,<1.12",
-                "moodle/moodle": "<4.3.6|>=4.4.0.0-beta,<4.4.2",
+                "moodle/moodle": "<4.3.6|>=4.4,<4.4.2",
                 "mos/cimage": "<0.7.19",
                 "movim/moxl": ">=0.8,<=0.10",
                 "movingbytes/social-network": "<=1.2.1",
@@ -7799,7 +7800,7 @@
                 "openmage/magento-lts": "<20.10.1",
                 "opensolutions/vimbadmin": "<=3.0.15",
                 "opensource-workshop/connect-cms": "<1.7.2|>=2,<2.3.2",
-                "orchid/platform": ">=9,<9.4.4|>=14.0.0.0-alpha4,<14.5",
+                "orchid/platform": ">=8,<14.43",
                 "oro/calendar-bundle": ">=4.2,<=4.2.6|>=5,<=5.0.6|>=5.1,<5.1.1",
                 "oro/commerce": ">=4.1,<5.0.11|>=5.1,<5.1.1",
                 "oro/crm": ">=1.7,<1.7.4|>=3.1,<4.1.17|>=4.2,<4.2.7",
@@ -8202,7 +8203,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-07T19:04:57+00:00"
+            "time": "2024-11-12T22:04:37+00:00"
         },
         {
             "name": "sebastian/cli-parser",

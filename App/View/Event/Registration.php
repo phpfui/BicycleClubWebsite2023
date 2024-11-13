@@ -39,15 +39,16 @@ class Registration
 			$submit = new \PHPFUI\Submit('Add Event Registration', 'action');
 			$submit->addClass('success');
 			$form = new \PHPFUI\Form($this->page);
+			$this->canAddPayment = false;
+			$this->canAddAttendee = true;
+			$this->canDeleteAttendee = true;
 			}
 		elseif ($reservation->pricePaid && empty($reservation->paymentId))
 			{
 			// no payment yet, do a post and redirect
 			$submit = new \PHPFUI\Submit('Save', 'action');
 			$form = new \PHPFUI\Form($this->page);
-			$this->canAddPayment = ! $selfEditing;
-			$this->canAddAttendee = ! $selfEditing;
-			$this->canDeleteAttendee = ! $selfEditing;
+			$this->canAddPayment = $this->canAddAttendee = $this->canDeleteAttendee = ! $selfEditing || $this->page->isAuthorized('Add Reservation');
 			}
 		else
 			{
@@ -220,7 +221,7 @@ class Registration
 
 				if ($this->canAddPayment)
 					{
-					if ($reservation->pricePaid > 0)
+					if ($event->price > 0)
 						{
 						if ($reservation->paymentId)
 							{
@@ -229,7 +230,7 @@ class Registration
 						else
 							{
 							$addPaymentButton = new \PHPFUI\Button('Add Payment');
-							$addPaymentButton->addClass('success');
+							$addPaymentButton->addClass('warning');
 							$paymentInfo->add($addPaymentButton);
 
 							$reveal = new \PHPFUI\Reveal($this->page, $addPaymentButton);
@@ -273,7 +274,10 @@ class Registration
 
 			$personCount = \count($reservationPersonTable);
 
-			$form->add($paymentInfo);
+			if (count($paymentInfo) > 1)
+				{
+				$form->add($paymentInfo);
+				}
 
 			$table = new \PHPFUI\Table();
 			$table->setRecordId($this->recordId);

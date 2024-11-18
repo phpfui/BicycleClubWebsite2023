@@ -4,6 +4,22 @@ namespace App\WWW;
 
 class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
+	public function copy(\App\Record\GaEvent $eventToCopy) : void
+		{
+		if ($this->page->addHeader('Copy Date'))
+			{
+			if ($eventToCopy->loaded())
+				{
+				$view = new \App\View\GA\Event($this->page);
+				$this->page->addPageContent($view->copyDialog($eventToCopy));
+				}
+			else
+				{
+				$this->page->addSubHeader('Not Found');
+				}
+			}
+		}
+
 	public function download() : void
 		{
 		if ($this->page->addHeader('Download Registrants'))

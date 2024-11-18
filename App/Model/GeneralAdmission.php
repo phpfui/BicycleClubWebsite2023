@@ -67,6 +67,62 @@ class GeneralAdmission
 			}
 		}
 
+	public function copy(\App\Record\GaEvent $originalEvent, ?string $newDate, ?string $newTitle) : \App\Record\GaEvent
+		{
+		$dateDiff = \App\Tools\Date::diff($originalEvent->eventDate, $newDate);
+
+		$newEvent = new \App\Record\GaEvent($originalEvent);
+		$newEvent->volunteerEvent = null;
+		$newEvent->gaEventId = 0;
+
+		if ($newTitle)
+			{
+			$newEvent->title = $newTitle;
+			}
+
+		if ($newDate)
+			{
+			$newEvent->eventDate = $newDate;
+			}
+		$newEvent->lastRegistrationDate = \App\Tools\Date::increment($newEvent->lastRegistrationDate, $dateDiff);
+		$newEvent->membershipExpires = \App\Tools\Date::increment($newEvent->membershipExpires, $dateDiff);
+		$newEvent->insert();
+
+		$where = new \PHPFUI\ORM\Condition('gaEventId', $originalEvent->gaEventId);
+		$optionTable = new \App\Table\GaOption();
+		$optionTable->setWhere($where);
+
+		foreach ($optionTable->getRecordCursor() as $record)
+			{
+			$record->gaEvent = $newEvent;
+			$record->gaOptionId = 0;
+			$record->insert();
+			}
+
+		$selectionTable = new \App\Table\GaSelection();
+		$selectionTable->setWhere($where);
+
+		foreach ($selectionTable->getRecordCursor() as $record)
+			{
+			$record->gaEvent = $newEvent;
+			$record->gaSelectionId = 0;
+			$record->insert();
+			}
+
+		$priceDateTable = new \App\Table\GaPriceDate();
+		$priceDateTable->setWhere($where);
+
+		foreach ($priceDateTable->getRecordCursor() as $record)
+			{
+			$record->gaEvent = $newEvent;
+			$record->gaPriceDateId = 0;
+			$record->date = \App\Tools\Date::increment($record->date, $dateDiff);
+			$record->insert();
+			}
+
+		return $newEvent;
+		}
+
 	/**
 	 * @return array<string,mixed>
 	 */

@@ -41,7 +41,6 @@ class RideStatusRequest
 		$email->setSubject($title);
 		$email->setBody($message);
 		$email->setFromMember($this->sender);
-		$email->addBCCMember($this->sender);
 		$leader = $ride->member;
 
 		if ($leader->loaded())

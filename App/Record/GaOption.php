@@ -23,4 +23,26 @@ class GaOption extends \App\Record\Definition\GaOption
 
 		return $this;
 		}
+
+	public function clone(\App\Record\GaEvent $gaEvent) : static
+		{
+		$selections = [];
+		foreach ($this->GaSelectionChildren as $selection)
+			{
+			$selections[] = clone $selection;
+			}
+		$this->gaOptionId = 0;
+		$this->gaEvent = $gaEvent;
+		$this->insert();
+
+		foreach ($selections as $selection)
+			{
+			$selection->gaEvent = $gaEvent;
+			$selection->gaOption = $this;
+			$selection->gaSelectionId = 0;
+			$selection->insert();
+			}
+
+		return $this;
+		}
 	}

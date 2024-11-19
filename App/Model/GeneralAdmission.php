@@ -94,19 +94,7 @@ class GeneralAdmission
 
 		foreach ($optionTable->getRecordCursor() as $record)
 			{
-			$record->gaEvent = $newEvent;
-			$record->gaOptionId = 0;
-			$record->insert();
-			}
-
-		$selectionTable = new \App\Table\GaSelection();
-		$selectionTable->setWhere($where);
-
-		foreach ($selectionTable->getRecordCursor() as $record)
-			{
-			$record->gaEvent = $newEvent;
-			$record->gaSelectionId = 0;
-			$record->insert();
+			$record->clone($newEvent);
 			}
 
 		$priceDateTable = new \App\Table\GaPriceDate();

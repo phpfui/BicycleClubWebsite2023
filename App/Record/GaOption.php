@@ -27,6 +27,7 @@ class GaOption extends \App\Record\Definition\GaOption
 	public function clone(\App\Record\GaEvent $gaEvent) : static
 		{
 		$selections = [];
+
 		foreach ($this->GaSelectionChildren as $selection)
 			{
 			$selections[] = clone $selection;

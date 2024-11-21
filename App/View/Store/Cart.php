@@ -6,9 +6,12 @@ class Cart
 	{
 	private readonly \App\Model\GeneralAdmission $gaModel;
 
+	private string $storeClosedMessage;
+
 	public function __construct(private readonly \App\View\Page $page, private readonly \App\Model\Cart $cartModel)
 		{
 		$this->gaModel = new \App\Model\GeneralAdmission();
+		$this->storeClosedMessage = $this->page->value('storeClosedMessage');
 		$this->processRequest($_GET);
 		$this->processRequest($_POST);
 		}
@@ -28,9 +31,13 @@ class Cart
 			$form->add($alert);
 			$buttonGroup = new \PHPFUI\ButtonGroup();
 			$buttonGroup->addButton(new \PHPFUI\Button('Edit My Cart', '/Store/cart'));
-			$continueShopping = new \PHPFUI\Button('Continue Shopping', '/Store/shop');
-			$continueShopping->addClass('info');
-			$buttonGroup->addButton($continueShopping);
+
+			if (! $this->storeClosedMessage)
+				{
+				$continueShopping = new \PHPFUI\Button('Continue Shopping', '/Store/shop');
+				$continueShopping->addClass('info');
+				$buttonGroup->addButton($continueShopping);
+				}
 			$form->add($buttonGroup);
 
 			$form->add('<hr>');
@@ -264,9 +271,13 @@ class Cart
 			$column->add(new \PHPFUI\Header('But you have unpaid invoices, so take a look at those', 5));
 			$buttonGroup->addButton(new \PHPFUI\Button('Unpaid Invoices', '/Store/Invoice/myUnpaid'));
 			}
-		$shop = new \PHPFUI\Button('Continue Shopping', '/Store/shop');
-		$shop->addClass('info');
-		$buttonGroup->addButton($shop);
+
+		if (! $this->storeClosedMessage)
+			{
+			$shop = new \PHPFUI\Button('Continue Shopping', '/Store/shop');
+			$shop->addClass('info');
+			$buttonGroup->addButton($shop);
+			}
 		$column->add($buttonGroup);
 
 		return $column;

@@ -57,10 +57,12 @@ class DB extends \App\Settings\Settings
 	public function getPDO() : ?\PHPFUI\ORM\PDOInstance
 		{
 		$this->error = '';
+		$user = $this->getUser();
+		$pw = $this->getPassword();
 
 		try
 			{
-			$pdo = new \PHPFUI\ORM\PDOInstance($this->getConnectionString(), $this->getUser(), $this->getPassword());
+			$pdo = new \PHPFUI\ORM\PDOInstance($this->getConnectionString(), $user, $pw);
 
 			$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
 			// set up session to our specifications

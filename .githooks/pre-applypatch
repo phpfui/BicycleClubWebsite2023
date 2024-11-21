@@ -1,4 +1,4 @@
-#!c:/wamp64/bin/php/php8.2.0/php.exe
+#!c:/wamp64/bin/php/php8.4.0/php.exe
 <?php
 
 include 'commonbase.php';

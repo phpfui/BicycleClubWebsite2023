@@ -108,9 +108,13 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$buttonGroup->addButton($checkOut);
 			$update = new \PHPFUI\Submit('Update Cart');
 			$buttonGroup->addButton($update);
-			$shop = new \PHPFUI\Submit('Continue Shopping');
-			$shop->addClass('info');
-			$buttonGroup->addButton($shop);
+
+			if (! $this->page->value('storeClosedMessage'))
+				{
+				$shop = new \PHPFUI\Submit('Continue Shopping');
+				$shop->addClass('info');
+				$buttonGroup->addButton($shop);
+				}
 			$cart->add($buttonGroup);
 			$this->page->addPageContent($cart);
 			}

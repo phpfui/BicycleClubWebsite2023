@@ -50,33 +50,6 @@ class Register implements \Stringable
 				return;
 				}
 			}
-
-		if ($this->gaEvent->gaEventId > 0 && ! empty($_GET['add']))
-			{
-			$memberTable = new \App\Table\Member();
-			$membership = $memberTable->getMembership($_GET['add']);
-			$membership['gaEventId'] = $this->gaEvent->gaEventId;
-
-			if (! empty($membership['cellPhone']))
-				{
-				$membership['phone'] = $membership['cellPhone'];
-				}
-			$membership['contact'] = $membership['emergencyContact'];
-			$membership['contactPhone'] = $membership['emergencyPhone'];
-			$membership['signedUpOn'] = \date('Y-m-d H:i:s');
-			$riderId = $this->cartModel->addGaRider($membership);
-
-			if ($riderId)
-				{
-				$this->page->redirect('/GA/updateRider/' . $riderId);
-				}
-			else
-				{
-				$this->page->redirect($this->page->getBaseURL());
-				}
-
-			return;
-			}
 		}
 
 	public function __toString() : string
@@ -92,7 +65,15 @@ class Register implements \Stringable
 			foreach ($members as $member)
 				{
 				$row = new \PHPFUI\GridX();
-				$row->add(new \PHPFUI\Button('Add ' . $member['firstName'] . ' ' . $member['lastName'], "/GA/signUp/{$this->gaEvent->gaEventId}?add={$member['memberId']}"));
+				$addMemberButton = new \PHPFUI\Button('Add ' . $member->fullName());
+				$row->add($addMemberButton);
+				$rider = new \App\Record\GaRider();
+				$data = \array_merge($member->toArray(), $member->membership->toArray());
+				$data['contact'] = $member->emergencyContact;
+				$data['contactPhone'] = $member->emergencyPhone;
+				$data['phone'] = $member->cellPhone;
+				$rider->setFrom($data);
+				$this->addRiderModal($addMemberButton, $rider);
 				$fieldSet->add($row);
 				}
 			$container->add($fieldSet);
@@ -144,14 +125,10 @@ class Register implements \Stringable
 		return (string)$container;
 		}
 
-	protected function addRiderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\GaRider $rider) : void
+	private function addRiderModal(\PHPFUI\HTML5Element $modalLink, \App\Record\GaRider $rider) : void
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
 
-		if (! $rider->empty())
-			{
-			$modal->showOnPageLoad();
-			}
 		$modalForm = new \PHPFUI\Form($this->page);
 		$modalForm->setAreYouSure(false);
 		$view = new \App\View\GA\Rider($this->page);

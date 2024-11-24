@@ -684,7 +684,7 @@ class Events
 		return $accordion;
 		}
 
-	public function signup() : \PHPFUI\Form
+	public function signUp() : \PHPFUI\Form
 		{
 		$form = new \PHPFUI\Form($this->page);
 		$customerModel = new \App\Model\Customer();
@@ -698,6 +698,7 @@ class Events
 			$reservation->reservationFirstName = $customer->firstName;
 			$reservation->reservationLastName = $customer->lastName;
 			$reservation->reservationemail = $customer->email;
+			$reservation->phone = $customer->cellPhone;
 			$reservation->eventId = $this->event->eventId;
 			$reservation->memberId = $memberId;
 			$reservation->signedUpAt = \date('Y-m-d H:i:s');  // this should default, but does not

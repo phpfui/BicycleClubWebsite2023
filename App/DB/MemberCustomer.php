@@ -14,6 +14,7 @@ namespace App\DB;
  * @property string $state
  * @property string $town
  * @property string $zip
+ * @property string $cellPhone
  */
 class MemberCustomer
 	{

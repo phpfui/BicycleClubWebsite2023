@@ -389,7 +389,7 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function signup(\App\Record\Event $event = new \App\Record\Event()) : void
+	public function signUp(\App\Record\Event $event = new \App\Record\Event()) : void
 		{
 		// view will set the page to public if need be.
 		$this->view->setEvent($event);
@@ -407,7 +407,7 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				if ($event->registrationStartDate <= \App\Tools\Date::todayString())
 					{
-					$this->page->addPageContent($this->view->signup());
+					$this->page->addPageContent($this->view->signUp());
 					}
 				else
 					{

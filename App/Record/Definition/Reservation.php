@@ -39,7 +39,7 @@ abstract class Reservation extends \PHPFUI\ORM\Record
 		'memberId' => ['int', 'int', 0, false, ],
 		'paymentId' => ['int', 'int', 0, true, ],
 		'phone' => ['varchar(20)', 'string', 20, true, '', ],
-		'pricePaid' => ['decimal(6,2)', 'float', 6, false, 0, ],
+		'pricePaid' => ['decimal(6,2)', 'float', 6, false, 0.00, ],
 		'reservationFirstName' => ['varchar(50)', 'string', 50, true, ],
 		'reservationId' => ['int', 'int', 0, false, ],
 		'reservationLastName' => ['varchar(50)', 'string', 50, true, ],

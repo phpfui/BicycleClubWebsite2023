@@ -26,7 +26,7 @@ abstract class DiscountCode extends \PHPFUI\ORM\Record
 		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
 		'cashOnly' => ['int', 'int', 0, false, 0, ],
 		'description' => ['varchar(60)', 'string', 60, true, ],
-		'discount' => ['float(10,2)', 'float', 10, false, 0, ],
+		'discount' => ['float(10,2)', 'float', 10, false, 0.00, ],
 		'discountCode' => ['char(15)', 'string', 15, true, ],
 		'discountCodeId' => ['int', 'int', 0, false, ],
 		'expirationDate' => ['date', 'string', 10, false, ],

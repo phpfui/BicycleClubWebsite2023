@@ -28,7 +28,7 @@ namespace App\Record\Definition;
  * @property ?string $state MySQL type varchar(255)
  * @property string $title MySQL type varchar(255)
  * @property string $town MySQL type varchar(50)
- * @property string $zip MySQL type varchar(10)
+ * @property ?string $zip MySQL type varchar(10)
  */
 abstract class RWGPS extends \PHPFUI\ORM\Record
 	{
@@ -44,7 +44,7 @@ abstract class RWGPS extends \PHPFUI\ORM\Record
 		'description' => ['varchar(255)', 'string', 255, false, '', ],
 		'elevationFeet' => ['decimal(8,0)', 'float', 8, true, ],
 		'elevationMeters' => ['decimal(8,0)', 'float', 8, true, ],
-		'feetPerMile' => ['decimal(5,1)', 'float', 5, false, 0, ],
+		'feetPerMile' => ['decimal(5,1)', 'float', 5, false, 0.0, ],
 		'km' => ['decimal(4,2)', 'float', 4, true, ],
 		'lastSynced' => ['datetime', 'string', 20, false, '0000-00-00 00:00:00', ],
 		'lastUpdated' => ['datetime', 'string', 20, false, null, ],
@@ -58,7 +58,7 @@ abstract class RWGPS extends \PHPFUI\ORM\Record
 		'state' => ['varchar(255)', 'string', 255, true, ],
 		'title' => ['varchar(255)', 'string', 255, false, '', ],
 		'town' => ['varchar(50)', 'string', 50, false, '', ],
-		'zip' => ['varchar(10)', 'string', 10, false, '', ],
+		'zip' => ['varchar(10)', 'string', 10, true, ],
 	];
 
 	/** @var array<string> */

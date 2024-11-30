@@ -14,7 +14,7 @@ class ConfirmedRiders extends \PHPFUI\ORM\VirtualField
 		{
 		$table = new \App\Table\RideSignup();
 		$condition = new \PHPFUI\ORM\Condition('rideId', $this->currentRecord->rideId);
-		$condition->and('attended', \App\Table\RideSignup::CONFIRMED);
+		$condition->and('attended', \App\Enum\RideSignup\Attended::CONFIRMED);
 		$table->setWhere($condition);
 
 		return $table->getRecordCursor();

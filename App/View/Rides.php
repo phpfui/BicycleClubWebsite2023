@@ -116,7 +116,7 @@ class Rides
 				foreach ($_POST['attended'] as $key => $value)
 					{
 					$rideSignup->read(['rideId' => $ride->rideId, 'memberId' => $key]);
-					$rideSignup->attended = (int)$value;
+					$rideSignup->attended = \App\Enum\RideSignup\Attended::from((int)$value);
 					$rideSignup->update();
 					}
 				\PHPFUI\ORM::commit();
@@ -132,14 +132,14 @@ class Rides
 
 				if ($rideData->loaded())
 					{
-					$rideData->attended = \App\Table\RideSignup::CONFIRMED;
+					$rideData->attended = \App\Enum\RideSignup\Attended::CONFIRMED;
 					$rideData->update();
 					}
 				else
 					{
-					$rideData->status = \App\Table\RideSignup::DEFINITELY_RIDING;
+					$rideData->status = \App\Enum\RideSignup\Status::DEFINITELY_RIDING;
 					$rideData->comments = '';
-					$rideData->attended = \App\Table\RideSignup::CONFIRMED;
+					$rideData->attended = \App\Enum\RideSignup\Attended::CONFIRMED;
 					$rideData->ride = $ride;
 					$rideData->memberId = (int)$_POST['memberId'];
 					$rideData->insert();
@@ -184,22 +184,22 @@ class Rides
 				$form->add($row);
 				$id = $rider->memberId;
 
-				$attended = $rider->attended;
+				$rideSignup = new \App\Record\RideSignup();
+				$rideSignup->setFrom($rider->toArray());
+				$attended = $rideSignup->attended;
 
-				if (empty($attended))
+				if (empty($rider->attended))
 					{
 					if ($rider->memberId == \App\Model\Session::signedInMemberId())
 						{
-						$attended = \App\Table\RideSignup::CONFIRMED;
+						$attended = \App\Enum\RideSignup\Attended::CONFIRMED;
 						}
-					elseif (\App\Table\RideSignup::DEFINITELY_NOT_RIDING == $rider->status)
+					elseif (\App\Enum\RideSignup\Status::DEFINITELY_NOT_RIDING == $rider->status)
 						{
-						$attended = \App\Table\RideSignup::NO_SHOW;
+						$attended = \App\Enum\RideSignup\Attended::NO_SHOW;
 						}
 					}
-				$radio = new \PHPFUI\Input\RadioGroup("attended[{$id}]", '', $attended);
-				$radio->addButton('No Show', (string)1);
-				$radio->addButton('Confirmed', (string)2);
+				$radio = new \PHPFUI\Input\RadioGroupEnum("attended[{$id}]", '', $attended);
 				$row = new \PHPFUI\GridX();
 				$row->add($radio);
 				$form->add($row);
@@ -286,7 +286,7 @@ class Rides
 				}
 			}
 
-		if ($signupLimit && $signupLimit <= ($counts[\App\Table\RideSignup::DEFINITELY_RIDING] ?? 0))
+		if ($signupLimit && $signupLimit <= ($counts[\App\Enum\RideSignup\Status::DEFINITELY_RIDING->value] ?? 0))
 			{
 			$callout = new \PHPFUI\Callout('alert');
 			$callout->addClass('small');
@@ -332,11 +332,11 @@ class Rides
 			$row = new \PHPFUI\GridX();
 			$nameColumn = new \PHPFUI\Cell(8 - (int)$isLeader);
 
-			if (\App\Table\RideSignup::UNKNOWN == $rider->attended)
+			if (\App\Enum\RideSignup\Attended::UNKNOWN == $rider->attended)
 				{
 				$status = $statusArray[$rider->status];
 				}
-			elseif (\App\Table\RideSignup::NO_SHOW == $rider->attended)
+			elseif (\App\Enum\RideSignup\Attended::NO_SHOW == $rider->attended)
 				{
 				$status = 'No Show';
 				}

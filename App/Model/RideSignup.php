@@ -50,14 +50,14 @@ class RideSignup
 
 		while (true)
 			{
-			$definites = $this->rideSignupTable->getRidersForStatus($this->ride, \App\Table\RideSignup::DEFINITELY_RIDING);
+			$definites = $this->rideSignupTable->getRidersForStatus($this->ride, \App\Enum\RideSignup\Status::DEFINITELY_RIDING);
 
 			if (\count($definites) >= $this->signupLimit)
 				{
 				return;
 				}
 
-			$waitList = $this->rideSignupTable->getRidersForStatus($this->ride, \App\Table\RideSignup::WAIT_LIST);
+			$waitList = $this->rideSignupTable->getRidersForStatus($this->ride, \App\Enum\RideSignup\Status::WAIT_LIST);
 
 			if (! \count($waitList))
 				{
@@ -65,7 +65,7 @@ class RideSignup
 				}
 
 			$rider = $waitList->current();
-			$rider->status = \App\Table\RideSignup::DEFINITELY_RIDING;
+			$rider->status = \App\Enum\RideSignup\Status::DEFINITELY_RIDING;
 //			$rider->signedUpTime = \date('Y-m-d H:i:s');
 			$this->rideSignupTable->deleteOtherSignedUpRides($this->ride, $rider->member);
 			$rider->rideId = $this->ride->rideId;
@@ -110,8 +110,8 @@ class RideSignup
 		$key = ['rideId' => $this->ride->rideId, 'memberId' => $this->member->memberId, ];
 		$rider = new \App\Record\RideSignup($key);
 		$status = $this->rideSignupTable->getRiderStatus();
-		$definites = $this->rideSignupTable->getRidersForStatus($this->ride, \App\Table\RideSignup::DEFINITELY_RIDING);
-		$waitlisted = $this->rideSignupTable->getRidersForStatus($this->ride, \App\Table\RideSignup::WAIT_LIST);
+		$definites = $this->rideSignupTable->getRidersForStatus($this->ride, \App\Enum\RideSignup\Status::DEFINITELY_RIDING);
+		$waitlisted = $this->rideSignupTable->getRidersForStatus($this->ride, \App\Enum\RideSignup\Status::WAIT_LIST);
 
 		if (empty($fields['status']))
 			{
@@ -119,11 +119,11 @@ class RideSignup
 
 			// if there is a waitlist, and rider is definately riding, and ride within 24 hours of ride start, and signed up 24 hours before ride, then mark as cancelled
 			if (\count($waitlisted) &&
-					\App\Table\RideSignup::DEFINITELY_RIDING == ($rider->status ?? 0) &&
+					\App\Enum\RideSignup\Status::DEFINITELY_RIDING == ($rider->status ?? 0) &&
 					$rideTime - \time() < 24 * 60 * 60 &&
 					$rider->signedUpTime < \date('Y-m-d H:i:s', $rideTime - 86400))
 				{
-				$rider->status = \App\Table\RideSignup::CANCELLED;
+				$rider->status = \App\Enum\RideSignup\Status::CANCELLED;
 				$rider->update();
 				}
 			else
@@ -142,9 +142,9 @@ class RideSignup
 				{
 				if ($fields['status'] != $rider->status)
 					{
-					if (\App\Table\RideSignup::DEFINITELY_RIDING == $fields['status'] && $this->signupLimit && \count($definites) >= $this->signupLimit)
+					if (\App\Enum\RideSignup\Status::DEFINITELY_RIDING == $fields['status'] && $this->signupLimit && \count($definites) >= $this->signupLimit)
 						{
-						$fields['status'] = \App\Table\RideSignup::WAIT_LIST;
+						$fields['status'] = \App\Enum\RideSignup\Status::WAIT_LIST;
 						\App\Model\Session::setFlash('alert', 'Ride is full, you are now on the wait list.');
 						}
 					$rider->setFrom($fields);
@@ -156,7 +156,7 @@ class RideSignup
 				{
 				if ($this->signupLimit && \count($definites) >= $this->signupLimit)
 					{
-					$fields['status'] = \App\Table\RideSignup::WAIT_LIST;
+					$fields['status'] = \App\Enum\RideSignup\Status::WAIT_LIST;
 					\App\Model\Session::setFlash('alert', 'Ride is full, you are now on the wait list.');
 					}
 				$rider->setFrom($fields);
@@ -182,7 +182,7 @@ class RideSignup
 			}
 		unset($fields['rideComments']);
 
-		if (\App\Table\RideSignup::DEFINITELY_RIDING == ($fields['status'] ?? -1) && $this->signupLimit)
+		if (\App\Enum\RideSignup\Status::DEFINITELY_RIDING == ($fields['status'] ?? -1) && $this->signupLimit)
 			{
 			$this->rideSignupTable->deleteOtherSignedUpRides($this->ride, $this->member);
 			}
@@ -225,7 +225,7 @@ class RideSignup
 			{
 			$rideSignupTable = new \App\Table\RideSignup();
 			$condition = new \PHPFUI\ORM\Condition('memberId', $this->member->memberId);
-			$condition->and('attended', \App\Table\RideSignup::CONFIRMED);
+			$condition->and('attended', \App\Enum\RideSignup\Attended::CONFIRMED);
 			$rideSignupTable->setWhere($condition);
 
 			if (! $rideSignupTable->count())

@@ -42,7 +42,7 @@ class WaitListReminder extends \App\Cron\MemberMailer
 
 			if ($rideTime >= $startTime && $rideTime < $endTime)
 				{
-				$riders = $rideSignupTable->getRidersForStatus($ride, \App\Table\RideSignup::WAIT_LIST);
+				$riders = $rideSignupTable->getRidersForStatus($ride, \App\Enum\RideSignup\Status::WAIT_LIST);
 
 				if (\count($riders))
 					{

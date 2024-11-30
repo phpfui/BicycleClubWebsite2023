@@ -199,7 +199,7 @@ class SMS
 
 		foreach ($this->rideSignupTable->getAllSignedUpRiders($ride) as $rider)
 			{
-			if (\App\Table\RideSignup::NO_SHOW != $rider['attended'])
+			if (\App\Enum\RideSignup\Attended::NO_SHOW::NO_SHOW != $rider['attended'])
 				{
 				$this->textMember($rider);
 				}

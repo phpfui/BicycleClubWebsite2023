@@ -90,16 +90,16 @@ class Ride
 	public function addLeaderSignups(\App\Record\Ride $ride) : void
 		{
 		// add leader for sure
-		$this->addSignup($ride, $ride->member, \App\Table\RideSignup::DEFINITELY_RIDING);
+		$this->addSignup($ride, $ride->member, \App\Enum\RideSignup\Status::DEFINITELY_RIDING);
 		$assistants = \App\Table\AssistantLeader::getForRide($ride);
 
 		foreach ($assistants as $assistant)
 			{
-			$this->addSignup($ride, $assistant, \App\Table\RideSignup::DEFINITELY_RIDING);
+			$this->addSignup($ride, $assistant, \App\Enum\RideSignup\Status::DEFINITELY_RIDING);
 			}
 		}
 
-	public function addSignup(\App\Record\Ride $ride, \App\Record\Member $member, int $status) : void
+	public function addSignup(\App\Record\Ride $ride, \App\Record\Member $member, \App\Enum\RideSignup\Status $status) : void
 		{
 		if ($member->memberId && $ride->rideId)
 			{
@@ -505,7 +505,7 @@ class Ride
 			{
 			$signup = '<p>The following riders have already signed up as of ' . \date('g:i A') . ' (in signup order):</p>';
 			$status = $this->rideSignupTable->getRiderStatus();
-			unset($status[\App\Table\RideSignup::POSSIBLY_RIDING]);
+//			unset($status[\App\Enum\RideSignup\Status::POSSIBLY_RIDING->value]);
 
 			$ul = new \PHPFUI\UnorderedList();
 

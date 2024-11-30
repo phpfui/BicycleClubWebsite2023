@@ -4,32 +4,12 @@ namespace App\Table;
 
 class RideSignup extends \PHPFUI\ORM\Table
 {
-	final public const CANCELLED = 6;
-
-	final public const CONFIRMED = 2;
-
-	final public const DEFINITELY_NOT_RIDING = 5;
-
-	final public const DEFINITELY_RIDING = 1;
-
-	final public const NO_SHOW = 1;
-
-	final public const POSSIBLY_RIDING = 3;
-
-	final public const PROBABLY_RIDING = 2;
-
-	final public const REMOVE = 0;
-
-	final public const UNKNOWN = 0;
-
-	final public const WAIT_LIST = 4;
-
 	protected static string $className = '\\' . \App\Record\RideSignup::class;
 
 	public function deleteOtherSignedUpRides(\App\Record\Ride $ride, \App\Record\Member $member) : static
 		{
 		$sql = 'delete from rideSignup where rideId in (select rideId from ride where rideDate=(select rideDate from ride where rideId=:rideId) and rideId!=:rideId) and memberId=:memberId and status<:status';
-		$input = ['rideId' => $ride->rideId, 'memberId' => $member->memberId, 'status' => self::DEFINITELY_NOT_RIDING];
+		$input = ['rideId' => $ride->rideId, 'memberId' => $member->memberId, 'status' => \App\Enum\RideSignup\Status::DEFINITELY_NOT_RIDING->value];
 		\PHPFUI\ORM::execute($sql, $input);
 
 		return $this;
@@ -100,7 +80,7 @@ class RideSignup extends \PHPFUI\ORM\Table
 		$sortByStatus = $sortByStatus ? 'r.status asc,' : '';
 		$sql = "select * from member m left join rideSignup r on r.memberId=m.memberId where r.rideId=? and r.status!=? order by {$sortByStatus} m.lastName, m.firstName";
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$ride->rideId, self::CANCELLED]);
+		return \PHPFUI\ORM::getDataObjectCursor($sql, [$ride->rideId, \App\Enum\RideSignup\Status::CANCELLED->value]);
 		}
 
 	/**
@@ -167,7 +147,7 @@ class RideSignup extends \PHPFUI\ORM\Table
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\RideSignup>
 	 */
-	public function getRidersForAttended(\App\Record\Ride $ride, int $attended = self::CONFIRMED) : \PHPFUI\ORM\RecordCursor
+	public function getRidersForAttended(\App\Record\Ride $ride, \App\Enum\RideSignup\Attended $attended = \App\Enum\RideSignup\Attended::CONFIRMED) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from rideSignup where rideId=? and attended=? order by signedUpTime';
 
@@ -177,11 +157,11 @@ class RideSignup extends \PHPFUI\ORM\Table
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\RideSignup>
 	 */
-	public function getRidersForStatus(\App\Record\Ride $ride, int $status) : \PHPFUI\ORM\RecordCursor
+	public function getRidersForStatus(\App\Record\Ride $ride, \App\Enum\RideSignup\Status $status) : \PHPFUI\ORM\RecordCursor
 		{
 		$sql = 'select * from rideSignup where rideId=? and status=? order by signedUpTime';
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, [$ride->rideId, $status]);
+		return \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, [$ride->rideId, $status->value]);
 		}
 
 	/**
@@ -190,13 +170,13 @@ class RideSignup extends \PHPFUI\ORM\Table
 	public static function getRiderStatus() : array
 		{
 		return [
-			self::REMOVE => 'Remove From Ride',
-			self::DEFINITELY_RIDING => 'Definitely Riding',
-			self::PROBABLY_RIDING => 'Probably Riding',
-			self::POSSIBLY_RIDING => 'Possibly',
-			self::WAIT_LIST => 'Wait List',
-			self::DEFINITELY_NOT_RIDING => "Can't Ride Because",
-			self::CANCELLED => 'Cancelled',
+			\App\Enum\RideSignup\Status::REMOVE->value => 'Remove From Ride',
+			\App\Enum\RideSignup\Status::DEFINITELY_RIDING->value => 'Definitely Riding',
+			\App\Enum\RideSignup\Status::PROBABLY_RIDING->value => 'Probably Riding',
+			//			\App\Enum\RideSignup\Status::POSSIBLY_RIDING->value => 'Possibly',
+			\App\Enum\RideSignup\Status::WAIT_LIST->value => 'Wait List',
+			\App\Enum\RideSignup\Status::DEFINITELY_NOT_RIDING->value => "Can't Ride Because",
+			\App\Enum\RideSignup\Status::CANCELLED->value => 'Cancelled',
 		];
 		}
 
@@ -218,13 +198,13 @@ class RideSignup extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select * from member m left join rideSignup r on r.memberId=m.memberId where r.rideId=? and r.status<=? order by ' . $order;
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$rideId, self::WAIT_LIST]);
+		return \PHPFUI\ORM::getDataObjectCursor($sql, [$rideId, \App\Enum\RideSignup\Status::WAIT_LIST->value]);
 		}
 
 	public function moveWaitListToRideFromRide(\App\Record\Ride $ride, \App\Record\Ride $clonedRide) : void
 		{
 		$sql = 'select * from rideSignup where rideId=? and status=?';
-		$input = [$clonedRide->rideId, self::WAIT_LIST];
+		$input = [$clonedRide->rideId, \App\Enum\RideSignup\Status::WAIT_LIST->value];
 
 		$waitlist = \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, $input);
 

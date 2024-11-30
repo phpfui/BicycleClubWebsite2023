@@ -276,7 +276,7 @@ class Ride extends \PHPFUI\ORM\Table
 				left join rideSignup on rideSignup.rideId=ride.rideId
 				where ride.rideDate >= ? and ride.rideDate <= ? and ride.pending=0 and rideSignup.attended=? and rideSignup.memberId=?
 				order by ride.rideDate asc,pace.ordering asc,ride.startTime asc,ride.mileage ' . $sort;
-		$data = [$start, $end, \App\Table\RideSignup::CONFIRMED, \App\Model\Session::signedInMemberId()];
+		$data = [$start, $end, \App\Enum\RideSignup\Attended::CONFIRMED, \App\Model\Session::signedInMemberId()];
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, $data);
 		}
@@ -288,7 +288,7 @@ class Ride extends \PHPFUI\ORM\Table
 			where rideSignup.attended=? and rideSignup.memberId=? and pending=0
 			order by ride.rideDate desc limit 1';
 
-		$input = [\App\Table\RideSignup::CONFIRMED, \App\Model\Session::signedInMemberId(), ];
+		$input = [\App\Enum\RideSignup\Attended::CONFIRMED, \App\Model\Session::signedInMemberId(), ];
 
 		$ride = new \App\Record\Ride();
 		$ride->loadFromSQL($sql, $input);
@@ -303,7 +303,7 @@ class Ride extends \PHPFUI\ORM\Table
 			where rideSignup.attended=? and rideSignup.memberId=? and pending=0
 			order by ride.rideDate asc limit 1';
 
-		$input = [\App\Table\RideSignup::CONFIRMED, \App\Model\Session::signedInMemberId(), ];
+		$input = [\App\Enum\RideSignup\Attended::CONFIRMED, \App\Model\Session::signedInMemberId(), ];
 		$ride = new \App\Record\Ride();
 		$ride->loadFromSQL($sql, $input);
 

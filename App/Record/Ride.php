@@ -20,7 +20,7 @@ class Ride extends \App\Record\Definition\Ride
 		'assistantLeaders' => [\PHPFUI\ORM\Children::class, \App\Table\AssistantLeader::class],
 		'RideCommentChildren' => [\PHPFUI\ORM\Children::class, \App\Table\RideComment::class],
 		'waitList' => [\App\DB\RideWaitList::class],
-		'rideSignups' => [\PHPFUI\ORM\Children::class, \App\Table\RideSignup::class],
+		'rideSignups' => [\PHPFUI\ORM\Children::class, \App\Enum\RideSignup\Status::class],
 		'SigninSheetRideChildren' => [\PHPFUI\ORM\Children::class, \App\Table\SigninSheetRide::class],
 		'confirmedRiders' => [\App\DB\ConfirmedRiders::class],
 		'commentsDisabled' => [\PHPFUI\ORM\Enum::class, \App\Enum\Ride\Comments::class],

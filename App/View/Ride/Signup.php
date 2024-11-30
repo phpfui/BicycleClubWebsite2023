@@ -64,30 +64,31 @@ class Signup
 		else
 			{
 			$newSignup = true;
-			$rider->status = \App\Table\RideSignup::DEFINITELY_RIDING;
+			$rider->status = \App\Enum\RideSignup\Status::DEFINITELY_RIDING;
 			}
 
 		$rideSignupTable = new \App\Table\RideSignup();
 		$status = $rideSignupTable->getRiderStatus();
-		unset($status[\App\Table\RideSignup::POSSIBLY_RIDING], $status[\App\Table\RideSignup::CANCELLED]);
+		// remove statuses that don't make sense for user selection
+		unset($status[\App\Enum\RideSignup\Status::CANCELLED->value]);
 
 		$model = new \App\Model\RideSignup($this->ride, \App\Model\Session::signedInMemberRecord());
 		$signupLimit = $model->getRiderSignupLimit();
 
 		if ($signupLimit)
 			{
-			unset($status[\App\Table\RideSignup::PROBABLY_RIDING]);
+			unset($status[\App\Enum\RideSignup\Status::PROBABLY_RIDING->value]);
 			}
 		else
 			{
-			unset($status[\App\Table\RideSignup::WAIT_LIST]);
+			unset($status[\App\Enum\RideSignup\Status::WAIT_LIST->value]);
 			}
 
 		$select = new \PHPFUI\Input\Select('status', 'Status');
 
 		foreach ($status as $key => $value)
 			{
-			$select->addOption($value, $key, $key == $rider->status);
+			$select->addOption($value, $key, $key == $rider->status->value);
 			}
 		$select->setToolTip('Select "Definitely Riding" if you plan on being there for sure. Update if your status changes.');
 		$fieldSet->add($select);

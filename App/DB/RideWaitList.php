@@ -14,7 +14,7 @@ class RideWaitList extends \PHPFUI\ORM\VirtualField
 		{
 		$table = new \App\Table\RideSignup();
 		$condition = new \PHPFUI\ORM\Condition('rideId', $this->currentRecord->rideId);
-		$condition->and('status', \App\Table\RideSignup::WAIT_LIST);
+		$condition->and('status', \App\Enum\RideSignup\Status::WAIT_LIST);
 		$table->setWhere($condition);
 
 		return $table->getRecordCursor();

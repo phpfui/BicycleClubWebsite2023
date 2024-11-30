@@ -46,7 +46,8 @@ class Registration
 		elseif ($reservation->pricePaid && empty($reservation->paymentId))
 			{
 			// no payment yet, do a post and redirect
-			$submit = new \PHPFUI\Submit('Save', 'action');
+			$submit = new \PHPFUI\Submit('Save and Continue', 'action');
+			$submit->addClass('success');
 			$form = new \PHPFUI\Form($this->page);
 			$this->canAddPayment = $this->canAddAttendee = $this->canDeleteAttendee = ! $selfEditing || $this->page->isAuthorized('Add Reservation');
 			}

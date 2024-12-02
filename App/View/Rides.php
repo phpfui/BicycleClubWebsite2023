@@ -503,13 +503,13 @@ class Rides
 				{
 				$leader = new \PHPFUI\Cell(3);
 
-				if (\App\Table\Ride::STATUS_NO_LEADER == $ride->rideStatus)
+				if (\App\Enum\Ride\Status::LEADER_OPTED_OUT == $ride->rideStatus)
 					{
 					$status = $leaderName = "<span class='ride-cancelled'>{$leaderless}</span>";
 					}
-				elseif (\App\Table\Ride::STATUS_WEATHER == $ride->rideStatus)
+				elseif (\App\Enum\Ride\Status::CANCELLED_FOR_WEATHER == $ride->rideStatus)
 					{
-					$status = \App\Table\Ride::getStatusValues()[$ride->rideStatus];
+					$status = $ride->rideStatus->name();
 					$status = $leaderName = "<span class='ride-cancelled'>{$status}</span>";
 					}
 				else
@@ -533,9 +533,9 @@ class Rides
 
 			if ($this->page->isSignedIn())
 				{
-				if ($ride->rideDate < $today && $ride->rideStatus > 0 && \App\Table\Ride::STATUS_NO_LEADER != $ride->rideStatus)
+				if ($ride->rideDate < $today && $ride->rideStatus->value > 0 && \App\Enum\Ride\Status::LEADER_OPTED_OUT != $ride->rideStatus)
 					{
-					$content->add('<br><b>Ride Stats: </b>' . \App\Table\Ride::getStatusValues()[$ride->rideStatus] . ' ');
+					$content->add('<br><b>Ride Stats: </b>' . $ride->rideStatus->name() . ' ');
 
 					if ($ride->averagePace)
 						{
@@ -568,7 +568,7 @@ class Rides
 					$bg->addButton($button);
 					}
 
-				if ($this->page->isAuthorized('Ride Sign Up') && ! $ride->unaffiliated && ! $this->approvingRides && \App\Table\Ride::STATUS_WEATHER != $ride->rideStatus)
+				if ($this->page->isAuthorized('Ride Sign Up') && ! $ride->unaffiliated && ! $this->approvingRides && \App\Enum\Ride\Status::CANCELLED_FOR_WEATHER != $ride->rideStatus)
 					{
 					if ($ride->rideDate >= $today)
 						{
@@ -708,7 +708,7 @@ class Rides
 
 		foreach ($rides as $ride)
 			{
-			if ($ride->unaffiliated && ! $ride->rideStatus)
+			if ($ride->unaffiliated && ! $ride->rideStatus->value)
 				{
 				continue;	// don't count unreported unafilliated rides
 				}
@@ -1118,7 +1118,7 @@ class Rides
 			$cloning = new \App\Record\Ride((int)$_POST['rideId']);
 			$cloning->rideId = $cloning->numberOfRiders = $cloning->accident = $cloning->pointsAwarded = 0;
 			$cloning->averagePace = null;
-			$cloning->rideStatus = \App\Table\Ride::STATUS_NOT_YET;
+			$cloning->rideStatus = \App\Enum\Ride\Status::NOT_YET;
 			$cloning->releasePrinted = '';
 			$cloning->memberId = \App\Model\Session::signedInMemberId();
 

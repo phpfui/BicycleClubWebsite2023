@@ -174,7 +174,7 @@ class Invoice
 			$message .= "\n\nItems that don't involve shipping are now active.";
 			$email->setBody($message);
 			$clubAbbrev = $this->settingTable->value('clubAbbrev');
-			$email->setSubject("{$clubAbbrev} Store Invoice #{$invoice->invoiceId} " . \App\Tools\Date::format('M j, Y'));
+			$email->setSubject("{$clubAbbrev} Purchase Invoice #{$invoice->invoiceId} " . \App\Tools\Date::format('M j, Y'));
 			$email->addAttachment($invoiceString, $this->getFileName($invoice));
 			// copy the affected chairs
 

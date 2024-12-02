@@ -4,18 +4,6 @@ namespace App\Table;
 
 class Ride extends \PHPFUI\ORM\Table
 	{
-	final public const STATUS_COMPLETED = 5;
-
-	final public const STATUS_CUT_SHORT = 4;
-
-	final public const STATUS_NO_LEADER = 3;
-
-	final public const STATUS_NO_RIDERS = 2;
-
-	final public const STATUS_NOT_YET = 0;
-
-	final public const STATUS_WEATHER = 1;
-
 	protected static string $className = '\\' . \App\Record\Ride::class;
 
 	public static function changePace(int $from, int $to) : bool
@@ -403,7 +391,7 @@ class Ride extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select AVG(elevation) from ride where RWGPSId = ? and elevation > 0 and rideStatus = ? and pending=0';
 
-		return (int)\round((int)\PHPFUI\ORM::getValue($sql, [$RWGPS->RWGPSId, self::STATUS_COMPLETED, ]));
+		return (int)\round((int)\PHPFUI\ORM::getValue($sql, [$RWGPS->RWGPSId, \App\Enum\Ride\Status::COMPLETED, ]));
 		}
 
 	/**
@@ -413,7 +401,7 @@ class Ride extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select * from ride where RWGPSId = ? and elevation > 0 and rideStatus = ? and pending=0';
 
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$rwgps->RWGPSId, self::STATUS_COMPLETED, ]);
+		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$rwgps->RWGPSId, \App\Enum\Ride\Status::COMPLETED, ]);
 		}
 
 	/**
@@ -422,12 +410,12 @@ class Ride extends \PHPFUI\ORM\Table
 	public static function getStatusValues() : array
 		{
 		return [
-			self::STATUS_NOT_YET => 'Not Yet',
-			self::STATUS_WEATHER => 'Canceled for Weather',
-			self::STATUS_NO_RIDERS => 'No Riders Showed',
-			self::STATUS_NO_LEADER => 'Leader Opted Out',
-			self::STATUS_CUT_SHORT => 'Cut Short',
-			self::STATUS_COMPLETED => 'Completed',
+			\App\Enum\Ride\Status::NOT_YET->value => 'Not Yet',
+			\App\Enum\Ride\Status::CANCELLED_FOR_WEATHER->value => 'Canceled for CANCELLED_FOR_WEATHER',
+			\App\Enum\Ride\Status::NO_RIDERS_SHOWED->value => 'No Riders Showed',
+			\App\Enum\Ride\Status::LEADER_OPTED_OUT->value => 'Leader Opted Out',
+			\App\Enum\Ride\Status::CUT_SHORT->value => 'Cut Short',
+			\App\Enum\Ride\Status::COMPLETED->value => 'Completed',
 		];
 		}
 

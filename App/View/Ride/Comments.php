@@ -59,7 +59,7 @@ class Comments
 					{
 					$email = new \App\Tools\EMail();
 
-					if ($this->smsModel->enabled() && $this->ride->rideDate == \App\Tools\Date::todayString() && \App\Table\RideComment::DELIVERY_EMAIL != $_POST['delivery'])
+					if ($this->smsModel->enabled() && $this->ride->rideDate == \App\Tools\Date::todayString() && \App\Enum\RideComment\Delivery::EMAIL != \App\Enum\RideComment\Delivery::from((int)$_POST['delivery']))
 						{
 						$this->smsModel->setBody($_POST['comment']);
 						$this->smsModel->setGeoLocation($_POST);
@@ -237,14 +237,11 @@ class Comments
 
 		if ($this->smsModel->enabled() && $this->ride->rideDate == \App\Tools\Date::todayString())
 			{
-			$radioGroup = new \PHPFUI\Input\RadioGroup('delivery', 'Delivery Method', (string)\App\Table\RideComment::DELIVERY_BOTH);
-			$radioGroup->addButton('Email', (string)\App\Table\RideComment::DELIVERY_EMAIL);
-			$radioGroup->addButton('Text', (string)\App\Table\RideComment::DELIVERY_TEXT);
-			$radioGroup->addButton('Both', (string)\App\Table\RideComment::DELIVERY_BOTH);
+			$radioGroup = new \PHPFUI\Input\RadioGroupEnum('delivery', 'Delivery Method', \App\Enum\RideComment\Delivery::BOTH);
 			}
 		else
 			{
-			$radioGroup = new \PHPFUI\Input\Hidden('delivery', (string)\App\Table\RideComment::DELIVERY_EMAIL);
+			$radioGroup = new \PHPFUI\Input\Hidden('delivery', (string)\App\Enum\RideComment\Delivery::EMAIL->value);
 			}
 		$modalForm->add($radioGroup);
 

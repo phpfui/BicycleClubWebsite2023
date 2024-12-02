@@ -28,7 +28,6 @@ class Ride extends \PHPFUI\ORM\Validator
 		'restStop' => ['maxlength'],
 		'rideDate' => ['required', 'maxlength', 'date'],
 		'rideId' => ['integer'],
-		'rideStatus' => ['integer'],
 		'signupNotifications' => ['integer'],
 		'startLocationId' => ['integer'],
 		'targetPace' => ['number', 'minvalue:5', 'maxvalue:25'],

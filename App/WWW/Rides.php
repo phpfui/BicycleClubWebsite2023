@@ -396,17 +396,17 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			{
 			$this->page->addPageContent($this->view->getRideInfo($ride));
 
-			if (\App\Table\Ride::STATUS_WEATHER == $ride->rideStatus)
+			if (\App\Enum\Ride\Status::CANCELLED_FOR_WEATHER == $ride->rideStatus)
 				{
 				$callout = new \PHPFUI\Callout('alert');
-				$callout->add(\App\Table\Ride::getStatusValues()[$ride->rideStatus]);
+				$callout->add($ride->rideStatus->name());
 				$this->page->addPageContent($callout);
 				}
 			$editSignups = $this->canEditRideSignups($ride);
 			$buttonGroup = new \PHPFUI\ButtonGroup();
 			$signup = null;
 
-			if ($ride->rideDate >= \App\Tools\Date::todayString() && $this->page->isAuthorized('Ride Sign Up') && \App\Table\Ride::STATUS_NOT_YET == $ride->rideStatus)
+			if ($ride->rideDate >= \App\Tools\Date::todayString() && $this->page->isAuthorized('Ride Sign Up') && \App\Enum\Ride\Status::NOT_YET == $ride->rideStatus)
 				{
 				$signup = new \PHPFUI\Button('Sign Up For This Ride');
 				$signup->addClass('success');

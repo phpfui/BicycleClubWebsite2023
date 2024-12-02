@@ -44,7 +44,7 @@ class Volunteer
 				continue;
 				}
 
-			if ($ride->rideStatus > 0 && \App\Table\Ride::STATUS_NO_LEADER != $ride->rideStatus && ! $ride->pointsAwarded)
+			if ($ride->rideStatus->value > 0 && \App\Enum\Ride\Status::LEADER_OPTED_OUT != $ride->rideStatus && ! $ride->pointsAwarded)
 				{
 				$points = $statusPoints + $categoryPoints[$ride->pace->categoryId];
 				$this->addPoints($ride, $points);
@@ -52,7 +52,7 @@ class Volunteer
 				$ride->update();
 				$this->addAssistantLeaderPoints($assistantLeaders, $assistPoints, 1);
 				}
-			elseif (! $ride->rideStatus && $ride->pointsAwarded)
+			elseif (! $ride->rideStatus->value && $ride->pointsAwarded)
 				{
 				$this->addPoints($ride, 0 - $ride->pointsAwarded);
 				$ride->pointsAwarded = 0;

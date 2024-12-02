@@ -4,14 +4,6 @@ namespace App\Table;
 
 class Event extends \PHPFUI\ORM\Table
 	{
-	final public const FREE_MEMBERSHIP = 2;
-
-	final public const MEMBERS_ONLY = 1;
-
-	final public const PAID_MEMBERSHIP = 3;
-
-	final public const PUBLIC = 0;
-
 	protected static string $className = '\\' . \App\Record\Event::class;
 
 	public static function getAvailableForMember(\App\Record\Member $member) : \PHPFUI\ORM\DataObjectCursor

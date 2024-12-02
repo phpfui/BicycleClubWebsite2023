@@ -223,9 +223,9 @@ class Editor
 				{
 				$ride->numberOfRiders = \count($ride->confirmedRiders);
 
-				if ($ride->numberOfRiders && ! $ride->rideStatus)
+				if ($ride->numberOfRiders && ! $ride->rideStatus->value)
 					{
-					$ride->rideStatus = \App\Table\Ride::STATUS_COMPLETED;
+					$ride->rideStatus = \App\Enum\Ride\Status::COMPLETED;
 					}
 				}
 
@@ -244,14 +244,8 @@ class Editor
 			$mileage->setToolTip('Actual mileage for the ride');
 			$mileage->setRequired($afterRide);
 			$multiColumn->add($mileage);
-			$status = new \PHPFUI\Input\Select('rideStatus', 'Ride Status');
+			$status = new \PHPFUI\Input\SelectEnum('rideStatus', 'Ride Status', $ride->rideStatus);
 			$status->setToolTip('This helps us judge how many rides are actually led');
-			$values = \App\Table\Ride::getStatusValues();
-
-			foreach ($values as $key => $value)
-				{
-				$status->addOption($value, $key, $ride->rideStatus == $key);
-				}
 			$multiColumn->add($status);
 			$fieldSet->add($multiColumn);
 

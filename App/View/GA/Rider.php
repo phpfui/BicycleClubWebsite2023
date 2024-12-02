@@ -161,7 +161,7 @@ class Rider
 
 	private function getAdminFields(\App\Record\GaRider $rider) : \PHPFUI\FieldSet
 		{
-		$fieldSet = new \PHPFUI\FieldSet('Adminstrative Fields');
+		$fieldSet = new \PHPFUI\FieldSet('Administrative Fields');
 		$address = new \PHPFUI\Input\Number('pricePaid', 'Price Paid', $rider->pricePaid);
 		$pending = new \PHPFUI\Input\CheckBoxBoolean('pending', 'Pending', (bool)$rider->pending);
 		$pending->setToolTip('Payment has not cleared PayPal yet or check not received if checked');

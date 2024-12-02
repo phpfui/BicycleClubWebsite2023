@@ -35,7 +35,6 @@
         "phpfui/constantcontact": "dev-main",
         "phpfui/icalendar": "^1.0",
         "phpfui/instadoc": "^1.0",
-        "phpfui/orm": "^1.0",
         "phpfui/orm": "^1.1",
         "phpfui/phpfui": "^6.2",
         "phpfui/translation": "^1.0",

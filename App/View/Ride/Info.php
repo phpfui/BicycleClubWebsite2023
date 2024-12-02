@@ -143,9 +143,9 @@ class Info
 
 		$fieldSet->add($rwgpsMenu);
 
-		if ($ride->rideStatus)
+		if ($ride->rideStatus->value)
 			{
-			$fieldSet->add(new \App\UI\Display('Ride Status', \App\Table\Ride::getStatusValues()[$ride->rideStatus]));
+			$fieldSet->add(new \App\UI\Display('Ride Status', $ride->rideStatus->name()));
 			}
 
 		if ($ride->numberOfRiders)
@@ -270,9 +270,9 @@ class Info
 
 		$table->addRow(['RWGPS', $ride->RWGPS->routeLink()]);
 
-		if ($ride->rideStatus)
+		if ($ride->rideStatus->value)
 			{
-			$table->addRow(['Ride Status', \App\Table\Ride::getStatusValues()[$ride->rideStatus]]);
+			$table->addRow(['Ride Status', $ride->rideStatus->name()]);
 			}
 
 		$fieldSet->add($table);

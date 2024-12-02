@@ -172,7 +172,7 @@ class Ride
 			$this->deleteSignup($ride, $assistant);
 			}
 		$ride->memberId = 0;
-		$ride->rideStatus = \App\Table\Ride::STATUS_NO_LEADER;
+		$ride->rideStatus = \App\Enum\Ride\Status::LEADER_OPTED_OUT;
 		$ride->update();
 		}
 
@@ -545,7 +545,7 @@ class Ride
 			{
 			$message .= 'No Leader';
 
-			if (\App\Table\Ride::STATUS_NO_LEADER == $ride->rideStatus)
+			if (\App\Enum\Ride\Status::LEADER_OPTED_OUT == $ride->rideStatus)
 				{
 				$message .= ': Ride Cancelled';
 				}
@@ -628,21 +628,21 @@ class Ride
 		// if the ride status is not yet, but they have an average pace and riders
 		if (empty($parameters['rideStatus']) && ! empty($parameters['averagePace']) && ! empty($parameters['numberOfRiders']))
 			{
-			$parameters['rideStatus'] = \App\Table\Ride::STATUS_COMPLETED;  // then set the status to completed
+			$parameters['rideStatus'] = \App\Enum\Ride\Status::COMPLETED;  // then set the status to completed
 			}
 
 		if (! empty($parameters['memberId']))
 			{
 			$ride = new \App\Record\Ride($parameters['rideId']);
 
-			if (\App\Table\Ride::STATUS_NO_LEADER == $ride->rideStatus) // was cancelled, but now has leader
+			if (\App\Enum\Ride\Status::LEADER_OPTED_OUT == $ride->rideStatus) // was cancelled, but now has leader
 				{
-				$parameters['rideStatus'] = \App\Table\Ride::STATUS_NOT_YET;
+				$parameters['rideStatus'] = \App\Enum\Ride\Status::NOT_YET;
 				}
 			}
 		else
 			{
-			$parameters['rideStatus'] = \App\Table\Ride::STATUS_NO_LEADER;
+			$parameters['rideStatus'] = \App\Enum\Ride\Status::LEADER_OPTED_OUT;
 			}
 		$errors = $this->checkForStartTimeConflicts($parameters);
 

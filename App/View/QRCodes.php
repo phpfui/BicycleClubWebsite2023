@@ -46,14 +46,16 @@ class QRCodes
 					$settingTable->save('FreeMembershipQR', $_POST['FreeMembershipQR'] ?? '');
 					$url = $settingTable->value('homePage') . '/Join?a=' . \urlencode((string)$_POST['shop']);
 
-					$qrCode = \Endroid\QrCode\QrCode::create($url)
-						->setEncoding(new \Endroid\QrCode\Encoding\Encoding('UTF-8'))
-						->setErrorCorrectionLevel(\Endroid\QrCode\ErrorCorrectionLevel::High)
-						->setSize((int)($_POST['pixels'] ?? 300))
-						->setMargin(10)
-						->setRoundBlockSizeMode(\Endroid\QrCode\RoundBlockSizeMode::Margin)
-						->setForegroundColor(new \Endroid\QrCode\Color\Color(0, 0, 0))
-						->setBackgroundColor(new \Endroid\QrCode\Color\Color(255, 255, 255));
+					$qrCode = new \Endroid\QrCode\QrCode(
+						data: $url,
+						encoding: new \Endroid\QrCode\Encoding\Encoding('UTF-8'),
+						errorCorrectionLevel: \Endroid\QrCode\ErrorCorrectionLevel::High,
+						size: (int)($_POST['pixels'] ?? 300),
+						margin: 10,
+						roundBlockSizeMode: \Endroid\QrCode\RoundBlockSizeMode::Margin,
+						foregroundColor: new \Endroid\QrCode\Color\Color(0, 0, 0),
+						backgroundColor: new \Endroid\QrCode\Color\Color(255, 255, 255),
+					);
 
 					$writer = new \Endroid\QrCode\Writer\PngWriter();
 					$result = $writer->write($qrCode);

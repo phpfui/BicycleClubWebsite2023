@@ -477,7 +477,7 @@ class Editor
 								{
 								$rwgps->elevationFeet = (float)$elevation;
 								}
-							$rwgps->miles = (float)\number_format($rwgps->miles, 1);
+							$rwgps->miles = (float)\number_format($rwgps->miles ?? 0.0, 1);
 							$data = $rwgps->toArray();
 							$data['RWGPSId'] = $rwgps->routeLink();
 							}

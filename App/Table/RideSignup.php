@@ -151,7 +151,7 @@ class RideSignup extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select * from rideSignup where rideId=? and attended=? order by signedUpTime';
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, [$ride->rideId, $attended]);
+		return \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, [$ride->rideId, $attended->value]);
 		}
 
 	/**

@@ -378,9 +378,9 @@ class RideWithGPS extends GPS
 				if (! $header)
 					{
 					$header = true;
-					\fputcsv($stream, \array_keys($row));
+					\fputcsv($stream, \array_keys($row), escape:'\\');
 					}
-				\fputcsv($stream, $row);
+				\fputcsv($stream, $row, escape:'\\');
 				}
 			\rewind($stream);
 			$csv = \stream_get_contents($stream);

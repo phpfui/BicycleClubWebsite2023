@@ -122,7 +122,7 @@ class Client
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function __construct($endpoint, array $options = [], Guzzle $guzzle = null)
+    public function __construct($endpoint, array $options = [], ?Guzzle $guzzle = null)
     {
         $this->endpoint = $endpoint;
 

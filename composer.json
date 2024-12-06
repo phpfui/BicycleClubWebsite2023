@@ -22,7 +22,7 @@
         "flowjs/flow-php-server": "^1.0",
         "gitonomy/gitlib": "^1.0",
         "google/recaptcha": ">=1.2",
-        "guzzlehttp/guzzle": "^7.9"
+        "guzzlehttp/guzzle": "^7.9",
         "ifsnop/mysqldump-php": "^2.8",
         "intervention/image": "^3.0",
         "kwn/number-to-words": "^2.8",
@@ -50,6 +50,7 @@
         "tinify/tinify": "*",
         "tinymce/tinymce": "^7.0",
         "twilio/sdk": "^8.0",
+        "webklex/php-imap": "^5.5.0",
         "zbateson/mail-mime-parser": "^3.0"
     },
     "require-dev": {

@@ -48,8 +48,8 @@ class Info extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				'Symfony',
 				'Soundasleep',
 				'Tinify',
-				'Twilio',
 				'voku',
+				'Webklex',
 				'ZBateson',
 			];
 

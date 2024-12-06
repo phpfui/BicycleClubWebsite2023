@@ -14,10 +14,10 @@ class Basic
     /**
      * @param  string                 $destination where to save file
      * @param  string|ConfigInterface $config
-     * @param  RequestInterface       $request     optional
+     * @param  ?RequestInterface       $request     optional
      * @return bool
      */
-    public static function save($destination, $config, RequestInterface $request = null)
+    public static function save($destination, $config, ?RequestInterface $request = null)
     {
         if (!$config instanceof ConfigInterface) {
             $config = new Config(array(

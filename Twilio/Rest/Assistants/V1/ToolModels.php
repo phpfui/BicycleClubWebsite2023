@@ -60,45 +60,6 @@ abstract class ToolModels
 
 }
 
-class AssistantsV1ServiceCreatePolicyRequest implements \JsonSerializable
-{
-    /**
-     * @property string $description The description of the policy.
-     * @property string $id The Policy ID.
-     * @property string $name The name of the policy.
-     * @property array $policyDetails
-     * @property string $type The description of the policy.
-    */
-        protected $description;
-        protected $id;
-        protected $name;
-        protected $policyDetails;
-        protected $type;
-    public function __construct(array $payload = []) {
-        $this->description = Values::array_get($payload, 'description');
-        $this->id = Values::array_get($payload, 'id');
-        $this->name = Values::array_get($payload, 'name');
-        $this->policyDetails = Values::array_get($payload, 'policyDetails');
-        $this->type = Values::array_get($payload, 'type');
-    }
-
-    public function toArray(): array
-    {
-        return $this->jsonSerialize();
-    }
-
-    public function jsonSerialize(): array
-    {
-        return [
-            'description' => $this->description,
-            'id' => $this->id,
-            'name' => $this->name,
-            'policyDetails' => $this->policyDetails,
-            'type' => $this->type
-        ];
-    }
-}
-
 class AssistantsV1ServiceCreateToolRequest implements \JsonSerializable
 {
     /**

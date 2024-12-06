@@ -154,12 +154,12 @@ class RideSignup
 				}
 			else
 				{
+				$rider->setFrom($fields);
 				if ($this->signupLimit && \count($definites) >= $this->signupLimit)
 					{
-					$fields['status'] = \App\Enum\RideSignup\Status::WAIT_LIST;
+					$rider->status = \App\Enum\RideSignup\Status::WAIT_LIST;
 					\App\Model\Session::setFlash('alert', 'Ride is full, you are now on the wait list.');
 					}
-				$rider->setFrom($fields);
 				$rider->signedUpTime = \date('Y-m-d H:i:s');
 				$signedUpTime = $this->rideSignupTable->getEarliestRiderSignupTime($this->member, $this->ride->rideDate);
 

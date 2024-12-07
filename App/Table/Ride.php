@@ -391,7 +391,7 @@ class Ride extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select AVG(elevation) from ride where RWGPSId = ? and elevation > 0 and rideStatus = ? and pending=0';
 
-		return (int)\round((int)\PHPFUI\ORM::getValue($sql, [$RWGPS->RWGPSId, \App\Enum\Ride\Status::COMPLETED, ]));
+		return (int)\round((int)\PHPFUI\ORM::getValue($sql, [$RWGPS->RWGPSId, \App\Enum\Ride\Status::COMPLETED->value, ]));
 		}
 
 	/**
@@ -401,7 +401,7 @@ class Ride extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select * from ride where RWGPSId = ? and elevation > 0 and rideStatus = ? and pending=0';
 
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$rwgps->RWGPSId, \App\Enum\Ride\Status::COMPLETED, ]);
+		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$rwgps->RWGPSId, \App\Enum\Ride\Status::COMPLETED->value, ]);
 		}
 
 	/**

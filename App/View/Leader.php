@@ -294,7 +294,7 @@ class Leader
 				$row['Year'] = "<a href='/Leaders/leaderYear/{$ride['memberId']}/{$year}'>{$year}</a>";
 				}
 
-			if (\App\Enum\Ride\Status::LEADER_OPTED_OUT->name == $ride['rideStatus'])
+			if (\App\Enum\Ride\Status::LEADER_OPTED_OUT->value == $ride['rideStatus'])
 				{
 				++$row['Leader Opted Out'];
 				}

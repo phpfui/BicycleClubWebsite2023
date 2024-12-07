@@ -39,7 +39,7 @@ class Video extends \App\View\Folder
 				{
 				$uploader = new \App\UI\ChunkedUploader($this->page);
 				$uploader->setOption('target', "'/Video/upload'");
-				$uploader->setOption('chunkSize', 1024 * 1024 * 10);
+				$uploader->setOption('chunkSize', 1024 * 1024);
 				$uploader->setOption('testChunks', false);
 				$uploader->setOption('singleFile', true);
 				$uploader->setOption('query', ['videoId' => $video->videoId]);

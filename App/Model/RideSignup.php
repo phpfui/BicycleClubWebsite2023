@@ -140,14 +140,15 @@ class RideSignup
 			{
 			if ($rider->loaded())
 				{
-				if ($fields['status'] != $rider->status)
+				if ($fields['status'] != $rider->status->value)
 					{
-					if (\App\Enum\RideSignup\Status::DEFINITELY_RIDING == $fields['status'] && $this->signupLimit && \count($definites) >= $this->signupLimit)
+					$rider->setFrom($fields);
+
+					if (\App\Enum\RideSignup\Status::DEFINITELY_RIDING == $rider->status && $this->signupLimit && \count($definites) >= $this->signupLimit)
 						{
-						$fields['status'] = \App\Enum\RideSignup\Status::WAIT_LIST;
+						$rider->status = \App\Enum\RideSignup\Status::WAIT_LIST;
 						\App\Model\Session::setFlash('alert', 'Ride is full, you are now on the wait list.');
 						}
-					$rider->setFrom($fields);
 					$rider->update();
 					$action = "changed their status to <b>{$status[$fields['status']]}</b>";
 					}
@@ -155,6 +156,7 @@ class RideSignup
 			else
 				{
 				$rider->setFrom($fields);
+
 				if ($this->signupLimit && \count($definites) >= $this->signupLimit)
 					{
 					$rider->status = \App\Enum\RideSignup\Status::WAIT_LIST;

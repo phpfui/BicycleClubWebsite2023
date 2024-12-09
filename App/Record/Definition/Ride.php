@@ -30,7 +30,7 @@ namespace App\Record\Definition;
  * @property string $rideDate MySQL type date
  * @property int $rideId MySQL type int
  * @property \App\Record\Ride $ride related record
- * @property ?int $rideStatus MySQL type int
+ * @property int $rideStatus MySQL type int
  * @property ?int $signupNotifications MySQL type tinyint
  * @property ?int $startLocationId MySQL type int
  * @property \App\Record\StartLocation $startLocation related record
@@ -66,7 +66,7 @@ abstract class Ride extends \PHPFUI\ORM\Record
 		'restStop' => ['varchar(70)', 'string', 70, true, ],
 		'rideDate' => ['date', 'string', 10, false, ],
 		'rideId' => ['int', 'int', 0, false, ],
-		'rideStatus' => ['int', 'int', 0, true, 0, ],
+		'rideStatus' => ['int', 'int', 0, false, 0, ],
 		'signupNotifications' => ['tinyint', 'int', 0, true, 1, ],
 		'startLocationId' => ['int', 'int', 0, true, ],
 		'startTime' => ['time', 'string', 0, true, ],

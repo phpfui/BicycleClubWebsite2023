@@ -210,16 +210,14 @@ class Ride extends \PHPFUI\ORM\Table
 
 	/**
 	 * @param array<int> $categories
-	 *
-	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
 	 */
-	public function getLeadersRides(array $categories, string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
+	public function getLeadersRides(array $categories, string $startDate, string $endDate, int $leaderType = 0) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$statusCondition = new \PHPFUI\ORM\Condition('rideStatus', 1, new \PHPFUI\ORM\Operator\GreaterThan());
 		$statusCondition->or('unaffiliated', 0);
 		$condition = new \PHPFUI\ORM\Condition('rideDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
 		$condition->and(new \PHPFUI\ORM\Condition('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual()));
-		$condition->and(new \PHPFUI\ORM\Condition('memberId', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
+		$condition->and(new \PHPFUI\ORM\Condition('ride.memberId', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
 		$condition->and('pending', 0);
 		$condition->and($statusCondition);
 
@@ -227,10 +225,24 @@ class Ride extends \PHPFUI\ORM\Table
 			{
 			$condition->and(new \PHPFUI\ORM\Condition('paceId', $categories, new \PHPFUI\ORM\Operator\In()));
 			}
-		$this->addOrderBy('memberId')->addOrderBy('rideDate');
+		$this->addSelect('ride.*');
+		$this->addOrderBy('LeaderId')->addOrderBy('rideDate');
+
+		if ($leaderType)
+			{
+			$assistantLeaderCondition = new \PHPFUI\ORM\Condition();
+			$this->addJoin('assistantLeader');
+			$assistantLeaderCondition->or(new \PHPFUI\ORM\Condition('assistantLeader.assistantLeaderTypeId', $leaderType));
+			$this->addSelect('assistantLeader.memberId', 'LeaderId');
+			$condition->and($assistantLeaderCondition);
+			}
+		else
+			{
+			$this->addSelect('ride.memberId', 'LeaderId');
+			}
 		$this->setWhere($condition);
 
-		return $this->getRecordCursor();
+		return $this->getDataObjectCursor();
 		}
 
 	/**

@@ -56,7 +56,7 @@ class Leader extends \PDF_MC_Table
 
 	private static string $sort;
 
-	public function __construct(private readonly string $reportName)
+	public function __construct(private string $reportName)
 		{
 		parent::__construct();
 		}
@@ -101,7 +101,18 @@ class Leader extends \PDF_MC_Table
 		$startDate = \gregoriantojd(1, 1, $this->firstYear);
 		$endDate = \gregoriantojd(12, 31, $this->currentYear);
 		$rideTable = new \App\Table\Ride();
-		$rides = $rideTable->getLeadersRides($paces, \App\Tools\Date::toString($startDate), \App\Tools\Date::toString($endDate));
+		$reportType = $parameters['leader'] ?? 0;
+
+		if (0 != $reportType)
+			{
+			$assistantLeaderType = new \App\Record\AssistantLeaderType($reportType);
+			$this->reportName = $assistantLeaderType->name . ' Report';
+			}
+		$rides = $rideTable->getLeadersRides($paces, \App\Tools\Date::toString($startDate), \App\Tools\Date::toString($endDate), $reportType);
+		$input = [];
+		$logger = \App\Tools\Logger::get();
+		$logger->debug($rideTable->getLastSQL());
+		$logger->debug($rideTable->getLastInput());
 		$this->initRides = [];
 
 		for ($year = $this->firstYear; $year <= $this->currentYear; ++$year)
@@ -119,10 +130,10 @@ class Leader extends \PDF_MC_Table
 				continue;	// don't count unafilliated rides
 				}
 
-			if ($this->lastLeader != $ride->memberId)
+			if ($this->lastLeader != $ride->LeaderId)
 				{
 				$this->addRow();
-				$this->lastLeader = $ride->memberId;
+				$this->lastLeader = $ride->LeaderId;
 				}
 			$date = $ride->rideDate;
 			++$this->ridesByYear[(int)$date];

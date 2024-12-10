@@ -43,9 +43,27 @@ class Leader
 		$form->addAttribute('target', '_blank');
 		$row = new \PHPFUI\GridX();
 		$column = new \PHPFUI\Cell(12, 6, 4);
+
+		$assistantLeaderTypeTable = new \App\Table\AssistantLeaderType();
+		$assistantLeaderTypeTable->setOrderBy('name');
+
+		if (\count($assistantLeaderTypeTable))
+			{
+			$fieldSet = new \PHPFUI\FieldSet('Leader Type');
+			$leaderSelect = new \PHPFUI\Input\RadioGroup('leader', value:'0');
+			$leaderSelect->setSeparateRows()->addButton('Ride Leader', '0');
+
+			foreach ($assistantLeaderTypeTable->getRecordCursor() as $type)
+				{
+				$leaderSelect->addButton($type->name, $type->assistantLeaderTypeId);
+				}
+			$column->add($fieldSet->add($leaderSelect));
+			}
+
 		$picker = new \App\UI\MultiCategoryPicker('categories', 'Category Restriction');
 		$picker->setToolTip('Pick specific categories if you to filter the report to specific categories');
 		$column->add($picker);
+
 		$radio = new \PHPFUI\Input\RadioGroup('sort', '', 'leader');
 		$radio->setSeparateRows();
 		$radio->addButton('Leader', 'leader');

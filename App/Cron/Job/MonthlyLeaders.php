@@ -32,11 +32,11 @@ class MonthlyLeaders extends \App\Cron\BaseJob
 
 		foreach ($rides as $ride)
 			{
-			if (! isset($leaderRides[$ride['memberId']]))
+			if (! isset($leaderRides[$ride->memberId]))
 				{
-				$leaderRides[$ride['memberId']] = [];
+				$leaderRides[$ride->memberId] = [];
 				}
-			$leaderRides[$ride['memberId']][] = $ride['rideDate'];
+			$leaderRides[$ride->memberId][] = $ride->rideDate;
 			}
 		$file = new \App\Tools\TempFile('monthlyLeaders');
 		$csv = new \App\Tools\CSV\FileWriter($file, download:false);

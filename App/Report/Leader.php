@@ -101,18 +101,7 @@ class Leader extends \PDF_MC_Table
 		$startDate = \gregoriantojd(1, 1, $this->firstYear);
 		$endDate = \gregoriantojd(12, 31, $this->currentYear);
 		$rideTable = new \App\Table\Ride();
-		$reportType = $parameters['leader'] ?? 0;
-
-		if (0 != $reportType)
-			{
-			$assistantLeaderType = new \App\Record\AssistantLeaderType($reportType);
-			$this->reportName = $assistantLeaderType->name . ' Report';
-			}
-		$rides = $rideTable->getLeadersRides($paces, \App\Tools\Date::toString($startDate), \App\Tools\Date::toString($endDate), $reportType);
-		$input = [];
-		$logger = \App\Tools\Logger::get();
-		$logger->debug($rideTable->getLastSQL());
-		$logger->debug($rideTable->getLastInput());
+		$rides = $rideTable->getLeadersRides($paces, \App\Tools\Date::toString($startDate), \App\Tools\Date::toString($endDate), $parameters['leaders'] ?? [0]);
 		$this->initRides = [];
 
 		for ($year = $this->firstYear; $year <= $this->currentYear; ++$year)

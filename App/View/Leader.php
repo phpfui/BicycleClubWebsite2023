@@ -50,12 +50,12 @@ class Leader
 		if (\count($assistantLeaderTypeTable))
 			{
 			$fieldSet = new \PHPFUI\FieldSet('Leader Type');
-			$leaderSelect = new \PHPFUI\Input\RadioGroup('leader', value:'0');
-			$leaderSelect->setSeparateRows()->addButton('Ride Leader', '0');
+			$leaderSelect = new \PHPFUI\Input\MultiSelect('leaders');
+			$leaderSelect->addOption('Ride Leader', '0');
 
 			foreach ($assistantLeaderTypeTable->getRecordCursor() as $type)
 				{
-				$leaderSelect->addButton($type->name, $type->assistantLeaderTypeId);
+				$leaderSelect->addOption($type->name, $type->assistantLeaderTypeId);
 				}
 			$column->add($fieldSet->add($leaderSelect));
 			}

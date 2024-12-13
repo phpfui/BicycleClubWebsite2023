@@ -15,8 +15,10 @@ namespace App\DB;
  * @property string $town
  * @property string $zip
  * @property string $cellPhone
+ *
+ * @implements \ArrayAccess<string,string>
  */
-class MemberCustomer
+class MemberCustomer implements \ArrayAccess
 	{
 	private \App\Record\Customer $customer;
 
@@ -115,6 +117,25 @@ class MemberCustomer
 			}
 
 		return $this->membership;
+		}
+
+	public function offsetExists(mixed $offset) : bool
+		{
+		return $this->__isset($offset);
+		}
+
+	public function offsetGet(mixed $offset) : mixed
+		{
+		return $this->__get($offset);
+		}
+
+	public function offsetSet(mixed $offset, mixed $value) : void
+		{
+		$this->__set($offset, $value);
+		}
+
+	public function offsetUnset(mixed $offset) : void
+		{
 		}
 
 	/**

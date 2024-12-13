@@ -1,8 +1,8 @@
 <?php
 
-namespace App\View;
+namespace App\View\RWGPS;
 
-class RideWithGPSSearch implements \Stringable
+class Search implements \Stringable
 	{
 	/**
 	 * @var string[]

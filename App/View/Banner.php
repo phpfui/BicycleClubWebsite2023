@@ -64,7 +64,6 @@ class Banner
 			$startDate->setMinDate(\App\Tools\Date::todayString());
 			$startDate->setRequired()->setToolTip('The date the banner will start to be displayed');
 			$endDate = new \PHPFUI\Input\Date($this->page, 'endDate', 'End Date', $banner->endDate);
-			$endDate->setMinDate(\App\Tools\Date::todayString());
 			$endDate->setRequired()->setToolTip('The last date the banner will be shown.');
 			$infoFields->add(new \PHPFUI\MultiColumn($startDate, $endDate));
 			$title = new \PHPFUI\Input\Text('description', 'Banner Title', $banner->description);

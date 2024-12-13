@@ -6,6 +6,8 @@ class GeoLocation
 	{
 	private ?\PHPFUI\HTML5Element $callout = null;
 
+	private string $errorMessage = 'Uncheck Include GPS location to send.';
+
 	private ?\PHPFUI\Input $latitude = null;
 
 	private ?\PHPFUI\Input $longitude = null;
@@ -59,7 +61,7 @@ class GeoLocation
 
 		if ($this->callout)
 			{
-			$js .= "{$d}('#{$this->callout->getId()}').html('ERROR('+err.code+'):'+err.message+'. Uncheck Include GPS location to send.').removeClass('hide')";
+			$js .= "{$d}('#{$this->callout->getId()}').html('ERROR('+err.code+'):'+err.message+'. {$this->errorMessage}').removeClass('hide')";
 			}
 		$js .= '},' . \PHPFUI\TextHelper::arrayToJS($this->options) . ')}else{';
 
@@ -103,6 +105,13 @@ class GeoLocation
 		$button->addAttribute('disabled');
 
 		return $this->submit = $button;
+		}
+
+	public function setErrorMessage(string $message) : static
+		{
+		$this->errorMessage = $message;
+
+		return $this;
 		}
 
 	public function setLatLong(\PHPFUI\Input $latitude, \PHPFUI\Input $longitude) : static

@@ -22,6 +22,22 @@ class Ride extends \PHPFUI\ORM\Table
 		\PHPFUI\ORM::execute($sql, $input);
 		}
 
+	public function distanceFrom(float $latitude, float $longitude) : static
+		{
+		$this->addSelect('ride.rideId');
+		$this->addSelect('ride.rideDate');
+		$this->addSelect('ride.title', 'name');
+		$this->addSelect('RWGPS.RWGPSId');
+		$this->addSelect('RWGPS.title');
+		$this->addSelect('RWGPS.latitude');
+		$this->addSelect('RWGPS.longitude');
+		$this->addSelect("ST_Distance_Sphere(POINT(rwgps.latitude, rwgps.longitude),POINT({$latitude},{$longitude}))", 'meters');
+		$this->addJoin('RWGPS');
+		$this->setWhere(new \PHPFUI\ORM\Condition('ride.RWGSPId', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
+
+		return $this;
+		}
+
 	/**
 	 * @param array<string,array<int>|string> $parameters
 	 */

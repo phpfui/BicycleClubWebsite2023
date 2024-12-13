@@ -321,17 +321,29 @@ class RideWithGPS
 		{
 		$sortableHeaders = ['title' => 'Name', ];
 
+		$metric = $this->metric;
+
 		if ($this->metric)
 			{
 			$sortableHeaders['km'] = 'km';
 			$sortableHeaders['elevationMeters'] = 'Elev<wbr>ation';
 			$sortableHeaders['metersPerKm'] = 'm/km';
+
+			if (\array_key_exists('meters', $additionalHeaders))
+				{
+				$sortableHeaders['meters'] = $additionalHeaders['meters'] = $additionalHeaders['meters'] . ' Km';
+				}
 			}
 		else
 			{
 			$sortableHeaders['miles'] = 'Miles';
 			$sortableHeaders['elevationFeet'] = 'Elev<wbr>ation';
 			$sortableHeaders['feetPerMile'] = 'Ft/Mi';
+
+			if (\array_key_exists('meters', $additionalHeaders))
+				{
+				$sortableHeaders['meters'] = $additionalHeaders['meters'] = $additionalHeaders['meters'] . ' Mi';
+				}
 			}
 		$sortableHeaders['town'] = 'Start';
 		$sortableHeaders['club'] = 'Club';
@@ -360,6 +372,16 @@ class RideWithGPS
 			$start->addAttribute('target', '_blank');
 
 			return $start;
+			});
+
+		$view->addCustomColumn('meters', static function(array $rwgps) use ($metric)
+			{
+			if ($metric)
+				{
+				return \number_format($rwgps['meters'] / 1000, 2);
+				}
+
+			return \number_format($rwgps['meters'] * 0.000621371192, 2);
 			});
 
 		$view->addCustomColumn('club', static fn (array $rwgps) => $rwgps['club'] ? '<b>&check;</b>' : '');

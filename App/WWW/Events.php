@@ -394,7 +394,7 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		// view will set the page to public if need be.
 		$this->view->setEvent($event);
 
-		if (! $event->empty() && \App\Enum\Event\MembersOnly::MEMBERS_ONLY != $event->membersOnly)
+		if (! $event->empty() && \App\Enum\Event\MembersOnly::MEMBERS_ONLY == $event->membersOnly)
 			{
 			$this->page->setPublic(false);
 			}

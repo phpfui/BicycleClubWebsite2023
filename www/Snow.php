@@ -13,9 +13,9 @@ if (! \App\Model\Session::signedInMemberId())
 
 if (\App\Tools\Date::today() != \App\Tools\Date::make(\App\Tools\Date::year(), 12, 25))
 	{
-	$page->redirect('/');
+//	$page->redirect('/');
 
-	exit;
+//	exit;
 	}
 
 $page->add('<div id="scene">
@@ -31,9 +31,9 @@ $page->add('<div id="scene">
   </div>
   <div id="hint"><span>ESC to exit</span></div>
 </div>');
-$page->addHeadScript('https://threejs.org/build/three.min.js');
-$page->addHeadScript('https://threejs.org/examples/js/libs/stats.min.js');
-$page->addHeadScript('https://threejs.org/examples/js/controls/PointerLockControls.js');
+$page->addHeadScript('https://threejs.org/build/three.module.js');
+$page->addHeadScript('https://threejs.org/examples/jsm/libs/stats.module.js');
+$page->addHeadScript('https://threejs.org/examples/jsm/controls/PointerLockControls.js');
 
 $page->addCSS('body {
     margin: 0;

@@ -48,11 +48,39 @@ class RWGPS extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function distance() : void
+		{
+		if ($this->page->addHeader('Distance To Start'))
+			{
+			$select = new \PHPFUI\Button('Select Coordinates');
+			$show = new \PHPFUI\Submit('Search');
+			$reveal = new \App\UI\CoordinatePicker($this->page, $select);
+			$reveal->addClass('medium');
+			$reveal->addMyLocation();
+
+			$reveal->getForm()->add($reveal->getButtonAndCancel($show));
+			$this->page->addPageContent($select);
+
+			if (\is_numeric($_GET['latitude'] ?? '') && \is_numeric($_GET['longitude'] ?? ''))
+				{
+				$latitude = (float)$_GET['latitude'];
+				$longitude = (float)$_GET['longitude'];
+				$rwgpsTable = new \App\Table\RWGPS();
+				$rwgpsTable->distanceFrom($latitude, $longitude);
+
+				$this->page->addPageContent(new \PHPFUI\Header(new \PHPFUI\Link("https://www.google.com/maps/?q={$latitude},{$longitude}", 'Distance from here (Google Maps)'), 5));
+
+				$distanceView = new \App\View\RideWithGPS($this->page);
+				$this->page->addPageContent($distanceView->list($rwgpsTable, ['meters' => 'Dist']));
+				}
+			}
+		}
+
 	public function find() : void
 		{
 		if ($this->page->addHeader('Search RWGPS'))
 			{
-			$this->page->addPageContent(new \App\View\RideWithGPSSearch($this->page));
+			$this->page->addPageContent(new \App\View\RWGPS\Search($this->page));
 			}
 		}
 

@@ -13,6 +13,14 @@ class RWGPS extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getArrayCursor($sql, ['lat' => $lat, 'long' => $long, 'distance' => $distance, 'limit' => $limit]);
 		}
 
+	public function distanceFrom(float $latitude, float $longitude) : static
+		{
+		$this->addSelect('*');
+		$this->addSelect(new \PHPFUI\ORM\Literal("ST_Distance_Sphere(POINT(latitude,longitude),POINT({$latitude},{$longitude}))"), 'meters');
+
+		return $this;
+		}
+
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\RWGPS>
 	 */

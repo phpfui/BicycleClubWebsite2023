@@ -106,6 +106,7 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/RWGPS/stats', 'RWGPS Stats');
 			$this->addSub($menu, '/RWGPS/upcoming', 'Upcoming RWGPS');
 			$this->addSub($menu, '/RWGPS/addUpdate', 'Add / Update RWGPS');
+			$this->addSub($menu, '/RWGPS/distance', 'Distance To Start');
 			$url = $settingTable->value('RideWithGPSURL');
 
 			if ($url)

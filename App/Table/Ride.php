@@ -22,18 +22,38 @@ class Ride extends \PHPFUI\ORM\Table
 		\PHPFUI\ORM::execute($sql, $input);
 		}
 
-	public function distanceFrom(float $latitude, float $longitude) : static
+	public function distanceToRide(float $latitude, float $longitude, string $startDate, string $endDate) : static
 		{
 		$this->addSelect('ride.rideId');
 		$this->addSelect('ride.rideDate');
 		$this->addSelect('ride.title', 'name');
+		$this->addSelect('firstName');
+		$this->addSelect('lastName');
 		$this->addSelect('RWGPS.RWGPSId');
 		$this->addSelect('RWGPS.title');
 		$this->addSelect('RWGPS.latitude');
 		$this->addSelect('RWGPS.longitude');
-		$this->addSelect("ST_Distance_Sphere(POINT(rwgps.latitude, rwgps.longitude),POINT({$latitude},{$longitude}))", 'meters');
+		$this->addSelect(new \PHPFUI\ORM\Literal("ST_Distance_Sphere(POINT(rwgps.latitude, rwgps.longitude),POINT({$latitude},{$longitude}))"), 'meters');
 		$this->addJoin('RWGPS');
-		$this->setWhere(new \PHPFUI\ORM\Condition('ride.RWGSPId', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
+		$this->addJoin('member');
+		$this->setWhere(new \PHPFUI\ORM\Condition('ride.RWGPSId', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
+
+		$condition = new \PHPFUI\ORM\Condition();
+
+		if (\strlen($startDate))
+			{
+			$condition->and('rideDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			}
+
+		if (\strlen($endDate))
+			{
+			$condition->and('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+			}
+
+		if (\count($condition))
+			{
+			$this->setWhere($condition);
+			}
 
 		return $this;
 		}

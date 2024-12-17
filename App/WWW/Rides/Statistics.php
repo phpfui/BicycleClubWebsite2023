@@ -31,6 +31,36 @@ class Statistics extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		}
 
+	public function distance() : void
+		{
+		if ($this->page->addHeader('Distance To Ride Start'))
+			{
+			$select = new \PHPFUI\Button('Select Coordinates');
+			$show = new \PHPFUI\Submit('Search');
+			$reveal = new \App\UI\CoordinatePicker($this->page, $select);
+			$reveal->addClass('medium');
+			$reveal->addDateRange();
+			$reveal->addStartLocation();
+			$reveal->addRWGPS();
+
+			$reveal->getForm()->add($reveal->getButtonAndCancel($show));
+			$this->page->addPageContent($select);
+
+			if (\is_numeric($_GET['latitude'] ?? '') && \is_numeric($_GET['longitude'] ?? ''))
+				{
+				$latitude = (float)$_GET['latitude'];
+				$longitude = (float)$_GET['longitude'];
+				$rideTable = new \App\Table\Ride();
+				$rideTable->distanceToRide($latitude, $longitude, $_GET['startDate'], $_GET['endDate']);
+
+				$this->page->addPageContent(new \PHPFUI\Header(new \PHPFUI\Link("https://www.google.com/maps/?q={$latitude},{$longitude}", 'Distance from here (Google Maps)'), 5));
+
+				$distanceView = new \App\View\Ride\Lister($this->page);
+				$this->page->addPageContent($distanceView->list($rideTable));
+				}
+			}
+		}
+
 	public function landingPage() : void
 		{
 		$this->page->landingPage('Ride Statistics');

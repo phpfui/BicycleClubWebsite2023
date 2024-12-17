@@ -33,6 +33,7 @@ class MainMenu extends \App\UI\MainMenu
 				$this->addSub($statsMenu, '/Rides/Statistics/cuesheets', 'Cue Sheet Statistics');
 				$this->addSub($statsMenu, '/Rides/Statistics/startLocations', 'Start Location Statistics');
 				$this->addSub($statsMenu, '/Rides/Statistics/rwgps', 'RWGPS Statistics');
+				$this->addSub($statsMenu, '/Rides/Statistics/distance', 'Distance To Ride Start');
 				}
 			}
 

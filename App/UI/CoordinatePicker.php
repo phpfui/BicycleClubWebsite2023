@@ -25,7 +25,6 @@ class CoordinatePicker extends \PHPFUI\Reveal
 		$this->latitude->setRequired();
 		$this->longitude = new \PHPFUI\Input\Number('longitude', 'Longitude');
 		$this->longitude->setRequired();
-		$this->latitude->setValue('23.333');//$_GET['latitude']);
 
 		$noPopUp = 0;
 
@@ -58,7 +57,6 @@ class CoordinatePicker extends \PHPFUI\Reveal
 		$fieldSet->add($this->latitude)->add($this->longitude);
 		$this->form->add($fieldSet);
 		$this->add($this->form);
-//		$this->form->add(new \PHPFUI\Debug($this->geoLocate));
 
 		if (\App\Model\Session::checkCSRF())
 			{
@@ -80,8 +78,8 @@ class CoordinatePicker extends \PHPFUI\Reveal
 	public function addDateRange() : static
 		{
 		$fieldSet = new \PHPFUI\FieldSet('Date Range');
-		$fieldSet->add(new \PHPFUI\Input\Date($this->page, 'startDate', 'Start Date'));
-		$fieldSet->add(new \PHPFUI\Input\Date($this->page, 'endDate', 'End Date'));
+		$fieldSet->add(new \PHPFUI\Input\Date($this->page, 'startDate', 'Start Date', $_GET['startDate'] ?? ''));
+		$fieldSet->add(new \PHPFUI\Input\Date($this->page, 'endDate', 'End Date', $_GET['endDate'] ?? ''));
 		$this->form->add($fieldSet);
 
 		return $this;

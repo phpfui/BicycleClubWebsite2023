@@ -376,6 +376,11 @@ class RideWithGPS
 
 		$view->addCustomColumn('meters', static function(array $rwgps) use ($metric)
 			{
+			if (! ($rwgps['meters'] ?? 0))
+				{
+				return '';
+				}
+
 			if ($metric)
 				{
 				return \number_format($rwgps['meters'] / 1000, 2);

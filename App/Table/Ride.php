@@ -33,7 +33,7 @@ class Ride extends \PHPFUI\ORM\Table
 		$this->addSelect('RWGPS.title');
 		$this->addSelect('RWGPS.latitude');
 		$this->addSelect('RWGPS.longitude');
-		$this->addSelect(new \PHPFUI\ORM\Literal("ST_Distance_Sphere(POINT(rwgps.latitude, rwgps.longitude),POINT({$latitude},{$longitude}))"), 'meters');
+		$this->addSelect(new \PHPFUI\ORM\Literal("ST_Distance_Sphere(POINT(RWGPS.latitude,RWGPS.longitude),POINT({$latitude},{$longitude}))"), 'meters');
 		$this->addJoin('RWGPS');
 		$this->addJoin('member');
 		$this->setWhere(new \PHPFUI\ORM\Condition('ride.RWGPSId', 0, new \PHPFUI\ORM\Operator\GreaterThan()));

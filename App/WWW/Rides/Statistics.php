@@ -51,7 +51,7 @@ class Statistics extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 				$latitude = (float)$_GET['latitude'];
 				$longitude = (float)$_GET['longitude'];
 				$rideTable = new \App\Table\Ride();
-				$rideTable->distanceToRide($latitude, $longitude, $_GET['startDate'], $_GET['endDate']);
+				$rideTable->distanceToRide($latitude, $longitude, $_GET['startDate'] ?? '', $_GET['endDate'] ?? '');
 
 				$this->page->addPageContent(new \PHPFUI\Header(new \PHPFUI\Link("https://www.google.com/maps/?q={$latitude},{$longitude}", 'Distance from here (Google Maps)'), 5));
 

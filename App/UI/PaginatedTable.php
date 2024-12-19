@@ -113,15 +113,6 @@ class PaginatedTable extends \PHPFUI\SortableTable
 			$this->dataTable->setLimit($this->limitNumber, $this->pageNumber);
 			}
 
-// possible pagination optimization
-//SELECT * FROM people
-//    INNER JOIN (
-//      -- Paginate the narrow subquery instead of the entire table
-//      SELECT id FROM people ORDER BY first_name, id LIMIT 10 OFFSET 450000
-//    ) AS tmp USING (id)
-//ORDER BY
-//  first_name, id
-
 		if ($this->sortColumn)
 			{
 			$this->setSortedColumnOrder($this->sortColumn, $this->sort);
@@ -414,7 +405,16 @@ class PaginatedTable extends \PHPFUI\SortableTable
 			foreach ($this->getArrayCursor(false) as $row)
 				{
 				unset($row['password'], $row['loginAttempts']);
-				$csvWriter->outputRow($row);
+				$displayRow = $row;
+
+				// merge in any virtual fields
+				foreach ($this->customColumns as $field => $callbackInfo)
+					{
+					$displayRow[$field] = $callbackInfo[0]($row, $callbackInfo[1]);
+					}
+				// but leave the orginal fields
+				$displayRow = \array_merge($displayRow, $row);
+				$csvWriter->outputRow($displayRow);
 				}
 			unset($csvWriter);
 			\header('location: ' . $this->getUrl());

@@ -36,9 +36,8 @@ class Ride extends \PHPFUI\ORM\Table
 		$this->addSelect(new \PHPFUI\ORM\Literal("ST_Distance_Sphere(POINT(RWGPS.latitude,RWGPS.longitude),POINT({$latitude},{$longitude}))"), 'meters');
 		$this->addJoin('RWGPS');
 		$this->addJoin('member');
-		$this->setWhere(new \PHPFUI\ORM\Condition('ride.RWGPSId', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
 
-		$condition = new \PHPFUI\ORM\Condition();
+		$condition = new \PHPFUI\ORM\Condition('ride.RWGPSId', 0, new \PHPFUI\ORM\Operator\GreaterThan());
 
 		if (\strlen($startDate))
 			{
@@ -50,10 +49,7 @@ class Ride extends \PHPFUI\ORM\Table
 			$condition->and('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
 			}
 
-		if (\count($condition))
-			{
-			$this->setWhere($condition);
-			}
+		$this->setWhere($condition);
 
 		return $this;
 		}

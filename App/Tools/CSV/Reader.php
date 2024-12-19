@@ -17,7 +17,7 @@ namespace App\Tools\CSV;
  */
 abstract class Reader implements \Iterator
 	{
-	/** @var array<string, string> */
+	/** @var array<string, string> | array<string|null> */
 	private array $current = [];
 
 	/** @var array<string> */
@@ -33,7 +33,7 @@ abstract class Reader implements \Iterator
 		$this->rewind();
 		}
 
-	/** @return array<string, string> */
+	/** @return array<string, string> | array<string|null> */
 	public function current() : array
 		{
 		return $this->current;

@@ -398,6 +398,37 @@ class TextHelper extends \PHPFUI\TextHelper
 		}
 
 	/**
+	 * Decode hmtl entities
+	 *
+	 * @param ?string $string to decode
+	 */
+	public static function unhtmlentities(?string $string) : string
+		{
+		if (! $string)
+			{
+			return '';
+			}
+
+		try
+			{
+			\ini_set('mbstring.substitute_character', 'none');
+			$string = \mb_convert_encoding($string, 'UTF-8', 'ASCII');
+			}
+		catch (\Exception $e)
+			{
+			echo new \PHPFUI\Debug('error from mb_convert_encoding');
+			echo new \PHPFUI\Debug($e);
+			}
+		// Transliterate non-ASCII characters to closest ASCII equivalents.
+		$string = @\iconv('UTF-8', 'ASCII//TRANSLIT', $string);
+
+		// Remove any remaining non-ASCII characters.
+		$string = \preg_replace('/[^[:ascii:]]/', '', $string);
+
+		return parent::unhtmlentities($string);
+		}
+
+	/**
 	 * Add wrapping into clickable links
 	 */
 	public static function wrapLinks(string $html) : string

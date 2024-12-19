@@ -505,7 +505,6 @@ class Ride
 			{
 			$signup = '<p>The following riders have already signed up as of ' . \date('g:i A') . ' (in signup order):</p>';
 			$status = $this->rideSignupTable->getRiderStatus();
-//			unset($status[\App\Enum\RideSignup\Status::POSSIBLY_RIDING->value]);
 
 			$ul = new \PHPFUI\UnorderedList();
 

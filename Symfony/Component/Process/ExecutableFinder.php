@@ -38,10 +38,7 @@ class ExecutableFinder
     }
 
     /**
-     * Adds new possible suffix to check for executable, including the dot (.).
-     *
-     *     $finder = new ExecutableFinder();
-     *     $finder->addSuffix('.foo');
+     * Adds new possible suffix to check for executable.
      */
     public function addSuffix(string $suffix): void
     {
@@ -67,9 +64,10 @@ class ExecutableFinder
             $extraDirs
         );
 
-        $suffixes = $this->suffixes;
+        $suffixes = [];
         if ('\\' === \DIRECTORY_SEPARATOR) {
             $pathExt = getenv('PATHEXT');
+            $suffixes = $this->suffixes;
             $suffixes = array_merge($suffixes, $pathExt ? explode(\PATH_SEPARATOR, $pathExt) : ['.exe', '.bat', '.cmd', '.com']);
         }
         $suffixes = '' !== pathinfo($name, PATHINFO_EXTENSION) ? array_merge([''], $suffixes) : array_merge($suffixes, ['']);

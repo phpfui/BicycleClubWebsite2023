@@ -387,7 +387,7 @@ class Editor
 						$parameters['RWGPSId'] = $cueSheet->RWGPSId;
 						$parameters['memberId'] = \App\Model\Session::signedInMemberId();
 						$parameters['description'] = $cueSheet->description;
-						$parameters['elevation'] = \round($cueSheet->RWGPS->elevationFeet);
+						$parameters['elevation'] = \round($cueSheet->RWGPS->elevationFeet ?? 0.0);
 						$parameters['mileage'] = $cueSheet->mileage;
 						$parameters['startLocationId'] = $cueSheet->startLocationId;
 						$parameters['title'] = $cueSheet->name;

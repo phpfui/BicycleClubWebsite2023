@@ -183,6 +183,7 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Membership/password', 'Change My Password');
 			$this->addSub($menu, '/Membership/card', 'Membership Card');
 			$this->addSub($menu, '/Membership/emailAll', 'Email All Members');
+			$this->addSub($menu, '/Membership/emailFellow', 'Email Fellow Riders');
 			$this->addSub($menu, '/Membership/minor', 'Print Minor Release');
 			$this->addSub($menu, '/Membership/mom/' . \App\Tools\Date::year(\App\Tools\Date::today()), 'Member Of The Month');
 			$this->addSub($menu, '/Membership/newMembers', 'New Members');

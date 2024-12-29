@@ -127,6 +127,14 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		}
 
+	public function emailFellow() : void
+		{
+		if ($this->page->addHeader('Email Fellow Riders'))
+			{
+			$this->page->addPageContent(new \App\View\Email\FellowRiders($this->page));
+			}
+		}
+
 	public function find() : void
 		{
 		if ($this->page->addHeader('Find Members'))

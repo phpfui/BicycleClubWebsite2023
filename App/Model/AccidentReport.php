@@ -32,7 +32,7 @@ class AccidentReport
 			{
 			return;
 			}
-		$topic = 'Crash Report Request for ' . $paceTable->getPace($ride->paceId) . ' ride on ' . \App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime);
+		$topic = 'Crash Report Request for ' . $ride->title . ' ride on ' . \App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime);
 
 		if ($test)
 			{

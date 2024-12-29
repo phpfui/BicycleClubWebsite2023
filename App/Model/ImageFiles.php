@@ -20,6 +20,11 @@ class ImageFiles extends \App\Model\TinifyImage
 			}
 
 		$path = $this->get($file);
+
+		if (! \file_exists($path))
+			{
+			return new \PHPFUI\Image('/images/missing.jpg', 'Image not found');
+			}
 		$data = \base64_encode(@\file_get_contents($path));
 
 		return new \PHPFUI\Image("data:image/jpeg;base64,{$data}", $base);

@@ -108,7 +108,8 @@ class GearCalculator
 			{
 			return '';
 			}
-		[$diameter, $iso] = \explode('~', $this->t ?? '622~28');
+		$parts = \explode('~', $this->t ?? '622~28');
+		$diameter = $parts[0];
 		$unit = $this->u ?? '0';
 
 		switch ($unit)

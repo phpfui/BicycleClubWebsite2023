@@ -298,7 +298,10 @@ class Rides
 
 		foreach ($counts as $index => $count)
 			{
-			$row->add("<strong>{$statusArray[$index]}:</strong> &nbsp; {$count} &nbsp; ");
+			if (isset($statusArray[$index]))
+				{
+				$row->add("<strong>{$statusArray[$index]}:</strong> &nbsp; {$count} &nbsp; ");
+				}
 			}
 		$fieldSet->add($row);
 		$fieldSet->add('<strong><hr></strong>');
@@ -664,7 +667,7 @@ class Rides
 
 			if ($ride->memberId)
 				{
-				$title = "Your {$this->paceTable->getPace($ride->paceId ?? 0)} ride on " . \App\Tools\Date::formatString('M j', $ride->rideDate);
+				$title = "Your {$ride->title} ride on " . \App\Tools\Date::formatString('M j', $ride->rideDate);
 				$button = new \PHPFUI\Button('Contact Leader', '/Membership/email/' . $ride->memberId . '?title=' . \urlencode($title));
 				$bg->addButton($button);
 				}

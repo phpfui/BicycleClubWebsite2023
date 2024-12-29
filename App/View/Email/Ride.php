@@ -17,7 +17,7 @@ class Ride implements \Stringable
 		{
 		$this->page = $page;
 		$this->view = new \App\View\Rides($this->page);
-		$this->title = 'The ' . $this->view->getPace($this->ride->paceId) . ' ride on ' . \App\Tools\Date::formatString('l, F j, Y', $this->ride->rideDate) . ' at ' . \App\Tools\TimeHelper::toSmallTime($this->ride->startTime);
+		$this->title = 'The ' . $ride->title . ' ride on ' . \App\Tools\Date::formatString('l, F j, Y', $this->ride->rideDate) . ' at ' . \App\Tools\TimeHelper::toSmallTime($this->ride->startTime);
 
 		$settingTable = new \App\Table\Setting();
 		$leaders = \App\Table\RideSignup::getSignedUpByPermmission($ride, $settingTable->getStandardPermissionGroup('Ride Leader'));

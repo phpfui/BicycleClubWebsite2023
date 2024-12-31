@@ -16,20 +16,25 @@ class ComposerUpdate
 
 	public function __construct()
 		{
-		$installed = @\json_decode(\file_get_contents($this->vendorDir . '../composer.lock'), true);
+		$composerLockFile = $this->vendorDir . '../composer.lock';
 
-		foreach (($installed['packages'] ?? []) as $install)
+		if (\file_exists($composerLockFile))
 			{
-			$packageName = $install['name'];
+			$installed = @\json_decode(\file_get_contents($composerLockFile), true);
 
-			foreach ($this->ignored as $ignore)
+			foreach (($installed['packages'] ?? []) as $install)
 				{
-				if (false !== \str_starts_with($packageName, $ignore))
+				$packageName = $install['name'];
+
+				foreach ($this->ignored as $ignore)
 					{
-					continue 2;
+					if (false !== \str_starts_with($packageName, $ignore))
+						{
+						continue 2;
+						}
 					}
+				$this->installedVersions[$packageName] = $install['version'];
 				}
-			$this->installedVersions[$packageName] = $install['version'];
 			}
 		}
 
@@ -251,8 +256,10 @@ class ComposerUpdate
 					{
 					$files = \str_replace('/', '\\', "vendor\\{$packageName}\\" . \implode(',', $autoload['files']));
 					echo "WARNING: Package {$packageName} contains an autoload files section ({$files})\n";
+					unset($autoload['files']);
 					}
-				elseif (! empty($autoload['psr-4']))
+
+				if (! empty($autoload['psr-4']))
 					{
 					foreach ($autoload['psr-4'] as $destDir => $sourceDir)
 						{
@@ -267,8 +274,10 @@ class ComposerUpdate
 							}
 						$this->copyPath($packageName, $sourceDir, $destDir);
 						}
+					unset($autoload['psr-4']);
 					}
-				elseif (! empty($autoload['psr-0']))
+
+				if (! empty($autoload['psr-0']))
 					{
 					foreach ($autoload['psr-0'] as $destDir => $sourceDir)
 						{
@@ -283,8 +292,10 @@ class ComposerUpdate
 							}
 						$this->copyPath($packageName, $sourceDir, $destDir);
 						}
+					unset($autoload['psr-0']);
 					}
-				elseif (! empty($autoload['classmap']))
+
+				if (! empty($autoload['classmap']))
 					{
 					foreach ($autoload['classmap'] as $file)
 						{
@@ -330,7 +341,15 @@ class ComposerUpdate
 							if ($file->isFile() && \str_ends_with($fileName, '.php'))
 								{
 								$phpFile = \file_get_contents($file->getPathname());
-								$namespacePos = \strpos($phpFile, 'namespace') + 10;
+								$namespacePos = \strpos($phpFile, 'namespace');
+
+								if (false === $namespacePos)
+									{
+									echo "WARNING: Package {$packageName} classmap file {$fileName} has no namespace\n";
+
+									continue;
+									}
+								$namespacePos += 10;
 								$semicolin = \strpos($phpFile, ';', $namespacePos);
 								$namespace = \trim(\substr($phpFile, $namespacePos, $semicolin - $namespacePos));
 								$sourceFile = \str_replace('\\', '/', $file->getPathname());
@@ -345,8 +364,20 @@ class ComposerUpdate
 								}
 							}
 						}
+					unset($autoload['classmap']);
+					}
+				unset($autoload['exclude-from-classmap']);
+
+				if (\count($autoload))
+					{
+					echo "Unhandled AUTOLOAD for {$packageName}: \n";
+					\print_r($autoload);
 					}
 				}
+
+
+//				echo "No AUTOLOAD for $packageName\n";
+
 			}
 		}
 

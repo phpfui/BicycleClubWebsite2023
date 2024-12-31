@@ -72,8 +72,18 @@ class PayPal extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$request = new \PayPalCheckoutSdk\Orders\OrdersCaptureRequest($json['orderID']);
 		$request->prefer('return=representation');
 		$model = new \App\Model\PayPal($paypalType);
-		$client = $model->getPayPalClient();
-		$response = $client->execute($request);
+		try
+			{
+			$client = $model->getPayPalClient();
+			$response = $client->execute($request);
+			}
+		catch (\Exception $e)
+			{
+			$this->logger->debug($e, __METHOD__);
+			$this->page->setRawResponse(\json_encode([], JSON_PRETTY_PRINT));
+
+			return;
+			}
 		$result = $response->result;
 
 		if ($result->id != $json['orderID']) // @phpstan-ignore property.nonObject
@@ -99,7 +109,16 @@ class PayPal extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	public function createOrder(string $paypalType = '', \App\Record\Invoice $invoice = new \App\Record\Invoice(), string $description = '') : void
 		{
 		$model = new \App\Model\PayPal($paypalType);
-		$response = $model->createOrderRequest($invoice, $description);
+		$response = null;
+
+		try
+			{
+			$response = $model->createOrderRequest($invoice, $description);
+			}
+		catch (\Exception $e)
+			{
+			$this->logger->debug($e, __METHOD__);
+			}
 
 		if (! $response)
 			{

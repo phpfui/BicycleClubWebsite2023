@@ -1,23 +1,22 @@
 <?php
 
-// set the server name which determains which db to use
-$_SERVER['SERVER_NAME'] = $argv[1] ?? 'localhost';
+$url = $argv[1] ?? 'https://google.com';
 
-include 'common.php';
+include 'commonbase.php';
 
-echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
-
-$qrCode = \Endroid\QrCode\QrCode::create('https://www.westchestercycleclub.org/velodefemmes')
-	->setEncoding(new \Endroid\QrCode\Encoding\Encoding('UTF-8'))
-	->setErrorCorrectionLevel(\Endroid\QrCode\ErrorCorrectionLevel::High)
-	->setSize(1200)
-	->setMargin(10)
-	->setRoundBlockSizeMode(\Endroid\QrCode\RoundBlockSizeMode::Margin)
-	->setForegroundColor(new \Endroid\QrCode\Color\Color(0, 0, 0))
-	->setBackgroundColor(new \Endroid\QrCode\Color\Color(255, 255, 255));
+$qrCode = new \Endroid\QrCode\QrCode(
+	data: $url,
+	encoding: new \Endroid\QrCode\Encoding\Encoding('UTF-8'),
+	errorCorrectionLevel: \Endroid\QrCode\ErrorCorrectionLevel::High,
+	size: 1200,
+	margin: 10,
+	roundBlockSizeMode: \Endroid\QrCode\RoundBlockSizeMode::Margin,
+	foregroundColor: new \Endroid\QrCode\Color\Color(0, 0, 0),
+	backgroundColor: new \Endroid\QrCode\Color\Color(255, 255, 255),
+	);
 
 $writer = new \Endroid\QrCode\Writer\PngWriter();
 $result = $writer->write($qrCode);
-file_put_contents('velodefemmesQR.png', $result->getString());
+file_put_contents('QRCode.png', $result->getString());
 
-
+echo "QRCode.png created for $url\n";

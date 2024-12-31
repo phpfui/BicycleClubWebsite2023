@@ -28,7 +28,6 @@ $updater->setIgnoredRepos([
 	'OndraM',
 	'PackageVersions',
 	'phar-io',
-	'PHPStan',
 	'sebastian',
 	'phpunit',
 	'phpspec',

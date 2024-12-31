@@ -20,6 +20,8 @@ class Client
 
 	private string $body = '';
 
+	private $guzzleFactory = null;
+
 	private \GuzzleHttp\HandlerStack $guzzleHandler;
 
 	private string $host = '';
@@ -124,8 +126,7 @@ class Client
 		{
 		try
 			{
-			$guzzle = new \GuzzleHttp\Client(['headers' => $this->getHeaders(), 'handler' => $this->guzzleHandler, ]);
-			$response = $guzzle->request('DELETE', $url);
+			$response = $this->getGuzzleClient()->request('DELETE', $url);
 
 			return $this->process($response);
 			}
@@ -156,8 +157,7 @@ class Client
 					}
 				}
 
-			$guzzle = new \GuzzleHttp\Client(['headers' => $this->getHeaders(), 'handler' => $this->guzzleHandler, ]);
-			$response = $guzzle->request('GET', $url);
+			$response = $this->getGuzzleClient()->request('GET', $url);
 
 			return $this->process($response);
 			}
@@ -213,9 +213,40 @@ class Client
 		return $this->body;
 		}
 
+	/**
+	 * Return a new GuzzleHttp\Client with the appropriate headers and handlers set.
+	 *
+	 * If a Guzzle factory has been set, then the factory method will be called.
+	 *
+	 * @param array<string, int|string> $headers override the default headers
+	 */
+	public function getGuzzleClient(string $body = '', array $headers = []) : \GuzzleHttp\Client
+		{
+		$config = [
+			'headers' => $this->getHeaders($headers),
+			'handler' => $this->guzzleHandler, ];
+
+		if (\strlen($body))
+			{
+			$config['body'] = $body;
+			}
+
+		return $this->guzzleFactory ? \call_user_func($this->guzzleFactory, $config) : new \GuzzleHttp\Client($config);
+		}
+
+	public function getGuzzleFactory() : ?callable
+		{
+		return $this->guzzleFactory;
+		}
+
 	public function getLastError() : string
 		{
 		return $this->lastError;
+		}
+
+	public function getSessionCallback() : ?callable
+		{
+		return $this->sessionCallback;
 		}
 
 	public function getStatusCode() : int
@@ -235,8 +266,7 @@ class Client
 			return [];
 			}
 
-		$guzzle = new \GuzzleHttp\Client(['headers' => $this->getHeaders(), 'handler' => $this->guzzleHandler, ]);
-		$response = $guzzle->request('GET', 'https://api.cc.email' . $this->next);
+		$response = $this->getGuzzleClient()->request('GET', 'https://api.cc.email' . $this->next);
 
 		return $this->process($response);
 		}
@@ -256,11 +286,7 @@ class Client
 		{
 		try
 			{
-			$json = \json_encode($parameters['body'], JSON_PRETTY_PRINT);
-			$guzzle = new \GuzzleHttp\Client(['headers' => $this->getHeaders(),
-				'handler' => $this->guzzleHandler,
-				'body' => $json, ]);
-			$response = $guzzle->request('POST', $url);
+			$response = $this->getGuzzleClient(\json_encode($parameters['body'], JSON_PRETTY_PRINT))->request('POST', $url);
 
 			return $this->process($response);
 			}
@@ -281,7 +307,8 @@ class Client
 		try
 			{
 			$json = \json_encode($parameters['body'], JSON_PRETTY_PRINT);
-			$guzzle = new \GuzzleHttp\Client(['headers' => $this->getHeaders(
+			$guzzle = $this->getGuzzleClient(
+				$json,
 				[
 					'Connection' => 'keep-alive',
 					'Content-Length' => \strlen($json),
@@ -289,10 +316,7 @@ class Client
 					'Host' => $this->host,
 					'Accept' => '*/*'
 				]
-			),
-				'handler' => $this->guzzleHandler,
-				'body' => $json, ]);
-
+			);
 			$response = $guzzle->request($method, $url);
 
 			return $this->process($response);
@@ -337,6 +361,24 @@ class Client
 	public function removeScope(string $scope) : self
 		{
 		unset($this->scopes[$scope]);
+
+		return $this;
+		}
+
+	/**
+	 * This library uses GuzzleHttp\Client to make CC API calls.  If you want to use your own GuzzleHttp\Client, you should create a factory callable method and set it.
+	 *
+	 * If the factory callable is set, it will be called with the appropriate $config array passed as the first parameter.
+	 *
+	 * Callback function signature:
+	 *
+	 *  - function(array $config) : \GuzzleHttp\Client
+	 *
+	 * @see [graham-campbell/guzzle-factory](https://packagist.org/packages/graham-campbell/guzzle-factory) for an example factory
+	 */
+	public function setGuzzleFactory(?callable $factory) : self
+		{
+		$this->guzzleFactory = $factory;
 
 		return $this;
 		}

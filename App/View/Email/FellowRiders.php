@@ -32,20 +32,24 @@ class FellowRiders implements \Stringable
 			$rideSignupTable->addGroupBy('member.email');
 			$rideSignupTable->addOrderBy('numberRides', 'desc');
 			$numberRides = (int)($_POST['numberRides'] ?? 0);
+
 			if ($numberRides)
 				{
 				$rideSignupTable->setHaving(new \PHPFUI\ORM\Condition('numberRides', $numberRides, new \PHPFUI\ORM\Operator\GreaterThanEqual()));
 				}
 			$where = new \PHPFUI\ORM\Condition('member.email', '', new \PHPFUI\ORM\Operator\GreaterThan());
 			$where->and('rideSignup.rideId', $riderSelect, new \PHPFUI\ORM\Operator\In());
+
 			if (! (int)($_POST['includeFellow'] ?? 0))
 				{
 				$where->and('member.memberId', $_POST['memberId'], new \PHPFUI\ORM\Operator\NotEqual());
 				}
+
 			if ($_POST['fromDate'])
 				{
 				$where->and('ride.rideDate', $_POST['fromDate'], new \PHPFUI\ORM\Operator\GreaterThanEqual());
 				}
+
 			if ($_POST['toDate'])
 				{
 				$where->and('ride.rideDate', $_POST['toDate'], new \PHPFUI\ORM\Operator\LessThanEqual());
@@ -68,6 +72,7 @@ class FellowRiders implements \Stringable
 			if ($_POST['submit'] == $this->emailText)
 				{
 				$email->setBody($body);
+
 				foreach ($riders as $rider)
 					{
 					$email->addBCCMember($rider);
@@ -80,6 +85,7 @@ class FellowRiders implements \Stringable
 				{
 				$table = new \PHPFUI\Table();
 				$table->setHeaders(['numberRides' => 'Rides With', 'firstName' => 'First Name', 'lastName' => 'Last Name', 'email' => 'Email']);
+
 				foreach ($riders as $rider)
 					{
 					$table->addRow($rider);
@@ -145,4 +151,3 @@ class FellowRiders implements \Stringable
 		return (string)$form;
 		}
 	}
-

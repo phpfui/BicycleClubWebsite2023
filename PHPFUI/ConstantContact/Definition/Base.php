@@ -185,7 +185,7 @@ abstract class Base
 				}
 			elseif (\str_starts_with($expectedType, 'PHPFUI'))
 				{
-				if (\is_array($value))
+				if (\is_array($value) || $expectedType != $type)
 					{
 					$value = new $expectedType($value);
 					}
@@ -301,7 +301,7 @@ abstract class Base
 	/**
 	 * @return array all the valid fields for the object. Index is field name and value is the type.
 	 */
-	public function getfields() : array
+	public function getFields() : array
 		{
 		return static::$fields;
 		}

@@ -64,10 +64,9 @@ class ErrorLogging
 			{
 			if (($_SERVER['REQUEST_SCHEME'] ?? '') != 'https')
 				{
-				echo $message;
 				$_SERVER['REQUEST_SCHEME'] = 'http';
 				}
-			$link = $_SERVER['REQUEST_SCHEME'] . '://' . ($_SERVER['SERVER_NAME'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '') . "\n";
+			$link = $_SERVER['REQUEST_SCHEME'] . '://' . ($_SERVER['SERVER_NAME'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '') . " {$type}\n";
 			$this->logger->debug($link . $message);
 			}
 		catch (\Exception $e)

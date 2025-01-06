@@ -24,9 +24,8 @@ if (! \defined('PROJECT_ROOT'))
 	}
 
 // setup error logging
-\error_reporting(E_ALL);
 \ini_set('error_log', PROJECT_ROOT . '/error.log');
-new \App\Tools\ErrorLogging();
+$errorLogger - new \App\Tools\ErrorLogging();
 
 function emailServerName() : string
 	{

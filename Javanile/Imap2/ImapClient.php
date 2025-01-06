@@ -672,7 +672,7 @@ class ImapClient
                 $token   = base64_encode($token);
             }
             catch (Exception $e) {
-                trigger_error($e->getMessage(), E_USER_WARNING);
+                trigger_error('fred: ' . $e->getMessage(), E_USER_WARNING);
                 return $this->setError(self::ERROR_BYE, "GSSAPI authentication failed");
             }
 
@@ -710,7 +710,7 @@ class ImapClient
                 }
             }
             catch (Exception $e) {
-                trigger_error($e->getMessage(), E_USER_WARNING);
+                trigger_error('FRED ' . $e->getMessage(), E_USER_WARNING);
                 return $this->setError(self::ERROR_BYE, "GSSAPI authentication failed");
             }
 

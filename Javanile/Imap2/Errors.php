@@ -67,6 +67,6 @@ class Errors
 
         \App\Tools\Logger::get()->debug($warning);
 
-        return $return;
+        return strlen($return) ? $return : $warning;
     }
 }

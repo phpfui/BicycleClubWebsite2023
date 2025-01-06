@@ -117,7 +117,8 @@ class GearCalculator
 			case '0': // gear inches
 				// the diameter of the drive wheel, times the size of the front sprocket divided by the size of the rear sprocket
 				$gear = (int)$diameter * 0.0393700787 * $ring / $cog;
-				return \number_format($gear, max(min((int)($this->parameters['p'] ?? 2), 2), 5));
+
+				return \number_format($gear, \max(\min((int)($this->parameters['p'] ?? 2), 2), 5));
 
 			case '1': // gear ratio
 				$gear = $ring / $cog;

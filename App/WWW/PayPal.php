@@ -72,6 +72,7 @@ class PayPal extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$request = new \PayPalCheckoutSdk\Orders\OrdersCaptureRequest($json['orderID']);
 		$request->prefer('return=representation');
 		$model = new \App\Model\PayPal($paypalType);
+
 		try
 			{
 			$client = $model->getPayPalClient();

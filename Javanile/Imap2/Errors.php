@@ -65,7 +65,7 @@ class Errors
         $warning = 'Invalid IMAP connection parameter for '.$backtrace[$depth]['function'].'() '
                  . 'at '.$backtrace[$depth]['file']. ' on line '.$backtrace[$depth]['line'].'. Source code';
 
-        trigger_error($warning, E_USER_WARNING);
+        \App\Tools\Logger::get()->debug($warning);
 
         return $return;
     }

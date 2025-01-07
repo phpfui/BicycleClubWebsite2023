@@ -93,11 +93,11 @@ class RiderHistory
 
 			if ($ride['attended'])
 				{
-				$ride['Status'] = \App\Table\RideSignup::getAttendedStatus()[$ride['attended']];
+				$ride['Status'] = \App\Table\RideSignup::getAttendedStatus()[$ride['attended']] ?? 'Unknown';
 				}
 			else
 				{
-				$ride['Status'] = \App\Table\RideSignup::getRiderStatus()[$ride['status']];
+				$ride['Status'] = \App\Table\RideSignup::getRiderStatus()[$ride['status']] ?? 'Unknown';
 				}
 			$ride['Ride'] = new \PHPFUI\Link('/Rides/signedUp/' . $ride['rideId'], $ride['title'], false);
 			$table->addRow($ride);

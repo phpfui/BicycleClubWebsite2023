@@ -87,6 +87,31 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function calendar(\App\Record\Ride $ride) : void
+		{
+		if (! $this->page->isAuthorized('Signed Up Riders'))
+			{
+			$this->page->redirect('/Home');
+			}
+
+		$rideModel = new \App\Model\Ride();
+		$calendar = $rideModel->getCalendarObject($ride);
+
+		if ($calendar)
+			{
+			$filename = 'ride_' . $ride->rideDate . '_' . $ride->rideId . '.ics';
+			$file = $calendar->export();
+			\header('Content-Type: text/calendar');
+			\header('Content-Length: ' . \strlen($file));
+			\header('Content-Disposition: inline; filename="' . $filename . '"');
+			\header('Cache-Control: private, max-age=0, must-revalidate');
+			\header('Pragma: public');
+			echo $file;
+
+			exit;
+			}
+		}
+
 	public function clone(\App\Record\Ride $ride = new \App\Record\Ride()) : void
 		{
 		if ($this->page->addHeader('Clone As Leader') && $ride->canClone())
@@ -455,6 +480,16 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$textAll = new \PHPFUI\Button('Text All Riders', '/Rides/textRide/' . $ride->rideId);
 				$textAll->addClass('warning');
 				$buttonGroup->addButton($textAll);
+				}
+
+			$rideSignup = new \App\Record\RideSignup(['memberId' => \App\Model\Session::signedInMemberId(), 'rideId' => $ride->rideId]);
+
+			if ($rideSignup->signedUpTime)
+				{
+				$addToCalendarButton = new \PHPFUI\Button('Add To Calendar');
+				$addToCalendarButton->addAttribute('onclick', 'window.location.href="/Rides/calendar/' . $ride->rideId . '"');
+				$addToCalendarButton->addClass('secondary');
+				$buttonGroup->addButton($addToCalendarButton);
 				}
 
 			if ($this->page->isAuthorized('Clone As Leader') && $ride->canClone())

@@ -383,12 +383,15 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		{
 		$this->page->setRenewing()->turnOffBanner(); // banners can cause a crash
 
-		if ($this->page->addHeader('Renew My Membership'))
+		if ($this->page->addHeader($title = 'Renew My Membership'))
 			{
 			if (\App\Model\Session::hasExpired())
 				{
 				$this->page->addPageContent(new \PHPFUI\Header('Your membership has lapsed. Renew NOW!', 3));
 				}
+			$content = new \App\View\Content($this->page);
+			$this->page->addPageContent($content->getDisplayCategoryHTML($title));
+
 			$renewView = new \App\View\Membership\Renew($this->page, \App\Model\Session::signedInMembershipRecord(), $this->memberView);
 			$this->page->addPageContent($renewView->renew());
 			}

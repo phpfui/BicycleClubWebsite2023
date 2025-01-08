@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -43,7 +44,7 @@ class ReCaptcha
      * Version of this client library.
      * @const string
      */
-    public const VERSION = 'php_1.3.0';
+    public const VERSION = 'php_2.0.0';
 
     /**
      * URL for reCAPTCHA siteverify API
@@ -111,43 +112,28 @@ class ReCaptcha
      */
     public const E_CHALLENGE_TIMEOUT = 'challenge-timeout';
 
-    /**
-     * Shared secret for the site.
-     * @var string
-     */
-    private $secret;
-
-    /**
-     * Method used to communicate with service. Defaults to POST request.
-     * @var RequestMethod
-     */
-    private $requestMethod;
-
-    private $hostname;
-    private $apkPackageName;
-    private $action;
-    private $threshold;
-    private $timeoutSeconds;
+    private string $hostname;
+    private string $apkPackageName;
+    private string $action;
+    private float $threshold;
+    private int $timeoutSeconds;
 
     /**
      * Create a configured instance to use the reCAPTCHA service.
      *
      * @param string $secret The shared key between your site and reCAPTCHA.
-     * @param RequestMethod $requestMethod method used to send the request. Defaults to POST.
+     * @param ?RequestMethod $requestMethod method used to send the request. Defaults to POST.
      * @throws \RuntimeException if $secret is invalid
      */
-    public function __construct($secret, ?RequestMethod $requestMethod = null)
+    public function __construct(private string $secret, private ?RequestMethod $requestMethod = null)
     {
         if (empty($secret)) {
             throw new \RuntimeException('No secret provided');
         }
 
-        if (!is_string($secret)) {
-            throw new \RuntimeException('The provided secret must be a string');
+        if (is_null($requestMethod)) {
+            $this->requestMethod = new RequestMethod\Post();
         }
-
-        $this->secret = $secret;
-        $this->requestMethod = (is_null($requestMethod)) ? new RequestMethod\Post() : $requestMethod;
     }
 
     /**
@@ -156,20 +142,21 @@ class ReCaptcha
      *
      * @param string $response The user response token provided by reCAPTCHA, verifying the user on your site.
      * @param string $remoteIp The end user's IP address.
+     *
      * @return Response Response from the service.
      */
-    public function verify(string $response, ?string $remoteIp = null)
+    public function verify(string $response, ?string $remoteIp = null): Response
     {
         // Discard empty solution submissions
         if (empty($response)) {
-            $recaptchaResponse = new Response(false, array(self::E_MISSING_INPUT_RESPONSE));
+            $recaptchaResponse = new Response(false, [self::E_MISSING_INPUT_RESPONSE]);
             return $recaptchaResponse;
         }
 
         $params = new RequestParameters($this->secret, $response, $remoteIp, self::VERSION);
         $rawResponse = $this->requestMethod->submit($params);
         $initialResponse = Response::fromJson($rawResponse);
-        $validationErrors = array();
+        $validationErrors = [];
 
         if (isset($this->hostname) && strcasecmp($this->hostname, $initialResponse->getHostname()) !== 0) {
             $validationErrors[] = self::E_HOSTNAME_MISMATCH;
@@ -215,11 +202,11 @@ class ReCaptcha
      * This should be without a protocol or trailing slash, e.g. www.google.com
      *
      * @param string $hostname Expected hostname
-     * @return ReCaptcha Current instance for fluent interface
      */
-    public function setExpectedHostname(string $hostname)
+    public function setExpectedHostname(string $hostname): static
     {
         $this->hostname = $hostname;
+
         return $this;
     }
 
@@ -227,11 +214,11 @@ class ReCaptcha
      * Provide an APK package name to match against in verify()
      *
      * @param string $apkPackageName Expected APK package name
-     * @return ReCaptcha Current instance for fluent interface
      */
-    public function setExpectedApkPackageName(string $apkPackageName)
+    public function setExpectedApkPackageName(string $apkPackageName): static
     {
         $this->apkPackageName = $apkPackageName;
+
         return $this;
     }
 
@@ -240,11 +227,11 @@ class ReCaptcha
      * This should be set per page.
      *
      * @param string $action Expected action
-     * @return ReCaptcha Current instance for fluent interface
      */
-    public function setExpectedAction(string $action)
+    public function setExpectedAction(string $action): static
     {
         $this->action = $action;
+
         return $this;
     }
 
@@ -253,11 +240,11 @@ class ReCaptcha
      * Threshold should be a float between 0 and 1 which will be tested as response >= threshold.
      *
      * @param float $threshold Expected threshold
-     * @return ReCaptcha Current instance for fluent interface
      */
-    public function setScoreThreshold(float $threshold)
+    public function setScoreThreshold(float $threshold): static
     {
         $this->threshold = floatval($threshold);
+
         return $this;
     }
 
@@ -265,11 +252,11 @@ class ReCaptcha
      * Provide a timeout in seconds to test against the challenge timestamp in verify()
      *
      * @param int $timeoutSeconds Expected hostname
-     * @return ReCaptcha Current instance for fluent interface
      */
-    public function setChallengeTimeout(int $timeoutSeconds)
+    public function setChallengeTimeout(int $timeoutSeconds): static
     {
         $this->timeoutSeconds = $timeoutSeconds;
+
         return $this;
     }
 }

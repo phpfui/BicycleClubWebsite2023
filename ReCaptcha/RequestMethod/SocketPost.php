@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -46,32 +47,29 @@ use ReCaptcha\RequestParameters;
 class SocketPost implements RequestMethod
 {
     /**
-     * Socket to the reCAPTCHA service
-     * @var Socket
-     */
-    private $socket;
-
-    private $siteVerifyUrl;
-
-    /**
      * Only needed if you want to override the defaults
      *
      * @param \ReCaptcha\RequestMethod\Socket $socket optional socket, injectable for testing
      * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
-    public function __construct(?Socket $socket = null, ?string $siteVerifyUrl = null)
+    public function __construct(private ?Socket $socket = null, private ?string $siteVerifyUrl = null)
     {
-        $this->socket = (is_null($socket)) ? new Socket() : $socket;
-        $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
+        if (is_null($socket)) {
+            $this->socket = new Socket();
+        }
+        if (is_null($siteVerifyUrl)) {
+            $this->siteVerifyUrl = ReCaptcha::SITE_VERIFY_URL;
+        }
     }
 
     /**
      * Submit the POST request with the specified parameters.
      *
      * @param RequestParameters $params Request parameters
+     *
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params)
+    public function submit(RequestParameters $params): string
     {
         $errno = 0;
         $errstr = '';

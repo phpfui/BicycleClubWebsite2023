@@ -21,7 +21,7 @@
         "endroid/qr-code": "^6.0",
         "flowjs/flow-php-server": "^2.0",
         "gitonomy/gitlib": "^1.0",
-        "google/recaptcha": ">=1.2",
+        "phpfui/recaptcha": ">=1.2",
         "guzzlehttp/guzzle": "^7.9",
         "ifsnop/mysqldump-php": "^2.8",
         "intervention/image": "^3.0",

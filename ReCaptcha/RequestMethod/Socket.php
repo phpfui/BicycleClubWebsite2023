@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -40,18 +41,17 @@ namespace ReCaptcha\RequestMethod;
  */
 class Socket
 {
+    /**
+     * @var resource|false
+     */
     private $handle = null;
 
     /**
      * fsockopen
      *
      * @see http://php.net/fsockopen
-     * @param string $hostname
-     * @param int $port
-     * @param int $errno
-     * @param string $errstr
-     * @param float $timeout
-     * @return resource
+     *
+     * @return resource|false
      */
     public function fsockopen(string $hostname, int $port = -1, int &$errno = 0, string &$errstr = '', ?float $timeout = null)
     {
@@ -67,11 +67,8 @@ class Socket
      * fwrite
      *
      * @see http://php.net/fwrite
-     * @param string $string
-     * @param int $length
-     * @return int | bool
      */
-    public function fwrite(string $string, ?int $length = null)
+    public function fwrite(string $string, ?int $length = null): int | bool
     {
         return fwrite($this->handle, $string, (is_null($length) ? strlen($string) : $length));
     }
@@ -80,10 +77,8 @@ class Socket
      * fgets
      *
      * @see http://php.net/fgets
-     * @param int $length
-     * @return string
      */
-    public function fgets(?int $length = null)
+    public function fgets(?int $length = null): string
     {
         return fgets($this->handle, $length);
     }
@@ -92,9 +87,8 @@ class Socket
      * feof
      *
      * @see http://php.net/feof
-     * @return bool
      */
-    public function feof()
+    public function feof(): bool
     {
         return feof($this->handle);
     }
@@ -103,9 +97,8 @@ class Socket
      * fclose
      *
      * @see http://php.net/fclose
-     * @return bool
      */
-    public function fclose()
+    public function fclose(): bool
     {
         return fclose($this->handle);
     }

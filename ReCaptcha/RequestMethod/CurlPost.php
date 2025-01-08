@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -46,50 +47,43 @@ use ReCaptcha\RequestParameters;
 class CurlPost implements RequestMethod
 {
     /**
-     * Curl connection to the reCAPTCHA service
-     * @var Curl
-     */
-    private $curl;
-
-    /**
-     * URL for reCAPTCHA siteverify API
-     * @var string
-     */
-    private $siteVerifyUrl;
-
-    /**
      * Only needed if you want to override the defaults
      *
-     * @param Curl $curl Curl resource
-     * @param string $siteVerifyUrl URL for reCAPTCHA siteverify API
+     * @param ?Curl $curl Curl connection to the reCAPTCHA service
+     * @param ?string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
-    public function __construct(?Curl $curl = null, ?string $siteVerifyUrl = null)
+    public function __construct(private ?Curl $curl = null, private ?string $siteVerifyUrl = null)
     {
-        $this->curl = (is_null($curl)) ? new Curl() : $curl;
-        $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
+        if (is_null($curl)) {
+            $this->curl = new Curl();
+        }
+        if (is_null($siteVerifyUrl)) {
+            $this->siteVerifyUrl = ReCaptcha::SITE_VERIFY_URL;
+        }
     }
 
     /**
      * Submit the cURL request with the specified parameters.
      *
      * @param RequestParameters $params Request parameters
+     *
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params)
+    public function submit(RequestParameters $params): string
     {
         $handle = $this->curl->init($this->siteVerifyUrl);
 
-        $options = array(
+        $options = [
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => $params->toQueryString(),
-            CURLOPT_HTTPHEADER => array(
+            CURLOPT_HTTPHEADER => [
                 'Content-Type: application/x-www-form-urlencoded'
-            ),
+            ],
             CURLINFO_HEADER_OUT => false,
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true
-        );
+        ];
         $this->curl->setoptArray($handle, $options);
 
         $response = $this->curl->exec($handle);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -41,8 +42,8 @@ class Curl
 {
     /**
      * @see http://php.net/curl_init
-     * @param string $url
-     * @return resource cURL handle
+     *
+     * @return \CurlHandle|false cURL handle  *
      */
     public function init(?string $url = null)
     {
@@ -51,30 +52,27 @@ class Curl
 
     /**
      * @see http://php.net/curl_setopt_array
-     * @param resource $ch
-     * @param array $options
-     * @return bool
+     * @param \CurlHandle|false $ch
      */
-    public function setoptArray($ch, array $options)
+    public function setoptArray($ch, array $options): bool
     {
         return curl_setopt_array($ch, $options);
     }
 
     /**
      * @see http://php.net/curl_exec
-     * @param resource $ch
-     * @return mixed
+     * @param \CurlHandle|false $ch
      */
-    public function exec($ch)
+    public function exec($ch): mixed
     {
         return curl_exec($ch);
     }
 
     /**
      * @see http://php.net/curl_close
-     * @param resource $ch
+     * @param \CurlHandle|false $ch
      */
-    public function close($ch)
+    public function close($ch): void
     {
         curl_close($ch);
     }

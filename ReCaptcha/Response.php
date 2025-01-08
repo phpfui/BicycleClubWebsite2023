@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -40,59 +41,14 @@ namespace ReCaptcha;
 class Response
 {
     /**
-     * Success or failure.
-     * @var boolean
-     */
-    private $success = false;
-
-    /**
-     * Error code strings.
-     * @var array
-     */
-    private $errorCodes = array();
-
-    /**
-     * The hostname of the site where the reCAPTCHA was solved.
-     * @var string
-     */
-    private $hostname;
-
-    /**
-     * Timestamp of the challenge load (ISO format yyyy-MM-dd'T'HH:mm:ssZZ)
-     * @var string
-     */
-    private $challengeTs;
-
-    /**
-     * APK package name
-     * @var string
-     */
-    private $apkPackageName;
-
-    /**
-     * Score assigned to the request
-     * @var float
-     */
-    private $score;
-
-    /**
-     * Action as specified by the page
-     * @var string
-     */
-    private $action;
-
-    /**
      * Build the response from the expected JSON returned by the service.
-     *
-     * @param string $json
-     * @return \ReCaptcha\Response
      */
-    public static function fromJson(string $json)
+    public static function fromJson(string $json): Response
     {
         $responseData = json_decode($json, true);
 
         if (!$responseData) {
-            return new Response(false, array(ReCaptcha::E_INVALID_JSON));
+            return new Response(false, [ReCaptcha::E_INVALID_JSON]);
         }
 
         $hostname = isset($responseData['hostname']) ? $responseData['hostname'] : '';
@@ -102,110 +58,90 @@ class Response
         $action = isset($responseData['action']) ? $responseData['action'] : '';
 
         if (isset($responseData['success']) && $responseData['success'] == true) {
-            return new Response(true, array(), $hostname, $challengeTs, $apkPackageName, $score, $action);
+            return new Response(true, [], $hostname, $challengeTs, $apkPackageName, $score, $action);
         }
 
         if (isset($responseData['error-codes']) && is_array($responseData['error-codes'])) {
             return new Response(false, $responseData['error-codes'], $hostname, $challengeTs, $apkPackageName, $score, $action);
         }
 
-        return new Response(false, array(ReCaptcha::E_UNKNOWN_ERROR), $hostname, $challengeTs, $apkPackageName, $score, $action);
+        return new Response(false, [ReCaptcha::E_UNKNOWN_ERROR], $hostname, $challengeTs, $apkPackageName, $score, $action);
     }
 
     /**
      * Constructor.
      *
-     * @param boolean $success
-     * @param string $hostname
-     * @param string $challengeTs
-     * @param string $apkPackageName
-     * @param float $score
-     * @param string $action
-     * @param array $errorCodes
+     * @param boolean $success Success or failure
+     * @param string $hostname The hostname of the site where the reCAPTCHA was solved
+     * @param string $challengeTs Timestamp of the challenge load (ISO format yyyy-MM-dd'T'HH:mm:ssZZ)
+     * @param string $apkPackageName APK package name
+     * @param ?float $score Score assigned to the request
+     * @param string $action Action as specified by the page
+     * @param array $errorCodes Error code strings.
      */
-    public function __construct(bool $success, array $errorCodes = [], string $hostname = '', string $challengeTs = '', string $apkPackageName = '', ?float $score = null, string $action = '')
+    public function __construct(private bool $success, private array $errorCodes = [], private string $hostname = '', private string $challengeTs = '', private string $apkPackageName = '', private ?float $score = null, private string $action = '')
     {
-        $this->success = $success;
-        $this->hostname = $hostname;
-        $this->challengeTs = $challengeTs;
-        $this->apkPackageName = $apkPackageName;
-        $this->score = $score;
-        $this->action = $action;
-        $this->errorCodes = $errorCodes;
     }
 
     /**
      * Is success?
-     *
-     * @return boolean
      */
-    public function isSuccess()
+    public function isSuccess(): bool
     {
         return $this->success;
     }
 
     /**
      * Get error codes.
-     *
-     * @return array
      */
-    public function getErrorCodes()
+    public function getErrorCodes(): array
     {
         return $this->errorCodes;
     }
 
     /**
      * Get hostname.
-     *
-     * @return string
      */
-    public function getHostname()
+    public function getHostname(): string
     {
         return $this->hostname;
     }
 
     /**
      * Get challenge timestamp
-     *
-     * @return string
      */
-    public function getChallengeTs()
+    public function getChallengeTs(): string
     {
         return $this->challengeTs;
     }
 
     /**
      * Get APK package name
-     *
-     * @return string
      */
-    public function getApkPackageName()
+    public function getApkPackageName(): string
     {
         return $this->apkPackageName;
     }
+
     /**
      * Get score
-     *
-     * @return float
      */
-    public function getScore()
+    public function getScore(): ?float
     {
         return $this->score;
     }
 
     /**
      * Get action
-     *
-     * @return string
      */
-    public function getAction()
+    public function getAction(): string
     {
         return $this->action;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
-        return array(
+        return [
             'success' => $this->isSuccess(),
             'hostname' => $this->getHostname(),
             'challenge_ts' => $this->getChallengeTs(),
@@ -213,6 +149,6 @@ class Response
             'score' => $this->getScore(),
             'action' => $this->getAction(),
             'error-codes' => $this->getErrorCodes(),
-        );
+        ];
     }
 }

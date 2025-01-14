@@ -78,11 +78,18 @@ class Forum
 		$email = new \PHPFUI\Input\Text('email', 'email Address', $forum->email);
 		$email->setToolTip('This is the club email address of the forum. It will be the part before @' . $this->page->value('domain'));
 		$fieldSet->add(new \PHPFUI\MultiColumn($forumName, $email));
+
 		$closed = new \PHPFUI\Input\CheckBoxBoolean('closed', 'Closed for new comments', (bool)$forum->closed);
 		$closed->setToolTip('Close this forum for new comments. A forum must be closed before it can be deleted.');
+
 		$attachments = new \PHPFUI\Input\CheckBoxBoolean('attachments', 'Allow attachments', (bool)$forum->attachments);
 		$attachments->setToolTip('Allow attachments to be posted and retreived from the group. This could present security issues.');
-		$fieldSet->add(new \PHPFUI\MultiColumn($closed, $attachments));
+
+		$formerMembers = new \PHPFUI\Input\CheckBoxBoolean('formerMembers', 'Allow Former Members', (bool)$forum->formerMembers);
+		$formerMembers->setToolTip('Allow former members to participate.');
+
+		$fieldSet->add(new \PHPFUI\MultiColumn($closed, $attachments, $formerMembers));
+
 		$description = new \PHPFUI\Input\TextArea('description', 'Forum Description', $forum->description);
 		$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
 		$description->setRequired();
@@ -642,7 +649,15 @@ class Forum
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
 		$form->add(new \PHPFUI\Input\Hidden('forumId', (string)$forum->forumId));
-		$memberPicker = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPickerNoSave('Enter member name to add'), 'memberId');
+
+		if ($forum->formerMembers)
+			{
+			$memberPicker = new \App\UI\MemberPicker($this->page, new \App\Model\NonMemberPickerNoSave('Enter member name to add'), 'memberId');
+			}
+		else
+			{
+			$memberPicker = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPickerNoSave('Enter member name to add'), 'memberId');
+			}
 		$form->add($memberPicker->getEditControl());
 		$form->add($this->getSubscriptionRadio(\App\Enum\Forum\SubscriptionType::UNSUBSCRIBE));
 		$submit = new \PHPFUI\Submit('Add Member', 'action');

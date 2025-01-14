@@ -47,7 +47,11 @@ class ForumMember extends \PHPFUI\ORM\Table
 		$this->addOrderBy('member.lastName');
 		$this->addOrderBy('member.firstName');
 		$condition = new \PHPFUI\ORM\Condition('forumId', $forum->forumId);
-		$condition->and('expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+
+		if (! $forum->formerMembers)
+			{
+			$condition->and('expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			}
 		$condition->and('deceased', 0);
 
 		foreach ($additionalWhere as $field => $value)

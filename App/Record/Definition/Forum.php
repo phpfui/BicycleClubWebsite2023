@@ -9,6 +9,7 @@ namespace App\Record\Definition;
  * @property ?int $closed MySQL type int
  * @property ?string $description MySQL type text
  * @property ?string $email MySQL type varchar(255)
+ * @property int $formerMembers MySQL type int
  * @property int $forumId MySQL type int
  * @property \App\Record\Forum $forum related record
  * @property ?string $name MySQL type varchar(255)
@@ -25,6 +26,7 @@ abstract class Forum extends \PHPFUI\ORM\Record
 		'closed' => ['int', 'int', 0, true, ],
 		'description' => ['text', 'string', 65535, true, ],
 		'email' => ['varchar(255)', 'string', 255, true, ],
+		'formerMembers' => ['int', 'int', 0, false, 0, ],
 		'forumId' => ['int', 'int', 0, false, ],
 		'name' => ['varchar(255)', 'string', 255, true, ],
 		'whiteList' => ['text', 'string', 65535, true, ],

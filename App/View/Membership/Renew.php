@@ -419,7 +419,9 @@ class Renew
 
 		$js = <<<JAVASCRIPT
 function updatePrice(){var form={$dollar}('#{$formId}');
-$.ajax({type:'POST',dataType:'html',data:form.serialize(),
+var formData=form.serialize();
+if (! formData.includes('years')) return;
+$.ajax({type:'POST', dataType:'html', data:formData,
 success:function(response){var data;try{data=JSON.parse(response);}catch(e){alert('Error: '+response);}
 {$dollar}('#{$totalDueId}').html('<b>$'+data.response+'</b>')}});};updatePrice();
 JAVASCRIPT;

@@ -27,7 +27,7 @@ class ErrorLogging
 			$this->log_error($error['type'], $error['message'], $error['file'], $error['line']);
 			}
 
-		return false;
+		return true;
 		}
 
 	/**
@@ -37,7 +37,7 @@ class ErrorLogging
 		{
 		$this->log_exception(new \ErrorException($str, 0, $num, $file, $line));
 
-		return false;
+		return true;
 		}
 
 	/**

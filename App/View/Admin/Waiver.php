@@ -10,6 +10,7 @@ class Waiver implements \Stringable
 			{
 			$memberModel = new \App\Model\Member();
 			$memberModel->signWaiver(\App\Model\Session::signedInMemberRecord());
+			$page->redirect();
 			}
 		}
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "167d941941804242cf23ba76f8da0c85",
+    "content-hash": "b56710a3fe19ca6035d018f42eda9197",
     "packages": [
         {
             "name": "alek13/slack",
@@ -3563,16 +3563,16 @@
         },
         {
             "name": "phpfui/orm",
-            "version": "V1.7.10",
+            "version": "V1.7.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ORM.git",
-                "reference": "f26bc7419fecf465411221594916095839032c53"
+                "reference": "d4f7e4f0ac34e4ff27b517e956825a7e3c2216e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ORM/zipball/f26bc7419fecf465411221594916095839032c53",
-                "reference": "f26bc7419fecf465411221594916095839032c53",
+                "url": "https://api.github.com/repos/phpfui/ORM/zipball/d4f7e4f0ac34e4ff27b517e956825a7e3c2216e7",
+                "reference": "d4f7e4f0ac34e4ff27b517e956825a7e3c2216e7",
                 "shasum": ""
             },
             "require": {
@@ -3620,9 +3620,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ORM/issues",
-                "source": "https://github.com/phpfui/ORM/tree/V1.7.10"
+                "source": "https://github.com/phpfui/ORM/tree/V1.7.11"
             },
-            "time": "2025-01-06T21:51:19+00:00"
+            "time": "2025-01-16T04:04:46+00:00"
         },
         {
             "name": "phpfui/phpfui",
@@ -7516,12 +7516,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "b3b47da8ab8f3fd7ab2881a1add662280d6257e2"
+                "reference": "e7a38fcc13e4ddfe9a28d5c7bf50aa9a9da758ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/b3b47da8ab8f3fd7ab2881a1add662280d6257e2",
-                "reference": "b3b47da8ab8f3fd7ab2881a1add662280d6257e2",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/e7a38fcc13e4ddfe9a28d5c7bf50aa9a9da758ec",
+                "reference": "e7a38fcc13e4ddfe9a28d5c7bf50aa9a9da758ec",
                 "shasum": ""
             },
             "conflict": {
@@ -7805,6 +7805,7 @@
                 "intelliants/subrion": "<4.2.2",
                 "inter-mediator/inter-mediator": "==5.5",
                 "ipl/web": "<0.10.1",
+                "islandora/crayfish": "<4.1",
                 "islandora/islandora": ">=2,<2.4.1",
                 "ivankristianto/phpwhois": "<=4.3",
                 "jackalope/jackalope-doctrine-dbal": "<1.7.4",
@@ -8376,7 +8377,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-01-14T23:04:29+00:00"
+            "time": "2025-01-15T23:05:13+00:00"
         },
         {
             "name": "sebastian/cli-parser",

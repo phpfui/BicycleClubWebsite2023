@@ -17,7 +17,7 @@ class IMAP implements \Countable
 
 		if ($server)
 			{
-			$this->mbox = @\imap2_open($server, $this->settingTable->value('IMAPMailBox'), $this->settingTable->value('IMAPPassword'));
+			$this->mbox = @\imap_open($server, $this->settingTable->value('IMAPMailBox'), $this->settingTable->value('IMAPPassword'));
 			}
 		}
 
@@ -31,7 +31,7 @@ class IMAP implements \Countable
 				{
 				\App\Tools\Logger::get()->debug($errors);
 				}
-			@\imap2_close($this->mbox, CL_EXPUNGE);
+			@\imap_close($this->mbox, CL_EXPUNGE);
 			}
 		}
 
@@ -42,14 +42,14 @@ class IMAP implements \Countable
 			return 0;
 			}
 
-		return @\imap2_num_msg($this->mbox);
+		return @\imap_num_msg($this->mbox);
 		}
 
 	public function delete(string $messageNumbers = '0') : self
 		{
 		if (null !== $this->mbox)
 			{
-			@\imap2_delete($this->mbox, $messageNumbers);
+			@\imap_delete($this->mbox, $messageNumbers);
 			}
 
 		return $this;
@@ -86,12 +86,12 @@ class IMAP implements \Countable
 	 */
 	public function getErrors() : array
 		{
-		return \imap2_errors() ?: [];
+		return \imap_errors() ?: [];
 		}
 
 	public function saveBodyToFile(string $fileName, int $messageNumber) : void
 		{
-		@\imap2_savebody($this->mbox, $fileName, $messageNumber);
+		@\imap_savebody($this->mbox, $fileName, $messageNumber);
 		}
 
 	public function valid() : bool

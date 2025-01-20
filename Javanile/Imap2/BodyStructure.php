@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the PHP Input package.
+ * This file is part of the PHP IMAP2 package.
  *
  * (c) Francesco Bianco <bianco@javanile.org>
  *
@@ -11,257 +11,252 @@
 
 namespace Javanile\Imap2;
 
-use Javanile\Imap2\ImapClient;
-
 class BodyStructure
 {
-    protected static $encodingNumber = [
-        '8BIT' => 1,
-        'BASE64' => 3,
-        'QUOTED-PRINTABLE' => 4,
+
+    const TYPETEXT = 0;             /* unformatted text */
+    const TYPEMULTIPART = 1;        /* multiple part */
+    const TYPEMESSAGE = 2;         /* encapsulated message */
+    const TYPEAPPLICATION = 3;      /* application data */
+    const TYPEAUDIO = 4;            /* audio */
+    const TYPEIMAGE = 5;            /* static image */
+    const TYPEVIDEO = 6;            /* video */
+    const TYPEMODEL = 7;            /* model */
+    const TYPEOTHER = 8;            /* unknown */
+
+    const ENC7BIT = 0;              /* 7 bit SMTP semantic data */
+    const ENC8BIT = 1;              /* 8 bit SMTP semantic data */
+    const ENCBINARY = 2;            /* 8 bit binary data */
+    const ENCBASE64 = 3;            /* base-64 encoded data */
+    const ENCQUOTEDPRINTABLE = 4;   /* human-readable 8-as-7 bit data */
+    const ENCOTHER = 5;             /* unknown */
+
+    protected static $body_types = [
+        self::TYPETEXT => "TEXT",
+        self::TYPEMULTIPART => "MULTIPART",
+        self::TYPEMESSAGE => "MESSAGE",
+        self::TYPEAPPLICATION => "APPLICATION",
+        self::TYPEAUDIO => "AUDIO",
+        self::TYPEIMAGE => "IMAGE",
+        self::TYPEVIDEO => "VIDEO",
+        self::TYPEMODEL => "MODEL",
+        self::TYPEOTHER => "X-UNKNOWN"
+    ];
+
+    protected static $body_encodings = [
+        self::ENC7BIT => "7BIT",
+        self::ENC8BIT => "8BIT",
+        self::ENCBINARY => "BINARY",
+        self::ENCBASE64 => "BASE64",
+        self::ENCQUOTEDPRINTABLE => "QUOTED-PRINTABLE",
+        self::ENCOTHER => "X-UNKNOWN"
     ];
 
     public static function fromMessage($message)
     {
-        return self::fromBodyStructure($message->bodystructure);
+        return self::extractBodyStructure($message->bodystructure);
     }
 
-    protected static function fromBodyStructure($structure)
+    protected static function extractBodyStructure($structure)
     {
-        $parts = [];
-        $parameters = [];
 
-        #file_put_contents('t3.json', json_encode($message, JSON_PRETTY_PRINT));
+        /* if NIL */
+        if ( is_null($structure) )
+            return null;
 
-        if (isset($structure[0]) && $structure[0] == 'TEXT') {
-            $parameters = self::extractParameters($structure[2], []);
+        /* body structure list */
+        if ( ! $length = count($structure) )
+            return null;
 
-            return (object) [
-                'type' => 0,
-                'encoding' => self::getEncoding($structure, 5),
-                'ifsubtype' => 1,
-                'subtype' => $structure[1],
-                'ifdescription' => 0,
-                'ifid' => 0,
-                'lines' => intval($structure[7]),
-                'bytes' => intval($structure[6]),
-                'ifdisposition' => 0,
-                'ifdparameters' => 0,
-                'ifparameters' => count($parameters),
-                'parameters' => count($parameters) ? $parameters : (object) [],
-            ];
-        }
-
-        $section = 'parts';
-        $subType = 'ALTERNATIVE';
-        foreach ($structure as $item) {
-            if ($item == 'ALTERNATIVE') {
-                $section = 'parameters';
-                continue;
-            }
-
-            if ($item == 'MIXED') {
-                $subType = 'MIXED';
-                $section = 'parameters';
-                continue;
-            }
-
-            if ($section == 'parts') {
-                $parts[] = self::extractPart($item);
-            } elseif (is_array($item)) {
-                $parameters = self::extractParameters($item, $parameters);
-            }
-        }
-
-        return (object) [
-            'type' => 1,
-            'encoding' => 0,
-            'ifsubtype' => 1,
-            'subtype' => $subType,
-            'ifdescription' => 0,
-            'ifid' => 0,
-            'ifdisposition' => 0,
-            'ifdparameters' => 0,
-            'ifparameters' => 1,
-            'parameters' => $parameters,
-            'parts' => $parts,
-        ];
-    }
-
-    protected static function extractPart($item)
-    {
-        global $countParts;
-        
-        $attribute = null;
-        $parameters = [];
-
-        if (!is_array($item[2])) {
-            return $parameters;
-        }
-
-        foreach ($item[2] as $value) {
-            if (empty($attribute)) {
-                $attribute = [
-                    'attribute' => $value,
-                    'value' => null,
-                ];
-            } else {
-                $attribute['value'] = $value;
-                $parameters[] = (object) $attribute;
-                $attribute = null;
-            }
-        }
-
-        $type = 0;
-        $linesIndex = 7;
-        $bytesIndex = 6;
-        if ($item[0] == 'MESSAGE') {
-            $type = 2;
-            $linesIndex = 9;
-        }
-
-        $part = (object) [
-            'type' => $type,
-            'encoding' => self::getEncoding($item, 5),
-            'ifsubtype' => 1,
-            'subtype' => $item[1],
-            'ifdescription' => 0,
-            'ifid' => 0,
-            'lines' => intval($item[$linesIndex]),
-            'bytes' => intval($item[$bytesIndex]),
-            'ifdisposition' => 0,
-            'disposition' => null,
-            'ifdparameters' => 0,
-            'dparameters' => null,
-            'ifparameters' => 1,
-            'parameters' => $parameters,
+        $body = (object)[
+            "type" => self::TYPEOTHER,
+            "encoding" => self::ENC7BIT,
+            "ifsubtype" => 0,
+            "subtype" => null,
+            "ifdescription" => 0,
+            "description" => null,
+            "ifid" => 0,
+            "id" => null,
+            "lines" => null,
+            "bytes" => null,
+            "ifdisposition" => 0,
+            "disposition" => null,
+            "ifdparameters" => 0,
+            "dparameters" => null,
+            "ifparameters" => 0,
+            "parameters" => null
         ];
 
-        $dispositionIndex = 9;
-        if ($type == 2) {
-            $dispositionIndex = 11;
-        }
-        if (isset($item[$dispositionIndex][0])) {
-            $attribute = null;
-            $dispositionParameters = [];
-            $part->disposition = $item[$dispositionIndex][0];
-            if (isset($item[$dispositionIndex][1]) && is_array($item[$dispositionIndex][1])) {
-                foreach ($item[$dispositionIndex][1] as $value) {
-                    if (empty($attribute)) {
-                        $attribute = [
-                            'attribute' => $value,
-                            'value' => null,
-                        ];
-                    } else {
-                        $attribute['value'] = $value;
-                        $dispositionParameters[] = (object)$attribute;
-                        $attribute = null;
+        /* multipart body? */
+        if ( is_array($structure[0]) ) {
+
+            /* yes, set its type */
+            $body->type = self::TYPEMULTIPART;
+
+            $index = 0;
+            $parts = [];
+
+            /* for each body part */
+            while( is_array($structure[$index]) )
+                $parts[] = self::extractBodyStructure( $structure[$index++] );
+
+            /* parse subtype */
+            if ( $body->subtype = strtoupper($structure[$index++]) )
+                $body->ifsubtype = 1;
+
+            /* multipart parameters */
+            if ( $index < $length ) {
+                if ( count( $body->parameters = self::extractParameters($structure[$index++], []) ) )
+                    $body->ifparameters = 1;
+                else
+                    $body->parameters = (object)[];
+            }
+
+            /* disposition */
+            if ( $index < $length ) {
+                if ( is_array($disposition = $structure[$index++]) ) {
+                    $body->disposition = $disposition[0];
+                    $body->ifdisposition = 1;
+
+                    if ( count( $body->dparameters = self::extractParameters($disposition[1], []) ) )
+                        $body->ifdparameters = 1;
+                    else {
+                        $body->dparameters = null;
                     }
                 }
             }
-            $part->dparameters = $dispositionParameters;
-            $part->ifdparameters = 1;
-            $part->ifdisposition = 1;
-        } else {
-            unset($part->disposition);
-            unset($part->dparameters);
-        }
 
-        return self::processSubParts($item, $part);
-    }
-
-    protected static function processSubParts($item, $part)
-    {
-        if ($item[0] != 'MESSAGE') {
-            return $part;
-        }
-
-        $part->parts = [
-            self::processSubPartAsMessage($item)
-        ];
-
-        return $part;
-    }
-    
-    protected static function processSubPartAsMessage($item)
-    {
-        $message = (object) [
-            'type' => 1,
-            'encoding' => 0,
-            'ifsubtype' => 1,
-            'subtype' => 'MIXED',
-            'ifdescription' => 0,
-            'ifid' => 0,
-            'ifdisposition' => 0,
-            'ifdparameters' => 0,
-            'ifparameters' => 1,
-            'parameters' => [
-                (object) [
-                    'attribute' => 'BOUNDARY',
-                    'value' => '=_995890bdbf8bd158f2cbae0e8d966000'
-                ]
-            ],
-            'parts' => [
-
-            ]
-        ];
-
-        foreach ($item[8] as $itemPart) {
-            if (!is_array($itemPart[2])) {
-                continue;
+            /* location  */
+            if ( $index < $length ) {
+                ++$index;
             }
 
-            $parameters = self::extractParameters($itemPart[2], []);
+            while( $index < $length ) {
+                //parse_extension
+                ++$index;
+            }
 
-            $part = (object) [
-                'type' => 0,
-                'encoding' => self::getEncoding($itemPart, 5),
-                'ifsubtype' => 1,
-                'subtype' => 'PLAIN',
-                'ifdescription' => 0,
-                'ifid' => 0,
-                'lines' => intval($itemPart[7]),
-                'bytes' => intval($itemPart[6]),
-                'ifdisposition' => 0,
-                'disposition' => [],
-                'ifdparameters' => 0,
-                'dparameters' => [],
-                'ifparameters' => 1,
-                'parameters' => $parameters
-            ];
+            $body->parts = $parts;
 
-            $dispositionParametersIndex = 9;
+        }
+        /* not multipart, parse type name */
+        else {
 
-            if (isset($itemPart[$dispositionParametersIndex][0])) {
-                $attribute = null;
-                $dispositionParameters = [];
-                $part->disposition = $itemPart[$dispositionParametersIndex][0];
-                if (isset($itemPart[$dispositionParametersIndex][1]) && is_array($itemPart[$dispositionParametersIndex][1])) {
-                    foreach ($itemPart[$dispositionParametersIndex][1] as $value) {
-                        if (empty($attribute)) {
-                            $attribute = [
-                                'attribute' => $value,
-                                'value' => null,
-                            ];
-                        } else {
-                            $attribute['value'] = $value;
-                            $dispositionParameters[] = (object) $attribute;
-                            $attribute = null;
-                        }
+            /* empty body? */
+            if ( ! $length ) return (object)[];
+
+            /* assume unknown type */
+            $body->type = self::TYPEOTHER;
+            /* and unknown encoding */
+            $body->encoding = self::ENCOTHER;
+
+            /* parse type */
+            if ( ($type = array_search(strtoupper($structure[0]), self::$body_types)) !== false )
+                $body->type = $type;
+
+            /* encoding always gets uppercase form */
+            if ( ($encoding = array_search(strtoupper($structure[5]), self::$body_encodings)) !== false )
+                $body->encoding = $encoding;
+
+            /* parse subtype */
+            if ( $body->subtype = strtoupper($structure[1]) )
+                $body->ifsubtype = 1;
+
+            $body->ifdescription = 0;
+            if ( ! empty($structure[4]) ) {
+                $body->ifdescription = 1;
+                $body->description = $structure[4];
+            }
+
+            $body->ifid = 0;
+            if ( ! empty($structure[3]) ) {
+                $body->ifid = 1;
+                $body->id = $structure[3];
+            }
+
+            /* parse size of contents in bytes */
+            $body->bytes = intval($structure[6]);
+
+            $index = 7;
+
+            /* possible extra stuff */
+            switch ( $body->type ) {
+
+                /* message envelope and body */
+                case self::TYPEMESSAGE:
+                    /* non MESSAGE/RFC822 is basic type */
+                    if ( strcmp($body->subtype, "RFC822") ) break;
+
+                    /* make certain server sends an envelope */
+                    ++$index;
+
+                    $body->parts[] = self::extractBodyStructure( $structure[$index++] );
+
+                    /* drop into text case */
+
+                /* size in lines */
+                case self::TYPETEXT:
+                    $body->lines = intval($structure[$index++]);
+                    break;
+
+                /* otherwise nothing special */
+                default:
+                    break;
+
+            }
+
+            /* extension data - md5 */
+            if ( $index < $length )
+                ++$index;
+
+            /* disposition */
+            if ( $index < $length ) {
+                if ( is_array($disposition = $structure[$index++]) ) {
+                    $body->disposition = $disposition[0];
+                    $body->ifdisposition = 1;
+
+                    if ( count( $body->dparameters = self::extractParameters($disposition[1], []) ) )
+                        $body->ifdparameters = 1;
+                    else {
+                        $body->dparameters = null;
                     }
                 }
-                $part->dparameters = $dispositionParameters;
-                $part->ifdparameters = 1;
-                $part->ifdisposition = 1;
-            } else {
-                unset($part->disposition);
-                unset($part->dparameters);
             }
 
-            $message->parts[] = $part;
+            /* language */
+            if ( $index < $length ) {
+                //parse_language
+                ++$index;
+            }
+
+            /* location  */
+            if ( $index < $length ) {
+                ++$index;
+            }
+
+            while( $index < $length ) {
+                //parse_extension
+                ++$index;
+            }
+
+            if ( count( $body->parameters = self::extractParameters($structure[2], []) ) )
+                $body->ifparameters = 1;
+            else
+                $body->parameters = (object)[];
+
         }
-        
-        return $message;
+
+        if ( is_null($body->description) ) unset($body->description);
+        if ( is_null($body->id) ) unset($body->id);
+        if ( is_null($body->disposition) ) unset($body->disposition);
+        if ( is_null($body->dparameters) ) unset($body->dparameters);
+        if ( is_null($body->parameters) ) unset($body->parameters);
+
+        if ( ! $body->bytes ) unset($body->bytes);
+        if ( ! $body->lines ) unset($body->lines);
+
+        return $body;
+
     }
 
     protected static function extractParameters($attributes, $parameters)
@@ -288,8 +283,4 @@ class BodyStructure
         return $parameters;
     }
 
-    protected static function getEncoding($item, $encodingIndex)
-    {
-        return isset($item[$encodingIndex]) ? (self::$encodingNumber[$item[$encodingIndex]] ?? 0) : 0;
-    }
 }

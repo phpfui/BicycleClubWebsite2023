@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the PHP Input package.
+ * This file is part of the PHP IMAP2 package.
  *
  * (c) Francesco Bianco <bianco@javanile.org>
  *
@@ -10,6 +10,8 @@
  */
 
 namespace Javanile\Imap2;
+
+use Javanile\Imap2\Roundcube\ImapClient;
 
 class Mailbox
 {
@@ -29,11 +31,11 @@ class Mailbox
                 'Recent' => intval($status['RECENT']),
             ];
 
-        } elseif (IMAP2_RETROFIT_MODE && is_resource($imap) && get_resource_type($imap) == 'imap') {
+        } elseif (IMAP2_RETROFIT_MODE && Functions::isRetrofitResource($imap)) {
             return imap_check($imap);
         }
 
-        trigger_error(Errors::invalidImapConnection(debug_backtrace(), 1), E_USER_WARNING);
+        trigger_error(Errors::invalidImapConnection(debug_backtrace(), 1, false), E_USER_WARNING);
 
         return false;
     }
@@ -119,49 +121,38 @@ class Mailbox
         return (object) $returnStatus;
     }
 
-    public static function mailboxMsgInfo($imap, $mailbox, $flags)
+    public static function mailboxMsgInfo($imap)
     {
-        if (is_a($imap, Connection::class)) {
-            $client = $imap->getClient();
-            $mailboxParts = explode('}', $mailbox);
-            $mailboxName = $mailboxParts[2] ?? 'INBOX';
-            $items = [];
-
-            $statusKeys = [
-                'MESSAGES' => 'messages',
-                'UNSEEN' => 'unseen',
-                'RECENT' => 'recent',
-                'UIDNEXT' => 'uidnext',
-                'UIDVALIDITY' => 'uidvalidity',
-            ];
-
-            if ($flags & SA_MESSAGES || $flags & SA_ALL) {
-                $items[] = 'MESSAGES';
-            }
-            if ($flags & SA_RECENT || $flags & SA_ALL) {
-                $items[] = 'RECENT';
-            }
-            if ($flags & SA_UNSEEN || $flags & SA_ALL) {
-                $items[] = 'UNSEEN';
-            }
-            if ($flags & SA_UIDNEXT || $flags & SA_ALL) {
-                $items[] = 'UIDNEXT';
-            }
-            if ($flags & SA_UIDVALIDITY || $flags & SA_ALL) {
-                $items[] = 'UIDVALIDITY';
-            }
-
-            $status = $client->status($mailboxName, $items);
-
-            $returnStatus = [];
-            foreach ($status as $key => $value) {
-                $returnStatus[$statusKeys[$key]] = is_numeric($value) ? intval($value) : $value;
-            }
-
-            return (object) $returnStatus;
+        if (!is_a($imap, Connection::class)) {
+            return Errors::invalidImapConnection(debug_backtrace(), 1, false);
         }
 
-        return imap_status($imap, $mailbox, $flags);
+        $client = $imap->getClient();
+        #$client->setDebug(true);
+
+        $imap->selectMailbox();
+        $mailboxName = $imap->getMailboxName();
+
+        $status = $client->status($mailboxName, [
+            'MESSAGES',
+            'UNSEEN',
+            'RECENT',
+            'UIDNEXT',
+            'UIDVALIDITY'
+        ]);
+
+        $mailboxInfo = [
+            'Unread' => intval($status['UNSEEN']),
+            'Deleted' => 0,
+            'Nmsgs' => intval($status['MESSAGES']),
+            'Size' => 0,
+            'Date' => date('D, j M Y G:i:s').' +0000 (UTC)',
+            'Driver' => 'imap',
+            'Mailbox' => $imap->getMailbox(),
+            'Recent' => intval($status['RECENT'])
+        ];
+
+        return (object) $mailboxInfo;
     }
 
     public static function list($imap, $reference, $pattern)

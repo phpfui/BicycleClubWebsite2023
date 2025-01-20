@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the PHP Input package.
+ * This file is part of the PHP IMAP2 package.
  *
  * (c) Francesco Bianco <bianco@javanile.org>
  *
@@ -13,27 +13,37 @@ namespace Javanile\Imap2;
 
 class Message
 {
+    /**
+     * Returns an array of messages matching the given search criteria.
+     *
+     * @param $imap
+     * @param $criteria
+     * @param $flags
+     * @param $charset
+     *
+     * @return array|false|mixed
+     */
     public static function search($imap, $criteria, $flags = SE_FREE, $charset = "")
     {
-        if (is_a($imap, Connection::class)) {
-            $client = $imap->getClient();
-            #$client->setDebug(true);
-
-            $result = $client->search($imap->getMailboxName(), $criteria, $flags & SE_UID);
-
-            if (empty($result->count())) {
-                return false;
-            }
-
-            $messages = $result->get();
-            foreach ($messages as &$message) {
-                $message = is_numeric($message) ? intval($message) : $message;
-            }
-
-            return $messages;
+        if (!is_a($imap, Connection::class)) {
+            return Errors::invalidImapConnection(debug_backtrace(), 1, false);
         }
 
-        return imap_search($imap, $criteria, $flags, $charset);
+        $client = $imap->getClient();
+        #$client->setDebug(true);
+
+        $result = $client->search($imap->getMailboxName(), $criteria, $flags & SE_UID);
+
+        if (empty($result->count())) {
+            return false;
+        }
+
+        $messages = $result->get();
+        foreach ($messages as &$message) {
+            $message = is_numeric($message) ? intval($message) : $message;
+        }
+
+        return $messages;
     }
 
     public static function sort($imap, $criteria, $reverse, $flags = 0, $searchCriteria = null, $charset = null)
@@ -69,7 +79,7 @@ class Message
         #$client->setDebug(true);
 
         $messages = $client->fetch($imap->getMailboxName(), $messageNum, false, [
-            'BODY[HEADER.FIELDS (SUBJECT FROM TO CC REPLY-TO DATE SIZE)]',
+            'BODY.PEEK[HEADER.FIELDS (SUBJECT FROM TO CC REPLY-TO DATE SIZE REFERENCES)]',
             'ENVELOPE',
             'INTERNALDATE',
             'UID',
@@ -87,22 +97,59 @@ class Message
         }
     }
 
-    public static function headers($imap, $messageNum, $fromLength = 0, $subjectLength = 0, $defaultHost = null)
+    public static function headers($imap)
     {
-        if (is_a($imap, Connection::class)) {
-            $client = $imap->getClient();
-            #$client->setDebug(true);
-
-            $messages = $client->fetch($imap->getMailboxName(), $messageNum, false, ['BODY['.$section.']']);
-
-            if ($section) {
-                return $messages[$messageNum]->bodypart[$section];
-            }
-
-            return $messages[$messageNum]->body;
+        if (!is_a($imap, Connection::class)) {
+            return Errors::invalidImapConnection(debug_backtrace(), 1, false);
         }
 
-        return imap_headerinfo($imap, $messageNum, $fromLength = 0, $subjectLength = 0);
+        $client = $imap->getClient();
+        #$client->setDebug(true);
+
+        $status = $client->status($imap->getMailboxName(), ['MESSAGES']);
+        if (empty($status['MESSAGES'])) {
+            return [];
+        }
+
+        $sequence = '1:'.intval($status['MESSAGES']);
+        $messages = $client->fetch($imap->getMailboxName(), $sequence, false, [
+            'BODY.PEEK[HEADER.FIELDS (SUBJECT FROM TO CC REPLYTO MESSAGEID DATE SIZE REFERENCES)]',
+            #'UID',
+            'FLAGS',
+            'INTERNALDATE',
+            'RFC822.SIZE',
+            #'ENVELOPE',
+            'RFC822.HEADER'
+        ]);
+
+        if (empty($messages)) {
+            return [];
+        }
+
+        $headers = [];
+        foreach ($messages as $message) {
+            $from = ' ';
+            if ($message->from != 'no_host') {
+                $from = imap_rfc822_parse_adrlist($message->from, 'no_host');
+                $from = isset($from[0]->personal) ? $from[0]->personal : $message->from;
+            }
+
+            $date = explode(' ', $message->internaldate);
+            $subject = empty($message->subject) ? ' ' : $message->subject;
+            $unseen = empty($message->flags['SEEN']) ? 'U' : ' ';
+            $flagged = empty($message->flags['FLAGGED']) ? ' ' : 'F';
+            $answered = empty($message->flags['ANSWERED']) ? ' ' : 'A';
+            $draft = empty($message->flags['DRAFT']) ? ' ' : 'D';
+            $deleted = empty($message->flags['DELETED']) ? ' ' : 'X';
+
+            $header = ' ' . $unseen . $flagged . $answered . $draft . $deleted . ' '
+                    . str_pad($message->id, 3, ' ', STR_PAD_LEFT) . ')' . $date[0] .' ' . str_pad($from, 20, ' ') . ' '
+                    . substr($subject, 0, 25) . ' (' . $message->size . ' chars)';
+
+            $headers[] = $header;
+        }
+
+        return $headers;
     }
 
     public static function body($imap, $messageNum, $flags = 0)
@@ -115,37 +162,93 @@ class Message
         #$client->setDebug(true);
 
         $isUid = boolval($flags & FT_UID);
+        
+        /**
+        TODO
+        The information on whether the fetch operation will be performed in PEEK mode should be obtained 
+        from the $flags parameter. The $flags parameter needs to be moved to where the fetch() function is called, 
+        and the PEEK mode needs to be decided whether the $flags variable contains the FT_PEEK value.
+        */
+        $messages = $client->fetch($imap->getMailboxName(), $messageNum, $isUid, ['BODY.PEEK[TEXT]']);
 
-        $messages = $client->fetch($imap->getMailboxName(), $messageNum, $isUid, ['BODY[TEXT]']);
+        if ($isUid && is_array($messages)) {
+            $messages = Functions::keyBy('uid', $messages);
+        }
 
         return $messages[$messageNum]->bodypart['TEXT'];
     }
 
     public static function fetchBody($imap, $messageNum, $section, $flags = 0)
     {
-        if (is_a($imap, Connection::class)) {
-            $client = $imap->getClient();
-            #$client->setDebug(true);
-
-            $messages = $client->fetch($imap->getMailboxName(), $messageNum, false, ['BODY['.$section.']']);
-
-            if ($section) {
-                return $messages[$messageNum]->bodypart[$section];
-            }
-
-            return $messages[$messageNum]->body;
+        if (!is_a($imap, Connection::class)) {
+            return Errors::invalidImapConnection(debug_backtrace(), 1, false);
         }
 
-        return imap_fetchbody($imap, $messageNum, $section, $flags);
+        $client = $imap->getClient();
+        #$client->setDebug(true);
+
+        $isUid = boolval($flags & FT_UID);
+        $messages = $client->fetch($imap->getMailboxName(), $messageNum, $isUid, ['BODY.PEEK['.$section.']']);
+
+        if (empty($messages)) {
+            trigger_error(Errors::badMessageNumber(debug_backtrace(), 1), E_USER_WARNING);
+
+            return false;
+        }
+
+        if ($isUid && is_array($messages)) {
+            $messages = Functions::keyBy('uid', $messages);
+        }
+
+        if ($section) {
+            return $messages[$messageNum]->bodypart[$section];
+        }
+
+        return $messages[$messageNum]->body;
+    }
+
+    public static function fetchMime($imap, $messageNum, $section, $flags = 0)
+    {
+        if (!is_a($imap, Connection::class)) {
+            return Errors::invalidImapConnection(debug_backtrace(), 1, false);
+        }
+
+        if ($messageNum <= 0) {
+            trigger_error(Errors::badMessageNumber(debug_backtrace(), 1), E_USER_WARNING);
+
+            return false;
+        }
+
+        $client = $imap->getClient();
+        #$client->setDebug(true);
+
+        $isUid = boolval($flags & FT_UID);
+
+        $sectionKey = $section.'.MIME';
+        $messages = $client->fetch($imap->getMailboxName(), $messageNum, $isUid, ['BODY.PEEK['.$sectionKey.']']);
+
+        if (empty($messages)) {
+            return "";
+        }
+
+        if ($isUid && is_array($messages)) {
+            $messages = Functions::keyBy('uid', $messages);
+        }
+
+        if ($section && isset($messages[$messageNum]->bodypart[$sectionKey])) {
+            return $messages[$messageNum]->bodypart[$sectionKey];
+        }
+
+        return $messages[$messageNum]->body;
     }
 
     public static function saveBody($imap, $file, $messageNum, $section = "", $flags = 0)
     {
         if (is_a($imap, Connection::class)) {
             $client = $imap->getClient();
-           # $client->setDebug(true);
+            #$client->setDebug(true);
 
-            $messages = $client->fetch($imap->getMailboxName(), $messageNum, false, ['BODY['.$section.']']);
+            $messages = $client->fetch($imap->getMailboxName(), $messageNum, false, ['BODY.PEEK['.$section.']']);
 
             $body = $section ? $messages[$messageNum]->bodypart[$section] : $messages[$messageNum]->body;
 
@@ -177,22 +280,22 @@ class Message
         }
     }
 
-    public static function bodyStruct($imap, $messageNum, $flags = 0)
+    public static function bodyStruct($imap, $messageNum, $section)
     {
-        if (is_a($imap, Connection::class)) {
-            $client = $imap->getClient();
-            #$client->setDebug(true);
-
-            $messages = $client->fetch($imap->getMailboxName(), $messageNum, false, ['BODY['.$section.']']);
-
-            if ($section) {
-                return $messages[$messageNum]->bodypart[$section];
-            }
-
-            return $messages[$messageNum]->body;
+        if (!is_a($imap, Connection::class)) {
+            return Errors::invalidImapConnection(debug_backtrace(), 1, false);
         }
 
-        return imap_fetchstructure($imap, $messageNum, $flags);
+        $client = $imap->getClient();
+        #$client->setDebug(true);
+
+        $messages = $client->fetch($imap->getMailboxName(), $messageNum, false, ['BODY.PEEK['.$section.']']);
+
+        if ($section) {
+            return $messages[$messageNum]->bodypart[$section];
+        }
+
+        return $messages[$messageNum]->body;
     }
 
     public static function fetchHeader($imap, $messageNum, $flags = 0)
@@ -212,7 +315,7 @@ class Message
 
         $isUid = boolval($flags & FT_UID);
 
-        $messages = $client->fetch($imap->getMailboxName(), $messageNum, $isUid, ['BODY[HEADER]']);
+        $messages = $client->fetch($imap->getMailboxName(), $messageNum, $isUid, ['BODY.PEEK[HEADER]']);
 
         if (empty($messages)) {
             return false;
@@ -225,80 +328,113 @@ class Message
 
     public static function fetchOverview($imap, $sequence, $flags = 0)
     {
-        if (is_a($imap, Connection::class)) {
-            $client = $imap->getClient();
-            #$client->setDebug(true);
-
-            $messages = $client->fetch($imap->getMailboxName(), $sequence, false, [
-                'BODY[HEADER.FIELDS (SUBJECT FROM TO CC REPLYTO MESSAGEID DATE SIZE)]',
-                'UID',
-                'FLAGS',
-                'INTERNALDATE',
-                'RFC822.SIZE',
-                'ENVELOPE',
-                'RFC822.HEADER'
-            ]);
-
-            if ($sequence != '*' && count($messages) < Functions::expectedNumberOfMessages($sequence)) {
-                return [];
-            }
-
-            $overview = [];
-            foreach ($messages as $message) {
-                #var_dump($message);
-                #die();
-                $messageEntry = (object) [
-                    'subject' => $message->envelope[1],
-                    'from' => Functions::sanitizeAddress($message->get('from')),
-                    'to' => $message->get('to'),
-                    'date' => $message->envelope[0],
-                    'message_id' => $message->envelope[9],
-                    'size' => $message->size,
-                    'uid' => $message->uid,
-                    'msgno' => $message->id,
-                    'recent' => intval($message->flags['RECENT'] ?? 0),
-                    'flagged' => intval($message->flags['FLAGGED'] ?? 0),
-                    'answered' => intval($message->flags['ANSWERED'] ?? 0),
-                    'deleted' => intval($message->flags['DELETED'] ?? 0),
-                    'seen' => intval($message->flags['SEEN'] ?? 0),
-                    'draft' => intval($message->flags['DRAFT'] ?? 0),
-                    'udate' => strtotime($message->internaldate),
-                ];
-                if (empty($messageEntry->to)) {
-                    unset($messageEntry->to);
-                }
-                $overview[] = $messageEntry;
-            }
-
-            return $overview;
-
-        } elseif (IMAP2_RETROFIT_MODE && is_resource($imap) && get_resource_type($imap) == 'imap') {
-            return imap_fetch_overview($imap, $sequence, $flags);
+        if (!is_a($imap, Connection::class)) {
+            return Errors::invalidImapConnection(debug_backtrace(), 1, false);
         }
 
-        trigger_error(Errors::invalidImapConnection(debug_backtrace(), 1), E_USER_WARNING);
+        $client = $imap->getClient();
+        #$client->setDebug(true);
 
-        return false;
+        $isUid = (bool)($flags & FT_UID);
+        $messages = $client->fetch($imap->getMailboxName(), $sequence, $isUid, [
+            'BODY.PEEK[HEADER.FIELDS (SUBJECT FROM TO CC REPLYTO MESSAGEID DATE SIZE REFERENCES)]',
+            'UID',
+            'FLAGS',
+            'INTERNALDATE',
+            'RFC822.SIZE',
+            'ENVELOPE',
+            'RFC822.HEADER'
+        ]);
+
+
+        if (false === $messages) {
+            return [];
+        }
+
+        if ($sequence != '*' && count($messages) < Functions::expectedNumberOfMessages($sequence)) {
+            return [];
+        }
+
+        $overview = [];
+        foreach ($messages as $message) {
+            $messageEntry = (object) [
+                'subject' => $message->envelope[1],
+                'from' => Functions::writeAddressFromEnvelope($message->envelope[2]),
+                'to' => $message->get('to'),
+                'date' => $message->envelope[0],
+                'message_id' => $message->envelope[9],
+                'references' => $message->references,
+                'in_reply_to' => $message->envelope[8],
+                'size' => $message->size,
+                'uid' => $message->uid,
+                'msgno' => $message->id,
+                'recent' => intval($message->flags['RECENT'] ?? 0),
+                'flagged' => intval($message->flags['FLAGGED'] ?? 0),
+                'answered' => intval($message->flags['ANSWERED'] ?? 0),
+                'deleted' => intval($message->flags['DELETED'] ?? 0),
+                'seen' => intval($message->flags['SEEN'] ?? 0),
+                'draft' => intval($message->flags['DRAFT'] ?? 0),
+                'udate' => strtotime($message->internaldate),
+            ];
+
+            if (empty($messageEntry->subject)) {
+                unset($messageEntry->subject);
+            }
+
+            if (empty($messageEntry->references)) {
+                unset($messageEntry->references);
+            }
+
+            if (empty($messageEntry->in_reply_to)) {
+                unset($messageEntry->in_reply_to);
+            }
+
+            if (empty($messageEntry->to)) {
+                unset($messageEntry->to);
+            }
+
+            $overview[] = $messageEntry;
+        }
+
+        return $overview;
+    }
+
+    public static function fetchUids($imap, string $sequence, int $flags = 0)
+    {
+        if (!is_a($imap, Connection::class)) {
+            return Errors::invalidImapConnection(debug_backtrace(), 1, false);
+        }
+
+        $client = $imap->getClient();
+
+        $isUid = boolval($flags & FT_UID);
+        $messages = $client->fetch($imap->getMailboxName(), $sequence, $isUid, ['UID']);
+
+        if ($sequence != '*' && count($messages) < Functions::expectedNumberOfMessages($sequence)) {
+            return false;
+        }
+
+        return $messages;
     }
 
     public static function delete($imap, $messageNums, $flags = 0)
     {
-        if (is_a($imap, Connection::class)) {
-            $client = $imap->getClient();
-
-            $messages = $client->fetch($imap->getMailboxName(), $messageNums, false, ['UID']);
-
-            $uid = [];
-            foreach ($messages as $message) {
-                $uid[] = $message->uid;
-            }
-
-            $client->flag($imap->getMailboxName(), implode(',', $uid), $client->flags['DELETED']);
-
-            return true;
+        if (!is_a($imap, Connection::class)) {
+            return Errors::invalidImapConnection(debug_backtrace(), 1, false);
         }
 
-        return imap_undelete($imap, $messageNums, $flags);
+        $client = $imap->getClient();
+
+        $messages = $client->fetch($imap->getMailboxName(), $messageNums, false, ['UID']);
+
+        $uid = [];
+        foreach ($messages as $message) {
+            $uid[] = $message->uid;
+        }
+
+        $client->flag($imap->getMailboxName(), implode(',', $uid), $client->flags['DELETED']);
+
+        return true;
     }
 
     public static function undelete($imap, $messageNums, $flags = 0)
@@ -337,7 +473,7 @@ class Message
      * @param $flag
      * @param $options
      *
-     * @return bool|void
+     * @return bool
      */
     public static function setFlagFull($imap, $sequence, $flag, $options = 0)
     {
@@ -358,9 +494,7 @@ class Message
             $sequence = implode(',', $uid);
         }
 
-        $client->flag($imap->getMailboxName(), $sequence, strtoupper(substr($flag, 1)));
-
-        return false;
+        return $client->flag($imap->getMailboxName(), $sequence, strtoupper(substr($flag, 1)));
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-include PROJECT_ROOT . '/Javanile/bootstrap.php';
+include PROJECT_ROOT . '/vendor/PHPFUI/php-imaps2/IMAPStubs.php';
 
 class IMAP implements \Countable
 	{

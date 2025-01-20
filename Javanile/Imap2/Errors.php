@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the PHP Input package.
+ * This file is part of the PHP IMAP2 package.
  *
  * (c) Francesco Bianco <bianco@javanile.org>
  *
@@ -11,13 +11,13 @@
 
 namespace Javanile\Imap2;
 
-use Javanile\Imap2\ImapClient;
-
 class Errors
 {
     protected static $alerts = [];
 
     protected static $errors = [];
+
+    protected static $lastError;
 
     public static function appendAlert($alert)
     {
@@ -26,6 +26,8 @@ class Errors
 
     public static function appendError($error)
     {
+        self::$lastError = $error;
+
         self::$errors[] = $error;
     }
 
@@ -57,7 +59,18 @@ class Errors
 
     public static function lastError()
     {
-        return false;
+        if (empty(self::$lastError)) {
+            return false;
+        }
+
+        return self::$lastError;
+    }
+
+    public static function raiseWarning($warning, $backtrace, $depth)
+    {
+        $message = $warning . ' in '.$backtrace[$depth]['file']. ' on line '.$backtrace[$depth]['line'];
+
+        trigger_error($message, E_USER_WARNING);
     }
 
     public static function invalidImapConnection($backtrace, $depth, $return)
@@ -65,8 +78,43 @@ class Errors
         $warning = 'Invalid IMAP connection parameter for '.$backtrace[$depth]['function'].'() '
                  . 'at '.$backtrace[$depth]['file']. ' on line '.$backtrace[$depth]['line'].'. Source code';
 
-        \App\Tools\Logger::get()->debug($warning);
+        trigger_error($warning, E_USER_WARNING);
 
-        return strlen($return) ? $return : $warning;
+        return $return;
+    }
+
+    public static function couldNotOpenStream($mailbox, $backtrace, $depth)
+    {
+        if (isset($backtrace[$depth + 1]['function']) && $backtrace[$depth + 1]['function'] == 'imap_open') {
+            $depth++;
+        }
+
+        return $backtrace[$depth]['function'].'(): Couldn\'t open stream '.$mailbox
+             . ' in '.$backtrace[$depth]['file']. ' on line '.$backtrace[$depth]['line'].'. Source code';
+    }
+
+    public static function badMessageNumber($backtrace, $depth)
+    {
+        if (Functions::isBackportCall($backtrace, $depth)) {
+            $depth++;
+        }
+
+        return $backtrace[$depth]['function'].'(): Bad message number in '
+             . $backtrace[$depth]['file']. ' on line '.$backtrace[$depth]['line'].'. Source code';
+    }
+
+    public static function appendErrorCanNotOpen($mailbox, $error)
+    {
+        $mailbox = (string) $mailbox;
+
+        if ($mailbox[0] == '{') {
+            $error = preg_replace("/^AUTHENTICATE [A-Z]+\d*:\s/i", '', $error);
+            //$error = preg_replace("/^([A-Z]+\d+ )(OK|NO|BAD|BYE|PREAUTH)?\s/i", '', $error);
+            $error = 'Can not authenticate to IMAP server: '.$error;
+        } else {
+            $error = "Can't open mailbox {$mailbox}: no such mailbox";
+        }
+
+        self::appendError($error);
     }
 }

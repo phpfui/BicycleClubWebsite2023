@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the PHP Input package.
+ * This file is part of the PHP IMAP2 package.
  *
  * (c) Francesco Bianco <bianco@javanile.org>
  *
@@ -11,7 +11,7 @@
 
 namespace Javanile\Imap2;
 
-use Javanile\Imap2\ImapClient;
+use Javanile\Imap2\Roundcube\ImapClient;
 
 class Connection
 {
@@ -52,7 +52,7 @@ class Connection
         $mailboxParts = Functions::parseMailboxString($mailbox);
 
         $this->host = Functions::getHostFromMailbox($mailboxParts);
-        $this->port = $mailboxParts['port'];
+        $this->port = @$mailboxParts['port'];
         $this->sslMode = Functions::getSslModeFromMailbox($mailboxParts);
         $this->currentMailbox = $mailboxParts['mailbox'];
     }
@@ -73,7 +73,17 @@ class Connection
     {
         $connection = new Connection($mailbox, $user, $password, $flags, $retries, $options);
 
-        return $connection->connect();
+        $success = $connection->connect();
+
+        if (empty($success)) {
+            Errors::appendErrorCanNotOpen($connection->getMailbox(), $connection->getLastError());
+
+            trigger_error(Errors::couldNotOpenStream($connection->getMailbox(), debug_backtrace(), 1), E_USER_WARNING);
+
+            return false;
+        }
+
+        return $connection;
     }
 
     public static function reopen($imap, $mailbox, $flags = 0, $retries = 0)
@@ -116,12 +126,13 @@ class Connection
     protected function connect()
     {
         $this->connected = false;
-        //$this->client->setDebug(true);
+        $client = $this->getClient();
+        #$client->setDebug(true);
 
-        $success = $this->client->connect($this->host, $this->user, $this->password, [
+        $success = $client->connect($this->host, $this->user, $this->password, [
             'port' => $this->port,
             'ssl_mode' => $this->sslMode,
-            'auth_type' => $this->flags & OP_XOAUTH2 ? 'XOAUTH2' : 'CHECK',
+            'auth_type' => $this->flags & OP_XOAUTH2 ? 'XOAUTH2' : 'IMAP',
             'timeout' => -1,
             'force_caps' => false,
         ]);
@@ -132,6 +143,10 @@ class Connection
 
         if (empty($this->currentMailbox)) {
             $mailboxes = $this->client->listMailboxes('', '*');
+            if (false === $mailboxes) {
+                return false;
+            }
+
             if (in_array('INBOX', $mailboxes)) {
                 $this->currentMailbox = 'INBOX';
                 $this->mailbox .= 'INBOX';
@@ -216,14 +231,6 @@ class Connection
     /**
      *
      */
-    public static function timeout($timeoutType, $timeout = -1)
-    {
-
-    }
-
-    /**
-     *
-     */
     public static function close($imap, $flags = 0)
     {
         if (!is_a($imap, Connection::class)) {
@@ -274,5 +281,12 @@ class Connection
         }
 
         return false;
+    }
+
+    public function getLastError()
+    {
+        $client = $this->getClient();
+
+        return $client->error;
     }
 }

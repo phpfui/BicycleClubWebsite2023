@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the PHP Input package.
+ * This file is part of the PHP IMAP2 package.
  *
  * (c) Francesco Bianco <bianco@javanile.org>
  *
@@ -10,8 +10,6 @@
  */
 
 namespace Javanile\Imap2;
-
-use Javanile\Imap2\ImapClient;
 
 class Functions
 {
@@ -32,7 +30,7 @@ class Functions
     {
         $mailboxParts = is_array($mailbox) ? $mailbox : self::parseMailboxString($mailbox);
 
-        return $mailboxParts['host'];
+        return @$mailboxParts['host'];
     }
 
     public static function getSslModeFromMailbox($mailbox)
@@ -52,7 +50,7 @@ class Functions
             return count(explode(',', $sequence));
         } elseif (strpos($sequence, ':') > 0) {
             $range = explode(':', $sequence);
-            return $range[1] - $range[0];
+            return (int) $range[1] - (int) $range[0];
         } else {
             return 1;
         }
@@ -101,9 +99,17 @@ class Functions
      */
     public static function writeAddressFromEnvelope($addressList)
     {
+        if (empty($addressList)) {
+            return null;
+        }
+
         $sanitizedAddress = [];
         foreach ($addressList as $addressEntry) {
-            $sanitizedAddress[] = imap_rfc822_write_address($addressEntry[2], $addressEntry[3], $addressEntry[0]);
+            $parsedAddressEntry = imap_rfc822_write_address($addressEntry[2], $addressEntry[3], $addressEntry[0]);
+            if (substr($parsedAddressEntry, -3) == '@""') {
+                $parsedAddressEntry = substr($parsedAddressEntry, 0, strlen($parsedAddressEntry) - 3).': ';
+            }
+            $sanitizedAddress[] = $parsedAddressEntry;
         }
 
         return implode(', ', $sanitizedAddress);
@@ -147,11 +153,64 @@ class Functions
 
     public static function isValidImap1Connection($imap)
     {
-        return is_resource($imap) && get_resource_type($imap) == 'imap';
+        return self::isRetrofitResource($imap);
     }
 
     public static function isValidImap2Connection($imap)
     {
         return Connection::isValid($imap);
+    }
+
+    public static function getAddressObjectList($addressList, $defaultHost = 'UNKNOWN')
+    {
+        $addressObjectList = [];
+        foreach ($addressList as $toAddress) {
+            $email = explode('@', $toAddress->getEmail());
+
+            $addressObject = (object) [
+                'mailbox' => $email[0],
+                'host' => $email[1] ?? $defaultHost,
+            ];
+
+            $personal = $toAddress->getName();
+            if ($personal) {
+                $addressObject->personal = $personal;
+            }
+
+            $addressObjectList[] = $addressObject;
+        }
+
+        return $addressObjectList;
+    }
+
+    public static function isBackportCall($backtrace, $depth)
+    {
+        return isset($backtrace[$depth + 1]['function'])
+            && preg_match('/^imap_/', $backtrace[$depth + 1]['function'])
+            && preg_match('/^imap2_/', $backtrace[$depth]['function'])
+            && substr($backtrace[$depth + 1]['function'], 4) == substr($backtrace[$depth]['function'], 5);
+    }
+
+    public static function isRetrofitResource($imap)
+    {
+        return (class_exists('\IMAP\Connection') && $imap instanceof \IMAP\Connection) || (is_resource($imap) && get_resource_type($imap) == 'imap');
+    }
+
+    public static function keyBy(string $name, array $list): array
+    {
+        $keyBy = [];
+        foreach ($list as $item) {
+            if (!isset($item->$name)) {
+                trigger_error('keyBy: key "' . $name . '" not found!', E_USER_WARNING);
+                continue;
+            }
+            if (isset($keyBy[$item->$name])) {
+                trigger_error('keyBy: duplicate key "' . $name . '" = "' . $item->$name . '"', E_USER_WARNING);
+                continue;
+            }
+            $keyBy[$item->$name] = $item;
+        }
+
+        return $keyBy;
     }
 }

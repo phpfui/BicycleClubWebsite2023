@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the PHP Input package.
+ * This file is part of the PHP IMAP2 package.
  *
  * (c) Francesco Bianco <bianco@javanile.org>
  *
@@ -10,8 +10,6 @@
  */
 
 namespace Javanile\Imap2;
-
-use Javanile\Imap2\ImapClient;
 
 class ImapHelpers
 {

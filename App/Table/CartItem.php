@@ -8,7 +8,7 @@ class CartItem extends \PHPFUI\ORM\Table
 
 	public function deleteDiscountForMember(int $memberId) : bool
 		{
-		$sql = 'delete from cartItem where discountCodeId is not null and memberId=?';
+		$sql = 'delete from cartItem where discountCodeId > 0 and memberId=?';
 
 		return \PHPFUI\ORM::execute($sql, [$memberId]);
 		}

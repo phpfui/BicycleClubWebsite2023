@@ -62,31 +62,38 @@ class Cart
 
 			$owe = 'You owe $' . \number_format($totalOwed, 2) . ' to complete this order.';
 			$form->add($owe);
-			$fieldSet = new \PHPFUI\FieldSet('Discount Code');
-			$row = new \PHPFUI\GridX();
-			$cola = new \PHPFUI\Cell(6);
-			$discountCode = $this->cartModel->getDiscountCode();
-			$colb = new \PHPFUI\Cell(6);
 
-			if ($discountCode->empty())
+			$discountCodeTable = new \App\Table\DiscountCode();
+
+			if ($discountCodeTable->getActiveCodes()->count())
 				{
-				if ($badDiscountCode)
+				$fieldSet = new \PHPFUI\FieldSet('Discount Code');
+				$row = new \PHPFUI\GridX();
+				$cola = new \PHPFUI\Cell(6);
+				$discountCode = $this->cartModel->getDiscountCode();
+				$colb = new \PHPFUI\Cell(6);
+
+				if ($discountCode->empty())
 					{
-					$cola->add($badDiscountCode . ' is not valid');
+					if ($badDiscountCode)
+						{
+						$cola->add($badDiscountCode . ' is not valid');
+						}
+					$cola->add(new \PHPFUI\Input\Text('discountCode'));
+					$colb->add(new \PHPFUI\Submit('Apply'));
 					}
-				$cola->add(new \PHPFUI\Input\Text('discountCode'));
-				$colb->add(new \PHPFUI\Submit('Apply'));
+				else
+					{
+					$cola->add(new \PHPFUI\Header($discountCode['discountCode'], 4));
+					$cola->add($discountCode['description']);
+					$colb->add(new \PHPFUI\Submit('Remove'));
+					}
+				$row->add($cola);
+				$row->add($colb);
+				$fieldSet->add($row);
+				$form->add($fieldSet);
 				}
-			else
-				{
-				$cola->add(new \PHPFUI\Header($discountCode['discountCode'], 4));
-				$cola->add($discountCode['description']);
-				$colb->add(new \PHPFUI\Submit('Remove'));
-				}
-			$row->add($cola);
-			$row->add($colb);
-			$fieldSet->add($row);
-			$form->add($fieldSet);
+
 			$fieldSet = new \PHPFUI\FieldSet('Special Instructions');
 			$fieldSet->add(new \PHPFUI\Input\Text('instructions', 'Instructions / Comments'));
 			$form->add($fieldSet);
@@ -385,7 +392,7 @@ class Cart
 
 					if (! $this->cartModel->updateDiscount($parameters['discountCode']) && $parameters['discountCode'])
 						{
-						$redirect .= '/' . $parameters['discountCode'];
+						$redirect .= $parameters['discountCode'];
 						}
 
 					break;

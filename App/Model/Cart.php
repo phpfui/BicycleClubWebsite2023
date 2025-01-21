@@ -560,11 +560,10 @@ class Cart
 	public function updateDiscount(string $discountCode) : bool
 		{
 		$discount = new \App\Record\DiscountCode(['discountCode' => $discountCode]);
-		$discountCodeId = ! $discount->empty() ? $this->validateDiscountCode($discount, $this->memberId) : 0;
 		$cartItemTable = new \App\Table\CartItem();
 		$cartItemTable->deleteDiscountForMember($this->memberId);
 
-		if ($discount->discountCodeId)
+		if (! $discount->empty() && $this->validateDiscountCode($discount, $this->memberId))
 			{
 			$cartItem = new \App\Record\CartItem();
 			$cartItem->memberId = $this->memberId;
@@ -579,23 +578,23 @@ class Cart
 		return false;
 		}
 
-	private function validateDiscountCode(\App\Record\DiscountCode $discount, int $customerNumber) : int
+	private function validateDiscountCode(\App\Record\DiscountCode $discount, int $customerNumber) : bool
 		{
 		if ($discount->expirationDate && \App\Tools\Date::todayString() > $discount->expirationDate)
 			{
-			return 0;
+			return false;
 			}
 
 		if ($discount->startDate && \App\Tools\Date::todayString() < $discount->startDate)
 			{
-			return 0;
+			return false;
 			}
 
 		if ($discount->validItemNumbers)
 			{
 			if (! \App\Table\CartItem::getItemCountForMember($discount->validItemNumbers, $customerNumber))
 				{
-				return 0;
+				return false;
 				}
 			}
 
@@ -603,11 +602,11 @@ class Cart
 			{
 			if (\App\Table\Invoice::getDiscountCodeTimesUsed($discount->discountCodeId) >= $discount->maximumUses)
 				{
-				return 0;
+				return false;
 				}
 			}
 
-		return $discount->discountCodeId;
+		return true;
 		}
 
 	private function zero() : void

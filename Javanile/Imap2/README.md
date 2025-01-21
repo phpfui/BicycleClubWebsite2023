@@ -5,7 +5,7 @@ A drop in PHP replacement for the imap_ functions removed from PHP 8.4. If imap_
 ## Usage
 
 ```php
-include 'vendor/phpfui/php-imap/IMAPStubs.php
+include 'vendor/phpfui/php-imap2/src/IMAPStubs.php
 // continue to use imap_ functions. Example:
 //$mbh = \imap_open($server, $username, $token, OP_XOAUTH2);
 ```

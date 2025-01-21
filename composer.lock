@@ -1284,66 +1284,6 @@
             "time": "2025-01-18T15:42:14+00:00"
         },
         {
-            "name": "javanile/php-imap2",
-            "version": "0.1.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/javanile/php-imap2.git",
-                "reference": "376cc0ce7e21cf7a04515dec6bbc7b86acdd59d8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/javanile/php-imap2/zipball/376cc0ce7e21cf7a04515dec6bbc7b86acdd59d8",
-                "reference": "376cc0ce7e21cf7a04515dec6bbc7b86acdd59d8",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6.5"
-            },
-            "type": "library",
-            "extra": {
-                "thanks": {
-                    "url": "https://github.com/javanile/webrequest",
-                    "name": "javanile/webrequest"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "bootstrap.php"
-                ],
-                "psr-4": {
-                    "Javanile\\Imap2\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Francesco Bianco",
-                    "homepage": "https://github.com/francescobianco"
-                }
-            ],
-            "description": "Implement no-code input function for PHP",
-            "homepage": "https://github.com/javanile/php-inpuy",
-            "keywords": [
-                "input",
-                "lowcode",
-                "nocode",
-                "web3",
-                "webrequest"
-            ],
-            "support": {
-                "issues": "https://github.com/javanile/php-imap2/issues",
-                "source": "https://github.com/javanile/php-imap2/tree/0.1.4"
-            },
-            "time": "2022-07-05T14:45:45+00:00"
-        },
-        {
             "name": "kwn/number-to-words",
             "version": "2.11.2",
             "source": {
@@ -3626,21 +3566,21 @@
         },
         {
             "name": "phpfui/php-imap",
-            "version": "0.1",
+            "version": "0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/php-imap2.git",
-                "reference": "0c1b5233c887957f985bb9d22003bb3d169f36b9"
+                "reference": "cf75bba866a4772a9389a324df8b8242fa735462"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/php-imap2/zipball/0c1b5233c887957f985bb9d22003bb3d169f36b9",
-                "reference": "0c1b5233c887957f985bb9d22003bb3d169f36b9",
+                "url": "https://api.github.com/repos/phpfui/php-imap2/zipball/cf75bba866a4772a9389a324df8b8242fa735462",
+                "reference": "cf75bba866a4772a9389a324df8b8242fa735462",
                 "shasum": ""
             },
             "require": {
-                "javanile/php-imap2": "^0.1.4",
-                "php": ">=8.2"
+                "php": ">=8.2",
+                "zbateson/mail-mime-parser": "^3.0"
             },
             "require-dev": {
                 "roave/security-advisories": "dev-latest"
@@ -3657,6 +3597,10 @@
             ],
             "authors": [
                 {
+                    "name": "Francesco Bianco",
+                    "homepage": "https://github.com/francescobianco"
+                },
+                {
                     "name": "Bruce Wells",
                     "homepage": "https://github.com/phpfui"
                 }
@@ -3669,9 +3613,9 @@
                 "oauth2"
             ],
             "support": {
-                "source": "https://github.com/phpfui/php-imap2/tree/0.1"
+                "source": "https://github.com/phpfui/php-imap2/tree/0.2"
             },
-            "time": "2025-01-20T23:21:07+00:00"
+            "time": "2025-01-21T15:51:26+00:00"
         },
         {
             "name": "phpfui/phpfui",
@@ -6506,16 +6450,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.1",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "cd6e973e04b4c2b94c86e8612b5a65f0da0e08e7"
+                "reference": "7d08f569e582ade182a375c366cbd896eccadd3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/cd6e973e04b4c2b94c86e8612b5a65f0da0e08e7",
-                "reference": "cd6e973e04b4c2b94c86e8612b5a65f0da0e08e7",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/7d08f569e582ade182a375c366cbd896eccadd3a",
+                "reference": "7d08f569e582ade182a375c366cbd896eccadd3a",
                 "shasum": ""
             },
             "require": {
@@ -6560,7 +6504,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-01-05T16:43:48+00:00"
+            "time": "2025-01-21T14:54:06+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

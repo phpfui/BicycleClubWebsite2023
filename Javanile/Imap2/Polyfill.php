@@ -11,9 +11,6 @@
 
 namespace Javanile\Imap2;
 
-use ZBateson\MailMimeParser\Message;
-use ZBateson\MailMimeParser\Header\HeaderConsts;
-
 class Polyfill
 {
     public static function convert8bit($string)
@@ -38,10 +35,10 @@ class Polyfill
 
     public static function rfc822ParseAdrList($string, $defaultHost)
     {
-        $message = Message::from('To: '.$string, false);
+        $message = \ZBateson\MailMimeParser\Message::from('To: '.$string, false);
 
         return Functions::getAddressObjectList(
-            $message->getHeader(HeaderConsts::TO)->getAddresses(),
+            $message->getHeader(\ZBateson\MailMimeParser\Header\HeaderConsts::TO)->getAddresses(),
             $defaultHost
         );
     }
@@ -55,28 +52,28 @@ class Polyfill
      */
     public static function rfc822ParseHeaders($headers, $defaultHost = 'UNKNOWN')
     {
-        $message = Message::from($headers, false);
+        $message = \ZBateson\MailMimeParser\Message::from($headers, false);
 
-        $date = $message->getHeaderValue(HeaderConsts::DATE);
-        $subject = $message->getHeaderValue(HeaderConsts::SUBJECT);
+        $date = $message->getHeaderValue(\ZBateson\MailMimeParser\Header\HeaderConsts::DATE);
+        $subject = $message->getHeaderValue(\ZBateson\MailMimeParser\Header\HeaderConsts::SUBJECT);
 
-        $hasReplyTo = $message->getHeader(HeaderConsts::REPLY_TO) !== null;
-        $hasSender = $message->getHeader(HeaderConsts::SENDER) !== null;
+        $hasReplyTo = $message->getHeader(\ZBateson\MailMimeParser\Header\HeaderConsts::REPLY_TO) !== null;
+        $hasSender = $message->getHeader(\ZBateson\MailMimeParser\Header\HeaderConsts::SENDER) !== null;
 
         return (object) [
             'date' => $date,
             'Date' => $date,
             'subject' => $subject,
             'Subject' => $subject,
-            'message_id' => '<'.$message->getHeaderValue(HeaderConsts::MESSAGE_ID).'>',
-            'toaddress' => $message->getHeaderValue(HeaderConsts::TO),
-            'to' => Functions::getAddressObjectList($message->getHeader(HeaderConsts::TO)->getAddresses()),
-            'fromaddress' => $message->getHeaderValue(HeaderConsts::FROM),
-            'from' => Functions::getAddressObjectList($message->getHeader(HeaderConsts::FROM)->getAddresses()),
-            'reply_toaddress' => $message->getHeaderValue($hasReplyTo ? HeaderConsts::REPLY_TO : HeaderConsts::FROM),
-            'reply_to' => Functions::getAddressObjectList($message->getHeader($hasReplyTo ? HeaderConsts::REPLY_TO : HeaderConsts::FROM)->getAddresses()),
-            'senderaddress' => $message->getHeaderValue($hasSender ? HeaderConsts::SENDER : HeaderConsts::FROM),
-            'sender' => Functions::getAddressObjectList($message->getHeader($hasSender ? HeaderConsts::SENDER : HeaderConsts::FROM)->getAddresses()),
+            'message_id' => '<'.$message->getHeaderValue(\ZBateson\MailMimeParser\Header\HeaderConsts::MESSAGE_ID).'>',
+            'toaddress' => $message->getHeaderValue(\ZBateson\MailMimeParser\Header\HeaderConsts::TO),
+            'to' => Functions::getAddressObjectList($message->getHeader(\ZBateson\MailMimeParser\Header\HeaderConsts::TO)->getAddresses()),
+            'fromaddress' => $message->getHeaderValue(\ZBateson\MailMimeParser\Header\HeaderConsts::FROM),
+            'from' => Functions::getAddressObjectList($message->getHeader(\ZBateson\MailMimeParser\Header\HeaderConsts::FROM)->getAddresses()),
+            'reply_toaddress' => $message->getHeaderValue($hasReplyTo ? \ZBateson\MailMimeParser\Header\HeaderConsts::REPLY_TO : \ZBateson\MailMimeParser\Header\HeaderConsts::FROM),
+            'reply_to' => Functions::getAddressObjectList($message->getHeader($hasReplyTo ? \ZBateson\MailMimeParser\Header\HeaderConsts::REPLY_TO : \ZBateson\MailMimeParser\Header\HeaderConsts::FROM)->getAddresses()),
+            'senderaddress' => $message->getHeaderValue($hasSender ? \ZBateson\MailMimeParser\Header\HeaderConsts::SENDER : \ZBateson\MailMimeParser\Header\HeaderConsts::FROM),
+            'sender' => Functions::getAddressObjectList($message->getHeader($hasSender ? \ZBateson\MailMimeParser\Header\HeaderConsts::SENDER : \ZBateson\MailMimeParser\Header\HeaderConsts::FROM)->getAddresses()),
         ];
     }
 
@@ -87,10 +84,6 @@ class Polyfill
         {
             $ret .= '@' . $hostname;
         }
-//        if (!empty($personal))
-//        {
-//            $ret .= ' <' . $personal . '>';
-//        }
         return $ret;
     }
 

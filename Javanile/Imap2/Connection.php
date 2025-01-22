@@ -98,7 +98,7 @@ class Connection
 	/**
 	 * Open an IMAP stream to a mailbox.
 	 */
-	public static function open(string $mailbox, string $user, string $password, int $flags = 0, int $retries = 0, array $options = []) : void
+	public static function open(string $mailbox, string $user, string $password, int $flags = 0, int $retries = 0, array $options = []) : Connection | false
 	{
 		$connection = new Connection($mailbox, $user, $password, $flags, $retries, $options);
 

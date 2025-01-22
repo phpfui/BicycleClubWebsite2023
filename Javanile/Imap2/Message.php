@@ -369,7 +369,7 @@ class Message
 	 *
 	 * @return array|false|mixed
 	 */
-	public static function search(Connection $imap, $criteria, int $flags = SE_FREE, int $charset = '')
+	public static function search(Connection $imap, $criteria, int $flags = SE_FREE, string $charset = '')
 	{
 		$client = $imap->getClient();
 

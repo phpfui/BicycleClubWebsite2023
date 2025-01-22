@@ -125,7 +125,7 @@ class Functions
 		return false;
 	}
 
-	public static function isBackportCall(array $backtrace, int $depth) : void
+	public static function isBackportCall(array $backtrace, int $depth) : bool
 	{
 		return isset($backtrace[$depth + 1]['function'])
 			&& \preg_match('/^imap_/', $backtrace[$depth + 1]['function'])

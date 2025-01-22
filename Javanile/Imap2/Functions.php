@@ -13,204 +13,196 @@ namespace Javanile\Imap2;
 
 class Functions
 {
-    public static function parseMailboxString($mailbox)
-    {
-        $mailboxParts = explode('}', $mailbox);
-        $mailboxParts[0] = substr($mailboxParts[0], 1);
+	public static function expectedNumberOfMessages(string $sequence) : int
+	{
+		if (\strpos($sequence, ',') > 0) {
+			return \count(\explode(',', $sequence));
+		} elseif (\strpos($sequence, ':') > 0) {
+			$range = \explode(':', $sequence);
 
-        $values = parse_url($mailboxParts[0]);
+			return (int)$range[1] - (int)$range[0];
+		}
 
-        $values['mailbox'] = $mailboxParts[1] ?? '';
-        $values['path'] = explode('/', $values['path']);
+			return 1;
 
-        return $values;
-    }
+	}
 
-    public static function getHostFromMailbox($mailbox)
-    {
-        $mailboxParts = is_array($mailbox) ? $mailbox : self::parseMailboxString($mailbox);
+	public static function getAddressObjectList(string $addressList, string $defaultHost = 'UNKNOWN')
+	{
+		$addressObjectList = [];
 
-        return @$mailboxParts['host'];
-    }
+		foreach ($addressList as $toAddress) {
+			$email = \explode('@', $toAddress->getEmail());
 
-    public static function getSslModeFromMailbox($mailbox)
-    {
-        $mailboxParts = is_array($mailbox) ? $mailbox : self::parseMailboxString($mailbox);
+			$addressObject = (object)[
+				'mailbox' => $email[0],
+				'host' => $email[1] ?? $defaultHost,
+			];
 
-        if (in_array('ssl', $mailboxParts['path'])) {
-            return 'ssl';
-        }
+			$personal = $toAddress->getName();
 
-        return false;
-    }
+			if ($personal) {
+				$addressObject->personal = $personal;
+			}
 
-    public static function expectedNumberOfMessages($sequence)
-    {
-        if (strpos($sequence, ',') > 0) {
-            return count(explode(',', $sequence));
-        } elseif (strpos($sequence, ':') > 0) {
-            $range = explode(':', $sequence);
-            return (int) $range[1] - (int) $range[0];
-        } else {
-            return 1;
-        }
-    }
+			$addressObjectList[] = $addressObject;
+		}
 
-    public static function unique()
-    {
-        return md5(microtime(). time() . rand(1000, 9999));
-    }
+		return $addressObjectList;
+	}
 
-    /**
-     * Get name from full mailbox string.
-     *
-     * @param $mailbox
-     *
-     * @return mixed|string
-     */
-    public static function getMailboxName($mailbox)
-    {
-        $mailboxParts = explode('}', $mailbox, 2);
+	public static function getHostFromMailbox(string|array $mailbox) : string
+	{
+		$mailboxParts = \is_array($mailbox) ? $mailbox : self::parseMailboxString($mailbox);
 
-        return empty($mailboxParts[1]) ? 'INBOX' : $mailboxParts[1];
-    }
+		return @$mailboxParts['host'];
+	}
 
-    /**
-     *
-     * @param $address
-     * @param $defaultHost
-     *
-     * @return string
-     */
-    public static function sanitizeAddress($address, $defaultHost = 'UNKNOWN')
-    {
-        $addressList = imap_rfc822_parse_adrlist($address, $defaultHost);
+	public static function getListAttributesValue(array $attributes) : int
+	{
+		$attributesValue = 0;
 
-        $sanitizedAddress = [];
-        foreach ($addressList as $addressEntry) {
-            $sanitizedAddress[] = imap_rfc822_write_address($addressEntry->mailbox, $addressEntry->host, $addressEntry->personal);
-        }
+		foreach ($attributes as $attribute) {
+			switch ($attribute) {
+				case '\\NoInferiors':
+					$attributesValue |= LATT_NOINFERIORS;
 
-        return implode(', ', $sanitizedAddress);
-    }
+					break;
 
-    /**
-     *
-     */
-    public static function writeAddressFromEnvelope($addressList)
-    {
-        if (empty($addressList)) {
-            return null;
-        }
+				case '\\NoSelect':
+					$attributesValue |= LATT_NOSELECT;
 
-        $sanitizedAddress = [];
-        foreach ($addressList as $addressEntry) {
-            $parsedAddressEntry = imap_rfc822_write_address($addressEntry[2], $addressEntry[3], $addressEntry[0]);
-            if (substr($parsedAddressEntry, -3) == '@""') {
-                $parsedAddressEntry = substr($parsedAddressEntry, 0, strlen($parsedAddressEntry) - 3).': ';
-            }
-            $sanitizedAddress[] = $parsedAddressEntry;
-        }
+					break;
 
-        return implode(', ', $sanitizedAddress);
-    }
+				case '\\Marked':
+					$attributesValue |= LATT_MARKED;
 
-    /**
-     *
-     */
-    public static function getListAttributesValue($attributes)
-    {
-        $attributesValue = 0;
+					break;
 
-        foreach ($attributes as $attribute) {
-            switch ($attribute) {
-                case '\\NoInferiors':
-                    $attributesValue |= LATT_NOINFERIORS;
-                    break;
-                case '\\NoSelect':
-                    $attributesValue |= LATT_NOSELECT;
-                    break;
-                case '\\Marked':
-                    $attributesValue |= LATT_MARKED;
-                    break;
-                case '\\UnMarked':
-                    $attributesValue |= LATT_UNMARKED;
-                    break;
-                case '\\Referral':
-                    $attributesValue |= LATT_REFERRAL;
-                    break;
-                case '\\HasChildren':
-                    $attributesValue |= LATT_HASCHILDREN;
-                    break;
-                case '\\HasNoChildren':
-                    $attributesValue |= LATT_HASNOCHILDREN;
-                    break;
-            }
-        }
+				case '\\UnMarked':
+					$attributesValue |= LATT_UNMARKED;
 
-        return $attributesValue;
-    }
+					break;
 
-    public static function isValidImap1Connection($imap)
-    {
-        return self::isRetrofitResource($imap);
-    }
+				case '\\Referral':
+					$attributesValue |= LATT_REFERRAL;
 
-    public static function isValidImap2Connection($imap)
-    {
-        return Connection::isValid($imap);
-    }
+					break;
 
-    public static function getAddressObjectList($addressList, $defaultHost = 'UNKNOWN')
-    {
-        $addressObjectList = [];
-        foreach ($addressList as $toAddress) {
-            $email = explode('@', $toAddress->getEmail());
+				case '\\HasChildren':
+					$attributesValue |= LATT_HASCHILDREN;
 
-            $addressObject = (object) [
-                'mailbox' => $email[0],
-                'host' => $email[1] ?? $defaultHost,
-            ];
+					break;
 
-            $personal = $toAddress->getName();
-            if ($personal) {
-                $addressObject->personal = $personal;
-            }
+				case '\\HasNoChildren':
+					$attributesValue |= LATT_HASNOCHILDREN;
 
-            $addressObjectList[] = $addressObject;
-        }
+					break;
+			}
+		}
 
-        return $addressObjectList;
-    }
+		return $attributesValue;
+	}
 
-    public static function isBackportCall($backtrace, $depth)
-    {
-        return isset($backtrace[$depth + 1]['function'])
-            && preg_match('/^imap_/', $backtrace[$depth + 1]['function'])
-            && preg_match('/^imap2_/', $backtrace[$depth]['function'])
-            && substr($backtrace[$depth + 1]['function'], 4) == substr($backtrace[$depth]['function'], 5);
-    }
+	/**
+	 * Get name from full mailbox string.
+	 */
+	public static function getMailboxName(string $mailbox) : string
+	{
+		$mailboxParts = \explode('}', $mailbox, 2);
 
-    public static function isRetrofitResource($imap)
-    {
-        return (class_exists('\IMAP\Connection') && $imap instanceof \IMAP\Connection) || (is_resource($imap) && get_resource_type($imap) == 'imap');
-    }
+		return empty($mailboxParts[1]) ? 'INBOX' : $mailboxParts[1];
+	}
 
-    public static function keyBy(string $name, array $list): array
-    {
-        $keyBy = [];
-        foreach ($list as $item) {
-            if (!isset($item->$name)) {
-                trigger_error('keyBy: key "' . $name . '" not found!', E_USER_WARNING);
-                continue;
-            }
-            if (isset($keyBy[$item->$name])) {
-                trigger_error('keyBy: duplicate key "' . $name . '" = "' . $item->$name . '"', E_USER_WARNING);
-                continue;
-            }
-            $keyBy[$item->$name] = $item;
-        }
+	public static function getSslModeFromMailbox(string $mailbox) : string | bool
+	{
+		$mailboxParts = \is_array($mailbox) ? $mailbox : self::parseMailboxString($mailbox);
 
-        return $keyBy;
-    }
+		if (\in_array('ssl', $mailboxParts['path'])) {
+			return 'ssl';
+		}
+
+		return false;
+	}
+
+	public static function isBackportCall(array $backtrace, int $depth) : void
+	{
+		return isset($backtrace[$depth + 1]['function'])
+			&& \preg_match('/^imap_/', $backtrace[$depth + 1]['function'])
+			&& \preg_match('/^imap2_/', $backtrace[$depth]['function'])
+			&& \substr($backtrace[$depth + 1]['function'], 4) == \substr($backtrace[$depth]['function'], 5);
+	}
+
+	public static function keyBy(string $name, array $list) : array
+	{
+		$keyBy = [];
+
+		foreach ($list as $item) {
+			if (! isset($item->{$name})) {
+				\trigger_error('keyBy: key "' . $name . '" not found!', E_USER_WARNING);
+
+				continue;
+			}
+
+			if (isset($keyBy[$item->{$name}])) {
+				\trigger_error('keyBy: duplicate key "' . $name . '" = "' . $item->{$name} . '"', E_USER_WARNING);
+
+				continue;
+			}
+			$keyBy[$item->{$name}] = $item;
+		}
+
+		return $keyBy;
+	}
+
+	public static function parseMailboxString(string $mailbox) : array
+	{
+		$mailboxParts = \explode('}', $mailbox);
+		$mailboxParts[0] = \substr($mailboxParts[0], 1);
+
+		$values = \parse_url($mailboxParts[0]);
+
+		$values['mailbox'] = $mailboxParts[1] ?? '';
+		$values['path'] = \explode('/', $values['path']);
+
+		return $values;
+	}
+
+	public static function sanitizeAddress(string $address, string $defaultHost = 'UNKNOWN') : string
+	{
+		$addressList = \imap_rfc822_parse_adrlist($address, $defaultHost);
+
+		$sanitizedAddress = [];
+
+		foreach ($addressList as $addressEntry) {
+			$sanitizedAddress[] = \imap_rfc822_write_address($addressEntry->mailbox, $addressEntry->host, $addressEntry->personal);
+		}
+
+		return \implode(', ', $sanitizedAddress);
+	}
+
+	public static function unique() : int
+	{
+		return \md5(\microtime() . \time() . \rand(1000, 9999));
+	}
+
+	public static function writeAddressFromEnvelope($addressList) : string
+	{
+		if (empty($addressList)) {
+			return;
+		}
+
+		$sanitizedAddress = [];
+
+		foreach ($addressList as $addressEntry) {
+			$parsedAddressEntry = \imap_rfc822_write_address($addressEntry[2], $addressEntry[3], $addressEntry[0]);
+
+			if ('@""' == \substr($parsedAddressEntry, -3)) {
+				$parsedAddressEntry = \substr($parsedAddressEntry, 0, \strlen($parsedAddressEntry) - 3) . ': ';
+			}
+			$sanitizedAddress[] = $parsedAddressEntry;
+		}
+
+		return \implode(', ', $sanitizedAddress);
+	}
 }

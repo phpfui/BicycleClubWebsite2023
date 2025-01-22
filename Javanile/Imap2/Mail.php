@@ -12,99 +12,75 @@
 namespace Javanile\Imap2;
 
 class Mail
-{
-    /**
-     * Copy specified messages to a mailbox.
-     *
-     * @param $imap
-     * @param $messageNums
-     * @param $mailbox
-     * @param $flags
-     *
-     * @return false|mixed
-     */
-    public static function copy($imap, $messageNums, $mailbox, $flags = 0)
-    {
-        if (!is_a($imap, Connection::class)) {
-            return Errors::invalidImapConnection(debug_backtrace(), 1, false);
-        }
+	{
+	/**
+	 * Copy specified messages to a mailbox.
+	 *
+	 * @return false|mixed
+	 */
+	public static function copy(Connection $imap, $messageNums, string $mailbox, int $flags = 0)
+		{
+		if ($flags & CP_MOVE)
+			{
+			return Mail::move($imap, $messageNums, $mailbox, $flags);
+			}
 
-        if ($flags & CP_MOVE) {
-            return Mail::move($imap, $messageNums, $mailbox, $flags);
-        }
+		$client = $imap->getClient();
 
-        $client = $imap->getClient();
+		if (! ($flags & CP_UID))
+			{
+			$messageNums = ImapHelpers::idToUid($imap, $messageNums);
+			}
 
-        if (!($flags & CP_UID)) {
-            $messageNums = ImapHelpers::idToUid($imap, $messageNums);
-        }
+		$from = $imap->getMailboxName();
+		$to = $mailbox;
 
-        $from = $imap->getMailboxName();
-        $to = $mailbox;
+		return $client->copy($messageNums, $from, $to);
+		}
 
-        return $client->copy($messageNums, $from, $to);
-    }
+	/**
+	 * Move specified messages to a mailbox.
+	 *
+	 * @return false|mixed
+	 */
+	public static function move(Connection $imap, $messageNums, $mailbox, $flags = 0)
+		{
+		$client = $imap->getClient();
+		//$client->setDebug(true);
 
-    /**
-     * Move specified messages to a mailbox.
-     *
-     * @param $imap
-     * @param $messageNums
-     * @param $mailbox
-     * @param $flags
-     *
-     * @return false|mixed
-     */
-    public static function move($imap, $messageNums, $mailbox, $flags = 0)
-    {
-        if (!is_a($imap, Connection::class)) {
-            return Errors::invalidImapConnection(debug_backtrace(), 1, false);
-        }
+		if (! ($flags & CP_UID))
+			{
+			$messageNums = ImapHelpers::idToUid($imap, $messageNums);
+			}
 
-        $client = $imap->getClient();
-        #$client->setDebug(true);
+		return $client->move($messageNums, $imap->getMailboxName(), $mailbox);
+		}
 
-        if (!($flags & CP_UID)) {
-            $messageNums = ImapHelpers::idToUid($imap, $messageNums);
-        }
+	/**
+	 * Send an email message.
+	 *
+	 * @return false|mixed
+	 */
+	public static function send(string $to, string $subject, string $message, $additionalHeaders = null, ?string $cc = null, ?string $bcc = null, ?string $returnPath = null)
+		{
+		$client = $imap->getClient();
 
-        return $client->move($messageNums, $imap->getMailboxName(), $mailbox);
-    }
+		if (! ($options & ST_UID))
+			{
+			$messages = $client->fetch($imap->getMailboxName(), $sequence, false, ['UID']);
 
-    /**
-     * Send an email message.
-     *
-     * @param $to
-     * @param $subject
-     * @param $message
-     * @param $additionalHeaders
-     * @param $cc
-     * @param $bcc
-     * @param $returnPath
-     *
-     * @return false|mixed
-     */
-    public static function send($to, $subject, $message, $additionalHeaders = null, $cc = null, $bcc = null, $returnPath = null)
-    {
-        if (!is_a($imap, Connection::class)) {
-            return Errors::invalidImapConnection(debug_backtrace(), 1, false);
-        }
+			$uid = [];
 
-        $client = $imap->getClient();
+			foreach ($messages as $message)
+				{
+				$uid[] = $message->uid;
+				}
 
-        if (!($options & ST_UID)) {
-            $messages = $client->fetch($imap->getMailboxName(), $sequence, false, ['UID']);
+			$sequence = \implode(',', $uid);
+			}
 
-            $uid = [];
-            foreach ($messages as $message) {
-                $uid[] = $message->uid;
-            }
+		$client->flag($imap->getMailboxName(), $sequence, \strtoupper(\substr($flag, 1)));
 
-            $sequence = implode(',', $uid);
-        }
-
-        $client->flag($imap->getMailboxName(), $sequence, strtoupper(substr($flag, 1)));
-
-        return false;
-    }
-}
+		return false;
+		}
+	}

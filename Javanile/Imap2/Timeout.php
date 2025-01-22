@@ -12,22 +12,23 @@
 namespace Javanile\Imap2;
 
 class Timeout
-{
-    protected static $timeout;
+	{
+	protected static array $timeout;
 
-    public static function set($timeoutType, $timeout = -1)
-    {
-        if ($timeout == -1) {
-            return self::get($timeoutType);
-        }
+	public static function get($timeoutType)
+		{
+		return self::$timeout[$timeoutType];
+		}
 
-        self::$timeout[$timeoutType] = $timeout;
+	public static function set($timeoutType, int $timeout = -1)
+		{
+		if (-1 == $timeout)
+			{
+			return self::get($timeoutType);
+			}
 
-        return true;
-    }
+		self::$timeout[$timeoutType] = $timeout;
 
-    public static function get($timeoutType)
-    {
-        return self::$timeout[$timeoutType];
-    }
-}
+		return true;
+		}
+	}

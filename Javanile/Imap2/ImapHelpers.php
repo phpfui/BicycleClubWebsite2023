@@ -12,48 +12,42 @@
 namespace Javanile\Imap2;
 
 class ImapHelpers
-{
-    /**
-     * Convert a string contain a sequence of message id to and equivalent with uid.
-     *
-     * @param $imap
-     * @param $messageNums
-     *
-     * @return string
-     */
-    public static function idToUid($imap, $messageNums)
-    {
-        $client = $imap->getClient();
+	{
+	/**
+	 * Convert a string contain a sequence of message id to and equivalent with uid.
+	 */
+	public static function idToUid(Connection $imap, $messageNums) : string
+		{
+		$client = $imap->getClient();
 
-        $messages = $client->fetch($imap->getMailboxName(), $messageNums, false, ['UID']);
+		$messages = $client->fetch($imap->getMailboxName(), $messageNums, false, ['UID']);
 
-        $uid = [];
-        foreach ($messages as $message) {
-            $uid[] = $message->uid;
-        }
+		$uid = [];
 
-        return implode(',', $uid);
-    }
+		foreach ($messages as $message)
+			{
+			$uid[] = $message->uid;
+			}
 
-    /**
-     * Convert a string contain a sequence of uid(s) to an equivalent with id(s).
-     *
-     * @param $imap
-     * @param $messageUid
-     *
-     * @return string
-     */
-    public static function uidToId($imap, $messageUid)
-    {
-        $client = $imap->getClient();
+		return \implode(',', $uid);
+		}
 
-        $messages = $client->fetch($imap->getMailboxName(), $messageUid, true, ['UID']);
+	/**
+	 * Convert a string contain a sequence of uid(s) to an equivalent with id(s).
+	 */
+	public static function uidToId(Connection $imap, $messageUid) : string
+		{
+		$client = $imap->getClient();
 
-        $id = [];
-        foreach ($messages as $message) {
-            $id[] = $message->id;
-        }
+		$messages = $client->fetch($imap->getMailboxName(), $messageUid, true, ['UID']);
 
-        return implode(',', $id);
-    }
-}
+		$id = [];
+
+		foreach ($messages as $message)
+			{
+			$id[] = $message->id;
+			}
+
+		return \implode(',', $id);
+		}
+	}

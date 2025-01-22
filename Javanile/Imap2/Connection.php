@@ -15,278 +15,226 @@ use Javanile\Imap2\Roundcube\ImapClient;
 
 class Connection
 {
-    protected $mailbox;
-    protected $user;
-    protected $password;
-    protected $flags;
-    protected $retries;
-    protected $options;
-    protected $client;
-    protected $host;
-    protected $port;
-    protected $sslMode;
-    protected $currentMailbox;
-    protected $connected;
-    protected $registry;
+	protected ImapClient $client;
 
-    /**
-     *
-     */
-    public function __construct($mailbox, $user, $password, $flags = 0, $retries = 0, $options = [])
-    {
-        $this->user = $user;
-        $this->password = $password;
-        $this->flags = $flags;
-        $this->retries = $retries;
-        $this->options = $options;
+	protected $connected;
 
-        $this->openMailbox($mailbox);
+	protected string $currentMailbox;
 
-        $this->client = new ImapClient();
-    }
+	protected string $host;
 
-    public function openMailbox($mailbox)
-    {
-        $this->mailbox = $mailbox;
+	protected int $port;
 
-        $mailboxParts = Functions::parseMailboxString($mailbox);
+	protected array $registry;
 
-        $this->host = Functions::getHostFromMailbox($mailboxParts);
-        $this->port = @$mailboxParts['port'];
-        $this->sslMode = Functions::getSslModeFromMailbox($mailboxParts);
-        $this->currentMailbox = $mailboxParts['mailbox'];
-    }
+	protected string $sslMode;
 
-    /**
-     * Open an IMAP stream to a mailbox.
-     *
-     * @param $mailbox
-     * @param $user
-     * @param $password
-     * @param int $flags
-     * @param int $retries
-     * @param array $options
-     *
-     * @return void
-     */
-    public static function open($mailbox, $user, $password, $flags = 0, $retries = 0, $options = [])
-    {
-        $connection = new Connection($mailbox, $user, $password, $flags, $retries, $options);
+	public function __construct(protected $mailbox, protected string $user, protected string $password, protected int $flags = 0, protected int $retries = 0, protected array $options = [])
+	{
+		$this->openMailbox($mailbox);
 
-        $success = $connection->connect();
+		$this->client = new ImapClient();
+	}
 
-        if (empty($success)) {
-            Errors::appendErrorCanNotOpen($connection->getMailbox(), $connection->getLastError());
+	public static function close(Connection $imap, int $flags = 0)
+	{
+		$client = $imap->getClient();
 
-            trigger_error(Errors::couldNotOpenStream($connection->getMailbox(), debug_backtrace(), 1), E_USER_WARNING);
+		if ($client->close()) {
+			return true;
+		}
 
-            return false;
-        }
+		$client->closeConnection();
 
-        return $connection;
-    }
+		return true;
+	}
 
-    public static function reopen($imap, $mailbox, $flags = 0, $retries = 0)
-    {
-        if (!is_a($imap, Connection::class)) {
-            return Errors::invalidImapConnection(debug_backtrace(), 1, null);
-        }
+	public function getClient()
+	{
+		return $this->client;
+	}
 
-        $imap->openMailbox($mailbox);
+	public function getHost()
+	{
+		return $this->host;
+	}
 
-        $success = $imap->connect();
+	public function getLastError()
+	{
+		$client = $this->getClient();
 
-        if (empty($success)) {
-            trigger_error('imap2_reopen(): Couldn\'t re-open stream', E_USER_WARNING);
+		return $client->error;
+	}
 
-            return false;
-        }
+	public function getMailbox()
+	{
+		return $this->mailbox;
+	}
 
-        $imap->selectMailbox();
+	public function getMailboxName()
+	{
+		return $this->currentMailbox;
+	}
 
-        return true;
-    }
+	public function getRegistryValue($space, $item, $key)
+	{
+		if (isset($this->registry[$space][$item][$key])) {
+			return $this->registry[$space][$item][$key];
+		}
 
-    public static function ping($imap)
-    {
-        if (!is_a($imap, Connection::class)) {
-            return Errors::invalidImapConnection(debug_backtrace(), 1, null);
-        }
+		return false;
+	}
 
-        $client = $imap->getClient();
-        #$client->setDebug(true);
-        $status = $client->status($imap->getMailboxName(), ['UIDNEXT']);
+	public function isConnected()
+	{
+		return (bool)($this->connected);
+	}
 
-        return isset($status['UIDNEXT']) && $status['UIDNEXT'] > 0;
-    }
+	public static function isValid(Connection $imap)
+	{
+		return $imap->isConnected();
+	}
 
-    /**
-     *
-     */
-    protected function connect()
-    {
-        $this->connected = false;
-        $client = $this->getClient();
-        #$client->setDebug(true);
+	/**
+	 * Open an IMAP stream to a mailbox.
+	 */
+	public static function open(string $mailbox, string $user, string $password, int $flags = 0, int $retries = 0, array $options = []) : void
+	{
+		$connection = new Connection($mailbox, $user, $password, $flags, $retries, $options);
 
-        $success = $client->connect($this->host, $this->user, $this->password, [
-            'port' => $this->port,
-            'ssl_mode' => $this->sslMode,
-            'auth_type' => $this->flags & OP_XOAUTH2 ? 'XOAUTH2' : 'IMAP',
-            'timeout' => -1,
-            'force_caps' => false,
-        ]);
+		$success = $connection->connect();
 
-        if (empty($success)) {
-            return false;
-        }
+		if (empty($success)) {
+			Errors::appendErrorCanNotOpen($connection->getMailbox(), $connection->getLastError());
 
-        if (empty($this->currentMailbox)) {
-            $mailboxes = $this->client->listMailboxes('', '*');
-            if (false === $mailboxes) {
-                return false;
-            }
+			\trigger_error(Errors::couldNotOpenStream($connection->getMailbox(), \debug_backtrace(), 1), E_USER_WARNING);
 
-            if (in_array('INBOX', $mailboxes)) {
-                $this->currentMailbox = 'INBOX';
-                $this->mailbox .= 'INBOX';
-            }
-        }
+			return false;
+		}
 
-        $this->rewriteMailbox();
+		return $connection;
+	}
 
-        $this->connected = true;
+	public function openMailbox(string $mailbox) : void
+	{
+		$this->mailbox = $mailbox;
 
-        return $this;
-    }
+		$mailboxParts = Functions::parseMailboxString($mailbox);
 
-    /**
-     *
-     */
-    protected function rewriteMailbox($forceMailbox = null)
-    {
-        $mailboxParts = Functions::parseMailboxString($this->mailbox);
+		$this->host = Functions::getHostFromMailbox($mailboxParts);
+		$this->port = @$mailboxParts['port'];
+		$this->sslMode = Functions::getSslModeFromMailbox($mailboxParts);
+		$this->currentMailbox = $mailboxParts['mailbox'];
+	}
 
-        // '{imap.gmail.com:993/imap/notls/ssl/user="javanile.develop@gmail.com"}INBOX'
-        $params = [];
+	public static function ping(Connection $imap) : ?bool
+	{
+		$client = $imap->getClient();
+		//$client->setDebug(true);
+		$status = $client->status($imap->getMailboxName(), ['UIDNEXT']);
 
-        $params[] = 'imap';
-        if ($this->sslMode == 'ssl') {
-            $params[] = 'notls';
-            $params[] = 'ssl';
-        }
-        $params[] = 'user="'.$this->user.'"';
+		return isset($status['UIDNEXT']) && $status['UIDNEXT'] > 0;
+	}
 
-        $mailboxName = $forceMailbox ? $forceMailbox : $mailboxParts['mailbox'];
+	public static function reopen(Connection $imap, string $mailbox, int $flags = 0, int $retries = 0) : ?bool
+	{
+		$imap->openMailbox($mailbox);
 
-        $updatedMailbox = '{'.$mailboxParts['host'].':'.$mailboxParts['port'].'/'.implode('/', $params).'}'.$mailboxName;
+		$success = $imap->connect();
 
-        $this->mailbox = $updatedMailbox;
-    }
+		if (empty($success)) {
+			\trigger_error('imap2_reopen(): Couldn\'t re-open stream', E_USER_WARNING);
 
-    /**
-     *
-     */
-    public function getClient()
-    {
-        return $this->client;
-    }
+			return false;
+		}
 
-    /**
-     *
-     */
-    public function getMailbox()
-    {
-        return $this->mailbox;
-    }
+		$imap->selectMailbox();
 
-    /**
-     *
-     */
-    public function getMailboxName()
-    {
-        return $this->currentMailbox;
-    }
+		return true;
+	}
 
-    /**
-     *
-     */
-    public function getHost()
-    {
-        return $this->host;
-    }
+	public function selectMailbox() : void
+	{
+		$success = $this->client->select($this->currentMailbox);
 
-    /**
-     *
-     */
-    public function selectMailbox()
-    {
-        $success = $this->client->select($this->currentMailbox);
+		if (empty($success)) {
+			$this->rewriteMailbox('<no_mailbox>');
+		}
+	}
 
-        if (empty($success)) {
-            $this->rewriteMailbox('<no_mailbox>');
-        }
-    }
+	public function setRegistryValue($space, $item, $key, $value) : void
+	{
+		if (empty($this->registry)) {
+			$this->registry = [];
+		}
 
-    /**
-     *
-     */
-    public static function close($imap, $flags = 0)
-    {
-        if (!is_a($imap, Connection::class)) {
-            return Errors::invalidImapConnection(debug_backtrace(), 1, false);
-        }
+		if (empty($this->registry[$space])) {
+			$this->registry[$space] = [];
+		}
 
-        $client = $imap->getClient();
-        if ($client->close()) {
-            return true;
-        }
+		if (empty($this->registry[$space][$item])) {
+			$this->registry[$space][$item] = [];
+		}
 
-        $client->closeConnection();
+		$this->registry[$space][$item][$key] = $value;
+	}
 
-        return true;
-    }
+	protected function connect() : bool|static
+	{
+		$this->connected = false;
+		$client = $this->getClient();
+		//$client->setDebug(true);
 
-    public function isConnected()
-    {
-        return boolval($this->connected);
-    }
+		$success = $client->connect($this->host, $this->user, $this->password, [
+			'port' => $this->port,
+			'ssl_mode' => $this->sslMode,
+			'auth_type' => $this->flags & OP_XOAUTH2 ? 'XOAUTH2' : 'IMAP',
+			'timeout' => -1,
+			'force_caps' => false,
+		]);
 
-    public static function isValid($imap)
-    {
-        return is_a($imap, Connection::class) && $imap->isConnected();
-    }
+		if (empty($success)) {
+			return false;
+		}
 
-    public function setRegistryValue($space, $item, $key, $value)
-    {
-        if (empty($this->registry)) {
-            $this->registry = [];
-        }
+		if (empty($this->currentMailbox)) {
+			$mailboxes = $this->client->listMailboxes('', '*');
 
-        if (empty($this->registry[$space])) {
-            $this->registry[$space] = [];
-        }
+			if (false === $mailboxes) {
+				return false;
+			}
 
-        if (empty($this->registry[$space][$item])) {
-            $this->registry[$space][$item] = [];
-        }
+			if (\in_array('INBOX', $mailboxes)) {
+				$this->currentMailbox = 'INBOX';
+				$this->mailbox .= 'INBOX';
+			}
+		}
 
-        $this->registry[$space][$item][$key] = $value;
-    }
+		$this->rewriteMailbox();
 
-    public function getRegistryValue($space, $item, $key)
-    {
-        if (isset($this->registry[$space][$item][$key])) {
-            return $this->registry[$space][$item][$key];
-        }
+		$this->connected = true;
 
-        return false;
-    }
+		return $this;
+	}
 
-    public function getLastError()
-    {
-        $client = $this->getClient();
+	protected function rewriteMailbox(?string $forceMailbox = null) : void
+	{
+		$mailboxParts = Functions::parseMailboxString($this->mailbox);
 
-        return $client->error;
-    }
+		$params = [];
+
+		$params[] = 'imap';
+
+		if ('ssl' == $this->sslMode) {
+			$params[] = 'notls';
+			$params[] = 'ssl';
+		}
+		$params[] = 'user="' . $this->user . '"';
+
+		$mailboxName = $forceMailbox ?: $mailboxParts['mailbox'];
+
+		$updatedMailbox = '{' . $mailboxParts['host'] . ':' . $mailboxParts['port'] . '/' . \implode('/', $params) . '}' . $mailboxName;
+
+		$this->mailbox = $updatedMailbox;
+	}
 }

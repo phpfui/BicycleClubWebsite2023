@@ -186,10 +186,10 @@ class Functions
 		return \md5(\microtime() . \time() . \rand(1000, 9999));
 	}
 
-	public static function writeAddressFromEnvelope($addressList) : string
+	public static function writeAddressFromEnvelope(array $addressList) : string
 	{
 		if (empty($addressList)) {
-			return;
+			return '';
 		}
 
 		$sanitizedAddress = [];

@@ -114,7 +114,7 @@ class Functions
 		return empty($mailboxParts[1]) ? 'INBOX' : $mailboxParts[1];
 	}
 
-	public static function getSslModeFromMailbox(string $mailbox) : string | bool
+	public static function getSslModeFromMailbox(array|string $mailbox) : string | bool
 	{
 		$mailboxParts = \is_array($mailbox) ? $mailbox : self::parseMailboxString($mailbox);
 

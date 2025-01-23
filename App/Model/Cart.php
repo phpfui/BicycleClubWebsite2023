@@ -598,15 +598,7 @@ class Cart
 				}
 			}
 
-		if ($discount->maximumUses)
-			{
-			if (\App\Table\Invoice::getDiscountCodeTimesUsed($discount->discountCodeId) >= $discount->maximumUses)
-				{
-				return false;
-				}
-			}
-
-		return true;
+		return ! ($discount->maximumUses && $discount->timesUsed >= $discount->maximumUses);
 		}
 
 	private function zero() : void

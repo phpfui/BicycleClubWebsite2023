@@ -175,13 +175,6 @@ class Invoice extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
 		}
 
-	public static function getDiscountCodeTimesUsed(int $discountCodeId) : int
-		{
-		$sql = 'select count(*) from invoice where discountCodeId=?';
-
-		return (int)\PHPFUI\ORM::getValue($sql, [$discountCodeId]);
-		}
-
 	public static function getPaidByDate(int $shipped, string $startDate = '', string $endDate = '', int $points = 0) : \PHPFUI\ORM\ArrayCursor
 		{
 		$sql = self::getSelectedFields() ;

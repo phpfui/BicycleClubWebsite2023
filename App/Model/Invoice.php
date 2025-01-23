@@ -439,6 +439,7 @@ class Invoice
 						break;
 
 					case \App\Enum\Store\Type::DISCOUNT_CODE:
+						$invoice->discountCodeId = (int)$cartItem['discountCodeId'];
 
 						break;
 

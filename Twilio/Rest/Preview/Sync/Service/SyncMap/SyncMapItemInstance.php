@@ -48,7 +48,7 @@ class SyncMapItemInstance extends InstanceResource
      * @param string $mapSid 
      * @param string $key 
      */
-    public function __construct(Version $version, array $payload, string $serviceSid, string $mapSid, string $key = null)
+    public function __construct(Version $version, array $payload, string $serviceSid, string $mapSid, ?string $key = null)
     {
         parent::__construct($version);
 

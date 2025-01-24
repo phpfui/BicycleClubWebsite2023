@@ -44,7 +44,7 @@ class SyncMapPermissionInstance extends InstanceResource
      * @param string $mapSid Identifier of the Sync Map. Either a SID or a unique name.
      * @param string $identity Arbitrary string identifier representing a user associated with an FPA token, assigned by the developer.
      */
-    public function __construct(Version $version, array $payload, string $serviceSid, string $mapSid, string $identity = null)
+    public function __construct(Version $version, array $payload, string $serviceSid, string $mapSid, ?string $identity = null)
     {
         parent::__construct($version);
 

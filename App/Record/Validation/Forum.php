@@ -12,7 +12,7 @@ class Forum extends \PHPFUI\ORM\Validator
 		'attachments' => ['integer'],
 		'closed' => ['integer'],
 		'description' => ['maxlength', 'required'],
-		'email' => ['maxlength', 'required', 'unique'],
+		'email' => ['maxlength', 'required', 'unique', '!contains:@,.,#,$,%,^,&,<,*,(,),;,/,<,>,?,[,],{,},+,=,.,~,!,`,\\'],
 		'name' => ['maxlength', 'required', 'unique'],
 		'forumId' => ['integer'],
 		'whiteList' => ['maxlength'],

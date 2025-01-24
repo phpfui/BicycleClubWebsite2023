@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5c8abb1f34253c30151ace39e157df56",
+    "content-hash": "c3aaccaf6058f926855bab3a678ff790",
     "packages": [
         {
             "name": "alek13/slack",
@@ -5270,7 +5270,7 @@
         },
         {
             "name": "twilio/sdk",
-            "version": "8.3.12",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twilio/twilio-php.git",
@@ -5292,6 +5292,7 @@
             "suggest": {
                 "guzzlehttp/guzzle": "An HTTP client to execute the API requests"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -7512,12 +7513,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "2135caa192c134f0a421ee680fa9c0e346841dbc"
+                "reference": "fa05b1cdeb1d38692aea5d34bed226b682403a6d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/2135caa192c134f0a421ee680fa9c0e346841dbc",
-                "reference": "2135caa192c134f0a421ee680fa9c0e346841dbc",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/fa05b1cdeb1d38692aea5d34bed226b682403a6d",
+                "reference": "fa05b1cdeb1d38692aea5d34bed226b682403a6d",
                 "shasum": ""
             },
             "conflict": {
@@ -7990,7 +7991,7 @@
                 "phpfastcache/phpfastcache": "<6.1.5|>=7,<7.1.2|>=8,<8.0.7",
                 "phpmailer/phpmailer": "<6.5",
                 "phpmussel/phpmussel": ">=1,<1.6",
-                "phpmyadmin/phpmyadmin": "<5.2.1",
+                "phpmyadmin/phpmyadmin": "<5.2.2",
                 "phpmyfaq/phpmyfaq": "<3.2.5|==3.2.5|>=3.2.10,<=4.0.1",
                 "phpoffice/common": "<0.2.9",
                 "phpoffice/phpexcel": "<1.8.1",
@@ -8374,7 +8375,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-01-22T19:04:49+00:00"
+            "time": "2025-01-23T18:06:21+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -10402,7 +10403,8 @@
     "stability-flags": {
         "phpfui/common": 20,
         "phpfui/constantcontact": 20,
-        "roave/security-advisories": 20
+        "roave/security-advisories": 20,
+        "twilio/sdk": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

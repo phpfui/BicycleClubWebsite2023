@@ -44,7 +44,7 @@ class SyncListPermissionInstance extends InstanceResource
      * @param string $listSid Identifier of the Sync List. Either a SID or a unique name.
      * @param string $identity Arbitrary string identifier representing a user associated with an FPA token, assigned by the developer.
      */
-    public function __construct(Version $version, array $payload, string $serviceSid, string $listSid, string $identity = null)
+    public function __construct(Version $version, array $payload, string $serviceSid, string $listSid, ?string $identity = null)
     {
         parent::__construct($version);
 

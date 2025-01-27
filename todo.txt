@@ -1,3 +1,5 @@
+Add white list credit for GA events
+
 Add new forum permissions to member group.
 
 Add normal member permission for free members.

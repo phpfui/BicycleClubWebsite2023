@@ -11,14 +11,7 @@ class Enum extends \PHPFUI\ORM\VirtualField
 		{
 		$enum = $parameters[0];
 
-		$value = $this->currentRecord->offsetGet($this->fieldName) ?? 0;
-
-		if ($value instanceof $enum)
-			{
-			return $value;
-			}
-
-		return $enum::from($value);
+		return $enum::from($this->currentRecord->offsetGet($this->fieldName) ?? 0);
 		}
 
 	/**

@@ -454,8 +454,8 @@ class RideWithGPS
 
 		$fieldSet = new \PHPFUI\FieldSet('Overall Ride With GPS Stats');
 		$fieldSet->add(new \App\UI\Display('Total Routes', $total));
-		$fieldSet->add(new \App\UI\Display('Synced Routes', $synced));
-		$fieldSet->add(new \App\UI\Display('Unsynced Routes', $total - $synced));
+		$fieldSet->add(new \App\UI\Display('Map Based Routes', $synced));
+		$fieldSet->add(new \App\UI\Display('Recorded Routes', $total - $synced));
 		$fieldSet->add(new \App\UI\Display('Club Routes', $clubCount));
 		$container->add($fieldSet);
 

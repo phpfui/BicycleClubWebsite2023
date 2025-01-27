@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c3aaccaf6058f926855bab3a678ff790",
+    "content-hash": "5c8abb1f34253c30151ace39e157df56",
     "packages": [
         {
             "name": "alek13/slack",
@@ -3503,16 +3503,16 @@
         },
         {
             "name": "phpfui/orm",
-            "version": "V1.7.11",
+            "version": "V1.7.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ORM.git",
-                "reference": "d4f7e4f0ac34e4ff27b517e956825a7e3c2216e7"
+                "reference": "68a51dfdaf8b6fb91a5c02ac3436c4abc290343a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ORM/zipball/d4f7e4f0ac34e4ff27b517e956825a7e3c2216e7",
-                "reference": "d4f7e4f0ac34e4ff27b517e956825a7e3c2216e7",
+                "url": "https://api.github.com/repos/phpfui/ORM/zipball/68a51dfdaf8b6fb91a5c02ac3436c4abc290343a",
+                "reference": "68a51dfdaf8b6fb91a5c02ac3436c4abc290343a",
                 "shasum": ""
             },
             "require": {
@@ -3560,9 +3560,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ORM/issues",
-                "source": "https://github.com/phpfui/ORM/tree/V1.7.11"
+                "source": "https://github.com/phpfui/ORM/tree/V1.7.12"
             },
-            "time": "2025-01-16T04:04:46+00:00"
+            "time": "2025-01-27T16:37:06+00:00"
         },
         {
             "name": "phpfui/php-imap",
@@ -5151,16 +5151,16 @@
         },
         {
             "name": "tinify/tinify",
-            "version": "1.6.1",
+            "version": "1.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinify/tinify-php.git",
-                "reference": "1d23f5069f450dc33dd062083a825be2baed48ea"
+                "reference": "8386ac9b5d4068640ad9756a897ccd162597b8c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinify/tinify-php/zipball/1d23f5069f450dc33dd062083a825be2baed48ea",
-                "reference": "1d23f5069f450dc33dd062083a825be2baed48ea",
+                "url": "https://api.github.com/repos/tinify/tinify-php/zipball/8386ac9b5d4068640ad9756a897ccd162597b8c1",
+                "reference": "8386ac9b5d4068640ad9756a897ccd162597b8c1",
                 "shasum": ""
             },
             "require": {
@@ -5205,9 +5205,9 @@
             "support": {
                 "email": "support@tinify.com",
                 "issues": "https://github.com/tinify/tinify-php/issues",
-                "source": "https://github.com/tinify/tinify-php/tree/1.6.1"
+                "source": "https://github.com/tinify/tinify-php/tree/1.6.2"
             },
-            "time": "2023-02-21T14:51:21+00:00"
+            "time": "2025-01-27T15:41:06+00:00"
         },
         {
             "name": "tinymce/tinymce",
@@ -5270,16 +5270,16 @@
         },
         {
             "name": "twilio/sdk",
-            "version": "dev-main",
+            "version": "8.3.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twilio/twilio-php.git",
-                "reference": "6fd8a3ef45efd1154d5d84a8be96b1be2051de64"
+                "reference": "9981b086f1463389cb0df0be59e90c1f64d430c2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/6fd8a3ef45efd1154d5d84a8be96b1be2051de64",
-                "reference": "6fd8a3ef45efd1154d5d84a8be96b1be2051de64",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/9981b086f1463389cb0df0be59e90c1f64d430c2",
+                "reference": "9981b086f1463389cb0df0be59e90c1f64d430c2",
                 "shasum": ""
             },
             "require": {
@@ -5292,7 +5292,6 @@
             "suggest": {
                 "guzzlehttp/guzzle": "An HTTP client to execute the API requests"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -5318,9 +5317,9 @@
             ],
             "support": {
                 "issues": "https://github.com/twilio/twilio-php/issues",
-                "source": "https://github.com/twilio/twilio-php/tree/8.3.12"
+                "source": "https://github.com/twilio/twilio-php/tree/8.3.13"
             },
-            "time": "2025-01-13T11:49:32+00:00"
+            "time": "2025-01-28T11:38:41+00:00"
         },
         {
             "name": "voku/simple_html_dom",
@@ -6116,16 +6115,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.68.1",
+            "version": "v3.68.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "b9db2b2ea3cdba7201067acee46f984ef2397cff"
+                "reference": "85fd31cced824749a732e697acdd1a3d657312f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/b9db2b2ea3cdba7201067acee46f984ef2397cff",
-                "reference": "b9db2b2ea3cdba7201067acee46f984ef2397cff",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/85fd31cced824749a732e697acdd1a3d657312f0",
+                "reference": "85fd31cced824749a732e697acdd1a3d657312f0",
                 "shasum": ""
             },
             "require": {
@@ -6207,7 +6206,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.68.1"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.68.3"
             },
             "funding": [
                 {
@@ -6215,7 +6214,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-01-17T09:20:36+00:00"
+            "time": "2025-01-27T16:37:32+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -7513,12 +7512,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "fa05b1cdeb1d38692aea5d34bed226b682403a6d"
+                "reference": "43863a277154d140db783fe2ba50166fae26bb2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/fa05b1cdeb1d38692aea5d34bed226b682403a6d",
-                "reference": "fa05b1cdeb1d38692aea5d34bed226b682403a6d",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/43863a277154d140db783fe2ba50166fae26bb2d",
+                "reference": "43863a277154d140db783fe2ba50166fae26bb2d",
                 "shasum": ""
             },
             "conflict": {
@@ -7656,7 +7655,7 @@
                 "doctrine/mongodb-odm": "<1.0.2",
                 "doctrine/mongodb-odm-bundle": "<3.0.1",
                 "doctrine/orm": ">=1,<1.2.4|>=2,<2.4.8|>=2.5,<2.5.1|>=2.8.3,<2.8.4",
-                "dolibarr/dolibarr": "<19.0.2",
+                "dolibarr/dolibarr": "<19.0.2|==21.0.0.0-beta",
                 "dompdf/dompdf": "<2.0.4",
                 "doublethreedigital/guest-entries": "<3.1.2",
                 "drupal/core": ">=6,<6.38|>=7,<7.102|>=8,<10.2.11|>=10.3,<10.3.9|>=11,<11.0.8",
@@ -8375,7 +8374,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-01-23T18:06:21+00:00"
+            "time": "2025-01-27T21:04:44+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -10403,8 +10402,7 @@
     "stability-flags": {
         "phpfui/common": 20,
         "phpfui/constantcontact": 20,
-        "roave/security-advisories": 20,
-        "twilio/sdk": 20
+        "roave/security-advisories": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

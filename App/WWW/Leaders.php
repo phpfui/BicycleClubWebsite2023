@@ -19,6 +19,17 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->backButton->addClass('hollow');
 		}
 
+	public function accidents() : void
+		{
+		if ($this->page->addHeader('Accidents Reported'))
+			{
+			$view = new \App\View\Ride\Accidents($this->page);
+			$rideTable = new \App\Table\Ride();
+			$rideTable->setWhere(new \PHPFUI\ORM\Condition('accident', 1));
+			$this->page->addPageContent($view->list($rideTable));
+			}
+		}
+
 	public function addLocation() : void
 		{
 		if ($this->page->addHeader('Add Start Location'))

@@ -100,10 +100,13 @@ final class AheadOfTimeFactoryCreatorCommand extends Command
         $containerConfigurations = [];
 
         foreach ($compiledFactories as $factory) {
+            $dirName = preg_replace('/\W/', '', $factory->containerConfigurationKey);
+            assert(is_string($dirName));
+
             $targetDirectory = sprintf(
                 '%s/%s',
                 $this->factoryTargetPath,
-                preg_replace('/\W/', '', $factory->containerConfigurationKey)
+                $dirName,
             );
 
             $factoryClassName = sprintf('%sFactory', $factory->fullyQualifiedClassName);
@@ -138,8 +141,8 @@ final class AheadOfTimeFactoryCreatorCommand extends Command
              * Psalm has to understand that the `factoryClassName` variable contains a class-string to a factory which
              * will be available once persisted to the filesystem and loaded via composer autoloading.
              *
-             * @psalm-suppress UnnecessaryVarAnnotation Sadly, we do have to do this as psalm is not able to infer
-             *                                          concatenated arrays.
+             * Sadly, we do have to do this as psalm is not able to infer concatenated arrays.
+             *
              * @var class-string<FactoryInterface> $factoryClassName
              */
             $containerConfigurations[$factory->containerConfigurationKey]['factories'] += [

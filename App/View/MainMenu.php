@@ -128,6 +128,7 @@ class MainMenu extends \App\UI\MainMenu
 
 		if ($menu = $this->addTopMenu('Leaders', 'Ride Leaders'))
 			{
+			$this->addSub($menu, '/Leaders/accidents', 'Accidents Reported');
 			$this->addSub($menu, '/Leaders/crashReport', 'Crash Report');
 			$this->addSub($menu, '/Leaders/pending', 'Pending Ride Leaders');
 			$this->addSub($menu, '/Leaders/apply', 'Become A Ride Leader');

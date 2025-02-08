@@ -34,6 +34,7 @@ final class FactoryCreator implements FactoryCreatorInterface
 {
     private const NAMESPACE_SEPARATOR = '\\';
 
+    // phpcs:disable Generic.Files.LineLength
     private const FACTORY_TEMPLATE = <<<'EOT'
         <?php
 
@@ -43,14 +44,16 @@ final class FactoryCreator implements FactoryCreatorInterface
 
         class %sFactory implements FactoryInterface
         {
-            public function __invoke(ContainerInterface $container, string $requestedName, array $options = null): %s
+            public function __invoke(ContainerInterface $container, string $requestedName, array|null $options = null): %s
             {
                 return new %s(%s);
             }
         }
 
         EOT;
-    private const IMPORT_ALWAYS    = [
+    // phpcs:enable Generic.Files.LineLength
+
+    private const IMPORT_ALWAYS = [
         FactoryInterface::class,
         ContainerInterface::class,
     ];

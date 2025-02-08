@@ -255,9 +255,7 @@ abstract class AbstractPluginManager implements PluginManagerInterface
      *
      * @deprecated Please use {@see AbstractPluginManager::configure()} instead.
      *
-     * @phpcs:disable Generic.Files.LineLength.TooLong
-     * @param class-string<FactoryInterface>|class-string<object&FactoryCallable>|FactoryCallable|FactoryInterface $factory
-     * @phpcs:enable Generic.Files.LineLength.TooLong
+     * @param class-string<FactoryInterface>|FactoryCallable|FactoryInterface $factory
      * @throws ContainerModificationsNotAllowedException If $name already
      *     exists as a service and overrides are disallowed.
      */
@@ -301,9 +299,7 @@ abstract class AbstractPluginManager implements PluginManagerInterface
      *
      * @param string $name Service name
      * @param string|callable|DelegatorFactoryInterface $factory Delegator factory to assign.
-     * @phpcs:disable Generic.Files.LineLength.TooLong
-     * @psalm-param class-string<DelegatorFactoryInterface>|class-string<object&DelegatorCallable>|DelegatorCallable $factory
-     * @phpcs:enable Generic.Files.LineLength.TooLong
+     * @psalm-param class-string<DelegatorFactoryInterface>|DelegatorCallable $factory
      */
     public function addDelegator(string $name, string|callable|DelegatorFactoryInterface $factory): void
     {

@@ -40,14 +40,11 @@ class EventEdit
 
 			$order = 1;
 
-			foreach ($post['ordering'] ?? [] as &$value)
+			foreach ($post['ordering'] ?? [] as $index => $value)
 				{
-				$value = $order++;
+				$post['ordering'][$index] = $order++;
 				}
 			unset($post['orderName'], $post['required'], $post['maximumAllowed'], $post['price'], $post['csvField']);
-
-
-
 
 			$this->gaOptionTable->updateFromTable($post);
 
@@ -499,7 +496,10 @@ class EventEdit
 					{
 					$gaEvent = new \App\Record\GaEvent($post['gaEventId']);
 					$model = new \App\Model\GeneralAdmission();
-					$rider = new \App\Record\GaRider();
+					$gaRiderTable = new \App\Table\GaRider();
+					$gaRiderTable->setLimit(1);
+					$gaRiderTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', (int)$post['gaEventId']));
+					$rider = $gaRiderTable->getRecordCursor()->current();
 					$sender = \App\Model\Session::signedInMemberRecord();
 					$membership = $sender->membership;
 					$rider->address = $membership->address;

@@ -39,7 +39,6 @@ class GeneralAdmission
 			$this->email = new \App\Tools\EMail();
 			$this->email->setSubject('Registration Confirmation for ' . $event->title);
 			$this->email->setFromMember($this->chair);
-			$this->email->setHtml();
 			$this->message = $event->signupMessage;
 			$this->message .= "<p>The following riders have been signed up for <strong>{$event->title}</strong>";
 			$this->message .= ' on ' . $event->eventDate . ' starting from ' . $event->location . '.</p>';

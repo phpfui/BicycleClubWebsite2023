@@ -18,6 +18,9 @@ class PaginatedTable extends \PHPFUI\SortableTable
 	/** @var array<string,string> */
 	private array $fieldTable = [];
 
+	/** @var array<string> */
+	private array $havingColumns = [];
+
 	private bool $filled = false;
 
 	private int $limitNumber = 25;
@@ -149,6 +152,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 	public function getRawArrayCursor() : \PHPFUI\ORM\ArrayCursor
 		{
 		$searchCondition = new \PHPFUI\ORM\Condition();
+		$havingCondition = new \PHPFUI\ORM\Condition();
 
 		foreach ($_GET as $name => $value)
 			{
@@ -165,20 +169,26 @@ class PaginatedTable extends \PHPFUI\SortableTable
 				foreach ($parts as $part)
 					{
 					$operator = $this->getOperator($part);
-					$searchCondition->and($fieldName, $part, $operator);
+					if (in_array($fieldName, $this->havingColumns))
+						{
+						$havingCondition->and($fieldName, $part, $operator);
+						}
+					else
+						{
+						$searchCondition->and($fieldName, $part, $operator);
+						}
 					}
 				}
 			}
 
 		if (\count($searchCondition))
 			{
-			$whereCondition = $this->dataTable->getWhereCondition();
+			$this->dataTable->getWhereCondition()->and($searchCondition);
+			}
 
-			if (\count($whereCondition))
-				{
-				$searchCondition->and($whereCondition);
-				}
-			$this->dataTable->setWhere($searchCondition);
+		if (\count($havingCondition))
+			{
+			$this->dataTable->getHavingCondition()->and($havingCondition);
 			}
 
 		return $this->dataTable->getArrayCursor();
@@ -202,6 +212,16 @@ class PaginatedTable extends \PHPFUI\SortableTable
 	public function setDownloadName(string $csvDownloadName) : static
 		{
 		$this->csvDownloadName = $csvDownloadName;
+
+		return $this;
+		}
+
+	/**
+	 * @param array<string> $havingColumns
+	 */
+	public function setHavingColumns(array $havingColumns) : static
+		{
+		$this->havingColumns = $havingColumns;
 
 		return $this;
 		}

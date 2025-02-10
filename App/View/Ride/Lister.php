@@ -8,27 +8,26 @@ class Lister
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
-		$this->metric = (bool)$page->value('RWGPSUnits');
+		$this->metric = $page->value('RWGPSUnits') == 'km';
 		}
 
 	public function list(\App\Table\Ride $rideTable) : \App\UI\ContinuousScrollTable
 		{
-		$normalHeaders = [];
-		$searchableHeaders = ['rideDate' => 'Ride Date', 'title' => 'RWGPS Link'];
-		$sortableHeaders = $searchableHeaders + ['name' => 'Ride Name', 'Leader' => 'Leader'];
-
 		$metric = $this->metric;
 
 		if ($this->metric)
 			{
-			$sortableHeaders['meters'] = 'Dist Km';
+			$headers['meters'] = 'Dist Km';
 			}
 		else
 			{
-			$sortableHeaders['meters'] = 'Dist Mi';
+			$headers['meters'] = 'Dist Mi';
 			}
 
+		$headers += ['rideDate' => 'Ride Date', 'title' => 'RWGPS Link', 'name' => 'Ride Name', 'lastName' => 'Leader'];
+
 		$view = new \App\UI\ContinuousScrollTable($this->page, $rideTable);
+		$view->setHavingColumns(['meters', 'name']);
 
 		$view->addCustomColumn('name', static function(array $ride)
 			{
@@ -38,7 +37,7 @@ class Lister
 			return $name;
 			});
 
-		$view->addCustomColumn('Leader', static function(array $ride)
+		$view->addCustomColumn('lastName', static function(array $ride)
 			{
 			return \PHPFUI\TextHelper::unhtmlentities($ride['firstName'] . ' ' . $ride['lastName']);
 			});
@@ -66,8 +65,7 @@ class Lister
 			return \number_format($ride['meters'] * 0.000621371192, 2);
 			});
 
-		$view->setHeaders($sortableHeaders + $searchableHeaders + $normalHeaders)->setSortableColumns(\array_keys($sortableHeaders));
-		$view->setSearchColumns($searchableHeaders);
+		$view->setHeaders($headers)->setSortableColumns(\array_keys($headers))->setSearchColumns($headers);
 
 		return $view;
 		}

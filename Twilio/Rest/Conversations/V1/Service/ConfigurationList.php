@@ -17,12 +17,11 @@
 namespace Twilio\Rest\Conversations\V1\Service;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\ListResource;
-use Twilio\Version;
 use Twilio\InstanceContext;
-use Twilio\Rest\Conversations\V1\Service\Configuration\WebhookList;
+use Twilio\ListResource;
 use Twilio\Rest\Conversations\V1\Service\Configuration\NotificationList;
-
+use Twilio\Rest\Conversations\V1\Service\Configuration\WebhookList;
+use Twilio\Version;
 
 /**
  * @property WebhookList $webhooks
@@ -31,113 +30,117 @@ use Twilio\Rest\Conversations\V1\Service\Configuration\NotificationList;
  * @method \Twilio\Rest\Conversations\V1\Service\Configuration\NotificationContext notifications()
  */
 class ConfigurationList extends ListResource
-    {
-    protected $_webhooks = null;
-    protected $_notifications = null;
+	{
+	protected $_notifications = null;
 
-    /**
-     * Construct the ConfigurationList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $chatServiceSid The SID of the Service configuration resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        string $chatServiceSid
-    ) {
-        parent::__construct($version);
+	protected $_webhooks = null;
 
-        // Path Solution
-        $this->solution = [
-        'chatServiceSid' =>
-            $chatServiceSid,
-        
-        ];
-    }
+	/**
+	 * Construct the ConfigurationList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $chatServiceSid The SID of the Service configuration resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		string $chatServiceSid
+	) {
+		parent::__construct($version);
 
-    /**
-     * Constructs a ConfigurationContext
-     */
-    public function getContext(
-        
-    ): ConfigurationContext
-    {
-        return new ConfigurationContext(
-            $this->version,
-            $this->solution['chatServiceSid']
-        );
-    }
+		// Path Solution
+		$this->solution = [
+			'chatServiceSid' => $chatServiceSid,
 
-    /**
-     * Access the webhooks
-     */
-    protected function getWebhooks(): WebhookList
-    {
-        if (!$this->_webhooks) {
-            $this->_webhooks = new WebhookList(
-                $this->version,
-                $this->solution['chatServiceSid']
-            );
-        }
-        return $this->_webhooks;
-    }
+		];
+	}
 
-    /**
-     * Access the notifications
-     */
-    protected function getNotifications(): NotificationList
-    {
-        if (!$this->_notifications) {
-            $this->_notifications = new NotificationList(
-                $this->version,
-                $this->solution['chatServiceSid']
-            );
-        }
-        return $this->_notifications;
-    }
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return \Twilio\ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name)
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		throw new TwilioException('Resource does not have a context');
+	}
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return \Twilio\ListResource The requested subresource
+	 */
+	public function __get(string $name)
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        throw new TwilioException('Resource does not have a context');
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Conversations.V1.ConfigurationList]';
-    }
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Conversations.V1.ConfigurationList]';
+	}
+
+	/**
+	 * Constructs a ConfigurationContext
+	 */
+	public function getContext(
+
+	) : ConfigurationContext
+	{
+		return new ConfigurationContext(
+			$this->version,
+			$this->solution['chatServiceSid']
+		);
+	}
+
+	/**
+	 * Access the notifications
+	 */
+	protected function getNotifications() : NotificationList
+	{
+		if (! $this->_notifications) {
+			$this->_notifications = new NotificationList(
+				$this->version,
+				$this->solution['chatServiceSid']
+			);
+		}
+
+		return $this->_notifications;
+	}
+
+	/**
+	 * Access the webhooks
+	 */
+	protected function getWebhooks() : WebhookList
+	{
+		if (! $this->_webhooks) {
+			$this->_webhooks = new WebhookList(
+				$this->version,
+				$this->solution['chatServiceSid']
+			);
+		}
+
+		return $this->_webhooks;
+	}
 }

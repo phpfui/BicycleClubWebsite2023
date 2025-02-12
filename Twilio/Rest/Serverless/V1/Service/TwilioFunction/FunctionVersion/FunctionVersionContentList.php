@@ -19,61 +19,57 @@ namespace Twilio\Rest\Serverless\V1\Service\TwilioFunction\FunctionVersion;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class FunctionVersionContentList extends ListResource
-    {
-    /**
-     * Construct the FunctionVersionContentList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the Service to fetch the Function Version content from.
-     * @param string $functionSid The SID of the Function that is the parent of the Function Version content to fetch.
-     * @param string $sid The SID of the Function Version content to fetch.
-     */
-    public function __construct(
-        Version $version,
-        string $serviceSid,
-        string $functionSid,
-        string $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the FunctionVersionContentList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the Service to fetch the Function Version content from.
+	 * @param string $functionSid The SID of the Function that is the parent of the Function Version content to fetch.
+	 * @param string $sid The SID of the Function Version content to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		string $serviceSid,
+		string $functionSid,
+		string $sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        
-        'functionSid' =>
-            $functionSid,
-        
-        'sid' =>
-            $sid,
-        
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
 
-    /**
-     * Constructs a FunctionVersionContentContext
-     */
-    public function getContext(
-        
-    ): FunctionVersionContentContext
-    {
-        return new FunctionVersionContentContext(
-            $this->version,
-            $this->solution['serviceSid'],
-            $this->solution['functionSid'],
-            $this->solution['sid']
-        );
-    }
+			'functionSid' => $functionSid,
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Serverless.V1.FunctionVersionContentList]';
-    }
+			'sid' => $sid,
+
+		];
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Serverless.V1.FunctionVersionContentList]';
+	}
+
+	/**
+	 * Constructs a FunctionVersionContentContext
+	 */
+	public function getContext(
+
+	) : FunctionVersionContentContext
+	{
+		return new FunctionVersionContentContext(
+			$this->version,
+			$this->solution['serviceSid'],
+			$this->solution['functionSid'],
+			$this->solution['sid']
+		);
+	}
 }

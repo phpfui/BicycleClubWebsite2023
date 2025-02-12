@@ -17,18 +17,27 @@ abstract class JobShift extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'endTime' => ['time', 'string', 0, false, ],
-		'jobId' => ['int', 'int', 0, true, ],
-		'jobShiftId' => ['int', 'int', 0, false, ],
-		'needed' => ['int', 'int', 0, true, ],
-		'startTime' => ['time', 'string', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['jobShiftId', ];
 
 	protected static string $table = 'jobShift';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'endTime' => new \PHPFUI\ORM\FieldDefinition('time', 'string', 0, false, ),
+				'jobId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'jobShiftId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'needed' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'startTime' => new \PHPFUI\ORM\FieldDefinition('time', 'string', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

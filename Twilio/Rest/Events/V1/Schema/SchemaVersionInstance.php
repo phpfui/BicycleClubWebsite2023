@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Events\V1\Schema;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $id
@@ -33,94 +31,96 @@ use Twilio\Deserialize;
  */
 class SchemaVersionInstance extends InstanceResource
 {
-    /**
-     * Initialize the SchemaVersionInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $id The unique identifier of the schema. Each schema can have multiple versions, that share the same id.
-     * @param int $schemaVersion The version of the schema
-     */
-    public function __construct(Version $version, array $payload, string $id, ?int $schemaVersion = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the SchemaVersionInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $id The unique identifier of the schema. Each schema can have multiple versions, that share the same id.
+	 * @param int $schemaVersion The version of the schema
+	 */
+	public function __construct(Version $version, array $payload, string $id, ?int $schemaVersion = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'id' => Values::array_get($payload, 'id'),
-            'schemaVersion' => Values::array_get($payload, 'schema_version'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'url' => Values::array_get($payload, 'url'),
-            'raw' => Values::array_get($payload, 'raw'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'id' => Values::array_get($payload, 'id'),
+			'schemaVersion' => Values::array_get($payload, 'schema_version'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'url' => Values::array_get($payload, 'url'),
+			'raw' => Values::array_get($payload, 'raw'),
+		];
 
-        $this->solution = ['id' => $id, 'schemaVersion' => $schemaVersion ?: $this->properties['schemaVersion'], ];
-    }
+		$this->solution = ['id' => $id, 'schemaVersion' => $schemaVersion ?: $this->properties['schemaVersion'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return SchemaVersionContext Context for this SchemaVersionInstance
-     */
-    protected function proxy(): SchemaVersionContext
-    {
-        if (!$this->context) {
-            $this->context = new SchemaVersionContext(
-                $this->version,
-                $this->solution['id'],
-                $this->solution['schemaVersion']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the SchemaVersionInstance
-     *
-     * @return SchemaVersionInstance Fetched SchemaVersionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): SchemaVersionInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Events.V1.SchemaVersionInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Events.V1.SchemaVersionInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the SchemaVersionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SchemaVersionInstance Fetched SchemaVersionInstance
+	 */
+	public function fetch() : SchemaVersionInstance
+	{
+
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return SchemaVersionContext Context for this SchemaVersionInstance
+	 */
+	protected function proxy() : SchemaVersionContext
+	{
+		if (! $this->context) {
+			$this->context = new SchemaVersionContext(
+				$this->version,
+				$this->solution['id'],
+				$this->solution['schemaVersion']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

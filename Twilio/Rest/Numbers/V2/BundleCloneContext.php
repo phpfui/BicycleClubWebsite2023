@@ -14,85 +14,80 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Numbers\V2;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class BundleCloneContext extends InstanceContext
-    {
-    /**
-     * Initialize the BundleCloneContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $bundleSid The unique string that identifies the Bundle to be cloned.
-     */
-    public function __construct(
-        Version $version,
-        $bundleSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the BundleCloneContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $bundleSid The unique string that identifies the Bundle to be cloned.
+	 */
+	public function __construct(
+		Version $version,
+		$bundleSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'bundleSid' =>
-            $bundleSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'bundleSid' => $bundleSid,
+		];
 
-        $this->uri = '/RegulatoryCompliance/Bundles/' . \rawurlencode($bundleSid)
-        .'/Clones';
-    }
+		$this->uri = '/RegulatoryCompliance/Bundles/' . \rawurlencode($bundleSid)
+		. '/Clones';
+	}
 
-    /**
-     * Create the BundleCloneInstance
-     *
-     * @param string $targetAccountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) where the bundle needs to be cloned.
-     * @param array|Options $options Optional Arguments
-     * @return BundleCloneInstance Created BundleCloneInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $targetAccountSid, array $options = []): BundleCloneInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $data = Values::of([
-            'TargetAccountSid' =>
-                $targetAccountSid,
-            'MoveToDraft' =>
-                Serialize::booleanToString($options['moveToDraft']),
-            'FriendlyName' =>
-                $options['friendlyName'],
-        ]);
+		return '[Twilio.Numbers.V2.BundleCloneContext ' . \implode(' ', $context) . ']';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Create the BundleCloneInstance
+	 *
+	 * @param string $targetAccountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) where the bundle needs to be cloned.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return BundleCloneInstance Created BundleCloneInstance
+	 */
+	public function create(string $targetAccountSid, array $options = []) : BundleCloneInstance
+	{
 
-        return new BundleCloneInstance(
-            $this->version,
-            $payload,
-            $this->solution['bundleSid']
-        );
-    }
+		$options = new Values($options);
 
+		$data = Values::of([
+			'TargetAccountSid' => $targetAccountSid,
+			'MoveToDraft' => Serialize::booleanToString($options['moveToDraft']),
+			'FriendlyName' => $options['friendlyName'],
+		]);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Numbers.V2.BundleCloneContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+
+		return new BundleCloneInstance(
+			$this->version,
+			$payload,
+			$this->solution['bundleSid']
+		);
+	}
 }

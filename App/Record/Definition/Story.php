@@ -26,28 +26,37 @@ abstract class Story extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'author' => ['varchar(30)', 'string', 30, true, ],
-		'body' => ['mediumtext', 'string', 16777215, true, ],
-		'date' => ['date', 'string', 10, true, ],
-		'editorId' => ['int', 'int', 0, true, ],
-		'endDate' => ['date', 'string', 10, true, ],
-		'headline' => ['varchar(200)', 'string', 200, true, ],
-		'javaScript' => ['text', 'string', 65535, true, ],
-		'lastEdited' => ['date', 'string', 10, true, ],
-		'membersOnly' => ['int', 'int', 0, true, 0, ],
-		'noTitle' => ['int', 'int', 0, true, ],
-		'onTop' => ['int', 'int', 0, true, ],
-		'showFull' => ['int', 'int', 0, true, ],
-		'startDate' => ['date', 'string', 10, true, ],
-		'storyId' => ['int', 'int', 0, false, ],
-		'subhead' => ['varchar(200)', 'string', 200, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['storyId', ];
 
 	protected static string $table = 'story';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'author' => new \PHPFUI\ORM\FieldDefinition('varchar(30)', 'string', 30, true, ),
+				'body' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
+				'date' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'editorId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'endDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'headline' => new \PHPFUI\ORM\FieldDefinition('varchar(200)', 'string', 200, true, ),
+				'javaScript' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'lastEdited' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'membersOnly' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'noTitle' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'onTop' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'showFull' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'startDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'storyId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'subhead' => new \PHPFUI\ORM\FieldDefinition('varchar(200)', 'string', 200, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

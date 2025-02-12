@@ -14,96 +14,92 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\IpMessaging\V2\Service\User;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class UserBindingContext extends InstanceContext
-    {
-    /**
-     * Initialize the UserBindingContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid 
-     * @param string $userSid 
-     * @param string $sid 
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $userSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the UserBindingContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid
+	 * @param string $userSid
+	 * @param string $sid
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$userSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'userSid' =>
-            $userSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'userSid' => $userSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Users/' . \rawurlencode($userSid)
-        .'/Bindings/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Users/' . \rawurlencode($userSid)
+		. '/Bindings/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the UserBindingInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.IpMessaging.V2.UserBindingContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the UserBindingInstance
-     *
-     * @return UserBindingInstance Fetched UserBindingInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): UserBindingInstance
-    {
+	/**
+	 * Delete the UserBindingInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new UserBindingInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['userSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the UserBindingInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UserBindingInstance Fetched UserBindingInstance
+	 */
+	public function fetch() : UserBindingInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.IpMessaging.V2.UserBindingContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new UserBindingInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['userSid'],
+			$this->solution['sid']
+		);
+	}
 }

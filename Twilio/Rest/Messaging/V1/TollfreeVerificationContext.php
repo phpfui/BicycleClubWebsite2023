@@ -14,154 +14,130 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Messaging\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class TollfreeVerificationContext extends InstanceContext
-    {
-    /**
-     * Initialize the TollfreeVerificationContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The unique string to identify Tollfree Verification.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the TollfreeVerificationContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The unique string to identify Tollfree Verification.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Tollfree/Verifications/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Tollfree/Verifications/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the TollfreeVerificationInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Messaging.V1.TollfreeVerificationContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the TollfreeVerificationInstance
-     *
-     * @return TollfreeVerificationInstance Fetched TollfreeVerificationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): TollfreeVerificationInstance
-    {
+	/**
+	 * Delete the TollfreeVerificationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new TollfreeVerificationInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the TollfreeVerificationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TollfreeVerificationInstance Fetched TollfreeVerificationInstance
+	 */
+	public function fetch() : TollfreeVerificationInstance
+	{
 
-    /**
-     * Update the TollfreeVerificationInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return TollfreeVerificationInstance Updated TollfreeVerificationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): TollfreeVerificationInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new TollfreeVerificationInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'BusinessName' =>
-                $options['businessName'],
-            'BusinessWebsite' =>
-                $options['businessWebsite'],
-            'NotificationEmail' =>
-                $options['notificationEmail'],
-            'UseCaseCategories' =>
-                Serialize::map($options['useCaseCategories'], function ($e) { return $e; }),
-            'UseCaseSummary' =>
-                $options['useCaseSummary'],
-            'ProductionMessageSample' =>
-                $options['productionMessageSample'],
-            'OptInImageUrls' =>
-                Serialize::map($options['optInImageUrls'], function ($e) { return $e; }),
-            'OptInType' =>
-                $options['optInType'],
-            'MessageVolume' =>
-                $options['messageVolume'],
-            'BusinessStreetAddress' =>
-                $options['businessStreetAddress'],
-            'BusinessStreetAddress2' =>
-                $options['businessStreetAddress2'],
-            'BusinessCity' =>
-                $options['businessCity'],
-            'BusinessStateProvinceRegion' =>
-                $options['businessStateProvinceRegion'],
-            'BusinessPostalCode' =>
-                $options['businessPostalCode'],
-            'BusinessCountry' =>
-                $options['businessCountry'],
-            'AdditionalInformation' =>
-                $options['additionalInformation'],
-            'BusinessContactFirstName' =>
-                $options['businessContactFirstName'],
-            'BusinessContactLastName' =>
-                $options['businessContactLastName'],
-            'BusinessContactEmail' =>
-                $options['businessContactEmail'],
-            'BusinessContactPhone' =>
-                $options['businessContactPhone'],
-            'EditReason' =>
-                $options['editReason'],
-        ]);
+	/**
+	 * Update the TollfreeVerificationInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TollfreeVerificationInstance Updated TollfreeVerificationInstance
+	 */
+	public function update(array $options = []) : TollfreeVerificationInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new TollfreeVerificationInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'BusinessName' => $options['businessName'],
+			'BusinessWebsite' => $options['businessWebsite'],
+			'NotificationEmail' => $options['notificationEmail'],
+			'UseCaseCategories' => Serialize::map($options['useCaseCategories'], static function($e) { return $e; }),
+			'UseCaseSummary' => $options['useCaseSummary'],
+			'ProductionMessageSample' => $options['productionMessageSample'],
+			'OptInImageUrls' => Serialize::map($options['optInImageUrls'], static function($e) { return $e; }),
+			'OptInType' => $options['optInType'],
+			'MessageVolume' => $options['messageVolume'],
+			'BusinessStreetAddress' => $options['businessStreetAddress'],
+			'BusinessStreetAddress2' => $options['businessStreetAddress2'],
+			'BusinessCity' => $options['businessCity'],
+			'BusinessStateProvinceRegion' => $options['businessStateProvinceRegion'],
+			'BusinessPostalCode' => $options['businessPostalCode'],
+			'BusinessCountry' => $options['businessCountry'],
+			'AdditionalInformation' => $options['additionalInformation'],
+			'BusinessContactFirstName' => $options['businessContactFirstName'],
+			'BusinessContactLastName' => $options['businessContactLastName'],
+			'BusinessContactEmail' => $options['businessContactEmail'],
+			'BusinessContactPhone' => $options['businessContactPhone'],
+			'EditReason' => $options['editReason'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Messaging.V1.TollfreeVerificationContext ' . \implode(' ', $context) . ']';
-    }
+		return new TollfreeVerificationInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

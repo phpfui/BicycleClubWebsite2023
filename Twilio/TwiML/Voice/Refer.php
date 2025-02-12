@@ -11,41 +11,42 @@ namespace Twilio\TwiML\Voice;
 
 use Twilio\TwiML\TwiML;
 
-class Refer extends TwiML {
-    /**
-     * Refer constructor.
-     *
-     * @param array $attributes Optional attributes
-     */
-    public function __construct($attributes = []) {
-        parent::__construct('Refer', null, $attributes);
-    }
+class Refer extends TwiML
+{
+	/**
+	 * Refer constructor.
+	 *
+	 * @param array $attributes Optional attributes
+	 */
+	public function __construct($attributes = []) {
+		parent::__construct('Refer', null, $attributes);
+	}
 
-    /**
-     * Add Sip child.
-     *
-     * @param string $sipUrl SIP URL
-     * @return ReferSip Child element.
-     */
-    public function sip($sipUrl): ReferSip {
-        return $this->nest(new ReferSip($sipUrl));
-    }
+	/**
+	 * Add Action attribute.
+	 *
+	 * @param string $action Action URL
+	 */
+	public function setAction($action) : self {
+		return $this->setAttribute('action', $action);
+	}
 
-    /**
-     * Add Action attribute.
-     *
-     * @param string $action Action URL
-     */
-    public function setAction($action): self {
-        return $this->setAttribute('action', $action);
-    }
+	/**
+	 * Add Method attribute.
+	 *
+	 * @param string $method Action URL method
+	 */
+	public function setMethod($method) : self {
+		return $this->setAttribute('method', $method);
+	}
 
-    /**
-     * Add Method attribute.
-     *
-     * @param string $method Action URL method
-     */
-    public function setMethod($method): self {
-        return $this->setAttribute('method', $method);
-    }
+	/**
+	 * Add Sip child.
+	 *
+	 * @param string $sipUrl SIP URL
+	 * @return ReferSip Child element.
+	 */
+	public function sip($sipUrl) : ReferSip {
+		return $this->nest(new ReferSip($sipUrl));
+	}
 }

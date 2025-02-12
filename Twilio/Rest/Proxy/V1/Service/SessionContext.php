@@ -14,19 +14,17 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Proxy\V1\Service;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Rest\Proxy\V1\Service\Session\InteractionList;
+use Twilio\Rest\Proxy\V1\Service\Session\ParticipantList;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-use Twilio\Rest\Proxy\V1\Service\Session\ParticipantList;
-use Twilio\Rest\Proxy\V1\Service\Session\InteractionList;
-
 
 /**
  * @property ParticipantList $participants
@@ -35,183 +33,181 @@ use Twilio\Rest\Proxy\V1\Service\Session\InteractionList;
  * @method \Twilio\Rest\Proxy\V1\Service\Session\ParticipantContext participants(string $sid)
  */
 class SessionContext extends InstanceContext
-    {
-    protected $_participants;
-    protected $_interactions;
+	{
+	protected $_interactions;
 
-    /**
-     * Initialize the SessionContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the parent [Service](https://www.twilio.com/docs/proxy/api/service) resource.
-     * @param string $sid The Twilio-provided string that uniquely identifies the Session resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	protected $_participants;
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'sid' =>
-            $sid,
-        ];
+	/**
+	 * Initialize the SessionContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the parent [Service](https://www.twilio.com/docs/proxy/api/service) resource.
+	 * @param string $sid The Twilio-provided string that uniquely identifies the Session resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Sessions/' . \rawurlencode($sid)
-        .'';
-    }
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'sid' => $sid,
+		];
 
-    /**
-     * Delete the SessionInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Sessions/' . \rawurlencode($sid)
+		. '';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
-    /**
-     * Fetch the SessionInstance
-     *
-     * @return SessionInstance Fetched SessionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): SessionInstance
-    {
+		throw new TwilioException('Resource does not have a context');
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return new SessionInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['sid']
-        );
-    }
+			return $this->{$method}();
+		}
 
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
-    /**
-     * Update the SessionInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return SessionInstance Updated SessionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): SessionInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $data = Values::of([
-            'DateExpiry' =>
-                Serialize::iso8601DateTime($options['dateExpiry']),
-            'Ttl' =>
-                $options['ttl'],
-            'Status' =>
-                $options['status'],
-        ]);
+		return '[Twilio.Proxy.V1.SessionContext ' . \implode(' ', $context) . ']';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Delete the SessionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        return new SessionInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['sid']
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
-    /**
-     * Access the participants
-     */
-    protected function getParticipants(): ParticipantList
-    {
-        if (!$this->_participants) {
-            $this->_participants = new ParticipantList(
-                $this->version,
-                $this->solution['serviceSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Fetch the SessionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SessionInstance Fetched SessionInstance
+	 */
+	public function fetch() : SessionInstance
+	{
 
-        return $this->_participants;
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-    /**
-     * Access the interactions
-     */
-    protected function getInteractions(): InteractionList
-    {
-        if (!$this->_interactions) {
-            $this->_interactions = new InteractionList(
-                $this->version,
-                $this->solution['serviceSid'],
-                $this->solution['sid']
-            );
-        }
+		return new SessionInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['sid']
+		);
+	}
 
-        return $this->_interactions;
-    }
+	/**
+	 * Update the SessionInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SessionInstance Updated SessionInstance
+	 */
+	public function update(array $options = []) : SessionInstance
+	{
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		$options = new Values($options);
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		$data = Values::of([
+			'DateExpiry' => Serialize::iso8601DateTime($options['dateExpiry']),
+			'Ttl' => $options['ttl'],
+			'Status' => $options['status'],
+		]);
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-        throw new TwilioException('Resource does not have a context');
-    }
+		return new SessionInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['sid']
+		);
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Proxy.V1.SessionContext ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Access the interactions
+	 */
+	protected function getInteractions() : InteractionList
+	{
+		if (! $this->_interactions) {
+			$this->_interactions = new InteractionList(
+				$this->version,
+				$this->solution['serviceSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_interactions;
+	}
+
+	/**
+	 * Access the participants
+	 */
+	protected function getParticipants() : ParticipantList
+	{
+		if (! $this->_participants) {
+			$this->_participants = new ParticipantList(
+				$this->version,
+				$this->solution['serviceSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_participants;
+	}
 }

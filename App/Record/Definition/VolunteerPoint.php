@@ -16,17 +16,26 @@ abstract class VolunteerPoint extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'date' => ['date', 'string', 10, false, ],
-		'jobEventId' => ['int', 'int', 0, false, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'pointsAwarded' => ['int', 'int', 0, false, 0, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['jobEventId', 'date', 'memberId', ];
 
 	protected static string $table = 'volunteerPoint';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'date' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'jobEventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'pointsAwarded' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+			];
+			}
+
+		return $this;
+		}
 	}

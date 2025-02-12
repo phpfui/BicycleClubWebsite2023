@@ -14,90 +14,87 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Trusthub\V1\TrustProducts;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class TrustProductsChannelEndpointAssignmentContext extends InstanceContext
-    {
-    /**
-     * Initialize the TrustProductsChannelEndpointAssignmentContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $trustProductSid The unique string that we created to identify the CustomerProfile resource.
-     * @param string $sid The unique string that we created to identify the resource.
-     */
-    public function __construct(
-        Version $version,
-        $trustProductSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the TrustProductsChannelEndpointAssignmentContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $trustProductSid The unique string that we created to identify the CustomerProfile resource.
+	 * @param string $sid The unique string that we created to identify the resource.
+	 */
+	public function __construct(
+		Version $version,
+		$trustProductSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'trustProductSid' =>
-            $trustProductSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'trustProductSid' => $trustProductSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/TrustProducts/' . \rawurlencode($trustProductSid)
-        .'/ChannelEndpointAssignments/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/TrustProducts/' . \rawurlencode($trustProductSid)
+		. '/ChannelEndpointAssignments/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the TrustProductsChannelEndpointAssignmentInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Trusthub.V1.TrustProductsChannelEndpointAssignmentContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the TrustProductsChannelEndpointAssignmentInstance
-     *
-     * @return TrustProductsChannelEndpointAssignmentInstance Fetched TrustProductsChannelEndpointAssignmentInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): TrustProductsChannelEndpointAssignmentInstance
-    {
+	/**
+	 * Delete the TrustProductsChannelEndpointAssignmentInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new TrustProductsChannelEndpointAssignmentInstance(
-            $this->version,
-            $payload,
-            $this->solution['trustProductSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the TrustProductsChannelEndpointAssignmentInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TrustProductsChannelEndpointAssignmentInstance Fetched TrustProductsChannelEndpointAssignmentInstance
+	 */
+	public function fetch() : TrustProductsChannelEndpointAssignmentInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Trusthub.V1.TrustProductsChannelEndpointAssignmentContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new TrustProductsChannelEndpointAssignmentInstance(
+			$this->version,
+			$payload,
+			$this->solution['trustProductSid'],
+			$this->solution['sid']
+		);
+	}
 }

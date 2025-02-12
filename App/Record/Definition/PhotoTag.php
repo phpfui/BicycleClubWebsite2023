@@ -19,20 +19,29 @@ abstract class PhotoTag extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'frontToBack' => ['int', 'int', 0, false, ],
-		'leftToRight' => ['int', 'int', 0, false, ],
-		'memberId' => ['int', 'int', 0, true, ],
-		'photoId' => ['int', 'int', 0, false, ],
-		'photoTag' => ['varchar(100)', 'string', 100, false, '', ],
-		'photoTagId' => ['int', 'int', 0, false, ],
-		'taggerId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['photoTagId', ];
 
 	protected static string $table = 'photoTag';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'frontToBack' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'leftToRight' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'photoId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'photoTag' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, false, '', ),
+				'photoTagId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'taggerId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

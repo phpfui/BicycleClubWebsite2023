@@ -21,24 +21,33 @@ abstract class DiscountCode extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'cashOnly' => ['int', 'int', 0, false, 0, ],
-		'description' => ['varchar(60)', 'string', 60, true, ],
-		'discount' => ['float(10,2)', 'float', 10, false, 0.00, ],
-		'discountCode' => ['char(15)', 'string', 15, true, ],
-		'discountCodeId' => ['int', 'int', 0, false, ],
-		'expirationDate' => ['date', 'string', 10, false, ],
-		'maximumUses' => ['int', 'int', 0, true, ],
-		'repeatCount' => ['int', 'int', 0, true, ],
-		'startDate' => ['date', 'string', 10, false, ],
-		'type' => ['int', 'int', 0, false, 0, ],
-		'validItemNumbers' => ['text', 'string', 65535, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['discountCodeId', ];
 
 	protected static string $table = 'discountCode';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'cashOnly' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'description' => new \PHPFUI\ORM\FieldDefinition('varchar(60)', 'string', 60, true, ),
+				'discount' => new \PHPFUI\ORM\FieldDefinition('float(10,2)', 'float', 10, false, 0.00, ),
+				'discountCode' => new \PHPFUI\ORM\FieldDefinition('char(15)', 'string', 15, true, ),
+				'discountCodeId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'expirationDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'maximumUses' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'repeatCount' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'startDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'type' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'validItemNumbers' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

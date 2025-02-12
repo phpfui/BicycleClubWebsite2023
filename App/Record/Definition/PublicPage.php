@@ -24,26 +24,35 @@ abstract class PublicPage extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'banner' => ['int', 'int', 0, true, 0, ],
-		'blog' => ['int', 'int', 0, true, 0, ],
-		'blogAfter' => ['varchar(100)', 'string', 100, true, ],
-		'footerMenu' => ['tinyint', 'int', 0, false, 0, ],
-		'header' => ['int', 'int', 0, true, 0, ],
-		'hidden' => ['int', 'int', 0, true, 0, ],
-		'homePageNotification' => ['tinyint', 'int', 0, false, 0, ],
-		'method' => ['varchar(200)', 'string', 200, true, ],
-		'name' => ['varchar(200)', 'string', 200, true, ],
-		'publicMenu' => ['tinyint', 'int', 0, false, 1, ],
-		'publicPageId' => ['int', 'int', 0, false, ],
-		'sequence' => ['int', 'int', 0, true, 0, ],
-		'url' => ['varchar(100)', 'string', 100, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['publicPageId', ];
 
 	protected static string $table = 'publicPage';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'banner' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'blog' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'blogAfter' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+				'footerMenu' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
+				'header' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'hidden' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'homePageNotification' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
+				'method' => new \PHPFUI\ORM\FieldDefinition('varchar(200)', 'string', 200, true, ),
+				'name' => new \PHPFUI\ORM\FieldDefinition('varchar(200)', 'string', 200, true, ),
+				'publicMenu' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 1, ),
+				'publicPageId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'sequence' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'url' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

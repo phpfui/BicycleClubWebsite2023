@@ -16,18 +16,27 @@ abstract class JobEvent extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'cutoffDate' => ['date', 'string', 10, true, ],
-		'date' => ['date', 'string', 10, false, ],
-		'jobEventId' => ['int', 'int', 0, false, ],
-		'name' => ['char(100)', 'string', 100, true, ],
-		'organizer' => ['int', 'int', 0, true, 0, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['jobEventId', ];
 
 	protected static string $table = 'jobEvent';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'cutoffDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'date' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'jobEventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'name' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
+				'organizer' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -14,14 +14,12 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Studio\V2\Flow\Execution\ExecutionStep;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $accountSid
@@ -33,97 +31,99 @@ use Twilio\Version;
  */
 class ExecutionStepContextInstance extends InstanceResource
 {
-    /**
-     * Initialize the ExecutionStepContextInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $flowSid The SID of the Flow with the Step to fetch.
-     * @param string $executionSid The SID of the Execution resource with the Step to fetch.
-     * @param string $stepSid The SID of the Step to fetch.
-     */
-    public function __construct(Version $version, array $payload, string $flowSid, string $executionSid, string $stepSid)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the ExecutionStepContextInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $flowSid The SID of the Flow with the Step to fetch.
+	 * @param string $executionSid The SID of the Execution resource with the Step to fetch.
+	 * @param string $stepSid The SID of the Step to fetch.
+	 */
+	public function __construct(Version $version, array $payload, string $flowSid, string $executionSid, string $stepSid)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'context' => Values::array_get($payload, 'context'),
-            'executionSid' => Values::array_get($payload, 'execution_sid'),
-            'flowSid' => Values::array_get($payload, 'flow_sid'),
-            'stepSid' => Values::array_get($payload, 'step_sid'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'context' => Values::array_get($payload, 'context'),
+			'executionSid' => Values::array_get($payload, 'execution_sid'),
+			'flowSid' => Values::array_get($payload, 'flow_sid'),
+			'stepSid' => Values::array_get($payload, 'step_sid'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['flowSid' => $flowSid, 'executionSid' => $executionSid, 'stepSid' => $stepSid, ];
-    }
+		$this->solution = ['flowSid' => $flowSid, 'executionSid' => $executionSid, 'stepSid' => $stepSid, ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return ExecutionStepContextContext Context for this ExecutionStepContextInstance
-     */
-    protected function proxy(): ExecutionStepContextContext
-    {
-        if (!$this->context) {
-            $this->context = new ExecutionStepContextContext(
-                $this->version,
-                $this->solution['flowSid'],
-                $this->solution['executionSid'],
-                $this->solution['stepSid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the ExecutionStepContextInstance
-     *
-     * @return ExecutionStepContextInstance Fetched ExecutionStepContextInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ExecutionStepContextInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Studio.V2.ExecutionStepContextInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Studio.V2.ExecutionStepContextInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the ExecutionStepContextInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ExecutionStepContextInstance Fetched ExecutionStepContextInstance
+	 */
+	public function fetch() : ExecutionStepContextInstance
+	{
+
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return ExecutionStepContextContext Context for this ExecutionStepContextInstance
+	 */
+	protected function proxy() : ExecutionStepContextContext
+	{
+		if (! $this->context) {
+			$this->context = new ExecutionStepContextContext(
+				$this->version,
+				$this->solution['flowSid'],
+				$this->solution['executionSid'],
+				$this->solution['stepSid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

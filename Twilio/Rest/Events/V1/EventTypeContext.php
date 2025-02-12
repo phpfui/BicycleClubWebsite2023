@@ -14,70 +14,68 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Events\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class EventTypeContext extends InstanceContext
-    {
-    /**
-     * Initialize the EventTypeContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $type A string that uniquely identifies this Event Type.
-     */
-    public function __construct(
-        Version $version,
-        $type
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the EventTypeContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $type A string that uniquely identifies this Event Type.
+	 */
+	public function __construct(
+		Version $version,
+		$type
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'type' =>
-            $type,
-        ];
+		// Path Solution
+		$this->solution = [
+			'type' => $type,
+		];
 
-        $this->uri = '/Types/' . \rawurlencode($type)
-        .'';
-    }
+		$this->uri = '/Types/' . \rawurlencode($type)
+		. '';
+	}
 
-    /**
-     * Fetch the EventTypeInstance
-     *
-     * @return EventTypeInstance Fetched EventTypeInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): EventTypeInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new EventTypeInstance(
-            $this->version,
-            $payload,
-            $this->solution['type']
-        );
-    }
+		return '[Twilio.Events.V1.EventTypeContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the EventTypeInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return EventTypeInstance Fetched EventTypeInstance
+	 */
+	public function fetch() : EventTypeInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Events.V1.EventTypeContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new EventTypeInstance(
+			$this->version,
+			$payload,
+			$this->solution['type']
+		);
+	}
 }

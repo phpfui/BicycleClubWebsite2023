@@ -14,96 +14,92 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account\Message;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class MediaContext extends InstanceContext
-    {
-    /**
-     * Initialize the MediaContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that is associated with the Media resource.
-     * @param string $messageSid The SID of the Message resource that is associated with the Media resource.
-     * @param string $sid The unique identifier of the to-be-deleted Media resource.
-     */
-    public function __construct(
-        Version $version,
-        $accountSid,
-        $messageSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the MediaContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that is associated with the Media resource.
+	 * @param string $messageSid The SID of the Message resource that is associated with the Media resource.
+	 * @param string $sid The unique identifier of the to-be-deleted Media resource.
+	 */
+	public function __construct(
+		Version $version,
+		$accountSid,
+		$messageSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        'messageSid' =>
-            $messageSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
+			'messageSid' => $messageSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Messages/' . \rawurlencode($messageSid)
-        .'/Media/' . \rawurlencode($sid)
-        .'.json';
-    }
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Messages/' . \rawurlencode($messageSid)
+		. '/Media/' . \rawurlencode($sid)
+		. '.json';
+	}
 
-    /**
-     * Delete the MediaInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Api.V2010.MediaContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the MediaInstance
-     *
-     * @return MediaInstance Fetched MediaInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): MediaInstance
-    {
+	/**
+	 * Delete the MediaInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new MediaInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['messageSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the MediaInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return MediaInstance Fetched MediaInstance
+	 */
+	public function fetch() : MediaInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.MediaContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new MediaInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['messageSid'],
+			$this->solution['sid']
+		);
+	}
 }

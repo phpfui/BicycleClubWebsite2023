@@ -14,94 +14,86 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class TaskQueueStatisticsContext extends InstanceContext
-    {
-    /**
-     * Initialize the TaskQueueStatisticsContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $workspaceSid The SID of the Workspace with the TaskQueue to fetch.
-     * @param string $taskQueueSid The SID of the TaskQueue for which to fetch statistics.
-     */
-    public function __construct(
-        Version $version,
-        $workspaceSid,
-        $taskQueueSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the TaskQueueStatisticsContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $workspaceSid The SID of the Workspace with the TaskQueue to fetch.
+	 * @param string $taskQueueSid The SID of the TaskQueue for which to fetch statistics.
+	 */
+	public function __construct(
+		Version $version,
+		$workspaceSid,
+		$taskQueueSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'workspaceSid' =>
-            $workspaceSid,
-        'taskQueueSid' =>
-            $taskQueueSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'workspaceSid' => $workspaceSid,
+			'taskQueueSid' => $taskQueueSid,
+		];
 
-        $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
-        .'/TaskQueues/' . \rawurlencode($taskQueueSid)
-        .'/Statistics';
-    }
+		$this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
+		. '/TaskQueues/' . \rawurlencode($taskQueueSid)
+		. '/Statistics';
+	}
 
-    /**
-     * Fetch the TaskQueueStatisticsInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return TaskQueueStatisticsInstance Fetched TaskQueueStatisticsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(array $options = []): TaskQueueStatisticsInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $params = Values::of([
-            'EndDate' =>
-                Serialize::iso8601DateTime($options['endDate']),
-            'Minutes' =>
-                $options['minutes'],
-            'StartDate' =>
-                Serialize::iso8601DateTime($options['startDate']),
-            'TaskChannel' =>
-                $options['taskChannel'],
-            'SplitByWaitTime' =>
-                $options['splitByWaitTime'],
-        ]);
+		return '[Twilio.Taskrouter.V1.TaskQueueStatisticsContext ' . \implode(' ', $context) . ']';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+	/**
+	 * Fetch the TaskQueueStatisticsInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TaskQueueStatisticsInstance Fetched TaskQueueStatisticsInstance
+	 */
+	public function fetch(array $options = []) : TaskQueueStatisticsInstance
+	{
 
-        return new TaskQueueStatisticsInstance(
-            $this->version,
-            $payload,
-            $this->solution['workspaceSid'],
-            $this->solution['taskQueueSid']
-        );
-    }
+		$options = new Values($options);
 
+		$params = Values::of([
+			'EndDate' => Serialize::iso8601DateTime($options['endDate']),
+			'Minutes' => $options['minutes'],
+			'StartDate' => Serialize::iso8601DateTime($options['startDate']),
+			'TaskChannel' => $options['taskChannel'],
+			'SplitByWaitTime' => $options['splitByWaitTime'],
+		]);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Taskrouter.V1.TaskQueueStatisticsContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+
+		return new TaskQueueStatisticsInstance(
+			$this->version,
+			$payload,
+			$this->solution['workspaceSid'],
+			$this->solution['taskQueueSid']
+		);
+	}
 }

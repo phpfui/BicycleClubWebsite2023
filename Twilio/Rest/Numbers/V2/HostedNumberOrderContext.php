@@ -14,118 +14,111 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Numbers\V2;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class HostedNumberOrderContext extends InstanceContext
-    {
-    /**
-     * Initialize the HostedNumberOrderContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid A 34 character string that uniquely identifies this HostedNumberOrder.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the HostedNumberOrderContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid A 34 character string that uniquely identifies this HostedNumberOrder.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/HostedNumber/Orders/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/HostedNumber/Orders/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the HostedNumberOrderInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Numbers.V2.HostedNumberOrderContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the HostedNumberOrderInstance
-     *
-     * @return HostedNumberOrderInstance Fetched HostedNumberOrderInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): HostedNumberOrderInstance
-    {
+	/**
+	 * Delete the HostedNumberOrderInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new HostedNumberOrderInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the HostedNumberOrderInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return HostedNumberOrderInstance Fetched HostedNumberOrderInstance
+	 */
+	public function fetch() : HostedNumberOrderInstance
+	{
 
-    /**
-     * Update the HostedNumberOrderInstance
-     *
-     * @param string $status
-     * @param array|Options $options Optional Arguments
-     * @return HostedNumberOrderInstance Updated HostedNumberOrderInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $status, array $options = []): HostedNumberOrderInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new HostedNumberOrderInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'Status' =>
-                $status,
-            'VerificationCallDelay' =>
-                $options['verificationCallDelay'],
-            'VerificationCallExtension' =>
-                $options['verificationCallExtension'],
-        ]);
+	/**
+	 * Update the HostedNumberOrderInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return HostedNumberOrderInstance Updated HostedNumberOrderInstance
+	 */
+	public function update(string $status, array $options = []) : HostedNumberOrderInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new HostedNumberOrderInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'Status' => $status,
+			'VerificationCallDelay' => $options['verificationCallDelay'],
+			'VerificationCallExtension' => $options['verificationCallExtension'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Numbers.V2.HostedNumberOrderContext ' . \implode(' ', $context) . ']';
-    }
+		return new HostedNumberOrderInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

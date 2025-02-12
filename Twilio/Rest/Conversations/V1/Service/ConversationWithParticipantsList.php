@@ -19,93 +19,78 @@ namespace Twilio\Rest\Conversations\V1\Service;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Serialize;
-
 
 class ConversationWithParticipantsList extends ListResource
-    {
-    /**
-     * Construct the ConversationWithParticipantsList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $chatServiceSid The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Conversation resource is associated with.
-     */
-    public function __construct(
-        Version $version,
-        string $chatServiceSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the ConversationWithParticipantsList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $chatServiceSid The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Conversation resource is associated with.
+	 */
+	public function __construct(
+		Version $version,
+		string $chatServiceSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'chatServiceSid' =>
-            $chatServiceSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'chatServiceSid' => $chatServiceSid,
 
-        $this->uri = '/Services/' . \rawurlencode($chatServiceSid)
-        .'/ConversationWithParticipants';
-    }
+		];
 
-    /**
-     * Create the ConversationWithParticipantsInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ConversationWithParticipantsInstance Created ConversationWithParticipantsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(array $options = []): ConversationWithParticipantsInstance
-    {
+		$this->uri = '/Services/' . \rawurlencode($chatServiceSid)
+		. '/ConversationWithParticipants';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Conversations.V1.ConversationWithParticipantsList]';
+	}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'UniqueName' =>
-                $options['uniqueName'],
-            'DateCreated' =>
-                Serialize::iso8601DateTime($options['dateCreated']),
-            'DateUpdated' =>
-                Serialize::iso8601DateTime($options['dateUpdated']),
-            'MessagingServiceSid' =>
-                $options['messagingServiceSid'],
-            'Attributes' =>
-                $options['attributes'],
-            'State' =>
-                $options['state'],
-            'Timers.Inactive' =>
-                $options['timersInactive'],
-            'Timers.Closed' =>
-                $options['timersClosed'],
-            'Bindings.Email.Address' =>
-                $options['bindingsEmailAddress'],
-            'Bindings.Email.Name' =>
-                $options['bindingsEmailName'],
-            'Participant' =>
-                Serialize::map($options['participant'], function ($e) { return $e; }),
-        ]);
+	/**
+	 * Create the ConversationWithParticipantsInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ConversationWithParticipantsInstance Created ConversationWithParticipantsInstance
+	 */
+	public function create(array $options = []) : ConversationWithParticipantsInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new ConversationWithParticipantsInstance(
-            $this->version,
-            $payload,
-            $this->solution['chatServiceSid']
-        );
-    }
+		$data = Values::of([
+			'FriendlyName' => $options['friendlyName'],
+			'UniqueName' => $options['uniqueName'],
+			'DateCreated' => Serialize::iso8601DateTime($options['dateCreated']),
+			'DateUpdated' => Serialize::iso8601DateTime($options['dateUpdated']),
+			'MessagingServiceSid' => $options['messagingServiceSid'],
+			'Attributes' => $options['attributes'],
+			'State' => $options['state'],
+			'Timers.Inactive' => $options['timersInactive'],
+			'Timers.Closed' => $options['timersClosed'],
+			'Bindings.Email.Address' => $options['bindingsEmailAddress'],
+			'Bindings.Email.Name' => $options['bindingsEmailName'],
+			'Participant' => Serialize::map($options['participant'], static function($e) { return $e; }),
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Conversations.V1.ConversationWithParticipantsList]';
-    }
+		return new ConversationWithParticipantsInstance(
+			$this->version,
+			$payload,
+			$this->solution['chatServiceSid']
+		);
+	}
 }

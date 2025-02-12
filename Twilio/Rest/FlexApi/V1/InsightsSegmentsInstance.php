@@ -14,14 +14,12 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $segmentId
@@ -49,74 +47,74 @@ use Twilio\Version;
  */
 class InsightsSegmentsInstance extends InstanceResource
 {
-    /**
-     * Initialize the InsightsSegmentsInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     */
-    public function __construct(Version $version, array $payload)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the InsightsSegmentsInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 */
+	public function __construct(Version $version, array $payload)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'segmentId' => Values::array_get($payload, 'segment_id'),
-            'externalId' => Values::array_get($payload, 'external_id'),
-            'queue' => Values::array_get($payload, 'queue'),
-            'externalContact' => Values::array_get($payload, 'external_contact'),
-            'externalSegmentLinkId' => Values::array_get($payload, 'external_segment_link_id'),
-            'date' => Values::array_get($payload, 'date'),
-            'accountId' => Values::array_get($payload, 'account_id'),
-            'externalSegmentLink' => Values::array_get($payload, 'external_segment_link'),
-            'agentId' => Values::array_get($payload, 'agent_id'),
-            'agentPhone' => Values::array_get($payload, 'agent_phone'),
-            'agentName' => Values::array_get($payload, 'agent_name'),
-            'agentTeamName' => Values::array_get($payload, 'agent_team_name'),
-            'agentTeamNameInHierarchy' => Values::array_get($payload, 'agent_team_name_in_hierarchy'),
-            'agentLink' => Values::array_get($payload, 'agent_link'),
-            'customerPhone' => Values::array_get($payload, 'customer_phone'),
-            'customerName' => Values::array_get($payload, 'customer_name'),
-            'customerLink' => Values::array_get($payload, 'customer_link'),
-            'segmentRecordingOffset' => Values::array_get($payload, 'segment_recording_offset'),
-            'media' => Values::array_get($payload, 'media'),
-            'assessmentType' => Values::array_get($payload, 'assessment_type'),
-            'assessmentPercentage' => Values::array_get($payload, 'assessment_percentage'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'segmentId' => Values::array_get($payload, 'segment_id'),
+			'externalId' => Values::array_get($payload, 'external_id'),
+			'queue' => Values::array_get($payload, 'queue'),
+			'externalContact' => Values::array_get($payload, 'external_contact'),
+			'externalSegmentLinkId' => Values::array_get($payload, 'external_segment_link_id'),
+			'date' => Values::array_get($payload, 'date'),
+			'accountId' => Values::array_get($payload, 'account_id'),
+			'externalSegmentLink' => Values::array_get($payload, 'external_segment_link'),
+			'agentId' => Values::array_get($payload, 'agent_id'),
+			'agentPhone' => Values::array_get($payload, 'agent_phone'),
+			'agentName' => Values::array_get($payload, 'agent_name'),
+			'agentTeamName' => Values::array_get($payload, 'agent_team_name'),
+			'agentTeamNameInHierarchy' => Values::array_get($payload, 'agent_team_name_in_hierarchy'),
+			'agentLink' => Values::array_get($payload, 'agent_link'),
+			'customerPhone' => Values::array_get($payload, 'customer_phone'),
+			'customerName' => Values::array_get($payload, 'customer_name'),
+			'customerLink' => Values::array_get($payload, 'customer_link'),
+			'segmentRecordingOffset' => Values::array_get($payload, 'segment_recording_offset'),
+			'media' => Values::array_get($payload, 'media'),
+			'assessmentType' => Values::array_get($payload, 'assessment_type'),
+			'assessmentPercentage' => Values::array_get($payload, 'assessment_percentage'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = [];
-    }
+		$this->solution = [];
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.FlexApi.V1.InsightsSegmentsInstance]';
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.FlexApi.V1.InsightsSegmentsInstance]';
+	}
 }
-

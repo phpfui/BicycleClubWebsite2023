@@ -1,5 +1,7 @@
 <?php
+
 namespace Twilio\Rest;
 
-class Iam extends IamBase {
+class Iam extends IamBase
+{
 }

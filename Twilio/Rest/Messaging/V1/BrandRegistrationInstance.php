@@ -14,17 +14,15 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Messaging\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
-use Twilio\Values;
-use Twilio\Version;
-use Twilio\Deserialize;
 use Twilio\Rest\Messaging\V1\BrandRegistration\BrandRegistrationOtpList;
 use Twilio\Rest\Messaging\V1\BrandRegistration\BrandVettingList;
-
+use Twilio\Values;
+use Twilio\Version;
 
 /**
  * @property string|null $sid
@@ -51,139 +49,142 @@ use Twilio\Rest\Messaging\V1\BrandRegistration\BrandVettingList;
  */
 class BrandRegistrationInstance extends InstanceResource
 {
-    protected $_brandRegistrationOtps;
-    protected $_brandVettings;
+	protected $_brandRegistrationOtps;
 
-    /**
-     * Initialize the BrandRegistrationInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $sid The SID of the Brand Registration resource to fetch.
-     */
-    public function __construct(Version $version, array $payload, ?string $sid = null)
-    {
-        parent::__construct($version);
+	protected $_brandVettings;
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'customerProfileBundleSid' => Values::array_get($payload, 'customer_profile_bundle_sid'),
-            'a2PProfileBundleSid' => Values::array_get($payload, 'a2p_profile_bundle_sid'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'brandType' => Values::array_get($payload, 'brand_type'),
-            'status' => Values::array_get($payload, 'status'),
-            'tcrId' => Values::array_get($payload, 'tcr_id'),
-            'failureReason' => Values::array_get($payload, 'failure_reason'),
-            'errors' => Values::array_get($payload, 'errors'),
-            'url' => Values::array_get($payload, 'url'),
-            'brandScore' => Values::array_get($payload, 'brand_score'),
-            'brandFeedback' => Values::array_get($payload, 'brand_feedback'),
-            'identityStatus' => Values::array_get($payload, 'identity_status'),
-            'russell3000' => Values::array_get($payload, 'russell_3000'),
-            'governmentEntity' => Values::array_get($payload, 'government_entity'),
-            'taxExemptStatus' => Values::array_get($payload, 'tax_exempt_status'),
-            'skipAutomaticSecVet' => Values::array_get($payload, 'skip_automatic_sec_vet'),
-            'mock' => Values::array_get($payload, 'mock'),
-            'links' => Values::array_get($payload, 'links'),
-        ];
+	/**
+	 * Initialize the BrandRegistrationInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $sid The SID of the Brand Registration resource to fetch.
+	 */
+	public function __construct(Version $version, array $payload, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-    }
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'customerProfileBundleSid' => Values::array_get($payload, 'customer_profile_bundle_sid'),
+			'a2PProfileBundleSid' => Values::array_get($payload, 'a2p_profile_bundle_sid'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'brandType' => Values::array_get($payload, 'brand_type'),
+			'status' => Values::array_get($payload, 'status'),
+			'tcrId' => Values::array_get($payload, 'tcr_id'),
+			'failureReason' => Values::array_get($payload, 'failure_reason'),
+			'errors' => Values::array_get($payload, 'errors'),
+			'url' => Values::array_get($payload, 'url'),
+			'brandScore' => Values::array_get($payload, 'brand_score'),
+			'brandFeedback' => Values::array_get($payload, 'brand_feedback'),
+			'identityStatus' => Values::array_get($payload, 'identity_status'),
+			'russell3000' => Values::array_get($payload, 'russell_3000'),
+			'governmentEntity' => Values::array_get($payload, 'government_entity'),
+			'taxExemptStatus' => Values::array_get($payload, 'tax_exempt_status'),
+			'skipAutomaticSecVet' => Values::array_get($payload, 'skip_automatic_sec_vet'),
+			'mock' => Values::array_get($payload, 'mock'),
+			'links' => Values::array_get($payload, 'links'),
+		];
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return BrandRegistrationContext Context for this BrandRegistrationInstance
-     */
-    protected function proxy(): BrandRegistrationContext
-    {
-        if (!$this->context) {
-            $this->context = new BrandRegistrationContext(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-        return $this->context;
-    }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-    /**
-     * Fetch the BrandRegistrationInstance
-     *
-     * @return BrandRegistrationInstance Fetched BrandRegistrationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): BrandRegistrationInstance
-    {
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return $this->proxy()->fetch();
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Update the BrandRegistrationInstance
-     *
-     * @return BrandRegistrationInstance Updated BrandRegistrationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(): BrandRegistrationInstance
-    {
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-        return $this->proxy()->update();
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Access the brandRegistrationOtps
-     */
-    protected function getBrandRegistrationOtps(): BrandRegistrationOtpList
-    {
-        return $this->proxy()->brandRegistrationOtps;
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Access the brandVettings
-     */
-    protected function getBrandVettings(): BrandVettingList
-    {
-        return $this->proxy()->brandVettings;
-    }
+		return '[Twilio.Messaging.V1.BrandRegistrationInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Fetch the BrandRegistrationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return BrandRegistrationInstance Fetched BrandRegistrationInstance
+	 */
+	public function fetch() : BrandRegistrationInstance
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->fetch();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Update the BrandRegistrationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return BrandRegistrationInstance Updated BrandRegistrationInstance
+	 */
+	public function update() : BrandRegistrationInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Messaging.V1.BrandRegistrationInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->update();
+	}
+
+	/**
+	 * Access the brandRegistrationOtps
+	 */
+	protected function getBrandRegistrationOtps() : BrandRegistrationOtpList
+	{
+		return $this->proxy()->brandRegistrationOtps;
+	}
+
+	/**
+	 * Access the brandVettings
+	 */
+	protected function getBrandVettings() : BrandVettingList
+	{
+		return $this->proxy()->brandVettings;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return BrandRegistrationContext Context for this BrandRegistrationInstance
+	 */
+	protected function proxy() : BrandRegistrationContext
+	{
+		if (! $this->context) {
+			$this->context = new BrandRegistrationContext(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

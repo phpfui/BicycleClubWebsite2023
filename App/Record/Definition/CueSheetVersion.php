@@ -19,19 +19,28 @@ abstract class CueSheetVersion extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'cueSheetId' => ['int', 'int', 0, true, ],
-		'cueSheetVersionId' => ['int', 'int', 0, false, ],
-		'dateAdded' => ['date', 'string', 10, false, ],
-		'extension' => ['char(10)', 'string', 10, true, ],
-		'link' => ['varchar(200)', 'string', 200, true, ],
-		'memberId' => ['int', 'int', 0, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['cueSheetVersionId', ];
 
 	protected static string $table = 'cueSheetVersion';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'cueSheetId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'cueSheetVersionId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'dateAdded' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'extension' => new \PHPFUI\ORM\FieldDefinition('char(10)', 'string', 10, true, ),
+				'link' => new \PHPFUI\ORM\FieldDefinition('varchar(200)', 'string', 200, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

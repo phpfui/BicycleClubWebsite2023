@@ -88,7 +88,7 @@ class Invoice extends \PHPFUI\ORM\Table
 					}
 				elseif (! empty($value))
 					{
-					$type = $fields[$field][\PHPFUI\ORM\Record::PHP_TYPE_INDEX];
+					$type = $fields[$field]->phpType;
 
 					switch ($type)
 						{

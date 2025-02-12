@@ -21,162 +21,156 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class PayloadList extends ListResource
-    {
-    /**
-     * Construct the PayloadList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Recording AddOnResult Payload resources to delete.
-     * @param string $referenceSid The SID of the recording to which the AddOnResult resource that contains the payloads to delete belongs.
-     * @param string $addOnResultSid The SID of the AddOnResult to which the payloads to delete belongs.
-     */
-    public function __construct(
-        Version $version,
-        string $accountSid,
-        string $referenceSid,
-        string $addOnResultSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the PayloadList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Recording AddOnResult Payload resources to delete.
+	 * @param string $referenceSid The SID of the recording to which the AddOnResult resource that contains the payloads to delete belongs.
+	 * @param string $addOnResultSid The SID of the AddOnResult to which the payloads to delete belongs.
+	 */
+	public function __construct(
+		Version $version,
+		string $accountSid,
+		string $referenceSid,
+		string $addOnResultSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        
-        'referenceSid' =>
-            $referenceSid,
-        
-        'addOnResultSid' =>
-            $addOnResultSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Recordings/' . \rawurlencode($referenceSid)
-        .'/AddOnResults/' . \rawurlencode($addOnResultSid)
-        .'/Payloads.json';
-    }
+			'referenceSid' => $referenceSid,
 
-    /**
-     * Reads PayloadInstance records from the API as a list.
-     * Unlike stream(), this operation is eager and will load `limit` records into
-     * memory before returning.
-     *
-     * @param int $limit Upper limit for the number of records to return. read()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, read()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return PayloadInstance[] Array of results
-     */
-    public function read(?int $limit = null, $pageSize = null): array
-    {
-        return \iterator_to_array($this->stream($limit, $pageSize), false);
-    }
+			'addOnResultSid' => $addOnResultSid,
 
-    /**
-     * Streams PayloadInstance records from the API as a generator stream.
-     * This operation lazily loads records as efficiently as possible until the
-     * limit
-     * is reached.
-     * The results are returned as a generator, so this operation is memory
-     * efficient.
-     *
-     * @param int $limit Upper limit for the number of records to return. stream()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, stream()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return Stream stream of results
-     */
-    public function stream(?int $limit = null, $pageSize = null): Stream
-    {
-        $limits = $this->version->readLimits($limit, $pageSize);
+		];
 
-        $page = $this->page($limits['pageSize']);
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Recordings/' . \rawurlencode($referenceSid)
+		. '/AddOnResults/' . \rawurlencode($addOnResultSid)
+		. '/Payloads.json';
+	}
 
-        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Api.V2010.PayloadList]';
+	}
 
-    /**
-     * Retrieve a single page of PayloadInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param mixed $pageSize Number of records to return, defaults to 50
-     * @param string $pageToken PageToken provided by the API
-     * @param mixed $pageNumber Page Number, this value is simply for client state
-     * @return PayloadPage Page of PayloadInstance
-     */
-    public function page(
-        $pageSize = Values::NONE,
-        string $pageToken = Values::NONE,
-        $pageNumber = Values::NONE
-    ): PayloadPage
-    {
+	/**
+	 * Constructs a PayloadContext
+	 *
+	 * @param string $sid The Twilio-provided string that uniquely identifies the Recording AddOnResult Payload resource to delete.
+	 */
+	public function getContext(
+		string $sid
+	) : PayloadContext
+	{
+		return new PayloadContext(
+			$this->version,
+			$this->solution['accountSid'],
+			$this->solution['referenceSid'],
+			$this->solution['addOnResultSid'],
+			$sid
+		);
+	}
 
-        $params = Values::of([
-            'PageToken' => $pageToken,
-            'Page' => $pageNumber,
-            'PageSize' => $pageSize,
-        ]);
+	/**
+	 * Retrieve a specific page of PayloadInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param string $targetUrl API-generated URL for the requested results page
+	 * @return PayloadPage Page of PayloadInstance
+	 */
+	public function getPage(string $targetUrl) : PayloadPage
+	{
+		$response = $this->version->getDomain()->getClient()->request(
+			'GET',
+			$targetUrl
+		);
 
-        $response = $this->version->page('GET', $this->uri, $params);
+		return new PayloadPage($this->version, $response, $this->solution);
+	}
 
-        return new PayloadPage($this->version, $response, $this->solution);
-    }
+	/**
+	 * Retrieve a single page of PayloadInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param mixed $pageSize Number of records to return, defaults to 50
+	 * @param string $pageToken PageToken provided by the API
+	 * @param mixed $pageNumber Page Number, this value is simply for client state
+	 * @return PayloadPage Page of PayloadInstance
+	 */
+	public function page(
+		$pageSize = Values::NONE,
+		string $pageToken = Values::NONE,
+		$pageNumber = Values::NONE
+	) : PayloadPage
+	{
 
-    /**
-     * Retrieve a specific page of PayloadInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param string $targetUrl API-generated URL for the requested results page
-     * @return PayloadPage Page of PayloadInstance
-     */
-    public function getPage(string $targetUrl): PayloadPage
-    {
-        $response = $this->version->getDomain()->getClient()->request(
-            'GET',
-            $targetUrl
-        );
+		$params = Values::of([
+			'PageToken' => $pageToken,
+			'Page' => $pageNumber,
+			'PageSize' => $pageSize,
+		]);
 
-        return new PayloadPage($this->version, $response, $this->solution);
-    }
+		$response = $this->version->page('GET', $this->uri, $params);
 
+		return new PayloadPage($this->version, $response, $this->solution);
+	}
 
-    /**
-     * Constructs a PayloadContext
-     *
-     * @param string $sid The Twilio-provided string that uniquely identifies the Recording AddOnResult Payload resource to delete.
-     */
-    public function getContext(
-        string $sid
-        
-    ): PayloadContext
-    {
-        return new PayloadContext(
-            $this->version,
-            $this->solution['accountSid'],
-            $this->solution['referenceSid'],
-            $this->solution['addOnResultSid'],
-            $sid
-        );
-    }
+	/**
+	 * Reads PayloadInstance records from the API as a list.
+	 * Unlike stream(), this operation is eager and will load `limit` records into
+	 * memory before returning.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. read()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, read()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return PayloadInstance[] Array of results
+	 */
+	public function read(?int $limit = null, $pageSize = null) : array
+	{
+		return \iterator_to_array($this->stream($limit, $pageSize), false);
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Api.V2010.PayloadList]';
-    }
+	/**
+	 * Streams PayloadInstance records from the API as a generator stream.
+	 * This operation lazily loads records as efficiently as possible until the
+	 * limit
+	 * is reached.
+	 * The results are returned as a generator, so this operation is memory
+	 * efficient.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. stream()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, stream()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return Stream stream of results
+	 */
+	public function stream(?int $limit = null, $pageSize = null) : Stream
+	{
+		$limits = $this->version->readLimits($limit, $pageSize);
+
+		$page = $this->page($limits['pageSize']);
+
+		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+	}
 }

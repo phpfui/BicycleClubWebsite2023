@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Chat\V2\Service;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $sid
@@ -37,123 +35,125 @@ use Twilio\Deserialize;
  */
 class RoleInstance extends InstanceResource
 {
-    /**
-     * Initialize the RoleInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the Role resource under.
-     * @param string $sid The SID of the Role resource to delete.
-     */
-    public function __construct(Version $version, array $payload, string $serviceSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the RoleInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the Role resource under.
+	 * @param string $sid The SID of the Role resource to delete.
+	 */
+	public function __construct(Version $version, array $payload, string $serviceSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'serviceSid' => Values::array_get($payload, 'service_sid'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'type' => Values::array_get($payload, 'type'),
-            'permissions' => Values::array_get($payload, 'permissions'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'serviceSid' => Values::array_get($payload, 'service_sid'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'type' => Values::array_get($payload, 'type'),
+			'permissions' => Values::array_get($payload, 'permissions'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return RoleContext Context for this RoleInstance
-     */
-    protected function proxy(): RoleContext
-    {
-        if (!$this->context) {
-            $this->context = new RoleContext(
-                $this->version,
-                $this->solution['serviceSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the RoleInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the RoleInstance
-     *
-     * @return RoleInstance Fetched RoleInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): RoleInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Update the RoleInstance
-     *
-     * @param string[] $permission A permission that you grant to the role. Only one permission can be granted per parameter. To assign more than one permission, repeat this parameter for each permission value. Note that the update action replaces all previously assigned permissions with those defined in the update action. To remove a permission, do not include it in the subsequent update action. The values for this parameter depend on the role's `type`.
-     * @return RoleInstance Updated RoleInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $permission): RoleInstance
-    {
+		return '[Twilio.Chat.V2.RoleInstance ' . \implode(' ', $context) . ']';
+	}
 
-        return $this->proxy()->update($permission);
-    }
+	/**
+	 * Delete the RoleInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return $this->proxy()->delete();
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Fetch the RoleInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return RoleInstance Fetched RoleInstance
+	 */
+	public function fetch() : RoleInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->fetch();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Chat.V2.RoleInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the RoleInstance
+	 *
+	 * @param string[] $permission A permission that you grant to the role. Only one permission can be granted per parameter. To assign more than one permission, repeat this parameter for each permission value. Note that the update action replaces all previously assigned permissions with those defined in the update action. To remove a permission, do not include it in the subsequent update action. The values for this parameter depend on the role's `type`.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return RoleInstance Updated RoleInstance
+	 */
+	public function update(array $permission) : RoleInstance
+	{
+
+		return $this->proxy()->update($permission);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return RoleContext Context for this RoleInstance
+	 */
+	protected function proxy() : RoleContext
+	{
+		if (! $this->context) {
+			$this->context = new RoleContext(
+				$this->version,
+				$this->solution['serviceSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

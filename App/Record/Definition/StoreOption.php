@@ -14,16 +14,25 @@ abstract class StoreOption extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'optionName' => ['char(100)', 'string', 100, false, '', ],
-		'optionValues' => ['varchar(255)', 'string', 255, false, '', ],
-		'storeOptionId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['storeOptionId', ];
 
 	protected static string $table = 'storeOption';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'optionName' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, false, '', ),
+				'optionValues' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, '', ),
+				'storeOptionId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

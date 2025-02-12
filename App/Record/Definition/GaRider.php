@@ -35,34 +35,43 @@ abstract class GaRider extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'address' => ['varchar(100)', 'string', 100, true, ],
-		'agreedToWaiver' => ['tinyint', 'int', 0, true, ],
-		'comments' => ['varchar(50)', 'string', 50, true, ],
-		'contact' => ['varchar(50)', 'string', 50, true, ],
-		'contactPhone' => ['char(15)', 'string', 15, true, ],
-		'customerId' => ['int', 'int', 0, true, ],
-		'email' => ['varchar(50)', 'string', 50, true, ],
-		'emailAnnouncements' => ['int', 'int', 0, true, 1, ],
-		'firstName' => ['varchar(50)', 'string', 50, true, ],
-		'gaEventId' => ['int', 'int', 0, false, ],
-		'gaRiderId' => ['int', 'int', 0, false, ],
-		'lastName' => ['varchar(50)', 'string', 50, true, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'pending' => ['int', 'int', 0, false, 1, ],
-		'phone' => ['varchar(20)', 'string', 20, true, '', ],
-		'pricePaid' => ['decimal(5,2)', 'float', 5, true, ],
-		'prize' => ['int', 'int', 0, true, ],
-		'signedUpOn' => ['datetime', 'string', 20, false, null, ],
-		'state' => ['char(2)', 'string', 2, true, ],
-		'town' => ['varchar(50)', 'string', 50, true, ],
-		'zip' => ['varchar(10)', 'string', 10, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['gaRiderId', ];
 
 	protected static string $table = 'gaRider';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'address' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+				'agreedToWaiver' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, true, ),
+				'comments' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'contact' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'contactPhone' => new \PHPFUI\ORM\FieldDefinition('char(15)', 'string', 15, true, ),
+				'customerId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'email' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'emailAnnouncements' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 1, ),
+				'firstName' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'gaEventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'gaRiderId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'lastName' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'pending' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 1, ),
+				'phone' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, '', ),
+				'pricePaid' => new \PHPFUI\ORM\FieldDefinition('decimal(5,2)', 'float', 5, true, ),
+				'prize' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'signedUpOn' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'state' => new \PHPFUI\ORM\FieldDefinition('char(2)', 'string', 2, true, ),
+				'town' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'zip' => new \PHPFUI\ORM\FieldDefinition('varchar(10)', 'string', 10, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -14,82 +14,78 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Serverless\V1\Service\Environment;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class DeploymentContext extends InstanceContext
-    {
-    /**
-     * Initialize the DeploymentContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the Service to create the Deployment resource under.
-     * @param string $environmentSid The SID of the Environment for the Deployment.
-     * @param string $sid The SID that identifies the Deployment resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $environmentSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the DeploymentContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the Service to create the Deployment resource under.
+	 * @param string $environmentSid The SID of the Environment for the Deployment.
+	 * @param string $sid The SID that identifies the Deployment resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$environmentSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'environmentSid' =>
-            $environmentSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'environmentSid' => $environmentSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Environments/' . \rawurlencode($environmentSid)
-        .'/Deployments/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Environments/' . \rawurlencode($environmentSid)
+		. '/Deployments/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the DeploymentInstance
-     *
-     * @return DeploymentInstance Fetched DeploymentInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): DeploymentInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new DeploymentInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['environmentSid'],
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Serverless.V1.DeploymentContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the DeploymentInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DeploymentInstance Fetched DeploymentInstance
+	 */
+	public function fetch() : DeploymentInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Serverless.V1.DeploymentContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new DeploymentInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['environmentSid'],
+			$this->solution['sid']
+		);
+	}
 }

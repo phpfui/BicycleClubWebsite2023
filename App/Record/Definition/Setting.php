@@ -12,15 +12,24 @@ abstract class Setting extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'name' => ['varchar(30)', 'string', 30, false, '', ],
-		'value' => ['text', 'string', 65535, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['name', ];
 
 	protected static string $table = 'setting';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'name' => new \PHPFUI\ORM\FieldDefinition('varchar(30)', 'string', 30, false, '', ),
+				'value' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

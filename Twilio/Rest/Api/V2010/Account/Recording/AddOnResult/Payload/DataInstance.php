@@ -14,7 +14,6 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account\Recording\AddOnResult\Payload;
 
 use Twilio\Exceptions\TwilioException;
@@ -22,100 +21,101 @@ use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
 
-
 /**
  * @property string|null $redirectTo
  */
 class DataInstance extends InstanceResource
 {
-    /**
-     * Initialize the DataInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Recording AddOnResult Payload resource to fetch.
-     * @param string $referenceSid The SID of the recording to which the AddOnResult resource that contains the payload to fetch belongs.
-     * @param string $addOnResultSid The SID of the AddOnResult to which the payload to fetch belongs.
-     * @param string $payloadSid The Twilio-provided string that uniquely identifies the Recording AddOnResult Payload resource to fetch.
-     */
-    public function __construct(Version $version, array $payload, string $accountSid, string $referenceSid, string $addOnResultSid, string $payloadSid)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the DataInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Recording AddOnResult Payload resource to fetch.
+	 * @param string $referenceSid The SID of the recording to which the AddOnResult resource that contains the payload to fetch belongs.
+	 * @param string $addOnResultSid The SID of the AddOnResult to which the payload to fetch belongs.
+	 * @param string $payloadSid The Twilio-provided string that uniquely identifies the Recording AddOnResult Payload resource to fetch.
+	 */
+	public function __construct(Version $version, array $payload, string $accountSid, string $referenceSid, string $addOnResultSid, string $payloadSid)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'redirectTo' => Values::array_get($payload, 'redirect_to'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'redirectTo' => Values::array_get($payload, 'redirect_to'),
+		];
 
-        $this->solution = ['accountSid' => $accountSid, 'referenceSid' => $referenceSid, 'addOnResultSid' => $addOnResultSid, 'payloadSid' => $payloadSid, ];
-    }
+		$this->solution = ['accountSid' => $accountSid, 'referenceSid' => $referenceSid, 'addOnResultSid' => $addOnResultSid, 'payloadSid' => $payloadSid, ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return DataContext Context for this DataInstance
-     */
-    protected function proxy(): DataContext
-    {
-        if (!$this->context) {
-            $this->context = new DataContext(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['referenceSid'],
-                $this->solution['addOnResultSid'],
-                $this->solution['payloadSid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the DataInstance
-     *
-     * @return DataInstance Fetched DataInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): DataInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Api.V2010.DataInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.DataInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the DataInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DataInstance Fetched DataInstance
+	 */
+	public function fetch() : DataInstance
+	{
+
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return DataContext Context for this DataInstance
+	 */
+	protected function proxy() : DataContext
+	{
+		if (! $this->context) {
+			$this->context = new DataContext(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['referenceSid'],
+				$this->solution['addOnResultSid'],
+				$this->solution['payloadSid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

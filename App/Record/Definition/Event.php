@@ -38,40 +38,49 @@ abstract class Event extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'additionalInfo' => ['blob', 'string', 0, true, ],
-		'checks' => ['int', 'int', 0, true, 0, ],
-		'commentTitle' => ['varchar(255)', 'string', 255, false, '', ],
-		'directionsUrl' => ['varchar(100)', 'string', 100, true, ],
-		'door' => ['int', 'int', 0, true, 0, ],
-		'endTime' => ['varchar(20)', 'string', 20, true, ],
-		'eventDate' => ['date', 'string', 10, false, ],
-		'eventId' => ['int', 'int', 0, false, ],
-		'information' => ['blob', 'string', 0, true, ],
-		'lastRegistrationDate' => ['date', 'string', 10, false, ],
-		'location' => ['varchar(250)', 'string', 250, true, ],
-		'maxDiscounts' => ['int', 'int', 0, false, 0, ],
-		'maxReservations' => ['int', 'int', 0, true, 4, ],
-		'membersOnly' => ['int', 'int', 0, true, 1, ],
-		'newMemberDate' => ['date', 'string', 10, true, ],
-		'newMemberDiscount' => ['decimal(6,2)', 'float', 6, false, 0.00, ],
-		'numberReservations' => ['int', 'int', 0, true, ],
-		'organizer' => ['int', 'int', 0, true, ],
-		'paypal' => ['int', 'int', 0, true, 1, ],
-		'price' => ['decimal(6,2)', 'float', 6, false, 0.00, ],
-		'publicDate' => ['date', 'string', 10, true, ],
-		'registrationStartDate' => ['date', 'string', 10, true, ],
-		'requireComment' => ['int', 'int', 0, true, 0, ],
-		'showComments' => ['tinyint(1)', 'int', 1, false, 0, ],
-		'showRegistered' => ['tinyint(1)', 'int', 1, false, 1, ],
-		'startTime' => ['varchar(20)', 'string', 20, true, ],
-		'title' => ['varchar(100)', 'string', 100, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['eventId', ];
 
 	protected static string $table = 'event';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'additionalInfo' => new \PHPFUI\ORM\FieldDefinition('blob', 'string', 0, true, ),
+				'checks' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'commentTitle' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, '', ),
+				'directionsUrl' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+				'door' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'endTime' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, ),
+				'eventDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'eventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'information' => new \PHPFUI\ORM\FieldDefinition('blob', 'string', 0, true, ),
+				'lastRegistrationDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'location' => new \PHPFUI\ORM\FieldDefinition('varchar(250)', 'string', 250, true, ),
+				'maxDiscounts' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'maxReservations' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 4, ),
+				'membersOnly' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 1, ),
+				'newMemberDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'newMemberDiscount' => new \PHPFUI\ORM\FieldDefinition('decimal(6,2)', 'float', 6, false, 0.00, ),
+				'numberReservations' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'organizer' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'paypal' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 1, ),
+				'price' => new \PHPFUI\ORM\FieldDefinition('decimal(6,2)', 'float', 6, false, 0.00, ),
+				'publicDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'registrationStartDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'requireComment' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'showComments' => new \PHPFUI\ORM\FieldDefinition('tinyint(1)', 'int', 1, false, 0, ),
+				'showRegistered' => new \PHPFUI\ORM\FieldDefinition('tinyint(1)', 'int', 1, false, 1, ),
+				'startTime' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

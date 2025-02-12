@@ -14,21 +14,19 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\LocalList;
+use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\MachineToMachineList;
+use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\MobileList;
+use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\NationalList;
+use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\SharedCostList;
+use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\TollFreeList;
+use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\VoipList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\VoipList;
-use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\NationalList;
-use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\MobileList;
-use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\MachineToMachineList;
-use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\TollFreeList;
-use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\SharedCostList;
-use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\LocalList;
-
 
 /**
  * @property string|null $countryCode
@@ -39,158 +37,166 @@ use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountry\LocalList;
  */
 class AvailablePhoneNumberCountryInstance extends InstanceResource
 {
-    protected $_voip;
-    protected $_national;
-    protected $_mobile;
-    protected $_machineToMachine;
-    protected $_tollFree;
-    protected $_sharedCost;
-    protected $_local;
+	protected $_local;
 
-    /**
-     * Initialize the AvailablePhoneNumberCountryInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) requesting the available phone number Country resource.
-     * @param string $countryCode The [ISO-3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code of the country to fetch available phone number information about.
-     */
-    public function __construct(Version $version, array $payload, string $accountSid, ?string $countryCode = null)
-    {
-        parent::__construct($version);
+	protected $_machineToMachine;
 
-        // Marshaled Properties
-        $this->properties = [
-            'countryCode' => Values::array_get($payload, 'country_code'),
-            'country' => Values::array_get($payload, 'country'),
-            'uri' => Values::array_get($payload, 'uri'),
-            'beta' => Values::array_get($payload, 'beta'),
-            'subresourceUris' => Values::array_get($payload, 'subresource_uris'),
-        ];
+	protected $_mobile;
 
-        $this->solution = ['accountSid' => $accountSid, 'countryCode' => $countryCode ?: $this->properties['countryCode'], ];
-    }
+	protected $_national;
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return AvailablePhoneNumberCountryContext Context for this AvailablePhoneNumberCountryInstance
-     */
-    protected function proxy(): AvailablePhoneNumberCountryContext
-    {
-        if (!$this->context) {
-            $this->context = new AvailablePhoneNumberCountryContext(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['countryCode']
-            );
-        }
+	protected $_sharedCost;
 
-        return $this->context;
-    }
+	protected $_tollFree;
 
-    /**
-     * Fetch the AvailablePhoneNumberCountryInstance
-     *
-     * @return AvailablePhoneNumberCountryInstance Fetched AvailablePhoneNumberCountryInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): AvailablePhoneNumberCountryInstance
-    {
+	protected $_voip;
 
-        return $this->proxy()->fetch();
-    }
+	/**
+	 * Initialize the AvailablePhoneNumberCountryInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) requesting the available phone number Country resource.
+	 * @param string $countryCode The [ISO-3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code of the country to fetch available phone number information about.
+	 */
+	public function __construct(Version $version, array $payload, string $accountSid, ?string $countryCode = null)
+	{
+		parent::__construct($version);
 
-    /**
-     * Access the voip
-     */
-    protected function getVoip(): VoipList
-    {
-        return $this->proxy()->voip;
-    }
+		// Marshaled Properties
+		$this->properties = [
+			'countryCode' => Values::array_get($payload, 'country_code'),
+			'country' => Values::array_get($payload, 'country'),
+			'uri' => Values::array_get($payload, 'uri'),
+			'beta' => Values::array_get($payload, 'beta'),
+			'subresourceUris' => Values::array_get($payload, 'subresource_uris'),
+		];
 
-    /**
-     * Access the national
-     */
-    protected function getNational(): NationalList
-    {
-        return $this->proxy()->national;
-    }
+		$this->solution = ['accountSid' => $accountSid, 'countryCode' => $countryCode ?: $this->properties['countryCode'], ];
+	}
 
-    /**
-     * Access the mobile
-     */
-    protected function getMobile(): MobileList
-    {
-        return $this->proxy()->mobile;
-    }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-    /**
-     * Access the machineToMachine
-     */
-    protected function getMachineToMachine(): MachineToMachineList
-    {
-        return $this->proxy()->machineToMachine;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Access the tollFree
-     */
-    protected function getTollFree(): TollFreeList
-    {
-        return $this->proxy()->tollFree;
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Access the sharedCost
-     */
-    protected function getSharedCost(): SharedCostList
-    {
-        return $this->proxy()->sharedCost;
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Access the local
-     */
-    protected function getLocal(): LocalList
-    {
-        return $this->proxy()->local;
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return '[Twilio.Api.V2010.AvailablePhoneNumberCountryInstance ' . \implode(' ', $context) . ']';
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Fetch the AvailablePhoneNumberCountryInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AvailablePhoneNumberCountryInstance Fetched AvailablePhoneNumberCountryInstance
+	 */
+	public function fetch() : AvailablePhoneNumberCountryInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.AvailablePhoneNumberCountryInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Access the local
+	 */
+	protected function getLocal() : LocalList
+	{
+		return $this->proxy()->local;
+	}
+
+	/**
+	 * Access the machineToMachine
+	 */
+	protected function getMachineToMachine() : MachineToMachineList
+	{
+		return $this->proxy()->machineToMachine;
+	}
+
+	/**
+	 * Access the mobile
+	 */
+	protected function getMobile() : MobileList
+	{
+		return $this->proxy()->mobile;
+	}
+
+	/**
+	 * Access the national
+	 */
+	protected function getNational() : NationalList
+	{
+		return $this->proxy()->national;
+	}
+
+	/**
+	 * Access the sharedCost
+	 */
+	protected function getSharedCost() : SharedCostList
+	{
+		return $this->proxy()->sharedCost;
+	}
+
+	/**
+	 * Access the tollFree
+	 */
+	protected function getTollFree() : TollFreeList
+	{
+		return $this->proxy()->tollFree;
+	}
+
+	/**
+	 * Access the voip
+	 */
+	protected function getVoip() : VoipList
+	{
+		return $this->proxy()->voip;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return AvailablePhoneNumberCountryContext Context for this AvailablePhoneNumberCountryInstance
+	 */
+	protected function proxy() : AvailablePhoneNumberCountryContext
+	{
+		if (! $this->context) {
+			$this->context = new AvailablePhoneNumberCountryContext(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['countryCode']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

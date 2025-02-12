@@ -14,16 +14,25 @@ abstract class Blog extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'blogId' => ['int', 'int', 0, false, ],
-		'count' => ['int', 'int', 0, false, 0, ],
-		'name' => ['varchar(255)', 'string', 255, false, '', ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['blogId', ];
 
 	protected static string $table = 'blog';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'blogId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'count' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'name' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, '', ),
+			];
+			}
+
+		return $this;
+		}
 	}

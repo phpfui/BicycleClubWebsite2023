@@ -14,104 +14,96 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Video\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class CompositionSettingsContext extends InstanceContext
-    {
-    /**
-     * Initialize the CompositionSettingsContext
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the CompositionSettingsContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/CompositionSettings/Default';
-    }
+		$this->uri = '/CompositionSettings/Default';
+	}
 
-    /**
-     * Create the CompositionSettingsInstance
-     *
-     * @param string $friendlyName A descriptive string that you create to describe the resource and show to the user in the console
-     * @param array|Options $options Optional Arguments
-     * @return CompositionSettingsInstance Created CompositionSettingsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $friendlyName, array $options = []): CompositionSettingsInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $friendlyName,
-            'AwsCredentialsSid' =>
-                $options['awsCredentialsSid'],
-            'EncryptionKeySid' =>
-                $options['encryptionKeySid'],
-            'AwsS3Url' =>
-                $options['awsS3Url'],
-            'AwsStorageEnabled' =>
-                Serialize::booleanToString($options['awsStorageEnabled']),
-            'EncryptionEnabled' =>
-                Serialize::booleanToString($options['encryptionEnabled']),
-        ]);
+		return '[Twilio.Video.V1.CompositionSettingsContext ' . \implode(' ', $context) . ']';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Create the CompositionSettingsInstance
+	 *
+	 * @param string $friendlyName A descriptive string that you create to describe the resource and show to the user in the console
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CompositionSettingsInstance Created CompositionSettingsInstance
+	 */
+	public function create(string $friendlyName, array $options = []) : CompositionSettingsInstance
+	{
 
-        return new CompositionSettingsInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$options = new Values($options);
 
+		$data = Values::of([
+			'FriendlyName' => $friendlyName,
+			'AwsCredentialsSid' => $options['awsCredentialsSid'],
+			'EncryptionKeySid' => $options['encryptionKeySid'],
+			'AwsS3Url' => $options['awsS3Url'],
+			'AwsStorageEnabled' => Serialize::booleanToString($options['awsStorageEnabled']),
+			'EncryptionEnabled' => Serialize::booleanToString($options['encryptionEnabled']),
+		]);
 
-    /**
-     * Fetch the CompositionSettingsInstance
-     *
-     * @return CompositionSettingsInstance Fetched CompositionSettingsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): CompositionSettingsInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		return new CompositionSettingsInstance(
+			$this->version,
+			$payload
+		);
+	}
 
-        return new CompositionSettingsInstance(
-            $this->version,
-            $payload
-        );
-    }
+	/**
+	 * Fetch the CompositionSettingsInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CompositionSettingsInstance Fetched CompositionSettingsInstance
+	 */
+	public function fetch() : CompositionSettingsInstance
+	{
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Video.V1.CompositionSettingsContext ' . \implode(' ', $context) . ']';
-    }
+		return new CompositionSettingsInstance(
+			$this->version,
+			$payload
+		);
+	}
 }

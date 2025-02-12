@@ -19,47 +19,45 @@ namespace Twilio\Rest\Numbers\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class PortingWebhookConfigurationDeleteList extends ListResource
-    {
-    /**
-     * Construct the PortingWebhookConfigurationDeleteList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the PortingWebhookConfigurationDeleteList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+		];
+	}
 
-    /**
-     * Constructs a PortingWebhookConfigurationDeleteContext
-     *
-     * @param string $webhookType The webhook type for the configuration to be delete. `PORT_IN`, `PORT_OUT`
-     */
-    public function getContext(
-        string $webhookType
-        
-    ): PortingWebhookConfigurationDeleteContext
-    {
-        return new PortingWebhookConfigurationDeleteContext(
-            $this->version,
-            $webhookType
-        );
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Numbers.V1.PortingWebhookConfigurationDeleteList]';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Numbers.V1.PortingWebhookConfigurationDeleteList]';
-    }
+	/**
+	 * Constructs a PortingWebhookConfigurationDeleteContext
+	 *
+	 * @param string $webhookType The webhook type for the configuration to be delete. `PORT_IN`, `PORT_OUT`
+	 */
+	public function getContext(
+		string $webhookType
+	) : PortingWebhookConfigurationDeleteContext
+	{
+		return new PortingWebhookConfigurationDeleteContext(
+			$this->version,
+			$webhookType
+		);
+	}
 }

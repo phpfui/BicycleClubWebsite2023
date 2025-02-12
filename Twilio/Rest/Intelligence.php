@@ -1,5 +1,7 @@
 <?php
+
 namespace Twilio\Rest;
 
-class Intelligence extends IntelligenceBase {
+class Intelligence extends IntelligenceBase
+{
 }

@@ -19,51 +19,49 @@ namespace Twilio\Rest\Messaging\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class LinkshorteningMessagingServiceList extends ListResource
-    {
-    /**
-     * Construct the LinkshorteningMessagingServiceList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the LinkshorteningMessagingServiceList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+		];
+	}
 
-    /**
-     * Constructs a LinkshorteningMessagingServiceContext
-     *
-     * @param string $domainSid The domain SID to associate with a messaging service. With URL shortening enabled, links in messages sent with the associated messaging service will be shortened to the provided domain
-     *
-     * @param string $messagingServiceSid A messaging service SID to associate with a domain. With URL shortening enabled, links in messages sent with the provided messaging service will be shortened to the associated domain
-     */
-    public function getContext(
-        string $domainSid
-        , string $messagingServiceSid
-        
-    ): LinkshorteningMessagingServiceContext
-    {
-        return new LinkshorteningMessagingServiceContext(
-            $this->version,
-            $domainSid,
-            $messagingServiceSid
-        );
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Messaging.V1.LinkshorteningMessagingServiceList]';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Messaging.V1.LinkshorteningMessagingServiceList]';
-    }
+	/**
+	 * Constructs a LinkshorteningMessagingServiceContext
+	 *
+	 * @param string $domainSid The domain SID to associate with a messaging service. With URL shortening enabled, links in messages sent with the associated messaging service will be shortened to the provided domain
+	 *
+	 * @param string $messagingServiceSid A messaging service SID to associate with a domain. With URL shortening enabled, links in messages sent with the provided messaging service will be shortened to the associated domain
+	 */
+	public function getContext(
+		string $domainSid,
+		string $messagingServiceSid
+	) : LinkshorteningMessagingServiceContext
+	{
+		return new LinkshorteningMessagingServiceContext(
+			$this->version,
+			$domainSid,
+			$messagingServiceSid
+		);
+	}
 }

@@ -14,14 +14,12 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Marketplace\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $url
@@ -37,62 +35,62 @@ use Twilio\Version;
  */
 class ModuleDataInstance extends InstanceResource
 {
-    /**
-     * Initialize the ModuleDataInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     */
-    public function __construct(Version $version, array $payload)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the ModuleDataInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 */
+	public function __construct(Version $version, array $payload)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'url' => Values::array_get($payload, 'url'),
-            'sid' => Values::array_get($payload, 'sid'),
-            'description' => Values::array_get($payload, 'description'),
-            'support' => Values::array_get($payload, 'support'),
-            'policies' => Values::array_get($payload, 'policies'),
-            'moduleInfo' => Values::array_get($payload, 'module_info'),
-            'documentation' => Values::array_get($payload, 'documentation'),
-            'configuration' => Values::array_get($payload, 'configuration'),
-            'pricing' => Values::array_get($payload, 'pricing'),
-            'listings' => Values::array_get($payload, 'listings'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'url' => Values::array_get($payload, 'url'),
+			'sid' => Values::array_get($payload, 'sid'),
+			'description' => Values::array_get($payload, 'description'),
+			'support' => Values::array_get($payload, 'support'),
+			'policies' => Values::array_get($payload, 'policies'),
+			'moduleInfo' => Values::array_get($payload, 'module_info'),
+			'documentation' => Values::array_get($payload, 'documentation'),
+			'configuration' => Values::array_get($payload, 'configuration'),
+			'pricing' => Values::array_get($payload, 'pricing'),
+			'listings' => Values::array_get($payload, 'listings'),
+		];
 
-        $this->solution = [];
-    }
+		$this->solution = [];
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Marketplace.V1.ModuleDataInstance]';
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Marketplace.V1.ModuleDataInstance]';
+	}
 }
-

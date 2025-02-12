@@ -22,22 +22,31 @@ abstract class Payment extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'amount' => ['decimal(6,2)', 'float', 6, true, ],
-		'dateReceived' => ['date', 'string', 10, false, ],
-		'enteringMemberNumber' => ['int', 'int', 0, true, ],
-		'invoiceId' => ['int', 'int', 0, true, 0, ],
-		'membershipId' => ['int', 'int', 0, true, ],
-		'paymentDated' => ['date', 'string', 10, true, ],
-		'paymentId' => ['int', 'int', 0, false, ],
-		'paymentNumber' => ['varchar(50)', 'string', 50, true, ],
-		'paymentType' => ['int', 'int', 0, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['paymentId', ];
 
 	protected static string $table = 'payment';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'amount' => new \PHPFUI\ORM\FieldDefinition('decimal(6,2)', 'float', 6, true, ),
+				'dateReceived' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'enteringMemberNumber' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'invoiceId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'membershipId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'paymentDated' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'paymentId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'paymentNumber' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'paymentType' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -17,13 +17,12 @@
 namespace Twilio\Rest\Voice\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\ListResource;
-use Twilio\Version;
 use Twilio\InstanceContext;
+use Twilio\ListResource;
 use Twilio\Rest\Voice\V1\DialingPermissions\BulkCountryUpdateList;
 use Twilio\Rest\Voice\V1\DialingPermissions\CountryList;
 use Twilio\Rest\Voice\V1\DialingPermissions\SettingsList;
-
+use Twilio\Version;
 
 /**
  * @property BulkCountryUpdateList $bulkCountryUpdates
@@ -33,107 +32,114 @@ use Twilio\Rest\Voice\V1\DialingPermissions\SettingsList;
  * @method \Twilio\Rest\Voice\V1\DialingPermissions\SettingsContext settings()
  */
 class DialingPermissionsList extends ListResource
-    {
-    protected $_bulkCountryUpdates = null;
-    protected $_countries = null;
-    protected $_settings = null;
+	{
+	protected $_bulkCountryUpdates = null;
 
-    /**
-     * Construct the DialingPermissionsList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	protected $_countries = null;
 
-        // Path Solution
-        $this->solution = [
-        ];
-    }
+	protected $_settings = null;
 
-    /**
-     * Access the bulkCountryUpdates
-     */
-    protected function getBulkCountryUpdates(): BulkCountryUpdateList
-    {
-        if (!$this->_bulkCountryUpdates) {
-            $this->_bulkCountryUpdates = new BulkCountryUpdateList(
-                $this->version
-            );
-        }
-        return $this->_bulkCountryUpdates;
-    }
+	/**
+	 * Construct the DialingPermissionsList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-    /**
-     * Access the countries
-     */
-    protected function getCountries(): CountryList
-    {
-        if (!$this->_countries) {
-            $this->_countries = new CountryList(
-                $this->version
-            );
-        }
-        return $this->_countries;
-    }
+		// Path Solution
+		$this->solution = [
+		];
+	}
 
-    /**
-     * Access the settings
-     */
-    protected function getSettings(): SettingsList
-    {
-        if (!$this->_settings) {
-            $this->_settings = new SettingsList(
-                $this->version
-            );
-        }
-        return $this->_settings;
-    }
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return \Twilio\ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name)
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		throw new TwilioException('Resource does not have a context');
+	}
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return \Twilio\ListResource The requested subresource
+	 */
+	public function __get(string $name)
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        throw new TwilioException('Resource does not have a context');
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Voice.V1.DialingPermissionsList]';
-    }
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Voice.V1.DialingPermissionsList]';
+	}
+
+	/**
+	 * Access the bulkCountryUpdates
+	 */
+	protected function getBulkCountryUpdates() : BulkCountryUpdateList
+	{
+		if (! $this->_bulkCountryUpdates) {
+			$this->_bulkCountryUpdates = new BulkCountryUpdateList(
+				$this->version
+			);
+		}
+
+		return $this->_bulkCountryUpdates;
+	}
+
+	/**
+	 * Access the countries
+	 */
+	protected function getCountries() : CountryList
+	{
+		if (! $this->_countries) {
+			$this->_countries = new CountryList(
+				$this->version
+			);
+		}
+
+		return $this->_countries;
+	}
+
+	/**
+	 * Access the settings
+	 */
+	protected function getSettings() : SettingsList
+	{
+		if (! $this->_settings) {
+			$this->_settings = new SettingsList(
+				$this->version
+			);
+		}
+
+		return $this->_settings;
+	}
 }

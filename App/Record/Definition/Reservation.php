@@ -30,28 +30,37 @@ abstract class Reservation extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'address' => ['varchar(100)', 'string', 100, true, ],
-		'eventId' => ['int', 'int', 0, true, ],
-		'invoiceId' => ['int', 'int', 0, true, 0, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'paymentId' => ['int', 'int', 0, true, ],
-		'phone' => ['varchar(20)', 'string', 20, true, '', ],
-		'pricePaid' => ['decimal(6,2)', 'float', 6, false, 0.00, ],
-		'reservationFirstName' => ['varchar(50)', 'string', 50, true, ],
-		'reservationId' => ['int', 'int', 0, false, ],
-		'reservationLastName' => ['varchar(50)', 'string', 50, true, ],
-		'reservationemail' => ['varchar(50)', 'string', 50, true, ],
-		'signedUpAt' => ['datetime', 'string', 20, false, null, ],
-		'state' => ['char(2)', 'string', 2, true, ],
-		'town' => ['varchar(50)', 'string', 50, true, ],
-		'zip' => ['varchar(10)', 'string', 10, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['reservationId', ];
 
 	protected static string $table = 'reservation';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'address' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+				'eventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'invoiceId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'paymentId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'phone' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, '', ),
+				'pricePaid' => new \PHPFUI\ORM\FieldDefinition('decimal(6,2)', 'float', 6, false, 0.00, ),
+				'reservationFirstName' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'reservationId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'reservationLastName' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'reservationemail' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'signedUpAt' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'state' => new \PHPFUI\ORM\FieldDefinition('char(2)', 'string', 2, true, ),
+				'town' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'zip' => new \PHPFUI\ORM\FieldDefinition('varchar(10)', 'string', 10, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

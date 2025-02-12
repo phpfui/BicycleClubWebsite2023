@@ -14,14 +14,12 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Bulkexports\V1\Export;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $friendlyName
@@ -38,64 +36,64 @@ use Twilio\Version;
  */
 class ExportCustomJobInstance extends InstanceResource
 {
-    /**
-     * Initialize the ExportCustomJobInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $resourceType The type of communication – Messages or Calls, Conferences, and Participants
-     */
-    public function __construct(Version $version, array $payload, string $resourceType)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the ExportCustomJobInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $resourceType The type of communication – Messages or Calls, Conferences, and Participants
+	 */
+	public function __construct(Version $version, array $payload, string $resourceType)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'resourceType' => Values::array_get($payload, 'resource_type'),
-            'startDay' => Values::array_get($payload, 'start_day'),
-            'endDay' => Values::array_get($payload, 'end_day'),
-            'webhookUrl' => Values::array_get($payload, 'webhook_url'),
-            'webhookMethod' => Values::array_get($payload, 'webhook_method'),
-            'email' => Values::array_get($payload, 'email'),
-            'jobSid' => Values::array_get($payload, 'job_sid'),
-            'details' => Values::array_get($payload, 'details'),
-            'jobQueuePosition' => Values::array_get($payload, 'job_queue_position'),
-            'estimatedCompletionTime' => Values::array_get($payload, 'estimated_completion_time'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'resourceType' => Values::array_get($payload, 'resource_type'),
+			'startDay' => Values::array_get($payload, 'start_day'),
+			'endDay' => Values::array_get($payload, 'end_day'),
+			'webhookUrl' => Values::array_get($payload, 'webhook_url'),
+			'webhookMethod' => Values::array_get($payload, 'webhook_method'),
+			'email' => Values::array_get($payload, 'email'),
+			'jobSid' => Values::array_get($payload, 'job_sid'),
+			'details' => Values::array_get($payload, 'details'),
+			'jobQueuePosition' => Values::array_get($payload, 'job_queue_position'),
+			'estimatedCompletionTime' => Values::array_get($payload, 'estimated_completion_time'),
+		];
 
-        $this->solution = ['resourceType' => $resourceType, ];
-    }
+		$this->solution = ['resourceType' => $resourceType, ];
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Bulkexports.V1.ExportCustomJobInstance]';
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Bulkexports.V1.ExportCustomJobInstance]';
+	}
 }
-

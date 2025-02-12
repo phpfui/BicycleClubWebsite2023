@@ -14,18 +14,16 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Notify\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Rest\Notify\V1\Service\BindingList;
+use Twilio\Rest\Notify\V1\Service\NotificationList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-use Twilio\Rest\Notify\V1\Service\NotificationList;
-use Twilio\Rest\Notify\V1\Service\BindingList;
-
 
 /**
  * @property string|null $sid
@@ -51,151 +49,154 @@ use Twilio\Rest\Notify\V1\Service\BindingList;
  */
 class ServiceInstance extends InstanceResource
 {
-    protected $_notifications;
-    protected $_bindings;
+	protected $_bindings;
 
-    /**
-     * Initialize the ServiceInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $sid The Twilio-provided string that uniquely identifies the Service resource to delete.
-     */
-    public function __construct(Version $version, array $payload, ?string $sid = null)
-    {
-        parent::__construct($version);
+	protected $_notifications;
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'apnCredentialSid' => Values::array_get($payload, 'apn_credential_sid'),
-            'gcmCredentialSid' => Values::array_get($payload, 'gcm_credential_sid'),
-            'fcmCredentialSid' => Values::array_get($payload, 'fcm_credential_sid'),
-            'messagingServiceSid' => Values::array_get($payload, 'messaging_service_sid'),
-            'facebookMessengerPageId' => Values::array_get($payload, 'facebook_messenger_page_id'),
-            'defaultApnNotificationProtocolVersion' => Values::array_get($payload, 'default_apn_notification_protocol_version'),
-            'defaultGcmNotificationProtocolVersion' => Values::array_get($payload, 'default_gcm_notification_protocol_version'),
-            'defaultFcmNotificationProtocolVersion' => Values::array_get($payload, 'default_fcm_notification_protocol_version'),
-            'logEnabled' => Values::array_get($payload, 'log_enabled'),
-            'url' => Values::array_get($payload, 'url'),
-            'links' => Values::array_get($payload, 'links'),
-            'alexaSkillId' => Values::array_get($payload, 'alexa_skill_id'),
-            'defaultAlexaNotificationProtocolVersion' => Values::array_get($payload, 'default_alexa_notification_protocol_version'),
-            'deliveryCallbackUrl' => Values::array_get($payload, 'delivery_callback_url'),
-            'deliveryCallbackEnabled' => Values::array_get($payload, 'delivery_callback_enabled'),
-        ];
+	/**
+	 * Initialize the ServiceInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $sid The Twilio-provided string that uniquely identifies the Service resource to delete.
+	 */
+	public function __construct(Version $version, array $payload, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-    }
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'apnCredentialSid' => Values::array_get($payload, 'apn_credential_sid'),
+			'gcmCredentialSid' => Values::array_get($payload, 'gcm_credential_sid'),
+			'fcmCredentialSid' => Values::array_get($payload, 'fcm_credential_sid'),
+			'messagingServiceSid' => Values::array_get($payload, 'messaging_service_sid'),
+			'facebookMessengerPageId' => Values::array_get($payload, 'facebook_messenger_page_id'),
+			'defaultApnNotificationProtocolVersion' => Values::array_get($payload, 'default_apn_notification_protocol_version'),
+			'defaultGcmNotificationProtocolVersion' => Values::array_get($payload, 'default_gcm_notification_protocol_version'),
+			'defaultFcmNotificationProtocolVersion' => Values::array_get($payload, 'default_fcm_notification_protocol_version'),
+			'logEnabled' => Values::array_get($payload, 'log_enabled'),
+			'url' => Values::array_get($payload, 'url'),
+			'links' => Values::array_get($payload, 'links'),
+			'alexaSkillId' => Values::array_get($payload, 'alexa_skill_id'),
+			'defaultAlexaNotificationProtocolVersion' => Values::array_get($payload, 'default_alexa_notification_protocol_version'),
+			'deliveryCallbackUrl' => Values::array_get($payload, 'delivery_callback_url'),
+			'deliveryCallbackEnabled' => Values::array_get($payload, 'delivery_callback_enabled'),
+		];
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return ServiceContext Context for this ServiceInstance
-     */
-    protected function proxy(): ServiceContext
-    {
-        if (!$this->context) {
-            $this->context = new ServiceContext(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-        return $this->context;
-    }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-    /**
-     * Delete the ServiceInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return $this->proxy()->delete();
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Fetch the ServiceInstance
-     *
-     * @return ServiceInstance Fetched ServiceInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ServiceInstance
-    {
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-        return $this->proxy()->fetch();
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Update the ServiceInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ServiceInstance Updated ServiceInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): ServiceInstance
-    {
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return $this->proxy()->update($options);
-    }
+		return '[Twilio.Notify.V1.ServiceInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Access the notifications
-     */
-    protected function getNotifications(): NotificationList
-    {
-        return $this->proxy()->notifications;
-    }
+	/**
+	 * Delete the ServiceInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Access the bindings
-     */
-    protected function getBindings(): BindingList
-    {
-        return $this->proxy()->bindings;
-    }
+		return $this->proxy()->delete();
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Fetch the ServiceInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ServiceInstance Fetched ServiceInstance
+	 */
+	public function fetch() : ServiceInstance
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->fetch();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Update the ServiceInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ServiceInstance Updated ServiceInstance
+	 */
+	public function update(array $options = []) : ServiceInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Notify.V1.ServiceInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Access the bindings
+	 */
+	protected function getBindings() : BindingList
+	{
+		return $this->proxy()->bindings;
+	}
+
+	/**
+	 * Access the notifications
+	 */
+	protected function getNotifications() : NotificationList
+	{
+		return $this->proxy()->notifications;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return ServiceContext Context for this ServiceInstance
+	 */
+	protected function proxy() : ServiceContext
+	{
+		if (! $this->context) {
+			$this->context = new ServiceContext(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

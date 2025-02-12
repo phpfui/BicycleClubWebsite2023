@@ -14,17 +14,15 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Studio\V1\Flow;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Rest\Studio\V1\Flow\Engagement\EngagementContextList;
+use Twilio\Rest\Studio\V1\Flow\Engagement\StepList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-use Twilio\Rest\Studio\V1\Flow\Engagement\StepList;
-use Twilio\Rest\Studio\V1\Flow\Engagement\EngagementContextList;
-
 
 /**
  * @property string|null $sid
@@ -41,131 +39,134 @@ use Twilio\Rest\Studio\V1\Flow\Engagement\EngagementContextList;
  */
 class EngagementInstance extends InstanceResource
 {
-    protected $_steps;
-    protected $_engagementContext;
+	protected $_engagementContext;
 
-    /**
-     * Initialize the EngagementInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $flowSid The SID of the Flow.
-     * @param string $sid The SID of the Engagement resource to delete.
-     */
-    public function __construct(Version $version, array $payload, string $flowSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	protected $_steps;
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'flowSid' => Values::array_get($payload, 'flow_sid'),
-            'contactSid' => Values::array_get($payload, 'contact_sid'),
-            'contactChannelAddress' => Values::array_get($payload, 'contact_channel_address'),
-            'context' => Values::array_get($payload, 'context'),
-            'status' => Values::array_get($payload, 'status'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-            'links' => Values::array_get($payload, 'links'),
-        ];
+	/**
+	 * Initialize the EngagementInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $flowSid The SID of the Flow.
+	 * @param string $sid The SID of the Engagement resource to delete.
+	 */
+	public function __construct(Version $version, array $payload, string $flowSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        $this->solution = ['flowSid' => $flowSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'flowSid' => Values::array_get($payload, 'flow_sid'),
+			'contactSid' => Values::array_get($payload, 'contact_sid'),
+			'contactChannelAddress' => Values::array_get($payload, 'contact_channel_address'),
+			'context' => Values::array_get($payload, 'context'),
+			'status' => Values::array_get($payload, 'status'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+			'links' => Values::array_get($payload, 'links'),
+		];
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return EngagementContext Context for this EngagementInstance
-     */
-    protected function proxy(): EngagementContext
-    {
-        if (!$this->context) {
-            $this->context = new EngagementContext(
-                $this->version,
-                $this->solution['flowSid'],
-                $this->solution['sid']
-            );
-        }
+		$this->solution = ['flowSid' => $flowSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-        return $this->context;
-    }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-    /**
-     * Delete the EngagementInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return $this->proxy()->delete();
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Fetch the EngagementInstance
-     *
-     * @return EngagementInstance Fetched EngagementInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): EngagementInstance
-    {
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-        return $this->proxy()->fetch();
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Access the steps
-     */
-    protected function getSteps(): StepList
-    {
-        return $this->proxy()->steps;
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Access the engagementContext
-     */
-    protected function getEngagementContext(): EngagementContextList
-    {
-        return $this->proxy()->engagementContext;
-    }
+		return '[Twilio.Studio.V1.EngagementInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Delete the EngagementInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->delete();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Fetch the EngagementInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return EngagementInstance Fetched EngagementInstance
+	 */
+	public function fetch() : EngagementInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Studio.V1.EngagementInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Access the engagementContext
+	 */
+	protected function getEngagementContext() : EngagementContextList
+	{
+		return $this->proxy()->engagementContext;
+	}
+
+	/**
+	 * Access the steps
+	 */
+	protected function getSteps() : StepList
+	{
+		return $this->proxy()->steps;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return EngagementContext Context for this EngagementInstance
+	 */
+	protected function proxy() : EngagementContext
+	{
+		if (! $this->context) {
+			$this->context = new EngagementContext(
+				$this->version,
+				$this->solution['flowSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

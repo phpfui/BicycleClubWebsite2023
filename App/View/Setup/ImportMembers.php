@@ -107,7 +107,7 @@ class ImportMembers extends \PHPFUI\Container
 
 	/**
 	 * @param array<string> $importFields
-	 * @param array<string,array<mixed>> $dataFields
+	 * @param array<string,\PHPFUI\ORM\FieldDefinition> $dataFields
 	 */
 	private function getMatchFields(array $importFields, array $dataFields) : string
 		{

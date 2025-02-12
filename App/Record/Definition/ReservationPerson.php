@@ -20,20 +20,29 @@ abstract class ReservationPerson extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'comments' => ['varchar(255)', 'string', 255, false, '', ],
-		'email' => ['varchar(50)', 'string', 50, true, ],
-		'eventId' => ['int', 'int', 0, true, ],
-		'firstName' => ['varchar(50)', 'string', 50, true, ],
-		'lastName' => ['varchar(50)', 'string', 50, true, ],
-		'reservationId' => ['int', 'int', 0, true, ],
-		'reservationPersonId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['reservationPersonId', ];
 
 	protected static string $table = 'reservationPerson';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'comments' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, '', ),
+				'email' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'eventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'firstName' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'lastName' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'reservationId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'reservationPersonId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

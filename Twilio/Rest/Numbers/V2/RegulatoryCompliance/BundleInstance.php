@@ -14,20 +14,18 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Numbers\V2\RegulatoryCompliance;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Rest\Numbers\V2\RegulatoryCompliance\Bundle\BundleCopyList;
+use Twilio\Rest\Numbers\V2\RegulatoryCompliance\Bundle\EvaluationList;
+use Twilio\Rest\Numbers\V2\RegulatoryCompliance\Bundle\ItemAssignmentList;
+use Twilio\Rest\Numbers\V2\RegulatoryCompliance\Bundle\ReplaceItemsList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-use Twilio\Rest\Numbers\V2\RegulatoryCompliance\Bundle\ReplaceItemsList;
-use Twilio\Rest\Numbers\V2\RegulatoryCompliance\Bundle\EvaluationList;
-use Twilio\Rest\Numbers\V2\RegulatoryCompliance\Bundle\BundleCopyList;
-use Twilio\Rest\Numbers\V2\RegulatoryCompliance\Bundle\ItemAssignmentList;
-
 
 /**
  * @property string|null $sid
@@ -45,161 +43,166 @@ use Twilio\Rest\Numbers\V2\RegulatoryCompliance\Bundle\ItemAssignmentList;
  */
 class BundleInstance extends InstanceResource
 {
-    protected $_replaceItems;
-    protected $_evaluations;
-    protected $_bundleCopies;
-    protected $_itemAssignments;
+	protected $_bundleCopies;
 
-    /**
-     * Initialize the BundleInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $sid The unique string that we created to identify the Bundle resource.
-     */
-    public function __construct(Version $version, array $payload, ?string $sid = null)
-    {
-        parent::__construct($version);
+	protected $_evaluations;
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'regulationSid' => Values::array_get($payload, 'regulation_sid'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'status' => Values::array_get($payload, 'status'),
-            'validUntil' => Deserialize::dateTime(Values::array_get($payload, 'valid_until')),
-            'email' => Values::array_get($payload, 'email'),
-            'statusCallback' => Values::array_get($payload, 'status_callback'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-            'links' => Values::array_get($payload, 'links'),
-        ];
+	protected $_itemAssignments;
 
-        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-    }
+	protected $_replaceItems;
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return BundleContext Context for this BundleInstance
-     */
-    protected function proxy(): BundleContext
-    {
-        if (!$this->context) {
-            $this->context = new BundleContext(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Initialize the BundleInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $sid The unique string that we created to identify the Bundle resource.
+	 */
+	public function __construct(Version $version, array $payload, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        return $this->context;
-    }
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'regulationSid' => Values::array_get($payload, 'regulation_sid'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'status' => Values::array_get($payload, 'status'),
+			'validUntil' => Deserialize::dateTime(Values::array_get($payload, 'valid_until')),
+			'email' => Values::array_get($payload, 'email'),
+			'statusCallback' => Values::array_get($payload, 'status_callback'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+			'links' => Values::array_get($payload, 'links'),
+		];
 
-    /**
-     * Delete the BundleInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-        return $this->proxy()->delete();
-    }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-    /**
-     * Fetch the BundleInstance
-     *
-     * @return BundleInstance Fetched BundleInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): BundleInstance
-    {
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return $this->proxy()->fetch();
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Update the BundleInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return BundleInstance Updated BundleInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): BundleInstance
-    {
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-        return $this->proxy()->update($options);
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Access the replaceItems
-     */
-    protected function getReplaceItems(): ReplaceItemsList
-    {
-        return $this->proxy()->replaceItems;
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Access the evaluations
-     */
-    protected function getEvaluations(): EvaluationList
-    {
-        return $this->proxy()->evaluations;
-    }
+		return '[Twilio.Numbers.V2.BundleInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Access the bundleCopies
-     */
-    protected function getBundleCopies(): BundleCopyList
-    {
-        return $this->proxy()->bundleCopies;
-    }
+	/**
+	 * Delete the BundleInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Access the itemAssignments
-     */
-    protected function getItemAssignments(): ItemAssignmentList
-    {
-        return $this->proxy()->itemAssignments;
-    }
+		return $this->proxy()->delete();
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Fetch the BundleInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return BundleInstance Fetched BundleInstance
+	 */
+	public function fetch() : BundleInstance
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->fetch();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Update the BundleInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return BundleInstance Updated BundleInstance
+	 */
+	public function update(array $options = []) : BundleInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Numbers.V2.BundleInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Access the bundleCopies
+	 */
+	protected function getBundleCopies() : BundleCopyList
+	{
+		return $this->proxy()->bundleCopies;
+	}
+
+	/**
+	 * Access the evaluations
+	 */
+	protected function getEvaluations() : EvaluationList
+	{
+		return $this->proxy()->evaluations;
+	}
+
+	/**
+	 * Access the itemAssignments
+	 */
+	protected function getItemAssignments() : ItemAssignmentList
+	{
+		return $this->proxy()->itemAssignments;
+	}
+
+	/**
+	 * Access the replaceItems
+	 */
+	protected function getReplaceItems() : ReplaceItemsList
+	{
+		return $this->proxy()->replaceItems;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return BundleContext Context for this BundleInstance
+	 */
+	protected function proxy() : BundleContext
+	{
+		if (! $this->context) {
+			$this->context = new BundleContext(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

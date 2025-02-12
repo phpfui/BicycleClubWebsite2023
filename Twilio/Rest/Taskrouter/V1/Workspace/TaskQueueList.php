@@ -17,278 +17,268 @@
 namespace Twilio\Rest\Taskrouter\V1\Workspace;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueueBulkRealTimeStatisticsList;
+use Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueuesStatisticsList;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueueBulkRealTimeStatisticsList;
-use Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue\TaskQueuesStatisticsList;
-
 
 /**
  * @property TaskQueueBulkRealTimeStatisticsList $bulkRealTimeStatistics
  * @property TaskQueuesStatisticsList $statistics
  */
 class TaskQueueList extends ListResource
-    {
-    protected $_bulkRealTimeStatistics = null;
-    protected $_statistics = null;
+	{
+	protected $_bulkRealTimeStatistics = null;
 
-    /**
-     * Construct the TaskQueueList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $workspaceSid The SID of the Workspace that the new TaskQueue belongs to.
-     */
-    public function __construct(
-        Version $version,
-        string $workspaceSid
-    ) {
-        parent::__construct($version);
+	protected $_statistics = null;
 
-        // Path Solution
-        $this->solution = [
-        'workspaceSid' =>
-            $workspaceSid,
-        
-        ];
+	/**
+	 * Construct the TaskQueueList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $workspaceSid The SID of the Workspace that the new TaskQueue belongs to.
+	 */
+	public function __construct(
+		Version $version,
+		string $workspaceSid
+	) {
+		parent::__construct($version);
 
-        $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
-        .'/TaskQueues';
-    }
+		// Path Solution
+		$this->solution = [
+			'workspaceSid' => $workspaceSid,
 
-    /**
-     * Create the TaskQueueInstance
-     *
-     * @param string $friendlyName A descriptive string that you create to describe the TaskQueue. For example `Support-Tier 1`, `Sales`, or `Escalation`.
-     * @param array|Options $options Optional Arguments
-     * @return TaskQueueInstance Created TaskQueueInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $friendlyName, array $options = []): TaskQueueInstance
-    {
+		];
 
-        $options = new Values($options);
+		$this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
+		. '/TaskQueues';
+	}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $friendlyName,
-            'TargetWorkers' =>
-                $options['targetWorkers'],
-            'MaxReservedWorkers' =>
-                $options['maxReservedWorkers'],
-            'TaskOrder' =>
-                $options['taskOrder'],
-            'ReservationActivitySid' =>
-                $options['reservationActivitySid'],
-            'AssignmentActivitySid' =>
-                $options['assignmentActivitySid'],
-        ]);
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
-        return new TaskQueueInstance(
-            $this->version,
-            $payload,
-            $this->solution['workspaceSid']
-        );
-    }
+		throw new TwilioException('Resource does not have a context');
+	}
 
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return \Twilio\ListResource The requested subresource
+	 */
+	public function __get(string $name)
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Reads TaskQueueInstance records from the API as a list.
-     * Unlike stream(), this operation is eager and will load `limit` records into
-     * memory before returning.
-     *
-     * @param array|Options $options Optional Arguments
-     * @param int $limit Upper limit for the number of records to return. read()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, read()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return TaskQueueInstance[] Array of results
-     */
-    public function read(array $options = [], ?int $limit = null, $pageSize = null): array
-    {
-        return \iterator_to_array($this->stream($options, $limit, $pageSize), false);
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Streams TaskQueueInstance records from the API as a generator stream.
-     * This operation lazily loads records as efficiently as possible until the
-     * limit
-     * is reached.
-     * The results are returned as a generator, so this operation is memory
-     * efficient.
-     *
-     * @param array|Options $options Optional Arguments
-     * @param int $limit Upper limit for the number of records to return. stream()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, stream()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return Stream stream of results
-     */
-    public function stream(array $options = [], ?int $limit = null, $pageSize = null): Stream
-    {
-        $limits = $this->version->readLimits($limit, $pageSize);
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
-        $page = $this->page($options, $limits['pageSize']);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Taskrouter.V1.TaskQueueList]';
+	}
 
-        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-    }
+	/**
+	 * Create the TaskQueueInstance
+	 *
+	 * @param string $friendlyName A descriptive string that you create to describe the TaskQueue. For example `Support-Tier 1`, `Sales`, or `Escalation`.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TaskQueueInstance Created TaskQueueInstance
+	 */
+	public function create(string $friendlyName, array $options = []) : TaskQueueInstance
+	{
 
-    /**
-     * Retrieve a single page of TaskQueueInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param mixed $pageSize Number of records to return, defaults to 50
-     * @param string $pageToken PageToken provided by the API
-     * @param mixed $pageNumber Page Number, this value is simply for client state
-     * @return TaskQueuePage Page of TaskQueueInstance
-     */
-    public function page(
-        array $options = [],
-        $pageSize = Values::NONE,
-        string $pageToken = Values::NONE,
-        $pageNumber = Values::NONE
-    ): TaskQueuePage
-    {
-        $options = new Values($options);
+		$options = new Values($options);
 
-        $params = Values::of([
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'EvaluateWorkerAttributes' =>
-                $options['evaluateWorkerAttributes'],
-            'WorkerSid' =>
-                $options['workerSid'],
-            'Ordering' =>
-                $options['ordering'],
-            'PageToken' => $pageToken,
-            'Page' => $pageNumber,
-            'PageSize' => $pageSize,
-        ]);
+		$data = Values::of([
+			'FriendlyName' => $friendlyName,
+			'TargetWorkers' => $options['targetWorkers'],
+			'MaxReservedWorkers' => $options['maxReservedWorkers'],
+			'TaskOrder' => $options['taskOrder'],
+			'ReservationActivitySid' => $options['reservationActivitySid'],
+			'AssignmentActivitySid' => $options['assignmentActivitySid'],
+		]);
 
-        $response = $this->version->page('GET', $this->uri, $params);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-        return new TaskQueuePage($this->version, $response, $this->solution);
-    }
+		return new TaskQueueInstance(
+			$this->version,
+			$payload,
+			$this->solution['workspaceSid']
+		);
+	}
 
-    /**
-     * Retrieve a specific page of TaskQueueInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param string $targetUrl API-generated URL for the requested results page
-     * @return TaskQueuePage Page of TaskQueueInstance
-     */
-    public function getPage(string $targetUrl): TaskQueuePage
-    {
-        $response = $this->version->getDomain()->getClient()->request(
-            'GET',
-            $targetUrl
-        );
+	/**
+	 * Constructs a TaskQueueContext
+	 *
+	 * @param string $sid The SID of the TaskQueue resource to delete.
+	 */
+	public function getContext(
+		string $sid
+	) : TaskQueueContext
+	{
+		return new TaskQueueContext(
+			$this->version,
+			$this->solution['workspaceSid'],
+			$sid
+		);
+	}
 
-        return new TaskQueuePage($this->version, $response, $this->solution);
-    }
+	/**
+	 * Retrieve a specific page of TaskQueueInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param string $targetUrl API-generated URL for the requested results page
+	 * @return TaskQueuePage Page of TaskQueueInstance
+	 */
+	public function getPage(string $targetUrl) : TaskQueuePage
+	{
+		$response = $this->version->getDomain()->getClient()->request(
+			'GET',
+			$targetUrl
+		);
 
+		return new TaskQueuePage($this->version, $response, $this->solution);
+	}
 
-    /**
-     * Constructs a TaskQueueContext
-     *
-     * @param string $sid The SID of the TaskQueue resource to delete.
-     */
-    public function getContext(
-        string $sid
-        
-    ): TaskQueueContext
-    {
-        return new TaskQueueContext(
-            $this->version,
-            $this->solution['workspaceSid'],
-            $sid
-        );
-    }
+	/**
+	 * Retrieve a single page of TaskQueueInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param mixed $pageSize Number of records to return, defaults to 50
+	 * @param string $pageToken PageToken provided by the API
+	 * @param mixed $pageNumber Page Number, this value is simply for client state
+	 * @return TaskQueuePage Page of TaskQueueInstance
+	 */
+	public function page(
+		array $options = [],
+		$pageSize = Values::NONE,
+		string $pageToken = Values::NONE,
+		$pageNumber = Values::NONE
+	) : TaskQueuePage
+	{
+		$options = new Values($options);
 
-    /**
-     * Access the bulkRealTimeStatistics
-     */
-    protected function getBulkRealTimeStatistics(): TaskQueueBulkRealTimeStatisticsList
-    {
-        if (!$this->_bulkRealTimeStatistics) {
-            $this->_bulkRealTimeStatistics = new TaskQueueBulkRealTimeStatisticsList(
-                $this->version,
-                $this->solution['workspaceSid']
-            );
-        }
-        return $this->_bulkRealTimeStatistics;
-    }
+		$params = Values::of([
+			'FriendlyName' => $options['friendlyName'],
+			'EvaluateWorkerAttributes' => $options['evaluateWorkerAttributes'],
+			'WorkerSid' => $options['workerSid'],
+			'Ordering' => $options['ordering'],
+			'PageToken' => $pageToken,
+			'Page' => $pageNumber,
+			'PageSize' => $pageSize,
+		]);
 
-    /**
-     * Access the statistics
-     */
-    protected function getStatistics(): TaskQueuesStatisticsList
-    {
-        if (!$this->_statistics) {
-            $this->_statistics = new TaskQueuesStatisticsList(
-                $this->version,
-                $this->solution['workspaceSid']
-            );
-        }
-        return $this->_statistics;
-    }
+		$response = $this->version->page('GET', $this->uri, $params);
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return \Twilio\ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name)
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return new TaskQueuePage($this->version, $response, $this->solution);
+	}
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+	/**
+	 * Reads TaskQueueInstance records from the API as a list.
+	 * Unlike stream(), this operation is eager and will load `limit` records into
+	 * memory before returning.
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @param int $limit Upper limit for the number of records to return. read()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, read()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return TaskQueueInstance[] Array of results
+	 */
+	public function read(array $options = [], ?int $limit = null, $pageSize = null) : array
+	{
+		return \iterator_to_array($this->stream($options, $limit, $pageSize), false);
+	}
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+	/**
+	 * Streams TaskQueueInstance records from the API as a generator stream.
+	 * This operation lazily loads records as efficiently as possible until the
+	 * limit
+	 * is reached.
+	 * The results are returned as a generator, so this operation is memory
+	 * efficient.
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @param int $limit Upper limit for the number of records to return. stream()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, stream()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return Stream stream of results
+	 */
+	public function stream(array $options = [], ?int $limit = null, $pageSize = null) : Stream
+	{
+		$limits = $this->version->readLimits($limit, $pageSize);
 
-        throw new TwilioException('Resource does not have a context');
-    }
+		$page = $this->page($options, $limits['pageSize']);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Taskrouter.V1.TaskQueueList]';
-    }
+		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+	}
+
+	/**
+	 * Access the bulkRealTimeStatistics
+	 */
+	protected function getBulkRealTimeStatistics() : TaskQueueBulkRealTimeStatisticsList
+	{
+		if (! $this->_bulkRealTimeStatistics) {
+			$this->_bulkRealTimeStatistics = new TaskQueueBulkRealTimeStatisticsList(
+				$this->version,
+				$this->solution['workspaceSid']
+			);
+		}
+
+		return $this->_bulkRealTimeStatistics;
+	}
+
+	/**
+	 * Access the statistics
+	 */
+	protected function getStatistics() : TaskQueuesStatisticsList
+	{
+		if (! $this->_statistics) {
+			$this->_statistics = new TaskQueuesStatisticsList(
+				$this->version,
+				$this->solution['workspaceSid']
+			);
+		}
+
+		return $this->_statistics;
+	}
 }

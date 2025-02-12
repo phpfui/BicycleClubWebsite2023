@@ -18,10 +18,10 @@ class PaginatedTable extends \PHPFUI\SortableTable
 	/** @var array<string,string> */
 	private array $fieldTable = [];
 
+	private bool $filled = false;
+
 	/** @var array<string> */
 	private array $havingColumns = [];
-
-	private bool $filled = false;
 
 	private int $limitNumber = 25;
 
@@ -169,7 +169,8 @@ class PaginatedTable extends \PHPFUI\SortableTable
 				foreach ($parts as $part)
 					{
 					$operator = $this->getOperator($part);
-					if (in_array($fieldName, $this->havingColumns))
+
+					if (\in_array($fieldName, $this->havingColumns))
 						{
 						$havingCondition->and($fieldName, $part, $operator);
 						}

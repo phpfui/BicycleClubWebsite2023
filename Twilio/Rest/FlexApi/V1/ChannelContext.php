@@ -14,84 +14,82 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class ChannelContext extends InstanceContext
-    {
-    /**
-     * Initialize the ChannelContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The SID of the Flex chat channel resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the ChannelContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The SID of the Flex chat channel resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Channels/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Channels/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the ChannelInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.FlexApi.V1.ChannelContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the ChannelInstance
-     *
-     * @return ChannelInstance Fetched ChannelInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ChannelInstance
-    {
+	/**
+	 * Delete the ChannelInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new ChannelInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the ChannelInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ChannelInstance Fetched ChannelInstance
+	 */
+	public function fetch() : ChannelInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.FlexApi.V1.ChannelContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new ChannelInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

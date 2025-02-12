@@ -19,43 +19,42 @@ namespace Twilio\Rest\Verify\V2;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class VerificationAttemptsSummaryList extends ListResource
-    {
-    /**
-     * Construct the VerificationAttemptsSummaryList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the VerificationAttemptsSummaryList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+		];
+	}
 
-    /**
-     * Constructs a VerificationAttemptsSummaryContext
-     */
-    public function getContext(
-        
-    ): VerificationAttemptsSummaryContext
-    {
-        return new VerificationAttemptsSummaryContext(
-            $this->version
-        );
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Verify.V2.VerificationAttemptsSummaryList]';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Verify.V2.VerificationAttemptsSummaryList]';
-    }
+	/**
+	 * Constructs a VerificationAttemptsSummaryContext
+	 */
+	public function getContext(
+
+	) : VerificationAttemptsSummaryContext
+	{
+		return new VerificationAttemptsSummaryContext(
+			$this->version
+		);
+	}
 }

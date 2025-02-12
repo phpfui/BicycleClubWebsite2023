@@ -22,67 +22,63 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class TokenList extends ListResource
-    {
-    /**
-     * Construct the TokenList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
-     */
-    public function __construct(
-        Version $version,
-        string $accountSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the TokenList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
+	 */
+	public function __construct(
+		Version $version,
+		string $accountSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Tokens.json';
-    }
+		];
 
-    /**
-     * Create the TokenInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return TokenInstance Created TokenInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(array $options = []): TokenInstance
-    {
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Tokens.json';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Api.V2010.TokenList]';
+	}
 
-        $data = Values::of([
-            'Ttl' =>
-                $options['ttl'],
-        ]);
+	/**
+	 * Create the TokenInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TokenInstance Created TokenInstance
+	 */
+	public function create(array $options = []) : TokenInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new TokenInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid']
-        );
-    }
+		$data = Values::of([
+			'Ttl' => $options['ttl'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Api.V2010.TokenList]';
-    }
+		return new TokenInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid']
+		);
+	}
 }

@@ -15,16 +15,25 @@ abstract class BlogItem extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'blogId' => ['int', 'int', 0, false, ],
-		'ranking' => ['int', 'int', 0, true, 0, ],
-		'storyId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['blogId', 'storyId', ];
 
 	protected static string $table = 'blogItem';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'blogId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'ranking' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'storyId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

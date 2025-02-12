@@ -14,115 +14,110 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Preview\Wireless;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class RatePlanContext extends InstanceContext
-    {
-    /**
-     * Initialize the RatePlanContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid 
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the RatePlanContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/RatePlans/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/RatePlans/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the RatePlanInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Preview.Wireless.RatePlanContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the RatePlanInstance
-     *
-     * @return RatePlanInstance Fetched RatePlanInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): RatePlanInstance
-    {
+	/**
+	 * Delete the RatePlanInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new RatePlanInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the RatePlanInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return RatePlanInstance Fetched RatePlanInstance
+	 */
+	public function fetch() : RatePlanInstance
+	{
 
-    /**
-     * Update the RatePlanInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return RatePlanInstance Updated RatePlanInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): RatePlanInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new RatePlanInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'UniqueName' =>
-                $options['uniqueName'],
-            'FriendlyName' =>
-                $options['friendlyName'],
-        ]);
+	/**
+	 * Update the RatePlanInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return RatePlanInstance Updated RatePlanInstance
+	 */
+	public function update(array $options = []) : RatePlanInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new RatePlanInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'UniqueName' => $options['uniqueName'],
+			'FriendlyName' => $options['friendlyName'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Preview.Wireless.RatePlanContext ' . \implode(' ', $context) . ']';
-    }
+		return new RatePlanInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

@@ -14,19 +14,17 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Microvisor\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Values;
-use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
 use Twilio\Rest\Microvisor\V1\Device\DeviceConfigList;
 use Twilio\Rest\Microvisor\V1\Device\DeviceSecretList;
-
+use Twilio\Serialize;
+use Twilio\Values;
+use Twilio\Version;
 
 /**
  * @property DeviceConfigList $deviceConfigs
@@ -35,162 +33,160 @@ use Twilio\Rest\Microvisor\V1\Device\DeviceSecretList;
  * @method \Twilio\Rest\Microvisor\V1\Device\DeviceConfigContext deviceConfigs(string $key)
  */
 class DeviceContext extends InstanceContext
-    {
-    protected $_deviceConfigs;
-    protected $_deviceSecrets;
+	{
+	protected $_deviceConfigs;
 
-    /**
-     * Initialize the DeviceContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid A 34-character string that uniquely identifies this Device.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	protected $_deviceSecrets;
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+	/**
+	 * Initialize the DeviceContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid A 34-character string that uniquely identifies this Device.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        $this->uri = '/Devices/' . \rawurlencode($sid)
-        .'';
-    }
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-    /**
-     * Fetch the DeviceInstance
-     *
-     * @return DeviceInstance Fetched DeviceInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): DeviceInstance
-    {
+		$this->uri = '/Devices/' . \rawurlencode($sid)
+		. '';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-        return new DeviceInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
+		throw new TwilioException('Resource does not have a context');
+	}
 
-    /**
-     * Update the DeviceInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return DeviceInstance Updated DeviceInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): DeviceInstance
-    {
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        $options = new Values($options);
+			return $this->{$method}();
+		}
 
-        $data = Values::of([
-            'UniqueName' =>
-                $options['uniqueName'],
-            'TargetApp' =>
-                $options['targetApp'],
-            'LoggingEnabled' =>
-                Serialize::booleanToString($options['loggingEnabled']),
-            'RestartApp' =>
-                Serialize::booleanToString($options['restartApp']),
-        ]);
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return new DeviceInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Microvisor.V1.DeviceContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Access the deviceConfigs
-     */
-    protected function getDeviceConfigs(): DeviceConfigList
-    {
-        if (!$this->_deviceConfigs) {
-            $this->_deviceConfigs = new DeviceConfigList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Fetch the DeviceInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DeviceInstance Fetched DeviceInstance
+	 */
+	public function fetch() : DeviceInstance
+	{
 
-        return $this->_deviceConfigs;
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-    /**
-     * Access the deviceSecrets
-     */
-    protected function getDeviceSecrets(): DeviceSecretList
-    {
-        if (!$this->_deviceSecrets) {
-            $this->_deviceSecrets = new DeviceSecretList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		return new DeviceInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        return $this->_deviceSecrets;
-    }
+	/**
+	 * Update the DeviceInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DeviceInstance Updated DeviceInstance
+	 */
+	public function update(array $options = []) : DeviceInstance
+	{
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		$options = new Values($options);
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		$data = Values::of([
+			'UniqueName' => $options['uniqueName'],
+			'TargetApp' => $options['targetApp'],
+			'LoggingEnabled' => Serialize::booleanToString($options['loggingEnabled']),
+			'RestartApp' => Serialize::booleanToString($options['restartApp']),
+		]);
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-        throw new TwilioException('Resource does not have a context');
-    }
+		return new DeviceInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Microvisor.V1.DeviceContext ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Access the deviceConfigs
+	 */
+	protected function getDeviceConfigs() : DeviceConfigList
+	{
+		if (! $this->_deviceConfigs) {
+			$this->_deviceConfigs = new DeviceConfigList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_deviceConfigs;
+	}
+
+	/**
+	 * Access the deviceSecrets
+	 */
+	protected function getDeviceSecrets() : DeviceSecretList
+	{
+		if (! $this->_deviceSecrets) {
+			$this->_deviceSecrets = new DeviceSecretList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_deviceSecrets;
+	}
 }

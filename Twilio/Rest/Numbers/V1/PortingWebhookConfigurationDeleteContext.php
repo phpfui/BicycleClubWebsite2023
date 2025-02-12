@@ -14,64 +14,63 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Numbers\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class PortingWebhookConfigurationDeleteContext extends InstanceContext
-    {
-    /**
-     * Initialize the PortingWebhookConfigurationDeleteContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $webhookType The webhook type for the configuration to be delete. `PORT_IN`, `PORT_OUT`
-     */
-    public function __construct(
-        Version $version,
-        $webhookType
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the PortingWebhookConfigurationDeleteContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $webhookType The webhook type for the configuration to be delete. `PORT_IN`, `PORT_OUT`
+	 */
+	public function __construct(
+		Version $version,
+		$webhookType
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'webhookType' =>
-            $webhookType,
-        ];
+		// Path Solution
+		$this->solution = [
+			'webhookType' => $webhookType,
+		];
 
-        $this->uri = '/Porting/Configuration/Webhook/' . \rawurlencode($webhookType)
-        .'';
-    }
+		$this->uri = '/Porting/Configuration/Webhook/' . \rawurlencode($webhookType)
+		. '';
+	}
 
-    /**
-     * Delete the PortingWebhookConfigurationDeleteInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Numbers.V1.PortingWebhookConfigurationDeleteContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Numbers.V1.PortingWebhookConfigurationDeleteContext ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Delete the PortingWebhookConfigurationDeleteInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
+
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 }

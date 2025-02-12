@@ -14,14 +14,12 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\IpMessaging\V1\Service\User;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $accountSid
@@ -35,62 +33,60 @@ use Twilio\Version;
  */
 class UserChannelInstance extends InstanceResource
 {
-    /**
-     * Initialize the UserChannelInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $serviceSid 
-     * @param string $userSid 
-     */
-    public function __construct(Version $version, array $payload, string $serviceSid, string $userSid)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the UserChannelInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 */
+	public function __construct(Version $version, array $payload, string $serviceSid, string $userSid)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'serviceSid' => Values::array_get($payload, 'service_sid'),
-            'channelSid' => Values::array_get($payload, 'channel_sid'),
-            'memberSid' => Values::array_get($payload, 'member_sid'),
-            'status' => Values::array_get($payload, 'status'),
-            'lastConsumedMessageIndex' => Values::array_get($payload, 'last_consumed_message_index'),
-            'unreadMessagesCount' => Values::array_get($payload, 'unread_messages_count'),
-            'links' => Values::array_get($payload, 'links'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'serviceSid' => Values::array_get($payload, 'service_sid'),
+			'channelSid' => Values::array_get($payload, 'channel_sid'),
+			'memberSid' => Values::array_get($payload, 'member_sid'),
+			'status' => Values::array_get($payload, 'status'),
+			'lastConsumedMessageIndex' => Values::array_get($payload, 'last_consumed_message_index'),
+			'unreadMessagesCount' => Values::array_get($payload, 'unread_messages_count'),
+			'links' => Values::array_get($payload, 'links'),
+		];
 
-        $this->solution = ['serviceSid' => $serviceSid, 'userSid' => $userSid, ];
-    }
+		$this->solution = ['serviceSid' => $serviceSid, 'userSid' => $userSid, ];
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.IpMessaging.V1.UserChannelInstance]';
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.IpMessaging.V1.UserChannelInstance]';
+	}
 }
-

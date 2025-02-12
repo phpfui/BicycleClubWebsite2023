@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Assistants\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string $id
@@ -37,61 +35,61 @@ use Twilio\Deserialize;
  */
 class PolicyInstance extends InstanceResource
 {
-    /**
-     * Initialize the PolicyInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     */
-    public function __construct(Version $version, array $payload)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the PolicyInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 */
+	public function __construct(Version $version, array $payload)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'id' => Values::array_get($payload, 'id'),
-            'name' => Values::array_get($payload, 'name'),
-            'description' => Values::array_get($payload, 'description'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'userSid' => Values::array_get($payload, 'user_sid'),
-            'type' => Values::array_get($payload, 'type'),
-            'policyDetails' => Values::array_get($payload, 'policy_details'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'id' => Values::array_get($payload, 'id'),
+			'name' => Values::array_get($payload, 'name'),
+			'description' => Values::array_get($payload, 'description'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'userSid' => Values::array_get($payload, 'user_sid'),
+			'type' => Values::array_get($payload, 'type'),
+			'policyDetails' => Values::array_get($payload, 'policy_details'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+		];
 
-        $this->solution = [];
-    }
+		$this->solution = [];
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Assistants.V1.PolicyInstance]';
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Assistants.V1.PolicyInstance]';
+	}
 }
-

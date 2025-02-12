@@ -14,103 +14,97 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Verify\V2\Service;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class VerificationContext extends InstanceContext
-    {
-    /**
-     * Initialize the VerificationContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the verification [Service](https://www.twilio.com/docs/verify/api/service) to create the resource under.
-     * @param string $sid The Twilio-provided string that uniquely identifies the Verification resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the VerificationContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the verification [Service](https://www.twilio.com/docs/verify/api/service) to create the resource under.
+	 * @param string $sid The Twilio-provided string that uniquely identifies the Verification resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Verifications/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Verifications/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the VerificationInstance
-     *
-     * @return VerificationInstance Fetched VerificationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): VerificationInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new VerificationInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Verify.V2.VerificationContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the VerificationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return VerificationInstance Fetched VerificationInstance
+	 */
+	public function fetch() : VerificationInstance
+	{
 
-    /**
-     * Update the VerificationInstance
-     *
-     * @param string $status
-     * @return VerificationInstance Updated VerificationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $status): VerificationInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $data = Values::of([
-            'Status' =>
-                $status,
-        ]);
+		return new VerificationInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['sid']
+		);
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Update the VerificationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return VerificationInstance Updated VerificationInstance
+	 */
+	public function update(string $status) : VerificationInstance
+	{
 
-        return new VerificationInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'Status' => $status,
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Verify.V2.VerificationContext ' . \implode(' ', $context) . ']';
-    }
+		return new VerificationInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['sid']
+		);
+	}
 }

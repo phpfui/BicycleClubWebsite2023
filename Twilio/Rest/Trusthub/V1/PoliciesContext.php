@@ -14,70 +14,68 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Trusthub\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class PoliciesContext extends InstanceContext
-    {
-    /**
-     * Initialize the PoliciesContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The unique string that identifies the Policy resource.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the PoliciesContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The unique string that identifies the Policy resource.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Policies/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Policies/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the PoliciesInstance
-     *
-     * @return PoliciesInstance Fetched PoliciesInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): PoliciesInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new PoliciesInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Trusthub.V1.PoliciesContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the PoliciesInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return PoliciesInstance Fetched PoliciesInstance
+	 */
+	public function fetch() : PoliciesInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Trusthub.V1.PoliciesContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new PoliciesInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

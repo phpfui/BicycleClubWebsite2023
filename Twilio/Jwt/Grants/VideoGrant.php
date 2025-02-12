@@ -1,52 +1,53 @@
 <?php
 
-
 namespace Twilio\Jwt\Grants;
 
+class VideoGrant implements Grant
+{
+	private $room;
 
-class VideoGrant implements Grant {
+	/**
+	 * Returns the grant type
+	 *
+	 * @return string type of the grant
+	 */
+	public function getGrantKey() : string {
+		return 'video';
+	}
 
-    private $room;
+	/**
+	 * Returns the grant data
+	 *
+	 * @return array data of the grant
+	 */
+	public function getPayload() : array {
+		$payload = [];
 
-    /**
-     * Returns the room
-     *
-     * @return string room name or sid set in this grant
-     */
-    public function getRoom(): string {
-        return $this->room;
-    }
+		if ($this->room) {
+			$payload['room'] = $this->room;
+		}
 
-    /**
-     * Set the room to allow access to in the grant
-     *
-     * @param string $roomSidOrName room sid or name
-     * @return $this updated grant
-     */
-    public function setRoom(string $roomSidOrName): self {
-        $this->room = $roomSidOrName;
-        return $this;
-    }
+		return $payload;
+	}
 
-    /**
-     * Returns the grant type
-     *
-     * @return string type of the grant
-     */
-    public function getGrantKey(): string {
-        return 'video';
-    }
+	/**
+	 * Returns the room
+	 *
+	 * @return string room name or sid set in this grant
+	 */
+	public function getRoom() : string {
+		return $this->room;
+	}
 
-    /**
-     * Returns the grant data
-     *
-     * @return array data of the grant
-     */
-    public function getPayload(): array {
-        $payload = [];
-        if ($this->room) {
-            $payload['room'] = $this->room;
-        }
-        return $payload;
-    }
+	/**
+	 * Set the room to allow access to in the grant
+	 *
+	 * @param string $roomSidOrName room sid or name
+	 * @return $this updated grant
+	 */
+	public function setRoom(string $roomSidOrName) : self {
+		$this->room = $roomSidOrName;
+
+		return $this;
+	}
 }

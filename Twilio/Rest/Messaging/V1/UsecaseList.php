@@ -21,52 +21,50 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class UsecaseList extends ListResource
-    {
-    /**
-     * Construct the UsecaseList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the UsecaseList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/Services/Usecases';
-    }
+		$this->uri = '/Services/Usecases';
+	}
 
-    /**
-     * Fetch the UsecaseInstance
-     *
-     * @return UsecaseInstance Fetched UsecaseInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): UsecaseInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Messaging.V1.UsecaseList]';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+	/**
+	 * Fetch the UsecaseInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UsecaseInstance Fetched UsecaseInstance
+	 */
+	public function fetch() : UsecaseInstance
+	{
 
-        return new UsecaseInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Messaging.V1.UsecaseList]';
-    }
+		return new UsecaseInstance(
+			$this->version,
+			$payload
+		);
+	}
 }

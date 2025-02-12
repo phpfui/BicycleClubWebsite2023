@@ -14,16 +14,14 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Voice\V1\ConnectionPolicy;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $accountSid
@@ -40,125 +38,127 @@ use Twilio\Deserialize;
  */
 class ConnectionPolicyTargetInstance extends InstanceResource
 {
-    /**
-     * Initialize the ConnectionPolicyTargetInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $connectionPolicySid The SID of the Connection Policy that owns the Target.
-     * @param string $sid The unique string that we created to identify the Target resource to delete.
-     */
-    public function __construct(Version $version, array $payload, string $connectionPolicySid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the ConnectionPolicyTargetInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $connectionPolicySid The SID of the Connection Policy that owns the Target.
+	 * @param string $sid The unique string that we created to identify the Target resource to delete.
+	 */
+	public function __construct(Version $version, array $payload, string $connectionPolicySid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'connectionPolicySid' => Values::array_get($payload, 'connection_policy_sid'),
-            'sid' => Values::array_get($payload, 'sid'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'target' => Values::array_get($payload, 'target'),
-            'priority' => Values::array_get($payload, 'priority'),
-            'weight' => Values::array_get($payload, 'weight'),
-            'enabled' => Values::array_get($payload, 'enabled'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'connectionPolicySid' => Values::array_get($payload, 'connection_policy_sid'),
+			'sid' => Values::array_get($payload, 'sid'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'target' => Values::array_get($payload, 'target'),
+			'priority' => Values::array_get($payload, 'priority'),
+			'weight' => Values::array_get($payload, 'weight'),
+			'enabled' => Values::array_get($payload, 'enabled'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['connectionPolicySid' => $connectionPolicySid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['connectionPolicySid' => $connectionPolicySid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return ConnectionPolicyTargetContext Context for this ConnectionPolicyTargetInstance
-     */
-    protected function proxy(): ConnectionPolicyTargetContext
-    {
-        if (!$this->context) {
-            $this->context = new ConnectionPolicyTargetContext(
-                $this->version,
-                $this->solution['connectionPolicySid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the ConnectionPolicyTargetInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the ConnectionPolicyTargetInstance
-     *
-     * @return ConnectionPolicyTargetInstance Fetched ConnectionPolicyTargetInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ConnectionPolicyTargetInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Update the ConnectionPolicyTargetInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ConnectionPolicyTargetInstance Updated ConnectionPolicyTargetInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): ConnectionPolicyTargetInstance
-    {
+		return '[Twilio.Voice.V1.ConnectionPolicyTargetInstance ' . \implode(' ', $context) . ']';
+	}
 
-        return $this->proxy()->update($options);
-    }
+	/**
+	 * Delete the ConnectionPolicyTargetInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return $this->proxy()->delete();
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Fetch the ConnectionPolicyTargetInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ConnectionPolicyTargetInstance Fetched ConnectionPolicyTargetInstance
+	 */
+	public function fetch() : ConnectionPolicyTargetInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->fetch();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Voice.V1.ConnectionPolicyTargetInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the ConnectionPolicyTargetInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ConnectionPolicyTargetInstance Updated ConnectionPolicyTargetInstance
+	 */
+	public function update(array $options = []) : ConnectionPolicyTargetInstance
+	{
+
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return ConnectionPolicyTargetContext Context for this ConnectionPolicyTargetInstance
+	 */
+	protected function proxy() : ConnectionPolicyTargetContext
+	{
+		if (! $this->context) {
+			$this->context = new ConnectionPolicyTargetContext(
+				$this->version,
+				$this->solution['connectionPolicySid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

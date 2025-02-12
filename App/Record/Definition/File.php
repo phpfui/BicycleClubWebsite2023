@@ -21,21 +21,30 @@ abstract class File extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'description' => ['varchar(255)', 'string', 255, true, ],
-		'extension' => ['varchar(10)', 'string', 10, false, '', ],
-		'fileId' => ['int', 'int', 0, false, ],
-		'fileName' => ['varchar(255)', 'string', 255, false, '', ],
-		'folderId' => ['int', 'int', 0, false, ],
-		'memberId' => ['int', 'int', 0, true, ],
-		'public' => ['int', 'int', 0, false, 0, ],
-		'uploaded' => ['datetime', 'string', 20, true, null, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['fileId', ];
 
 	protected static string $table = 'file';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'description' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'extension' => new \PHPFUI\ORM\FieldDefinition('varchar(10)', 'string', 10, false, '', ),
+				'fileId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'fileName' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, '', ),
+				'folderId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'public' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'uploaded' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, 'CURRENT_TIMESTAMP', ),
+			];
+			}
+
+		return $this;
+		}
 	}

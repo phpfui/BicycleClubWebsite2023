@@ -14,19 +14,17 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Trusthub\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Values;
-use Twilio\Version;
-use Twilio\InstanceContext;
 use Twilio\Rest\Trusthub\V1\CustomerProfiles\CustomerProfilesChannelEndpointAssignmentList;
 use Twilio\Rest\Trusthub\V1\CustomerProfiles\CustomerProfilesEntityAssignmentsList;
 use Twilio\Rest\Trusthub\V1\CustomerProfiles\CustomerProfilesEvaluationsList;
-
+use Twilio\Values;
+use Twilio\Version;
 
 /**
  * @property CustomerProfilesChannelEndpointAssignmentList $customerProfilesChannelEndpointAssignment
@@ -37,192 +35,191 @@ use Twilio\Rest\Trusthub\V1\CustomerProfiles\CustomerProfilesEvaluationsList;
  * @method \Twilio\Rest\Trusthub\V1\CustomerProfiles\CustomerProfilesEvaluationsContext customerProfilesEvaluations(string $sid)
  */
 class CustomerProfilesContext extends InstanceContext
-    {
-    protected $_customerProfilesChannelEndpointAssignment;
-    protected $_customerProfilesEntityAssignments;
-    protected $_customerProfilesEvaluations;
+	{
+	protected $_customerProfilesChannelEndpointAssignment;
 
-    /**
-     * Initialize the CustomerProfilesContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The unique string that we created to identify the Customer-Profile resource.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	protected $_customerProfilesEntityAssignments;
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+	protected $_customerProfilesEvaluations;
 
-        $this->uri = '/CustomerProfiles/' . \rawurlencode($sid)
-        .'';
-    }
+	/**
+	 * Initialize the CustomerProfilesContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The unique string that we created to identify the Customer-Profile resource.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-    /**
-     * Delete the CustomerProfilesInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		$this->uri = '/CustomerProfiles/' . \rawurlencode($sid)
+		. '';
+	}
 
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-    /**
-     * Fetch the CustomerProfilesInstance
-     *
-     * @return CustomerProfilesInstance Fetched CustomerProfilesInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): CustomerProfilesInstance
-    {
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		throw new TwilioException('Resource does not have a context');
+	}
 
-        return new CustomerProfilesInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
+			return $this->{$method}();
+		}
 
-    /**
-     * Update the CustomerProfilesInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return CustomerProfilesInstance Updated CustomerProfilesInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): CustomerProfilesInstance
-    {
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
-        $options = new Values($options);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $data = Values::of([
-            'Status' =>
-                $options['status'],
-            'StatusCallback' =>
-                $options['statusCallback'],
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'Email' =>
-                $options['email'],
-        ]);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		return '[Twilio.Trusthub.V1.CustomerProfilesContext ' . \implode(' ', $context) . ']';
+	}
 
-        return new CustomerProfilesInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+	/**
+	 * Delete the CustomerProfilesInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-    /**
-     * Access the customerProfilesChannelEndpointAssignment
-     */
-    protected function getCustomerProfilesChannelEndpointAssignment(): CustomerProfilesChannelEndpointAssignmentList
-    {
-        if (!$this->_customerProfilesChannelEndpointAssignment) {
-            $this->_customerProfilesChannelEndpointAssignment = new CustomerProfilesChannelEndpointAssignmentList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
-        return $this->_customerProfilesChannelEndpointAssignment;
-    }
+	/**
+	 * Fetch the CustomerProfilesInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CustomerProfilesInstance Fetched CustomerProfilesInstance
+	 */
+	public function fetch() : CustomerProfilesInstance
+	{
 
-    /**
-     * Access the customerProfilesEntityAssignments
-     */
-    protected function getCustomerProfilesEntityAssignments(): CustomerProfilesEntityAssignmentsList
-    {
-        if (!$this->_customerProfilesEntityAssignments) {
-            $this->_customerProfilesEntityAssignments = new CustomerProfilesEntityAssignmentsList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        return $this->_customerProfilesEntityAssignments;
-    }
+		return new CustomerProfilesInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-    /**
-     * Access the customerProfilesEvaluations
-     */
-    protected function getCustomerProfilesEvaluations(): CustomerProfilesEvaluationsList
-    {
-        if (!$this->_customerProfilesEvaluations) {
-            $this->_customerProfilesEvaluations = new CustomerProfilesEvaluationsList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Update the CustomerProfilesInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CustomerProfilesInstance Updated CustomerProfilesInstance
+	 */
+	public function update(array $options = []) : CustomerProfilesInstance
+	{
 
-        return $this->_customerProfilesEvaluations;
-    }
+		$options = new Values($options);
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		$data = Values::of([
+			'Status' => $options['status'],
+			'StatusCallback' => $options['statusCallback'],
+			'FriendlyName' => $options['friendlyName'],
+			'Email' => $options['email'],
+		]);
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+		return new CustomerProfilesInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        throw new TwilioException('Resource does not have a context');
-    }
+	/**
+	 * Access the customerProfilesChannelEndpointAssignment
+	 */
+	protected function getCustomerProfilesChannelEndpointAssignment() : CustomerProfilesChannelEndpointAssignmentList
+	{
+		if (! $this->_customerProfilesChannelEndpointAssignment) {
+			$this->_customerProfilesChannelEndpointAssignment = new CustomerProfilesChannelEndpointAssignmentList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Trusthub.V1.CustomerProfilesContext ' . \implode(' ', $context) . ']';
-    }
+		return $this->_customerProfilesChannelEndpointAssignment;
+	}
+
+	/**
+	 * Access the customerProfilesEntityAssignments
+	 */
+	protected function getCustomerProfilesEntityAssignments() : CustomerProfilesEntityAssignmentsList
+	{
+		if (! $this->_customerProfilesEntityAssignments) {
+			$this->_customerProfilesEntityAssignments = new CustomerProfilesEntityAssignmentsList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_customerProfilesEntityAssignments;
+	}
+
+	/**
+	 * Access the customerProfilesEvaluations
+	 */
+	protected function getCustomerProfilesEvaluations() : CustomerProfilesEvaluationsList
+	{
+		if (! $this->_customerProfilesEvaluations) {
+			$this->_customerProfilesEvaluations = new CustomerProfilesEvaluationsList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_customerProfilesEvaluations;
+	}
 }

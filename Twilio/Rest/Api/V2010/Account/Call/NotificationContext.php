@@ -14,82 +14,78 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account\Call;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class NotificationContext extends InstanceContext
-    {
-    /**
-     * Initialize the NotificationContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Call Notification resource to fetch.
-     * @param string $callSid The [Call](https://www.twilio.com/docs/voice/api/call-resource) SID of the Call Notification resource to fetch.
-     * @param string $sid The Twilio-provided string that uniquely identifies the Call Notification resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $accountSid,
-        $callSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the NotificationContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Call Notification resource to fetch.
+	 * @param string $callSid The [Call](https://www.twilio.com/docs/voice/api/call-resource) SID of the Call Notification resource to fetch.
+	 * @param string $sid The Twilio-provided string that uniquely identifies the Call Notification resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$accountSid,
+		$callSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        'callSid' =>
-            $callSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
+			'callSid' => $callSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Calls/' . \rawurlencode($callSid)
-        .'/Notifications/' . \rawurlencode($sid)
-        .'.json';
-    }
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Calls/' . \rawurlencode($callSid)
+		. '/Notifications/' . \rawurlencode($sid)
+		. '.json';
+	}
 
-    /**
-     * Fetch the NotificationInstance
-     *
-     * @return NotificationInstance Fetched NotificationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): NotificationInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new NotificationInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['callSid'],
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Api.V2010.NotificationContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the NotificationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return NotificationInstance Fetched NotificationInstance
+	 */
+	public function fetch() : NotificationInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.NotificationContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new NotificationInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['callSid'],
+			$this->solution['sid']
+		);
+	}
 }

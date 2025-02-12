@@ -19,193 +19,182 @@ namespace Twilio\Rest\FlexApi\V1;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Serialize;
-
 
 class InsightsQuestionnairesQuestionList extends ListResource
-    {
-    /**
-     * Construct the InsightsQuestionnairesQuestionList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the InsightsQuestionnairesQuestionList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/Insights/QualityManagement/Questions';
-    }
+		$this->uri = '/Insights/QualityManagement/Questions';
+	}
 
-    /**
-     * Create the InsightsQuestionnairesQuestionInstance
-     *
-     * @param string $categorySid The SID of the category
-     * @param string $question The question.
-     * @param string $answerSetId The answer_set for the question.
-     * @param bool $allowNa The flag to enable for disable NA for answer.
-     * @param array|Options $options Optional Arguments
-     * @return InsightsQuestionnairesQuestionInstance Created InsightsQuestionnairesQuestionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $categorySid, string $question, string $answerSetId, bool $allowNa, array $options = []): InsightsQuestionnairesQuestionInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.FlexApi.V1.InsightsQuestionnairesQuestionList]';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Create the InsightsQuestionnairesQuestionInstance
+	 *
+	 * @param string $categorySid The SID of the category
+	 * @param string $question The question.
+	 * @param string $answerSetId The answer_set for the question.
+	 * @param bool $allowNa The flag to enable for disable NA for answer.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return InsightsQuestionnairesQuestionInstance Created InsightsQuestionnairesQuestionInstance
+	 */
+	public function create(string $categorySid, string $question, string $answerSetId, bool $allowNa, array $options = []) : InsightsQuestionnairesQuestionInstance
+	{
 
-        $data = Values::of([
-            'CategorySid' =>
-                $categorySid,
-            'Question' =>
-                $question,
-            'AnswerSetId' =>
-                $answerSetId,
-            'AllowNa' =>
-                Serialize::booleanToString($allowNa),
-            'Description' =>
-                $options['description'],
-        ]);
+		$options = new Values($options);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Authorization' => $options['authorization']]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$data = Values::of([
+			'CategorySid' => $categorySid,
+			'Question' => $question,
+			'AnswerSetId' => $answerSetId,
+			'AllowNa' => Serialize::booleanToString($allowNa),
+			'Description' => $options['description'],
+		]);
 
-        return new InsightsQuestionnairesQuestionInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Authorization' => $options['authorization']]);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
+		return new InsightsQuestionnairesQuestionInstance(
+			$this->version,
+			$payload
+		);
+	}
 
-    /**
-     * Reads InsightsQuestionnairesQuestionInstance records from the API as a list.
-     * Unlike stream(), this operation is eager and will load `limit` records into
-     * memory before returning.
-     *
-     * @param array|Options $options Optional Arguments
-     * @param int $limit Upper limit for the number of records to return. read()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, read()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return InsightsQuestionnairesQuestionInstance[] Array of results
-     */
-    public function read(array $options = [], ?int $limit = null, $pageSize = null): array
-    {
-        return \iterator_to_array($this->stream($options, $limit, $pageSize), false);
-    }
+	/**
+	 * Constructs a InsightsQuestionnairesQuestionContext
+	 *
+	 * @param string $questionSid The SID of the question
+	 */
+	public function getContext(
+		string $questionSid
+	) : InsightsQuestionnairesQuestionContext
+	{
+		return new InsightsQuestionnairesQuestionContext(
+			$this->version,
+			$questionSid
+		);
+	}
 
-    /**
-     * Streams InsightsQuestionnairesQuestionInstance records from the API as a generator stream.
-     * This operation lazily loads records as efficiently as possible until the
-     * limit
-     * is reached.
-     * The results are returned as a generator, so this operation is memory
-     * efficient.
-     *
-     * @param array|Options $options Optional Arguments
-     * @param int $limit Upper limit for the number of records to return. stream()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, stream()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return Stream stream of results
-     */
-    public function stream(array $options = [], ?int $limit = null, $pageSize = null): Stream
-    {
-        $limits = $this->version->readLimits($limit, $pageSize);
+	/**
+	 * Retrieve a specific page of InsightsQuestionnairesQuestionInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param string $targetUrl API-generated URL for the requested results page
+	 * @return InsightsQuestionnairesQuestionPage Page of InsightsQuestionnairesQuestionInstance
+	 */
+	public function getPage(string $targetUrl) : InsightsQuestionnairesQuestionPage
+	{
+		$response = $this->version->getDomain()->getClient()->request(
+			'GET',
+			$targetUrl
+		);
 
-        $page = $this->page($options, $limits['pageSize']);
+		return new InsightsQuestionnairesQuestionPage($this->version, $response, $this->solution);
+	}
 
-        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-    }
+	/**
+	 * Retrieve a single page of InsightsQuestionnairesQuestionInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param mixed $pageSize Number of records to return, defaults to 50
+	 * @param string $pageToken PageToken provided by the API
+	 * @param mixed $pageNumber Page Number, this value is simply for client state
+	 * @return InsightsQuestionnairesQuestionPage Page of InsightsQuestionnairesQuestionInstance
+	 */
+	public function page(
+		array $options = [],
+		$pageSize = Values::NONE,
+		string $pageToken = Values::NONE,
+		$pageNumber = Values::NONE
+	) : InsightsQuestionnairesQuestionPage
+	{
+		$options = new Values($options);
 
-    /**
-     * Retrieve a single page of InsightsQuestionnairesQuestionInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param mixed $pageSize Number of records to return, defaults to 50
-     * @param string $pageToken PageToken provided by the API
-     * @param mixed $pageNumber Page Number, this value is simply for client state
-     * @return InsightsQuestionnairesQuestionPage Page of InsightsQuestionnairesQuestionInstance
-     */
-    public function page(
-        array $options = [],
-        $pageSize = Values::NONE,
-        string $pageToken = Values::NONE,
-        $pageNumber = Values::NONE
-    ): InsightsQuestionnairesQuestionPage
-    {
-        $options = new Values($options);
+		$params = Values::of([
+			'CategorySid' => Serialize::map($options['categorySid'], static function($e) { return $e; }),
+			'Authorization' => $options['authorization'],
+			'PageToken' => $pageToken,
+			'Page' => $pageNumber,
+			'PageSize' => $pageSize,
+		]);
 
-        $params = Values::of([
-            'CategorySid' =>
-                Serialize::map($options['categorySid'], function ($e) { return $e; }),
-            'Authorization' =>
-                $options['authorization'],
-            'PageToken' => $pageToken,
-            'Page' => $pageNumber,
-            'PageSize' => $pageSize,
-        ]);
+		$response = $this->version->page('GET', $this->uri, $params);
 
-        $response = $this->version->page('GET', $this->uri, $params);
+		return new InsightsQuestionnairesQuestionPage($this->version, $response, $this->solution);
+	}
 
-        return new InsightsQuestionnairesQuestionPage($this->version, $response, $this->solution);
-    }
+	/**
+	 * Reads InsightsQuestionnairesQuestionInstance records from the API as a list.
+	 * Unlike stream(), this operation is eager and will load `limit` records into
+	 * memory before returning.
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @param int $limit Upper limit for the number of records to return. read()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, read()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return InsightsQuestionnairesQuestionInstance[] Array of results
+	 */
+	public function read(array $options = [], ?int $limit = null, $pageSize = null) : array
+	{
+		return \iterator_to_array($this->stream($options, $limit, $pageSize), false);
+	}
 
-    /**
-     * Retrieve a specific page of InsightsQuestionnairesQuestionInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param string $targetUrl API-generated URL for the requested results page
-     * @return InsightsQuestionnairesQuestionPage Page of InsightsQuestionnairesQuestionInstance
-     */
-    public function getPage(string $targetUrl): InsightsQuestionnairesQuestionPage
-    {
-        $response = $this->version->getDomain()->getClient()->request(
-            'GET',
-            $targetUrl
-        );
+	/**
+	 * Streams InsightsQuestionnairesQuestionInstance records from the API as a generator stream.
+	 * This operation lazily loads records as efficiently as possible until the
+	 * limit
+	 * is reached.
+	 * The results are returned as a generator, so this operation is memory
+	 * efficient.
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @param int $limit Upper limit for the number of records to return. stream()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, stream()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return Stream stream of results
+	 */
+	public function stream(array $options = [], ?int $limit = null, $pageSize = null) : Stream
+	{
+		$limits = $this->version->readLimits($limit, $pageSize);
 
-        return new InsightsQuestionnairesQuestionPage($this->version, $response, $this->solution);
-    }
+		$page = $this->page($options, $limits['pageSize']);
 
-
-    /**
-     * Constructs a InsightsQuestionnairesQuestionContext
-     *
-     * @param string $questionSid The SID of the question
-     */
-    public function getContext(
-        string $questionSid
-        
-    ): InsightsQuestionnairesQuestionContext
-    {
-        return new InsightsQuestionnairesQuestionContext(
-            $this->version,
-            $questionSid
-        );
-    }
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.FlexApi.V1.InsightsQuestionnairesQuestionList]';
-    }
+		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+	}
 }

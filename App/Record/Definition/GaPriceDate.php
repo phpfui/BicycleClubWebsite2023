@@ -16,17 +16,26 @@ abstract class GaPriceDate extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'date' => ['date', 'string', 10, false, ],
-		'gaEventId' => ['int', 'int', 0, false, ],
-		'gaPriceDateId' => ['int', 'int', 0, false, ],
-		'price' => ['decimal(5,2)', 'float', 5, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['gaPriceDateId', ];
 
 	protected static string $table = 'gaPriceDate';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'date' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'gaEventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'gaPriceDateId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'price' => new \PHPFUI\ORM\FieldDefinition('decimal(5,2)', 'float', 5, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

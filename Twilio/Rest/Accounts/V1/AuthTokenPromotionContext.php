@@ -14,64 +14,63 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Accounts\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class AuthTokenPromotionContext extends InstanceContext
-    {
-    /**
-     * Initialize the AuthTokenPromotionContext
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the AuthTokenPromotionContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/AuthTokens/Promote';
-    }
+		$this->uri = '/AuthTokens/Promote';
+	}
 
-    /**
-     * Update the AuthTokenPromotionInstance
-     *
-     * @return AuthTokenPromotionInstance Updated AuthTokenPromotionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(): AuthTokenPromotionInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new AuthTokenPromotionInstance(
-            $this->version,
-            $payload
-        );
-    }
+		return '[Twilio.Accounts.V1.AuthTokenPromotionContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Update the AuthTokenPromotionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AuthTokenPromotionInstance Updated AuthTokenPromotionInstance
+	 */
+	public function update() : AuthTokenPromotionInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Accounts.V1.AuthTokenPromotionContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], [], $headers);
+
+		return new AuthTokenPromotionInstance(
+			$this->version,
+			$payload
+		);
+	}
 }

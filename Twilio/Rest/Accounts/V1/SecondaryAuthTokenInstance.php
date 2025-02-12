@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Accounts\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $accountSid
@@ -33,102 +31,104 @@ use Twilio\Deserialize;
  */
 class SecondaryAuthTokenInstance extends InstanceResource
 {
-    /**
-     * Initialize the SecondaryAuthTokenInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     */
-    public function __construct(Version $version, array $payload)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the SecondaryAuthTokenInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 */
+	public function __construct(Version $version, array $payload)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'secondaryAuthToken' => Values::array_get($payload, 'secondary_auth_token'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'secondaryAuthToken' => Values::array_get($payload, 'secondary_auth_token'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = [];
-    }
+		$this->solution = [];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return SecondaryAuthTokenContext Context for this SecondaryAuthTokenInstance
-     */
-    protected function proxy(): SecondaryAuthTokenContext
-    {
-        if (!$this->context) {
-            $this->context = new SecondaryAuthTokenContext(
-                $this->version
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Create the SecondaryAuthTokenInstance
-     *
-     * @return SecondaryAuthTokenInstance Created SecondaryAuthTokenInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(): SecondaryAuthTokenInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->create();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Delete the SecondaryAuthTokenInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->delete();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return '[Twilio.Accounts.V1.SecondaryAuthTokenInstance ' . \implode(' ', $context) . ']';
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Create the SecondaryAuthTokenInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SecondaryAuthTokenInstance Created SecondaryAuthTokenInstance
+	 */
+	public function create() : SecondaryAuthTokenInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->create();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Accounts.V1.SecondaryAuthTokenInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Delete the SecondaryAuthTokenInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
+
+		return $this->proxy()->delete();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return SecondaryAuthTokenContext Context for this SecondaryAuthTokenInstance
+	 */
+	protected function proxy() : SecondaryAuthTokenContext
+	{
+		if (! $this->context) {
+			$this->context = new SecondaryAuthTokenContext(
+				$this->version
+			);
+		}
+
+		return $this->context;
+	}
 }
-

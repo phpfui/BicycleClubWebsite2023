@@ -14,17 +14,15 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Content\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
-use Twilio\Values;
-use Twilio\Version;
-use Twilio\Deserialize;
 use Twilio\Rest\Content\V1\Content\ApprovalCreateList;
 use Twilio\Rest\Content\V1\Content\ApprovalFetchList;
-
+use Twilio\Values;
+use Twilio\Version;
 
 /**
  * @property \DateTime|null $dateCreated
@@ -40,128 +38,131 @@ use Twilio\Rest\Content\V1\Content\ApprovalFetchList;
  */
 class ContentInstance extends InstanceResource
 {
-    protected $_approvalCreate;
-    protected $_approvalFetch;
+	protected $_approvalCreate;
 
-    /**
-     * Initialize the ContentInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $sid The Twilio-provided string that uniquely identifies the Content resource to fetch.
-     */
-    public function __construct(Version $version, array $payload, ?string $sid = null)
-    {
-        parent::__construct($version);
+	protected $_approvalFetch;
 
-        // Marshaled Properties
-        $this->properties = [
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'sid' => Values::array_get($payload, 'sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'language' => Values::array_get($payload, 'language'),
-            'variables' => Values::array_get($payload, 'variables'),
-            'types' => Values::array_get($payload, 'types'),
-            'url' => Values::array_get($payload, 'url'),
-            'links' => Values::array_get($payload, 'links'),
-        ];
+	/**
+	 * Initialize the ContentInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $sid The Twilio-provided string that uniquely identifies the Content resource to fetch.
+	 */
+	public function __construct(Version $version, array $payload, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-    }
+		// Marshaled Properties
+		$this->properties = [
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'sid' => Values::array_get($payload, 'sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'language' => Values::array_get($payload, 'language'),
+			'variables' => Values::array_get($payload, 'variables'),
+			'types' => Values::array_get($payload, 'types'),
+			'url' => Values::array_get($payload, 'url'),
+			'links' => Values::array_get($payload, 'links'),
+		];
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return ContentContext Context for this ContentInstance
-     */
-    protected function proxy(): ContentContext
-    {
-        if (!$this->context) {
-            $this->context = new ContentContext(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-        return $this->context;
-    }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-    /**
-     * Delete the ContentInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return $this->proxy()->delete();
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Fetch the ContentInstance
-     *
-     * @return ContentInstance Fetched ContentInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ContentInstance
-    {
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-        return $this->proxy()->fetch();
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Access the approvalCreate
-     */
-    protected function getApprovalCreate(): ApprovalCreateList
-    {
-        return $this->proxy()->approvalCreate;
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Access the approvalFetch
-     */
-    protected function getApprovalFetch(): ApprovalFetchList
-    {
-        return $this->proxy()->approvalFetch;
-    }
+		return '[Twilio.Content.V1.ContentInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Delete the ContentInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->delete();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Fetch the ContentInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ContentInstance Fetched ContentInstance
+	 */
+	public function fetch() : ContentInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Content.V1.ContentInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Access the approvalCreate
+	 */
+	protected function getApprovalCreate() : ApprovalCreateList
+	{
+		return $this->proxy()->approvalCreate;
+	}
+
+	/**
+	 * Access the approvalFetch
+	 */
+	protected function getApprovalFetch() : ApprovalFetchList
+	{
+		return $this->proxy()->approvalFetch;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return ContentContext Context for this ContentInstance
+	 */
+	protected function proxy() : ContentContext
+	{
+		if (! $this->context) {
+			$this->context = new ContentContext(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

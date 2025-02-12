@@ -14,98 +14,92 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Conversations\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class ConfigurationContext extends InstanceContext
-    {
-    /**
-     * Initialize the ConfigurationContext
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the ConfigurationContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/Configuration';
-    }
+		$this->uri = '/Configuration';
+	}
 
-    /**
-     * Fetch the ConfigurationInstance
-     *
-     * @return ConfigurationInstance Fetched ConfigurationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ConfigurationInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new ConfigurationInstance(
-            $this->version,
-            $payload
-        );
-    }
+		return '[Twilio.Conversations.V1.ConfigurationContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the ConfigurationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ConfigurationInstance Fetched ConfigurationInstance
+	 */
+	public function fetch() : ConfigurationInstance
+	{
 
-    /**
-     * Update the ConfigurationInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ConfigurationInstance Updated ConfigurationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): ConfigurationInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new ConfigurationInstance(
+			$this->version,
+			$payload
+		);
+	}
 
-        $data = Values::of([
-            'DefaultChatServiceSid' =>
-                $options['defaultChatServiceSid'],
-            'DefaultMessagingServiceSid' =>
-                $options['defaultMessagingServiceSid'],
-            'DefaultInactiveTimer' =>
-                $options['defaultInactiveTimer'],
-            'DefaultClosedTimer' =>
-                $options['defaultClosedTimer'],
-        ]);
+	/**
+	 * Update the ConfigurationInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ConfigurationInstance Updated ConfigurationInstance
+	 */
+	public function update(array $options = []) : ConfigurationInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new ConfigurationInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$data = Values::of([
+			'DefaultChatServiceSid' => $options['defaultChatServiceSid'],
+			'DefaultMessagingServiceSid' => $options['defaultMessagingServiceSid'],
+			'DefaultInactiveTimer' => $options['defaultInactiveTimer'],
+			'DefaultClosedTimer' => $options['defaultClosedTimer'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Conversations.V1.ConfigurationContext ' . \implode(' ', $context) . ']';
-    }
+		return new ConfigurationInstance(
+			$this->version,
+			$payload
+		);
+	}
 }

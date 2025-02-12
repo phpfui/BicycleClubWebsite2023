@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Notify\V1\Service;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $sid
@@ -48,73 +46,73 @@ use Twilio\Deserialize;
  */
 class NotificationInstance extends InstanceResource
 {
-    /**
-     * Initialize the NotificationInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/notify/api/service-resource) to create the resource under.
-     */
-    public function __construct(Version $version, array $payload, string $serviceSid)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the NotificationInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/notify/api/service-resource) to create the resource under.
+	 */
+	public function __construct(Version $version, array $payload, string $serviceSid)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'serviceSid' => Values::array_get($payload, 'service_sid'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'identities' => Values::array_get($payload, 'identities'),
-            'tags' => Values::array_get($payload, 'tags'),
-            'segments' => Values::array_get($payload, 'segments'),
-            'priority' => Values::array_get($payload, 'priority'),
-            'ttl' => Values::array_get($payload, 'ttl'),
-            'title' => Values::array_get($payload, 'title'),
-            'body' => Values::array_get($payload, 'body'),
-            'sound' => Values::array_get($payload, 'sound'),
-            'action' => Values::array_get($payload, 'action'),
-            'data' => Values::array_get($payload, 'data'),
-            'apn' => Values::array_get($payload, 'apn'),
-            'gcm' => Values::array_get($payload, 'gcm'),
-            'fcm' => Values::array_get($payload, 'fcm'),
-            'sms' => Values::array_get($payload, 'sms'),
-            'facebookMessenger' => Values::array_get($payload, 'facebook_messenger'),
-            'alexa' => Values::array_get($payload, 'alexa'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'serviceSid' => Values::array_get($payload, 'service_sid'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'identities' => Values::array_get($payload, 'identities'),
+			'tags' => Values::array_get($payload, 'tags'),
+			'segments' => Values::array_get($payload, 'segments'),
+			'priority' => Values::array_get($payload, 'priority'),
+			'ttl' => Values::array_get($payload, 'ttl'),
+			'title' => Values::array_get($payload, 'title'),
+			'body' => Values::array_get($payload, 'body'),
+			'sound' => Values::array_get($payload, 'sound'),
+			'action' => Values::array_get($payload, 'action'),
+			'data' => Values::array_get($payload, 'data'),
+			'apn' => Values::array_get($payload, 'apn'),
+			'gcm' => Values::array_get($payload, 'gcm'),
+			'fcm' => Values::array_get($payload, 'fcm'),
+			'sms' => Values::array_get($payload, 'sms'),
+			'facebookMessenger' => Values::array_get($payload, 'facebook_messenger'),
+			'alexa' => Values::array_get($payload, 'alexa'),
+		];
 
-        $this->solution = ['serviceSid' => $serviceSid, ];
-    }
+		$this->solution = ['serviceSid' => $serviceSid, ];
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Notify.V1.NotificationInstance]';
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Notify.V1.NotificationInstance]';
+	}
 }
-

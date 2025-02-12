@@ -14,90 +14,87 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Assistants\V1\Assistant;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class AssistantsToolContext extends InstanceContext
-    {
-    /**
-     * Initialize the AssistantsToolContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $assistantId The assistant ID.
-     * @param string $id The tool ID.
-     */
-    public function __construct(
-        Version $version,
-        $assistantId,
-        $id
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the AssistantsToolContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $assistantId The assistant ID.
+	 * @param string $id The tool ID.
+	 */
+	public function __construct(
+		Version $version,
+		$assistantId,
+		$id
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'assistantId' =>
-            $assistantId,
-        'id' =>
-            $id,
-        ];
+		// Path Solution
+		$this->solution = [
+			'assistantId' => $assistantId,
+			'id' => $id,
+		];
 
-        $this->uri = '/Assistants/' . \rawurlencode($assistantId)
-        .'/Tools/' . \rawurlencode($id)
-        .'';
-    }
+		$this->uri = '/Assistants/' . \rawurlencode($assistantId)
+		. '/Tools/' . \rawurlencode($id)
+		. '';
+	}
 
-    /**
-     * Create the AssistantsToolInstance
-     *
-     * @return AssistantsToolInstance Created AssistantsToolInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(): AssistantsToolInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new AssistantsToolInstance(
-            $this->version,
-            $payload,
-            $this->solution['assistantId'],
-            $this->solution['id']
-        );
-    }
+		return '[Twilio.Assistants.V1.AssistantsToolContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Create the AssistantsToolInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AssistantsToolInstance Created AssistantsToolInstance
+	 */
+	public function create() : AssistantsToolInstance
+	{
 
-    /**
-     * Delete the AssistantsToolInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], [], $headers);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		return new AssistantsToolInstance(
+			$this->version,
+			$payload,
+			$this->solution['assistantId'],
+			$this->solution['id']
+		);
+	}
 
+	/**
+	 * Delete the AssistantsToolInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Assistants.V1.AssistantsToolContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 }

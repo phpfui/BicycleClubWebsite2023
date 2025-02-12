@@ -14,96 +14,92 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\IpMessaging\V2\Service\Channel;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class InviteContext extends InstanceContext
-    {
-    /**
-     * Initialize the InviteContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid 
-     * @param string $channelSid 
-     * @param string $sid 
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $channelSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the InviteContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid
+	 * @param string $channelSid
+	 * @param string $sid
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$channelSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'channelSid' =>
-            $channelSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'channelSid' => $channelSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Channels/' . \rawurlencode($channelSid)
-        .'/Invites/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Channels/' . \rawurlencode($channelSid)
+		. '/Invites/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the InviteInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.IpMessaging.V2.InviteContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the InviteInstance
-     *
-     * @return InviteInstance Fetched InviteInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): InviteInstance
-    {
+	/**
+	 * Delete the InviteInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new InviteInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['channelSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the InviteInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return InviteInstance Fetched InviteInstance
+	 */
+	public function fetch() : InviteInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.IpMessaging.V2.InviteContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new InviteInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['channelSid'],
+			$this->solution['sid']
+		);
+	}
 }

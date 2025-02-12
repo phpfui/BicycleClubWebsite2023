@@ -14,136 +14,125 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Messaging\V1\Service;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\Values;
-use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Serialize;
-
+use Twilio\Values;
+use Twilio\Version;
 
 class UsAppToPersonContext extends InstanceContext
-    {
-    /**
-     * Initialize the UsAppToPersonContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $messagingServiceSid The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) to create the resources from.
-     * @param string $sid The SID of the US A2P Compliance resource to delete `QE2c6890da8086d771620e9b13fadeba0b`.
-     */
-    public function __construct(
-        Version $version,
-        $messagingServiceSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the UsAppToPersonContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $messagingServiceSid The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) to create the resources from.
+	 * @param string $sid The SID of the US A2P Compliance resource to delete `QE2c6890da8086d771620e9b13fadeba0b`.
+	 */
+	public function __construct(
+		Version $version,
+		$messagingServiceSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'messagingServiceSid' =>
-            $messagingServiceSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'messagingServiceSid' => $messagingServiceSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($messagingServiceSid)
-        .'/Compliance/Usa2p/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Services/' . \rawurlencode($messagingServiceSid)
+		. '/Compliance/Usa2p/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the UsAppToPersonInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Messaging.V1.UsAppToPersonContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the UsAppToPersonInstance
-     *
-     * @return UsAppToPersonInstance Fetched UsAppToPersonInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): UsAppToPersonInstance
-    {
+	/**
+	 * Delete the UsAppToPersonInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new UsAppToPersonInstance(
-            $this->version,
-            $payload,
-            $this->solution['messagingServiceSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the UsAppToPersonInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UsAppToPersonInstance Fetched UsAppToPersonInstance
+	 */
+	public function fetch() : UsAppToPersonInstance
+	{
 
-    /**
-     * Update the UsAppToPersonInstance
-     *
-     * @param bool $hasEmbeddedLinks Indicates that this SMS campaign will send messages that contain links.
-     * @param bool $hasEmbeddedPhone Indicates that this SMS campaign will send messages that contain phone numbers.
-     * @param string[] $messageSamples An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars.
-     * @param string $messageFlow Required for all Campaigns. Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum.
-     * @param string $description A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters.
-     * @param bool $ageGated A boolean that specifies whether campaign requires age gate for federally legal content.
-     * @param bool $directLending A boolean that specifies whether campaign allows direct lending or not.
-     * @return UsAppToPersonInstance Updated UsAppToPersonInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(bool $hasEmbeddedLinks, bool $hasEmbeddedPhone, array $messageSamples, string $messageFlow, string $description, bool $ageGated, bool $directLending): UsAppToPersonInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $data = Values::of([
-            'HasEmbeddedLinks' =>
-                Serialize::booleanToString($hasEmbeddedLinks),
-            'HasEmbeddedPhone' =>
-                Serialize::booleanToString($hasEmbeddedPhone),
-            'MessageSamples' =>
-                Serialize::map($messageSamples,function ($e) { return $e; }),
-            'MessageFlow' =>
-                $messageFlow,
-            'Description' =>
-                $description,
-            'AgeGated' =>
-                Serialize::booleanToString($ageGated),
-            'DirectLending' =>
-                Serialize::booleanToString($directLending),
-        ]);
+		return new UsAppToPersonInstance(
+			$this->version,
+			$payload,
+			$this->solution['messagingServiceSid'],
+			$this->solution['sid']
+		);
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Update the UsAppToPersonInstance
+	 *
+	 * @param bool $hasEmbeddedLinks Indicates that this SMS campaign will send messages that contain links.
+	 * @param bool $hasEmbeddedPhone Indicates that this SMS campaign will send messages that contain phone numbers.
+	 * @param string[] $messageSamples An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars.
+	 * @param string $messageFlow Required for all Campaigns. Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum.
+	 * @param string $description A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters.
+	 * @param bool $ageGated A boolean that specifies whether campaign requires age gate for federally legal content.
+	 * @param bool $directLending A boolean that specifies whether campaign allows direct lending or not.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UsAppToPersonInstance Updated UsAppToPersonInstance
+	 */
+	public function update(bool $hasEmbeddedLinks, bool $hasEmbeddedPhone, array $messageSamples, string $messageFlow, string $description, bool $ageGated, bool $directLending) : UsAppToPersonInstance
+	{
 
-        return new UsAppToPersonInstance(
-            $this->version,
-            $payload,
-            $this->solution['messagingServiceSid'],
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'HasEmbeddedLinks' => Serialize::booleanToString($hasEmbeddedLinks),
+			'HasEmbeddedPhone' => Serialize::booleanToString($hasEmbeddedPhone),
+			'MessageSamples' => Serialize::map($messageSamples, static function($e) { return $e; }),
+			'MessageFlow' => $messageFlow,
+			'Description' => $description,
+			'AgeGated' => Serialize::booleanToString($ageGated),
+			'DirectLending' => Serialize::booleanToString($directLending),
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Messaging.V1.UsAppToPersonContext ' . \implode(' ', $context) . ']';
-    }
+		return new UsAppToPersonInstance(
+			$this->version,
+			$payload,
+			$this->solution['messagingServiceSid'],
+			$this->solution['sid']
+		);
+	}
 }

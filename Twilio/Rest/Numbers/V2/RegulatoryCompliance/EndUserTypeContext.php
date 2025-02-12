@@ -14,70 +14,68 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Numbers\V2\RegulatoryCompliance;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class EndUserTypeContext extends InstanceContext
-    {
-    /**
-     * Initialize the EndUserTypeContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The unique string that identifies the End-User Type resource.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the EndUserTypeContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The unique string that identifies the End-User Type resource.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/RegulatoryCompliance/EndUserTypes/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/RegulatoryCompliance/EndUserTypes/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the EndUserTypeInstance
-     *
-     * @return EndUserTypeInstance Fetched EndUserTypeInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): EndUserTypeInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new EndUserTypeInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Numbers.V2.EndUserTypeContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the EndUserTypeInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return EndUserTypeInstance Fetched EndUserTypeInstance
+	 */
+	public function fetch() : EndUserTypeInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Numbers.V2.EndUserTypeContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new EndUserTypeInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

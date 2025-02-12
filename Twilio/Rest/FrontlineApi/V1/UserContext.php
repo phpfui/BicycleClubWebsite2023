@@ -14,106 +14,99 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\FrontlineApi\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class UserContext extends InstanceContext
-    {
-    /**
-     * Initialize the UserContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The SID of the User resource to fetch. This value can be either the `sid` or the `identity` of the User resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the UserContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The SID of the User resource to fetch. This value can be either the `sid` or the `identity` of the User resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Users/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Users/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the UserInstance
-     *
-     * @return UserInstance Fetched UserInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): UserInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new UserInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.FrontlineApi.V1.UserContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the UserInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UserInstance Fetched UserInstance
+	 */
+	public function fetch() : UserInstance
+	{
 
-    /**
-     * Update the UserInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return UserInstance Updated UserInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): UserInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new UserInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'Avatar' =>
-                $options['avatar'],
-            'State' =>
-                $options['state'],
-            'IsAvailable' =>
-                Serialize::booleanToString($options['isAvailable']),
-        ]);
+	/**
+	 * Update the UserInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UserInstance Updated UserInstance
+	 */
+	public function update(array $options = []) : UserInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new UserInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'FriendlyName' => $options['friendlyName'],
+			'Avatar' => $options['avatar'],
+			'State' => $options['state'],
+			'IsAvailable' => Serialize::booleanToString($options['isAvailable']),
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.FrontlineApi.V1.UserContext ' . \implode(' ', $context) . ']';
-    }
+		return new UserInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

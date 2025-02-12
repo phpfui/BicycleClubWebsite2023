@@ -17,18 +17,27 @@ abstract class JournalItem extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'body' => ['mediumtext', 'string', 16777215, true, ],
-		'journalItemId' => ['int', 'int', 0, false, ],
-		'memberId' => ['int', 'int', 0, true, ],
-		'timeSent' => ['datetime', 'string', 20, true, null, ],
-		'title' => ['char(100)', 'string', 100, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['journalItemId', ];
 
 	protected static string $table = 'journalItem';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'body' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
+				'journalItemId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'timeSent' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, 'CURRENT_TIMESTAMP', ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Messaging\V1\Service;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $accountSid
@@ -37,110 +35,112 @@ use Twilio\Deserialize;
  */
 class ChannelSenderInstance extends InstanceResource
 {
-    /**
-     * Initialize the ChannelSenderInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $messagingServiceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the resource under.
-     * @param string $sid The SID of the Channel Sender resource to delete.
-     */
-    public function __construct(Version $version, array $payload, string $messagingServiceSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the ChannelSenderInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $messagingServiceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the resource under.
+	 * @param string $sid The SID of the Channel Sender resource to delete.
+	 */
+	public function __construct(Version $version, array $payload, string $messagingServiceSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'messagingServiceSid' => Values::array_get($payload, 'messaging_service_sid'),
-            'sid' => Values::array_get($payload, 'sid'),
-            'sender' => Values::array_get($payload, 'sender'),
-            'senderType' => Values::array_get($payload, 'sender_type'),
-            'countryCode' => Values::array_get($payload, 'country_code'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'messagingServiceSid' => Values::array_get($payload, 'messaging_service_sid'),
+			'sid' => Values::array_get($payload, 'sid'),
+			'sender' => Values::array_get($payload, 'sender'),
+			'senderType' => Values::array_get($payload, 'sender_type'),
+			'countryCode' => Values::array_get($payload, 'country_code'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['messagingServiceSid' => $messagingServiceSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['messagingServiceSid' => $messagingServiceSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return ChannelSenderContext Context for this ChannelSenderInstance
-     */
-    protected function proxy(): ChannelSenderContext
-    {
-        if (!$this->context) {
-            $this->context = new ChannelSenderContext(
-                $this->version,
-                $this->solution['messagingServiceSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the ChannelSenderInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the ChannelSenderInstance
-     *
-     * @return ChannelSenderInstance Fetched ChannelSenderInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ChannelSenderInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return '[Twilio.Messaging.V1.ChannelSenderInstance ' . \implode(' ', $context) . ']';
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Delete the ChannelSenderInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->delete();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Messaging.V1.ChannelSenderInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the ChannelSenderInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ChannelSenderInstance Fetched ChannelSenderInstance
+	 */
+	public function fetch() : ChannelSenderInstance
+	{
+
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return ChannelSenderContext Context for this ChannelSenderInstance
+	 */
+	protected function proxy() : ChannelSenderContext
+	{
+		if (! $this->context) {
+			$this->context = new ChannelSenderContext(
+				$this->version,
+				$this->solution['messagingServiceSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

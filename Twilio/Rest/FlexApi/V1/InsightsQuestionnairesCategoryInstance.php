@@ -14,7 +14,6 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
@@ -22,7 +21,6 @@ use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $accountSid
@@ -32,106 +30,108 @@ use Twilio\Version;
  */
 class InsightsQuestionnairesCategoryInstance extends InstanceResource
 {
-    /**
-     * Initialize the InsightsQuestionnairesCategoryInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $categorySid The SID of the category to be deleted
-     */
-    public function __construct(Version $version, array $payload, ?string $categorySid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the InsightsQuestionnairesCategoryInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $categorySid The SID of the category to be deleted
+	 */
+	public function __construct(Version $version, array $payload, ?string $categorySid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'categorySid' => Values::array_get($payload, 'category_sid'),
-            'name' => Values::array_get($payload, 'name'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'categorySid' => Values::array_get($payload, 'category_sid'),
+			'name' => Values::array_get($payload, 'name'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['categorySid' => $categorySid ?: $this->properties['categorySid'], ];
-    }
+		$this->solution = ['categorySid' => $categorySid ?: $this->properties['categorySid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return InsightsQuestionnairesCategoryContext Context for this InsightsQuestionnairesCategoryInstance
-     */
-    protected function proxy(): InsightsQuestionnairesCategoryContext
-    {
-        if (!$this->context) {
-            $this->context = new InsightsQuestionnairesCategoryContext(
-                $this->version,
-                $this->solution['categorySid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the InsightsQuestionnairesCategoryInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(array $options = []): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete($options);
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Update the InsightsQuestionnairesCategoryInstance
-     *
-     * @param string $name The name of this category.
-     * @param array|Options $options Optional Arguments
-     * @return InsightsQuestionnairesCategoryInstance Updated InsightsQuestionnairesCategoryInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $name, array $options = []): InsightsQuestionnairesCategoryInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->update($name, $options);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return '[Twilio.FlexApi.V1.InsightsQuestionnairesCategoryInstance ' . \implode(' ', $context) . ']';
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Delete the InsightsQuestionnairesCategoryInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete(array $options = []) : bool
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->delete($options);
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.FlexApi.V1.InsightsQuestionnairesCategoryInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the InsightsQuestionnairesCategoryInstance
+	 *
+	 * @param string $name The name of this category.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return InsightsQuestionnairesCategoryInstance Updated InsightsQuestionnairesCategoryInstance
+	 */
+	public function update(string $name, array $options = []) : InsightsQuestionnairesCategoryInstance
+	{
+
+		return $this->proxy()->update($name, $options);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return InsightsQuestionnairesCategoryContext Context for this InsightsQuestionnairesCategoryInstance
+	 */
+	protected function proxy() : InsightsQuestionnairesCategoryContext
+	{
+		if (! $this->context) {
+			$this->context = new InsightsQuestionnairesCategoryContext(
+				$this->version,
+				$this->solution['categorySid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

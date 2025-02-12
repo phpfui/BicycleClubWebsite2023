@@ -14,80 +14,77 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\FlexApi\V1\Plugin;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class PluginVersionsContext extends InstanceContext
-    {
-    /**
-     * Initialize the PluginVersionsContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $pluginSid The SID of the Flex Plugin the resource to belongs to.
-     * @param string $sid The SID of the Flex Plugin Version resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $pluginSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the PluginVersionsContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $pluginSid The SID of the Flex Plugin the resource to belongs to.
+	 * @param string $sid The SID of the Flex Plugin Version resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$pluginSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'pluginSid' =>
-            $pluginSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'pluginSid' => $pluginSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/PluginService/Plugins/' . \rawurlencode($pluginSid)
-        .'/Versions/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/PluginService/Plugins/' . \rawurlencode($pluginSid)
+		. '/Versions/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the PluginVersionsInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return PluginVersionsInstance Fetched PluginVersionsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(array $options = []): PluginVersionsInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Flex-Metadata' => $options['flexMetadata']]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		return '[Twilio.FlexApi.V1.PluginVersionsContext ' . \implode(' ', $context) . ']';
+	}
 
-        return new PluginVersionsInstance(
-            $this->version,
-            $payload,
-            $this->solution['pluginSid'],
-            $this->solution['sid']
-        );
-    }
+	/**
+	 * Fetch the PluginVersionsInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return PluginVersionsInstance Fetched PluginVersionsInstance
+	 */
+	public function fetch(array $options = []) : PluginVersionsInstance
+	{
 
+		$options = new Values($options);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.FlexApi.V1.PluginVersionsContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Flex-Metadata' => $options['flexMetadata']]);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new PluginVersionsInstance(
+			$this->version,
+			$payload,
+			$this->solution['pluginSid'],
+			$this->solution['sid']
+		);
+	}
 }

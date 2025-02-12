@@ -19,47 +19,45 @@ namespace Twilio\Rest\Messaging\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class DomainConfigList extends ListResource
-    {
-    /**
-     * Construct the DomainConfigList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the DomainConfigList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+		];
+	}
 
-    /**
-     * Constructs a DomainConfigContext
-     *
-     * @param string $domainSid Unique string used to identify the domain that this config should be associated with.
-     */
-    public function getContext(
-        string $domainSid
-        
-    ): DomainConfigContext
-    {
-        return new DomainConfigContext(
-            $this->version,
-            $domainSid
-        );
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Messaging.V1.DomainConfigList]';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Messaging.V1.DomainConfigList]';
-    }
+	/**
+	 * Constructs a DomainConfigContext
+	 *
+	 * @param string $domainSid Unique string used to identify the domain that this config should be associated with.
+	 */
+	public function getContext(
+		string $domainSid
+	) : DomainConfigContext
+	{
+		return new DomainConfigContext(
+			$this->version,
+			$domainSid
+		);
+	}
 }

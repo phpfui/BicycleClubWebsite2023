@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Verify\V2\Service;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $sid
@@ -40,65 +38,65 @@ use Twilio\Deserialize;
  */
 class VerificationCheckInstance extends InstanceResource
 {
-    /**
-     * Initialize the VerificationCheckInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $serviceSid The SID of the verification [Service](https://www.twilio.com/docs/verify/api/service) to create the resource under.
-     */
-    public function __construct(Version $version, array $payload, string $serviceSid)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the VerificationCheckInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $serviceSid The SID of the verification [Service](https://www.twilio.com/docs/verify/api/service) to create the resource under.
+	 */
+	public function __construct(Version $version, array $payload, string $serviceSid)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'serviceSid' => Values::array_get($payload, 'service_sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'to' => Values::array_get($payload, 'to'),
-            'channel' => Values::array_get($payload, 'channel'),
-            'status' => Values::array_get($payload, 'status'),
-            'valid' => Values::array_get($payload, 'valid'),
-            'amount' => Values::array_get($payload, 'amount'),
-            'payee' => Values::array_get($payload, 'payee'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'snaAttemptsErrorCodes' => Values::array_get($payload, 'sna_attempts_error_codes'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'serviceSid' => Values::array_get($payload, 'service_sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'to' => Values::array_get($payload, 'to'),
+			'channel' => Values::array_get($payload, 'channel'),
+			'status' => Values::array_get($payload, 'status'),
+			'valid' => Values::array_get($payload, 'valid'),
+			'amount' => Values::array_get($payload, 'amount'),
+			'payee' => Values::array_get($payload, 'payee'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'snaAttemptsErrorCodes' => Values::array_get($payload, 'sna_attempts_error_codes'),
+		];
 
-        $this->solution = ['serviceSid' => $serviceSid, ];
-    }
+		$this->solution = ['serviceSid' => $serviceSid, ];
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Verify.V2.VerificationCheckInstance]';
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Verify.V2.VerificationCheckInstance]';
+	}
 }
-

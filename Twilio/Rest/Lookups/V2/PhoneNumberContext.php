@@ -14,107 +14,90 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Lookups\V2;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class PhoneNumberContext extends InstanceContext
-    {
-    /**
-     * Initialize the PhoneNumberContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $phoneNumber The phone number to lookup in E.164 or national format. Default country code is +1 (North America).
-     */
-    public function __construct(
-        Version $version,
-        $phoneNumber
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the PhoneNumberContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $phoneNumber The phone number to lookup in E.164 or national format. Default country code is +1 (North America).
+	 */
+	public function __construct(
+		Version $version,
+		$phoneNumber
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'phoneNumber' =>
-            $phoneNumber,
-        ];
+		// Path Solution
+		$this->solution = [
+			'phoneNumber' => $phoneNumber,
+		];
 
-        $this->uri = '/PhoneNumbers/' . \rawurlencode($phoneNumber)
-        .'';
-    }
+		$this->uri = '/PhoneNumbers/' . \rawurlencode($phoneNumber)
+		. '';
+	}
 
-    /**
-     * Fetch the PhoneNumberInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return PhoneNumberInstance Fetched PhoneNumberInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(array $options = []): PhoneNumberInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $params = Values::of([
-            'Fields' =>
-                $options['fields'],
-            'CountryCode' =>
-                $options['countryCode'],
-            'FirstName' =>
-                $options['firstName'],
-            'LastName' =>
-                $options['lastName'],
-            'AddressLine1' =>
-                $options['addressLine1'],
-            'AddressLine2' =>
-                $options['addressLine2'],
-            'City' =>
-                $options['city'],
-            'State' =>
-                $options['state'],
-            'PostalCode' =>
-                $options['postalCode'],
-            'AddressCountryCode' =>
-                $options['addressCountryCode'],
-            'NationalId' =>
-                $options['nationalId'],
-            'DateOfBirth' =>
-                $options['dateOfBirth'],
-            'LastVerifiedDate' =>
-                $options['lastVerifiedDate'],
-            'VerificationSid' =>
-                $options['verificationSid'],
-            'PartnerSubId' =>
-                $options['partnerSubId'],
-        ]);
+		return '[Twilio.Lookups.V2.PhoneNumberContext ' . \implode(' ', $context) . ']';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+	/**
+	 * Fetch the PhoneNumberInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return PhoneNumberInstance Fetched PhoneNumberInstance
+	 */
+	public function fetch(array $options = []) : PhoneNumberInstance
+	{
 
-        return new PhoneNumberInstance(
-            $this->version,
-            $payload,
-            $this->solution['phoneNumber']
-        );
-    }
+		$options = new Values($options);
 
+		$params = Values::of([
+			'Fields' => $options['fields'],
+			'CountryCode' => $options['countryCode'],
+			'FirstName' => $options['firstName'],
+			'LastName' => $options['lastName'],
+			'AddressLine1' => $options['addressLine1'],
+			'AddressLine2' => $options['addressLine2'],
+			'City' => $options['city'],
+			'State' => $options['state'],
+			'PostalCode' => $options['postalCode'],
+			'AddressCountryCode' => $options['addressCountryCode'],
+			'NationalId' => $options['nationalId'],
+			'DateOfBirth' => $options['dateOfBirth'],
+			'LastVerifiedDate' => $options['lastVerifiedDate'],
+			'VerificationSid' => $options['verificationSid'],
+			'PartnerSubId' => $options['partnerSubId'],
+		]);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Lookups.V2.PhoneNumberContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+
+		return new PhoneNumberInstance(
+			$this->version,
+			$payload,
+			$this->solution['phoneNumber']
+		);
+	}
 }

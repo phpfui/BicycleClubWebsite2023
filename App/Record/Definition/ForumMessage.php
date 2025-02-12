@@ -22,22 +22,31 @@ abstract class ForumMessage extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'forumId' => ['int', 'int', 0, true, ],
-		'forumMessageId' => ['int', 'int', 0, false, ],
-		'htmlMessage' => ['mediumtext', 'string', 16777215, true, ],
-		'lastEdited' => ['datetime', 'string', 20, true, ],
-		'lastEditorId' => ['int', 'int', 0, true, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'posted' => ['datetime', 'string', 20, false, null, ],
-		'textMessage' => ['text', 'string', 65535, true, ],
-		'title' => ['varchar(255)', 'string', 255, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['forumMessageId', ];
 
 	protected static string $table = 'forumMessage';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'forumId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'forumMessageId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'htmlMessage' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
+				'lastEdited' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, ),
+				'lastEditorId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'posted' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'textMessage' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

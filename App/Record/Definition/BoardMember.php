@@ -16,18 +16,27 @@ abstract class BoardMember extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'description' => ['text', 'string', 65535, true, ],
-		'extension' => ['char(10)', 'string', 10, false, '', ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'rank' => ['int', 'int', 0, true, ],
-		'title' => ['varchar(50)', 'string', 50, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['memberId', ];
 
 	protected static string $table = 'boardMember';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'description' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'extension' => new \PHPFUI\ORM\FieldDefinition('char(10)', 'string', 10, false, '', ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'rank' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

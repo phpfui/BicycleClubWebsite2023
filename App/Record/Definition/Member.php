@@ -51,52 +51,61 @@ abstract class Member extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'acceptedWaiver' => ['datetime', 'string', 20, true, ],
-		'allowTexting' => ['int', 'int', 0, false, 1, ],
-		'cellPhone' => ['varchar(20)', 'string', 20, true, '', ],
-		'deceased' => ['int', 'int', 0, false, 0, ],
-		'discountCount' => ['int', 'int', 0, false, 0, ],
-		'email' => ['varchar(100)', 'string', 100, false, ],
-		'emailAnnouncements' => ['tinyint', 'int', 0, false, 0, ],
-		'emailNewsletter' => ['int', 'int', 0, false, 1, ],
-		'emergencyContact' => ['varchar(50)', 'string', 50, true, '', ],
-		'emergencyPhone' => ['varchar(20)', 'string', 20, true, '', ],
-		'extension' => ['varchar(10)', 'string', 10, false, '', ],
-		'firstName' => ['varchar(50)', 'string', 50, false, ],
-		'geoLocate' => ['int', 'int', 0, false, 1, ],
-		'journal' => ['tinyint', 'int', 0, false, 0, ],
-		'lastLogin' => ['datetime', 'string', 20, false, null, ],
-		'lastName' => ['varchar(50)', 'string', 50, false, ],
-		'license' => ['char(10)', 'string', 10, true, ],
-		'loginAttempts' => ['varchar(255)', 'string', 255, true, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'membershipId' => ['int', 'int', 0, true, ],
-		'newRideEmail' => ['tinyint', 'int', 0, false, 0, ],
-		'password' => ['varchar(255)', 'string', 255, true, ],
-		'passwordReset' => ['varchar(20)', 'string', 20, true, ],
-		'passwordResetExpires' => ['datetime', 'string', 20, true, ],
-		'pendingLeader' => ['int', 'int', 0, false, 0, ],
-		'phone' => ['varchar(20)', 'string', 20, true, '', ],
-		'profileHeight' => ['int', 'int', 0, false, 0, ],
-		'profileWidth' => ['int', 'int', 0, false, 0, ],
-		'profileX' => ['int', 'int', 0, false, 0, ],
-		'profileY' => ['int', 'int', 0, false, 0, ],
-		'rideComments' => ['int', 'int', 0, true, 1, ],
-		'rideJournal' => ['tinyint', 'int', 0, false, 0, ],
-		'showNoPhone' => ['tinyint', 'int', 0, false, 0, ],
-		'showNoRideSignup' => ['int', 'int', 0, true, 0, ],
-		'showNoStreet' => ['tinyint', 'int', 0, false, 0, ],
-		'showNoTown' => ['tinyint', 'int', 0, false, 0, ],
-		'showNothing' => ['tinyint', 'int', 0, false, 0, ],
-		'verifiedEmail' => ['int', 'int', 0, false, 0, ],
-		'volunteerPoints' => ['int', 'int', 0, false, 0, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['memberId', ];
 
 	protected static string $table = 'member';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'acceptedWaiver' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, ),
+				'allowTexting' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 1, ),
+				'cellPhone' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, '', ),
+				'deceased' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'discountCount' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'email' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, false, ),
+				'emailAnnouncements' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
+				'emailNewsletter' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 1, ),
+				'emergencyContact' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, '', ),
+				'emergencyPhone' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, '', ),
+				'extension' => new \PHPFUI\ORM\FieldDefinition('varchar(10)', 'string', 10, false, '', ),
+				'firstName' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, false, ),
+				'geoLocate' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 1, ),
+				'journal' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
+				'lastLogin' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'lastName' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, false, ),
+				'license' => new \PHPFUI\ORM\FieldDefinition('char(10)', 'string', 10, true, ),
+				'loginAttempts' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'membershipId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'newRideEmail' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
+				'password' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'passwordReset' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, ),
+				'passwordResetExpires' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, ),
+				'pendingLeader' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'phone' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, '', ),
+				'profileHeight' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'profileWidth' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'profileX' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'profileY' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'rideComments' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 1, ),
+				'rideJournal' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
+				'showNoPhone' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
+				'showNoRideSignup' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'showNoStreet' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
+				'showNoTown' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
+				'showNothing' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
+				'verifiedEmail' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'volunteerPoints' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+			];
+			}
+
+		return $this;
+		}
 	}

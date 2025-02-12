@@ -14,7 +14,6 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Lookups\V2;
 
 use Twilio\Exceptions\TwilioException;
@@ -22,7 +21,6 @@ use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $callingCountryCode
@@ -45,105 +43,107 @@ use Twilio\Version;
  */
 class PhoneNumberInstance extends InstanceResource
 {
-    /**
-     * Initialize the PhoneNumberInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $phoneNumber The phone number to lookup in E.164 or national format. Default country code is +1 (North America).
-     */
-    public function __construct(Version $version, array $payload, ?string $phoneNumber = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the PhoneNumberInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $phoneNumber The phone number to lookup in E.164 or national format. Default country code is +1 (North America).
+	 */
+	public function __construct(Version $version, array $payload, ?string $phoneNumber = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'callingCountryCode' => Values::array_get($payload, 'calling_country_code'),
-            'countryCode' => Values::array_get($payload, 'country_code'),
-            'phoneNumber' => Values::array_get($payload, 'phone_number'),
-            'nationalFormat' => Values::array_get($payload, 'national_format'),
-            'valid' => Values::array_get($payload, 'valid'),
-            'validationErrors' => Values::array_get($payload, 'validation_errors'),
-            'callerName' => Values::array_get($payload, 'caller_name'),
-            'simSwap' => Values::array_get($payload, 'sim_swap'),
-            'callForwarding' => Values::array_get($payload, 'call_forwarding'),
-            'lineStatus' => Values::array_get($payload, 'line_status'),
-            'lineTypeIntelligence' => Values::array_get($payload, 'line_type_intelligence'),
-            'identityMatch' => Values::array_get($payload, 'identity_match'),
-            'reassignedNumber' => Values::array_get($payload, 'reassigned_number'),
-            'smsPumpingRisk' => Values::array_get($payload, 'sms_pumping_risk'),
-            'phoneNumberQualityScore' => Values::array_get($payload, 'phone_number_quality_score'),
-            'preFill' => Values::array_get($payload, 'pre_fill'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'callingCountryCode' => Values::array_get($payload, 'calling_country_code'),
+			'countryCode' => Values::array_get($payload, 'country_code'),
+			'phoneNumber' => Values::array_get($payload, 'phone_number'),
+			'nationalFormat' => Values::array_get($payload, 'national_format'),
+			'valid' => Values::array_get($payload, 'valid'),
+			'validationErrors' => Values::array_get($payload, 'validation_errors'),
+			'callerName' => Values::array_get($payload, 'caller_name'),
+			'simSwap' => Values::array_get($payload, 'sim_swap'),
+			'callForwarding' => Values::array_get($payload, 'call_forwarding'),
+			'lineStatus' => Values::array_get($payload, 'line_status'),
+			'lineTypeIntelligence' => Values::array_get($payload, 'line_type_intelligence'),
+			'identityMatch' => Values::array_get($payload, 'identity_match'),
+			'reassignedNumber' => Values::array_get($payload, 'reassigned_number'),
+			'smsPumpingRisk' => Values::array_get($payload, 'sms_pumping_risk'),
+			'phoneNumberQualityScore' => Values::array_get($payload, 'phone_number_quality_score'),
+			'preFill' => Values::array_get($payload, 'pre_fill'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['phoneNumber' => $phoneNumber ?: $this->properties['phoneNumber'], ];
-    }
+		$this->solution = ['phoneNumber' => $phoneNumber ?: $this->properties['phoneNumber'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return PhoneNumberContext Context for this PhoneNumberInstance
-     */
-    protected function proxy(): PhoneNumberContext
-    {
-        if (!$this->context) {
-            $this->context = new PhoneNumberContext(
-                $this->version,
-                $this->solution['phoneNumber']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the PhoneNumberInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return PhoneNumberInstance Fetched PhoneNumberInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(array $options = []): PhoneNumberInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch($options);
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Lookups.V2.PhoneNumberInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Lookups.V2.PhoneNumberInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the PhoneNumberInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return PhoneNumberInstance Fetched PhoneNumberInstance
+	 */
+	public function fetch(array $options = []) : PhoneNumberInstance
+	{
+
+		return $this->proxy()->fetch($options);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return PhoneNumberContext Context for this PhoneNumberInstance
+	 */
+	protected function proxy() : PhoneNumberContext
+	{
+		if (! $this->context) {
+			$this->context = new PhoneNumberContext(
+				$this->version,
+				$this->solution['phoneNumber']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

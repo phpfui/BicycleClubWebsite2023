@@ -14,117 +14,112 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Microvisor\V1\Device;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class DeviceConfigContext extends InstanceContext
-    {
-    /**
-     * Initialize the DeviceConfigContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $deviceSid A 34-character string that uniquely identifies the Device.
-     * @param string $key The config key; up to 100 characters.
-     */
-    public function __construct(
-        Version $version,
-        $deviceSid,
-        $key
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the DeviceConfigContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $deviceSid A 34-character string that uniquely identifies the Device.
+	 * @param string $key The config key; up to 100 characters.
+	 */
+	public function __construct(
+		Version $version,
+		$deviceSid,
+		$key
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'deviceSid' =>
-            $deviceSid,
-        'key' =>
-            $key,
-        ];
+		// Path Solution
+		$this->solution = [
+			'deviceSid' => $deviceSid,
+			'key' => $key,
+		];
 
-        $this->uri = '/Devices/' . \rawurlencode($deviceSid)
-        .'/Configs/' . \rawurlencode($key)
-        .'';
-    }
+		$this->uri = '/Devices/' . \rawurlencode($deviceSid)
+		. '/Configs/' . \rawurlencode($key)
+		. '';
+	}
 
-    /**
-     * Delete the DeviceConfigInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Microvisor.V1.DeviceConfigContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the DeviceConfigInstance
-     *
-     * @return DeviceConfigInstance Fetched DeviceConfigInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): DeviceConfigInstance
-    {
+	/**
+	 * Delete the DeviceConfigInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new DeviceConfigInstance(
-            $this->version,
-            $payload,
-            $this->solution['deviceSid'],
-            $this->solution['key']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the DeviceConfigInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DeviceConfigInstance Fetched DeviceConfigInstance
+	 */
+	public function fetch() : DeviceConfigInstance
+	{
 
-    /**
-     * Update the DeviceConfigInstance
-     *
-     * @param string $value The config value; up to 4096 characters.
-     * @return DeviceConfigInstance Updated DeviceConfigInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $value): DeviceConfigInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $data = Values::of([
-            'Value' =>
-                $value,
-        ]);
+		return new DeviceConfigInstance(
+			$this->version,
+			$payload,
+			$this->solution['deviceSid'],
+			$this->solution['key']
+		);
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Update the DeviceConfigInstance
+	 *
+	 * @param string $value The config value; up to 4096 characters.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DeviceConfigInstance Updated DeviceConfigInstance
+	 */
+	public function update(string $value) : DeviceConfigInstance
+	{
 
-        return new DeviceConfigInstance(
-            $this->version,
-            $payload,
-            $this->solution['deviceSid'],
-            $this->solution['key']
-        );
-    }
+		$data = Values::of([
+			'Value' => $value,
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Microvisor.V1.DeviceConfigContext ' . \implode(' ', $context) . ']';
-    }
+		return new DeviceConfigInstance(
+			$this->version,
+			$payload,
+			$this->solution['deviceSid'],
+			$this->solution['key']
+		);
+	}
 }

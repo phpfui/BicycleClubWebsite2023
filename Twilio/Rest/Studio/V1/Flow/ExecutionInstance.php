@@ -14,17 +14,15 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Studio\V1\Flow;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Rest\Studio\V1\Flow\Execution\ExecutionContextList;
+use Twilio\Rest\Studio\V1\Flow\Execution\ExecutionStepList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-use Twilio\Rest\Studio\V1\Flow\Execution\ExecutionStepList;
-use Twilio\Rest\Studio\V1\Flow\Execution\ExecutionContextList;
-
 
 /**
  * @property string|null $sid
@@ -41,144 +39,146 @@ use Twilio\Rest\Studio\V1\Flow\Execution\ExecutionContextList;
  */
 class ExecutionInstance extends InstanceResource
 {
-    protected $_steps;
-    protected $_executionContext;
+	protected $_executionContext;
 
-    /**
-     * Initialize the ExecutionInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $flowSid The SID of the Excecution's Flow.
-     * @param string $sid The SID of the Execution resource to delete.
-     */
-    public function __construct(Version $version, array $payload, string $flowSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	protected $_steps;
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'flowSid' => Values::array_get($payload, 'flow_sid'),
-            'contactSid' => Values::array_get($payload, 'contact_sid'),
-            'contactChannelAddress' => Values::array_get($payload, 'contact_channel_address'),
-            'context' => Values::array_get($payload, 'context'),
-            'status' => Values::array_get($payload, 'status'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-            'links' => Values::array_get($payload, 'links'),
-        ];
+	/**
+	 * Initialize the ExecutionInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $flowSid The SID of the Excecution's Flow.
+	 * @param string $sid The SID of the Execution resource to delete.
+	 */
+	public function __construct(Version $version, array $payload, string $flowSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        $this->solution = ['flowSid' => $flowSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'flowSid' => Values::array_get($payload, 'flow_sid'),
+			'contactSid' => Values::array_get($payload, 'contact_sid'),
+			'contactChannelAddress' => Values::array_get($payload, 'contact_channel_address'),
+			'context' => Values::array_get($payload, 'context'),
+			'status' => Values::array_get($payload, 'status'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+			'links' => Values::array_get($payload, 'links'),
+		];
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return ExecutionContext Context for this ExecutionInstance
-     */
-    protected function proxy(): ExecutionContext
-    {
-        if (!$this->context) {
-            $this->context = new ExecutionContext(
-                $this->version,
-                $this->solution['flowSid'],
-                $this->solution['sid']
-            );
-        }
+		$this->solution = ['flowSid' => $flowSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-        return $this->context;
-    }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-    /**
-     * Delete the ExecutionInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return $this->proxy()->delete();
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Fetch the ExecutionInstance
-     *
-     * @return ExecutionInstance Fetched ExecutionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ExecutionInstance
-    {
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-        return $this->proxy()->fetch();
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Update the ExecutionInstance
-     *
-     * @param string $status
-     * @return ExecutionInstance Updated ExecutionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $status): ExecutionInstance
-    {
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return $this->proxy()->update($status);
-    }
+		return '[Twilio.Studio.V1.ExecutionInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Access the steps
-     */
-    protected function getSteps(): ExecutionStepList
-    {
-        return $this->proxy()->steps;
-    }
+	/**
+	 * Delete the ExecutionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Access the executionContext
-     */
-    protected function getExecutionContext(): ExecutionContextList
-    {
-        return $this->proxy()->executionContext;
-    }
+		return $this->proxy()->delete();
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Fetch the ExecutionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ExecutionInstance Fetched ExecutionInstance
+	 */
+	public function fetch() : ExecutionInstance
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->fetch();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Update the ExecutionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ExecutionInstance Updated ExecutionInstance
+	 */
+	public function update(string $status) : ExecutionInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Studio.V1.ExecutionInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->update($status);
+	}
+
+	/**
+	 * Access the executionContext
+	 */
+	protected function getExecutionContext() : ExecutionContextList
+	{
+		return $this->proxy()->executionContext;
+	}
+
+	/**
+	 * Access the steps
+	 */
+	protected function getSteps() : ExecutionStepList
+	{
+		return $this->proxy()->steps;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return ExecutionContext Context for this ExecutionInstance
+	 */
+	protected function proxy() : ExecutionContext
+	{
+		if (! $this->context) {
+			$this->context = new ExecutionContext(
+				$this->version,
+				$this->solution['flowSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

@@ -14,82 +14,78 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Serverless\V1\Service\TwilioFunction\FunctionVersion;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class FunctionVersionContentContext extends InstanceContext
-    {
-    /**
-     * Initialize the FunctionVersionContentContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the Service to fetch the Function Version content from.
-     * @param string $functionSid The SID of the Function that is the parent of the Function Version content to fetch.
-     * @param string $sid The SID of the Function Version content to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $functionSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the FunctionVersionContentContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the Service to fetch the Function Version content from.
+	 * @param string $functionSid The SID of the Function that is the parent of the Function Version content to fetch.
+	 * @param string $sid The SID of the Function Version content to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$functionSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'functionSid' =>
-            $functionSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'functionSid' => $functionSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Functions/' . \rawurlencode($functionSid)
-        .'/Versions/' . \rawurlencode($sid)
-        .'/Content';
-    }
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Functions/' . \rawurlencode($functionSid)
+		. '/Versions/' . \rawurlencode($sid)
+		. '/Content';
+	}
 
-    /**
-     * Fetch the FunctionVersionContentInstance
-     *
-     * @return FunctionVersionContentInstance Fetched FunctionVersionContentInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): FunctionVersionContentInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new FunctionVersionContentInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['functionSid'],
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Serverless.V1.FunctionVersionContentContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the FunctionVersionContentInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return FunctionVersionContentInstance Fetched FunctionVersionContentInstance
+	 */
+	public function fetch() : FunctionVersionContentInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Serverless.V1.FunctionVersionContentContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new FunctionVersionContentInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['functionSid'],
+			$this->solution['sid']
+		);
+	}
 }

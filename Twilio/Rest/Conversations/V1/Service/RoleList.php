@@ -18,185 +18,176 @@ namespace Twilio\Rest\Conversations\V1\Service;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\Serialize;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Serialize;
-
 
 class RoleList extends ListResource
-    {
-    /**
-     * Construct the RoleList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $chatServiceSid The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) to create the Role resource under.
-     */
-    public function __construct(
-        Version $version,
-        string $chatServiceSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the RoleList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $chatServiceSid The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) to create the Role resource under.
+	 */
+	public function __construct(
+		Version $version,
+		string $chatServiceSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'chatServiceSid' =>
-            $chatServiceSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'chatServiceSid' => $chatServiceSid,
 
-        $this->uri = '/Services/' . \rawurlencode($chatServiceSid)
-        .'/Roles';
-    }
+		];
 
-    /**
-     * Create the RoleInstance
-     *
-     * @param string $friendlyName A descriptive string that you create to describe the new resource. It can be up to 64 characters long.
-     * @param string $type
-     * @param string[] $permission A permission that you grant to the new role. Only one permission can be granted per parameter. To assign more than one permission, repeat this parameter for each permission value. The values for this parameter depend on the role's `type`.
-     * @return RoleInstance Created RoleInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $friendlyName, string $type, array $permission): RoleInstance
-    {
+		$this->uri = '/Services/' . \rawurlencode($chatServiceSid)
+		. '/Roles';
+	}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $friendlyName,
-            'Type' =>
-                $type,
-            'Permission' =>
-                Serialize::map($permission,function ($e) { return $e; }),
-        ]);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Conversations.V1.RoleList]';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Create the RoleInstance
+	 *
+	 * @param string $friendlyName A descriptive string that you create to describe the new resource. It can be up to 64 characters long.
+	 * @param string[] $permission A permission that you grant to the new role. Only one permission can be granted per parameter. To assign more than one permission, repeat this parameter for each permission value. The values for this parameter depend on the role's `type`.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return RoleInstance Created RoleInstance
+	 */
+	public function create(string $friendlyName, string $type, array $permission) : RoleInstance
+	{
 
-        return new RoleInstance(
-            $this->version,
-            $payload,
-            $this->solution['chatServiceSid']
-        );
-    }
+		$data = Values::of([
+			'FriendlyName' => $friendlyName,
+			'Type' => $type,
+			'Permission' => Serialize::map($permission, static function($e) { return $e; }),
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Reads RoleInstance records from the API as a list.
-     * Unlike stream(), this operation is eager and will load `limit` records into
-     * memory before returning.
-     *
-     * @param int $limit Upper limit for the number of records to return. read()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, read()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return RoleInstance[] Array of results
-     */
-    public function read(?int $limit = null, $pageSize = null): array
-    {
-        return \iterator_to_array($this->stream($limit, $pageSize), false);
-    }
+		return new RoleInstance(
+			$this->version,
+			$payload,
+			$this->solution['chatServiceSid']
+		);
+	}
 
-    /**
-     * Streams RoleInstance records from the API as a generator stream.
-     * This operation lazily loads records as efficiently as possible until the
-     * limit
-     * is reached.
-     * The results are returned as a generator, so this operation is memory
-     * efficient.
-     *
-     * @param int $limit Upper limit for the number of records to return. stream()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, stream()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return Stream stream of results
-     */
-    public function stream(?int $limit = null, $pageSize = null): Stream
-    {
-        $limits = $this->version->readLimits($limit, $pageSize);
+	/**
+	 * Constructs a RoleContext
+	 *
+	 * @param string $sid The SID of the Role resource to delete.
+	 */
+	public function getContext(
+		string $sid
+	) : RoleContext
+	{
+		return new RoleContext(
+			$this->version,
+			$this->solution['chatServiceSid'],
+			$sid
+		);
+	}
 
-        $page = $this->page($limits['pageSize']);
+	/**
+	 * Retrieve a specific page of RoleInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param string $targetUrl API-generated URL for the requested results page
+	 * @return RolePage Page of RoleInstance
+	 */
+	public function getPage(string $targetUrl) : RolePage
+	{
+		$response = $this->version->getDomain()->getClient()->request(
+			'GET',
+			$targetUrl
+		);
 
-        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-    }
+		return new RolePage($this->version, $response, $this->solution);
+	}
 
-    /**
-     * Retrieve a single page of RoleInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param mixed $pageSize Number of records to return, defaults to 50
-     * @param string $pageToken PageToken provided by the API
-     * @param mixed $pageNumber Page Number, this value is simply for client state
-     * @return RolePage Page of RoleInstance
-     */
-    public function page(
-        $pageSize = Values::NONE,
-        string $pageToken = Values::NONE,
-        $pageNumber = Values::NONE
-    ): RolePage
-    {
+	/**
+	 * Retrieve a single page of RoleInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param mixed $pageSize Number of records to return, defaults to 50
+	 * @param string $pageToken PageToken provided by the API
+	 * @param mixed $pageNumber Page Number, this value is simply for client state
+	 * @return RolePage Page of RoleInstance
+	 */
+	public function page(
+		$pageSize = Values::NONE,
+		string $pageToken = Values::NONE,
+		$pageNumber = Values::NONE
+	) : RolePage
+	{
 
-        $params = Values::of([
-            'PageToken' => $pageToken,
-            'Page' => $pageNumber,
-            'PageSize' => $pageSize,
-        ]);
+		$params = Values::of([
+			'PageToken' => $pageToken,
+			'Page' => $pageNumber,
+			'PageSize' => $pageSize,
+		]);
 
-        $response = $this->version->page('GET', $this->uri, $params);
+		$response = $this->version->page('GET', $this->uri, $params);
 
-        return new RolePage($this->version, $response, $this->solution);
-    }
+		return new RolePage($this->version, $response, $this->solution);
+	}
 
-    /**
-     * Retrieve a specific page of RoleInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param string $targetUrl API-generated URL for the requested results page
-     * @return RolePage Page of RoleInstance
-     */
-    public function getPage(string $targetUrl): RolePage
-    {
-        $response = $this->version->getDomain()->getClient()->request(
-            'GET',
-            $targetUrl
-        );
+	/**
+	 * Reads RoleInstance records from the API as a list.
+	 * Unlike stream(), this operation is eager and will load `limit` records into
+	 * memory before returning.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. read()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, read()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return RoleInstance[] Array of results
+	 */
+	public function read(?int $limit = null, $pageSize = null) : array
+	{
+		return \iterator_to_array($this->stream($limit, $pageSize), false);
+	}
 
-        return new RolePage($this->version, $response, $this->solution);
-    }
+	/**
+	 * Streams RoleInstance records from the API as a generator stream.
+	 * This operation lazily loads records as efficiently as possible until the
+	 * limit
+	 * is reached.
+	 * The results are returned as a generator, so this operation is memory
+	 * efficient.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. stream()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, stream()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return Stream stream of results
+	 */
+	public function stream(?int $limit = null, $pageSize = null) : Stream
+	{
+		$limits = $this->version->readLimits($limit, $pageSize);
 
+		$page = $this->page($limits['pageSize']);
 
-    /**
-     * Constructs a RoleContext
-     *
-     * @param string $sid The SID of the Role resource to delete.
-     */
-    public function getContext(
-        string $sid
-        
-    ): RoleContext
-    {
-        return new RoleContext(
-            $this->version,
-            $this->solution['chatServiceSid'],
-            $sid
-        );
-    }
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Conversations.V1.RoleList]';
-    }
+		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+	}
 }

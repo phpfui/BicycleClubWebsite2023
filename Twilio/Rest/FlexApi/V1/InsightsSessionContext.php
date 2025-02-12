@@ -14,68 +14,67 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class InsightsSessionContext extends InstanceContext
-    {
-    /**
-     * Initialize the InsightsSessionContext
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the InsightsSessionContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/Insights/Session';
-    }
+		$this->uri = '/Insights/Session';
+	}
 
-    /**
-     * Create the InsightsSessionInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return InsightsSessionInstance Created InsightsSessionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(array $options = []): InsightsSessionInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Authorization' => $options['authorization']]);
-        $payload = $this->version->create('POST', $this->uri, [], [], $headers);
+		return '[Twilio.FlexApi.V1.InsightsSessionContext ' . \implode(' ', $context) . ']';
+	}
 
-        return new InsightsSessionInstance(
-            $this->version,
-            $payload
-        );
-    }
+	/**
+	 * Create the InsightsSessionInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return InsightsSessionInstance Created InsightsSessionInstance
+	 */
+	public function create(array $options = []) : InsightsSessionInstance
+	{
 
+		$options = new Values($options);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.FlexApi.V1.InsightsSessionContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Authorization' => $options['authorization']]);
+		$payload = $this->version->create('POST', $this->uri, [], [], $headers);
+
+		return new InsightsSessionInstance(
+			$this->version,
+			$payload
+		);
+	}
 }

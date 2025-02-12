@@ -14,106 +14,99 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Conversations\V1\Service;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class ConfigurationContext extends InstanceContext
-    {
-    /**
-     * Initialize the ConfigurationContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $chatServiceSid The SID of the Service configuration resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $chatServiceSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the ConfigurationContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $chatServiceSid The SID of the Service configuration resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$chatServiceSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'chatServiceSid' =>
-            $chatServiceSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'chatServiceSid' => $chatServiceSid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($chatServiceSid)
-        .'/Configuration';
-    }
+		$this->uri = '/Services/' . \rawurlencode($chatServiceSid)
+		. '/Configuration';
+	}
 
-    /**
-     * Fetch the ConfigurationInstance
-     *
-     * @return ConfigurationInstance Fetched ConfigurationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ConfigurationInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new ConfigurationInstance(
-            $this->version,
-            $payload,
-            $this->solution['chatServiceSid']
-        );
-    }
+		return '[Twilio.Conversations.V1.ConfigurationContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the ConfigurationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ConfigurationInstance Fetched ConfigurationInstance
+	 */
+	public function fetch() : ConfigurationInstance
+	{
 
-    /**
-     * Update the ConfigurationInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ConfigurationInstance Updated ConfigurationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): ConfigurationInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new ConfigurationInstance(
+			$this->version,
+			$payload,
+			$this->solution['chatServiceSid']
+		);
+	}
 
-        $data = Values::of([
-            'DefaultConversationCreatorRoleSid' =>
-                $options['defaultConversationCreatorRoleSid'],
-            'DefaultConversationRoleSid' =>
-                $options['defaultConversationRoleSid'],
-            'DefaultChatServiceRoleSid' =>
-                $options['defaultChatServiceRoleSid'],
-            'ReachabilityEnabled' =>
-                Serialize::booleanToString($options['reachabilityEnabled']),
-        ]);
+	/**
+	 * Update the ConfigurationInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ConfigurationInstance Updated ConfigurationInstance
+	 */
+	public function update(array $options = []) : ConfigurationInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new ConfigurationInstance(
-            $this->version,
-            $payload,
-            $this->solution['chatServiceSid']
-        );
-    }
+		$data = Values::of([
+			'DefaultConversationCreatorRoleSid' => $options['defaultConversationCreatorRoleSid'],
+			'DefaultConversationRoleSid' => $options['defaultConversationRoleSid'],
+			'DefaultChatServiceRoleSid' => $options['defaultChatServiceRoleSid'],
+			'ReachabilityEnabled' => Serialize::booleanToString($options['reachabilityEnabled']),
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Conversations.V1.ConfigurationContext ' . \implode(' ', $context) . ']';
-    }
+		return new ConfigurationInstance(
+			$this->version,
+			$payload,
+			$this->solution['chatServiceSid']
+		);
+	}
 }

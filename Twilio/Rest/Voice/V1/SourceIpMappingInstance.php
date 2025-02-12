@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Voice\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $sid
@@ -34,118 +32,120 @@ use Twilio\Deserialize;
  */
 class SourceIpMappingInstance extends InstanceResource
 {
-    /**
-     * Initialize the SourceIpMappingInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $sid The Twilio-provided string that uniquely identifies the IP Record resource to delete.
-     */
-    public function __construct(Version $version, array $payload, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the SourceIpMappingInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $sid The Twilio-provided string that uniquely identifies the IP Record resource to delete.
+	 */
+	public function __construct(Version $version, array $payload, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'ipRecordSid' => Values::array_get($payload, 'ip_record_sid'),
-            'sipDomainSid' => Values::array_get($payload, 'sip_domain_sid'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'ipRecordSid' => Values::array_get($payload, 'ip_record_sid'),
+			'sipDomainSid' => Values::array_get($payload, 'sip_domain_sid'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return SourceIpMappingContext Context for this SourceIpMappingInstance
-     */
-    protected function proxy(): SourceIpMappingContext
-    {
-        if (!$this->context) {
-            $this->context = new SourceIpMappingContext(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the SourceIpMappingInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the SourceIpMappingInstance
-     *
-     * @return SourceIpMappingInstance Fetched SourceIpMappingInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): SourceIpMappingInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Update the SourceIpMappingInstance
-     *
-     * @param string $sipDomainSid The SID of the SIP Domain that the IP Record should be mapped to.
-     * @return SourceIpMappingInstance Updated SourceIpMappingInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $sipDomainSid): SourceIpMappingInstance
-    {
+		return '[Twilio.Voice.V1.SourceIpMappingInstance ' . \implode(' ', $context) . ']';
+	}
 
-        return $this->proxy()->update($sipDomainSid);
-    }
+	/**
+	 * Delete the SourceIpMappingInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return $this->proxy()->delete();
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Fetch the SourceIpMappingInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SourceIpMappingInstance Fetched SourceIpMappingInstance
+	 */
+	public function fetch() : SourceIpMappingInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->fetch();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Voice.V1.SourceIpMappingInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the SourceIpMappingInstance
+	 *
+	 * @param string $sipDomainSid The SID of the SIP Domain that the IP Record should be mapped to.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SourceIpMappingInstance Updated SourceIpMappingInstance
+	 */
+	public function update(string $sipDomainSid) : SourceIpMappingInstance
+	{
+
+		return $this->proxy()->update($sipDomainSid);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return SourceIpMappingContext Context for this SourceIpMappingInstance
+	 */
+	protected function proxy() : SourceIpMappingContext
+	{
+		if (! $this->context) {
+			$this->context = new SourceIpMappingContext(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

@@ -14,132 +14,124 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\IpMessaging\V2\Service\User;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class UserChannelContext extends InstanceContext
-    {
-    /**
-     * Initialize the UserChannelContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid 
-     * @param string $userSid 
-     * @param string $channelSid 
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $userSid,
-        $channelSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the UserChannelContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid
+	 * @param string $userSid
+	 * @param string $channelSid
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$userSid,
+		$channelSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'userSid' =>
-            $userSid,
-        'channelSid' =>
-            $channelSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'userSid' => $userSid,
+			'channelSid' => $channelSid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Users/' . \rawurlencode($userSid)
-        .'/Channels/' . \rawurlencode($channelSid)
-        .'';
-    }
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Users/' . \rawurlencode($userSid)
+		. '/Channels/' . \rawurlencode($channelSid)
+		. '';
+	}
 
-    /**
-     * Delete the UserChannelInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.IpMessaging.V2.UserChannelContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the UserChannelInstance
-     *
-     * @return UserChannelInstance Fetched UserChannelInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): UserChannelInstance
-    {
+	/**
+	 * Delete the UserChannelInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new UserChannelInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['userSid'],
-            $this->solution['channelSid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the UserChannelInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UserChannelInstance Fetched UserChannelInstance
+	 */
+	public function fetch() : UserChannelInstance
+	{
 
-    /**
-     * Update the UserChannelInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return UserChannelInstance Updated UserChannelInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): UserChannelInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new UserChannelInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['userSid'],
+			$this->solution['channelSid']
+		);
+	}
 
-        $data = Values::of([
-            'NotificationLevel' =>
-                $options['notificationLevel'],
-            'LastConsumedMessageIndex' =>
-                $options['lastConsumedMessageIndex'],
-            'LastConsumptionTimestamp' =>
-                Serialize::iso8601DateTime($options['lastConsumptionTimestamp']),
-        ]);
+	/**
+	 * Update the UserChannelInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UserChannelInstance Updated UserChannelInstance
+	 */
+	public function update(array $options = []) : UserChannelInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new UserChannelInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['userSid'],
-            $this->solution['channelSid']
-        );
-    }
+		$data = Values::of([
+			'NotificationLevel' => $options['notificationLevel'],
+			'LastConsumedMessageIndex' => $options['lastConsumedMessageIndex'],
+			'LastConsumptionTimestamp' => Serialize::iso8601DateTime($options['lastConsumptionTimestamp']),
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.IpMessaging.V2.UserChannelContext ' . \implode(' ', $context) . ']';
-    }
+		return new UserChannelInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['userSid'],
+			$this->solution['channelSid']
+		);
+	}
 }

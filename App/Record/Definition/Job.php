@@ -19,20 +19,29 @@ abstract class Job extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'date' => ['date', 'string', 10, false, ],
-		'description' => ['text', 'string', 65535, true, ],
-		'jobEventId' => ['int', 'int', 0, true, ],
-		'jobId' => ['int', 'int', 0, false, ],
-		'location' => ['char(100)', 'string', 100, true, ],
-		'organizer' => ['int', 'int', 0, true, ],
-		'title' => ['char(100)', 'string', 100, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['jobId', ];
 
 	protected static string $table = 'job';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'date' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'description' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'jobEventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'jobId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'location' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
+				'organizer' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

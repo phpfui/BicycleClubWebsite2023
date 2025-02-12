@@ -22,174 +22,168 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class ChannelSenderList extends ListResource
-    {
-    /**
-     * Construct the ChannelSenderList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $messagingServiceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the resource under.
-     */
-    public function __construct(
-        Version $version,
-        string $messagingServiceSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the ChannelSenderList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $messagingServiceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the resource under.
+	 */
+	public function __construct(
+		Version $version,
+		string $messagingServiceSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'messagingServiceSid' =>
-            $messagingServiceSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'messagingServiceSid' => $messagingServiceSid,
 
-        $this->uri = '/Services/' . \rawurlencode($messagingServiceSid)
-        .'/ChannelSenders';
-    }
+		];
 
-    /**
-     * Create the ChannelSenderInstance
-     *
-     * @param string $sid The SID of the Channel Sender being added to the Service.
-     * @return ChannelSenderInstance Created ChannelSenderInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $sid): ChannelSenderInstance
-    {
+		$this->uri = '/Services/' . \rawurlencode($messagingServiceSid)
+		. '/ChannelSenders';
+	}
 
-        $data = Values::of([
-            'Sid' =>
-                $sid,
-        ]);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Messaging.V1.ChannelSenderList]';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Create the ChannelSenderInstance
+	 *
+	 * @param string $sid The SID of the Channel Sender being added to the Service.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ChannelSenderInstance Created ChannelSenderInstance
+	 */
+	public function create(string $sid) : ChannelSenderInstance
+	{
 
-        return new ChannelSenderInstance(
-            $this->version,
-            $payload,
-            $this->solution['messagingServiceSid']
-        );
-    }
+		$data = Values::of([
+			'Sid' => $sid,
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Reads ChannelSenderInstance records from the API as a list.
-     * Unlike stream(), this operation is eager and will load `limit` records into
-     * memory before returning.
-     *
-     * @param int $limit Upper limit for the number of records to return. read()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, read()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return ChannelSenderInstance[] Array of results
-     */
-    public function read(?int $limit = null, $pageSize = null): array
-    {
-        return \iterator_to_array($this->stream($limit, $pageSize), false);
-    }
+		return new ChannelSenderInstance(
+			$this->version,
+			$payload,
+			$this->solution['messagingServiceSid']
+		);
+	}
 
-    /**
-     * Streams ChannelSenderInstance records from the API as a generator stream.
-     * This operation lazily loads records as efficiently as possible until the
-     * limit
-     * is reached.
-     * The results are returned as a generator, so this operation is memory
-     * efficient.
-     *
-     * @param int $limit Upper limit for the number of records to return. stream()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, stream()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return Stream stream of results
-     */
-    public function stream(?int $limit = null, $pageSize = null): Stream
-    {
-        $limits = $this->version->readLimits($limit, $pageSize);
+	/**
+	 * Constructs a ChannelSenderContext
+	 *
+	 * @param string $sid The SID of the Channel Sender resource to delete.
+	 */
+	public function getContext(
+		string $sid
+	) : ChannelSenderContext
+	{
+		return new ChannelSenderContext(
+			$this->version,
+			$this->solution['messagingServiceSid'],
+			$sid
+		);
+	}
 
-        $page = $this->page($limits['pageSize']);
+	/**
+	 * Retrieve a specific page of ChannelSenderInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param string $targetUrl API-generated URL for the requested results page
+	 * @return ChannelSenderPage Page of ChannelSenderInstance
+	 */
+	public function getPage(string $targetUrl) : ChannelSenderPage
+	{
+		$response = $this->version->getDomain()->getClient()->request(
+			'GET',
+			$targetUrl
+		);
 
-        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-    }
+		return new ChannelSenderPage($this->version, $response, $this->solution);
+	}
 
-    /**
-     * Retrieve a single page of ChannelSenderInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param mixed $pageSize Number of records to return, defaults to 50
-     * @param string $pageToken PageToken provided by the API
-     * @param mixed $pageNumber Page Number, this value is simply for client state
-     * @return ChannelSenderPage Page of ChannelSenderInstance
-     */
-    public function page(
-        $pageSize = Values::NONE,
-        string $pageToken = Values::NONE,
-        $pageNumber = Values::NONE
-    ): ChannelSenderPage
-    {
+	/**
+	 * Retrieve a single page of ChannelSenderInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param mixed $pageSize Number of records to return, defaults to 50
+	 * @param string $pageToken PageToken provided by the API
+	 * @param mixed $pageNumber Page Number, this value is simply for client state
+	 * @return ChannelSenderPage Page of ChannelSenderInstance
+	 */
+	public function page(
+		$pageSize = Values::NONE,
+		string $pageToken = Values::NONE,
+		$pageNumber = Values::NONE
+	) : ChannelSenderPage
+	{
 
-        $params = Values::of([
-            'PageToken' => $pageToken,
-            'Page' => $pageNumber,
-            'PageSize' => $pageSize,
-        ]);
+		$params = Values::of([
+			'PageToken' => $pageToken,
+			'Page' => $pageNumber,
+			'PageSize' => $pageSize,
+		]);
 
-        $response = $this->version->page('GET', $this->uri, $params);
+		$response = $this->version->page('GET', $this->uri, $params);
 
-        return new ChannelSenderPage($this->version, $response, $this->solution);
-    }
+		return new ChannelSenderPage($this->version, $response, $this->solution);
+	}
 
-    /**
-     * Retrieve a specific page of ChannelSenderInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param string $targetUrl API-generated URL for the requested results page
-     * @return ChannelSenderPage Page of ChannelSenderInstance
-     */
-    public function getPage(string $targetUrl): ChannelSenderPage
-    {
-        $response = $this->version->getDomain()->getClient()->request(
-            'GET',
-            $targetUrl
-        );
+	/**
+	 * Reads ChannelSenderInstance records from the API as a list.
+	 * Unlike stream(), this operation is eager and will load `limit` records into
+	 * memory before returning.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. read()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, read()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return ChannelSenderInstance[] Array of results
+	 */
+	public function read(?int $limit = null, $pageSize = null) : array
+	{
+		return \iterator_to_array($this->stream($limit, $pageSize), false);
+	}
 
-        return new ChannelSenderPage($this->version, $response, $this->solution);
-    }
+	/**
+	 * Streams ChannelSenderInstance records from the API as a generator stream.
+	 * This operation lazily loads records as efficiently as possible until the
+	 * limit
+	 * is reached.
+	 * The results are returned as a generator, so this operation is memory
+	 * efficient.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. stream()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, stream()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return Stream stream of results
+	 */
+	public function stream(?int $limit = null, $pageSize = null) : Stream
+	{
+		$limits = $this->version->readLimits($limit, $pageSize);
 
+		$page = $this->page($limits['pageSize']);
 
-    /**
-     * Constructs a ChannelSenderContext
-     *
-     * @param string $sid The SID of the Channel Sender resource to delete.
-     */
-    public function getContext(
-        string $sid
-        
-    ): ChannelSenderContext
-    {
-        return new ChannelSenderContext(
-            $this->version,
-            $this->solution['messagingServiceSid'],
-            $sid
-        );
-    }
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Messaging.V1.ChannelSenderList]';
-    }
+		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+	}
 }

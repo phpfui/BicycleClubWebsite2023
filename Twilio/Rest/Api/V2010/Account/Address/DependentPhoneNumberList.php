@@ -21,137 +21,133 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class DependentPhoneNumberList extends ListResource
-    {
-    /**
-     * Construct the DependentPhoneNumberList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the DependentPhoneNumber resources to read.
-     * @param string $addressSid The SID of the Address resource associated with the phone number.
-     */
-    public function __construct(
-        Version $version,
-        string $accountSid,
-        string $addressSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the DependentPhoneNumberList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the DependentPhoneNumber resources to read.
+	 * @param string $addressSid The SID of the Address resource associated with the phone number.
+	 */
+	public function __construct(
+		Version $version,
+		string $accountSid,
+		string $addressSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        
-        'addressSid' =>
-            $addressSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Addresses/' . \rawurlencode($addressSid)
-        .'/DependentPhoneNumbers.json';
-    }
+			'addressSid' => $addressSid,
 
-    /**
-     * Reads DependentPhoneNumberInstance records from the API as a list.
-     * Unlike stream(), this operation is eager and will load `limit` records into
-     * memory before returning.
-     *
-     * @param int $limit Upper limit for the number of records to return. read()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, read()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return DependentPhoneNumberInstance[] Array of results
-     */
-    public function read(?int $limit = null, $pageSize = null): array
-    {
-        return \iterator_to_array($this->stream($limit, $pageSize), false);
-    }
+		];
 
-    /**
-     * Streams DependentPhoneNumberInstance records from the API as a generator stream.
-     * This operation lazily loads records as efficiently as possible until the
-     * limit
-     * is reached.
-     * The results are returned as a generator, so this operation is memory
-     * efficient.
-     *
-     * @param int $limit Upper limit for the number of records to return. stream()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, stream()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return Stream stream of results
-     */
-    public function stream(?int $limit = null, $pageSize = null): Stream
-    {
-        $limits = $this->version->readLimits($limit, $pageSize);
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Addresses/' . \rawurlencode($addressSid)
+		. '/DependentPhoneNumbers.json';
+	}
 
-        $page = $this->page($limits['pageSize']);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Api.V2010.DependentPhoneNumberList]';
+	}
 
-        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-    }
+	/**
+	 * Retrieve a specific page of DependentPhoneNumberInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param string $targetUrl API-generated URL for the requested results page
+	 * @return DependentPhoneNumberPage Page of DependentPhoneNumberInstance
+	 */
+	public function getPage(string $targetUrl) : DependentPhoneNumberPage
+	{
+		$response = $this->version->getDomain()->getClient()->request(
+			'GET',
+			$targetUrl
+		);
 
-    /**
-     * Retrieve a single page of DependentPhoneNumberInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param mixed $pageSize Number of records to return, defaults to 50
-     * @param string $pageToken PageToken provided by the API
-     * @param mixed $pageNumber Page Number, this value is simply for client state
-     * @return DependentPhoneNumberPage Page of DependentPhoneNumberInstance
-     */
-    public function page(
-        $pageSize = Values::NONE,
-        string $pageToken = Values::NONE,
-        $pageNumber = Values::NONE
-    ): DependentPhoneNumberPage
-    {
+		return new DependentPhoneNumberPage($this->version, $response, $this->solution);
+	}
 
-        $params = Values::of([
-            'PageToken' => $pageToken,
-            'Page' => $pageNumber,
-            'PageSize' => $pageSize,
-        ]);
+	/**
+	 * Retrieve a single page of DependentPhoneNumberInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param mixed $pageSize Number of records to return, defaults to 50
+	 * @param string $pageToken PageToken provided by the API
+	 * @param mixed $pageNumber Page Number, this value is simply for client state
+	 * @return DependentPhoneNumberPage Page of DependentPhoneNumberInstance
+	 */
+	public function page(
+		$pageSize = Values::NONE,
+		string $pageToken = Values::NONE,
+		$pageNumber = Values::NONE
+	) : DependentPhoneNumberPage
+	{
 
-        $response = $this->version->page('GET', $this->uri, $params);
+		$params = Values::of([
+			'PageToken' => $pageToken,
+			'Page' => $pageNumber,
+			'PageSize' => $pageSize,
+		]);
 
-        return new DependentPhoneNumberPage($this->version, $response, $this->solution);
-    }
+		$response = $this->version->page('GET', $this->uri, $params);
 
-    /**
-     * Retrieve a specific page of DependentPhoneNumberInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param string $targetUrl API-generated URL for the requested results page
-     * @return DependentPhoneNumberPage Page of DependentPhoneNumberInstance
-     */
-    public function getPage(string $targetUrl): DependentPhoneNumberPage
-    {
-        $response = $this->version->getDomain()->getClient()->request(
-            'GET',
-            $targetUrl
-        );
+		return new DependentPhoneNumberPage($this->version, $response, $this->solution);
+	}
 
-        return new DependentPhoneNumberPage($this->version, $response, $this->solution);
-    }
+	/**
+	 * Reads DependentPhoneNumberInstance records from the API as a list.
+	 * Unlike stream(), this operation is eager and will load `limit` records into
+	 * memory before returning.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. read()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, read()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return DependentPhoneNumberInstance[] Array of results
+	 */
+	public function read(?int $limit = null, $pageSize = null) : array
+	{
+		return \iterator_to_array($this->stream($limit, $pageSize), false);
+	}
 
+	/**
+	 * Streams DependentPhoneNumberInstance records from the API as a generator stream.
+	 * This operation lazily loads records as efficiently as possible until the
+	 * limit
+	 * is reached.
+	 * The results are returned as a generator, so this operation is memory
+	 * efficient.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. stream()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, stream()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return Stream stream of results
+	 */
+	public function stream(?int $limit = null, $pageSize = null) : Stream
+	{
+		$limits = $this->version->readLimits($limit, $pageSize);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Api.V2010.DependentPhoneNumberList]';
-    }
+		$page = $this->page($limits['pageSize']);
+
+		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+	}
 }

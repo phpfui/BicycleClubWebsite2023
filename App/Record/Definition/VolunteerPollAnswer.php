@@ -15,16 +15,25 @@ abstract class VolunteerPollAnswer extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'answer' => ['varchar(100)', 'string', 100, true, '', ],
-		'volunteerPollAnswerId' => ['int', 'int', 0, false, ],
-		'volunteerPollId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['volunteerPollAnswerId', ];
 
 	protected static string $table = 'volunteerPollAnswer';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'answer' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, '', ),
+				'volunteerPollAnswerId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'volunteerPollId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

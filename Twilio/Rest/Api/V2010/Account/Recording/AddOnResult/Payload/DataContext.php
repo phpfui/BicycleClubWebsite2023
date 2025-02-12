@@ -14,88 +14,83 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account\Recording\AddOnResult\Payload;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class DataContext extends InstanceContext
-    {
-    /**
-     * Initialize the DataContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Recording AddOnResult Payload resource to fetch.
-     * @param string $referenceSid The SID of the recording to which the AddOnResult resource that contains the payload to fetch belongs.
-     * @param string $addOnResultSid The SID of the AddOnResult to which the payload to fetch belongs.
-     * @param string $payloadSid The Twilio-provided string that uniquely identifies the Recording AddOnResult Payload resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $accountSid,
-        $referenceSid,
-        $addOnResultSid,
-        $payloadSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the DataContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Recording AddOnResult Payload resource to fetch.
+	 * @param string $referenceSid The SID of the recording to which the AddOnResult resource that contains the payload to fetch belongs.
+	 * @param string $addOnResultSid The SID of the AddOnResult to which the payload to fetch belongs.
+	 * @param string $payloadSid The Twilio-provided string that uniquely identifies the Recording AddOnResult Payload resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$accountSid,
+		$referenceSid,
+		$addOnResultSid,
+		$payloadSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        'referenceSid' =>
-            $referenceSid,
-        'addOnResultSid' =>
-            $addOnResultSid,
-        'payloadSid' =>
-            $payloadSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
+			'referenceSid' => $referenceSid,
+			'addOnResultSid' => $addOnResultSid,
+			'payloadSid' => $payloadSid,
+		];
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Recordings/' . \rawurlencode($referenceSid)
-        .'/AddOnResults/' . \rawurlencode($addOnResultSid)
-        .'/Payloads/' . \rawurlencode($payloadSid)
-        .'/Data.json';
-    }
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Recordings/' . \rawurlencode($referenceSid)
+		. '/AddOnResults/' . \rawurlencode($addOnResultSid)
+		. '/Payloads/' . \rawurlencode($payloadSid)
+		. '/Data.json';
+	}
 
-    /**
-     * Fetch the DataInstance
-     *
-     * @return DataInstance Fetched DataInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): DataInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new DataInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['referenceSid'],
-            $this->solution['addOnResultSid'],
-            $this->solution['payloadSid']
-        );
-    }
+		return '[Twilio.Api.V2010.DataContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the DataInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DataInstance Fetched DataInstance
+	 */
+	public function fetch() : DataInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.DataContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new DataInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['referenceSid'],
+			$this->solution['addOnResultSid'],
+			$this->solution['payloadSid']
+		);
+	}
 }

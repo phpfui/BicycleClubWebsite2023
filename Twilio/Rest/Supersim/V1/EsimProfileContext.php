@@ -14,70 +14,68 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Supersim\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class EsimProfileContext extends InstanceContext
-    {
-    /**
-     * Initialize the EsimProfileContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The SID of the eSIM Profile resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the EsimProfileContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The SID of the eSIM Profile resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/ESimProfiles/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/ESimProfiles/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the EsimProfileInstance
-     *
-     * @return EsimProfileInstance Fetched EsimProfileInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): EsimProfileInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new EsimProfileInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Supersim.V1.EsimProfileContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the EsimProfileInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return EsimProfileInstance Fetched EsimProfileInstance
+	 */
+	public function fetch() : EsimProfileInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Supersim.V1.EsimProfileContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new EsimProfileInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

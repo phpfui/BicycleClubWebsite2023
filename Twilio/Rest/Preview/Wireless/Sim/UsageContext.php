@@ -14,81 +14,77 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Preview\Wireless\Sim;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class UsageContext extends InstanceContext
-    {
-    /**
-     * Initialize the UsageContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $simSid 
-     */
-    public function __construct(
-        Version $version,
-        $simSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the UsageContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $simSid
+	 */
+	public function __construct(
+		Version $version,
+		$simSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'simSid' =>
-            $simSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'simSid' => $simSid,
+		];
 
-        $this->uri = '/Sims/' . \rawurlencode($simSid)
-        .'/Usage';
-    }
+		$this->uri = '/Sims/' . \rawurlencode($simSid)
+		. '/Usage';
+	}
 
-    /**
-     * Fetch the UsageInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return UsageInstance Fetched UsageInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(array $options = []): UsageInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $params = Values::of([
-            'End' =>
-                $options['end'],
-            'Start' =>
-                $options['start'],
-        ]);
+		return '[Twilio.Preview.Wireless.UsageContext ' . \implode(' ', $context) . ']';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+	/**
+	 * Fetch the UsageInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UsageInstance Fetched UsageInstance
+	 */
+	public function fetch(array $options = []) : UsageInstance
+	{
 
-        return new UsageInstance(
-            $this->version,
-            $payload,
-            $this->solution['simSid']
-        );
-    }
+		$options = new Values($options);
 
+		$params = Values::of([
+			'End' => $options['end'],
+			'Start' => $options['start'],
+		]);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Preview.Wireless.UsageContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+
+		return new UsageInstance(
+			$this->version,
+			$payload,
+			$this->solution['simSid']
+		);
+	}
 }

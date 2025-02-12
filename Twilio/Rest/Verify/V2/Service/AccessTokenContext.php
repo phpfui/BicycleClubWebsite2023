@@ -14,76 +14,73 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Verify\V2\Service;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class AccessTokenContext extends InstanceContext
-    {
-    /**
-     * Initialize the AccessTokenContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The unique SID identifier of the Service.
-     * @param string $sid A 34 character string that uniquely identifies this Access Token.
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the AccessTokenContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The unique SID identifier of the Service.
+	 * @param string $sid A 34 character string that uniquely identifies this Access Token.
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/AccessTokens/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/AccessTokens/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the AccessTokenInstance
-     *
-     * @return AccessTokenInstance Fetched AccessTokenInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): AccessTokenInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new AccessTokenInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Verify.V2.AccessTokenContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the AccessTokenInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AccessTokenInstance Fetched AccessTokenInstance
+	 */
+	public function fetch() : AccessTokenInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Verify.V2.AccessTokenContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new AccessTokenInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['sid']
+		);
+	}
 }

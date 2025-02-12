@@ -22,81 +22,76 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class ModuleDataList extends ListResource
-    {
-    /**
-     * Construct the ModuleDataList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the ModuleDataList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/Listings';
-    }
+		$this->uri = '/Listings';
+	}
 
-    /**
-     * Create the ModuleDataInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ModuleDataInstance Created ModuleDataInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(array $options = []): ModuleDataInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Marketplace.V1.ModuleDataList]';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Create the ModuleDataInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ModuleDataInstance Created ModuleDataInstance
+	 */
+	public function create(array $options = []) : ModuleDataInstance
+	{
 
-        $data = Values::of([
-            'ModuleInfo' =>
-                $options['moduleInfo'],
-            'Configuration' =>
-                $options['configuration'],
-        ]);
+		$options = new Values($options);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$data = Values::of([
+			'ModuleInfo' => $options['moduleInfo'],
+			'Configuration' => $options['configuration'],
+		]);
 
-        return new ModuleDataInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
+		return new ModuleDataInstance(
+			$this->version,
+			$payload
+		);
+	}
 
-    /**
-     * Fetch the ModuleDataInstance
-     *
-     * @return ModuleDataInstance Fetched ModuleDataInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ModuleDataInstance
-    {
+	/**
+	 * Fetch the ModuleDataInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ModuleDataInstance Fetched ModuleDataInstance
+	 */
+	public function fetch() : ModuleDataInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        return new ModuleDataInstance(
-            $this->version,
-            $payload
-        );
-    }
-
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Marketplace.V1.ModuleDataList]';
-    }
+		return new ModuleDataInstance(
+			$this->version,
+			$payload
+		);
+	}
 }

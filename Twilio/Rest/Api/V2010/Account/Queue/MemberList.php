@@ -21,155 +21,150 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class MemberList extends ListResource
-    {
-    /**
-     * Construct the MemberList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Member resource(s) to fetch.
-     * @param string $queueSid The SID of the Queue in which to find the members to fetch.
-     */
-    public function __construct(
-        Version $version,
-        string $accountSid,
-        string $queueSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the MemberList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Member resource(s) to fetch.
+	 * @param string $queueSid The SID of the Queue in which to find the members to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		string $accountSid,
+		string $queueSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        
-        'queueSid' =>
-            $queueSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Queues/' . \rawurlencode($queueSid)
-        .'/Members.json';
-    }
+			'queueSid' => $queueSid,
 
-    /**
-     * Reads MemberInstance records from the API as a list.
-     * Unlike stream(), this operation is eager and will load `limit` records into
-     * memory before returning.
-     *
-     * @param int $limit Upper limit for the number of records to return. read()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, read()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return MemberInstance[] Array of results
-     */
-    public function read(?int $limit = null, $pageSize = null): array
-    {
-        return \iterator_to_array($this->stream($limit, $pageSize), false);
-    }
+		];
 
-    /**
-     * Streams MemberInstance records from the API as a generator stream.
-     * This operation lazily loads records as efficiently as possible until the
-     * limit
-     * is reached.
-     * The results are returned as a generator, so this operation is memory
-     * efficient.
-     *
-     * @param int $limit Upper limit for the number of records to return. stream()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, stream()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return Stream stream of results
-     */
-    public function stream(?int $limit = null, $pageSize = null): Stream
-    {
-        $limits = $this->version->readLimits($limit, $pageSize);
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Queues/' . \rawurlencode($queueSid)
+		. '/Members.json';
+	}
 
-        $page = $this->page($limits['pageSize']);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Api.V2010.MemberList]';
+	}
 
-        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-    }
+	/**
+	 * Constructs a MemberContext
+	 *
+	 * @param string $callSid The [Call](https://www.twilio.com/docs/voice/api/call-resource) SID of the resource(s) to fetch.
+	 */
+	public function getContext(
+		string $callSid
+	) : MemberContext
+	{
+		return new MemberContext(
+			$this->version,
+			$this->solution['accountSid'],
+			$this->solution['queueSid'],
+			$callSid
+		);
+	}
 
-    /**
-     * Retrieve a single page of MemberInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param mixed $pageSize Number of records to return, defaults to 50
-     * @param string $pageToken PageToken provided by the API
-     * @param mixed $pageNumber Page Number, this value is simply for client state
-     * @return MemberPage Page of MemberInstance
-     */
-    public function page(
-        $pageSize = Values::NONE,
-        string $pageToken = Values::NONE,
-        $pageNumber = Values::NONE
-    ): MemberPage
-    {
+	/**
+	 * Retrieve a specific page of MemberInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param string $targetUrl API-generated URL for the requested results page
+	 * @return MemberPage Page of MemberInstance
+	 */
+	public function getPage(string $targetUrl) : MemberPage
+	{
+		$response = $this->version->getDomain()->getClient()->request(
+			'GET',
+			$targetUrl
+		);
 
-        $params = Values::of([
-            'PageToken' => $pageToken,
-            'Page' => $pageNumber,
-            'PageSize' => $pageSize,
-        ]);
+		return new MemberPage($this->version, $response, $this->solution);
+	}
 
-        $response = $this->version->page('GET', $this->uri, $params);
+	/**
+	 * Retrieve a single page of MemberInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param mixed $pageSize Number of records to return, defaults to 50
+	 * @param string $pageToken PageToken provided by the API
+	 * @param mixed $pageNumber Page Number, this value is simply for client state
+	 * @return MemberPage Page of MemberInstance
+	 */
+	public function page(
+		$pageSize = Values::NONE,
+		string $pageToken = Values::NONE,
+		$pageNumber = Values::NONE
+	) : MemberPage
+	{
 
-        return new MemberPage($this->version, $response, $this->solution);
-    }
+		$params = Values::of([
+			'PageToken' => $pageToken,
+			'Page' => $pageNumber,
+			'PageSize' => $pageSize,
+		]);
 
-    /**
-     * Retrieve a specific page of MemberInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param string $targetUrl API-generated URL for the requested results page
-     * @return MemberPage Page of MemberInstance
-     */
-    public function getPage(string $targetUrl): MemberPage
-    {
-        $response = $this->version->getDomain()->getClient()->request(
-            'GET',
-            $targetUrl
-        );
+		$response = $this->version->page('GET', $this->uri, $params);
 
-        return new MemberPage($this->version, $response, $this->solution);
-    }
+		return new MemberPage($this->version, $response, $this->solution);
+	}
 
+	/**
+	 * Reads MemberInstance records from the API as a list.
+	 * Unlike stream(), this operation is eager and will load `limit` records into
+	 * memory before returning.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. read()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, read()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return MemberInstance[] Array of results
+	 */
+	public function read(?int $limit = null, $pageSize = null) : array
+	{
+		return \iterator_to_array($this->stream($limit, $pageSize), false);
+	}
 
-    /**
-     * Constructs a MemberContext
-     *
-     * @param string $callSid The [Call](https://www.twilio.com/docs/voice/api/call-resource) SID of the resource(s) to fetch.
-     */
-    public function getContext(
-        string $callSid
-        
-    ): MemberContext
-    {
-        return new MemberContext(
-            $this->version,
-            $this->solution['accountSid'],
-            $this->solution['queueSid'],
-            $callSid
-        );
-    }
+	/**
+	 * Streams MemberInstance records from the API as a generator stream.
+	 * This operation lazily loads records as efficiently as possible until the
+	 * limit
+	 * is reached.
+	 * The results are returned as a generator, so this operation is memory
+	 * efficient.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. stream()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, stream()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return Stream stream of results
+	 */
+	public function stream(?int $limit = null, $pageSize = null) : Stream
+	{
+		$limits = $this->version->readLimits($limit, $pageSize);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Api.V2010.MemberList]';
-    }
+		$page = $this->page($limits['pageSize']);
+
+		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+	}
 }

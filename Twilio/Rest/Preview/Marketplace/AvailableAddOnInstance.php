@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Preview\Marketplace;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Rest\Preview\Marketplace\AvailableAddOn\AvailableAddOnExtensionList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Rest\Preview\Marketplace\AvailableAddOn\AvailableAddOnExtensionList;
-
 
 /**
  * @property string|null $sid
@@ -35,104 +33,106 @@ use Twilio\Rest\Preview\Marketplace\AvailableAddOn\AvailableAddOnExtensionList;
  */
 class AvailableAddOnInstance extends InstanceResource
 {
-    protected $_extensions;
+	protected $_extensions;
 
-    /**
-     * Initialize the AvailableAddOnInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $sid The SID of the AvailableAddOn resource to fetch.
-     */
-    public function __construct(Version $version, array $payload, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the AvailableAddOnInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $sid The SID of the AvailableAddOn resource to fetch.
+	 */
+	public function __construct(Version $version, array $payload, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'description' => Values::array_get($payload, 'description'),
-            'pricingType' => Values::array_get($payload, 'pricing_type'),
-            'configurationSchema' => Values::array_get($payload, 'configuration_schema'),
-            'url' => Values::array_get($payload, 'url'),
-            'links' => Values::array_get($payload, 'links'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'description' => Values::array_get($payload, 'description'),
+			'pricingType' => Values::array_get($payload, 'pricing_type'),
+			'configurationSchema' => Values::array_get($payload, 'configuration_schema'),
+			'url' => Values::array_get($payload, 'url'),
+			'links' => Values::array_get($payload, 'links'),
+		];
 
-        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return AvailableAddOnContext Context for this AvailableAddOnInstance
-     */
-    protected function proxy(): AvailableAddOnContext
-    {
-        if (!$this->context) {
-            $this->context = new AvailableAddOnContext(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the AvailableAddOnInstance
-     *
-     * @return AvailableAddOnInstance Fetched AvailableAddOnInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): AvailableAddOnInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Access the extensions
-     */
-    protected function getExtensions(): AvailableAddOnExtensionList
-    {
-        return $this->proxy()->extensions;
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return '[Twilio.Preview.Marketplace.AvailableAddOnInstance ' . \implode(' ', $context) . ']';
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Fetch the AvailableAddOnInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AvailableAddOnInstance Fetched AvailableAddOnInstance
+	 */
+	public function fetch() : AvailableAddOnInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Preview.Marketplace.AvailableAddOnInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Access the extensions
+	 */
+	protected function getExtensions() : AvailableAddOnExtensionList
+	{
+		return $this->proxy()->extensions;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return AvailableAddOnContext Context for this AvailableAddOnInstance
+	 */
+	protected function proxy() : AvailableAddOnContext
+	{
+		if (! $this->context) {
+			$this->context = new AvailableAddOnContext(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

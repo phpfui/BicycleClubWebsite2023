@@ -14,21 +14,19 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Sync\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Rest\Sync\V1\Service\DocumentList;
+use Twilio\Rest\Sync\V1\Service\SyncListList;
+use Twilio\Rest\Sync\V1\Service\SyncMapList;
+use Twilio\Rest\Sync\V1\Service\SyncStreamList;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-use Twilio\Rest\Sync\V1\Service\SyncListList;
-use Twilio\Rest\Sync\V1\Service\SyncStreamList;
-use Twilio\Rest\Sync\V1\Service\DocumentList;
-use Twilio\Rest\Sync\V1\Service\SyncMapList;
-
 
 /**
  * @property SyncListList $syncLists
@@ -41,214 +39,211 @@ use Twilio\Rest\Sync\V1\Service\SyncMapList;
  * @method \Twilio\Rest\Sync\V1\Service\DocumentContext documents(string $sid)
  */
 class ServiceContext extends InstanceContext
-    {
-    protected $_syncLists;
-    protected $_syncStreams;
-    protected $_documents;
-    protected $_syncMaps;
+	{
+	protected $_documents;
 
-    /**
-     * Initialize the ServiceContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The SID of the Service resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	protected $_syncLists;
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+	protected $_syncMaps;
 
-        $this->uri = '/Services/' . \rawurlencode($sid)
-        .'';
-    }
+	protected $_syncStreams;
 
-    /**
-     * Delete the ServiceInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Initialize the ServiceContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The SID of the Service resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
+		$this->uri = '/Services/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the ServiceInstance
-     *
-     * @return ServiceInstance Fetched ServiceInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ServiceInstance
-    {
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
-        return new ServiceInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		throw new TwilioException('Resource does not have a context');
+	}
 
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Update the ServiceInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ServiceInstance Updated ServiceInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): ServiceInstance
-    {
+			return $this->{$method}();
+		}
 
-        $options = new Values($options);
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
-        $data = Values::of([
-            'WebhookUrl' =>
-                $options['webhookUrl'],
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'ReachabilityWebhooksEnabled' =>
-                Serialize::booleanToString($options['reachabilityWebhooksEnabled']),
-            'AclEnabled' =>
-                Serialize::booleanToString($options['aclEnabled']),
-            'ReachabilityDebouncingEnabled' =>
-                Serialize::booleanToString($options['reachabilityDebouncingEnabled']),
-            'ReachabilityDebouncingWindow' =>
-                $options['reachabilityDebouncingWindow'],
-            'WebhooksFromRestEnabled' =>
-                Serialize::booleanToString($options['webhooksFromRestEnabled']),
-        ]);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new ServiceInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Sync.V1.ServiceContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Delete the ServiceInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Access the syncLists
-     */
-    protected function getSyncLists(): SyncListList
-    {
-        if (!$this->_syncLists) {
-            $this->_syncLists = new SyncListList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return $this->_syncLists;
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
-    /**
-     * Access the syncStreams
-     */
-    protected function getSyncStreams(): SyncStreamList
-    {
-        if (!$this->_syncStreams) {
-            $this->_syncStreams = new SyncStreamList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Fetch the ServiceInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ServiceInstance Fetched ServiceInstance
+	 */
+	public function fetch() : ServiceInstance
+	{
 
-        return $this->_syncStreams;
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-    /**
-     * Access the documents
-     */
-    protected function getDocuments(): DocumentList
-    {
-        if (!$this->_documents) {
-            $this->_documents = new DocumentList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		return new ServiceInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        return $this->_documents;
-    }
+	/**
+	 * Update the ServiceInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ServiceInstance Updated ServiceInstance
+	 */
+	public function update(array $options = []) : ServiceInstance
+	{
 
-    /**
-     * Access the syncMaps
-     */
-    protected function getSyncMaps(): SyncMapList
-    {
-        if (!$this->_syncMaps) {
-            $this->_syncMaps = new SyncMapList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		$options = new Values($options);
 
-        return $this->_syncMaps;
-    }
+		$data = Values::of([
+			'WebhookUrl' => $options['webhookUrl'],
+			'FriendlyName' => $options['friendlyName'],
+			'ReachabilityWebhooksEnabled' => Serialize::booleanToString($options['reachabilityWebhooksEnabled']),
+			'AclEnabled' => Serialize::booleanToString($options['aclEnabled']),
+			'ReachabilityDebouncingEnabled' => Serialize::booleanToString($options['reachabilityDebouncingEnabled']),
+			'ReachabilityDebouncingWindow' => $options['reachabilityDebouncingWindow'],
+			'WebhooksFromRestEnabled' => Serialize::booleanToString($options['webhooksFromRestEnabled']),
+		]);
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		return new ServiceInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+	/**
+	 * Access the documents
+	 */
+	protected function getDocuments() : DocumentList
+	{
+		if (! $this->_documents) {
+			$this->_documents = new DocumentList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
 
-        throw new TwilioException('Resource does not have a context');
-    }
+		return $this->_documents;
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Sync.V1.ServiceContext ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Access the syncLists
+	 */
+	protected function getSyncLists() : SyncListList
+	{
+		if (! $this->_syncLists) {
+			$this->_syncLists = new SyncListList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_syncLists;
+	}
+
+	/**
+	 * Access the syncMaps
+	 */
+	protected function getSyncMaps() : SyncMapList
+	{
+		if (! $this->_syncMaps) {
+			$this->_syncMaps = new SyncMapList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_syncMaps;
+	}
+
+	/**
+	 * Access the syncStreams
+	 */
+	protected function getSyncStreams() : SyncStreamList
+	{
+		if (! $this->_syncStreams) {
+			$this->_syncStreams = new SyncStreamList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_syncStreams;
+	}
 }

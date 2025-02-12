@@ -16,17 +16,26 @@ abstract class MailAttachment extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'fileName' => ['mediumblob', 'string', 0, true, ],
-		'mailAttachmentId' => ['int', 'int', 0, false, ],
-		'mailItemId' => ['int', 'int', 0, false, ],
-		'prettyName' => ['varchar(255)', 'string', 255, true, '', ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['mailAttachmentId', ];
 
 	protected static string $table = 'mailAttachment';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'fileName' => new \PHPFUI\ORM\FieldDefinition('mediumblob', 'string', 0, true, ),
+				'mailAttachmentId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'mailItemId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'prettyName' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, '', ),
+			];
+			}
+
+		return $this;
+		}
 	}

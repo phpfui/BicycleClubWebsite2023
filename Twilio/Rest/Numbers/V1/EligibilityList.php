@@ -21,54 +21,52 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class EligibilityList extends ListResource
-    {
-    /**
-     * Construct the EligibilityList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the EligibilityList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/HostedNumber/Eligibility';
-    }
+		$this->uri = '/HostedNumber/Eligibility';
+	}
 
-    /**
-     * Create the EligibilityInstance
-     *
-     * @return EligibilityInstance Created EligibilityInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(): EligibilityInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Numbers.V1.EligibilityList]';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $data = $body->toArray();
-        $headers['Content-Type'] = 'application/json';
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Create the EligibilityInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return EligibilityInstance Created EligibilityInstance
+	 */
+	public function create() : EligibilityInstance
+	{
 
-        return new EligibilityInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$data = $body->toArray();
+		$headers['Content-Type'] = 'application/json';
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Numbers.V1.EligibilityList]';
-    }
+		return new EligibilityInstance(
+			$this->version,
+			$payload
+		);
+	}
 }

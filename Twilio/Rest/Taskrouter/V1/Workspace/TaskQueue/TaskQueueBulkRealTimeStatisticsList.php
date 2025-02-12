@@ -21,61 +21,58 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class TaskQueueBulkRealTimeStatisticsList extends ListResource
-    {
-    /**
-     * Construct the TaskQueueBulkRealTimeStatisticsList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $workspaceSid The unique SID identifier of the Workspace.
-     */
-    public function __construct(
-        Version $version,
-        string $workspaceSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the TaskQueueBulkRealTimeStatisticsList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $workspaceSid The unique SID identifier of the Workspace.
+	 */
+	public function __construct(
+		Version $version,
+		string $workspaceSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'workspaceSid' =>
-            $workspaceSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'workspaceSid' => $workspaceSid,
 
-        $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
-        .'/TaskQueues/RealTimeStatistics';
-    }
+		];
 
-    /**
-     * Create the TaskQueueBulkRealTimeStatisticsInstance
-     *
-     * @return TaskQueueBulkRealTimeStatisticsInstance Created TaskQueueBulkRealTimeStatisticsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(): TaskQueueBulkRealTimeStatisticsInstance
-    {
+		$this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
+		. '/TaskQueues/RealTimeStatistics';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $data = $body->toArray();
-        $headers['Content-Type'] = 'application/json';
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Taskrouter.V1.TaskQueueBulkRealTimeStatisticsList]';
+	}
 
-        return new TaskQueueBulkRealTimeStatisticsInstance(
-            $this->version,
-            $payload,
-            $this->solution['workspaceSid']
-        );
-    }
+	/**
+	 * Create the TaskQueueBulkRealTimeStatisticsInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TaskQueueBulkRealTimeStatisticsInstance Created TaskQueueBulkRealTimeStatisticsInstance
+	 */
+	public function create() : TaskQueueBulkRealTimeStatisticsInstance
+	{
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$data = $body->toArray();
+		$headers['Content-Type'] = 'application/json';
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Taskrouter.V1.TaskQueueBulkRealTimeStatisticsList]';
-    }
+		return new TaskQueueBulkRealTimeStatisticsInstance(
+			$this->version,
+			$payload,
+			$this->solution['workspaceSid']
+		);
+	}
 }

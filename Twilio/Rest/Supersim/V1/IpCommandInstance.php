@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Supersim\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $sid
@@ -41,100 +39,102 @@ use Twilio\Deserialize;
  */
 class IpCommandInstance extends InstanceResource
 {
-    /**
-     * Initialize the IpCommandInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $sid The SID of the IP Command resource to fetch.
-     */
-    public function __construct(Version $version, array $payload, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the IpCommandInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $sid The SID of the IP Command resource to fetch.
+	 */
+	public function __construct(Version $version, array $payload, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'simSid' => Values::array_get($payload, 'sim_sid'),
-            'simIccid' => Values::array_get($payload, 'sim_iccid'),
-            'status' => Values::array_get($payload, 'status'),
-            'direction' => Values::array_get($payload, 'direction'),
-            'deviceIp' => Values::array_get($payload, 'device_ip'),
-            'devicePort' => Values::array_get($payload, 'device_port'),
-            'payloadType' => Values::array_get($payload, 'payload_type'),
-            'payload' => Values::array_get($payload, 'payload'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'simSid' => Values::array_get($payload, 'sim_sid'),
+			'simIccid' => Values::array_get($payload, 'sim_iccid'),
+			'status' => Values::array_get($payload, 'status'),
+			'direction' => Values::array_get($payload, 'direction'),
+			'deviceIp' => Values::array_get($payload, 'device_ip'),
+			'devicePort' => Values::array_get($payload, 'device_port'),
+			'payloadType' => Values::array_get($payload, 'payload_type'),
+			'payload' => Values::array_get($payload, 'payload'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return IpCommandContext Context for this IpCommandInstance
-     */
-    protected function proxy(): IpCommandContext
-    {
-        if (!$this->context) {
-            $this->context = new IpCommandContext(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the IpCommandInstance
-     *
-     * @return IpCommandInstance Fetched IpCommandInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): IpCommandInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Supersim.V1.IpCommandInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Supersim.V1.IpCommandInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the IpCommandInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return IpCommandInstance Fetched IpCommandInstance
+	 */
+	public function fetch() : IpCommandInstance
+	{
+
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return IpCommandContext Context for this IpCommandInstance
+	 */
+	protected function proxy() : IpCommandContext
+	{
+		if (! $this->context) {
+			$this->context = new IpCommandContext(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

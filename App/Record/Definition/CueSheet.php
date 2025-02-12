@@ -29,27 +29,36 @@ abstract class CueSheet extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'RWGPSId' => ['int', 'int', 0, true, ],
-		'cueSheetId' => ['int', 'int', 0, false, ],
-		'dateAdded' => ['date', 'string', 10, false, ],
-		'description' => ['text', 'string', 65535, true, ],
-		'destination' => ['varchar(100)', 'string', 100, true, ],
-		'elevation' => ['int', 'int', 0, true, ],
-		'memberId' => ['int', 'int', 0, true, ],
-		'mileage' => ['float', 'float', 0, true, 0, ],
-		'name' => ['varchar(100)', 'string', 100, true, ],
-		'pending' => ['int', 'int', 0, false, 1, ],
-		'pointsAwarded' => ['int', 'int', 0, false, 0, ],
-		'revisionDate' => ['date', 'string', 10, true, ],
-		'startLocationId' => ['int', 'int', 0, true, ],
-		'terrainId' => ['int', 'int', 0, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['cueSheetId', ];
 
 	protected static string $table = 'cueSheet';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'RWGPSId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'cueSheetId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'dateAdded' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'description' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'destination' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+				'elevation' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'mileage' => new \PHPFUI\ORM\FieldDefinition('float', 'float', 0, true, 0, ),
+				'name' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+				'pending' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 1, ),
+				'pointsAwarded' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'revisionDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'startLocationId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'terrainId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

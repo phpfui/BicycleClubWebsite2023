@@ -21,137 +21,133 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class EventList extends ListResource
-    {
-    /**
-     * Construct the EventList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The unique SID identifier of the Account.
-     * @param string $callSid The unique SID identifier of the Call.
-     */
-    public function __construct(
-        Version $version,
-        string $accountSid,
-        string $callSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the EventList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The unique SID identifier of the Account.
+	 * @param string $callSid The unique SID identifier of the Call.
+	 */
+	public function __construct(
+		Version $version,
+		string $accountSid,
+		string $callSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        
-        'callSid' =>
-            $callSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Calls/' . \rawurlencode($callSid)
-        .'/Events.json';
-    }
+			'callSid' => $callSid,
 
-    /**
-     * Reads EventInstance records from the API as a list.
-     * Unlike stream(), this operation is eager and will load `limit` records into
-     * memory before returning.
-     *
-     * @param int $limit Upper limit for the number of records to return. read()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, read()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return EventInstance[] Array of results
-     */
-    public function read(?int $limit = null, $pageSize = null): array
-    {
-        return \iterator_to_array($this->stream($limit, $pageSize), false);
-    }
+		];
 
-    /**
-     * Streams EventInstance records from the API as a generator stream.
-     * This operation lazily loads records as efficiently as possible until the
-     * limit
-     * is reached.
-     * The results are returned as a generator, so this operation is memory
-     * efficient.
-     *
-     * @param int $limit Upper limit for the number of records to return. stream()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, stream()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return Stream stream of results
-     */
-    public function stream(?int $limit = null, $pageSize = null): Stream
-    {
-        $limits = $this->version->readLimits($limit, $pageSize);
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Calls/' . \rawurlencode($callSid)
+		. '/Events.json';
+	}
 
-        $page = $this->page($limits['pageSize']);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Api.V2010.EventList]';
+	}
 
-        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-    }
+	/**
+	 * Retrieve a specific page of EventInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param string $targetUrl API-generated URL for the requested results page
+	 * @return EventPage Page of EventInstance
+	 */
+	public function getPage(string $targetUrl) : EventPage
+	{
+		$response = $this->version->getDomain()->getClient()->request(
+			'GET',
+			$targetUrl
+		);
 
-    /**
-     * Retrieve a single page of EventInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param mixed $pageSize Number of records to return, defaults to 50
-     * @param string $pageToken PageToken provided by the API
-     * @param mixed $pageNumber Page Number, this value is simply for client state
-     * @return EventPage Page of EventInstance
-     */
-    public function page(
-        $pageSize = Values::NONE,
-        string $pageToken = Values::NONE,
-        $pageNumber = Values::NONE
-    ): EventPage
-    {
+		return new EventPage($this->version, $response, $this->solution);
+	}
 
-        $params = Values::of([
-            'PageToken' => $pageToken,
-            'Page' => $pageNumber,
-            'PageSize' => $pageSize,
-        ]);
+	/**
+	 * Retrieve a single page of EventInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param mixed $pageSize Number of records to return, defaults to 50
+	 * @param string $pageToken PageToken provided by the API
+	 * @param mixed $pageNumber Page Number, this value is simply for client state
+	 * @return EventPage Page of EventInstance
+	 */
+	public function page(
+		$pageSize = Values::NONE,
+		string $pageToken = Values::NONE,
+		$pageNumber = Values::NONE
+	) : EventPage
+	{
 
-        $response = $this->version->page('GET', $this->uri, $params);
+		$params = Values::of([
+			'PageToken' => $pageToken,
+			'Page' => $pageNumber,
+			'PageSize' => $pageSize,
+		]);
 
-        return new EventPage($this->version, $response, $this->solution);
-    }
+		$response = $this->version->page('GET', $this->uri, $params);
 
-    /**
-     * Retrieve a specific page of EventInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param string $targetUrl API-generated URL for the requested results page
-     * @return EventPage Page of EventInstance
-     */
-    public function getPage(string $targetUrl): EventPage
-    {
-        $response = $this->version->getDomain()->getClient()->request(
-            'GET',
-            $targetUrl
-        );
+		return new EventPage($this->version, $response, $this->solution);
+	}
 
-        return new EventPage($this->version, $response, $this->solution);
-    }
+	/**
+	 * Reads EventInstance records from the API as a list.
+	 * Unlike stream(), this operation is eager and will load `limit` records into
+	 * memory before returning.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. read()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, read()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return EventInstance[] Array of results
+	 */
+	public function read(?int $limit = null, $pageSize = null) : array
+	{
+		return \iterator_to_array($this->stream($limit, $pageSize), false);
+	}
 
+	/**
+	 * Streams EventInstance records from the API as a generator stream.
+	 * This operation lazily loads records as efficiently as possible until the
+	 * limit
+	 * is reached.
+	 * The results are returned as a generator, so this operation is memory
+	 * efficient.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. stream()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, stream()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return Stream stream of results
+	 */
+	public function stream(?int $limit = null, $pageSize = null) : Stream
+	{
+		$limits = $this->version->readLimits($limit, $pageSize);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Api.V2010.EventList]';
-    }
+		$page = $this->page($limits['pageSize']);
+
+		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+	}
 }

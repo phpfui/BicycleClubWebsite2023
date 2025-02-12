@@ -19,47 +19,45 @@ namespace Twilio\Rest\Lookups\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class PhoneNumberList extends ListResource
-    {
-    /**
-     * Construct the PhoneNumberList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the PhoneNumberList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+		];
+	}
 
-    /**
-     * Constructs a PhoneNumberContext
-     *
-     * @param string $phoneNumber The phone number to lookup in [E.164](https://www.twilio.com/docs/glossary/what-e164) format, which consists of a + followed by the country code and subscriber number.
-     */
-    public function getContext(
-        string $phoneNumber
-        
-    ): PhoneNumberContext
-    {
-        return new PhoneNumberContext(
-            $this->version,
-            $phoneNumber
-        );
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Lookups.V1.PhoneNumberList]';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Lookups.V1.PhoneNumberList]';
-    }
+	/**
+	 * Constructs a PhoneNumberContext
+	 *
+	 * @param string $phoneNumber The phone number to lookup in [E.164](https://www.twilio.com/docs/glossary/what-e164) format, which consists of a + followed by the country code and subscriber number.
+	 */
+	public function getContext(
+		string $phoneNumber
+	) : PhoneNumberContext
+	{
+		return new PhoneNumberContext(
+			$this->version,
+			$phoneNumber
+		);
+	}
 }

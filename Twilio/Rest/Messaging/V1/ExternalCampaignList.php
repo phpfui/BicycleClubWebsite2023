@@ -19,70 +19,65 @@ namespace Twilio\Rest\Messaging\V1;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Serialize;
-
 
 class ExternalCampaignList extends ListResource
-    {
-    /**
-     * Construct the ExternalCampaignList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the ExternalCampaignList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/Services/PreregisteredUsa2p';
-    }
+		$this->uri = '/Services/PreregisteredUsa2p';
+	}
 
-    /**
-     * Create the ExternalCampaignInstance
-     *
-     * @param string $campaignId ID of the preregistered campaign.
-     * @param string $messagingServiceSid The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) that the resource is associated with.
-     * @param array|Options $options Optional Arguments
-     * @return ExternalCampaignInstance Created ExternalCampaignInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $campaignId, string $messagingServiceSid, array $options = []): ExternalCampaignInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Messaging.V1.ExternalCampaignList]';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Create the ExternalCampaignInstance
+	 *
+	 * @param string $campaignId ID of the preregistered campaign.
+	 * @param string $messagingServiceSid The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) that the resource is associated with.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ExternalCampaignInstance Created ExternalCampaignInstance
+	 */
+	public function create(string $campaignId, string $messagingServiceSid, array $options = []) : ExternalCampaignInstance
+	{
 
-        $data = Values::of([
-            'CampaignId' =>
-                $campaignId,
-            'MessagingServiceSid' =>
-                $messagingServiceSid,
-            'CnpMigration' =>
-                Serialize::booleanToString($options['cnpMigration']),
-        ]);
+		$options = new Values($options);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$data = Values::of([
+			'CampaignId' => $campaignId,
+			'MessagingServiceSid' => $messagingServiceSid,
+			'CnpMigration' => Serialize::booleanToString($options['cnpMigration']),
+		]);
 
-        return new ExternalCampaignInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Messaging.V1.ExternalCampaignList]';
-    }
+		return new ExternalCampaignInstance(
+			$this->version,
+			$payload
+		);
+	}
 }

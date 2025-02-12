@@ -23,22 +23,31 @@ abstract class VolunteerJobShift extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'email' => ['text', 'string', 65535, true, ],
-		'jobId' => ['int', 'int', 0, true, ],
-		'jobShiftId' => ['int', 'int', 0, true, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'notes' => ['varchar(255)', 'string', 255, false, '', ],
-		'shiftLeader' => ['int', 'int', 0, true, ],
-		'signedUpDate' => ['datetime', 'string', 20, false, null, ],
-		'volunteerJobShiftId' => ['int', 'int', 0, false, ],
-		'worked' => ['tinyint', 'int', 0, false, 0, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['volunteerJobShiftId', ];
 
 	protected static string $table = 'volunteerJobShift';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'email' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'jobId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'jobShiftId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'notes' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, '', ),
+				'shiftLeader' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'signedUpDate' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'volunteerJobShiftId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'worked' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
+			];
+			}
+
+		return $this;
+		}
 	}

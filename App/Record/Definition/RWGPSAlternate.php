@@ -16,16 +16,25 @@ abstract class RWGPSAlternate extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'RWGPSAlternateId' => ['int', 'int', 0, false, ],
-		'RWGPSId' => ['int', 'int', 0, false, ],
-		'memberId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['RWGPSId', 'RWGPSAlternateId', ];
 
 	protected static string $table = 'RWGPSAlternate';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'RWGPSAlternateId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'RWGPSId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -14,70 +14,68 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Intelligence\V2;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class OperatorContext extends InstanceContext
-    {
-    /**
-     * Initialize the OperatorContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid A 34 character string that uniquely identifies this Operator.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the OperatorContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid A 34 character string that uniquely identifies this Operator.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Operators/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Operators/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the OperatorInstance
-     *
-     * @return OperatorInstance Fetched OperatorInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): OperatorInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new OperatorInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Intelligence.V2.OperatorContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the OperatorInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return OperatorInstance Fetched OperatorInstance
+	 */
+	public function fetch() : OperatorInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Intelligence.V2.OperatorContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new OperatorInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

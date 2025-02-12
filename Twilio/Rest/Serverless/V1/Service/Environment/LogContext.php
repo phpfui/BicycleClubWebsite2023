@@ -14,82 +14,78 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Serverless\V1\Service\Environment;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class LogContext extends InstanceContext
-    {
-    /**
-     * Initialize the LogContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the Service to fetch the Log resource from.
-     * @param string $environmentSid The SID of the environment with the Log resource to fetch.
-     * @param string $sid The SID of the Log resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $environmentSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the LogContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the Service to fetch the Log resource from.
+	 * @param string $environmentSid The SID of the environment with the Log resource to fetch.
+	 * @param string $sid The SID of the Log resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$environmentSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'environmentSid' =>
-            $environmentSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'environmentSid' => $environmentSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Environments/' . \rawurlencode($environmentSid)
-        .'/Logs/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Environments/' . \rawurlencode($environmentSid)
+		. '/Logs/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the LogInstance
-     *
-     * @return LogInstance Fetched LogInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): LogInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new LogInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['environmentSid'],
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Serverless.V1.LogContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the LogInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return LogInstance Fetched LogInstance
+	 */
+	public function fetch() : LogInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Serverless.V1.LogContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new LogInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['environmentSid'],
+			$this->solution['sid']
+		);
+	}
 }

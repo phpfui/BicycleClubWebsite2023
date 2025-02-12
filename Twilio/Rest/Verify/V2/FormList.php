@@ -19,47 +19,45 @@ namespace Twilio\Rest\Verify\V2;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class FormList extends ListResource
-    {
-    /**
-     * Construct the FormList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the FormList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+		];
+	}
 
-    /**
-     * Constructs a FormContext
-     *
-     * @param string $formType The Type of this Form. Currently only `form-push` is supported.
-     */
-    public function getContext(
-        string $formType
-        
-    ): FormContext
-    {
-        return new FormContext(
-            $this->version,
-            $formType
-        );
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Verify.V2.FormList]';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Verify.V2.FormList]';
-    }
+	/**
+	 * Constructs a FormContext
+	 *
+	 * @param string $formType The Type of this Form. Currently only `form-push` is supported.
+	 */
+	public function getContext(
+		string $formType
+	) : FormContext
+	{
+		return new FormContext(
+			$this->version,
+			$formType
+		);
+	}
 }

@@ -11,13 +11,14 @@ namespace Twilio\TwiML\Voice;
 
 use Twilio\TwiML\TwiML;
 
-class ApplicationSid extends TwiML {
-    /**
-     * ApplicationSid constructor.
-     *
-     * @param string $sid Application sid to dial
-     */
-    public function __construct($sid) {
-        parent::__construct('ApplicationSid', $sid);
-    }
+class ApplicationSid extends TwiML
+{
+	/**
+	 * ApplicationSid constructor.
+	 *
+	 * @param string $sid Application sid to dial
+	 */
+	public function __construct($sid) {
+		parent::__construct('ApplicationSid', $sid);
+	}
 }

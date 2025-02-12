@@ -14,115 +14,110 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class WebChannelContext extends InstanceContext
-    {
-    /**
-     * Initialize the WebChannelContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The SID of the WebChannel resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the WebChannelContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The SID of the WebChannel resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/WebChannels/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/WebChannels/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the WebChannelInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.FlexApi.V1.WebChannelContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the WebChannelInstance
-     *
-     * @return WebChannelInstance Fetched WebChannelInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): WebChannelInstance
-    {
+	/**
+	 * Delete the WebChannelInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new WebChannelInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the WebChannelInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return WebChannelInstance Fetched WebChannelInstance
+	 */
+	public function fetch() : WebChannelInstance
+	{
 
-    /**
-     * Update the WebChannelInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return WebChannelInstance Updated WebChannelInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): WebChannelInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new WebChannelInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'ChatStatus' =>
-                $options['chatStatus'],
-            'PostEngagementData' =>
-                $options['postEngagementData'],
-        ]);
+	/**
+	 * Update the WebChannelInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return WebChannelInstance Updated WebChannelInstance
+	 */
+	public function update(array $options = []) : WebChannelInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new WebChannelInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'ChatStatus' => $options['chatStatus'],
+			'PostEngagementData' => $options['postEngagementData'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.FlexApi.V1.WebChannelContext ' . \implode(' ', $context) . ']';
-    }
+		return new WebChannelInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

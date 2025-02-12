@@ -14,90 +14,87 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Trusthub\V1\CustomerProfiles;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class CustomerProfilesChannelEndpointAssignmentContext extends InstanceContext
-    {
-    /**
-     * Initialize the CustomerProfilesChannelEndpointAssignmentContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $customerProfileSid The unique string that we created to identify the CustomerProfile resource.
-     * @param string $sid The unique string that we created to identify the resource.
-     */
-    public function __construct(
-        Version $version,
-        $customerProfileSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the CustomerProfilesChannelEndpointAssignmentContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $customerProfileSid The unique string that we created to identify the CustomerProfile resource.
+	 * @param string $sid The unique string that we created to identify the resource.
+	 */
+	public function __construct(
+		Version $version,
+		$customerProfileSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'customerProfileSid' =>
-            $customerProfileSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'customerProfileSid' => $customerProfileSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/CustomerProfiles/' . \rawurlencode($customerProfileSid)
-        .'/ChannelEndpointAssignments/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/CustomerProfiles/' . \rawurlencode($customerProfileSid)
+		. '/ChannelEndpointAssignments/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the CustomerProfilesChannelEndpointAssignmentInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Trusthub.V1.CustomerProfilesChannelEndpointAssignmentContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the CustomerProfilesChannelEndpointAssignmentInstance
-     *
-     * @return CustomerProfilesChannelEndpointAssignmentInstance Fetched CustomerProfilesChannelEndpointAssignmentInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): CustomerProfilesChannelEndpointAssignmentInstance
-    {
+	/**
+	 * Delete the CustomerProfilesChannelEndpointAssignmentInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new CustomerProfilesChannelEndpointAssignmentInstance(
-            $this->version,
-            $payload,
-            $this->solution['customerProfileSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the CustomerProfilesChannelEndpointAssignmentInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CustomerProfilesChannelEndpointAssignmentInstance Fetched CustomerProfilesChannelEndpointAssignmentInstance
+	 */
+	public function fetch() : CustomerProfilesChannelEndpointAssignmentInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Trusthub.V1.CustomerProfilesChannelEndpointAssignmentContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new CustomerProfilesChannelEndpointAssignmentInstance(
+			$this->version,
+			$payload,
+			$this->solution['customerProfileSid'],
+			$this->solution['sid']
+		);
+	}
 }

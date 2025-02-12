@@ -11,31 +11,32 @@ namespace Twilio\TwiML\Voice;
 
 use Twilio\TwiML\TwiML;
 
-class Config extends TwiML {
-    /**
-     * Config constructor.
-     *
-     * @param array $attributes Optional attributes
-     */
-    public function __construct($attributes = []) {
-        parent::__construct('Config', null, $attributes);
-    }
+class Config extends TwiML
+{
+	/**
+	 * Config constructor.
+	 *
+	 * @param array $attributes Optional attributes
+	 */
+	public function __construct($attributes = []) {
+		parent::__construct('Config', null, $attributes);
+	}
 
-    /**
-     * Add Name attribute.
-     *
-     * @param string $name The name of the custom config
-     */
-    public function setName($name): self {
-        return $this->setAttribute('name', $name);
-    }
+	/**
+	 * Add Name attribute.
+	 *
+	 * @param string $name The name of the custom config
+	 */
+	public function setName($name) : self {
+		return $this->setAttribute('name', $name);
+	}
 
-    /**
-     * Add Value attribute.
-     *
-     * @param string $value The value of the custom config
-     */
-    public function setValue($value): self {
-        return $this->setAttribute('value', $value);
-    }
+	/**
+	 * Add Value attribute.
+	 *
+	 * @param string $value The value of the custom config
+	 */
+	public function setValue($value) : self {
+		return $this->setAttribute('value', $value);
+	}
 }

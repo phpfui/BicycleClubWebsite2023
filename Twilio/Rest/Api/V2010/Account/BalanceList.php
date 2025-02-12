@@ -21,59 +21,56 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class BalanceList extends ListResource
-    {
-    /**
-     * Construct the BalanceList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The unique SID identifier of the Account.
-     */
-    public function __construct(
-        Version $version,
-        string $accountSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the BalanceList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The unique SID identifier of the Account.
+	 */
+	public function __construct(
+		Version $version,
+		string $accountSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Balance.json';
-    }
+		];
 
-    /**
-     * Fetch the BalanceInstance
-     *
-     * @return BalanceInstance Fetched BalanceInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): BalanceInstance
-    {
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Balance.json';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Api.V2010.BalanceList]';
+	}
 
-        return new BalanceInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid']
-        );
-    }
+	/**
+	 * Fetch the BalanceInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return BalanceInstance Fetched BalanceInstance
+	 */
+	public function fetch() : BalanceInstance
+	{
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Api.V2010.BalanceList]';
-    }
+		return new BalanceInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid']
+		);
+	}
 }

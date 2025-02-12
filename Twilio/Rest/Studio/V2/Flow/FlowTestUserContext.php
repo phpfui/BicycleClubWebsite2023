@@ -14,97 +14,93 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Studio\V2\Flow;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\Values;
-use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Serialize;
-
+use Twilio\Values;
+use Twilio\Version;
 
 class FlowTestUserContext extends InstanceContext
-    {
-    /**
-     * Initialize the FlowTestUserContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid Unique identifier of the flow.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the FlowTestUserContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid Unique identifier of the flow.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Flows/' . \rawurlencode($sid)
-        .'/TestUsers';
-    }
+		$this->uri = '/Flows/' . \rawurlencode($sid)
+		. '/TestUsers';
+	}
 
-    /**
-     * Fetch the FlowTestUserInstance
-     *
-     * @return FlowTestUserInstance Fetched FlowTestUserInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): FlowTestUserInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new FlowTestUserInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Studio.V2.FlowTestUserContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the FlowTestUserInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return FlowTestUserInstance Fetched FlowTestUserInstance
+	 */
+	public function fetch() : FlowTestUserInstance
+	{
 
-    /**
-     * Update the FlowTestUserInstance
-     *
-     * @param string[] $testUsers List of test user identities that can test draft versions of the flow.
-     * @return FlowTestUserInstance Updated FlowTestUserInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $testUsers): FlowTestUserInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $data = Values::of([
-            'TestUsers' =>
-                Serialize::map($testUsers,function ($e) { return $e; }),
-        ]);
+		return new FlowTestUserInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Update the FlowTestUserInstance
+	 *
+	 * @param string[] $testUsers List of test user identities that can test draft versions of the flow.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return FlowTestUserInstance Updated FlowTestUserInstance
+	 */
+	public function update(array $testUsers) : FlowTestUserInstance
+	{
 
-        return new FlowTestUserInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'TestUsers' => Serialize::map($testUsers, static function($e) { return $e; }),
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Studio.V2.FlowTestUserContext ' . \implode(' ', $context) . ']';
-    }
+		return new FlowTestUserInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

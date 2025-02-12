@@ -22,97 +22,89 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class UserDefinedMessageSubscriptionList extends ListResource
-    {
-    /**
-     * Construct the UserDefinedMessageSubscriptionList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that subscribed to the User Defined Messages.
-     * @param string $callSid The SID of the [Call](https://www.twilio.com/docs/voice/api/call-resource) the User Defined Messages subscription is associated with. This refers to the Call SID that is producing the user defined messages.
-     */
-    public function __construct(
-        Version $version,
-        string $accountSid,
-        string $callSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the UserDefinedMessageSubscriptionList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that subscribed to the User Defined Messages.
+	 * @param string $callSid The SID of the [Call](https://www.twilio.com/docs/voice/api/call-resource) the User Defined Messages subscription is associated with. This refers to the Call SID that is producing the user defined messages.
+	 */
+	public function __construct(
+		Version $version,
+		string $accountSid,
+		string $callSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        
-        'callSid' =>
-            $callSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Calls/' . \rawurlencode($callSid)
-        .'/UserDefinedMessageSubscriptions.json';
-    }
+			'callSid' => $callSid,
 
-    /**
-     * Create the UserDefinedMessageSubscriptionInstance
-     *
-     * @param string $callback The URL we should call using the `method` to send user defined events to your application. URLs must contain a valid hostname (underscores are not permitted).
-     * @param array|Options $options Optional Arguments
-     * @return UserDefinedMessageSubscriptionInstance Created UserDefinedMessageSubscriptionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $callback, array $options = []): UserDefinedMessageSubscriptionInstance
-    {
+		];
 
-        $options = new Values($options);
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Calls/' . \rawurlencode($callSid)
+		. '/UserDefinedMessageSubscriptions.json';
+	}
 
-        $data = Values::of([
-            'Callback' =>
-                $callback,
-            'IdempotencyKey' =>
-                $options['idempotencyKey'],
-            'Method' =>
-                $options['method'],
-        ]);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Api.V2010.UserDefinedMessageSubscriptionList]';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Create the UserDefinedMessageSubscriptionInstance
+	 *
+	 * @param string $callback The URL we should call using the `method` to send user defined events to your application. URLs must contain a valid hostname (underscores are not permitted).
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UserDefinedMessageSubscriptionInstance Created UserDefinedMessageSubscriptionInstance
+	 */
+	public function create(string $callback, array $options = []) : UserDefinedMessageSubscriptionInstance
+	{
 
-        return new UserDefinedMessageSubscriptionInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['callSid']
-        );
-    }
+		$options = new Values($options);
 
+		$data = Values::of([
+			'Callback' => $callback,
+			'IdempotencyKey' => $options['idempotencyKey'],
+			'Method' => $options['method'],
+		]);
 
-    /**
-     * Constructs a UserDefinedMessageSubscriptionContext
-     *
-     * @param string $sid The SID that uniquely identifies this User Defined Message Subscription.
-     */
-    public function getContext(
-        string $sid
-        
-    ): UserDefinedMessageSubscriptionContext
-    {
-        return new UserDefinedMessageSubscriptionContext(
-            $this->version,
-            $this->solution['accountSid'],
-            $this->solution['callSid'],
-            $sid
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Api.V2010.UserDefinedMessageSubscriptionList]';
-    }
+		return new UserDefinedMessageSubscriptionInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['callSid']
+		);
+	}
+
+	/**
+	 * Constructs a UserDefinedMessageSubscriptionContext
+	 *
+	 * @param string $sid The SID that uniquely identifies this User Defined Message Subscription.
+	 */
+	public function getContext(
+		string $sid
+	) : UserDefinedMessageSubscriptionContext
+	{
+		return new UserDefinedMessageSubscriptionContext(
+			$this->version,
+			$this->solution['accountSid'],
+			$this->solution['callSid'],
+			$sid
+		);
+	}
 }

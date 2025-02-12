@@ -4,7 +4,6 @@ namespace App\View\Ride;
 
 class Accidents
 	{
-
 	public function __construct(private readonly \App\View\Page $page)
 		{
 		}

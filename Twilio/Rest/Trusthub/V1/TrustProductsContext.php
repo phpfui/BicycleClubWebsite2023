@@ -14,19 +14,17 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Trusthub\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Rest\Trusthub\V1\TrustProducts\TrustProductsChannelEndpointAssignmentList;
+use Twilio\Rest\Trusthub\V1\TrustProducts\TrustProductsEntityAssignmentsList;
+use Twilio\Rest\Trusthub\V1\TrustProducts\TrustProductsEvaluationsList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Rest\Trusthub\V1\TrustProducts\TrustProductsChannelEndpointAssignmentList;
-use Twilio\Rest\Trusthub\V1\TrustProducts\TrustProductsEvaluationsList;
-use Twilio\Rest\Trusthub\V1\TrustProducts\TrustProductsEntityAssignmentsList;
-
 
 /**
  * @property TrustProductsChannelEndpointAssignmentList $trustProductsChannelEndpointAssignment
@@ -37,192 +35,191 @@ use Twilio\Rest\Trusthub\V1\TrustProducts\TrustProductsEntityAssignmentsList;
  * @method \Twilio\Rest\Trusthub\V1\TrustProducts\TrustProductsEvaluationsContext trustProductsEvaluations(string $sid)
  */
 class TrustProductsContext extends InstanceContext
-    {
-    protected $_trustProductsChannelEndpointAssignment;
-    protected $_trustProductsEvaluations;
-    protected $_trustProductsEntityAssignments;
+	{
+	protected $_trustProductsChannelEndpointAssignment;
 
-    /**
-     * Initialize the TrustProductsContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The unique string that we created to identify the Trust Product resource.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	protected $_trustProductsEntityAssignments;
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+	protected $_trustProductsEvaluations;
 
-        $this->uri = '/TrustProducts/' . \rawurlencode($sid)
-        .'';
-    }
+	/**
+	 * Initialize the TrustProductsContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The unique string that we created to identify the Trust Product resource.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-    /**
-     * Delete the TrustProductsInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		$this->uri = '/TrustProducts/' . \rawurlencode($sid)
+		. '';
+	}
 
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-    /**
-     * Fetch the TrustProductsInstance
-     *
-     * @return TrustProductsInstance Fetched TrustProductsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): TrustProductsInstance
-    {
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		throw new TwilioException('Resource does not have a context');
+	}
 
-        return new TrustProductsInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
+			return $this->{$method}();
+		}
 
-    /**
-     * Update the TrustProductsInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return TrustProductsInstance Updated TrustProductsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): TrustProductsInstance
-    {
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
-        $options = new Values($options);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $data = Values::of([
-            'Status' =>
-                $options['status'],
-            'StatusCallback' =>
-                $options['statusCallback'],
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'Email' =>
-                $options['email'],
-        ]);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		return '[Twilio.Trusthub.V1.TrustProductsContext ' . \implode(' ', $context) . ']';
+	}
 
-        return new TrustProductsInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+	/**
+	 * Delete the TrustProductsInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-    /**
-     * Access the trustProductsChannelEndpointAssignment
-     */
-    protected function getTrustProductsChannelEndpointAssignment(): TrustProductsChannelEndpointAssignmentList
-    {
-        if (!$this->_trustProductsChannelEndpointAssignment) {
-            $this->_trustProductsChannelEndpointAssignment = new TrustProductsChannelEndpointAssignmentList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
-        return $this->_trustProductsChannelEndpointAssignment;
-    }
+	/**
+	 * Fetch the TrustProductsInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TrustProductsInstance Fetched TrustProductsInstance
+	 */
+	public function fetch() : TrustProductsInstance
+	{
 
-    /**
-     * Access the trustProductsEvaluations
-     */
-    protected function getTrustProductsEvaluations(): TrustProductsEvaluationsList
-    {
-        if (!$this->_trustProductsEvaluations) {
-            $this->_trustProductsEvaluations = new TrustProductsEvaluationsList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        return $this->_trustProductsEvaluations;
-    }
+		return new TrustProductsInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-    /**
-     * Access the trustProductsEntityAssignments
-     */
-    protected function getTrustProductsEntityAssignments(): TrustProductsEntityAssignmentsList
-    {
-        if (!$this->_trustProductsEntityAssignments) {
-            $this->_trustProductsEntityAssignments = new TrustProductsEntityAssignmentsList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Update the TrustProductsInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TrustProductsInstance Updated TrustProductsInstance
+	 */
+	public function update(array $options = []) : TrustProductsInstance
+	{
 
-        return $this->_trustProductsEntityAssignments;
-    }
+		$options = new Values($options);
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		$data = Values::of([
+			'Status' => $options['status'],
+			'StatusCallback' => $options['statusCallback'],
+			'FriendlyName' => $options['friendlyName'],
+			'Email' => $options['email'],
+		]);
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+		return new TrustProductsInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        throw new TwilioException('Resource does not have a context');
-    }
+	/**
+	 * Access the trustProductsChannelEndpointAssignment
+	 */
+	protected function getTrustProductsChannelEndpointAssignment() : TrustProductsChannelEndpointAssignmentList
+	{
+		if (! $this->_trustProductsChannelEndpointAssignment) {
+			$this->_trustProductsChannelEndpointAssignment = new TrustProductsChannelEndpointAssignmentList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Trusthub.V1.TrustProductsContext ' . \implode(' ', $context) . ']';
-    }
+		return $this->_trustProductsChannelEndpointAssignment;
+	}
+
+	/**
+	 * Access the trustProductsEntityAssignments
+	 */
+	protected function getTrustProductsEntityAssignments() : TrustProductsEntityAssignmentsList
+	{
+		if (! $this->_trustProductsEntityAssignments) {
+			$this->_trustProductsEntityAssignments = new TrustProductsEntityAssignmentsList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_trustProductsEntityAssignments;
+	}
+
+	/**
+	 * Access the trustProductsEvaluations
+	 */
+	protected function getTrustProductsEvaluations() : TrustProductsEvaluationsList
+	{
+		if (! $this->_trustProductsEvaluations) {
+			$this->_trustProductsEvaluations = new TrustProductsEvaluationsList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_trustProductsEvaluations;
+	}
 }

@@ -14,118 +14,113 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\IpMessaging\V1\Service;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\Values;
-use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Serialize;
-
+use Twilio\Values;
+use Twilio\Version;
 
 class RoleContext extends InstanceContext
-    {
-    /**
-     * Initialize the RoleContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid 
-     * @param string $sid 
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the RoleContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid
+	 * @param string $sid
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Roles/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Roles/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the RoleInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.IpMessaging.V1.RoleContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the RoleInstance
-     *
-     * @return RoleInstance Fetched RoleInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): RoleInstance
-    {
+	/**
+	 * Delete the RoleInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new RoleInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the RoleInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return RoleInstance Fetched RoleInstance
+	 */
+	public function fetch() : RoleInstance
+	{
 
-    /**
-     * Update the RoleInstance
-     *
-     * @param string[] $permission 
-     * @return RoleInstance Updated RoleInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $permission): RoleInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $data = Values::of([
-            'Permission' =>
-                Serialize::map($permission,function ($e) { return $e; }),
-        ]);
+		return new RoleInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['sid']
+		);
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Update the RoleInstance
+	 *
+	 * @param string[] $permission
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return RoleInstance Updated RoleInstance
+	 */
+	public function update(array $permission) : RoleInstance
+	{
 
-        return new RoleInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'Permission' => Serialize::map($permission, static function($e) { return $e; }),
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.IpMessaging.V1.RoleContext ' . \implode(' ', $context) . ']';
-    }
+		return new RoleInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['sid']
+		);
+	}
 }

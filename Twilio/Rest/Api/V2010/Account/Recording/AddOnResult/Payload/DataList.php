@@ -19,67 +19,62 @@ namespace Twilio\Rest\Api\V2010\Account\Recording\AddOnResult\Payload;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class DataList extends ListResource
-    {
-    /**
-     * Construct the DataList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Recording AddOnResult Payload resource to fetch.
-     * @param string $referenceSid The SID of the recording to which the AddOnResult resource that contains the payload to fetch belongs.
-     * @param string $addOnResultSid The SID of the AddOnResult to which the payload to fetch belongs.
-     * @param string $payloadSid The Twilio-provided string that uniquely identifies the Recording AddOnResult Payload resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        string $accountSid,
-        string $referenceSid,
-        string $addOnResultSid,
-        string $payloadSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the DataList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Recording AddOnResult Payload resource to fetch.
+	 * @param string $referenceSid The SID of the recording to which the AddOnResult resource that contains the payload to fetch belongs.
+	 * @param string $addOnResultSid The SID of the AddOnResult to which the payload to fetch belongs.
+	 * @param string $payloadSid The Twilio-provided string that uniquely identifies the Recording AddOnResult Payload resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		string $accountSid,
+		string $referenceSid,
+		string $addOnResultSid,
+		string $payloadSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        
-        'referenceSid' =>
-            $referenceSid,
-        
-        'addOnResultSid' =>
-            $addOnResultSid,
-        
-        'payloadSid' =>
-            $payloadSid,
-        
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
 
-    /**
-     * Constructs a DataContext
-     */
-    public function getContext(
-        
-    ): DataContext
-    {
-        return new DataContext(
-            $this->version,
-            $this->solution['accountSid'],
-            $this->solution['referenceSid'],
-            $this->solution['addOnResultSid'],
-            $this->solution['payloadSid']
-        );
-    }
+			'referenceSid' => $referenceSid,
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Api.V2010.DataList]';
-    }
+			'addOnResultSid' => $addOnResultSid,
+
+			'payloadSid' => $payloadSid,
+
+		];
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Api.V2010.DataList]';
+	}
+
+	/**
+	 * Constructs a DataContext
+	 */
+	public function getContext(
+
+	) : DataContext
+	{
+		return new DataContext(
+			$this->version,
+			$this->solution['accountSid'],
+			$this->solution['referenceSid'],
+			$this->solution['addOnResultSid'],
+			$this->solution['payloadSid']
+		);
+	}
 }

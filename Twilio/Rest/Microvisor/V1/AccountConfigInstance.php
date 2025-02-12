@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Microvisor\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $key
@@ -32,116 +30,118 @@ use Twilio\Deserialize;
  */
 class AccountConfigInstance extends InstanceResource
 {
-    /**
-     * Initialize the AccountConfigInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $key The config key; up to 100 characters.
-     */
-    public function __construct(Version $version, array $payload, ?string $key = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the AccountConfigInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $key The config key; up to 100 characters.
+	 */
+	public function __construct(Version $version, array $payload, ?string $key = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'key' => Values::array_get($payload, 'key'),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'value' => Values::array_get($payload, 'value'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'key' => Values::array_get($payload, 'key'),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'value' => Values::array_get($payload, 'value'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['key' => $key ?: $this->properties['key'], ];
-    }
+		$this->solution = ['key' => $key ?: $this->properties['key'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return AccountConfigContext Context for this AccountConfigInstance
-     */
-    protected function proxy(): AccountConfigContext
-    {
-        if (!$this->context) {
-            $this->context = new AccountConfigContext(
-                $this->version,
-                $this->solution['key']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the AccountConfigInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the AccountConfigInstance
-     *
-     * @return AccountConfigInstance Fetched AccountConfigInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): AccountConfigInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Update the AccountConfigInstance
-     *
-     * @param string $value The config value; up to 4096 characters.
-     * @return AccountConfigInstance Updated AccountConfigInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $value): AccountConfigInstance
-    {
+		return '[Twilio.Microvisor.V1.AccountConfigInstance ' . \implode(' ', $context) . ']';
+	}
 
-        return $this->proxy()->update($value);
-    }
+	/**
+	 * Delete the AccountConfigInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return $this->proxy()->delete();
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Fetch the AccountConfigInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AccountConfigInstance Fetched AccountConfigInstance
+	 */
+	public function fetch() : AccountConfigInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->fetch();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Microvisor.V1.AccountConfigInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the AccountConfigInstance
+	 *
+	 * @param string $value The config value; up to 4096 characters.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AccountConfigInstance Updated AccountConfigInstance
+	 */
+	public function update(string $value) : AccountConfigInstance
+	{
+
+		return $this->proxy()->update($value);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return AccountConfigContext Context for this AccountConfigInstance
+	 */
+	protected function proxy() : AccountConfigContext
+	{
+		if (! $this->context) {
+			$this->context = new AccountConfigContext(
+				$this->version,
+				$this->solution['key']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

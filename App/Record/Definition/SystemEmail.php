@@ -15,17 +15,26 @@ abstract class SystemEmail extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'email' => ['varchar(100)', 'string', 100, true, ],
-		'mailbox' => ['varchar(50)', 'string', 50, true, ],
-		'name' => ['varchar(50)', 'string', 50, true, ],
-		'systemEmailId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['systemEmailId', ];
 
 	protected static string $table = 'systemEmail';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'email' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+				'mailbox' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'name' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'systemEmailId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

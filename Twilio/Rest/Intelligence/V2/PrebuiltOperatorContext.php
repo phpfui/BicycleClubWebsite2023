@@ -14,70 +14,68 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Intelligence\V2;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class PrebuiltOperatorContext extends InstanceContext
-    {
-    /**
-     * Initialize the PrebuiltOperatorContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid A 34 character string that uniquely identifies this Pre-built Operator.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the PrebuiltOperatorContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid A 34 character string that uniquely identifies this Pre-built Operator.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Operators/PreBuilt/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Operators/PreBuilt/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the PrebuiltOperatorInstance
-     *
-     * @return PrebuiltOperatorInstance Fetched PrebuiltOperatorInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): PrebuiltOperatorInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new PrebuiltOperatorInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Intelligence.V2.PrebuiltOperatorContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the PrebuiltOperatorInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return PrebuiltOperatorInstance Fetched PrebuiltOperatorInstance
+	 */
+	public function fetch() : PrebuiltOperatorInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Intelligence.V2.PrebuiltOperatorContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new PrebuiltOperatorInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

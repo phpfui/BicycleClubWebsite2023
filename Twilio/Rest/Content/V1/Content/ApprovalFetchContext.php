@@ -14,70 +14,68 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Content\V1\Content;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class ApprovalFetchContext extends InstanceContext
-    {
-    /**
-     * Initialize the ApprovalFetchContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The Twilio-provided string that uniquely identifies the Content resource whose approval information to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the ApprovalFetchContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The Twilio-provided string that uniquely identifies the Content resource whose approval information to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Content/' . \rawurlencode($sid)
-        .'/ApprovalRequests';
-    }
+		$this->uri = '/Content/' . \rawurlencode($sid)
+		. '/ApprovalRequests';
+	}
 
-    /**
-     * Fetch the ApprovalFetchInstance
-     *
-     * @return ApprovalFetchInstance Fetched ApprovalFetchInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ApprovalFetchInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new ApprovalFetchInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Content.V1.ApprovalFetchContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the ApprovalFetchInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ApprovalFetchInstance Fetched ApprovalFetchInstance
+	 */
+	public function fetch() : ApprovalFetchInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Content.V1.ApprovalFetchContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new ApprovalFetchInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

@@ -563,7 +563,7 @@ class Member
 		}
 
 	/**
-	 * @return array<string,array<mixed>>
+	 * @return array<string,\PHPFUI\ORM\FieldDefinition>
 	 */
 	public function getFields() : array
 		{

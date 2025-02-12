@@ -14,16 +14,14 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Conversations\V1\User;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $accountSid
@@ -47,132 +45,134 @@ use Twilio\Deserialize;
  */
 class UserConversationInstance extends InstanceResource
 {
-    /**
-     * Initialize the UserConversationInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $userSid The unique SID identifier of the [User resource](https://www.twilio.com/docs/conversations/api/user-resource). This value can be either the `sid` or the `identity` of the User resource.
-     * @param string $conversationSid The unique SID identifier of the Conversation. This value can be either the `sid` or the `unique_name` of the [Conversation resource](https://www.twilio.com/docs/conversations/api/conversation-resource).
-     */
-    public function __construct(Version $version, array $payload, string $userSid, ?string $conversationSid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the UserConversationInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $userSid The unique SID identifier of the [User resource](https://www.twilio.com/docs/conversations/api/user-resource). This value can be either the `sid` or the `identity` of the User resource.
+	 * @param string $conversationSid The unique SID identifier of the Conversation. This value can be either the `sid` or the `unique_name` of the [Conversation resource](https://www.twilio.com/docs/conversations/api/conversation-resource).
+	 */
+	public function __construct(Version $version, array $payload, string $userSid, ?string $conversationSid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'chatServiceSid' => Values::array_get($payload, 'chat_service_sid'),
-            'conversationSid' => Values::array_get($payload, 'conversation_sid'),
-            'unreadMessagesCount' => Values::array_get($payload, 'unread_messages_count'),
-            'lastReadMessageIndex' => Values::array_get($payload, 'last_read_message_index'),
-            'participantSid' => Values::array_get($payload, 'participant_sid'),
-            'userSid' => Values::array_get($payload, 'user_sid'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'conversationState' => Values::array_get($payload, 'conversation_state'),
-            'timers' => Values::array_get($payload, 'timers'),
-            'attributes' => Values::array_get($payload, 'attributes'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'createdBy' => Values::array_get($payload, 'created_by'),
-            'notificationLevel' => Values::array_get($payload, 'notification_level'),
-            'uniqueName' => Values::array_get($payload, 'unique_name'),
-            'url' => Values::array_get($payload, 'url'),
-            'links' => Values::array_get($payload, 'links'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'chatServiceSid' => Values::array_get($payload, 'chat_service_sid'),
+			'conversationSid' => Values::array_get($payload, 'conversation_sid'),
+			'unreadMessagesCount' => Values::array_get($payload, 'unread_messages_count'),
+			'lastReadMessageIndex' => Values::array_get($payload, 'last_read_message_index'),
+			'participantSid' => Values::array_get($payload, 'participant_sid'),
+			'userSid' => Values::array_get($payload, 'user_sid'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'conversationState' => Values::array_get($payload, 'conversation_state'),
+			'timers' => Values::array_get($payload, 'timers'),
+			'attributes' => Values::array_get($payload, 'attributes'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'createdBy' => Values::array_get($payload, 'created_by'),
+			'notificationLevel' => Values::array_get($payload, 'notification_level'),
+			'uniqueName' => Values::array_get($payload, 'unique_name'),
+			'url' => Values::array_get($payload, 'url'),
+			'links' => Values::array_get($payload, 'links'),
+		];
 
-        $this->solution = ['userSid' => $userSid, 'conversationSid' => $conversationSid ?: $this->properties['conversationSid'], ];
-    }
+		$this->solution = ['userSid' => $userSid, 'conversationSid' => $conversationSid ?: $this->properties['conversationSid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return UserConversationContext Context for this UserConversationInstance
-     */
-    protected function proxy(): UserConversationContext
-    {
-        if (!$this->context) {
-            $this->context = new UserConversationContext(
-                $this->version,
-                $this->solution['userSid'],
-                $this->solution['conversationSid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the UserConversationInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the UserConversationInstance
-     *
-     * @return UserConversationInstance Fetched UserConversationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): UserConversationInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Update the UserConversationInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return UserConversationInstance Updated UserConversationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): UserConversationInstance
-    {
+		return '[Twilio.Conversations.V1.UserConversationInstance ' . \implode(' ', $context) . ']';
+	}
 
-        return $this->proxy()->update($options);
-    }
+	/**
+	 * Delete the UserConversationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return $this->proxy()->delete();
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Fetch the UserConversationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UserConversationInstance Fetched UserConversationInstance
+	 */
+	public function fetch() : UserConversationInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->fetch();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Conversations.V1.UserConversationInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the UserConversationInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UserConversationInstance Updated UserConversationInstance
+	 */
+	public function update(array $options = []) : UserConversationInstance
+	{
+
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return UserConversationContext Context for this UserConversationInstance
+	 */
+	protected function proxy() : UserConversationContext
+	{
+		if (! $this->context) {
+			$this->context = new UserConversationContext(
+				$this->version,
+				$this->solution['userSid'],
+				$this->solution['conversationSid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

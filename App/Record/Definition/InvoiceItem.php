@@ -24,24 +24,33 @@ abstract class InvoiceItem extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'description' => ['text', 'string', 65535, true, ],
-		'detailLine' => ['char(100)', 'string', 100, true, ],
-		'invoiceId' => ['int', 'int', 0, false, ],
-		'price' => ['decimal(5,2)', 'float', 5, true, ],
-		'quantity' => ['int', 'int', 0, true, ],
-		'shipping' => ['decimal(5,2)', 'float', 5, true, ],
-		'storeItemDetailId' => ['int', 'int', 0, false, ],
-		'storeItemId' => ['int', 'int', 0, false, ],
-		'tax' => ['decimal(7,2)', 'float', 7, true, ],
-		'title' => ['char(100)', 'string', 100, true, ],
-		'type' => ['int', 'int', 0, true, 0, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['invoiceId', 'storeItemId', 'storeItemDetailId', ];
 
 	protected static string $table = 'invoiceItem';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'description' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'detailLine' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
+				'invoiceId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'price' => new \PHPFUI\ORM\FieldDefinition('decimal(5,2)', 'float', 5, true, ),
+				'quantity' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'shipping' => new \PHPFUI\ORM\FieldDefinition('decimal(5,2)', 'float', 5, true, ),
+				'storeItemDetailId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'storeItemId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'tax' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
+				'type' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+			];
+			}
+
+		return $this;
+		}
 	}

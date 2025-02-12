@@ -14,14 +14,12 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Messaging\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $domainSid
@@ -30,104 +28,106 @@ use Twilio\Version;
  */
 class LinkshorteningMessagingServiceInstance extends InstanceResource
 {
-    /**
-     * Initialize the LinkshorteningMessagingServiceInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $domainSid The domain SID to associate with a messaging service. With URL shortening enabled, links in messages sent with the associated messaging service will be shortened to the provided domain
-     * @param string $messagingServiceSid A messaging service SID to associate with a domain. With URL shortening enabled, links in messages sent with the provided messaging service will be shortened to the associated domain
-     */
-    public function __construct(Version $version, array $payload, ?string $domainSid = null, ?string $messagingServiceSid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the LinkshorteningMessagingServiceInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $domainSid The domain SID to associate with a messaging service. With URL shortening enabled, links in messages sent with the associated messaging service will be shortened to the provided domain
+	 * @param string $messagingServiceSid A messaging service SID to associate with a domain. With URL shortening enabled, links in messages sent with the provided messaging service will be shortened to the associated domain
+	 */
+	public function __construct(Version $version, array $payload, ?string $domainSid = null, ?string $messagingServiceSid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'domainSid' => Values::array_get($payload, 'domain_sid'),
-            'messagingServiceSid' => Values::array_get($payload, 'messaging_service_sid'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'domainSid' => Values::array_get($payload, 'domain_sid'),
+			'messagingServiceSid' => Values::array_get($payload, 'messaging_service_sid'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['domainSid' => $domainSid ?: $this->properties['domainSid'], 'messagingServiceSid' => $messagingServiceSid ?: $this->properties['messagingServiceSid'], ];
-    }
+		$this->solution = ['domainSid' => $domainSid ?: $this->properties['domainSid'], 'messagingServiceSid' => $messagingServiceSid ?: $this->properties['messagingServiceSid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return LinkshorteningMessagingServiceContext Context for this LinkshorteningMessagingServiceInstance
-     */
-    protected function proxy(): LinkshorteningMessagingServiceContext
-    {
-        if (!$this->context) {
-            $this->context = new LinkshorteningMessagingServiceContext(
-                $this->version,
-                $this->solution['domainSid'],
-                $this->solution['messagingServiceSid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Create the LinkshorteningMessagingServiceInstance
-     *
-     * @return LinkshorteningMessagingServiceInstance Created LinkshorteningMessagingServiceInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(): LinkshorteningMessagingServiceInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->create();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Delete the LinkshorteningMessagingServiceInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->delete();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return '[Twilio.Messaging.V1.LinkshorteningMessagingServiceInstance ' . \implode(' ', $context) . ']';
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Create the LinkshorteningMessagingServiceInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return LinkshorteningMessagingServiceInstance Created LinkshorteningMessagingServiceInstance
+	 */
+	public function create() : LinkshorteningMessagingServiceInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->create();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Messaging.V1.LinkshorteningMessagingServiceInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Delete the LinkshorteningMessagingServiceInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
+
+		return $this->proxy()->delete();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return LinkshorteningMessagingServiceContext Context for this LinkshorteningMessagingServiceInstance
+	 */
+	protected function proxy() : LinkshorteningMessagingServiceContext
+	{
+		if (! $this->context) {
+			$this->context = new LinkshorteningMessagingServiceContext(
+				$this->version,
+				$this->solution['domainSid'],
+				$this->solution['messagingServiceSid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

@@ -14,22 +14,20 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Trunking\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Rest\Trunking\V1\Trunk\CredentialListList;
+use Twilio\Rest\Trunking\V1\Trunk\IpAccessControlListList;
+use Twilio\Rest\Trunking\V1\Trunk\OriginationUrlList;
+use Twilio\Rest\Trunking\V1\Trunk\PhoneNumberList;
+use Twilio\Rest\Trunking\V1\Trunk\RecordingList;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-use Twilio\Rest\Trunking\V1\Trunk\IpAccessControlListList;
-use Twilio\Rest\Trunking\V1\Trunk\PhoneNumberList;
-use Twilio\Rest\Trunking\V1\Trunk\CredentialListList;
-use Twilio\Rest\Trunking\V1\Trunk\OriginationUrlList;
-use Twilio\Rest\Trunking\V1\Trunk\RecordingList;
-
 
 /**
  * @property IpAccessControlListList $ipAccessControlLists
@@ -44,232 +42,229 @@ use Twilio\Rest\Trunking\V1\Trunk\RecordingList;
  * @method \Twilio\Rest\Trunking\V1\Trunk\OriginationUrlContext originationUrls(string $sid)
  */
 class TrunkContext extends InstanceContext
-    {
-    protected $_ipAccessControlLists;
-    protected $_phoneNumbers;
-    protected $_credentialsLists;
-    protected $_originationUrls;
-    protected $_recordings;
+	{
+	protected $_credentialsLists;
 
-    /**
-     * Initialize the TrunkContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The unique string that we created to identify the Trunk resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	protected $_ipAccessControlLists;
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+	protected $_originationUrls;
 
-        $this->uri = '/Trunks/' . \rawurlencode($sid)
-        .'';
-    }
+	protected $_phoneNumbers;
 
-    /**
-     * Delete the TrunkInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	protected $_recordings;
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+	/**
+	 * Initialize the TrunkContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The unique string that we created to identify the Trunk resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-    /**
-     * Fetch the TrunkInstance
-     *
-     * @return TrunkInstance Fetched TrunkInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): TrunkInstance
-    {
+		$this->uri = '/Trunks/' . \rawurlencode($sid)
+		. '';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-        return new TrunkInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
+		throw new TwilioException('Resource does not have a context');
+	}
 
-    /**
-     * Update the TrunkInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return TrunkInstance Updated TrunkInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): TrunkInstance
-    {
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        $options = new Values($options);
+			return $this->{$method}();
+		}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'DomainName' =>
-                $options['domainName'],
-            'DisasterRecoveryUrl' =>
-                $options['disasterRecoveryUrl'],
-            'DisasterRecoveryMethod' =>
-                $options['disasterRecoveryMethod'],
-            'TransferMode' =>
-                $options['transferMode'],
-            'Secure' =>
-                Serialize::booleanToString($options['secure']),
-            'CnamLookupEnabled' =>
-                Serialize::booleanToString($options['cnamLookupEnabled']),
-            'TransferCallerId' =>
-                $options['transferCallerId'],
-        ]);
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return new TrunkInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Trunking.V1.TrunkContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Access the ipAccessControlLists
-     */
-    protected function getIpAccessControlLists(): IpAccessControlListList
-    {
-        if (!$this->_ipAccessControlLists) {
-            $this->_ipAccessControlLists = new IpAccessControlListList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Delete the TrunkInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        return $this->_ipAccessControlLists;
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-    /**
-     * Access the phoneNumbers
-     */
-    protected function getPhoneNumbers(): PhoneNumberList
-    {
-        if (!$this->_phoneNumbers) {
-            $this->_phoneNumbers = new PhoneNumberList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
-        return $this->_phoneNumbers;
-    }
+	/**
+	 * Fetch the TrunkInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TrunkInstance Fetched TrunkInstance
+	 */
+	public function fetch() : TrunkInstance
+	{
 
-    /**
-     * Access the credentialsLists
-     */
-    protected function getCredentialsLists(): CredentialListList
-    {
-        if (!$this->_credentialsLists) {
-            $this->_credentialsLists = new CredentialListList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        return $this->_credentialsLists;
-    }
+		return new TrunkInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-    /**
-     * Access the originationUrls
-     */
-    protected function getOriginationUrls(): OriginationUrlList
-    {
-        if (!$this->_originationUrls) {
-            $this->_originationUrls = new OriginationUrlList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Update the TrunkInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TrunkInstance Updated TrunkInstance
+	 */
+	public function update(array $options = []) : TrunkInstance
+	{
 
-        return $this->_originationUrls;
-    }
+		$options = new Values($options);
 
-    /**
-     * Access the recordings
-     */
-    protected function getRecordings(): RecordingList
-    {
-        if (!$this->_recordings) {
-            $this->_recordings = new RecordingList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		$data = Values::of([
+			'FriendlyName' => $options['friendlyName'],
+			'DomainName' => $options['domainName'],
+			'DisasterRecoveryUrl' => $options['disasterRecoveryUrl'],
+			'DisasterRecoveryMethod' => $options['disasterRecoveryMethod'],
+			'TransferMode' => $options['transferMode'],
+			'Secure' => Serialize::booleanToString($options['secure']),
+			'CnamLookupEnabled' => Serialize::booleanToString($options['cnamLookupEnabled']),
+			'TransferCallerId' => $options['transferCallerId'],
+		]);
 
-        return $this->_recordings;
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return new TrunkInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+	/**
+	 * Access the credentialsLists
+	 */
+	protected function getCredentialsLists() : CredentialListList
+	{
+		if (! $this->_credentialsLists) {
+			$this->_credentialsLists = new CredentialListList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+		return $this->_credentialsLists;
+	}
 
-        throw new TwilioException('Resource does not have a context');
-    }
+	/**
+	 * Access the ipAccessControlLists
+	 */
+	protected function getIpAccessControlLists() : IpAccessControlListList
+	{
+		if (! $this->_ipAccessControlLists) {
+			$this->_ipAccessControlLists = new IpAccessControlListList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Trunking.V1.TrunkContext ' . \implode(' ', $context) . ']';
-    }
+		return $this->_ipAccessControlLists;
+	}
+
+	/**
+	 * Access the originationUrls
+	 */
+	protected function getOriginationUrls() : OriginationUrlList
+	{
+		if (! $this->_originationUrls) {
+			$this->_originationUrls = new OriginationUrlList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_originationUrls;
+	}
+
+	/**
+	 * Access the phoneNumbers
+	 */
+	protected function getPhoneNumbers() : PhoneNumberList
+	{
+		if (! $this->_phoneNumbers) {
+			$this->_phoneNumbers = new PhoneNumberList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_phoneNumbers;
+	}
+
+	/**
+	 * Access the recordings
+	 */
+	protected function getRecordings() : RecordingList
+	{
+		if (! $this->_recordings) {
+			$this->_recordings = new RecordingList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_recordings;
+	}
 }

@@ -14,86 +14,82 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Intelligence\V2\Transcript;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class OperatorResultContext extends InstanceContext
-    {
-    /**
-     * Initialize the OperatorResultContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $transcriptSid A 34 character string that uniquely identifies this Transcript.
-     * @param string $operatorSid A 34 character string that identifies this Language Understanding operator sid.
-     */
-    public function __construct(
-        Version $version,
-        $transcriptSid,
-        $operatorSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the OperatorResultContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $transcriptSid A 34 character string that uniquely identifies this Transcript.
+	 * @param string $operatorSid A 34 character string that identifies this Language Understanding operator sid.
+	 */
+	public function __construct(
+		Version $version,
+		$transcriptSid,
+		$operatorSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'transcriptSid' =>
-            $transcriptSid,
-        'operatorSid' =>
-            $operatorSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'transcriptSid' => $transcriptSid,
+			'operatorSid' => $operatorSid,
+		];
 
-        $this->uri = '/Transcripts/' . \rawurlencode($transcriptSid)
-        .'/OperatorResults/' . \rawurlencode($operatorSid)
-        .'';
-    }
+		$this->uri = '/Transcripts/' . \rawurlencode($transcriptSid)
+		. '/OperatorResults/' . \rawurlencode($operatorSid)
+		. '';
+	}
 
-    /**
-     * Fetch the OperatorResultInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return OperatorResultInstance Fetched OperatorResultInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(array $options = []): OperatorResultInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $params = Values::of([
-            'Redacted' =>
-                Serialize::booleanToString($options['redacted']),
-        ]);
+		return '[Twilio.Intelligence.V2.OperatorResultContext ' . \implode(' ', $context) . ']';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+	/**
+	 * Fetch the OperatorResultInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return OperatorResultInstance Fetched OperatorResultInstance
+	 */
+	public function fetch(array $options = []) : OperatorResultInstance
+	{
 
-        return new OperatorResultInstance(
-            $this->version,
-            $payload,
-            $this->solution['transcriptSid'],
-            $this->solution['operatorSid']
-        );
-    }
+		$options = new Values($options);
 
+		$params = Values::of([
+			'Redacted' => Serialize::booleanToString($options['redacted']),
+		]);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Intelligence.V2.OperatorResultContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+
+		return new OperatorResultInstance(
+			$this->version,
+			$payload,
+			$this->solution['transcriptSid'],
+			$this->solution['operatorSid']
+		);
+	}
 }

@@ -14,14 +14,12 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Preview\Sync\Service\SyncList;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $accountSid
@@ -35,126 +33,127 @@ use Twilio\Version;
  */
 class SyncListPermissionInstance extends InstanceResource
 {
-    /**
-     * Initialize the SyncListPermissionInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $serviceSid 
-     * @param string $listSid Identifier of the Sync List. Either a SID or a unique name.
-     * @param string $identity Arbitrary string identifier representing a user associated with an FPA token, assigned by the developer.
-     */
-    public function __construct(Version $version, array $payload, string $serviceSid, string $listSid, ?string $identity = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the SyncListPermissionInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $listSid Identifier of the Sync List. Either a SID or a unique name.
+	 * @param string $identity Arbitrary string identifier representing a user associated with an FPA token, assigned by the developer.
+	 */
+	public function __construct(Version $version, array $payload, string $serviceSid, string $listSid, ?string $identity = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'serviceSid' => Values::array_get($payload, 'service_sid'),
-            'listSid' => Values::array_get($payload, 'list_sid'),
-            'identity' => Values::array_get($payload, 'identity'),
-            'read' => Values::array_get($payload, 'read'),
-            'write' => Values::array_get($payload, 'write'),
-            'manage' => Values::array_get($payload, 'manage'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'serviceSid' => Values::array_get($payload, 'service_sid'),
+			'listSid' => Values::array_get($payload, 'list_sid'),
+			'identity' => Values::array_get($payload, 'identity'),
+			'read' => Values::array_get($payload, 'read'),
+			'write' => Values::array_get($payload, 'write'),
+			'manage' => Values::array_get($payload, 'manage'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['serviceSid' => $serviceSid, 'listSid' => $listSid, 'identity' => $identity ?: $this->properties['identity'], ];
-    }
+		$this->solution = ['serviceSid' => $serviceSid, 'listSid' => $listSid, 'identity' => $identity ?: $this->properties['identity'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return SyncListPermissionContext Context for this SyncListPermissionInstance
-     */
-    protected function proxy(): SyncListPermissionContext
-    {
-        if (!$this->context) {
-            $this->context = new SyncListPermissionContext(
-                $this->version,
-                $this->solution['serviceSid'],
-                $this->solution['listSid'],
-                $this->solution['identity']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the SyncListPermissionInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the SyncListPermissionInstance
-     *
-     * @return SyncListPermissionInstance Fetched SyncListPermissionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): SyncListPermissionInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Update the SyncListPermissionInstance
-     *
-     * @param bool $read Boolean flag specifying whether the identity can read the Sync List.
-     * @param bool $write Boolean flag specifying whether the identity can create, update and delete Items of the Sync List.
-     * @param bool $manage Boolean flag specifying whether the identity can delete the Sync List.
-     * @return SyncListPermissionInstance Updated SyncListPermissionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(bool $read, bool $write, bool $manage): SyncListPermissionInstance
-    {
+		return '[Twilio.Preview.Sync.SyncListPermissionInstance ' . \implode(' ', $context) . ']';
+	}
 
-        return $this->proxy()->update($read, $write, $manage);
-    }
+	/**
+	 * Delete the SyncListPermissionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return $this->proxy()->delete();
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Fetch the SyncListPermissionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SyncListPermissionInstance Fetched SyncListPermissionInstance
+	 */
+	public function fetch() : SyncListPermissionInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->fetch();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Preview.Sync.SyncListPermissionInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the SyncListPermissionInstance
+	 *
+	 * @param bool $read Boolean flag specifying whether the identity can read the Sync List.
+	 * @param bool $write Boolean flag specifying whether the identity can create, update and delete Items of the Sync List.
+	 * @param bool $manage Boolean flag specifying whether the identity can delete the Sync List.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SyncListPermissionInstance Updated SyncListPermissionInstance
+	 */
+	public function update(bool $read, bool $write, bool $manage) : SyncListPermissionInstance
+	{
+
+		return $this->proxy()->update($read, $write, $manage);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return SyncListPermissionContext Context for this SyncListPermissionInstance
+	 */
+	protected function proxy() : SyncListPermissionContext
+	{
+		if (! $this->context) {
+			$this->context = new SyncListPermissionContext(
+				$this->version,
+				$this->solution['serviceSid'],
+				$this->solution['listSid'],
+				$this->solution['identity']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

@@ -14,90 +14,87 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Assistants\V1\Assistant;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class AssistantsKnowledgeContext extends InstanceContext
-    {
-    /**
-     * Initialize the AssistantsKnowledgeContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $assistantId The assistant ID.
-     * @param string $id The knowledge ID.
-     */
-    public function __construct(
-        Version $version,
-        $assistantId,
-        $id
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the AssistantsKnowledgeContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $assistantId The assistant ID.
+	 * @param string $id The knowledge ID.
+	 */
+	public function __construct(
+		Version $version,
+		$assistantId,
+		$id
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'assistantId' =>
-            $assistantId,
-        'id' =>
-            $id,
-        ];
+		// Path Solution
+		$this->solution = [
+			'assistantId' => $assistantId,
+			'id' => $id,
+		];
 
-        $this->uri = '/Assistants/' . \rawurlencode($assistantId)
-        .'/Knowledge/' . \rawurlencode($id)
-        .'';
-    }
+		$this->uri = '/Assistants/' . \rawurlencode($assistantId)
+		. '/Knowledge/' . \rawurlencode($id)
+		. '';
+	}
 
-    /**
-     * Create the AssistantsKnowledgeInstance
-     *
-     * @return AssistantsKnowledgeInstance Created AssistantsKnowledgeInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(): AssistantsKnowledgeInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new AssistantsKnowledgeInstance(
-            $this->version,
-            $payload,
-            $this->solution['assistantId'],
-            $this->solution['id']
-        );
-    }
+		return '[Twilio.Assistants.V1.AssistantsKnowledgeContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Create the AssistantsKnowledgeInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AssistantsKnowledgeInstance Created AssistantsKnowledgeInstance
+	 */
+	public function create() : AssistantsKnowledgeInstance
+	{
 
-    /**
-     * Delete the AssistantsKnowledgeInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], [], $headers);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		return new AssistantsKnowledgeInstance(
+			$this->version,
+			$payload,
+			$this->solution['assistantId'],
+			$this->solution['id']
+		);
+	}
 
+	/**
+	 * Delete the AssistantsKnowledgeInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Assistants.V1.AssistantsKnowledgeContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 }

@@ -21,65 +21,61 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class SinkValidateList extends ListResource
-    {
-    /**
-     * Construct the SinkValidateList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid A 34 character string that uniquely identifies the Sink being validated.
-     */
-    public function __construct(
-        Version $version,
-        string $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the SinkValidateList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid A 34 character string that uniquely identifies the Sink being validated.
+	 */
+	public function __construct(
+		Version $version,
+		string $sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
 
-        $this->uri = '/Sinks/' . \rawurlencode($sid)
-        .'/Validate';
-    }
+		];
 
-    /**
-     * Create the SinkValidateInstance
-     *
-     * @param string $testId A 34 character string that uniquely identifies the test event for a Sink being validated.
-     * @return SinkValidateInstance Created SinkValidateInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $testId): SinkValidateInstance
-    {
+		$this->uri = '/Sinks/' . \rawurlencode($sid)
+		. '/Validate';
+	}
 
-        $data = Values::of([
-            'TestId' =>
-                $testId,
-        ]);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Events.V1.SinkValidateList]';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Create the SinkValidateInstance
+	 *
+	 * @param string $testId A 34 character string that uniquely identifies the test event for a Sink being validated.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SinkValidateInstance Created SinkValidateInstance
+	 */
+	public function create(string $testId) : SinkValidateInstance
+	{
 
-        return new SinkValidateInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'TestId' => $testId,
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Events.V1.SinkValidateList]';
-    }
+		return new SinkValidateInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

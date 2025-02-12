@@ -14,106 +14,99 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class InsightsQuestionnairesQuestionContext extends InstanceContext
-    {
-    /**
-     * Initialize the InsightsQuestionnairesQuestionContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $questionSid The SID of the question
-     */
-    public function __construct(
-        Version $version,
-        $questionSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the InsightsQuestionnairesQuestionContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $questionSid The SID of the question
+	 */
+	public function __construct(
+		Version $version,
+		$questionSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'questionSid' =>
-            $questionSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'questionSid' => $questionSid,
+		];
 
-        $this->uri = '/Insights/QualityManagement/Questions/' . \rawurlencode($questionSid)
-        .'';
-    }
+		$this->uri = '/Insights/QualityManagement/Questions/' . \rawurlencode($questionSid)
+		. '';
+	}
 
-    /**
-     * Delete the InsightsQuestionnairesQuestionInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(array $options = []): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Authorization' => $options['authorization']]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		return '[Twilio.FlexApi.V1.InsightsQuestionnairesQuestionContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Delete the InsightsQuestionnairesQuestionInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete(array $options = []) : bool
+	{
 
-    /**
-     * Update the InsightsQuestionnairesQuestionInstance
-     *
-     * @param bool $allowNa The flag to enable for disable NA for answer.
-     * @param array|Options $options Optional Arguments
-     * @return InsightsQuestionnairesQuestionInstance Updated InsightsQuestionnairesQuestionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(bool $allowNa, array $options = []): InsightsQuestionnairesQuestionInstance
-    {
+		$options = new Values($options);
 
-        $options = new Values($options);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Authorization' => $options['authorization']]);
 
-        $data = Values::of([
-            'AllowNa' =>
-                Serialize::booleanToString($allowNa),
-            'CategorySid' =>
-                $options['categorySid'],
-            'Question' =>
-                $options['question'],
-            'Description' =>
-                $options['description'],
-            'AnswerSetId' =>
-                $options['answerSetId'],
-        ]);
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Authorization' => $options['authorization']]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Update the InsightsQuestionnairesQuestionInstance
+	 *
+	 * @param bool $allowNa The flag to enable for disable NA for answer.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return InsightsQuestionnairesQuestionInstance Updated InsightsQuestionnairesQuestionInstance
+	 */
+	public function update(bool $allowNa, array $options = []) : InsightsQuestionnairesQuestionInstance
+	{
 
-        return new InsightsQuestionnairesQuestionInstance(
-            $this->version,
-            $payload,
-            $this->solution['questionSid']
-        );
-    }
+		$options = new Values($options);
 
+		$data = Values::of([
+			'AllowNa' => Serialize::booleanToString($allowNa),
+			'CategorySid' => $options['categorySid'],
+			'Question' => $options['question'],
+			'Description' => $options['description'],
+			'AnswerSetId' => $options['answerSetId'],
+		]);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.FlexApi.V1.InsightsQuestionnairesQuestionContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Authorization' => $options['authorization']]);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+
+		return new InsightsQuestionnairesQuestionInstance(
+			$this->version,
+			$payload,
+			$this->solution['questionSid']
+		);
+	}
 }

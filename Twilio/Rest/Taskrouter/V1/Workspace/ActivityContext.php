@@ -14,120 +14,115 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Taskrouter\V1\Workspace;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class ActivityContext extends InstanceContext
-    {
-    /**
-     * Initialize the ActivityContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $workspaceSid The SID of the Workspace that the new Activity belongs to.
-     * @param string $sid The SID of the Activity resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $workspaceSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the ActivityContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $workspaceSid The SID of the Workspace that the new Activity belongs to.
+	 * @param string $sid The SID of the Activity resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$workspaceSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'workspaceSid' =>
-            $workspaceSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'workspaceSid' => $workspaceSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
-        .'/Activities/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
+		. '/Activities/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the ActivityInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Taskrouter.V1.ActivityContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the ActivityInstance
-     *
-     * @return ActivityInstance Fetched ActivityInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ActivityInstance
-    {
+	/**
+	 * Delete the ActivityInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new ActivityInstance(
-            $this->version,
-            $payload,
-            $this->solution['workspaceSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the ActivityInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ActivityInstance Fetched ActivityInstance
+	 */
+	public function fetch() : ActivityInstance
+	{
 
-    /**
-     * Update the ActivityInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ActivityInstance Updated ActivityInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): ActivityInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new ActivityInstance(
+			$this->version,
+			$payload,
+			$this->solution['workspaceSid'],
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $options['friendlyName'],
-        ]);
+	/**
+	 * Update the ActivityInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ActivityInstance Updated ActivityInstance
+	 */
+	public function update(array $options = []) : ActivityInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new ActivityInstance(
-            $this->version,
-            $payload,
-            $this->solution['workspaceSid'],
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'FriendlyName' => $options['friendlyName'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Taskrouter.V1.ActivityContext ' . \implode(' ', $context) . ']';
-    }
+		return new ActivityInstance(
+			$this->version,
+			$payload,
+			$this->solution['workspaceSid'],
+			$this->solution['sid']
+		);
+	}
 }

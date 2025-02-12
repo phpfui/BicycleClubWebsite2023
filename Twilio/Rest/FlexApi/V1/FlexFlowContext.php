@@ -14,146 +14,126 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class FlexFlowContext extends InstanceContext
-    {
-    /**
-     * Initialize the FlexFlowContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The SID of the Flex Flow resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the FlexFlowContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The SID of the Flex Flow resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/FlexFlows/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/FlexFlows/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the FlexFlowInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.FlexApi.V1.FlexFlowContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the FlexFlowInstance
-     *
-     * @return FlexFlowInstance Fetched FlexFlowInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): FlexFlowInstance
-    {
+	/**
+	 * Delete the FlexFlowInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new FlexFlowInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the FlexFlowInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return FlexFlowInstance Fetched FlexFlowInstance
+	 */
+	public function fetch() : FlexFlowInstance
+	{
 
-    /**
-     * Update the FlexFlowInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return FlexFlowInstance Updated FlexFlowInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): FlexFlowInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new FlexFlowInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'ChatServiceSid' =>
-                $options['chatServiceSid'],
-            'ChannelType' =>
-                $options['channelType'],
-            'ContactIdentity' =>
-                $options['contactIdentity'],
-            'Enabled' =>
-                Serialize::booleanToString($options['enabled']),
-            'IntegrationType' =>
-                $options['integrationType'],
-            'Integration.FlowSid' =>
-                $options['integrationFlowSid'],
-            'Integration.Url' =>
-                $options['integrationUrl'],
-            'Integration.WorkspaceSid' =>
-                $options['integrationWorkspaceSid'],
-            'Integration.WorkflowSid' =>
-                $options['integrationWorkflowSid'],
-            'Integration.Channel' =>
-                $options['integrationChannel'],
-            'Integration.Timeout' =>
-                $options['integrationTimeout'],
-            'Integration.Priority' =>
-                $options['integrationPriority'],
-            'Integration.CreationOnMessage' =>
-                Serialize::booleanToString($options['integrationCreationOnMessage']),
-            'LongLived' =>
-                Serialize::booleanToString($options['longLived']),
-            'JanitorEnabled' =>
-                Serialize::booleanToString($options['janitorEnabled']),
-            'Integration.RetryCount' =>
-                $options['integrationRetryCount'],
-        ]);
+	/**
+	 * Update the FlexFlowInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return FlexFlowInstance Updated FlexFlowInstance
+	 */
+	public function update(array $options = []) : FlexFlowInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new FlexFlowInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'FriendlyName' => $options['friendlyName'],
+			'ChatServiceSid' => $options['chatServiceSid'],
+			'ChannelType' => $options['channelType'],
+			'ContactIdentity' => $options['contactIdentity'],
+			'Enabled' => Serialize::booleanToString($options['enabled']),
+			'IntegrationType' => $options['integrationType'],
+			'Integration.FlowSid' => $options['integrationFlowSid'],
+			'Integration.Url' => $options['integrationUrl'],
+			'Integration.WorkspaceSid' => $options['integrationWorkspaceSid'],
+			'Integration.WorkflowSid' => $options['integrationWorkflowSid'],
+			'Integration.Channel' => $options['integrationChannel'],
+			'Integration.Timeout' => $options['integrationTimeout'],
+			'Integration.Priority' => $options['integrationPriority'],
+			'Integration.CreationOnMessage' => Serialize::booleanToString($options['integrationCreationOnMessage']),
+			'LongLived' => Serialize::booleanToString($options['longLived']),
+			'JanitorEnabled' => Serialize::booleanToString($options['janitorEnabled']),
+			'Integration.RetryCount' => $options['integrationRetryCount'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.FlexApi.V1.FlexFlowContext ' . \implode(' ', $context) . ']';
-    }
+		return new FlexFlowInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

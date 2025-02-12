@@ -14,128 +14,128 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Insights\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
+use Twilio\Rest\Insights\V1\Room\ParticipantList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Rest\Insights\V1\Room\ParticipantList;
-
 
 /**
  * @property ParticipantList $participants
  * @method \Twilio\Rest\Insights\V1\Room\ParticipantContext participants(string $participantSid)
  */
 class RoomContext extends InstanceContext
-    {
-    protected $_participants;
+	{
+	protected $_participants;
 
-    /**
-     * Initialize the RoomContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $roomSid The SID of the Room resource.
-     */
-    public function __construct(
-        Version $version,
-        $roomSid
-    ) {
-        parent::__construct($version);
+	/**
+	 * Initialize the RoomContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $roomSid The SID of the Room resource.
+	 */
+	public function __construct(
+		Version $version,
+		$roomSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'roomSid' =>
-            $roomSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'roomSid' => $roomSid,
+		];
 
-        $this->uri = '/Video/Rooms/' . \rawurlencode($roomSid)
-        .'';
-    }
+		$this->uri = '/Video/Rooms/' . \rawurlencode($roomSid)
+		. '';
+	}
 
-    /**
-     * Fetch the RoomInstance
-     *
-     * @return RoomInstance Fetched RoomInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): RoomInstance
-    {
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
-        return new RoomInstance(
-            $this->version,
-            $payload,
-            $this->solution['roomSid']
-        );
-    }
+		throw new TwilioException('Resource does not have a context');
+	}
 
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Access the participants
-     */
-    protected function getParticipants(): ParticipantList
-    {
-        if (!$this->_participants) {
-            $this->_participants = new ParticipantList(
-                $this->version,
-                $this->solution['roomSid']
-            );
-        }
+			return $this->{$method}();
+		}
 
-        return $this->_participants;
-    }
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+		return '[Twilio.Insights.V1.RoomContext ' . \implode(' ', $context) . ']';
+	}
 
-        throw new TwilioException('Resource does not have a context');
-    }
+	/**
+	 * Fetch the RoomInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return RoomInstance Fetched RoomInstance
+	 */
+	public function fetch() : RoomInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Insights.V1.RoomContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new RoomInstance(
+			$this->version,
+			$payload,
+			$this->solution['roomSid']
+		);
+	}
+
+	/**
+	 * Access the participants
+	 */
+	protected function getParticipants() : ParticipantList
+	{
+		if (! $this->_participants) {
+			$this->_participants = new ParticipantList(
+				$this->version,
+				$this->solution['roomSid']
+			);
+		}
+
+		return $this->_participants;
+	}
 }

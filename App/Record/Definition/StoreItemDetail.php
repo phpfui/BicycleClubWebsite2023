@@ -16,17 +16,26 @@ abstract class StoreItemDetail extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'detailLine' => ['char(100)', 'string', 100, true, ],
-		'quantity' => ['int', 'int', 0, true, ],
-		'storeItemDetailId' => ['int', 'int', 0, false, ],
-		'storeItemId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['storeItemId', 'storeItemDetailId', ];
 
 	protected static string $table = 'storeItemDetail';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'detailLine' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
+				'quantity' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'storeItemDetailId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'storeItemId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

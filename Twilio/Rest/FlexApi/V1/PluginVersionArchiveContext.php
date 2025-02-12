@@ -14,80 +14,77 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class PluginVersionArchiveContext extends InstanceContext
-    {
-    /**
-     * Initialize the PluginVersionArchiveContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $pluginSid The SID of the Flex Plugin the resource to belongs to.
-     * @param string $sid The SID of the Flex Plugin Version resource to archive.
-     */
-    public function __construct(
-        Version $version,
-        $pluginSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the PluginVersionArchiveContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $pluginSid The SID of the Flex Plugin the resource to belongs to.
+	 * @param string $sid The SID of the Flex Plugin Version resource to archive.
+	 */
+	public function __construct(
+		Version $version,
+		$pluginSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'pluginSid' =>
-            $pluginSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'pluginSid' => $pluginSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/PluginService/Plugins/' . \rawurlencode($pluginSid)
-        .'/Versions/' . \rawurlencode($sid)
-        .'/Archive';
-    }
+		$this->uri = '/PluginService/Plugins/' . \rawurlencode($pluginSid)
+		. '/Versions/' . \rawurlencode($sid)
+		. '/Archive';
+	}
 
-    /**
-     * Update the PluginVersionArchiveInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return PluginVersionArchiveInstance Updated PluginVersionArchiveInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): PluginVersionArchiveInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Flex-Metadata' => $options['flexMetadata']]);
-        $payload = $this->version->update('POST', $this->uri, [], [], $headers);
+		return '[Twilio.FlexApi.V1.PluginVersionArchiveContext ' . \implode(' ', $context) . ']';
+	}
 
-        return new PluginVersionArchiveInstance(
-            $this->version,
-            $payload,
-            $this->solution['pluginSid'],
-            $this->solution['sid']
-        );
-    }
+	/**
+	 * Update the PluginVersionArchiveInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return PluginVersionArchiveInstance Updated PluginVersionArchiveInstance
+	 */
+	public function update(array $options = []) : PluginVersionArchiveInstance
+	{
 
+		$options = new Values($options);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.FlexApi.V1.PluginVersionArchiveContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Flex-Metadata' => $options['flexMetadata']]);
+		$payload = $this->version->update('POST', $this->uri, [], [], $headers);
+
+		return new PluginVersionArchiveInstance(
+			$this->version,
+			$payload,
+			$this->solution['pluginSid'],
+			$this->solution['sid']
+		);
+	}
 }

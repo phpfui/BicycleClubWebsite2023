@@ -19,55 +19,52 @@ namespace Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class TaskQueueRealTimeStatisticsList extends ListResource
-    {
-    /**
-     * Construct the TaskQueueRealTimeStatisticsList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $workspaceSid The SID of the Workspace with the TaskQueue to fetch.
-     * @param string $taskQueueSid The SID of the TaskQueue for which to fetch statistics.
-     */
-    public function __construct(
-        Version $version,
-        string $workspaceSid,
-        string $taskQueueSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the TaskQueueRealTimeStatisticsList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $workspaceSid The SID of the Workspace with the TaskQueue to fetch.
+	 * @param string $taskQueueSid The SID of the TaskQueue for which to fetch statistics.
+	 */
+	public function __construct(
+		Version $version,
+		string $workspaceSid,
+		string $taskQueueSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'workspaceSid' =>
-            $workspaceSid,
-        
-        'taskQueueSid' =>
-            $taskQueueSid,
-        
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+			'workspaceSid' => $workspaceSid,
 
-    /**
-     * Constructs a TaskQueueRealTimeStatisticsContext
-     */
-    public function getContext(
-        
-    ): TaskQueueRealTimeStatisticsContext
-    {
-        return new TaskQueueRealTimeStatisticsContext(
-            $this->version,
-            $this->solution['workspaceSid'],
-            $this->solution['taskQueueSid']
-        );
-    }
+			'taskQueueSid' => $taskQueueSid,
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Taskrouter.V1.TaskQueueRealTimeStatisticsList]';
-    }
+		];
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Taskrouter.V1.TaskQueueRealTimeStatisticsList]';
+	}
+
+	/**
+	 * Constructs a TaskQueueRealTimeStatisticsContext
+	 */
+	public function getContext(
+
+	) : TaskQueueRealTimeStatisticsContext
+	{
+		return new TaskQueueRealTimeStatisticsContext(
+			$this->version,
+			$this->solution['workspaceSid'],
+			$this->solution['taskQueueSid']
+		);
+	}
 }

@@ -22,24 +22,33 @@ abstract class HeaderContent extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'active' => ['int', 'int', 0, false, 0, ],
-		'content' => ['mediumtext', 'string', 16777215, true, ],
-		'css' => ['mediumtext', 'string', 16777215, true, ],
-		'endDate' => ['date', 'string', 10, true, ],
-		'headerContentId' => ['int', 'int', 0, false, ],
-		'javaScript' => ['text', 'string', 65535, true, ],
-		'name' => ['varchar(100)', 'string', 100, true, ],
-		'showDay' => ['int', 'int', 0, true, ],
-		'showMonth' => ['int', 'int', 0, true, ],
-		'startDate' => ['date', 'string', 10, true, ],
-		'urlPath' => ['varchar(255)', 'string', 255, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['headerContentId', ];
 
 	protected static string $table = 'headerContent';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'active' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'content' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
+				'css' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
+				'endDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'headerContentId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'javaScript' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'name' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+				'showDay' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'showMonth' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'startDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'urlPath' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

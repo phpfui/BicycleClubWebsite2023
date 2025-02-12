@@ -14,116 +14,111 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Iam\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class ApiKeyContext extends InstanceContext
-    {
-    /**
-     * Initialize the ApiKeyContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The Twilio-provided string that uniquely identifies the Key resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the ApiKeyContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The Twilio-provided string that uniquely identifies the Key resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Keys/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Keys/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the ApiKeyInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Iam.V1.ApiKeyContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the ApiKeyInstance
-     *
-     * @return ApiKeyInstance Fetched ApiKeyInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ApiKeyInstance
-    {
+	/**
+	 * Delete the ApiKeyInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new ApiKeyInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the ApiKeyInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ApiKeyInstance Fetched ApiKeyInstance
+	 */
+	public function fetch() : ApiKeyInstance
+	{
 
-    /**
-     * Update the ApiKeyInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ApiKeyInstance Updated ApiKeyInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): ApiKeyInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new ApiKeyInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'Policy' =>
-                Serialize::jsonObject($options['policy']),
-        ]);
+	/**
+	 * Update the ApiKeyInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ApiKeyInstance Updated ApiKeyInstance
+	 */
+	public function update(array $options = []) : ApiKeyInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new ApiKeyInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'FriendlyName' => $options['friendlyName'],
+			'Policy' => Serialize::jsonObject($options['policy']),
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Iam.V1.ApiKeyContext ' . \implode(' ', $context) . ']';
-    }
+		return new ApiKeyInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

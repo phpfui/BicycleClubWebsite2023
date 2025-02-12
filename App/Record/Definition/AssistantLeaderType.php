@@ -14,16 +14,25 @@ abstract class AssistantLeaderType extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'assistantLeaderTypeId' => ['int', 'int', 0, false, ],
-		'name' => ['varchar(100)', 'string', 100, false, ],
-		'volunteerPoints' => ['int', 'int', 0, false, 0, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['assistantLeaderTypeId', ];
 
 	protected static string $table = 'assistantLeaderType';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'assistantLeaderTypeId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'name' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, false, ),
+				'volunteerPoints' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+			];
+			}
+
+		return $this;
+		}
 	}

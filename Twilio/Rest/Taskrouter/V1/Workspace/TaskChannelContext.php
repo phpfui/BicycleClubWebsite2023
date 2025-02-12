@@ -14,123 +14,117 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Taskrouter\V1\Workspace;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class TaskChannelContext extends InstanceContext
-    {
-    /**
-     * Initialize the TaskChannelContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $workspaceSid The SID of the Workspace that the new Task Channel belongs to.
-     * @param string $sid The SID of the Task Channel resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $workspaceSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the TaskChannelContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $workspaceSid The SID of the Workspace that the new Task Channel belongs to.
+	 * @param string $sid The SID of the Task Channel resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$workspaceSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'workspaceSid' =>
-            $workspaceSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'workspaceSid' => $workspaceSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
-        .'/TaskChannels/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
+		. '/TaskChannels/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the TaskChannelInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Taskrouter.V1.TaskChannelContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the TaskChannelInstance
-     *
-     * @return TaskChannelInstance Fetched TaskChannelInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): TaskChannelInstance
-    {
+	/**
+	 * Delete the TaskChannelInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new TaskChannelInstance(
-            $this->version,
-            $payload,
-            $this->solution['workspaceSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the TaskChannelInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TaskChannelInstance Fetched TaskChannelInstance
+	 */
+	public function fetch() : TaskChannelInstance
+	{
 
-    /**
-     * Update the TaskChannelInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return TaskChannelInstance Updated TaskChannelInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): TaskChannelInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new TaskChannelInstance(
+			$this->version,
+			$payload,
+			$this->solution['workspaceSid'],
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'ChannelOptimizedRouting' =>
-                Serialize::booleanToString($options['channelOptimizedRouting']),
-        ]);
+	/**
+	 * Update the TaskChannelInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TaskChannelInstance Updated TaskChannelInstance
+	 */
+	public function update(array $options = []) : TaskChannelInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new TaskChannelInstance(
-            $this->version,
-            $payload,
-            $this->solution['workspaceSid'],
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'FriendlyName' => $options['friendlyName'],
+			'ChannelOptimizedRouting' => Serialize::booleanToString($options['channelOptimizedRouting']),
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Taskrouter.V1.TaskChannelContext ' . \implode(' ', $context) . ']';
-    }
+		return new TaskChannelInstance(
+			$this->version,
+			$payload,
+			$this->solution['workspaceSid'],
+			$this->solution['sid']
+		);
+	}
 }

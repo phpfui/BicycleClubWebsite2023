@@ -14,76 +14,73 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Serverless\V1\Service\Build;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class BuildStatusContext extends InstanceContext
-    {
-    /**
-     * Initialize the BuildStatusContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the Service to fetch the Build resource from.
-     * @param string $sid The SID of the Build resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the BuildStatusContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the Service to fetch the Build resource from.
+	 * @param string $sid The SID of the Build resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Builds/' . \rawurlencode($sid)
-        .'/Status';
-    }
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Builds/' . \rawurlencode($sid)
+		. '/Status';
+	}
 
-    /**
-     * Fetch the BuildStatusInstance
-     *
-     * @return BuildStatusInstance Fetched BuildStatusInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): BuildStatusInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new BuildStatusInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Serverless.V1.BuildStatusContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the BuildStatusInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return BuildStatusInstance Fetched BuildStatusInstance
+	 */
+	public function fetch() : BuildStatusInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Serverless.V1.BuildStatusContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new BuildStatusInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['sid']
+		);
+	}
 }

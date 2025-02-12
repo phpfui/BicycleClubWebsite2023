@@ -14,93 +14,93 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Numbers\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Version;
 
-
 class PortingWebhookConfigurationDeleteInstance extends InstanceResource
 {
-    /**
-     * Initialize the PortingWebhookConfigurationDeleteInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $webhookType The webhook type for the configuration to be delete. `PORT_IN`, `PORT_OUT`
-     */
-    public function __construct(Version $version, array $payload, ?string $webhookType = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the PortingWebhookConfigurationDeleteInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $webhookType The webhook type for the configuration to be delete. `PORT_IN`, `PORT_OUT`
+	 */
+	public function __construct(Version $version, array $payload, ?string $webhookType = null)
+	{
+		parent::__construct($version);
 
-        $this->solution = ['webhookType' => $webhookType ?: $this->properties['webhookType'], ];
-    }
+		$this->solution = ['webhookType' => $webhookType ?: $this->properties['webhookType'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return PortingWebhookConfigurationDeleteContext Context for this PortingWebhookConfigurationDeleteInstance
-     */
-    protected function proxy(): PortingWebhookConfigurationDeleteContext
-    {
-        if (!$this->context) {
-            $this->context = new PortingWebhookConfigurationDeleteContext(
-                $this->version,
-                $this->solution['webhookType']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the PortingWebhookConfigurationDeleteInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Numbers.V1.PortingWebhookConfigurationDeleteInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Numbers.V1.PortingWebhookConfigurationDeleteInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Delete the PortingWebhookConfigurationDeleteInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
+
+		return $this->proxy()->delete();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return PortingWebhookConfigurationDeleteContext Context for this PortingWebhookConfigurationDeleteInstance
+	 */
+	protected function proxy() : PortingWebhookConfigurationDeleteContext
+	{
+		if (! $this->context) {
+			$this->context = new PortingWebhookConfigurationDeleteContext(
+				$this->version,
+				$this->solution['webhookType']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

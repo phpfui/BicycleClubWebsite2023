@@ -14,16 +14,14 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Messaging\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $domainSid
@@ -38,109 +36,111 @@ use Twilio\Deserialize;
  */
 class DomainConfigInstance extends InstanceResource
 {
-    /**
-     * Initialize the DomainConfigInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $domainSid Unique string used to identify the domain that this config should be associated with.
-     */
-    public function __construct(Version $version, array $payload, ?string $domainSid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the DomainConfigInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $domainSid Unique string used to identify the domain that this config should be associated with.
+	 */
+	public function __construct(Version $version, array $payload, ?string $domainSid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'domainSid' => Values::array_get($payload, 'domain_sid'),
-            'configSid' => Values::array_get($payload, 'config_sid'),
-            'fallbackUrl' => Values::array_get($payload, 'fallback_url'),
-            'callbackUrl' => Values::array_get($payload, 'callback_url'),
-            'continueOnFailure' => Values::array_get($payload, 'continue_on_failure'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-            'disableHttps' => Values::array_get($payload, 'disable_https'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'domainSid' => Values::array_get($payload, 'domain_sid'),
+			'configSid' => Values::array_get($payload, 'config_sid'),
+			'fallbackUrl' => Values::array_get($payload, 'fallback_url'),
+			'callbackUrl' => Values::array_get($payload, 'callback_url'),
+			'continueOnFailure' => Values::array_get($payload, 'continue_on_failure'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+			'disableHttps' => Values::array_get($payload, 'disable_https'),
+		];
 
-        $this->solution = ['domainSid' => $domainSid ?: $this->properties['domainSid'], ];
-    }
+		$this->solution = ['domainSid' => $domainSid ?: $this->properties['domainSid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return DomainConfigContext Context for this DomainConfigInstance
-     */
-    protected function proxy(): DomainConfigContext
-    {
-        if (!$this->context) {
-            $this->context = new DomainConfigContext(
-                $this->version,
-                $this->solution['domainSid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the DomainConfigInstance
-     *
-     * @return DomainConfigInstance Fetched DomainConfigInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): DomainConfigInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Update the DomainConfigInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return DomainConfigInstance Updated DomainConfigInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): DomainConfigInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->update($options);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return '[Twilio.Messaging.V1.DomainConfigInstance ' . \implode(' ', $context) . ']';
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Fetch the DomainConfigInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DomainConfigInstance Fetched DomainConfigInstance
+	 */
+	public function fetch() : DomainConfigInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->fetch();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Messaging.V1.DomainConfigInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the DomainConfigInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DomainConfigInstance Updated DomainConfigInstance
+	 */
+	public function update(array $options = []) : DomainConfigInstance
+	{
+
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return DomainConfigContext Context for this DomainConfigInstance
+	 */
+	protected function proxy() : DomainConfigContext
+	{
+		if (! $this->context) {
+			$this->context = new DomainConfigContext(
+				$this->version,
+				$this->solution['domainSid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

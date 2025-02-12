@@ -14,120 +14,115 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Events\V1\Subscription;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class SubscribedEventContext extends InstanceContext
-    {
-    /**
-     * Initialize the SubscribedEventContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $subscriptionSid The unique SID identifier of the Subscription.
-     * @param string $type Type of event being subscribed to.
-     */
-    public function __construct(
-        Version $version,
-        $subscriptionSid,
-        $type
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the SubscribedEventContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $subscriptionSid The unique SID identifier of the Subscription.
+	 * @param string $type Type of event being subscribed to.
+	 */
+	public function __construct(
+		Version $version,
+		$subscriptionSid,
+		$type
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'subscriptionSid' =>
-            $subscriptionSid,
-        'type' =>
-            $type,
-        ];
+		// Path Solution
+		$this->solution = [
+			'subscriptionSid' => $subscriptionSid,
+			'type' => $type,
+		];
 
-        $this->uri = '/Subscriptions/' . \rawurlencode($subscriptionSid)
-        .'/SubscribedEvents/' . \rawurlencode($type)
-        .'';
-    }
+		$this->uri = '/Subscriptions/' . \rawurlencode($subscriptionSid)
+		. '/SubscribedEvents/' . \rawurlencode($type)
+		. '';
+	}
 
-    /**
-     * Delete the SubscribedEventInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Events.V1.SubscribedEventContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the SubscribedEventInstance
-     *
-     * @return SubscribedEventInstance Fetched SubscribedEventInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): SubscribedEventInstance
-    {
+	/**
+	 * Delete the SubscribedEventInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new SubscribedEventInstance(
-            $this->version,
-            $payload,
-            $this->solution['subscriptionSid'],
-            $this->solution['type']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the SubscribedEventInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SubscribedEventInstance Fetched SubscribedEventInstance
+	 */
+	public function fetch() : SubscribedEventInstance
+	{
 
-    /**
-     * Update the SubscribedEventInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return SubscribedEventInstance Updated SubscribedEventInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): SubscribedEventInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new SubscribedEventInstance(
+			$this->version,
+			$payload,
+			$this->solution['subscriptionSid'],
+			$this->solution['type']
+		);
+	}
 
-        $data = Values::of([
-            'SchemaVersion' =>
-                $options['schemaVersion'],
-        ]);
+	/**
+	 * Update the SubscribedEventInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SubscribedEventInstance Updated SubscribedEventInstance
+	 */
+	public function update(array $options = []) : SubscribedEventInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new SubscribedEventInstance(
-            $this->version,
-            $payload,
-            $this->solution['subscriptionSid'],
-            $this->solution['type']
-        );
-    }
+		$data = Values::of([
+			'SchemaVersion' => $options['schemaVersion'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Events.V1.SubscribedEventContext ' . \implode(' ', $context) . ']';
-    }
+		return new SubscribedEventInstance(
+			$this->version,
+			$payload,
+			$this->solution['subscriptionSid'],
+			$this->solution['type']
+		);
+	}
 }

@@ -14,74 +14,72 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Messaging\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class DeactivationsContext extends InstanceContext
-    {
-    /**
-     * Initialize the DeactivationsContext
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the DeactivationsContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/Deactivations';
-    }
+		$this->uri = '/Deactivations';
+	}
 
-    /**
-     * Fetch the DeactivationsInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return DeactivationsInstance Fetched DeactivationsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(array $options = []): DeactivationsInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $params = Values::of([
-            'Date' =>
-                Serialize::iso8601Date($options['date']),
-        ]);
+		return '[Twilio.Messaging.V1.DeactivationsContext ' . \implode(' ', $context) . ']';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+	/**
+	 * Fetch the DeactivationsInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DeactivationsInstance Fetched DeactivationsInstance
+	 */
+	public function fetch(array $options = []) : DeactivationsInstance
+	{
 
-        return new DeactivationsInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$options = new Values($options);
 
+		$params = Values::of([
+			'Date' => Serialize::iso8601Date($options['date']),
+		]);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Messaging.V1.DeactivationsContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+
+		return new DeactivationsInstance(
+			$this->version,
+			$payload
+		);
+	}
 }

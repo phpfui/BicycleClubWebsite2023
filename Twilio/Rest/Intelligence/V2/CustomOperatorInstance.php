@@ -14,16 +14,14 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Intelligence\V2;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $accountSid
@@ -41,126 +39,128 @@ use Twilio\Deserialize;
  */
 class CustomOperatorInstance extends InstanceResource
 {
-    /**
-     * Initialize the CustomOperatorInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $sid A 34 character string that uniquely identifies this Custom Operator.
-     */
-    public function __construct(Version $version, array $payload, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the CustomOperatorInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $sid A 34 character string that uniquely identifies this Custom Operator.
+	 */
+	public function __construct(Version $version, array $payload, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'sid' => Values::array_get($payload, 'sid'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'description' => Values::array_get($payload, 'description'),
-            'author' => Values::array_get($payload, 'author'),
-            'operatorType' => Values::array_get($payload, 'operator_type'),
-            'version' => Values::array_get($payload, 'version'),
-            'availability' => Values::array_get($payload, 'availability'),
-            'config' => Values::array_get($payload, 'config'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'sid' => Values::array_get($payload, 'sid'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'description' => Values::array_get($payload, 'description'),
+			'author' => Values::array_get($payload, 'author'),
+			'operatorType' => Values::array_get($payload, 'operator_type'),
+			'version' => Values::array_get($payload, 'version'),
+			'availability' => Values::array_get($payload, 'availability'),
+			'config' => Values::array_get($payload, 'config'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return CustomOperatorContext Context for this CustomOperatorInstance
-     */
-    protected function proxy(): CustomOperatorContext
-    {
-        if (!$this->context) {
-            $this->context = new CustomOperatorContext(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the CustomOperatorInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the CustomOperatorInstance
-     *
-     * @return CustomOperatorInstance Fetched CustomOperatorInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): CustomOperatorInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Update the CustomOperatorInstance
-     *
-     * @param string $friendlyName A human-readable name of this resource, up to 64 characters.
-     * @param array $config Operator configuration, following the schema defined by the Operator Type.
-     * @param array|Options $options Optional Arguments
-     * @return CustomOperatorInstance Updated CustomOperatorInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $friendlyName, array $config, array $options = []): CustomOperatorInstance
-    {
+		return '[Twilio.Intelligence.V2.CustomOperatorInstance ' . \implode(' ', $context) . ']';
+	}
 
-        return $this->proxy()->update($friendlyName, $config, $options);
-    }
+	/**
+	 * Delete the CustomOperatorInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return $this->proxy()->delete();
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Fetch the CustomOperatorInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CustomOperatorInstance Fetched CustomOperatorInstance
+	 */
+	public function fetch() : CustomOperatorInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->fetch();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Intelligence.V2.CustomOperatorInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the CustomOperatorInstance
+	 *
+	 * @param string $friendlyName A human-readable name of this resource, up to 64 characters.
+	 * @param array $config Operator configuration, following the schema defined by the Operator Type.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CustomOperatorInstance Updated CustomOperatorInstance
+	 */
+	public function update(string $friendlyName, array $config, array $options = []) : CustomOperatorInstance
+	{
+
+		return $this->proxy()->update($friendlyName, $config, $options);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return CustomOperatorContext Context for this CustomOperatorInstance
+	 */
+	protected function proxy() : CustomOperatorContext
+	{
+		if (! $this->context) {
+			$this->context = new CustomOperatorContext(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

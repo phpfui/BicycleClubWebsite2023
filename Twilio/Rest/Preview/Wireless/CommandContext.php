@@ -14,70 +14,68 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Preview\Wireless;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class CommandContext extends InstanceContext
-    {
-    /**
-     * Initialize the CommandContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid 
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the CommandContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Commands/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Commands/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the CommandInstance
-     *
-     * @return CommandInstance Fetched CommandInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): CommandInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new CommandInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Preview.Wireless.CommandContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the CommandInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CommandInstance Fetched CommandInstance
+	 */
+	public function fetch() : CommandInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Preview.Wireless.CommandContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new CommandInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

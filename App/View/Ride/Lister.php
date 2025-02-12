@@ -8,7 +8,7 @@ class Lister
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
-		$this->metric = $page->value('RWGPSUnits') == 'km';
+		$this->metric = 'km' == $page->value('RWGPSUnits');
 		}
 
 	public function list(\App\Table\Ride $rideTable) : \App\UI\ContinuousScrollTable

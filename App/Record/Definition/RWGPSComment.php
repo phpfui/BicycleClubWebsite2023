@@ -17,18 +17,27 @@ abstract class RWGPSComment extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'RWGPSId' => ['int', 'int', 0, false, ],
-		'comment' => ['text', 'string', 65535, true, ],
-		'comments' => ['varchar(255)', 'string', 255, false, ],
-		'lastEdited' => ['datetime', 'string', 20, false, null, ],
-		'memberId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['RWGPSId', 'memberId', ];
 
 	protected static string $table = 'RWGPSComment';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'RWGPSId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'comment' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'comments' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, ),
+				'lastEdited' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

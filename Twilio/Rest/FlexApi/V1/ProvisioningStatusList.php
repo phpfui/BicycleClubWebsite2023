@@ -19,43 +19,42 @@ namespace Twilio\Rest\FlexApi\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class ProvisioningStatusList extends ListResource
-    {
-    /**
-     * Construct the ProvisioningStatusList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the ProvisioningStatusList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+		];
+	}
 
-    /**
-     * Constructs a ProvisioningStatusContext
-     */
-    public function getContext(
-        
-    ): ProvisioningStatusContext
-    {
-        return new ProvisioningStatusContext(
-            $this->version
-        );
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.FlexApi.V1.ProvisioningStatusList]';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.FlexApi.V1.ProvisioningStatusList]';
-    }
+	/**
+	 * Constructs a ProvisioningStatusContext
+	 */
+	public function getContext(
+
+	) : ProvisioningStatusContext
+	{
+		return new ProvisioningStatusContext(
+			$this->version
+		);
+	}
 }

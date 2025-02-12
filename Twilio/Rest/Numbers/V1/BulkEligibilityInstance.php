@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Numbers\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $requestId
@@ -35,94 +33,96 @@ use Twilio\Deserialize;
  */
 class BulkEligibilityInstance extends InstanceResource
 {
-    /**
-     * Initialize the BulkEligibilityInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $requestId The SID of the bulk eligibility check that you want to know about.
-     */
-    public function __construct(Version $version, array $payload, ?string $requestId = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the BulkEligibilityInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $requestId The SID of the bulk eligibility check that you want to know about.
+	 */
+	public function __construct(Version $version, array $payload, ?string $requestId = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'requestId' => Values::array_get($payload, 'request_id'),
-            'url' => Values::array_get($payload, 'url'),
-            'results' => Values::array_get($payload, 'results'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'status' => Values::array_get($payload, 'status'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateCompleted' => Deserialize::dateTime(Values::array_get($payload, 'date_completed')),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'requestId' => Values::array_get($payload, 'request_id'),
+			'url' => Values::array_get($payload, 'url'),
+			'results' => Values::array_get($payload, 'results'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'status' => Values::array_get($payload, 'status'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateCompleted' => Deserialize::dateTime(Values::array_get($payload, 'date_completed')),
+		];
 
-        $this->solution = ['requestId' => $requestId ?: $this->properties['requestId'], ];
-    }
+		$this->solution = ['requestId' => $requestId ?: $this->properties['requestId'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return BulkEligibilityContext Context for this BulkEligibilityInstance
-     */
-    protected function proxy(): BulkEligibilityContext
-    {
-        if (!$this->context) {
-            $this->context = new BulkEligibilityContext(
-                $this->version,
-                $this->solution['requestId']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the BulkEligibilityInstance
-     *
-     * @return BulkEligibilityInstance Fetched BulkEligibilityInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): BulkEligibilityInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Numbers.V1.BulkEligibilityInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Numbers.V1.BulkEligibilityInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the BulkEligibilityInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return BulkEligibilityInstance Fetched BulkEligibilityInstance
+	 */
+	public function fetch() : BulkEligibilityInstance
+	{
+
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return BulkEligibilityContext Context for this BulkEligibilityInstance
+	 */
+	protected function proxy() : BulkEligibilityContext
+	{
+		if (! $this->context) {
+			$this->context = new BulkEligibilityContext(
+				$this->version,
+				$this->solution['requestId']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

@@ -25,26 +25,35 @@ abstract class StoreItem extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'active' => ['int', 'int', 0, false, 0, ],
-		'clothing' => ['int', 'int', 0, true, ],
-		'description' => ['text', 'string', 65535, true, ],
-		'folderId' => ['int', 'int', 0, true, ],
-		'noShipping' => ['int', 'int', 0, true, ],
-		'payByPoints' => ['int', 'int', 0, true, ],
-		'pickupZip' => ['char(5)', 'string', 5, true, ],
-		'pointsOnly' => ['int', 'int', 0, false, 0, ],
-		'price' => ['decimal(5,2)', 'float', 5, true, ],
-		'shipping' => ['decimal(5,2)', 'float', 5, true, ],
-		'storeItemId' => ['int', 'int', 0, false, ],
-		'taxable' => ['int', 'int', 0, true, ],
-		'title' => ['char(100)', 'string', 100, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['storeItemId', ];
 
 	protected static string $table = 'storeItem';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'active' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'clothing' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'description' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'folderId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'noShipping' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'payByPoints' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'pickupZip' => new \PHPFUI\ORM\FieldDefinition('char(5)', 'string', 5, true, ),
+				'pointsOnly' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'price' => new \PHPFUI\ORM\FieldDefinition('decimal(5,2)', 'float', 5, true, ),
+				'shipping' => new \PHPFUI\ORM\FieldDefinition('decimal(5,2)', 'float', 5, true, ),
+				'storeItemId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'taxable' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

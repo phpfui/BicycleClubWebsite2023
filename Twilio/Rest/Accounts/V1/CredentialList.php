@@ -17,12 +17,11 @@
 namespace Twilio\Rest\Accounts\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\ListResource;
-use Twilio\Version;
 use Twilio\InstanceContext;
+use Twilio\ListResource;
 use Twilio\Rest\Accounts\V1\Credential\AwsList;
 use Twilio\Rest\Accounts\V1\Credential\PublicKeyList;
-
+use Twilio\Version;
 
 /**
  * @property AwsList $aws
@@ -31,93 +30,98 @@ use Twilio\Rest\Accounts\V1\Credential\PublicKeyList;
  * @method \Twilio\Rest\Accounts\V1\Credential\AwsContext aws(string $sid)
  */
 class CredentialList extends ListResource
-    {
-    protected $_aws = null;
-    protected $_publicKey = null;
+	{
+	protected $_aws = null;
 
-    /**
-     * Construct the CredentialList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	protected $_publicKey = null;
 
-        // Path Solution
-        $this->solution = [
-        ];
-    }
+	/**
+	 * Construct the CredentialList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-    /**
-     * Access the aws
-     */
-    protected function getAws(): AwsList
-    {
-        if (!$this->_aws) {
-            $this->_aws = new AwsList(
-                $this->version
-            );
-        }
-        return $this->_aws;
-    }
+		// Path Solution
+		$this->solution = [
+		];
+	}
 
-    /**
-     * Access the publicKey
-     */
-    protected function getPublicKey(): PublicKeyList
-    {
-        if (!$this->_publicKey) {
-            $this->_publicKey = new PublicKeyList(
-                $this->version
-            );
-        }
-        return $this->_publicKey;
-    }
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return \Twilio\ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name)
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		throw new TwilioException('Resource does not have a context');
+	}
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return \Twilio\ListResource The requested subresource
+	 */
+	public function __get(string $name)
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        throw new TwilioException('Resource does not have a context');
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Accounts.V1.CredentialList]';
-    }
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Accounts.V1.CredentialList]';
+	}
+
+	/**
+	 * Access the aws
+	 */
+	protected function getAws() : AwsList
+	{
+		if (! $this->_aws) {
+			$this->_aws = new AwsList(
+				$this->version
+			);
+		}
+
+		return $this->_aws;
+	}
+
+	/**
+	 * Access the publicKey
+	 */
+	protected function getPublicKey() : PublicKeyList
+	{
+		if (! $this->_publicKey) {
+			$this->_publicKey = new PublicKeyList(
+				$this->version
+			);
+		}
+
+		return $this->_publicKey;
+	}
 }

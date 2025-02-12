@@ -20,14 +20,8 @@ class FileFolder extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'fileFolder' => ['varchar(255)', 'string', 255, false, '', ],
-		'fileFolderId' => ['int', 'int', 0, false, ],
-		'parentFolderId' => ['int', 'int', 0, true, 0, ],
-		'permissionId' => ['int', 'int', 0, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['folderId', ];
@@ -46,4 +40,19 @@ class FileFolder extends \PHPFUI\ORM\Record
 
 		 return $this;
 		 }
+
+	 public function initFieldDefinitions() : static
+		 {
+		 if (! \count(static::$fields))
+			 {
+			 static::$fields = [
+			 	'fileFolder' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, '', ),
+			 	'fileFolderId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			 	'parentFolderId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+			 	'permissionId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+			 ];
+			 }
+
+			return $this;
+			}
 	}

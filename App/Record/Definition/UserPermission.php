@@ -14,16 +14,25 @@ abstract class UserPermission extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'memberId' => ['int', 'int', 0, false, ],
-		'permissionGroup' => ['int', 'int', 0, false, ],
-		'revoked' => ['int', 'int', 0, false, 0, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['memberId', 'permissionGroup', ];
 
 	protected static string $table = 'userPermission';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'permissionGroup' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'revoked' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+			];
+			}
+
+		return $this;
+		}
 	}

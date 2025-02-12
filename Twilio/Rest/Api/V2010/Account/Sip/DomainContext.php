@@ -14,20 +14,18 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account\Sip;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Values;
-use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
+use Twilio\Rest\Api\V2010\Account\Sip\Domain\AuthTypesList;
 use Twilio\Rest\Api\V2010\Account\Sip\Domain\CredentialListMappingList;
 use Twilio\Rest\Api\V2010\Account\Sip\Domain\IpAccessControlListMappingList;
-use Twilio\Rest\Api\V2010\Account\Sip\Domain\AuthTypesList;
-
+use Twilio\Serialize;
+use Twilio\Values;
+use Twilio\Version;
 
 /**
  * @property CredentialListMappingList $credentialListMappings
@@ -37,220 +35,209 @@ use Twilio\Rest\Api\V2010\Account\Sip\Domain\AuthTypesList;
  * @method \Twilio\Rest\Api\V2010\Account\Sip\Domain\CredentialListMappingContext credentialListMappings(string $sid)
  */
 class DomainContext extends InstanceContext
-    {
-    protected $_credentialListMappings;
-    protected $_ipAccessControlListMappings;
-    protected $_auth;
+	{
+	protected $_auth;
 
-    /**
-     * Initialize the DomainContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
-     * @param string $sid The Twilio-provided string that uniquely identifies the SipDomain resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $accountSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	protected $_credentialListMappings;
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        'sid' =>
-            $sid,
-        ];
+	protected $_ipAccessControlListMappings;
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/SIP/Domains/' . \rawurlencode($sid)
-        .'.json';
-    }
+	/**
+	 * Initialize the DomainContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
+	 * @param string $sid The Twilio-provided string that uniquely identifies the SipDomain resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$accountSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-    /**
-     * Delete the DomainInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
+			'sid' => $sid,
+		];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/SIP/Domains/' . \rawurlencode($sid)
+		. '.json';
+	}
 
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-    /**
-     * Fetch the DomainInstance
-     *
-     * @return DomainInstance Fetched DomainInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): DomainInstance
-    {
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		throw new TwilioException('Resource does not have a context');
+	}
 
-        return new DomainInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['sid']
-        );
-    }
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
+			return $this->{$method}();
+		}
 
-    /**
-     * Update the DomainInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return DomainInstance Updated DomainInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): DomainInstance
-    {
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
-        $options = new Values($options);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'VoiceFallbackMethod' =>
-                $options['voiceFallbackMethod'],
-            'VoiceFallbackUrl' =>
-                $options['voiceFallbackUrl'],
-            'VoiceMethod' =>
-                $options['voiceMethod'],
-            'VoiceStatusCallbackMethod' =>
-                $options['voiceStatusCallbackMethod'],
-            'VoiceStatusCallbackUrl' =>
-                $options['voiceStatusCallbackUrl'],
-            'VoiceUrl' =>
-                $options['voiceUrl'],
-            'SipRegistration' =>
-                Serialize::booleanToString($options['sipRegistration']),
-            'DomainName' =>
-                $options['domainName'],
-            'EmergencyCallingEnabled' =>
-                Serialize::booleanToString($options['emergencyCallingEnabled']),
-            'Secure' =>
-                Serialize::booleanToString($options['secure']),
-            'ByocTrunkSid' =>
-                $options['byocTrunkSid'],
-            'EmergencyCallerSid' =>
-                $options['emergencyCallerSid'],
-        ]);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		return '[Twilio.Api.V2010.DomainContext ' . \implode(' ', $context) . ']';
+	}
 
-        return new DomainInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['sid']
-        );
-    }
+	/**
+	 * Delete the DomainInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-    /**
-     * Access the credentialListMappings
-     */
-    protected function getCredentialListMappings(): CredentialListMappingList
-    {
-        if (!$this->_credentialListMappings) {
-            $this->_credentialListMappings = new CredentialListMappingList(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['sid']
-            );
-        }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
-        return $this->_credentialListMappings;
-    }
+	/**
+	 * Fetch the DomainInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DomainInstance Fetched DomainInstance
+	 */
+	public function fetch() : DomainInstance
+	{
 
-    /**
-     * Access the ipAccessControlListMappings
-     */
-    protected function getIpAccessControlListMappings(): IpAccessControlListMappingList
-    {
-        if (!$this->_ipAccessControlListMappings) {
-            $this->_ipAccessControlListMappings = new IpAccessControlListMappingList(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['sid']
-            );
-        }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        return $this->_ipAccessControlListMappings;
-    }
+		return new DomainInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['sid']
+		);
+	}
 
-    /**
-     * Access the auth
-     */
-    protected function getAuth(): AuthTypesList
-    {
-        if (!$this->_auth) {
-            $this->_auth = new AuthTypesList(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Update the DomainInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DomainInstance Updated DomainInstance
+	 */
+	public function update(array $options = []) : DomainInstance
+	{
 
-        return $this->_auth;
-    }
+		$options = new Values($options);
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		$data = Values::of([
+			'FriendlyName' => $options['friendlyName'],
+			'VoiceFallbackMethod' => $options['voiceFallbackMethod'],
+			'VoiceFallbackUrl' => $options['voiceFallbackUrl'],
+			'VoiceMethod' => $options['voiceMethod'],
+			'VoiceStatusCallbackMethod' => $options['voiceStatusCallbackMethod'],
+			'VoiceStatusCallbackUrl' => $options['voiceStatusCallbackUrl'],
+			'VoiceUrl' => $options['voiceUrl'],
+			'SipRegistration' => Serialize::booleanToString($options['sipRegistration']),
+			'DomainName' => $options['domainName'],
+			'EmergencyCallingEnabled' => Serialize::booleanToString($options['emergencyCallingEnabled']),
+			'Secure' => Serialize::booleanToString($options['secure']),
+			'ByocTrunkSid' => $options['byocTrunkSid'],
+			'EmergencyCallerSid' => $options['emergencyCallerSid'],
+		]);
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+		return new DomainInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['sid']
+		);
+	}
 
-        throw new TwilioException('Resource does not have a context');
-    }
+	/**
+	 * Access the auth
+	 */
+	protected function getAuth() : AuthTypesList
+	{
+		if (! $this->_auth) {
+			$this->_auth = new AuthTypesList(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['sid']
+			);
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.DomainContext ' . \implode(' ', $context) . ']';
-    }
+		return $this->_auth;
+	}
+
+	/**
+	 * Access the credentialListMappings
+	 */
+	protected function getCredentialListMappings() : CredentialListMappingList
+	{
+		if (! $this->_credentialListMappings) {
+			$this->_credentialListMappings = new CredentialListMappingList(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_credentialListMappings;
+	}
+
+	/**
+	 * Access the ipAccessControlListMappings
+	 */
+	protected function getIpAccessControlListMappings() : IpAccessControlListMappingList
+	{
+		if (! $this->_ipAccessControlListMappings) {
+			$this->_ipAccessControlListMappings = new IpAccessControlListMappingList(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_ipAccessControlListMappings;
+	}
 }

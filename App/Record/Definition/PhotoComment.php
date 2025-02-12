@@ -17,18 +17,27 @@ abstract class PhotoComment extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'memberId' => ['int', 'int', 0, false, ],
-		'photoComment' => ['varchar(255)', 'string', 255, false, '', ],
-		'photoCommentId' => ['int', 'int', 0, false, ],
-		'photoId' => ['int', 'int', 0, false, ],
-		'timestamp' => ['datetime', 'string', 20, false, null, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['photoCommentId', ];
 
 	protected static string $table = 'photoComment';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'photoComment' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, '', ),
+				'photoCommentId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'photoId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'timestamp' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+			];
+			}
+
+		return $this;
+		}
 	}

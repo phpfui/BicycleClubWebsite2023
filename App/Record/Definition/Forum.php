@@ -19,21 +19,30 @@ abstract class Forum extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'attachments' => ['int', 'int', 0, true, 0, ],
-		'closed' => ['int', 'int', 0, true, ],
-		'description' => ['text', 'string', 65535, true, ],
-		'email' => ['varchar(255)', 'string', 255, true, ],
-		'formerMembers' => ['int', 'int', 0, false, 0, ],
-		'forumId' => ['int', 'int', 0, false, ],
-		'name' => ['varchar(255)', 'string', 255, true, ],
-		'whiteList' => ['text', 'string', 65535, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['forumId', ];
 
 	protected static string $table = 'forum';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'attachments' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'closed' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'description' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'email' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'formerMembers' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'forumId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'name' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'whiteList' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

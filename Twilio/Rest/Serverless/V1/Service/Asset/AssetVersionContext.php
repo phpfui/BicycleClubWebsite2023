@@ -14,82 +14,78 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Serverless\V1\Service\Asset;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class AssetVersionContext extends InstanceContext
-    {
-    /**
-     * Initialize the AssetVersionContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the Service to fetch the Asset Version resource from.
-     * @param string $assetSid The SID of the Asset resource that is the parent of the Asset Version resource to fetch.
-     * @param string $sid The SID of the Asset Version resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $assetSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the AssetVersionContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the Service to fetch the Asset Version resource from.
+	 * @param string $assetSid The SID of the Asset resource that is the parent of the Asset Version resource to fetch.
+	 * @param string $sid The SID of the Asset Version resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$assetSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'assetSid' =>
-            $assetSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'assetSid' => $assetSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Assets/' . \rawurlencode($assetSid)
-        .'/Versions/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Assets/' . \rawurlencode($assetSid)
+		. '/Versions/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the AssetVersionInstance
-     *
-     * @return AssetVersionInstance Fetched AssetVersionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): AssetVersionInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new AssetVersionInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['assetSid'],
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Serverless.V1.AssetVersionContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the AssetVersionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AssetVersionInstance Fetched AssetVersionInstance
+	 */
+	public function fetch() : AssetVersionInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Serverless.V1.AssetVersionContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new AssetVersionInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['assetSid'],
+			$this->solution['sid']
+		);
+	}
 }

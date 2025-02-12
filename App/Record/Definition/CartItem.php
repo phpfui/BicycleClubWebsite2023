@@ -24,22 +24,31 @@ abstract class CartItem extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'cartItemId' => ['int', 'int', 0, false, ],
-		'dateAdded' => ['date', 'string', 10, false, ],
-		'discountCodeId' => ['int', 'int', 0, true, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'optionsSelected' => ['varchar(255)', 'string', 255, true, ],
-		'quantity' => ['int', 'int', 0, true, ],
-		'storeItemDetailId' => ['int', 'int', 0, true, ],
-		'storeItemId' => ['int', 'int', 0, true, ],
-		'type' => ['int', 'int', 0, false, 0, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['cartItemId', ];
 
 	protected static string $table = 'cartItem';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'cartItemId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'dateAdded' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'discountCodeId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'optionsSelected' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'quantity' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'storeItemDetailId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'storeItemId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'type' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+			];
+			}
+
+		return $this;
+		}
 	}

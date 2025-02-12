@@ -19,124 +19,102 @@ namespace Twilio\Rest\Verify\V2\Service;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Serialize;
-
 
 class VerificationList extends ListResource
-    {
-    /**
-     * Construct the VerificationList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the verification [Service](https://www.twilio.com/docs/verify/api/service) to create the resource under.
-     */
-    public function __construct(
-        Version $version,
-        string $serviceSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the VerificationList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the verification [Service](https://www.twilio.com/docs/verify/api/service) to create the resource under.
+	 */
+	public function __construct(
+		Version $version,
+		string $serviceSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Verifications';
-    }
+		];
 
-    /**
-     * Create the VerificationInstance
-     *
-     * @param string $to The phone number or [email](https://www.twilio.com/docs/verify/email) to verify. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
-     * @param string $channel The verification method to use. One of: [`email`](https://www.twilio.com/docs/verify/email), `sms`, `whatsapp`, `call`, `sna` or `auto`.
-     * @param array|Options $options Optional Arguments
-     * @return VerificationInstance Created VerificationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $to, string $channel, array $options = []): VerificationInstance
-    {
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Verifications';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Verify.V2.VerificationList]';
+	}
 
-        $data = Values::of([
-            'To' =>
-                $to,
-            'Channel' =>
-                $channel,
-            'CustomFriendlyName' =>
-                $options['customFriendlyName'],
-            'CustomMessage' =>
-                $options['customMessage'],
-            'SendDigits' =>
-                $options['sendDigits'],
-            'Locale' =>
-                $options['locale'],
-            'CustomCode' =>
-                $options['customCode'],
-            'Amount' =>
-                $options['amount'],
-            'Payee' =>
-                $options['payee'],
-            'RateLimits' =>
-                Serialize::jsonObject($options['rateLimits']),
-            'ChannelConfiguration' =>
-                Serialize::jsonObject($options['channelConfiguration']),
-            'AppHash' =>
-                $options['appHash'],
-            'TemplateSid' =>
-                $options['templateSid'],
-            'TemplateCustomSubstitutions' =>
-                $options['templateCustomSubstitutions'],
-            'DeviceIp' =>
-                $options['deviceIp'],
-            'EnableSnaClientToken' =>
-                Serialize::booleanToString($options['enableSnaClientToken']),
-            'RiskCheck' =>
-                $options['riskCheck'],
-            'Tags' =>
-                $options['tags'],
-        ]);
+	/**
+	 * Create the VerificationInstance
+	 *
+	 * @param string $to The phone number or [email](https://www.twilio.com/docs/verify/email) to verify. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
+	 * @param string $channel The verification method to use. One of: [`email`](https://www.twilio.com/docs/verify/email), `sms`, `whatsapp`, `call`, `sna` or `auto`.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return VerificationInstance Created VerificationInstance
+	 */
+	public function create(string $to, string $channel, array $options = []) : VerificationInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new VerificationInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid']
-        );
-    }
+		$data = Values::of([
+			'To' => $to,
+			'Channel' => $channel,
+			'CustomFriendlyName' => $options['customFriendlyName'],
+			'CustomMessage' => $options['customMessage'],
+			'SendDigits' => $options['sendDigits'],
+			'Locale' => $options['locale'],
+			'CustomCode' => $options['customCode'],
+			'Amount' => $options['amount'],
+			'Payee' => $options['payee'],
+			'RateLimits' => Serialize::jsonObject($options['rateLimits']),
+			'ChannelConfiguration' => Serialize::jsonObject($options['channelConfiguration']),
+			'AppHash' => $options['appHash'],
+			'TemplateSid' => $options['templateSid'],
+			'TemplateCustomSubstitutions' => $options['templateCustomSubstitutions'],
+			'DeviceIp' => $options['deviceIp'],
+			'EnableSnaClientToken' => Serialize::booleanToString($options['enableSnaClientToken']),
+			'RiskCheck' => $options['riskCheck'],
+			'Tags' => $options['tags'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Constructs a VerificationContext
-     *
-     * @param string $sid The Twilio-provided string that uniquely identifies the Verification resource to fetch.
-     */
-    public function getContext(
-        string $sid
-        
-    ): VerificationContext
-    {
-        return new VerificationContext(
-            $this->version,
-            $this->solution['serviceSid'],
-            $sid
-        );
-    }
+		return new VerificationInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid']
+		);
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Verify.V2.VerificationList]';
-    }
+	/**
+	 * Constructs a VerificationContext
+	 *
+	 * @param string $sid The Twilio-provided string that uniquely identifies the Verification resource to fetch.
+	 */
+	public function getContext(
+		string $sid
+	) : VerificationContext
+	{
+		return new VerificationContext(
+			$this->version,
+			$this->solution['serviceSid'],
+			$sid
+		);
+	}
 }

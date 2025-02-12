@@ -21,59 +21,56 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class BrandRegistrationOtpList extends ListResource
-    {
-    /**
-     * Construct the BrandRegistrationOtpList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $brandRegistrationSid Brand Registration Sid of Sole Proprietor Brand.
-     */
-    public function __construct(
-        Version $version,
-        string $brandRegistrationSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the BrandRegistrationOtpList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $brandRegistrationSid Brand Registration Sid of Sole Proprietor Brand.
+	 */
+	public function __construct(
+		Version $version,
+		string $brandRegistrationSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'brandRegistrationSid' =>
-            $brandRegistrationSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'brandRegistrationSid' => $brandRegistrationSid,
 
-        $this->uri = '/a2p/BrandRegistrations/' . \rawurlencode($brandRegistrationSid)
-        .'/SmsOtp';
-    }
+		];
 
-    /**
-     * Create the BrandRegistrationOtpInstance
-     *
-     * @return BrandRegistrationOtpInstance Created BrandRegistrationOtpInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(): BrandRegistrationOtpInstance
-    {
+		$this->uri = '/a2p/BrandRegistrations/' . \rawurlencode($brandRegistrationSid)
+		. '/SmsOtp';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], [], $headers);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Messaging.V1.BrandRegistrationOtpList]';
+	}
 
-        return new BrandRegistrationOtpInstance(
-            $this->version,
-            $payload,
-            $this->solution['brandRegistrationSid']
-        );
-    }
+	/**
+	 * Create the BrandRegistrationOtpInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return BrandRegistrationOtpInstance Created BrandRegistrationOtpInstance
+	 */
+	public function create() : BrandRegistrationOtpInstance
+	{
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], [], $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Messaging.V1.BrandRegistrationOtpList]';
-    }
+		return new BrandRegistrationOtpInstance(
+			$this->version,
+			$payload,
+			$this->solution['brandRegistrationSid']
+		);
+	}
 }

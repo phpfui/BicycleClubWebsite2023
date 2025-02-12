@@ -14,14 +14,12 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Wireless\V1\Sim;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $simSid
@@ -32,58 +30,58 @@ use Twilio\Version;
  */
 class UsageRecordInstance extends InstanceResource
 {
-    /**
-     * Initialize the UsageRecordInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $simSid The SID of the [Sim resource](https://www.twilio.com/docs/iot/wireless/api/sim-resource)  to read the usage from.
-     */
-    public function __construct(Version $version, array $payload, string $simSid)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the UsageRecordInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $simSid The SID of the [Sim resource](https://www.twilio.com/docs/iot/wireless/api/sim-resource)  to read the usage from.
+	 */
+	public function __construct(Version $version, array $payload, string $simSid)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'simSid' => Values::array_get($payload, 'sim_sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'period' => Values::array_get($payload, 'period'),
-            'commands' => Values::array_get($payload, 'commands'),
-            'data' => Values::array_get($payload, 'data'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'simSid' => Values::array_get($payload, 'sim_sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'period' => Values::array_get($payload, 'period'),
+			'commands' => Values::array_get($payload, 'commands'),
+			'data' => Values::array_get($payload, 'data'),
+		];
 
-        $this->solution = ['simSid' => $simSid, ];
-    }
+		$this->solution = ['simSid' => $simSid, ];
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Wireless.V1.UsageRecordInstance]';
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Wireless.V1.UsageRecordInstance]';
+	}
 }
-

@@ -14,195 +14,184 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Rest\Api\V2010\Account\Address\DependentPhoneNumberList;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-use Twilio\Rest\Api\V2010\Account\Address\DependentPhoneNumberList;
-
 
 /**
  * @property DependentPhoneNumberList $dependentPhoneNumbers
  */
 class AddressContext extends InstanceContext
-    {
-    protected $_dependentPhoneNumbers;
+	{
+	protected $_dependentPhoneNumbers;
 
-    /**
-     * Initialize the AddressContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will be responsible for the new Address resource.
-     * @param string $sid The Twilio-provided string that uniquely identifies the Address resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $accountSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	/**
+	 * Initialize the AddressContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will be responsible for the new Address resource.
+	 * @param string $sid The Twilio-provided string that uniquely identifies the Address resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$accountSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Addresses/' . \rawurlencode($sid)
-        .'.json';
-    }
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Addresses/' . \rawurlencode($sid)
+		. '.json';
+	}
 
-    /**
-     * Delete the AddressInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
+		throw new TwilioException('Resource does not have a context');
+	}
 
-    /**
-     * Fetch the AddressInstance
-     *
-     * @return AddressInstance Fetched AddressInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): AddressInstance
-    {
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+			return $this->{$method}();
+		}
 
-        return new AddressInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['sid']
-        );
-    }
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Update the AddressInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return AddressInstance Updated AddressInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): AddressInstance
-    {
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $options = new Values($options);
+		return '[Twilio.Api.V2010.AddressContext ' . \implode(' ', $context) . ']';
+	}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'CustomerName' =>
-                $options['customerName'],
-            'Street' =>
-                $options['street'],
-            'City' =>
-                $options['city'],
-            'Region' =>
-                $options['region'],
-            'PostalCode' =>
-                $options['postalCode'],
-            'EmergencyEnabled' =>
-                Serialize::booleanToString($options['emergencyEnabled']),
-            'AutoCorrectAddress' =>
-                Serialize::booleanToString($options['autoCorrectAddress']),
-            'StreetSecondary' =>
-                $options['streetSecondary'],
-        ]);
+	/**
+	 * Delete the AddressInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new AddressInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the AddressInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AddressInstance Fetched AddressInstance
+	 */
+	public function fetch() : AddressInstance
+	{
 
-    /**
-     * Access the dependentPhoneNumbers
-     */
-    protected function getDependentPhoneNumbers(): DependentPhoneNumberList
-    {
-        if (!$this->_dependentPhoneNumbers) {
-            $this->_dependentPhoneNumbers = new DependentPhoneNumberList(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['sid']
-            );
-        }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        return $this->_dependentPhoneNumbers;
-    }
+		return new AddressInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['sid']
+		);
+	}
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Update the AddressInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AddressInstance Updated AddressInstance
+	 */
+	public function update(array $options = []) : AddressInstance
+	{
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		$options = new Values($options);
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+		$data = Values::of([
+			'FriendlyName' => $options['friendlyName'],
+			'CustomerName' => $options['customerName'],
+			'Street' => $options['street'],
+			'City' => $options['city'],
+			'Region' => $options['region'],
+			'PostalCode' => $options['postalCode'],
+			'EmergencyEnabled' => Serialize::booleanToString($options['emergencyEnabled']),
+			'AutoCorrectAddress' => Serialize::booleanToString($options['autoCorrectAddress']),
+			'StreetSecondary' => $options['streetSecondary'],
+		]);
 
-        throw new TwilioException('Resource does not have a context');
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.AddressContext ' . \implode(' ', $context) . ']';
-    }
+		return new AddressInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['sid']
+		);
+	}
+
+	/**
+	 * Access the dependentPhoneNumbers
+	 */
+	protected function getDependentPhoneNumbers() : DependentPhoneNumberList
+	{
+		if (! $this->_dependentPhoneNumbers) {
+			$this->_dependentPhoneNumbers = new DependentPhoneNumberList(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_dependentPhoneNumbers;
+	}
 }

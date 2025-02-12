@@ -14,16 +14,14 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\FlexApi\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $accountSid
@@ -43,126 +41,128 @@ use Twilio\Deserialize;
  */
 class FlexFlowInstance extends InstanceResource
 {
-    /**
-     * Initialize the FlexFlowInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $sid The SID of the Flex Flow resource to delete.
-     */
-    public function __construct(Version $version, array $payload, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the FlexFlowInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $sid The SID of the Flex Flow resource to delete.
+	 */
+	public function __construct(Version $version, array $payload, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'sid' => Values::array_get($payload, 'sid'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'chatServiceSid' => Values::array_get($payload, 'chat_service_sid'),
-            'channelType' => Values::array_get($payload, 'channel_type'),
-            'contactIdentity' => Values::array_get($payload, 'contact_identity'),
-            'enabled' => Values::array_get($payload, 'enabled'),
-            'integrationType' => Values::array_get($payload, 'integration_type'),
-            'integration' => Values::array_get($payload, 'integration'),
-            'longLived' => Values::array_get($payload, 'long_lived'),
-            'janitorEnabled' => Values::array_get($payload, 'janitor_enabled'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'sid' => Values::array_get($payload, 'sid'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'chatServiceSid' => Values::array_get($payload, 'chat_service_sid'),
+			'channelType' => Values::array_get($payload, 'channel_type'),
+			'contactIdentity' => Values::array_get($payload, 'contact_identity'),
+			'enabled' => Values::array_get($payload, 'enabled'),
+			'integrationType' => Values::array_get($payload, 'integration_type'),
+			'integration' => Values::array_get($payload, 'integration'),
+			'longLived' => Values::array_get($payload, 'long_lived'),
+			'janitorEnabled' => Values::array_get($payload, 'janitor_enabled'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return FlexFlowContext Context for this FlexFlowInstance
-     */
-    protected function proxy(): FlexFlowContext
-    {
-        if (!$this->context) {
-            $this->context = new FlexFlowContext(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the FlexFlowInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the FlexFlowInstance
-     *
-     * @return FlexFlowInstance Fetched FlexFlowInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): FlexFlowInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Update the FlexFlowInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return FlexFlowInstance Updated FlexFlowInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): FlexFlowInstance
-    {
+		return '[Twilio.FlexApi.V1.FlexFlowInstance ' . \implode(' ', $context) . ']';
+	}
 
-        return $this->proxy()->update($options);
-    }
+	/**
+	 * Delete the FlexFlowInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return $this->proxy()->delete();
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Fetch the FlexFlowInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return FlexFlowInstance Fetched FlexFlowInstance
+	 */
+	public function fetch() : FlexFlowInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->fetch();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.FlexApi.V1.FlexFlowInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the FlexFlowInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return FlexFlowInstance Updated FlexFlowInstance
+	 */
+	public function update(array $options = []) : FlexFlowInstance
+	{
+
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return FlexFlowContext Context for this FlexFlowInstance
+	 */
+	protected function proxy() : FlexFlowContext
+	{
+		if (! $this->context) {
+			$this->context = new FlexFlowContext(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

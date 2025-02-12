@@ -14,18 +14,16 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Microvisor\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
-use Twilio\Values;
-use Twilio\Version;
-use Twilio\Deserialize;
 use Twilio\Rest\Microvisor\V1\Device\DeviceConfigList;
 use Twilio\Rest\Microvisor\V1\Device\DeviceSecretList;
-
+use Twilio\Values;
+use Twilio\Version;
 
 /**
  * @property string|null $sid
@@ -40,128 +38,131 @@ use Twilio\Rest\Microvisor\V1\Device\DeviceSecretList;
  */
 class DeviceInstance extends InstanceResource
 {
-    protected $_deviceConfigs;
-    protected $_deviceSecrets;
+	protected $_deviceConfigs;
 
-    /**
-     * Initialize the DeviceInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $sid A 34-character string that uniquely identifies this Device.
-     */
-    public function __construct(Version $version, array $payload, ?string $sid = null)
-    {
-        parent::__construct($version);
+	protected $_deviceSecrets;
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'uniqueName' => Values::array_get($payload, 'unique_name'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'app' => Values::array_get($payload, 'app'),
-            'logging' => Values::array_get($payload, 'logging'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-            'links' => Values::array_get($payload, 'links'),
-        ];
+	/**
+	 * Initialize the DeviceInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $sid A 34-character string that uniquely identifies this Device.
+	 */
+	public function __construct(Version $version, array $payload, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-    }
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'uniqueName' => Values::array_get($payload, 'unique_name'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'app' => Values::array_get($payload, 'app'),
+			'logging' => Values::array_get($payload, 'logging'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+			'links' => Values::array_get($payload, 'links'),
+		];
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return DeviceContext Context for this DeviceInstance
-     */
-    protected function proxy(): DeviceContext
-    {
-        if (!$this->context) {
-            $this->context = new DeviceContext(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-        return $this->context;
-    }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-    /**
-     * Fetch the DeviceInstance
-     *
-     * @return DeviceInstance Fetched DeviceInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): DeviceInstance
-    {
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return $this->proxy()->fetch();
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Update the DeviceInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return DeviceInstance Updated DeviceInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): DeviceInstance
-    {
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-        return $this->proxy()->update($options);
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Access the deviceConfigs
-     */
-    protected function getDeviceConfigs(): DeviceConfigList
-    {
-        return $this->proxy()->deviceConfigs;
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Access the deviceSecrets
-     */
-    protected function getDeviceSecrets(): DeviceSecretList
-    {
-        return $this->proxy()->deviceSecrets;
-    }
+		return '[Twilio.Microvisor.V1.DeviceInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Fetch the DeviceInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DeviceInstance Fetched DeviceInstance
+	 */
+	public function fetch() : DeviceInstance
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->fetch();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Update the DeviceInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DeviceInstance Updated DeviceInstance
+	 */
+	public function update(array $options = []) : DeviceInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Microvisor.V1.DeviceInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Access the deviceConfigs
+	 */
+	protected function getDeviceConfigs() : DeviceConfigList
+	{
+		return $this->proxy()->deviceConfigs;
+	}
+
+	/**
+	 * Access the deviceSecrets
+	 */
+	protected function getDeviceSecrets() : DeviceSecretList
+	{
+		return $this->proxy()->deviceSecrets;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return DeviceContext Context for this DeviceInstance
+	 */
+	protected function proxy() : DeviceContext
+	{
+		if (! $this->context) {
+			$this->context = new DeviceContext(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

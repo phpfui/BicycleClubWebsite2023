@@ -14,116 +14,109 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account\Queue;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class MemberContext extends InstanceContext
-    {
-    /**
-     * Initialize the MemberContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Member resource(s) to fetch.
-     * @param string $queueSid The SID of the Queue in which to find the members to fetch.
-     * @param string $callSid The [Call](https://www.twilio.com/docs/voice/api/call-resource) SID of the resource(s) to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $accountSid,
-        $queueSid,
-        $callSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the MemberContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Member resource(s) to fetch.
+	 * @param string $queueSid The SID of the Queue in which to find the members to fetch.
+	 * @param string $callSid The [Call](https://www.twilio.com/docs/voice/api/call-resource) SID of the resource(s) to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$accountSid,
+		$queueSid,
+		$callSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        'queueSid' =>
-            $queueSid,
-        'callSid' =>
-            $callSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
+			'queueSid' => $queueSid,
+			'callSid' => $callSid,
+		];
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Queues/' . \rawurlencode($queueSid)
-        .'/Members/' . \rawurlencode($callSid)
-        .'.json';
-    }
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Queues/' . \rawurlencode($queueSid)
+		. '/Members/' . \rawurlencode($callSid)
+		. '.json';
+	}
 
-    /**
-     * Fetch the MemberInstance
-     *
-     * @return MemberInstance Fetched MemberInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): MemberInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new MemberInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['queueSid'],
-            $this->solution['callSid']
-        );
-    }
+		return '[Twilio.Api.V2010.MemberContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the MemberInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return MemberInstance Fetched MemberInstance
+	 */
+	public function fetch() : MemberInstance
+	{
 
-    /**
-     * Update the MemberInstance
-     *
-     * @param string $url The absolute URL of the Queue resource.
-     * @param array|Options $options Optional Arguments
-     * @return MemberInstance Updated MemberInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $url, array $options = []): MemberInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new MemberInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['queueSid'],
+			$this->solution['callSid']
+		);
+	}
 
-        $data = Values::of([
-            'Url' =>
-                $url,
-            'Method' =>
-                $options['method'],
-        ]);
+	/**
+	 * Update the MemberInstance
+	 *
+	 * @param string $url The absolute URL of the Queue resource.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return MemberInstance Updated MemberInstance
+	 */
+	public function update(string $url, array $options = []) : MemberInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new MemberInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['queueSid'],
-            $this->solution['callSid']
-        );
-    }
+		$data = Values::of([
+			'Url' => $url,
+			'Method' => $options['method'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.MemberContext ' . \implode(' ', $context) . ']';
-    }
+		return new MemberInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['queueSid'],
+			$this->solution['callSid']
+		);
+	}
 }

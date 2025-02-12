@@ -19,158 +19,114 @@ namespace Twilio\Rest\Trusthub\V1;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Serialize;
-
 
 class ComplianceRegistrationInquiriesList extends ListResource
-    {
-    /**
-     * Construct the ComplianceRegistrationInquiriesList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the ComplianceRegistrationInquiriesList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/ComplianceInquiries/Registration/RegulatoryCompliance/GB/Initialize';
-    }
+		$this->uri = '/ComplianceInquiries/Registration/RegulatoryCompliance/GB/Initialize';
+	}
 
-    /**
-     * Create the ComplianceRegistrationInquiriesInstance
-     *
-     * @param string $endUserType
-     * @param string $phoneNumberType
-     * @param array|Options $options Optional Arguments
-     * @return ComplianceRegistrationInquiriesInstance Created ComplianceRegistrationInquiriesInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $endUserType, string $phoneNumberType, array $options = []): ComplianceRegistrationInquiriesInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Trusthub.V1.ComplianceRegistrationInquiriesList]';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Create the ComplianceRegistrationInquiriesInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ComplianceRegistrationInquiriesInstance Created ComplianceRegistrationInquiriesInstance
+	 */
+	public function create(string $endUserType, string $phoneNumberType, array $options = []) : ComplianceRegistrationInquiriesInstance
+	{
 
-        $data = Values::of([
-            'EndUserType' =>
-                $endUserType,
-            'PhoneNumberType' =>
-                $phoneNumberType,
-            'BusinessIdentityType' =>
-                $options['businessIdentityType'],
-            'BusinessRegistrationAuthority' =>
-                $options['businessRegistrationAuthority'],
-            'BusinessLegalName' =>
-                $options['businessLegalName'],
-            'NotificationEmail' =>
-                $options['notificationEmail'],
-            'AcceptedNotificationReceipt' =>
-                Serialize::booleanToString($options['acceptedNotificationReceipt']),
-            'BusinessRegistrationNumber' =>
-                $options['businessRegistrationNumber'],
-            'BusinessWebsiteUrl' =>
-                $options['businessWebsiteUrl'],
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'AuthorizedRepresentative1FirstName' =>
-                $options['authorizedRepresentative1FirstName'],
-            'AuthorizedRepresentative1LastName' =>
-                $options['authorizedRepresentative1LastName'],
-            'AuthorizedRepresentative1Phone' =>
-                $options['authorizedRepresentative1Phone'],
-            'AuthorizedRepresentative1Email' =>
-                $options['authorizedRepresentative1Email'],
-            'AuthorizedRepresentative1DateOfBirth' =>
-                $options['authorizedRepresentative1DateOfBirth'],
-            'AddressStreet' =>
-                $options['addressStreet'],
-            'AddressStreetSecondary' =>
-                $options['addressStreetSecondary'],
-            'AddressCity' =>
-                $options['addressCity'],
-            'AddressSubdivision' =>
-                $options['addressSubdivision'],
-            'AddressPostalCode' =>
-                $options['addressPostalCode'],
-            'AddressCountryCode' =>
-                $options['addressCountryCode'],
-            'EmergencyAddressStreet' =>
-                $options['emergencyAddressStreet'],
-            'EmergencyAddressStreetSecondary' =>
-                $options['emergencyAddressStreetSecondary'],
-            'EmergencyAddressCity' =>
-                $options['emergencyAddressCity'],
-            'EmergencyAddressSubdivision' =>
-                $options['emergencyAddressSubdivision'],
-            'EmergencyAddressPostalCode' =>
-                $options['emergencyAddressPostalCode'],
-            'EmergencyAddressCountryCode' =>
-                $options['emergencyAddressCountryCode'],
-            'UseAddressAsEmergencyAddress' =>
-                Serialize::booleanToString($options['useAddressAsEmergencyAddress']),
-            'FileName' =>
-                $options['fileName'],
-            'File' =>
-                $options['file'],
-            'FirstName' =>
-                $options['firstName'],
-            'LastName' =>
-                $options['lastName'],
-            'DateOfBirth' =>
-                $options['dateOfBirth'],
-            'IndividualEmail' =>
-                $options['individualEmail'],
-            'IndividualPhone' =>
-                $options['individualPhone'],
-            'IsIsvEmbed' =>
-                Serialize::booleanToString($options['isIsvEmbed']),
-            'IsvRegisteringForSelfOrTenant' =>
-                $options['isvRegisteringForSelfOrTenant'],
-            'StatusCallbackUrl' =>
-                $options['statusCallbackUrl'],
-            'ThemeSetId' =>
-                $options['themeSetId'],
-        ]);
+		$options = new Values($options);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$data = Values::of([
+			'EndUserType' => $endUserType,
+			'PhoneNumberType' => $phoneNumberType,
+			'BusinessIdentityType' => $options['businessIdentityType'],
+			'BusinessRegistrationAuthority' => $options['businessRegistrationAuthority'],
+			'BusinessLegalName' => $options['businessLegalName'],
+			'NotificationEmail' => $options['notificationEmail'],
+			'AcceptedNotificationReceipt' => Serialize::booleanToString($options['acceptedNotificationReceipt']),
+			'BusinessRegistrationNumber' => $options['businessRegistrationNumber'],
+			'BusinessWebsiteUrl' => $options['businessWebsiteUrl'],
+			'FriendlyName' => $options['friendlyName'],
+			'AuthorizedRepresentative1FirstName' => $options['authorizedRepresentative1FirstName'],
+			'AuthorizedRepresentative1LastName' => $options['authorizedRepresentative1LastName'],
+			'AuthorizedRepresentative1Phone' => $options['authorizedRepresentative1Phone'],
+			'AuthorizedRepresentative1Email' => $options['authorizedRepresentative1Email'],
+			'AuthorizedRepresentative1DateOfBirth' => $options['authorizedRepresentative1DateOfBirth'],
+			'AddressStreet' => $options['addressStreet'],
+			'AddressStreetSecondary' => $options['addressStreetSecondary'],
+			'AddressCity' => $options['addressCity'],
+			'AddressSubdivision' => $options['addressSubdivision'],
+			'AddressPostalCode' => $options['addressPostalCode'],
+			'AddressCountryCode' => $options['addressCountryCode'],
+			'EmergencyAddressStreet' => $options['emergencyAddressStreet'],
+			'EmergencyAddressStreetSecondary' => $options['emergencyAddressStreetSecondary'],
+			'EmergencyAddressCity' => $options['emergencyAddressCity'],
+			'EmergencyAddressSubdivision' => $options['emergencyAddressSubdivision'],
+			'EmergencyAddressPostalCode' => $options['emergencyAddressPostalCode'],
+			'EmergencyAddressCountryCode' => $options['emergencyAddressCountryCode'],
+			'UseAddressAsEmergencyAddress' => Serialize::booleanToString($options['useAddressAsEmergencyAddress']),
+			'FileName' => $options['fileName'],
+			'File' => $options['file'],
+			'FirstName' => $options['firstName'],
+			'LastName' => $options['lastName'],
+			'DateOfBirth' => $options['dateOfBirth'],
+			'IndividualEmail' => $options['individualEmail'],
+			'IndividualPhone' => $options['individualPhone'],
+			'IsIsvEmbed' => Serialize::booleanToString($options['isIsvEmbed']),
+			'IsvRegisteringForSelfOrTenant' => $options['isvRegisteringForSelfOrTenant'],
+			'StatusCallbackUrl' => $options['statusCallbackUrl'],
+			'ThemeSetId' => $options['themeSetId'],
+		]);
 
-        return new ComplianceRegistrationInquiriesInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
+		return new ComplianceRegistrationInquiriesInstance(
+			$this->version,
+			$payload
+		);
+	}
 
-    /**
-     * Constructs a ComplianceRegistrationInquiriesContext
-     *
-     * @param string $registrationId The unique RegistrationId matching the Regulatory Compliance Inquiry that should be resumed or resubmitted. This value will have been returned by the initial Regulatory Compliance Inquiry creation call.
-     */
-    public function getContext(
-        string $registrationId
-        
-    ): ComplianceRegistrationInquiriesContext
-    {
-        return new ComplianceRegistrationInquiriesContext(
-            $this->version,
-            $registrationId
-        );
-    }
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Trusthub.V1.ComplianceRegistrationInquiriesList]';
-    }
+	/**
+	 * Constructs a ComplianceRegistrationInquiriesContext
+	 *
+	 * @param string $registrationId The unique RegistrationId matching the Regulatory Compliance Inquiry that should be resumed or resubmitted. This value will have been returned by the initial Regulatory Compliance Inquiry creation call.
+	 */
+	public function getContext(
+		string $registrationId
+	) : ComplianceRegistrationInquiriesContext
+	{
+		return new ComplianceRegistrationInquiriesContext(
+			$this->version,
+			$registrationId
+		);
+	}
 }

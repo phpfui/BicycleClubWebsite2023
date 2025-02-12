@@ -19,49 +19,47 @@ namespace Twilio\Rest\Insights\V1\Call;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class CallSummaryList extends ListResource
-    {
-    /**
-     * Construct the CallSummaryList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $callSid The unique SID identifier of the Call.
-     */
-    public function __construct(
-        Version $version,
-        string $callSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the CallSummaryList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $callSid The unique SID identifier of the Call.
+	 */
+	public function __construct(
+		Version $version,
+		string $callSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'callSid' =>
-            $callSid,
-        
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+			'callSid' => $callSid,
 
-    /**
-     * Constructs a CallSummaryContext
-     */
-    public function getContext(
-        
-    ): CallSummaryContext
-    {
-        return new CallSummaryContext(
-            $this->version,
-            $this->solution['callSid']
-        );
-    }
+		];
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Insights.V1.CallSummaryList]';
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Insights.V1.CallSummaryList]';
+	}
+
+	/**
+	 * Constructs a CallSummaryContext
+	 */
+	public function getContext(
+
+	) : CallSummaryContext
+	{
+		return new CallSummaryContext(
+			$this->version,
+			$this->solution['callSid']
+		);
+	}
 }

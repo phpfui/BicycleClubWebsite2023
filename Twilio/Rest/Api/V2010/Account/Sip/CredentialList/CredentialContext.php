@@ -14,127 +14,121 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account\Sip\CredentialList;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class CredentialContext extends InstanceContext
-    {
-    /**
-     * Initialize the CredentialContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The unique id of the Account that is responsible for this resource.
-     * @param string $credentialListSid The unique id that identifies the credential list to include the created credential.
-     * @param string $sid The unique id that identifies the resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $accountSid,
-        $credentialListSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the CredentialContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The unique id of the Account that is responsible for this resource.
+	 * @param string $credentialListSid The unique id that identifies the credential list to include the created credential.
+	 * @param string $sid The unique id that identifies the resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$accountSid,
+		$credentialListSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        'credentialListSid' =>
-            $credentialListSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
+			'credentialListSid' => $credentialListSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/SIP/CredentialLists/' . \rawurlencode($credentialListSid)
-        .'/Credentials/' . \rawurlencode($sid)
-        .'.json';
-    }
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/SIP/CredentialLists/' . \rawurlencode($credentialListSid)
+		. '/Credentials/' . \rawurlencode($sid)
+		. '.json';
+	}
 
-    /**
-     * Delete the CredentialInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Api.V2010.CredentialContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the CredentialInstance
-     *
-     * @return CredentialInstance Fetched CredentialInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): CredentialInstance
-    {
+	/**
+	 * Delete the CredentialInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new CredentialInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['credentialListSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the CredentialInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CredentialInstance Fetched CredentialInstance
+	 */
+	public function fetch() : CredentialInstance
+	{
 
-    /**
-     * Update the CredentialInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return CredentialInstance Updated CredentialInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): CredentialInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new CredentialInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['credentialListSid'],
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'Password' =>
-                $options['password'],
-        ]);
+	/**
+	 * Update the CredentialInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CredentialInstance Updated CredentialInstance
+	 */
+	public function update(array $options = []) : CredentialInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new CredentialInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['credentialListSid'],
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'Password' => $options['password'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.CredentialContext ' . \implode(' ', $context) . ']';
-    }
+		return new CredentialInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['credentialListSid'],
+			$this->solution['sid']
+		);
+	}
 }

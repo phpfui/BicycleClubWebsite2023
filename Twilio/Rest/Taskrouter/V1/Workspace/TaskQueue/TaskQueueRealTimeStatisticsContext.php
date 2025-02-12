@@ -14,85 +14,81 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class TaskQueueRealTimeStatisticsContext extends InstanceContext
-    {
-    /**
-     * Initialize the TaskQueueRealTimeStatisticsContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $workspaceSid The SID of the Workspace with the TaskQueue to fetch.
-     * @param string $taskQueueSid The SID of the TaskQueue for which to fetch statistics.
-     */
-    public function __construct(
-        Version $version,
-        $workspaceSid,
-        $taskQueueSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the TaskQueueRealTimeStatisticsContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $workspaceSid The SID of the Workspace with the TaskQueue to fetch.
+	 * @param string $taskQueueSid The SID of the TaskQueue for which to fetch statistics.
+	 */
+	public function __construct(
+		Version $version,
+		$workspaceSid,
+		$taskQueueSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'workspaceSid' =>
-            $workspaceSid,
-        'taskQueueSid' =>
-            $taskQueueSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'workspaceSid' => $workspaceSid,
+			'taskQueueSid' => $taskQueueSid,
+		];
 
-        $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
-        .'/TaskQueues/' . \rawurlencode($taskQueueSid)
-        .'/RealTimeStatistics';
-    }
+		$this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
+		. '/TaskQueues/' . \rawurlencode($taskQueueSid)
+		. '/RealTimeStatistics';
+	}
 
-    /**
-     * Fetch the TaskQueueRealTimeStatisticsInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return TaskQueueRealTimeStatisticsInstance Fetched TaskQueueRealTimeStatisticsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(array $options = []): TaskQueueRealTimeStatisticsInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $options = new Values($options);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $params = Values::of([
-            'TaskChannel' =>
-                $options['taskChannel'],
-        ]);
+		return '[Twilio.Taskrouter.V1.TaskQueueRealTimeStatisticsContext ' . \implode(' ', $context) . ']';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+	/**
+	 * Fetch the TaskQueueRealTimeStatisticsInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TaskQueueRealTimeStatisticsInstance Fetched TaskQueueRealTimeStatisticsInstance
+	 */
+	public function fetch(array $options = []) : TaskQueueRealTimeStatisticsInstance
+	{
 
-        return new TaskQueueRealTimeStatisticsInstance(
-            $this->version,
-            $payload,
-            $this->solution['workspaceSid'],
-            $this->solution['taskQueueSid']
-        );
-    }
+		$options = new Values($options);
 
+		$params = Values::of([
+			'TaskChannel' => $options['taskChannel'],
+		]);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Taskrouter.V1.TaskQueueRealTimeStatisticsContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+
+		return new TaskQueueRealTimeStatisticsInstance(
+			$this->version,
+			$payload,
+			$this->solution['workspaceSid'],
+			$this->solution['taskQueueSid']
+		);
+	}
 }

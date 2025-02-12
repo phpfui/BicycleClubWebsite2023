@@ -14,70 +14,68 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Trusthub\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class SupportingDocumentTypeContext extends InstanceContext
-    {
-    /**
-     * Initialize the SupportingDocumentTypeContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The unique string that identifies the Supporting Document Type resource.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the SupportingDocumentTypeContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The unique string that identifies the Supporting Document Type resource.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/SupportingDocumentTypes/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/SupportingDocumentTypes/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the SupportingDocumentTypeInstance
-     *
-     * @return SupportingDocumentTypeInstance Fetched SupportingDocumentTypeInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): SupportingDocumentTypeInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new SupportingDocumentTypeInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Trusthub.V1.SupportingDocumentTypeContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the SupportingDocumentTypeInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SupportingDocumentTypeInstance Fetched SupportingDocumentTypeInstance
+	 */
+	public function fetch() : SupportingDocumentTypeInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Trusthub.V1.SupportingDocumentTypeContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new SupportingDocumentTypeInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

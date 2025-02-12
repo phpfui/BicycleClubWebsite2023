@@ -14,88 +14,82 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account\Call;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class TranscriptionContext extends InstanceContext
-    {
-    /**
-     * Initialize the TranscriptionContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created this Transcription resource.
-     * @param string $callSid The SID of the [Call](https://www.twilio.com/docs/voice/api/call-resource) the Transcription resource is associated with.
-     * @param string $sid The SID of the Transcription resource, or the `name` used when creating the resource
-     */
-    public function __construct(
-        Version $version,
-        $accountSid,
-        $callSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the TranscriptionContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created this Transcription resource.
+	 * @param string $callSid The SID of the [Call](https://www.twilio.com/docs/voice/api/call-resource) the Transcription resource is associated with.
+	 * @param string $sid The SID of the Transcription resource, or the `name` used when creating the resource
+	 */
+	public function __construct(
+		Version $version,
+		$accountSid,
+		$callSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        'callSid' =>
-            $callSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
+			'callSid' => $callSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Calls/' . \rawurlencode($callSid)
-        .'/Transcriptions/' . \rawurlencode($sid)
-        .'.json';
-    }
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Calls/' . \rawurlencode($callSid)
+		. '/Transcriptions/' . \rawurlencode($sid)
+		. '.json';
+	}
 
-    /**
-     * Update the TranscriptionInstance
-     *
-     * @param string $status
-     * @return TranscriptionInstance Updated TranscriptionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $status): TranscriptionInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $data = Values::of([
-            'Status' =>
-                $status,
-        ]);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		return '[Twilio.Api.V2010.TranscriptionContext ' . \implode(' ', $context) . ']';
+	}
 
-        return new TranscriptionInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['callSid'],
-            $this->solution['sid']
-        );
-    }
+	/**
+	 * Update the TranscriptionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return TranscriptionInstance Updated TranscriptionInstance
+	 */
+	public function update(string $status) : TranscriptionInstance
+	{
 
+		$data = Values::of([
+			'Status' => $status,
+		]);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.TranscriptionContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+
+		return new TranscriptionInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['callSid'],
+			$this->solution['sid']
+		);
+	}
 }

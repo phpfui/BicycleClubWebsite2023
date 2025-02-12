@@ -22,22 +22,31 @@ abstract class Photo extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'description' => ['varchar(255)', 'string', 255, true, ],
-		'extension' => ['varchar(10)', 'string', 10, false, '', ],
-		'folderId' => ['int', 'int', 0, false, ],
-		'memberId' => ['int', 'int', 0, true, ],
-		'photoId' => ['int', 'int', 0, false, ],
-		'public' => ['int', 'int', 0, false, 0, ],
-		'taken' => ['datetime', 'string', 20, true, ],
-		'thumbnail' => ['int', 'int', 0, false, 0, ],
-		'uploaded' => ['datetime', 'string', 20, false, null, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['photoId', ];
 
 	protected static string $table = 'photo';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'description' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'extension' => new \PHPFUI\ORM\FieldDefinition('varchar(10)', 'string', 10, false, '', ),
+				'folderId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'photoId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'public' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'taken' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, ),
+				'thumbnail' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'uploaded' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+			];
+			}
+
+		return $this;
+		}
 	}

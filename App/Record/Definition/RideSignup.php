@@ -19,20 +19,29 @@ abstract class RideSignup extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'attended' => ['int', 'int', 0, true, 0, ],
-		'comments' => ['varchar(200)', 'string', 200, true, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'rideComments' => ['int', 'int', 0, true, 1, ],
-		'rideId' => ['int', 'int', 0, false, ],
-		'signedUpTime' => ['datetime', 'string', 20, false, null, ],
-		'status' => ['int', 'int', 0, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['rideId', 'memberId', ];
 
 	protected static string $table = 'rideSignup';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'attended' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'comments' => new \PHPFUI\ORM\FieldDefinition('varchar(200)', 'string', 200, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'rideComments' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 1, ),
+				'rideId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'signedUpTime' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'status' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

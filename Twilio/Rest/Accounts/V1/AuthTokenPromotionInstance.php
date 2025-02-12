@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Accounts\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $accountSid
@@ -33,90 +31,92 @@ use Twilio\Deserialize;
  */
 class AuthTokenPromotionInstance extends InstanceResource
 {
-    /**
-     * Initialize the AuthTokenPromotionInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     */
-    public function __construct(Version $version, array $payload)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the AuthTokenPromotionInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 */
+	public function __construct(Version $version, array $payload)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'authToken' => Values::array_get($payload, 'auth_token'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'authToken' => Values::array_get($payload, 'auth_token'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = [];
-    }
+		$this->solution = [];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return AuthTokenPromotionContext Context for this AuthTokenPromotionInstance
-     */
-    protected function proxy(): AuthTokenPromotionContext
-    {
-        if (!$this->context) {
-            $this->context = new AuthTokenPromotionContext(
-                $this->version
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Update the AuthTokenPromotionInstance
-     *
-     * @return AuthTokenPromotionInstance Updated AuthTokenPromotionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(): AuthTokenPromotionInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->update();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Accounts.V1.AuthTokenPromotionInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Accounts.V1.AuthTokenPromotionInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the AuthTokenPromotionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AuthTokenPromotionInstance Updated AuthTokenPromotionInstance
+	 */
+	public function update() : AuthTokenPromotionInstance
+	{
+
+		return $this->proxy()->update();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return AuthTokenPromotionContext Context for this AuthTokenPromotionInstance
+	 */
+	protected function proxy() : AuthTokenPromotionContext
+	{
+		if (! $this->context) {
+			$this->context = new AuthTokenPromotionContext(
+				$this->version
+			);
+		}
+
+		return $this->context;
+	}
 }
-

@@ -14,18 +14,16 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Sync\V1\Service;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
-use Twilio\Values;
-use Twilio\Version;
-use Twilio\Deserialize;
 use Twilio\Rest\Sync\V1\Service\SyncMap\SyncMapItemList;
 use Twilio\Rest\Sync\V1\Service\SyncMap\SyncMapPermissionList;
-
+use Twilio\Values;
+use Twilio\Version;
 
 /**
  * @property string|null $sid
@@ -42,144 +40,147 @@ use Twilio\Rest\Sync\V1\Service\SyncMap\SyncMapPermissionList;
  */
 class SyncMapInstance extends InstanceResource
 {
-    protected $_syncMapItems;
-    protected $_syncMapPermissions;
+	protected $_syncMapItems;
 
-    /**
-     * Initialize the SyncMapInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) to create the Sync Map in.
-     * @param string $sid The SID of the Sync Map resource to delete. Can be the Sync Map's `sid` or its `unique_name`.
-     */
-    public function __construct(Version $version, array $payload, string $serviceSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	protected $_syncMapPermissions;
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'uniqueName' => Values::array_get($payload, 'unique_name'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'serviceSid' => Values::array_get($payload, 'service_sid'),
-            'url' => Values::array_get($payload, 'url'),
-            'links' => Values::array_get($payload, 'links'),
-            'revision' => Values::array_get($payload, 'revision'),
-            'dateExpires' => Deserialize::dateTime(Values::array_get($payload, 'date_expires')),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'createdBy' => Values::array_get($payload, 'created_by'),
-        ];
+	/**
+	 * Initialize the SyncMapInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) to create the Sync Map in.
+	 * @param string $sid The SID of the Sync Map resource to delete. Can be the Sync Map's `sid` or its `unique_name`.
+	 */
+	public function __construct(Version $version, array $payload, string $serviceSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        $this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'uniqueName' => Values::array_get($payload, 'unique_name'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'serviceSid' => Values::array_get($payload, 'service_sid'),
+			'url' => Values::array_get($payload, 'url'),
+			'links' => Values::array_get($payload, 'links'),
+			'revision' => Values::array_get($payload, 'revision'),
+			'dateExpires' => Deserialize::dateTime(Values::array_get($payload, 'date_expires')),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'createdBy' => Values::array_get($payload, 'created_by'),
+		];
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return SyncMapContext Context for this SyncMapInstance
-     */
-    protected function proxy(): SyncMapContext
-    {
-        if (!$this->context) {
-            $this->context = new SyncMapContext(
-                $this->version,
-                $this->solution['serviceSid'],
-                $this->solution['sid']
-            );
-        }
+		$this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-        return $this->context;
-    }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-    /**
-     * Delete the SyncMapInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return $this->proxy()->delete();
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Fetch the SyncMapInstance
-     *
-     * @return SyncMapInstance Fetched SyncMapInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): SyncMapInstance
-    {
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-        return $this->proxy()->fetch();
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Update the SyncMapInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return SyncMapInstance Updated SyncMapInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): SyncMapInstance
-    {
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return $this->proxy()->update($options);
-    }
+		return '[Twilio.Sync.V1.SyncMapInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Access the syncMapItems
-     */
-    protected function getSyncMapItems(): SyncMapItemList
-    {
-        return $this->proxy()->syncMapItems;
-    }
+	/**
+	 * Delete the SyncMapInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Access the syncMapPermissions
-     */
-    protected function getSyncMapPermissions(): SyncMapPermissionList
-    {
-        return $this->proxy()->syncMapPermissions;
-    }
+		return $this->proxy()->delete();
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Fetch the SyncMapInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SyncMapInstance Fetched SyncMapInstance
+	 */
+	public function fetch() : SyncMapInstance
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->fetch();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Update the SyncMapInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SyncMapInstance Updated SyncMapInstance
+	 */
+	public function update(array $options = []) : SyncMapInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Sync.V1.SyncMapInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Access the syncMapItems
+	 */
+	protected function getSyncMapItems() : SyncMapItemList
+	{
+		return $this->proxy()->syncMapItems;
+	}
+
+	/**
+	 * Access the syncMapPermissions
+	 */
+	protected function getSyncMapPermissions() : SyncMapPermissionList
+	{
+		return $this->proxy()->syncMapPermissions;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return SyncMapContext Context for this SyncMapInstance
+	 */
+	protected function proxy() : SyncMapContext
+	{
+		if (! $this->context) {
+			$this->context = new SyncMapContext(
+				$this->version,
+				$this->solution['serviceSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

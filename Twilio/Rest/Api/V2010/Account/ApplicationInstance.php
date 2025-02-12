@@ -14,16 +14,14 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $accountSid
@@ -50,135 +48,137 @@ use Twilio\Deserialize;
  */
 class ApplicationInstance extends InstanceResource
 {
-    /**
-     * Initialize the ApplicationInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
-     * @param string $sid The Twilio-provided string that uniquely identifies the Application resource to delete.
-     */
-    public function __construct(Version $version, array $payload, string $accountSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the ApplicationInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
+	 * @param string $sid The Twilio-provided string that uniquely identifies the Application resource to delete.
+	 */
+	public function __construct(Version $version, array $payload, string $accountSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'apiVersion' => Values::array_get($payload, 'api_version'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'messageStatusCallback' => Values::array_get($payload, 'message_status_callback'),
-            'sid' => Values::array_get($payload, 'sid'),
-            'smsFallbackMethod' => Values::array_get($payload, 'sms_fallback_method'),
-            'smsFallbackUrl' => Values::array_get($payload, 'sms_fallback_url'),
-            'smsMethod' => Values::array_get($payload, 'sms_method'),
-            'smsStatusCallback' => Values::array_get($payload, 'sms_status_callback'),
-            'smsUrl' => Values::array_get($payload, 'sms_url'),
-            'statusCallback' => Values::array_get($payload, 'status_callback'),
-            'statusCallbackMethod' => Values::array_get($payload, 'status_callback_method'),
-            'uri' => Values::array_get($payload, 'uri'),
-            'voiceCallerIdLookup' => Values::array_get($payload, 'voice_caller_id_lookup'),
-            'voiceFallbackMethod' => Values::array_get($payload, 'voice_fallback_method'),
-            'voiceFallbackUrl' => Values::array_get($payload, 'voice_fallback_url'),
-            'voiceMethod' => Values::array_get($payload, 'voice_method'),
-            'voiceUrl' => Values::array_get($payload, 'voice_url'),
-            'publicApplicationConnectEnabled' => Values::array_get($payload, 'public_application_connect_enabled'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'apiVersion' => Values::array_get($payload, 'api_version'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'messageStatusCallback' => Values::array_get($payload, 'message_status_callback'),
+			'sid' => Values::array_get($payload, 'sid'),
+			'smsFallbackMethod' => Values::array_get($payload, 'sms_fallback_method'),
+			'smsFallbackUrl' => Values::array_get($payload, 'sms_fallback_url'),
+			'smsMethod' => Values::array_get($payload, 'sms_method'),
+			'smsStatusCallback' => Values::array_get($payload, 'sms_status_callback'),
+			'smsUrl' => Values::array_get($payload, 'sms_url'),
+			'statusCallback' => Values::array_get($payload, 'status_callback'),
+			'statusCallbackMethod' => Values::array_get($payload, 'status_callback_method'),
+			'uri' => Values::array_get($payload, 'uri'),
+			'voiceCallerIdLookup' => Values::array_get($payload, 'voice_caller_id_lookup'),
+			'voiceFallbackMethod' => Values::array_get($payload, 'voice_fallback_method'),
+			'voiceFallbackUrl' => Values::array_get($payload, 'voice_fallback_url'),
+			'voiceMethod' => Values::array_get($payload, 'voice_method'),
+			'voiceUrl' => Values::array_get($payload, 'voice_url'),
+			'publicApplicationConnectEnabled' => Values::array_get($payload, 'public_application_connect_enabled'),
+		];
 
-        $this->solution = ['accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return ApplicationContext Context for this ApplicationInstance
-     */
-    protected function proxy(): ApplicationContext
-    {
-        if (!$this->context) {
-            $this->context = new ApplicationContext(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the ApplicationInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the ApplicationInstance
-     *
-     * @return ApplicationInstance Fetched ApplicationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ApplicationInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Update the ApplicationInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ApplicationInstance Updated ApplicationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): ApplicationInstance
-    {
+		return '[Twilio.Api.V2010.ApplicationInstance ' . \implode(' ', $context) . ']';
+	}
 
-        return $this->proxy()->update($options);
-    }
+	/**
+	 * Delete the ApplicationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return $this->proxy()->delete();
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Fetch the ApplicationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ApplicationInstance Fetched ApplicationInstance
+	 */
+	public function fetch() : ApplicationInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->fetch();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.ApplicationInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the ApplicationInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ApplicationInstance Updated ApplicationInstance
+	 */
+	public function update(array $options = []) : ApplicationInstance
+	{
+
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return ApplicationContext Context for this ApplicationInstance
+	 */
+	protected function proxy() : ApplicationContext
+	{
+		if (! $this->context) {
+			$this->context = new ApplicationContext(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

@@ -14,128 +14,128 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Insights\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
+use Twilio\Rest\Insights\V1\Conference\ConferenceParticipantList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Rest\Insights\V1\Conference\ConferenceParticipantList;
-
 
 /**
  * @property ConferenceParticipantList $conferenceParticipants
  * @method \Twilio\Rest\Insights\V1\Conference\ConferenceParticipantContext conferenceParticipants(string $participantSid)
  */
 class ConferenceContext extends InstanceContext
-    {
-    protected $_conferenceParticipants;
+	{
+	protected $_conferenceParticipants;
 
-    /**
-     * Initialize the ConferenceContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $conferenceSid The unique SID identifier of the Conference.
-     */
-    public function __construct(
-        Version $version,
-        $conferenceSid
-    ) {
-        parent::__construct($version);
+	/**
+	 * Initialize the ConferenceContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $conferenceSid The unique SID identifier of the Conference.
+	 */
+	public function __construct(
+		Version $version,
+		$conferenceSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'conferenceSid' =>
-            $conferenceSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'conferenceSid' => $conferenceSid,
+		];
 
-        $this->uri = '/Conferences/' . \rawurlencode($conferenceSid)
-        .'';
-    }
+		$this->uri = '/Conferences/' . \rawurlencode($conferenceSid)
+		. '';
+	}
 
-    /**
-     * Fetch the ConferenceInstance
-     *
-     * @return ConferenceInstance Fetched ConferenceInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ConferenceInstance
-    {
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
-        return new ConferenceInstance(
-            $this->version,
-            $payload,
-            $this->solution['conferenceSid']
-        );
-    }
+		throw new TwilioException('Resource does not have a context');
+	}
 
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Access the conferenceParticipants
-     */
-    protected function getConferenceParticipants(): ConferenceParticipantList
-    {
-        if (!$this->_conferenceParticipants) {
-            $this->_conferenceParticipants = new ConferenceParticipantList(
-                $this->version,
-                $this->solution['conferenceSid']
-            );
-        }
+			return $this->{$method}();
+		}
 
-        return $this->_conferenceParticipants;
-    }
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+		return '[Twilio.Insights.V1.ConferenceContext ' . \implode(' ', $context) . ']';
+	}
 
-        throw new TwilioException('Resource does not have a context');
-    }
+	/**
+	 * Fetch the ConferenceInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ConferenceInstance Fetched ConferenceInstance
+	 */
+	public function fetch() : ConferenceInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Insights.V1.ConferenceContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new ConferenceInstance(
+			$this->version,
+			$payload,
+			$this->solution['conferenceSid']
+		);
+	}
+
+	/**
+	 * Access the conferenceParticipants
+	 */
+	protected function getConferenceParticipants() : ConferenceParticipantList
+	{
+		if (! $this->_conferenceParticipants) {
+			$this->_conferenceParticipants = new ConferenceParticipantList(
+				$this->version,
+				$this->solution['conferenceSid']
+			);
+		}
+
+		return $this->_conferenceParticipants;
+	}
 }

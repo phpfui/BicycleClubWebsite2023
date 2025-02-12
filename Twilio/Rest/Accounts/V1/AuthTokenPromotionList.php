@@ -19,43 +19,42 @@ namespace Twilio\Rest\Accounts\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class AuthTokenPromotionList extends ListResource
-    {
-    /**
-     * Construct the AuthTokenPromotionList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the AuthTokenPromotionList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+		];
+	}
 
-    /**
-     * Constructs a AuthTokenPromotionContext
-     */
-    public function getContext(
-        
-    ): AuthTokenPromotionContext
-    {
-        return new AuthTokenPromotionContext(
-            $this->version
-        );
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Accounts.V1.AuthTokenPromotionList]';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Accounts.V1.AuthTokenPromotionList]';
-    }
+	/**
+	 * Constructs a AuthTokenPromotionContext
+	 */
+	public function getContext(
+
+	) : AuthTokenPromotionContext
+	{
+		return new AuthTokenPromotionContext(
+			$this->version
+		);
+	}
 }

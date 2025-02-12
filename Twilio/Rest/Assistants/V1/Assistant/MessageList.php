@@ -21,62 +21,58 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class MessageList extends ListResource
-    {
-    /**
-     * Construct the MessageList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $id the Assistant ID.
-     */
-    public function __construct(
-        Version $version,
-        string $id
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the MessageList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $id the Assistant ID.
+	 */
+	public function __construct(
+		Version $version,
+		string $id
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'id' =>
-            $id,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'id' => $id,
 
-        $this->uri = '/Assistants/' . \rawurlencode($id)
-        .'/Messages';
-    }
+		];
 
-    /**
-     * Create the MessageInstance
-     *
-     * @param AssistantsV1ServiceAssistantSendMessageRequest $assistantsV1ServiceAssistantSendMessageRequest
-     * @return MessageInstance Created MessageInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(AssistantsV1ServiceAssistantSendMessageRequest $assistantsV1ServiceAssistantSendMessageRequest): MessageInstance
-    {
+		$this->uri = '/Assistants/' . \rawurlencode($id)
+		. '/Messages';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $data = $assistantsV1ServiceAssistantSendMessageRequest->toArray();
-        $headers['Content-Type'] = 'application/json';
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Assistants.V1.MessageList]';
+	}
 
-        return new MessageInstance(
-            $this->version,
-            $payload,
-            $this->solution['id']
-        );
-    }
+	/**
+	 * Create the MessageInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return MessageInstance Created MessageInstance
+	 */
+	public function create(AssistantsV1ServiceAssistantSendMessageRequest $assistantsV1ServiceAssistantSendMessageRequest) : MessageInstance
+	{
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$data = $assistantsV1ServiceAssistantSendMessageRequest->toArray();
+		$headers['Content-Type'] = 'application/json';
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Assistants.V1.MessageList]';
-    }
+		return new MessageInstance(
+			$this->version,
+			$payload,
+			$this->solution['id']
+		);
+	}
 }

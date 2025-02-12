@@ -29,29 +29,38 @@ abstract class Invoice extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'discount' => ['float(10,2)', 'float', 10, true, ],
-		'discountCodeId' => ['int', 'int', 0, true, ],
-		'errors' => ['text', 'string', 65535, true, ],
-		'fullfillmentDate' => ['date', 'string', 10, true, ],
-		'instructions' => ['char(125)', 'string', 125, true, ],
-		'invoiceId' => ['int', 'int', 0, false, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'orderDate' => ['date', 'string', 10, false, ],
-		'paidByCheck' => ['int', 'int', 0, true, 0, ],
-		'paymentDate' => ['date', 'string', 10, true, ],
-		'paypalPaid' => ['decimal(7,2)', 'float', 7, true, ],
-		'paypaltx' => ['varchar(50)', 'string', 50, true, '', ],
-		'pointsUsed' => ['int', 'int', 0, true, ],
-		'totalPrice' => ['decimal(7,2)', 'float', 7, true, ],
-		'totalShipping' => ['decimal(7,2)', 'float', 7, true, ],
-		'totalTax' => ['decimal(7,2)', 'float', 7, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['invoiceId', ];
 
 	protected static string $table = 'invoice';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'discount' => new \PHPFUI\ORM\FieldDefinition('float(10,2)', 'float', 10, true, ),
+				'discountCodeId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'errors' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'fullfillmentDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'instructions' => new \PHPFUI\ORM\FieldDefinition('char(125)', 'string', 125, true, ),
+				'invoiceId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'orderDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'paidByCheck' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'paymentDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'paypalPaid' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
+				'paypaltx' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, '', ),
+				'pointsUsed' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'totalPrice' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
+				'totalShipping' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
+				'totalTax' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -14,18 +14,16 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Values;
-use Twilio\Version;
-use Twilio\InstanceContext;
 use Twilio\Rest\Api\V2010\Account\Conference\ParticipantList;
 use Twilio\Rest\Api\V2010\Account\Conference\RecordingList;
-
+use Twilio\Values;
+use Twilio\Version;
 
 /**
  * @property ParticipantList $participants
@@ -34,169 +32,167 @@ use Twilio\Rest\Api\V2010\Account\Conference\RecordingList;
  * @method \Twilio\Rest\Api\V2010\Account\Conference\ParticipantContext participants(string $callSid)
  */
 class ConferenceContext extends InstanceContext
-    {
-    protected $_participants;
-    protected $_recordings;
+	{
+	protected $_participants;
 
-    /**
-     * Initialize the ConferenceContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Conference resource(s) to fetch.
-     * @param string $sid The Twilio-provided string that uniquely identifies the Conference resource to fetch
-     */
-    public function __construct(
-        Version $version,
-        $accountSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	protected $_recordings;
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        'sid' =>
-            $sid,
-        ];
+	/**
+	 * Initialize the ConferenceContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Conference resource(s) to fetch.
+	 * @param string $sid The Twilio-provided string that uniquely identifies the Conference resource to fetch
+	 */
+	public function __construct(
+		Version $version,
+		$accountSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/Conferences/' . \rawurlencode($sid)
-        .'.json';
-    }
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
+			'sid' => $sid,
+		];
 
-    /**
-     * Fetch the ConferenceInstance
-     *
-     * @return ConferenceInstance Fetched ConferenceInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ConferenceInstance
-    {
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/Conferences/' . \rawurlencode($sid)
+		. '.json';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-        return new ConferenceInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['sid']
-        );
-    }
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
+		throw new TwilioException('Resource does not have a context');
+	}
 
-    /**
-     * Update the ConferenceInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ConferenceInstance Updated ConferenceInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): ConferenceInstance
-    {
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        $options = new Values($options);
+			return $this->{$method}();
+		}
 
-        $data = Values::of([
-            'Status' =>
-                $options['status'],
-            'AnnounceUrl' =>
-                $options['announceUrl'],
-            'AnnounceMethod' =>
-                $options['announceMethod'],
-        ]);
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return new ConferenceInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['sid']
-        );
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Api.V2010.ConferenceContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Access the participants
-     */
-    protected function getParticipants(): ParticipantList
-    {
-        if (!$this->_participants) {
-            $this->_participants = new ParticipantList(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Fetch the ConferenceInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ConferenceInstance Fetched ConferenceInstance
+	 */
+	public function fetch() : ConferenceInstance
+	{
 
-        return $this->_participants;
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-    /**
-     * Access the recordings
-     */
-    protected function getRecordings(): RecordingList
-    {
-        if (!$this->_recordings) {
-            $this->_recordings = new RecordingList(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['sid']
-            );
-        }
+		return new ConferenceInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['sid']
+		);
+	}
 
-        return $this->_recordings;
-    }
+	/**
+	 * Update the ConferenceInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ConferenceInstance Updated ConferenceInstance
+	 */
+	public function update(array $options = []) : ConferenceInstance
+	{
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		$options = new Values($options);
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		$data = Values::of([
+			'Status' => $options['status'],
+			'AnnounceUrl' => $options['announceUrl'],
+			'AnnounceMethod' => $options['announceMethod'],
+		]);
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-        throw new TwilioException('Resource does not have a context');
-    }
+		return new ConferenceInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['sid']
+		);
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.ConferenceContext ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Access the participants
+	 */
+	protected function getParticipants() : ParticipantList
+	{
+		if (! $this->_participants) {
+			$this->_participants = new ParticipantList(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_participants;
+	}
+
+	/**
+	 * Access the recordings
+	 */
+	protected function getRecordings() : RecordingList
+	{
+		if (! $this->_recordings) {
+			$this->_recordings = new RecordingList(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_recordings;
+	}
 }

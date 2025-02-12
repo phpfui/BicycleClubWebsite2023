@@ -3,7 +3,7 @@
 namespace App\Table;
 
 class Setting extends \PHPFUI\ORM\Table
-{
+	{
 	protected static string $className = '\\' . \App\Record\Setting::class;
 
 	/** @var array<string,string> */

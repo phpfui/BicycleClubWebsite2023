@@ -22,174 +22,168 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class AssetList extends ListResource
-    {
-    /**
-     * Construct the AssetList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the Service to create the Asset resource under.
-     */
-    public function __construct(
-        Version $version,
-        string $serviceSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the AssetList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the Service to create the Asset resource under.
+	 */
+	public function __construct(
+		Version $version,
+		string $serviceSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Assets';
-    }
+		];
 
-    /**
-     * Create the AssetInstance
-     *
-     * @param string $friendlyName A descriptive string that you create to describe the Asset resource. It can be a maximum of 255 characters.
-     * @return AssetInstance Created AssetInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $friendlyName): AssetInstance
-    {
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Assets';
+	}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $friendlyName,
-        ]);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Serverless.V1.AssetList]';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Create the AssetInstance
+	 *
+	 * @param string $friendlyName A descriptive string that you create to describe the Asset resource. It can be a maximum of 255 characters.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AssetInstance Created AssetInstance
+	 */
+	public function create(string $friendlyName) : AssetInstance
+	{
 
-        return new AssetInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid']
-        );
-    }
+		$data = Values::of([
+			'FriendlyName' => $friendlyName,
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Reads AssetInstance records from the API as a list.
-     * Unlike stream(), this operation is eager and will load `limit` records into
-     * memory before returning.
-     *
-     * @param int $limit Upper limit for the number of records to return. read()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, read()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return AssetInstance[] Array of results
-     */
-    public function read(?int $limit = null, $pageSize = null): array
-    {
-        return \iterator_to_array($this->stream($limit, $pageSize), false);
-    }
+		return new AssetInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid']
+		);
+	}
 
-    /**
-     * Streams AssetInstance records from the API as a generator stream.
-     * This operation lazily loads records as efficiently as possible until the
-     * limit
-     * is reached.
-     * The results are returned as a generator, so this operation is memory
-     * efficient.
-     *
-     * @param int $limit Upper limit for the number of records to return. stream()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, stream()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return Stream stream of results
-     */
-    public function stream(?int $limit = null, $pageSize = null): Stream
-    {
-        $limits = $this->version->readLimits($limit, $pageSize);
+	/**
+	 * Constructs a AssetContext
+	 *
+	 * @param string $sid The SID that identifies the Asset resource to delete.
+	 */
+	public function getContext(
+		string $sid
+	) : AssetContext
+	{
+		return new AssetContext(
+			$this->version,
+			$this->solution['serviceSid'],
+			$sid
+		);
+	}
 
-        $page = $this->page($limits['pageSize']);
+	/**
+	 * Retrieve a specific page of AssetInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param string $targetUrl API-generated URL for the requested results page
+	 * @return AssetPage Page of AssetInstance
+	 */
+	public function getPage(string $targetUrl) : AssetPage
+	{
+		$response = $this->version->getDomain()->getClient()->request(
+			'GET',
+			$targetUrl
+		);
 
-        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-    }
+		return new AssetPage($this->version, $response, $this->solution);
+	}
 
-    /**
-     * Retrieve a single page of AssetInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param mixed $pageSize Number of records to return, defaults to 50
-     * @param string $pageToken PageToken provided by the API
-     * @param mixed $pageNumber Page Number, this value is simply for client state
-     * @return AssetPage Page of AssetInstance
-     */
-    public function page(
-        $pageSize = Values::NONE,
-        string $pageToken = Values::NONE,
-        $pageNumber = Values::NONE
-    ): AssetPage
-    {
+	/**
+	 * Retrieve a single page of AssetInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param mixed $pageSize Number of records to return, defaults to 50
+	 * @param string $pageToken PageToken provided by the API
+	 * @param mixed $pageNumber Page Number, this value is simply for client state
+	 * @return AssetPage Page of AssetInstance
+	 */
+	public function page(
+		$pageSize = Values::NONE,
+		string $pageToken = Values::NONE,
+		$pageNumber = Values::NONE
+	) : AssetPage
+	{
 
-        $params = Values::of([
-            'PageToken' => $pageToken,
-            'Page' => $pageNumber,
-            'PageSize' => $pageSize,
-        ]);
+		$params = Values::of([
+			'PageToken' => $pageToken,
+			'Page' => $pageNumber,
+			'PageSize' => $pageSize,
+		]);
 
-        $response = $this->version->page('GET', $this->uri, $params);
+		$response = $this->version->page('GET', $this->uri, $params);
 
-        return new AssetPage($this->version, $response, $this->solution);
-    }
+		return new AssetPage($this->version, $response, $this->solution);
+	}
 
-    /**
-     * Retrieve a specific page of AssetInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param string $targetUrl API-generated URL for the requested results page
-     * @return AssetPage Page of AssetInstance
-     */
-    public function getPage(string $targetUrl): AssetPage
-    {
-        $response = $this->version->getDomain()->getClient()->request(
-            'GET',
-            $targetUrl
-        );
+	/**
+	 * Reads AssetInstance records from the API as a list.
+	 * Unlike stream(), this operation is eager and will load `limit` records into
+	 * memory before returning.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. read()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, read()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return AssetInstance[] Array of results
+	 */
+	public function read(?int $limit = null, $pageSize = null) : array
+	{
+		return \iterator_to_array($this->stream($limit, $pageSize), false);
+	}
 
-        return new AssetPage($this->version, $response, $this->solution);
-    }
+	/**
+	 * Streams AssetInstance records from the API as a generator stream.
+	 * This operation lazily loads records as efficiently as possible until the
+	 * limit
+	 * is reached.
+	 * The results are returned as a generator, so this operation is memory
+	 * efficient.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. stream()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, stream()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return Stream stream of results
+	 */
+	public function stream(?int $limit = null, $pageSize = null) : Stream
+	{
+		$limits = $this->version->readLimits($limit, $pageSize);
 
+		$page = $this->page($limits['pageSize']);
 
-    /**
-     * Constructs a AssetContext
-     *
-     * @param string $sid The SID that identifies the Asset resource to delete.
-     */
-    public function getContext(
-        string $sid
-        
-    ): AssetContext
-    {
-        return new AssetContext(
-            $this->version,
-            $this->solution['serviceSid'],
-            $sid
-        );
-    }
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Serverless.V1.AssetList]';
-    }
+		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+	}
 }

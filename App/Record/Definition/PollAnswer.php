@@ -15,16 +15,25 @@ abstract class PollAnswer extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'answer' => ['varchar(250)', 'string', 250, true, ],
-		'pollAnswerId' => ['int', 'int', 0, false, ],
-		'pollId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['pollId', 'pollAnswerId', ];
 
 	protected static string $table = 'pollAnswer';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'answer' => new \PHPFUI\ORM\FieldDefinition('varchar(250)', 'string', 250, true, ),
+				'pollAnswerId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'pollId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

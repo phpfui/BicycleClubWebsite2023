@@ -22,21 +22,30 @@ abstract class StoreOrder extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'added' => ['datetime', 'string', 20, false, null, ],
-		'invoiceId' => ['int', 'int', 0, false, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'optionsSelected' => ['varchar(255)', 'string', 255, false, ],
-		'quantity' => ['int', 'int', 0, false, ],
-		'storeItemId' => ['int', 'int', 0, false, ],
-		'storeOrderId' => ['int', 'int', 0, false, ],
-		'updated' => ['datetime', 'string', 20, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['storeOrderId', ];
 
 	protected static string $table = 'storeOrder';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'added' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'invoiceId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'optionsSelected' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, ),
+				'quantity' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'storeItemId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'storeOrderId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'updated' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -19,71 +19,65 @@ namespace Twilio\Rest\Iam\V1;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Serialize;
-
 
 class KeyList extends ListResource
-    {
-    /**
-     * Construct the KeyList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the KeyList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/Keys';
-    }
+		$this->uri = '/Keys';
+	}
 
-    /**
-     * Create the KeyInstance
-     *
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Payments resource.
-     * @param array|Options $options Optional Arguments
-     * @return KeyInstance Created KeyInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $accountSid, array $options = []): KeyInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Iam.V1.KeyList]';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Create the KeyInstance
+	 *
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Payments resource.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return KeyInstance Created KeyInstance
+	 */
+	public function create(string $accountSid, array $options = []) : KeyInstance
+	{
 
-        $data = Values::of([
-            'AccountSid' =>
-                $accountSid,
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'KeyType' =>
-                $options['keyType'],
-            'Policy' =>
-                Serialize::jsonObject($options['policy']),
-        ]);
+		$options = new Values($options);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$data = Values::of([
+			'AccountSid' => $accountSid,
+			'FriendlyName' => $options['friendlyName'],
+			'KeyType' => $options['keyType'],
+			'Policy' => Serialize::jsonObject($options['policy']),
+		]);
 
-        return new KeyInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Iam.V1.KeyList]';
-    }
+		return new KeyInstance(
+			$this->version,
+			$payload
+		);
+	}
 }

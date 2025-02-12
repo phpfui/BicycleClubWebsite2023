@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Supersim\V1\Sim;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $sid
@@ -36,61 +34,61 @@ use Twilio\Deserialize;
  */
 class BillingPeriodInstance extends InstanceResource
 {
-    /**
-     * Initialize the BillingPeriodInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $simSid The SID of the Super SIM to list Billing Periods for.
-     */
-    public function __construct(Version $version, array $payload, string $simSid)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the BillingPeriodInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $simSid The SID of the Super SIM to list Billing Periods for.
+	 */
+	public function __construct(Version $version, array $payload, string $simSid)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'simSid' => Values::array_get($payload, 'sim_sid'),
-            'startTime' => Deserialize::dateTime(Values::array_get($payload, 'start_time')),
-            'endTime' => Deserialize::dateTime(Values::array_get($payload, 'end_time')),
-            'periodType' => Values::array_get($payload, 'period_type'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'simSid' => Values::array_get($payload, 'sim_sid'),
+			'startTime' => Deserialize::dateTime(Values::array_get($payload, 'start_time')),
+			'endTime' => Deserialize::dateTime(Values::array_get($payload, 'end_time')),
+			'periodType' => Values::array_get($payload, 'period_type'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+		];
 
-        $this->solution = ['simSid' => $simSid, ];
-    }
+		$this->solution = ['simSid' => $simSid, ];
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Supersim.V1.BillingPeriodInstance]';
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Supersim.V1.BillingPeriodInstance]';
+	}
 }
-

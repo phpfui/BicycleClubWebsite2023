@@ -84,18 +84,16 @@ class Schema extends \App\View\API\Base implements \PHPFUI\Interfaces\NanoClass
 	private function getSchema(\PHPFUI\ORM\Table $table) : array
 		{
 		$fields = $table->getFields();
-		$keys = ['mysql_type', 'php_type', 'length', 'key', 'nullable', 'default', ];
-
 		$response = [];
 
 		foreach ($fields as $key => $row)
 			{
-			$schema = [];
-
-			foreach ($row as $index => $value)
-				{
-				$schema[$keys[$index]] = $value;
-				}
+			$schema = [
+				'mysql_type' => $row->sqlType,
+				'php_type' => $row->phpType,
+				'length' => $row->length,
+				'nullable' => $row->nullable,
+				'default' => $row->defaultValue];
 			$response[$key] = $schema;
 			}
 		$response['primaryKeys'] = $table->getPrimaryKeys();

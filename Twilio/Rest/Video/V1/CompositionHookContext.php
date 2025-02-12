@@ -14,133 +14,120 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Video\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class CompositionHookContext extends InstanceContext
-    {
-    /**
-     * Initialize the CompositionHookContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The SID of the CompositionHook resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the CompositionHookContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The SID of the CompositionHook resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/CompositionHooks/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/CompositionHooks/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the CompositionHookInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Video.V1.CompositionHookContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the CompositionHookInstance
-     *
-     * @return CompositionHookInstance Fetched CompositionHookInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): CompositionHookInstance
-    {
+	/**
+	 * Delete the CompositionHookInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new CompositionHookInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the CompositionHookInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CompositionHookInstance Fetched CompositionHookInstance
+	 */
+	public function fetch() : CompositionHookInstance
+	{
 
-    /**
-     * Update the CompositionHookInstance
-     *
-     * @param string $friendlyName A descriptive string that you create to describe the resource. It can be up to  100 characters long and it must be unique within the account.
-     * @param array|Options $options Optional Arguments
-     * @return CompositionHookInstance Updated CompositionHookInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $friendlyName, array $options = []): CompositionHookInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new CompositionHookInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $friendlyName,
-            'Enabled' =>
-                Serialize::booleanToString($options['enabled']),
-            'VideoLayout' =>
-                Serialize::jsonObject($options['videoLayout']),
-            'AudioSources' =>
-                Serialize::map($options['audioSources'], function ($e) { return $e; }),
-            'AudioSourcesExcluded' =>
-                Serialize::map($options['audioSourcesExcluded'], function ($e) { return $e; }),
-            'Trim' =>
-                Serialize::booleanToString($options['trim']),
-            'Format' =>
-                $options['format'],
-            'Resolution' =>
-                $options['resolution'],
-            'StatusCallback' =>
-                $options['statusCallback'],
-            'StatusCallbackMethod' =>
-                $options['statusCallbackMethod'],
-        ]);
+	/**
+	 * Update the CompositionHookInstance
+	 *
+	 * @param string $friendlyName A descriptive string that you create to describe the resource. It can be up to  100 characters long and it must be unique within the account.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CompositionHookInstance Updated CompositionHookInstance
+	 */
+	public function update(string $friendlyName, array $options = []) : CompositionHookInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new CompositionHookInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'FriendlyName' => $friendlyName,
+			'Enabled' => Serialize::booleanToString($options['enabled']),
+			'VideoLayout' => Serialize::jsonObject($options['videoLayout']),
+			'AudioSources' => Serialize::map($options['audioSources'], static function($e) { return $e; }),
+			'AudioSourcesExcluded' => Serialize::map($options['audioSourcesExcluded'], static function($e) { return $e; }),
+			'Trim' => Serialize::booleanToString($options['trim']),
+			'Format' => $options['format'],
+			'Resolution' => $options['resolution'],
+			'StatusCallback' => $options['statusCallback'],
+			'StatusCallbackMethod' => $options['statusCallbackMethod'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Video.V1.CompositionHookContext ' . \implode(' ', $context) . ']';
-    }
+		return new CompositionHookInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

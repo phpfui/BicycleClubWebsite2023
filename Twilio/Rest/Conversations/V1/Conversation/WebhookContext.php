@@ -14,129 +14,120 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Conversations\V1\Conversation;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class WebhookContext extends InstanceContext
-    {
-    /**
-     * Initialize the WebhookContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $conversationSid The unique ID of the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for this webhook.
-     * @param string $sid A 34 character string that uniquely identifies this resource.
-     */
-    public function __construct(
-        Version $version,
-        $conversationSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the WebhookContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $conversationSid The unique ID of the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for this webhook.
+	 * @param string $sid A 34 character string that uniquely identifies this resource.
+	 */
+	public function __construct(
+		Version $version,
+		$conversationSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'conversationSid' =>
-            $conversationSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'conversationSid' => $conversationSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Conversations/' . \rawurlencode($conversationSid)
-        .'/Webhooks/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Conversations/' . \rawurlencode($conversationSid)
+		. '/Webhooks/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the WebhookInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Conversations.V1.WebhookContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the WebhookInstance
-     *
-     * @return WebhookInstance Fetched WebhookInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): WebhookInstance
-    {
+	/**
+	 * Delete the WebhookInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new WebhookInstance(
-            $this->version,
-            $payload,
-            $this->solution['conversationSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the WebhookInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return WebhookInstance Fetched WebhookInstance
+	 */
+	public function fetch() : WebhookInstance
+	{
 
-    /**
-     * Update the WebhookInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return WebhookInstance Updated WebhookInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): WebhookInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new WebhookInstance(
+			$this->version,
+			$payload,
+			$this->solution['conversationSid'],
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'Configuration.Url' =>
-                $options['configurationUrl'],
-            'Configuration.Method' =>
-                $options['configurationMethod'],
-            'Configuration.Filters' =>
-                Serialize::map($options['configurationFilters'], function ($e) { return $e; }),
-            'Configuration.Triggers' =>
-                Serialize::map($options['configurationTriggers'], function ($e) { return $e; }),
-            'Configuration.FlowSid' =>
-                $options['configurationFlowSid'],
-        ]);
+	/**
+	 * Update the WebhookInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return WebhookInstance Updated WebhookInstance
+	 */
+	public function update(array $options = []) : WebhookInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new WebhookInstance(
-            $this->version,
-            $payload,
-            $this->solution['conversationSid'],
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'Configuration.Url' => $options['configurationUrl'],
+			'Configuration.Method' => $options['configurationMethod'],
+			'Configuration.Filters' => Serialize::map($options['configurationFilters'], static function($e) { return $e; }),
+			'Configuration.Triggers' => Serialize::map($options['configurationTriggers'], static function($e) { return $e; }),
+			'Configuration.FlowSid' => $options['configurationFlowSid'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Conversations.V1.WebhookContext ' . \implode(' ', $context) . ']';
-    }
+		return new WebhookInstance(
+			$this->version,
+			$payload,
+			$this->solution['conversationSid'],
+			$this->solution['sid']
+		);
+	}
 }

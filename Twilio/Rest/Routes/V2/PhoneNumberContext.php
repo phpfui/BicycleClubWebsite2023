@@ -14,101 +14,96 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Routes\V2;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class PhoneNumberContext extends InstanceContext
-    {
-    /**
-     * Initialize the PhoneNumberContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $phoneNumber The phone number in E.164 format
-     */
-    public function __construct(
-        Version $version,
-        $phoneNumber
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the PhoneNumberContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $phoneNumber The phone number in E.164 format
+	 */
+	public function __construct(
+		Version $version,
+		$phoneNumber
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'phoneNumber' =>
-            $phoneNumber,
-        ];
+		// Path Solution
+		$this->solution = [
+			'phoneNumber' => $phoneNumber,
+		];
 
-        $this->uri = '/PhoneNumbers/' . \rawurlencode($phoneNumber)
-        .'';
-    }
+		$this->uri = '/PhoneNumbers/' . \rawurlencode($phoneNumber)
+		. '';
+	}
 
-    /**
-     * Fetch the PhoneNumberInstance
-     *
-     * @return PhoneNumberInstance Fetched PhoneNumberInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): PhoneNumberInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new PhoneNumberInstance(
-            $this->version,
-            $payload,
-            $this->solution['phoneNumber']
-        );
-    }
+		return '[Twilio.Routes.V2.PhoneNumberContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the PhoneNumberInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return PhoneNumberInstance Fetched PhoneNumberInstance
+	 */
+	public function fetch() : PhoneNumberInstance
+	{
 
-    /**
-     * Update the PhoneNumberInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return PhoneNumberInstance Updated PhoneNumberInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): PhoneNumberInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new PhoneNumberInstance(
+			$this->version,
+			$payload,
+			$this->solution['phoneNumber']
+		);
+	}
 
-        $data = Values::of([
-            'VoiceRegion' =>
-                $options['voiceRegion'],
-            'FriendlyName' =>
-                $options['friendlyName'],
-        ]);
+	/**
+	 * Update the PhoneNumberInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return PhoneNumberInstance Updated PhoneNumberInstance
+	 */
+	public function update(array $options = []) : PhoneNumberInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new PhoneNumberInstance(
-            $this->version,
-            $payload,
-            $this->solution['phoneNumber']
-        );
-    }
+		$data = Values::of([
+			'VoiceRegion' => $options['voiceRegion'],
+			'FriendlyName' => $options['friendlyName'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Routes.V2.PhoneNumberContext ' . \implode(' ', $context) . ']';
-    }
+		return new PhoneNumberInstance(
+			$this->version,
+			$payload,
+			$this->solution['phoneNumber']
+		);
+	}
 }

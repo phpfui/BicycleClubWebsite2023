@@ -14,18 +14,16 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Sync\V1\Service;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Rest\Sync\V1\Service\SyncList\SyncListItemList;
+use Twilio\Rest\Sync\V1\Service\SyncList\SyncListPermissionList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-use Twilio\Rest\Sync\V1\Service\SyncList\SyncListPermissionList;
-use Twilio\Rest\Sync\V1\Service\SyncList\SyncListItemList;
-
 
 /**
  * @property string|null $sid
@@ -42,144 +40,147 @@ use Twilio\Rest\Sync\V1\Service\SyncList\SyncListItemList;
  */
 class SyncListInstance extends InstanceResource
 {
-    protected $_syncListPermissions;
-    protected $_syncListItems;
+	protected $_syncListItems;
 
-    /**
-     * Initialize the SyncListInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) to create the new Sync List in.
-     * @param string $sid The SID of the Sync List resource to delete. Can be the Sync List resource's `sid` or its `unique_name`.
-     */
-    public function __construct(Version $version, array $payload, string $serviceSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	protected $_syncListPermissions;
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'uniqueName' => Values::array_get($payload, 'unique_name'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'serviceSid' => Values::array_get($payload, 'service_sid'),
-            'url' => Values::array_get($payload, 'url'),
-            'links' => Values::array_get($payload, 'links'),
-            'revision' => Values::array_get($payload, 'revision'),
-            'dateExpires' => Deserialize::dateTime(Values::array_get($payload, 'date_expires')),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'createdBy' => Values::array_get($payload, 'created_by'),
-        ];
+	/**
+	 * Initialize the SyncListInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) to create the new Sync List in.
+	 * @param string $sid The SID of the Sync List resource to delete. Can be the Sync List resource's `sid` or its `unique_name`.
+	 */
+	public function __construct(Version $version, array $payload, string $serviceSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        $this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'uniqueName' => Values::array_get($payload, 'unique_name'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'serviceSid' => Values::array_get($payload, 'service_sid'),
+			'url' => Values::array_get($payload, 'url'),
+			'links' => Values::array_get($payload, 'links'),
+			'revision' => Values::array_get($payload, 'revision'),
+			'dateExpires' => Deserialize::dateTime(Values::array_get($payload, 'date_expires')),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'createdBy' => Values::array_get($payload, 'created_by'),
+		];
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return SyncListContext Context for this SyncListInstance
-     */
-    protected function proxy(): SyncListContext
-    {
-        if (!$this->context) {
-            $this->context = new SyncListContext(
-                $this->version,
-                $this->solution['serviceSid'],
-                $this->solution['sid']
-            );
-        }
+		$this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-        return $this->context;
-    }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-    /**
-     * Delete the SyncListInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return $this->proxy()->delete();
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Fetch the SyncListInstance
-     *
-     * @return SyncListInstance Fetched SyncListInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): SyncListInstance
-    {
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-        return $this->proxy()->fetch();
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Update the SyncListInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return SyncListInstance Updated SyncListInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): SyncListInstance
-    {
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return $this->proxy()->update($options);
-    }
+		return '[Twilio.Sync.V1.SyncListInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Access the syncListPermissions
-     */
-    protected function getSyncListPermissions(): SyncListPermissionList
-    {
-        return $this->proxy()->syncListPermissions;
-    }
+	/**
+	 * Delete the SyncListInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Access the syncListItems
-     */
-    protected function getSyncListItems(): SyncListItemList
-    {
-        return $this->proxy()->syncListItems;
-    }
+		return $this->proxy()->delete();
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Fetch the SyncListInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SyncListInstance Fetched SyncListInstance
+	 */
+	public function fetch() : SyncListInstance
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->fetch();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Update the SyncListInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SyncListInstance Updated SyncListInstance
+	 */
+	public function update(array $options = []) : SyncListInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Sync.V1.SyncListInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Access the syncListItems
+	 */
+	protected function getSyncListItems() : SyncListItemList
+	{
+		return $this->proxy()->syncListItems;
+	}
+
+	/**
+	 * Access the syncListPermissions
+	 */
+	protected function getSyncListPermissions() : SyncListPermissionList
+	{
+		return $this->proxy()->syncListPermissions;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return SyncListContext Context for this SyncListInstance
+	 */
+	protected function proxy() : SyncListContext
+	{
+		if (! $this->context) {
+			$this->context = new SyncListContext(
+				$this->version,
+				$this->solution['serviceSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Video\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $accountSid
@@ -49,120 +47,122 @@ use Twilio\Deserialize;
  */
 class CompositionInstance extends InstanceResource
 {
-    /**
-     * Initialize the CompositionInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $sid The SID of the Composition resource to delete.
-     */
-    public function __construct(Version $version, array $payload, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the CompositionInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $sid The SID of the Composition resource to delete.
+	 */
+	public function __construct(Version $version, array $payload, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'status' => Values::array_get($payload, 'status'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateCompleted' => Deserialize::dateTime(Values::array_get($payload, 'date_completed')),
-            'dateDeleted' => Deserialize::dateTime(Values::array_get($payload, 'date_deleted')),
-            'sid' => Values::array_get($payload, 'sid'),
-            'roomSid' => Values::array_get($payload, 'room_sid'),
-            'audioSources' => Values::array_get($payload, 'audio_sources'),
-            'audioSourcesExcluded' => Values::array_get($payload, 'audio_sources_excluded'),
-            'videoLayout' => Values::array_get($payload, 'video_layout'),
-            'resolution' => Values::array_get($payload, 'resolution'),
-            'trim' => Values::array_get($payload, 'trim'),
-            'format' => Values::array_get($payload, 'format'),
-            'bitrate' => Values::array_get($payload, 'bitrate'),
-            'size' => Values::array_get($payload, 'size'),
-            'duration' => Values::array_get($payload, 'duration'),
-            'mediaExternalLocation' => Values::array_get($payload, 'media_external_location'),
-            'statusCallback' => Values::array_get($payload, 'status_callback'),
-            'statusCallbackMethod' => Values::array_get($payload, 'status_callback_method'),
-            'url' => Values::array_get($payload, 'url'),
-            'links' => Values::array_get($payload, 'links'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'status' => Values::array_get($payload, 'status'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateCompleted' => Deserialize::dateTime(Values::array_get($payload, 'date_completed')),
+			'dateDeleted' => Deserialize::dateTime(Values::array_get($payload, 'date_deleted')),
+			'sid' => Values::array_get($payload, 'sid'),
+			'roomSid' => Values::array_get($payload, 'room_sid'),
+			'audioSources' => Values::array_get($payload, 'audio_sources'),
+			'audioSourcesExcluded' => Values::array_get($payload, 'audio_sources_excluded'),
+			'videoLayout' => Values::array_get($payload, 'video_layout'),
+			'resolution' => Values::array_get($payload, 'resolution'),
+			'trim' => Values::array_get($payload, 'trim'),
+			'format' => Values::array_get($payload, 'format'),
+			'bitrate' => Values::array_get($payload, 'bitrate'),
+			'size' => Values::array_get($payload, 'size'),
+			'duration' => Values::array_get($payload, 'duration'),
+			'mediaExternalLocation' => Values::array_get($payload, 'media_external_location'),
+			'statusCallback' => Values::array_get($payload, 'status_callback'),
+			'statusCallbackMethod' => Values::array_get($payload, 'status_callback_method'),
+			'url' => Values::array_get($payload, 'url'),
+			'links' => Values::array_get($payload, 'links'),
+		];
 
-        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return CompositionContext Context for this CompositionInstance
-     */
-    protected function proxy(): CompositionContext
-    {
-        if (!$this->context) {
-            $this->context = new CompositionContext(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the CompositionInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the CompositionInstance
-     *
-     * @return CompositionInstance Fetched CompositionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): CompositionInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return '[Twilio.Video.V1.CompositionInstance ' . \implode(' ', $context) . ']';
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Delete the CompositionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->delete();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Video.V1.CompositionInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the CompositionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CompositionInstance Fetched CompositionInstance
+	 */
+	public function fetch() : CompositionInstance
+	{
+
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return CompositionContext Context for this CompositionInstance
+	 */
+	protected function proxy() : CompositionContext
+	{
+		if (! $this->context) {
+			$this->context = new CompositionContext(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

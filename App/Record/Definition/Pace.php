@@ -18,20 +18,29 @@ abstract class Pace extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'categoryId' => ['int', 'int', 0, true, ],
-		'maxRiders' => ['int', 'int', 0, false, 0, ],
-		'maxSpeed' => ['varchar(5)', 'string', 5, true, ],
-		'minSpeed' => ['varchar(5)', 'string', 5, true, ],
-		'ordering' => ['int', 'int', 0, false, 999999, ],
-		'pace' => ['varchar(20)', 'string', 20, true, ],
-		'paceId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['paceId', ];
 
 	protected static string $table = 'pace';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'categoryId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'maxRiders' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'maxSpeed' => new \PHPFUI\ORM\FieldDefinition('varchar(5)', 'string', 5, true, ),
+				'minSpeed' => new \PHPFUI\ORM\FieldDefinition('varchar(5)', 'string', 5, true, ),
+				'ordering' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 999999, ),
+				'pace' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, ),
+				'paceId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

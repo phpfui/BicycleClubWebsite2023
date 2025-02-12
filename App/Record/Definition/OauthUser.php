@@ -18,19 +18,28 @@ abstract class OauthUser extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'lastLogin' => ['datetime', 'string', 20, true, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'oauthUserId' => ['int', 'int', 0, false, ],
-		'password' => ['varchar(255)', 'string', 255, true, ],
-		'permissions' => ['text', 'string', 65535, true, ],
-		'userName' => ['varchar(100)', 'string', 100, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['oauthUserId', ];
 
 	protected static string $table = 'oauthUser';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'lastLogin' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'oauthUserId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'password' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'permissions' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'userName' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

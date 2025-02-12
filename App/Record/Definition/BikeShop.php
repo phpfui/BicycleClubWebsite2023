@@ -24,25 +24,34 @@ abstract class BikeShop extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'address' => ['varchar(100)', 'string', 100, true, '', ],
-		'bikeShopAreaId' => ['int', 'int', 0, true, 0, ],
-		'bikeShopId' => ['int', 'int', 0, false, ],
-		'contact' => ['varchar(255)', 'string', 255, true, '', ],
-		'email' => ['varchar(100)', 'string', 100, true, '', ],
-		'name' => ['varchar(255)', 'string', 255, true, '', ],
-		'notes' => ['text', 'string', 65535, true, ],
-		'phone' => ['varchar(20)', 'string', 20, true, '', ],
-		'state' => ['char(2)', 'string', 2, true, '', ],
-		'town' => ['varchar(50)', 'string', 50, true, '', ],
-		'url' => ['varchar(255)', 'string', 255, true, '', ],
-		'zip' => ['varchar(10)', 'string', 10, true, '', ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['bikeShopId', ];
 
 	protected static string $table = 'bikeShop';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'address' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, '', ),
+				'bikeShopAreaId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'bikeShopId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'contact' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, '', ),
+				'email' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, '', ),
+				'name' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, '', ),
+				'notes' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'phone' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, '', ),
+				'state' => new \PHPFUI\ORM\FieldDefinition('char(2)', 'string', 2, true, '', ),
+				'town' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, '', ),
+				'url' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, '', ),
+				'zip' => new \PHPFUI\ORM\FieldDefinition('varchar(10)', 'string', 10, true, '', ),
+			];
+			}
+
+		return $this;
+		}
 	}

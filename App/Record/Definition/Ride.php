@@ -43,40 +43,49 @@ abstract class Ride extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'RWGPSId' => ['int', 'int', 0, true, ],
-		'accident' => ['int', 'int', 0, true, ],
-		'averagePace' => ['float', 'float', 0, true, ],
-		'commentsDisabled' => ['int', 'int', 0, false, 0, ],
-		'cueSheetId' => ['int', 'int', 0, true, ],
-		'dateAdded' => ['datetime', 'string', 20, false, null, ],
-		'description' => ['mediumtext', 'string', 16777215, true, ],
-		'elevation' => ['int', 'int', 0, true, ],
-		'maxRiders' => ['int', 'int', 0, false, 0, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'mileage' => ['varchar(8)', 'string', 8, true, ],
-		'numberOfRiders' => ['int', 'int', 0, true, ],
-		'paceId' => ['int', 'int', 0, false, 0, ],
-		'pending' => ['int', 'int', 0, false, 0, ],
-		'pointsAwarded' => ['int', 'int', 0, false, 0, ],
-		'regrouping' => ['varchar(50)', 'string', 50, true, '', ],
-		'releasePrinted' => ['datetime', 'string', 20, true, ],
-		'restStop' => ['varchar(70)', 'string', 70, true, ],
-		'rideDate' => ['date', 'string', 10, false, ],
-		'rideId' => ['int', 'int', 0, false, ],
-		'rideStatus' => ['int', 'int', 0, false, 0, ],
-		'signupNotifications' => ['tinyint', 'int', 0, true, 1, ],
-		'startLocationId' => ['int', 'int', 0, true, ],
-		'startTime' => ['time', 'string', 0, true, ],
-		'targetPace' => ['decimal(3,1)', 'float', 3, true, ],
-		'title' => ['varchar(100)', 'string', 100, true, ],
-		'unaffiliated' => ['int', 'int', 0, true, 0, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['rideId', ];
 
 	protected static string $table = 'ride';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'RWGPSId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'accident' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'averagePace' => new \PHPFUI\ORM\FieldDefinition('float', 'float', 0, true, ),
+				'commentsDisabled' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'cueSheetId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'dateAdded' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'description' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
+				'elevation' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'maxRiders' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'mileage' => new \PHPFUI\ORM\FieldDefinition('varchar(8)', 'string', 8, true, ),
+				'numberOfRiders' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'paceId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'pending' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'pointsAwarded' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'regrouping' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, '', ),
+				'releasePrinted' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, ),
+				'restStop' => new \PHPFUI\ORM\FieldDefinition('varchar(70)', 'string', 70, true, ),
+				'rideDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'rideId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'rideStatus' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'signupNotifications' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, true, 1, ),
+				'startLocationId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'startTime' => new \PHPFUI\ORM\FieldDefinition('time', 'string', 0, true, ),
+				'targetPace' => new \PHPFUI\ORM\FieldDefinition('decimal(3,1)', 'float', 3, true, ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+				'unaffiliated' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+			];
+			}
+
+		return $this;
+		}
 	}

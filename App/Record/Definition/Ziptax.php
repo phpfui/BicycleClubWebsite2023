@@ -15,18 +15,27 @@ abstract class Ziptax extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'zip_code' => ['varchar(32)', 'string', 32, true, ],
-		'zip_id' => ['int', 'int', 0, false, ],
-		'zip_tax_rate' => ['decimal(7,4)', 'float', 7, true, ],
-		'zipcounty' => ['varchar(32)', 'string', 32, true, ],
-		'zipstate' => ['varchar(32)', 'string', 32, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['zip_id', ];
 
 	protected static string $table = 'ziptax';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'zip_code' => new \PHPFUI\ORM\FieldDefinition('varchar(32)', 'string', 32, true, ),
+				'zip_id' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'zip_tax_rate' => new \PHPFUI\ORM\FieldDefinition('decimal(7,4)', 'float', 7, true, ),
+				'zipcounty' => new \PHPFUI\ORM\FieldDefinition('varchar(32)', 'string', 32, true, ),
+				'zipstate' => new \PHPFUI\ORM\FieldDefinition('varchar(32)', 'string', 32, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

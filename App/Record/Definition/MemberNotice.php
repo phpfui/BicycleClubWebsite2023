@@ -20,21 +20,30 @@ abstract class MemberNotice extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'body' => ['mediumtext', 'string', 16777215, true, ],
-		'dayOffsets' => ['varchar(255)', 'string', 255, false, ],
-		'field' => ['varchar(30)', 'string', 30, false, ],
-		'memberId' => ['int', 'int', 0, true, ],
-		'memberNoticeId' => ['int', 'int', 0, false, ],
-		'overridePreferences' => ['int', 'int', 0, true, 0, ],
-		'summary' => ['int', 'int', 0, false, 1, ],
-		'title' => ['varchar(255)', 'string', 255, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['memberNoticeId', ];
 
 	protected static string $table = 'memberNotice';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'body' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
+				'dayOffsets' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, ),
+				'field' => new \PHPFUI\ORM\FieldDefinition('varchar(30)', 'string', 30, false, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'memberNoticeId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'overridePreferences' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'summary' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 1, ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

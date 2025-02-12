@@ -14,7 +14,6 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Trunking\V1\Trunk;
 
 use Twilio\Exceptions\TwilioException;
@@ -23,109 +22,110 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
-
 /**
  * @property string $mode
  * @property string $trim
  */
 class RecordingInstance extends InstanceResource
 {
-    /**
-     * Initialize the RecordingInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $trunkSid The SID of the Trunk from which to fetch the recording settings.
-     */
-    public function __construct(Version $version, array $payload, string $trunkSid)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the RecordingInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $trunkSid The SID of the Trunk from which to fetch the recording settings.
+	 */
+	public function __construct(Version $version, array $payload, string $trunkSid)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'mode' => Values::array_get($payload, 'mode'),
-            'trim' => Values::array_get($payload, 'trim'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'mode' => Values::array_get($payload, 'mode'),
+			'trim' => Values::array_get($payload, 'trim'),
+		];
 
-        $this->solution = ['trunkSid' => $trunkSid, ];
-    }
+		$this->solution = ['trunkSid' => $trunkSid, ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return RecordingContext Context for this RecordingInstance
-     */
-    protected function proxy(): RecordingContext
-    {
-        if (!$this->context) {
-            $this->context = new RecordingContext(
-                $this->version,
-                $this->solution['trunkSid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the RecordingInstance
-     *
-     * @return RecordingInstance Fetched RecordingInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): RecordingInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Update the RecordingInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return RecordingInstance Updated RecordingInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): RecordingInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->update($options);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return '[Twilio.Trunking.V1.RecordingInstance ' . \implode(' ', $context) . ']';
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Fetch the RecordingInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return RecordingInstance Fetched RecordingInstance
+	 */
+	public function fetch() : RecordingInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->fetch();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Trunking.V1.RecordingInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the RecordingInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return RecordingInstance Updated RecordingInstance
+	 */
+	public function update(array $options = []) : RecordingInstance
+	{
+
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return RecordingContext Context for this RecordingInstance
+	 */
+	protected function proxy() : RecordingContext
+	{
+		if (! $this->context) {
+			$this->context = new RecordingContext(
+				$this->version,
+				$this->solution['trunkSid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

@@ -22,67 +22,63 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class NewSigningKeyList extends ListResource
-    {
-    /**
-     * Construct the NewSigningKeyList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will be responsible for the new Key resource.
-     */
-    public function __construct(
-        Version $version,
-        string $accountSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the NewSigningKeyList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will be responsible for the new Key resource.
+	 */
+	public function __construct(
+		Version $version,
+		string $accountSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/SigningKeys.json';
-    }
+		];
 
-    /**
-     * Create the NewSigningKeyInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return NewSigningKeyInstance Created NewSigningKeyInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(array $options = []): NewSigningKeyInstance
-    {
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/SigningKeys.json';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Api.V2010.NewSigningKeyList]';
+	}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $options['friendlyName'],
-        ]);
+	/**
+	 * Create the NewSigningKeyInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return NewSigningKeyInstance Created NewSigningKeyInstance
+	 */
+	public function create(array $options = []) : NewSigningKeyInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new NewSigningKeyInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid']
-        );
-    }
+		$data = Values::of([
+			'FriendlyName' => $options['friendlyName'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Api.V2010.NewSigningKeyList]';
-    }
+		return new NewSigningKeyInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid']
+		);
+	}
 }

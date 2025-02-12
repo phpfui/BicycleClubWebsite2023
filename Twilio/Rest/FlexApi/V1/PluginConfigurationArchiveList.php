@@ -19,47 +19,45 @@ namespace Twilio\Rest\FlexApi\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class PluginConfigurationArchiveList extends ListResource
-    {
-    /**
-     * Construct the PluginConfigurationArchiveList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the PluginConfigurationArchiveList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+		];
+	}
 
-    /**
-     * Constructs a PluginConfigurationArchiveContext
-     *
-     * @param string $sid The SID of the Flex Plugin Configuration resource to archive.
-     */
-    public function getContext(
-        string $sid
-        
-    ): PluginConfigurationArchiveContext
-    {
-        return new PluginConfigurationArchiveContext(
-            $this->version,
-            $sid
-        );
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.FlexApi.V1.PluginConfigurationArchiveList]';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.FlexApi.V1.PluginConfigurationArchiveList]';
-    }
+	/**
+	 * Constructs a PluginConfigurationArchiveContext
+	 *
+	 * @param string $sid The SID of the Flex Plugin Configuration resource to archive.
+	 */
+	public function getContext(
+		string $sid
+	) : PluginConfigurationArchiveContext
+	{
+		return new PluginConfigurationArchiveContext(
+			$this->version,
+			$sid
+		);
+	}
 }

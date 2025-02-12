@@ -14,14 +14,12 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Supersim\V1\NetworkAccessProfile;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $sid
@@ -33,107 +31,109 @@ use Twilio\Version;
  */
 class NetworkAccessProfileNetworkInstance extends InstanceResource
 {
-    /**
-     * Initialize the NetworkAccessProfileNetworkInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $networkAccessProfileSid The unique string that identifies the Network Access Profile resource.
-     * @param string $sid The SID of the Network resource to be removed from the Network Access Profile resource.
-     */
-    public function __construct(Version $version, array $payload, string $networkAccessProfileSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the NetworkAccessProfileNetworkInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $networkAccessProfileSid The unique string that identifies the Network Access Profile resource.
+	 * @param string $sid The SID of the Network resource to be removed from the Network Access Profile resource.
+	 */
+	public function __construct(Version $version, array $payload, string $networkAccessProfileSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'networkAccessProfileSid' => Values::array_get($payload, 'network_access_profile_sid'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'isoCountry' => Values::array_get($payload, 'iso_country'),
-            'identifiers' => Values::array_get($payload, 'identifiers'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'networkAccessProfileSid' => Values::array_get($payload, 'network_access_profile_sid'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'isoCountry' => Values::array_get($payload, 'iso_country'),
+			'identifiers' => Values::array_get($payload, 'identifiers'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['networkAccessProfileSid' => $networkAccessProfileSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['networkAccessProfileSid' => $networkAccessProfileSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return NetworkAccessProfileNetworkContext Context for this NetworkAccessProfileNetworkInstance
-     */
-    protected function proxy(): NetworkAccessProfileNetworkContext
-    {
-        if (!$this->context) {
-            $this->context = new NetworkAccessProfileNetworkContext(
-                $this->version,
-                $this->solution['networkAccessProfileSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the NetworkAccessProfileNetworkInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the NetworkAccessProfileNetworkInstance
-     *
-     * @return NetworkAccessProfileNetworkInstance Fetched NetworkAccessProfileNetworkInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): NetworkAccessProfileNetworkInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return '[Twilio.Supersim.V1.NetworkAccessProfileNetworkInstance ' . \implode(' ', $context) . ']';
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Delete the NetworkAccessProfileNetworkInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->delete();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Supersim.V1.NetworkAccessProfileNetworkInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the NetworkAccessProfileNetworkInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return NetworkAccessProfileNetworkInstance Fetched NetworkAccessProfileNetworkInstance
+	 */
+	public function fetch() : NetworkAccessProfileNetworkInstance
+	{
+
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return NetworkAccessProfileNetworkContext Context for this NetworkAccessProfileNetworkInstance
+	 */
+	protected function proxy() : NetworkAccessProfileNetworkContext
+	{
+		if (! $this->context) {
+			$this->context = new NetworkAccessProfileNetworkContext(
+				$this->version,
+				$this->solution['networkAccessProfileSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

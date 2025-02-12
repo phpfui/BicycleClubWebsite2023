@@ -16,16 +16,25 @@ abstract class GaRiderSelection extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'gaOptionId' => ['int', 'int', 0, false, ],
-		'gaRiderId' => ['int', 'int', 0, false, ],
-		'gaSelectionId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['gaRiderId', 'gaOptionId', 'gaSelectionId', ];
 
 	protected static string $table = 'gaRiderSelection';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'gaOptionId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'gaRiderId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'gaSelectionId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -17,18 +17,27 @@ abstract class StorePhoto extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'extension' => ['varchar(10)', 'string', 10, true, ],
-		'filename' => ['varchar(255)', 'string', 255, true, ],
-		'sequence' => ['int', 'int', 0, false, ],
-		'storeItemId' => ['int', 'int', 0, false, ],
-		'storePhotoId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['storePhotoId', ];
 
 	protected static string $table = 'storePhoto';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'extension' => new \PHPFUI\ORM\FieldDefinition('varchar(10)', 'string', 10, true, ),
+				'filename' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'sequence' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'storeItemId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'storePhotoId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

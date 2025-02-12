@@ -14,14 +14,12 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Messaging\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $domainSid
@@ -30,90 +28,92 @@ use Twilio\Version;
  */
 class LinkshorteningMessagingServiceDomainAssociationInstance extends InstanceResource
 {
-    /**
-     * Initialize the LinkshorteningMessagingServiceDomainAssociationInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $messagingServiceSid Unique string used to identify the Messaging service that this domain should be associated with.
-     */
-    public function __construct(Version $version, array $payload, ?string $messagingServiceSid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the LinkshorteningMessagingServiceDomainAssociationInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $messagingServiceSid Unique string used to identify the Messaging service that this domain should be associated with.
+	 */
+	public function __construct(Version $version, array $payload, ?string $messagingServiceSid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'domainSid' => Values::array_get($payload, 'domain_sid'),
-            'messagingServiceSid' => Values::array_get($payload, 'messaging_service_sid'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'domainSid' => Values::array_get($payload, 'domain_sid'),
+			'messagingServiceSid' => Values::array_get($payload, 'messaging_service_sid'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['messagingServiceSid' => $messagingServiceSid ?: $this->properties['messagingServiceSid'], ];
-    }
+		$this->solution = ['messagingServiceSid' => $messagingServiceSid ?: $this->properties['messagingServiceSid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return LinkshorteningMessagingServiceDomainAssociationContext Context for this LinkshorteningMessagingServiceDomainAssociationInstance
-     */
-    protected function proxy(): LinkshorteningMessagingServiceDomainAssociationContext
-    {
-        if (!$this->context) {
-            $this->context = new LinkshorteningMessagingServiceDomainAssociationContext(
-                $this->version,
-                $this->solution['messagingServiceSid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the LinkshorteningMessagingServiceDomainAssociationInstance
-     *
-     * @return LinkshorteningMessagingServiceDomainAssociationInstance Fetched LinkshorteningMessagingServiceDomainAssociationInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): LinkshorteningMessagingServiceDomainAssociationInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Messaging.V1.LinkshorteningMessagingServiceDomainAssociationInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Messaging.V1.LinkshorteningMessagingServiceDomainAssociationInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the LinkshorteningMessagingServiceDomainAssociationInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return LinkshorteningMessagingServiceDomainAssociationInstance Fetched LinkshorteningMessagingServiceDomainAssociationInstance
+	 */
+	public function fetch() : LinkshorteningMessagingServiceDomainAssociationInstance
+	{
+
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return LinkshorteningMessagingServiceDomainAssociationContext Context for this LinkshorteningMessagingServiceDomainAssociationInstance
+	 */
+	protected function proxy() : LinkshorteningMessagingServiceDomainAssociationContext
+	{
+		if (! $this->context) {
+			$this->context = new LinkshorteningMessagingServiceDomainAssociationContext(
+				$this->version,
+				$this->solution['messagingServiceSid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

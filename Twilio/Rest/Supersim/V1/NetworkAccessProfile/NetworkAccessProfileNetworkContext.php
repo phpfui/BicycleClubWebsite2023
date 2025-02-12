@@ -14,90 +14,87 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Supersim\V1\NetworkAccessProfile;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class NetworkAccessProfileNetworkContext extends InstanceContext
-    {
-    /**
-     * Initialize the NetworkAccessProfileNetworkContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $networkAccessProfileSid The unique string that identifies the Network Access Profile resource.
-     * @param string $sid The SID of the Network resource to be removed from the Network Access Profile resource.
-     */
-    public function __construct(
-        Version $version,
-        $networkAccessProfileSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the NetworkAccessProfileNetworkContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $networkAccessProfileSid The unique string that identifies the Network Access Profile resource.
+	 * @param string $sid The SID of the Network resource to be removed from the Network Access Profile resource.
+	 */
+	public function __construct(
+		Version $version,
+		$networkAccessProfileSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'networkAccessProfileSid' =>
-            $networkAccessProfileSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'networkAccessProfileSid' => $networkAccessProfileSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/NetworkAccessProfiles/' . \rawurlencode($networkAccessProfileSid)
-        .'/Networks/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/NetworkAccessProfiles/' . \rawurlencode($networkAccessProfileSid)
+		. '/Networks/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the NetworkAccessProfileNetworkInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Supersim.V1.NetworkAccessProfileNetworkContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the NetworkAccessProfileNetworkInstance
-     *
-     * @return NetworkAccessProfileNetworkInstance Fetched NetworkAccessProfileNetworkInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): NetworkAccessProfileNetworkInstance
-    {
+	/**
+	 * Delete the NetworkAccessProfileNetworkInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new NetworkAccessProfileNetworkInstance(
-            $this->version,
-            $payload,
-            $this->solution['networkAccessProfileSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the NetworkAccessProfileNetworkInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return NetworkAccessProfileNetworkInstance Fetched NetworkAccessProfileNetworkInstance
+	 */
+	public function fetch() : NetworkAccessProfileNetworkInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Supersim.V1.NetworkAccessProfileNetworkContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new NetworkAccessProfileNetworkInstance(
+			$this->version,
+			$payload,
+			$this->solution['networkAccessProfileSid'],
+			$this->solution['sid']
+		);
+	}
 }

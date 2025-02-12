@@ -17,17 +17,26 @@ abstract class PollResponse extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'answer' => ['int', 'int', 0, true, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'membershipId' => ['int', 'int', 0, false, ],
-		'pollId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['pollId', 'membershipId', 'memberId', ];
 
 	protected static string $table = 'pollResponse';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'answer' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'membershipId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'pollId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -28,30 +28,39 @@ abstract class Calendar extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'calendarId' => ['int', 'int', 0, false, ],
-		'description' => ['text', 'string', 65535, true, ],
-		'distances' => ['char(20)', 'string', 20, true, ],
-		'eventDate' => ['date', 'string', 10, false, ],
-		'eventDays' => ['int', 'int', 0, true, ],
-		'eventType' => ['int', 'int', 0, true, ],
-		'location' => ['varchar(100)', 'string', 100, true, ],
-		'pending' => ['int', 'int', 0, false, 1, ],
-		'price' => ['int', 'int', 0, true, ],
-		'privateContact' => ['char(50)', 'string', 50, true, ],
-		'privateEmail' => ['char(50)', 'string', 50, true, ],
-		'publicContact' => ['char(50)', 'string', 50, true, ],
-		'publicEmail' => ['char(50)', 'string', 50, true, ],
-		'startTime' => ['time', 'string', 0, true, ],
-		'state' => ['char(2)', 'string', 2, true, ],
-		'title' => ['char(100)', 'string', 100, true, ],
-		'webSite' => ['char(100)', 'string', 100, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['calendarId', ];
 
 	protected static string $table = 'calendar';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'calendarId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'description' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'distances' => new \PHPFUI\ORM\FieldDefinition('char(20)', 'string', 20, true, ),
+				'eventDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'eventDays' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'eventType' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'location' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+				'pending' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 1, ),
+				'price' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'privateContact' => new \PHPFUI\ORM\FieldDefinition('char(50)', 'string', 50, true, ),
+				'privateEmail' => new \PHPFUI\ORM\FieldDefinition('char(50)', 'string', 50, true, ),
+				'publicContact' => new \PHPFUI\ORM\FieldDefinition('char(50)', 'string', 50, true, ),
+				'publicEmail' => new \PHPFUI\ORM\FieldDefinition('char(50)', 'string', 50, true, ),
+				'startTime' => new \PHPFUI\ORM\FieldDefinition('time', 'string', 0, true, ),
+				'state' => new \PHPFUI\ORM\FieldDefinition('char(2)', 'string', 2, true, ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
+				'webSite' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

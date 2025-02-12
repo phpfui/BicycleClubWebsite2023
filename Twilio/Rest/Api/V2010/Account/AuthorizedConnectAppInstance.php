@@ -14,14 +14,12 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $accountSid
@@ -35,97 +33,99 @@ use Twilio\Version;
  */
 class AuthorizedConnectAppInstance extends InstanceResource
 {
-    /**
-     * Initialize the AuthorizedConnectAppInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the AuthorizedConnectApp resource to fetch.
-     * @param string $connectAppSid The SID of the Connect App to fetch.
-     */
-    public function __construct(Version $version, array $payload, string $accountSid, ?string $connectAppSid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the AuthorizedConnectAppInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the AuthorizedConnectApp resource to fetch.
+	 * @param string $connectAppSid The SID of the Connect App to fetch.
+	 */
+	public function __construct(Version $version, array $payload, string $accountSid, ?string $connectAppSid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'connectAppCompanyName' => Values::array_get($payload, 'connect_app_company_name'),
-            'connectAppDescription' => Values::array_get($payload, 'connect_app_description'),
-            'connectAppFriendlyName' => Values::array_get($payload, 'connect_app_friendly_name'),
-            'connectAppHomepageUrl' => Values::array_get($payload, 'connect_app_homepage_url'),
-            'connectAppSid' => Values::array_get($payload, 'connect_app_sid'),
-            'permissions' => Values::array_get($payload, 'permissions'),
-            'uri' => Values::array_get($payload, 'uri'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'connectAppCompanyName' => Values::array_get($payload, 'connect_app_company_name'),
+			'connectAppDescription' => Values::array_get($payload, 'connect_app_description'),
+			'connectAppFriendlyName' => Values::array_get($payload, 'connect_app_friendly_name'),
+			'connectAppHomepageUrl' => Values::array_get($payload, 'connect_app_homepage_url'),
+			'connectAppSid' => Values::array_get($payload, 'connect_app_sid'),
+			'permissions' => Values::array_get($payload, 'permissions'),
+			'uri' => Values::array_get($payload, 'uri'),
+		];
 
-        $this->solution = ['accountSid' => $accountSid, 'connectAppSid' => $connectAppSid ?: $this->properties['connectAppSid'], ];
-    }
+		$this->solution = ['accountSid' => $accountSid, 'connectAppSid' => $connectAppSid ?: $this->properties['connectAppSid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return AuthorizedConnectAppContext Context for this AuthorizedConnectAppInstance
-     */
-    protected function proxy(): AuthorizedConnectAppContext
-    {
-        if (!$this->context) {
-            $this->context = new AuthorizedConnectAppContext(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['connectAppSid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the AuthorizedConnectAppInstance
-     *
-     * @return AuthorizedConnectAppInstance Fetched AuthorizedConnectAppInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): AuthorizedConnectAppInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Api.V2010.AuthorizedConnectAppInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.AuthorizedConnectAppInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the AuthorizedConnectAppInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AuthorizedConnectAppInstance Fetched AuthorizedConnectAppInstance
+	 */
+	public function fetch() : AuthorizedConnectAppInstance
+	{
+
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return AuthorizedConnectAppContext Context for this AuthorizedConnectAppInstance
+	 */
+	protected function proxy() : AuthorizedConnectAppContext
+	{
+		if (! $this->context) {
+			$this->context = new AuthorizedConnectAppContext(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['connectAppSid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

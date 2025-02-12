@@ -23,23 +23,32 @@ abstract class Video extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'description' => ['mediumtext', 'string', 16777215, true, ],
-		'fileName' => ['varchar(255)', 'string', 255, true, ],
-		'folderId' => ['int', 'int', 0, true, ],
-		'hits' => ['int', 'int', 0, true, ],
-		'lastEdited' => ['datetime', 'string', 20, false, null, ],
-		'memberId' => ['int', 'int', 0, true, ],
-		'public' => ['int', 'int', 0, false, 0, ],
-		'title' => ['varchar(255)', 'string', 255, false, ],
-		'videoDate' => ['date', 'string', 10, false, ],
-		'videoId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['videoId', ];
 
 	protected static string $table = 'video';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'description' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
+				'fileName' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'folderId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'hits' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'lastEdited' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'public' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, ),
+				'videoDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'videoId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

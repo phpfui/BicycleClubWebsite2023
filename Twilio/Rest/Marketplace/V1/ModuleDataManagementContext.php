@@ -14,111 +14,101 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Marketplace\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class ModuleDataManagementContext extends InstanceContext
-    {
-    /**
-     * Initialize the ModuleDataManagementContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The unique identifier of a Listing.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the ModuleDataManagementContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The unique identifier of a Listing.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Listing/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Listing/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the ModuleDataManagementInstance
-     *
-     * @return ModuleDataManagementInstance Fetched ModuleDataManagementInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ModuleDataManagementInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new ModuleDataManagementInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Marketplace.V1.ModuleDataManagementContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the ModuleDataManagementInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ModuleDataManagementInstance Fetched ModuleDataManagementInstance
+	 */
+	public function fetch() : ModuleDataManagementInstance
+	{
 
-    /**
-     * Update the ModuleDataManagementInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ModuleDataManagementInstance Updated ModuleDataManagementInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): ModuleDataManagementInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new ModuleDataManagementInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'ModuleInfo' =>
-                $options['moduleInfo'],
-            'Description' =>
-                $options['description'],
-            'Documentation' =>
-                $options['documentation'],
-            'Policies' =>
-                $options['policies'],
-            'Support' =>
-                $options['support'],
-            'Configuration' =>
-                $options['configuration'],
-            'Pricing' =>
-                $options['pricing'],
-        ]);
+	/**
+	 * Update the ModuleDataManagementInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ModuleDataManagementInstance Updated ModuleDataManagementInstance
+	 */
+	public function update(array $options = []) : ModuleDataManagementInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new ModuleDataManagementInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'ModuleInfo' => $options['moduleInfo'],
+			'Description' => $options['description'],
+			'Documentation' => $options['documentation'],
+			'Policies' => $options['policies'],
+			'Support' => $options['support'],
+			'Configuration' => $options['configuration'],
+			'Pricing' => $options['pricing'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Marketplace.V1.ModuleDataManagementContext ' . \implode(' ', $context) . ']';
-    }
+		return new ModuleDataManagementInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

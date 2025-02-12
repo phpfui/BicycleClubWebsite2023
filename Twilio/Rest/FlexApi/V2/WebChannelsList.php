@@ -22,67 +22,61 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class WebChannelsList extends ListResource
-    {
-    /**
-     * Construct the WebChannelsList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the WebChannelsList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/WebChats';
-    }
+		$this->uri = '/WebChats';
+	}
 
-    /**
-     * Create the WebChannelsInstance
-     *
-     * @param string $addressSid The SID of the Conversations Address. See [Address Configuration Resource](https://www.twilio.com/docs/conversations/api/address-configuration-resource) for configuration details. When a conversation is created on the Flex backend, the callback URL will be set to the corresponding Studio Flow SID or webhook URL in your address configuration.
-     * @param array|Options $options Optional Arguments
-     * @return WebChannelsInstance Created WebChannelsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $addressSid, array $options = []): WebChannelsInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.FlexApi.V2.WebChannelsList]';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Create the WebChannelsInstance
+	 *
+	 * @param string $addressSid The SID of the Conversations Address. See [Address Configuration Resource](https://www.twilio.com/docs/conversations/api/address-configuration-resource) for configuration details. When a conversation is created on the Flex backend, the callback URL will be set to the corresponding Studio Flow SID or webhook URL in your address configuration.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return WebChannelsInstance Created WebChannelsInstance
+	 */
+	public function create(string $addressSid, array $options = []) : WebChannelsInstance
+	{
 
-        $data = Values::of([
-            'AddressSid' =>
-                $addressSid,
-            'ChatFriendlyName' =>
-                $options['chatFriendlyName'],
-            'CustomerFriendlyName' =>
-                $options['customerFriendlyName'],
-            'PreEngagementData' =>
-                $options['preEngagementData'],
-        ]);
+		$options = new Values($options);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Ui-Version' => $options['uiVersion']]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$data = Values::of([
+			'AddressSid' => $addressSid,
+			'ChatFriendlyName' => $options['chatFriendlyName'],
+			'CustomerFriendlyName' => $options['customerFriendlyName'],
+			'PreEngagementData' => $options['preEngagementData'],
+		]);
 
-        return new WebChannelsInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Ui-Version' => $options['uiVersion']]);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.FlexApi.V2.WebChannelsList]';
-    }
+		return new WebChannelsInstance(
+			$this->version,
+			$payload
+		);
+	}
 }

@@ -19,85 +19,79 @@ namespace Twilio\Rest\FlexApi\V1;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Serialize;
-
 
 class InteractionList extends ListResource
-    {
-    /**
-     * Construct the InteractionList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the InteractionList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/Interactions';
-    }
+		$this->uri = '/Interactions';
+	}
 
-    /**
-     * Create the InteractionInstance
-     *
-     * @param array $channel The Interaction's channel.
-     * @param array|Options $options Optional Arguments
-     * @return InteractionInstance Created InteractionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(array $channel, array $options = []): InteractionInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.FlexApi.V1.InteractionList]';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Create the InteractionInstance
+	 *
+	 * @param array $channel The Interaction's channel.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return InteractionInstance Created InteractionInstance
+	 */
+	public function create(array $channel, array $options = []) : InteractionInstance
+	{
 
-        $data = Values::of([
-            'Channel' =>
-                Serialize::jsonObject($channel),
-            'Routing' =>
-                Serialize::jsonObject($options['routing']),
-            'InteractionContextSid' =>
-                $options['interactionContextSid'],
-        ]);
+		$options = new Values($options);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$data = Values::of([
+			'Channel' => Serialize::jsonObject($channel),
+			'Routing' => Serialize::jsonObject($options['routing']),
+			'InteractionContextSid' => $options['interactionContextSid'],
+		]);
 
-        return new InteractionInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
+		return new InteractionInstance(
+			$this->version,
+			$payload
+		);
+	}
 
-    /**
-     * Constructs a InteractionContext
-     *
-     * @param string $sid The SID of the Interaction resource to fetch.
-     */
-    public function getContext(
-        string $sid
-        
-    ): InteractionContext
-    {
-        return new InteractionContext(
-            $this->version,
-            $sid
-        );
-    }
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.FlexApi.V1.InteractionList]';
-    }
+	/**
+	 * Constructs a InteractionContext
+	 *
+	 * @param string $sid The SID of the Interaction resource to fetch.
+	 */
+	public function getContext(
+		string $sid
+	) : InteractionContext
+	{
+		return new InteractionContext(
+			$this->version,
+			$sid
+		);
+	}
 }

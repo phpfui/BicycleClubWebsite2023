@@ -19,49 +19,47 @@ namespace Twilio\Rest\Conversations\V1\Service\Configuration;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class NotificationList extends ListResource
-    {
-    /**
-     * Construct the NotificationList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $chatServiceSid The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Configuration applies to.
-     */
-    public function __construct(
-        Version $version,
-        string $chatServiceSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the NotificationList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $chatServiceSid The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) the Configuration applies to.
+	 */
+	public function __construct(
+		Version $version,
+		string $chatServiceSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'chatServiceSid' =>
-            $chatServiceSid,
-        
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+			'chatServiceSid' => $chatServiceSid,
 
-    /**
-     * Constructs a NotificationContext
-     */
-    public function getContext(
-        
-    ): NotificationContext
-    {
-        return new NotificationContext(
-            $this->version,
-            $this->solution['chatServiceSid']
-        );
-    }
+		];
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Conversations.V1.NotificationList]';
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Conversations.V1.NotificationList]';
+	}
+
+	/**
+	 * Constructs a NotificationContext
+	 */
+	public function getContext(
+
+	) : NotificationContext
+	{
+		return new NotificationContext(
+			$this->version,
+			$this->solution['chatServiceSid']
+		);
+	}
 }

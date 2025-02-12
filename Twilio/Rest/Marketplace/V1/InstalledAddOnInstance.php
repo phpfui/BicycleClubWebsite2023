@@ -14,18 +14,16 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Marketplace\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Rest\Marketplace\V1\InstalledAddOn\InstalledAddOnExtensionList;
+use Twilio\Rest\Marketplace\V1\InstalledAddOn\InstalledAddOnUsageList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-use Twilio\Rest\Marketplace\V1\InstalledAddOn\InstalledAddOnUsageList;
-use Twilio\Rest\Marketplace\V1\InstalledAddOn\InstalledAddOnExtensionList;
-
 
 /**
  * @property string|null $sid
@@ -41,141 +39,144 @@ use Twilio\Rest\Marketplace\V1\InstalledAddOn\InstalledAddOnExtensionList;
  */
 class InstalledAddOnInstance extends InstanceResource
 {
-    protected $_usage;
-    protected $_extensions;
+	protected $_extensions;
 
-    /**
-     * Initialize the InstalledAddOnInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $sid The SID of the InstalledAddOn resource to delete.
-     */
-    public function __construct(Version $version, array $payload, ?string $sid = null)
-    {
-        parent::__construct($version);
+	protected $_usage;
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'description' => Values::array_get($payload, 'description'),
-            'configuration' => Values::array_get($payload, 'configuration'),
-            'uniqueName' => Values::array_get($payload, 'unique_name'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-            'links' => Values::array_get($payload, 'links'),
-        ];
+	/**
+	 * Initialize the InstalledAddOnInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $sid The SID of the InstalledAddOn resource to delete.
+	 */
+	public function __construct(Version $version, array $payload, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-    }
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'description' => Values::array_get($payload, 'description'),
+			'configuration' => Values::array_get($payload, 'configuration'),
+			'uniqueName' => Values::array_get($payload, 'unique_name'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+			'links' => Values::array_get($payload, 'links'),
+		];
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return InstalledAddOnContext Context for this InstalledAddOnInstance
-     */
-    protected function proxy(): InstalledAddOnContext
-    {
-        if (!$this->context) {
-            $this->context = new InstalledAddOnContext(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-        return $this->context;
-    }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-    /**
-     * Delete the InstalledAddOnInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return $this->proxy()->delete();
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Fetch the InstalledAddOnInstance
-     *
-     * @return InstalledAddOnInstance Fetched InstalledAddOnInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): InstalledAddOnInstance
-    {
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-        return $this->proxy()->fetch();
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Update the InstalledAddOnInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return InstalledAddOnInstance Updated InstalledAddOnInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): InstalledAddOnInstance
-    {
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return $this->proxy()->update($options);
-    }
+		return '[Twilio.Marketplace.V1.InstalledAddOnInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Access the usage
-     */
-    protected function getUsage(): InstalledAddOnUsageList
-    {
-        return $this->proxy()->usage;
-    }
+	/**
+	 * Delete the InstalledAddOnInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Access the extensions
-     */
-    protected function getExtensions(): InstalledAddOnExtensionList
-    {
-        return $this->proxy()->extensions;
-    }
+		return $this->proxy()->delete();
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Fetch the InstalledAddOnInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return InstalledAddOnInstance Fetched InstalledAddOnInstance
+	 */
+	public function fetch() : InstalledAddOnInstance
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->fetch();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Update the InstalledAddOnInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return InstalledAddOnInstance Updated InstalledAddOnInstance
+	 */
+	public function update(array $options = []) : InstalledAddOnInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Marketplace.V1.InstalledAddOnInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Access the extensions
+	 */
+	protected function getExtensions() : InstalledAddOnExtensionList
+	{
+		return $this->proxy()->extensions;
+	}
+
+	/**
+	 * Access the usage
+	 */
+	protected function getUsage() : InstalledAddOnUsageList
+	{
+		return $this->proxy()->usage;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return InstalledAddOnContext Context for this InstalledAddOnInstance
+	 */
+	protected function proxy() : InstalledAddOnContext
+	{
+		if (! $this->context) {
+			$this->context = new InstalledAddOnContext(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

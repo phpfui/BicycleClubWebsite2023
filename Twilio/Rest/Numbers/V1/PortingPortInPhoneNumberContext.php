@@ -14,90 +14,87 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Numbers\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class PortingPortInPhoneNumberContext extends InstanceContext
-    {
-    /**
-     * Initialize the PortingPortInPhoneNumberContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $portInRequestSid The SID of the Port In request. This is a unique identifier of the port in request.
-     * @param string $phoneNumberSid The SID of the Port In request phone number. This is a unique identifier of the phone number.
-     */
-    public function __construct(
-        Version $version,
-        $portInRequestSid,
-        $phoneNumberSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the PortingPortInPhoneNumberContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $portInRequestSid The SID of the Port In request. This is a unique identifier of the port in request.
+	 * @param string $phoneNumberSid The SID of the Port In request phone number. This is a unique identifier of the phone number.
+	 */
+	public function __construct(
+		Version $version,
+		$portInRequestSid,
+		$phoneNumberSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'portInRequestSid' =>
-            $portInRequestSid,
-        'phoneNumberSid' =>
-            $phoneNumberSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'portInRequestSid' => $portInRequestSid,
+			'phoneNumberSid' => $phoneNumberSid,
+		];
 
-        $this->uri = '/Porting/PortIn/' . \rawurlencode($portInRequestSid)
-        .'/PhoneNumber/' . \rawurlencode($phoneNumberSid)
-        .'';
-    }
+		$this->uri = '/Porting/PortIn/' . \rawurlencode($portInRequestSid)
+		. '/PhoneNumber/' . \rawurlencode($phoneNumberSid)
+		. '';
+	}
 
-    /**
-     * Delete the PortingPortInPhoneNumberInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Numbers.V1.PortingPortInPhoneNumberContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the PortingPortInPhoneNumberInstance
-     *
-     * @return PortingPortInPhoneNumberInstance Fetched PortingPortInPhoneNumberInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): PortingPortInPhoneNumberInstance
-    {
+	/**
+	 * Delete the PortingPortInPhoneNumberInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new PortingPortInPhoneNumberInstance(
-            $this->version,
-            $payload,
-            $this->solution['portInRequestSid'],
-            $this->solution['phoneNumberSid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the PortingPortInPhoneNumberInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return PortingPortInPhoneNumberInstance Fetched PortingPortInPhoneNumberInstance
+	 */
+	public function fetch() : PortingPortInPhoneNumberInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Numbers.V1.PortingPortInPhoneNumberContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new PortingPortInPhoneNumberInstance(
+			$this->version,
+			$payload,
+			$this->solution['portInRequestSid'],
+			$this->solution['phoneNumberSid']
+		);
+	}
 }

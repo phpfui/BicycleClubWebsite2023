@@ -15,16 +15,25 @@ abstract class ForumMember extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'emailType' => ['int', 'int', 0, false, 0, ],
-		'forumId' => ['int', 'int', 0, false, 0, ],
-		'memberId' => ['int', 'int', 0, false, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['forumId', 'memberId', ];
 
 	protected static string $table = 'forumMember';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'emailType' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'forumId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -14,16 +14,25 @@ abstract class BikeShopArea extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'area' => ['varchar(255)', 'string', 255, true, ],
-		'bikeShopAreaId' => ['int', 'int', 0, false, ],
-		'state' => ['char(2)', 'string', 2, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['bikeShopAreaId', ];
 
 	protected static string $table = 'bikeShopArea';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'area' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'bikeShopAreaId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'state' => new \PHPFUI\ORM\FieldDefinition('char(2)', 'string', 2, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

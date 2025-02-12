@@ -20,20 +20,29 @@ abstract class RideComment extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'comment' => ['varchar(255)', 'string', 255, true, ],
-		'latitude' => ['decimal(18,15)', 'float', 18, true, ],
-		'longitude' => ['decimal(18,15)', 'float', 18, true, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'rideCommentId' => ['int', 'int', 0, false, ],
-		'rideId' => ['int', 'int', 0, true, 0, ],
-		'time' => ['datetime', 'string', 20, false, null, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['rideCommentId', ];
 
 	protected static string $table = 'rideComment';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'comment' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'latitude' => new \PHPFUI\ORM\FieldDefinition('decimal(18,15)', 'float', 18, true, ),
+				'longitude' => new \PHPFUI\ORM\FieldDefinition('decimal(18,15)', 'float', 18, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'rideCommentId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'rideId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'time' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+			];
+			}
+
+		return $this;
+		}
 	}

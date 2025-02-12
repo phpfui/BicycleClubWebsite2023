@@ -11,162 +11,163 @@ namespace Twilio\TwiML\Voice;
 
 use Twilio\TwiML\TwiML;
 
-class Transcription extends TwiML {
-    /**
-     * Transcription constructor.
-     *
-     * @param array $attributes Optional attributes
-     */
-    public function __construct($attributes = []) {
-        parent::__construct('Transcription', null, $attributes);
-    }
+class Transcription extends TwiML
+{
+	/**
+	 * Transcription constructor.
+	 *
+	 * @param array $attributes Optional attributes
+	 */
+	public function __construct($attributes = []) {
+		parent::__construct('Transcription', null, $attributes);
+	}
 
-    /**
-     * Add Config child.
-     *
-     * @param array $attributes Optional attributes
-     * @return Config Child element.
-     */
-    public function config($attributes = []): Config {
-        return $this->nest(new Config($attributes));
-    }
+	/**
+	 * Add Config child.
+	 *
+	 * @param array $attributes Optional attributes
+	 * @return Config Child element.
+	 */
+	public function config($attributes = []) : Config {
+		return $this->nest(new Config($attributes));
+	}
 
-    /**
-     * Add Parameter child.
-     *
-     * @param array $attributes Optional attributes
-     * @return Parameter Child element.
-     */
-    public function parameter($attributes = []): Parameter {
-        return $this->nest(new Parameter($attributes));
-    }
+	/**
+	 * Add Parameter child.
+	 *
+	 * @param array $attributes Optional attributes
+	 * @return Parameter Child element.
+	 */
+	public function parameter($attributes = []) : Parameter {
+		return $this->nest(new Parameter($attributes));
+	}
 
-    /**
-     * Add Name attribute.
-     *
-     * @param string $name Friendly name given to the Transcription
-     */
-    public function setName($name): self {
-        return $this->setAttribute('name', $name);
-    }
+	/**
+	 * Add EnableAutomaticPunctuation attribute.
+	 *
+	 * @param bool $enableAutomaticPunctuation Enable Automatic Punctuation
+	 */
+	public function setEnableAutomaticPunctuation($enableAutomaticPunctuation) : self {
+		return $this->setAttribute('enableAutomaticPunctuation', $enableAutomaticPunctuation);
+	}
 
-    /**
-     * Add Track attribute.
-     *
-     * @param string $track Track to be analyze by the provider
-     */
-    public function setTrack($track): self {
-        return $this->setAttribute('track', $track);
-    }
+	/**
+	 * Add Hints attribute.
+	 *
+	 * @param string $hints Hints to be provided to the transcription engine
+	 */
+	public function setHints($hints) : self {
+		return $this->setAttribute('hints', $hints);
+	}
 
-    /**
-     * Add StatusCallbackUrl attribute.
-     *
-     * @param string $statusCallbackUrl Status Callback URL
-     */
-    public function setStatusCallbackUrl($statusCallbackUrl): self {
-        return $this->setAttribute('statusCallbackUrl', $statusCallbackUrl);
-    }
+	/**
+	 * Add InboundTrackLabel attribute.
+	 *
+	 * @param string $inboundTrackLabel Friendly name given to the Inbound Track
+	 */
+	public function setInboundTrackLabel($inboundTrackLabel) : self {
+		return $this->setAttribute('inboundTrackLabel', $inboundTrackLabel);
+	}
 
-    /**
-     * Add StatusCallbackMethod attribute.
-     *
-     * @param string $statusCallbackMethod Status Callback URL method
-     */
-    public function setStatusCallbackMethod($statusCallbackMethod): self {
-        return $this->setAttribute('statusCallbackMethod', $statusCallbackMethod);
-    }
+	/**
+	 * Add IntelligenceService attribute.
+	 *
+	 * @param string $intelligenceService The SID or the unique name of the
+	 *                                    Intelligence Service to be used
+	 */
+	public function setIntelligenceService($intelligenceService) : self {
+		return $this->setAttribute('intelligenceService', $intelligenceService);
+	}
 
-    /**
-     * Add InboundTrackLabel attribute.
-     *
-     * @param string $inboundTrackLabel Friendly name given to the Inbound Track
-     */
-    public function setInboundTrackLabel($inboundTrackLabel): self {
-        return $this->setAttribute('inboundTrackLabel', $inboundTrackLabel);
-    }
+	/**
+	 * Add LanguageCode attribute.
+	 *
+	 * @param string $languageCode Language Code used by the transcription engine
+	 */
+	public function setLanguageCode($languageCode) : self {
+		return $this->setAttribute('languageCode', $languageCode);
+	}
 
-    /**
-     * Add OutboundTrackLabel attribute.
-     *
-     * @param string $outboundTrackLabel Friendly name given to the Outbound Track
-     *                                   Label
-     */
-    public function setOutboundTrackLabel($outboundTrackLabel): self {
-        return $this->setAttribute('outboundTrackLabel', $outboundTrackLabel);
-    }
+	/**
+	 * Add Name attribute.
+	 *
+	 * @param string $name Friendly name given to the Transcription
+	 */
+	public function setName($name) : self {
+		return $this->setAttribute('name', $name);
+	}
 
-    /**
-     * Add PartialResults attribute.
-     *
-     * @param bool $partialResults Indicates if partial results are going to be
-     *                             send to the customer
-     */
-    public function setPartialResults($partialResults): self {
-        return $this->setAttribute('partialResults', $partialResults);
-    }
+	/**
+	 * Add OutboundTrackLabel attribute.
+	 *
+	 * @param string $outboundTrackLabel Friendly name given to the Outbound Track
+	 *                                   Label
+	 */
+	public function setOutboundTrackLabel($outboundTrackLabel) : self {
+		return $this->setAttribute('outboundTrackLabel', $outboundTrackLabel);
+	}
 
-    /**
-     * Add LanguageCode attribute.
-     *
-     * @param string $languageCode Language Code used by the transcription engine
-     */
-    public function setLanguageCode($languageCode): self {
-        return $this->setAttribute('languageCode', $languageCode);
-    }
+	/**
+	 * Add PartialResults attribute.
+	 *
+	 * @param bool $partialResults Indicates if partial results are going to be
+	 *                             send to the customer
+	 */
+	public function setPartialResults($partialResults) : self {
+		return $this->setAttribute('partialResults', $partialResults);
+	}
 
-    /**
-     * Add TranscriptionEngine attribute.
-     *
-     * @param string $transcriptionEngine Transcription Engine to be used
-     */
-    public function setTranscriptionEngine($transcriptionEngine): self {
-        return $this->setAttribute('transcriptionEngine', $transcriptionEngine);
-    }
+	/**
+	 * Add ProfanityFilter attribute.
+	 *
+	 * @param bool $profanityFilter Enable Profanity Filter
+	 */
+	public function setProfanityFilter($profanityFilter) : self {
+		return $this->setAttribute('profanityFilter', $profanityFilter);
+	}
 
-    /**
-     * Add ProfanityFilter attribute.
-     *
-     * @param bool $profanityFilter Enable Profanity Filter
-     */
-    public function setProfanityFilter($profanityFilter): self {
-        return $this->setAttribute('profanityFilter', $profanityFilter);
-    }
+	/**
+	 * Add SpeechModel attribute.
+	 *
+	 * @param string $speechModel Speech Model used by the transcription engine
+	 */
+	public function setSpeechModel($speechModel) : self {
+		return $this->setAttribute('speechModel', $speechModel);
+	}
 
-    /**
-     * Add SpeechModel attribute.
-     *
-     * @param string $speechModel Speech Model used by the transcription engine
-     */
-    public function setSpeechModel($speechModel): self {
-        return $this->setAttribute('speechModel', $speechModel);
-    }
+	/**
+	 * Add StatusCallbackMethod attribute.
+	 *
+	 * @param string $statusCallbackMethod Status Callback URL method
+	 */
+	public function setStatusCallbackMethod($statusCallbackMethod) : self {
+		return $this->setAttribute('statusCallbackMethod', $statusCallbackMethod);
+	}
 
-    /**
-     * Add Hints attribute.
-     *
-     * @param string $hints Hints to be provided to the transcription engine
-     */
-    public function setHints($hints): self {
-        return $this->setAttribute('hints', $hints);
-    }
+	/**
+	 * Add StatusCallbackUrl attribute.
+	 *
+	 * @param string $statusCallbackUrl Status Callback URL
+	 */
+	public function setStatusCallbackUrl($statusCallbackUrl) : self {
+		return $this->setAttribute('statusCallbackUrl', $statusCallbackUrl);
+	}
 
-    /**
-     * Add EnableAutomaticPunctuation attribute.
-     *
-     * @param bool $enableAutomaticPunctuation Enable Automatic Punctuation
-     */
-    public function setEnableAutomaticPunctuation($enableAutomaticPunctuation): self {
-        return $this->setAttribute('enableAutomaticPunctuation', $enableAutomaticPunctuation);
-    }
+	/**
+	 * Add Track attribute.
+	 *
+	 * @param string $track Track to be analyze by the provider
+	 */
+	public function setTrack($track) : self {
+		return $this->setAttribute('track', $track);
+	}
 
-    /**
-     * Add IntelligenceService attribute.
-     *
-     * @param string $intelligenceService The SID or the unique name of the
-     *                                    Intelligence Service to be used
-     */
-    public function setIntelligenceService($intelligenceService): self {
-        return $this->setAttribute('intelligenceService', $intelligenceService);
-    }
+	/**
+	 * Add TranscriptionEngine attribute.
+	 *
+	 * @param string $transcriptionEngine Transcription Engine to be used
+	 */
+	public function setTranscriptionEngine($transcriptionEngine) : self {
+		return $this->setAttribute('transcriptionEngine', $transcriptionEngine);
+	}
 }

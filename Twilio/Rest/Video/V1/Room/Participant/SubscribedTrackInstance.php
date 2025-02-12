@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Video\V1\Room\Participant;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $sid
@@ -38,101 +36,103 @@ use Twilio\Deserialize;
  */
 class SubscribedTrackInstance extends InstanceResource
 {
-    /**
-     * Initialize the SubscribedTrackInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $roomSid The SID of the Room where the Track resource to fetch is subscribed.
-     * @param string $participantSid The SID of the participant that subscribes to the Track resource to fetch.
-     * @param string $sid The SID of the RoomParticipantSubscribedTrack resource to fetch.
-     */
-    public function __construct(Version $version, array $payload, string $roomSid, string $participantSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the SubscribedTrackInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $roomSid The SID of the Room where the Track resource to fetch is subscribed.
+	 * @param string $participantSid The SID of the participant that subscribes to the Track resource to fetch.
+	 * @param string $sid The SID of the RoomParticipantSubscribedTrack resource to fetch.
+	 */
+	public function __construct(Version $version, array $payload, string $roomSid, string $participantSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'participantSid' => Values::array_get($payload, 'participant_sid'),
-            'publisherSid' => Values::array_get($payload, 'publisher_sid'),
-            'roomSid' => Values::array_get($payload, 'room_sid'),
-            'name' => Values::array_get($payload, 'name'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'enabled' => Values::array_get($payload, 'enabled'),
-            'kind' => Values::array_get($payload, 'kind'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'participantSid' => Values::array_get($payload, 'participant_sid'),
+			'publisherSid' => Values::array_get($payload, 'publisher_sid'),
+			'roomSid' => Values::array_get($payload, 'room_sid'),
+			'name' => Values::array_get($payload, 'name'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'enabled' => Values::array_get($payload, 'enabled'),
+			'kind' => Values::array_get($payload, 'kind'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['roomSid' => $roomSid, 'participantSid' => $participantSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['roomSid' => $roomSid, 'participantSid' => $participantSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return SubscribedTrackContext Context for this SubscribedTrackInstance
-     */
-    protected function proxy(): SubscribedTrackContext
-    {
-        if (!$this->context) {
-            $this->context = new SubscribedTrackContext(
-                $this->version,
-                $this->solution['roomSid'],
-                $this->solution['participantSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the SubscribedTrackInstance
-     *
-     * @return SubscribedTrackInstance Fetched SubscribedTrackInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): SubscribedTrackInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Video.V1.SubscribedTrackInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Video.V1.SubscribedTrackInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the SubscribedTrackInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SubscribedTrackInstance Fetched SubscribedTrackInstance
+	 */
+	public function fetch() : SubscribedTrackInstance
+	{
+
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return SubscribedTrackContext Context for this SubscribedTrackInstance
+	 */
+	protected function proxy() : SubscribedTrackContext
+	{
+		if (! $this->context) {
+			$this->context = new SubscribedTrackContext(
+				$this->version,
+				$this->solution['roomSid'],
+				$this->solution['participantSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

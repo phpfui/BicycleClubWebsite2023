@@ -14,17 +14,15 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Bulkexports\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
+use Twilio\Rest\Bulkexports\V1\Export\DayList;
+use Twilio\Rest\Bulkexports\V1\Export\ExportCustomJobList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Rest\Bulkexports\V1\Export\ExportCustomJobList;
-use Twilio\Rest\Bulkexports\V1\Export\DayList;
-
 
 /**
  * @property ExportCustomJobList $exportCustomJobs
@@ -32,128 +30,131 @@ use Twilio\Rest\Bulkexports\V1\Export\DayList;
  * @method \Twilio\Rest\Bulkexports\V1\Export\DayContext days(string $day)
  */
 class ExportContext extends InstanceContext
-    {
-    protected $_exportCustomJobs;
-    protected $_days;
+	{
+	protected $_days;
 
-    /**
-     * Initialize the ExportContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $resourceType The type of communication – Messages, Calls, Conferences, and Participants
-     */
-    public function __construct(
-        Version $version,
-        $resourceType
-    ) {
-        parent::__construct($version);
+	protected $_exportCustomJobs;
 
-        // Path Solution
-        $this->solution = [
-        'resourceType' =>
-            $resourceType,
-        ];
+	/**
+	 * Initialize the ExportContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $resourceType The type of communication – Messages, Calls, Conferences, and Participants
+	 */
+	public function __construct(
+		Version $version,
+		$resourceType
+	) {
+		parent::__construct($version);
 
-        $this->uri = '/Exports/' . \rawurlencode($resourceType)
-        .'';
-    }
+		// Path Solution
+		$this->solution = [
+			'resourceType' => $resourceType,
+		];
 
-    /**
-     * Fetch the ExportInstance
-     *
-     * @return ExportInstance Fetched ExportInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ExportInstance
-    {
+		$this->uri = '/Exports/' . \rawurlencode($resourceType)
+		. '';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-        return new ExportInstance(
-            $this->version,
-            $payload,
-            $this->solution['resourceType']
-        );
-    }
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
+		throw new TwilioException('Resource does not have a context');
+	}
 
-    /**
-     * Access the exportCustomJobs
-     */
-    protected function getExportCustomJobs(): ExportCustomJobList
-    {
-        if (!$this->_exportCustomJobs) {
-            $this->_exportCustomJobs = new ExportCustomJobList(
-                $this->version,
-                $this->solution['resourceType']
-            );
-        }
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return $this->_exportCustomJobs;
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Access the days
-     */
-    protected function getDays(): DayList
-    {
-        if (!$this->_days) {
-            $this->_days = new DayList(
-                $this->version,
-                $this->solution['resourceType']
-            );
-        }
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
-        return $this->_days;
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		return '[Twilio.Bulkexports.V1.ExportContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+	/**
+	 * Fetch the ExportInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ExportInstance Fetched ExportInstance
+	 */
+	public function fetch() : ExportInstance
+	{
 
-        throw new TwilioException('Resource does not have a context');
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Bulkexports.V1.ExportContext ' . \implode(' ', $context) . ']';
-    }
+		return new ExportInstance(
+			$this->version,
+			$payload,
+			$this->solution['resourceType']
+		);
+	}
+
+	/**
+	 * Access the days
+	 */
+	protected function getDays() : DayList
+	{
+		if (! $this->_days) {
+			$this->_days = new DayList(
+				$this->version,
+				$this->solution['resourceType']
+			);
+		}
+
+		return $this->_days;
+	}
+
+	/**
+	 * Access the exportCustomJobs
+	 */
+	protected function getExportCustomJobs() : ExportCustomJobList
+	{
+		if (! $this->_exportCustomJobs) {
+			$this->_exportCustomJobs = new ExportCustomJobList(
+				$this->version,
+				$this->solution['resourceType']
+			);
+		}
+
+		return $this->_exportCustomJobs;
+	}
 }

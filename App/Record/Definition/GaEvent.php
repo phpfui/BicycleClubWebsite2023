@@ -30,32 +30,41 @@ abstract class GaEvent extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'allowShopping' => ['int', 'int', 0, true, ],
-		'dayOfRegistration' => ['int', 'int', 0, true, ],
-		'description' => ['text', 'string', 65535, true, ],
-		'eventDate' => ['date', 'string', 10, false, ],
-		'gaEventId' => ['int', 'int', 0, false, ],
-		'includeMembership' => ['int', 'int', 0, false, 0, ],
-		'lastRegistrationDate' => ['date', 'string', 10, false, ],
-		'location' => ['char(100)', 'string', 100, true, ],
-		'maxRegistrants' => ['int', 'int', 0, true, ],
-		'membershipExpires' => ['date', 'string', 10, true, ],
-		'otherEvent' => ['int', 'int', 0, true, ],
-		'registrar' => ['char(50)', 'string', 50, true, ],
-		'registrarEmail' => ['char(50)', 'string', 50, true, ],
-		'showPreregistration' => ['int', 'int', 0, true, ],
-		'signupMessage' => ['mediumtext', 'string', 16777215, true, ],
-		'title' => ['char(100)', 'string', 100, true, ],
-		'volunteerDiscount' => ['int', 'int', 0, true, ],
-		'volunteerEvent' => ['int', 'int', 0, true, ],
-		'waiver' => ['mediumtext', 'string', 16777215, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['gaEventId', ];
 
 	protected static string $table = 'gaEvent';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'allowShopping' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'dayOfRegistration' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'description' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'eventDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'gaEventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'includeMembership' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'lastRegistrationDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'location' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
+				'maxRegistrants' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'membershipExpires' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'otherEvent' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'registrar' => new \PHPFUI\ORM\FieldDefinition('char(50)', 'string', 50, true, ),
+				'registrarEmail' => new \PHPFUI\ORM\FieldDefinition('char(50)', 'string', 50, true, ),
+				'showPreregistration' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'signupMessage' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
+				'volunteerDiscount' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'volunteerEvent' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'waiver' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

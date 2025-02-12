@@ -14,117 +14,112 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Microvisor\V1\Device;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class DeviceSecretContext extends InstanceContext
-    {
-    /**
-     * Initialize the DeviceSecretContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $deviceSid A 34-character string that uniquely identifies the Device.
-     * @param string $key The secret key; up to 100 characters.
-     */
-    public function __construct(
-        Version $version,
-        $deviceSid,
-        $key
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the DeviceSecretContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $deviceSid A 34-character string that uniquely identifies the Device.
+	 * @param string $key The secret key; up to 100 characters.
+	 */
+	public function __construct(
+		Version $version,
+		$deviceSid,
+		$key
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'deviceSid' =>
-            $deviceSid,
-        'key' =>
-            $key,
-        ];
+		// Path Solution
+		$this->solution = [
+			'deviceSid' => $deviceSid,
+			'key' => $key,
+		];
 
-        $this->uri = '/Devices/' . \rawurlencode($deviceSid)
-        .'/Secrets/' . \rawurlencode($key)
-        .'';
-    }
+		$this->uri = '/Devices/' . \rawurlencode($deviceSid)
+		. '/Secrets/' . \rawurlencode($key)
+		. '';
+	}
 
-    /**
-     * Delete the DeviceSecretInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Microvisor.V1.DeviceSecretContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the DeviceSecretInstance
-     *
-     * @return DeviceSecretInstance Fetched DeviceSecretInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): DeviceSecretInstance
-    {
+	/**
+	 * Delete the DeviceSecretInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new DeviceSecretInstance(
-            $this->version,
-            $payload,
-            $this->solution['deviceSid'],
-            $this->solution['key']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the DeviceSecretInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DeviceSecretInstance Fetched DeviceSecretInstance
+	 */
+	public function fetch() : DeviceSecretInstance
+	{
 
-    /**
-     * Update the DeviceSecretInstance
-     *
-     * @param string $value The secret value; up to 4096 characters.
-     * @return DeviceSecretInstance Updated DeviceSecretInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $value): DeviceSecretInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $data = Values::of([
-            'Value' =>
-                $value,
-        ]);
+		return new DeviceSecretInstance(
+			$this->version,
+			$payload,
+			$this->solution['deviceSid'],
+			$this->solution['key']
+		);
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Update the DeviceSecretInstance
+	 *
+	 * @param string $value The secret value; up to 4096 characters.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DeviceSecretInstance Updated DeviceSecretInstance
+	 */
+	public function update(string $value) : DeviceSecretInstance
+	{
 
-        return new DeviceSecretInstance(
-            $this->version,
-            $payload,
-            $this->solution['deviceSid'],
-            $this->solution['key']
-        );
-    }
+		$data = Values::of([
+			'Value' => $value,
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Microvisor.V1.DeviceSecretContext ' . \implode(' ', $context) . ']';
-    }
+		return new DeviceSecretInstance(
+			$this->version,
+			$payload,
+			$this->solution['deviceSid'],
+			$this->solution['key']
+		);
+	}
 }

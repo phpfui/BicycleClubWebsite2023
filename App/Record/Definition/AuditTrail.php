@@ -18,19 +18,28 @@ abstract class AuditTrail extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'additional' => ['text', 'string', 65535, true, ],
-		'auditTrailId' => ['int', 'int', 0, false, ],
-		'input' => ['text', 'string', 65535, true, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'statement' => ['text', 'string', 65535, true, ],
-		'time' => ['datetime', 'string', 20, false, null, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['auditTrailId', ];
 
 	protected static string $table = 'auditTrail';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'additional' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'auditTrailId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'input' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'statement' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'time' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+			];
+			}
+
+		return $this;
+		}
 	}

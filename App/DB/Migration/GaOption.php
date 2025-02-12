@@ -20,17 +20,8 @@ class GaOption extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'gaEventId' => ['int', 'int', 0, false, ],
-		'gaOptionId' => ['int', 'int', 0, false, ],
-		'maximumAllowed' => ['int', 'int', 0, false, 0, ],
-		'optionName' => ['varchar(255)', 'string', 255, false, ],
-		'ordering' => ['int', 'int', 0, false, 0, ],
-		'price' => ['decimal(7,2)', 'float', 7, true, ],
-		'required' => ['int', 'int', 0, false, 0, ],
-	];
+	/** @var array <string,\PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['gaOptionId', ];
@@ -41,4 +32,22 @@ class GaOption extends \PHPFUI\ORM\Record
 		{
 		parent::__construct($parameter);
 		}
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'gaEventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'gaOptionId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'maximumAllowed' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'optionName' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, ),
+				'ordering' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'price' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
+				'required' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+			];
+			}
+
+		 return $this;
+		 }
 	}

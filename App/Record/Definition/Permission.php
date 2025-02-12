@@ -15,17 +15,26 @@ abstract class Permission extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'menu' => ['varchar(255)', 'string', 255, true, ],
-		'name' => ['varchar(255)', 'string', 255, true, ],
-		'permissionId' => ['int', 'int', 0, false, ],
-		'system' => ['tinyint', 'int', 0, false, 0, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['permissionId', ];
 
 	protected static string $table = 'permission';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'menu' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'name' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'permissionId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'system' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
+			];
+			}
+
+		return $this;
+		}
 	}

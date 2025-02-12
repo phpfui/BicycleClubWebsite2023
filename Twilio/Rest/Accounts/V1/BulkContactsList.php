@@ -18,62 +18,59 @@ namespace Twilio\Rest\Accounts\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Serialize;
-
 
 class BulkContactsList extends ListResource
-    {
-    /**
-     * Construct the BulkContactsList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the BulkContactsList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/Contacts/Bulk';
-    }
+		$this->uri = '/Contacts/Bulk';
+	}
 
-    /**
-     * Create the BulkContactsInstance
-     *
-     * @param array[] $items A list of objects where each object represents a contact's details. Each object includes the following fields: `contact_id`, which must be a string representing phone number in [E.164 format](https://www.twilio.com/docs/glossary/what-e164); `correlation_id`, a unique 32-character UUID that maps the response to the original request; `country_iso_code`, a string representing the country using the ISO format (e.g., US for the United States); and `zip_code`, a string representing the postal code.
-     * @return BulkContactsInstance Created BulkContactsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(array $items): BulkContactsInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Accounts.V1.BulkContactsList]';
+	}
 
-        $data = Values::of([
-            'Items' =>
-                Serialize::map($items,function ($e) { return Serialize::jsonObject($e); }),
-        ]);
+	/**
+	 * Create the BulkContactsInstance
+	 *
+	 * @param array[] $items A list of objects where each object represents a contact's details. Each object includes the following fields: `contact_id`, which must be a string representing phone number in [E.164 format](https://www.twilio.com/docs/glossary/what-e164); `correlation_id`, a unique 32-character UUID that maps the response to the original request; `country_iso_code`, a string representing the country using the ISO format (e.g., US for the United States); and `zip_code`, a string representing the postal code.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return BulkContactsInstance Created BulkContactsInstance
+	 */
+	public function create(array $items) : BulkContactsInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$data = Values::of([
+			'Items' => Serialize::map($items, static function($e) { return Serialize::jsonObject($e); }),
+		]);
 
-        return new BulkContactsInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Accounts.V1.BulkContactsList]';
-    }
+		return new BulkContactsInstance(
+			$this->version,
+			$payload
+		);
+	}
 }

@@ -2,100 +2,109 @@
 
 namespace Twilio\Jwt\Grants;
 
-class TaskRouterGrant implements Grant {
-    private $workspaceSid;
-    private $workerSid;
-    private $role;
+class TaskRouterGrant implements Grant
+{
+	private $role;
 
-    /**
-     * Returns the workspace sid
-     *
-     * @return string the workspace sid
-     */
-    public function getWorkspaceSid(): string {
-        return $this->workspaceSid;
-    }
+	private $workerSid;
 
-    /**
-     * Set the workspace sid of this grant
-     *
-     * @param string $workspaceSid workspace sid of the grant
-     *
-     * @return $this updated grant
-     */
-    public function setWorkspaceSid(string $workspaceSid): self {
-        $this->workspaceSid = $workspaceSid;
-        return $this;
-    }
+	private $workspaceSid;
 
-    /**
-     * Returns the worker sid
-     *
-     * @return string the worker sid
-     */
-    public function getWorkerSid(): string {
-        return $this->workerSid;
-    }
+	/**
+	 * Returns the grant type
+	 *
+	 * @return string type of the grant
+	 */
+	public function getGrantKey() : string {
+		return 'task_router';
+	}
 
-    /**
-     * Set the worker sid of this grant
-     *
-     * @param string $workerSid worker sid of the grant
-     *
-     * @return $this updated grant
-     */
-    public function setWorkerSid(string $workerSid): self {
-        $this->workerSid = $workerSid;
-        return $this;
-    }
+	/**
+	 * Returns the grant data
+	 *
+	 * @return array data of the grant
+	 */
+	public function getPayload() : array {
+		$payload = [];
 
-    /**
-     * Returns the role
-     *
-     * @return string the role
-     */
-    public function getRole(): string {
-        return $this->role;
-    }
+		if ($this->workspaceSid) {
+			$payload['workspace_sid'] = $this->workspaceSid;
+		}
 
-    /**
-     * Set the role of this grant
-     *
-     * @param string $role role of the grant
-     *
-     * @return $this updated grant
-     */
-    public function setRole(string $role): self {
-        $this->role = $role;
-        return $this;
-    }
+		if ($this->workerSid) {
+			$payload['worker_sid'] = $this->workerSid;
+		}
 
-    /**
-     * Returns the grant type
-     *
-     * @return string type of the grant
-     */
-    public function getGrantKey(): string {
-        return 'task_router';
-    }
+		if ($this->role) {
+			$payload['role'] = $this->role;
+		}
 
-    /**
-     * Returns the grant data
-     *
-     * @return array data of the grant
-     */
-    public function getPayload(): array {
-        $payload = [];
-        if ($this->workspaceSid) {
-            $payload['workspace_sid'] = $this->workspaceSid;
-        }
-        if ($this->workerSid) {
-            $payload['worker_sid'] = $this->workerSid;
-        }
-        if ($this->role) {
-            $payload['role'] = $this->role;
-        }
+		return $payload;
+	}
 
-        return $payload;
-    }
+	/**
+	 * Returns the role
+	 *
+	 * @return string the role
+	 */
+	public function getRole() : string {
+		return $this->role;
+	}
+
+	/**
+	 * Returns the worker sid
+	 *
+	 * @return string the worker sid
+	 */
+	public function getWorkerSid() : string {
+		return $this->workerSid;
+	}
+
+	/**
+	 * Returns the workspace sid
+	 *
+	 * @return string the workspace sid
+	 */
+	public function getWorkspaceSid() : string {
+		return $this->workspaceSid;
+	}
+
+	/**
+	 * Set the role of this grant
+	 *
+	 * @param string $role role of the grant
+	 *
+	 * @return $this updated grant
+	 */
+	public function setRole(string $role) : self {
+		$this->role = $role;
+
+		return $this;
+	}
+
+	/**
+	 * Set the worker sid of this grant
+	 *
+	 * @param string $workerSid worker sid of the grant
+	 *
+	 * @return $this updated grant
+	 */
+	public function setWorkerSid(string $workerSid) : self {
+		$this->workerSid = $workerSid;
+
+		return $this;
+	}
+
+	/**
+	 * Set the workspace sid of this grant
+	 *
+	 * @param string $workspaceSid workspace sid of the grant
+	 *
+	 * @return $this updated grant
+	 */
+	public function setWorkspaceSid(string $workspaceSid) : self {
+		$this->workspaceSid = $workspaceSid;
+
+		return $this;
+	}
 }

@@ -14,70 +14,68 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Numbers\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class BulkEligibilityContext extends InstanceContext
-    {
-    /**
-     * Initialize the BulkEligibilityContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $requestId The SID of the bulk eligibility check that you want to know about.
-     */
-    public function __construct(
-        Version $version,
-        $requestId
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the BulkEligibilityContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $requestId The SID of the bulk eligibility check that you want to know about.
+	 */
+	public function __construct(
+		Version $version,
+		$requestId
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'requestId' =>
-            $requestId,
-        ];
+		// Path Solution
+		$this->solution = [
+			'requestId' => $requestId,
+		];
 
-        $this->uri = '/HostedNumber/Eligibility/Bulk/' . \rawurlencode($requestId)
-        .'';
-    }
+		$this->uri = '/HostedNumber/Eligibility/Bulk/' . \rawurlencode($requestId)
+		. '';
+	}
 
-    /**
-     * Fetch the BulkEligibilityInstance
-     *
-     * @return BulkEligibilityInstance Fetched BulkEligibilityInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): BulkEligibilityInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new BulkEligibilityInstance(
-            $this->version,
-            $payload,
-            $this->solution['requestId']
-        );
-    }
+		return '[Twilio.Numbers.V1.BulkEligibilityContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the BulkEligibilityInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return BulkEligibilityInstance Fetched BulkEligibilityInstance
+	 */
+	public function fetch() : BulkEligibilityInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Numbers.V1.BulkEligibilityContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new BulkEligibilityInstance(
+			$this->version,
+			$payload,
+			$this->solution['requestId']
+		);
+	}
 }

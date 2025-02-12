@@ -20,22 +20,31 @@ abstract class Customer extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'address' => ['varchar(100)', 'string', 100, true, ],
-		'customerId' => ['int', 'int', 0, false, ],
-		'email' => ['varchar(100)', 'string', 100, true, ],
-		'firstName' => ['varchar(50)', 'string', 50, true, ],
-		'lastName' => ['varchar(50)', 'string', 50, true, ],
-		'password' => ['varchar(50)', 'string', 50, true, ],
-		'state' => ['char(2)', 'string', 2, true, ],
-		'town' => ['varchar(50)', 'string', 50, true, ],
-		'zip' => ['varchar(10)', 'string', 10, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['customerId', ];
 
 	protected static string $table = 'customer';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'address' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+				'customerId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'email' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+				'firstName' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'lastName' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'password' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'state' => new \PHPFUI\ORM\FieldDefinition('char(2)', 'string', 2, true, ),
+				'town' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
+				'zip' => new \PHPFUI\ORM\FieldDefinition('varchar(10)', 'string', 10, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

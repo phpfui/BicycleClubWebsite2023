@@ -22,77 +22,68 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class VerificationCheckList extends ListResource
-    {
-    /**
-     * Construct the VerificationCheckList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the verification [Service](https://www.twilio.com/docs/verify/api/service) to create the resource under.
-     */
-    public function __construct(
-        Version $version,
-        string $serviceSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the VerificationCheckList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the verification [Service](https://www.twilio.com/docs/verify/api/service) to create the resource under.
+	 */
+	public function __construct(
+		Version $version,
+		string $serviceSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/VerificationCheck';
-    }
+		];
 
-    /**
-     * Create the VerificationCheckInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return VerificationCheckInstance Created VerificationCheckInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(array $options = []): VerificationCheckInstance
-    {
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/VerificationCheck';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Verify.V2.VerificationCheckList]';
+	}
 
-        $data = Values::of([
-            'Code' =>
-                $options['code'],
-            'To' =>
-                $options['to'],
-            'VerificationSid' =>
-                $options['verificationSid'],
-            'Amount' =>
-                $options['amount'],
-            'Payee' =>
-                $options['payee'],
-            'SnaClientToken' =>
-                $options['snaClientToken'],
-        ]);
+	/**
+	 * Create the VerificationCheckInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return VerificationCheckInstance Created VerificationCheckInstance
+	 */
+	public function create(array $options = []) : VerificationCheckInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new VerificationCheckInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid']
-        );
-    }
+		$data = Values::of([
+			'Code' => $options['code'],
+			'To' => $options['to'],
+			'VerificationSid' => $options['verificationSid'],
+			'Amount' => $options['amount'],
+			'Payee' => $options['payee'],
+			'SnaClientToken' => $options['snaClientToken'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Verify.V2.VerificationCheckList]';
-    }
+		return new VerificationCheckInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid']
+		);
+	}
 }

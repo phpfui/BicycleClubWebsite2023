@@ -14,131 +14,123 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Sync\V1\Service\Document;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\Values;
-use Twilio\Version;
 use Twilio\InstanceContext;
 use Twilio\Serialize;
-
+use Twilio\Values;
+use Twilio\Version;
 
 class DocumentPermissionContext extends InstanceContext
-    {
-    /**
-     * Initialize the DocumentPermissionContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) with the Document Permission resource to delete.
-     * @param string $documentSid The SID of the Sync Document with the Document Permission resource to delete. Can be the Document resource's `sid` or its `unique_name`.
-     * @param string $identity The application-defined string that uniquely identifies the User's Document Permission resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $documentSid,
-        $identity
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the DocumentPermissionContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) with the Document Permission resource to delete.
+	 * @param string $documentSid The SID of the Sync Document with the Document Permission resource to delete. Can be the Document resource's `sid` or its `unique_name`.
+	 * @param string $identity The application-defined string that uniquely identifies the User's Document Permission resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$documentSid,
+		$identity
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'documentSid' =>
-            $documentSid,
-        'identity' =>
-            $identity,
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'documentSid' => $documentSid,
+			'identity' => $identity,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Documents/' . \rawurlencode($documentSid)
-        .'/Permissions/' . \rawurlencode($identity)
-        .'';
-    }
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Documents/' . \rawurlencode($documentSid)
+		. '/Permissions/' . \rawurlencode($identity)
+		. '';
+	}
 
-    /**
-     * Delete the DocumentPermissionInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Sync.V1.DocumentPermissionContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the DocumentPermissionInstance
-     *
-     * @return DocumentPermissionInstance Fetched DocumentPermissionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): DocumentPermissionInstance
-    {
+	/**
+	 * Delete the DocumentPermissionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new DocumentPermissionInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['documentSid'],
-            $this->solution['identity']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the DocumentPermissionInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DocumentPermissionInstance Fetched DocumentPermissionInstance
+	 */
+	public function fetch() : DocumentPermissionInstance
+	{
 
-    /**
-     * Update the DocumentPermissionInstance
-     *
-     * @param bool $read Whether the identity can read the Sync Document. Default value is `false`.
-     * @param bool $write Whether the identity can update the Sync Document. Default value is `false`.
-     * @param bool $manage Whether the identity can delete the Sync Document. Default value is `false`.
-     * @return DocumentPermissionInstance Updated DocumentPermissionInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(bool $read, bool $write, bool $manage): DocumentPermissionInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $data = Values::of([
-            'Read' =>
-                Serialize::booleanToString($read),
-            'Write' =>
-                Serialize::booleanToString($write),
-            'Manage' =>
-                Serialize::booleanToString($manage),
-        ]);
+		return new DocumentPermissionInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['documentSid'],
+			$this->solution['identity']
+		);
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Update the DocumentPermissionInstance
+	 *
+	 * @param bool $read Whether the identity can read the Sync Document. Default value is `false`.
+	 * @param bool $write Whether the identity can update the Sync Document. Default value is `false`.
+	 * @param bool $manage Whether the identity can delete the Sync Document. Default value is `false`.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DocumentPermissionInstance Updated DocumentPermissionInstance
+	 */
+	public function update(bool $read, bool $write, bool $manage) : DocumentPermissionInstance
+	{
 
-        return new DocumentPermissionInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['documentSid'],
-            $this->solution['identity']
-        );
-    }
+		$data = Values::of([
+			'Read' => Serialize::booleanToString($read),
+			'Write' => Serialize::booleanToString($write),
+			'Manage' => Serialize::booleanToString($manage),
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Sync.V1.DocumentPermissionContext ' . \implode(' ', $context) . ']';
-    }
+		return new DocumentPermissionInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['documentSid'],
+			$this->solution['identity']
+		);
+	}
 }

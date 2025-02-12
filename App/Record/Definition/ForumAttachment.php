@@ -17,17 +17,26 @@ abstract class ForumAttachment extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'fileName' => ['varchar(255)', 'string', 255, true, ],
-		'forumAttachmentId' => ['int', 'int', 0, false, ],
-		'forumId' => ['int', 'int', 0, true, ],
-		'forumMessageId' => ['int', 'int', 0, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['forumAttachmentId', ];
 
 	protected static string $table = 'forumAttachment';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'fileName' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'forumAttachmentId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'forumId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'forumMessageId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

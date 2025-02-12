@@ -14,84 +14,82 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Video\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class RecordingContext extends InstanceContext
-    {
-    /**
-     * Initialize the RecordingContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The SID of the Recording resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the RecordingContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The SID of the Recording resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Recordings/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Recordings/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the RecordingInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Video.V1.RecordingContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the RecordingInstance
-     *
-     * @return RecordingInstance Fetched RecordingInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): RecordingInstance
-    {
+	/**
+	 * Delete the RecordingInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new RecordingInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the RecordingInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return RecordingInstance Fetched RecordingInstance
+	 */
+	public function fetch() : RecordingInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Video.V1.RecordingContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new RecordingInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

@@ -21,22 +21,31 @@ abstract class PaypalRefund extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'amount' => ['decimal(7,2)', 'float', 7, true, ],
-		'createdDate' => ['date', 'string', 10, false, ],
-		'createdMemberNumber' => ['int', 'int', 0, true, ],
-		'invoiceId' => ['int', 'int', 0, true, ],
-		'paypalRefundId' => ['int', 'int', 0, false, ],
-		'paypaltx' => ['varchar(20)', 'string', 20, true, ],
-		'refundOnDate' => ['date', 'string', 10, true, ],
-		'refundedDate' => ['date', 'string', 10, true, ],
-		'response' => ['text', 'string', 65535, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['paypalRefundId', ];
 
 	protected static string $table = 'paypalRefund';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'amount' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
+				'createdDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'createdMemberNumber' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'invoiceId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'paypalRefundId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'paypaltx' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, ),
+				'refundOnDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'refundedDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'response' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

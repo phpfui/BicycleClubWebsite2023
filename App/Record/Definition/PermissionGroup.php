@@ -14,16 +14,25 @@ abstract class PermissionGroup extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'groupId' => ['int', 'int', 0, false, ],
-		'permissionId' => ['int', 'int', 0, false, ],
-		'revoked' => ['int', 'int', 0, false, 0, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['groupId', 'permissionId', ];
 
 	protected static string $table = 'permissionGroup';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'groupId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'permissionId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'revoked' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+			];
+			}
+
+		return $this;
+		}
 	}

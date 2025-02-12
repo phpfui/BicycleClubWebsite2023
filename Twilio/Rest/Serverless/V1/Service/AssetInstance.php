@@ -14,16 +14,14 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Serverless\V1\Service;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Rest\Serverless\V1\Service\Asset\AssetVersionList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-use Twilio\Rest\Serverless\V1\Service\Asset\AssetVersionList;
-
 
 /**
  * @property string|null $sid
@@ -37,132 +35,134 @@ use Twilio\Rest\Serverless\V1\Service\Asset\AssetVersionList;
  */
 class AssetInstance extends InstanceResource
 {
-    protected $_assetVersions;
+	protected $_assetVersions;
 
-    /**
-     * Initialize the AssetInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $serviceSid The SID of the Service to create the Asset resource under.
-     * @param string $sid The SID that identifies the Asset resource to delete.
-     */
-    public function __construct(Version $version, array $payload, string $serviceSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the AssetInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $serviceSid The SID of the Service to create the Asset resource under.
+	 * @param string $sid The SID that identifies the Asset resource to delete.
+	 */
+	public function __construct(Version $version, array $payload, string $serviceSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'serviceSid' => Values::array_get($payload, 'service_sid'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-            'links' => Values::array_get($payload, 'links'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'serviceSid' => Values::array_get($payload, 'service_sid'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+			'links' => Values::array_get($payload, 'links'),
+		];
 
-        $this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return AssetContext Context for this AssetInstance
-     */
-    protected function proxy(): AssetContext
-    {
-        if (!$this->context) {
-            $this->context = new AssetContext(
-                $this->version,
-                $this->solution['serviceSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the AssetInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the AssetInstance
-     *
-     * @return AssetInstance Fetched AssetInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): AssetInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Update the AssetInstance
-     *
-     * @param string $friendlyName A descriptive string that you create to describe the Asset resource. It can be a maximum of 255 characters.
-     * @return AssetInstance Updated AssetInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $friendlyName): AssetInstance
-    {
+		return '[Twilio.Serverless.V1.AssetInstance ' . \implode(' ', $context) . ']';
+	}
 
-        return $this->proxy()->update($friendlyName);
-    }
+	/**
+	 * Delete the AssetInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Access the assetVersions
-     */
-    protected function getAssetVersions(): AssetVersionList
-    {
-        return $this->proxy()->assetVersions;
-    }
+		return $this->proxy()->delete();
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Fetch the AssetInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AssetInstance Fetched AssetInstance
+	 */
+	public function fetch() : AssetInstance
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->fetch();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Update the AssetInstance
+	 *
+	 * @param string $friendlyName A descriptive string that you create to describe the Asset resource. It can be a maximum of 255 characters.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AssetInstance Updated AssetInstance
+	 */
+	public function update(string $friendlyName) : AssetInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Serverless.V1.AssetInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->update($friendlyName);
+	}
+
+	/**
+	 * Access the assetVersions
+	 */
+	protected function getAssetVersions() : AssetVersionList
+	{
+		return $this->proxy()->assetVersions;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return AssetContext Context for this AssetInstance
+	 */
+	protected function proxy() : AssetContext
+	{
+		if (! $this->context) {
+			$this->context = new AssetContext(
+				$this->version,
+				$this->solution['serviceSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

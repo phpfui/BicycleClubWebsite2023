@@ -23,24 +23,33 @@ abstract class MailItem extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'body' => ['mediumtext', 'string', 16777215, true, ],
-		'domain' => ['varchar(30)', 'string', 30, true, '', ],
-		'fromEmail' => ['varchar(255)', 'string', 255, true, '', ],
-		'fromName' => ['varchar(255)', 'string', 255, true, '', ],
-		'html' => ['int', 'int', 0, true, 0, ],
-		'mailItemId' => ['int', 'int', 0, false, ],
-		'memberId' => ['int', 'int', 0, true, ],
-		'paused' => ['int', 'int', 0, true, 0, ],
-		'replyTo' => ['varchar(100)', 'string', 100, true, '', ],
-		'replyToName' => ['varchar(100)', 'string', 100, true, '', ],
-		'title' => ['varchar(255)', 'string', 255, true, '', ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['mailItemId', ];
 
 	protected static string $table = 'mailItem';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'body' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
+				'domain' => new \PHPFUI\ORM\FieldDefinition('varchar(30)', 'string', 30, true, '', ),
+				'fromEmail' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, '', ),
+				'fromName' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, '', ),
+				'html' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'mailItemId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'paused' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'replyTo' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, '', ),
+				'replyToName' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, '', ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, '', ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -23,173 +23,166 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class PublicKeyList extends ListResource
-    {
-    /**
-     * Construct the PublicKeyList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the PublicKeyList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/Credentials/PublicKeys';
-    }
+		$this->uri = '/Credentials/PublicKeys';
+	}
 
-    /**
-     * Create the PublicKeyInstance
-     *
-     * @param string $publicKey A URL encoded representation of the public key. For example, `-----BEGIN PUBLIC KEY-----MIIBIjANB.pa9xQIDAQAB-----END PUBLIC KEY-----`
-     * @param array|Options $options Optional Arguments
-     * @return PublicKeyInstance Created PublicKeyInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $publicKey, array $options = []): PublicKeyInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Accounts.V1.PublicKeyList]';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Create the PublicKeyInstance
+	 *
+	 * @param string $publicKey A URL encoded representation of the public key. For example, `-----BEGIN PUBLIC KEY-----MIIBIjANB.pa9xQIDAQAB-----END PUBLIC KEY-----`
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return PublicKeyInstance Created PublicKeyInstance
+	 */
+	public function create(string $publicKey, array $options = []) : PublicKeyInstance
+	{
 
-        $data = Values::of([
-            'PublicKey' =>
-                $publicKey,
-            'FriendlyName' =>
-                $options['friendlyName'],
-            'AccountSid' =>
-                $options['accountSid'],
-        ]);
+		$options = new Values($options);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$data = Values::of([
+			'PublicKey' => $publicKey,
+			'FriendlyName' => $options['friendlyName'],
+			'AccountSid' => $options['accountSid'],
+		]);
 
-        return new PublicKeyInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
+		return new PublicKeyInstance(
+			$this->version,
+			$payload
+		);
+	}
 
-    /**
-     * Reads PublicKeyInstance records from the API as a list.
-     * Unlike stream(), this operation is eager and will load `limit` records into
-     * memory before returning.
-     *
-     * @param int $limit Upper limit for the number of records to return. read()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, read()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return PublicKeyInstance[] Array of results
-     */
-    public function read(?int $limit = null, $pageSize = null): array
-    {
-        return \iterator_to_array($this->stream($limit, $pageSize), false);
-    }
+	/**
+	 * Constructs a PublicKeyContext
+	 *
+	 * @param string $sid The Twilio-provided string that uniquely identifies the PublicKey resource to delete.
+	 */
+	public function getContext(
+		string $sid
+	) : PublicKeyContext
+	{
+		return new PublicKeyContext(
+			$this->version,
+			$sid
+		);
+	}
 
-    /**
-     * Streams PublicKeyInstance records from the API as a generator stream.
-     * This operation lazily loads records as efficiently as possible until the
-     * limit
-     * is reached.
-     * The results are returned as a generator, so this operation is memory
-     * efficient.
-     *
-     * @param int $limit Upper limit for the number of records to return. stream()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, stream()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return Stream stream of results
-     */
-    public function stream(?int $limit = null, $pageSize = null): Stream
-    {
-        $limits = $this->version->readLimits($limit, $pageSize);
+	/**
+	 * Retrieve a specific page of PublicKeyInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param string $targetUrl API-generated URL for the requested results page
+	 * @return PublicKeyPage Page of PublicKeyInstance
+	 */
+	public function getPage(string $targetUrl) : PublicKeyPage
+	{
+		$response = $this->version->getDomain()->getClient()->request(
+			'GET',
+			$targetUrl
+		);
 
-        $page = $this->page($limits['pageSize']);
+		return new PublicKeyPage($this->version, $response, $this->solution);
+	}
 
-        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-    }
+	/**
+	 * Retrieve a single page of PublicKeyInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param mixed $pageSize Number of records to return, defaults to 50
+	 * @param string $pageToken PageToken provided by the API
+	 * @param mixed $pageNumber Page Number, this value is simply for client state
+	 * @return PublicKeyPage Page of PublicKeyInstance
+	 */
+	public function page(
+		$pageSize = Values::NONE,
+		string $pageToken = Values::NONE,
+		$pageNumber = Values::NONE
+	) : PublicKeyPage
+	{
 
-    /**
-     * Retrieve a single page of PublicKeyInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param mixed $pageSize Number of records to return, defaults to 50
-     * @param string $pageToken PageToken provided by the API
-     * @param mixed $pageNumber Page Number, this value is simply for client state
-     * @return PublicKeyPage Page of PublicKeyInstance
-     */
-    public function page(
-        $pageSize = Values::NONE,
-        string $pageToken = Values::NONE,
-        $pageNumber = Values::NONE
-    ): PublicKeyPage
-    {
+		$params = Values::of([
+			'PageToken' => $pageToken,
+			'Page' => $pageNumber,
+			'PageSize' => $pageSize,
+		]);
 
-        $params = Values::of([
-            'PageToken' => $pageToken,
-            'Page' => $pageNumber,
-            'PageSize' => $pageSize,
-        ]);
+		$response = $this->version->page('GET', $this->uri, $params);
 
-        $response = $this->version->page('GET', $this->uri, $params);
+		return new PublicKeyPage($this->version, $response, $this->solution);
+	}
 
-        return new PublicKeyPage($this->version, $response, $this->solution);
-    }
+	/**
+	 * Reads PublicKeyInstance records from the API as a list.
+	 * Unlike stream(), this operation is eager and will load `limit` records into
+	 * memory before returning.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. read()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, read()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return PublicKeyInstance[] Array of results
+	 */
+	public function read(?int $limit = null, $pageSize = null) : array
+	{
+		return \iterator_to_array($this->stream($limit, $pageSize), false);
+	}
 
-    /**
-     * Retrieve a specific page of PublicKeyInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param string $targetUrl API-generated URL for the requested results page
-     * @return PublicKeyPage Page of PublicKeyInstance
-     */
-    public function getPage(string $targetUrl): PublicKeyPage
-    {
-        $response = $this->version->getDomain()->getClient()->request(
-            'GET',
-            $targetUrl
-        );
+	/**
+	 * Streams PublicKeyInstance records from the API as a generator stream.
+	 * This operation lazily loads records as efficiently as possible until the
+	 * limit
+	 * is reached.
+	 * The results are returned as a generator, so this operation is memory
+	 * efficient.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. stream()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, stream()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return Stream stream of results
+	 */
+	public function stream(?int $limit = null, $pageSize = null) : Stream
+	{
+		$limits = $this->version->readLimits($limit, $pageSize);
 
-        return new PublicKeyPage($this->version, $response, $this->solution);
-    }
+		$page = $this->page($limits['pageSize']);
 
-
-    /**
-     * Constructs a PublicKeyContext
-     *
-     * @param string $sid The Twilio-provided string that uniquely identifies the PublicKey resource to delete.
-     */
-    public function getContext(
-        string $sid
-        
-    ): PublicKeyContext
-    {
-        return new PublicKeyContext(
-            $this->version,
-            $sid
-        );
-    }
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Accounts.V1.PublicKeyList]';
-    }
+		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+	}
 }

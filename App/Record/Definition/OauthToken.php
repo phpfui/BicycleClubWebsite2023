@@ -18,19 +18,28 @@ abstract class OauthToken extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'client' => ['varchar(255)', 'string', 255, true, ],
-		'expires' => ['datetime', 'string', 20, false, null, ],
-		'oauthTokenId' => ['int', 'int', 0, false, ],
-		'oauthUserId' => ['int', 'int', 0, true, ],
-		'scopes' => ['text', 'string', 65535, true, ],
-		'token' => ['varchar(255)', 'string', 255, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['oauthTokenId', ];
 
 	protected static string $table = 'oauthToken';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'client' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'expires' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'oauthTokenId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'oauthUserId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'scopes' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'token' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

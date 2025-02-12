@@ -34,35 +34,44 @@ abstract class RWGPS extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = false;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'RWGPSId' => ['int', 'int', 0, false, ],
-		'club' => ['int', 'int', 0, true, 0, ],
-		'country' => ['varchar(255)', 'string', 255, true, ],
-		'csv' => ['text', 'string', 65535, true, ],
-		'description' => ['varchar(255)', 'string', 255, true, '', ],
-		'elevationFeet' => ['decimal(8,0)', 'float', 8, true, ],
-		'elevationMeters' => ['decimal(8,0)', 'float', 8, true, ],
-		'feetPerMile' => ['decimal(5,1)', 'float', 5, true, 0.0, ],
-		'km' => ['decimal(4,2)', 'float', 4, true, ],
-		'lastSynced' => ['datetime', 'string', 20, false, '0000-00-00 00:00:00', ],
-		'lastUpdated' => ['datetime', 'string', 20, false, null, ],
-		'latitude' => ['decimal(10,6)', 'float', 10, true, ],
-		'longitude' => ['decimal(10,6)', 'float', 10, true, ],
-		'metersPerKm' => ['decimal(5,2)', 'float', 5, true, ],
-		'miles' => ['decimal(4,2)', 'float', 4, true, ],
-		'percentPaved' => ['int', 'int', 0, true, 100, ],
-		'query' => ['varchar(255)', 'string', 255, true, ],
-		'startLocationId' => ['int', 'int', 0, true, ],
-		'state' => ['varchar(255)', 'string', 255, true, ],
-		'title' => ['varchar(255)', 'string', 255, true, '', ],
-		'town' => ['varchar(50)', 'string', 50, true, '', ],
-		'zip' => ['varchar(10)', 'string', 10, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['RWGPSId', ];
 
 	protected static string $table = 'RWGPS';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'RWGPSId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'club' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'country' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'csv' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'description' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, '', ),
+				'elevationFeet' => new \PHPFUI\ORM\FieldDefinition('decimal(8,0)', 'float', 8, true, ),
+				'elevationMeters' => new \PHPFUI\ORM\FieldDefinition('decimal(8,0)', 'float', 8, true, ),
+				'feetPerMile' => new \PHPFUI\ORM\FieldDefinition('decimal(5,1)', 'float', 5, true, 0.0, ),
+				'km' => new \PHPFUI\ORM\FieldDefinition('decimal(4,2)', 'float', 4, true, ),
+				'lastSynced' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, '0000-00-00 00:00:00', ),
+				'lastUpdated' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'latitude' => new \PHPFUI\ORM\FieldDefinition('decimal(10,6)', 'float', 10, true, ),
+				'longitude' => new \PHPFUI\ORM\FieldDefinition('decimal(10,6)', 'float', 10, true, ),
+				'metersPerKm' => new \PHPFUI\ORM\FieldDefinition('decimal(5,2)', 'float', 5, true, ),
+				'miles' => new \PHPFUI\ORM\FieldDefinition('decimal(4,2)', 'float', 4, true, ),
+				'percentPaved' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 100, ),
+				'query' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'startLocationId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'state' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'title' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, '', ),
+				'town' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, '', ),
+				'zip' => new \PHPFUI\ORM\FieldDefinition('varchar(10)', 'string', 10, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

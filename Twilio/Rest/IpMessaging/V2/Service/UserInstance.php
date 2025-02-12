@@ -14,18 +14,16 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\IpMessaging\V2\Service;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
-use Twilio\Values;
-use Twilio\Version;
-use Twilio\Deserialize;
 use Twilio\Rest\IpMessaging\V2\Service\User\UserBindingList;
 use Twilio\Rest\IpMessaging\V2\Service\User\UserChannelList;
-
+use Twilio\Values;
+use Twilio\Version;
 
 /**
  * @property string|null $sid
@@ -45,147 +43,148 @@ use Twilio\Rest\IpMessaging\V2\Service\User\UserChannelList;
  */
 class UserInstance extends InstanceResource
 {
-    protected $_userBindings;
-    protected $_userChannels;
+	protected $_userBindings;
 
-    /**
-     * Initialize the UserInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $serviceSid 
-     * @param string $sid 
-     */
-    public function __construct(Version $version, array $payload, string $serviceSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	protected $_userChannels;
 
-        // Marshaled Properties
-        $this->properties = [
-            'sid' => Values::array_get($payload, 'sid'),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'serviceSid' => Values::array_get($payload, 'service_sid'),
-            'attributes' => Values::array_get($payload, 'attributes'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'roleSid' => Values::array_get($payload, 'role_sid'),
-            'identity' => Values::array_get($payload, 'identity'),
-            'isOnline' => Values::array_get($payload, 'is_online'),
-            'isNotifiable' => Values::array_get($payload, 'is_notifiable'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'joinedChannelsCount' => Values::array_get($payload, 'joined_channels_count'),
-            'links' => Values::array_get($payload, 'links'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+	/**
+	 * Initialize the UserInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 */
+	public function __construct(Version $version, array $payload, string $serviceSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        $this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		// Marshaled Properties
+		$this->properties = [
+			'sid' => Values::array_get($payload, 'sid'),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'serviceSid' => Values::array_get($payload, 'service_sid'),
+			'attributes' => Values::array_get($payload, 'attributes'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'roleSid' => Values::array_get($payload, 'role_sid'),
+			'identity' => Values::array_get($payload, 'identity'),
+			'isOnline' => Values::array_get($payload, 'is_online'),
+			'isNotifiable' => Values::array_get($payload, 'is_notifiable'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'joinedChannelsCount' => Values::array_get($payload, 'joined_channels_count'),
+			'links' => Values::array_get($payload, 'links'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return UserContext Context for this UserInstance
-     */
-    protected function proxy(): UserContext
-    {
-        if (!$this->context) {
-            $this->context = new UserContext(
-                $this->version,
-                $this->solution['serviceSid'],
-                $this->solution['sid']
-            );
-        }
+		$this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-        return $this->context;
-    }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-    /**
-     * Delete the UserInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return $this->proxy()->delete();
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Fetch the UserInstance
-     *
-     * @return UserInstance Fetched UserInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): UserInstance
-    {
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-        return $this->proxy()->fetch();
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Update the UserInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return UserInstance Updated UserInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): UserInstance
-    {
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return $this->proxy()->update($options);
-    }
+		return '[Twilio.IpMessaging.V2.UserInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Access the userBindings
-     */
-    protected function getUserBindings(): UserBindingList
-    {
-        return $this->proxy()->userBindings;
-    }
+	/**
+	 * Delete the UserInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Access the userChannels
-     */
-    protected function getUserChannels(): UserChannelList
-    {
-        return $this->proxy()->userChannels;
-    }
+		return $this->proxy()->delete();
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Fetch the UserInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UserInstance Fetched UserInstance
+	 */
+	public function fetch() : UserInstance
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->fetch();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Update the UserInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return UserInstance Updated UserInstance
+	 */
+	public function update(array $options = []) : UserInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.IpMessaging.V2.UserInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Access the userBindings
+	 */
+	protected function getUserBindings() : UserBindingList
+	{
+		return $this->proxy()->userBindings;
+	}
+
+	/**
+	 * Access the userChannels
+	 */
+	protected function getUserChannels() : UserChannelList
+	{
+		return $this->proxy()->userChannels;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return UserContext Context for this UserInstance
+	 */
+	protected function proxy() : UserContext
+	{
+		if (! $this->context) {
+			$this->context = new UserContext(
+				$this->version,
+				$this->solution['serviceSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

@@ -21,70 +21,67 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class PortingPortInList extends ListResource
-    {
-    /**
-     * Construct the PortingPortInList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the PortingPortInList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/Porting/PortIn';
-    }
+		$this->uri = '/Porting/PortIn';
+	}
 
-    /**
-     * Create the PortingPortInInstance
-     *
-     * @return PortingPortInInstance Created PortingPortInInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(): PortingPortInInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Numbers.V1.PortingPortInList]';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $data = $body->toArray();
-        $headers['Content-Type'] = 'application/json';
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Create the PortingPortInInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return PortingPortInInstance Created PortingPortInInstance
+	 */
+	public function create() : PortingPortInInstance
+	{
 
-        return new PortingPortInInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$data = $body->toArray();
+		$headers['Content-Type'] = 'application/json';
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
+		return new PortingPortInInstance(
+			$this->version,
+			$payload
+		);
+	}
 
-    /**
-     * Constructs a PortingPortInContext
-     *
-     * @param string $portInRequestSid The SID of the Port In request. This is a unique identifier of the port in request.
-     */
-    public function getContext(
-        string $portInRequestSid
-        
-    ): PortingPortInContext
-    {
-        return new PortingPortInContext(
-            $this->version,
-            $portInRequestSid
-        );
-    }
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Numbers.V1.PortingPortInList]';
-    }
+	/**
+	 * Constructs a PortingPortInContext
+	 *
+	 * @param string $portInRequestSid The SID of the Port In request. This is a unique identifier of the port in request.
+	 */
+	public function getContext(
+		string $portInRequestSid
+	) : PortingPortInContext
+	{
+		return new PortingPortInContext(
+			$this->version,
+			$portInRequestSid
+		);
+	}
 }

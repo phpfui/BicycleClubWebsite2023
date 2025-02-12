@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Assistants\V1\Assistant;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string $accountSid
@@ -39,112 +37,114 @@ use Twilio\Deserialize;
  */
 class AssistantsToolInstance extends InstanceResource
 {
-    /**
-     * Initialize the AssistantsToolInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $assistantId The assistant ID.
-     * @param string $id The tool ID.
-     */
-    public function __construct(Version $version, array $payload, string $assistantId, ?string $id = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the AssistantsToolInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $assistantId The assistant ID.
+	 * @param string $id The tool ID.
+	 */
+	public function __construct(Version $version, array $payload, string $assistantId, ?string $id = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'description' => Values::array_get($payload, 'description'),
-            'enabled' => Values::array_get($payload, 'enabled'),
-            'id' => Values::array_get($payload, 'id'),
-            'meta' => Values::array_get($payload, 'meta'),
-            'name' => Values::array_get($payload, 'name'),
-            'requiresAuth' => Values::array_get($payload, 'requires_auth'),
-            'type' => Values::array_get($payload, 'type'),
-            'url' => Values::array_get($payload, 'url'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'description' => Values::array_get($payload, 'description'),
+			'enabled' => Values::array_get($payload, 'enabled'),
+			'id' => Values::array_get($payload, 'id'),
+			'meta' => Values::array_get($payload, 'meta'),
+			'name' => Values::array_get($payload, 'name'),
+			'requiresAuth' => Values::array_get($payload, 'requires_auth'),
+			'type' => Values::array_get($payload, 'type'),
+			'url' => Values::array_get($payload, 'url'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+		];
 
-        $this->solution = ['assistantId' => $assistantId, 'id' => $id ?: $this->properties['id'], ];
-    }
+		$this->solution = ['assistantId' => $assistantId, 'id' => $id ?: $this->properties['id'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return AssistantsToolContext Context for this AssistantsToolInstance
-     */
-    protected function proxy(): AssistantsToolContext
-    {
-        if (!$this->context) {
-            $this->context = new AssistantsToolContext(
-                $this->version,
-                $this->solution['assistantId'],
-                $this->solution['id']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Create the AssistantsToolInstance
-     *
-     * @return AssistantsToolInstance Created AssistantsToolInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(): AssistantsToolInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->create();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Delete the AssistantsToolInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->delete();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return '[Twilio.Assistants.V1.AssistantsToolInstance ' . \implode(' ', $context) . ']';
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Create the AssistantsToolInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AssistantsToolInstance Created AssistantsToolInstance
+	 */
+	public function create() : AssistantsToolInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->create();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Assistants.V1.AssistantsToolInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Delete the AssistantsToolInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
+
+		return $this->proxy()->delete();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return AssistantsToolContext Context for this AssistantsToolInstance
+	 */
+	protected function proxy() : AssistantsToolContext
+	{
+		if (! $this->context) {
+			$this->context = new AssistantsToolContext(
+				$this->version,
+				$this->solution['assistantId'],
+				$this->solution['id']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

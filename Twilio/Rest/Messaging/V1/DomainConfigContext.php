@@ -14,106 +14,99 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Messaging\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
-
 
 class DomainConfigContext extends InstanceContext
-    {
-    /**
-     * Initialize the DomainConfigContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $domainSid Unique string used to identify the domain that this config should be associated with.
-     */
-    public function __construct(
-        Version $version,
-        $domainSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the DomainConfigContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $domainSid Unique string used to identify the domain that this config should be associated with.
+	 */
+	public function __construct(
+		Version $version,
+		$domainSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'domainSid' =>
-            $domainSid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'domainSid' => $domainSid,
+		];
 
-        $this->uri = '/LinkShortening/Domains/' . \rawurlencode($domainSid)
-        .'/Config';
-    }
+		$this->uri = '/LinkShortening/Domains/' . \rawurlencode($domainSid)
+		. '/Config';
+	}
 
-    /**
-     * Fetch the DomainConfigInstance
-     *
-     * @return DomainConfigInstance Fetched DomainConfigInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): DomainConfigInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new DomainConfigInstance(
-            $this->version,
-            $payload,
-            $this->solution['domainSid']
-        );
-    }
+		return '[Twilio.Messaging.V1.DomainConfigContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the DomainConfigInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DomainConfigInstance Fetched DomainConfigInstance
+	 */
+	public function fetch() : DomainConfigInstance
+	{
 
-    /**
-     * Update the DomainConfigInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return DomainConfigInstance Updated DomainConfigInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): DomainConfigInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new DomainConfigInstance(
+			$this->version,
+			$payload,
+			$this->solution['domainSid']
+		);
+	}
 
-        $data = Values::of([
-            'FallbackUrl' =>
-                $options['fallbackUrl'],
-            'CallbackUrl' =>
-                $options['callbackUrl'],
-            'ContinueOnFailure' =>
-                Serialize::booleanToString($options['continueOnFailure']),
-            'DisableHttps' =>
-                Serialize::booleanToString($options['disableHttps']),
-        ]);
+	/**
+	 * Update the DomainConfigInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DomainConfigInstance Updated DomainConfigInstance
+	 */
+	public function update(array $options = []) : DomainConfigInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new DomainConfigInstance(
-            $this->version,
-            $payload,
-            $this->solution['domainSid']
-        );
-    }
+		$data = Values::of([
+			'FallbackUrl' => $options['fallbackUrl'],
+			'CallbackUrl' => $options['callbackUrl'],
+			'ContinueOnFailure' => Serialize::booleanToString($options['continueOnFailure']),
+			'DisableHttps' => Serialize::booleanToString($options['disableHttps']),
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Messaging.V1.DomainConfigContext ' . \implode(' ', $context) . ']';
-    }
+		return new DomainConfigInstance(
+			$this->version,
+			$payload,
+			$this->solution['domainSid']
+		);
+	}
 }

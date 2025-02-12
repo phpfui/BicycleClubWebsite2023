@@ -19,47 +19,45 @@ namespace Twilio\Rest\Messaging\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class DomainConfigMessagingServiceList extends ListResource
-    {
-    /**
-     * Construct the DomainConfigMessagingServiceList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the DomainConfigMessagingServiceList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+		];
+	}
 
-    /**
-     * Constructs a DomainConfigMessagingServiceContext
-     *
-     * @param string $messagingServiceSid Unique string used to identify the Messaging service that this domain should be associated with.
-     */
-    public function getContext(
-        string $messagingServiceSid
-        
-    ): DomainConfigMessagingServiceContext
-    {
-        return new DomainConfigMessagingServiceContext(
-            $this->version,
-            $messagingServiceSid
-        );
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Messaging.V1.DomainConfigMessagingServiceList]';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Messaging.V1.DomainConfigMessagingServiceList]';
-    }
+	/**
+	 * Constructs a DomainConfigMessagingServiceContext
+	 *
+	 * @param string $messagingServiceSid Unique string used to identify the Messaging service that this domain should be associated with.
+	 */
+	public function getContext(
+		string $messagingServiceSid
+	) : DomainConfigMessagingServiceContext
+	{
+		return new DomainConfigMessagingServiceContext(
+			$this->version,
+			$messagingServiceSid
+		);
+	}
 }

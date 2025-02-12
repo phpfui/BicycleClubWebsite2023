@@ -11,13 +11,14 @@ namespace Twilio\TwiML\Voice;
 
 use Twilio\TwiML\TwiML;
 
-class ReferSip extends TwiML {
-    /**
-     * ReferSip constructor.
-     *
-     * @param string $sipUrl SIP URL
-     */
-    public function __construct($sipUrl) {
-        parent::__construct('Sip', $sipUrl);
-    }
+class ReferSip extends TwiML
+{
+	/**
+	 * ReferSip constructor.
+	 *
+	 * @param string $sipUrl SIP URL
+	 */
+	public function __construct($sipUrl) {
+		parent::__construct('Sip', $sipUrl);
+	}
 }

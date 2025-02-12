@@ -23,24 +23,33 @@ abstract class SlideShow extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'active' => ['int', 'int', 0, false, 0, ],
-		'added' => ['datetime', 'string', 20, false, null, ],
-		'alignment' => ['varchar(20)', 'string', 20, false, '', ],
-		'endDate' => ['date', 'string', 10, true, ],
-		'memberId' => ['int unsigned', 'int', 0, true, ],
-		'name' => ['varchar(255)', 'string', 255, true, ],
-		'settings' => ['text', 'string', 65535, true, ],
-		'slideShowId' => ['int', 'int', 0, false, ],
-		'startDate' => ['date', 'string', 10, true, ],
-		'updated' => ['datetime', 'string', 20, true, ],
-		'width' => ['int', 'int', 0, false, 0, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['slideShowId', ];
 
 	protected static string $table = 'slideShow';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'active' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'added' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'alignment' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, false, '', ),
+				'endDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int unsigned', 'int', 0, true, ),
+				'name' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'settings' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'slideShowId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'startDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'updated' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, ),
+				'width' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+			];
+			}
+
+		return $this;
+		}
 	}

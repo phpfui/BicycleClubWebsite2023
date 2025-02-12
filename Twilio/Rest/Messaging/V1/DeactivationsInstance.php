@@ -14,7 +14,6 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Messaging\V1;
 
 use Twilio\Exceptions\TwilioException;
@@ -23,93 +22,94 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
-
 /**
  * @property string|null $redirectTo
  */
 class DeactivationsInstance extends InstanceResource
 {
-    /**
-     * Initialize the DeactivationsInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     */
-    public function __construct(Version $version, array $payload)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the DeactivationsInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 */
+	public function __construct(Version $version, array $payload)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'redirectTo' => Values::array_get($payload, 'redirect_to'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'redirectTo' => Values::array_get($payload, 'redirect_to'),
+		];
 
-        $this->solution = [];
-    }
+		$this->solution = [];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return DeactivationsContext Context for this DeactivationsInstance
-     */
-    protected function proxy(): DeactivationsContext
-    {
-        if (!$this->context) {
-            $this->context = new DeactivationsContext(
-                $this->version
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the DeactivationsInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return DeactivationsInstance Fetched DeactivationsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(array $options = []): DeactivationsInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch($options);
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Messaging.V1.DeactivationsInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Messaging.V1.DeactivationsInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the DeactivationsInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DeactivationsInstance Fetched DeactivationsInstance
+	 */
+	public function fetch(array $options = []) : DeactivationsInstance
+	{
+
+		return $this->proxy()->fetch($options);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return DeactivationsContext Context for this DeactivationsInstance
+	 */
+	protected function proxy() : DeactivationsContext
+	{
+		if (! $this->context) {
+			$this->context = new DeactivationsContext(
+				$this->version
+			);
+		}
+
+		return $this->context;
+	}
 }
-

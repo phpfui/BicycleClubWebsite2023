@@ -14,129 +14,122 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Verify\V2\Service\RateLimit;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class BucketContext extends InstanceContext
-    {
-    /**
-     * Initialize the BucketContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/verify/api/service) the resource is associated with.
-     * @param string $rateLimitSid The Twilio-provided string that uniquely identifies the Rate Limit resource.
-     * @param string $sid A 34 character string that uniquely identifies this Bucket.
-     */
-    public function __construct(
-        Version $version,
-        $serviceSid,
-        $rateLimitSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the BucketContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/verify/api/service) the resource is associated with.
+	 * @param string $rateLimitSid The Twilio-provided string that uniquely identifies the Rate Limit resource.
+	 * @param string $sid A 34 character string that uniquely identifies this Bucket.
+	 */
+	public function __construct(
+		Version $version,
+		$serviceSid,
+		$rateLimitSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        'rateLimitSid' =>
-            $rateLimitSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
+			'rateLimitSid' => $rateLimitSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/RateLimits/' . \rawurlencode($rateLimitSid)
-        .'/Buckets/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/RateLimits/' . \rawurlencode($rateLimitSid)
+		. '/Buckets/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the BucketInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
+		return '[Twilio.Verify.V2.BucketContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Fetch the BucketInstance
-     *
-     * @return BucketInstance Fetched BucketInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): BucketInstance
-    {
+	/**
+	 * Delete the BucketInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-        return new BucketInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['rateLimitSid'],
-            $this->solution['sid']
-        );
-    }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
+	/**
+	 * Fetch the BucketInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return BucketInstance Fetched BucketInstance
+	 */
+	public function fetch() : BucketInstance
+	{
 
-    /**
-     * Update the BucketInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return BucketInstance Updated BucketInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): BucketInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new BucketInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['rateLimitSid'],
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'Max' =>
-                $options['max'],
-            'Interval' =>
-                $options['interval'],
-        ]);
+	/**
+	 * Update the BucketInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return BucketInstance Updated BucketInstance
+	 */
+	public function update(array $options = []) : BucketInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new BucketInstance(
-            $this->version,
-            $payload,
-            $this->solution['serviceSid'],
-            $this->solution['rateLimitSid'],
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'Max' => $options['max'],
+			'Interval' => $options['interval'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Verify.V2.BucketContext ' . \implode(' ', $context) . ']';
-    }
+		return new BucketInstance(
+			$this->version,
+			$payload,
+			$this->solution['serviceSid'],
+			$this->solution['rateLimitSid'],
+			$this->solution['sid']
+		);
+	}
 }

@@ -14,176 +14,173 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account\Sip;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
+use Twilio\Rest\Api\V2010\Account\Sip\IpAccessControlList\IpAddressList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Rest\Api\V2010\Account\Sip\IpAccessControlList\IpAddressList;
-
 
 /**
  * @property IpAddressList $ipAddresses
  * @method \Twilio\Rest\Api\V2010\Account\Sip\IpAccessControlList\IpAddressContext ipAddresses(string $sid)
  */
 class IpAccessControlListContext extends InstanceContext
-    {
-    protected $_ipAddresses;
+	{
+	protected $_ipAddresses;
 
-    /**
-     * Initialize the IpAccessControlListContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $accountSid The unique id of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this resource.
-     * @param string $sid A 34 character string that uniquely identifies the resource to delete.
-     */
-    public function __construct(
-        Version $version,
-        $accountSid,
-        $sid
-    ) {
-        parent::__construct($version);
+	/**
+	 * Initialize the IpAccessControlListContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $accountSid The unique id of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this resource.
+	 * @param string $sid A 34 character string that uniquely identifies the resource to delete.
+	 */
+	public function __construct(
+		Version $version,
+		$accountSid,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'accountSid' =>
-            $accountSid,
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'accountSid' => $accountSid,
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
-        .'/SIP/IpAccessControlLists/' . \rawurlencode($sid)
-        .'.json';
-    }
+		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
+		. '/SIP/IpAccessControlLists/' . \rawurlencode($sid)
+		. '.json';
+	}
 
-    /**
-     * Delete the IpAccessControlListInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
+		throw new TwilioException('Resource does not have a context');
+	}
 
-    /**
-     * Fetch the IpAccessControlListInstance
-     *
-     * @return IpAccessControlListInstance Fetched IpAccessControlListInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): IpAccessControlListInstance
-    {
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+			return $this->{$method}();
+		}
 
-        return new IpAccessControlListInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['sid']
-        );
-    }
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Update the IpAccessControlListInstance
-     *
-     * @param string $friendlyName A human readable descriptive text, up to 255 characters long.
-     * @return IpAccessControlListInstance Updated IpAccessControlListInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $friendlyName): IpAccessControlListInstance
-    {
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        $data = Values::of([
-            'FriendlyName' =>
-                $friendlyName,
-        ]);
+		return '[Twilio.Api.V2010.IpAccessControlListContext ' . \implode(' ', $context) . ']';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+	/**
+	 * Delete the IpAccessControlListInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        return new IpAccessControlListInstance(
-            $this->version,
-            $payload,
-            $this->solution['accountSid'],
-            $this->solution['sid']
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
-    /**
-     * Access the ipAddresses
-     */
-    protected function getIpAddresses(): IpAddressList
-    {
-        if (!$this->_ipAddresses) {
-            $this->_ipAddresses = new IpAddressList(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Fetch the IpAccessControlListInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return IpAccessControlListInstance Fetched IpAccessControlListInstance
+	 */
+	public function fetch() : IpAccessControlListInstance
+	{
 
-        return $this->_ipAddresses;
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return new IpAccessControlListInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['sid']
+		);
+	}
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+	/**
+	 * Update the IpAccessControlListInstance
+	 *
+	 * @param string $friendlyName A human readable descriptive text, up to 255 characters long.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return IpAccessControlListInstance Updated IpAccessControlListInstance
+	 */
+	public function update(string $friendlyName) : IpAccessControlListInstance
+	{
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+		$data = Values::of([
+			'FriendlyName' => $friendlyName,
+		]);
 
-        throw new TwilioException('Resource does not have a context');
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.IpAccessControlListContext ' . \implode(' ', $context) . ']';
-    }
+		return new IpAccessControlListInstance(
+			$this->version,
+			$payload,
+			$this->solution['accountSid'],
+			$this->solution['sid']
+		);
+	}
+
+	/**
+	 * Access the ipAddresses
+	 */
+	protected function getIpAddresses() : IpAddressList
+	{
+		if (! $this->_ipAddresses) {
+			$this->_ipAddresses = new IpAddressList(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_ipAddresses;
+	}
 }

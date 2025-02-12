@@ -16,17 +16,26 @@ abstract class AdditionalEmail extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'additionalEmailId' => ['int', 'int', 0, false, ],
-		'email' => ['varchar(100)', 'string', 100, false, ],
-		'memberId' => ['int', 'int', 0, false, ],
-		'verified' => ['int', 'int', 0, false, 0, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['additionalEmailId', ];
 
 	protected static string $table = 'additionalEmail';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'additionalEmailId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'email' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, false, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'verified' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+			];
+			}
+
+		return $this;
+		}
 	}

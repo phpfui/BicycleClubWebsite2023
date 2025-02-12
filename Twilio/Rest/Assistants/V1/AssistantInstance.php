@@ -14,19 +14,17 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Assistants\V1;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
-use Twilio\Values;
-use Twilio\Version;
-use Twilio\Deserialize;
 use Twilio\Rest\Assistants\V1\Assistant\AssistantsKnowledgeList;
 use Twilio\Rest\Assistants\V1\Assistant\AssistantsToolList;
 use Twilio\Rest\Assistants\V1\Assistant\FeedbackList;
 use Twilio\Rest\Assistants\V1\Assistant\MessageList;
-
+use Twilio\Values;
+use Twilio\Version;
 
 /**
  * @property string $accountSid
@@ -54,170 +52,174 @@ use Twilio\Rest\Assistants\V1\Assistant\MessageList;
  */
 class AssistantInstance extends InstanceResource
 {
-    protected $_assistantsKnowledge;
-    protected $_assistantsTools;
-    protected $_feedbacks;
-    protected $_messages;
+	protected $_assistantsKnowledge;
 
-    /**
-     * Initialize the AssistantInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $id
-     */
-    public function __construct(Version $version, array $payload, ?string $id = null)
-    {
-        parent::__construct($version);
+	protected $_assistantsTools;
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'customerAi' => Values::array_get($payload, 'customer_ai'),
-            'id' => Values::array_get($payload, 'id'),
-            'model' => Values::array_get($payload, 'model'),
-            'name' => Values::array_get($payload, 'name'),
-            'owner' => Values::array_get($payload, 'owner'),
-            'url' => Values::array_get($payload, 'url'),
-            'personalityPrompt' => Values::array_get($payload, 'personality_prompt'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'customerAi' => Values::array_get($payload, 'customer_ai'),
-            'id' => Values::array_get($payload, 'id'),
-            'model' => Values::array_get($payload, 'model'),
-            'name' => Values::array_get($payload, 'name'),
-            'owner' => Values::array_get($payload, 'owner'),
-            'url' => Values::array_get($payload, 'url'),
-            'personalityPrompt' => Values::array_get($payload, 'personality_prompt'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'knowledge' => Values::array_get($payload, 'knowledge'),
-            'tools' => Values::array_get($payload, 'tools'),
-        ];
+	protected $_feedbacks;
 
-        $this->solution = ['id' => $id ?: $this->properties['id'], ];
-    }
+	protected $_messages;
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return AssistantContext Context for this AssistantInstance
-     */
-    protected function proxy(): AssistantContext
-    {
-        if (!$this->context) {
-            $this->context = new AssistantContext(
-                $this->version,
-                $this->solution['id']
-            );
-        }
+	/**
+	 * Initialize the AssistantInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 */
+	public function __construct(Version $version, array $payload, ?string $id = null)
+	{
+		parent::__construct($version);
 
-        return $this->context;
-    }
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'customerAi' => Values::array_get($payload, 'customer_ai'),
+			'id' => Values::array_get($payload, 'id'),
+			'model' => Values::array_get($payload, 'model'),
+			'name' => Values::array_get($payload, 'name'),
+			'owner' => Values::array_get($payload, 'owner'),
+			'url' => Values::array_get($payload, 'url'),
+			'personalityPrompt' => Values::array_get($payload, 'personality_prompt'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'customerAi' => Values::array_get($payload, 'customer_ai'),
+			'id' => Values::array_get($payload, 'id'),
+			'model' => Values::array_get($payload, 'model'),
+			'name' => Values::array_get($payload, 'name'),
+			'owner' => Values::array_get($payload, 'owner'),
+			'url' => Values::array_get($payload, 'url'),
+			'personalityPrompt' => Values::array_get($payload, 'personality_prompt'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'knowledge' => Values::array_get($payload, 'knowledge'),
+			'tools' => Values::array_get($payload, 'tools'),
+		];
 
-    /**
-     * Delete the AssistantInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+		$this->solution = ['id' => $id ?: $this->properties['id'], ];
+	}
 
-        return $this->proxy()->delete();
-    }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-    /**
-     * Fetch the AssistantInstance
-     *
-     * @return AssistantInstance Fetched AssistantInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): AssistantInstance
-    {
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        return $this->proxy()->fetch();
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Update the AssistantInstance
-     *
-     * @return AssistantInstance Updated AssistantInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(): AssistantInstance
-    {
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-        return $this->proxy()->update();
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Access the assistantsKnowledge
-     */
-    protected function getAssistantsKnowledge(): AssistantsKnowledgeList
-    {
-        return $this->proxy()->assistantsKnowledge;
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Access the assistantsTools
-     */
-    protected function getAssistantsTools(): AssistantsToolList
-    {
-        return $this->proxy()->assistantsTools;
-    }
+		return '[Twilio.Assistants.V1.AssistantInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Access the feedbacks
-     */
-    protected function getFeedbacks(): FeedbackList
-    {
-        return $this->proxy()->feedbacks;
-    }
+	/**
+	 * Delete the AssistantInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Access the messages
-     */
-    protected function getMessages(): MessageList
-    {
-        return $this->proxy()->messages;
-    }
+		return $this->proxy()->delete();
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Fetch the AssistantInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AssistantInstance Fetched AssistantInstance
+	 */
+	public function fetch() : AssistantInstance
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->fetch();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Update the AssistantInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AssistantInstance Updated AssistantInstance
+	 */
+	public function update() : AssistantInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Assistants.V1.AssistantInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->update();
+	}
+
+	/**
+	 * Access the assistantsKnowledge
+	 */
+	protected function getAssistantsKnowledge() : AssistantsKnowledgeList
+	{
+		return $this->proxy()->assistantsKnowledge;
+	}
+
+	/**
+	 * Access the assistantsTools
+	 */
+	protected function getAssistantsTools() : AssistantsToolList
+	{
+		return $this->proxy()->assistantsTools;
+	}
+
+	/**
+	 * Access the feedbacks
+	 */
+	protected function getFeedbacks() : FeedbackList
+	{
+		return $this->proxy()->feedbacks;
+	}
+
+	/**
+	 * Access the messages
+	 */
+	protected function getMessages() : MessageList
+	{
+		return $this->proxy()->messages;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return AssistantContext Context for this AssistantInstance
+	 */
+	protected function proxy() : AssistantContext
+	{
+		if (! $this->context) {
+			$this->context = new AssistantContext(
+				$this->version,
+				$this->solution['id']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

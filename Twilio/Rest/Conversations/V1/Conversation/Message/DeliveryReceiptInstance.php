@@ -14,15 +14,13 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Conversations\V1\Conversation\Message;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $accountSid
@@ -39,102 +37,104 @@ use Twilio\Deserialize;
  */
 class DeliveryReceiptInstance extends InstanceResource
 {
-    /**
-     * Initialize the DeliveryReceiptInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $conversationSid The unique ID of the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for this message.
-     * @param string $messageSid The SID of the message within a [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) the delivery receipt belongs to.
-     * @param string $sid A 34 character string that uniquely identifies this resource.
-     */
-    public function __construct(Version $version, array $payload, string $conversationSid, string $messageSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the DeliveryReceiptInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $conversationSid The unique ID of the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for this message.
+	 * @param string $messageSid The SID of the message within a [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) the delivery receipt belongs to.
+	 * @param string $sid A 34 character string that uniquely identifies this resource.
+	 */
+	public function __construct(Version $version, array $payload, string $conversationSid, string $messageSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'conversationSid' => Values::array_get($payload, 'conversation_sid'),
-            'sid' => Values::array_get($payload, 'sid'),
-            'messageSid' => Values::array_get($payload, 'message_sid'),
-            'channelMessageSid' => Values::array_get($payload, 'channel_message_sid'),
-            'participantSid' => Values::array_get($payload, 'participant_sid'),
-            'status' => Values::array_get($payload, 'status'),
-            'errorCode' => Values::array_get($payload, 'error_code'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'conversationSid' => Values::array_get($payload, 'conversation_sid'),
+			'sid' => Values::array_get($payload, 'sid'),
+			'messageSid' => Values::array_get($payload, 'message_sid'),
+			'channelMessageSid' => Values::array_get($payload, 'channel_message_sid'),
+			'participantSid' => Values::array_get($payload, 'participant_sid'),
+			'status' => Values::array_get($payload, 'status'),
+			'errorCode' => Values::array_get($payload, 'error_code'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['conversationSid' => $conversationSid, 'messageSid' => $messageSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['conversationSid' => $conversationSid, 'messageSid' => $messageSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return DeliveryReceiptContext Context for this DeliveryReceiptInstance
-     */
-    protected function proxy(): DeliveryReceiptContext
-    {
-        if (!$this->context) {
-            $this->context = new DeliveryReceiptContext(
-                $this->version,
-                $this->solution['conversationSid'],
-                $this->solution['messageSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the DeliveryReceiptInstance
-     *
-     * @return DeliveryReceiptInstance Fetched DeliveryReceiptInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): DeliveryReceiptInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Conversations.V1.DeliveryReceiptInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Conversations.V1.DeliveryReceiptInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the DeliveryReceiptInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return DeliveryReceiptInstance Fetched DeliveryReceiptInstance
+	 */
+	public function fetch() : DeliveryReceiptInstance
+	{
+
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return DeliveryReceiptContext Context for this DeliveryReceiptInstance
+	 */
+	protected function proxy() : DeliveryReceiptContext
+	{
+		if (! $this->context) {
+			$this->context = new DeliveryReceiptContext(
+				$this->version,
+				$this->solution['conversationSid'],
+				$this->solution['messageSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

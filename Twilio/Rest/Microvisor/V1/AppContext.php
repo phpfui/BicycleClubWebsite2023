@@ -14,142 +14,142 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Microvisor\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\ListResource;
+use Twilio\Rest\Microvisor\V1\App\AppManifestList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-use Twilio\Rest\Microvisor\V1\App\AppManifestList;
-
 
 /**
  * @property AppManifestList $appManifests
  * @method \Twilio\Rest\Microvisor\V1\App\AppManifestContext appManifests()
  */
 class AppContext extends InstanceContext
-    {
-    protected $_appManifests;
+	{
+	protected $_appManifests;
 
-    /**
-     * Initialize the AppContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid A 34-character string that uniquely identifies this App.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	/**
+	 * Initialize the AppContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid A 34-character string that uniquely identifies this App.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Apps/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Apps/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Delete the AppInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-    }
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
+		throw new TwilioException('Resource does not have a context');
+	}
 
-    /**
-     * Fetch the AppInstance
-     *
-     * @return AppInstance Fetched AppInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): AppInstance
-    {
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return ListResource The requested subresource
+	 */
+	public function __get(string $name) : ListResource
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+			return $this->{$method}();
+		}
 
-        return new AppInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
 
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-    /**
-     * Access the appManifests
-     */
-    protected function getAppManifests(): AppManifestList
-    {
-        if (!$this->_appManifests) {
-            $this->_appManifests = new AppManifestList(
-                $this->version,
-                $this->solution['sid']
-            );
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return $this->_appManifests;
-    }
+		return '[Twilio.Microvisor.V1.AppContext ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name): ListResource
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Delete the AppInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+	}
 
-        throw new TwilioException('Resource does not have a context');
-    }
+	/**
+	 * Fetch the AppInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AppInstance Fetched AppInstance
+	 */
+	public function fetch() : AppInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Microvisor.V1.AppContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new AppInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
+
+	/**
+	 * Access the appManifests
+	 */
+	protected function getAppManifests() : AppManifestList
+	{
+		if (! $this->_appManifests) {
+			$this->_appManifests = new AppManifestList(
+				$this->version,
+				$this->solution['sid']
+			);
+		}
+
+		return $this->_appManifests;
+	}
 }

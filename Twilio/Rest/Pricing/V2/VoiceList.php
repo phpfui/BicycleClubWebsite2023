@@ -17,12 +17,11 @@
 namespace Twilio\Rest\Pricing\V2;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\ListResource;
-use Twilio\Version;
 use Twilio\InstanceContext;
+use Twilio\ListResource;
 use Twilio\Rest\Pricing\V2\Voice\CountryList;
 use Twilio\Rest\Pricing\V2\Voice\NumberList;
-
+use Twilio\Version;
 
 /**
  * @property CountryList $countries
@@ -31,93 +30,98 @@ use Twilio\Rest\Pricing\V2\Voice\NumberList;
  * @method \Twilio\Rest\Pricing\V2\Voice\NumberContext numbers(string $destinationNumber)
  */
 class VoiceList extends ListResource
-    {
-    protected $_countries = null;
-    protected $_numbers = null;
+	{
+	protected $_countries = null;
 
-    /**
-     * Construct the VoiceList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	protected $_numbers = null;
 
-        // Path Solution
-        $this->solution = [
-        ];
-    }
+	/**
+	 * Construct the VoiceList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-    /**
-     * Access the countries
-     */
-    protected function getCountries(): CountryList
-    {
-        if (!$this->_countries) {
-            $this->_countries = new CountryList(
-                $this->version
-            );
-        }
-        return $this->_countries;
-    }
+		// Path Solution
+		$this->solution = [
+		];
+	}
 
-    /**
-     * Access the numbers
-     */
-    protected function getNumbers(): NumberList
-    {
-        if (!$this->_numbers) {
-            $this->_numbers = new NumberList(
-                $this->version
-            );
-        }
-        return $this->_numbers;
-    }
+	/**
+	 * Magic caller to get resource contexts
+	 *
+	 * @param string $name Resource to return
+	 * @param array $arguments Context parameters
+	 * @throws TwilioException For unknown resource
+	 * @return InstanceContext The requested resource context
+	 */
+	public function __call(string $name, array $arguments) : InstanceContext
+	{
+		$property = $this->{$name};
 
-    /**
-     * Magic getter to lazy load subresources
-     *
-     * @param string $name Subresource to return
-     * @return \Twilio\ListResource The requested subresource
-     * @throws TwilioException For unknown subresources
-     */
-    public function __get(string $name)
-    {
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		if (\method_exists($property, 'getContext')) {
+			return \call_user_func_array([$property, 'getContext'], $arguments);
+		}
 
-        throw new TwilioException('Unknown subresource ' . $name);
-    }
+		throw new TwilioException('Resource does not have a context');
+	}
 
-    /**
-     * Magic caller to get resource contexts
-     *
-     * @param string $name Resource to return
-     * @param array $arguments Context parameters
-     * @return InstanceContext The requested resource context
-     * @throws TwilioException For unknown resource
-     */
-    public function __call(string $name, array $arguments): InstanceContext
-    {
-        $property = $this->$name;
-        if (\method_exists($property, 'getContext')) {
-            return \call_user_func_array(array($property, 'getContext'), $arguments);
-        }
+	/**
+	 * Magic getter to lazy load subresources
+	 *
+	 * @param string $name Subresource to return
+	 * @throws TwilioException For unknown subresources
+	 * @return \Twilio\ListResource The requested subresource
+	 */
+	public function __get(string $name)
+	{
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-        throw new TwilioException('Resource does not have a context');
-    }
+			return $this->{$method}();
+		}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Pricing.V2.VoiceList]';
-    }
+		throw new TwilioException('Unknown subresource ' . $name);
+	}
+
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Pricing.V2.VoiceList]';
+	}
+
+	/**
+	 * Access the countries
+	 */
+	protected function getCountries() : CountryList
+	{
+		if (! $this->_countries) {
+			$this->_countries = new CountryList(
+				$this->version
+			);
+		}
+
+		return $this->_countries;
+	}
+
+	/**
+	 * Access the numbers
+	 */
+	protected function getNumbers() : NumberList
+	{
+		if (! $this->_numbers) {
+			$this->_numbers = new NumberList(
+				$this->version
+			);
+		}
+
+		return $this->_numbers;
+	}
 }

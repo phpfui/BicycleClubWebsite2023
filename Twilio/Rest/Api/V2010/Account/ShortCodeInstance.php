@@ -14,16 +14,14 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-
 
 /**
  * @property string|null $accountSid
@@ -41,114 +39,116 @@ use Twilio\Deserialize;
  */
 class ShortCodeInstance extends InstanceResource
 {
-    /**
-     * Initialize the ShortCodeInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the ShortCode resource(s) to fetch.
-     * @param string $sid The Twilio-provided string that uniquely identifies the ShortCode resource to fetch
-     */
-    public function __construct(Version $version, array $payload, string $accountSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the ShortCodeInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the ShortCode resource(s) to fetch.
+	 * @param string $sid The Twilio-provided string that uniquely identifies the ShortCode resource to fetch
+	 */
+	public function __construct(Version $version, array $payload, string $accountSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'apiVersion' => Values::array_get($payload, 'api_version'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'shortCode' => Values::array_get($payload, 'short_code'),
-            'sid' => Values::array_get($payload, 'sid'),
-            'smsFallbackMethod' => Values::array_get($payload, 'sms_fallback_method'),
-            'smsFallbackUrl' => Values::array_get($payload, 'sms_fallback_url'),
-            'smsMethod' => Values::array_get($payload, 'sms_method'),
-            'smsUrl' => Values::array_get($payload, 'sms_url'),
-            'uri' => Values::array_get($payload, 'uri'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'apiVersion' => Values::array_get($payload, 'api_version'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'shortCode' => Values::array_get($payload, 'short_code'),
+			'sid' => Values::array_get($payload, 'sid'),
+			'smsFallbackMethod' => Values::array_get($payload, 'sms_fallback_method'),
+			'smsFallbackUrl' => Values::array_get($payload, 'sms_fallback_url'),
+			'smsMethod' => Values::array_get($payload, 'sms_method'),
+			'smsUrl' => Values::array_get($payload, 'sms_url'),
+			'uri' => Values::array_get($payload, 'uri'),
+		];
 
-        $this->solution = ['accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return ShortCodeContext Context for this ShortCodeInstance
-     */
-    protected function proxy(): ShortCodeContext
-    {
-        if (!$this->context) {
-            $this->context = new ShortCodeContext(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the ShortCodeInstance
-     *
-     * @return ShortCodeInstance Fetched ShortCodeInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ShortCodeInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Update the ShortCodeInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ShortCodeInstance Updated ShortCodeInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): ShortCodeInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->update($options);
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return '[Twilio.Api.V2010.ShortCodeInstance ' . \implode(' ', $context) . ']';
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Fetch the ShortCodeInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ShortCodeInstance Fetched ShortCodeInstance
+	 */
+	public function fetch() : ShortCodeInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->fetch();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.ShortCodeInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the ShortCodeInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ShortCodeInstance Updated ShortCodeInstance
+	 */
+	public function update(array $options = []) : ShortCodeInstance
+	{
+
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return ShortCodeContext Context for this ShortCodeInstance
+	 */
+	protected function proxy() : ShortCodeContext
+	{
+		if (! $this->context) {
+			$this->context = new ShortCodeContext(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

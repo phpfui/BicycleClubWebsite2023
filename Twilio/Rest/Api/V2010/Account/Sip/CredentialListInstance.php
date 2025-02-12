@@ -14,16 +14,14 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account\Sip;
 
+use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Rest\Api\V2010\Account\Sip\CredentialList\CredentialList;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Deserialize;
-use Twilio\Rest\Api\V2010\Account\Sip\CredentialList\CredentialList;
-
 
 /**
  * @property string|null $accountSid
@@ -36,131 +34,133 @@ use Twilio\Rest\Api\V2010\Account\Sip\CredentialList\CredentialList;
  */
 class CredentialListInstance extends InstanceResource
 {
-    protected $_credentials;
+	protected $_credentials;
 
-    /**
-     * Initialize the CredentialListInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $accountSid The unique id of the Account that is responsible for this resource.
-     * @param string $sid The credential list Sid that uniquely identifies this resource
-     */
-    public function __construct(Version $version, array $payload, string $accountSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the CredentialListInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $accountSid The unique id of the Account that is responsible for this resource.
+	 * @param string $sid The credential list Sid that uniquely identifies this resource
+	 */
+	public function __construct(Version $version, array $payload, string $accountSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'sid' => Values::array_get($payload, 'sid'),
-            'subresourceUris' => Values::array_get($payload, 'subresource_uris'),
-            'uri' => Values::array_get($payload, 'uri'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'sid' => Values::array_get($payload, 'sid'),
+			'subresourceUris' => Values::array_get($payload, 'subresource_uris'),
+			'uri' => Values::array_get($payload, 'uri'),
+		];
 
-        $this->solution = ['accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return CredentialListContext Context for this CredentialListInstance
-     */
-    protected function proxy(): CredentialListContext
-    {
-        if (!$this->context) {
-            $this->context = new CredentialListContext(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the CredentialListInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the CredentialListInstance
-     *
-     * @return CredentialListInstance Fetched CredentialListInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): CredentialListInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Update the CredentialListInstance
-     *
-     * @param string $friendlyName A human readable descriptive text for a CredentialList, up to 64 characters long.
-     * @return CredentialListInstance Updated CredentialListInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $friendlyName): CredentialListInstance
-    {
+		return '[Twilio.Api.V2010.CredentialListInstance ' . \implode(' ', $context) . ']';
+	}
 
-        return $this->proxy()->update($friendlyName);
-    }
+	/**
+	 * Delete the CredentialListInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Access the credentials
-     */
-    protected function getCredentials(): CredentialList
-    {
-        return $this->proxy()->credentials;
-    }
+		return $this->proxy()->delete();
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Fetch the CredentialListInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CredentialListInstance Fetched CredentialListInstance
+	 */
+	public function fetch() : CredentialListInstance
+	{
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		return $this->proxy()->fetch();
+	}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+	/**
+	 * Update the CredentialListInstance
+	 *
+	 * @param string $friendlyName A human readable descriptive text for a CredentialList, up to 64 characters long.
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CredentialListInstance Updated CredentialListInstance
+	 */
+	public function update(string $friendlyName) : CredentialListInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.CredentialListInstance ' . \implode(' ', $context) . ']';
-    }
+		return $this->proxy()->update($friendlyName);
+	}
+
+	/**
+	 * Access the credentials
+	 */
+	protected function getCredentials() : CredentialList
+	{
+		return $this->proxy()->credentials;
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return CredentialListContext Context for this CredentialListInstance
+	 */
+	protected function proxy() : CredentialListContext
+	{
+		if (! $this->context) {
+			$this->context = new CredentialListContext(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

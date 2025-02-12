@@ -21,74 +21,70 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class SafelistList extends ListResource
-    {
-    /**
-     * Construct the SafelistList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the SafelistList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/SafeList/Numbers';
-    }
+		$this->uri = '/SafeList/Numbers';
+	}
 
-    /**
-     * Create the SafelistInstance
-     *
-     * @param string $phoneNumber The phone number to be added in SafeList. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
-     * @return SafelistInstance Created SafelistInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $phoneNumber): SafelistInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Verify.V2.SafelistList]';
+	}
 
-        $data = Values::of([
-            'PhoneNumber' =>
-                $phoneNumber,
-        ]);
+	/**
+	 * Create the SafelistInstance
+	 *
+	 * @param string $phoneNumber The phone number to be added in SafeList. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SafelistInstance Created SafelistInstance
+	 */
+	public function create(string $phoneNumber) : SafelistInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$data = Values::of([
+			'PhoneNumber' => $phoneNumber,
+		]);
 
-        return new SafelistInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
+		return new SafelistInstance(
+			$this->version,
+			$payload
+		);
+	}
 
-    /**
-     * Constructs a SafelistContext
-     *
-     * @param string $phoneNumber The phone number to be removed from SafeList. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
-     */
-    public function getContext(
-        string $phoneNumber
-        
-    ): SafelistContext
-    {
-        return new SafelistContext(
-            $this->version,
-            $phoneNumber
-        );
-    }
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Verify.V2.SafelistList]';
-    }
+	/**
+	 * Constructs a SafelistContext
+	 *
+	 * @param string $phoneNumber The phone number to be removed from SafeList. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
+	 */
+	public function getContext(
+		string $phoneNumber
+	) : SafelistContext
+	{
+		return new SafelistContext(
+			$this->version,
+			$phoneNumber
+		);
+	}
 }

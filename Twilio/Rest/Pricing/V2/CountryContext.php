@@ -14,70 +14,68 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Pricing\V2;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class CountryContext extends InstanceContext
-    {
-    /**
-     * Initialize the CountryContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $isoCountry The [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) of the origin-based voice pricing information to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $isoCountry
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the CountryContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $isoCountry The [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) of the origin-based voice pricing information to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$isoCountry
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'isoCountry' =>
-            $isoCountry,
-        ];
+		// Path Solution
+		$this->solution = [
+			'isoCountry' => $isoCountry,
+		];
 
-        $this->uri = '/Trunking/Countries/' . \rawurlencode($isoCountry)
-        .'';
-    }
+		$this->uri = '/Trunking/Countries/' . \rawurlencode($isoCountry)
+		. '';
+	}
 
-    /**
-     * Fetch the CountryInstance
-     *
-     * @return CountryInstance Fetched CountryInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): CountryInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new CountryInstance(
-            $this->version,
-            $payload,
-            $this->solution['isoCountry']
-        );
-    }
+		return '[Twilio.Pricing.V2.CountryContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the CountryInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return CountryInstance Fetched CountryInstance
+	 */
+	public function fetch() : CountryInstance
+	{
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Pricing.V2.CountryContext ' . \implode(' ', $context) . ']';
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+
+		return new CountryInstance(
+			$this->version,
+			$payload,
+			$this->solution['isoCountry']
+		);
+	}
 }

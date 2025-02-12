@@ -19,49 +19,47 @@ namespace Twilio\Rest\Assistants\V1\Knowledge;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class KnowledgeStatusList extends ListResource
-    {
-    /**
-     * Construct the KnowledgeStatusList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $id the Knowledge ID.
-     */
-    public function __construct(
-        Version $version,
-        string $id
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the KnowledgeStatusList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $id the Knowledge ID.
+	 */
+	public function __construct(
+		Version $version,
+		string $id
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'id' =>
-            $id,
-        
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+			'id' => $id,
 
-    /**
-     * Constructs a KnowledgeStatusContext
-     */
-    public function getContext(
-        
-    ): KnowledgeStatusContext
-    {
-        return new KnowledgeStatusContext(
-            $this->version,
-            $this->solution['id']
-        );
-    }
+		];
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Assistants.V1.KnowledgeStatusList]';
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Assistants.V1.KnowledgeStatusList]';
+	}
+
+	/**
+	 * Constructs a KnowledgeStatusContext
+	 */
+	public function getContext(
+
+	) : KnowledgeStatusContext
+	{
+		return new KnowledgeStatusContext(
+			$this->version,
+			$this->solution['id']
+		);
+	}
 }

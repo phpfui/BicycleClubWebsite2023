@@ -14,7 +14,6 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
@@ -22,7 +21,6 @@ use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $accountSid
@@ -39,125 +37,127 @@ use Twilio\Version;
  */
 class ConnectAppInstance extends InstanceResource
 {
-    /**
-     * Initialize the ConnectAppInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the ConnectApp resource to fetch.
-     * @param string $sid The Twilio-provided string that uniquely identifies the ConnectApp resource to fetch.
-     */
-    public function __construct(Version $version, array $payload, string $accountSid, ?string $sid = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the ConnectAppInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the ConnectApp resource to fetch.
+	 * @param string $sid The Twilio-provided string that uniquely identifies the ConnectApp resource to fetch.
+	 */
+	public function __construct(Version $version, array $payload, string $accountSid, ?string $sid = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'authorizeRedirectUrl' => Values::array_get($payload, 'authorize_redirect_url'),
-            'companyName' => Values::array_get($payload, 'company_name'),
-            'deauthorizeCallbackMethod' => Values::array_get($payload, 'deauthorize_callback_method'),
-            'deauthorizeCallbackUrl' => Values::array_get($payload, 'deauthorize_callback_url'),
-            'description' => Values::array_get($payload, 'description'),
-            'friendlyName' => Values::array_get($payload, 'friendly_name'),
-            'homepageUrl' => Values::array_get($payload, 'homepage_url'),
-            'permissions' => Values::array_get($payload, 'permissions'),
-            'sid' => Values::array_get($payload, 'sid'),
-            'uri' => Values::array_get($payload, 'uri'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'accountSid' => Values::array_get($payload, 'account_sid'),
+			'authorizeRedirectUrl' => Values::array_get($payload, 'authorize_redirect_url'),
+			'companyName' => Values::array_get($payload, 'company_name'),
+			'deauthorizeCallbackMethod' => Values::array_get($payload, 'deauthorize_callback_method'),
+			'deauthorizeCallbackUrl' => Values::array_get($payload, 'deauthorize_callback_url'),
+			'description' => Values::array_get($payload, 'description'),
+			'friendlyName' => Values::array_get($payload, 'friendly_name'),
+			'homepageUrl' => Values::array_get($payload, 'homepage_url'),
+			'permissions' => Values::array_get($payload, 'permissions'),
+			'sid' => Values::array_get($payload, 'sid'),
+			'uri' => Values::array_get($payload, 'uri'),
+		];
 
-        $this->solution = ['accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], ];
-    }
+		$this->solution = ['accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return ConnectAppContext Context for this ConnectAppInstance
-     */
-    protected function proxy(): ConnectAppContext
-    {
-        if (!$this->context) {
-            $this->context = new ConnectAppContext(
-                $this->version,
-                $this->solution['accountSid'],
-                $this->solution['sid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Delete the ConnectAppInstance
-     *
-     * @return bool True if delete succeeds, false otherwise
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function delete(): bool
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->delete();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Fetch the ConnectAppInstance
-     *
-     * @return ConnectAppInstance Fetched ConnectAppInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): ConnectAppInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        return $this->proxy()->fetch();
-    }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-    /**
-     * Update the ConnectAppInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return ConnectAppInstance Updated ConnectAppInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): ConnectAppInstance
-    {
+		return '[Twilio.Api.V2010.ConnectAppInstance ' . \implode(' ', $context) . ']';
+	}
 
-        return $this->proxy()->update($options);
-    }
+	/**
+	 * Delete the ConnectAppInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return bool True if delete succeeds, false otherwise
+	 */
+	public function delete() : bool
+	{
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+		return $this->proxy()->delete();
+	}
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+	/**
+	 * Fetch the ConnectAppInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ConnectAppInstance Fetched ConnectAppInstance
+	 */
+	public function fetch() : ConnectAppInstance
+	{
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return $this->proxy()->fetch();
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Api.V2010.ConnectAppInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the ConnectAppInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ConnectAppInstance Updated ConnectAppInstance
+	 */
+	public function update(array $options = []) : ConnectAppInstance
+	{
+
+		return $this->proxy()->update($options);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return ConnectAppContext Context for this ConnectAppInstance
+	 */
+	protected function proxy() : ConnectAppContext
+	{
+		if (! $this->context) {
+			$this->context = new ConnectAppContext(
+				$this->version,
+				$this->solution['accountSid'],
+				$this->solution['sid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

@@ -14,7 +14,6 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Trusthub\V1;
 
 use Twilio\Exceptions\TwilioException;
@@ -22,7 +21,6 @@ use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $inquiryId
@@ -32,93 +30,95 @@ use Twilio\Version;
  */
 class ComplianceInquiriesInstance extends InstanceResource
 {
-    /**
-     * Initialize the ComplianceInquiriesInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $customerId The unique CustomerId matching the Customer Profile/Compliance Inquiry that should be resumed or resubmitted. This value will have been returned by the initial Compliance Inquiry creation call.
-     */
-    public function __construct(Version $version, array $payload, ?string $customerId = null)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the ComplianceInquiriesInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $customerId The unique CustomerId matching the Customer Profile/Compliance Inquiry that should be resumed or resubmitted. This value will have been returned by the initial Compliance Inquiry creation call.
+	 */
+	public function __construct(Version $version, array $payload, ?string $customerId = null)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'inquiryId' => Values::array_get($payload, 'inquiry_id'),
-            'inquirySessionToken' => Values::array_get($payload, 'inquiry_session_token'),
-            'customerId' => Values::array_get($payload, 'customer_id'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'inquiryId' => Values::array_get($payload, 'inquiry_id'),
+			'inquirySessionToken' => Values::array_get($payload, 'inquiry_session_token'),
+			'customerId' => Values::array_get($payload, 'customer_id'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['customerId' => $customerId ?: $this->properties['customerId'], ];
-    }
+		$this->solution = ['customerId' => $customerId ?: $this->properties['customerId'], ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return ComplianceInquiriesContext Context for this ComplianceInquiriesInstance
-     */
-    protected function proxy(): ComplianceInquiriesContext
-    {
-        if (!$this->context) {
-            $this->context = new ComplianceInquiriesContext(
-                $this->version,
-                $this->solution['customerId']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Update the ComplianceInquiriesInstance
-     *
-     * @param string $primaryProfileSid The unique SID identifier of the Primary Customer Profile that should be used as a parent. Only necessary when creating a secondary Customer Profile.
-     * @param array|Options $options Optional Arguments
-     * @return ComplianceInquiriesInstance Updated ComplianceInquiriesInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(string $primaryProfileSid, array $options = []): ComplianceInquiriesInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->update($primaryProfileSid, $options);
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Trusthub.V1.ComplianceInquiriesInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Trusthub.V1.ComplianceInquiriesInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Update the ComplianceInquiriesInstance
+	 *
+	 * @param string $primaryProfileSid The unique SID identifier of the Primary Customer Profile that should be used as a parent. Only necessary when creating a secondary Customer Profile.
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return ComplianceInquiriesInstance Updated ComplianceInquiriesInstance
+	 */
+	public function update(string $primaryProfileSid, array $options = []) : ComplianceInquiriesInstance
+	{
+
+		return $this->proxy()->update($primaryProfileSid, $options);
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return ComplianceInquiriesContext Context for this ComplianceInquiriesInstance
+	 */
+	protected function proxy() : ComplianceInquiriesContext
+	{
+		if (! $this->context) {
+			$this->context = new ComplianceInquiriesContext(
+				$this->version,
+				$this->solution['customerId']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

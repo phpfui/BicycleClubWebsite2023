@@ -22,22 +22,31 @@ abstract class Poll extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'emailConfirmation' => ['int', 'int', 0, true, ],
-		'endDate' => ['date', 'string', 10, false, ],
-		'memberId' => ['int', 'int', 0, true, ],
-		'membershipOnly' => ['int', 'int', 0, true, ],
-		'pollId' => ['int', 'int', 0, false, ],
-		'question' => ['text', 'string', 65535, true, ],
-		'required' => ['int', 'int', 0, true, ],
-		'startDate' => ['date', 'string', 10, false, ],
-		'storyId' => ['int', 'int', 0, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['pollId', ];
 
 	protected static string $table = 'poll';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'emailConfirmation' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'endDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'membershipOnly' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'pollId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'question' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'required' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'startDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'storyId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -18,18 +18,27 @@ abstract class MailPiece extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'email' => ['varchar(255)', 'string', 255, false, ],
-		'mailItemId' => ['int', 'int', 0, false, ],
-		'mailPieceId' => ['int', 'int', 0, false, ],
-		'memberId' => ['int', 'int', 0, true, ],
-		'name' => ['varchar(100)', 'string', 100, true, '', ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['mailPieceId', ];
 
 	protected static string $table = 'mailPiece';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'email' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, ),
+				'mailItemId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'mailPieceId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'name' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, '', ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -14,14 +14,12 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Microvisor\V1\App;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
-
 
 /**
  * @property string|null $appSid
@@ -31,91 +29,93 @@ use Twilio\Version;
  */
 class AppManifestInstance extends InstanceResource
 {
-    /**
-     * Initialize the AppManifestInstance
-     *
-     * @param Version $version Version that contains the resource
-     * @param mixed[] $payload The response payload
-     * @param string $appSid A 34-character string that uniquely identifies this App.
-     */
-    public function __construct(Version $version, array $payload, string $appSid)
-    {
-        parent::__construct($version);
+	/**
+	 * Initialize the AppManifestInstance
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param mixed[] $payload The response payload
+	 * @param string $appSid A 34-character string that uniquely identifies this App.
+	 */
+	public function __construct(Version $version, array $payload, string $appSid)
+	{
+		parent::__construct($version);
 
-        // Marshaled Properties
-        $this->properties = [
-            'appSid' => Values::array_get($payload, 'app_sid'),
-            'hash' => Values::array_get($payload, 'hash'),
-            'encodedBytes' => Values::array_get($payload, 'encoded_bytes'),
-            'url' => Values::array_get($payload, 'url'),
-        ];
+		// Marshaled Properties
+		$this->properties = [
+			'appSid' => Values::array_get($payload, 'app_sid'),
+			'hash' => Values::array_get($payload, 'hash'),
+			'encodedBytes' => Values::array_get($payload, 'encoded_bytes'),
+			'url' => Values::array_get($payload, 'url'),
+		];
 
-        $this->solution = ['appSid' => $appSid, ];
-    }
+		$this->solution = ['appSid' => $appSid, ];
+	}
 
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return AppManifestContext Context for this AppManifestInstance
-     */
-    protected function proxy(): AppManifestContext
-    {
-        if (!$this->context) {
-            $this->context = new AppManifestContext(
-                $this->version,
-                $this->solution['appSid']
-            );
-        }
+	/**
+	 * Magic getter to access properties
+	 *
+	 * @param string $name Property to access
+	 * @throws TwilioException For unknown properties
+	 * @return mixed The requested property
+	 */
+	public function __get(string $name)
+	{
+		if (\array_key_exists($name, $this->properties)) {
+			return $this->properties[$name];
+		}
 
-        return $this->context;
-    }
+		if (\property_exists($this, '_' . $name)) {
+			$method = 'get' . \ucfirst($name);
 
-    /**
-     * Fetch the AppManifestInstance
-     *
-     * @return AppManifestInstance Fetched AppManifestInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): AppManifestInstance
-    {
+			return $this->{$method}();
+		}
 
-        return $this->proxy()->fetch();
-    }
+		throw new TwilioException('Unknown property: ' . $name);
+	}
 
-    /**
-     * Magic getter to access properties
-     *
-     * @param string $name Property to access
-     * @return mixed The requested property
-     * @throws TwilioException For unknown properties
-     */
-    public function __get(string $name)
-    {
-        if (\array_key_exists($name, $this->properties)) {
-            return $this->properties[$name];
-        }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        if (\property_exists($this, '_' . $name)) {
-            $method = 'get' . \ucfirst($name);
-            return $this->$method();
-        }
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        throw new TwilioException('Unknown property: ' . $name);
-    }
+		return '[Twilio.Microvisor.V1.AppManifestInstance ' . \implode(' ', $context) . ']';
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Microvisor.V1.AppManifestInstance ' . \implode(' ', $context) . ']';
-    }
+	/**
+	 * Fetch the AppManifestInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return AppManifestInstance Fetched AppManifestInstance
+	 */
+	public function fetch() : AppManifestInstance
+	{
+
+		return $this->proxy()->fetch();
+	}
+
+	/**
+	 * Generate an instance context for the instance, the context is capable of
+	 * performing various actions.  All instance actions are proxied to the context
+	 *
+	 * @return AppManifestContext Context for this AppManifestInstance
+	 */
+	protected function proxy() : AppManifestContext
+	{
+		if (! $this->context) {
+			$this->context = new AppManifestContext(
+				$this->version,
+				$this->solution['appSid']
+			);
+		}
+
+		return $this->context;
+	}
 }
-

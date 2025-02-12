@@ -19,99 +19,93 @@ namespace Twilio\Rest\Video\V1\Room\Participant;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Serialize;
-
 
 class SubscribeRulesList extends ListResource
-    {
-    /**
-     * Construct the SubscribeRulesList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $roomSid The SID of the Room resource where the subscribe rules to fetch apply.
-     * @param string $participantSid The SID of the Participant resource with the subscribe rules to fetch.
-     */
-    public function __construct(
-        Version $version,
-        string $roomSid,
-        string $participantSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the SubscribeRulesList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $roomSid The SID of the Room resource where the subscribe rules to fetch apply.
+	 * @param string $participantSid The SID of the Participant resource with the subscribe rules to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		string $roomSid,
+		string $participantSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'roomSid' =>
-            $roomSid,
-        
-        'participantSid' =>
-            $participantSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'roomSid' => $roomSid,
 
-        $this->uri = '/Rooms/' . \rawurlencode($roomSid)
-        .'/Participants/' . \rawurlencode($participantSid)
-        .'/SubscribeRules';
-    }
+			'participantSid' => $participantSid,
 
-    /**
-     * Fetch the SubscribeRulesInstance
-     *
-     * @return SubscribeRulesInstance Fetched SubscribeRulesInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): SubscribeRulesInstance
-    {
+		];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		$this->uri = '/Rooms/' . \rawurlencode($roomSid)
+		. '/Participants/' . \rawurlencode($participantSid)
+		. '/SubscribeRules';
+	}
 
-        return new SubscribeRulesInstance(
-            $this->version,
-            $payload,
-            $this->solution['roomSid'],
-            $this->solution['participantSid']
-        );
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Video.V1.SubscribeRulesList]';
+	}
 
+	/**
+	 * Fetch the SubscribeRulesInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SubscribeRulesInstance Fetched SubscribeRulesInstance
+	 */
+	public function fetch() : SubscribeRulesInstance
+	{
 
-    /**
-     * Update the SubscribeRulesInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return SubscribeRulesInstance Updated SubscribeRulesInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): SubscribeRulesInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new SubscribeRulesInstance(
+			$this->version,
+			$payload,
+			$this->solution['roomSid'],
+			$this->solution['participantSid']
+		);
+	}
 
-        $data = Values::of([
-            'Rules' =>
-                Serialize::jsonObject($options['rules']),
-        ]);
+	/**
+	 * Update the SubscribeRulesInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return SubscribeRulesInstance Updated SubscribeRulesInstance
+	 */
+	public function update(array $options = []) : SubscribeRulesInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new SubscribeRulesInstance(
-            $this->version,
-            $payload,
-            $this->solution['roomSid'],
-            $this->solution['participantSid']
-        );
-    }
+		$data = Values::of([
+			'Rules' => Serialize::jsonObject($options['rules']),
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Video.V1.SubscribeRulesList]';
-    }
+		return new SubscribeRulesInstance(
+			$this->version,
+			$payload,
+			$this->solution['roomSid'],
+			$this->solution['participantSid']
+		);
+	}
 }

@@ -21,52 +21,50 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class WebhookList extends ListResource
-    {
-    /**
-     * Construct the WebhookList
-     *
-     * @param Version $version Version that contains the resource
-     */
-    public function __construct(
-        Version $version
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the WebhookList
+	 *
+	 * @param Version $version Version that contains the resource
+	 */
+	public function __construct(
+		Version $version
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        ];
+		// Path Solution
+		$this->solution = [
+		];
 
-        $this->uri = '/Porting/Configuration/Webhook';
-    }
+		$this->uri = '/Porting/Configuration/Webhook';
+	}
 
-    /**
-     * Fetch the WebhookInstance
-     *
-     * @return WebhookInstance Fetched WebhookInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): WebhookInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Numbers.V1.WebhookList]';
+	}
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+	/**
+	 * Fetch the WebhookInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return WebhookInstance Fetched WebhookInstance
+	 */
+	public function fetch() : WebhookInstance
+	{
 
-        return new WebhookInstance(
-            $this->version,
-            $payload
-        );
-    }
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Numbers.V1.WebhookList]';
-    }
+		return new WebhookInstance(
+			$this->version,
+			$payload
+		);
+	}
 }

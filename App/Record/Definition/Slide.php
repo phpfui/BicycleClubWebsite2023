@@ -25,24 +25,33 @@ abstract class Slide extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'added' => ['datetime', 'string', 20, false, null, ],
-		'caption' => ['varchar(255)', 'string', 255, true, ],
-		'extension' => ['varchar(10)', 'string', 10, true, ],
-		'memberId' => ['int unsigned', 'int', 0, true, ],
-		'photoId' => ['int', 'int', 0, true, ],
-		'sequence' => ['int', 'int', 0, false, 0, ],
-		'showCaption' => ['int', 'int', 0, false, 1, ],
-		'slideId' => ['int', 'int', 0, false, ],
-		'slideShowId' => ['int', 'int', 0, false, ],
-		'updated' => ['datetime', 'string', 20, true, ],
-		'url' => ['varchar(255)', 'string', 255, true, '', ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['slideId', ];
 
 	protected static string $table = 'slide';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'added' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'caption' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
+				'extension' => new \PHPFUI\ORM\FieldDefinition('varchar(10)', 'string', 10, true, ),
+				'memberId' => new \PHPFUI\ORM\FieldDefinition('int unsigned', 'int', 0, true, ),
+				'photoId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'sequence' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'showCaption' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 1, ),
+				'slideId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'slideShowId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'updated' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, ),
+				'url' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, '', ),
+			];
+			}
+
+		return $this;
+		}
 	}

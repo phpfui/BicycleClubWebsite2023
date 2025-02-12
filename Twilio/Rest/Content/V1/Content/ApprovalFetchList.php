@@ -19,49 +19,47 @@ namespace Twilio\Rest\Content\V1\Content;
 use Twilio\ListResource;
 use Twilio\Version;
 
-
 class ApprovalFetchList extends ListResource
-    {
-    /**
-     * Construct the ApprovalFetchList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The Twilio-provided string that uniquely identifies the Content resource whose approval information to fetch.
-     */
-    public function __construct(
-        Version $version,
-        string $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the ApprovalFetchList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The Twilio-provided string that uniquely identifies the Content resource whose approval information to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		string $sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        
-        ];
-    }
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
 
-    /**
-     * Constructs a ApprovalFetchContext
-     */
-    public function getContext(
-        
-    ): ApprovalFetchContext
-    {
-        return new ApprovalFetchContext(
-            $this->version,
-            $this->solution['sid']
-        );
-    }
+		];
+	}
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Content.V1.ApprovalFetchList]';
-    }
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Content.V1.ApprovalFetchList]';
+	}
+
+	/**
+	 * Constructs a ApprovalFetchContext
+	 */
+	public function getContext(
+
+	) : ApprovalFetchContext
+	{
+		return new ApprovalFetchContext(
+			$this->version,
+			$this->solution['sid']
+		);
+	}
 }

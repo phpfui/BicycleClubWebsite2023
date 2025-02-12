@@ -1,240 +1,274 @@
 <?php
 
-
 namespace Twilio\Http;
 
-
-use Twilio\Exceptions\ConfigurationException;
 use Twilio\Exceptions\EnvironmentException;
 
-class CurlClient implements Client {
-    public const DEFAULT_TIMEOUT = 60;
-    protected $curlOptions = [];
+class CurlClient implements Client
+{
+	public const DEFAULT_TIMEOUT = 60;
 
-    public $lastRequest;
-    public $lastResponse;
+	public $lastRequest;
 
-    public function __construct(array $options = []) {
-        $this->curlOptions = $options;
-    }
+	public $lastResponse;
 
-    public function request(string $method, string $url,
-                            array $params = [], array $data = [], array $headers = [],
-                            ?string $user = null, ?string $password = null,
-                            ?int $timeout = null): Response {
-        $options = $this->options($method, $url, $params, $data, $headers,
-                                  $user, $password, $timeout);
+	protected $curlOptions = [];
 
-        $this->lastRequest = $options;
-        $this->lastResponse = null;
+	public function __construct(array $options = []) {
+		$this->curlOptions = $options;
+	}
 
-        try {
-            if (!$curl = \curl_init()) {
-                throw new EnvironmentException('Unable to initialize cURL');
-            }
+	public function buildQuery(?array $params) : string {
+		$parts = [];
+		$params = $params ?: [];
 
-            if (!\curl_setopt_array($curl, $options)) {
-                throw new EnvironmentException(\curl_error($curl));
-            }
+		foreach ($params as $key => $value) {
+			if (\is_array($value)) {
+				foreach ($value as $item) {
+					$parts[] = \urlencode((string)$key) . '=' . \urlencode((string)$item);
+				}
+			} else {
+				$parts[] = \urlencode((string)$key) . '=' . \urlencode((string)$value);
+			}
+		}
 
-            if (!$response = \curl_exec($curl)) {
-                throw new EnvironmentException(\curl_error($curl));
-            }
+		return \implode('&', $parts);
+	}
 
-            $parts = \explode("\r\n\r\n", $response, 3);
+	public function options(
+		string $method,
+		string $url,
+		array $params = [],
+		array $data = [],
+		array $headers = [],
+		?string $user = null,
+		?string $password = null,
+		?int $timeout = null
+	) : array {
+		$timeout = $timeout ?? self::DEFAULT_TIMEOUT;
+		$options = $this->curlOptions + [
+			CURLOPT_URL => $url,
+			CURLOPT_HEADER => true,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_INFILESIZE => null,
+			CURLOPT_HTTPHEADER => [],
+			CURLOPT_TIMEOUT => $timeout,
+		];
 
-            list($head, $body) = (
-                \preg_match('/\AHTTP\/1.\d 100 Continue\Z/', $parts[0])
-                || \preg_match('/\AHTTP\/1.\d 200 Connection established\Z/', $parts[0])
-                || \preg_match('/\AHTTP\/1.\d 200 Tunnel established\Z/', $parts[0])
-            )
-                ? array($parts[1], $parts[2])
-                : array($parts[0], $parts[1]);
+		foreach ($headers as $key => $value) {
+			$options[CURLOPT_HTTPHEADER][] = "{$key}: {$value}";
+		}
 
-            $statusCode = \curl_getinfo($curl, CURLINFO_HTTP_CODE);
+		if ($user && $password) {
+			$options[CURLOPT_HTTPHEADER][] = 'Authorization: Basic ' . \base64_encode("{$user}:{$password}");
+		}
 
-            $responseHeaders = [];
-            $headerLines = \explode("\r\n", $head);
-            \array_shift($headerLines);
-            foreach ($headerLines as $line) {
-                list($key, $value) = \explode(':', $line, 2);
-                $responseHeaders[$key] = $value;
-            }
+		$query = $this->buildQuery($params);
 
-            \curl_close($curl);
+		if ($query) {
+			$options[CURLOPT_URL] .= '?' . $query;
+		}
 
-            if (isset($options[CURLOPT_INFILE]) && \is_resource($options[CURLOPT_INFILE])) {
-                \fclose($options[CURLOPT_INFILE]);
-            }
+		switch (\strtolower(\trim($method))) {
+			case 'get':
+				$options[CURLOPT_HTTPGET] = true;
 
-            $this->lastResponse = new Response($statusCode, $body, $responseHeaders);
+				break;
 
-            return $this->lastResponse;
-        } catch (\ErrorException $e) {
-            if (isset($curl) && \is_resource($curl)) {
-                \curl_close($curl);
-            }
+			case 'post':
+				$options[CURLOPT_POST] = true;
 
-            if (isset($options[CURLOPT_INFILE]) && \is_resource($options[CURLOPT_INFILE])) {
-                \fclose($options[CURLOPT_INFILE]);
-            }
+				if ($this->hasFile($data)) {
+					[$headers, $body] = $this->buildMultipartOptions($data);
+					$options[CURLOPT_POSTFIELDS] = $body;
+					$options[CURLOPT_HTTPHEADER] = \array_merge($options[CURLOPT_HTTPHEADER], $headers);
+				}
+				elseif ('application/json' === $headers['Content-Type']) {
+					$options[CURLOPT_POSTFIELDS] = \json_encode($data);
+				}
+				else {
+					$options[CURLOPT_POSTFIELDS] = $this->buildQuery($data);
+				}
 
-            throw $e;
-        }
-    }
+				break;
 
-    public function options(string $method, string $url,
-                            array $params = [], array $data = [], array $headers = [],
-                            ?string $user = null, ?string $password = null,
-                            ?int $timeout = null): array {
-        $timeout = $timeout ?? self::DEFAULT_TIMEOUT;
-        $options = $this->curlOptions + [
-            CURLOPT_URL => $url,
-            CURLOPT_HEADER => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_INFILESIZE => Null,
-            CURLOPT_HTTPHEADER => [],
-            CURLOPT_TIMEOUT => $timeout,
-        ];
+			case 'put':
+				$options[CURLOPT_CUSTOMREQUEST] = 'PUT';
 
-        foreach ($headers as $key => $value) {
-            $options[CURLOPT_HTTPHEADER][] = "$key: $value";
-        }
+				if ($this->hasFile($data)) {
+					[$headers, $body] = $this->buildMultipartOptions($data);
+					$options[CURLOPT_POSTFIELDS] = $body;
+					$options[CURLOPT_HTTPHEADER] = \array_merge($options[CURLOPT_HTTPHEADER], $headers);
+				}
+				elseif ('application/json' === $headers['Content-Type']) {
+					$options[CURLOPT_POSTFIELDS] = \json_encode($data);
+				}
+				else {
+					$options[CURLOPT_POSTFIELDS] = $this->buildQuery($data);
+				}
 
-        if ($user && $password) {
-            $options[CURLOPT_HTTPHEADER][] = 'Authorization: Basic ' . \base64_encode("$user:$password");
-        }
+				break;
 
-        $query = $this->buildQuery($params);
-        if ($query) {
-            $options[CURLOPT_URL] .= '?' . $query;
-        }
+			case 'head':
+				$options[CURLOPT_NOBODY] = true;
 
-        switch (\strtolower(\trim($method))) {
-            case 'get':
-                $options[CURLOPT_HTTPGET] = true;
-                break;
-            case 'post':
-                $options[CURLOPT_POST] = true;
-                if ($this->hasFile($data)) {
-                    [$headers, $body] = $this->buildMultipartOptions($data);
-                    $options[CURLOPT_POSTFIELDS] = $body;
-                    $options[CURLOPT_HTTPHEADER] = \array_merge($options[CURLOPT_HTTPHEADER], $headers);
-                }
-                elseif ($headers['Content-Type'] === 'application/json') {
-                    $options[CURLOPT_POSTFIELDS] = json_encode($data);
-                }
-                else {
-                    $options[CURLOPT_POSTFIELDS] = $this->buildQuery($data);
-                }
+				break;
 
-                break;
-            case 'put':
-                $options[CURLOPT_CUSTOMREQUEST] = 'PUT';
-                if ($this->hasFile($data)) {
-                    [$headers, $body] = $this->buildMultipartOptions($data);
-                    $options[CURLOPT_POSTFIELDS] = $body;
-                    $options[CURLOPT_HTTPHEADER] = \array_merge($options[CURLOPT_HTTPHEADER], $headers);
-                }
-                elseif ($headers['Content-Type'] === 'application/json') {
-                    $options[CURLOPT_POSTFIELDS] = json_encode($data);
-                }
-                else {
-                    $options[CURLOPT_POSTFIELDS] = $this->buildQuery($data);
-                }
-                break;
-            case 'head':
-                $options[CURLOPT_NOBODY] = true;
-                break;
-            default:
-                $options[CURLOPT_CUSTOMREQUEST] = \strtoupper($method);
-        }
+			default:
+				$options[CURLOPT_CUSTOMREQUEST] = \strtoupper($method);
+		}
 
-        return $options;
-    }
+		return $options;
+	}
 
-    public function buildQuery(?array $params): string {
-        $parts = [];
-        $params = $params ?: [];
+	public function request(
+		string $method,
+		string $url,
+		array $params = [],
+		array $data = [],
+		array $headers = [],
+		?string $user = null,
+		?string $password = null,
+		?int $timeout = null
+	) : Response {
+		$options = $this->options(
+			$method,
+			$url,
+			$params,
+			$data,
+			$headers,
+			$user,
+			$password,
+			$timeout
+		);
 
-        foreach ($params as $key => $value) {
-            if (\is_array($value)) {
-                foreach ($value as $item) {
-                    $parts[] = \urlencode((string)$key) . '=' . \urlencode((string)$item);
-                }
-            } else {
-                $parts[] = \urlencode((string)$key) . '=' . \urlencode((string)$value);
-            }
-        }
+		$this->lastRequest = $options;
+		$this->lastResponse = null;
 
-        return \implode('&', $parts);
-    }
+		try {
+			if (! $curl = \curl_init()) {
+				throw new EnvironmentException('Unable to initialize cURL');
+			}
 
-    private function hasFile(array $data): bool {
-        foreach ($data as $value) {
-            if ($value instanceof File) {
-                return true;
-            }
-        }
+			if (! \curl_setopt_array($curl, $options)) {
+				throw new EnvironmentException(\curl_error($curl));
+			}
 
-        return false;
-    }
+			if (! $response = \curl_exec($curl)) {
+				throw new EnvironmentException(\curl_error($curl));
+			}
 
-    private function buildMultipartOptions(array $data): array {
-        $boundary = \uniqid('', true);
-        $delimiter = "-------------{$boundary}";
-        $body = '';
+			$parts = \explode("\r\n\r\n", $response, 3);
 
-        foreach ($data as $key => $value) {
-            if ($value instanceof File) {
-                $contents = $value->getContents();
-                if ($contents === null) {
-                    $chunk = \file_get_contents($value->getFileName());
-                    $filename = \basename($value->getFileName());
-                } elseif (\is_resource($contents)) {
-                    $chunk = '';
-                    while (!\feof($contents)) {
-                        $chunk .= \fread($contents, 8096);
-                    }
+			[$head, $body] = (
+				\preg_match('/\AHTTP\/1.\d 100 Continue\Z/', $parts[0])
+				|| \preg_match('/\AHTTP\/1.\d 200 Connection established\Z/', $parts[0])
+				|| \preg_match('/\AHTTP\/1.\d 200 Tunnel established\Z/', $parts[0])
+			)
+				? [$parts[1], $parts[2]]
+				: [$parts[0], $parts[1]];
 
-                    $filename = $value->getFileName();
-                } elseif (\is_string($contents)) {
-                    $chunk = $contents;
-                    $filename = $value->getFileName();
-                } else {
-                    throw new \InvalidArgumentException('Unsupported content type');
-                }
+			$statusCode = \curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
-                $headers = '';
-                $contentType = $value->getContentType();
-                if ($contentType !== null) {
-                    $headers .= "Content-Type: {$contentType}\r\n";
-                }
+			$responseHeaders = [];
+			$headerLines = \explode("\r\n", $head);
+			\array_shift($headerLines);
 
-                $body .= \vsprintf("--%s\r\nContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n%s\r\n%s\r\n", [
-                    $delimiter,
-                    $key,
-                    $filename,
-                    $headers,
-                    $chunk,
-                ]);
-            } else {
-                $body .= \vsprintf("--%s\r\nContent-Disposition: form-data; name=\"%s\"\r\n\r\n%s\r\n", [
-                    $delimiter,
-                    $key,
-                    $value,
-                ]);
-            }
-        }
+			foreach ($headerLines as $line) {
+				[$key, $value] = \explode(':', $line, 2);
+				$responseHeaders[$key] = $value;
+			}
 
-        $body .= "--{$delimiter}--\r\n";
+			\curl_close($curl);
 
-        return [
-            [
-                "Content-Type: multipart/form-data; boundary={$delimiter}",
-                'Content-Length: ' . \strlen($body),
-            ],
-            $body,
-        ];
-    }
+			if (isset($options[CURLOPT_INFILE]) && \is_resource($options[CURLOPT_INFILE])) {
+				\fclose($options[CURLOPT_INFILE]);
+			}
+
+			$this->lastResponse = new Response($statusCode, $body, $responseHeaders);
+
+			return $this->lastResponse;
+		} catch (\ErrorException $e) {
+			if (isset($curl) && \is_resource($curl)) {
+				\curl_close($curl);
+			}
+
+			if (isset($options[CURLOPT_INFILE]) && \is_resource($options[CURLOPT_INFILE])) {
+				\fclose($options[CURLOPT_INFILE]);
+			}
+
+			throw $e;
+		}
+	}
+
+	private function buildMultipartOptions(array $data) : array {
+		$boundary = \uniqid('', true);
+		$delimiter = "-------------{$boundary}";
+		$body = '';
+
+		foreach ($data as $key => $value) {
+			if ($value instanceof File) {
+				$contents = $value->getContents();
+
+				if (null === $contents) {
+					$chunk = \file_get_contents($value->getFileName());
+					$filename = \basename($value->getFileName());
+				} elseif (\is_resource($contents)) {
+					$chunk = '';
+
+					while (! \feof($contents)) {
+						$chunk .= \fread($contents, 8096);
+					}
+
+					$filename = $value->getFileName();
+				} elseif (\is_string($contents)) {
+					$chunk = $contents;
+					$filename = $value->getFileName();
+				} else {
+					throw new \InvalidArgumentException('Unsupported content type');
+				}
+
+				$headers = '';
+				$contentType = $value->getContentType();
+
+				if (null !== $contentType) {
+					$headers .= "Content-Type: {$contentType}\r\n";
+				}
+
+				$body .= \vsprintf("--%s\r\nContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\n%s\r\n%s\r\n", [
+					$delimiter,
+					$key,
+					$filename,
+					$headers,
+					$chunk,
+				]);
+			} else {
+				$body .= \vsprintf("--%s\r\nContent-Disposition: form-data; name=\"%s\"\r\n\r\n%s\r\n", [
+					$delimiter,
+					$key,
+					$value,
+				]);
+			}
+		}
+
+		$body .= "--{$delimiter}--\r\n";
+
+		return [
+			[
+				"Content-Type: multipart/form-data; boundary={$delimiter}",
+				'Content-Length: ' . \strlen($body),
+			],
+			$body,
+		];
+	}
+
+	private function hasFile(array $data) : bool {
+		foreach ($data as $value) {
+			if ($value instanceof File) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

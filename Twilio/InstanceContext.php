@@ -1,19 +1,20 @@
 <?php
 
-
 namespace Twilio;
 
+class InstanceContext
+{
+	protected $solution = [];
 
-class InstanceContext {
-    protected $version;
-    protected $solution = [];
-    protected $uri;
+	protected $uri;
 
-    public function __construct(Version $version) {
-        $this->version = $version;
-    }
+	protected $version;
 
-    public function __toString(): string {
-        return '[InstanceContext]';
-    }
+	public function __construct(Version $version) {
+		$this->version = $version;
+	}
+
+	public function __toString() : string {
+		return '[InstanceContext]';
+	}
 }

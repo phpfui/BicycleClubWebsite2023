@@ -19,195 +19,183 @@ namespace Twilio\Rest\FlexApi\V1\Plugin;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
+use Twilio\Serialize;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\Serialize;
-
 
 class PluginVersionsList extends ListResource
-    {
-    /**
-     * Construct the PluginVersionsList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $pluginSid The SID of the Flex Plugin the resource to belongs to.
-     */
-    public function __construct(
-        Version $version,
-        string $pluginSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the PluginVersionsList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $pluginSid The SID of the Flex Plugin the resource to belongs to.
+	 */
+	public function __construct(
+		Version $version,
+		string $pluginSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'pluginSid' =>
-            $pluginSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'pluginSid' => $pluginSid,
 
-        $this->uri = '/PluginService/Plugins/' . \rawurlencode($pluginSid)
-        .'/Versions';
-    }
+		];
 
-    /**
-     * Create the PluginVersionsInstance
-     *
-     * @param string $version The Flex Plugin Version's version.
-     * @param string $pluginUrl The URL of the Flex Plugin Version bundle
-     * @param array|Options $options Optional Arguments
-     * @return PluginVersionsInstance Created PluginVersionsInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(string $version, string $pluginUrl, array $options = []): PluginVersionsInstance
-    {
+		$this->uri = '/PluginService/Plugins/' . \rawurlencode($pluginSid)
+		. '/Versions';
+	}
 
-        $options = new Values($options);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.FlexApi.V1.PluginVersionsList]';
+	}
 
-        $data = Values::of([
-            'Version' =>
-                $version,
-            'PluginUrl' =>
-                $pluginUrl,
-            'Changelog' =>
-                $options['changelog'],
-            'Private' =>
-                Serialize::booleanToString($options['_private']),
-            'CliVersion' =>
-                $options['cliVersion'],
-            'ValidateStatus' =>
-                $options['validateStatus'],
-        ]);
+	/**
+	 * Create the PluginVersionsInstance
+	 *
+	 * @param string $version The Flex Plugin Version's version.
+	 * @param string $pluginUrl The URL of the Flex Plugin Version bundle
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return PluginVersionsInstance Created PluginVersionsInstance
+	 */
+	public function create(string $version, string $pluginUrl, array $options = []) : PluginVersionsInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Flex-Metadata' => $options['flexMetadata']]);
-        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new PluginVersionsInstance(
-            $this->version,
-            $payload,
-            $this->solution['pluginSid']
-        );
-    }
+		$data = Values::of([
+			'Version' => $version,
+			'PluginUrl' => $pluginUrl,
+			'Changelog' => $options['changelog'],
+			'Private' => Serialize::booleanToString($options['_private']),
+			'CliVersion' => $options['cliVersion'],
+			'ValidateStatus' => $options['validateStatus'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Flex-Metadata' => $options['flexMetadata']]);
+		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Reads PluginVersionsInstance records from the API as a list.
-     * Unlike stream(), this operation is eager and will load `limit` records into
-     * memory before returning.
-     *
-     * @param int $limit Upper limit for the number of records to return. read()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, read()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return PluginVersionsInstance[] Array of results
-     */
-    public function read(?int $limit = null, $pageSize = null): array
-    {
-        return \iterator_to_array($this->stream($limit, $pageSize), false);
-    }
+		return new PluginVersionsInstance(
+			$this->version,
+			$payload,
+			$this->solution['pluginSid']
+		);
+	}
 
-    /**
-     * Streams PluginVersionsInstance records from the API as a generator stream.
-     * This operation lazily loads records as efficiently as possible until the
-     * limit
-     * is reached.
-     * The results are returned as a generator, so this operation is memory
-     * efficient.
-     *
-     * @param int $limit Upper limit for the number of records to return. stream()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, stream()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return Stream stream of results
-     */
-    public function stream(?int $limit = null, $pageSize = null): Stream
-    {
-        $limits = $this->version->readLimits($limit, $pageSize);
+	/**
+	 * Constructs a PluginVersionsContext
+	 *
+	 * @param string $sid The SID of the Flex Plugin Version resource to fetch.
+	 */
+	public function getContext(
+		string $sid
+	) : PluginVersionsContext
+	{
+		return new PluginVersionsContext(
+			$this->version,
+			$this->solution['pluginSid'],
+			$sid
+		);
+	}
 
-        $page = $this->page($limits['pageSize']);
+	/**
+	 * Retrieve a specific page of PluginVersionsInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param string $targetUrl API-generated URL for the requested results page
+	 * @return PluginVersionsPage Page of PluginVersionsInstance
+	 */
+	public function getPage(string $targetUrl) : PluginVersionsPage
+	{
+		$response = $this->version->getDomain()->getClient()->request(
+			'GET',
+			$targetUrl
+		);
 
-        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-    }
+		return new PluginVersionsPage($this->version, $response, $this->solution);
+	}
 
-    /**
-     * Retrieve a single page of PluginVersionsInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param mixed $pageSize Number of records to return, defaults to 50
-     * @param string $pageToken PageToken provided by the API
-     * @param mixed $pageNumber Page Number, this value is simply for client state
-     * @return PluginVersionsPage Page of PluginVersionsInstance
-     */
-    public function page(
-        $pageSize = Values::NONE,
-        string $pageToken = Values::NONE,
-        $pageNumber = Values::NONE
-    ): PluginVersionsPage
-    {
+	/**
+	 * Retrieve a single page of PluginVersionsInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param mixed $pageSize Number of records to return, defaults to 50
+	 * @param string $pageToken PageToken provided by the API
+	 * @param mixed $pageNumber Page Number, this value is simply for client state
+	 * @return PluginVersionsPage Page of PluginVersionsInstance
+	 */
+	public function page(
+		$pageSize = Values::NONE,
+		string $pageToken = Values::NONE,
+		$pageNumber = Values::NONE
+	) : PluginVersionsPage
+	{
 
-        $params = Values::of([
-            'Flex-Metadata' =>
-                $options['flexMetadata'],
-            'PageToken' => $pageToken,
-            'Page' => $pageNumber,
-            'PageSize' => $pageSize,
-        ]);
+		$params = Values::of([
+			'Flex-Metadata' => $options['flexMetadata'],
+			'PageToken' => $pageToken,
+			'Page' => $pageNumber,
+			'PageSize' => $pageSize,
+		]);
 
-        $response = $this->version->page('GET', $this->uri, $params);
+		$response = $this->version->page('GET', $this->uri, $params);
 
-        return new PluginVersionsPage($this->version, $response, $this->solution);
-    }
+		return new PluginVersionsPage($this->version, $response, $this->solution);
+	}
 
-    /**
-     * Retrieve a specific page of PluginVersionsInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param string $targetUrl API-generated URL for the requested results page
-     * @return PluginVersionsPage Page of PluginVersionsInstance
-     */
-    public function getPage(string $targetUrl): PluginVersionsPage
-    {
-        $response = $this->version->getDomain()->getClient()->request(
-            'GET',
-            $targetUrl
-        );
+	/**
+	 * Reads PluginVersionsInstance records from the API as a list.
+	 * Unlike stream(), this operation is eager and will load `limit` records into
+	 * memory before returning.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. read()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, read()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return PluginVersionsInstance[] Array of results
+	 */
+	public function read(?int $limit = null, $pageSize = null) : array
+	{
+		return \iterator_to_array($this->stream($limit, $pageSize), false);
+	}
 
-        return new PluginVersionsPage($this->version, $response, $this->solution);
-    }
+	/**
+	 * Streams PluginVersionsInstance records from the API as a generator stream.
+	 * This operation lazily loads records as efficiently as possible until the
+	 * limit
+	 * is reached.
+	 * The results are returned as a generator, so this operation is memory
+	 * efficient.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. stream()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, stream()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return Stream stream of results
+	 */
+	public function stream(?int $limit = null, $pageSize = null) : Stream
+	{
+		$limits = $this->version->readLimits($limit, $pageSize);
 
+		$page = $this->page($limits['pageSize']);
 
-    /**
-     * Constructs a PluginVersionsContext
-     *
-     * @param string $sid The SID of the Flex Plugin Version resource to fetch.
-     */
-    public function getContext(
-        string $sid
-        
-    ): PluginVersionsContext
-    {
-        return new PluginVersionsContext(
-            $this->version,
-            $this->solution['pluginSid'],
-            $sid
-        );
-    }
-
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.FlexApi.V1.PluginVersionsList]';
-    }
+		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+	}
 }

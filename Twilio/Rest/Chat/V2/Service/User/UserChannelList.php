@@ -21,155 +21,150 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
-
 class UserChannelList extends ListResource
-    {
-    /**
-     * Construct the UserChannelList
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/api/chat/rest/services) to read the resources from.
-     * @param string $userSid The SID of the [User](https://www.twilio.com/docs/api/chat/rest/users) to read the User Channel resources from.
-     */
-    public function __construct(
-        Version $version,
-        string $serviceSid,
-        string $userSid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Construct the UserChannelList
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/api/chat/rest/services) to read the resources from.
+	 * @param string $userSid The SID of the [User](https://www.twilio.com/docs/api/chat/rest/users) to read the User Channel resources from.
+	 */
+	public function __construct(
+		Version $version,
+		string $serviceSid,
+		string $userSid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'serviceSid' =>
-            $serviceSid,
-        
-        'userSid' =>
-            $userSid,
-        
-        ];
+		// Path Solution
+		$this->solution = [
+			'serviceSid' => $serviceSid,
 
-        $this->uri = '/Services/' . \rawurlencode($serviceSid)
-        .'/Users/' . \rawurlencode($userSid)
-        .'/Channels';
-    }
+			'userSid' => $userSid,
 
-    /**
-     * Reads UserChannelInstance records from the API as a list.
-     * Unlike stream(), this operation is eager and will load `limit` records into
-     * memory before returning.
-     *
-     * @param int $limit Upper limit for the number of records to return. read()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, read()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return UserChannelInstance[] Array of results
-     */
-    public function read(?int $limit = null, $pageSize = null): array
-    {
-        return \iterator_to_array($this->stream($limit, $pageSize), false);
-    }
+		];
 
-    /**
-     * Streams UserChannelInstance records from the API as a generator stream.
-     * This operation lazily loads records as efficiently as possible until the
-     * limit
-     * is reached.
-     * The results are returned as a generator, so this operation is memory
-     * efficient.
-     *
-     * @param int $limit Upper limit for the number of records to return. stream()
-     *                   guarantees to never return more than limit.  Default is no
-     *                   limit
-     * @param mixed $pageSize Number of records to fetch per request, when not set
-     *                        will use the default value of 50 records.  If no
-     *                        page_size is defined but a limit is defined, stream()
-     *                        will attempt to read the limit with the most
-     *                        efficient page size, i.e. min(limit, 1000)
-     * @return Stream stream of results
-     */
-    public function stream(?int $limit = null, $pageSize = null): Stream
-    {
-        $limits = $this->version->readLimits($limit, $pageSize);
+		$this->uri = '/Services/' . \rawurlencode($serviceSid)
+		. '/Users/' . \rawurlencode($userSid)
+		. '/Channels';
+	}
 
-        $page = $this->page($limits['pageSize']);
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		return '[Twilio.Chat.V2.UserChannelList]';
+	}
 
-        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-    }
+	/**
+	 * Constructs a UserChannelContext
+	 *
+	 * @param string $channelSid The SID of the [Channel](https://www.twilio.com/docs/api/chat/rest/channels) the resource belongs to.
+	 */
+	public function getContext(
+		string $channelSid
+	) : UserChannelContext
+	{
+		return new UserChannelContext(
+			$this->version,
+			$this->solution['serviceSid'],
+			$this->solution['userSid'],
+			$channelSid
+		);
+	}
 
-    /**
-     * Retrieve a single page of UserChannelInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param mixed $pageSize Number of records to return, defaults to 50
-     * @param string $pageToken PageToken provided by the API
-     * @param mixed $pageNumber Page Number, this value is simply for client state
-     * @return UserChannelPage Page of UserChannelInstance
-     */
-    public function page(
-        $pageSize = Values::NONE,
-        string $pageToken = Values::NONE,
-        $pageNumber = Values::NONE
-    ): UserChannelPage
-    {
+	/**
+	 * Retrieve a specific page of UserChannelInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param string $targetUrl API-generated URL for the requested results page
+	 * @return UserChannelPage Page of UserChannelInstance
+	 */
+	public function getPage(string $targetUrl) : UserChannelPage
+	{
+		$response = $this->version->getDomain()->getClient()->request(
+			'GET',
+			$targetUrl
+		);
 
-        $params = Values::of([
-            'PageToken' => $pageToken,
-            'Page' => $pageNumber,
-            'PageSize' => $pageSize,
-        ]);
+		return new UserChannelPage($this->version, $response, $this->solution);
+	}
 
-        $response = $this->version->page('GET', $this->uri, $params);
+	/**
+	 * Retrieve a single page of UserChannelInstance records from the API.
+	 * Request is executed immediately
+	 *
+	 * @param mixed $pageSize Number of records to return, defaults to 50
+	 * @param string $pageToken PageToken provided by the API
+	 * @param mixed $pageNumber Page Number, this value is simply for client state
+	 * @return UserChannelPage Page of UserChannelInstance
+	 */
+	public function page(
+		$pageSize = Values::NONE,
+		string $pageToken = Values::NONE,
+		$pageNumber = Values::NONE
+	) : UserChannelPage
+	{
 
-        return new UserChannelPage($this->version, $response, $this->solution);
-    }
+		$params = Values::of([
+			'PageToken' => $pageToken,
+			'Page' => $pageNumber,
+			'PageSize' => $pageSize,
+		]);
 
-    /**
-     * Retrieve a specific page of UserChannelInstance records from the API.
-     * Request is executed immediately
-     *
-     * @param string $targetUrl API-generated URL for the requested results page
-     * @return UserChannelPage Page of UserChannelInstance
-     */
-    public function getPage(string $targetUrl): UserChannelPage
-    {
-        $response = $this->version->getDomain()->getClient()->request(
-            'GET',
-            $targetUrl
-        );
+		$response = $this->version->page('GET', $this->uri, $params);
 
-        return new UserChannelPage($this->version, $response, $this->solution);
-    }
+		return new UserChannelPage($this->version, $response, $this->solution);
+	}
 
+	/**
+	 * Reads UserChannelInstance records from the API as a list.
+	 * Unlike stream(), this operation is eager and will load `limit` records into
+	 * memory before returning.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. read()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, read()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return UserChannelInstance[] Array of results
+	 */
+	public function read(?int $limit = null, $pageSize = null) : array
+	{
+		return \iterator_to_array($this->stream($limit, $pageSize), false);
+	}
 
-    /**
-     * Constructs a UserChannelContext
-     *
-     * @param string $channelSid The SID of the [Channel](https://www.twilio.com/docs/api/chat/rest/channels) the resource belongs to.
-     */
-    public function getContext(
-        string $channelSid
-        
-    ): UserChannelContext
-    {
-        return new UserChannelContext(
-            $this->version,
-            $this->solution['serviceSid'],
-            $this->solution['userSid'],
-            $channelSid
-        );
-    }
+	/**
+	 * Streams UserChannelInstance records from the API as a generator stream.
+	 * This operation lazily loads records as efficiently as possible until the
+	 * limit
+	 * is reached.
+	 * The results are returned as a generator, so this operation is memory
+	 * efficient.
+	 *
+	 * @param int $limit Upper limit for the number of records to return. stream()
+	 *                   guarantees to never return more than limit.  Default is no
+	 *                   limit
+	 * @param mixed $pageSize Number of records to fetch per request, when not set
+	 *                        will use the default value of 50 records.  If no
+	 *                        page_size is defined but a limit is defined, stream()
+	 *                        will attempt to read the limit with the most
+	 *                        efficient page size, i.e. min(limit, 1000)
+	 * @return Stream stream of results
+	 */
+	public function stream(?int $limit = null, $pageSize = null) : Stream
+	{
+		$limits = $this->version->readLimits($limit, $pageSize);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        return '[Twilio.Chat.V2.UserChannelList]';
-    }
+		$page = $this->page($limits['pageSize']);
+
+		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+	}
 }

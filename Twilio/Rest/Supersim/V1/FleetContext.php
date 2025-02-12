@@ -14,111 +14,101 @@
  * Do not edit the class manually.
  */
 
-
 namespace Twilio\Rest\Supersim\V1;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
-use Twilio\InstanceContext;
-
 
 class FleetContext extends InstanceContext
-    {
-    /**
-     * Initialize the FleetContext
-     *
-     * @param Version $version Version that contains the resource
-     * @param string $sid The SID of the Fleet resource to fetch.
-     */
-    public function __construct(
-        Version $version,
-        $sid
-    ) {
-        parent::__construct($version);
+	{
+	/**
+	 * Initialize the FleetContext
+	 *
+	 * @param Version $version Version that contains the resource
+	 * @param string $sid The SID of the Fleet resource to fetch.
+	 */
+	public function __construct(
+		Version $version,
+		$sid
+	) {
+		parent::__construct($version);
 
-        // Path Solution
-        $this->solution = [
-        'sid' =>
-            $sid,
-        ];
+		// Path Solution
+		$this->solution = [
+			'sid' => $sid,
+		];
 
-        $this->uri = '/Fleets/' . \rawurlencode($sid)
-        .'';
-    }
+		$this->uri = '/Fleets/' . \rawurlencode($sid)
+		. '';
+	}
 
-    /**
-     * Fetch the FleetInstance
-     *
-     * @return FleetInstance Fetched FleetInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function fetch(): FleetInstance
-    {
+	/**
+	 * Provide a friendly representation
+	 *
+	 * @return string Machine friendly representation
+	 */
+	public function __toString() : string
+	{
+		$context = [];
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+		foreach ($this->solution as $key => $value) {
+			$context[] = "{$key}={$value}";
+		}
 
-        return new FleetInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		return '[Twilio.Supersim.V1.FleetContext ' . \implode(' ', $context) . ']';
+	}
 
+	/**
+	 * Fetch the FleetInstance
+	 *
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return FleetInstance Fetched FleetInstance
+	 */
+	public function fetch() : FleetInstance
+	{
 
-    /**
-     * Update the FleetInstance
-     *
-     * @param array|Options $options Optional Arguments
-     * @return FleetInstance Updated FleetInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function update(array $options = []): FleetInstance
-    {
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-        $options = new Values($options);
+		return new FleetInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 
-        $data = Values::of([
-            'UniqueName' =>
-                $options['uniqueName'],
-            'NetworkAccessProfile' =>
-                $options['networkAccessProfile'],
-            'IpCommandsUrl' =>
-                $options['ipCommandsUrl'],
-            'IpCommandsMethod' =>
-                $options['ipCommandsMethod'],
-            'SmsCommandsUrl' =>
-                $options['smsCommandsUrl'],
-            'SmsCommandsMethod' =>
-                $options['smsCommandsMethod'],
-            'DataLimit' =>
-                $options['dataLimit'],
-        ]);
+	/**
+	 * Update the FleetInstance
+	 *
+	 * @param array|Options $options Optional Arguments
+	 * @throws TwilioException When an HTTP error occurs.
+	 * @return FleetInstance Updated FleetInstance
+	 */
+	public function update(array $options = []) : FleetInstance
+	{
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
-        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+		$options = new Values($options);
 
-        return new FleetInstance(
-            $this->version,
-            $payload,
-            $this->solution['sid']
-        );
-    }
+		$data = Values::of([
+			'UniqueName' => $options['uniqueName'],
+			'NetworkAccessProfile' => $options['networkAccessProfile'],
+			'IpCommandsUrl' => $options['ipCommandsUrl'],
+			'IpCommandsMethod' => $options['ipCommandsMethod'],
+			'SmsCommandsUrl' => $options['smsCommandsUrl'],
+			'SmsCommandsMethod' => $options['smsCommandsMethod'],
+			'DataLimit' => $options['dataLimit'],
+		]);
 
+		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-    /**
-     * Provide a friendly representation
-     *
-     * @return string Machine friendly representation
-     */
-    public function __toString(): string
-    {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Supersim.V1.FleetContext ' . \implode(' ', $context) . ']';
-    }
+		return new FleetInstance(
+			$this->version,
+			$payload,
+			$this->solution['sid']
+		);
+	}
 }

@@ -21,23 +21,32 @@ abstract class Banner extends \PHPFUI\ORM\Record
 	{
 	protected static bool $autoIncrement = true;
 
-	/** @var array<string, array<mixed>> */
-	protected static array $fields = [
-		// MYSQL_TYPE, PHP_TYPE, LENGTH, ALLOWS_NULL, DEFAULT
-		'bannerId' => ['int', 'int', 0, false, ],
-		'css' => ['text', 'string', 65535, true, ],
-		'description' => ['varchar(200)', 'string', 200, true, ],
-		'endDate' => ['date', 'string', 10, true, ],
-		'fileNameExt' => ['char(10)', 'string', 10, true, ],
-		'html' => ['text', 'string', 65535, true, ],
-		'js' => ['text', 'string', 65535, true, ],
-		'pending' => ['int', 'int', 0, false, 1, ],
-		'startDate' => ['date', 'string', 10, true, ],
-		'url' => ['varchar(200)', 'string', 200, true, ],
-	];
+	/** @var array<string, \PHPFUI\ORM\FieldDefinition> */
+	protected static array $fields = [];
 
 	/** @var array<string> */
 	protected static array $primaryKeys = ['bannerId', ];
 
 	protected static string $table = 'banner';
+
+	public function initFieldDefinitions() : static
+		{
+		if (! \count(static::$fields))
+			{
+			static::$fields = [
+				'bannerId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'css' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'description' => new \PHPFUI\ORM\FieldDefinition('varchar(200)', 'string', 200, true, ),
+				'endDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'fileNameExt' => new \PHPFUI\ORM\FieldDefinition('char(10)', 'string', 10, true, ),
+				'html' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'js' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'pending' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 1, ),
+				'startDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
+				'url' => new \PHPFUI\ORM\FieldDefinition('varchar(200)', 'string', 200, true, ),
+			];
+			}
+
+		return $this;
+		}
 	}

@@ -21,10 +21,7 @@
  * +-----------------------------------------------------------------------+
  */
 
-namespace Javanile\Imap2\Roundcube;
-
-use Javanile\Imap2\ErrorException;
-use Javanile\Imap2\rcube;
+namespace PHPFUI\Imap2\Roundcube;
 
 /**
  * Character sets conversion functionality
@@ -205,7 +202,7 @@ class Charset
 			$res = \mb_convert_encoding($input, 'UTF-8', 'UTF-8');
 			\mb_substitute_character($msch);
 
-			if (false !== $res) {
+			if (false !== $res) { // @phpstan-ignore-line
 				return $res;
 			}
 		}
@@ -314,14 +311,12 @@ class Charset
 		) {
 			// throw an exception if iconv reports an illegal character in input
 			// it means that input string has been truncated
-			//set_error_handler(array('rcube_charset', 'error_handler'), E_NOTICE);
 			try {
 				$out = \iconv($from, $to . $iconv_options, $str);
 			}
-			catch (ErrorException $e) {
+			catch (\Exception $e) {
 				$out = false;
 			}
-			//restore_error_handler();
 
 			if (false !== $out) {
 				return $out;
@@ -340,22 +335,20 @@ class Charset
 				'ISO-2022-JP' => 'ISO-2022-JP-MS',
 			];
 
-			$mb_from = $aliases[$from] ?: $from;
-			$mb_to = $aliases[$to] ?: $to;
+			$mb_from = $aliases[$from] ?? $from;
+			$mb_to = $aliases[$to] ?? $to;
 
 			// Do the same as //IGNORE with iconv
 			\mb_substitute_character('none');
 
 			// throw an exception if mbstring reports an illegal character in input
 			// using mb_check_encoding() is much slower
-			//set_error_handler(array('rcube_charset', 'error_handler'), E_WARNING);
 			try {
 				$out = \mb_convert_encoding($str, $mb_to, $mb_from);
 			}
-			catch (ErrorException $e) {
+			catch (\Exception $e) {
 				$out = false;
 			}
-			//restore_error_handler();
 
 			\mb_substitute_character($mbstring_sc);
 
@@ -397,137 +390,15 @@ class Charset
 	}
 
 	/**
-	 * A method to guess character set of a string.
-	 *
-	 * @param string $string   String
-	 * @param string $failover Default result for failover
-	 * @param string $language User language
-	 *
-	 * @return string Charset name
-	 */
-	public static function detect($string, $failover = null, $language = null)
-	{
-		if ("\0\0\xFE\xFF" == \substr($string, 0, 4)) return 'UTF-32BE';  // Big Endian
-
-		if ("\xFF\xFE\0\0" == \substr($string, 0, 4)) return 'UTF-32LE';  // Little Endian
-
-		if ("\xFE\xFF" == \substr($string, 0, 2))     return 'UTF-16BE';  // Big Endian
-
-		if ("\xFF\xFE" == \substr($string, 0, 2))     return 'UTF-16LE';  // Little Endian
-
-		if ("\xEF\xBB\xBF" == \substr($string, 0, 3)) return 'UTF-8';
-
-		// heuristics
-		if ("\0" == $string[0] && "\0" == $string[1] && "\0" == $string[2] && "\0" != $string[3]) return 'UTF-32BE';
-
-		if ("\0" != $string[0] && "\0" == $string[1] && "\0" == $string[2] && "\0" == $string[3]) return 'UTF-32LE';
-
-		if ("\0" == $string[0] && "\0" != $string[1] && "\0" == $string[2] && "\0" != $string[3]) return 'UTF-16BE';
-
-		if ("\0" != $string[0] && "\0" == $string[1] && "\0" != $string[2] && "\0" == $string[3]) return 'UTF-16LE';
-
-		if (empty($language)) {
-			$rcube = rcube::get_instance();
-			$language = $rcube->get_user_language();
-		}
-
-		// Prioritize charsets according to current language (#1485669)
-		switch ($language) {
-			case 'ja_JP':
-				$prio = ['ISO-2022-JP', 'JIS', 'UTF-8', 'EUC-JP', 'eucJP-win', 'SJIS', 'SJIS-win'];
-
-				break;
-
-			case 'zh_CN':
-			case 'zh_TW':
-				$prio = ['UTF-8', 'BIG-5', 'GB2312', 'EUC-TW'];
-
-				break;
-
-			case 'ko_KR':
-				$prio = ['UTF-8', 'EUC-KR', 'ISO-2022-KR'];
-
-				break;
-
-			case 'ru_RU':
-				$prio = ['UTF-8', 'WINDOWS-1251', 'KOI8-R'];
-
-				break;
-
-			case 'tr_TR':
-				$prio = ['UTF-8', 'ISO-8859-9', 'WINDOWS-1254'];
-
-				break;
-		}
-
-		// mb_detect_encoding() is not reliable for some charsets (#1490135)
-		// use mb_check_encoding() to make charset priority lists really working
-		if ($prio && \function_exists('mb_check_encoding')) {
-			foreach ($prio as $encoding) {
-				if (\mb_check_encoding($string, $encoding)) {
-					return $encoding;
-				}
-			}
-		}
-
-		if (\function_exists('mb_detect_encoding')) {
-			if (! $prio) {
-				$prio = ['UTF-8', 'SJIS', 'GB2312',
-					'ISO-8859-1', 'ISO-8859-2', 'ISO-8859-3', 'ISO-8859-4',
-					'ISO-8859-5', 'ISO-8859-6', 'ISO-8859-7', 'ISO-8859-8', 'ISO-8859-9',
-					'ISO-8859-10', 'ISO-8859-13', 'ISO-8859-14', 'ISO-8859-15', 'ISO-8859-16',
-					'WINDOWS-1252', 'WINDOWS-1251', 'EUC-JP', 'EUC-TW', 'KOI8-R', 'BIG-5',
-					'ISO-2022-KR', 'ISO-2022-JP',
-				];
-			}
-
-			$encodings = \array_unique(\array_merge($prio, \mb_list_encodings()));
-
-			if ($encoding = \mb_detect_encoding($string, $encodings)) {
-				return $encoding;
-			}
-		}
-
-		// No match, check for UTF-8
-		// from http://w3.org/International/questions/qa-forms-utf-8.html
-		if (\preg_match('/\A(
-            [\x09\x0A\x0D\x20-\x7E]
-            | [\xC2-\xDF][\x80-\xBF]
-            | \xE0[\xA0-\xBF][\x80-\xBF]
-            | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}
-            | \xED[\x80-\x9F][\x80-\xBF]
-            | \xF0[\x90-\xBF][\x80-\xBF]{2}
-            | [\xF1-\xF3][\x80-\xBF]{3}
-            | \xF4[\x80-\x8F][\x80-\xBF]{2}
-            )*\z/xs', \substr($string, 0, 2048))
-		) {
-			return 'UTF-8';
-		}
-
-		return $failover;
-	}
-
-	/**
-	 * Catch an error and throw an exception.
-	 *
-	 * @param int    $errno  Level of the error
-	 * @param string $errstr Error message
-	 */
-	public static function error_handler($errno, $errstr) : void
-	{
-		throw new ErrorException($errstr, 0, $errno);
-	}
-
-	/**
 	 * Parse and validate charset name string.
 	 * Sometimes charset string is malformed, there are also charset aliases,
 	 * but we need strict names for charset conversion (specially utf8 class)
 	 *
 	 * @param string $input Input charset name
 	 *
-	 * @return string The validated charset name
+	 * @return ?string The validated charset name
 	 */
-	public static function parse_charset($input)
+	public static function parse_charset($input) : ?string
 	{
 		static $charsets = [];
 		$charset = \strtoupper($input);
@@ -826,7 +697,7 @@ class Charset
 
 		$u8len = \strlen($str);
 		$base64 = 0;
-		$i = 0;
+		$i = $b = $k = 0;
 		$p = '';
 		$err = '';
 

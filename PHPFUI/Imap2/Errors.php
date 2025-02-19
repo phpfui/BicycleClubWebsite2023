@@ -3,13 +3,13 @@
 /*
  * This file is part of the PHP IMAP2 package.
  *
- * (c) Francesco Bianco <bianco@javanile.org>
+ * (c) Francesco Bianco <bianco@PHPFUI.org>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Javanile\Imap2;
+namespace PHPFUI\Imap2;
 
 class Errors
   {
@@ -26,11 +26,6 @@ class Errors
 		self::$alerts = [];
 
 		return $return;
-		}
-
-  public static function appendAlert(string $alert) : void
-		{
-		self::$alerts[] = $alert;
 		}
 
   public static function appendError(string $error) : void
@@ -53,7 +48,7 @@ class Errors
 			$error = "Can't open mailbox {$mailbox}: no such mailbox";
 			}
 
-		$this->appendError($error);
+		self::appendError($error);
 		}
 
   public static function badMessageNumber(array $backtrace, int $depth) : string
@@ -90,12 +85,5 @@ class Errors
 	public static function lastError() : string
 		{
 		return self::$lastError;
-		}
-
-	public static function raiseWarning(string $warning, array $backtrace, int $depth) : void
-		{
-		$message = $warning . ' in ' . $backtrace[$depth]['file'] . ' on line ' . $backtrace[$depth]['line'];
-
-		\trigger_error($message, E_USER_WARNING);
 		}
 	}

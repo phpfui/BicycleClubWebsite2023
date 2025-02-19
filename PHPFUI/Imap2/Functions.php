@@ -3,13 +3,13 @@
 /*
  * This file is part of the PHP IMAP2 package.
  *
- * (c) Francesco Bianco <bianco@javanile.org>
+ * (c) Francesco Bianco <bianco@PHPFUI.org>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Javanile\Imap2;
+namespace PHPFUI\Imap2;
 
 class Functions
 {
@@ -27,11 +27,12 @@ class Functions
 
 	}
 
-	public static function getAddressObjectList(string $addressList, string $defaultHost = 'UNKNOWN')
-	{
+	public static function getAddressObjectList(array $addressList, string $defaultHost = 'UNKNOWN') : array
+		{
 		$addressObjectList = [];
 
-		foreach ($addressList as $toAddress) {
+		foreach ($addressList as $toAddress)
+			{
 			$email = \explode('@', $toAddress->getEmail());
 
 			$addressObject = (object)[
@@ -41,15 +42,21 @@ class Functions
 
 			$personal = $toAddress->getName();
 
-			if ($personal) {
+			if ($personal)
+				{
 				$addressObject->personal = $personal;
-			}
+				}
+			else
+				{
+				$addressObject->personal = '';
+				}
+			$addressObject->adl = '';
 
 			$addressObjectList[] = $addressObject;
-		}
+			}
 
 		return $addressObjectList;
-	}
+		}
 
 	public static function getHostFromMailbox(string|array $mailbox) : string
 	{
@@ -166,24 +173,6 @@ class Functions
 		$values['path'] = \explode('/', $values['path']);
 
 		return $values;
-	}
-
-	public static function sanitizeAddress(string $address, string $defaultHost = 'UNKNOWN') : string
-	{
-		$addressList = \imap_rfc822_parse_adrlist($address, $defaultHost);
-
-		$sanitizedAddress = [];
-
-		foreach ($addressList as $addressEntry) {
-			$sanitizedAddress[] = \imap_rfc822_write_address($addressEntry->mailbox, $addressEntry->host, $addressEntry->personal);
-		}
-
-		return \implode(', ', $sanitizedAddress);
-	}
-
-	public static function unique() : int
-	{
-		return \md5(\microtime() . \time() . \rand(1000, 9999));
 	}
 
 	public static function writeAddressFromEnvelope(array $addressList) : string

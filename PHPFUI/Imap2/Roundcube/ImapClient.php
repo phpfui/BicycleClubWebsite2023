@@ -24,15 +24,7 @@
  * +-----------------------------------------------------------------------+
  */
 
-namespace Javanile\Imap2\Roundcube;
-
-use Javanile\Imap2\Auth_SASL;
-use Javanile\Imap2\Exception;
-use Javanile\Imap2\GSSAPIContext;
-use Javanile\Imap2\KRB5CCache;
-use Javanile\Imap2\rcube_message_header;
-use Javanile\Imap2\rcube_result_index;
-use Javanile\Imap2\rcube_result_thread;
+namespace PHPFUI\Imap2\Roundcube;
 
 /**
  * PHP based wrapper class to connect to an IMAP server
@@ -42,37 +34,39 @@ use Javanile\Imap2\rcube_result_thread;
  */
 class ImapClient
 {
-	public const COMMAND_ANONYMIZED = 8;
+	public const int COMMAND_ANONYMIZED = 8;
 
-	public const COMMAND_CAPABILITY = 2;
+	public const int COMMAND_CAPABILITY = 2;
 
-	public const COMMAND_LASTLINE = 4;
+	public const int COMMAND_LASTLINE = 4;
 
-	public const COMMAND_NORESPONSE = 1;
+	public const int COMMAND_NORESPONSE = 1;
 
-	public const COMMAND_RAW_LASTLINE = 16;
+	public const int COMMAND_RAW_LASTLINE = 16;
 
-	public const DEBUG_LINE_LENGTH = 4098; // 4KB + 2B for \r\n
+	public const int DEBUG_LINE_LENGTH = 4098; // 4KB + 2B for \r\n
 
-	public const ERROR_BAD = -2;
+	public const int ERROR_BAD = -2;
 
-	public const ERROR_BYE = -3;
+	public const int ERROR_BYE = -3;
 
-	public const ERROR_COMMAND = -5;
+	public const int ERROR_COMMAND = -5;
 
-	public const ERROR_NO = -1;
+	public const int ERROR_NO = -1;
 
-	public const ERROR_OK = 0;
+	public const int ERROR_OK = 0;
 
-	public const ERROR_READONLY = -6;
+	public const int ERROR_READONLY = -6;
 
-	public const ERROR_UNKNOWN = -4;
+	public const int ERROR_UNKNOWN = -4;
 
 	public array $data = [];
 
 	public $error;
 
 	public int $errornum;
+
+	public array $extensions_enabled = [];
 
 	public array $flags = [
 		'SEEN' => '\\Seen',
@@ -101,21 +95,21 @@ class ImapClient
 
 	protected bool $debug = false;
 
-	protected bool $debug_handler = false;
+	protected $debug_handler = null;
 
 	protected $fp;
 
-	protected $host;
+	protected string $host;
 
 	protected bool $logged = false;
 
 	protected array $prefs = [];
 
-	protected $rawLastLine;
+	protected string $rawLastLine;
 
 	protected $resourceid;
 
-	protected $user;
+	protected string $user;
 
 	/**
 	 * Handler for IMAP APPEND command
@@ -128,11 +122,11 @@ class ImapClient
 	 *
 	 * @return string|bool On success APPENDUID response (if available) or True, False on failure
 	 */
-	public function append(string $mailbox, string|array &$message, array $flags = [], ?string $date = null, bool $binary = false)
+	public function append(?string $mailbox, string|array &$message, array $flags = [], ?string $date = null, bool $binary = false)
 	{
 		unset($this->data['APPENDUID']);
 
-		if (null === $mailbox || '' === $mailbox) {
+		if (empty($mailbox)) {
 			return false;
 		}
 
@@ -253,9 +247,11 @@ class ImapClient
 	 *
 	 * @return string|bool On success APPENDUID response (if available) or True, False on failure
 	 */
-	public function appendFromFile(string $mailbox, string $path, ?string $headers = null, array $flags = [], ?string $date = null, bool $binary = false)
+	public function appendFromFile(string $mailbox, string $path, ?string $headers = null, array $flags = [], ?string $date = null, bool $binary = false) : string | bool
 	{
 		// open message file
+		$fp = null;
+
 		if (\file_exists(\realpath($path))) {
 			$fp = \fopen($path, 'r');
 		}
@@ -292,8 +288,10 @@ class ImapClient
 	 *
 	 * @return bool True on success, False on error
 	 */
-	public function clearFolder(string $mailbox)
+	public function clearFolder(string $mailbox) : bool
 	{
+		$res = null;
+
 		if ($this->countMessages($mailbox) > 0) {
 			$res = $this->flag($mailbox, '1:*', 'DELETED');
 		}
@@ -318,7 +316,7 @@ class ImapClient
 	 */
 	public function close() : bool
 	{
-		$result = $this->execute('CLOSE', null, self::COMMAND_NORESPONSE);
+		$result = $this->execute('CLOSE', [], self::COMMAND_NORESPONSE);
 
 		if (self::ERROR_OK == $result) {
 			$this->selected = null;
@@ -491,8 +489,6 @@ class ImapClient
 		// pre-login capabilities can be not complete
 		$this->capability_readed = false;
 
-
-
 		// Authenticate
 		switch ($auth_method) {
 			case 'CRAM_MD5':
@@ -581,28 +577,26 @@ class ImapClient
 	 *
 	 * @return int Number of messages, False on error
 	 */
-	public function countMessages(string $mailbox) : int|false
-	{
-		if ($this->selected === $mailbox && isset($this->data['EXISTS'])) {
+	public function countMessages(string $mailbox) : int | false
+		{
+		if ($this->selected === $mailbox && isset($this->data['EXISTS']))
+			{
 			return $this->data['EXISTS'];
-		}
+			}
 
 		// Check internal cache
 		$cache = $this->data['STATUS:' . $mailbox];
 
-		if (! empty($cache) && isset($cache['MESSAGES'])) {
+		if (! empty($cache) && isset($cache['MESSAGES']))
+			{
 			return (int)$cache['MESSAGES'];
-		}
+			}
 
 		// Try STATUS (should be faster than SELECT)
 		$counts = $this->status($mailbox);
 
-		if (\is_array($counts)) {
-			return (int)$counts['MESSAGES'];
+		return (int)$counts['MESSAGES'];
 		}
-
-		return false;
-	}
 
 	/**
 	 * Returns count of messages with \Recent flag in a folder
@@ -611,28 +605,26 @@ class ImapClient
 	 *
 	 * @return int Number of messages, False on error
 	 */
-	public function countRecent(string $mailbox) : int
-	{
-		if ($this->selected === $mailbox && isset($this->data['RECENT'])) {
+	public function countRecent(string $mailbox) : int | false
+		{
+		if ($this->selected === $mailbox && isset($this->data['RECENT']))
+			{
 			return $this->data['RECENT'];
-		}
+			}
 
 		// Check internal cache
 		$cache = $this->data['STATUS:' . $mailbox];
 
-		if (! empty($cache) && isset($cache['RECENT'])) {
+		if (! empty($cache) && isset($cache['RECENT']))
+			{
 			return (int)$cache['RECENT'];
-		}
+			}
 
 		// Try STATUS (should be faster than SELECT)
 		$counts = $this->status($mailbox, ['RECENT']);
 
-		if (\is_array($counts)) {
-			return (int)$counts['RECENT'];
+		return (int)$counts['RECENT'];
 		}
-
-		return false;
-	}
 
 	/**
 	 * Returns count of messages without \Seen flag in a specified folder
@@ -641,31 +633,34 @@ class ImapClient
 	 *
 	 * @return int Number of messages, False on error
 	 */
-	public function countUnseen(string $mailbox) : int|false
-	{
+	public function countUnseen(string $mailbox) : int | false
+		{
 		// Check internal cache
 		$cache = $this->data['STATUS:' . $mailbox];
 
-		if (! empty($cache) && isset($cache['UNSEEN'])) {
+		if (! empty($cache) && isset($cache['UNSEEN']))
+			{
 			return (int)$cache['UNSEEN'];
-		}
+			}
 
 		// Try STATUS (should be faster than SELECT+SEARCH)
 		$counts = $this->status($mailbox);
 
-		if (\is_array($counts)) {
+		if (\is_array($counts))
+			{
 			return (int)$counts['UNSEEN'];
-		}
+			}
 
 		// Invoke SEARCH as a fallback
 		$index = $this->search($mailbox, 'ALL UNSEEN', false, ['COUNT']);
 
-		if (! $index->is_error()) {
+		if (! $index->is_error())
+			{
 			return $index->count();
-		}
+			}
 
 		return false;
-	}
+		}
 
 	/**
 	 * Folder creation (CREATE)
@@ -714,28 +709,6 @@ class ImapClient
 	}
 
 	/**
-	 * Send the SETANNOTATION command with NIL values (draft-daboo-imap-annotatemore)
-	 *
-	 * @param string $mailbox Mailbox name
-	 * @param array  $data    Data array where each item is an array with
-	 *                        two elements: entry name and attribute name
-	 *
-	 * @return bool True on success, False on failure
-	 *
-	 * @since 0.5-beta
-	 */
-	public function deleteAnnotation(string $mailbox, $data) : bool
-	{
-		if (! \is_array($data) || empty($data)) {
-			$this->setError(self::ERROR_COMMAND, 'Wrong argument for SETANNOTATION command');
-
-			return false;
-		}
-
-		return $this->setAnnotation($mailbox, $data);
-	}
-
-	/**
 	 * Executes DELETE command
 	 *
 	 * @param string $mailbox Mailbox name
@@ -763,7 +736,7 @@ class ImapClient
 	 *
 	 * @since 0.5-beta
 	 */
-	public function deleteMetadata(string $mailbox, $entries) : bool
+	public function deleteMetadata(string $mailbox, array | string $entries) : bool
 	{
 		if (! \is_array($entries) && ! empty($entries)) {
 			$entries = \explode(' ', $entries);
@@ -790,7 +763,7 @@ class ImapClient
 	 * @return array|bool List of enabled extensions, False on error
 	 * @since 0.6
 	 */
-	public function enable($extension)
+	public function enable($extension) : array | bool
 	{
 		if (empty($extension)) {
 			return false;
@@ -835,13 +808,13 @@ class ImapClient
 	/**
 	 * Escapes a string when it contains special characters (RFC3501)
 	 *
-	 * @param string  $string       IMAP string
+	 * @param ?string  $string       IMAP string
 	 * @param bool $force_quotes Forces string quoting (for atoms)
 	 *
 	 * @return string String atom, quoted-string or string literal
 	 * @todo lists
 	 */
-	public static function escape($string, $force_quotes = false)
+	public static function escape(?string $string, bool $force_quotes = false) : string
 	{
 		if (null === $string) {
 			return 'NIL';
@@ -876,7 +849,7 @@ class ImapClient
 	 * @return mixed Response code or list of response code and data
 	 * @since 0.5-beta
 	 */
-	public function execute($command, $arguments = [], $options = 0, $filter = null)
+	public function execute(string $command, ?array $arguments = [], int $options = 0, ?string $filter = null)
 	{
 		$tag = $this->nextTag();
 		$query = $tag . ' ' . $command;
@@ -890,7 +863,7 @@ class ImapClient
 		}
 
 		// Send command
-		if (! $this->putLineC($query, true, ($options & self::COMMAND_ANONYMIZED))) {
+		if (! $this->putLineC($query, true, (bool)($options & self::COMMAND_ANONYMIZED))) {
 			\preg_match('/^[A-Z0-9]+ ((UID )?[A-Z]+)/', $query, $matches);
 			$cmd = $matches[1] ?: 'UNKNOWN';
 			$this->setError(self::ERROR_COMMAND, "Failed to send {$cmd} command");
@@ -957,7 +930,7 @@ class ImapClient
 	 *
 	 * @return bool True on success, False on error
 	 */
-	public function expunge($mailbox, $messages = null)
+	public function expunge(string $mailbox, string | array | null $messages = null) : bool
 	{
 		if (! $this->select($mailbox)) {
 			return false;
@@ -993,23 +966,23 @@ class ImapClient
 	 * FETCH command (RFC3501)
 	 *
 	 * @param string $mailbox     Mailbox name
-	 * @param mixed  $message_set Message(s) sequence identifier(s) or UID(s)
+	 * @param array|string  $message_set Message(s) sequence identifier(s) or UID(s)
 	 * @param bool   $is_uid      True if $message_set contains UIDs
 	 * @param array  $query_items FETCH command data items
-	 * @param string $mod_seq     Modification sequence for CHANGEDSINCE (RFC4551) query
+	 * @param ?string $mod_seq     Modification sequence for CHANGEDSINCE (RFC4551) query
 	 * @param bool   $vanished    Enables VANISHED parameter (RFC5162) for CHANGEDSINCE query
 	 *
 	 * @return array List of rcube_message_header elements, False on error
 	 * @since 0.6
 	 */
 	public function fetch(
-		$mailbox,
-		$message_set,
-		$is_uid = false,
-		$query_items = [],
-		$mod_seq = null,
-		$vanished = false
-	)
+		string $mailbox,
+		array | string $message_set,
+		bool $is_uid = false,
+		array $query_items = [],
+		?string $mod_seq = null,
+		bool $vanished = false
+	) : array | false
 	{
 		if (! $this->select($mailbox)) {
 			return false;
@@ -1066,9 +1039,11 @@ class ImapClient
 
 				// Tokenize response and assign to object properties
 				$tokens = [];
+
 				while ($tokens = $this->tokenizeResponse($line, 2)) {
 					$name = $tokens[0] ?? '';
 					$value = $tokens[1] ?? '';
+
 					if ('UID' == $name) {
 						$result[$id]->uid = (int)$value;
 					}
@@ -1249,9 +1224,9 @@ class ImapClient
 	 * @param bool   $bodystr     Enable to add BODYSTRUCTURE data to the result
 	 * @param array  $add_headers List of additional headers
 	 *
-	 * @return bool|rcube_message_header Message data, False on error
+	 * @return \PHPFUI\Imap2\Roundcube\MessageHeader Message data, False on error
 	 */
-	public function fetchHeader($mailbox, $id, $is_uid = false, $bodystr = false, $add_headers = [])
+	public function fetchHeader(string $mailbox, int $id, bool $is_uid = false, bool $bodystr = false, array $add_headers = []) : bool | \PHPFUI\Imap2\Roundcube\MessageHeader
 	{
 		$a = $this->fetchHeaders($mailbox, $id, $is_uid, $bodystr, $add_headers);
 
@@ -1275,12 +1250,12 @@ class ImapClient
 	 * @return array|bool List of header values or False on failure
 	 */
 	public function fetchHeaderIndex(
-		$mailbox,
-		$message_set,
-		$index_field = '',
-		$skip_deleted = true,
-		$uidfetch = false,
-		$return_uid = false
+		string $mailbox,
+		array | string $message_set,
+		string $index_field = '',
+		bool $skip_deleted = true,
+		bool $uidfetch = false,
+		bool $return_uid = false
 	)
 	{
 		if (\is_array($message_set)) {
@@ -1292,7 +1267,7 @@ class ImapClient
 			[$from_idx, $to_idx] = \explode(':', $message_set);
 
 			if (empty($message_set) ||
-				(isset($to_idx) && '*' != $to_idx && (int)$from_idx > (int)$to_idx)
+				('*' != $to_idx && (int)$from_idx > (int)$to_idx)
 			) {
 				return false;
 			}
@@ -1452,14 +1427,14 @@ class ImapClient
 	 * Returns message(s) data (flags, headers, etc.)
 	 *
 	 * @param string $mailbox     Mailbox name
-	 * @param mixed  $message_set Message(s) sequence identifier(s) or UID(s)
+	 * @param string | array  $message_set Message(s) sequence identifier(s) or UID(s)
 	 * @param bool   $is_uid      True if $message_set contains UIDs
 	 * @param bool   $bodystr     Enable to add BODYSTRUCTURE data to the result
 	 * @param array  $add_headers List of additional headers
 	 *
-	 * @return bool|array List of rcube_message_header elements, False on error
+	 * @return bool|array<\PHPFUI\Imap2\Roundcube\MessageHeader> List of rcube_message_header elements, False on error
 	 */
-	public function fetchHeaders($mailbox, $message_set, $is_uid = false, $bodystr = false, $add_headers = [])
+	public function fetchHeaders(string $mailbox, int | string | array $message_set, bool $is_uid = false, bool $bodystr = false, array $add_headers = []) : array | bool
 	{
 		$query_items = ['UID', 'RFC822.SIZE', 'FLAGS', 'INTERNALDATE'];
 		$headers = ['DATE', 'FROM', 'TO', 'SUBJECT', 'CONTENT-TYPE', 'CC', 'REPLY-TO',
@@ -1490,7 +1465,7 @@ class ImapClient
 	 * @return array|bool Array containing headers string for each specified body
 	 *                    False on failure.
 	 */
-	public function fetchMIMEHeaders($mailbox, $uid, $parts, $mime = true)
+	public function fetchMIMEHeaders(string $mailbox, int $uid, array $parts, bool $mime = true) : array | bool
 	{
 		if (! $this->select($mailbox)) {
 			return false;
@@ -1537,7 +1512,7 @@ class ImapClient
 	/**
 	 * Fetches message part header
 	 */
-	public function fetchPartHeader($mailbox, $id, $is_uid = false, $part = null)
+	public function fetchPartHeader(string $mailbox, int $id, bool $is_uid = false, ?string $part = null)
 	{
 		$part = empty($part) ? 'HEADER' : $part . '.MIME';
 
@@ -1553,7 +1528,7 @@ class ImapClient
 	 *
 	 * @return bool True on success, False on failure
 	 */
-	public function flag($mailbox, $messages, $flag)
+	public function flag(string $mailbox, string | array $messages, string $flag) : bool
 	{
 		return $this->modFlag($mailbox, $messages, $flag, '+');
 	}
@@ -1566,7 +1541,7 @@ class ImapClient
 	 * @return array User-rights array on success, NULL on error
 	 * @since 0.5-beta
 	 */
-	public function getACL($mailbox)
+	public function getACL(string $mailbox) : array
 	{
 		[$code, $response] = $this->execute('GETACL', [$this->escape($mailbox)], 0, '/^\* ACL /i');
 
@@ -1593,6 +1568,8 @@ class ImapClient
 
 			$this->setError(self::ERROR_COMMAND, 'Incomplete ACL response');
 		}
+
+		return [];
 	}
 
 	/**
@@ -1606,11 +1583,15 @@ class ImapClient
 	 *
 	 * @since 0.5-beta
 	 */
-	public function getAnnotation($mailbox, $entries, $attribs)
+	public function getAnnotation(string $mailbox, string | array $entries, string | array $attribs) : ?array
 	{
+		$result = null;
+
 		if (! \is_array($entries)) {
 			$entries = [$entries];
 		}
+
+		$last_entry = '';
 
 		// create entries string
 		// ANNOTATEMORE drafts before version 08 require quoted parameters
@@ -1633,7 +1614,6 @@ class ImapClient
 			$this->escape($mailbox), $entries, $attribs]);
 
 		if (self::ERROR_OK == $code) {
-			$result = [];
 			$data = $this->tokenizeResponse($response);
 
 			// Here we returns only data compatible with METADATA result format
@@ -1687,8 +1667,9 @@ class ImapClient
 				}
 			}
 
-			return $result;
 		}
+
+		return $result;
 	}
 
 	/**
@@ -1698,7 +1679,7 @@ class ImapClient
 	 *
 	 * @return mixed Capability values array for key=value pairs, true/false for others
 	 */
-	public function getCapability($name)
+	public function getCapability(string $name)
 	{
 		$result = $this->hasCapability($name);
 
@@ -1727,7 +1708,7 @@ class ImapClient
 	 *
 	 * @return string The delimiter
 	 */
-	public function getHierarchyDelimiter()
+	public function getHierarchyDelimiter() : string
 	{
 		if (isset($this->prefs['delimiter']) && $this->prefs['delimiter']) {
 			return $this->prefs['delimiter'];
@@ -1747,6 +1728,8 @@ class ImapClient
 				return $this->prefs['delimiter'] = $delimiter;
 			}
 		}
+
+		return '';
 	}
 
 	/**
@@ -1760,8 +1743,10 @@ class ImapClient
 	 *
 	 * @since 0.5-beta
 	 */
-	public function getMetadata($mailbox, $entries, $options = [])
+	public function getMetadata(string $mailbox, string | array $entries, array $options = []) : array
 	{
+		$result = [];
+
 		if (! \is_array($entries)) {
 			$entries = [$entries];
 		}
@@ -1775,7 +1760,7 @@ class ImapClient
 		$entlist = '(' . \implode(' ', $entries) . ')';
 
 		// create options string
-		if (\is_array($options)) {
+		if (\count($options)) {
 			$options = \array_change_key_case($options, CASE_UPPER);
 			$opts = [];
 
@@ -1817,8 +1802,9 @@ class ImapClient
 				}
 			}
 
-			return $result;
 		}
+
+		return $result;
 	}
 
 	/**
@@ -1826,8 +1812,10 @@ class ImapClient
 	 *
 	 * @return array Namespace data hash (personal, other, shared)
 	 */
-	public function getNamespace()
+	public function getNamespace() : array | int
 	{
+		$data = null;
+
 		if (\array_key_exists('namespace', $this->prefs)) {
 			return $this->prefs['namespace'];
 		}
@@ -1863,7 +1851,7 @@ class ImapClient
 	 *
 	 * @return array Quota information
 	 */
-	public function getQuota($mailbox = null)
+	public function getQuota(?string $mailbox = null) : array
 	{
 		if (null === $mailbox || '' === $mailbox) {
 			$mailbox = 'INBOX';
@@ -1938,12 +1926,12 @@ class ImapClient
 	 * @param int    $id      Message sequence number or UID
 	 * @param bool   $is_uid  True if $id is an UID
 	 *
-	 * @return array/bool Body structure array or False on error.
+	 * @return array|bool Body structure array or False on error.
 	 * @since 0.6
 	 */
-	public function getStructure($mailbox, $id, $is_uid = false)
+	public function getStructure(string $mailbox, int $id, bool $is_uid = false) : array | bool
 	{
-		$result = $this->fetch($mailbox, $id, $is_uid, ['BODYSTRUCTURE']);
+		$result = $this->fetch($mailbox, "{$id}", $is_uid, ['BODYSTRUCTURE']);
 
 		if (\is_array($result)) {
 			$result = \array_shift($result);
@@ -1974,7 +1962,7 @@ class ImapClient
 			$orig_part = $part;
 			$pos = \strpos($part, '.');
 			$rest = \substr($orig_part, $pos + 1);
-			$part = \substr($orig_part, 0, $pos);
+			$part = (int)\substr($orig_part, 0, $pos);
 
 			return self::getStructurePartArray($a[$part - 1], $rest);
 		}
@@ -1991,7 +1979,7 @@ class ImapClient
 	 *
 	 * @return array Part data as hash array (type, encoding, charset, size)
 	 */
-	public static function getStructurePartData($structure, $part)
+	public static function getStructurePartData($structure, $part) : array
 	{
 		$part_a = self::getStructurePartArray($structure, $part);
 		$data = [];
@@ -2029,14 +2017,19 @@ class ImapClient
 
 	/**
 	 * Fetches body of the specified message part
+	 *
+	 * @param ?resource $file
 	 */
-	public function handlePartBody($mailbox, $id, $is_uid = false, $part = '', $encoding = null, $print = null, $file = null, $formatted = false, $max_bytes = 0)
+	public function handlePartBody(string $mailbox, $id, bool $is_uid = false, string $part = '', ?string $encoding = null, bool $print = false, $file = null, bool $formatted = false, int $max_bytes = 0)
 	{
 		if (! $this->select($mailbox)) {
 			return false;
 		}
 
 		$binary = true;
+		$key = '';
+		$result = $initiated = $found = false;
+		$mode = 0;
 
 		do {
 			if (! $initiated) {
@@ -2113,7 +2106,8 @@ class ImapClient
 			if ('(' == $line[0] && ')' == \substr($line, -1)) {
 				// tokenize content inside brackets
 				// the content can be e.g.: (UID 9844 BODY[2.4] NIL)
-				$tokens = $this->tokenizeResponse(\preg_replace('/(^\(|\)$)/', '', $line));
+				$replacedLine = \preg_replace('/(^\(|\)$)/', '', $line);
+				$tokens = $this->tokenizeResponse($replacedLine);
 
 				for ($i = 0; $i < \count($tokens); $i += 2) {
 					if (\preg_match('/^(BODY|BINARY)/i', $tokens[$i])) {
@@ -2169,7 +2163,7 @@ class ImapClient
 						$length = \strlen($line);
 
 						if ($length % 4) {
-							$length = \floor($length / 4) * 4;
+							$length = (int)(\floor($length / 4) * 4);
 							$prev = \substr($line, $length);
 							$line = \substr($line, 0, $length);
 						}
@@ -2237,9 +2231,9 @@ class ImapClient
 	 * @return array|false Server identification information key/value hash, False on error
 	 * @since 0.6
 	 */
-	public function id($items = [])
+	public function id(array $items = []) : array | false
 	{
-		if (\is_array($items) && ! empty($items)) {
+		if (! empty($items)) {
 			foreach ($items as $key => $value) {
 				$args[] = $this->escape($key, true);
 				$args[] = $this->escape($value, true);
@@ -2277,14 +2271,14 @@ class ImapClient
 	 *
 	 * @return int Message unique identifier
 	 */
-	public function ID2UID($mailbox, $id)
+	public function ID2UID(string $mailbox, $id) : ?int
 	{
 		if (empty($id) || $id < 0) {
-			return;
+			return null;
 		}
 
 		if (! $this->select($mailbox)) {
-			return;
+			return null;
 		}
 
 		if ($uid = $this->data['UID-MAP'][$id]) {
@@ -2292,7 +2286,7 @@ class ImapClient
 		}
 
 		if (isset($this->data['EXISTS']) && $id > $this->data['EXISTS']) {
-			return;
+			return null;
 		}
 
 		$index = $this->search($mailbox, $id, true);
@@ -2302,6 +2296,8 @@ class ImapClient
 
 			return $this->data['UID-MAP'][$id] = (int)$arr[0];
 		}
+
+		return null;
 	}
 
 	/**
@@ -2314,16 +2310,16 @@ class ImapClient
 	 * @param bool         $uidfetch     Enables UID FETCH usage
 	 * @param bool         $return_uid   Enables returning UIDs instead of IDs
 	 *
-	 * @return rcube_result_index Response data
+	 * @return ResultIndex Response data
 	 */
 	public function index(
-		$mailbox,
-		$message_set,
-		$index_field = '',
-		$skip_deleted = true,
-		$uidfetch = false,
-		$return_uid = false
-	)
+		string $mailbox,
+		string | array $message_set,
+		string $index_field = '',
+		bool $skip_deleted = true,
+		bool $uidfetch = false,
+		bool $return_uid = false
+	) : ResultIndex
 	{
 		$msg_index = $this->fetchHeaderIndex(
 			$mailbox,
@@ -2357,7 +2353,7 @@ class ImapClient
 	 * @return array|bool List of mailboxes or hash of options if STATUS/MYROGHTS response
 	 *                    is requested, False on error.
 	 */
-	public function listMailboxes($ref, $mailbox, $return_opts = [], $select_opts = [])
+	public function listMailboxes(string $ref, string $mailbox, array $return_opts = [], array $select_opts = [])
 	{
 		return $this->_listMailboxes($ref, $mailbox, false, $return_opts, $select_opts);
 	}
@@ -2371,7 +2367,7 @@ class ImapClient
 	 * @return array List of user rights
 	 * @since 0.5-beta
 	 */
-	public function listRights($mailbox, $user)
+	public function listRights(string $mailbox, string $user) : array
 	{
 		[$code, $response] = $this->execute(
 			'LISTRIGHTS',
@@ -2394,6 +2390,8 @@ class ImapClient
 				'optional' => \explode(' ', $optional),
 			];
 		}
+
+		return [];
 	}
 
 	/**
@@ -2406,9 +2404,9 @@ class ImapClient
 	 * @return array|bool List of mailboxes or hash of options if STATUS/MYROGHTS response
 	 *                    is requested, False on error.
 	 */
-	public function listSubscribed($ref, $mailbox, $return_opts = [])
+	public function listSubscribed(string $ref, string $mailbox, array $return_opts = [])
 	{
-		return $this->_listMailboxes($ref, $mailbox, true, $return_opts, null);
+		return $this->_listMailboxes($ref, $mailbox, true, $return_opts, []);
 	}
 
 	/**
@@ -2420,7 +2418,7 @@ class ImapClient
 	 *
 	 * @return bool True on success, False on failure
 	 */
-	public function move($messages, $from, $to)
+	public function move($messages, string $from, string $to)
 	{
 		if (! $this->select($from)) {
 			return false;
@@ -2480,7 +2478,7 @@ class ImapClient
 	 * @return array MYRIGHTS response on success, NULL on error
 	 * @since 0.5-beta
 	 */
-	public function myRights($mailbox)
+	public function myRights(string $mailbox) : array
 	{
 		[$code, $response] = $this->execute('MYRIGHTS', [$this->escape($mailbox)], 0, '/^\* MYRIGHTS /i');
 
@@ -2493,6 +2491,8 @@ class ImapClient
 
 			return \str_split($rights);
 		}
+
+		return [];
 	}
 
 	/**
@@ -2534,9 +2534,9 @@ class ImapClient
 	 * @param bool   $return_uid Enable UID in result instead of sequence ID
 	 * @param array  $items      Return items (MIN, MAX, COUNT, ALL)
 	 *
-	 * @return rcube_result_index Result data
+	 * @return ResultIndex Result data
 	 */
-	public function search($mailbox, $criteria, $return_uid = false, $items = [])
+	public function search(string $mailbox, string $criteria, bool $return_uid = false, array $items = [])
 	{
 		$old_sel = $this->selected;
 
@@ -2591,7 +2591,7 @@ class ImapClient
 	 *
 	 * @return bool True on success, false on error
 	 */
-	public function select($mailbox, $qresync_data = null)
+	public function select(string $mailbox, $qresync_data = null)
 	{
 		if (! \strlen($mailbox)) {
 			return false;
@@ -2712,13 +2712,13 @@ class ImapClient
 	 *
 	 * @param string $mailbox Mailbox name
 	 * @param string $user    User name
-	 * @param mixed  $acl     ACL string or array
+	 * @param string | array $acl     ACL string or array
 	 *
 	 * @return bool True on success, False on failure
 	 *
 	 * @since 0.5-beta
 	 */
-	public function setACL($mailbox, $user, $acl)
+	public function setACL(string $mailbox, string $user, array | string $acl) : bool
 	{
 		if (\is_array($acl)) {
 			$acl = \implode('', $acl);
@@ -2744,9 +2744,9 @@ class ImapClient
 	 * @return bool True on success, False on failure
 	 * @since 0.5-beta
 	 */
-	public function setAnnotation($mailbox, $data)
+	public function setAnnotation(string $mailbox, array $data) : bool
 	{
-		if (! \is_array($data) || empty($data)) {
+		if (empty($data)) {
 			$this->setError(self::ERROR_COMMAND, 'Wrong argument for SETANNOTATION command');
 
 			return false;
@@ -2777,7 +2777,7 @@ class ImapClient
 	 *
 	 * @since 0.5-stable
 	 */
-	public function setDebug($debug, $handler = null) : void
+	public function setDebug($debug, ?callable $handler = null) : void
 	{
 		$this->debug = $debug;
 		$this->debug_handler = $handler;
@@ -2803,9 +2803,9 @@ class ImapClient
 	 * @return bool True on success, False on failure
 	 * @since 0.5-beta
 	 */
-	public function setMetadata($mailbox, $entries)
+	public function setMetadata(string $mailbox, array $entries) : bool
 	{
-		if (! \is_array($entries) || empty($entries)) {
+		if (empty($entries)) {
 			$this->setError(self::ERROR_COMMAND, 'Wrong argument for SETMETADATA command');
 
 			return false;
@@ -2835,9 +2835,9 @@ class ImapClient
 	 * @param bool   $return_uid Enables UID SORT usage
 	 * @param string $encoding   Character set
 	 *
-	 * @return rcube_result_index Response data
+	 * @return ResultIndex Response data
 	 */
-	public function sort($mailbox, $field = 'ARRIVAL', $criteria = '', $return_uid = false, $encoding = 'US-ASCII')
+	public function sort(string $mailbox, $field = 'ARRIVAL', $criteria = '', $return_uid = false, $encoding = 'US-ASCII')
 	{
 		$old_sel = $this->selected;
 		$supported = ['ARRIVAL', 'CC', 'DATE', 'FROM', 'SIZE', 'SUBJECT', 'TO'];
@@ -2953,9 +2953,8 @@ class ImapClient
 	 *                        in RFC3501: UIDNEXT, UIDVALIDITY, RECENT
 	 *
 	 * @return array Status item-value hash
-	 * @since 0.5-beta
 	 */
-	public function status($mailbox, $items = [])
+	public function status(string $mailbox, array $items = []) : array | false
 	{
 		if (! \strlen($mailbox)) {
 			return false;
@@ -3031,20 +3030,18 @@ class ImapClient
 	 * @param string $criteria   Searching criteria
 	 * @param bool   $return_uid Enables UIDs in result instead of sequence numbers
 	 * @param string $encoding   Character set
-	 *
-	 * @return rcube_result_thread Thread data
 	 */
-	public function thread(string $mailbox, string $algorithm = 'REFERENCES', string $criteria = '', bool $return_uid = false, string $encoding = 'US-ASCII')
+	public function thread(string $mailbox, string $algorithm = 'REFERENCES', string $criteria = '', bool $return_uid = false, string $encoding = 'US-ASCII') : \PHPFUI\Imap2\Roundcube\ResultThread
 	{
 		$old_sel = $this->selected;
 
 		if (! $this->select($mailbox)) {
-			return new ResultThread($mailbox);
+			return new \PHPFUI\Imap2\Roundcube\ResultThread($mailbox);
 		}
 
 		// return empty result when folder is empty and we're just after SELECT
 		if ($old_sel != $mailbox && ! $this->data['EXISTS']) {
-			return new ResultThread($mailbox, '* THREAD');
+			return new \PHPFUI\Imap2\Roundcube\ResultThread($mailbox, '* THREAD');
 		}
 
 		$encoding = $encoding ? \trim($encoding) : 'US-ASCII';
@@ -3060,7 +3057,7 @@ class ImapClient
 			$response = null;
 		}
 
-		return new ResultThread($mailbox, $response);
+		return new \PHPFUI\Imap2\Roundcube\ResultThread($mailbox, $response);
 	}
 
 	/**
@@ -3092,6 +3089,7 @@ class ImapClient
 						// error
 					}
 
+					$bytes = (int)$bytes;
 					$result[] = $bytes ? \substr($str, $epos + 3, $bytes) : '';
 					$str = \substr($str, $epos + 3 + $bytes);
 
@@ -3134,9 +3132,10 @@ class ImapClient
 				// String atom, number, astring, NIL, *, %
 				default:
 					// empty string
-					if ('' === $str || null === $str) {
+					if (empty($str))
+						{
 						break 2;
-					}
+						}
 
 					// excluded chars: SP, CTL, ), DEL
 					// we do not exclude [ and ] (#1489223)
@@ -3160,7 +3159,7 @@ class ImapClient
 	 *
 	 * @return int Message sequence identifier
 	 */
-	public function UID2ID($mailbox, $uid)
+	public function UID2ID(string $mailbox, int $uid) : int
 	{
 		if ($uid > 0) {
 			$index = $this->search($mailbox, "UID {$uid}");
@@ -3171,6 +3170,8 @@ class ImapClient
 				return (int)$arr[0];
 			}
 		}
+
+		return $uid;
 	}
 
 	/**
@@ -3211,7 +3212,7 @@ class ImapClient
 	 *
 	 * @return bool True on success, False on failure
 	 */
-	public function unflag($mailbox, $messages, $flag)
+	public function unflag(string $mailbox, $messages, $flag)
 	{
 		return $this->modFlag($mailbox, $messages, $flag, '-');
 	}
@@ -3376,11 +3377,11 @@ class ImapClient
 	 *                    is requested, False on error.
 	 */
 	protected function _listMailboxes(
-		$ref,
-		$mailbox,
-		$subscribed = false,
-		$return_opts = [],
-		$select_opts = []
+		string $ref,
+		string $mailbox,
+		bool $subscribed = false,
+		array $return_opts = [],
+		array $select_opts = []
 	)
 	{
 		if (! \strlen($mailbox)) {
@@ -3512,10 +3513,12 @@ class ImapClient
 	 * @param string $pass Password
 	 * @param string $type Authentication type (PLAIN/CRAM-MD5/DIGEST-MD5)
 	 *
-	 * @return resource Connection resourse on success, error code on error
+	 * @return \IMAP\Connection resourse on success, error code on error
 	 */
-	protected function authenticate(string $user, string $pass, string $type = 'PLAIN')
+	protected function authenticate(string $user, string $pass, string $type = 'PLAIN') : \IMAP\Connection | int
 	{
+		$result = $line = '';
+
 		if ('CRAM-MD5' == $type || 'DIGEST-MD5' == $type) {
 			if ('DIGEST-MD5' == $type && ! \class_exists('Auth_SASL')) {
 				return $this->setError(
@@ -3580,7 +3583,7 @@ class ImapClient
 					$user = '';
 				}
 
-				$auth_sasl = new Auth_SASL();
+				$auth_sasl = new \Auth_SASL();
 				$auth_sasl = $auth_sasl->factory('digestmd5');
 				$reply = \base64_encode($auth_sasl->getResponse(
 					$authc,
@@ -3616,91 +3619,82 @@ class ImapClient
 			$line = $this->readReply();
 			$result = $this->parseResult($line);
 		}
-		elseif ('GSSAPI' == $type) {
-			if (! \extension_loaded('krb5')) {
-				return $this->setError(
-					self::ERROR_BYE,
-					'The krb5 extension is required for GSSAPI authentication'
-				);
-			}
-
-			if (empty($this->prefs['gssapi_cn'])) {
-				return $this->setError(
-					self::ERROR_BYE,
-					'The gssapi_cn parameter is required for GSSAPI authentication'
-				);
-			}
-
-			if (empty($this->prefs['gssapi_context'])) {
-				return $this->setError(
-					self::ERROR_BYE,
-					'The gssapi_context parameter is required for GSSAPI authentication'
-				);
-			}
-
-			\putenv('KRB5CCNAME=' . $this->prefs['gssapi_cn']);
-
-			try {
-				$ccache = new KRB5CCache();
-				$ccache->open($this->prefs['gssapi_cn']);
-				$gssapicontext = new GSSAPIContext();
-				$gssapicontext->acquireCredentials($ccache);
-
-				$token = '';
-				$success = $gssapicontext->initSecContext($this->prefs['gssapi_context'], null, null, null, $token);
-				$token = \base64_encode($token);
-			}
-			catch (Exception $e) {
-				\trigger_error($e->getMessage(), E_USER_WARNING);
-
-				return $this->setError(self::ERROR_BYE, 'GSSAPI authentication failed');
-			}
-
-			$this->putLine($this->nextTag() . ' AUTHENTICATE GSSAPI ' . $token);
-			$line = \trim($this->readReply());
-
-			if ('+' != $line[0]) {
-				return $this->parseResult($line);
-			}
-
-			try {
-				$itoken = \base64_decode(\substr($line, 2));
-
-				if (! $gssapicontext->unwrap($itoken, $itoken)) {
-					throw new Exception('GSSAPI SASL input token unwrap failed');
-				}
-
-				if (\strlen($itoken) < 4) {
-					throw new Exception('GSSAPI SASL input token invalid');
-				}
-
-				// Integrity/encryption layers are not supported. The first bit
-				// indicates that the server supports "no security layers".
-				// 0x00 should not occur, but support broken implementations.
-				$server_layers = \ord($itoken[0]);
-
-				if ($server_layers && ($server_layers & 0x1) != 0x1) {
-					throw new Exception('Server requires GSSAPI SASL integrity/encryption');
-				}
-
-				// Construct output token. 0x01 in the first octet = SASL layer "none",
-				// zero in the following three octets = no data follows.
-				// See https://github.com/cyrusimap/cyrus-sasl/blob/e41cfb986c1b1935770de554872247453fdbb079/plugins/gssapi.c#L1284
-				if (! $gssapicontext->wrap(\pack('CCCC', 0x1, 0, 0, 0), $otoken, true)) {
-					throw new Exception('GSSAPI SASL output token wrap failed');
-				}
-			}
-			catch (Exception $e) {
-				\trigger_error($e->getMessage(), E_USER_WARNING);
-
-				return $this->setError(self::ERROR_BYE, 'GSSAPI authentication failed');
-			}
-
-			$this->putLine(\base64_encode($otoken));
-
-			$line = $this->readReply();
-			$result = $this->parseResult($line);
-		}
+		//else if ($type == 'GSSAPI') {
+		//	if (!extension_loaded('krb5')) {
+		//		return $this->setError(self::ERROR_BYE,
+		//													 "The krb5 extension is required for GSSAPI authentication");
+		//	}
+		//
+		//	if (empty($this->prefs['gssapi_cn'])) {
+		//		return $this->setError(self::ERROR_BYE,
+		//													 "The gssapi_cn parameter is required for GSSAPI authentication");
+		//	}
+		//
+		//	if (empty($this->prefs['gssapi_context'])) {
+		//		return $this->setError(self::ERROR_BYE,
+		//													 "The gssapi_context parameter is required for GSSAPI authentication");
+		//	}
+		//
+		//	putenv('KRB5CCNAME=' . $this->prefs['gssapi_cn']);
+		//
+		//	try {
+		//		$ccache = new \KRB5CCache();
+		//		$ccache->open($this->prefs['gssapi_cn']);
+		//		$gssapicontext = new \GSSAPIContext();
+		//		$gssapicontext->acquireCredentials($ccache);
+		//
+		//		$token   = '';
+		//		$success = $gssapicontext->initSecContext($this->prefs['gssapi_context'], null, null, null, $token);
+		//		$token   = base64_encode($token);
+		//	}
+		//	catch (\Exception $e) {
+		//		trigger_error($e->getMessage(), E_USER_WARNING);
+		//		return $this->setError(self::ERROR_BYE, "GSSAPI authentication failed");
+		//	}
+		//
+		//	$this->putLine($this->nextTag() . " AUTHENTICATE GSSAPI " . $token);
+		//	$line = trim($this->readReply());
+		//
+		//	if ($line[0] != '+') {
+		//		return $this->parseResult($line);
+		//	}
+		//
+		//	try {
+		//		$itoken = base64_decode(substr($line, 2));
+		//
+		//		if (!$gssapicontext->unwrap($itoken, $itoken)) {
+		//			throw new \Exception("GSSAPI SASL input token unwrap failed");
+		//		}
+		//
+		//		if (strlen($itoken) < 4) {
+		//			throw new \Exception("GSSAPI SASL input token invalid");
+		//		}
+		//
+		//		// Integrity/encryption layers are not supported. The first bit
+		//		// indicates that the server supports "no security layers".
+		//		// 0x00 should not occur, but support broken implementations.
+		//		$server_layers = ord($itoken[0]);
+		//		if ($server_layers && ($server_layers & 0x1) != 0x1) {
+		//			throw new \Exception("Server requires GSSAPI SASL integrity/encryption");
+		//		}
+		//
+		//		// Construct output token. 0x01 in the first octet = SASL layer "none",
+		//		// zero in the following three octets = no data follows.
+		//		// See https://github.com/cyrusimap/cyrus-sasl/blob/e41cfb986c1b1935770de554872247453fdbb079/plugins/gssapi.c#L1284
+		//		if (!$gssapicontext->wrap(pack("CCCC", 0x1, 0, 0, 0), $itoken, true)) {
+		//			throw new \Exception("GSSAPI SASL output token wrap failed");
+		//		}
+		//	}
+		//	catch (\Exception $e) {
+		//		trigger_error($e->getMessage(), E_USER_WARNING);
+		//		return $this->setError(self::ERROR_BYE, "GSSAPI authentication failed");
+		//	}
+		//
+		//	$this->putLine(base64_encode($itoken));
+		//
+		//	$line   = $this->readReply();
+		//	$result = $this->parseResult($line);
+		//}
 		elseif ('PLAIN' == $type) {
 			// proxy authorization
 			if (! empty($this->prefs['auth_cid'])) {
@@ -3804,7 +3798,7 @@ class ImapClient
 	/**
 	 * Clear internal status cache
 	 */
-	protected function clear_status_cache($mailbox) : void
+	protected function clear_status_cache(string $mailbox = '') : void
 	{
 		unset($this->data['STATUS:' . $mailbox]);
 
@@ -3831,7 +3825,7 @@ class ImapClient
 	 *
 	 * @since 0.5-stable
 	 */
-	protected function debug($message) : void
+	protected function debug(string $message) : void
 	{
 		if (($len = \strlen($message)) > self::DEBUG_LINE_LENGTH) {
 			$diff = $len - self::DEBUG_LINE_LENGTH;
@@ -3856,7 +3850,7 @@ class ImapClient
 	 *
 	 * @return bool True if connection is closed
 	 */
-	protected function eof()
+	protected function eof() : bool
 	{
 		if (! \is_resource($this->fp)) {
 			return true;
@@ -3884,7 +3878,7 @@ class ImapClient
 	 *
 	 * @return string Space-separated list of flags
 	 */
-	protected function flagsToStr($flags)
+	protected function flagsToStr(array $flags) : string
 	{
 		foreach ((array)$flags as $idx => $flag) {
 			if ($flag = $this->flags[\strtoupper($flag)]) {
@@ -3898,7 +3892,7 @@ class ImapClient
 	/**
 	 * Capabilities checker
 	 */
-	protected function hasCapability(string $name)
+	protected function hasCapability(string $name) : bool
 	{
 		if (empty($this->capability) || '' == $name) {
 			return false;
@@ -3931,7 +3925,7 @@ class ImapClient
 	 *
 	 * @return resource Connection resourse on success, error code on error
 	 */
-	protected function login($user, $password)
+	protected function login(string $user, string $password)
 	{
 		// Prevent from sending credentials in plain text when connection is not secure
 		if ($this->getCapability('LOGINDISABLED')) {
@@ -3963,7 +3957,7 @@ class ImapClient
 	 *
 	 * @return bool True on success, False on failure
 	 */
-	protected function modFlag($mailbox, $messages, $flag, $mod = '+')
+	protected function modFlag(string $mailbox, string | array $messages, string $flag, string $mod = '+') : bool
 	{
 		if (! $flag) {
 			return false;
@@ -4019,14 +4013,14 @@ class ImapClient
 	 *
 	 * @return string Line of text response
 	 */
-	protected function multLine($line, $escape = false)
+	protected function multLine(string $line, bool $escape = false) : string
 	{
 		$line = \rtrim($line);
 
 		if (\preg_match('/\{([0-9]+)\}$/', $line, $m)) {
 			$out = '';
 			$str = \substr($line, 0, -\strlen($m[0]));
-			$bytes = $m[1];
+			$bytes = (int)$m[1];
 
 			while (\strlen($out) < $bytes) {
 				$line = $this->readBytes($bytes);
@@ -4047,7 +4041,7 @@ class ImapClient
 	/**
 	 * CAPABILITY response parser
 	 */
-	protected function parseCapability($str, $trusted = false) : void
+	protected function parseCapability(string $str, bool $trusted = false) : void
 	{
 		$str = \preg_replace('/^\* CAPABILITY /i', '', $str);
 
@@ -4074,7 +4068,7 @@ class ImapClient
 	 *
 	 * @return int Response status
 	 */
-	protected function parseResult($string, $err_prefix = '')
+	protected function parseResult(string $string, string $err_prefix = '') : int
 	{
 		if (\preg_match('/^[a-z0-9*]+ (OK|NO|BAD|BYE)(.*)$/i', \trim($string), $matches)) {
 			$res = \strtoupper($matches[1]);
@@ -4135,9 +4129,9 @@ class ImapClient
 	 * @param bool   $endln      True if CRLF need to be added at the end of command
 	 * @param bool   $anonymized Don't write the given data to log but a placeholder
 	 *
-	 * @param int Number of bytes sent, False on error
+	 * @return int | bool Number of bytes sent, False on error
 	 */
-	protected function putLine($string, $endln = true, $anonymized = false)
+	protected function putLine(string $string, bool $endln = true, bool $anonymized = false) : int | bool
 	{
 		if (! $this->fp) {
 			return false;
@@ -4183,7 +4177,7 @@ class ImapClient
 	 *
 	 * @return int|bool Number of bytes sent, False on error
 	 */
-	protected function putLineC($string, $endln = true, $anonymized = false)
+	protected function putLineC(string $string, bool $endln = true, bool $anonymized = false) : bool | int
 	{
 		if (! $this->fp) {
 			return false;
@@ -4241,7 +4235,7 @@ class ImapClient
 	/**
 	 * Joins IMAP command line elements (recursively)
 	 */
-	protected static function r_implode($element)
+	protected static function r_implode(string | array $element) : string
 	{
 		$string = '';
 
@@ -4266,7 +4260,7 @@ class ImapClient
 	 *
 	 * @return string Response text
 	 */
-	protected function readBytes($bytes)
+	protected function readBytes(int $bytes) : string
 	{
 		$data = '';
 		$len = 0;
@@ -4297,13 +4291,13 @@ class ImapClient
 	 *
 	 * @return string Line of text response
 	 */
-	protected function readFullLine($size = 1024)
+	protected function readFullLine(int $size = 1024) : string
 	{
 		$line = $this->readLine($size);
 
 		// include all string literels untile the real end of "line"
 		while (\preg_match('/\{([0-9]+)\}\r\n$/', $line, $m)) {
-			$bytes = $m[1];
+			$bytes = (int)$m[1];
 			$out = '';
 
 			while (\strlen($out) < $bytes) {
@@ -4329,7 +4323,7 @@ class ImapClient
 	 *
 	 * @return string Line of text response
 	 */
-	protected function readLine($size = 1024)
+	protected function readLine(int $size = 1024) : ?string
 	{
 		$line = '';
 
@@ -4368,24 +4362,27 @@ class ImapClient
 	 *
 	 * @return string Response text
 	 */
-	protected function readReply(&$untagged = null)
-	{
-		do {
+	protected function readReply(string|array|null &$untagged = null) : string
+		{
+		do
+			{
 			$line = \trim($this->readLine(1024));
 
 			// store untagged response lines
-			if ('*' == $line[0]) {
+			if ('*' == $line[0])
+				{
 				$untagged[] = $line;
+				}
 			}
-		}
 		while ('*' == $line[0]);
 
-		if ($untagged) {
+		if (\is_array($untagged))
+			{
 			$untagged = \implode("\n", $untagged);
-		}
+			}
 
 		return $line;
-	}
+		}
 
 	/**
 	 * Initializes environment
@@ -4428,7 +4425,7 @@ class ImapClient
 	 *
 	 * @return bool True any check is true or connection is closed.
 	 */
-	protected function startsWith($string, $match, $error = false, $nonempty = false)
+	protected function startsWith(string $string, string $match, bool $error = false, bool $nonempty = false) : bool
 	{
 		if (! $this->fp) {
 			return true;

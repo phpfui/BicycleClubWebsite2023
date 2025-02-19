@@ -3,15 +3,15 @@
 /*
  * This file is part of the PHP IMAP2 package.
  *
- * (c) Francesco Bianco <bianco@javanile.org>
+ * (c) Francesco Bianco <bianco@PHPFUI.org>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Javanile\Imap2;
+namespace PHPFUI\Imap2;
 
-use Javanile\Imap2\Roundcube\ImapClient;
+use PHPFUI\Imap2\Roundcube\ImapClient;
 
 class Mailbox
 {
@@ -21,7 +21,7 @@ class Mailbox
 	 *
 	 * @return bool
 	 */
-	public static function append(Connection $imap, $folder, $message, $options = null, $internalDate = null)
+	public static function append(\IMAP\Connection $imap, $folder, $message, $options = null, $internalDate = null)
 	{
 		$folderParts = \explode('}', $folder);
 		$client = $imap->getClient();
@@ -33,7 +33,7 @@ class Mailbox
 		return (bool)$success;
 	}
 
-	public static function check(Connection $imap) : stdClass
+	public static function check(\IMAP\Connection $imap) : \stdClass
 	{
 		$imap->selectMailbox();
 
@@ -49,7 +49,7 @@ class Mailbox
 		];
 	}
 
-	public static function createMailbox(Connection $imap, string $mailbox) : bool
+	public static function createMailbox(\IMAP\Connection $imap, string $mailbox) : bool
 	{
 		$client = $imap->getClient();
 
@@ -66,7 +66,7 @@ class Mailbox
 		return $success;
 	}
 
-	public static function deleteMailbox(Connection $imap, string $mailbox)
+	public static function deleteMailbox(\IMAP\Connection $imap, string $mailbox)
 	{
 		$client = $imap->getClient();
 
@@ -89,7 +89,7 @@ class Mailbox
 		return $success;
 	}
 
-	public static function getMailboxes(Connection $imap, $reference, $pattern)
+	public static function getMailboxes(\IMAP\Connection $imap, $reference, $pattern)
 	{
 		$referenceParts = \explode('}', $reference);
 		$client = $imap->getClient();
@@ -114,14 +114,14 @@ class Mailbox
 		return $return;
 	}
 
-	public static function getSubscribed(Connection $imap, $mailbox)
+	public static function getSubscribed(\IMAP\Connection $imap, $mailbox)
 	{
 		$client = $imap->getClient();
 
 		return $client->deleteFolder($mailbox);
 	}
 
-	public static function list(Connection $imap, $reference, $pattern)
+	public static function list(\IMAP\Connection $imap, $reference, $pattern)
 	{
 		$referenceParts = \explode('}', $reference);
 		$client = $imap->getClient();
@@ -138,7 +138,7 @@ class Mailbox
 		return $return;
 	}
 
-	public static function listScan(Connection $imap, $reference, $pattern)
+	public static function listScan(\IMAP\Connection $imap, $reference, $pattern)
 	{
 		$referenceParts = \explode('}', $reference);
 		$client = $imap->getClient();
@@ -155,14 +155,14 @@ class Mailbox
 		return $return;
 	}
 
-	public static function listSubscribed(Connection $imap, $mailbox)
+	public static function listSubscribed(\IMAP\Connection $imap, $mailbox)
 	{
 		$client = $imap->getClient();
 
 		return $client->deleteFolder($mailbox);
 	}
 
-	public static function mailboxMsgInfo(Connection $imap)
+	public static function mailboxMsgInfo(\IMAP\Connection $imap)
 	{
 		$client = $imap->getClient();
 
@@ -191,7 +191,7 @@ class Mailbox
 		return (object)$mailboxInfo;
 	}
 
-	public static function numMsg(Connection $imap)
+	public static function numMsg(\IMAP\Connection $imap)
 	{
 		$imap->selectMailbox();
 		$client = $imap->getClient();
@@ -201,7 +201,7 @@ class Mailbox
 		return (int)($status['MESSAGES']);
 	}
 
-	public static function numRecent(Connection $imap)
+	public static function numRecent(\IMAP\Connection $imap)
 	{
 		$client = $imap->getClient();
 		$imap->selectMailbox();
@@ -214,12 +214,12 @@ class Mailbox
 		];
 	}
 
-	public static function renameMailbox(Connection $imap, string $from, string $to)
+	public static function renameMailbox(\IMAP\Connection $imap, string $from, string $to)
 	{
 		return $imap->getClient()->renameFolder($from, $to);
 	}
 
-	public static function status(Connection $imap, string $mailbox, int $flags)
+	public static function status(\IMAP\Connection $imap, string $mailbox, int $flags)
 	{
 		$mailboxName = Functions::getMailboxName($mailbox);
 
@@ -270,12 +270,12 @@ class Mailbox
 		return (object)$returnStatus;
 	}
 
-	public static function subscribe(Connection $imap, string $mailbox)
+	public static function subscribe(\IMAP\Connection $imap, string $mailbox)
 		{
 		return $imap->getClient()->deleteFolder($mailbox);
 		}
 
-	public static function unsubscribe(Connection $imap, string $mailbox)
+	public static function unsubscribe(\IMAP\Connection $imap, string $mailbox)
 		{
 		return $imap->getClient()->deleteFolder($mailbox);
 		}

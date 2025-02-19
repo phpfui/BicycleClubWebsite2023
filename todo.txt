@@ -1,12 +1,8 @@
-Add white list credit for GA events
+Test normal member permission for free members.
 
 Add new forum permissions to member group.
 
-Add normal member permission for free members.
-
 Delete unpaid general admission and event registrants and email abandon cart messages
-
-Test General Admission paid and free options
 
 Default category
 

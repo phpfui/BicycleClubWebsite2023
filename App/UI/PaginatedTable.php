@@ -257,7 +257,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 		}
 
 	/**
-	 * Specify which columns are sortable.
+	 * Specify which columns are searchable.
 	 *
 	 * @param array<string|int,string|\PHPFUI\Input\Input> $inputs if the key is a string, then value must be a PHPFUI\Input. If value is a string, then it is assumed a field name.
 	 */

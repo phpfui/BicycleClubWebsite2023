@@ -34,7 +34,6 @@ class JournalQueue
 			$view->setHeaders(\array_merge($headers, ['edit', 'del']));
 			unset($headers['memberId']);
 			$view->setSortableColumns(\array_keys($headers));
-//			$view->setSearchColumns(\array_keys($headers));
 			$container->add($view);
 			}
 		else

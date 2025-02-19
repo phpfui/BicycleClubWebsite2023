@@ -50,7 +50,7 @@
         "tinify/tinify": "*",
         "tinymce/tinymce": "^7.0",
         "twilio/sdk": "^8.0",
-        "phpfui/php-imap": "*",
+        "phpfui/php-imap": "dev-main",
         "zbateson/mail-mime-parser": "^3.0"
     },
     "require-dev": {

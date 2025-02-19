@@ -3,20 +3,18 @@
 /*
  * This file is part of the PHP IMAP2 package.
  *
- * (c) Francesco Bianco <bianco@javanile.org>
+ * (c) Francesco Bianco <bianco@PHPFUI.org>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Javanile\Imap2;
+namespace PHPFUI\Imap2;
 
 class HeaderInfo
 {
-	public static function fromMessage($message, $defaultHost)
+	public static function fromMessage($message, $defaultHost) : \stdClass
 	{
-		//file_put_contents('t3.json', json_encode($message, JSON_PRETTY_PRINT));
-
 		$to = Functions::writeAddressFromEnvelope($message->envelope[5]);
 		$cc = Functions::writeAddressFromEnvelope($message->envelope[6]);
 		$from = Functions::writeAddressFromEnvelope($message->envelope[2]);
@@ -84,7 +82,7 @@ class HeaderInfo
 		return (object)$headerInfo;
 	}
 
-	public static function sanitizeMailDate($mailDate)
+	public static function sanitizeMailDate(string $mailDate) : string
 	{
 		if ('0' == $mailDate[0]) {
 			$mailDate = ' ' . \substr($mailDate, 1);
@@ -93,7 +91,10 @@ class HeaderInfo
 		return $mailDate;
 	}
 
-	protected static function parseAddressList($address, $defaultHost)
+	/**
+	 * @return array<\stdClass>
+	 */
+	protected static function parseAddressList(string $address, string $defaultHost) : array
 	{
 		$addressList = \imap_rfc822_parse_adrlist($address, $defaultHost);
 		$customAddressList = [];

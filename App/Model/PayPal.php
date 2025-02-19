@@ -84,8 +84,6 @@ class PayPal
 
 		if ($unpaidBalance <= 0.0)
 			{
-			$this->logger->debug($unpaidBalance);
-
 			return null;
 			}
 

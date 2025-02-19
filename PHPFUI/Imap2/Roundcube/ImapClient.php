@@ -62,9 +62,9 @@ class ImapClient
 
 	public array $data = [];
 
-	public $error;
+	public string $error = '';
 
-	public int $errornum;
+	public int $errornum = self::ERROR_OK;
 
 	public array $extensions_enabled = [];
 
@@ -79,11 +79,11 @@ class ImapClient
 		'*' => '\\*',
 	];
 
-	public $result;
+	public string $result = '';
 
-	public $resultcode;
+	public string $resultcode = '';
 
-	public $selected;
+	public string $selected = '';
 
 	protected array $capability = [];
 
@@ -91,15 +91,15 @@ class ImapClient
 
 	protected int $cmd_num = 0;
 
-	protected $cmd_tag;
+	protected string $cmd_tag = '';
 
 	protected bool $debug = false;
 
 	protected $debug_handler = null;
 
-	protected $fp;
+	protected $fp = null;
 
-	protected string $host;
+	protected string $host = '';
 
 	protected bool $logged = false;
 
@@ -107,9 +107,9 @@ class ImapClient
 
 	protected string $rawLastLine;
 
-	protected $resourceid;
+	protected string $resourceid = '';
 
-	protected string $user;
+	protected string $user = '';
 
 	/**
 	 * Handler for IMAP APPEND command
@@ -276,10 +276,10 @@ class ImapClient
 	 * Clears detected server capabilities
 	 */
 	public function clearCapability() : void
-	{
+		{
 		$this->capability = [];
 		$this->capability_readed = false;
-	}
+		}
 
 	/**
 	 * Removes all messages in a folder
@@ -289,24 +289,28 @@ class ImapClient
 	 * @return bool True on success, False on error
 	 */
 	public function clearFolder(string $mailbox) : bool
-	{
+		{
 		$res = null;
 
-		if ($this->countMessages($mailbox) > 0) {
+		if ($this->countMessages($mailbox) > 0)
+			{
 			$res = $this->flag($mailbox, '1:*', 'DELETED');
-		}
+			}
 
-		if ($res) {
-			if ($this->selected === $mailbox) {
+		if ($res)
+			{
+			if ($this->selected === $mailbox)
+				{
 				$res = $this->close();
-			}
-			else {
+				}
+			else
+				{
 				$res = $this->expunge($mailbox);
+				}
 			}
-		}
 
 		return $res;
-	}
+		}
 
 	/**
 	 * Executes CLOSE command
@@ -315,29 +319,31 @@ class ImapClient
 	 * @since 0.5
 	 */
 	public function close() : bool
-	{
+		{
 		$result = $this->execute('CLOSE', [], self::COMMAND_NORESPONSE);
 
-		if (self::ERROR_OK == $result) {
-			$this->selected = null;
+		if (self::ERROR_OK == $result)
+			{
+			$this->selected = '';
 
 			return true;
-		}
+			}
 
 		return false;
-	}
+		}
 
 	/**
 	 * Closes connection with logout.
 	 */
 	public function closeConnection() : void
-	{
-		if ($this->logged && $this->putLine($this->nextTag() . ' LOGOUT')) {
+		{
+		if ($this->logged && $this->putLine($this->nextTag() . ' LOGOUT'))
+			{
 			$this->readReply();
-		}
+			}
 
 		$this->closeSocket();
-	}
+		}
 
 	/**
 	 * Converts message identifiers array into sequence-set syntax
@@ -348,57 +354,66 @@ class ImapClient
 	 * @return string Compressed sequence-set
 	 */
 	public static function compressMessageSet(string|array $messages, bool $force = false) : string
-	{
+		{
 		// given a comma delimited list of independent mid's,
 		// compresses by grouping sequences together
-		if (! \is_array($messages)) {
+		if (! \is_array($messages))
+			{
 			// if less than 255 bytes long, let's not bother
-			if (! $force && \strlen($messages) < 255) {
+			if (! $force && \strlen($messages) < 255)
+				{
 				return \preg_match('/[^0-9:,*]/', $messages) ? 'INVALID' : $messages;
-			}
+				}
 
 			// see if it's already been compressed
-			if (false !== \strpos($messages, ':')) {
+			if (false !== \strpos($messages, ':'))
+				{
 				return \preg_match('/[^0-9:,*]/', $messages) ? 'INVALID' : $messages;
-			}
+				}
 
 			// separate, then sort
 			$messages = \explode(',', $messages);
-		}
+			}
 
 		\sort($messages);
 
 		$result = [];
 		$start = $prev = $messages[0];
 
-		foreach ($messages as $id) {
+		foreach ($messages as $id)
+			{
 			$incr = $id - $prev;
 
-			if ($incr > 1) { // found a gap
-				if ($start == $prev) {
+			if ($incr > 1)
+				{ // found a gap
+				if ($start == $prev)
+					{
 					$result[] = $prev; // push single id
-				}
-				else {
+					}
+				else
+					{
 					$result[] = $start . ':' . $prev; // push sequence as start_id:end_id
-				}
+					}
 				$start = $id; // start of new sequence
-			}
+				}
 			$prev = $id;
-		}
+			}
 
 		// handle the last sequence/id
-		if ($start == $prev) {
+		if ($start == $prev)
+			{
 			$result[] = $prev;
-		}
-		else {
+			}
+		else
+			{
 			$result[] = $start . ':' . $prev;
-		}
+			}
 
 		// return as comma separated string
 		$result = \implode(',', $result);
 
 		return \preg_match('/[^0-9:,*]/', $result) ? 'INVALID' : $result;
-	}
+		}
 
 	/**
 	 * Connects to IMAP server and authenticates.
@@ -411,86 +426,99 @@ class ImapClient
 	 * @return bool True on success, False on failure
 	 */
 	public function connect(string $host, string $user, string $password, array $options = []) : bool
-	{
+		{
 		// configure
 		$this->set_prefs($options);
 
 		$this->host = $host;
 		$this->user = $user;
 		$this->logged = false;
-		$this->selected = null;
+		$this->selected = '';
 
 		// check input
-		if (empty($host)) {
+		if (empty($host))
+			{
 			$this->setError(self::ERROR_BAD, 'Empty host');
 
 			return false;
-		}
+			}
 
-		if (empty($user)) {
+		if (empty($user))
+			{
 			$this->setError(self::ERROR_NO, 'Empty user');
 
 			return false;
-		}
+			}
 
-		if (empty($password) && empty($options['gssapi_cn'])) {
+		if (empty($password) && empty($options['gssapi_cn']))
+			{
 			$this->setError(self::ERROR_NO, 'Empty password');
 
 			return false;
-		}
+			}
 
 		// Connect
-		if (! $this->_connect($host)) {
+		if (! $this->_connect($host))
+			{
 			return false;
-		}
+			}
 
 		// Send ID info
-		if (! empty($this->prefs['ident']) && $this->getCapability('ID')) {
+		if (! empty($this->prefs['ident']) && $this->getCapability('ID'))
+			{
 			$this->data['ID'] = $this->id($this->prefs['ident']);
-		}
+			}
 
 		$auth_method = $this->prefs['auth_type'];
 
 		// Switch to XOAUTH2 if password is a JWT token
 		$token = \json_decode(\base64_decode(\str_replace('_', '/', \str_replace('-', '+', @\explode('.', $password)[0]))), true);
 
-		if (\is_array($token) && isset($token['typ']) && 'JWT' == $token['typ']) {
+		if (\is_array($token) && isset($token['typ']) && 'JWT' == $token['typ'])
+			{
 			$auth_method = 'XOAUTH2';
-		}
+			}
 
 		$auth_methods = [];
 		$result = null;
 
 		// check for supported auth methods
-		if (! $auth_method || 'CHECK' == $auth_method) {
-			if ($auth_caps = $this->getCapability('AUTH')) {
+		if (! $auth_method || 'CHECK' == $auth_method)
+			{
+			if ($auth_caps = $this->getCapability('AUTH'))
+				{
 				$auth_methods = $auth_caps;
-			}
+				}
 
 			// Use best (for security) supported authentication method
 			$all_methods = ['DIGEST-MD5', 'CRAM-MD5', 'CRAM_MD5', 'PLAIN', 'LOGIN', 'XOAUTH2'];
 
-			if (! empty($this->prefs['gssapi_cn'])) {
+			if (! empty($this->prefs['gssapi_cn']))
+				{
 				\array_unshift($all_methods, 'GSSAPI');
-			}
-
-			foreach ($all_methods as $auth_method) {
-				if (\in_array($auth_method, $auth_methods)) {
-					break;
 				}
-			}
+
+			foreach ($all_methods as $auth_method)
+				{
+				if (\in_array($auth_method, $auth_methods))
+					{
+					break;
+					}
+				}
 
 			// Prefer LOGIN over AUTHENTICATE LOGIN for performance reasons
-			if ('LOGIN' == $auth_method && ! $this->getCapability('LOGINDISABLED')) {
+			if ('LOGIN' == $auth_method && ! $this->getCapability('LOGINDISABLED'))
+				{
 				$auth_method = 'IMAP';
+				}
 			}
-		}
 
 		// pre-login capabilities can be not complete
 		$this->capability_readed = false;
 
 		// Authenticate
-		switch ($auth_method) {
+		switch ($auth_method)
+			{
 			case 'CRAM_MD5':
 				$auth_method = 'CRAM-MD5';
 
@@ -512,22 +540,24 @@ class ImapClient
 
 			default:
 				$this->setError(self::ERROR_BAD, "Configuration error. Unknown auth method: {$auth_method}");
-		}
+			}
 
 		// Connected and authenticated
-		if (\is_resource($result)) {
-			if ($this->prefs['force_caps']) {
+		if (\is_resource($result))
+			{
+			if ($this->prefs['force_caps'])
+				{
 				$this->clearCapability();
-			}
+				}
 			$this->logged = true;
 
 			return true;
-		}
+			}
 
 		$this->closeConnection();
 
 		return false;
-	}
+		}
 
 	/**
 	 * Checks connection status
@@ -535,9 +565,9 @@ class ImapClient
 	 * @return bool True if connection is active and user is logged in, False otherwise.
 	 */
 	public function connected() : bool
-	{
+		{
 		return $this->fp && $this->logged;
-	}
+		}
 
 	/**
 	 * Copies message(s) from one folder to another
@@ -549,13 +579,14 @@ class ImapClient
 	 * @return bool True on success, False on failure
 	 */
 	public function copy(string|array $messages, string $from, string $to) : bool
-	{
+		{
 		// Clear last COPYUID data
 		unset($this->data['COPYUID']);
 
-		if (! $this->select($from)) {
+		if (! $this->select($from))
+			{
 			return false;
-		}
+			}
 
 		// Clear internal status cache
 		unset($this->data['STATUS:' . $to]);
@@ -568,7 +599,7 @@ class ImapClient
 		);
 
 		return self::ERROR_OK == $result;
-	}
+		}
 
 	/**
 	 * Returns count of all messages in a folder
@@ -671,20 +702,21 @@ class ImapClient
 	 * @return bool True on success, False on error
 	 */
 	public function createFolder(string $mailbox, ?array $types = null) : bool
-	{
+		{
 		$args = [$this->escape($mailbox)];
 
 		// RFC 6154: CREATE-SPECIAL-USE
-		if (! empty($types) && $this->getCapability('CREATE-SPECIAL-USE')) {
+		if (! empty($types) && $this->getCapability('CREATE-SPECIAL-USE'))
+			{
 			$args[] = '(USE (' . \implode(' ', $types) . '))';
-		}
+			}
 
 		$result = $this->execute('CREATE', $args, self::COMMAND_RAW_LASTLINE);
 
 		$this->rawLastLine = $result[1];
 
 		return self::ERROR_OK == $result[0];
-	}
+		}
 
 	/**
 	 * Send the DELETEACL command (RFC4314)
@@ -697,7 +729,7 @@ class ImapClient
 	 * @since 0.5-beta
 	 */
 	public function deleteACL(string $mailbox, string $user) : bool
-	{
+		{
 		$result = $this->execute(
 			'DELETEACL',
 			[
@@ -706,7 +738,7 @@ class ImapClient
 		);
 
 		return self::ERROR_OK == $result;
-	}
+		}
 
 	/**
 	 * Executes DELETE command
@@ -716,7 +748,7 @@ class ImapClient
 	 * @return bool True on success, False on error
 	 */
 	public function deleteFolder(string $mailbox) : bool
-	{
+		{
 		$result = $this->execute(
 			'DELETE',
 			[$this->escape($mailbox)],
@@ -724,7 +756,7 @@ class ImapClient
 		);
 
 		return self::ERROR_OK == $result;
-	}
+		}
 
 	/**
 	 * Send the SETMETADATA command with NIL values (RFC5464)
@@ -737,23 +769,26 @@ class ImapClient
 	 * @since 0.5-beta
 	 */
 	public function deleteMetadata(string $mailbox, array | string $entries) : bool
-	{
-		if (! \is_array($entries) && ! empty($entries)) {
+		{
+		if (! \is_array($entries) && ! empty($entries))
+			{
 			$entries = \explode(' ', $entries);
-		}
+			}
 
-		if (empty($entries)) {
+		if (empty($entries))
+			{
 			$this->setError(self::ERROR_COMMAND, 'Wrong argument for SETMETADATA command');
 
 			return false;
-		}
+			}
 
-		foreach ($entries as $entry) {
+		foreach ($entries as $entry)
+			{
 			$data[$entry] = null;
-		}
+			}
 
 		return $this->setMetadata($mailbox, $data);
-	}
+		}
 
 	/**
 	 * Executes ENABLE command (RFC5161)
@@ -764,46 +799,53 @@ class ImapClient
 	 * @since 0.6
 	 */
 	public function enable($extension) : array | bool
-	{
-		if (empty($extension)) {
+		{
+		if (empty($extension))
+			{
 			return false;
-		}
+			}
 
-		if (! $this->hasCapability('ENABLE')) {
+		if (! $this->hasCapability('ENABLE'))
+			{
 			return false;
-		}
+			}
 
-		if (! \is_array($extension)) {
+		if (! \is_array($extension))
+			{
 			$extension = [$extension];
-		}
+			}
 
-		if (! empty($this->extensions_enabled)) {
+		if (! empty($this->extensions_enabled))
+			{
 			// check if all extensions are already enabled
 			$diff = \array_diff($extension, $this->extensions_enabled);
 
-			if (empty($diff)) {
+			if (empty($diff))
+				{
 				return $extension;
-			}
+				}
 
 			// Make sure the mailbox isn't selected, before enabling extension(s)
-			if (null !== $this->selected) {
+			if ($this->selected)
+				{
 				$this->close();
+				}
 			}
-		}
 
 		[$code, $response] = $this->execute('ENABLE', $extension, 0, '/^\* ENABLED /i');
 
-		if (self::ERROR_OK == $code && $response) {
+		if (self::ERROR_OK == $code && $response)
+			{
 			$response = \substr($response, 10); // remove prefix "* ENABLED "
 			$result = (array)$this->tokenizeResponse($response);
 
 			$this->extensions_enabled = \array_unique(\array_merge((array)$this->extensions_enabled, $result));
 
 			return $this->extensions_enabled;
-		}
+			}
 
 		return false;
-	}
+		}
 
 	/**
 	 * Escapes a string when it contains special characters (RFC3501)
@@ -954,7 +996,7 @@ class ImapClient
 		}
 
 		if (self::ERROR_OK == $result) {
-			$this->selected = null; // state has changed, need to reselect
+			$this->selected = ''; // state has changed, need to reselect
 
 			return true;
 		}
@@ -2501,13 +2543,13 @@ class ImapClient
 	 * @return string Command identifier
 	 * @since 0.5-beta
 	 */
-	public function nextTag()
-	{
+	public function nextTag() : string
+		{
 		$this->cmd_num++;
 		$this->cmd_tag = \sprintf('A%04d', $this->cmd_num);
 
 		return $this->cmd_tag;
-	}
+		}
 
 	/**
 	 * Folder renaming (RENAME)
@@ -2515,8 +2557,8 @@ class ImapClient
 	 *
 	 * @return bool True on success, False on error
 	 */
-	public function renameFolder($from, $to)
-	{
+	public function renameFolder($from, $to) : bool
+		{
 		$result = $this->execute(
 			'RENAME',
 			[$this->escape($from), $this->escape($to)],
@@ -2524,7 +2566,7 @@ class ImapClient
 		);
 
 		return self::ERROR_OK == $result;
-	}
+		}
 
 	/**
 	 * Executes SEARCH command
@@ -2591,7 +2633,7 @@ class ImapClient
 	 *
 	 * @return bool True on success, false on error
 	 */
-	public function select(string $mailbox, $qresync_data = null)
+	public function select(string $mailbox, ?array $qresync_data = null)
 	{
 		if (! \strlen($mailbox)) {
 			return false;
@@ -2786,7 +2828,7 @@ class ImapClient
 	/**
 	 * Error code/message setter.
 	 */
-	public function setError($code, $msg = '')
+	public function setError(int $code, string $msg = '') : int
 	{
 		$this->errornum = $code;
 		$this->error = $msg;
@@ -3784,39 +3826,41 @@ class ImapClient
 	 * Clear internal cache of the current mailbox
 	 */
 	protected function clear_mailbox_cache() : void
-	{
+		{
 		$this->clear_status_cache($this->selected);
 
 		$keys = ['UIDNEXT', 'UIDVALIDITY', 'HIGHESTMODSEQ', 'NOMODSEQ',
 			'PERMANENTFLAGS', 'QRESYNC', 'VANISHED', 'READ-WRITE'];
 
-		foreach ($keys as $key) {
+		foreach ($keys as $key)
+			{
 			unset($this->data[$key]);
+			}
 		}
-	}
 
 	/**
 	 * Clear internal status cache
 	 */
 	protected function clear_status_cache(string $mailbox = '') : void
-	{
+		{
 		unset($this->data['STATUS:' . $mailbox]);
 
 		$keys = ['EXISTS', 'RECENT', 'UNSEEN', 'UID-MAP'];
 
-		foreach ($keys as $key) {
+		foreach ($keys as $key)
+			{
 			unset($this->data[$key]);
+			}
 		}
-	}
 
 	/**
 	 * Closes connection stream.
 	 */
 	protected function closeSocket() : void
-	{
+		{
 		@\fclose($this->fp);
 		$this->fp = null;
-	}
+		}
 
 	/**
 	 * Write the given debug text to the current debug output handler.
@@ -3826,24 +3870,28 @@ class ImapClient
 	 * @since 0.5-stable
 	 */
 	protected function debug(string $message) : void
-	{
-		if (($len = \strlen($message)) > self::DEBUG_LINE_LENGTH) {
+		{
+		if (($len = \strlen($message)) > self::DEBUG_LINE_LENGTH)
+			{
 			$diff = $len - self::DEBUG_LINE_LENGTH;
 			$message = \substr($message, 0, self::DEBUG_LINE_LENGTH)
 				. "... [truncated {$diff} bytes]";
-		}
+			}
 
-		if ($this->resourceid) {
+		if ($this->resourceid)
+			{
 			$message = \sprintf('[%s] %s', $this->resourceid, $message);
-		}
+			}
 
-		if ($this->debug_handler) {
+		if ($this->debug_handler)
+			{
 			\call_user_func_array($this->debug_handler, [&$this, $message]);
-		}
-		else {
+			}
+		else
+			{
 			echo "DEBUG: {$message}\n";
+			}
 		}
-	}
 
 	/**
 	 * Checks connection stream state.
@@ -3851,25 +3899,25 @@ class ImapClient
 	 * @return bool True if connection is closed
 	 */
 	protected function eof() : bool
-	{
-		if (! \is_resource($this->fp)) {
+		{
+		if (! \is_resource($this->fp))
+			{
 			return true;
-		}
+			}
 
 		// If a connection opened by fsockopen() wasn't closed
 		// by the server, feof() will hang.
 		$start = \microtime(true);
 
-		if (\feof($this->fp) ||
-			($this->prefs['timeout'] && (\microtime(true) - $start > $this->prefs['timeout']))
-		) {
+		if (\feof($this->fp) || ($this->prefs['timeout'] && (\microtime(true) - $start > $this->prefs['timeout'])))
+			{
 			$this->closeSocket();
 
 			return true;
-		}
+			}
 
 		return false;
-	}
+		}
 
 	/**
 	 * Converts flags array into string for inclusion in IMAP command
@@ -3879,15 +3927,17 @@ class ImapClient
 	 * @return string Space-separated list of flags
 	 */
 	protected function flagsToStr(array $flags) : string
-	{
-		foreach ((array)$flags as $idx => $flag) {
-			if ($flag = $this->flags[\strtoupper($flag)]) {
+		{
+		foreach ((array)$flags as $idx => $flag)
+			{
+			if ($flag = $this->flags[\strtoupper($flag)])
+				{
 				$flags[$idx] = $flag;
+				}
 			}
-		}
 
 		return \implode(' ', (array)$flags);
-	}
+		}
 
 	/**
 	 * Capabilities checker
@@ -4097,7 +4147,7 @@ class ImapClient
 					$str = \trim(\substr($str, \strlen($m[1]) + 2));
 				}
 				else {
-					$this->resultcode = null;
+					$this->resultcode = '';
 
 					// parse response for [APPENDUID 1204196876 3456]
 					if (\preg_match("/^\[APPENDUID [0-9]+ ([0-9]+)\]/i", $str, $m)) {

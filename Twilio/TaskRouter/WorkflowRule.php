@@ -8,29 +8,24 @@ namespace Twilio\TaskRouter;
  * @author Justin Witz <jwitz@twilio.com>
  * @license  http://creativecommons.org/licenses/MIT/ MIT
  */
-class WorkflowRule implements \JsonSerializable
-{
-	public $expression;
+class WorkflowRule implements \JsonSerializable {
+    public $expression;
+    public $friendly_name;
+    public $targets;
 
-	public $friendly_name;
+    public function __construct(string $expression, array $targets, ?string $friendly_name = null) {
+        $this->expression = $expression;
+        $this->targets = $targets;
+        $this->friendly_name = $friendly_name;
+    }
 
-	public $targets;
-
-	public function __construct(string $expression, array $targets, ?string $friendly_name = null) {
-		$this->expression = $expression;
-		$this->targets = $targets;
-		$this->friendly_name = $friendly_name;
-	}
-
-	public function jsonSerialize() : array {
-		$json = [];
-		$json['expression'] = $this->expression;
-		$json['targets'] = $this->targets;
-
-		if (null !== $this->friendly_name) {
-			$json['friendly_name'] = $this->friendly_name;
-		}
-
-		return $json;
-	}
+    public function jsonSerialize(): array {
+        $json = [];
+        $json['expression'] = $this->expression;
+        $json['targets'] = $this->targets;
+        if ($this->friendly_name !== null) {
+            $json['friendly_name'] = $this->friendly_name;
+        }
+        return $json;
+    }
 }

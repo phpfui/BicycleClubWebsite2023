@@ -14,127 +14,127 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Assistants\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Assistants\V1\Session\MessageList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Assistants\V1\Session\MessageList;
+
 
 /**
  * @property MessageList $messages
  */
 class SessionContext extends InstanceContext
-	{
-	protected $_messages;
+    {
+    protected $_messages;
 
-	/**
-	 * Initialize the SessionContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $id
-	 */
-	public function __construct(
-		Version $version,
-		$id
-	) {
-		parent::__construct($version);
+    /**
+     * Initialize the SessionContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $id
+     */
+    public function __construct(
+        Version $version,
+        $id
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'id' => $id,
-		];
+        // Path Solution
+        $this->solution = [
+        'id' =>
+            $id,
+        ];
 
-		$this->uri = '/Sessions/' . \rawurlencode($id)
-		. '';
-	}
+        $this->uri = '/Sessions/' . \rawurlencode($id)
+        .'';
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Fetch the SessionInstance
+     *
+     * @return SessionInstance Fetched SessionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SessionInstance
+    {
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        return new SessionInstance(
+            $this->version,
+            $payload,
+            $this->solution['id']
+        );
+    }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
 
-			return $this->{$method}();
-		}
+    /**
+     * Access the messages
+     */
+    protected function getMessages(): MessageList
+    {
+        if (!$this->_messages) {
+            $this->_messages = new MessageList(
+                $this->version,
+                $this->solution['id']
+            );
+        }
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        return $this->_messages;
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		return '[Twilio.Assistants.V1.SessionContext ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-	/**
-	 * Fetch the SessionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SessionInstance Fetched SessionInstance
-	 */
-	public function fetch() : SessionInstance
-	{
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new SessionInstance(
-			$this->version,
-			$payload,
-			$this->solution['id']
-		);
-	}
-
-	/**
-	 * Access the messages
-	 */
-	protected function getMessages() : MessageList
-	{
-		if (! $this->_messages) {
-			$this->_messages = new MessageList(
-				$this->version,
-				$this->solution['id']
-			);
-		}
-
-		return $this->_messages;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Assistants.V1.SessionContext ' . \implode(' ', $context) . ']';
+    }
 }

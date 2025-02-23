@@ -19,52 +19,55 @@ namespace Twilio\Rest\Taskrouter\V1\Workspace\TaskQueue;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class TaskQueueStatisticsList extends ListResource
-	{
-	/**
-	 * Construct the TaskQueueStatisticsList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $workspaceSid The SID of the Workspace with the TaskQueue to fetch.
-	 * @param string $taskQueueSid The SID of the TaskQueue for which to fetch statistics.
-	 */
-	public function __construct(
-		Version $version,
-		string $workspaceSid,
-		string $taskQueueSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the TaskQueueStatisticsList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $workspaceSid The SID of the Workspace with the TaskQueue to fetch.
+     * @param string $taskQueueSid The SID of the TaskQueue for which to fetch statistics.
+     */
+    public function __construct(
+        Version $version,
+        string $workspaceSid,
+        string $taskQueueSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'workspaceSid' => $workspaceSid,
+        // Path Solution
+        $this->solution = [
+        'workspaceSid' =>
+            $workspaceSid,
+        
+        'taskQueueSid' =>
+            $taskQueueSid,
+        
+        ];
+    }
 
-			'taskQueueSid' => $taskQueueSid,
+    /**
+     * Constructs a TaskQueueStatisticsContext
+     */
+    public function getContext(
+        
+    ): TaskQueueStatisticsContext
+    {
+        return new TaskQueueStatisticsContext(
+            $this->version,
+            $this->solution['workspaceSid'],
+            $this->solution['taskQueueSid']
+        );
+    }
 
-		];
-	}
-
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Taskrouter.V1.TaskQueueStatisticsList]';
-	}
-
-	/**
-	 * Constructs a TaskQueueStatisticsContext
-	 */
-	public function getContext(
-
-	) : TaskQueueStatisticsContext
-	{
-		return new TaskQueueStatisticsContext(
-			$this->version,
-			$this->solution['workspaceSid'],
-			$this->solution['taskQueueSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Taskrouter.V1.TaskQueueStatisticsList]';
+    }
 }

@@ -14,154 +14,156 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Api\V2010\Account\IncomingPhoneNumber;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Api\V2010\Account\IncomingPhoneNumber\AssignedAddOn\AssignedAddOnExtensionList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Api\V2010\Account\IncomingPhoneNumber\AssignedAddOn\AssignedAddOnExtensionList;
+
 
 /**
  * @property AssignedAddOnExtensionList $extensions
  * @method \Twilio\Rest\Api\V2010\Account\IncomingPhoneNumber\AssignedAddOn\AssignedAddOnExtensionContext extensions(string $sid)
  */
 class AssignedAddOnContext extends InstanceContext
-	{
-	protected $_extensions;
+    {
+    protected $_extensions;
 
-	/**
-	 * Initialize the AssignedAddOnContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
-	 * @param string $resourceSid The SID of the Phone Number to assign the Add-on.
-	 * @param string $sid The Twilio-provided string that uniquely identifies the resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$accountSid,
-		$resourceSid,
-		$sid
-	) {
-		parent::__construct($version);
+    /**
+     * Initialize the AssignedAddOnContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
+     * @param string $resourceSid The SID of the Phone Number to assign the Add-on.
+     * @param string $sid The Twilio-provided string that uniquely identifies the resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $accountSid,
+        $resourceSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
-			'resourceSid' => $resourceSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        'resourceSid' =>
+            $resourceSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		. '/IncomingPhoneNumbers/' . \rawurlencode($resourceSid)
-		. '/AssignedAddOns/' . \rawurlencode($sid)
-		. '.json';
-	}
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+        .'/IncomingPhoneNumbers/' . \rawurlencode($resourceSid)
+        .'/AssignedAddOns/' . \rawurlencode($sid)
+        .'.json';
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Delete the AssignedAddOnInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		throw new TwilioException('Resource does not have a context');
-	}
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+    /**
+     * Fetch the AssignedAddOnInstance
+     *
+     * @return AssignedAddOnInstance Fetched AssignedAddOnInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): AssignedAddOnInstance
+    {
 
-			return $this->{$method}();
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        return new AssignedAddOnInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['resourceSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Access the extensions
+     */
+    protected function getExtensions(): AssignedAddOnExtensionList
+    {
+        if (!$this->_extensions) {
+            $this->_extensions = new AssignedAddOnExtensionList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['resourceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		return '[Twilio.Api.V2010.AssignedAddOnContext ' . \implode(' ', $context) . ']';
-	}
+        return $this->_extensions;
+    }
 
-	/**
-	 * Delete the AssignedAddOnInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-	/**
-	 * Fetch the AssignedAddOnInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AssignedAddOnInstance Fetched AssignedAddOnInstance
-	 */
-	public function fetch() : AssignedAddOnInstance
-	{
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new AssignedAddOnInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['resourceSid'],
-			$this->solution['sid']
-		);
-	}
-
-	/**
-	 * Access the extensions
-	 */
-	protected function getExtensions() : AssignedAddOnExtensionList
-	{
-		if (! $this->_extensions) {
-			$this->_extensions = new AssignedAddOnExtensionList(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['resourceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_extensions;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.AssignedAddOnContext ' . \implode(' ', $context) . ']';
+    }
 }

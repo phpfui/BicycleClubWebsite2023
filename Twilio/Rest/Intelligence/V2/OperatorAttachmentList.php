@@ -19,49 +19,51 @@ namespace Twilio\Rest\Intelligence\V2;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class OperatorAttachmentList extends ListResource
-	{
-	/**
-	 * Construct the OperatorAttachmentList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the OperatorAttachmentList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Intelligence.V2.OperatorAttachmentList]';
-	}
+    /**
+     * Constructs a OperatorAttachmentContext
+     *
+     * @param string $serviceSid The unique SID identifier of the Service.
+     *
+     * @param string $operatorSid The unique SID identifier of the Operator. Allows both Custom and Pre-built Operators.
+     */
+    public function getContext(
+        string $serviceSid
+        , string $operatorSid
+        
+    ): OperatorAttachmentContext
+    {
+        return new OperatorAttachmentContext(
+            $this->version,
+            $serviceSid,
+            $operatorSid
+        );
+    }
 
-	/**
-	 * Constructs a OperatorAttachmentContext
-	 *
-	 * @param string $serviceSid The unique SID identifier of the Service.
-	 *
-	 * @param string $operatorSid The unique SID identifier of the Operator. Allows both Custom and Pre-built Operators.
-	 */
-	public function getContext(
-		string $serviceSid,
-		string $operatorSid
-	) : OperatorAttachmentContext
-	{
-		return new OperatorAttachmentContext(
-			$this->version,
-			$serviceSid,
-			$operatorSid
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Intelligence.V2.OperatorAttachmentList]';
+    }
 }

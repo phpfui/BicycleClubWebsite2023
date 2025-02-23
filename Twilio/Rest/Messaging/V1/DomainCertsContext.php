@@ -14,106 +14,110 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Messaging\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class DomainCertsContext extends InstanceContext
-	{
-	/**
-	 * Initialize the DomainCertsContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $domainSid Unique string used to identify the domain that this certificate should be associated with.
-	 */
-	public function __construct(
-		Version $version,
-		$domainSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the DomainCertsContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $domainSid Unique string used to identify the domain that this certificate should be associated with.
+     */
+    public function __construct(
+        Version $version,
+        $domainSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'domainSid' => $domainSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'domainSid' =>
+            $domainSid,
+        ];
 
-		$this->uri = '/LinkShortening/Domains/' . \rawurlencode($domainSid)
-		. '/Certificate';
-	}
+        $this->uri = '/LinkShortening/Domains/' . \rawurlencode($domainSid)
+        .'/Certificate';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the DomainCertsInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Messaging.V1.DomainCertsContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the DomainCertsInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the DomainCertsInstance
+     *
+     * @return DomainCertsInstance Fetched DomainCertsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): DomainCertsInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new DomainCertsInstance(
+            $this->version,
+            $payload,
+            $this->solution['domainSid']
+        );
+    }
 
-	/**
-	 * Fetch the DomainCertsInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return DomainCertsInstance Fetched DomainCertsInstance
-	 */
-	public function fetch() : DomainCertsInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the DomainCertsInstance
+     *
+     * @param string $tlsCert Contains the full TLS certificate and private for this domain in PEM format: https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail. Twilio uses this information to process HTTPS traffic sent to your domain.
+     * @return DomainCertsInstance Updated DomainCertsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $tlsCert): DomainCertsInstance
+    {
 
-		return new DomainCertsInstance(
-			$this->version,
-			$payload,
-			$this->solution['domainSid']
-		);
-	}
+        $data = Values::of([
+            'TlsCert' =>
+                $tlsCert,
+        ]);
 
-	/**
-	 * Update the DomainCertsInstance
-	 *
-	 * @param string $tlsCert Contains the full TLS certificate and private for this domain in PEM format: https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail. Twilio uses this information to process HTTPS traffic sent to your domain.
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return DomainCertsInstance Updated DomainCertsInstance
-	 */
-	public function update(string $tlsCert) : DomainCertsInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'TlsCert' => $tlsCert,
-		]);
+        return new DomainCertsInstance(
+            $this->version,
+            $payload,
+            $this->solution['domainSid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new DomainCertsInstance(
-			$this->version,
-			$payload,
-			$this->solution['domainSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Messaging.V1.DomainCertsContext ' . \implode(' ', $context) . ']';
+    }
 }

@@ -11,62 +11,61 @@ namespace Twilio\TwiML\Voice;
 
 use Twilio\TwiML\TwiML;
 
-class Language extends TwiML
-{
-	/**
-	 * Language constructor.
-	 *
-	 * @param array $attributes Optional attributes
-	 */
-	public function __construct($attributes = []) {
-		parent::__construct('Language', null, $attributes);
-	}
+class Language extends TwiML {
+    /**
+     * Language constructor.
+     *
+     * @param array $attributes Optional attributes
+     */
+    public function __construct($attributes = []) {
+        parent::__construct('Language', null, $attributes);
+    }
 
-	/**
-	 * Add Code attribute.
-	 *
-	 * @param string $code Language code of this language setting is for
-	 */
-	public function setCode($code) : self {
-		return $this->setAttribute('code', $code);
-	}
+    /**
+     * Add Code attribute.
+     *
+     * @param string $code Language code of this language setting is for
+     */
+    public function setCode($code): self {
+        return $this->setAttribute('code', $code);
+    }
 
-	/**
-	 * Add SpeechModel attribute.
-	 *
-	 * @param string $speechModel Speech model to be used for transcription of this
-	 *                            language
-	 */
-	public function setSpeechModel($speechModel) : self {
-		return $this->setAttribute('speechModel', $speechModel);
-	}
+    /**
+     * Add TtsProvider attribute.
+     *
+     * @param string $ttsProvider Provider to be used for text-to-speech of this
+     *                            language
+     */
+    public function setTtsProvider($ttsProvider): self {
+        return $this->setAttribute('ttsProvider', $ttsProvider);
+    }
 
-	/**
-	 * Add TranscriptionProvider attribute.
-	 *
-	 * @param string $transcriptionProvider Provider to be used for transcription
-	 *                                      of this language
-	 */
-	public function setTranscriptionProvider($transcriptionProvider) : self {
-		return $this->setAttribute('transcriptionProvider', $transcriptionProvider);
-	}
+    /**
+     * Add Voice attribute.
+     *
+     * @param string $voice Voice to be used for text-to-speech of this language
+     */
+    public function setVoice($voice): self {
+        return $this->setAttribute('voice', $voice);
+    }
 
-	/**
-	 * Add TtsProvider attribute.
-	 *
-	 * @param string $ttsProvider Provider to be used for text-to-speech of this
-	 *                            language
-	 */
-	public function setTtsProvider($ttsProvider) : self {
-		return $this->setAttribute('ttsProvider', $ttsProvider);
-	}
+    /**
+     * Add TranscriptionProvider attribute.
+     *
+     * @param string $transcriptionProvider Provider to be used for transcription
+     *                                      of this language
+     */
+    public function setTranscriptionProvider($transcriptionProvider): self {
+        return $this->setAttribute('transcriptionProvider', $transcriptionProvider);
+    }
 
-	/**
-	 * Add Voice attribute.
-	 *
-	 * @param string $voice Voice to be used for text-to-speech of this language
-	 */
-	public function setVoice($voice) : self {
-		return $this->setAttribute('voice', $voice);
-	}
+    /**
+     * Add SpeechModel attribute.
+     *
+     * @param string $speechModel Speech model to be used for transcription of this
+     *                            language
+     */
+    public function setSpeechModel($speechModel): self {
+        return $this->setAttribute('speechModel', $speechModel);
+    }
 }

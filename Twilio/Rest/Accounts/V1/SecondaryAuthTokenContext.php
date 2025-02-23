@@ -14,77 +14,78 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Accounts\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class SecondaryAuthTokenContext extends InstanceContext
-	{
-	/**
-	 * Initialize the SecondaryAuthTokenContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the SecondaryAuthTokenContext
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/AuthTokens/Secondary';
-	}
+        $this->uri = '/AuthTokens/Secondary';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Create the SecondaryAuthTokenInstance
+     *
+     * @return SecondaryAuthTokenInstance Created SecondaryAuthTokenInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(): SecondaryAuthTokenInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], [], $headers);
 
-		return '[Twilio.Accounts.V1.SecondaryAuthTokenContext ' . \implode(' ', $context) . ']';
-	}
+        return new SecondaryAuthTokenInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-	/**
-	 * Create the SecondaryAuthTokenInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SecondaryAuthTokenInstance Created SecondaryAuthTokenInstance
-	 */
-	public function create() : SecondaryAuthTokenInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], [], $headers);
+    /**
+     * Delete the SecondaryAuthTokenInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		return new SecondaryAuthTokenInstance(
-			$this->version,
-			$payload
-		);
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-	/**
-	 * Delete the SecondaryAuthTokenInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Accounts.V1.SecondaryAuthTokenContext ' . \implode(' ', $context) . ']';
+    }
 }

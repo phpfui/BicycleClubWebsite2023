@@ -14,116 +14,121 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Proxy\V1\Service;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class PhoneNumberContext extends InstanceContext
-	{
-	/**
-	 * Initialize the PhoneNumberContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid The SID parent [Service](https://www.twilio.com/docs/proxy/api/service) resource of the new PhoneNumber resource.
-	 * @param string $sid The Twilio-provided string that uniquely identifies the PhoneNumber resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$serviceSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the PhoneNumberContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid The SID parent [Service](https://www.twilio.com/docs/proxy/api/service) resource of the new PhoneNumber resource.
+     * @param string $sid The Twilio-provided string that uniquely identifies the PhoneNumber resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $serviceSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/PhoneNumbers/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/PhoneNumbers/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the PhoneNumberInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Proxy.V1.PhoneNumberContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the PhoneNumberInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the PhoneNumberInstance
+     *
+     * @return PhoneNumberInstance Fetched PhoneNumberInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): PhoneNumberInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new PhoneNumberInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the PhoneNumberInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PhoneNumberInstance Fetched PhoneNumberInstance
-	 */
-	public function fetch() : PhoneNumberInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the PhoneNumberInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return PhoneNumberInstance Updated PhoneNumberInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): PhoneNumberInstance
+    {
 
-		return new PhoneNumberInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['sid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the PhoneNumberInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PhoneNumberInstance Updated PhoneNumberInstance
-	 */
-	public function update(array $options = []) : PhoneNumberInstance
-	{
+        $data = Values::of([
+            'IsReserved' =>
+                Serialize::booleanToString($options['isReserved']),
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'IsReserved' => Serialize::booleanToString($options['isReserved']),
-		]);
+        return new PhoneNumberInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new PhoneNumberInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Proxy.V1.PhoneNumberContext ' . \implode(' ', $context) . ']';
+    }
 }

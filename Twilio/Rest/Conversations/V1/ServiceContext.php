@@ -14,20 +14,22 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Conversations\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Conversations\V1\Service\BindingList;
-use Twilio\Rest\Conversations\V1\Service\ConfigurationList;
-use Twilio\Rest\Conversations\V1\Service\ConversationList;
-use Twilio\Rest\Conversations\V1\Service\ConversationWithParticipantsList;
-use Twilio\Rest\Conversations\V1\Service\ParticipantConversationList;
-use Twilio\Rest\Conversations\V1\Service\RoleList;
-use Twilio\Rest\Conversations\V1\Service\UserList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Conversations\V1\Service\ParticipantConversationList;
+use Twilio\Rest\Conversations\V1\Service\UserList;
+use Twilio\Rest\Conversations\V1\Service\BindingList;
+use Twilio\Rest\Conversations\V1\Service\ConversationWithParticipantsList;
+use Twilio\Rest\Conversations\V1\Service\ConversationList;
+use Twilio\Rest\Conversations\V1\Service\RoleList;
+use Twilio\Rest\Conversations\V1\Service\ConfigurationList;
+
 
 /**
  * @property ParticipantConversationList $participantConversations
@@ -44,230 +46,222 @@ use Twilio\Version;
  * @method \Twilio\Rest\Conversations\V1\Service\ConversationContext conversations(string $sid)
  */
 class ServiceContext extends InstanceContext
-	{
-	protected $_bindings;
+    {
+    protected $_participantConversations;
+    protected $_users;
+    protected $_bindings;
+    protected $_conversationWithParticipants;
+    protected $_conversations;
+    protected $_roles;
+    protected $_configuration;
 
-	protected $_configuration;
+    /**
+     * Initialize the ServiceContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid A 34 character string that uniquely identifies this resource.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-	protected $_conversations;
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-	protected $_conversationWithParticipants;
+        $this->uri = '/Services/' . \rawurlencode($sid)
+        .'';
+    }
 
-	protected $_participantConversations;
+    /**
+     * Delete the ServiceInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-	protected $_roles;
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-	protected $_users;
 
-	/**
-	 * Initialize the ServiceContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid A 34 character string that uniquely identifies this resource.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    /**
+     * Fetch the ServiceInstance
+     *
+     * @return ServiceInstance Fetched ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ServiceInstance
+    {
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		$this->uri = '/Services/' . \rawurlencode($sid)
-		. '';
-	}
+        return new ServiceInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+    /**
+     * Access the participantConversations
+     */
+    protected function getParticipantConversations(): ParticipantConversationList
+    {
+        if (!$this->_participantConversations) {
+            $this->_participantConversations = new ParticipantConversationList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        return $this->_participantConversations;
+    }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+    /**
+     * Access the users
+     */
+    protected function getUsers(): UserList
+    {
+        if (!$this->_users) {
+            $this->_users = new UserList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-			return $this->{$method}();
-		}
+        return $this->_users;
+    }
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+    /**
+     * Access the bindings
+     */
+    protected function getBindings(): BindingList
+    {
+        if (!$this->_bindings) {
+            $this->_bindings = new BindingList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        return $this->_bindings;
+    }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Access the conversationWithParticipants
+     */
+    protected function getConversationWithParticipants(): ConversationWithParticipantsList
+    {
+        if (!$this->_conversationWithParticipants) {
+            $this->_conversationWithParticipants = new ConversationWithParticipantsList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		return '[Twilio.Conversations.V1.ServiceContext ' . \implode(' ', $context) . ']';
-	}
+        return $this->_conversationWithParticipants;
+    }
 
-	/**
-	 * Delete the ServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Access the conversations
+     */
+    protected function getConversations(): ConversationList
+    {
+        if (!$this->_conversations) {
+            $this->_conversations = new ConversationList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        return $this->_conversations;
+    }
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+    /**
+     * Access the roles
+     */
+    protected function getRoles(): RoleList
+    {
+        if (!$this->_roles) {
+            $this->_roles = new RoleList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Fetch the ServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ServiceInstance Fetched ServiceInstance
-	 */
-	public function fetch() : ServiceInstance
-	{
+        return $this->_roles;
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Access the configuration
+     */
+    protected function getConfiguration(): ConfigurationList
+    {
+        if (!$this->_configuration) {
+            $this->_configuration = new ConfigurationList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		return new ServiceInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        return $this->_configuration;
+    }
 
-	/**
-	 * Access the bindings
-	 */
-	protected function getBindings() : BindingList
-	{
-		if (! $this->_bindings) {
-			$this->_bindings = new BindingList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->_bindings;
-	}
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-	/**
-	 * Access the configuration
-	 */
-	protected function getConfiguration() : ConfigurationList
-	{
-		if (! $this->_configuration) {
-			$this->_configuration = new ConfigurationList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		return $this->_configuration;
-	}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-	/**
-	 * Access the conversations
-	 */
-	protected function getConversations() : ConversationList
-	{
-		if (! $this->_conversations) {
-			$this->_conversations = new ConversationList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_conversations;
-	}
-
-	/**
-	 * Access the conversationWithParticipants
-	 */
-	protected function getConversationWithParticipants() : ConversationWithParticipantsList
-	{
-		if (! $this->_conversationWithParticipants) {
-			$this->_conversationWithParticipants = new ConversationWithParticipantsList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_conversationWithParticipants;
-	}
-
-	/**
-	 * Access the participantConversations
-	 */
-	protected function getParticipantConversations() : ParticipantConversationList
-	{
-		if (! $this->_participantConversations) {
-			$this->_participantConversations = new ParticipantConversationList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_participantConversations;
-	}
-
-	/**
-	 * Access the roles
-	 */
-	protected function getRoles() : RoleList
-	{
-		if (! $this->_roles) {
-			$this->_roles = new RoleList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_roles;
-	}
-
-	/**
-	 * Access the users
-	 */
-	protected function getUsers() : UserList
-	{
-		if (! $this->_users) {
-			$this->_users = new UserList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_users;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Conversations.V1.ServiceContext ' . \implode(' ', $context) . ']';
+    }
 }

@@ -19,186 +19,204 @@ namespace Twilio\Rest\Video\V1;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Serialize;
+
 
 class CompositionHookList extends ListResource
-	{
-	/**
-	 * Construct the CompositionHookList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the CompositionHookList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/CompositionHooks';
-	}
+        $this->uri = '/CompositionHooks';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Video.V1.CompositionHookList]';
-	}
+    /**
+     * Create the CompositionHookInstance
+     *
+     * @param string $friendlyName A descriptive string that you create to describe the resource. It can be up to  100 characters long and it must be unique within the account.
+     * @param array|Options $options Optional Arguments
+     * @return CompositionHookInstance Created CompositionHookInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $friendlyName, array $options = []): CompositionHookInstance
+    {
 
-	/**
-	 * Create the CompositionHookInstance
-	 *
-	 * @param string $friendlyName A descriptive string that you create to describe the resource. It can be up to  100 characters long and it must be unique within the account.
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return CompositionHookInstance Created CompositionHookInstance
-	 */
-	public function create(string $friendlyName, array $options = []) : CompositionHookInstance
-	{
+        $options = new Values($options);
 
-		$options = new Values($options);
+        $data = Values::of([
+            'FriendlyName' =>
+                $friendlyName,
+            'Enabled' =>
+                Serialize::booleanToString($options['enabled']),
+            'VideoLayout' =>
+                Serialize::jsonObject($options['videoLayout']),
+            'AudioSources' =>
+                Serialize::map($options['audioSources'], function ($e) { return $e; }),
+            'AudioSourcesExcluded' =>
+                Serialize::map($options['audioSourcesExcluded'], function ($e) { return $e; }),
+            'Resolution' =>
+                $options['resolution'],
+            'Format' =>
+                $options['format'],
+            'StatusCallback' =>
+                $options['statusCallback'],
+            'StatusCallbackMethod' =>
+                $options['statusCallbackMethod'],
+            'Trim' =>
+                Serialize::booleanToString($options['trim']),
+        ]);
 
-		$data = Values::of([
-			'FriendlyName' => $friendlyName,
-			'Enabled' => Serialize::booleanToString($options['enabled']),
-			'VideoLayout' => Serialize::jsonObject($options['videoLayout']),
-			'AudioSources' => Serialize::map($options['audioSources'], static function($e) { return $e; }),
-			'AudioSourcesExcluded' => Serialize::map($options['audioSourcesExcluded'], static function($e) { return $e; }),
-			'Resolution' => $options['resolution'],
-			'Format' => $options['format'],
-			'StatusCallback' => $options['statusCallback'],
-			'StatusCallbackMethod' => $options['statusCallbackMethod'],
-			'Trim' => Serialize::booleanToString($options['trim']),
-		]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return new CompositionHookInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new CompositionHookInstance(
-			$this->version,
-			$payload
-		);
-	}
 
-	/**
-	 * Constructs a CompositionHookContext
-	 *
-	 * @param string $sid The SID of the CompositionHook resource to delete.
-	 */
-	public function getContext(
-		string $sid
-	) : CompositionHookContext
-	{
-		return new CompositionHookContext(
-			$this->version,
-			$sid
-		);
-	}
+    /**
+     * Reads CompositionHookInstance records from the API as a list.
+     * Unlike stream(), this operation is eager and will load `limit` records into
+     * memory before returning.
+     *
+     * @param array|Options $options Optional Arguments
+     * @param int $limit Upper limit for the number of records to return. read()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, read()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return CompositionHookInstance[] Array of results
+     */
+    public function read(array $options = [], int $limit = null, $pageSize = null): array
+    {
+        return \iterator_to_array($this->stream($options, $limit, $pageSize), false);
+    }
 
-	/**
-	 * Retrieve a specific page of CompositionHookInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param string $targetUrl API-generated URL for the requested results page
-	 * @return CompositionHookPage Page of CompositionHookInstance
-	 */
-	public function getPage(string $targetUrl) : CompositionHookPage
-	{
-		$response = $this->version->getDomain()->getClient()->request(
-			'GET',
-			$targetUrl
-		);
+    /**
+     * Streams CompositionHookInstance records from the API as a generator stream.
+     * This operation lazily loads records as efficiently as possible until the
+     * limit
+     * is reached.
+     * The results are returned as a generator, so this operation is memory
+     * efficient.
+     *
+     * @param array|Options $options Optional Arguments
+     * @param int $limit Upper limit for the number of records to return. stream()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, stream()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return Stream stream of results
+     */
+    public function stream(array $options = [], int $limit = null, $pageSize = null): Stream
+    {
+        $limits = $this->version->readLimits($limit, $pageSize);
 
-		return new CompositionHookPage($this->version, $response, $this->solution);
-	}
+        $page = $this->page($options, $limits['pageSize']);
 
-	/**
-	 * Retrieve a single page of CompositionHookInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param mixed $pageSize Number of records to return, defaults to 50
-	 * @param string $pageToken PageToken provided by the API
-	 * @param mixed $pageNumber Page Number, this value is simply for client state
-	 * @return CompositionHookPage Page of CompositionHookInstance
-	 */
-	public function page(
-		array $options = [],
-		$pageSize = Values::NONE,
-		string $pageToken = Values::NONE,
-		$pageNumber = Values::NONE
-	) : CompositionHookPage
-	{
-		$options = new Values($options);
+        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+    }
 
-		$params = Values::of([
-			'Enabled' => Serialize::booleanToString($options['enabled']),
-			'DateCreatedAfter' => Serialize::iso8601DateTime($options['dateCreatedAfter']),
-			'DateCreatedBefore' => Serialize::iso8601DateTime($options['dateCreatedBefore']),
-			'FriendlyName' => $options['friendlyName'],
-			'PageToken' => $pageToken,
-			'Page' => $pageNumber,
-			'PageSize' => $pageSize,
-		]);
+    /**
+     * Retrieve a single page of CompositionHookInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param mixed $pageSize Number of records to return, defaults to 50
+     * @param string $pageToken PageToken provided by the API
+     * @param mixed $pageNumber Page Number, this value is simply for client state
+     * @return CompositionHookPage Page of CompositionHookInstance
+     */
+    public function page(
+        array $options = [],
+        $pageSize = Values::NONE,
+        string $pageToken = Values::NONE,
+        $pageNumber = Values::NONE
+    ): CompositionHookPage
+    {
+        $options = new Values($options);
 
-		$response = $this->version->page('GET', $this->uri, $params);
+        $params = Values::of([
+            'Enabled' =>
+                Serialize::booleanToString($options['enabled']),
+            'DateCreatedAfter' =>
+                Serialize::iso8601DateTime($options['dateCreatedAfter']),
+            'DateCreatedBefore' =>
+                Serialize::iso8601DateTime($options['dateCreatedBefore']),
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'PageToken' => $pageToken,
+            'Page' => $pageNumber,
+            'PageSize' => $pageSize,
+        ]);
 
-		return new CompositionHookPage($this->version, $response, $this->solution);
-	}
+        $response = $this->version->page('GET', $this->uri, $params);
 
-	/**
-	 * Reads CompositionHookInstance records from the API as a list.
-	 * Unlike stream(), this operation is eager and will load `limit` records into
-	 * memory before returning.
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @param int $limit Upper limit for the number of records to return. read()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, read()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return CompositionHookInstance[] Array of results
-	 */
-	public function read(array $options = [], ?int $limit = null, $pageSize = null) : array
-	{
-		return \iterator_to_array($this->stream($options, $limit, $pageSize), false);
-	}
+        return new CompositionHookPage($this->version, $response, $this->solution);
+    }
 
-	/**
-	 * Streams CompositionHookInstance records from the API as a generator stream.
-	 * This operation lazily loads records as efficiently as possible until the
-	 * limit
-	 * is reached.
-	 * The results are returned as a generator, so this operation is memory
-	 * efficient.
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @param int $limit Upper limit for the number of records to return. stream()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, stream()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return Stream stream of results
-	 */
-	public function stream(array $options = [], ?int $limit = null, $pageSize = null) : Stream
-	{
-		$limits = $this->version->readLimits($limit, $pageSize);
+    /**
+     * Retrieve a specific page of CompositionHookInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return CompositionHookPage Page of CompositionHookInstance
+     */
+    public function getPage(string $targetUrl): CompositionHookPage
+    {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
 
-		$page = $this->page($options, $limits['pageSize']);
+        return new CompositionHookPage($this->version, $response, $this->solution);
+    }
 
-		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-	}
+
+    /**
+     * Constructs a CompositionHookContext
+     *
+     * @param string $sid The SID of the CompositionHook resource to delete.
+     */
+    public function getContext(
+        string $sid
+        
+    ): CompositionHookContext
+    {
+        return new CompositionHookContext(
+            $this->version,
+            $sid
+        );
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Video.V1.CompositionHookList]';
+    }
 }

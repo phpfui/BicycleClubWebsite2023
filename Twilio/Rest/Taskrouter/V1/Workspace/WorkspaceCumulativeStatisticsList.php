@@ -19,47 +19,49 @@ namespace Twilio\Rest\Taskrouter\V1\Workspace;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class WorkspaceCumulativeStatisticsList extends ListResource
-	{
-	/**
-	 * Construct the WorkspaceCumulativeStatisticsList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $workspaceSid The SID of the Workspace to fetch.
-	 */
-	public function __construct(
-		Version $version,
-		string $workspaceSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the WorkspaceCumulativeStatisticsList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $workspaceSid The SID of the Workspace to fetch.
+     */
+    public function __construct(
+        Version $version,
+        string $workspaceSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'workspaceSid' => $workspaceSid,
+        // Path Solution
+        $this->solution = [
+        'workspaceSid' =>
+            $workspaceSid,
+        
+        ];
+    }
 
-		];
-	}
+    /**
+     * Constructs a WorkspaceCumulativeStatisticsContext
+     */
+    public function getContext(
+        
+    ): WorkspaceCumulativeStatisticsContext
+    {
+        return new WorkspaceCumulativeStatisticsContext(
+            $this->version,
+            $this->solution['workspaceSid']
+        );
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Taskrouter.V1.WorkspaceCumulativeStatisticsList]';
-	}
-
-	/**
-	 * Constructs a WorkspaceCumulativeStatisticsContext
-	 */
-	public function getContext(
-
-	) : WorkspaceCumulativeStatisticsContext
-	{
-		return new WorkspaceCumulativeStatisticsContext(
-			$this->version,
-			$this->solution['workspaceSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Taskrouter.V1.WorkspaceCumulativeStatisticsList]';
+    }
 }

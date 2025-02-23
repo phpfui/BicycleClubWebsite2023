@@ -14,123 +14,131 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Api\V2010\Account\Sip\IpAccessControlList;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class IpAddressContext extends InstanceContext
-	{
-	/**
-	 * Initialize the IpAddressContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid The unique id of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this resource.
-	 * @param string $ipAccessControlListSid The IpAccessControlList Sid with which to associate the created IpAddress resource.
-	 * @param string $sid A 34 character string that uniquely identifies the resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$accountSid,
-		$ipAccessControlListSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the IpAddressContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid The unique id of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for this resource.
+     * @param string $ipAccessControlListSid The IpAccessControlList Sid with which to associate the created IpAddress resource.
+     * @param string $sid A 34 character string that uniquely identifies the resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $accountSid,
+        $ipAccessControlListSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
-			'ipAccessControlListSid' => $ipAccessControlListSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        'ipAccessControlListSid' =>
+            $ipAccessControlListSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		. '/SIP/IpAccessControlLists/' . \rawurlencode($ipAccessControlListSid)
-		. '/IpAddresses/' . \rawurlencode($sid)
-		. '.json';
-	}
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+        .'/SIP/IpAccessControlLists/' . \rawurlencode($ipAccessControlListSid)
+        .'/IpAddresses/' . \rawurlencode($sid)
+        .'.json';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the IpAddressInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Api.V2010.IpAddressContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the IpAddressInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the IpAddressInstance
+     *
+     * @return IpAddressInstance Fetched IpAddressInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): IpAddressInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new IpAddressInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['ipAccessControlListSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the IpAddressInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return IpAddressInstance Fetched IpAddressInstance
-	 */
-	public function fetch() : IpAddressInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the IpAddressInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return IpAddressInstance Updated IpAddressInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): IpAddressInstance
+    {
 
-		return new IpAddressInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['ipAccessControlListSid'],
-			$this->solution['sid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the IpAddressInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return IpAddressInstance Updated IpAddressInstance
-	 */
-	public function update(array $options = []) : IpAddressInstance
-	{
+        $data = Values::of([
+            'IpAddress' =>
+                $options['ipAddress'],
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'CidrPrefixLength' =>
+                $options['cidrPrefixLength'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'IpAddress' => $options['ipAddress'],
-			'FriendlyName' => $options['friendlyName'],
-			'CidrPrefixLength' => $options['cidrPrefixLength'],
-		]);
+        return new IpAddressInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['ipAccessControlListSid'],
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new IpAddressInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['ipAccessControlListSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.IpAddressContext ' . \implode(' ', $context) . ']';
+    }
 }

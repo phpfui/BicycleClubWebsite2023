@@ -14,16 +14,18 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Api\V2010\Account;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
-use Twilio\Rest\Api\V2010\Account\Conference\ParticipantList;
-use Twilio\Rest\Api\V2010\Account\Conference\RecordingList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+use Twilio\Rest\Api\V2010\Account\Conference\ParticipantList;
+use Twilio\Rest\Api\V2010\Account\Conference\RecordingList;
+
 
 /**
  * @property string|null $accountSid
@@ -41,136 +43,133 @@ use Twilio\Version;
  */
 class ConferenceInstance extends InstanceResource
 {
-	protected $_participants;
+    protected $_participants;
+    protected $_recordings;
 
-	protected $_recordings;
+    /**
+     * Initialize the ConferenceInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Conference resource(s) to fetch.
+     * @param string $sid The Twilio-provided string that uniquely identifies the Conference resource to fetch
+     */
+    public function __construct(Version $version, array $payload, string $accountSid, string $sid = null)
+    {
+        parent::__construct($version);
 
-	/**
-	 * Initialize the ConferenceInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Conference resource(s) to fetch.
-	 * @param string $sid The Twilio-provided string that uniquely identifies the Conference resource to fetch
-	 */
-	public function __construct(Version $version, array $payload, string $accountSid, ?string $sid = null)
-	{
-		parent::__construct($version);
+        // Marshaled Properties
+        $this->properties = [
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'apiVersion' => Values::array_get($payload, 'api_version'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'region' => Values::array_get($payload, 'region'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'status' => Values::array_get($payload, 'status'),
+            'uri' => Values::array_get($payload, 'uri'),
+            'subresourceUris' => Values::array_get($payload, 'subresource_uris'),
+            'reasonConferenceEnded' => Values::array_get($payload, 'reason_conference_ended'),
+            'callSidEndingConference' => Values::array_get($payload, 'call_sid_ending_conference'),
+        ];
 
-		// Marshaled Properties
-		$this->properties = [
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'apiVersion' => Values::array_get($payload, 'api_version'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'region' => Values::array_get($payload, 'region'),
-			'sid' => Values::array_get($payload, 'sid'),
-			'status' => Values::array_get($payload, 'status'),
-			'uri' => Values::array_get($payload, 'uri'),
-			'subresourceUris' => Values::array_get($payload, 'subresource_uris'),
-			'reasonConferenceEnded' => Values::array_get($payload, 'reason_conference_ended'),
-			'callSidEndingConference' => Values::array_get($payload, 'call_sid_ending_conference'),
-		];
+        $this->solution = ['accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-		$this->solution = ['accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], ];
-	}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return ConferenceContext Context for this ConferenceInstance
+     */
+    protected function proxy(): ConferenceContext
+    {
+        if (!$this->context) {
+            $this->context = new ConferenceContext(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+        return $this->context;
+    }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+    /**
+     * Fetch the ConferenceInstance
+     *
+     * @return ConferenceInstance Fetched ConferenceInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ConferenceInstance
+    {
 
-			return $this->{$method}();
-		}
+        return $this->proxy()->fetch();
+    }
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+    /**
+     * Update the ConferenceInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return ConferenceInstance Updated ConferenceInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): ConferenceInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        return $this->proxy()->update($options);
+    }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Access the participants
+     */
+    protected function getParticipants(): ParticipantList
+    {
+        return $this->proxy()->participants;
+    }
 
-		return '[Twilio.Api.V2010.ConferenceInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Access the recordings
+     */
+    protected function getRecordings(): RecordingList
+    {
+        return $this->proxy()->recordings;
+    }
 
-	/**
-	 * Fetch the ConferenceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ConferenceInstance Fetched ConferenceInstance
-	 */
-	public function fetch() : ConferenceInstance
-	{
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		return $this->proxy()->fetch();
-	}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Update the ConferenceInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ConferenceInstance Updated ConferenceInstance
-	 */
-	public function update(array $options = []) : ConferenceInstance
-	{
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		return $this->proxy()->update($options);
-	}
-
-	/**
-	 * Access the participants
-	 */
-	protected function getParticipants() : ParticipantList
-	{
-		return $this->proxy()->participants;
-	}
-
-	/**
-	 * Access the recordings
-	 */
-	protected function getRecordings() : RecordingList
-	{
-		return $this->proxy()->recordings;
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return ConferenceContext Context for this ConferenceInstance
-	 */
-	protected function proxy() : ConferenceContext
-	{
-		if (! $this->context) {
-			$this->context = new ConferenceContext(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.ConferenceInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

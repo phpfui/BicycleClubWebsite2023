@@ -14,96 +14,101 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Routes\V2;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class TrunkContext extends InstanceContext
-	{
-	/**
-	 * Initialize the TrunkContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sipTrunkDomain The absolute URL of the SIP Trunk
-	 */
-	public function __construct(
-		Version $version,
-		$sipTrunkDomain
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the TrunkContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sipTrunkDomain The absolute URL of the SIP Trunk
+     */
+    public function __construct(
+        Version $version,
+        $sipTrunkDomain
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sipTrunkDomain' => $sipTrunkDomain,
-		];
+        // Path Solution
+        $this->solution = [
+        'sipTrunkDomain' =>
+            $sipTrunkDomain,
+        ];
 
-		$this->uri = '/Trunks/' . \rawurlencode($sipTrunkDomain)
-		. '';
-	}
+        $this->uri = '/Trunks/' . \rawurlencode($sipTrunkDomain)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the TrunkInstance
+     *
+     * @return TrunkInstance Fetched TrunkInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): TrunkInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Routes.V2.TrunkContext ' . \implode(' ', $context) . ']';
-	}
+        return new TrunkInstance(
+            $this->version,
+            $payload,
+            $this->solution['sipTrunkDomain']
+        );
+    }
 
-	/**
-	 * Fetch the TrunkInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return TrunkInstance Fetched TrunkInstance
-	 */
-	public function fetch() : TrunkInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the TrunkInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return TrunkInstance Updated TrunkInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): TrunkInstance
+    {
 
-		return new TrunkInstance(
-			$this->version,
-			$payload,
-			$this->solution['sipTrunkDomain']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the TrunkInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return TrunkInstance Updated TrunkInstance
-	 */
-	public function update(array $options = []) : TrunkInstance
-	{
+        $data = Values::of([
+            'VoiceRegion' =>
+                $options['voiceRegion'],
+            'FriendlyName' =>
+                $options['friendlyName'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'VoiceRegion' => $options['voiceRegion'],
-			'FriendlyName' => $options['friendlyName'],
-		]);
+        return new TrunkInstance(
+            $this->version,
+            $payload,
+            $this->solution['sipTrunkDomain']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new TrunkInstance(
-			$this->version,
-			$payload,
-			$this->solution['sipTrunkDomain']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Routes.V2.TrunkContext ' . \implode(' ', $context) . ']';
+    }
 }

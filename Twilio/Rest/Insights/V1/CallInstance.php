@@ -14,16 +14,18 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Insights\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
-use Twilio\Rest\Insights\V1\Call\AnnotationList;
-use Twilio\Rest\Insights\V1\Call\CallSummaryList;
-use Twilio\Rest\Insights\V1\Call\EventList;
-use Twilio\Rest\Insights\V1\Call\MetricList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Rest\Insights\V1\Call\MetricList;
+use Twilio\Rest\Insights\V1\Call\EventList;
+use Twilio\Rest\Insights\V1\Call\CallSummaryList;
+use Twilio\Rest\Insights\V1\Call\AnnotationList;
+
 
 /**
  * @property string|null $sid
@@ -32,131 +34,127 @@ use Twilio\Version;
  */
 class CallInstance extends InstanceResource
 {
-	protected $_annotation;
+    protected $_metrics;
+    protected $_events;
+    protected $_summary;
+    protected $_annotation;
 
-	protected $_events;
+    /**
+     * Initialize the CallInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid 
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-	protected $_metrics;
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
+        ];
 
-	protected $_summary;
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Initialize the CallInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return CallContext Context for this CallInstance
+     */
+    protected function proxy(): CallContext
+    {
+        if (!$this->context) {
+            $this->context = new CallContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'url' => Values::array_get($payload, 'url'),
-			'links' => Values::array_get($payload, 'links'),
-		];
+        return $this->context;
+    }
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+    /**
+     * Fetch the CallInstance
+     *
+     * @return CallInstance Fetched CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): CallInstance
+    {
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+        return $this->proxy()->fetch();
+    }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+    /**
+     * Access the metrics
+     */
+    protected function getMetrics(): MetricList
+    {
+        return $this->proxy()->metrics;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Access the events
+     */
+    protected function getEvents(): EventList
+    {
+        return $this->proxy()->events;
+    }
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+    /**
+     * Access the summary
+     */
+    protected function getSummary(): CallSummaryList
+    {
+        return $this->proxy()->summary;
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Access the annotation
+     */
+    protected function getAnnotation(): AnnotationList
+    {
+        return $this->proxy()->annotation;
+    }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		return '[Twilio.Insights.V1.CallInstance ' . \implode(' ', $context) . ']';
-	}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Fetch the CallInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return CallInstance Fetched CallInstance
-	 */
-	public function fetch() : CallInstance
-	{
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Access the annotation
-	 */
-	protected function getAnnotation() : AnnotationList
-	{
-		return $this->proxy()->annotation;
-	}
-
-	/**
-	 * Access the events
-	 */
-	protected function getEvents() : EventList
-	{
-		return $this->proxy()->events;
-	}
-
-	/**
-	 * Access the metrics
-	 */
-	protected function getMetrics() : MetricList
-	{
-		return $this->proxy()->metrics;
-	}
-
-	/**
-	 * Access the summary
-	 */
-	protected function getSummary() : CallSummaryList
-	{
-		return $this->proxy()->summary;
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return CallContext Context for this CallInstance
-	 */
-	protected function proxy() : CallContext
-	{
-		if (! $this->context) {
-			$this->context = new CallContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Insights.V1.CallInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

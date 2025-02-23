@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Events\V1;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $type
@@ -35,98 +37,96 @@ use Twilio\Version;
  */
 class EventTypeInstance extends InstanceResource
 {
-	/**
-	 * Initialize the EventTypeInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $type A string that uniquely identifies this Event Type.
-	 */
-	public function __construct(Version $version, array $payload, ?string $type = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the EventTypeInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $type A string that uniquely identifies this Event Type.
+     */
+    public function __construct(Version $version, array $payload, string $type = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'type' => Values::array_get($payload, 'type'),
-			'schemaId' => Values::array_get($payload, 'schema_id'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'description' => Values::array_get($payload, 'description'),
-			'status' => Values::array_get($payload, 'status'),
-			'documentationUrl' => Values::array_get($payload, 'documentation_url'),
-			'url' => Values::array_get($payload, 'url'),
-			'links' => Values::array_get($payload, 'links'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'type' => Values::array_get($payload, 'type'),
+            'schemaId' => Values::array_get($payload, 'schema_id'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'description' => Values::array_get($payload, 'description'),
+            'status' => Values::array_get($payload, 'status'),
+            'documentationUrl' => Values::array_get($payload, 'documentation_url'),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
+        ];
 
-		$this->solution = ['type' => $type ?: $this->properties['type'], ];
-	}
+        $this->solution = ['type' => $type ?: $this->properties['type'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return EventTypeContext Context for this EventTypeInstance
+     */
+    protected function proxy(): EventTypeContext
+    {
+        if (!$this->context) {
+            $this->context = new EventTypeContext(
+                $this->version,
+                $this->solution['type']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the EventTypeInstance
+     *
+     * @return EventTypeInstance Fetched EventTypeInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): EventTypeInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.Events.V1.EventTypeInstance ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the EventTypeInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return EventTypeInstance Fetched EventTypeInstance
-	 */
-	public function fetch() : EventTypeInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return EventTypeContext Context for this EventTypeInstance
-	 */
-	protected function proxy() : EventTypeContext
-	{
-		if (! $this->context) {
-			$this->context = new EventTypeContext(
-				$this->version,
-				$this->solution['type']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Events.V1.EventTypeInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

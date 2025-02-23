@@ -19,45 +19,47 @@ namespace Twilio\Rest\Messaging\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class LinkshorteningMessagingServiceDomainAssociationList extends ListResource
-	{
-	/**
-	 * Construct the LinkshorteningMessagingServiceDomainAssociationList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the LinkshorteningMessagingServiceDomainAssociationList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Messaging.V1.LinkshorteningMessagingServiceDomainAssociationList]';
-	}
+    /**
+     * Constructs a LinkshorteningMessagingServiceDomainAssociationContext
+     *
+     * @param string $messagingServiceSid Unique string used to identify the Messaging service that this domain should be associated with.
+     */
+    public function getContext(
+        string $messagingServiceSid
+        
+    ): LinkshorteningMessagingServiceDomainAssociationContext
+    {
+        return new LinkshorteningMessagingServiceDomainAssociationContext(
+            $this->version,
+            $messagingServiceSid
+        );
+    }
 
-	/**
-	 * Constructs a LinkshorteningMessagingServiceDomainAssociationContext
-	 *
-	 * @param string $messagingServiceSid Unique string used to identify the Messaging service that this domain should be associated with.
-	 */
-	public function getContext(
-		string $messagingServiceSid
-	) : LinkshorteningMessagingServiceDomainAssociationContext
-	{
-		return new LinkshorteningMessagingServiceDomainAssociationContext(
-			$this->version,
-			$messagingServiceSid
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Messaging.V1.LinkshorteningMessagingServiceDomainAssociationList]';
+    }
 }

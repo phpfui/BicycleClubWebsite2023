@@ -21,67 +21,70 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class BulkEligibilityList extends ListResource
-	{
-	/**
-	 * Construct the BulkEligibilityList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the BulkEligibilityList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/HostedNumber/Eligibility/Bulk';
-	}
+        $this->uri = '/HostedNumber/Eligibility/Bulk';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Numbers.V1.BulkEligibilityList]';
-	}
+    /**
+     * Create the BulkEligibilityInstance
+     *
+     * @return BulkEligibilityInstance Created BulkEligibilityInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(): BulkEligibilityInstance
+    {
 
-	/**
-	 * Create the BulkEligibilityInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return BulkEligibilityInstance Created BulkEligibilityInstance
-	 */
-	public function create() : BulkEligibilityInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $data = $body->toArray();
+        $headers['Content-Type'] = 'application/json';
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$data = $body->toArray();
-		$headers['Content-Type'] = 'application/json';
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return new BulkEligibilityInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new BulkEligibilityInstance(
-			$this->version,
-			$payload
-		);
-	}
 
-	/**
-	 * Constructs a BulkEligibilityContext
-	 *
-	 * @param string $requestId The SID of the bulk eligibility check that you want to know about.
-	 */
-	public function getContext(
-		string $requestId
-	) : BulkEligibilityContext
-	{
-		return new BulkEligibilityContext(
-			$this->version,
-			$requestId
-		);
-	}
+    /**
+     * Constructs a BulkEligibilityContext
+     *
+     * @param string $requestId The SID of the bulk eligibility check that you want to know about.
+     */
+    public function getContext(
+        string $requestId
+        
+    ): BulkEligibilityContext
+    {
+        return new BulkEligibilityContext(
+            $this->version,
+            $requestId
+        );
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Numbers.V1.BulkEligibilityList]';
+    }
 }

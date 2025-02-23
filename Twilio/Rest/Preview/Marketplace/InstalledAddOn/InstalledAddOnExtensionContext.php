@@ -14,99 +14,104 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Preview\Marketplace\InstalledAddOn;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class InstalledAddOnExtensionContext extends InstanceContext
-	{
-	/**
-	 * Initialize the InstalledAddOnExtensionContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $installedAddOnSid The SID of the InstalledAddOn resource with the extension to fetch.
-	 * @param string $sid The SID of the InstalledAddOn Extension resource to fetch.
-	 */
-	public function __construct(
-		Version $version,
-		$installedAddOnSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the InstalledAddOnExtensionContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $installedAddOnSid The SID of the InstalledAddOn resource with the extension to fetch.
+     * @param string $sid The SID of the InstalledAddOn Extension resource to fetch.
+     */
+    public function __construct(
+        Version $version,
+        $installedAddOnSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'installedAddOnSid' => $installedAddOnSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'installedAddOnSid' =>
+            $installedAddOnSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/InstalledAddOns/' . \rawurlencode($installedAddOnSid)
-		. '/Extensions/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/InstalledAddOns/' . \rawurlencode($installedAddOnSid)
+        .'/Extensions/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the InstalledAddOnExtensionInstance
+     *
+     * @return InstalledAddOnExtensionInstance Fetched InstalledAddOnExtensionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): InstalledAddOnExtensionInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Preview.Marketplace.InstalledAddOnExtensionContext ' . \implode(' ', $context) . ']';
-	}
+        return new InstalledAddOnExtensionInstance(
+            $this->version,
+            $payload,
+            $this->solution['installedAddOnSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the InstalledAddOnExtensionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InstalledAddOnExtensionInstance Fetched InstalledAddOnExtensionInstance
-	 */
-	public function fetch() : InstalledAddOnExtensionInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the InstalledAddOnExtensionInstance
+     *
+     * @param bool $enabled Whether the Extension should be invoked.
+     * @return InstalledAddOnExtensionInstance Updated InstalledAddOnExtensionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(bool $enabled): InstalledAddOnExtensionInstance
+    {
 
-		return new InstalledAddOnExtensionInstance(
-			$this->version,
-			$payload,
-			$this->solution['installedAddOnSid'],
-			$this->solution['sid']
-		);
-	}
+        $data = Values::of([
+            'Enabled' =>
+                Serialize::booleanToString($enabled),
+        ]);
 
-	/**
-	 * Update the InstalledAddOnExtensionInstance
-	 *
-	 * @param bool $enabled Whether the Extension should be invoked.
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InstalledAddOnExtensionInstance Updated InstalledAddOnExtensionInstance
-	 */
-	public function update(bool $enabled) : InstalledAddOnExtensionInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'Enabled' => Serialize::booleanToString($enabled),
-		]);
+        return new InstalledAddOnExtensionInstance(
+            $this->version,
+            $payload,
+            $this->solution['installedAddOnSid'],
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new InstalledAddOnExtensionInstance(
-			$this->version,
-			$payload,
-			$this->solution['installedAddOnSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Preview.Marketplace.InstalledAddOnExtensionContext ' . \implode(' ', $context) . ']';
+    }
 }

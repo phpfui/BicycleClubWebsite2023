@@ -19,45 +19,47 @@ namespace Twilio\Rest\Routes\V2;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class TrunkList extends ListResource
-	{
-	/**
-	 * Construct the TrunkList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the TrunkList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Routes.V2.TrunkList]';
-	}
+    /**
+     * Constructs a TrunkContext
+     *
+     * @param string $sipTrunkDomain The absolute URL of the SIP Trunk
+     */
+    public function getContext(
+        string $sipTrunkDomain
+        
+    ): TrunkContext
+    {
+        return new TrunkContext(
+            $this->version,
+            $sipTrunkDomain
+        );
+    }
 
-	/**
-	 * Constructs a TrunkContext
-	 *
-	 * @param string $sipTrunkDomain The absolute URL of the SIP Trunk
-	 */
-	public function getContext(
-		string $sipTrunkDomain
-	) : TrunkContext
-	{
-		return new TrunkContext(
-			$this->version,
-			$sipTrunkDomain
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Routes.V2.TrunkList]';
+    }
 }

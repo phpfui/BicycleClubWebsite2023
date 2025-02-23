@@ -22,61 +22,68 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class AuthorizeList extends ListResource
-	{
-	/**
-	 * Construct the AuthorizeList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the AuthorizeList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/authorize';
-	}
+        $this->uri = '/authorize';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Oauth.V1.AuthorizeList]';
-	}
+    /**
+     * Fetch the AuthorizeInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return AuthorizeInstance Fetched AuthorizeInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): AuthorizeInstance
+    {
 
-	/**
-	 * Fetch the AuthorizeInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AuthorizeInstance Fetched AuthorizeInstance
-	 */
-	public function fetch(array $options = []) : AuthorizeInstance
-	{
+        $options = new Values($options);
 
-		$options = new Values($options);
+        $params = Values::of([
+            'ResponseType' =>
+                $options['responseType'],
+            'ClientId' =>
+                $options['clientId'],
+            'RedirectUri' =>
+                $options['redirectUri'],
+            'Scope' =>
+                $options['scope'],
+            'State' =>
+                $options['state'],
+        ]);
 
-		$params = Values::of([
-			'ResponseType' => $options['responseType'],
-			'ClientId' => $options['clientId'],
-			'RedirectUri' => $options['redirectUri'],
-			'Scope' => $options['scope'],
-			'State' => $options['state'],
-		]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+        return new AuthorizeInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new AuthorizeInstance(
-			$this->version,
-			$payload
-		);
-	}
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Oauth.V1.AuthorizeList]';
+    }
 }

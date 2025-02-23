@@ -14,73 +14,76 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Studio\V1\Flow\Engagement;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class EngagementContextContext extends InstanceContext
-	{
-	/**
-	 * Initialize the EngagementContextContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $flowSid The SID of the Flow.
-	 * @param string $engagementSid The SID of the Engagement.
-	 */
-	public function __construct(
-		Version $version,
-		$flowSid,
-		$engagementSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the EngagementContextContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $flowSid The SID of the Flow.
+     * @param string $engagementSid The SID of the Engagement.
+     */
+    public function __construct(
+        Version $version,
+        $flowSid,
+        $engagementSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'flowSid' => $flowSid,
-			'engagementSid' => $engagementSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'flowSid' =>
+            $flowSid,
+        'engagementSid' =>
+            $engagementSid,
+        ];
 
-		$this->uri = '/Flows/' . \rawurlencode($flowSid)
-		. '/Engagements/' . \rawurlencode($engagementSid)
-		. '/Context';
-	}
+        $this->uri = '/Flows/' . \rawurlencode($flowSid)
+        .'/Engagements/' . \rawurlencode($engagementSid)
+        .'/Context';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the EngagementContextInstance
+     *
+     * @return EngagementContextInstance Fetched EngagementContextInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): EngagementContextInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Studio.V1.EngagementContextContext ' . \implode(' ', $context) . ']';
-	}
+        return new EngagementContextInstance(
+            $this->version,
+            $payload,
+            $this->solution['flowSid'],
+            $this->solution['engagementSid']
+        );
+    }
 
-	/**
-	 * Fetch the EngagementContextInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return EngagementContextInstance Fetched EngagementContextInstance
-	 */
-	public function fetch() : EngagementContextInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new EngagementContextInstance(
-			$this->version,
-			$payload,
-			$this->solution['flowSid'],
-			$this->solution['engagementSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Studio.V1.EngagementContextContext ' . \implode(' ', $context) . ']';
+    }
 }

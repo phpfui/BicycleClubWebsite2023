@@ -1,16 +1,15 @@
 <?php
 
+
 namespace Twilio;
 
-class VersionInfo
-{
-	public const MAJOR = '8';
 
-	public const MINOR = '3';
+class VersionInfo {
+    const MAJOR = "8";
+    const MINOR = "3";
+    const PATCH = "15";
 
-	public const PATCH = '14';
-
-	public static function string() {
-		return \implode('.', [self::MAJOR, self::MINOR, self::PATCH]);
-	}
+    public static function string() {
+        return implode('.', array(self::MAJOR, self::MINOR, self::PATCH));
+    }
 }

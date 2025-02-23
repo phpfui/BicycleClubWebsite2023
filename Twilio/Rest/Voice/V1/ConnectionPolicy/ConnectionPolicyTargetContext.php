@@ -14,120 +14,129 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Voice\V1\ConnectionPolicy;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class ConnectionPolicyTargetContext extends InstanceContext
-	{
-	/**
-	 * Initialize the ConnectionPolicyTargetContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $connectionPolicySid The SID of the Connection Policy that owns the Target.
-	 * @param string $sid The unique string that we created to identify the Target resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$connectionPolicySid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the ConnectionPolicyTargetContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $connectionPolicySid The SID of the Connection Policy that owns the Target.
+     * @param string $sid The unique string that we created to identify the Target resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $connectionPolicySid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'connectionPolicySid' => $connectionPolicySid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'connectionPolicySid' =>
+            $connectionPolicySid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/ConnectionPolicies/' . \rawurlencode($connectionPolicySid)
-		. '/Targets/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/ConnectionPolicies/' . \rawurlencode($connectionPolicySid)
+        .'/Targets/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the ConnectionPolicyTargetInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Voice.V1.ConnectionPolicyTargetContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the ConnectionPolicyTargetInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the ConnectionPolicyTargetInstance
+     *
+     * @return ConnectionPolicyTargetInstance Fetched ConnectionPolicyTargetInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ConnectionPolicyTargetInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new ConnectionPolicyTargetInstance(
+            $this->version,
+            $payload,
+            $this->solution['connectionPolicySid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the ConnectionPolicyTargetInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ConnectionPolicyTargetInstance Fetched ConnectionPolicyTargetInstance
-	 */
-	public function fetch() : ConnectionPolicyTargetInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the ConnectionPolicyTargetInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return ConnectionPolicyTargetInstance Updated ConnectionPolicyTargetInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): ConnectionPolicyTargetInstance
+    {
 
-		return new ConnectionPolicyTargetInstance(
-			$this->version,
-			$payload,
-			$this->solution['connectionPolicySid'],
-			$this->solution['sid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the ConnectionPolicyTargetInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ConnectionPolicyTargetInstance Updated ConnectionPolicyTargetInstance
-	 */
-	public function update(array $options = []) : ConnectionPolicyTargetInstance
-	{
+        $data = Values::of([
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'Target' =>
+                $options['target'],
+            'Priority' =>
+                $options['priority'],
+            'Weight' =>
+                $options['weight'],
+            'Enabled' =>
+                Serialize::booleanToString($options['enabled']),
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'FriendlyName' => $options['friendlyName'],
-			'Target' => $options['target'],
-			'Priority' => $options['priority'],
-			'Weight' => $options['weight'],
-			'Enabled' => Serialize::booleanToString($options['enabled']),
-		]);
+        return new ConnectionPolicyTargetInstance(
+            $this->version,
+            $payload,
+            $this->solution['connectionPolicySid'],
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new ConnectionPolicyTargetInstance(
-			$this->version,
-			$payload,
-			$this->solution['connectionPolicySid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Voice.V1.ConnectionPolicyTargetContext ' . \implode(' ', $context) . ']';
+    }
 }

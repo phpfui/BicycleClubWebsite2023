@@ -14,82 +14,84 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Video\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class CompositionContext extends InstanceContext
-	{
-	/**
-	 * Initialize the CompositionContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The SID of the Composition resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the CompositionContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The SID of the Composition resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Compositions/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Compositions/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the CompositionInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Video.V1.CompositionContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the CompositionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the CompositionInstance
+     *
+     * @return CompositionInstance Fetched CompositionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): CompositionInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new CompositionInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the CompositionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return CompositionInstance Fetched CompositionInstance
-	 */
-	public function fetch() : CompositionInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new CompositionInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Video.V1.CompositionContext ' . \implode(' ', $context) . ']';
+    }
 }

@@ -14,73 +14,76 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Events\V1\Schema;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class SchemaVersionContext extends InstanceContext
-	{
-	/**
-	 * Initialize the SchemaVersionContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $id The unique identifier of the schema. Each schema can have multiple versions, that share the same id.
-	 * @param int $schemaVersion The version of the schema
-	 */
-	public function __construct(
-		Version $version,
-		$id,
-		$schemaVersion
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the SchemaVersionContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $id The unique identifier of the schema. Each schema can have multiple versions, that share the same id.
+     * @param int $schemaVersion The version of the schema
+     */
+    public function __construct(
+        Version $version,
+        $id,
+        $schemaVersion
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'id' => $id,
-			'schemaVersion' => $schemaVersion,
-		];
+        // Path Solution
+        $this->solution = [
+        'id' =>
+            $id,
+        'schemaVersion' =>
+            $schemaVersion,
+        ];
 
-		$this->uri = '/Schemas/' . \rawurlencode($id)
-		. '/Versions/' . \rawurlencode($schemaVersion)
-		. '';
-	}
+        $this->uri = '/Schemas/' . \rawurlencode($id)
+        .'/Versions/' . \rawurlencode($schemaVersion)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the SchemaVersionInstance
+     *
+     * @return SchemaVersionInstance Fetched SchemaVersionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SchemaVersionInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Events.V1.SchemaVersionContext ' . \implode(' ', $context) . ']';
-	}
+        return new SchemaVersionInstance(
+            $this->version,
+            $payload,
+            $this->solution['id'],
+            $this->solution['schemaVersion']
+        );
+    }
 
-	/**
-	 * Fetch the SchemaVersionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SchemaVersionInstance Fetched SchemaVersionInstance
-	 */
-	public function fetch() : SchemaVersionInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new SchemaVersionInstance(
-			$this->version,
-			$payload,
-			$this->solution['id'],
-			$this->solution['schemaVersion']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Events.V1.SchemaVersionContext ' . \implode(' ', $context) . ']';
+    }
 }

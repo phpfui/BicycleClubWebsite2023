@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Conversations\V1;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $sid
@@ -35,123 +37,121 @@ use Twilio\Version;
  */
 class RoleInstance extends InstanceResource
 {
-	/**
-	 * Initialize the RoleInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $sid The SID of the Role resource to delete.
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the RoleInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid The SID of the Role resource to delete.
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'chatServiceSid' => Values::array_get($payload, 'chat_service_sid'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'type' => Values::array_get($payload, 'type'),
-			'permissions' => Values::array_get($payload, 'permissions'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'chatServiceSid' => Values::array_get($payload, 'chat_service_sid'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'type' => Values::array_get($payload, 'type'),
+            'permissions' => Values::array_get($payload, 'permissions'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return RoleContext Context for this RoleInstance
+     */
+    protected function proxy(): RoleContext
+    {
+        if (!$this->context) {
+            $this->context = new RoleContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Delete the RoleInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->delete();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the RoleInstance
+     *
+     * @return RoleInstance Fetched RoleInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): RoleInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->fetch();
+    }
 
-		return '[Twilio.Conversations.V1.RoleInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Update the RoleInstance
+     *
+     * @param string[] $permission A permission that you grant to the role. Only one permission can be granted per parameter. To assign more than one permission, repeat this parameter for each permission value. Note that the update action replaces all previously assigned permissions with those defined in the update action. To remove a permission, do not include it in the subsequent update action. The values for this parameter depend on the role's `type`.
+     * @return RoleInstance Updated RoleInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $permission): RoleInstance
+    {
 
-	/**
-	 * Delete the RoleInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        return $this->proxy()->update($permission);
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-	/**
-	 * Fetch the RoleInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RoleInstance Fetched RoleInstance
-	 */
-	public function fetch() : RoleInstance
-	{
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->proxy()->fetch();
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Update the RoleInstance
-	 *
-	 * @param string[] $permission A permission that you grant to the role. Only one permission can be granted per parameter. To assign more than one permission, repeat this parameter for each permission value. Note that the update action replaces all previously assigned permissions with those defined in the update action. To remove a permission, do not include it in the subsequent update action. The values for this parameter depend on the role's `type`.
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RoleInstance Updated RoleInstance
-	 */
-	public function update(array $permission) : RoleInstance
-	{
-
-		return $this->proxy()->update($permission);
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return RoleContext Context for this RoleInstance
-	 */
-	protected function proxy() : RoleContext
-	{
-		if (! $this->context) {
-			$this->context = new RoleContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Conversations.V1.RoleInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

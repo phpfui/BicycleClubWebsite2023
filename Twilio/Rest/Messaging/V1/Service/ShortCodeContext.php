@@ -14,87 +14,90 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Messaging\V1\Service;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class ShortCodeContext extends InstanceContext
-	{
-	/**
-	 * Initialize the ShortCodeContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the resource under.
-	 * @param string $sid The SID of the ShortCode resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$serviceSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the ShortCodeContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the resource under.
+     * @param string $sid The SID of the ShortCode resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $serviceSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/ShortCodes/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/ShortCodes/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the ShortCodeInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Messaging.V1.ShortCodeContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the ShortCodeInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the ShortCodeInstance
+     *
+     * @return ShortCodeInstance Fetched ShortCodeInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ShortCodeInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new ShortCodeInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the ShortCodeInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ShortCodeInstance Fetched ShortCodeInstance
-	 */
-	public function fetch() : ShortCodeInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new ShortCodeInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Messaging.V1.ShortCodeContext ' . \implode(' ', $context) . ']';
+    }
 }

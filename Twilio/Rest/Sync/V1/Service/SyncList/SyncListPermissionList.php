@@ -21,150 +21,155 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class SyncListPermissionList extends ListResource
-	{
-	/**
-	 * Construct the SyncListPermissionList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) with the Sync List Permission resource to delete.
-	 * @param string $listSid The SID of the Sync List with the Sync List Permission resource to delete. Can be the Sync List resource's `sid` or its `unique_name`.
-	 */
-	public function __construct(
-		Version $version,
-		string $serviceSid,
-		string $listSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the SyncListPermissionList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) with the Sync List Permission resource to delete.
+     * @param string $listSid The SID of the Sync List with the Sync List Permission resource to delete. Can be the Sync List resource's `sid` or its `unique_name`.
+     */
+    public function __construct(
+        Version $version,
+        string $serviceSid,
+        string $listSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        
+        'listSid' =>
+            $listSid,
+        
+        ];
 
-			'listSid' => $listSid,
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/Lists/' . \rawurlencode($listSid)
+        .'/Permissions';
+    }
 
-		];
+    /**
+     * Reads SyncListPermissionInstance records from the API as a list.
+     * Unlike stream(), this operation is eager and will load `limit` records into
+     * memory before returning.
+     *
+     * @param int $limit Upper limit for the number of records to return. read()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, read()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return SyncListPermissionInstance[] Array of results
+     */
+    public function read(int $limit = null, $pageSize = null): array
+    {
+        return \iterator_to_array($this->stream($limit, $pageSize), false);
+    }
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/Lists/' . \rawurlencode($listSid)
-		. '/Permissions';
-	}
+    /**
+     * Streams SyncListPermissionInstance records from the API as a generator stream.
+     * This operation lazily loads records as efficiently as possible until the
+     * limit
+     * is reached.
+     * The results are returned as a generator, so this operation is memory
+     * efficient.
+     *
+     * @param int $limit Upper limit for the number of records to return. stream()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, stream()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return Stream stream of results
+     */
+    public function stream(int $limit = null, $pageSize = null): Stream
+    {
+        $limits = $this->version->readLimits($limit, $pageSize);
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Sync.V1.SyncListPermissionList]';
-	}
+        $page = $this->page($limits['pageSize']);
 
-	/**
-	 * Constructs a SyncListPermissionContext
-	 *
-	 * @param string $identity The application-defined string that uniquely identifies the User's Sync List Permission resource to delete.
-	 */
-	public function getContext(
-		string $identity
-	) : SyncListPermissionContext
-	{
-		return new SyncListPermissionContext(
-			$this->version,
-			$this->solution['serviceSid'],
-			$this->solution['listSid'],
-			$identity
-		);
-	}
+        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+    }
 
-	/**
-	 * Retrieve a specific page of SyncListPermissionInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param string $targetUrl API-generated URL for the requested results page
-	 * @return SyncListPermissionPage Page of SyncListPermissionInstance
-	 */
-	public function getPage(string $targetUrl) : SyncListPermissionPage
-	{
-		$response = $this->version->getDomain()->getClient()->request(
-			'GET',
-			$targetUrl
-		);
+    /**
+     * Retrieve a single page of SyncListPermissionInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param mixed $pageSize Number of records to return, defaults to 50
+     * @param string $pageToken PageToken provided by the API
+     * @param mixed $pageNumber Page Number, this value is simply for client state
+     * @return SyncListPermissionPage Page of SyncListPermissionInstance
+     */
+    public function page(
+        $pageSize = Values::NONE,
+        string $pageToken = Values::NONE,
+        $pageNumber = Values::NONE
+    ): SyncListPermissionPage
+    {
 
-		return new SyncListPermissionPage($this->version, $response, $this->solution);
-	}
+        $params = Values::of([
+            'PageToken' => $pageToken,
+            'Page' => $pageNumber,
+            'PageSize' => $pageSize,
+        ]);
 
-	/**
-	 * Retrieve a single page of SyncListPermissionInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param mixed $pageSize Number of records to return, defaults to 50
-	 * @param string $pageToken PageToken provided by the API
-	 * @param mixed $pageNumber Page Number, this value is simply for client state
-	 * @return SyncListPermissionPage Page of SyncListPermissionInstance
-	 */
-	public function page(
-		$pageSize = Values::NONE,
-		string $pageToken = Values::NONE,
-		$pageNumber = Values::NONE
-	) : SyncListPermissionPage
-	{
+        $response = $this->version->page('GET', $this->uri, $params);
 
-		$params = Values::of([
-			'PageToken' => $pageToken,
-			'Page' => $pageNumber,
-			'PageSize' => $pageSize,
-		]);
+        return new SyncListPermissionPage($this->version, $response, $this->solution);
+    }
 
-		$response = $this->version->page('GET', $this->uri, $params);
+    /**
+     * Retrieve a specific page of SyncListPermissionInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return SyncListPermissionPage Page of SyncListPermissionInstance
+     */
+    public function getPage(string $targetUrl): SyncListPermissionPage
+    {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
 
-		return new SyncListPermissionPage($this->version, $response, $this->solution);
-	}
+        return new SyncListPermissionPage($this->version, $response, $this->solution);
+    }
 
-	/**
-	 * Reads SyncListPermissionInstance records from the API as a list.
-	 * Unlike stream(), this operation is eager and will load `limit` records into
-	 * memory before returning.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. read()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, read()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return SyncListPermissionInstance[] Array of results
-	 */
-	public function read(?int $limit = null, $pageSize = null) : array
-	{
-		return \iterator_to_array($this->stream($limit, $pageSize), false);
-	}
 
-	/**
-	 * Streams SyncListPermissionInstance records from the API as a generator stream.
-	 * This operation lazily loads records as efficiently as possible until the
-	 * limit
-	 * is reached.
-	 * The results are returned as a generator, so this operation is memory
-	 * efficient.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. stream()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, stream()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return Stream stream of results
-	 */
-	public function stream(?int $limit = null, $pageSize = null) : Stream
-	{
-		$limits = $this->version->readLimits($limit, $pageSize);
+    /**
+     * Constructs a SyncListPermissionContext
+     *
+     * @param string $identity The application-defined string that uniquely identifies the User's Sync List Permission resource to delete.
+     */
+    public function getContext(
+        string $identity
+        
+    ): SyncListPermissionContext
+    {
+        return new SyncListPermissionContext(
+            $this->version,
+            $this->solution['serviceSid'],
+            $this->solution['listSid'],
+            $identity
+        );
+    }
 
-		$page = $this->page($limits['pageSize']);
-
-		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Sync.V1.SyncListPermissionList]';
+    }
 }

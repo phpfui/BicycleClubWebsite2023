@@ -1,6 +1,8 @@
 <?php
 
+
 namespace Twilio\Jwt\Client;
+
 
 /**
  * Scope URI implementation
@@ -13,61 +15,53 @@ namespace Twilio\Jwt\Client;
  * For example:
  * scope:client:incoming?name=jonas
  */
-class ScopeURI
-{
-	public $params;
+class ScopeURI {
+    public $service;
+    public $privilege;
+    public $params;
 
-	public $privilege;
+    public function __construct(string $service, string $privilege, array $params = []) {
+        $this->service = $service;
+        $this->privilege = $privilege;
+        $this->params = $params;
+    }
 
-	public $service;
+    public function toString(): string {
+        $uri = "scope:{$this->service}:{$this->privilege}";
+        if (\count($this->params)) {
+            $uri .= '?' . \http_build_query($this->params, '', '&');
+        }
+        return $uri;
+    }
 
-	public function __construct(string $service, string $privilege, array $params = []) {
-		$this->service = $service;
-		$this->privilege = $privilege;
-		$this->params = $params;
-	}
+    /**
+     * Parse a scope URI into a ScopeURI object
+     *
+     * @param string $uri The scope URI
+     * @return ScopeURI The parsed scope uri
+     * @throws \UnexpectedValueException
+     */
+    public static function parse(string $uri): ScopeURI {
+        if (\strpos($uri, 'scope:') !== 0) {
+            throw new \UnexpectedValueException(
+                'Not a scope URI according to scheme');
+        }
 
-	/**
-	 * Parse a scope URI into a ScopeURI object
-	 *
-	 * @param string $uri The scope URI
-	 * @throws \UnexpectedValueException
-	 * @return ScopeURI The parsed scope uri
-	 */
-	public static function parse(string $uri) : ScopeURI {
-		if (0 !== \strpos($uri, 'scope:')) {
-			throw new \UnexpectedValueException(
-				'Not a scope URI according to scheme'
-			);
-		}
+        $parts = \explode('?', $uri, 1);
+        $params = null;
 
-		$parts = \explode('?', $uri, 1);
-		$params = null;
+        if (\count($parts) > 1) {
+            \parse_str($parts[1], $params);
+        }
 
-		if (\count($parts) > 1) {
-			\parse_str($parts[1], $params);
-		}
+        $parts = \explode(':', $parts[0], 2);
 
-		$parts = \explode(':', $parts[0], 2);
+        if (\count($parts) !== 3) {
+            throw new \UnexpectedValueException(
+                'Not enough parts for scope URI');
+        }
 
-		if (3 !== \count($parts)) {
-			throw new \UnexpectedValueException(
-				'Not enough parts for scope URI'
-			);
-		}
-
-		[$scheme, $service, $privilege] = $parts;
-
-		return new ScopeURI($service, $privilege, $params);
-	}
-
-	public function toString() : string {
-		$uri = "scope:{$this->service}:{$this->privilege}";
-
-		if (\count($this->params)) {
-			$uri .= '?' . \http_build_query($this->params, '', '&');
-		}
-
-		return $uri;
-	}
+        [$scheme, $service, $privilege] = $parts;
+        return new ScopeURI($service, $privilege, $params);
+    }
 }

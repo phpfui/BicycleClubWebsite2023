@@ -22,63 +22,67 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class NewKeyList extends ListResource
-	{
-	/**
-	 * Construct the NewKeyList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will be responsible for the new Key resource.
-	 */
-	public function __construct(
-		Version $version,
-		string $accountSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the NewKeyList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will be responsible for the new Key resource.
+     */
+    public function __construct(
+        Version $version,
+        string $accountSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        
+        ];
 
-		];
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+        .'/Keys.json';
+    }
 
-		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		. '/Keys.json';
-	}
+    /**
+     * Create the NewKeyInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return NewKeyInstance Created NewKeyInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(array $options = []): NewKeyInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Api.V2010.NewKeyList]';
-	}
+        $options = new Values($options);
 
-	/**
-	 * Create the NewKeyInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return NewKeyInstance Created NewKeyInstance
-	 */
-	public function create(array $options = []) : NewKeyInstance
-	{
+        $data = Values::of([
+            'FriendlyName' =>
+                $options['friendlyName'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'FriendlyName' => $options['friendlyName'],
-		]);
+        return new NewKeyInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		return new NewKeyInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Api.V2010.NewKeyList]';
+    }
 }

@@ -14,82 +14,87 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Insights\V1\Conference;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class ConferenceParticipantContext extends InstanceContext
-	{
-	/**
-	 * Initialize the ConferenceParticipantContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $conferenceSid The unique SID identifier of the Conference.
-	 * @param string $participantSid The unique SID identifier of the Participant.
-	 */
-	public function __construct(
-		Version $version,
-		$conferenceSid,
-		$participantSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the ConferenceParticipantContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $conferenceSid The unique SID identifier of the Conference.
+     * @param string $participantSid The unique SID identifier of the Participant.
+     */
+    public function __construct(
+        Version $version,
+        $conferenceSid,
+        $participantSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'conferenceSid' => $conferenceSid,
-			'participantSid' => $participantSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'conferenceSid' =>
+            $conferenceSid,
+        'participantSid' =>
+            $participantSid,
+        ];
 
-		$this->uri = '/Conferences/' . \rawurlencode($conferenceSid)
-		. '/Participants/' . \rawurlencode($participantSid)
-		. '';
-	}
+        $this->uri = '/Conferences/' . \rawurlencode($conferenceSid)
+        .'/Participants/' . \rawurlencode($participantSid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the ConferenceParticipantInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return ConferenceParticipantInstance Fetched ConferenceParticipantInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): ConferenceParticipantInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.Insights.V1.ConferenceParticipantContext ' . \implode(' ', $context) . ']';
-	}
+        $params = Values::of([
+            'Events' =>
+                $options['events'],
+            'Metrics' =>
+                $options['metrics'],
+        ]);
 
-	/**
-	 * Fetch the ConferenceParticipantInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ConferenceParticipantInstance Fetched ConferenceParticipantInstance
-	 */
-	public function fetch(array $options = []) : ConferenceParticipantInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
 
-		$options = new Values($options);
+        return new ConferenceParticipantInstance(
+            $this->version,
+            $payload,
+            $this->solution['conferenceSid'],
+            $this->solution['participantSid']
+        );
+    }
 
-		$params = Values::of([
-			'Events' => $options['events'],
-			'Metrics' => $options['metrics'],
-		]);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
-
-		return new ConferenceParticipantInstance(
-			$this->version,
-			$payload,
-			$this->solution['conferenceSid'],
-			$this->solution['participantSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Insights.V1.ConferenceParticipantContext ' . \implode(' ', $context) . ']';
+    }
 }

@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Video\V1\Room;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $roomSid
@@ -30,57 +32,57 @@ use Twilio\Version;
  */
 class RecordingRulesInstance extends InstanceResource
 {
-	/**
-	 * Initialize the RecordingRulesInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $roomSid The SID of the Room resource where the recording rules to fetch apply.
-	 */
-	public function __construct(Version $version, array $payload, string $roomSid)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the RecordingRulesInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $roomSid The SID of the Room resource where the recording rules to fetch apply.
+     */
+    public function __construct(Version $version, array $payload, string $roomSid)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'roomSid' => Values::array_get($payload, 'room_sid'),
-			'rules' => Values::array_get($payload, 'rules'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'roomSid' => Values::array_get($payload, 'room_sid'),
+            'rules' => Values::array_get($payload, 'rules'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+        ];
 
-		$this->solution = ['roomSid' => $roomSid, ];
-	}
+        $this->solution = ['roomSid' => $roomSid, ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-			return $this->{$method}();
-		}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
-
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Video.V1.RecordingRulesInstance]';
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Video.V1.RecordingRulesInstance]';
+    }
 }
+

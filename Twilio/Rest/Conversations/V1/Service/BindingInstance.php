@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Conversations\V1\Service;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $sid
@@ -37,114 +39,112 @@ use Twilio\Version;
  */
 class BindingInstance extends InstanceResource
 {
-	/**
-	 * Initialize the BindingInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $chatServiceSid The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) to delete the Binding resource from.
-	 * @param string $sid The SID of the Binding resource to delete.
-	 */
-	public function __construct(Version $version, array $payload, string $chatServiceSid, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the BindingInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $chatServiceSid The SID of the [Conversation Service](https://www.twilio.com/docs/conversations/api/service-resource) to delete the Binding resource from.
+     * @param string $sid The SID of the Binding resource to delete.
+     */
+    public function __construct(Version $version, array $payload, string $chatServiceSid, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'chatServiceSid' => Values::array_get($payload, 'chat_service_sid'),
-			'credentialSid' => Values::array_get($payload, 'credential_sid'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'endpoint' => Values::array_get($payload, 'endpoint'),
-			'identity' => Values::array_get($payload, 'identity'),
-			'bindingType' => Values::array_get($payload, 'binding_type'),
-			'messageTypes' => Values::array_get($payload, 'message_types'),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'chatServiceSid' => Values::array_get($payload, 'chat_service_sid'),
+            'credentialSid' => Values::array_get($payload, 'credential_sid'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'endpoint' => Values::array_get($payload, 'endpoint'),
+            'identity' => Values::array_get($payload, 'identity'),
+            'bindingType' => Values::array_get($payload, 'binding_type'),
+            'messageTypes' => Values::array_get($payload, 'message_types'),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['chatServiceSid' => $chatServiceSid, 'sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['chatServiceSid' => $chatServiceSid, 'sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return BindingContext Context for this BindingInstance
+     */
+    protected function proxy(): BindingContext
+    {
+        if (!$this->context) {
+            $this->context = new BindingContext(
+                $this->version,
+                $this->solution['chatServiceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Delete the BindingInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->delete();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the BindingInstance
+     *
+     * @return BindingInstance Fetched BindingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): BindingInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->fetch();
+    }
 
-		return '[Twilio.Conversations.V1.BindingInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-	/**
-	 * Delete the BindingInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->proxy()->delete();
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the BindingInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return BindingInstance Fetched BindingInstance
-	 */
-	public function fetch() : BindingInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return BindingContext Context for this BindingInstance
-	 */
-	protected function proxy() : BindingContext
-	{
-		if (! $this->context) {
-			$this->context = new BindingContext(
-				$this->version,
-				$this->solution['chatServiceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Conversations.V1.BindingInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

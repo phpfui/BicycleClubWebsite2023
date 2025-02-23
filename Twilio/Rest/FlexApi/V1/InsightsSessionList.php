@@ -19,42 +19,43 @@ namespace Twilio\Rest\FlexApi\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class InsightsSessionList extends ListResource
-	{
-	/**
-	 * Construct the InsightsSessionList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the InsightsSessionList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.FlexApi.V1.InsightsSessionList]';
-	}
+    /**
+     * Constructs a InsightsSessionContext
+     */
+    public function getContext(
+        
+    ): InsightsSessionContext
+    {
+        return new InsightsSessionContext(
+            $this->version
+        );
+    }
 
-	/**
-	 * Constructs a InsightsSessionContext
-	 */
-	public function getContext(
-
-	) : InsightsSessionContext
-	{
-		return new InsightsSessionContext(
-			$this->version
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.FlexApi.V1.InsightsSessionList]';
+    }
 }

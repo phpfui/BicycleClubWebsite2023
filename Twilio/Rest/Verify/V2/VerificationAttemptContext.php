@@ -14,68 +14,70 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Verify\V2;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class VerificationAttemptContext extends InstanceContext
-	{
-	/**
-	 * Initialize the VerificationAttemptContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The unique SID identifier of a Verification Attempt
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the VerificationAttemptContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The unique SID identifier of a Verification Attempt
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Attempts/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Attempts/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the VerificationAttemptInstance
+     *
+     * @return VerificationAttemptInstance Fetched VerificationAttemptInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): VerificationAttemptInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Verify.V2.VerificationAttemptContext ' . \implode(' ', $context) . ']';
-	}
+        return new VerificationAttemptInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the VerificationAttemptInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return VerificationAttemptInstance Fetched VerificationAttemptInstance
-	 */
-	public function fetch() : VerificationAttemptInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new VerificationAttemptInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Verify.V2.VerificationAttemptContext ' . \implode(' ', $context) . ']';
+    }
 }

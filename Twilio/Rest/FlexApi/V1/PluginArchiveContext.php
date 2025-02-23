@@ -14,72 +14,74 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class PluginArchiveContext extends InstanceContext
-	{
-	/**
-	 * Initialize the PluginArchiveContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The SID of the Flex Plugin resource to archive.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the PluginArchiveContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The SID of the Flex Plugin resource to archive.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/PluginService/Plugins/' . \rawurlencode($sid)
-		. '/Archive';
-	}
+        $this->uri = '/PluginService/Plugins/' . \rawurlencode($sid)
+        .'/Archive';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Update the PluginArchiveInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return PluginArchiveInstance Updated PluginArchiveInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): PluginArchiveInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.FlexApi.V1.PluginArchiveContext ' . \implode(' ', $context) . ']';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Flex-Metadata' => $options['flexMetadata']]);
+        $payload = $this->version->update('POST', $this->uri, [], [], $headers);
 
-	/**
-	 * Update the PluginArchiveInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PluginArchiveInstance Updated PluginArchiveInstance
-	 */
-	public function update(array $options = []) : PluginArchiveInstance
-	{
+        return new PluginArchiveInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		$options = new Values($options);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Flex-Metadata' => $options['flexMetadata']]);
-		$payload = $this->version->update('POST', $this->uri, [], [], $headers);
-
-		return new PluginArchiveInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.FlexApi.V1.PluginArchiveContext ' . \implode(' ', $context) . ']';
+    }
 }

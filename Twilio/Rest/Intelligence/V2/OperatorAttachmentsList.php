@@ -19,45 +19,47 @@ namespace Twilio\Rest\Intelligence\V2;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class OperatorAttachmentsList extends ListResource
-	{
-	/**
-	 * Construct the OperatorAttachmentsList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the OperatorAttachmentsList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Intelligence.V2.OperatorAttachmentsList]';
-	}
+    /**
+     * Constructs a OperatorAttachmentsContext
+     *
+     * @param string $serviceSid The unique SID identifier of the Service.
+     */
+    public function getContext(
+        string $serviceSid
+        
+    ): OperatorAttachmentsContext
+    {
+        return new OperatorAttachmentsContext(
+            $this->version,
+            $serviceSid
+        );
+    }
 
-	/**
-	 * Constructs a OperatorAttachmentsContext
-	 *
-	 * @param string $serviceSid The unique SID identifier of the Service.
-	 */
-	public function getContext(
-		string $serviceSid
-	) : OperatorAttachmentsContext
-	{
-		return new OperatorAttachmentsContext(
-			$this->version,
-			$serviceSid
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Intelligence.V2.OperatorAttachmentsList]';
+    }
 }

@@ -14,132 +14,132 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Rest\FlexApi\V1\PluginConfiguration\ConfiguredPluginList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\FlexApi\V1\PluginConfiguration\ConfiguredPluginList;
+
 
 /**
  * @property ConfiguredPluginList $plugins
  * @method \Twilio\Rest\FlexApi\V1\PluginConfiguration\ConfiguredPluginContext plugins(string $pluginSid)
  */
 class PluginConfigurationContext extends InstanceContext
-	{
-	protected $_plugins;
+    {
+    protected $_plugins;
 
-	/**
-	 * Initialize the PluginConfigurationContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The SID of the Flex Plugin Configuration resource to fetch.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    /**
+     * Initialize the PluginConfigurationContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The SID of the Flex Plugin Configuration resource to fetch.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/PluginService/Configurations/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/PluginService/Configurations/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Fetch the PluginConfigurationInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return PluginConfigurationInstance Fetched PluginConfigurationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): PluginConfigurationInstance
+    {
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        $options = new Values($options);
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Flex-Metadata' => $options['flexMetadata']]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return new PluginConfigurationInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-			return $this->{$method}();
-		}
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+    /**
+     * Access the plugins
+     */
+    protected function getPlugins(): ConfiguredPluginList
+    {
+        if (!$this->_plugins) {
+            $this->_plugins = new ConfiguredPluginList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        return $this->_plugins;
+    }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.FlexApi.V1.PluginConfigurationContext ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-	/**
-	 * Fetch the PluginConfigurationInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PluginConfigurationInstance Fetched PluginConfigurationInstance
-	 */
-	public function fetch(array $options = []) : PluginConfigurationInstance
-	{
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		$options = new Values($options);
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Flex-Metadata' => $options['flexMetadata']]);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new PluginConfigurationInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
-
-	/**
-	 * Access the plugins
-	 */
-	protected function getPlugins() : ConfiguredPluginList
-	{
-		if (! $this->_plugins) {
-			$this->_plugins = new ConfiguredPluginList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_plugins;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.FlexApi.V1.PluginConfigurationContext ' . \implode(' ', $context) . ']';
+    }
 }

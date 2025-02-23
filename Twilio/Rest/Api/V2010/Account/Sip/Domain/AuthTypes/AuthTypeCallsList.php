@@ -17,11 +17,12 @@
 namespace Twilio\Rest\Api\V2010\Account\Sip\Domain\AuthTypes;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Api\V2010\Account\Sip\Domain\AuthTypes\AuthTypeCalls\AuthCallsCredentialListMappingList;
-use Twilio\Rest\Api\V2010\Account\Sip\Domain\AuthTypes\AuthTypeCalls\AuthCallsIpAccessControlListMappingList;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Api\V2010\Account\Sip\Domain\AuthTypes\AuthTypeCalls\AuthCallsIpAccessControlListMappingList;
+use Twilio\Rest\Api\V2010\Account\Sip\Domain\AuthTypes\AuthTypeCalls\AuthCallsCredentialListMappingList;
+
 
 /**
  * @property AuthCallsIpAccessControlListMappingList $ipAccessControlListMappings
@@ -30,110 +31,107 @@ use Twilio\Version;
  * @method \Twilio\Rest\Api\V2010\Account\Sip\Domain\AuthTypes\AuthTypeCalls\AuthCallsIpAccessControlListMappingContext ipAccessControlListMappings(string $sid)
  */
 class AuthTypeCallsList extends ListResource
-	{
-	protected $_credentialListMappings = null;
+    {
+    protected $_ipAccessControlListMappings = null;
+    protected $_credentialListMappings = null;
 
-	protected $_ipAccessControlListMappings = null;
+    /**
+     * Construct the AuthTypeCallsList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the CredentialListMapping resource to fetch.
+     * @param string $domainSid The SID of the SIP domain that contains the resource to fetch.
+     */
+    public function __construct(
+        Version $version,
+        string $accountSid,
+        string $domainSid
+    ) {
+        parent::__construct($version);
 
-	/**
-	 * Construct the AuthTypeCallsList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the CredentialListMapping resource to fetch.
-	 * @param string $domainSid The SID of the SIP domain that contains the resource to fetch.
-	 */
-	public function __construct(
-		Version $version,
-		string $accountSid,
-		string $domainSid
-	) {
-		parent::__construct($version);
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        
+        'domainSid' =>
+            $domainSid,
+        
+        ];
+    }
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
+    /**
+     * Access the ipAccessControlListMappings
+     */
+    protected function getIpAccessControlListMappings(): AuthCallsIpAccessControlListMappingList
+    {
+        if (!$this->_ipAccessControlListMappings) {
+            $this->_ipAccessControlListMappings = new AuthCallsIpAccessControlListMappingList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['domainSid']
+            );
+        }
+        return $this->_ipAccessControlListMappings;
+    }
 
-			'domainSid' => $domainSid,
+    /**
+     * Access the credentialListMappings
+     */
+    protected function getCredentialListMappings(): AuthCallsCredentialListMappingList
+    {
+        if (!$this->_credentialListMappings) {
+            $this->_credentialListMappings = new AuthCallsCredentialListMappingList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['domainSid']
+            );
+        }
+        return $this->_credentialListMappings;
+    }
 
-		];
-	}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return \Twilio\ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name)
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return \Twilio\ListResource The requested subresource
-	 */
-	public function __get(string $name)
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
-
-			return $this->{$method}();
-		}
-
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
-
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Api.V2010.AuthTypeCallsList]';
-	}
-
-	/**
-	 * Access the credentialListMappings
-	 */
-	protected function getCredentialListMappings() : AuthCallsCredentialListMappingList
-	{
-		if (! $this->_credentialListMappings) {
-			$this->_credentialListMappings = new AuthCallsCredentialListMappingList(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['domainSid']
-			);
-		}
-
-		return $this->_credentialListMappings;
-	}
-
-	/**
-	 * Access the ipAccessControlListMappings
-	 */
-	protected function getIpAccessControlListMappings() : AuthCallsIpAccessControlListMappingList
-	{
-		if (! $this->_ipAccessControlListMappings) {
-			$this->_ipAccessControlListMappings = new AuthCallsIpAccessControlListMappingList(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['domainSid']
-			);
-		}
-
-		return $this->_ipAccessControlListMappings;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Api.V2010.AuthTypeCallsList]';
+    }
 }

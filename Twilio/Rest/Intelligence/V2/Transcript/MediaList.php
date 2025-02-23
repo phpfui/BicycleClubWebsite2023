@@ -19,47 +19,49 @@ namespace Twilio\Rest\Intelligence\V2\Transcript;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class MediaList extends ListResource
-	{
-	/**
-	 * Construct the MediaList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The unique SID identifier of the Transcript.
-	 */
-	public function __construct(
-		Version $version,
-		string $sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the MediaList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The unique SID identifier of the Transcript.
+     */
+    public function __construct(
+        Version $version,
+        string $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        
+        ];
+    }
 
-		];
-	}
+    /**
+     * Constructs a MediaContext
+     */
+    public function getContext(
+        
+    ): MediaContext
+    {
+        return new MediaContext(
+            $this->version,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Intelligence.V2.MediaList]';
-	}
-
-	/**
-	 * Constructs a MediaContext
-	 */
-	public function getContext(
-
-	) : MediaContext
-	{
-		return new MediaContext(
-			$this->version,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Intelligence.V2.MediaList]';
+    }
 }

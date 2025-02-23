@@ -14,12 +14,14 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Sync\V1\Service\SyncMap;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+
 
 /**
  * @property string|null $accountSid
@@ -33,128 +35,126 @@ use Twilio\Version;
  */
 class SyncMapPermissionInstance extends InstanceResource
 {
-	/**
-	 * Initialize the SyncMapPermissionInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) with the Sync Map Permission resource to delete. Can be the Service's `sid` value or `default`.
-	 * @param string $mapSid The SID of the Sync Map with the Sync Map Permission resource to delete. Can be the Sync Map resource's `sid` or its `unique_name`.
-	 * @param string $identity The application-defined string that uniquely identifies the User's Sync Map Permission resource to delete.
-	 */
-	public function __construct(Version $version, array $payload, string $serviceSid, string $mapSid, ?string $identity = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the SyncMapPermissionInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) with the Sync Map Permission resource to delete. Can be the Service's `sid` value or `default`.
+     * @param string $mapSid The SID of the Sync Map with the Sync Map Permission resource to delete. Can be the Sync Map resource's `sid` or its `unique_name`.
+     * @param string $identity The application-defined string that uniquely identifies the User's Sync Map Permission resource to delete.
+     */
+    public function __construct(Version $version, array $payload, string $serviceSid, string $mapSid, string $identity = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'serviceSid' => Values::array_get($payload, 'service_sid'),
-			'mapSid' => Values::array_get($payload, 'map_sid'),
-			'identity' => Values::array_get($payload, 'identity'),
-			'read' => Values::array_get($payload, 'read'),
-			'write' => Values::array_get($payload, 'write'),
-			'manage' => Values::array_get($payload, 'manage'),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'serviceSid' => Values::array_get($payload, 'service_sid'),
+            'mapSid' => Values::array_get($payload, 'map_sid'),
+            'identity' => Values::array_get($payload, 'identity'),
+            'read' => Values::array_get($payload, 'read'),
+            'write' => Values::array_get($payload, 'write'),
+            'manage' => Values::array_get($payload, 'manage'),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['serviceSid' => $serviceSid, 'mapSid' => $mapSid, 'identity' => $identity ?: $this->properties['identity'], ];
-	}
+        $this->solution = ['serviceSid' => $serviceSid, 'mapSid' => $mapSid, 'identity' => $identity ?: $this->properties['identity'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return SyncMapPermissionContext Context for this SyncMapPermissionInstance
+     */
+    protected function proxy(): SyncMapPermissionContext
+    {
+        if (!$this->context) {
+            $this->context = new SyncMapPermissionContext(
+                $this->version,
+                $this->solution['serviceSid'],
+                $this->solution['mapSid'],
+                $this->solution['identity']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Delete the SyncMapPermissionInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->delete();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the SyncMapPermissionInstance
+     *
+     * @return SyncMapPermissionInstance Fetched SyncMapPermissionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SyncMapPermissionInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->fetch();
+    }
 
-		return '[Twilio.Sync.V1.SyncMapPermissionInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Update the SyncMapPermissionInstance
+     *
+     * @param bool $read Whether the identity can read the Sync Map and its Items. Default value is `false`.
+     * @param bool $write Whether the identity can create, update, and delete Items in the Sync Map. Default value is `false`.
+     * @param bool $manage Whether the identity can delete the Sync Map. Default value is `false`.
+     * @return SyncMapPermissionInstance Updated SyncMapPermissionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(bool $read, bool $write, bool $manage): SyncMapPermissionInstance
+    {
 
-	/**
-	 * Delete the SyncMapPermissionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        return $this->proxy()->update($read, $write, $manage);
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-	/**
-	 * Fetch the SyncMapPermissionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SyncMapPermissionInstance Fetched SyncMapPermissionInstance
-	 */
-	public function fetch() : SyncMapPermissionInstance
-	{
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->proxy()->fetch();
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Update the SyncMapPermissionInstance
-	 *
-	 * @param bool $read Whether the identity can read the Sync Map and its Items. Default value is `false`.
-	 * @param bool $write Whether the identity can create, update, and delete Items in the Sync Map. Default value is `false`.
-	 * @param bool $manage Whether the identity can delete the Sync Map. Default value is `false`.
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SyncMapPermissionInstance Updated SyncMapPermissionInstance
-	 */
-	public function update(bool $read, bool $write, bool $manage) : SyncMapPermissionInstance
-	{
-
-		return $this->proxy()->update($read, $write, $manage);
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return SyncMapPermissionContext Context for this SyncMapPermissionInstance
-	 */
-	protected function proxy() : SyncMapPermissionContext
-	{
-		if (! $this->context) {
-			$this->context = new SyncMapPermissionContext(
-				$this->version,
-				$this->solution['serviceSid'],
-				$this->solution['mapSid'],
-				$this->solution['identity']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Sync.V1.SyncMapPermissionInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

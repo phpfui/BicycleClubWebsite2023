@@ -14,14 +14,16 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Numbers\V2;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $bundleSid
@@ -38,102 +40,100 @@ use Twilio\Version;
  */
 class BundleCloneInstance extends InstanceResource
 {
-	/**
-	 * Initialize the BundleCloneInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $bundleSid The unique string that identifies the Bundle to be cloned.
-	 */
-	public function __construct(Version $version, array $payload, ?string $bundleSid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the BundleCloneInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $bundleSid The unique string that identifies the Bundle to be cloned.
+     */
+    public function __construct(Version $version, array $payload, string $bundleSid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'bundleSid' => Values::array_get($payload, 'bundle_sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'regulationSid' => Values::array_get($payload, 'regulation_sid'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'status' => Values::array_get($payload, 'status'),
-			'validUntil' => Deserialize::dateTime(Values::array_get($payload, 'valid_until')),
-			'email' => Values::array_get($payload, 'email'),
-			'statusCallback' => Values::array_get($payload, 'status_callback'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'bundleSid' => Values::array_get($payload, 'bundle_sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'regulationSid' => Values::array_get($payload, 'regulation_sid'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'status' => Values::array_get($payload, 'status'),
+            'validUntil' => Deserialize::dateTime(Values::array_get($payload, 'valid_until')),
+            'email' => Values::array_get($payload, 'email'),
+            'statusCallback' => Values::array_get($payload, 'status_callback'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['bundleSid' => $bundleSid ?: $this->properties['bundleSid'], ];
-	}
+        $this->solution = ['bundleSid' => $bundleSid ?: $this->properties['bundleSid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return BundleCloneContext Context for this BundleCloneInstance
+     */
+    protected function proxy(): BundleCloneContext
+    {
+        if (!$this->context) {
+            $this->context = new BundleCloneContext(
+                $this->version,
+                $this->solution['bundleSid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Create the BundleCloneInstance
+     *
+     * @param string $targetAccountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) where the bundle needs to be cloned.
+     * @param array|Options $options Optional Arguments
+     * @return BundleCloneInstance Created BundleCloneInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $targetAccountSid, array $options = []): BundleCloneInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->create($targetAccountSid, $options);
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.Numbers.V2.BundleCloneInstance ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Create the BundleCloneInstance
-	 *
-	 * @param string $targetAccountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) where the bundle needs to be cloned.
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return BundleCloneInstance Created BundleCloneInstance
-	 */
-	public function create(string $targetAccountSid, array $options = []) : BundleCloneInstance
-	{
-
-		return $this->proxy()->create($targetAccountSid, $options);
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return BundleCloneContext Context for this BundleCloneInstance
-	 */
-	protected function proxy() : BundleCloneContext
-	{
-		if (! $this->context) {
-			$this->context = new BundleCloneContext(
-				$this->version,
-				$this->solution['bundleSid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Numbers.V2.BundleCloneInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

@@ -14,115 +14,124 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\IpMessaging\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class CredentialContext extends InstanceContext
-	{
-	/**
-	 * Initialize the CredentialContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the CredentialContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid 
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Credentials/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Credentials/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the CredentialInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.IpMessaging.V1.CredentialContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the CredentialInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the CredentialInstance
+     *
+     * @return CredentialInstance Fetched CredentialInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): CredentialInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new CredentialInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the CredentialInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return CredentialInstance Fetched CredentialInstance
-	 */
-	public function fetch() : CredentialInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the CredentialInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return CredentialInstance Updated CredentialInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): CredentialInstance
+    {
 
-		return new CredentialInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the CredentialInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return CredentialInstance Updated CredentialInstance
-	 */
-	public function update(array $options = []) : CredentialInstance
-	{
+        $data = Values::of([
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'Certificate' =>
+                $options['certificate'],
+            'PrivateKey' =>
+                $options['privateKey'],
+            'Sandbox' =>
+                Serialize::booleanToString($options['sandbox']),
+            'ApiKey' =>
+                $options['apiKey'],
+            'Secret' =>
+                $options['secret'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'FriendlyName' => $options['friendlyName'],
-			'Certificate' => $options['certificate'],
-			'PrivateKey' => $options['privateKey'],
-			'Sandbox' => Serialize::booleanToString($options['sandbox']),
-			'ApiKey' => $options['apiKey'],
-			'Secret' => $options['secret'],
-		]);
+        return new CredentialInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new CredentialInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.IpMessaging.V1.CredentialContext ' . \implode(' ', $context) . ']';
+    }
 }

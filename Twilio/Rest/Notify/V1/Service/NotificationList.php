@@ -19,84 +19,105 @@ namespace Twilio\Rest\Notify\V1\Service;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Serialize;
+
 
 class NotificationList extends ListResource
-	{
-	/**
-	 * Construct the NotificationList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/notify/api/service-resource) to create the resource under.
-	 */
-	public function __construct(
-		Version $version,
-		string $serviceSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the NotificationList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/notify/api/service-resource) to create the resource under.
+     */
+    public function __construct(
+        Version $version,
+        string $serviceSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        
+        ];
 
-		];
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/Notifications';
+    }
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/Notifications';
-	}
+    /**
+     * Create the NotificationInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return NotificationInstance Created NotificationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(array $options = []): NotificationInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Notify.V1.NotificationList]';
-	}
+        $options = new Values($options);
 
-	/**
-	 * Create the NotificationInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return NotificationInstance Created NotificationInstance
-	 */
-	public function create(array $options = []) : NotificationInstance
-	{
+        $data = Values::of([
+            'Body' =>
+                $options['body'],
+            'Priority' =>
+                $options['priority'],
+            'Ttl' =>
+                $options['ttl'],
+            'Title' =>
+                $options['title'],
+            'Sound' =>
+                $options['sound'],
+            'Action' =>
+                $options['action'],
+            'Data' =>
+                Serialize::jsonObject($options['data']),
+            'Apn' =>
+                Serialize::jsonObject($options['apn']),
+            'Gcm' =>
+                Serialize::jsonObject($options['gcm']),
+            'Sms' =>
+                Serialize::jsonObject($options['sms']),
+            'FacebookMessenger' =>
+                Serialize::jsonObject($options['facebookMessenger']),
+            'Fcm' =>
+                Serialize::jsonObject($options['fcm']),
+            'Segment' =>
+                Serialize::map($options['segment'], function ($e) { return $e; }),
+            'Alexa' =>
+                Serialize::jsonObject($options['alexa']),
+            'ToBinding' =>
+                Serialize::map($options['toBinding'], function ($e) { return $e; }),
+            'DeliveryCallbackUrl' =>
+                $options['deliveryCallbackUrl'],
+            'Identity' =>
+                Serialize::map($options['identity'], function ($e) { return $e; }),
+            'Tag' =>
+                Serialize::map($options['tag'], function ($e) { return $e; }),
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'Body' => $options['body'],
-			'Priority' => $options['priority'],
-			'Ttl' => $options['ttl'],
-			'Title' => $options['title'],
-			'Sound' => $options['sound'],
-			'Action' => $options['action'],
-			'Data' => Serialize::jsonObject($options['data']),
-			'Apn' => Serialize::jsonObject($options['apn']),
-			'Gcm' => Serialize::jsonObject($options['gcm']),
-			'Sms' => Serialize::jsonObject($options['sms']),
-			'FacebookMessenger' => Serialize::jsonObject($options['facebookMessenger']),
-			'Fcm' => Serialize::jsonObject($options['fcm']),
-			'Segment' => Serialize::map($options['segment'], static function($e) { return $e; }),
-			'Alexa' => Serialize::jsonObject($options['alexa']),
-			'ToBinding' => Serialize::map($options['toBinding'], static function($e) { return $e; }),
-			'DeliveryCallbackUrl' => $options['deliveryCallbackUrl'],
-			'Identity' => Serialize::map($options['identity'], static function($e) { return $e; }),
-			'Tag' => Serialize::map($options['tag'], static function($e) { return $e; }),
-		]);
+        return new NotificationInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		return new NotificationInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Notify.V1.NotificationList]';
+    }
 }

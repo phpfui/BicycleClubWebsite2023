@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Supersim\V1;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $sid
@@ -40,103 +42,101 @@ use Twilio\Version;
  */
 class EsimProfileInstance extends InstanceResource
 {
-	/**
-	 * Initialize the EsimProfileInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $sid The SID of the eSIM Profile resource to fetch.
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the EsimProfileInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid The SID of the eSIM Profile resource to fetch.
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'iccid' => Values::array_get($payload, 'iccid'),
-			'simSid' => Values::array_get($payload, 'sim_sid'),
-			'status' => Values::array_get($payload, 'status'),
-			'eid' => Values::array_get($payload, 'eid'),
-			'smdpPlusAddress' => Values::array_get($payload, 'smdp_plus_address'),
-			'matchingId' => Values::array_get($payload, 'matching_id'),
-			'activationCode' => Values::array_get($payload, 'activation_code'),
-			'errorCode' => Values::array_get($payload, 'error_code'),
-			'errorMessage' => Values::array_get($payload, 'error_message'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'iccid' => Values::array_get($payload, 'iccid'),
+            'simSid' => Values::array_get($payload, 'sim_sid'),
+            'status' => Values::array_get($payload, 'status'),
+            'eid' => Values::array_get($payload, 'eid'),
+            'smdpPlusAddress' => Values::array_get($payload, 'smdp_plus_address'),
+            'matchingId' => Values::array_get($payload, 'matching_id'),
+            'activationCode' => Values::array_get($payload, 'activation_code'),
+            'errorCode' => Values::array_get($payload, 'error_code'),
+            'errorMessage' => Values::array_get($payload, 'error_message'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return EsimProfileContext Context for this EsimProfileInstance
+     */
+    protected function proxy(): EsimProfileContext
+    {
+        if (!$this->context) {
+            $this->context = new EsimProfileContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the EsimProfileInstance
+     *
+     * @return EsimProfileInstance Fetched EsimProfileInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): EsimProfileInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.Supersim.V1.EsimProfileInstance ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the EsimProfileInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return EsimProfileInstance Fetched EsimProfileInstance
-	 */
-	public function fetch() : EsimProfileInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return EsimProfileContext Context for this EsimProfileInstance
-	 */
-	protected function proxy() : EsimProfileContext
-	{
-		if (! $this->context) {
-			$this->context = new EsimProfileContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Supersim.V1.EsimProfileInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

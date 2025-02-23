@@ -22,69 +22,74 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class FeedbackList extends ListResource
-	{
-	/**
-	 * Construct the FeedbackList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) associated with the Message resource for which to create MessageFeedback.
-	 * @param string $messageSid The SID of the Message resource for which to create MessageFeedback.
-	 */
-	public function __construct(
-		Version $version,
-		string $accountSid,
-		string $messageSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the FeedbackList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) associated with the Message resource for which to create MessageFeedback.
+     * @param string $messageSid The SID of the Message resource for which to create MessageFeedback.
+     */
+    public function __construct(
+        Version $version,
+        string $accountSid,
+        string $messageSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        
+        'messageSid' =>
+            $messageSid,
+        
+        ];
 
-			'messageSid' => $messageSid,
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+        .'/Messages/' . \rawurlencode($messageSid)
+        .'/Feedback.json';
+    }
 
-		];
+    /**
+     * Create the FeedbackInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return FeedbackInstance Created FeedbackInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(array $options = []): FeedbackInstance
+    {
 
-		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		. '/Messages/' . \rawurlencode($messageSid)
-		. '/Feedback.json';
-	}
+        $options = new Values($options);
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Api.V2010.FeedbackList]';
-	}
+        $data = Values::of([
+            'Outcome' =>
+                $options['outcome'],
+        ]);
 
-	/**
-	 * Create the FeedbackInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return FeedbackInstance Created FeedbackInstance
-	 */
-	public function create(array $options = []) : FeedbackInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$options = new Values($options);
+        return new FeedbackInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['messageSid']
+        );
+    }
 
-		$data = Values::of([
-			'Outcome' => $options['outcome'],
-		]);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
-
-		return new FeedbackInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['messageSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Api.V2010.FeedbackList]';
+    }
 }

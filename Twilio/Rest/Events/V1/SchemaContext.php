@@ -14,128 +14,128 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Events\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Events\V1\Schema\SchemaVersionList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Events\V1\Schema\SchemaVersionList;
+
 
 /**
  * @property SchemaVersionList $versions
  * @method \Twilio\Rest\Events\V1\Schema\SchemaVersionContext versions(string $schemaVersion)
  */
 class SchemaContext extends InstanceContext
-	{
-	protected $_versions;
+    {
+    protected $_versions;
 
-	/**
-	 * Initialize the SchemaContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $id The unique identifier of the schema. Each schema can have multiple versions, that share the same id.
-	 */
-	public function __construct(
-		Version $version,
-		$id
-	) {
-		parent::__construct($version);
+    /**
+     * Initialize the SchemaContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $id The unique identifier of the schema. Each schema can have multiple versions, that share the same id.
+     */
+    public function __construct(
+        Version $version,
+        $id
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'id' => $id,
-		];
+        // Path Solution
+        $this->solution = [
+        'id' =>
+            $id,
+        ];
 
-		$this->uri = '/Schemas/' . \rawurlencode($id)
-		. '';
-	}
+        $this->uri = '/Schemas/' . \rawurlencode($id)
+        .'';
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Fetch the SchemaInstance
+     *
+     * @return SchemaInstance Fetched SchemaInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SchemaInstance
+    {
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        return new SchemaInstance(
+            $this->version,
+            $payload,
+            $this->solution['id']
+        );
+    }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
 
-			return $this->{$method}();
-		}
+    /**
+     * Access the versions
+     */
+    protected function getVersions(): SchemaVersionList
+    {
+        if (!$this->_versions) {
+            $this->_versions = new SchemaVersionList(
+                $this->version,
+                $this->solution['id']
+            );
+        }
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        return $this->_versions;
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		return '[Twilio.Events.V1.SchemaContext ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-	/**
-	 * Fetch the SchemaInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SchemaInstance Fetched SchemaInstance
-	 */
-	public function fetch() : SchemaInstance
-	{
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new SchemaInstance(
-			$this->version,
-			$payload,
-			$this->solution['id']
-		);
-	}
-
-	/**
-	 * Access the versions
-	 */
-	protected function getVersions() : SchemaVersionList
-	{
-		if (! $this->_versions) {
-			$this->_versions = new SchemaVersionList(
-				$this->version,
-				$this->solution['id']
-			);
-		}
-
-		return $this->_versions;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Events.V1.SchemaContext ' . \implode(' ', $context) . ']';
+    }
 }

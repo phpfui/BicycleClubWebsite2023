@@ -17,11 +17,12 @@
 namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
+use Twilio\Version;
+use Twilio\InstanceContext;
 use Twilio\Rest\Api\V2010\Account\Usage\RecordList;
 use Twilio\Rest\Api\V2010\Account\Usage\TriggerList;
-use Twilio\Version;
+
 
 /**
  * @property RecordList $records
@@ -29,104 +30,100 @@ use Twilio\Version;
  * @method \Twilio\Rest\Api\V2010\Account\Usage\TriggerContext triggers(string $sid)
  */
 class UsageList extends ListResource
-	{
-	protected $_records = null;
+    {
+    protected $_records = null;
+    protected $_triggers = null;
 
-	protected $_triggers = null;
+    /**
+     * Construct the UsageList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the UsageRecord resources to read.
+     */
+    public function __construct(
+        Version $version,
+        string $accountSid
+    ) {
+        parent::__construct($version);
 
-	/**
-	 * Construct the UsageList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the UsageRecord resources to read.
-	 */
-	public function __construct(
-		Version $version,
-		string $accountSid
-	) {
-		parent::__construct($version);
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        
+        ];
+    }
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
+    /**
+     * Access the records
+     */
+    protected function getRecords(): RecordList
+    {
+        if (!$this->_records) {
+            $this->_records = new RecordList(
+                $this->version,
+                $this->solution['accountSid']
+            );
+        }
+        return $this->_records;
+    }
 
-		];
-	}
+    /**
+     * Access the triggers
+     */
+    protected function getTriggers(): TriggerList
+    {
+        if (!$this->_triggers) {
+            $this->_triggers = new TriggerList(
+                $this->version,
+                $this->solution['accountSid']
+            );
+        }
+        return $this->_triggers;
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return \Twilio\ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name)
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		throw new TwilioException('Resource does not have a context');
-	}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return \Twilio\ListResource The requested subresource
-	 */
-	public function __get(string $name)
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        throw new TwilioException('Resource does not have a context');
+    }
 
-			return $this->{$method}();
-		}
-
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
-
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Api.V2010.UsageList]';
-	}
-
-	/**
-	 * Access the records
-	 */
-	protected function getRecords() : RecordList
-	{
-		if (! $this->_records) {
-			$this->_records = new RecordList(
-				$this->version,
-				$this->solution['accountSid']
-			);
-		}
-
-		return $this->_records;
-	}
-
-	/**
-	 * Access the triggers
-	 */
-	protected function getTriggers() : TriggerList
-	{
-		if (! $this->_triggers) {
-			$this->_triggers = new TriggerList(
-				$this->version,
-				$this->solution['accountSid']
-			);
-		}
-
-		return $this->_triggers;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Api.V2010.UsageList]';
+    }
 }

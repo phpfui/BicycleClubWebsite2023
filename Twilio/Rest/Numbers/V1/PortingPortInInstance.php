@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Numbers\V1;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $portInRequestSid
@@ -38,113 +40,111 @@ use Twilio\Version;
  */
 class PortingPortInInstance extends InstanceResource
 {
-	/**
-	 * Initialize the PortingPortInInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $portInRequestSid The SID of the Port In request. This is a unique identifier of the port in request.
-	 */
-	public function __construct(Version $version, array $payload, ?string $portInRequestSid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the PortingPortInInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $portInRequestSid The SID of the Port In request. This is a unique identifier of the port in request.
+     */
+    public function __construct(Version $version, array $payload, string $portInRequestSid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'portInRequestSid' => Values::array_get($payload, 'port_in_request_sid'),
-			'url' => Values::array_get($payload, 'url'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'notificationEmails' => Values::array_get($payload, 'notification_emails'),
-			'targetPortInDate' => Deserialize::dateTime(Values::array_get($payload, 'target_port_in_date')),
-			'targetPortInTimeRangeStart' => Values::array_get($payload, 'target_port_in_time_range_start'),
-			'targetPortInTimeRangeEnd' => Values::array_get($payload, 'target_port_in_time_range_end'),
-			'portInRequestStatus' => Values::array_get($payload, 'port_in_request_status'),
-			'losingCarrierInformation' => Values::array_get($payload, 'losing_carrier_information'),
-			'phoneNumbers' => Values::array_get($payload, 'phone_numbers'),
-			'documents' => Values::array_get($payload, 'documents'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'portInRequestSid' => Values::array_get($payload, 'port_in_request_sid'),
+            'url' => Values::array_get($payload, 'url'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'notificationEmails' => Values::array_get($payload, 'notification_emails'),
+            'targetPortInDate' => Deserialize::dateTime(Values::array_get($payload, 'target_port_in_date')),
+            'targetPortInTimeRangeStart' => Values::array_get($payload, 'target_port_in_time_range_start'),
+            'targetPortInTimeRangeEnd' => Values::array_get($payload, 'target_port_in_time_range_end'),
+            'portInRequestStatus' => Values::array_get($payload, 'port_in_request_status'),
+            'losingCarrierInformation' => Values::array_get($payload, 'losing_carrier_information'),
+            'phoneNumbers' => Values::array_get($payload, 'phone_numbers'),
+            'documents' => Values::array_get($payload, 'documents'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+        ];
 
-		$this->solution = ['portInRequestSid' => $portInRequestSid ?: $this->properties['portInRequestSid'], ];
-	}
+        $this->solution = ['portInRequestSid' => $portInRequestSid ?: $this->properties['portInRequestSid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return PortingPortInContext Context for this PortingPortInInstance
+     */
+    protected function proxy(): PortingPortInContext
+    {
+        if (!$this->context) {
+            $this->context = new PortingPortInContext(
+                $this->version,
+                $this->solution['portInRequestSid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Delete the PortingPortInInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->delete();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the PortingPortInInstance
+     *
+     * @return PortingPortInInstance Fetched PortingPortInInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): PortingPortInInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->fetch();
+    }
 
-		return '[Twilio.Numbers.V1.PortingPortInInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-	/**
-	 * Delete the PortingPortInInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->proxy()->delete();
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the PortingPortInInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PortingPortInInstance Fetched PortingPortInInstance
-	 */
-	public function fetch() : PortingPortInInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return PortingPortInContext Context for this PortingPortInInstance
-	 */
-	protected function proxy() : PortingPortInContext
-	{
-		if (! $this->context) {
-			$this->context = new PortingPortInContext(
-				$this->version,
-				$this->solution['portInRequestSid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Numbers.V1.PortingPortInInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

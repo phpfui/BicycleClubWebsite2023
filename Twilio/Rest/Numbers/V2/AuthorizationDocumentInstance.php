@@ -14,14 +14,16 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Numbers\V2;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
-use Twilio\Rest\Numbers\V2\AuthorizationDocument\DependentHostedNumberOrderList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+use Twilio\Rest\Numbers\V2\AuthorizationDocument\DependentHostedNumberOrderList;
+
 
 /**
  * @property string|null $sid
@@ -36,120 +38,118 @@ use Twilio\Version;
  */
 class AuthorizationDocumentInstance extends InstanceResource
 {
-	protected $_dependentHostedNumberOrders;
+    protected $_dependentHostedNumberOrders;
 
-	/**
-	 * Initialize the AuthorizationDocumentInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $sid A 34 character string that uniquely identifies this AuthorizationDocument.
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the AuthorizationDocumentInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid A 34 character string that uniquely identifies this AuthorizationDocument.
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'addressSid' => Values::array_get($payload, 'address_sid'),
-			'status' => Values::array_get($payload, 'status'),
-			'email' => Values::array_get($payload, 'email'),
-			'ccEmails' => Values::array_get($payload, 'cc_emails'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'url' => Values::array_get($payload, 'url'),
-			'links' => Values::array_get($payload, 'links'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'addressSid' => Values::array_get($payload, 'address_sid'),
+            'status' => Values::array_get($payload, 'status'),
+            'email' => Values::array_get($payload, 'email'),
+            'ccEmails' => Values::array_get($payload, 'cc_emails'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
+        ];
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return AuthorizationDocumentContext Context for this AuthorizationDocumentInstance
+     */
+    protected function proxy(): AuthorizationDocumentContext
+    {
+        if (!$this->context) {
+            $this->context = new AuthorizationDocumentContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Delete the AuthorizationDocumentInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->delete();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the AuthorizationDocumentInstance
+     *
+     * @return AuthorizationDocumentInstance Fetched AuthorizationDocumentInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): AuthorizationDocumentInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->fetch();
+    }
 
-		return '[Twilio.Numbers.V2.AuthorizationDocumentInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Access the dependentHostedNumberOrders
+     */
+    protected function getDependentHostedNumberOrders(): DependentHostedNumberOrderList
+    {
+        return $this->proxy()->dependentHostedNumberOrders;
+    }
 
-	/**
-	 * Delete the AuthorizationDocumentInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		return $this->proxy()->delete();
-	}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Fetch the AuthorizationDocumentInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AuthorizationDocumentInstance Fetched AuthorizationDocumentInstance
-	 */
-	public function fetch() : AuthorizationDocumentInstance
-	{
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Access the dependentHostedNumberOrders
-	 */
-	protected function getDependentHostedNumberOrders() : DependentHostedNumberOrderList
-	{
-		return $this->proxy()->dependentHostedNumberOrders;
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return AuthorizationDocumentContext Context for this AuthorizationDocumentInstance
-	 */
-	protected function proxy() : AuthorizationDocumentContext
-	{
-		if (! $this->context) {
-			$this->context = new AuthorizationDocumentContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Numbers.V2.AuthorizationDocumentInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

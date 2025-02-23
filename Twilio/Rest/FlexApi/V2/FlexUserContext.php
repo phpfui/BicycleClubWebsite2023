@@ -14,106 +14,116 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\FlexApi\V2;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class FlexUserContext extends InstanceContext
-	{
-	/**
-	 * Initialize the FlexUserContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $instanceSid The unique ID created by Twilio to identify a Flex instance.
-	 * @param string $flexUserSid The unique id for the flex user to be retrieved.
-	 */
-	public function __construct(
-		Version $version,
-		$instanceSid,
-		$flexUserSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the FlexUserContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $instanceSid The unique ID created by Twilio to identify a Flex instance.
+     * @param string $flexUserSid The unique id for the flex user to be retrieved.
+     */
+    public function __construct(
+        Version $version,
+        $instanceSid,
+        $flexUserSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'instanceSid' => $instanceSid,
-			'flexUserSid' => $flexUserSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'instanceSid' =>
+            $instanceSid,
+        'flexUserSid' =>
+            $flexUserSid,
+        ];
 
-		$this->uri = '/Instances/' . \rawurlencode($instanceSid)
-		. '/Users/' . \rawurlencode($flexUserSid)
-		. '';
-	}
+        $this->uri = '/Instances/' . \rawurlencode($instanceSid)
+        .'/Users/' . \rawurlencode($flexUserSid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the FlexUserInstance
+     *
+     * @return FlexUserInstance Fetched FlexUserInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): FlexUserInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.FlexApi.V2.FlexUserContext ' . \implode(' ', $context) . ']';
-	}
+        return new FlexUserInstance(
+            $this->version,
+            $payload,
+            $this->solution['instanceSid'],
+            $this->solution['flexUserSid']
+        );
+    }
 
-	/**
-	 * Fetch the FlexUserInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return FlexUserInstance Fetched FlexUserInstance
-	 */
-	public function fetch() : FlexUserInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the FlexUserInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return FlexUserInstance Updated FlexUserInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): FlexUserInstance
+    {
 
-		return new FlexUserInstance(
-			$this->version,
-			$payload,
-			$this->solution['instanceSid'],
-			$this->solution['flexUserSid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the FlexUserInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return FlexUserInstance Updated FlexUserInstance
-	 */
-	public function update(array $options = []) : FlexUserInstance
-	{
+        $data = Values::of([
+            'FirstName' =>
+                $options['firstName'],
+            'LastName' =>
+                $options['lastName'],
+            'Email' =>
+                $options['email'],
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'UserSid' =>
+                $options['userSid'],
+            'Locale' =>
+                $options['locale'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'FirstName' => $options['firstName'],
-			'LastName' => $options['lastName'],
-			'Email' => $options['email'],
-			'FriendlyName' => $options['friendlyName'],
-			'UserSid' => $options['userSid'],
-			'Locale' => $options['locale'],
-		]);
+        return new FlexUserInstance(
+            $this->version,
+            $payload,
+            $this->solution['instanceSid'],
+            $this->solution['flexUserSid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new FlexUserInstance(
-			$this->version,
-			$payload,
-			$this->solution['instanceSid'],
-			$this->solution['flexUserSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.FlexApi.V2.FlexUserContext ' . \implode(' ', $context) . ']';
+    }
 }

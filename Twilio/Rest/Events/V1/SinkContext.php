@@ -14,184 +14,185 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Events\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Events\V1\Sink\SinkTestList;
-use Twilio\Rest\Events\V1\Sink\SinkValidateList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Events\V1\Sink\SinkTestList;
+use Twilio\Rest\Events\V1\Sink\SinkValidateList;
+
 
 /**
  * @property SinkTestList $sinkTest
  * @property SinkValidateList $sinkValidate
  */
 class SinkContext extends InstanceContext
-	{
-	protected $_sinkTest;
+    {
+    protected $_sinkTest;
+    protected $_sinkValidate;
 
-	protected $_sinkValidate;
+    /**
+     * Initialize the SinkContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid A 34 character string that uniquely identifies this Sink.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-	/**
-	 * Initialize the SinkContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid A 34 character string that uniquely identifies this Sink.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        $this->uri = '/Sinks/' . \rawurlencode($sid)
+        .'';
+    }
 
-		$this->uri = '/Sinks/' . \rawurlencode($sid)
-		. '';
-	}
+    /**
+     * Delete the SinkInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
 
-		throw new TwilioException('Resource does not have a context');
-	}
+    /**
+     * Fetch the SinkInstance
+     *
+     * @return SinkInstance Fetched SinkInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SinkInstance
+    {
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-			return $this->{$method}();
-		}
+        return new SinkInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Update the SinkInstance
+     *
+     * @param string $description A human readable description for the Sink **This value should not contain PII.**
+     * @return SinkInstance Updated SinkInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $description): SinkInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $data = Values::of([
+            'Description' =>
+                $description,
+        ]);
 
-		return '[Twilio.Events.V1.SinkContext ' . \implode(' ', $context) . ']';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-	/**
-	 * Delete the SinkInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        return new SinkInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+    /**
+     * Access the sinkTest
+     */
+    protected function getSinkTest(): SinkTestList
+    {
+        if (!$this->_sinkTest) {
+            $this->_sinkTest = new SinkTestList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Fetch the SinkInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SinkInstance Fetched SinkInstance
-	 */
-	public function fetch() : SinkInstance
-	{
+        return $this->_sinkTest;
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Access the sinkValidate
+     */
+    protected function getSinkValidate(): SinkValidateList
+    {
+        if (!$this->_sinkValidate) {
+            $this->_sinkValidate = new SinkValidateList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		return new SinkInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        return $this->_sinkValidate;
+    }
 
-	/**
-	 * Update the SinkInstance
-	 *
-	 * @param string $description A human readable description for the Sink **This value should not contain PII.**
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SinkInstance Updated SinkInstance
-	 */
-	public function update(string $description) : SinkInstance
-	{
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		$data = Values::of([
-			'Description' => $description,
-		]);
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		return new SinkInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-	/**
-	 * Access the sinkTest
-	 */
-	protected function getSinkTest() : SinkTestList
-	{
-		if (! $this->_sinkTest) {
-			$this->_sinkTest = new SinkTestList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_sinkTest;
-	}
-
-	/**
-	 * Access the sinkValidate
-	 */
-	protected function getSinkValidate() : SinkValidateList
-	{
-		if (! $this->_sinkValidate) {
-			$this->_sinkValidate = new SinkValidateList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_sinkValidate;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Events.V1.SinkContext ' . \implode(' ', $context) . ']';
+    }
 }

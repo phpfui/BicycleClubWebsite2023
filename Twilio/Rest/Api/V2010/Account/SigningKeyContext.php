@@ -14,115 +14,120 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class SigningKeyContext extends InstanceContext
-	{
-	/**
-	 * Initialize the SigningKeyContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid
-	 * @param string $sid
-	 */
-	public function __construct(
-		Version $version,
-		$accountSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the SigningKeyContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid 
+     * @param string $sid 
+     */
+    public function __construct(
+        Version $version,
+        $accountSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		. '/SigningKeys/' . \rawurlencode($sid)
-		. '.json';
-	}
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+        .'/SigningKeys/' . \rawurlencode($sid)
+        .'.json';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the SigningKeyInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Api.V2010.SigningKeyContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the SigningKeyInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the SigningKeyInstance
+     *
+     * @return SigningKeyInstance Fetched SigningKeyInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SigningKeyInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new SigningKeyInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the SigningKeyInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SigningKeyInstance Fetched SigningKeyInstance
-	 */
-	public function fetch() : SigningKeyInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the SigningKeyInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return SigningKeyInstance Updated SigningKeyInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): SigningKeyInstance
+    {
 
-		return new SigningKeyInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['sid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the SigningKeyInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SigningKeyInstance Updated SigningKeyInstance
-	 */
-	public function update(array $options = []) : SigningKeyInstance
-	{
+        $data = Values::of([
+            'FriendlyName' =>
+                $options['friendlyName'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'FriendlyName' => $options['friendlyName'],
-		]);
+        return new SigningKeyInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new SigningKeyInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.SigningKeyContext ' . \implode(' ', $context) . ']';
+    }
 }

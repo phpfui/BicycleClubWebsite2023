@@ -21,145 +21,150 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class ConfiguredPluginList extends ListResource
-	{
-	/**
-	 * Construct the ConfiguredPluginList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $configurationSid The SID of the Flex Plugin Configuration the resource to belongs to.
-	 */
-	public function __construct(
-		Version $version,
-		string $configurationSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the ConfiguredPluginList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $configurationSid The SID of the Flex Plugin Configuration the resource to belongs to.
+     */
+    public function __construct(
+        Version $version,
+        string $configurationSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'configurationSid' => $configurationSid,
+        // Path Solution
+        $this->solution = [
+        'configurationSid' =>
+            $configurationSid,
+        
+        ];
 
-		];
+        $this->uri = '/PluginService/Configurations/' . \rawurlencode($configurationSid)
+        .'/Plugins';
+    }
 
-		$this->uri = '/PluginService/Configurations/' . \rawurlencode($configurationSid)
-		. '/Plugins';
-	}
+    /**
+     * Reads ConfiguredPluginInstance records from the API as a list.
+     * Unlike stream(), this operation is eager and will load `limit` records into
+     * memory before returning.
+     *
+     * @param int $limit Upper limit for the number of records to return. read()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, read()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return ConfiguredPluginInstance[] Array of results
+     */
+    public function read(int $limit = null, $pageSize = null): array
+    {
+        return \iterator_to_array($this->stream($limit, $pageSize), false);
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.FlexApi.V1.ConfiguredPluginList]';
-	}
+    /**
+     * Streams ConfiguredPluginInstance records from the API as a generator stream.
+     * This operation lazily loads records as efficiently as possible until the
+     * limit
+     * is reached.
+     * The results are returned as a generator, so this operation is memory
+     * efficient.
+     *
+     * @param int $limit Upper limit for the number of records to return. stream()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, stream()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return Stream stream of results
+     */
+    public function stream(int $limit = null, $pageSize = null): Stream
+    {
+        $limits = $this->version->readLimits($limit, $pageSize);
 
-	/**
-	 * Constructs a ConfiguredPluginContext
-	 *
-	 * @param string $pluginSid The unique string that we created to identify the Flex Plugin resource.
-	 */
-	public function getContext(
-		string $pluginSid
-	) : ConfiguredPluginContext
-	{
-		return new ConfiguredPluginContext(
-			$this->version,
-			$this->solution['configurationSid'],
-			$pluginSid
-		);
-	}
+        $page = $this->page($limits['pageSize']);
 
-	/**
-	 * Retrieve a specific page of ConfiguredPluginInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param string $targetUrl API-generated URL for the requested results page
-	 * @return ConfiguredPluginPage Page of ConfiguredPluginInstance
-	 */
-	public function getPage(string $targetUrl) : ConfiguredPluginPage
-	{
-		$response = $this->version->getDomain()->getClient()->request(
-			'GET',
-			$targetUrl
-		);
+        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+    }
 
-		return new ConfiguredPluginPage($this->version, $response, $this->solution);
-	}
+    /**
+     * Retrieve a single page of ConfiguredPluginInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param mixed $pageSize Number of records to return, defaults to 50
+     * @param string $pageToken PageToken provided by the API
+     * @param mixed $pageNumber Page Number, this value is simply for client state
+     * @return ConfiguredPluginPage Page of ConfiguredPluginInstance
+     */
+    public function page(
+        $pageSize = Values::NONE,
+        string $pageToken = Values::NONE,
+        $pageNumber = Values::NONE
+    ): ConfiguredPluginPage
+    {
 
-	/**
-	 * Retrieve a single page of ConfiguredPluginInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param mixed $pageSize Number of records to return, defaults to 50
-	 * @param string $pageToken PageToken provided by the API
-	 * @param mixed $pageNumber Page Number, this value is simply for client state
-	 * @return ConfiguredPluginPage Page of ConfiguredPluginInstance
-	 */
-	public function page(
-		$pageSize = Values::NONE,
-		string $pageToken = Values::NONE,
-		$pageNumber = Values::NONE
-	) : ConfiguredPluginPage
-	{
+        $params = Values::of([
+            'Flex-Metadata' =>
+                $options['flexMetadata'],
+            'PageToken' => $pageToken,
+            'Page' => $pageNumber,
+            'PageSize' => $pageSize,
+        ]);
 
-		$params = Values::of([
-			'Flex-Metadata' => $options['flexMetadata'],
-			'PageToken' => $pageToken,
-			'Page' => $pageNumber,
-			'PageSize' => $pageSize,
-		]);
+        $response = $this->version->page('GET', $this->uri, $params);
 
-		$response = $this->version->page('GET', $this->uri, $params);
+        return new ConfiguredPluginPage($this->version, $response, $this->solution);
+    }
 
-		return new ConfiguredPluginPage($this->version, $response, $this->solution);
-	}
+    /**
+     * Retrieve a specific page of ConfiguredPluginInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return ConfiguredPluginPage Page of ConfiguredPluginInstance
+     */
+    public function getPage(string $targetUrl): ConfiguredPluginPage
+    {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
 
-	/**
-	 * Reads ConfiguredPluginInstance records from the API as a list.
-	 * Unlike stream(), this operation is eager and will load `limit` records into
-	 * memory before returning.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. read()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, read()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return ConfiguredPluginInstance[] Array of results
-	 */
-	public function read(?int $limit = null, $pageSize = null) : array
-	{
-		return \iterator_to_array($this->stream($limit, $pageSize), false);
-	}
+        return new ConfiguredPluginPage($this->version, $response, $this->solution);
+    }
 
-	/**
-	 * Streams ConfiguredPluginInstance records from the API as a generator stream.
-	 * This operation lazily loads records as efficiently as possible until the
-	 * limit
-	 * is reached.
-	 * The results are returned as a generator, so this operation is memory
-	 * efficient.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. stream()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, stream()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return Stream stream of results
-	 */
-	public function stream(?int $limit = null, $pageSize = null) : Stream
-	{
-		$limits = $this->version->readLimits($limit, $pageSize);
 
-		$page = $this->page($limits['pageSize']);
+    /**
+     * Constructs a ConfiguredPluginContext
+     *
+     * @param string $pluginSid The unique string that we created to identify the Flex Plugin resource.
+     */
+    public function getContext(
+        string $pluginSid
+        
+    ): ConfiguredPluginContext
+    {
+        return new ConfiguredPluginContext(
+            $this->version,
+            $this->solution['configurationSid'],
+            $pluginSid
+        );
+    }
 
-		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.FlexApi.V1.ConfiguredPluginList]';
+    }
 }

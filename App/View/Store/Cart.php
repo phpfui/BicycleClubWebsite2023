@@ -241,13 +241,9 @@ class Cart
 		$cart->add($table);
 		$cart->add($this->summaryLine('<b>SubTotal</b>', '$' . \number_format($subTotal, 2)));
 
-		if ($this->cartModel->getVolunteerPoints())
-			{
-			$cart->add($this->summaryLine('<b>Available Points</b>', '$' . $this->cartModel->getVolunteerPoints()));
-			}
-
 		if ($this->cartModel->getPayableByPoints() > 0.0 && $this->cartModel->getVolunteerPoints() > 0)
 			{
+			$cart->add($this->summaryLine('<b>Available Points</b>', '$' . $this->cartModel->getVolunteerPoints()));
 			$cart->add($this->summaryLine('<b>Payable By Points</b>', '$' . \number_format($this->cartModel->getPayableByPoints(), 2)));
 			$cart->add($this->summaryLine('<b>Applied Points</b>', '-$' . \number_format(\min($this->cartModel->getPayableByPoints(), $this->cartModel->getVolunteerPoints()), 2)));
 			}

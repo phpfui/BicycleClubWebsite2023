@@ -14,77 +14,80 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Numbers\V2\RegulatoryCompliance;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class RegulationContext extends InstanceContext
-	{
-	/**
-	 * Initialize the RegulationContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The unique string that identifies the Regulation resource.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the RegulationContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The unique string that identifies the Regulation resource.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/RegulatoryCompliance/Regulations/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/RegulatoryCompliance/Regulations/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the RegulationInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return RegulationInstance Fetched RegulationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): RegulationInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.Numbers.V2.RegulationContext ' . \implode(' ', $context) . ']';
-	}
+        $params = Values::of([
+            'IncludeConstraints' =>
+                Serialize::booleanToString($options['includeConstraints']),
+        ]);
 
-	/**
-	 * Fetch the RegulationInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RegulationInstance Fetched RegulationInstance
-	 */
-	public function fetch(array $options = []) : RegulationInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
 
-		$options = new Values($options);
+        return new RegulationInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		$params = Values::of([
-			'IncludeConstraints' => Serialize::booleanToString($options['includeConstraints']),
-		]);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
-
-		return new RegulationInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Numbers.V2.RegulationContext ' . \implode(' ', $context) . ']';
+    }
 }

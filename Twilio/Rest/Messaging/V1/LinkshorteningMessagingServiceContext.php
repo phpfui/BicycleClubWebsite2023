@@ -14,87 +14,90 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Messaging\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class LinkshorteningMessagingServiceContext extends InstanceContext
-	{
-	/**
-	 * Initialize the LinkshorteningMessagingServiceContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $domainSid The domain SID to associate with a messaging service. With URL shortening enabled, links in messages sent with the associated messaging service will be shortened to the provided domain
-	 * @param string $messagingServiceSid A messaging service SID to associate with a domain. With URL shortening enabled, links in messages sent with the provided messaging service will be shortened to the associated domain
-	 */
-	public function __construct(
-		Version $version,
-		$domainSid,
-		$messagingServiceSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the LinkshorteningMessagingServiceContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $domainSid The domain SID to associate with a messaging service. With URL shortening enabled, links in messages sent with the associated messaging service will be shortened to the provided domain
+     * @param string $messagingServiceSid A messaging service SID to associate with a domain. With URL shortening enabled, links in messages sent with the provided messaging service will be shortened to the associated domain
+     */
+    public function __construct(
+        Version $version,
+        $domainSid,
+        $messagingServiceSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'domainSid' => $domainSid,
-			'messagingServiceSid' => $messagingServiceSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'domainSid' =>
+            $domainSid,
+        'messagingServiceSid' =>
+            $messagingServiceSid,
+        ];
 
-		$this->uri = '/LinkShortening/Domains/' . \rawurlencode($domainSid)
-		. '/MessagingServices/' . \rawurlencode($messagingServiceSid)
-		. '';
-	}
+        $this->uri = '/LinkShortening/Domains/' . \rawurlencode($domainSid)
+        .'/MessagingServices/' . \rawurlencode($messagingServiceSid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Create the LinkshorteningMessagingServiceInstance
+     *
+     * @return LinkshorteningMessagingServiceInstance Created LinkshorteningMessagingServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(): LinkshorteningMessagingServiceInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], [], $headers);
 
-		return '[Twilio.Messaging.V1.LinkshorteningMessagingServiceContext ' . \implode(' ', $context) . ']';
-	}
+        return new LinkshorteningMessagingServiceInstance(
+            $this->version,
+            $payload,
+            $this->solution['domainSid'],
+            $this->solution['messagingServiceSid']
+        );
+    }
 
-	/**
-	 * Create the LinkshorteningMessagingServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return LinkshorteningMessagingServiceInstance Created LinkshorteningMessagingServiceInstance
-	 */
-	public function create() : LinkshorteningMessagingServiceInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], [], $headers);
+    /**
+     * Delete the LinkshorteningMessagingServiceInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		return new LinkshorteningMessagingServiceInstance(
-			$this->version,
-			$payload,
-			$this->solution['domainSid'],
-			$this->solution['messagingServiceSid']
-		);
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-	/**
-	 * Delete the LinkshorteningMessagingServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Messaging.V1.LinkshorteningMessagingServiceContext ' . \implode(' ', $context) . ']';
+    }
 }

@@ -14,68 +14,70 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Messaging\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class RequestManagedCertContext extends InstanceContext
-	{
-	/**
-	 * Initialize the RequestManagedCertContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $domainSid Unique string used to identify the domain that this certificate should be associated with.
-	 */
-	public function __construct(
-		Version $version,
-		$domainSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the RequestManagedCertContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $domainSid Unique string used to identify the domain that this certificate should be associated with.
+     */
+    public function __construct(
+        Version $version,
+        $domainSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'domainSid' => $domainSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'domainSid' =>
+            $domainSid,
+        ];
 
-		$this->uri = '/LinkShortening/Domains/' . \rawurlencode($domainSid)
-		. '/RequestManagedCert';
-	}
+        $this->uri = '/LinkShortening/Domains/' . \rawurlencode($domainSid)
+        .'/RequestManagedCert';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Update the RequestManagedCertInstance
+     *
+     * @return RequestManagedCertInstance Updated RequestManagedCertInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(): RequestManagedCertInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], [], $headers);
 
-		return '[Twilio.Messaging.V1.RequestManagedCertContext ' . \implode(' ', $context) . ']';
-	}
+        return new RequestManagedCertInstance(
+            $this->version,
+            $payload,
+            $this->solution['domainSid']
+        );
+    }
 
-	/**
-	 * Update the RequestManagedCertInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RequestManagedCertInstance Updated RequestManagedCertInstance
-	 */
-	public function update() : RequestManagedCertInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], [], $headers);
-
-		return new RequestManagedCertInstance(
-			$this->version,
-			$payload,
-			$this->solution['domainSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Messaging.V1.RequestManagedCertContext ' . \implode(' ', $context) . ']';
+    }
 }

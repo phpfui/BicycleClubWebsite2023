@@ -22,53 +22,55 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class InsightsSettingsCommentList extends ListResource
-	{
-	/**
-	 * Construct the InsightsSettingsCommentList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the InsightsSettingsCommentList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/Insights/QualityManagement/Settings/CommentTags';
-	}
+        $this->uri = '/Insights/QualityManagement/Settings/CommentTags';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.FlexApi.V1.InsightsSettingsCommentList]';
-	}
+    /**
+     * Fetch the InsightsSettingsCommentInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return InsightsSettingsCommentInstance Fetched InsightsSettingsCommentInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): InsightsSettingsCommentInstance
+    {
 
-	/**
-	 * Fetch the InsightsSettingsCommentInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InsightsSettingsCommentInstance Fetched InsightsSettingsCommentInstance
-	 */
-	public function fetch(array $options = []) : InsightsSettingsCommentInstance
-	{
+        $options = new Values($options);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Authorization' => $options['authorization']]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Authorization' => $options['authorization']]);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+        return new InsightsSettingsCommentInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new InsightsSettingsCommentInstance(
-			$this->version,
-			$payload
-		);
-	}
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.FlexApi.V1.InsightsSettingsCommentList]';
+    }
 }

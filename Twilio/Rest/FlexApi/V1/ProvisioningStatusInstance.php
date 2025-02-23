@@ -14,6 +14,7 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
@@ -21,95 +22,94 @@ use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
 
+
 /**
  * @property string $status
  * @property string|null $url
  */
 class ProvisioningStatusInstance extends InstanceResource
 {
-	/**
-	 * Initialize the ProvisioningStatusInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 */
-	public function __construct(Version $version, array $payload)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the ProvisioningStatusInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     */
+    public function __construct(Version $version, array $payload)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'status' => Values::array_get($payload, 'status'),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'status' => Values::array_get($payload, 'status'),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = [];
-	}
+        $this->solution = [];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return ProvisioningStatusContext Context for this ProvisioningStatusInstance
+     */
+    protected function proxy(): ProvisioningStatusContext
+    {
+        if (!$this->context) {
+            $this->context = new ProvisioningStatusContext(
+                $this->version
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the ProvisioningStatusInstance
+     *
+     * @return ProvisioningStatusInstance Fetched ProvisioningStatusInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ProvisioningStatusInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.FlexApi.V1.ProvisioningStatusInstance ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the ProvisioningStatusInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ProvisioningStatusInstance Fetched ProvisioningStatusInstance
-	 */
-	public function fetch() : ProvisioningStatusInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return ProvisioningStatusContext Context for this ProvisioningStatusInstance
-	 */
-	protected function proxy() : ProvisioningStatusContext
-	{
-		if (! $this->context) {
-			$this->context = new ProvisioningStatusContext(
-				$this->version
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.FlexApi.V1.ProvisioningStatusInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

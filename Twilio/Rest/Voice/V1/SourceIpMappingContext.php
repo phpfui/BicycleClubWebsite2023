@@ -14,106 +14,110 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Voice\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class SourceIpMappingContext extends InstanceContext
-	{
-	/**
-	 * Initialize the SourceIpMappingContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The Twilio-provided string that uniquely identifies the IP Record resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the SourceIpMappingContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The Twilio-provided string that uniquely identifies the IP Record resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/SourceIpMappings/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/SourceIpMappings/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the SourceIpMappingInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Voice.V1.SourceIpMappingContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the SourceIpMappingInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the SourceIpMappingInstance
+     *
+     * @return SourceIpMappingInstance Fetched SourceIpMappingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SourceIpMappingInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new SourceIpMappingInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the SourceIpMappingInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SourceIpMappingInstance Fetched SourceIpMappingInstance
-	 */
-	public function fetch() : SourceIpMappingInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the SourceIpMappingInstance
+     *
+     * @param string $sipDomainSid The SID of the SIP Domain that the IP Record should be mapped to.
+     * @return SourceIpMappingInstance Updated SourceIpMappingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $sipDomainSid): SourceIpMappingInstance
+    {
 
-		return new SourceIpMappingInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        $data = Values::of([
+            'SipDomainSid' =>
+                $sipDomainSid,
+        ]);
 
-	/**
-	 * Update the SourceIpMappingInstance
-	 *
-	 * @param string $sipDomainSid The SID of the SIP Domain that the IP Record should be mapped to.
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SourceIpMappingInstance Updated SourceIpMappingInstance
-	 */
-	public function update(string $sipDomainSid) : SourceIpMappingInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'SipDomainSid' => $sipDomainSid,
-		]);
+        return new SourceIpMappingInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new SourceIpMappingInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Voice.V1.SourceIpMappingContext ' . \implode(' ', $context) . ']';
+    }
 }

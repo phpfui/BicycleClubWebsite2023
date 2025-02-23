@@ -14,91 +14,99 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Api\V2010\Account\Call;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class PaymentContext extends InstanceContext
-	{
-	/**
-	 * Initialize the PaymentContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
-	 * @param string $callSid The SID of the call that will create the resource. Call leg associated with this sid is expected to provide payment information thru DTMF.
-	 * @param string $sid The SID of Payments session that needs to be updated.
-	 */
-	public function __construct(
-		Version $version,
-		$accountSid,
-		$callSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the PaymentContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
+     * @param string $callSid The SID of the call that will create the resource. Call leg associated with this sid is expected to provide payment information thru DTMF.
+     * @param string $sid The SID of Payments session that needs to be updated.
+     */
+    public function __construct(
+        Version $version,
+        $accountSid,
+        $callSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
-			'callSid' => $callSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        'callSid' =>
+            $callSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		. '/Calls/' . \rawurlencode($callSid)
-		. '/Payments/' . \rawurlencode($sid)
-		. '.json';
-	}
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+        .'/Calls/' . \rawurlencode($callSid)
+        .'/Payments/' . \rawurlencode($sid)
+        .'.json';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Update the PaymentInstance
+     *
+     * @param string $idempotencyKey A unique token that will be used to ensure that multiple API calls with the same information do not result in multiple transactions. This should be a unique string value per API call and can be a randomly generated.
+     * @param string $statusCallback Provide an absolute or relative URL to receive status updates regarding your Pay session. Read more about the [Update](https://www.twilio.com/docs/voice/api/payment-resource#statuscallback-update) and [Complete/Cancel](https://www.twilio.com/docs/voice/api/payment-resource#statuscallback-cancelcomplete) POST requests.
+     * @param array|Options $options Optional Arguments
+     * @return PaymentInstance Updated PaymentInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $idempotencyKey, string $statusCallback, array $options = []): PaymentInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.Api.V2010.PaymentContext ' . \implode(' ', $context) . ']';
-	}
+        $data = Values::of([
+            'IdempotencyKey' =>
+                $idempotencyKey,
+            'StatusCallback' =>
+                $statusCallback,
+            'Capture' =>
+                $options['capture'],
+            'Status' =>
+                $options['status'],
+        ]);
 
-	/**
-	 * Update the PaymentInstance
-	 *
-	 * @param string $idempotencyKey A unique token that will be used to ensure that multiple API calls with the same information do not result in multiple transactions. This should be a unique string value per API call and can be a randomly generated.
-	 * @param string $statusCallback Provide an absolute or relative URL to receive status updates regarding your Pay session. Read more about the [Update](https://www.twilio.com/docs/voice/api/payment-resource#statuscallback-update) and [Complete/Cancel](https://www.twilio.com/docs/voice/api/payment-resource#statuscallback-cancelcomplete) POST requests.
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PaymentInstance Updated PaymentInstance
-	 */
-	public function update(string $idempotencyKey, string $statusCallback, array $options = []) : PaymentInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$options = new Values($options);
+        return new PaymentInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['callSid'],
+            $this->solution['sid']
+        );
+    }
 
-		$data = Values::of([
-			'IdempotencyKey' => $idempotencyKey,
-			'StatusCallback' => $statusCallback,
-			'Capture' => $options['capture'],
-			'Status' => $options['status'],
-		]);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
-
-		return new PaymentInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['callSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.PaymentContext ' . \implode(' ', $context) . ']';
+    }
 }

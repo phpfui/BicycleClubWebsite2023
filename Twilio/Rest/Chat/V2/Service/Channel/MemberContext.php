@@ -14,130 +14,141 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Chat\V2\Service\Channel;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class MemberContext extends InstanceContext
-	{
-	/**
-	 * Initialize the MemberContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the Member resource under.
-	 * @param string $channelSid The SID of the [Channel](https://www.twilio.com/docs/chat/channels) the new Member resource belongs to. This value can be the Channel resource's `sid` or `unique_name`.
-	 * @param string $sid The SID of the Member resource to delete. This value can be either the Member's `sid` or its `identity` value.
-	 */
-	public function __construct(
-		Version $version,
-		$serviceSid,
-		$channelSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the MemberContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the Member resource under.
+     * @param string $channelSid The SID of the [Channel](https://www.twilio.com/docs/chat/channels) the new Member resource belongs to. This value can be the Channel resource's `sid` or `unique_name`.
+     * @param string $sid The SID of the Member resource to delete. This value can be either the Member's `sid` or its `identity` value.
+     */
+    public function __construct(
+        Version $version,
+        $serviceSid,
+        $channelSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
-			'channelSid' => $channelSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        'channelSid' =>
+            $channelSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/Channels/' . \rawurlencode($channelSid)
-		. '/Members/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/Channels/' . \rawurlencode($channelSid)
+        .'/Members/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the MemberInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(array $options = []): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.Chat.V2.MemberContext ' . \implode(' ', $context) . ']';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-	/**
-	 * Delete the MemberInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete(array $options = []) : bool
-	{
 
-		$options = new Values($options);
+    /**
+     * Fetch the MemberInstance
+     *
+     * @return MemberInstance Fetched MemberInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): MemberInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new MemberInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['channelSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the MemberInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return MemberInstance Fetched MemberInstance
-	 */
-	public function fetch() : MemberInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the MemberInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return MemberInstance Updated MemberInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): MemberInstance
+    {
 
-		return new MemberInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['channelSid'],
-			$this->solution['sid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the MemberInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return MemberInstance Updated MemberInstance
-	 */
-	public function update(array $options = []) : MemberInstance
-	{
+        $data = Values::of([
+            'RoleSid' =>
+                $options['roleSid'],
+            'LastConsumedMessageIndex' =>
+                $options['lastConsumedMessageIndex'],
+            'LastConsumptionTimestamp' =>
+                Serialize::iso8601DateTime($options['lastConsumptionTimestamp']),
+            'DateCreated' =>
+                Serialize::iso8601DateTime($options['dateCreated']),
+            'DateUpdated' =>
+                Serialize::iso8601DateTime($options['dateUpdated']),
+            'Attributes' =>
+                $options['attributes'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'RoleSid' => $options['roleSid'],
-			'LastConsumedMessageIndex' => $options['lastConsumedMessageIndex'],
-			'LastConsumptionTimestamp' => Serialize::iso8601DateTime($options['lastConsumptionTimestamp']),
-			'DateCreated' => Serialize::iso8601DateTime($options['dateCreated']),
-			'DateUpdated' => Serialize::iso8601DateTime($options['dateUpdated']),
-			'Attributes' => $options['attributes'],
-		]);
+        return new MemberInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['channelSid'],
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new MemberInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['channelSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Chat.V2.MemberContext ' . \implode(' ', $context) . ']';
+    }
 }

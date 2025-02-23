@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Messaging\V1;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $domainSid
@@ -34,122 +36,120 @@ use Twilio\Version;
  */
 class DomainCertsInstance extends InstanceResource
 {
-	/**
-	 * Initialize the DomainCertsInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $domainSid Unique string used to identify the domain that this certificate should be associated with.
-	 */
-	public function __construct(Version $version, array $payload, ?string $domainSid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the DomainCertsInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $domainSid Unique string used to identify the domain that this certificate should be associated with.
+     */
+    public function __construct(Version $version, array $payload, string $domainSid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'domainSid' => Values::array_get($payload, 'domain_sid'),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'dateExpires' => Deserialize::dateTime(Values::array_get($payload, 'date_expires')),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'domainName' => Values::array_get($payload, 'domain_name'),
-			'certificateSid' => Values::array_get($payload, 'certificate_sid'),
-			'url' => Values::array_get($payload, 'url'),
-			'certInValidation' => Values::array_get($payload, 'cert_in_validation'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'domainSid' => Values::array_get($payload, 'domain_sid'),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'dateExpires' => Deserialize::dateTime(Values::array_get($payload, 'date_expires')),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'domainName' => Values::array_get($payload, 'domain_name'),
+            'certificateSid' => Values::array_get($payload, 'certificate_sid'),
+            'url' => Values::array_get($payload, 'url'),
+            'certInValidation' => Values::array_get($payload, 'cert_in_validation'),
+        ];
 
-		$this->solution = ['domainSid' => $domainSid ?: $this->properties['domainSid'], ];
-	}
+        $this->solution = ['domainSid' => $domainSid ?: $this->properties['domainSid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return DomainCertsContext Context for this DomainCertsInstance
+     */
+    protected function proxy(): DomainCertsContext
+    {
+        if (!$this->context) {
+            $this->context = new DomainCertsContext(
+                $this->version,
+                $this->solution['domainSid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Delete the DomainCertsInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->delete();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the DomainCertsInstance
+     *
+     * @return DomainCertsInstance Fetched DomainCertsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): DomainCertsInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->fetch();
+    }
 
-		return '[Twilio.Messaging.V1.DomainCertsInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Update the DomainCertsInstance
+     *
+     * @param string $tlsCert Contains the full TLS certificate and private for this domain in PEM format: https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail. Twilio uses this information to process HTTPS traffic sent to your domain.
+     * @return DomainCertsInstance Updated DomainCertsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $tlsCert): DomainCertsInstance
+    {
 
-	/**
-	 * Delete the DomainCertsInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        return $this->proxy()->update($tlsCert);
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-	/**
-	 * Fetch the DomainCertsInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return DomainCertsInstance Fetched DomainCertsInstance
-	 */
-	public function fetch() : DomainCertsInstance
-	{
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->proxy()->fetch();
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Update the DomainCertsInstance
-	 *
-	 * @param string $tlsCert Contains the full TLS certificate and private for this domain in PEM format: https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail. Twilio uses this information to process HTTPS traffic sent to your domain.
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return DomainCertsInstance Updated DomainCertsInstance
-	 */
-	public function update(string $tlsCert) : DomainCertsInstance
-	{
-
-		return $this->proxy()->update($tlsCert);
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return DomainCertsContext Context for this DomainCertsInstance
-	 */
-	protected function proxy() : DomainCertsContext
-	{
-		if (! $this->context) {
-			$this->context = new DomainCertsContext(
-				$this->version,
-				$this->solution['domainSid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Messaging.V1.DomainCertsInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

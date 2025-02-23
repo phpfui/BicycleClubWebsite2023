@@ -14,14 +14,16 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Chat\V3;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $sid
@@ -41,106 +43,104 @@ use Twilio\Version;
  */
 class ChannelInstance extends InstanceResource
 {
-	/**
-	 * Initialize the ChannelInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $serviceSid The unique SID identifier of the Service.
-	 * @param string $sid A 34 character string that uniquely identifies this Channel.
-	 */
-	public function __construct(Version $version, array $payload, ?string $serviceSid = null, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the ChannelInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $serviceSid The unique SID identifier of the Service.
+     * @param string $sid A 34 character string that uniquely identifies this Channel.
+     */
+    public function __construct(Version $version, array $payload, string $serviceSid = null, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'serviceSid' => Values::array_get($payload, 'service_sid'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'uniqueName' => Values::array_get($payload, 'unique_name'),
-			'attributes' => Values::array_get($payload, 'attributes'),
-			'type' => Values::array_get($payload, 'type'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'createdBy' => Values::array_get($payload, 'created_by'),
-			'membersCount' => Values::array_get($payload, 'members_count'),
-			'messagesCount' => Values::array_get($payload, 'messages_count'),
-			'messagingServiceSid' => Values::array_get($payload, 'messaging_service_sid'),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'serviceSid' => Values::array_get($payload, 'service_sid'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'uniqueName' => Values::array_get($payload, 'unique_name'),
+            'attributes' => Values::array_get($payload, 'attributes'),
+            'type' => Values::array_get($payload, 'type'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'createdBy' => Values::array_get($payload, 'created_by'),
+            'membersCount' => Values::array_get($payload, 'members_count'),
+            'messagesCount' => Values::array_get($payload, 'messages_count'),
+            'messagingServiceSid' => Values::array_get($payload, 'messaging_service_sid'),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['serviceSid' => $serviceSid ?: $this->properties['serviceSid'], 'sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['serviceSid' => $serviceSid ?: $this->properties['serviceSid'], 'sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return ChannelContext Context for this ChannelInstance
+     */
+    protected function proxy(): ChannelContext
+    {
+        if (!$this->context) {
+            $this->context = new ChannelContext(
+                $this->version,
+                $this->solution['serviceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Update the ChannelInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return ChannelInstance Updated ChannelInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): ChannelInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->update($options);
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.Chat.V3.ChannelInstance ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Update the ChannelInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ChannelInstance Updated ChannelInstance
-	 */
-	public function update(array $options = []) : ChannelInstance
-	{
-
-		return $this->proxy()->update($options);
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return ChannelContext Context for this ChannelInstance
-	 */
-	protected function proxy() : ChannelContext
-	{
-		if (! $this->context) {
-			$this->context = new ChannelContext(
-				$this->version,
-				$this->solution['serviceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Chat.V3.ChannelInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

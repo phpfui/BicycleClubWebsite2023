@@ -19,86 +19,91 @@ namespace Twilio\Rest\Video\V1\Room;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Serialize;
+
 
 class RecordingRulesList extends ListResource
-	{
-	/**
-	 * Construct the RecordingRulesList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $roomSid The SID of the Room resource where the recording rules to fetch apply.
-	 */
-	public function __construct(
-		Version $version,
-		string $roomSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the RecordingRulesList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $roomSid The SID of the Room resource where the recording rules to fetch apply.
+     */
+    public function __construct(
+        Version $version,
+        string $roomSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'roomSid' => $roomSid,
+        // Path Solution
+        $this->solution = [
+        'roomSid' =>
+            $roomSid,
+        
+        ];
 
-		];
+        $this->uri = '/Rooms/' . \rawurlencode($roomSid)
+        .'/RecordingRules';
+    }
 
-		$this->uri = '/Rooms/' . \rawurlencode($roomSid)
-		. '/RecordingRules';
-	}
+    /**
+     * Fetch the RecordingRulesInstance
+     *
+     * @return RecordingRulesInstance Fetched RecordingRulesInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): RecordingRulesInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Video.V1.RecordingRulesList]';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-	/**
-	 * Fetch the RecordingRulesInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RecordingRulesInstance Fetched RecordingRulesInstance
-	 */
-	public function fetch() : RecordingRulesInstance
-	{
+        return new RecordingRulesInstance(
+            $this->version,
+            $payload,
+            $this->solution['roomSid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return new RecordingRulesInstance(
-			$this->version,
-			$payload,
-			$this->solution['roomSid']
-		);
-	}
+    /**
+     * Update the RecordingRulesInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return RecordingRulesInstance Updated RecordingRulesInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): RecordingRulesInstance
+    {
 
-	/**
-	 * Update the RecordingRulesInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RecordingRulesInstance Updated RecordingRulesInstance
-	 */
-	public function update(array $options = []) : RecordingRulesInstance
-	{
+        $options = new Values($options);
 
-		$options = new Values($options);
+        $data = Values::of([
+            'Rules' =>
+                Serialize::jsonObject($options['rules']),
+        ]);
 
-		$data = Values::of([
-			'Rules' => Serialize::jsonObject($options['rules']),
-		]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+        return new RecordingRulesInstance(
+            $this->version,
+            $payload,
+            $this->solution['roomSid']
+        );
+    }
 
-		return new RecordingRulesInstance(
-			$this->version,
-			$payload,
-			$this->solution['roomSid']
-		);
-	}
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Video.V1.RecordingRulesList]';
+    }
 }

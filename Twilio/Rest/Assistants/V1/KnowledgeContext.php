@@ -14,15 +14,17 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Assistants\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Assistants\V1\Knowledge\ChunkList;
-use Twilio\Rest\Assistants\V1\Knowledge\KnowledgeStatusList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Assistants\V1\Knowledge\ChunkList;
+use Twilio\Rest\Assistants\V1\Knowledge\KnowledgeStatusList;
+
 
 /**
  * @property ChunkList $chunks
@@ -30,166 +32,164 @@ use Twilio\Version;
  * @method \Twilio\Rest\Assistants\V1\Knowledge\KnowledgeStatusContext knowledgeStatus()
  */
 class KnowledgeContext extends InstanceContext
-	{
-	protected $_chunks;
+    {
+    protected $_chunks;
+    protected $_knowledgeStatus;
 
-	protected $_knowledgeStatus;
+    /**
+     * Initialize the KnowledgeContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $id the Knowledge ID.
+     */
+    public function __construct(
+        Version $version,
+        $id
+    ) {
+        parent::__construct($version);
 
-	/**
-	 * Initialize the KnowledgeContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $id the Knowledge ID.
-	 */
-	public function __construct(
-		Version $version,
-		$id
-	) {
-		parent::__construct($version);
+        // Path Solution
+        $this->solution = [
+        'id' =>
+            $id,
+        ];
 
-		// Path Solution
-		$this->solution = [
-			'id' => $id,
-		];
+        $this->uri = '/Knowledge/' . \rawurlencode($id)
+        .'';
+    }
 
-		$this->uri = '/Knowledge/' . \rawurlencode($id)
-		. '';
-	}
+    /**
+     * Delete the KnowledgeInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
 
-		throw new TwilioException('Resource does not have a context');
-	}
+    /**
+     * Fetch the KnowledgeInstance
+     *
+     * @return KnowledgeInstance Fetched KnowledgeInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): KnowledgeInstance
+    {
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-			return $this->{$method}();
-		}
+        return new KnowledgeInstance(
+            $this->version,
+            $payload,
+            $this->solution['id']
+        );
+    }
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Update the KnowledgeInstance
+     *
+     * @return KnowledgeInstance Updated KnowledgeInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(): KnowledgeInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $data = $assistantsV1ServiceUpdateKnowledgeRequest->toArray();
+        $headers['Content-Type'] = 'application/json';
+        $payload = $this->version->update('PUT', $this->uri, [], $data, $headers);
 
-		return '[Twilio.Assistants.V1.KnowledgeContext ' . \implode(' ', $context) . ']';
-	}
+        return new KnowledgeInstance(
+            $this->version,
+            $payload,
+            $this->solution['id']
+        );
+    }
 
-	/**
-	 * Delete the KnowledgeInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+    /**
+     * Access the chunks
+     */
+    protected function getChunks(): ChunkList
+    {
+        if (!$this->_chunks) {
+            $this->_chunks = new ChunkList(
+                $this->version,
+                $this->solution['id']
+            );
+        }
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return $this->_chunks;
+    }
 
-	/**
-	 * Fetch the KnowledgeInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return KnowledgeInstance Fetched KnowledgeInstance
-	 */
-	public function fetch() : KnowledgeInstance
-	{
+    /**
+     * Access the knowledgeStatus
+     */
+    protected function getKnowledgeStatus(): KnowledgeStatusList
+    {
+        if (!$this->_knowledgeStatus) {
+            $this->_knowledgeStatus = new KnowledgeStatusList(
+                $this->version,
+                $this->solution['id']
+            );
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+        return $this->_knowledgeStatus;
+    }
 
-		return new KnowledgeInstance(
-			$this->version,
-			$payload,
-			$this->solution['id']
-		);
-	}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Update the KnowledgeInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return KnowledgeInstance Updated KnowledgeInstance
-	 */
-	public function update() : KnowledgeInstance
-	{
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$data = $assistantsV1ServiceUpdateKnowledgeRequest->toArray();
-		$headers['Content-Type'] = 'application/json';
-		$payload = $this->version->update('PUT', $this->uri, [], $data, $headers);
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		return new KnowledgeInstance(
-			$this->version,
-			$payload,
-			$this->solution['id']
-		);
-	}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-	/**
-	 * Access the chunks
-	 */
-	protected function getChunks() : ChunkList
-	{
-		if (! $this->_chunks) {
-			$this->_chunks = new ChunkList(
-				$this->version,
-				$this->solution['id']
-			);
-		}
-
-		return $this->_chunks;
-	}
-
-	/**
-	 * Access the knowledgeStatus
-	 */
-	protected function getKnowledgeStatus() : KnowledgeStatusList
-	{
-		if (! $this->_knowledgeStatus) {
-			$this->_knowledgeStatus = new KnowledgeStatusList(
-				$this->version,
-				$this->solution['id']
-			);
-		}
-
-		return $this->_knowledgeStatus;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Assistants.V1.KnowledgeContext ' . \implode(' ', $context) . ']';
+    }
 }

@@ -14,171 +14,174 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Preview\Marketplace;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Rest\Preview\Marketplace\InstalledAddOn\InstalledAddOnExtensionList;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+use Twilio\Rest\Preview\Marketplace\InstalledAddOn\InstalledAddOnExtensionList;
+
 
 /**
  * @property InstalledAddOnExtensionList $extensions
  * @method \Twilio\Rest\Preview\Marketplace\InstalledAddOn\InstalledAddOnExtensionContext extensions(string $sid)
  */
 class InstalledAddOnContext extends InstanceContext
-	{
-	protected $_extensions;
+    {
+    protected $_extensions;
 
-	/**
-	 * Initialize the InstalledAddOnContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The SID of the InstalledAddOn resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    /**
+     * Initialize the InstalledAddOnContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The SID of the InstalledAddOn resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/InstalledAddOns/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/InstalledAddOns/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Delete the InstalledAddOnInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		throw new TwilioException('Resource does not have a context');
-	}
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+    /**
+     * Fetch the InstalledAddOnInstance
+     *
+     * @return InstalledAddOnInstance Fetched InstalledAddOnInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): InstalledAddOnInstance
+    {
 
-			return $this->{$method}();
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        return new InstalledAddOnInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Update the InstalledAddOnInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return InstalledAddOnInstance Updated InstalledAddOnInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): InstalledAddOnInstance
+    {
 
-		return '[Twilio.Preview.Marketplace.InstalledAddOnContext ' . \implode(' ', $context) . ']';
-	}
+        $options = new Values($options);
 
-	/**
-	 * Delete the InstalledAddOnInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        $data = Values::of([
+            'Configuration' =>
+                Serialize::jsonObject($options['configuration']),
+            'UniqueName' =>
+                $options['uniqueName'],
+        ]);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new InstalledAddOnInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the InstalledAddOnInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InstalledAddOnInstance Fetched InstalledAddOnInstance
-	 */
-	public function fetch() : InstalledAddOnInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Access the extensions
+     */
+    protected function getExtensions(): InstalledAddOnExtensionList
+    {
+        if (!$this->_extensions) {
+            $this->_extensions = new InstalledAddOnExtensionList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		return new InstalledAddOnInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        return $this->_extensions;
+    }
 
-	/**
-	 * Update the InstalledAddOnInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InstalledAddOnInstance Updated InstalledAddOnInstance
-	 */
-	public function update(array $options = []) : InstalledAddOnInstance
-	{
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		$options = new Values($options);
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		$data = Values::of([
-			'Configuration' => Serialize::jsonObject($options['configuration']),
-			'UniqueName' => $options['uniqueName'],
-		]);
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		return new InstalledAddOnInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
-
-	/**
-	 * Access the extensions
-	 */
-	protected function getExtensions() : InstalledAddOnExtensionList
-	{
-		if (! $this->_extensions) {
-			$this->_extensions = new InstalledAddOnExtensionList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_extensions;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Preview.Marketplace.InstalledAddOnContext ' . \implode(' ', $context) . ']';
+    }
 }

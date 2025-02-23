@@ -14,170 +14,187 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Preview\Wireless;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Rest\Preview\Wireless\Sim\UsageList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Preview\Wireless\Sim\UsageList;
+
 
 /**
  * @property UsageList $usage
  * @method \Twilio\Rest\Preview\Wireless\Sim\UsageContext usage()
  */
 class SimContext extends InstanceContext
-	{
-	protected $_usage;
+    {
+    protected $_usage;
 
-	/**
-	 * Initialize the SimContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    /**
+     * Initialize the SimContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid 
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Sims/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Sims/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Fetch the SimInstance
+     *
+     * @return SimInstance Fetched SimInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SimInstance
+    {
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        return new SimInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
 
-			return $this->{$method}();
-		}
+    /**
+     * Update the SimInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return SimInstance Updated SimInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): SimInstance
+    {
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        $data = Values::of([
+            'UniqueName' =>
+                $options['uniqueName'],
+            'CallbackMethod' =>
+                $options['callbackMethod'],
+            'CallbackUrl' =>
+                $options['callbackUrl'],
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'RatePlan' =>
+                $options['ratePlan'],
+            'Status' =>
+                $options['status'],
+            'CommandsCallbackMethod' =>
+                $options['commandsCallbackMethod'],
+            'CommandsCallbackUrl' =>
+                $options['commandsCallbackUrl'],
+            'SmsFallbackMethod' =>
+                $options['smsFallbackMethod'],
+            'SmsFallbackUrl' =>
+                $options['smsFallbackUrl'],
+            'SmsMethod' =>
+                $options['smsMethod'],
+            'SmsUrl' =>
+                $options['smsUrl'],
+            'VoiceFallbackMethod' =>
+                $options['voiceFallbackMethod'],
+            'VoiceFallbackUrl' =>
+                $options['voiceFallbackUrl'],
+            'VoiceMethod' =>
+                $options['voiceMethod'],
+            'VoiceUrl' =>
+                $options['voiceUrl'],
+        ]);
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return '[Twilio.Preview.Wireless.SimContext ' . \implode(' ', $context) . ']';
-	}
+        return new SimInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the SimInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SimInstance Fetched SimInstance
-	 */
-	public function fetch() : SimInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Access the usage
+     */
+    protected function getUsage(): UsageList
+    {
+        if (!$this->_usage) {
+            $this->_usage = new UsageList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		return new SimInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        return $this->_usage;
+    }
 
-	/**
-	 * Update the SimInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SimInstance Updated SimInstance
-	 */
-	public function update(array $options = []) : SimInstance
-	{
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		$options = new Values($options);
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		$data = Values::of([
-			'UniqueName' => $options['uniqueName'],
-			'CallbackMethod' => $options['callbackMethod'],
-			'CallbackUrl' => $options['callbackUrl'],
-			'FriendlyName' => $options['friendlyName'],
-			'RatePlan' => $options['ratePlan'],
-			'Status' => $options['status'],
-			'CommandsCallbackMethod' => $options['commandsCallbackMethod'],
-			'CommandsCallbackUrl' => $options['commandsCallbackUrl'],
-			'SmsFallbackMethod' => $options['smsFallbackMethod'],
-			'SmsFallbackUrl' => $options['smsFallbackUrl'],
-			'SmsMethod' => $options['smsMethod'],
-			'SmsUrl' => $options['smsUrl'],
-			'VoiceFallbackMethod' => $options['voiceFallbackMethod'],
-			'VoiceFallbackUrl' => $options['voiceFallbackUrl'],
-			'VoiceMethod' => $options['voiceMethod'],
-			'VoiceUrl' => $options['voiceUrl'],
-		]);
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		return new SimInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
-
-	/**
-	 * Access the usage
-	 */
-	protected function getUsage() : UsageList
-	{
-		if (! $this->_usage) {
-			$this->_usage = new UsageList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_usage;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Preview.Wireless.SimContext ' . \implode(' ', $context) . ']';
+    }
 }

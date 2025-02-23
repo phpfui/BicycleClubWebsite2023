@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Microvisor\V1;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $key
@@ -29,117 +31,115 @@ use Twilio\Version;
  */
 class AccountSecretInstance extends InstanceResource
 {
-	/**
-	 * Initialize the AccountSecretInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $key The secret key; up to 100 characters.
-	 */
-	public function __construct(Version $version, array $payload, ?string $key = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the AccountSecretInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $key The secret key; up to 100 characters.
+     */
+    public function __construct(Version $version, array $payload, string $key = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'key' => Values::array_get($payload, 'key'),
-			'dateRotated' => Deserialize::dateTime(Values::array_get($payload, 'date_rotated')),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'key' => Values::array_get($payload, 'key'),
+            'dateRotated' => Deserialize::dateTime(Values::array_get($payload, 'date_rotated')),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['key' => $key ?: $this->properties['key'], ];
-	}
+        $this->solution = ['key' => $key ?: $this->properties['key'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return AccountSecretContext Context for this AccountSecretInstance
+     */
+    protected function proxy(): AccountSecretContext
+    {
+        if (!$this->context) {
+            $this->context = new AccountSecretContext(
+                $this->version,
+                $this->solution['key']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Delete the AccountSecretInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->delete();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the AccountSecretInstance
+     *
+     * @return AccountSecretInstance Fetched AccountSecretInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): AccountSecretInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->fetch();
+    }
 
-		return '[Twilio.Microvisor.V1.AccountSecretInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Update the AccountSecretInstance
+     *
+     * @param string $value The secret value; up to 4096 characters.
+     * @return AccountSecretInstance Updated AccountSecretInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $value): AccountSecretInstance
+    {
 
-	/**
-	 * Delete the AccountSecretInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        return $this->proxy()->update($value);
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-	/**
-	 * Fetch the AccountSecretInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AccountSecretInstance Fetched AccountSecretInstance
-	 */
-	public function fetch() : AccountSecretInstance
-	{
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->proxy()->fetch();
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Update the AccountSecretInstance
-	 *
-	 * @param string $value The secret value; up to 4096 characters.
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AccountSecretInstance Updated AccountSecretInstance
-	 */
-	public function update(string $value) : AccountSecretInstance
-	{
-
-		return $this->proxy()->update($value);
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return AccountSecretContext Context for this AccountSecretInstance
-	 */
-	protected function proxy() : AccountSecretContext
-	{
-		if (! $this->context) {
-			$this->context = new AccountSecretContext(
-				$this->version,
-				$this->solution['key']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Microvisor.V1.AccountSecretInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

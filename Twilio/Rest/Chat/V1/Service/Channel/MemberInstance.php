@@ -14,14 +14,16 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Chat\V1\Service\Channel;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $sid
@@ -38,129 +40,127 @@ use Twilio\Version;
  */
 class MemberInstance extends InstanceResource
 {
-	/**
-	 * Initialize the MemberInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/api/chat/rest/services) to create the resource under.
-	 * @param string $channelSid The unique ID of the [Channel](https://www.twilio.com/docs/api/chat/rest/channels) the new member belongs to. Can be the Channel resource's `sid` or `unique_name`.
-	 * @param string $sid The Twilio-provided string that uniquely identifies the Member resource to delete.
-	 */
-	public function __construct(Version $version, array $payload, string $serviceSid, string $channelSid, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the MemberInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/api/chat/rest/services) to create the resource under.
+     * @param string $channelSid The unique ID of the [Channel](https://www.twilio.com/docs/api/chat/rest/channels) the new member belongs to. Can be the Channel resource's `sid` or `unique_name`.
+     * @param string $sid The Twilio-provided string that uniquely identifies the Member resource to delete.
+     */
+    public function __construct(Version $version, array $payload, string $serviceSid, string $channelSid, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'channelSid' => Values::array_get($payload, 'channel_sid'),
-			'serviceSid' => Values::array_get($payload, 'service_sid'),
-			'identity' => Values::array_get($payload, 'identity'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'roleSid' => Values::array_get($payload, 'role_sid'),
-			'lastConsumedMessageIndex' => Values::array_get($payload, 'last_consumed_message_index'),
-			'lastConsumptionTimestamp' => Deserialize::dateTime(Values::array_get($payload, 'last_consumption_timestamp')),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'channelSid' => Values::array_get($payload, 'channel_sid'),
+            'serviceSid' => Values::array_get($payload, 'service_sid'),
+            'identity' => Values::array_get($payload, 'identity'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'roleSid' => Values::array_get($payload, 'role_sid'),
+            'lastConsumedMessageIndex' => Values::array_get($payload, 'last_consumed_message_index'),
+            'lastConsumptionTimestamp' => Deserialize::dateTime(Values::array_get($payload, 'last_consumption_timestamp')),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['serviceSid' => $serviceSid, 'channelSid' => $channelSid, 'sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['serviceSid' => $serviceSid, 'channelSid' => $channelSid, 'sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return MemberContext Context for this MemberInstance
+     */
+    protected function proxy(): MemberContext
+    {
+        if (!$this->context) {
+            $this->context = new MemberContext(
+                $this->version,
+                $this->solution['serviceSid'],
+                $this->solution['channelSid'],
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Delete the MemberInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->delete();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the MemberInstance
+     *
+     * @return MemberInstance Fetched MemberInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): MemberInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->fetch();
+    }
 
-		return '[Twilio.Chat.V1.MemberInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Update the MemberInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return MemberInstance Updated MemberInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): MemberInstance
+    {
 
-	/**
-	 * Delete the MemberInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        return $this->proxy()->update($options);
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-	/**
-	 * Fetch the MemberInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return MemberInstance Fetched MemberInstance
-	 */
-	public function fetch() : MemberInstance
-	{
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->proxy()->fetch();
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Update the MemberInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return MemberInstance Updated MemberInstance
-	 */
-	public function update(array $options = []) : MemberInstance
-	{
-
-		return $this->proxy()->update($options);
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return MemberContext Context for this MemberInstance
-	 */
-	protected function proxy() : MemberContext
-	{
-		if (! $this->context) {
-			$this->context = new MemberContext(
-				$this->version,
-				$this->solution['serviceSid'],
-				$this->solution['channelSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Chat.V1.MemberInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

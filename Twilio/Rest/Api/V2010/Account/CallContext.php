@@ -14,23 +14,25 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Rest\Api\V2010\Account\Call\EventList;
-use Twilio\Rest\Api\V2010\Account\Call\NotificationList;
-use Twilio\Rest\Api\V2010\Account\Call\PaymentList;
-use Twilio\Rest\Api\V2010\Account\Call\RecordingList;
-use Twilio\Rest\Api\V2010\Account\Call\SiprecList;
-use Twilio\Rest\Api\V2010\Account\Call\StreamList;
-use Twilio\Rest\Api\V2010\Account\Call\TranscriptionList;
-use Twilio\Rest\Api\V2010\Account\Call\UserDefinedMessageList;
-use Twilio\Rest\Api\V2010\Account\Call\UserDefinedMessageSubscriptionList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Api\V2010\Account\Call\TranscriptionList;
+use Twilio\Rest\Api\V2010\Account\Call\RecordingList;
+use Twilio\Rest\Api\V2010\Account\Call\UserDefinedMessageSubscriptionList;
+use Twilio\Rest\Api\V2010\Account\Call\EventList;
+use Twilio\Rest\Api\V2010\Account\Call\NotificationList;
+use Twilio\Rest\Api\V2010\Account\Call\UserDefinedMessageList;
+use Twilio\Rest\Api\V2010\Account\Call\SiprecList;
+use Twilio\Rest\Api\V2010\Account\Call\StreamList;
+use Twilio\Rest\Api\V2010\Account\Call\PaymentList;
+
 
 /**
  * @property TranscriptionList $transcriptions
@@ -51,313 +53,314 @@ use Twilio\Version;
  * @method \Twilio\Rest\Api\V2010\Account\Call\StreamContext streams(string $sid)
  */
 class CallContext extends InstanceContext
-	{
-	protected $_events;
+    {
+    protected $_transcriptions;
+    protected $_recordings;
+    protected $_userDefinedMessageSubscriptions;
+    protected $_events;
+    protected $_notifications;
+    protected $_userDefinedMessages;
+    protected $_siprec;
+    protected $_streams;
+    protected $_payments;
 
-	protected $_notifications;
+    /**
+     * Initialize the CallContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
+     * @param string $sid The Twilio-provided Call SID that uniquely identifies the Call resource to delete
+     */
+    public function __construct(
+        Version $version,
+        $accountSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-	protected $_payments;
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        'sid' =>
+            $sid,
+        ];
 
-	protected $_recordings;
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+        .'/Calls/' . \rawurlencode($sid)
+        .'.json';
+    }
 
-	protected $_siprec;
+    /**
+     * Delete the CallInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-	protected $_streams;
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-	protected $_transcriptions;
 
-	protected $_userDefinedMessages;
+    /**
+     * Fetch the CallInstance
+     *
+     * @return CallInstance Fetched CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): CallInstance
+    {
 
-	protected $_userDefinedMessageSubscriptions;
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-	/**
-	 * Initialize the CallContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
-	 * @param string $sid The Twilio-provided Call SID that uniquely identifies the Call resource to delete
-	 */
-	public function __construct(
-		Version $version,
-		$accountSid,
-		$sid
-	) {
-		parent::__construct($version);
+        return new CallInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['sid']
+        );
+    }
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
-			'sid' => $sid,
-		];
 
-		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		. '/Calls/' . \rawurlencode($sid)
-		. '.json';
-	}
+    /**
+     * Update the CallInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return CallInstance Updated CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): CallInstance
+    {
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+        $options = new Values($options);
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        $data = Values::of([
+            'Url' =>
+                $options['url'],
+            'Method' =>
+                $options['method'],
+            'Status' =>
+                $options['status'],
+            'FallbackUrl' =>
+                $options['fallbackUrl'],
+            'FallbackMethod' =>
+                $options['fallbackMethod'],
+            'StatusCallback' =>
+                $options['statusCallback'],
+            'StatusCallbackMethod' =>
+                $options['statusCallbackMethod'],
+            'Twiml' =>
+                $options['twiml'],
+            'TimeLimit' =>
+                $options['timeLimit'],
+        ]);
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return new CallInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['sid']
+        );
+    }
 
-			return $this->{$method}();
-		}
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+    /**
+     * Access the transcriptions
+     */
+    protected function getTranscriptions(): TranscriptionList
+    {
+        if (!$this->_transcriptions) {
+            $this->_transcriptions = new TranscriptionList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        return $this->_transcriptions;
+    }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Access the recordings
+     */
+    protected function getRecordings(): RecordingList
+    {
+        if (!$this->_recordings) {
+            $this->_recordings = new RecordingList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['sid']
+            );
+        }
 
-		return '[Twilio.Api.V2010.CallContext ' . \implode(' ', $context) . ']';
-	}
+        return $this->_recordings;
+    }
 
-	/**
-	 * Delete the CallInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Access the userDefinedMessageSubscriptions
+     */
+    protected function getUserDefinedMessageSubscriptions(): UserDefinedMessageSubscriptionList
+    {
+        if (!$this->_userDefinedMessageSubscriptions) {
+            $this->_userDefinedMessageSubscriptions = new UserDefinedMessageSubscriptionList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['sid']
+            );
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        return $this->_userDefinedMessageSubscriptions;
+    }
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+    /**
+     * Access the events
+     */
+    protected function getEvents(): EventList
+    {
+        if (!$this->_events) {
+            $this->_events = new EventList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Fetch the CallInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return CallInstance Fetched CallInstance
-	 */
-	public function fetch() : CallInstance
-	{
+        return $this->_events;
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Access the notifications
+     */
+    protected function getNotifications(): NotificationList
+    {
+        if (!$this->_notifications) {
+            $this->_notifications = new NotificationList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['sid']
+            );
+        }
 
-		return new CallInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['sid']
-		);
-	}
+        return $this->_notifications;
+    }
 
-	/**
-	 * Update the CallInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return CallInstance Updated CallInstance
-	 */
-	public function update(array $options = []) : CallInstance
-	{
+    /**
+     * Access the userDefinedMessages
+     */
+    protected function getUserDefinedMessages(): UserDefinedMessageList
+    {
+        if (!$this->_userDefinedMessages) {
+            $this->_userDefinedMessages = new UserDefinedMessageList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['sid']
+            );
+        }
 
-		$options = new Values($options);
+        return $this->_userDefinedMessages;
+    }
 
-		$data = Values::of([
-			'Url' => $options['url'],
-			'Method' => $options['method'],
-			'Status' => $options['status'],
-			'FallbackUrl' => $options['fallbackUrl'],
-			'FallbackMethod' => $options['fallbackMethod'],
-			'StatusCallback' => $options['statusCallback'],
-			'StatusCallbackMethod' => $options['statusCallbackMethod'],
-			'Twiml' => $options['twiml'],
-			'TimeLimit' => $options['timeLimit'],
-		]);
+    /**
+     * Access the siprec
+     */
+    protected function getSiprec(): SiprecList
+    {
+        if (!$this->_siprec) {
+            $this->_siprec = new SiprecList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['sid']
+            );
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+        return $this->_siprec;
+    }
 
-		return new CallInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Access the streams
+     */
+    protected function getStreams(): StreamList
+    {
+        if (!$this->_streams) {
+            $this->_streams = new StreamList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Access the events
-	 */
-	protected function getEvents() : EventList
-	{
-		if (! $this->_events) {
-			$this->_events = new EventList(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['sid']
-			);
-		}
+        return $this->_streams;
+    }
 
-		return $this->_events;
-	}
+    /**
+     * Access the payments
+     */
+    protected function getPayments(): PaymentList
+    {
+        if (!$this->_payments) {
+            $this->_payments = new PaymentList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Access the notifications
-	 */
-	protected function getNotifications() : NotificationList
-	{
-		if (! $this->_notifications) {
-			$this->_notifications = new NotificationList(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['sid']
-			);
-		}
+        return $this->_payments;
+    }
 
-		return $this->_notifications;
-	}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Access the payments
-	 */
-	protected function getPayments() : PaymentList
-	{
-		if (! $this->_payments) {
-			$this->_payments = new PaymentList(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['sid']
-			);
-		}
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		return $this->_payments;
-	}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-	/**
-	 * Access the recordings
-	 */
-	protected function getRecordings() : RecordingList
-	{
-		if (! $this->_recordings) {
-			$this->_recordings = new RecordingList(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['sid']
-			);
-		}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		return $this->_recordings;
-	}
-
-	/**
-	 * Access the siprec
-	 */
-	protected function getSiprec() : SiprecList
-	{
-		if (! $this->_siprec) {
-			$this->_siprec = new SiprecList(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_siprec;
-	}
-
-	/**
-	 * Access the streams
-	 */
-	protected function getStreams() : StreamList
-	{
-		if (! $this->_streams) {
-			$this->_streams = new StreamList(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_streams;
-	}
-
-	/**
-	 * Access the transcriptions
-	 */
-	protected function getTranscriptions() : TranscriptionList
-	{
-		if (! $this->_transcriptions) {
-			$this->_transcriptions = new TranscriptionList(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_transcriptions;
-	}
-
-	/**
-	 * Access the userDefinedMessages
-	 */
-	protected function getUserDefinedMessages() : UserDefinedMessageList
-	{
-		if (! $this->_userDefinedMessages) {
-			$this->_userDefinedMessages = new UserDefinedMessageList(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_userDefinedMessages;
-	}
-
-	/**
-	 * Access the userDefinedMessageSubscriptions
-	 */
-	protected function getUserDefinedMessageSubscriptions() : UserDefinedMessageSubscriptionList
-	{
-		if (! $this->_userDefinedMessageSubscriptions) {
-			$this->_userDefinedMessageSubscriptions = new UserDefinedMessageSubscriptionList(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_userDefinedMessageSubscriptions;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.CallContext ' . \implode(' ', $context) . ']';
+    }
 }

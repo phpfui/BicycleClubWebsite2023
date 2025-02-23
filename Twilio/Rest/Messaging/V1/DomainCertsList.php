@@ -19,45 +19,47 @@ namespace Twilio\Rest\Messaging\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class DomainCertsList extends ListResource
-	{
-	/**
-	 * Construct the DomainCertsList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the DomainCertsList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Messaging.V1.DomainCertsList]';
-	}
+    /**
+     * Constructs a DomainCertsContext
+     *
+     * @param string $domainSid Unique string used to identify the domain that this certificate should be associated with.
+     */
+    public function getContext(
+        string $domainSid
+        
+    ): DomainCertsContext
+    {
+        return new DomainCertsContext(
+            $this->version,
+            $domainSid
+        );
+    }
 
-	/**
-	 * Constructs a DomainCertsContext
-	 *
-	 * @param string $domainSid Unique string used to identify the domain that this certificate should be associated with.
-	 */
-	public function getContext(
-		string $domainSid
-	) : DomainCertsContext
-	{
-		return new DomainCertsContext(
-			$this->version,
-			$domainSid
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Messaging.V1.DomainCertsList]';
+    }
 }

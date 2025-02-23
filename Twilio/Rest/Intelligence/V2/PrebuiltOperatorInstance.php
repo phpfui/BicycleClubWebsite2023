@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Intelligence\V2;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $accountSid
@@ -38,101 +40,99 @@ use Twilio\Version;
  */
 class PrebuiltOperatorInstance extends InstanceResource
 {
-	/**
-	 * Initialize the PrebuiltOperatorInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $sid A 34 character string that uniquely identifies this Pre-built Operator.
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the PrebuiltOperatorInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid A 34 character string that uniquely identifies this Pre-built Operator.
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'sid' => Values::array_get($payload, 'sid'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'description' => Values::array_get($payload, 'description'),
-			'author' => Values::array_get($payload, 'author'),
-			'operatorType' => Values::array_get($payload, 'operator_type'),
-			'version' => Values::array_get($payload, 'version'),
-			'availability' => Values::array_get($payload, 'availability'),
-			'config' => Values::array_get($payload, 'config'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'description' => Values::array_get($payload, 'description'),
+            'author' => Values::array_get($payload, 'author'),
+            'operatorType' => Values::array_get($payload, 'operator_type'),
+            'version' => Values::array_get($payload, 'version'),
+            'availability' => Values::array_get($payload, 'availability'),
+            'config' => Values::array_get($payload, 'config'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return PrebuiltOperatorContext Context for this PrebuiltOperatorInstance
+     */
+    protected function proxy(): PrebuiltOperatorContext
+    {
+        if (!$this->context) {
+            $this->context = new PrebuiltOperatorContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the PrebuiltOperatorInstance
+     *
+     * @return PrebuiltOperatorInstance Fetched PrebuiltOperatorInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): PrebuiltOperatorInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.Intelligence.V2.PrebuiltOperatorInstance ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the PrebuiltOperatorInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PrebuiltOperatorInstance Fetched PrebuiltOperatorInstance
-	 */
-	public function fetch() : PrebuiltOperatorInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return PrebuiltOperatorContext Context for this PrebuiltOperatorInstance
-	 */
-	protected function proxy() : PrebuiltOperatorContext
-	{
-		if (! $this->context) {
-			$this->context = new PrebuiltOperatorContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Intelligence.V2.PrebuiltOperatorInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

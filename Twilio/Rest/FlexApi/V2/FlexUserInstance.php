@@ -14,14 +14,16 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\FlexApi\V2;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $accountSid
@@ -45,122 +47,120 @@ use Twilio\Version;
  */
 class FlexUserInstance extends InstanceResource
 {
-	/**
-	 * Initialize the FlexUserInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $instanceSid The unique ID created by Twilio to identify a Flex instance.
-	 * @param string $flexUserSid The unique id for the flex user to be retrieved.
-	 */
-	public function __construct(Version $version, array $payload, ?string $instanceSid = null, ?string $flexUserSid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the FlexUserInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $instanceSid The unique ID created by Twilio to identify a Flex instance.
+     * @param string $flexUserSid The unique id for the flex user to be retrieved.
+     */
+    public function __construct(Version $version, array $payload, string $instanceSid = null, string $flexUserSid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'instanceSid' => Values::array_get($payload, 'instance_sid'),
-			'userSid' => Values::array_get($payload, 'user_sid'),
-			'flexUserSid' => Values::array_get($payload, 'flex_user_sid'),
-			'workerSid' => Values::array_get($payload, 'worker_sid'),
-			'workspaceSid' => Values::array_get($payload, 'workspace_sid'),
-			'flexTeamSid' => Values::array_get($payload, 'flex_team_sid'),
-			'firstName' => Values::array_get($payload, 'first_name'),
-			'lastName' => Values::array_get($payload, 'last_name'),
-			'username' => Values::array_get($payload, 'username'),
-			'email' => Values::array_get($payload, 'email'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'locale' => Values::array_get($payload, 'locale'),
-			'roles' => Values::array_get($payload, 'roles'),
-			'createdDate' => Deserialize::dateTime(Values::array_get($payload, 'created_date')),
-			'updatedDate' => Deserialize::dateTime(Values::array_get($payload, 'updated_date')),
-			'version' => Values::array_get($payload, 'version'),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'instanceSid' => Values::array_get($payload, 'instance_sid'),
+            'userSid' => Values::array_get($payload, 'user_sid'),
+            'flexUserSid' => Values::array_get($payload, 'flex_user_sid'),
+            'workerSid' => Values::array_get($payload, 'worker_sid'),
+            'workspaceSid' => Values::array_get($payload, 'workspace_sid'),
+            'flexTeamSid' => Values::array_get($payload, 'flex_team_sid'),
+            'firstName' => Values::array_get($payload, 'first_name'),
+            'lastName' => Values::array_get($payload, 'last_name'),
+            'username' => Values::array_get($payload, 'username'),
+            'email' => Values::array_get($payload, 'email'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'locale' => Values::array_get($payload, 'locale'),
+            'roles' => Values::array_get($payload, 'roles'),
+            'createdDate' => Deserialize::dateTime(Values::array_get($payload, 'created_date')),
+            'updatedDate' => Deserialize::dateTime(Values::array_get($payload, 'updated_date')),
+            'version' => Values::array_get($payload, 'version'),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['instanceSid' => $instanceSid ?: $this->properties['instanceSid'], 'flexUserSid' => $flexUserSid ?: $this->properties['flexUserSid'], ];
-	}
+        $this->solution = ['instanceSid' => $instanceSid ?: $this->properties['instanceSid'], 'flexUserSid' => $flexUserSid ?: $this->properties['flexUserSid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return FlexUserContext Context for this FlexUserInstance
+     */
+    protected function proxy(): FlexUserContext
+    {
+        if (!$this->context) {
+            $this->context = new FlexUserContext(
+                $this->version,
+                $this->solution['instanceSid'],
+                $this->solution['flexUserSid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the FlexUserInstance
+     *
+     * @return FlexUserInstance Fetched FlexUserInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): FlexUserInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Update the FlexUserInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return FlexUserInstance Updated FlexUserInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): FlexUserInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->update($options);
+    }
 
-		return '[Twilio.FlexApi.V2.FlexUserInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-	/**
-	 * Fetch the FlexUserInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return FlexUserInstance Fetched FlexUserInstance
-	 */
-	public function fetch() : FlexUserInstance
-	{
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->proxy()->fetch();
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Update the FlexUserInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return FlexUserInstance Updated FlexUserInstance
-	 */
-	public function update(array $options = []) : FlexUserInstance
-	{
-
-		return $this->proxy()->update($options);
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return FlexUserContext Context for this FlexUserInstance
-	 */
-	protected function proxy() : FlexUserContext
-	{
-		if (! $this->context) {
-			$this->context = new FlexUserContext(
-				$this->version,
-				$this->solution['instanceSid'],
-				$this->solution['flexUserSid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.FlexApi.V2.FlexUserInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

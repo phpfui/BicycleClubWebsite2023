@@ -21,67 +21,70 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class BulkHostedNumberOrderList extends ListResource
-	{
-	/**
-	 * Construct the BulkHostedNumberOrderList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the BulkHostedNumberOrderList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/HostedNumber/Orders/Bulk';
-	}
+        $this->uri = '/HostedNumber/Orders/Bulk';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Numbers.V2.BulkHostedNumberOrderList]';
-	}
+    /**
+     * Create the BulkHostedNumberOrderInstance
+     *
+     * @return BulkHostedNumberOrderInstance Created BulkHostedNumberOrderInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(): BulkHostedNumberOrderInstance
+    {
 
-	/**
-	 * Create the BulkHostedNumberOrderInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return BulkHostedNumberOrderInstance Created BulkHostedNumberOrderInstance
-	 */
-	public function create() : BulkHostedNumberOrderInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $data = $body->toArray();
+        $headers['Content-Type'] = 'application/json';
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$data = $body->toArray();
-		$headers['Content-Type'] = 'application/json';
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return new BulkHostedNumberOrderInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new BulkHostedNumberOrderInstance(
-			$this->version,
-			$payload
-		);
-	}
 
-	/**
-	 * Constructs a BulkHostedNumberOrderContext
-	 *
-	 * @param string $bulkHostingSid A 34 character string that uniquely identifies this BulkHostedNumberOrder.
-	 */
-	public function getContext(
-		string $bulkHostingSid
-	) : BulkHostedNumberOrderContext
-	{
-		return new BulkHostedNumberOrderContext(
-			$this->version,
-			$bulkHostingSid
-		);
-	}
+    /**
+     * Constructs a BulkHostedNumberOrderContext
+     *
+     * @param string $bulkHostingSid A 34 character string that uniquely identifies this BulkHostedNumberOrder.
+     */
+    public function getContext(
+        string $bulkHostingSid
+        
+    ): BulkHostedNumberOrderContext
+    {
+        return new BulkHostedNumberOrderContext(
+            $this->version,
+            $bulkHostingSid
+        );
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Numbers.V2.BulkHostedNumberOrderList]';
+    }
 }

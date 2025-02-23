@@ -19,173 +19,181 @@ namespace Twilio\Rest\Marketplace\V1;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Serialize;
+
 
 class InstalledAddOnList extends ListResource
-	{
-	/**
-	 * Construct the InstalledAddOnList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the InstalledAddOnList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/InstalledAddOns';
-	}
+        $this->uri = '/InstalledAddOns';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Marketplace.V1.InstalledAddOnList]';
-	}
+    /**
+     * Create the InstalledAddOnInstance
+     *
+     * @param string $availableAddOnSid The SID of the AvaliableAddOn to install.
+     * @param bool $acceptTermsOfService Whether the Terms of Service were accepted.
+     * @param array|Options $options Optional Arguments
+     * @return InstalledAddOnInstance Created InstalledAddOnInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $availableAddOnSid, bool $acceptTermsOfService, array $options = []): InstalledAddOnInstance
+    {
 
-	/**
-	 * Create the InstalledAddOnInstance
-	 *
-	 * @param string $availableAddOnSid The SID of the AvaliableAddOn to install.
-	 * @param bool $acceptTermsOfService Whether the Terms of Service were accepted.
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InstalledAddOnInstance Created InstalledAddOnInstance
-	 */
-	public function create(string $availableAddOnSid, bool $acceptTermsOfService, array $options = []) : InstalledAddOnInstance
-	{
+        $options = new Values($options);
 
-		$options = new Values($options);
+        $data = Values::of([
+            'AvailableAddOnSid' =>
+                $availableAddOnSid,
+            'AcceptTermsOfService' =>
+                Serialize::booleanToString($acceptTermsOfService),
+            'Configuration' =>
+                Serialize::jsonObject($options['configuration']),
+            'UniqueName' =>
+                $options['uniqueName'],
+        ]);
 
-		$data = Values::of([
-			'AvailableAddOnSid' => $availableAddOnSid,
-			'AcceptTermsOfService' => Serialize::booleanToString($acceptTermsOfService),
-			'Configuration' => Serialize::jsonObject($options['configuration']),
-			'UniqueName' => $options['uniqueName'],
-		]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return new InstalledAddOnInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new InstalledAddOnInstance(
-			$this->version,
-			$payload
-		);
-	}
 
-	/**
-	 * Constructs a InstalledAddOnContext
-	 *
-	 * @param string $sid The SID of the InstalledAddOn resource to delete.
-	 */
-	public function getContext(
-		string $sid
-	) : InstalledAddOnContext
-	{
-		return new InstalledAddOnContext(
-			$this->version,
-			$sid
-		);
-	}
+    /**
+     * Reads InstalledAddOnInstance records from the API as a list.
+     * Unlike stream(), this operation is eager and will load `limit` records into
+     * memory before returning.
+     *
+     * @param int $limit Upper limit for the number of records to return. read()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, read()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return InstalledAddOnInstance[] Array of results
+     */
+    public function read(int $limit = null, $pageSize = null): array
+    {
+        return \iterator_to_array($this->stream($limit, $pageSize), false);
+    }
 
-	/**
-	 * Retrieve a specific page of InstalledAddOnInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param string $targetUrl API-generated URL for the requested results page
-	 * @return InstalledAddOnPage Page of InstalledAddOnInstance
-	 */
-	public function getPage(string $targetUrl) : InstalledAddOnPage
-	{
-		$response = $this->version->getDomain()->getClient()->request(
-			'GET',
-			$targetUrl
-		);
+    /**
+     * Streams InstalledAddOnInstance records from the API as a generator stream.
+     * This operation lazily loads records as efficiently as possible until the
+     * limit
+     * is reached.
+     * The results are returned as a generator, so this operation is memory
+     * efficient.
+     *
+     * @param int $limit Upper limit for the number of records to return. stream()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, stream()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return Stream stream of results
+     */
+    public function stream(int $limit = null, $pageSize = null): Stream
+    {
+        $limits = $this->version->readLimits($limit, $pageSize);
 
-		return new InstalledAddOnPage($this->version, $response, $this->solution);
-	}
+        $page = $this->page($limits['pageSize']);
 
-	/**
-	 * Retrieve a single page of InstalledAddOnInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param mixed $pageSize Number of records to return, defaults to 50
-	 * @param string $pageToken PageToken provided by the API
-	 * @param mixed $pageNumber Page Number, this value is simply for client state
-	 * @return InstalledAddOnPage Page of InstalledAddOnInstance
-	 */
-	public function page(
-		$pageSize = Values::NONE,
-		string $pageToken = Values::NONE,
-		$pageNumber = Values::NONE
-	) : InstalledAddOnPage
-	{
+        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+    }
 
-		$params = Values::of([
-			'PageToken' => $pageToken,
-			'Page' => $pageNumber,
-			'PageSize' => $pageSize,
-		]);
+    /**
+     * Retrieve a single page of InstalledAddOnInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param mixed $pageSize Number of records to return, defaults to 50
+     * @param string $pageToken PageToken provided by the API
+     * @param mixed $pageNumber Page Number, this value is simply for client state
+     * @return InstalledAddOnPage Page of InstalledAddOnInstance
+     */
+    public function page(
+        $pageSize = Values::NONE,
+        string $pageToken = Values::NONE,
+        $pageNumber = Values::NONE
+    ): InstalledAddOnPage
+    {
 
-		$response = $this->version->page('GET', $this->uri, $params);
+        $params = Values::of([
+            'PageToken' => $pageToken,
+            'Page' => $pageNumber,
+            'PageSize' => $pageSize,
+        ]);
 
-		return new InstalledAddOnPage($this->version, $response, $this->solution);
-	}
+        $response = $this->version->page('GET', $this->uri, $params);
 
-	/**
-	 * Reads InstalledAddOnInstance records from the API as a list.
-	 * Unlike stream(), this operation is eager and will load `limit` records into
-	 * memory before returning.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. read()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, read()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return InstalledAddOnInstance[] Array of results
-	 */
-	public function read(?int $limit = null, $pageSize = null) : array
-	{
-		return \iterator_to_array($this->stream($limit, $pageSize), false);
-	}
+        return new InstalledAddOnPage($this->version, $response, $this->solution);
+    }
 
-	/**
-	 * Streams InstalledAddOnInstance records from the API as a generator stream.
-	 * This operation lazily loads records as efficiently as possible until the
-	 * limit
-	 * is reached.
-	 * The results are returned as a generator, so this operation is memory
-	 * efficient.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. stream()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, stream()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return Stream stream of results
-	 */
-	public function stream(?int $limit = null, $pageSize = null) : Stream
-	{
-		$limits = $this->version->readLimits($limit, $pageSize);
+    /**
+     * Retrieve a specific page of InstalledAddOnInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return InstalledAddOnPage Page of InstalledAddOnInstance
+     */
+    public function getPage(string $targetUrl): InstalledAddOnPage
+    {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
 
-		$page = $this->page($limits['pageSize']);
+        return new InstalledAddOnPage($this->version, $response, $this->solution);
+    }
 
-		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-	}
+
+    /**
+     * Constructs a InstalledAddOnContext
+     *
+     * @param string $sid The SID of the InstalledAddOn resource to delete.
+     */
+    public function getContext(
+        string $sid
+        
+    ): InstalledAddOnContext
+    {
+        return new InstalledAddOnContext(
+            $this->version,
+            $sid
+        );
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Marketplace.V1.InstalledAddOnList]';
+    }
 }

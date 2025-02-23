@@ -21,52 +21,55 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class ReferralConversionList extends ListResource
-	{
-	/**
-	 * Construct the ReferralConversionList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the ReferralConversionList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/ReferralConversion';
-	}
+        $this->uri = '/ReferralConversion';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Marketplace.V1.ReferralConversionList]';
-	}
+    /**
+     * Create the ReferralConversionInstance
+     *
+     * @param CreateReferralConversionRequest $createReferralConversionRequest
+     * @return ReferralConversionInstance Created ReferralConversionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(CreateReferralConversionRequest $createReferralConversionRequest): ReferralConversionInstance
+    {
 
-	/**
-	 * Create the ReferralConversionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ReferralConversionInstance Created ReferralConversionInstance
-	 */
-	public function create(CreateReferralConversionRequest $createReferralConversionRequest) : ReferralConversionInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $data = $createReferralConversionRequest->toArray();
+        $headers['Content-Type'] = 'application/json';
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$data = $createReferralConversionRequest->toArray();
-		$headers['Content-Type'] = 'application/json';
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return new ReferralConversionInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new ReferralConversionInstance(
-			$this->version,
-			$payload
-		);
-	}
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Marketplace.V1.ReferralConversionList]';
+    }
 }

@@ -23,172 +23,179 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class DestinationAlphaSenderList extends ListResource
-	{
-	/**
-	 * Construct the DestinationAlphaSenderList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the resource under.
-	 */
-	public function __construct(
-		Version $version,
-		string $serviceSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the DestinationAlphaSenderList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the resource under.
+     */
+    public function __construct(
+        Version $version,
+        string $serviceSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        
+        ];
 
-		];
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/DestinationAlphaSenders';
+    }
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/DestinationAlphaSenders';
-	}
+    /**
+     * Create the DestinationAlphaSenderInstance
+     *
+     * @param string $alphaSender The Alphanumeric Sender ID string. Can be up to 11 characters long. Valid characters are A-Z, a-z, 0-9, space, hyphen `-`, plus `+`, underscore `_` and ampersand `&`. This value cannot contain only numbers.
+     * @param array|Options $options Optional Arguments
+     * @return DestinationAlphaSenderInstance Created DestinationAlphaSenderInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $alphaSender, array $options = []): DestinationAlphaSenderInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Messaging.V1.DestinationAlphaSenderList]';
-	}
+        $options = new Values($options);
 
-	/**
-	 * Create the DestinationAlphaSenderInstance
-	 *
-	 * @param string $alphaSender The Alphanumeric Sender ID string. Can be up to 11 characters long. Valid characters are A-Z, a-z, 0-9, space, hyphen `-`, plus `+`, underscore `_` and ampersand `&`. This value cannot contain only numbers.
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return DestinationAlphaSenderInstance Created DestinationAlphaSenderInstance
-	 */
-	public function create(string $alphaSender, array $options = []) : DestinationAlphaSenderInstance
-	{
+        $data = Values::of([
+            'AlphaSender' =>
+                $alphaSender,
+            'IsoCountryCode' =>
+                $options['isoCountryCode'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'AlphaSender' => $alphaSender,
-			'IsoCountryCode' => $options['isoCountryCode'],
-		]);
+        return new DestinationAlphaSenderInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		return new DestinationAlphaSenderInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid']
-		);
-	}
+    /**
+     * Reads DestinationAlphaSenderInstance records from the API as a list.
+     * Unlike stream(), this operation is eager and will load `limit` records into
+     * memory before returning.
+     *
+     * @param int $limit Upper limit for the number of records to return. read()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, read()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return DestinationAlphaSenderInstance[] Array of results
+     */
+    public function read(int $limit = null, $pageSize = null): array
+    {
+        return \iterator_to_array($this->stream($limit, $pageSize), false);
+    }
 
-	/**
-	 * Constructs a DestinationAlphaSenderContext
-	 *
-	 * @param string $sid The SID of the AlphaSender resource to delete.
-	 */
-	public function getContext(
-		string $sid
-	) : DestinationAlphaSenderContext
-	{
-		return new DestinationAlphaSenderContext(
-			$this->version,
-			$this->solution['serviceSid'],
-			$sid
-		);
-	}
+    /**
+     * Streams DestinationAlphaSenderInstance records from the API as a generator stream.
+     * This operation lazily loads records as efficiently as possible until the
+     * limit
+     * is reached.
+     * The results are returned as a generator, so this operation is memory
+     * efficient.
+     *
+     * @param int $limit Upper limit for the number of records to return. stream()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, stream()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return Stream stream of results
+     */
+    public function stream(int $limit = null, $pageSize = null): Stream
+    {
+        $limits = $this->version->readLimits($limit, $pageSize);
 
-	/**
-	 * Retrieve a specific page of DestinationAlphaSenderInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param string $targetUrl API-generated URL for the requested results page
-	 * @return DestinationAlphaSenderPage Page of DestinationAlphaSenderInstance
-	 */
-	public function getPage(string $targetUrl) : DestinationAlphaSenderPage
-	{
-		$response = $this->version->getDomain()->getClient()->request(
-			'GET',
-			$targetUrl
-		);
+        $page = $this->page($limits['pageSize']);
 
-		return new DestinationAlphaSenderPage($this->version, $response, $this->solution);
-	}
+        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+    }
 
-	/**
-	 * Retrieve a single page of DestinationAlphaSenderInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param mixed $pageSize Number of records to return, defaults to 50
-	 * @param string $pageToken PageToken provided by the API
-	 * @param mixed $pageNumber Page Number, this value is simply for client state
-	 * @return DestinationAlphaSenderPage Page of DestinationAlphaSenderInstance
-	 */
-	public function page(
-		$pageSize = Values::NONE,
-		string $pageToken = Values::NONE,
-		$pageNumber = Values::NONE
-	) : DestinationAlphaSenderPage
-	{
+    /**
+     * Retrieve a single page of DestinationAlphaSenderInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param mixed $pageSize Number of records to return, defaults to 50
+     * @param string $pageToken PageToken provided by the API
+     * @param mixed $pageNumber Page Number, this value is simply for client state
+     * @return DestinationAlphaSenderPage Page of DestinationAlphaSenderInstance
+     */
+    public function page(
+        $pageSize = Values::NONE,
+        string $pageToken = Values::NONE,
+        $pageNumber = Values::NONE
+    ): DestinationAlphaSenderPage
+    {
 
-		$params = Values::of([
-			'PageToken' => $pageToken,
-			'Page' => $pageNumber,
-			'PageSize' => $pageSize,
-		]);
+        $params = Values::of([
+            'PageToken' => $pageToken,
+            'Page' => $pageNumber,
+            'PageSize' => $pageSize,
+        ]);
 
-		$response = $this->version->page('GET', $this->uri, $params);
+        $response = $this->version->page('GET', $this->uri, $params);
 
-		return new DestinationAlphaSenderPage($this->version, $response, $this->solution);
-	}
+        return new DestinationAlphaSenderPage($this->version, $response, $this->solution);
+    }
 
-	/**
-	 * Reads DestinationAlphaSenderInstance records from the API as a list.
-	 * Unlike stream(), this operation is eager and will load `limit` records into
-	 * memory before returning.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. read()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, read()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return DestinationAlphaSenderInstance[] Array of results
-	 */
-	public function read(?int $limit = null, $pageSize = null) : array
-	{
-		return \iterator_to_array($this->stream($limit, $pageSize), false);
-	}
+    /**
+     * Retrieve a specific page of DestinationAlphaSenderInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return DestinationAlphaSenderPage Page of DestinationAlphaSenderInstance
+     */
+    public function getPage(string $targetUrl): DestinationAlphaSenderPage
+    {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
 
-	/**
-	 * Streams DestinationAlphaSenderInstance records from the API as a generator stream.
-	 * This operation lazily loads records as efficiently as possible until the
-	 * limit
-	 * is reached.
-	 * The results are returned as a generator, so this operation is memory
-	 * efficient.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. stream()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, stream()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return Stream stream of results
-	 */
-	public function stream(?int $limit = null, $pageSize = null) : Stream
-	{
-		$limits = $this->version->readLimits($limit, $pageSize);
+        return new DestinationAlphaSenderPage($this->version, $response, $this->solution);
+    }
 
-		$page = $this->page($limits['pageSize']);
 
-		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-	}
+    /**
+     * Constructs a DestinationAlphaSenderContext
+     *
+     * @param string $sid The SID of the AlphaSender resource to delete.
+     */
+    public function getContext(
+        string $sid
+        
+    ): DestinationAlphaSenderContext
+    {
+        return new DestinationAlphaSenderContext(
+            $this->version,
+            $this->solution['serviceSid'],
+            $sid
+        );
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Messaging.V1.DestinationAlphaSenderList]';
+    }
 }

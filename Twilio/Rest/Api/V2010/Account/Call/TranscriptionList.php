@@ -19,103 +19,122 @@ namespace Twilio\Rest\Api\V2010\Account\Call;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Serialize;
+
 
 class TranscriptionList extends ListResource
-	{
-	/**
-	 * Construct the TranscriptionList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created this Transcription resource.
-	 * @param string $callSid The SID of the [Call](https://www.twilio.com/docs/voice/api/call-resource) the Transcription resource is associated with.
-	 */
-	public function __construct(
-		Version $version,
-		string $accountSid,
-		string $callSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the TranscriptionList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created this Transcription resource.
+     * @param string $callSid The SID of the [Call](https://www.twilio.com/docs/voice/api/call-resource) the Transcription resource is associated with.
+     */
+    public function __construct(
+        Version $version,
+        string $accountSid,
+        string $callSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        
+        'callSid' =>
+            $callSid,
+        
+        ];
 
-			'callSid' => $callSid,
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+        .'/Calls/' . \rawurlencode($callSid)
+        .'/Transcriptions.json';
+    }
 
-		];
+    /**
+     * Create the TranscriptionInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return TranscriptionInstance Created TranscriptionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(array $options = []): TranscriptionInstance
+    {
 
-		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		. '/Calls/' . \rawurlencode($callSid)
-		. '/Transcriptions.json';
-	}
+        $options = new Values($options);
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Api.V2010.TranscriptionList]';
-	}
+        $data = Values::of([
+            'Name' =>
+                $options['name'],
+            'Track' =>
+                $options['track'],
+            'StatusCallbackUrl' =>
+                $options['statusCallbackUrl'],
+            'StatusCallbackMethod' =>
+                $options['statusCallbackMethod'],
+            'InboundTrackLabel' =>
+                $options['inboundTrackLabel'],
+            'OutboundTrackLabel' =>
+                $options['outboundTrackLabel'],
+            'PartialResults' =>
+                Serialize::booleanToString($options['partialResults']),
+            'LanguageCode' =>
+                $options['languageCode'],
+            'TranscriptionEngine' =>
+                $options['transcriptionEngine'],
+            'ProfanityFilter' =>
+                Serialize::booleanToString($options['profanityFilter']),
+            'SpeechModel' =>
+                $options['speechModel'],
+            'Hints' =>
+                $options['hints'],
+            'EnableAutomaticPunctuation' =>
+                Serialize::booleanToString($options['enableAutomaticPunctuation']),
+            'IntelligenceService' =>
+                $options['intelligenceService'],
+        ]);
 
-	/**
-	 * Create the TranscriptionInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return TranscriptionInstance Created TranscriptionInstance
-	 */
-	public function create(array $options = []) : TranscriptionInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$options = new Values($options);
+        return new TranscriptionInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['callSid']
+        );
+    }
 
-		$data = Values::of([
-			'Name' => $options['name'],
-			'Track' => $options['track'],
-			'StatusCallbackUrl' => $options['statusCallbackUrl'],
-			'StatusCallbackMethod' => $options['statusCallbackMethod'],
-			'InboundTrackLabel' => $options['inboundTrackLabel'],
-			'OutboundTrackLabel' => $options['outboundTrackLabel'],
-			'PartialResults' => Serialize::booleanToString($options['partialResults']),
-			'LanguageCode' => $options['languageCode'],
-			'TranscriptionEngine' => $options['transcriptionEngine'],
-			'ProfanityFilter' => Serialize::booleanToString($options['profanityFilter']),
-			'SpeechModel' => $options['speechModel'],
-			'Hints' => $options['hints'],
-			'EnableAutomaticPunctuation' => Serialize::booleanToString($options['enableAutomaticPunctuation']),
-			'IntelligenceService' => $options['intelligenceService'],
-		]);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+    /**
+     * Constructs a TranscriptionContext
+     *
+     * @param string $sid The SID of the Transcription resource, or the `name` used when creating the resource
+     */
+    public function getContext(
+        string $sid
+        
+    ): TranscriptionContext
+    {
+        return new TranscriptionContext(
+            $this->version,
+            $this->solution['accountSid'],
+            $this->solution['callSid'],
+            $sid
+        );
+    }
 
-		return new TranscriptionInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['callSid']
-		);
-	}
-
-	/**
-	 * Constructs a TranscriptionContext
-	 *
-	 * @param string $sid The SID of the Transcription resource, or the `name` used when creating the resource
-	 */
-	public function getContext(
-		string $sid
-	) : TranscriptionContext
-	{
-		return new TranscriptionContext(
-			$this->version,
-			$this->solution['accountSid'],
-			$this->solution['callSid'],
-			$sid
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Api.V2010.TranscriptionList]';
+    }
 }

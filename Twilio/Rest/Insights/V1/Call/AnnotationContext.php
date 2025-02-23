@@ -14,102 +14,112 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Insights\V1\Call;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class AnnotationContext extends InstanceContext
-	{
-	/**
-	 * Initialize the AnnotationContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $callSid The unique SID identifier of the Call.
-	 */
-	public function __construct(
-		Version $version,
-		$callSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the AnnotationContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $callSid The unique SID identifier of the Call.
+     */
+    public function __construct(
+        Version $version,
+        $callSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'callSid' => $callSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'callSid' =>
+            $callSid,
+        ];
 
-		$this->uri = '/Voice/' . \rawurlencode($callSid)
-		. '/Annotation';
-	}
+        $this->uri = '/Voice/' . \rawurlencode($callSid)
+        .'/Annotation';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the AnnotationInstance
+     *
+     * @return AnnotationInstance Fetched AnnotationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): AnnotationInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Insights.V1.AnnotationContext ' . \implode(' ', $context) . ']';
-	}
+        return new AnnotationInstance(
+            $this->version,
+            $payload,
+            $this->solution['callSid']
+        );
+    }
 
-	/**
-	 * Fetch the AnnotationInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AnnotationInstance Fetched AnnotationInstance
-	 */
-	public function fetch() : AnnotationInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the AnnotationInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return AnnotationInstance Updated AnnotationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): AnnotationInstance
+    {
 
-		return new AnnotationInstance(
-			$this->version,
-			$payload,
-			$this->solution['callSid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the AnnotationInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AnnotationInstance Updated AnnotationInstance
-	 */
-	public function update(array $options = []) : AnnotationInstance
-	{
+        $data = Values::of([
+            'AnsweredBy' =>
+                $options['answeredBy'],
+            'ConnectivityIssue' =>
+                $options['connectivityIssue'],
+            'QualityIssues' =>
+                $options['qualityIssues'],
+            'Spam' =>
+                Serialize::booleanToString($options['spam']),
+            'CallScore' =>
+                $options['callScore'],
+            'Comment' =>
+                $options['comment'],
+            'Incident' =>
+                $options['incident'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'AnsweredBy' => $options['answeredBy'],
-			'ConnectivityIssue' => $options['connectivityIssue'],
-			'QualityIssues' => $options['qualityIssues'],
-			'Spam' => Serialize::booleanToString($options['spam']),
-			'CallScore' => $options['callScore'],
-			'Comment' => $options['comment'],
-			'Incident' => $options['incident'],
-		]);
+        return new AnnotationInstance(
+            $this->version,
+            $payload,
+            $this->solution['callSid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new AnnotationInstance(
-			$this->version,
-			$payload,
-			$this->solution['callSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Insights.V1.AnnotationContext ' . \implode(' ', $context) . ']';
+    }
 }

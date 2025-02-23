@@ -14,68 +14,70 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Supersim\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class SmsCommandContext extends InstanceContext
-	{
-	/**
-	 * Initialize the SmsCommandContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The SID of the SMS Command resource to fetch.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the SmsCommandContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The SID of the SMS Command resource to fetch.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/SmsCommands/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/SmsCommands/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the SmsCommandInstance
+     *
+     * @return SmsCommandInstance Fetched SmsCommandInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SmsCommandInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Supersim.V1.SmsCommandContext ' . \implode(' ', $context) . ']';
-	}
+        return new SmsCommandInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the SmsCommandInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SmsCommandInstance Fetched SmsCommandInstance
-	 */
-	public function fetch() : SmsCommandInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new SmsCommandInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Supersim.V1.SmsCommandContext ' . \implode(' ', $context) . ']';
+    }
 }

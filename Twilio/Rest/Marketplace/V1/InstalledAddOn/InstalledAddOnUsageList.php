@@ -21,58 +21,62 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class InstalledAddOnUsageList extends ListResource
-	{
-	/**
-	 * Construct the InstalledAddOnUsageList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $installedAddOnSid Customer Installation SID to report usage on.
-	 */
-	public function __construct(
-		Version $version,
-		string $installedAddOnSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the InstalledAddOnUsageList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $installedAddOnSid Customer Installation SID to report usage on.
+     */
+    public function __construct(
+        Version $version,
+        string $installedAddOnSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'installedAddOnSid' => $installedAddOnSid,
+        // Path Solution
+        $this->solution = [
+        'installedAddOnSid' =>
+            $installedAddOnSid,
+        
+        ];
 
-		];
+        $this->uri = '/InstalledAddOns/' . \rawurlencode($installedAddOnSid)
+        .'/Usage';
+    }
 
-		$this->uri = '/InstalledAddOns/' . \rawurlencode($installedAddOnSid)
-		. '/Usage';
-	}
+    /**
+     * Create the InstalledAddOnUsageInstance
+     *
+     * @param MarketplaceV1InstalledAddOnInstalledAddOnUsage $marketplaceV1InstalledAddOnInstalledAddOnUsage
+     * @return InstalledAddOnUsageInstance Created InstalledAddOnUsageInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(MarketplaceV1InstalledAddOnInstalledAddOnUsage $marketplaceV1InstalledAddOnInstalledAddOnUsage): InstalledAddOnUsageInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Marketplace.V1.InstalledAddOnUsageList]';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $data = $marketplaceV1InstalledAddOnInstalledAddOnUsage->toArray();
+        $headers['Content-Type'] = 'application/json';
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-	/**
-	 * Create the InstalledAddOnUsageInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InstalledAddOnUsageInstance Created InstalledAddOnUsageInstance
-	 */
-	public function create(MarketplaceV1InstalledAddOnInstalledAddOnUsage $marketplaceV1InstalledAddOnInstalledAddOnUsage) : InstalledAddOnUsageInstance
-	{
+        return new InstalledAddOnUsageInstance(
+            $this->version,
+            $payload,
+            $this->solution['installedAddOnSid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$data = $marketplaceV1InstalledAddOnInstalledAddOnUsage->toArray();
-		$headers['Content-Type'] = 'application/json';
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		return new InstalledAddOnUsageInstance(
-			$this->version,
-			$payload,
-			$this->solution['installedAddOnSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Marketplace.V1.InstalledAddOnUsageList]';
+    }
 }

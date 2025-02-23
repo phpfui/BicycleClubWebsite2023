@@ -21,61 +21,65 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class ReplaceItemsList extends ListResource
-	{
-	/**
-	 * Construct the ReplaceItemsList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $bundleSid The unique string that identifies the Bundle where the item assignments are going to be replaced.
-	 */
-	public function __construct(
-		Version $version,
-		string $bundleSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the ReplaceItemsList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $bundleSid The unique string that identifies the Bundle where the item assignments are going to be replaced.
+     */
+    public function __construct(
+        Version $version,
+        string $bundleSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'bundleSid' => $bundleSid,
+        // Path Solution
+        $this->solution = [
+        'bundleSid' =>
+            $bundleSid,
+        
+        ];
 
-		];
+        $this->uri = '/RegulatoryCompliance/Bundles/' . \rawurlencode($bundleSid)
+        .'/ReplaceItems';
+    }
 
-		$this->uri = '/RegulatoryCompliance/Bundles/' . \rawurlencode($bundleSid)
-		. '/ReplaceItems';
-	}
+    /**
+     * Create the ReplaceItemsInstance
+     *
+     * @param string $fromBundleSid The source bundle sid to copy the item assignments from.
+     * @return ReplaceItemsInstance Created ReplaceItemsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $fromBundleSid): ReplaceItemsInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Numbers.V2.ReplaceItemsList]';
-	}
+        $data = Values::of([
+            'FromBundleSid' =>
+                $fromBundleSid,
+        ]);
 
-	/**
-	 * Create the ReplaceItemsInstance
-	 *
-	 * @param string $fromBundleSid The source bundle sid to copy the item assignments from.
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ReplaceItemsInstance Created ReplaceItemsInstance
-	 */
-	public function create(string $fromBundleSid) : ReplaceItemsInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'FromBundleSid' => $fromBundleSid,
-		]);
+        return new ReplaceItemsInstance(
+            $this->version,
+            $payload,
+            $this->solution['bundleSid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		return new ReplaceItemsInstance(
-			$this->version,
-			$payload,
-			$this->solution['bundleSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Numbers.V2.ReplaceItemsList]';
+    }
 }

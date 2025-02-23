@@ -17,107 +17,106 @@
 namespace Twilio\Rest\Bulkexports\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Bulkexports\V1\Export\JobList;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Bulkexports\V1\Export\JobList;
+
 
 /**
  * @property JobList $jobs
  * @method \Twilio\Rest\Bulkexports\V1\Export\JobContext jobs(string $jobSid)
  */
 class ExportList extends ListResource
-	{
-	protected $_jobs = null;
+    {
+    protected $_jobs = null;
 
-	/**
-	 * Construct the ExportList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    /**
+     * Construct the ExportList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Constructs a ExportContext
+     *
+     * @param string $resourceType The type of communication – Messages, Calls, Conferences, and Participants
+     */
+    public function getContext(
+        string $resourceType
+        
+    ): ExportContext
+    {
+        return new ExportContext(
+            $this->version,
+            $resourceType
+        );
+    }
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+    /**
+     * Access the jobs
+     */
+    protected function getJobs(): JobList
+    {
+        if (!$this->_jobs) {
+            $this->_jobs = new JobList(
+                $this->version
+            );
+        }
+        return $this->_jobs;
+    }
 
-		throw new TwilioException('Resource does not have a context');
-	}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return \Twilio\ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name)
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return \Twilio\ListResource The requested subresource
-	 */
-	public function __get(string $name)
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Bulkexports.V1.ExportList]';
-	}
-
-	/**
-	 * Constructs a ExportContext
-	 *
-	 * @param string $resourceType The type of communication – Messages, Calls, Conferences, and Participants
-	 */
-	public function getContext(
-		string $resourceType
-	) : ExportContext
-	{
-		return new ExportContext(
-			$this->version,
-			$resourceType
-		);
-	}
-
-	/**
-	 * Access the jobs
-	 */
-	protected function getJobs() : JobList
-	{
-		if (! $this->_jobs) {
-			$this->_jobs = new JobList(
-				$this->version
-			);
-		}
-
-		return $this->_jobs;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Bulkexports.V1.ExportList]';
+    }
 }

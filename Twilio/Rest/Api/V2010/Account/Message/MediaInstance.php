@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Api\V2010\Account\Message;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $accountSid
@@ -33,112 +35,110 @@ use Twilio\Version;
  */
 class MediaInstance extends InstanceResource
 {
-	/**
-	 * Initialize the MediaInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that is associated with the Media resource.
-	 * @param string $messageSid The SID of the Message resource that is associated with the Media resource.
-	 * @param string $sid The unique identifier of the to-be-deleted Media resource.
-	 */
-	public function __construct(Version $version, array $payload, string $accountSid, string $messageSid, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the MediaInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that is associated with the Media resource.
+     * @param string $messageSid The SID of the Message resource that is associated with the Media resource.
+     * @param string $sid The unique identifier of the to-be-deleted Media resource.
+     */
+    public function __construct(Version $version, array $payload, string $accountSid, string $messageSid, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'contentType' => Values::array_get($payload, 'content_type'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'parentSid' => Values::array_get($payload, 'parent_sid'),
-			'sid' => Values::array_get($payload, 'sid'),
-			'uri' => Values::array_get($payload, 'uri'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'contentType' => Values::array_get($payload, 'content_type'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'parentSid' => Values::array_get($payload, 'parent_sid'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'uri' => Values::array_get($payload, 'uri'),
+        ];
 
-		$this->solution = ['accountSid' => $accountSid, 'messageSid' => $messageSid, 'sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['accountSid' => $accountSid, 'messageSid' => $messageSid, 'sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return MediaContext Context for this MediaInstance
+     */
+    protected function proxy(): MediaContext
+    {
+        if (!$this->context) {
+            $this->context = new MediaContext(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['messageSid'],
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Delete the MediaInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->delete();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the MediaInstance
+     *
+     * @return MediaInstance Fetched MediaInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): MediaInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->fetch();
+    }
 
-		return '[Twilio.Api.V2010.MediaInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-	/**
-	 * Delete the MediaInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->proxy()->delete();
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the MediaInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return MediaInstance Fetched MediaInstance
-	 */
-	public function fetch() : MediaInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return MediaContext Context for this MediaInstance
-	 */
-	protected function proxy() : MediaContext
-	{
-		if (! $this->context) {
-			$this->context = new MediaContext(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['messageSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.MediaInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

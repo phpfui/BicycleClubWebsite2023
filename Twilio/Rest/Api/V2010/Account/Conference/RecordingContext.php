@@ -14,122 +14,130 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Api\V2010\Account\Conference;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class RecordingContext extends InstanceContext
-	{
-	/**
-	 * Initialize the RecordingContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Conference Recording resources to delete.
-	 * @param string $conferenceSid The Conference SID that identifies the conference associated with the recording to delete.
-	 * @param string $sid The Twilio-provided string that uniquely identifies the Conference Recording resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$accountSid,
-		$conferenceSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the RecordingContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Conference Recording resources to delete.
+     * @param string $conferenceSid The Conference SID that identifies the conference associated with the recording to delete.
+     * @param string $sid The Twilio-provided string that uniquely identifies the Conference Recording resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $accountSid,
+        $conferenceSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
-			'conferenceSid' => $conferenceSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        'conferenceSid' =>
+            $conferenceSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		. '/Conferences/' . \rawurlencode($conferenceSid)
-		. '/Recordings/' . \rawurlencode($sid)
-		. '.json';
-	}
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+        .'/Conferences/' . \rawurlencode($conferenceSid)
+        .'/Recordings/' . \rawurlencode($sid)
+        .'.json';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the RecordingInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Api.V2010.RecordingContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the RecordingInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the RecordingInstance
+     *
+     * @return RecordingInstance Fetched RecordingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): RecordingInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new RecordingInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['conferenceSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the RecordingInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RecordingInstance Fetched RecordingInstance
-	 */
-	public function fetch() : RecordingInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the RecordingInstance
+     *
+     * @param string $status
+     * @param array|Options $options Optional Arguments
+     * @return RecordingInstance Updated RecordingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $status, array $options = []): RecordingInstance
+    {
 
-		return new RecordingInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['conferenceSid'],
-			$this->solution['sid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the RecordingInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RecordingInstance Updated RecordingInstance
-	 */
-	public function update(string $status, array $options = []) : RecordingInstance
-	{
+        $data = Values::of([
+            'Status' =>
+                $status,
+            'PauseBehavior' =>
+                $options['pauseBehavior'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'Status' => $status,
-			'PauseBehavior' => $options['pauseBehavior'],
-		]);
+        return new RecordingInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['conferenceSid'],
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new RecordingInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['conferenceSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.RecordingContext ' . \implode(' ', $context) . ']';
+    }
 }

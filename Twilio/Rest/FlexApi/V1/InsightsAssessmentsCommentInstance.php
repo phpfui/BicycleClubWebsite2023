@@ -14,12 +14,14 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+
 
 /**
  * @property string|null $accountSid
@@ -37,64 +39,64 @@ use Twilio\Version;
  */
 class InsightsAssessmentsCommentInstance extends InstanceResource
 {
-	/**
-	 * Initialize the InsightsAssessmentsCommentInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 */
-	public function __construct(Version $version, array $payload)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the InsightsAssessmentsCommentInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     */
+    public function __construct(Version $version, array $payload)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'assessmentSid' => Values::array_get($payload, 'assessment_sid'),
-			'comment' => Values::array_get($payload, 'comment'),
-			'offset' => Values::array_get($payload, 'offset'),
-			'report' => Values::array_get($payload, 'report'),
-			'weight' => Values::array_get($payload, 'weight'),
-			'agentId' => Values::array_get($payload, 'agent_id'),
-			'segmentId' => Values::array_get($payload, 'segment_id'),
-			'userName' => Values::array_get($payload, 'user_name'),
-			'userEmail' => Values::array_get($payload, 'user_email'),
-			'timestamp' => Values::array_get($payload, 'timestamp'),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'assessmentSid' => Values::array_get($payload, 'assessment_sid'),
+            'comment' => Values::array_get($payload, 'comment'),
+            'offset' => Values::array_get($payload, 'offset'),
+            'report' => Values::array_get($payload, 'report'),
+            'weight' => Values::array_get($payload, 'weight'),
+            'agentId' => Values::array_get($payload, 'agent_id'),
+            'segmentId' => Values::array_get($payload, 'segment_id'),
+            'userName' => Values::array_get($payload, 'user_name'),
+            'userEmail' => Values::array_get($payload, 'user_email'),
+            'timestamp' => Values::array_get($payload, 'timestamp'),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = [];
-	}
+        $this->solution = [];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-			return $this->{$method}();
-		}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
-
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.FlexApi.V1.InsightsAssessmentsCommentInstance]';
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.FlexApi.V1.InsightsAssessmentsCommentInstance]';
+    }
 }
+

@@ -17,15 +17,16 @@
 namespace Twilio\Rest\Numbers\V2;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Numbers\V2\RegulatoryCompliance\BundleList;
-use Twilio\Rest\Numbers\V2\RegulatoryCompliance\EndUserList;
-use Twilio\Rest\Numbers\V2\RegulatoryCompliance\EndUserTypeList;
+use Twilio\Version;
+use Twilio\InstanceContext;
 use Twilio\Rest\Numbers\V2\RegulatoryCompliance\RegulationList;
 use Twilio\Rest\Numbers\V2\RegulatoryCompliance\SupportingDocumentList;
+use Twilio\Rest\Numbers\V2\RegulatoryCompliance\BundleList;
+use Twilio\Rest\Numbers\V2\RegulatoryCompliance\EndUserTypeList;
+use Twilio\Rest\Numbers\V2\RegulatoryCompliance\EndUserList;
 use Twilio\Rest\Numbers\V2\RegulatoryCompliance\SupportingDocumentTypeList;
-use Twilio\Version;
+
 
 /**
  * @property RegulationList $regulations
@@ -42,162 +43,149 @@ use Twilio\Version;
  * @method \Twilio\Rest\Numbers\V2\RegulatoryCompliance\EndUserTypeContext endUserTypes(string $sid)
  */
 class RegulatoryComplianceList extends ListResource
-	{
-	protected $_bundles = null;
+    {
+    protected $_regulations = null;
+    protected $_supportingDocuments = null;
+    protected $_bundles = null;
+    protected $_endUserTypes = null;
+    protected $_endUsers = null;
+    protected $_supportingDocumentTypes = null;
 
-	protected $_endUsers = null;
+    /**
+     * Construct the RegulatoryComplianceList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-	protected $_endUserTypes = null;
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	protected $_regulations = null;
+    /**
+     * Access the regulations
+     */
+    protected function getRegulations(): RegulationList
+    {
+        if (!$this->_regulations) {
+            $this->_regulations = new RegulationList(
+                $this->version
+            );
+        }
+        return $this->_regulations;
+    }
 
-	protected $_supportingDocuments = null;
+    /**
+     * Access the supportingDocuments
+     */
+    protected function getSupportingDocuments(): SupportingDocumentList
+    {
+        if (!$this->_supportingDocuments) {
+            $this->_supportingDocuments = new SupportingDocumentList(
+                $this->version
+            );
+        }
+        return $this->_supportingDocuments;
+    }
 
-	protected $_supportingDocumentTypes = null;
+    /**
+     * Access the bundles
+     */
+    protected function getBundles(): BundleList
+    {
+        if (!$this->_bundles) {
+            $this->_bundles = new BundleList(
+                $this->version
+            );
+        }
+        return $this->_bundles;
+    }
 
-	/**
-	 * Construct the RegulatoryComplianceList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    /**
+     * Access the endUserTypes
+     */
+    protected function getEndUserTypes(): EndUserTypeList
+    {
+        if (!$this->_endUserTypes) {
+            $this->_endUserTypes = new EndUserTypeList(
+                $this->version
+            );
+        }
+        return $this->_endUserTypes;
+    }
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+    /**
+     * Access the endUsers
+     */
+    protected function getEndUsers(): EndUserList
+    {
+        if (!$this->_endUsers) {
+            $this->_endUsers = new EndUserList(
+                $this->version
+            );
+        }
+        return $this->_endUsers;
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Access the supportingDocumentTypes
+     */
+    protected function getSupportingDocumentTypes(): SupportingDocumentTypeList
+    {
+        if (!$this->_supportingDocumentTypes) {
+            $this->_supportingDocumentTypes = new SupportingDocumentTypeList(
+                $this->version
+            );
+        }
+        return $this->_supportingDocumentTypes;
+    }
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return \Twilio\ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name)
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return \Twilio\ListResource The requested subresource
-	 */
-	public function __get(string $name)
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-			return $this->{$method}();
-		}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
-
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Numbers.V2.RegulatoryComplianceList]';
-	}
-
-	/**
-	 * Access the bundles
-	 */
-	protected function getBundles() : BundleList
-	{
-		if (! $this->_bundles) {
-			$this->_bundles = new BundleList(
-				$this->version
-			);
-		}
-
-		return $this->_bundles;
-	}
-
-	/**
-	 * Access the endUsers
-	 */
-	protected function getEndUsers() : EndUserList
-	{
-		if (! $this->_endUsers) {
-			$this->_endUsers = new EndUserList(
-				$this->version
-			);
-		}
-
-		return $this->_endUsers;
-	}
-
-	/**
-	 * Access the endUserTypes
-	 */
-	protected function getEndUserTypes() : EndUserTypeList
-	{
-		if (! $this->_endUserTypes) {
-			$this->_endUserTypes = new EndUserTypeList(
-				$this->version
-			);
-		}
-
-		return $this->_endUserTypes;
-	}
-
-	/**
-	 * Access the regulations
-	 */
-	protected function getRegulations() : RegulationList
-	{
-		if (! $this->_regulations) {
-			$this->_regulations = new RegulationList(
-				$this->version
-			);
-		}
-
-		return $this->_regulations;
-	}
-
-	/**
-	 * Access the supportingDocuments
-	 */
-	protected function getSupportingDocuments() : SupportingDocumentList
-	{
-		if (! $this->_supportingDocuments) {
-			$this->_supportingDocuments = new SupportingDocumentList(
-				$this->version
-			);
-		}
-
-		return $this->_supportingDocuments;
-	}
-
-	/**
-	 * Access the supportingDocumentTypes
-	 */
-	protected function getSupportingDocumentTypes() : SupportingDocumentTypeList
-	{
-		if (! $this->_supportingDocumentTypes) {
-			$this->_supportingDocumentTypes = new SupportingDocumentTypeList(
-				$this->version
-			);
-		}
-
-		return $this->_supportingDocumentTypes;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Numbers.V2.RegulatoryComplianceList]';
+    }
 }

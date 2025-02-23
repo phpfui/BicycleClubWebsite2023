@@ -14,96 +14,101 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Trunking\V1\Trunk;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class RecordingContext extends InstanceContext
-	{
-	/**
-	 * Initialize the RecordingContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $trunkSid The SID of the Trunk from which to fetch the recording settings.
-	 */
-	public function __construct(
-		Version $version,
-		$trunkSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the RecordingContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $trunkSid The SID of the Trunk from which to fetch the recording settings.
+     */
+    public function __construct(
+        Version $version,
+        $trunkSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'trunkSid' => $trunkSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'trunkSid' =>
+            $trunkSid,
+        ];
 
-		$this->uri = '/Trunks/' . \rawurlencode($trunkSid)
-		. '/Recording';
-	}
+        $this->uri = '/Trunks/' . \rawurlencode($trunkSid)
+        .'/Recording';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the RecordingInstance
+     *
+     * @return RecordingInstance Fetched RecordingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): RecordingInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Trunking.V1.RecordingContext ' . \implode(' ', $context) . ']';
-	}
+        return new RecordingInstance(
+            $this->version,
+            $payload,
+            $this->solution['trunkSid']
+        );
+    }
 
-	/**
-	 * Fetch the RecordingInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RecordingInstance Fetched RecordingInstance
-	 */
-	public function fetch() : RecordingInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the RecordingInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return RecordingInstance Updated RecordingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): RecordingInstance
+    {
 
-		return new RecordingInstance(
-			$this->version,
-			$payload,
-			$this->solution['trunkSid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the RecordingInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RecordingInstance Updated RecordingInstance
-	 */
-	public function update(array $options = []) : RecordingInstance
-	{
+        $data = Values::of([
+            'Mode' =>
+                $options['mode'],
+            'Trim' =>
+                $options['trim'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'Mode' => $options['mode'],
-			'Trim' => $options['trim'],
-		]);
+        return new RecordingInstance(
+            $this->version,
+            $payload,
+            $this->solution['trunkSid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new RecordingInstance(
-			$this->version,
-			$payload,
-			$this->solution['trunkSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Trunking.V1.RecordingContext ' . \implode(' ', $context) . ']';
+    }
 }

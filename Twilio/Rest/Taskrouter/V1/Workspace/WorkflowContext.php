@@ -14,17 +14,19 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Taskrouter\V1\Workspace;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowCumulativeStatisticsList;
-use Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowRealTimeStatisticsList;
-use Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowStatisticsList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowStatisticsList;
+use Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowCumulativeStatisticsList;
+use Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowRealTimeStatisticsList;
+
 
 /**
  * @property WorkflowStatisticsList $statistics
@@ -35,202 +37,206 @@ use Twilio\Version;
  * @method \Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowRealTimeStatisticsContext realTimeStatistics()
  */
 class WorkflowContext extends InstanceContext
-	{
-	protected $_cumulativeStatistics;
+    {
+    protected $_statistics;
+    protected $_cumulativeStatistics;
+    protected $_realTimeStatistics;
 
-	protected $_realTimeStatistics;
+    /**
+     * Initialize the WorkflowContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $workspaceSid The SID of the Workspace that the new Workflow to create belongs to.
+     * @param string $sid The SID of the Workflow resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $workspaceSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-	protected $_statistics;
+        // Path Solution
+        $this->solution = [
+        'workspaceSid' =>
+            $workspaceSid,
+        'sid' =>
+            $sid,
+        ];
 
-	/**
-	 * Initialize the WorkflowContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $workspaceSid The SID of the Workspace that the new Workflow to create belongs to.
-	 * @param string $sid The SID of the Workflow resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$workspaceSid,
-		$sid
-	) {
-		parent::__construct($version);
+        $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
+        .'/Workflows/' . \rawurlencode($sid)
+        .'';
+    }
 
-		// Path Solution
-		$this->solution = [
-			'workspaceSid' => $workspaceSid,
-			'sid' => $sid,
-		];
+    /**
+     * Delete the WorkflowInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		$this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
-		. '/Workflows/' . \rawurlencode($sid)
-		. '';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+    /**
+     * Fetch the WorkflowInstance
+     *
+     * @return WorkflowInstance Fetched WorkflowInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): WorkflowInstance
+    {
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return new WorkflowInstance(
+            $this->version,
+            $payload,
+            $this->solution['workspaceSid'],
+            $this->solution['sid']
+        );
+    }
 
-			return $this->{$method}();
-		}
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+    /**
+     * Update the WorkflowInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return WorkflowInstance Updated WorkflowInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): WorkflowInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        $options = new Values($options);
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $data = Values::of([
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'AssignmentCallbackUrl' =>
+                $options['assignmentCallbackUrl'],
+            'FallbackAssignmentCallbackUrl' =>
+                $options['fallbackAssignmentCallbackUrl'],
+            'Configuration' =>
+                $options['configuration'],
+            'TaskReservationTimeout' =>
+                $options['taskReservationTimeout'],
+            'ReEvaluateTasks' =>
+                $options['reEvaluateTasks'],
+        ]);
 
-		return '[Twilio.Taskrouter.V1.WorkflowContext ' . \implode(' ', $context) . ']';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-	/**
-	 * Delete the WorkflowInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        return new WorkflowInstance(
+            $this->version,
+            $payload,
+            $this->solution['workspaceSid'],
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+    /**
+     * Access the statistics
+     */
+    protected function getStatistics(): WorkflowStatisticsList
+    {
+        if (!$this->_statistics) {
+            $this->_statistics = new WorkflowStatisticsList(
+                $this->version,
+                $this->solution['workspaceSid'],
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Fetch the WorkflowInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return WorkflowInstance Fetched WorkflowInstance
-	 */
-	public function fetch() : WorkflowInstance
-	{
+        return $this->_statistics;
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Access the cumulativeStatistics
+     */
+    protected function getCumulativeStatistics(): WorkflowCumulativeStatisticsList
+    {
+        if (!$this->_cumulativeStatistics) {
+            $this->_cumulativeStatistics = new WorkflowCumulativeStatisticsList(
+                $this->version,
+                $this->solution['workspaceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		return new WorkflowInstance(
-			$this->version,
-			$payload,
-			$this->solution['workspaceSid'],
-			$this->solution['sid']
-		);
-	}
+        return $this->_cumulativeStatistics;
+    }
 
-	/**
-	 * Update the WorkflowInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return WorkflowInstance Updated WorkflowInstance
-	 */
-	public function update(array $options = []) : WorkflowInstance
-	{
+    /**
+     * Access the realTimeStatistics
+     */
+    protected function getRealTimeStatistics(): WorkflowRealTimeStatisticsList
+    {
+        if (!$this->_realTimeStatistics) {
+            $this->_realTimeStatistics = new WorkflowRealTimeStatisticsList(
+                $this->version,
+                $this->solution['workspaceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		$options = new Values($options);
+        return $this->_realTimeStatistics;
+    }
 
-		$data = Values::of([
-			'FriendlyName' => $options['friendlyName'],
-			'AssignmentCallbackUrl' => $options['assignmentCallbackUrl'],
-			'FallbackAssignmentCallbackUrl' => $options['fallbackAssignmentCallbackUrl'],
-			'Configuration' => $options['configuration'],
-			'TaskReservationTimeout' => $options['taskReservationTimeout'],
-			'ReEvaluateTasks' => $options['reEvaluateTasks'],
-		]);
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		return new WorkflowInstance(
-			$this->version,
-			$payload,
-			$this->solution['workspaceSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-	/**
-	 * Access the cumulativeStatistics
-	 */
-	protected function getCumulativeStatistics() : WorkflowCumulativeStatisticsList
-	{
-		if (! $this->_cumulativeStatistics) {
-			$this->_cumulativeStatistics = new WorkflowCumulativeStatisticsList(
-				$this->version,
-				$this->solution['workspaceSid'],
-				$this->solution['sid']
-			);
-		}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		return $this->_cumulativeStatistics;
-	}
-
-	/**
-	 * Access the realTimeStatistics
-	 */
-	protected function getRealTimeStatistics() : WorkflowRealTimeStatisticsList
-	{
-		if (! $this->_realTimeStatistics) {
-			$this->_realTimeStatistics = new WorkflowRealTimeStatisticsList(
-				$this->version,
-				$this->solution['workspaceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_realTimeStatistics;
-	}
-
-	/**
-	 * Access the statistics
-	 */
-	protected function getStatistics() : WorkflowStatisticsList
-	{
-		if (! $this->_statistics) {
-			$this->_statistics = new WorkflowStatisticsList(
-				$this->version,
-				$this->solution['workspaceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_statistics;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Taskrouter.V1.WorkflowContext ' . \implode(' ', $context) . ']';
+    }
 }

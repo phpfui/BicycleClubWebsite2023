@@ -1,8 +1,9 @@
 <?php
 
+
 namespace Twilio\Exceptions;
 
-class HttpException extends TwilioException
-{
+
+class HttpException extends TwilioException {
 
 }

@@ -14,106 +14,110 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Microvisor\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class AccountSecretContext extends InstanceContext
-	{
-	/**
-	 * Initialize the AccountSecretContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $key The secret key; up to 100 characters.
-	 */
-	public function __construct(
-		Version $version,
-		$key
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the AccountSecretContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $key The secret key; up to 100 characters.
+     */
+    public function __construct(
+        Version $version,
+        $key
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'key' => $key,
-		];
+        // Path Solution
+        $this->solution = [
+        'key' =>
+            $key,
+        ];
 
-		$this->uri = '/Secrets/' . \rawurlencode($key)
-		. '';
-	}
+        $this->uri = '/Secrets/' . \rawurlencode($key)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the AccountSecretInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Microvisor.V1.AccountSecretContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the AccountSecretInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the AccountSecretInstance
+     *
+     * @return AccountSecretInstance Fetched AccountSecretInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): AccountSecretInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new AccountSecretInstance(
+            $this->version,
+            $payload,
+            $this->solution['key']
+        );
+    }
 
-	/**
-	 * Fetch the AccountSecretInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AccountSecretInstance Fetched AccountSecretInstance
-	 */
-	public function fetch() : AccountSecretInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the AccountSecretInstance
+     *
+     * @param string $value The secret value; up to 4096 characters.
+     * @return AccountSecretInstance Updated AccountSecretInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $value): AccountSecretInstance
+    {
 
-		return new AccountSecretInstance(
-			$this->version,
-			$payload,
-			$this->solution['key']
-		);
-	}
+        $data = Values::of([
+            'Value' =>
+                $value,
+        ]);
 
-	/**
-	 * Update the AccountSecretInstance
-	 *
-	 * @param string $value The secret value; up to 4096 characters.
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AccountSecretInstance Updated AccountSecretInstance
-	 */
-	public function update(string $value) : AccountSecretInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'Value' => $value,
-		]);
+        return new AccountSecretInstance(
+            $this->version,
+            $payload,
+            $this->solution['key']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new AccountSecretInstance(
-			$this->version,
-			$payload,
-			$this->solution['key']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Microvisor.V1.AccountSecretContext ' . \implode(' ', $context) . ']';
+    }
 }

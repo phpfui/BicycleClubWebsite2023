@@ -21,50 +21,52 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class WebhookList extends ListResource
-	{
-	/**
-	 * Construct the WebhookList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the WebhookList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/Porting/Configuration/Webhook';
-	}
+        $this->uri = '/Porting/Configuration/Webhook';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Numbers.V1.WebhookList]';
-	}
+    /**
+     * Fetch the WebhookInstance
+     *
+     * @return WebhookInstance Fetched WebhookInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): WebhookInstance
+    {
 
-	/**
-	 * Fetch the WebhookInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return WebhookInstance Fetched WebhookInstance
-	 */
-	public function fetch() : WebhookInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+        return new WebhookInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new WebhookInstance(
-			$this->version,
-			$payload
-		);
-	}
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Numbers.V1.WebhookList]';
+    }
 }

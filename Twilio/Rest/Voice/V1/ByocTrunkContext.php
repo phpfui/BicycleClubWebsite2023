@@ -14,119 +14,132 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Voice\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class ByocTrunkContext extends InstanceContext
-	{
-	/**
-	 * Initialize the ByocTrunkContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The Twilio-provided string that uniquely identifies the BYOC Trunk resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the ByocTrunkContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The Twilio-provided string that uniquely identifies the BYOC Trunk resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/ByocTrunks/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/ByocTrunks/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the ByocTrunkInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Voice.V1.ByocTrunkContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the ByocTrunkInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the ByocTrunkInstance
+     *
+     * @return ByocTrunkInstance Fetched ByocTrunkInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ByocTrunkInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new ByocTrunkInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the ByocTrunkInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ByocTrunkInstance Fetched ByocTrunkInstance
-	 */
-	public function fetch() : ByocTrunkInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the ByocTrunkInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return ByocTrunkInstance Updated ByocTrunkInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): ByocTrunkInstance
+    {
 
-		return new ByocTrunkInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the ByocTrunkInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ByocTrunkInstance Updated ByocTrunkInstance
-	 */
-	public function update(array $options = []) : ByocTrunkInstance
-	{
+        $data = Values::of([
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'VoiceUrl' =>
+                $options['voiceUrl'],
+            'VoiceMethod' =>
+                $options['voiceMethod'],
+            'VoiceFallbackUrl' =>
+                $options['voiceFallbackUrl'],
+            'VoiceFallbackMethod' =>
+                $options['voiceFallbackMethod'],
+            'StatusCallbackUrl' =>
+                $options['statusCallbackUrl'],
+            'StatusCallbackMethod' =>
+                $options['statusCallbackMethod'],
+            'CnamLookupEnabled' =>
+                Serialize::booleanToString($options['cnamLookupEnabled']),
+            'ConnectionPolicySid' =>
+                $options['connectionPolicySid'],
+            'FromDomainSid' =>
+                $options['fromDomainSid'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'FriendlyName' => $options['friendlyName'],
-			'VoiceUrl' => $options['voiceUrl'],
-			'VoiceMethod' => $options['voiceMethod'],
-			'VoiceFallbackUrl' => $options['voiceFallbackUrl'],
-			'VoiceFallbackMethod' => $options['voiceFallbackMethod'],
-			'StatusCallbackUrl' => $options['statusCallbackUrl'],
-			'StatusCallbackMethod' => $options['statusCallbackMethod'],
-			'CnamLookupEnabled' => Serialize::booleanToString($options['cnamLookupEnabled']),
-			'ConnectionPolicySid' => $options['connectionPolicySid'],
-			'FromDomainSid' => $options['fromDomainSid'],
-		]);
+        return new ByocTrunkInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new ByocTrunkInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Voice.V1.ByocTrunkContext ' . \implode(' ', $context) . ']';
+    }
 }

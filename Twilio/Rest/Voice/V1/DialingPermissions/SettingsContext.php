@@ -14,90 +14,93 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Voice\V1\DialingPermissions;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class SettingsContext extends InstanceContext
-	{
-	/**
-	 * Initialize the SettingsContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the SettingsContext
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/Settings';
-	}
+        $this->uri = '/Settings';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the SettingsInstance
+     *
+     * @return SettingsInstance Fetched SettingsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SettingsInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Voice.V1.SettingsContext ' . \implode(' ', $context) . ']';
-	}
+        return new SettingsInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-	/**
-	 * Fetch the SettingsInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SettingsInstance Fetched SettingsInstance
-	 */
-	public function fetch() : SettingsInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the SettingsInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return SettingsInstance Updated SettingsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): SettingsInstance
+    {
 
-		return new SettingsInstance(
-			$this->version,
-			$payload
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the SettingsInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SettingsInstance Updated SettingsInstance
-	 */
-	public function update(array $options = []) : SettingsInstance
-	{
+        $data = Values::of([
+            'DialingPermissionsInheritance' =>
+                Serialize::booleanToString($options['dialingPermissionsInheritance']),
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'DialingPermissionsInheritance' => Serialize::booleanToString($options['dialingPermissionsInheritance']),
-		]);
+        return new SettingsInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new SettingsInstance(
-			$this->version,
-			$payload
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Voice.V1.SettingsContext ' . \implode(' ', $context) . ']';
+    }
 }

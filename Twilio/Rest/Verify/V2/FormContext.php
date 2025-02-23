@@ -14,68 +14,70 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Verify\V2;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class FormContext extends InstanceContext
-	{
-	/**
-	 * Initialize the FormContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $formType The Type of this Form. Currently only `form-push` is supported.
-	 */
-	public function __construct(
-		Version $version,
-		$formType
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the FormContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $formType The Type of this Form. Currently only `form-push` is supported.
+     */
+    public function __construct(
+        Version $version,
+        $formType
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'formType' => $formType,
-		];
+        // Path Solution
+        $this->solution = [
+        'formType' =>
+            $formType,
+        ];
 
-		$this->uri = '/Forms/' . \rawurlencode($formType)
-		. '';
-	}
+        $this->uri = '/Forms/' . \rawurlencode($formType)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the FormInstance
+     *
+     * @return FormInstance Fetched FormInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): FormInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Verify.V2.FormContext ' . \implode(' ', $context) . ']';
-	}
+        return new FormInstance(
+            $this->version,
+            $payload,
+            $this->solution['formType']
+        );
+    }
 
-	/**
-	 * Fetch the FormInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return FormInstance Fetched FormInstance
-	 */
-	public function fetch() : FormInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new FormInstance(
-			$this->version,
-			$payload,
-			$this->solution['formType']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Verify.V2.FormContext ' . \implode(' ', $context) . ']';
+    }
 }

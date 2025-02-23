@@ -14,82 +14,84 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Bulkexports\V1\Export;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class JobContext extends InstanceContext
-	{
-	/**
-	 * Initialize the JobContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $jobSid The unique string that that we created to identify the Bulk Export job
-	 */
-	public function __construct(
-		Version $version,
-		$jobSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the JobContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $jobSid The unique string that that we created to identify the Bulk Export job
+     */
+    public function __construct(
+        Version $version,
+        $jobSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'jobSid' => $jobSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'jobSid' =>
+            $jobSid,
+        ];
 
-		$this->uri = '/Exports/Jobs/' . \rawurlencode($jobSid)
-		. '';
-	}
+        $this->uri = '/Exports/Jobs/' . \rawurlencode($jobSid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the JobInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Bulkexports.V1.JobContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the JobInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the JobInstance
+     *
+     * @return JobInstance Fetched JobInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): JobInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new JobInstance(
+            $this->version,
+            $payload,
+            $this->solution['jobSid']
+        );
+    }
 
-	/**
-	 * Fetch the JobInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return JobInstance Fetched JobInstance
-	 */
-	public function fetch() : JobInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new JobInstance(
-			$this->version,
-			$payload,
-			$this->solution['jobSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Bulkexports.V1.JobContext ' . \implode(' ', $context) . ']';
+    }
 }

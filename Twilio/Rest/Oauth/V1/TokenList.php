@@ -22,66 +22,76 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class TokenList extends ListResource
-	{
-	/**
-	 * Construct the TokenList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the TokenList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/token';
-	}
+        $this->uri = '/token';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Oauth.V1.TokenList]';
-	}
+    /**
+     * Create the TokenInstance
+     *
+     * @param string $grantType Grant type is a credential representing resource owner's authorization which can be used by client to obtain access token.
+     * @param string $clientId A 34 character string that uniquely identifies this OAuth App.
+     * @param array|Options $options Optional Arguments
+     * @return TokenInstance Created TokenInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $grantType, string $clientId, array $options = []): TokenInstance
+    {
 
-	/**
-	 * Create the TokenInstance
-	 *
-	 * @param string $grantType Grant type is a credential representing resource owner's authorization which can be used by client to obtain access token.
-	 * @param string $clientId A 34 character string that uniquely identifies this OAuth App.
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return TokenInstance Created TokenInstance
-	 */
-	public function create(string $grantType, string $clientId, array $options = []) : TokenInstance
-	{
+        $options = new Values($options);
 
-		$options = new Values($options);
+        $data = Values::of([
+            'GrantType' =>
+                $grantType,
+            'ClientId' =>
+                $clientId,
+            'ClientSecret' =>
+                $options['clientSecret'],
+            'Code' =>
+                $options['code'],
+            'RedirectUri' =>
+                $options['redirectUri'],
+            'Audience' =>
+                $options['audience'],
+            'RefreshToken' =>
+                $options['refreshToken'],
+            'Scope' =>
+                $options['scope'],
+        ]);
 
-		$data = Values::of([
-			'GrantType' => $grantType,
-			'ClientId' => $clientId,
-			'ClientSecret' => $options['clientSecret'],
-			'Code' => $options['code'],
-			'RedirectUri' => $options['redirectUri'],
-			'Audience' => $options['audience'],
-			'RefreshToken' => $options['refreshToken'],
-			'Scope' => $options['scope'],
-		]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return new TokenInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new TokenInstance(
-			$this->version,
-			$payload
-		);
-	}
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Oauth.V1.TokenList]';
+    }
 }

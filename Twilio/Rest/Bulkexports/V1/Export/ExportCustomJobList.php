@@ -23,162 +23,172 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class ExportCustomJobList extends ListResource
-	{
-	/**
-	 * Construct the ExportCustomJobList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $resourceType The type of communication – Messages or Calls, Conferences, and Participants
-	 */
-	public function __construct(
-		Version $version,
-		string $resourceType
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the ExportCustomJobList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $resourceType The type of communication – Messages or Calls, Conferences, and Participants
+     */
+    public function __construct(
+        Version $version,
+        string $resourceType
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'resourceType' => $resourceType,
+        // Path Solution
+        $this->solution = [
+        'resourceType' =>
+            $resourceType,
+        
+        ];
 
-		];
+        $this->uri = '/Exports/' . \rawurlencode($resourceType)
+        .'/Jobs';
+    }
 
-		$this->uri = '/Exports/' . \rawurlencode($resourceType)
-		. '/Jobs';
-	}
+    /**
+     * Create the ExportCustomJobInstance
+     *
+     * @param string $startDay The start day for the custom export specified as a string in the format of yyyy-mm-dd
+     * @param string $endDay The end day for the custom export specified as a string in the format of yyyy-mm-dd. End day is inclusive and must be 2 days earlier than the current UTC day.
+     * @param string $friendlyName The friendly name specified when creating the job
+     * @param array|Options $options Optional Arguments
+     * @return ExportCustomJobInstance Created ExportCustomJobInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $startDay, string $endDay, string $friendlyName, array $options = []): ExportCustomJobInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Bulkexports.V1.ExportCustomJobList]';
-	}
+        $options = new Values($options);
 
-	/**
-	 * Create the ExportCustomJobInstance
-	 *
-	 * @param string $startDay The start day for the custom export specified as a string in the format of yyyy-mm-dd
-	 * @param string $endDay The end day for the custom export specified as a string in the format of yyyy-mm-dd. End day is inclusive and must be 2 days earlier than the current UTC day.
-	 * @param string $friendlyName The friendly name specified when creating the job
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ExportCustomJobInstance Created ExportCustomJobInstance
-	 */
-	public function create(string $startDay, string $endDay, string $friendlyName, array $options = []) : ExportCustomJobInstance
-	{
+        $data = Values::of([
+            'StartDay' =>
+                $startDay,
+            'EndDay' =>
+                $endDay,
+            'FriendlyName' =>
+                $friendlyName,
+            'WebhookUrl' =>
+                $options['webhookUrl'],
+            'WebhookMethod' =>
+                $options['webhookMethod'],
+            'Email' =>
+                $options['email'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'StartDay' => $startDay,
-			'EndDay' => $endDay,
-			'FriendlyName' => $friendlyName,
-			'WebhookUrl' => $options['webhookUrl'],
-			'WebhookMethod' => $options['webhookMethod'],
-			'Email' => $options['email'],
-		]);
+        return new ExportCustomJobInstance(
+            $this->version,
+            $payload,
+            $this->solution['resourceType']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		return new ExportCustomJobInstance(
-			$this->version,
-			$payload,
-			$this->solution['resourceType']
-		);
-	}
+    /**
+     * Reads ExportCustomJobInstance records from the API as a list.
+     * Unlike stream(), this operation is eager and will load `limit` records into
+     * memory before returning.
+     *
+     * @param int $limit Upper limit for the number of records to return. read()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, read()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return ExportCustomJobInstance[] Array of results
+     */
+    public function read(int $limit = null, $pageSize = null): array
+    {
+        return \iterator_to_array($this->stream($limit, $pageSize), false);
+    }
 
-	/**
-	 * Retrieve a specific page of ExportCustomJobInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param string $targetUrl API-generated URL for the requested results page
-	 * @return ExportCustomJobPage Page of ExportCustomJobInstance
-	 */
-	public function getPage(string $targetUrl) : ExportCustomJobPage
-	{
-		$response = $this->version->getDomain()->getClient()->request(
-			'GET',
-			$targetUrl
-		);
+    /**
+     * Streams ExportCustomJobInstance records from the API as a generator stream.
+     * This operation lazily loads records as efficiently as possible until the
+     * limit
+     * is reached.
+     * The results are returned as a generator, so this operation is memory
+     * efficient.
+     *
+     * @param int $limit Upper limit for the number of records to return. stream()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, stream()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return Stream stream of results
+     */
+    public function stream(int $limit = null, $pageSize = null): Stream
+    {
+        $limits = $this->version->readLimits($limit, $pageSize);
 
-		return new ExportCustomJobPage($this->version, $response, $this->solution);
-	}
+        $page = $this->page($limits['pageSize']);
 
-	/**
-	 * Retrieve a single page of ExportCustomJobInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param mixed $pageSize Number of records to return, defaults to 50
-	 * @param string $pageToken PageToken provided by the API
-	 * @param mixed $pageNumber Page Number, this value is simply for client state
-	 * @return ExportCustomJobPage Page of ExportCustomJobInstance
-	 */
-	public function page(
-		$pageSize = Values::NONE,
-		string $pageToken = Values::NONE,
-		$pageNumber = Values::NONE
-	) : ExportCustomJobPage
-	{
+        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+    }
 
-		$params = Values::of([
-			'PageToken' => $pageToken,
-			'Page' => $pageNumber,
-			'PageSize' => $pageSize,
-		]);
+    /**
+     * Retrieve a single page of ExportCustomJobInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param mixed $pageSize Number of records to return, defaults to 50
+     * @param string $pageToken PageToken provided by the API
+     * @param mixed $pageNumber Page Number, this value is simply for client state
+     * @return ExportCustomJobPage Page of ExportCustomJobInstance
+     */
+    public function page(
+        $pageSize = Values::NONE,
+        string $pageToken = Values::NONE,
+        $pageNumber = Values::NONE
+    ): ExportCustomJobPage
+    {
 
-		$response = $this->version->page('GET', $this->uri, $params);
+        $params = Values::of([
+            'PageToken' => $pageToken,
+            'Page' => $pageNumber,
+            'PageSize' => $pageSize,
+        ]);
 
-		return new ExportCustomJobPage($this->version, $response, $this->solution);
-	}
+        $response = $this->version->page('GET', $this->uri, $params);
 
-	/**
-	 * Reads ExportCustomJobInstance records from the API as a list.
-	 * Unlike stream(), this operation is eager and will load `limit` records into
-	 * memory before returning.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. read()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, read()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return ExportCustomJobInstance[] Array of results
-	 */
-	public function read(?int $limit = null, $pageSize = null) : array
-	{
-		return \iterator_to_array($this->stream($limit, $pageSize), false);
-	}
+        return new ExportCustomJobPage($this->version, $response, $this->solution);
+    }
 
-	/**
-	 * Streams ExportCustomJobInstance records from the API as a generator stream.
-	 * This operation lazily loads records as efficiently as possible until the
-	 * limit
-	 * is reached.
-	 * The results are returned as a generator, so this operation is memory
-	 * efficient.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. stream()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, stream()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return Stream stream of results
-	 */
-	public function stream(?int $limit = null, $pageSize = null) : Stream
-	{
-		$limits = $this->version->readLimits($limit, $pageSize);
+    /**
+     * Retrieve a specific page of ExportCustomJobInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return ExportCustomJobPage Page of ExportCustomJobInstance
+     */
+    public function getPage(string $targetUrl): ExportCustomJobPage
+    {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
 
-		$page = $this->page($limits['pageSize']);
+        return new ExportCustomJobPage($this->version, $response, $this->solution);
+    }
 
-		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-	}
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Bulkexports.V1.ExportCustomJobList]';
+    }
 }

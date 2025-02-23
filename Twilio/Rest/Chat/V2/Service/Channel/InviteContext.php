@@ -14,92 +14,96 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Chat\V2\Service\Channel;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class InviteContext extends InstanceContext
-	{
-	/**
-	 * Initialize the InviteContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the Invite resource under.
-	 * @param string $channelSid The SID of the [Channel](https://www.twilio.com/docs/chat/channels) the new Invite resource belongs to. This value can be the Channel resource's `sid` or `unique_name`.
-	 * @param string $sid The SID of the Invite resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$serviceSid,
-		$channelSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the InviteContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/chat/rest/service-resource) to create the Invite resource under.
+     * @param string $channelSid The SID of the [Channel](https://www.twilio.com/docs/chat/channels) the new Invite resource belongs to. This value can be the Channel resource's `sid` or `unique_name`.
+     * @param string $sid The SID of the Invite resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $serviceSid,
+        $channelSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
-			'channelSid' => $channelSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        'channelSid' =>
+            $channelSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/Channels/' . \rawurlencode($channelSid)
-		. '/Invites/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/Channels/' . \rawurlencode($channelSid)
+        .'/Invites/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the InviteInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Chat.V2.InviteContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the InviteInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the InviteInstance
+     *
+     * @return InviteInstance Fetched InviteInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): InviteInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new InviteInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['channelSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the InviteInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InviteInstance Fetched InviteInstance
-	 */
-	public function fetch() : InviteInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new InviteInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['channelSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Chat.V2.InviteContext ' . \implode(' ', $context) . ']';
+    }
 }

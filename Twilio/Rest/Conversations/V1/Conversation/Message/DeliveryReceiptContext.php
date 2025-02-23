@@ -14,78 +14,82 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Conversations\V1\Conversation\Message;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class DeliveryReceiptContext extends InstanceContext
-	{
-	/**
-	 * Initialize the DeliveryReceiptContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $conversationSid The unique ID of the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for this message.
-	 * @param string $messageSid The SID of the message within a [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) the delivery receipt belongs to.
-	 * @param string $sid A 34 character string that uniquely identifies this resource.
-	 */
-	public function __construct(
-		Version $version,
-		$conversationSid,
-		$messageSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the DeliveryReceiptContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $conversationSid The unique ID of the [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) for this message.
+     * @param string $messageSid The SID of the message within a [Conversation](https://www.twilio.com/docs/conversations/api/conversation-resource) the delivery receipt belongs to.
+     * @param string $sid A 34 character string that uniquely identifies this resource.
+     */
+    public function __construct(
+        Version $version,
+        $conversationSid,
+        $messageSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'conversationSid' => $conversationSid,
-			'messageSid' => $messageSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'conversationSid' =>
+            $conversationSid,
+        'messageSid' =>
+            $messageSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Conversations/' . \rawurlencode($conversationSid)
-		. '/Messages/' . \rawurlencode($messageSid)
-		. '/Receipts/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Conversations/' . \rawurlencode($conversationSid)
+        .'/Messages/' . \rawurlencode($messageSid)
+        .'/Receipts/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the DeliveryReceiptInstance
+     *
+     * @return DeliveryReceiptInstance Fetched DeliveryReceiptInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): DeliveryReceiptInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Conversations.V1.DeliveryReceiptContext ' . \implode(' ', $context) . ']';
-	}
+        return new DeliveryReceiptInstance(
+            $this->version,
+            $payload,
+            $this->solution['conversationSid'],
+            $this->solution['messageSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the DeliveryReceiptInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return DeliveryReceiptInstance Fetched DeliveryReceiptInstance
-	 */
-	public function fetch() : DeliveryReceiptInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new DeliveryReceiptInstance(
-			$this->version,
-			$payload,
-			$this->solution['conversationSid'],
-			$this->solution['messageSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Conversations.V1.DeliveryReceiptContext ' . \implode(' ', $context) . ']';
+    }
 }

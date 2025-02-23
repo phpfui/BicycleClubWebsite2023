@@ -14,131 +14,151 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Api\V2010\Account;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class ApplicationContext extends InstanceContext
-	{
-	/**
-	 * Initialize the ApplicationContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
-	 * @param string $sid The Twilio-provided string that uniquely identifies the Application resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$accountSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the ApplicationContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
+     * @param string $sid The Twilio-provided string that uniquely identifies the Application resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $accountSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		. '/Applications/' . \rawurlencode($sid)
-		. '.json';
-	}
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+        .'/Applications/' . \rawurlencode($sid)
+        .'.json';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the ApplicationInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Api.V2010.ApplicationContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the ApplicationInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the ApplicationInstance
+     *
+     * @return ApplicationInstance Fetched ApplicationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ApplicationInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new ApplicationInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the ApplicationInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ApplicationInstance Fetched ApplicationInstance
-	 */
-	public function fetch() : ApplicationInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the ApplicationInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return ApplicationInstance Updated ApplicationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): ApplicationInstance
+    {
 
-		return new ApplicationInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['sid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the ApplicationInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ApplicationInstance Updated ApplicationInstance
-	 */
-	public function update(array $options = []) : ApplicationInstance
-	{
+        $data = Values::of([
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'ApiVersion' =>
+                $options['apiVersion'],
+            'VoiceUrl' =>
+                $options['voiceUrl'],
+            'VoiceMethod' =>
+                $options['voiceMethod'],
+            'VoiceFallbackUrl' =>
+                $options['voiceFallbackUrl'],
+            'VoiceFallbackMethod' =>
+                $options['voiceFallbackMethod'],
+            'StatusCallback' =>
+                $options['statusCallback'],
+            'StatusCallbackMethod' =>
+                $options['statusCallbackMethod'],
+            'VoiceCallerIdLookup' =>
+                Serialize::booleanToString($options['voiceCallerIdLookup']),
+            'SmsUrl' =>
+                $options['smsUrl'],
+            'SmsMethod' =>
+                $options['smsMethod'],
+            'SmsFallbackUrl' =>
+                $options['smsFallbackUrl'],
+            'SmsFallbackMethod' =>
+                $options['smsFallbackMethod'],
+            'SmsStatusCallback' =>
+                $options['smsStatusCallback'],
+            'MessageStatusCallback' =>
+                $options['messageStatusCallback'],
+            'PublicApplicationConnectEnabled' =>
+                Serialize::booleanToString($options['publicApplicationConnectEnabled']),
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'FriendlyName' => $options['friendlyName'],
-			'ApiVersion' => $options['apiVersion'],
-			'VoiceUrl' => $options['voiceUrl'],
-			'VoiceMethod' => $options['voiceMethod'],
-			'VoiceFallbackUrl' => $options['voiceFallbackUrl'],
-			'VoiceFallbackMethod' => $options['voiceFallbackMethod'],
-			'StatusCallback' => $options['statusCallback'],
-			'StatusCallbackMethod' => $options['statusCallbackMethod'],
-			'VoiceCallerIdLookup' => Serialize::booleanToString($options['voiceCallerIdLookup']),
-			'SmsUrl' => $options['smsUrl'],
-			'SmsMethod' => $options['smsMethod'],
-			'SmsFallbackUrl' => $options['smsFallbackUrl'],
-			'SmsFallbackMethod' => $options['smsFallbackMethod'],
-			'SmsStatusCallback' => $options['smsStatusCallback'],
-			'MessageStatusCallback' => $options['messageStatusCallback'],
-			'PublicApplicationConnectEnabled' => Serialize::booleanToString($options['publicApplicationConnectEnabled']),
-		]);
+        return new ApplicationInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new ApplicationInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.ApplicationContext ' . \implode(' ', $context) . ']';
+    }
 }

@@ -14,174 +14,178 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Conversations\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Rest\Conversations\V1\User\UserConversationList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Conversations\V1\User\UserConversationList;
+
 
 /**
  * @property UserConversationList $userConversations
  * @method \Twilio\Rest\Conversations\V1\User\UserConversationContext userConversations(string $conversationSid)
  */
 class UserContext extends InstanceContext
-	{
-	protected $_userConversations;
+    {
+    protected $_userConversations;
 
-	/**
-	 * Initialize the UserContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The SID of the User resource to delete. This value can be either the `sid` or the `identity` of the User resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    /**
+     * Initialize the UserContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The SID of the User resource to delete. This value can be either the `sid` or the `identity` of the User resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Users/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Users/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Delete the UserInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(array $options = []): bool
+    {
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        $options = new Values($options);
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the UserInstance
+     *
+     * @return UserInstance Fetched UserInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): UserInstance
+    {
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        return new UserInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
 
-		return '[Twilio.Conversations.V1.UserContext ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Update the UserInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return UserInstance Updated UserInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): UserInstance
+    {
 
-	/**
-	 * Delete the UserInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete(array $options = []) : bool
-	{
+        $options = new Values($options);
 
-		$options = new Values($options);
+        $data = Values::of([
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'Attributes' =>
+                $options['attributes'],
+            'RoleSid' =>
+                $options['roleSid'],
+        ]);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new UserInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the UserInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return UserInstance Fetched UserInstance
-	 */
-	public function fetch() : UserInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Access the userConversations
+     */
+    protected function getUserConversations(): UserConversationList
+    {
+        if (!$this->_userConversations) {
+            $this->_userConversations = new UserConversationList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		return new UserInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        return $this->_userConversations;
+    }
 
-	/**
-	 * Update the UserInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return UserInstance Updated UserInstance
-	 */
-	public function update(array $options = []) : UserInstance
-	{
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		$options = new Values($options);
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		$data = Values::of([
-			'FriendlyName' => $options['friendlyName'],
-			'Attributes' => $options['attributes'],
-			'RoleSid' => $options['roleSid'],
-		]);
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		return new UserInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
-
-	/**
-	 * Access the userConversations
-	 */
-	protected function getUserConversations() : UserConversationList
-	{
-		if (! $this->_userConversations) {
-			$this->_userConversations = new UserConversationList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_userConversations;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Conversations.V1.UserContext ' . \implode(' ', $context) . ']';
+    }
 }

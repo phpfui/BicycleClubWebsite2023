@@ -19,49 +19,51 @@ namespace Twilio\Rest\Voice\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class ArchivedCallList extends ListResource
-	{
-	/**
-	 * Construct the ArchivedCallList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the ArchivedCallList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Voice.V1.ArchivedCallList]';
-	}
+    /**
+     * Constructs a ArchivedCallContext
+     *
+     * @param \DateTime $date The date of the Call in UTC.
+     *
+     * @param string $sid The Twilio-provided Call SID that uniquely identifies the Call resource to delete
+     */
+    public function getContext(
+        \DateTime $date
+        , string $sid
+        
+    ): ArchivedCallContext
+    {
+        return new ArchivedCallContext(
+            $this->version,
+            $date,
+            $sid
+        );
+    }
 
-	/**
-	 * Constructs a ArchivedCallContext
-	 *
-	 * @param \DateTime $date The date of the Call in UTC.
-	 *
-	 * @param string $sid The Twilio-provided Call SID that uniquely identifies the Call resource to delete
-	 */
-	public function getContext(
-		\DateTime $date,
-		string $sid
-	) : ArchivedCallContext
-	{
-		return new ArchivedCallContext(
-			$this->version,
-			$date,
-			$sid
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Voice.V1.ArchivedCallList]';
+    }
 }

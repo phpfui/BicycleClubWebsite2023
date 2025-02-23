@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Assistants\V1\Knowledge;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string $accountSid
@@ -30,93 +32,91 @@ use Twilio\Version;
  */
 class KnowledgeStatusInstance extends InstanceResource
 {
-	/**
-	 * Initialize the KnowledgeStatusInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $id the Knowledge ID.
-	 */
-	public function __construct(Version $version, array $payload, string $id)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the KnowledgeStatusInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $id the Knowledge ID.
+     */
+    public function __construct(Version $version, array $payload, string $id)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'status' => Values::array_get($payload, 'status'),
-			'lastStatus' => Values::array_get($payload, 'last_status'),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'status' => Values::array_get($payload, 'status'),
+            'lastStatus' => Values::array_get($payload, 'last_status'),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+        ];
 
-		$this->solution = ['id' => $id, ];
-	}
+        $this->solution = ['id' => $id, ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return KnowledgeStatusContext Context for this KnowledgeStatusInstance
+     */
+    protected function proxy(): KnowledgeStatusContext
+    {
+        if (!$this->context) {
+            $this->context = new KnowledgeStatusContext(
+                $this->version,
+                $this->solution['id']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the KnowledgeStatusInstance
+     *
+     * @return KnowledgeStatusInstance Fetched KnowledgeStatusInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): KnowledgeStatusInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.Assistants.V1.KnowledgeStatusInstance ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the KnowledgeStatusInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return KnowledgeStatusInstance Fetched KnowledgeStatusInstance
-	 */
-	public function fetch() : KnowledgeStatusInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return KnowledgeStatusContext Context for this KnowledgeStatusInstance
-	 */
-	protected function proxy() : KnowledgeStatusContext
-	{
-		if (! $this->context) {
-			$this->context = new KnowledgeStatusContext(
-				$this->version,
-				$this->solution['id']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Assistants.V1.KnowledgeStatusInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

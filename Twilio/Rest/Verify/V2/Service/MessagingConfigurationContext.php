@@ -14,112 +14,117 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Verify\V2\Service;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class MessagingConfigurationContext extends InstanceContext
-	{
-	/**
-	 * Initialize the MessagingConfigurationContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/verify/api/service) that the resource is associated with.
-	 * @param string $country The [ISO-3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code of the country this configuration will be applied to. If this is a global configuration, Country will take the value `all`.
-	 */
-	public function __construct(
-		Version $version,
-		$serviceSid,
-		$country
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the MessagingConfigurationContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid The SID of the [Service](https://www.twilio.com/docs/verify/api/service) that the resource is associated with.
+     * @param string $country The [ISO-3166-1](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code of the country this configuration will be applied to. If this is a global configuration, Country will take the value `all`.
+     */
+    public function __construct(
+        Version $version,
+        $serviceSid,
+        $country
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
-			'country' => $country,
-		];
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        'country' =>
+            $country,
+        ];
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/MessagingConfigurations/' . \rawurlencode($country)
-		. '';
-	}
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/MessagingConfigurations/' . \rawurlencode($country)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the MessagingConfigurationInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Verify.V2.MessagingConfigurationContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the MessagingConfigurationInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the MessagingConfigurationInstance
+     *
+     * @return MessagingConfigurationInstance Fetched MessagingConfigurationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): MessagingConfigurationInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new MessagingConfigurationInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['country']
+        );
+    }
 
-	/**
-	 * Fetch the MessagingConfigurationInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return MessagingConfigurationInstance Fetched MessagingConfigurationInstance
-	 */
-	public function fetch() : MessagingConfigurationInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the MessagingConfigurationInstance
+     *
+     * @param string $messagingServiceSid The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) to be used to send SMS to the country of this configuration.
+     * @return MessagingConfigurationInstance Updated MessagingConfigurationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $messagingServiceSid): MessagingConfigurationInstance
+    {
 
-		return new MessagingConfigurationInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['country']
-		);
-	}
+        $data = Values::of([
+            'MessagingServiceSid' =>
+                $messagingServiceSid,
+        ]);
 
-	/**
-	 * Update the MessagingConfigurationInstance
-	 *
-	 * @param string $messagingServiceSid The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) to be used to send SMS to the country of this configuration.
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return MessagingConfigurationInstance Updated MessagingConfigurationInstance
-	 */
-	public function update(string $messagingServiceSid) : MessagingConfigurationInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'MessagingServiceSid' => $messagingServiceSid,
-		]);
+        return new MessagingConfigurationInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['country']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new MessagingConfigurationInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['country']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Verify.V2.MessagingConfigurationContext ' . \implode(' ', $context) . ']';
+    }
 }

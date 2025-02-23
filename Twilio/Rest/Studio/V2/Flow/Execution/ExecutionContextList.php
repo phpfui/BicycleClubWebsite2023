@@ -19,52 +19,55 @@ namespace Twilio\Rest\Studio\V2\Flow\Execution;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class ExecutionContextList extends ListResource
-	{
-	/**
-	 * Construct the ExecutionContextList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $flowSid The SID of the Flow with the Execution context to fetch.
-	 * @param string $executionSid The SID of the Execution context to fetch.
-	 */
-	public function __construct(
-		Version $version,
-		string $flowSid,
-		string $executionSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the ExecutionContextList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $flowSid The SID of the Flow with the Execution context to fetch.
+     * @param string $executionSid The SID of the Execution context to fetch.
+     */
+    public function __construct(
+        Version $version,
+        string $flowSid,
+        string $executionSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'flowSid' => $flowSid,
+        // Path Solution
+        $this->solution = [
+        'flowSid' =>
+            $flowSid,
+        
+        'executionSid' =>
+            $executionSid,
+        
+        ];
+    }
 
-			'executionSid' => $executionSid,
+    /**
+     * Constructs a ExecutionContextContext
+     */
+    public function getContext(
+        
+    ): ExecutionContextContext
+    {
+        return new ExecutionContextContext(
+            $this->version,
+            $this->solution['flowSid'],
+            $this->solution['executionSid']
+        );
+    }
 
-		];
-	}
-
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Studio.V2.ExecutionContextList]';
-	}
-
-	/**
-	 * Constructs a ExecutionContextContext
-	 */
-	public function getContext(
-
-	) : ExecutionContextContext
-	{
-		return new ExecutionContextContext(
-			$this->version,
-			$this->solution['flowSid'],
-			$this->solution['executionSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Studio.V2.ExecutionContextList]';
+    }
 }

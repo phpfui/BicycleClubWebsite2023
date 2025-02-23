@@ -19,45 +19,47 @@ namespace Twilio\Rest\Messaging\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class RequestManagedCertList extends ListResource
-	{
-	/**
-	 * Construct the RequestManagedCertList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the RequestManagedCertList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Messaging.V1.RequestManagedCertList]';
-	}
+    /**
+     * Constructs a RequestManagedCertContext
+     *
+     * @param string $domainSid Unique string used to identify the domain that this certificate should be associated with.
+     */
+    public function getContext(
+        string $domainSid
+        
+    ): RequestManagedCertContext
+    {
+        return new RequestManagedCertContext(
+            $this->version,
+            $domainSid
+        );
+    }
 
-	/**
-	 * Constructs a RequestManagedCertContext
-	 *
-	 * @param string $domainSid Unique string used to identify the domain that this certificate should be associated with.
-	 */
-	public function getContext(
-		string $domainSid
-	) : RequestManagedCertContext
-	{
-		return new RequestManagedCertContext(
-			$this->version,
-			$domainSid
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Messaging.V1.RequestManagedCertList]';
+    }
 }

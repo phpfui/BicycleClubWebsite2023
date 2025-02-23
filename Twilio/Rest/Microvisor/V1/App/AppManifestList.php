@@ -19,47 +19,49 @@ namespace Twilio\Rest\Microvisor\V1\App;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class AppManifestList extends ListResource
-	{
-	/**
-	 * Construct the AppManifestList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $appSid A 34-character string that uniquely identifies this App.
-	 */
-	public function __construct(
-		Version $version,
-		string $appSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the AppManifestList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $appSid A 34-character string that uniquely identifies this App.
+     */
+    public function __construct(
+        Version $version,
+        string $appSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'appSid' => $appSid,
+        // Path Solution
+        $this->solution = [
+        'appSid' =>
+            $appSid,
+        
+        ];
+    }
 
-		];
-	}
+    /**
+     * Constructs a AppManifestContext
+     */
+    public function getContext(
+        
+    ): AppManifestContext
+    {
+        return new AppManifestContext(
+            $this->version,
+            $this->solution['appSid']
+        );
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Microvisor.V1.AppManifestList]';
-	}
-
-	/**
-	 * Constructs a AppManifestContext
-	 */
-	public function getContext(
-
-	) : AppManifestContext
-	{
-		return new AppManifestContext(
-			$this->version,
-			$this->solution['appSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Microvisor.V1.AppManifestList]';
+    }
 }

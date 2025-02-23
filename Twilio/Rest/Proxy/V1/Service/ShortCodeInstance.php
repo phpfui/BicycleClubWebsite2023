@@ -14,15 +14,17 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Proxy\V1\Service;
 
-use Twilio\Base\PhoneNumberCapabilities;
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+use Twilio\Base\PhoneNumberCapabilities;
+
 
 /**
  * @property string|null $sid
@@ -38,126 +40,124 @@ use Twilio\Version;
  */
 class ShortCodeInstance extends InstanceResource
 {
-	/**
-	 * Initialize the ShortCodeInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $serviceSid The SID of the parent [Service](https://www.twilio.com/docs/proxy/api/service) resource.
-	 * @param string $sid The Twilio-provided string that uniquely identifies the ShortCode resource to delete.
-	 */
-	public function __construct(Version $version, array $payload, string $serviceSid, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the ShortCodeInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $serviceSid The SID of the parent [Service](https://www.twilio.com/docs/proxy/api/service) resource.
+     * @param string $sid The Twilio-provided string that uniquely identifies the ShortCode resource to delete.
+     */
+    public function __construct(Version $version, array $payload, string $serviceSid, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'serviceSid' => Values::array_get($payload, 'service_sid'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'shortCode' => Values::array_get($payload, 'short_code'),
-			'isoCountry' => Values::array_get($payload, 'iso_country'),
-			'capabilities' => Deserialize::phoneNumberCapabilities(Values::array_get($payload, 'capabilities')),
-			'url' => Values::array_get($payload, 'url'),
-			'isReserved' => Values::array_get($payload, 'is_reserved'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'serviceSid' => Values::array_get($payload, 'service_sid'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'shortCode' => Values::array_get($payload, 'short_code'),
+            'isoCountry' => Values::array_get($payload, 'iso_country'),
+            'capabilities' => Deserialize::phoneNumberCapabilities(Values::array_get($payload, 'capabilities')),
+            'url' => Values::array_get($payload, 'url'),
+            'isReserved' => Values::array_get($payload, 'is_reserved'),
+        ];
 
-		$this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return ShortCodeContext Context for this ShortCodeInstance
+     */
+    protected function proxy(): ShortCodeContext
+    {
+        if (!$this->context) {
+            $this->context = new ShortCodeContext(
+                $this->version,
+                $this->solution['serviceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Delete the ShortCodeInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->delete();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the ShortCodeInstance
+     *
+     * @return ShortCodeInstance Fetched ShortCodeInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ShortCodeInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->fetch();
+    }
 
-		return '[Twilio.Proxy.V1.ShortCodeInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Update the ShortCodeInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return ShortCodeInstance Updated ShortCodeInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): ShortCodeInstance
+    {
 
-	/**
-	 * Delete the ShortCodeInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        return $this->proxy()->update($options);
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-	/**
-	 * Fetch the ShortCodeInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ShortCodeInstance Fetched ShortCodeInstance
-	 */
-	public function fetch() : ShortCodeInstance
-	{
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->proxy()->fetch();
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Update the ShortCodeInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ShortCodeInstance Updated ShortCodeInstance
-	 */
-	public function update(array $options = []) : ShortCodeInstance
-	{
-
-		return $this->proxy()->update($options);
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return ShortCodeContext Context for this ShortCodeInstance
-	 */
-	protected function proxy() : ShortCodeContext
-	{
-		if (! $this->context) {
-			$this->context = new ShortCodeContext(
-				$this->version,
-				$this->solution['serviceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Proxy.V1.ShortCodeInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

@@ -23,165 +23,171 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class InsightsQuestionnairesCategoryList extends ListResource
-	{
-	/**
-	 * Construct the InsightsQuestionnairesCategoryList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the InsightsQuestionnairesCategoryList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/Insights/QualityManagement/Categories';
-	}
+        $this->uri = '/Insights/QualityManagement/Categories';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.FlexApi.V1.InsightsQuestionnairesCategoryList]';
-	}
+    /**
+     * Create the InsightsQuestionnairesCategoryInstance
+     *
+     * @param string $name The name of this category.
+     * @param array|Options $options Optional Arguments
+     * @return InsightsQuestionnairesCategoryInstance Created InsightsQuestionnairesCategoryInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $name, array $options = []): InsightsQuestionnairesCategoryInstance
+    {
 
-	/**
-	 * Create the InsightsQuestionnairesCategoryInstance
-	 *
-	 * @param string $name The name of this category.
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InsightsQuestionnairesCategoryInstance Created InsightsQuestionnairesCategoryInstance
-	 */
-	public function create(string $name, array $options = []) : InsightsQuestionnairesCategoryInstance
-	{
+        $options = new Values($options);
 
-		$options = new Values($options);
+        $data = Values::of([
+            'Name' =>
+                $name,
+        ]);
 
-		$data = Values::of([
-			'Name' => $name,
-		]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Authorization' => $options['authorization']]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Authorization' => $options['authorization']]);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return new InsightsQuestionnairesCategoryInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new InsightsQuestionnairesCategoryInstance(
-			$this->version,
-			$payload
-		);
-	}
 
-	/**
-	 * Constructs a InsightsQuestionnairesCategoryContext
-	 *
-	 * @param string $categorySid The SID of the category to be deleted
-	 */
-	public function getContext(
-		string $categorySid
-	) : InsightsQuestionnairesCategoryContext
-	{
-		return new InsightsQuestionnairesCategoryContext(
-			$this->version,
-			$categorySid
-		);
-	}
+    /**
+     * Reads InsightsQuestionnairesCategoryInstance records from the API as a list.
+     * Unlike stream(), this operation is eager and will load `limit` records into
+     * memory before returning.
+     *
+     * @param int $limit Upper limit for the number of records to return. read()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, read()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return InsightsQuestionnairesCategoryInstance[] Array of results
+     */
+    public function read(int $limit = null, $pageSize = null): array
+    {
+        return \iterator_to_array($this->stream($limit, $pageSize), false);
+    }
 
-	/**
-	 * Retrieve a specific page of InsightsQuestionnairesCategoryInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param string $targetUrl API-generated URL for the requested results page
-	 * @return InsightsQuestionnairesCategoryPage Page of InsightsQuestionnairesCategoryInstance
-	 */
-	public function getPage(string $targetUrl) : InsightsQuestionnairesCategoryPage
-	{
-		$response = $this->version->getDomain()->getClient()->request(
-			'GET',
-			$targetUrl
-		);
+    /**
+     * Streams InsightsQuestionnairesCategoryInstance records from the API as a generator stream.
+     * This operation lazily loads records as efficiently as possible until the
+     * limit
+     * is reached.
+     * The results are returned as a generator, so this operation is memory
+     * efficient.
+     *
+     * @param int $limit Upper limit for the number of records to return. stream()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, stream()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return Stream stream of results
+     */
+    public function stream(int $limit = null, $pageSize = null): Stream
+    {
+        $limits = $this->version->readLimits($limit, $pageSize);
 
-		return new InsightsQuestionnairesCategoryPage($this->version, $response, $this->solution);
-	}
+        $page = $this->page($limits['pageSize']);
 
-	/**
-	 * Retrieve a single page of InsightsQuestionnairesCategoryInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param mixed $pageSize Number of records to return, defaults to 50
-	 * @param string $pageToken PageToken provided by the API
-	 * @param mixed $pageNumber Page Number, this value is simply for client state
-	 * @return InsightsQuestionnairesCategoryPage Page of InsightsQuestionnairesCategoryInstance
-	 */
-	public function page(
-		$pageSize = Values::NONE,
-		string $pageToken = Values::NONE,
-		$pageNumber = Values::NONE
-	) : InsightsQuestionnairesCategoryPage
-	{
+        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+    }
 
-		$params = Values::of([
-			'Authorization' => $options['authorization'],
-			'PageToken' => $pageToken,
-			'Page' => $pageNumber,
-			'PageSize' => $pageSize,
-		]);
+    /**
+     * Retrieve a single page of InsightsQuestionnairesCategoryInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param mixed $pageSize Number of records to return, defaults to 50
+     * @param string $pageToken PageToken provided by the API
+     * @param mixed $pageNumber Page Number, this value is simply for client state
+     * @return InsightsQuestionnairesCategoryPage Page of InsightsQuestionnairesCategoryInstance
+     */
+    public function page(
+        $pageSize = Values::NONE,
+        string $pageToken = Values::NONE,
+        $pageNumber = Values::NONE
+    ): InsightsQuestionnairesCategoryPage
+    {
 
-		$response = $this->version->page('GET', $this->uri, $params);
+        $params = Values::of([
+            'Authorization' =>
+                $options['authorization'],
+            'PageToken' => $pageToken,
+            'Page' => $pageNumber,
+            'PageSize' => $pageSize,
+        ]);
 
-		return new InsightsQuestionnairesCategoryPage($this->version, $response, $this->solution);
-	}
+        $response = $this->version->page('GET', $this->uri, $params);
 
-	/**
-	 * Reads InsightsQuestionnairesCategoryInstance records from the API as a list.
-	 * Unlike stream(), this operation is eager and will load `limit` records into
-	 * memory before returning.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. read()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, read()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return InsightsQuestionnairesCategoryInstance[] Array of results
-	 */
-	public function read(?int $limit = null, $pageSize = null) : array
-	{
-		return \iterator_to_array($this->stream($limit, $pageSize), false);
-	}
+        return new InsightsQuestionnairesCategoryPage($this->version, $response, $this->solution);
+    }
 
-	/**
-	 * Streams InsightsQuestionnairesCategoryInstance records from the API as a generator stream.
-	 * This operation lazily loads records as efficiently as possible until the
-	 * limit
-	 * is reached.
-	 * The results are returned as a generator, so this operation is memory
-	 * efficient.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. stream()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, stream()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return Stream stream of results
-	 */
-	public function stream(?int $limit = null, $pageSize = null) : Stream
-	{
-		$limits = $this->version->readLimits($limit, $pageSize);
+    /**
+     * Retrieve a specific page of InsightsQuestionnairesCategoryInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return InsightsQuestionnairesCategoryPage Page of InsightsQuestionnairesCategoryInstance
+     */
+    public function getPage(string $targetUrl): InsightsQuestionnairesCategoryPage
+    {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
 
-		$page = $this->page($limits['pageSize']);
+        return new InsightsQuestionnairesCategoryPage($this->version, $response, $this->solution);
+    }
 
-		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-	}
+
+    /**
+     * Constructs a InsightsQuestionnairesCategoryContext
+     *
+     * @param string $categorySid The SID of the category to be deleted
+     */
+    public function getContext(
+        string $categorySid
+        
+    ): InsightsQuestionnairesCategoryContext
+    {
+        return new InsightsQuestionnairesCategoryContext(
+            $this->version,
+            $categorySid
+        );
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.FlexApi.V1.InsightsQuestionnairesCategoryList]';
+    }
 }

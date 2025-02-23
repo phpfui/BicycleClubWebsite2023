@@ -14,12 +14,14 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Content\V1\Content;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+
 
 /**
  * @property string|null $name
@@ -31,58 +33,59 @@ use Twilio\Version;
  */
 class ApprovalCreateInstance extends InstanceResource
 {
-	/**
-	 * Initialize the ApprovalCreateInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 */
-	public function __construct(Version $version, array $payload, string $contentSid)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the ApprovalCreateInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $contentSid 
+     */
+    public function __construct(Version $version, array $payload, string $contentSid)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'name' => Values::array_get($payload, 'name'),
-			'category' => Values::array_get($payload, 'category'),
-			'contentType' => Values::array_get($payload, 'content_type'),
-			'status' => Values::array_get($payload, 'status'),
-			'rejectionReason' => Values::array_get($payload, 'rejection_reason'),
-			'allowCategoryChange' => Values::array_get($payload, 'allow_category_change'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'name' => Values::array_get($payload, 'name'),
+            'category' => Values::array_get($payload, 'category'),
+            'contentType' => Values::array_get($payload, 'content_type'),
+            'status' => Values::array_get($payload, 'status'),
+            'rejectionReason' => Values::array_get($payload, 'rejection_reason'),
+            'allowCategoryChange' => Values::array_get($payload, 'allow_category_change'),
+        ];
 
-		$this->solution = ['contentSid' => $contentSid, ];
-	}
+        $this->solution = ['contentSid' => $contentSid, ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-			return $this->{$method}();
-		}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
-
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Content.V1.ApprovalCreateInstance]';
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Content.V1.ApprovalCreateInstance]';
+    }
 }
+

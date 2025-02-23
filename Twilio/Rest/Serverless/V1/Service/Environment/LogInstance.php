@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Serverless\V1\Service\Environment;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $sid
@@ -38,105 +40,103 @@ use Twilio\Version;
  */
 class LogInstance extends InstanceResource
 {
-	/**
-	 * Initialize the LogInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $serviceSid The SID of the Service to fetch the Log resource from.
-	 * @param string $environmentSid The SID of the environment with the Log resource to fetch.
-	 * @param string $sid The SID of the Log resource to fetch.
-	 */
-	public function __construct(Version $version, array $payload, string $serviceSid, string $environmentSid, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the LogInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $serviceSid The SID of the Service to fetch the Log resource from.
+     * @param string $environmentSid The SID of the environment with the Log resource to fetch.
+     * @param string $sid The SID of the Log resource to fetch.
+     */
+    public function __construct(Version $version, array $payload, string $serviceSid, string $environmentSid, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'serviceSid' => Values::array_get($payload, 'service_sid'),
-			'environmentSid' => Values::array_get($payload, 'environment_sid'),
-			'buildSid' => Values::array_get($payload, 'build_sid'),
-			'deploymentSid' => Values::array_get($payload, 'deployment_sid'),
-			'functionSid' => Values::array_get($payload, 'function_sid'),
-			'requestSid' => Values::array_get($payload, 'request_sid'),
-			'level' => Values::array_get($payload, 'level'),
-			'message' => Values::array_get($payload, 'message'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'serviceSid' => Values::array_get($payload, 'service_sid'),
+            'environmentSid' => Values::array_get($payload, 'environment_sid'),
+            'buildSid' => Values::array_get($payload, 'build_sid'),
+            'deploymentSid' => Values::array_get($payload, 'deployment_sid'),
+            'functionSid' => Values::array_get($payload, 'function_sid'),
+            'requestSid' => Values::array_get($payload, 'request_sid'),
+            'level' => Values::array_get($payload, 'level'),
+            'message' => Values::array_get($payload, 'message'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['serviceSid' => $serviceSid, 'environmentSid' => $environmentSid, 'sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['serviceSid' => $serviceSid, 'environmentSid' => $environmentSid, 'sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return LogContext Context for this LogInstance
+     */
+    protected function proxy(): LogContext
+    {
+        if (!$this->context) {
+            $this->context = new LogContext(
+                $this->version,
+                $this->solution['serviceSid'],
+                $this->solution['environmentSid'],
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the LogInstance
+     *
+     * @return LogInstance Fetched LogInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): LogInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.Serverless.V1.LogInstance ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the LogInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return LogInstance Fetched LogInstance
-	 */
-	public function fetch() : LogInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return LogContext Context for this LogInstance
-	 */
-	protected function proxy() : LogContext
-	{
-		if (! $this->context) {
-			$this->context = new LogContext(
-				$this->version,
-				$this->solution['serviceSid'],
-				$this->solution['environmentSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Serverless.V1.LogInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

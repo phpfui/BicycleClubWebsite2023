@@ -14,83 +14,88 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Proxy\V1\Service\Session\Participant;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class MessageInteractionContext extends InstanceContext
-	{
-	/**
-	 * Initialize the MessageInteractionContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid The SID of the parent [Service](https://www.twilio.com/docs/proxy/api/service) resource.
-	 * @param string $sessionSid The SID of the parent [Session](https://www.twilio.com/docs/proxy/api/session) resource.
-	 * @param string $participantSid The SID of the [Participant](https://www.twilio.com/docs/proxy/api/participant) resource.
-	 * @param string $sid The Twilio-provided string that uniquely identifies the MessageInteraction resource to fetch.
-	 */
-	public function __construct(
-		Version $version,
-		$serviceSid,
-		$sessionSid,
-		$participantSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the MessageInteractionContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid The SID of the parent [Service](https://www.twilio.com/docs/proxy/api/service) resource.
+     * @param string $sessionSid The SID of the parent [Session](https://www.twilio.com/docs/proxy/api/session) resource.
+     * @param string $participantSid The SID of the [Participant](https://www.twilio.com/docs/proxy/api/participant) resource.
+     * @param string $sid The Twilio-provided string that uniquely identifies the MessageInteraction resource to fetch.
+     */
+    public function __construct(
+        Version $version,
+        $serviceSid,
+        $sessionSid,
+        $participantSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
-			'sessionSid' => $sessionSid,
-			'participantSid' => $participantSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        'sessionSid' =>
+            $sessionSid,
+        'participantSid' =>
+            $participantSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/Sessions/' . \rawurlencode($sessionSid)
-		. '/Participants/' . \rawurlencode($participantSid)
-		. '/MessageInteractions/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/Sessions/' . \rawurlencode($sessionSid)
+        .'/Participants/' . \rawurlencode($participantSid)
+        .'/MessageInteractions/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the MessageInteractionInstance
+     *
+     * @return MessageInteractionInstance Fetched MessageInteractionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): MessageInteractionInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Proxy.V1.MessageInteractionContext ' . \implode(' ', $context) . ']';
-	}
+        return new MessageInteractionInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['sessionSid'],
+            $this->solution['participantSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the MessageInteractionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return MessageInteractionInstance Fetched MessageInteractionInstance
-	 */
-	public function fetch() : MessageInteractionInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new MessageInteractionInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['sessionSid'],
-			$this->solution['participantSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Proxy.V1.MessageInteractionContext ' . \implode(' ', $context) . ']';
+    }
 }

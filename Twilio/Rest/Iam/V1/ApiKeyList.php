@@ -19,45 +19,47 @@ namespace Twilio\Rest\Iam\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class ApiKeyList extends ListResource
-	{
-	/**
-	 * Construct the ApiKeyList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the ApiKeyList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Iam.V1.ApiKeyList]';
-	}
+    /**
+     * Constructs a ApiKeyContext
+     *
+     * @param string $sid The Twilio-provided string that uniquely identifies the Key resource to delete.
+     */
+    public function getContext(
+        string $sid
+        
+    ): ApiKeyContext
+    {
+        return new ApiKeyContext(
+            $this->version,
+            $sid
+        );
+    }
 
-	/**
-	 * Constructs a ApiKeyContext
-	 *
-	 * @param string $sid The Twilio-provided string that uniquely identifies the Key resource to delete.
-	 */
-	public function getContext(
-		string $sid
-	) : ApiKeyContext
-	{
-		return new ApiKeyContext(
-			$this->version,
-			$sid
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Iam.V1.ApiKeyList]';
+    }
 }

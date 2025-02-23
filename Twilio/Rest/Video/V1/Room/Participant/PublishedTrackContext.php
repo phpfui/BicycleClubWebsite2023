@@ -14,78 +14,82 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Video\V1\Room\Participant;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class PublishedTrackContext extends InstanceContext
-	{
-	/**
-	 * Initialize the PublishedTrackContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $roomSid The SID of the Room resource where the Track resource to fetch is published.
-	 * @param string $participantSid The SID of the Participant resource with the published track to fetch.
-	 * @param string $sid The SID of the RoomParticipantPublishedTrack resource to fetch.
-	 */
-	public function __construct(
-		Version $version,
-		$roomSid,
-		$participantSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the PublishedTrackContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $roomSid The SID of the Room resource where the Track resource to fetch is published.
+     * @param string $participantSid The SID of the Participant resource with the published track to fetch.
+     * @param string $sid The SID of the RoomParticipantPublishedTrack resource to fetch.
+     */
+    public function __construct(
+        Version $version,
+        $roomSid,
+        $participantSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'roomSid' => $roomSid,
-			'participantSid' => $participantSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'roomSid' =>
+            $roomSid,
+        'participantSid' =>
+            $participantSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Rooms/' . \rawurlencode($roomSid)
-		. '/Participants/' . \rawurlencode($participantSid)
-		. '/PublishedTracks/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Rooms/' . \rawurlencode($roomSid)
+        .'/Participants/' . \rawurlencode($participantSid)
+        .'/PublishedTracks/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the PublishedTrackInstance
+     *
+     * @return PublishedTrackInstance Fetched PublishedTrackInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): PublishedTrackInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Video.V1.PublishedTrackContext ' . \implode(' ', $context) . ']';
-	}
+        return new PublishedTrackInstance(
+            $this->version,
+            $payload,
+            $this->solution['roomSid'],
+            $this->solution['participantSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the PublishedTrackInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PublishedTrackInstance Fetched PublishedTrackInstance
-	 */
-	public function fetch() : PublishedTrackInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new PublishedTrackInstance(
-			$this->version,
-			$payload,
-			$this->solution['roomSid'],
-			$this->solution['participantSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Video.V1.PublishedTrackContext ' . \implode(' ', $context) . ']';
+    }
 }

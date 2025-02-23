@@ -14,99 +14,105 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Insights\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class SettingContext extends InstanceContext
-	{
-	/**
-	 * Initialize the SettingContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the SettingContext
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/Voice/Settings';
-	}
+        $this->uri = '/Voice/Settings';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the SettingInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return SettingInstance Fetched SettingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): SettingInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.Insights.V1.SettingContext ' . \implode(' ', $context) . ']';
-	}
+        $params = Values::of([
+            'SubaccountSid' =>
+                $options['subaccountSid'],
+        ]);
 
-	/**
-	 * Fetch the SettingInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SettingInstance Fetched SettingInstance
-	 */
-	public function fetch(array $options = []) : SettingInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
 
-		$options = new Values($options);
+        return new SettingInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		$params = Values::of([
-			'SubaccountSid' => $options['subaccountSid'],
-		]);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
+    /**
+     * Update the SettingInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return SettingInstance Updated SettingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): SettingInstance
+    {
 
-		return new SettingInstance(
-			$this->version,
-			$payload
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the SettingInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SettingInstance Updated SettingInstance
-	 */
-	public function update(array $options = []) : SettingInstance
-	{
+        $data = Values::of([
+            'AdvancedFeatures' =>
+                Serialize::booleanToString($options['advancedFeatures']),
+            'VoiceTrace' =>
+                Serialize::booleanToString($options['voiceTrace']),
+            'SubaccountSid' =>
+                $options['subaccountSid'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'AdvancedFeatures' => Serialize::booleanToString($options['advancedFeatures']),
-			'VoiceTrace' => Serialize::booleanToString($options['voiceTrace']),
-			'SubaccountSid' => $options['subaccountSid'],
-		]);
+        return new SettingInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new SettingInstance(
-			$this->version,
-			$payload
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Insights.V1.SettingContext ' . \implode(' ', $context) . ']';
+    }
 }

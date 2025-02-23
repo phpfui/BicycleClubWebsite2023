@@ -19,174 +19,183 @@ namespace Twilio\Rest\Messaging\V1;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Serialize;
+
 
 class BrandRegistrationList extends ListResource
-	{
-	/**
-	 * Construct the BrandRegistrationList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the BrandRegistrationList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/a2p/BrandRegistrations';
-	}
+        $this->uri = '/a2p/BrandRegistrations';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Messaging.V1.BrandRegistrationList]';
-	}
+    /**
+     * Create the BrandRegistrationInstance
+     *
+     * @param string $customerProfileBundleSid Customer Profile Bundle Sid.
+     * @param string $a2PProfileBundleSid A2P Messaging Profile Bundle Sid.
+     * @param array|Options $options Optional Arguments
+     * @return BrandRegistrationInstance Created BrandRegistrationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $customerProfileBundleSid, string $a2PProfileBundleSid, array $options = []): BrandRegistrationInstance
+    {
 
-	/**
-	 * Create the BrandRegistrationInstance
-	 *
-	 * @param string $customerProfileBundleSid Customer Profile Bundle Sid.
-	 * @param string $a2PProfileBundleSid A2P Messaging Profile Bundle Sid.
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return BrandRegistrationInstance Created BrandRegistrationInstance
-	 */
-	public function create(string $customerProfileBundleSid, string $a2PProfileBundleSid, array $options = []) : BrandRegistrationInstance
-	{
+        $options = new Values($options);
 
-		$options = new Values($options);
+        $data = Values::of([
+            'CustomerProfileBundleSid' =>
+                $customerProfileBundleSid,
+            'A2PProfileBundleSid' =>
+                $a2PProfileBundleSid,
+            'BrandType' =>
+                $options['brandType'],
+            'Mock' =>
+                Serialize::booleanToString($options['mock']),
+            'SkipAutomaticSecVet' =>
+                Serialize::booleanToString($options['skipAutomaticSecVet']),
+        ]);
 
-		$data = Values::of([
-			'CustomerProfileBundleSid' => $customerProfileBundleSid,
-			'A2PProfileBundleSid' => $a2PProfileBundleSid,
-			'BrandType' => $options['brandType'],
-			'Mock' => Serialize::booleanToString($options['mock']),
-			'SkipAutomaticSecVet' => Serialize::booleanToString($options['skipAutomaticSecVet']),
-		]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return new BrandRegistrationInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new BrandRegistrationInstance(
-			$this->version,
-			$payload
-		);
-	}
 
-	/**
-	 * Constructs a BrandRegistrationContext
-	 *
-	 * @param string $sid The SID of the Brand Registration resource to fetch.
-	 */
-	public function getContext(
-		string $sid
-	) : BrandRegistrationContext
-	{
-		return new BrandRegistrationContext(
-			$this->version,
-			$sid
-		);
-	}
+    /**
+     * Reads BrandRegistrationInstance records from the API as a list.
+     * Unlike stream(), this operation is eager and will load `limit` records into
+     * memory before returning.
+     *
+     * @param int $limit Upper limit for the number of records to return. read()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, read()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return BrandRegistrationInstance[] Array of results
+     */
+    public function read(int $limit = null, $pageSize = null): array
+    {
+        return \iterator_to_array($this->stream($limit, $pageSize), false);
+    }
 
-	/**
-	 * Retrieve a specific page of BrandRegistrationInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param string $targetUrl API-generated URL for the requested results page
-	 * @return BrandRegistrationPage Page of BrandRegistrationInstance
-	 */
-	public function getPage(string $targetUrl) : BrandRegistrationPage
-	{
-		$response = $this->version->getDomain()->getClient()->request(
-			'GET',
-			$targetUrl
-		);
+    /**
+     * Streams BrandRegistrationInstance records from the API as a generator stream.
+     * This operation lazily loads records as efficiently as possible until the
+     * limit
+     * is reached.
+     * The results are returned as a generator, so this operation is memory
+     * efficient.
+     *
+     * @param int $limit Upper limit for the number of records to return. stream()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, stream()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return Stream stream of results
+     */
+    public function stream(int $limit = null, $pageSize = null): Stream
+    {
+        $limits = $this->version->readLimits($limit, $pageSize);
 
-		return new BrandRegistrationPage($this->version, $response, $this->solution);
-	}
+        $page = $this->page($limits['pageSize']);
 
-	/**
-	 * Retrieve a single page of BrandRegistrationInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param mixed $pageSize Number of records to return, defaults to 50
-	 * @param string $pageToken PageToken provided by the API
-	 * @param mixed $pageNumber Page Number, this value is simply for client state
-	 * @return BrandRegistrationPage Page of BrandRegistrationInstance
-	 */
-	public function page(
-		$pageSize = Values::NONE,
-		string $pageToken = Values::NONE,
-		$pageNumber = Values::NONE
-	) : BrandRegistrationPage
-	{
+        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+    }
 
-		$params = Values::of([
-			'PageToken' => $pageToken,
-			'Page' => $pageNumber,
-			'PageSize' => $pageSize,
-		]);
+    /**
+     * Retrieve a single page of BrandRegistrationInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param mixed $pageSize Number of records to return, defaults to 50
+     * @param string $pageToken PageToken provided by the API
+     * @param mixed $pageNumber Page Number, this value is simply for client state
+     * @return BrandRegistrationPage Page of BrandRegistrationInstance
+     */
+    public function page(
+        $pageSize = Values::NONE,
+        string $pageToken = Values::NONE,
+        $pageNumber = Values::NONE
+    ): BrandRegistrationPage
+    {
 
-		$response = $this->version->page('GET', $this->uri, $params);
+        $params = Values::of([
+            'PageToken' => $pageToken,
+            'Page' => $pageNumber,
+            'PageSize' => $pageSize,
+        ]);
 
-		return new BrandRegistrationPage($this->version, $response, $this->solution);
-	}
+        $response = $this->version->page('GET', $this->uri, $params);
 
-	/**
-	 * Reads BrandRegistrationInstance records from the API as a list.
-	 * Unlike stream(), this operation is eager and will load `limit` records into
-	 * memory before returning.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. read()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, read()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return BrandRegistrationInstance[] Array of results
-	 */
-	public function read(?int $limit = null, $pageSize = null) : array
-	{
-		return \iterator_to_array($this->stream($limit, $pageSize), false);
-	}
+        return new BrandRegistrationPage($this->version, $response, $this->solution);
+    }
 
-	/**
-	 * Streams BrandRegistrationInstance records from the API as a generator stream.
-	 * This operation lazily loads records as efficiently as possible until the
-	 * limit
-	 * is reached.
-	 * The results are returned as a generator, so this operation is memory
-	 * efficient.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. stream()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, stream()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return Stream stream of results
-	 */
-	public function stream(?int $limit = null, $pageSize = null) : Stream
-	{
-		$limits = $this->version->readLimits($limit, $pageSize);
+    /**
+     * Retrieve a specific page of BrandRegistrationInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return BrandRegistrationPage Page of BrandRegistrationInstance
+     */
+    public function getPage(string $targetUrl): BrandRegistrationPage
+    {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
 
-		$page = $this->page($limits['pageSize']);
+        return new BrandRegistrationPage($this->version, $response, $this->solution);
+    }
 
-		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-	}
+
+    /**
+     * Constructs a BrandRegistrationContext
+     *
+     * @param string $sid The SID of the Brand Registration resource to fetch.
+     */
+    public function getContext(
+        string $sid
+        
+    ): BrandRegistrationContext
+    {
+        return new BrandRegistrationContext(
+            $this->version,
+            $sid
+        );
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Messaging.V1.BrandRegistrationList]';
+    }
 }

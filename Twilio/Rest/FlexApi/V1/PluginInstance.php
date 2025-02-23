@@ -14,15 +14,17 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\FlexApi\V1;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
-use Twilio\Rest\FlexApi\V1\Plugin\PluginVersionsList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+use Twilio\Rest\FlexApi\V1\Plugin\PluginVersionsList;
+
 
 /**
  * @property string|null $sid
@@ -38,123 +40,121 @@ use Twilio\Version;
  */
 class PluginInstance extends InstanceResource
 {
-	protected $_pluginVersions;
+    protected $_pluginVersions;
 
-	/**
-	 * Initialize the PluginInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $sid The SID of the Flex Plugin resource to fetch.
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the PluginInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid The SID of the Flex Plugin resource to fetch.
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'uniqueName' => Values::array_get($payload, 'unique_name'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'description' => Values::array_get($payload, 'description'),
-			'archived' => Values::array_get($payload, 'archived'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'url' => Values::array_get($payload, 'url'),
-			'links' => Values::array_get($payload, 'links'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'uniqueName' => Values::array_get($payload, 'unique_name'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'description' => Values::array_get($payload, 'description'),
+            'archived' => Values::array_get($payload, 'archived'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
+        ];
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return PluginContext Context for this PluginInstance
+     */
+    protected function proxy(): PluginContext
+    {
+        if (!$this->context) {
+            $this->context = new PluginContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the PluginInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return PluginInstance Fetched PluginInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): PluginInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch($options);
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Update the PluginInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return PluginInstance Updated PluginInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): PluginInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->update($options);
+    }
 
-		return '[Twilio.FlexApi.V1.PluginInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Access the pluginVersions
+     */
+    protected function getPluginVersions(): PluginVersionsList
+    {
+        return $this->proxy()->pluginVersions;
+    }
 
-	/**
-	 * Fetch the PluginInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PluginInstance Fetched PluginInstance
-	 */
-	public function fetch(array $options = []) : PluginInstance
-	{
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		return $this->proxy()->fetch($options);
-	}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Update the PluginInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PluginInstance Updated PluginInstance
-	 */
-	public function update(array $options = []) : PluginInstance
-	{
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		return $this->proxy()->update($options);
-	}
-
-	/**
-	 * Access the pluginVersions
-	 */
-	protected function getPluginVersions() : PluginVersionsList
-	{
-		return $this->proxy()->pluginVersions;
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return PluginContext Context for this PluginInstance
-	 */
-	protected function proxy() : PluginContext
-	{
-		if (! $this->context) {
-			$this->context = new PluginContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.FlexApi.V1.PluginInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

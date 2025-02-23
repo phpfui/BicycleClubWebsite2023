@@ -14,6 +14,7 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Numbers\V2\RegulatoryCompliance;
 
 use Twilio\Exceptions\TwilioException;
@@ -21,6 +22,7 @@ use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+
 
 /**
  * @property string|null $sid
@@ -33,97 +35,95 @@ use Twilio\Version;
  */
 class RegulationInstance extends InstanceResource
 {
-	/**
-	 * Initialize the RegulationInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $sid The unique string that identifies the Regulation resource.
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the RegulationInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid The unique string that identifies the Regulation resource.
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'isoCountry' => Values::array_get($payload, 'iso_country'),
-			'numberType' => Values::array_get($payload, 'number_type'),
-			'endUserType' => Values::array_get($payload, 'end_user_type'),
-			'requirements' => Values::array_get($payload, 'requirements'),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'isoCountry' => Values::array_get($payload, 'iso_country'),
+            'numberType' => Values::array_get($payload, 'number_type'),
+            'endUserType' => Values::array_get($payload, 'end_user_type'),
+            'requirements' => Values::array_get($payload, 'requirements'),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return RegulationContext Context for this RegulationInstance
+     */
+    protected function proxy(): RegulationContext
+    {
+        if (!$this->context) {
+            $this->context = new RegulationContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the RegulationInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return RegulationInstance Fetched RegulationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): RegulationInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch($options);
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.Numbers.V2.RegulationInstance ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the RegulationInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RegulationInstance Fetched RegulationInstance
-	 */
-	public function fetch(array $options = []) : RegulationInstance
-	{
-
-		return $this->proxy()->fetch($options);
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return RegulationContext Context for this RegulationInstance
-	 */
-	protected function proxy() : RegulationContext
-	{
-		if (! $this->context) {
-			$this->context = new RegulationContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Numbers.V2.RegulationInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

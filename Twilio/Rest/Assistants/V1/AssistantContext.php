@@ -14,17 +14,19 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Assistants\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
+use Twilio\Values;
+use Twilio\Version;
+use Twilio\InstanceContext;
 use Twilio\Rest\Assistants\V1\Assistant\AssistantsKnowledgeList;
 use Twilio\Rest\Assistants\V1\Assistant\AssistantsToolList;
 use Twilio\Rest\Assistants\V1\Assistant\FeedbackList;
 use Twilio\Rest\Assistants\V1\Assistant\MessageList;
-use Twilio\Values;
-use Twilio\Version;
+
 
 /**
  * @property AssistantsKnowledgeList $assistantsKnowledge
@@ -35,200 +37,196 @@ use Twilio\Version;
  * @method \Twilio\Rest\Assistants\V1\Assistant\AssistantsKnowledgeContext assistantsKnowledge(string $id)
  */
 class AssistantContext extends InstanceContext
-	{
-	protected $_assistantsKnowledge;
+    {
+    protected $_assistantsKnowledge;
+    protected $_assistantsTools;
+    protected $_feedbacks;
+    protected $_messages;
 
-	protected $_assistantsTools;
+    /**
+     * Initialize the AssistantContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $id
+     */
+    public function __construct(
+        Version $version,
+        $id
+    ) {
+        parent::__construct($version);
 
-	protected $_feedbacks;
+        // Path Solution
+        $this->solution = [
+        'id' =>
+            $id,
+        ];
 
-	protected $_messages;
+        $this->uri = '/Assistants/' . \rawurlencode($id)
+        .'';
+    }
 
-	/**
-	 * Initialize the AssistantContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $id
-	 */
-	public function __construct(
-		Version $version,
-		$id
-	) {
-		parent::__construct($version);
+    /**
+     * Delete the AssistantInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		// Path Solution
-		$this->solution = [
-			'id' => $id,
-		];
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		$this->uri = '/Assistants/' . \rawurlencode($id)
-		. '';
-	}
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Fetch the AssistantInstance
+     *
+     * @return AssistantInstance Fetched AssistantInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): AssistantInstance
+    {
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        return new AssistantInstance(
+            $this->version,
+            $payload,
+            $this->solution['id']
+        );
+    }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
 
-			return $this->{$method}();
-		}
+    /**
+     * Update the AssistantInstance
+     *
+     * @return AssistantInstance Updated AssistantInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(): AssistantInstance
+    {
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $data = $assistantsV1ServiceUpdateAssistantRequest->toArray();
+        $headers['Content-Type'] = 'application/json';
+        $payload = $this->version->update('PUT', $this->uri, [], $data, $headers);
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        return new AssistantInstance(
+            $this->version,
+            $payload,
+            $this->solution['id']
+        );
+    }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
 
-		return '[Twilio.Assistants.V1.AssistantContext ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Access the assistantsKnowledge
+     */
+    protected function getAssistantsKnowledge(): AssistantsKnowledgeList
+    {
+        if (!$this->_assistantsKnowledge) {
+            $this->_assistantsKnowledge = new AssistantsKnowledgeList(
+                $this->version,
+                $this->solution['id']
+            );
+        }
 
-	/**
-	 * Delete the AssistantInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        return $this->_assistantsKnowledge;
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+    /**
+     * Access the assistantsTools
+     */
+    protected function getAssistantsTools(): AssistantsToolList
+    {
+        if (!$this->_assistantsTools) {
+            $this->_assistantsTools = new AssistantsToolList(
+                $this->version,
+                $this->solution['id']
+            );
+        }
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return $this->_assistantsTools;
+    }
 
-	/**
-	 * Fetch the AssistantInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AssistantInstance Fetched AssistantInstance
-	 */
-	public function fetch() : AssistantInstance
-	{
+    /**
+     * Access the feedbacks
+     */
+    protected function getFeedbacks(): FeedbackList
+    {
+        if (!$this->_feedbacks) {
+            $this->_feedbacks = new FeedbackList(
+                $this->version,
+                $this->solution['id']
+            );
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+        return $this->_feedbacks;
+    }
 
-		return new AssistantInstance(
-			$this->version,
-			$payload,
-			$this->solution['id']
-		);
-	}
+    /**
+     * Access the messages
+     */
+    protected function getMessages(): MessageList
+    {
+        if (!$this->_messages) {
+            $this->_messages = new MessageList(
+                $this->version,
+                $this->solution['id']
+            );
+        }
 
-	/**
-	 * Update the AssistantInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AssistantInstance Updated AssistantInstance
-	 */
-	public function update() : AssistantInstance
-	{
+        return $this->_messages;
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$data = $assistantsV1ServiceUpdateAssistantRequest->toArray();
-		$headers['Content-Type'] = 'application/json';
-		$payload = $this->version->update('PUT', $this->uri, [], $data, $headers);
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return new AssistantInstance(
-			$this->version,
-			$payload,
-			$this->solution['id']
-		);
-	}
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-	/**
-	 * Access the assistantsKnowledge
-	 */
-	protected function getAssistantsKnowledge() : AssistantsKnowledgeList
-	{
-		if (! $this->_assistantsKnowledge) {
-			$this->_assistantsKnowledge = new AssistantsKnowledgeList(
-				$this->version,
-				$this->solution['id']
-			);
-		}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		return $this->_assistantsKnowledge;
-	}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-	/**
-	 * Access the assistantsTools
-	 */
-	protected function getAssistantsTools() : AssistantsToolList
-	{
-		if (! $this->_assistantsTools) {
-			$this->_assistantsTools = new AssistantsToolList(
-				$this->version,
-				$this->solution['id']
-			);
-		}
-
-		return $this->_assistantsTools;
-	}
-
-	/**
-	 * Access the feedbacks
-	 */
-	protected function getFeedbacks() : FeedbackList
-	{
-		if (! $this->_feedbacks) {
-			$this->_feedbacks = new FeedbackList(
-				$this->version,
-				$this->solution['id']
-			);
-		}
-
-		return $this->_feedbacks;
-	}
-
-	/**
-	 * Access the messages
-	 */
-	protected function getMessages() : MessageList
-	{
-		if (! $this->_messages) {
-			$this->_messages = new MessageList(
-				$this->version,
-				$this->solution['id']
-			);
-		}
-
-		return $this->_messages;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Assistants.V1.AssistantContext ' . \implode(' ', $context) . ']';
+    }
 }

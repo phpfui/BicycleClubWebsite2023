@@ -14,111 +14,116 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Numbers\V2\RegulatoryCompliance;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class EndUserContext extends InstanceContext
-	{
-	/**
-	 * Initialize the EndUserContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The unique string created by Twilio to identify the End User resource.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the EndUserContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The unique string created by Twilio to identify the End User resource.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/RegulatoryCompliance/EndUsers/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/RegulatoryCompliance/EndUsers/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the EndUserInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Numbers.V2.EndUserContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the EndUserInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the EndUserInstance
+     *
+     * @return EndUserInstance Fetched EndUserInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): EndUserInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new EndUserInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the EndUserInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return EndUserInstance Fetched EndUserInstance
-	 */
-	public function fetch() : EndUserInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the EndUserInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return EndUserInstance Updated EndUserInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): EndUserInstance
+    {
 
-		return new EndUserInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the EndUserInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return EndUserInstance Updated EndUserInstance
-	 */
-	public function update(array $options = []) : EndUserInstance
-	{
+        $data = Values::of([
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'Attributes' =>
+                Serialize::jsonObject($options['attributes']),
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'FriendlyName' => $options['friendlyName'],
-			'Attributes' => Serialize::jsonObject($options['attributes']),
-		]);
+        return new EndUserInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new EndUserInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Numbers.V2.EndUserContext ' . \implode(' ', $context) . ']';
+    }
 }

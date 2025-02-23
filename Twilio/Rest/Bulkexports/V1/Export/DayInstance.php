@@ -14,12 +14,14 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Bulkexports\V1\Export;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+
 
 /**
  * @property string|null $redirectTo
@@ -31,97 +33,95 @@ use Twilio\Version;
  */
 class DayInstance extends InstanceResource
 {
-	/**
-	 * Initialize the DayInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $resourceType The type of communication – Messages, Calls, Conferences, and Participants
-	 * @param string $day The ISO 8601 format date of the resources in the file, for a UTC day
-	 */
-	public function __construct(Version $version, array $payload, string $resourceType, ?string $day = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the DayInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $resourceType The type of communication – Messages, Calls, Conferences, and Participants
+     * @param string $day The ISO 8601 format date of the resources in the file, for a UTC day
+     */
+    public function __construct(Version $version, array $payload, string $resourceType, string $day = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'redirectTo' => Values::array_get($payload, 'redirect_to'),
-			'day' => Values::array_get($payload, 'day'),
-			'size' => Values::array_get($payload, 'size'),
-			'createDate' => Values::array_get($payload, 'create_date'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'resourceType' => Values::array_get($payload, 'resource_type'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'redirectTo' => Values::array_get($payload, 'redirect_to'),
+            'day' => Values::array_get($payload, 'day'),
+            'size' => Values::array_get($payload, 'size'),
+            'createDate' => Values::array_get($payload, 'create_date'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'resourceType' => Values::array_get($payload, 'resource_type'),
+        ];
 
-		$this->solution = ['resourceType' => $resourceType, 'day' => $day ?: $this->properties['day'], ];
-	}
+        $this->solution = ['resourceType' => $resourceType, 'day' => $day ?: $this->properties['day'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return DayContext Context for this DayInstance
+     */
+    protected function proxy(): DayContext
+    {
+        if (!$this->context) {
+            $this->context = new DayContext(
+                $this->version,
+                $this->solution['resourceType'],
+                $this->solution['day']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the DayInstance
+     *
+     * @return DayInstance Fetched DayInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): DayInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.Bulkexports.V1.DayInstance ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the DayInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return DayInstance Fetched DayInstance
-	 */
-	public function fetch() : DayInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return DayContext Context for this DayInstance
-	 */
-	protected function proxy() : DayContext
-	{
-		if (! $this->context) {
-			$this->context = new DayContext(
-				$this->version,
-				$this->solution['resourceType'],
-				$this->solution['day']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Bulkexports.V1.DayInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

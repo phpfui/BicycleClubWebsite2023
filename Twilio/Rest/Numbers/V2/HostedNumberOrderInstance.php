@@ -14,15 +14,17 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Numbers\V2;
 
-use Twilio\Base\PhoneNumberCapabilities;
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+use Twilio\Base\PhoneNumberCapabilities;
+
 
 /**
  * @property string|null $sid
@@ -53,139 +55,138 @@ use Twilio\Version;
  */
 class HostedNumberOrderInstance extends InstanceResource
 {
-	/**
-	 * Initialize the HostedNumberOrderInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $sid A 34 character string that uniquely identifies this HostedNumberOrder.
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the HostedNumberOrderInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid A 34 character string that uniquely identifies this HostedNumberOrder.
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'incomingPhoneNumberSid' => Values::array_get($payload, 'incoming_phone_number_sid'),
-			'addressSid' => Values::array_get($payload, 'address_sid'),
-			'signingDocumentSid' => Values::array_get($payload, 'signing_document_sid'),
-			'phoneNumber' => Values::array_get($payload, 'phone_number'),
-			'capabilities' => Deserialize::phoneNumberCapabilities(Values::array_get($payload, 'capabilities')),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'status' => Values::array_get($payload, 'status'),
-			'failureReason' => Values::array_get($payload, 'failure_reason'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'email' => Values::array_get($payload, 'email'),
-			'ccEmails' => Values::array_get($payload, 'cc_emails'),
-			'url' => Values::array_get($payload, 'url'),
-			'contactTitle' => Values::array_get($payload, 'contact_title'),
-			'contactPhoneNumber' => Values::array_get($payload, 'contact_phone_number'),
-			'bulkHostingRequestSid' => Values::array_get($payload, 'bulk_hosting_request_sid'),
-			'nextStep' => Values::array_get($payload, 'next_step'),
-			'verificationAttempts' => Values::array_get($payload, 'verification_attempts'),
-			'verificationCallSids' => Values::array_get($payload, 'verification_call_sids'),
-			'verificationCallDelay' => Values::array_get($payload, 'verification_call_delay'),
-			'verificationCallExtension' => Values::array_get($payload, 'verification_call_extension'),
-			'verificationCode' => Values::array_get($payload, 'verification_code'),
-			'verificationType' => Values::array_get($payload, 'verification_type'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'incomingPhoneNumberSid' => Values::array_get($payload, 'incoming_phone_number_sid'),
+            'addressSid' => Values::array_get($payload, 'address_sid'),
+            'signingDocumentSid' => Values::array_get($payload, 'signing_document_sid'),
+            'phoneNumber' => Values::array_get($payload, 'phone_number'),
+            'capabilities' => Deserialize::phoneNumberCapabilities(Values::array_get($payload, 'capabilities')),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'status' => Values::array_get($payload, 'status'),
+            'failureReason' => Values::array_get($payload, 'failure_reason'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'email' => Values::array_get($payload, 'email'),
+            'ccEmails' => Values::array_get($payload, 'cc_emails'),
+            'url' => Values::array_get($payload, 'url'),
+            'contactTitle' => Values::array_get($payload, 'contact_title'),
+            'contactPhoneNumber' => Values::array_get($payload, 'contact_phone_number'),
+            'bulkHostingRequestSid' => Values::array_get($payload, 'bulk_hosting_request_sid'),
+            'nextStep' => Values::array_get($payload, 'next_step'),
+            'verificationAttempts' => Values::array_get($payload, 'verification_attempts'),
+            'verificationCallSids' => Values::array_get($payload, 'verification_call_sids'),
+            'verificationCallDelay' => Values::array_get($payload, 'verification_call_delay'),
+            'verificationCallExtension' => Values::array_get($payload, 'verification_call_extension'),
+            'verificationCode' => Values::array_get($payload, 'verification_code'),
+            'verificationType' => Values::array_get($payload, 'verification_type'),
+        ];
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return HostedNumberOrderContext Context for this HostedNumberOrderInstance
+     */
+    protected function proxy(): HostedNumberOrderContext
+    {
+        if (!$this->context) {
+            $this->context = new HostedNumberOrderContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Delete the HostedNumberOrderInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->delete();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the HostedNumberOrderInstance
+     *
+     * @return HostedNumberOrderInstance Fetched HostedNumberOrderInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): HostedNumberOrderInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->fetch();
+    }
 
-		return '[Twilio.Numbers.V2.HostedNumberOrderInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Update the HostedNumberOrderInstance
+     *
+     * @param string $status
+     * @param array|Options $options Optional Arguments
+     * @return HostedNumberOrderInstance Updated HostedNumberOrderInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $status, array $options = []): HostedNumberOrderInstance
+    {
 
-	/**
-	 * Delete the HostedNumberOrderInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        return $this->proxy()->update($status, $options);
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-	/**
-	 * Fetch the HostedNumberOrderInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return HostedNumberOrderInstance Fetched HostedNumberOrderInstance
-	 */
-	public function fetch() : HostedNumberOrderInstance
-	{
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->proxy()->fetch();
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Update the HostedNumberOrderInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return HostedNumberOrderInstance Updated HostedNumberOrderInstance
-	 */
-	public function update(string $status, array $options = []) : HostedNumberOrderInstance
-	{
-
-		return $this->proxy()->update($status, $options);
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return HostedNumberOrderContext Context for this HostedNumberOrderInstance
-	 */
-	protected function proxy() : HostedNumberOrderContext
-	{
-		if (! $this->context) {
-			$this->context = new HostedNumberOrderContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Numbers.V2.HostedNumberOrderInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

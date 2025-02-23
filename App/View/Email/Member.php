@@ -33,7 +33,8 @@ class Member implements \Stringable
 					$settings = new \App\Table\Setting();
 					$link = $settings->value('homePage');
 					$email = new \App\Tools\EMail();
-					$email->setSubject($_POST['subject'] ?? 'No Subject');
+					$subject = \Soundasleep\Html2Text::convert($_POST['subject'] ?? 'No Subject', ['drop_links' => 'href', 'ignore_errors' => true]);
+					$email->setSubject($subject);
 					$email->addToMember($member->toArray());
 
 					if ($this->signedInMemberId)
@@ -98,7 +99,8 @@ class Member implements \Stringable
 				$form->add($fieldSet);
 				}
 			$fieldSet = new \PHPFUI\FieldSet('Email');
-			$title = empty($_GET['title']) ? '' : \urldecode((string)$_GET['title']);
+			$title = \urldecode($_GET['title'] ?? 'No Subject');
+			$title = \Soundasleep\Html2Text::convert($title, ['drop_links' => 'href', 'ignore_errors' => true]);
 			$subject = new \PHPFUI\Input\Text('subject', 'Subject', $title);
 			$subject->setRequired();
 			$subject->setToolTip('Give us the basic jist of what you are asking here, so we can see it in our inbox.');

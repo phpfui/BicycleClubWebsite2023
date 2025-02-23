@@ -14,73 +14,76 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Messaging\V1\BrandRegistration;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class BrandVettingContext extends InstanceContext
-	{
-	/**
-	 * Initialize the BrandVettingContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $brandSid The SID of the Brand Registration resource of the vettings to create .
-	 * @param string $brandVettingSid The Twilio SID of the third-party vetting record.
-	 */
-	public function __construct(
-		Version $version,
-		$brandSid,
-		$brandVettingSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the BrandVettingContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $brandSid The SID of the Brand Registration resource of the vettings to create .
+     * @param string $brandVettingSid The Twilio SID of the third-party vetting record.
+     */
+    public function __construct(
+        Version $version,
+        $brandSid,
+        $brandVettingSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'brandSid' => $brandSid,
-			'brandVettingSid' => $brandVettingSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'brandSid' =>
+            $brandSid,
+        'brandVettingSid' =>
+            $brandVettingSid,
+        ];
 
-		$this->uri = '/a2p/BrandRegistrations/' . \rawurlencode($brandSid)
-		. '/Vettings/' . \rawurlencode($brandVettingSid)
-		. '';
-	}
+        $this->uri = '/a2p/BrandRegistrations/' . \rawurlencode($brandSid)
+        .'/Vettings/' . \rawurlencode($brandVettingSid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the BrandVettingInstance
+     *
+     * @return BrandVettingInstance Fetched BrandVettingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): BrandVettingInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Messaging.V1.BrandVettingContext ' . \implode(' ', $context) . ']';
-	}
+        return new BrandVettingInstance(
+            $this->version,
+            $payload,
+            $this->solution['brandSid'],
+            $this->solution['brandVettingSid']
+        );
+    }
 
-	/**
-	 * Fetch the BrandVettingInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return BrandVettingInstance Fetched BrandVettingInstance
-	 */
-	public function fetch() : BrandVettingInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new BrandVettingInstance(
-			$this->version,
-			$payload,
-			$this->solution['brandSid'],
-			$this->solution['brandVettingSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Messaging.V1.BrandVettingContext ' . \implode(' ', $context) . ']';
+    }
 }

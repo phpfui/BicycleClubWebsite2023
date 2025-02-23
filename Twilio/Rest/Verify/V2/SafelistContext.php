@@ -14,82 +14,84 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Verify\V2;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class SafelistContext extends InstanceContext
-	{
-	/**
-	 * Initialize the SafelistContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $phoneNumber The phone number to be removed from SafeList. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
-	 */
-	public function __construct(
-		Version $version,
-		$phoneNumber
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the SafelistContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $phoneNumber The phone number to be removed from SafeList. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
+     */
+    public function __construct(
+        Version $version,
+        $phoneNumber
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'phoneNumber' => $phoneNumber,
-		];
+        // Path Solution
+        $this->solution = [
+        'phoneNumber' =>
+            $phoneNumber,
+        ];
 
-		$this->uri = '/SafeList/Numbers/' . \rawurlencode($phoneNumber)
-		. '';
-	}
+        $this->uri = '/SafeList/Numbers/' . \rawurlencode($phoneNumber)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the SafelistInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Verify.V2.SafelistContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the SafelistInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the SafelistInstance
+     *
+     * @return SafelistInstance Fetched SafelistInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SafelistInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new SafelistInstance(
+            $this->version,
+            $payload,
+            $this->solution['phoneNumber']
+        );
+    }
 
-	/**
-	 * Fetch the SafelistInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SafelistInstance Fetched SafelistInstance
-	 */
-	public function fetch() : SafelistInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new SafelistInstance(
-			$this->version,
-			$payload,
-			$this->solution['phoneNumber']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Verify.V2.SafelistContext ' . \implode(' ', $context) . ']';
+    }
 }

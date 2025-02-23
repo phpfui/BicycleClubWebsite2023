@@ -14,123 +14,131 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Preview\Sync\Service\Document;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class DocumentPermissionContext extends InstanceContext
-	{
-	/**
-	 * Initialize the DocumentPermissionContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid
-	 * @param string $documentSid Identifier of the Sync Document. Either a SID or a unique name.
-	 * @param string $identity Arbitrary string identifier representing a user associated with an FPA token, assigned by the developer.
-	 */
-	public function __construct(
-		Version $version,
-		$serviceSid,
-		$documentSid,
-		$identity
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the DocumentPermissionContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid 
+     * @param string $documentSid Identifier of the Sync Document. Either a SID or a unique name.
+     * @param string $identity Arbitrary string identifier representing a user associated with an FPA token, assigned by the developer.
+     */
+    public function __construct(
+        Version $version,
+        $serviceSid,
+        $documentSid,
+        $identity
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
-			'documentSid' => $documentSid,
-			'identity' => $identity,
-		];
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        'documentSid' =>
+            $documentSid,
+        'identity' =>
+            $identity,
+        ];
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/Documents/' . \rawurlencode($documentSid)
-		. '/Permissions/' . \rawurlencode($identity)
-		. '';
-	}
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/Documents/' . \rawurlencode($documentSid)
+        .'/Permissions/' . \rawurlencode($identity)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the DocumentPermissionInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Preview.Sync.DocumentPermissionContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the DocumentPermissionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the DocumentPermissionInstance
+     *
+     * @return DocumentPermissionInstance Fetched DocumentPermissionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): DocumentPermissionInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new DocumentPermissionInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['documentSid'],
+            $this->solution['identity']
+        );
+    }
 
-	/**
-	 * Fetch the DocumentPermissionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return DocumentPermissionInstance Fetched DocumentPermissionInstance
-	 */
-	public function fetch() : DocumentPermissionInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the DocumentPermissionInstance
+     *
+     * @param bool $read Boolean flag specifying whether the identity can read the Sync Document.
+     * @param bool $write Boolean flag specifying whether the identity can update the Sync Document.
+     * @param bool $manage Boolean flag specifying whether the identity can delete the Sync Document.
+     * @return DocumentPermissionInstance Updated DocumentPermissionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(bool $read, bool $write, bool $manage): DocumentPermissionInstance
+    {
 
-		return new DocumentPermissionInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['documentSid'],
-			$this->solution['identity']
-		);
-	}
+        $data = Values::of([
+            'Read' =>
+                Serialize::booleanToString($read),
+            'Write' =>
+                Serialize::booleanToString($write),
+            'Manage' =>
+                Serialize::booleanToString($manage),
+        ]);
 
-	/**
-	 * Update the DocumentPermissionInstance
-	 *
-	 * @param bool $read Boolean flag specifying whether the identity can read the Sync Document.
-	 * @param bool $write Boolean flag specifying whether the identity can update the Sync Document.
-	 * @param bool $manage Boolean flag specifying whether the identity can delete the Sync Document.
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return DocumentPermissionInstance Updated DocumentPermissionInstance
-	 */
-	public function update(bool $read, bool $write, bool $manage) : DocumentPermissionInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'Read' => Serialize::booleanToString($read),
-			'Write' => Serialize::booleanToString($write),
-			'Manage' => Serialize::booleanToString($manage),
-		]);
+        return new DocumentPermissionInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['documentSid'],
+            $this->solution['identity']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new DocumentPermissionInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['documentSid'],
-			$this->solution['identity']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Preview.Sync.DocumentPermissionContext ' . \implode(' ', $context) . ']';
+    }
 }

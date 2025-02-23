@@ -14,68 +14,70 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Assistants\V1\Knowledge;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class KnowledgeStatusContext extends InstanceContext
-	{
-	/**
-	 * Initialize the KnowledgeStatusContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $id the Knowledge ID.
-	 */
-	public function __construct(
-		Version $version,
-		$id
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the KnowledgeStatusContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $id the Knowledge ID.
+     */
+    public function __construct(
+        Version $version,
+        $id
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'id' => $id,
-		];
+        // Path Solution
+        $this->solution = [
+        'id' =>
+            $id,
+        ];
 
-		$this->uri = '/Knowledge/' . \rawurlencode($id)
-		. '/Status';
-	}
+        $this->uri = '/Knowledge/' . \rawurlencode($id)
+        .'/Status';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the KnowledgeStatusInstance
+     *
+     * @return KnowledgeStatusInstance Fetched KnowledgeStatusInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): KnowledgeStatusInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Assistants.V1.KnowledgeStatusContext ' . \implode(' ', $context) . ']';
-	}
+        return new KnowledgeStatusInstance(
+            $this->version,
+            $payload,
+            $this->solution['id']
+        );
+    }
 
-	/**
-	 * Fetch the KnowledgeStatusInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return KnowledgeStatusInstance Fetched KnowledgeStatusInstance
-	 */
-	public function fetch() : KnowledgeStatusInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new KnowledgeStatusInstance(
-			$this->version,
-			$payload,
-			$this->solution['id']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Assistants.V1.KnowledgeStatusContext ' . \implode(' ', $context) . ']';
+    }
 }

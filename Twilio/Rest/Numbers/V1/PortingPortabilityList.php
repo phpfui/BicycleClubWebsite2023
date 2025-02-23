@@ -19,45 +19,47 @@ namespace Twilio\Rest\Numbers\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class PortingPortabilityList extends ListResource
-	{
-	/**
-	 * Construct the PortingPortabilityList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the PortingPortabilityList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Numbers.V1.PortingPortabilityList]';
-	}
+    /**
+     * Constructs a PortingPortabilityContext
+     *
+     * @param string $phoneNumber Phone number to check portability in e164 format.
+     */
+    public function getContext(
+        string $phoneNumber
+        
+    ): PortingPortabilityContext
+    {
+        return new PortingPortabilityContext(
+            $this->version,
+            $phoneNumber
+        );
+    }
 
-	/**
-	 * Constructs a PortingPortabilityContext
-	 *
-	 * @param string $phoneNumber Phone number to check portability in e164 format.
-	 */
-	public function getContext(
-		string $phoneNumber
-	) : PortingPortabilityContext
-	{
-		return new PortingPortabilityContext(
-			$this->version,
-			$phoneNumber
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Numbers.V1.PortingPortabilityList]';
+    }
 }

@@ -14,128 +14,137 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Sync\V1\Service\SyncMap;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class SyncMapItemContext extends InstanceContext
-	{
-	/**
-	 * Initialize the SyncMapItemContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) to create the Map Item in.
-	 * @param string $mapSid The SID of the Sync Map to add the new Map Item to. Can be the Sync Map resource's `sid` or its `unique_name`.
-	 * @param string $key The `key` value of the Sync Map Item resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$serviceSid,
-		$mapSid,
-		$key
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the SyncMapItemContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) to create the Map Item in.
+     * @param string $mapSid The SID of the Sync Map to add the new Map Item to. Can be the Sync Map resource's `sid` or its `unique_name`.
+     * @param string $key The `key` value of the Sync Map Item resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $serviceSid,
+        $mapSid,
+        $key
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
-			'mapSid' => $mapSid,
-			'key' => $key,
-		];
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        'mapSid' =>
+            $mapSid,
+        'key' =>
+            $key,
+        ];
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/Maps/' . \rawurlencode($mapSid)
-		. '/Items/' . \rawurlencode($key)
-		. '';
-	}
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/Maps/' . \rawurlencode($mapSid)
+        .'/Items/' . \rawurlencode($key)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the SyncMapItemInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(array $options = []): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.Sync.V1.SyncMapItemContext ' . \implode(' ', $context) . ']';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'If-Match' => $options['ifMatch']]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-	/**
-	 * Delete the SyncMapItemInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete(array $options = []) : bool
-	{
 
-		$options = new Values($options);
+    /**
+     * Fetch the SyncMapItemInstance
+     *
+     * @return SyncMapItemInstance Fetched SyncMapItemInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SyncMapItemInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'If-Match' => $options['ifMatch']]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new SyncMapItemInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['mapSid'],
+            $this->solution['key']
+        );
+    }
 
-	/**
-	 * Fetch the SyncMapItemInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SyncMapItemInstance Fetched SyncMapItemInstance
-	 */
-	public function fetch() : SyncMapItemInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the SyncMapItemInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return SyncMapItemInstance Updated SyncMapItemInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): SyncMapItemInstance
+    {
 
-		return new SyncMapItemInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['mapSid'],
-			$this->solution['key']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the SyncMapItemInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SyncMapItemInstance Updated SyncMapItemInstance
-	 */
-	public function update(array $options = []) : SyncMapItemInstance
-	{
+        $data = Values::of([
+            'Data' =>
+                Serialize::jsonObject($options['data']),
+            'Ttl' =>
+                $options['ttl'],
+            'ItemTtl' =>
+                $options['itemTtl'],
+            'CollectionTtl' =>
+                $options['collectionTtl'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'If-Match' => $options['ifMatch']]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'Data' => Serialize::jsonObject($options['data']),
-			'Ttl' => $options['ttl'],
-			'ItemTtl' => $options['itemTtl'],
-			'CollectionTtl' => $options['collectionTtl'],
-		]);
+        return new SyncMapItemInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['mapSid'],
+            $this->solution['key']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'If-Match' => $options['ifMatch']]);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new SyncMapItemInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['mapSid'],
-			$this->solution['key']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Sync.V1.SyncMapItemContext ' . \implode(' ', $context) . ']';
+    }
 }

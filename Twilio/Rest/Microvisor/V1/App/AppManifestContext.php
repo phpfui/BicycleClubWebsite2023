@@ -14,68 +14,70 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Microvisor\V1\App;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class AppManifestContext extends InstanceContext
-	{
-	/**
-	 * Initialize the AppManifestContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $appSid A 34-character string that uniquely identifies this App.
-	 */
-	public function __construct(
-		Version $version,
-		$appSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the AppManifestContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $appSid A 34-character string that uniquely identifies this App.
+     */
+    public function __construct(
+        Version $version,
+        $appSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'appSid' => $appSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'appSid' =>
+            $appSid,
+        ];
 
-		$this->uri = '/Apps/' . \rawurlencode($appSid)
-		. '/Manifest';
-	}
+        $this->uri = '/Apps/' . \rawurlencode($appSid)
+        .'/Manifest';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the AppManifestInstance
+     *
+     * @return AppManifestInstance Fetched AppManifestInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): AppManifestInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Microvisor.V1.AppManifestContext ' . \implode(' ', $context) . ']';
-	}
+        return new AppManifestInstance(
+            $this->version,
+            $payload,
+            $this->solution['appSid']
+        );
+    }
 
-	/**
-	 * Fetch the AppManifestInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AppManifestInstance Fetched AppManifestInstance
-	 */
-	public function fetch() : AppManifestInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new AppManifestInstance(
-			$this->version,
-			$payload,
-			$this->solution['appSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Microvisor.V1.AppManifestContext ' . \implode(' ', $context) . ']';
+    }
 }

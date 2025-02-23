@@ -19,49 +19,51 @@ namespace Twilio\Rest\Chat\V3;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class ChannelList extends ListResource
-	{
-	/**
-	 * Construct the ChannelList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the ChannelList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Chat.V3.ChannelList]';
-	}
+    /**
+     * Constructs a ChannelContext
+     *
+     * @param string $serviceSid The unique SID identifier of the Service.
+     *
+     * @param string $sid A 34 character string that uniquely identifies this Channel.
+     */
+    public function getContext(
+        string $serviceSid
+        , string $sid
+        
+    ): ChannelContext
+    {
+        return new ChannelContext(
+            $this->version,
+            $serviceSid,
+            $sid
+        );
+    }
 
-	/**
-	 * Constructs a ChannelContext
-	 *
-	 * @param string $serviceSid The unique SID identifier of the Service.
-	 *
-	 * @param string $sid A 34 character string that uniquely identifies this Channel.
-	 */
-	public function getContext(
-		string $serviceSid,
-		string $sid
-	) : ChannelContext
-	{
-		return new ChannelContext(
-			$this->version,
-			$serviceSid,
-			$sid
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Chat.V3.ChannelList]';
+    }
 }

@@ -14,23 +14,25 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Api\V2010\Account;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
-use Twilio\Rest\Api\V2010\Account\Call\EventList;
-use Twilio\Rest\Api\V2010\Account\Call\NotificationList;
-use Twilio\Rest\Api\V2010\Account\Call\PaymentList;
-use Twilio\Rest\Api\V2010\Account\Call\RecordingList;
-use Twilio\Rest\Api\V2010\Account\Call\SiprecList;
-use Twilio\Rest\Api\V2010\Account\Call\StreamList;
-use Twilio\Rest\Api\V2010\Account\Call\TranscriptionList;
-use Twilio\Rest\Api\V2010\Account\Call\UserDefinedMessageList;
-use Twilio\Rest\Api\V2010\Account\Call\UserDefinedMessageSubscriptionList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+use Twilio\Rest\Api\V2010\Account\Call\TranscriptionList;
+use Twilio\Rest\Api\V2010\Account\Call\RecordingList;
+use Twilio\Rest\Api\V2010\Account\Call\UserDefinedMessageSubscriptionList;
+use Twilio\Rest\Api\V2010\Account\Call\EventList;
+use Twilio\Rest\Api\V2010\Account\Call\NotificationList;
+use Twilio\Rest\Api\V2010\Account\Call\UserDefinedMessageList;
+use Twilio\Rest\Api\V2010\Account\Call\SiprecList;
+use Twilio\Rest\Api\V2010\Account\Call\StreamList;
+use Twilio\Rest\Api\V2010\Account\Call\PaymentList;
+
 
 /**
  * @property string|null $sid
@@ -62,232 +64,222 @@ use Twilio\Version;
  */
 class CallInstance extends InstanceResource
 {
-	protected $_events;
+    protected $_transcriptions;
+    protected $_recordings;
+    protected $_userDefinedMessageSubscriptions;
+    protected $_events;
+    protected $_notifications;
+    protected $_userDefinedMessages;
+    protected $_siprec;
+    protected $_streams;
+    protected $_payments;
 
-	protected $_notifications;
+    /**
+     * Initialize the CallInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
+     * @param string $sid The Twilio-provided Call SID that uniquely identifies the Call resource to delete
+     */
+    public function __construct(Version $version, array $payload, string $accountSid, string $sid = null)
+    {
+        parent::__construct($version);
 
-	protected $_payments;
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'parentCallSid' => Values::array_get($payload, 'parent_call_sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'to' => Values::array_get($payload, 'to'),
+            'toFormatted' => Values::array_get($payload, 'to_formatted'),
+            'from' => Values::array_get($payload, 'from'),
+            'fromFormatted' => Values::array_get($payload, 'from_formatted'),
+            'phoneNumberSid' => Values::array_get($payload, 'phone_number_sid'),
+            'status' => Values::array_get($payload, 'status'),
+            'startTime' => Deserialize::dateTime(Values::array_get($payload, 'start_time')),
+            'endTime' => Deserialize::dateTime(Values::array_get($payload, 'end_time')),
+            'duration' => Values::array_get($payload, 'duration'),
+            'price' => Values::array_get($payload, 'price'),
+            'priceUnit' => Values::array_get($payload, 'price_unit'),
+            'direction' => Values::array_get($payload, 'direction'),
+            'answeredBy' => Values::array_get($payload, 'answered_by'),
+            'apiVersion' => Values::array_get($payload, 'api_version'),
+            'forwardedFrom' => Values::array_get($payload, 'forwarded_from'),
+            'groupSid' => Values::array_get($payload, 'group_sid'),
+            'callerName' => Values::array_get($payload, 'caller_name'),
+            'queueTime' => Values::array_get($payload, 'queue_time'),
+            'trunkSid' => Values::array_get($payload, 'trunk_sid'),
+            'uri' => Values::array_get($payload, 'uri'),
+            'subresourceUris' => Values::array_get($payload, 'subresource_uris'),
+        ];
 
-	protected $_recordings;
+        $this->solution = ['accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	protected $_siprec;
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return CallContext Context for this CallInstance
+     */
+    protected function proxy(): CallContext
+    {
+        if (!$this->context) {
+            $this->context = new CallContext(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['sid']
+            );
+        }
 
-	protected $_streams;
+        return $this->context;
+    }
 
-	protected $_transcriptions;
+    /**
+     * Delete the CallInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-	protected $_userDefinedMessages;
+        return $this->proxy()->delete();
+    }
 
-	protected $_userDefinedMessageSubscriptions;
+    /**
+     * Fetch the CallInstance
+     *
+     * @return CallInstance Fetched CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): CallInstance
+    {
 
-	/**
-	 * Initialize the CallInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that will create the resource.
-	 * @param string $sid The Twilio-provided Call SID that uniquely identifies the Call resource to delete
-	 */
-	public function __construct(Version $version, array $payload, string $accountSid, ?string $sid = null)
-	{
-		parent::__construct($version);
+        return $this->proxy()->fetch();
+    }
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'parentCallSid' => Values::array_get($payload, 'parent_call_sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'to' => Values::array_get($payload, 'to'),
-			'toFormatted' => Values::array_get($payload, 'to_formatted'),
-			'from' => Values::array_get($payload, 'from'),
-			'fromFormatted' => Values::array_get($payload, 'from_formatted'),
-			'phoneNumberSid' => Values::array_get($payload, 'phone_number_sid'),
-			'status' => Values::array_get($payload, 'status'),
-			'startTime' => Deserialize::dateTime(Values::array_get($payload, 'start_time')),
-			'endTime' => Deserialize::dateTime(Values::array_get($payload, 'end_time')),
-			'duration' => Values::array_get($payload, 'duration'),
-			'price' => Values::array_get($payload, 'price'),
-			'priceUnit' => Values::array_get($payload, 'price_unit'),
-			'direction' => Values::array_get($payload, 'direction'),
-			'answeredBy' => Values::array_get($payload, 'answered_by'),
-			'apiVersion' => Values::array_get($payload, 'api_version'),
-			'forwardedFrom' => Values::array_get($payload, 'forwarded_from'),
-			'groupSid' => Values::array_get($payload, 'group_sid'),
-			'callerName' => Values::array_get($payload, 'caller_name'),
-			'queueTime' => Values::array_get($payload, 'queue_time'),
-			'trunkSid' => Values::array_get($payload, 'trunk_sid'),
-			'uri' => Values::array_get($payload, 'uri'),
-			'subresourceUris' => Values::array_get($payload, 'subresource_uris'),
-		];
+    /**
+     * Update the CallInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return CallInstance Updated CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): CallInstance
+    {
 
-		$this->solution = ['accountSid' => $accountSid, 'sid' => $sid ?: $this->properties['sid'], ];
-	}
+        return $this->proxy()->update($options);
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Access the transcriptions
+     */
+    protected function getTranscriptions(): TranscriptionList
+    {
+        return $this->proxy()->transcriptions;
+    }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+    /**
+     * Access the recordings
+     */
+    protected function getRecordings(): RecordingList
+    {
+        return $this->proxy()->recordings;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Access the userDefinedMessageSubscriptions
+     */
+    protected function getUserDefinedMessageSubscriptions(): UserDefinedMessageSubscriptionList
+    {
+        return $this->proxy()->userDefinedMessageSubscriptions;
+    }
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+    /**
+     * Access the events
+     */
+    protected function getEvents(): EventList
+    {
+        return $this->proxy()->events;
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Access the notifications
+     */
+    protected function getNotifications(): NotificationList
+    {
+        return $this->proxy()->notifications;
+    }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Access the userDefinedMessages
+     */
+    protected function getUserDefinedMessages(): UserDefinedMessageList
+    {
+        return $this->proxy()->userDefinedMessages;
+    }
 
-		return '[Twilio.Api.V2010.CallInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Access the siprec
+     */
+    protected function getSiprec(): SiprecList
+    {
+        return $this->proxy()->siprec;
+    }
 
-	/**
-	 * Delete the CallInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Access the streams
+     */
+    protected function getStreams(): StreamList
+    {
+        return $this->proxy()->streams;
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Access the payments
+     */
+    protected function getPayments(): PaymentList
+    {
+        return $this->proxy()->payments;
+    }
 
-	/**
-	 * Fetch the CallInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return CallInstance Fetched CallInstance
-	 */
-	public function fetch() : CallInstance
-	{
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		return $this->proxy()->fetch();
-	}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Update the CallInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return CallInstance Updated CallInstance
-	 */
-	public function update(array $options = []) : CallInstance
-	{
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		return $this->proxy()->update($options);
-	}
-
-	/**
-	 * Access the events
-	 */
-	protected function getEvents() : EventList
-	{
-		return $this->proxy()->events;
-	}
-
-	/**
-	 * Access the notifications
-	 */
-	protected function getNotifications() : NotificationList
-	{
-		return $this->proxy()->notifications;
-	}
-
-	/**
-	 * Access the payments
-	 */
-	protected function getPayments() : PaymentList
-	{
-		return $this->proxy()->payments;
-	}
-
-	/**
-	 * Access the recordings
-	 */
-	protected function getRecordings() : RecordingList
-	{
-		return $this->proxy()->recordings;
-	}
-
-	/**
-	 * Access the siprec
-	 */
-	protected function getSiprec() : SiprecList
-	{
-		return $this->proxy()->siprec;
-	}
-
-	/**
-	 * Access the streams
-	 */
-	protected function getStreams() : StreamList
-	{
-		return $this->proxy()->streams;
-	}
-
-	/**
-	 * Access the transcriptions
-	 */
-	protected function getTranscriptions() : TranscriptionList
-	{
-		return $this->proxy()->transcriptions;
-	}
-
-	/**
-	 * Access the userDefinedMessages
-	 */
-	protected function getUserDefinedMessages() : UserDefinedMessageList
-	{
-		return $this->proxy()->userDefinedMessages;
-	}
-
-	/**
-	 * Access the userDefinedMessageSubscriptions
-	 */
-	protected function getUserDefinedMessageSubscriptions() : UserDefinedMessageSubscriptionList
-	{
-		return $this->proxy()->userDefinedMessageSubscriptions;
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return CallContext Context for this CallInstance
-	 */
-	protected function proxy() : CallContext
-	{
-		if (! $this->context) {
-			$this->context = new CallContext(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.CallInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

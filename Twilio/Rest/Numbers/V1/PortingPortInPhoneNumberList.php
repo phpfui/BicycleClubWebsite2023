@@ -19,49 +19,51 @@ namespace Twilio\Rest\Numbers\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class PortingPortInPhoneNumberList extends ListResource
-	{
-	/**
-	 * Construct the PortingPortInPhoneNumberList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the PortingPortInPhoneNumberList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Numbers.V1.PortingPortInPhoneNumberList]';
-	}
+    /**
+     * Constructs a PortingPortInPhoneNumberContext
+     *
+     * @param string $portInRequestSid The SID of the Port In request. This is a unique identifier of the port in request.
+     *
+     * @param string $phoneNumberSid The SID of the Port In request phone number. This is a unique identifier of the phone number.
+     */
+    public function getContext(
+        string $portInRequestSid
+        , string $phoneNumberSid
+        
+    ): PortingPortInPhoneNumberContext
+    {
+        return new PortingPortInPhoneNumberContext(
+            $this->version,
+            $portInRequestSid,
+            $phoneNumberSid
+        );
+    }
 
-	/**
-	 * Constructs a PortingPortInPhoneNumberContext
-	 *
-	 * @param string $portInRequestSid The SID of the Port In request. This is a unique identifier of the port in request.
-	 *
-	 * @param string $phoneNumberSid The SID of the Port In request phone number. This is a unique identifier of the phone number.
-	 */
-	public function getContext(
-		string $portInRequestSid,
-		string $phoneNumberSid
-	) : PortingPortInPhoneNumberContext
-	{
-		return new PortingPortInPhoneNumberContext(
-			$this->version,
-			$portInRequestSid,
-			$phoneNumberSid
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Numbers.V1.PortingPortInPhoneNumberList]';
+    }
 }

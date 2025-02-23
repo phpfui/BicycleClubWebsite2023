@@ -14,80 +14,85 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Lookups\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class PhoneNumberContext extends InstanceContext
-	{
-	/**
-	 * Initialize the PhoneNumberContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $phoneNumber The phone number to lookup in [E.164](https://www.twilio.com/docs/glossary/what-e164) format, which consists of a + followed by the country code and subscriber number.
-	 */
-	public function __construct(
-		Version $version,
-		$phoneNumber
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the PhoneNumberContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $phoneNumber The phone number to lookup in [E.164](https://www.twilio.com/docs/glossary/what-e164) format, which consists of a + followed by the country code and subscriber number.
+     */
+    public function __construct(
+        Version $version,
+        $phoneNumber
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'phoneNumber' => $phoneNumber,
-		];
+        // Path Solution
+        $this->solution = [
+        'phoneNumber' =>
+            $phoneNumber,
+        ];
 
-		$this->uri = '/PhoneNumbers/' . \rawurlencode($phoneNumber)
-		. '';
-	}
+        $this->uri = '/PhoneNumbers/' . \rawurlencode($phoneNumber)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the PhoneNumberInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return PhoneNumberInstance Fetched PhoneNumberInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): PhoneNumberInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.Lookups.V1.PhoneNumberContext ' . \implode(' ', $context) . ']';
-	}
+        $params = Values::of([
+            'CountryCode' =>
+                $options['countryCode'],
+            'Type' =>
+                Serialize::map($options['type'], function ($e) { return $e; }),
+            'AddOns' =>
+                Serialize::map($options['addOns'], function ($e) { return $e; }),
+        ]);
+        $params = \array_merge($params, Serialize::prefixedCollapsibleMap($options['addOnsData'], 'AddOns'));
 
-	/**
-	 * Fetch the PhoneNumberInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PhoneNumberInstance Fetched PhoneNumberInstance
-	 */
-	public function fetch(array $options = []) : PhoneNumberInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
 
-		$options = new Values($options);
+        return new PhoneNumberInstance(
+            $this->version,
+            $payload,
+            $this->solution['phoneNumber']
+        );
+    }
 
-		$params = Values::of([
-			'CountryCode' => $options['countryCode'],
-			'Type' => Serialize::map($options['type'], static function($e) { return $e; }),
-			'AddOns' => Serialize::map($options['addOns'], static function($e) { return $e; }),
-		]);
-		$params = \array_merge($params, Serialize::prefixedCollapsibleMap($options['addOnsData'], 'AddOns'));
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
-
-		return new PhoneNumberInstance(
-			$this->version,
-			$payload,
-			$this->solution['phoneNumber']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Lookups.V1.PhoneNumberContext ' . \implode(' ', $context) . ']';
+    }
 }

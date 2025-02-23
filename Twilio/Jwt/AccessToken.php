@@ -2,180 +2,168 @@
 
 namespace Twilio\Jwt;
 
+
 use Twilio\Jwt\Grants\Grant;
 
-class AccessToken
-{
-	private $accountSid;
+class AccessToken {
+    private $signingKeySid;
+    private $accountSid;
+    private $secret;
+    private $ttl;
+    private $identity;
+    private $nbf;
+    private $region;
+    /** @var Grant[] $grants */
+    private $grants;
+    /** @var string[] $customClaims */
+    private $customClaims;
 
-	/** @var string[] $customClaims */
-	private $customClaims;
+    public function __construct(string $accountSid, string $signingKeySid, string $secret, int $ttl = 3600, ?string $identity = null, ?string $region = null) {
+        $this->signingKeySid = $signingKeySid;
+        $this->accountSid = $accountSid;
+        $this->secret = $secret;
+        $this->ttl = $ttl;
+        $this->region = $region;
 
-	/** @var Grant[] $grants */
-	private $grants;
+        if ($identity !== null) {
+            $this->identity = $identity;
+        }
 
-	private $identity;
+        $this->grants = [];
+        $this->customClaims = [];
+    }
 
-	private $nbf;
+    /**
+     * Set the identity of this access token
+     *
+     * @param string $identity identity of the grant
+     *
+     * @return $this updated access token
+     */
+    public function setIdentity(string $identity): self {
+        $this->identity = $identity;
+        return $this;
+    }
 
-	private $region;
+    /**
+     * Returns the identity of the grant
+     *
+     * @return string the identity
+     */
+    public function getIdentity(): string {
+        return $this->identity;
+    }
 
-	private $secret;
+    /**
+     * Set the nbf of this access token
+     *
+     * @param int $nbf nbf in epoch seconds of the grant
+     *
+     * @return $this updated access token
+     */
+    public function setNbf(int $nbf): self {
+        $this->nbf = $nbf;
+        return $this;
+    }
 
-	private $signingKeySid;
+    /**
+     * Returns the nbf of the grant
+     *
+     * @return int the nbf in epoch seconds
+     */
+    public function getNbf(): int {
+        return $this->nbf;
+    }
 
-	private $ttl;
+    /**
+     * Set the region of this access token
+     *
+     * @param string $region Home region of the account sid in this access token
+     *
+     * @return $this updated access token
+     */
+    public function setRegion(string $region): self {
+        $this->region = $region;
+        return $this;
+    }
 
-	public function __construct(string $accountSid, string $signingKeySid, string $secret, int $ttl = 3600, ?string $identity = null, ?string $region = null) {
-		$this->signingKeySid = $signingKeySid;
-		$this->accountSid = $accountSid;
-		$this->secret = $secret;
-		$this->ttl = $ttl;
-		$this->region = $region;
+    /**
+     * Returns the region of this access token
+     *
+     * @return string Home region of the account sid in this access token
+     */
+    public function getRegion(): string {
+        return $this->region;
+    }
 
-		if (null !== $identity) {
-			$this->identity = $identity;
-		}
+    /**
+     * Add a grant to the access token
+     *
+     * @param Grant $grant to be added
+     *
+     * @return $this the updated access token
+     */
+    public function addGrant(Grant $grant): self {
+        $this->grants[] = $grant;
+        return $this;
+    }
 
-		$this->grants = [];
-		$this->customClaims = [];
-	}
+    /**
+     * Allows to set custom claims, which then will be encoded into JWT payload.
+     *
+     * @param string $name
+     * @param string $value
+     */
+    public function addClaim(string $name, string $value): void {
+        $this->customClaims[$name] = $value;
+    }
 
-	public function __toString() : string {
-		return $this->toJWT();
-	}
+    public function toJWT(string $algorithm = 'HS256'): string {
+        $header = [
+            'cty' => 'twilio-fpa;v=1',
+            'typ' => 'JWT'
+        ];
 
-	/**
-	 * Allows to set custom claims, which then will be encoded into JWT payload.
-	 *
-	 */
-	public function addClaim(string $name, string $value) : void {
-		$this->customClaims[$name] = $value;
-	}
+        if ($this->region) {
+            $header['twr'] = $this->region;
+        }
 
-	/**
-	 * Add a grant to the access token
-	 *
-	 * @param Grant $grant to be added
-	 *
-	 * @return $this the updated access token
-	 */
-	public function addGrant(Grant $grant) : self {
-		$this->grants[] = $grant;
+        $now = \time();
 
-		return $this;
-	}
+        $grants = [];
+        if ($this->identity) {
+            $grants['identity'] = $this->identity;
+        }
 
-	/**
-	 * Returns the identity of the grant
-	 *
-	 * @return string the identity
-	 */
-	public function getIdentity() : string {
-		return $this->identity;
-	}
+        foreach ($this->grants as $grant) {
+            $payload = $grant->getPayload();
+            if (empty($payload)) {
+                $payload = \json_decode('{}');
+            }
 
-	/**
-	 * Returns the nbf of the grant
-	 *
-	 * @return int the nbf in epoch seconds
-	 */
-	public function getNbf() : int {
-		return $this->nbf;
-	}
+            $grants[$grant->getGrantKey()] = $payload;
+        }
 
-	/**
-	 * Returns the region of this access token
-	 *
-	 * @return string Home region of the account sid in this access token
-	 */
-	public function getRegion() : string {
-		return $this->region;
-	}
+        if (empty($grants)) {
+            $grants = \json_decode('{}');
+        }
 
-	/**
-	 * Set the identity of this access token
-	 *
-	 * @param string $identity identity of the grant
-	 *
-	 * @return $this updated access token
-	 */
-	public function setIdentity(string $identity) : self {
-		$this->identity = $identity;
+        $payload = \array_merge($this->customClaims, [
+            'jti' => $this->signingKeySid . '-' . $now,
+            'iss' => $this->signingKeySid,
+            'sub' => $this->accountSid,
+            'exp' => $now + $this->ttl,
+            'grants' => $grants
+        ]);
 
-		return $this;
-	}
+        if ($this->nbf !== null) {
+            $payload['nbf'] = $this->nbf;
+        }
 
-	/**
-	 * Set the nbf of this access token
-	 *
-	 * @param int $nbf nbf in epoch seconds of the grant
-	 *
-	 * @return $this updated access token
-	 */
-	public function setNbf(int $nbf) : self {
-		$this->nbf = $nbf;
+        return JWT::encode($payload, $this->secret, $algorithm, $header);
+    }
 
-		return $this;
-	}
-
-	/**
-	 * Set the region of this access token
-	 *
-	 * @param string $region Home region of the account sid in this access token
-	 *
-	 * @return $this updated access token
-	 */
-	public function setRegion(string $region) : self {
-		$this->region = $region;
-
-		return $this;
-	}
-
-	public function toJWT(string $algorithm = 'HS256') : string {
-		$header = [
-			'cty' => 'twilio-fpa;v=1',
-			'typ' => 'JWT'
-		];
-
-		if ($this->region) {
-			$header['twr'] = $this->region;
-		}
-
-		$now = \time();
-
-		$grants = [];
-
-		if ($this->identity) {
-			$grants['identity'] = $this->identity;
-		}
-
-		foreach ($this->grants as $grant) {
-			$payload = $grant->getPayload();
-
-			if (empty($payload)) {
-				$payload = \json_decode('{}');
-			}
-
-			$grants[$grant->getGrantKey()] = $payload;
-		}
-
-		if (empty($grants)) {
-			$grants = \json_decode('{}');
-		}
-
-		$payload = \array_merge($this->customClaims, [
-			'jti' => $this->signingKeySid . '-' . $now,
-			'iss' => $this->signingKeySid,
-			'sub' => $this->accountSid,
-			'exp' => $now + $this->ttl,
-			'grants' => $grants
-		]);
-
-		if (null !== $this->nbf) {
-			$payload['nbf'] = $this->nbf;
-		}
-
-		return JWT::encode($payload, $this->secret, $algorithm, $header);
-	}
+    public function __toString(): string {
+        return $this->toJWT();
+    }
 }

@@ -14,81 +14,88 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Taskrouter\V1\Workspace;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class WorkspaceStatisticsContext extends InstanceContext
-	{
-	/**
-	 * Initialize the WorkspaceStatisticsContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $workspaceSid The SID of the Workspace to fetch.
-	 */
-	public function __construct(
-		Version $version,
-		$workspaceSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the WorkspaceStatisticsContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $workspaceSid The SID of the Workspace to fetch.
+     */
+    public function __construct(
+        Version $version,
+        $workspaceSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'workspaceSid' => $workspaceSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'workspaceSid' =>
+            $workspaceSid,
+        ];
 
-		$this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
-		. '/Statistics';
-	}
+        $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
+        .'/Statistics';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the WorkspaceStatisticsInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return WorkspaceStatisticsInstance Fetched WorkspaceStatisticsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): WorkspaceStatisticsInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.Taskrouter.V1.WorkspaceStatisticsContext ' . \implode(' ', $context) . ']';
-	}
+        $params = Values::of([
+            'Minutes' =>
+                $options['minutes'],
+            'StartDate' =>
+                Serialize::iso8601DateTime($options['startDate']),
+            'EndDate' =>
+                Serialize::iso8601DateTime($options['endDate']),
+            'TaskChannel' =>
+                $options['taskChannel'],
+            'SplitByWaitTime' =>
+                $options['splitByWaitTime'],
+        ]);
 
-	/**
-	 * Fetch the WorkspaceStatisticsInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return WorkspaceStatisticsInstance Fetched WorkspaceStatisticsInstance
-	 */
-	public function fetch(array $options = []) : WorkspaceStatisticsInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
 
-		$options = new Values($options);
+        return new WorkspaceStatisticsInstance(
+            $this->version,
+            $payload,
+            $this->solution['workspaceSid']
+        );
+    }
 
-		$params = Values::of([
-			'Minutes' => $options['minutes'],
-			'StartDate' => Serialize::iso8601DateTime($options['startDate']),
-			'EndDate' => Serialize::iso8601DateTime($options['endDate']),
-			'TaskChannel' => $options['taskChannel'],
-			'SplitByWaitTime' => $options['splitByWaitTime'],
-		]);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
-
-		return new WorkspaceStatisticsInstance(
-			$this->version,
-			$payload,
-			$this->solution['workspaceSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Taskrouter.V1.WorkspaceStatisticsContext ' . \implode(' ', $context) . ']';
+    }
 }

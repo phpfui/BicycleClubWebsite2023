@@ -14,20 +14,22 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Taskrouter\V1\Workspace;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Rest\Taskrouter\V1\Workspace\Worker\ReservationList;
-use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkerChannelList;
-use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkersCumulativeStatisticsList;
-use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkersRealTimeStatisticsList;
-use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkerStatisticsList;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkerChannelList;
+use Twilio\Rest\Taskrouter\V1\Workspace\Worker\ReservationList;
+use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkersRealTimeStatisticsList;
+use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkerStatisticsList;
+use Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkersCumulativeStatisticsList;
+
 
 /**
  * @property WorkerChannelList $workerChannels
@@ -42,239 +44,239 @@ use Twilio\Version;
  * @method \Twilio\Rest\Taskrouter\V1\Workspace\Worker\WorkerChannelContext workerChannels(string $sid)
  */
 class WorkerContext extends InstanceContext
-	{
-	protected $_cumulativeStatistics;
+    {
+    protected $_workerChannels;
+    protected $_reservations;
+    protected $_realTimeStatistics;
+    protected $_statistics;
+    protected $_cumulativeStatistics;
 
-	protected $_realTimeStatistics;
+    /**
+     * Initialize the WorkerContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $workspaceSid The SID of the Workspace that the new Worker belongs to.
+     * @param string $sid The SID of the Worker resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $workspaceSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-	protected $_reservations;
+        // Path Solution
+        $this->solution = [
+        'workspaceSid' =>
+            $workspaceSid,
+        'sid' =>
+            $sid,
+        ];
 
-	protected $_statistics;
+        $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
+        .'/Workers/' . \rawurlencode($sid)
+        .'';
+    }
 
-	protected $_workerChannels;
+    /**
+     * Delete the WorkerInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(array $options = []): bool
+    {
 
-	/**
-	 * Initialize the WorkerContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $workspaceSid The SID of the Workspace that the new Worker belongs to.
-	 * @param string $sid The SID of the Worker resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$workspaceSid,
-		$sid
-	) {
-		parent::__construct($version);
+        $options = new Values($options);
 
-		// Path Solution
-		$this->solution = [
-			'workspaceSid' => $workspaceSid,
-			'sid' => $sid,
-		];
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'If-Match' => $options['ifMatch']]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		$this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
-		. '/Workers/' . \rawurlencode($sid)
-		. '';
-	}
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Fetch the WorkerInstance
+     *
+     * @return WorkerInstance Fetched WorkerInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): WorkerInstance
+    {
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        return new WorkerInstance(
+            $this->version,
+            $payload,
+            $this->solution['workspaceSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
 
-			return $this->{$method}();
-		}
+    /**
+     * Update the WorkerInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return WorkerInstance Updated WorkerInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): WorkerInstance
+    {
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        $data = Values::of([
+            'ActivitySid' =>
+                $options['activitySid'],
+            'Attributes' =>
+                $options['attributes'],
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'RejectPendingReservations' =>
+                Serialize::booleanToString($options['rejectPendingReservations']),
+        ]);
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'If-Match' => $options['ifMatch']]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return '[Twilio.Taskrouter.V1.WorkerContext ' . \implode(' ', $context) . ']';
-	}
+        return new WorkerInstance(
+            $this->version,
+            $payload,
+            $this->solution['workspaceSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Delete the WorkerInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete(array $options = []) : bool
-	{
 
-		$options = new Values($options);
+    /**
+     * Access the workerChannels
+     */
+    protected function getWorkerChannels(): WorkerChannelList
+    {
+        if (!$this->_workerChannels) {
+            $this->_workerChannels = new WorkerChannelList(
+                $this->version,
+                $this->solution['workspaceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'If-Match' => $options['ifMatch']]);
+        return $this->_workerChannels;
+    }
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+    /**
+     * Access the reservations
+     */
+    protected function getReservations(): ReservationList
+    {
+        if (!$this->_reservations) {
+            $this->_reservations = new ReservationList(
+                $this->version,
+                $this->solution['workspaceSid'],
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Fetch the WorkerInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return WorkerInstance Fetched WorkerInstance
-	 */
-	public function fetch() : WorkerInstance
-	{
+        return $this->_reservations;
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Access the realTimeStatistics
+     */
+    protected function getRealTimeStatistics(): WorkersRealTimeStatisticsList
+    {
+        if (!$this->_realTimeStatistics) {
+            $this->_realTimeStatistics = new WorkersRealTimeStatisticsList(
+                $this->version,
+                $this->solution['workspaceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		return new WorkerInstance(
-			$this->version,
-			$payload,
-			$this->solution['workspaceSid'],
-			$this->solution['sid']
-		);
-	}
+        return $this->_realTimeStatistics;
+    }
 
-	/**
-	 * Update the WorkerInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return WorkerInstance Updated WorkerInstance
-	 */
-	public function update(array $options = []) : WorkerInstance
-	{
+    /**
+     * Access the statistics
+     */
+    protected function getStatistics(): WorkerStatisticsList
+    {
+        if (!$this->_statistics) {
+            $this->_statistics = new WorkerStatisticsList(
+                $this->version,
+                $this->solution['workspaceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		$options = new Values($options);
+        return $this->_statistics;
+    }
 
-		$data = Values::of([
-			'ActivitySid' => $options['activitySid'],
-			'Attributes' => $options['attributes'],
-			'FriendlyName' => $options['friendlyName'],
-			'RejectPendingReservations' => Serialize::booleanToString($options['rejectPendingReservations']),
-		]);
+    /**
+     * Access the cumulativeStatistics
+     */
+    protected function getCumulativeStatistics(): WorkersCumulativeStatisticsList
+    {
+        if (!$this->_cumulativeStatistics) {
+            $this->_cumulativeStatistics = new WorkersCumulativeStatisticsList(
+                $this->version,
+                $this->solution['workspaceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'If-Match' => $options['ifMatch']]);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+        return $this->_cumulativeStatistics;
+    }
 
-		return new WorkerInstance(
-			$this->version,
-			$payload,
-			$this->solution['workspaceSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Access the cumulativeStatistics
-	 */
-	protected function getCumulativeStatistics() : WorkersCumulativeStatisticsList
-	{
-		if (! $this->_cumulativeStatistics) {
-			$this->_cumulativeStatistics = new WorkersCumulativeStatisticsList(
-				$this->version,
-				$this->solution['workspaceSid'],
-				$this->solution['sid']
-			);
-		}
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		return $this->_cumulativeStatistics;
-	}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-	/**
-	 * Access the realTimeStatistics
-	 */
-	protected function getRealTimeStatistics() : WorkersRealTimeStatisticsList
-	{
-		if (! $this->_realTimeStatistics) {
-			$this->_realTimeStatistics = new WorkersRealTimeStatisticsList(
-				$this->version,
-				$this->solution['workspaceSid'],
-				$this->solution['sid']
-			);
-		}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		return $this->_realTimeStatistics;
-	}
-
-	/**
-	 * Access the reservations
-	 */
-	protected function getReservations() : ReservationList
-	{
-		if (! $this->_reservations) {
-			$this->_reservations = new ReservationList(
-				$this->version,
-				$this->solution['workspaceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_reservations;
-	}
-
-	/**
-	 * Access the statistics
-	 */
-	protected function getStatistics() : WorkerStatisticsList
-	{
-		if (! $this->_statistics) {
-			$this->_statistics = new WorkerStatisticsList(
-				$this->version,
-				$this->solution['workspaceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_statistics;
-	}
-
-	/**
-	 * Access the workerChannels
-	 */
-	protected function getWorkerChannels() : WorkerChannelList
-	{
-		if (! $this->_workerChannels) {
-			$this->_workerChannels = new WorkerChannelList(
-				$this->version,
-				$this->solution['workspaceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_workerChannels;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Taskrouter.V1.WorkerContext ' . \implode(' ', $context) . ']';
+    }
 }

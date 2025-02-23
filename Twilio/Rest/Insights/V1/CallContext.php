@@ -14,17 +14,19 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Insights\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Insights\V1\Call\AnnotationList;
-use Twilio\Rest\Insights\V1\Call\CallSummaryList;
-use Twilio\Rest\Insights\V1\Call\EventList;
-use Twilio\Rest\Insights\V1\Call\MetricList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Insights\V1\Call\MetricList;
+use Twilio\Rest\Insights\V1\Call\EventList;
+use Twilio\Rest\Insights\V1\Call\CallSummaryList;
+use Twilio\Rest\Insights\V1\Call\AnnotationList;
+
 
 /**
  * @property MetricList $metrics
@@ -35,165 +37,160 @@ use Twilio\Version;
  * @method \Twilio\Rest\Insights\V1\Call\AnnotationContext annotation()
  */
 class CallContext extends InstanceContext
-	{
-	protected $_annotation;
+    {
+    protected $_metrics;
+    protected $_events;
+    protected $_summary;
+    protected $_annotation;
 
-	protected $_events;
+    /**
+     * Initialize the CallContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid 
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-	protected $_metrics;
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-	protected $_summary;
+        $this->uri = '/Voice/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Initialize the CallContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    /**
+     * Fetch the CallInstance
+     *
+     * @return CallInstance Fetched CallInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): CallInstance
+    {
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		$this->uri = '/Voice/' . \rawurlencode($sid)
-		. '';
-	}
+        return new CallInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+    /**
+     * Access the metrics
+     */
+    protected function getMetrics(): MetricList
+    {
+        if (!$this->_metrics) {
+            $this->_metrics = new MetricList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        return $this->_metrics;
+    }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+    /**
+     * Access the events
+     */
+    protected function getEvents(): EventList
+    {
+        if (!$this->_events) {
+            $this->_events = new EventList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-			return $this->{$method}();
-		}
+        return $this->_events;
+    }
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+    /**
+     * Access the summary
+     */
+    protected function getSummary(): CallSummaryList
+    {
+        if (!$this->_summary) {
+            $this->_summary = new CallSummaryList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        return $this->_summary;
+    }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Access the annotation
+     */
+    protected function getAnnotation(): AnnotationList
+    {
+        if (!$this->_annotation) {
+            $this->_annotation = new AnnotationList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		return '[Twilio.Insights.V1.CallContext ' . \implode(' ', $context) . ']';
-	}
+        return $this->_annotation;
+    }
 
-	/**
-	 * Fetch the CallInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return CallInstance Fetched CallInstance
-	 */
-	public function fetch() : CallInstance
-	{
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		return new CallInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-	/**
-	 * Access the annotation
-	 */
-	protected function getAnnotation() : AnnotationList
-	{
-		if (! $this->_annotation) {
-			$this->_annotation = new AnnotationList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		return $this->_annotation;
-	}
-
-	/**
-	 * Access the events
-	 */
-	protected function getEvents() : EventList
-	{
-		if (! $this->_events) {
-			$this->_events = new EventList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_events;
-	}
-
-	/**
-	 * Access the metrics
-	 */
-	protected function getMetrics() : MetricList
-	{
-		if (! $this->_metrics) {
-			$this->_metrics = new MetricList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_metrics;
-	}
-
-	/**
-	 * Access the summary
-	 */
-	protected function getSummary() : CallSummaryList
-	{
-		if (! $this->_summary) {
-			$this->_summary = new CallSummaryList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_summary;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Insights.V1.CallContext ' . \implode(' ', $context) . ']';
+    }
 }

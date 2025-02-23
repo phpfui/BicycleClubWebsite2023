@@ -14,87 +14,90 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Trunking\V1\Trunk;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class CredentialListContext extends InstanceContext
-	{
-	/**
-	 * Initialize the CredentialListContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $trunkSid The SID of the Trunk to associate the credential list with.
-	 * @param string $sid The unique string that we created to identify the CredentialList resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$trunkSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the CredentialListContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $trunkSid The SID of the Trunk to associate the credential list with.
+     * @param string $sid The unique string that we created to identify the CredentialList resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $trunkSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'trunkSid' => $trunkSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'trunkSid' =>
+            $trunkSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Trunks/' . \rawurlencode($trunkSid)
-		. '/CredentialLists/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Trunks/' . \rawurlencode($trunkSid)
+        .'/CredentialLists/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the CredentialListInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Trunking.V1.CredentialListContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the CredentialListInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the CredentialListInstance
+     *
+     * @return CredentialListInstance Fetched CredentialListInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): CredentialListInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new CredentialListInstance(
+            $this->version,
+            $payload,
+            $this->solution['trunkSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the CredentialListInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return CredentialListInstance Fetched CredentialListInstance
-	 */
-	public function fetch() : CredentialListInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new CredentialListInstance(
-			$this->version,
-			$payload,
-			$this->solution['trunkSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Trunking.V1.CredentialListContext ' . \implode(' ', $context) . ']';
+    }
 }

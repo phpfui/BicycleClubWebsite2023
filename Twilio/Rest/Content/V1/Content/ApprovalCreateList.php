@@ -21,57 +21,62 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class ApprovalCreateList extends ListResource
-	{
-	/**
-	 * Construct the ApprovalCreateList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version,
-		string $contentSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the ApprovalCreateList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $contentSid 
+     */
+    public function __construct(
+        Version $version,
+        string $contentSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'contentSid' => $contentSid,
+        // Path Solution
+        $this->solution = [
+        'contentSid' =>
+            $contentSid,
+        
+        ];
 
-		];
+        $this->uri = '/Content/' . \rawurlencode($contentSid)
+        .'/ApprovalRequests/whatsapp';
+    }
 
-		$this->uri = '/Content/' . \rawurlencode($contentSid)
-		. '/ApprovalRequests/whatsapp';
-	}
+    /**
+     * Create the ApprovalCreateInstance
+     *
+     * @param ContentApprovalRequest $contentApprovalRequest
+     * @return ApprovalCreateInstance Created ApprovalCreateInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(ContentApprovalRequest $contentApprovalRequest): ApprovalCreateInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Content.V1.ApprovalCreateList]';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $data = $contentApprovalRequest->toArray();
+        $headers['Content-Type'] = 'application/json';
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-	/**
-	 * Create the ApprovalCreateInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ApprovalCreateInstance Created ApprovalCreateInstance
-	 */
-	public function create(ContentApprovalRequest $contentApprovalRequest) : ApprovalCreateInstance
-	{
+        return new ApprovalCreateInstance(
+            $this->version,
+            $payload,
+            $this->solution['contentSid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$data = $contentApprovalRequest->toArray();
-		$headers['Content-Type'] = 'application/json';
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		return new ApprovalCreateInstance(
-			$this->version,
-			$payload,
-			$this->solution['contentSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Content.V1.ApprovalCreateList]';
+    }
 }

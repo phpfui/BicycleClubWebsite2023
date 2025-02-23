@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Verify\V2\Service;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $sid
@@ -36,101 +38,99 @@ use Twilio\Version;
  */
 class AccessTokenInstance extends InstanceResource
 {
-	/**
-	 * Initialize the AccessTokenInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $serviceSid The unique SID identifier of the Service.
-	 * @param string $sid A 34 character string that uniquely identifies this Access Token.
-	 */
-	public function __construct(Version $version, array $payload, string $serviceSid, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the AccessTokenInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $serviceSid The unique SID identifier of the Service.
+     * @param string $sid A 34 character string that uniquely identifies this Access Token.
+     */
+    public function __construct(Version $version, array $payload, string $serviceSid, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'serviceSid' => Values::array_get($payload, 'service_sid'),
-			'entityIdentity' => Values::array_get($payload, 'entity_identity'),
-			'factorType' => Values::array_get($payload, 'factor_type'),
-			'factorFriendlyName' => Values::array_get($payload, 'factor_friendly_name'),
-			'token' => Values::array_get($payload, 'token'),
-			'url' => Values::array_get($payload, 'url'),
-			'ttl' => Values::array_get($payload, 'ttl'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'serviceSid' => Values::array_get($payload, 'service_sid'),
+            'entityIdentity' => Values::array_get($payload, 'entity_identity'),
+            'factorType' => Values::array_get($payload, 'factor_type'),
+            'factorFriendlyName' => Values::array_get($payload, 'factor_friendly_name'),
+            'token' => Values::array_get($payload, 'token'),
+            'url' => Values::array_get($payload, 'url'),
+            'ttl' => Values::array_get($payload, 'ttl'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+        ];
 
-		$this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return AccessTokenContext Context for this AccessTokenInstance
+     */
+    protected function proxy(): AccessTokenContext
+    {
+        if (!$this->context) {
+            $this->context = new AccessTokenContext(
+                $this->version,
+                $this->solution['serviceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the AccessTokenInstance
+     *
+     * @return AccessTokenInstance Fetched AccessTokenInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): AccessTokenInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.Verify.V2.AccessTokenInstance ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the AccessTokenInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AccessTokenInstance Fetched AccessTokenInstance
-	 */
-	public function fetch() : AccessTokenInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return AccessTokenContext Context for this AccessTokenInstance
-	 */
-	protected function proxy() : AccessTokenContext
-	{
-		if (! $this->context) {
-			$this->context = new AccessTokenContext(
-				$this->version,
-				$this->solution['serviceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Verify.V2.AccessTokenInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

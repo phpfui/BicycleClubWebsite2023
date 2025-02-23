@@ -21,56 +21,59 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class SinkTestList extends ListResource
-	{
-	/**
-	 * Construct the SinkTestList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid A 34 character string that uniquely identifies the Sink to be Tested.
-	 */
-	public function __construct(
-		Version $version,
-		string $sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the SinkTestList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid A 34 character string that uniquely identifies the Sink to be Tested.
+     */
+    public function __construct(
+        Version $version,
+        string $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        
+        ];
 
-		];
+        $this->uri = '/Sinks/' . \rawurlencode($sid)
+        .'/Test';
+    }
 
-		$this->uri = '/Sinks/' . \rawurlencode($sid)
-		. '/Test';
-	}
+    /**
+     * Create the SinkTestInstance
+     *
+     * @return SinkTestInstance Created SinkTestInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(): SinkTestInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Events.V1.SinkTestList]';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], [], $headers);
 
-	/**
-	 * Create the SinkTestInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SinkTestInstance Created SinkTestInstance
-	 */
-	public function create() : SinkTestInstance
-	{
+        return new SinkTestInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], [], $headers);
 
-		return new SinkTestInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Events.V1.SinkTestList]';
+    }
 }

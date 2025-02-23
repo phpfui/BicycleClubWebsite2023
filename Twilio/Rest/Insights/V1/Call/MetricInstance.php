@@ -14,12 +14,14 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Insights\V1\Call;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+
 
 /**
  * @property string|null $timestamp
@@ -34,62 +36,62 @@ use Twilio\Version;
  */
 class MetricInstance extends InstanceResource
 {
-	/**
-	 * Initialize the MetricInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $callSid The unique SID identifier of the Call.
-	 */
-	public function __construct(Version $version, array $payload, string $callSid)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the MetricInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $callSid The unique SID identifier of the Call.
+     */
+    public function __construct(Version $version, array $payload, string $callSid)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'timestamp' => Values::array_get($payload, 'timestamp'),
-			'callSid' => Values::array_get($payload, 'call_sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'edge' => Values::array_get($payload, 'edge'),
-			'direction' => Values::array_get($payload, 'direction'),
-			'carrierEdge' => Values::array_get($payload, 'carrier_edge'),
-			'sipEdge' => Values::array_get($payload, 'sip_edge'),
-			'sdkEdge' => Values::array_get($payload, 'sdk_edge'),
-			'clientEdge' => Values::array_get($payload, 'client_edge'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'timestamp' => Values::array_get($payload, 'timestamp'),
+            'callSid' => Values::array_get($payload, 'call_sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'edge' => Values::array_get($payload, 'edge'),
+            'direction' => Values::array_get($payload, 'direction'),
+            'carrierEdge' => Values::array_get($payload, 'carrier_edge'),
+            'sipEdge' => Values::array_get($payload, 'sip_edge'),
+            'sdkEdge' => Values::array_get($payload, 'sdk_edge'),
+            'clientEdge' => Values::array_get($payload, 'client_edge'),
+        ];
 
-		$this->solution = ['callSid' => $callSid, ];
-	}
+        $this->solution = ['callSid' => $callSid, ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-			return $this->{$method}();
-		}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
-
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Insights.V1.MetricInstance]';
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Insights.V1.MetricInstance]';
+    }
 }
+

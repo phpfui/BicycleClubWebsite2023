@@ -14,15 +14,17 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Preview\Sync\Service;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Preview\Sync\Service\SyncList\SyncListItemList;
-use Twilio\Rest\Preview\Sync\Service\SyncList\SyncListPermissionList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Preview\Sync\Service\SyncList\SyncListPermissionList;
+use Twilio\Rest\Preview\Sync\Service\SyncList\SyncListItemList;
+
 
 /**
  * @property SyncListPermissionList $syncListPermissions
@@ -31,152 +33,150 @@ use Twilio\Version;
  * @method \Twilio\Rest\Preview\Sync\Service\SyncList\SyncListItemContext syncListItems(string $index)
  */
 class SyncListContext extends InstanceContext
-	{
-	protected $_syncListItems;
+    {
+    protected $_syncListPermissions;
+    protected $_syncListItems;
 
-	protected $_syncListPermissions;
+    /**
+     * Initialize the SyncListContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid 
+     * @param string $sid 
+     */
+    public function __construct(
+        Version $version,
+        $serviceSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-	/**
-	 * Initialize the SyncListContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid
-	 * @param string $sid
-	 */
-	public function __construct(
-		Version $version,
-		$serviceSid,
-		$sid
-	) {
-		parent::__construct($version);
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        'sid' =>
+            $sid,
+        ];
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
-			'sid' => $sid,
-		];
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/Lists/' . \rawurlencode($sid)
+        .'';
+    }
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/Lists/' . \rawurlencode($sid)
-		. '';
-	}
+    /**
+     * Delete the SyncListInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
 
-		throw new TwilioException('Resource does not have a context');
-	}
+    /**
+     * Fetch the SyncListInstance
+     *
+     * @return SyncListInstance Fetched SyncListInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SyncListInstance
+    {
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-			return $this->{$method}();
-		}
+        return new SyncListInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['sid']
+        );
+    }
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Access the syncListPermissions
+     */
+    protected function getSyncListPermissions(): SyncListPermissionList
+    {
+        if (!$this->_syncListPermissions) {
+            $this->_syncListPermissions = new SyncListPermissionList(
+                $this->version,
+                $this->solution['serviceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->_syncListPermissions;
+    }
 
-		return '[Twilio.Preview.Sync.SyncListContext ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Access the syncListItems
+     */
+    protected function getSyncListItems(): SyncListItemList
+    {
+        if (!$this->_syncListItems) {
+            $this->_syncListItems = new SyncListItemList(
+                $this->version,
+                $this->solution['serviceSid'],
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Delete the SyncListInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        return $this->_syncListItems;
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-	/**
-	 * Fetch the SyncListInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SyncListInstance Fetched SyncListInstance
-	 */
-	public function fetch() : SyncListInstance
-	{
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		return new SyncListInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['sid']
-		);
-	}
-
-	/**
-	 * Access the syncListItems
-	 */
-	protected function getSyncListItems() : SyncListItemList
-	{
-		if (! $this->_syncListItems) {
-			$this->_syncListItems = new SyncListItemList(
-				$this->version,
-				$this->solution['serviceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_syncListItems;
-	}
-
-	/**
-	 * Access the syncListPermissions
-	 */
-	protected function getSyncListPermissions() : SyncListPermissionList
-	{
-		if (! $this->_syncListPermissions) {
-			$this->_syncListPermissions = new SyncListPermissionList(
-				$this->version,
-				$this->solution['serviceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_syncListPermissions;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Preview.Sync.SyncListContext ' . \implode(' ', $context) . ']';
+    }
 }

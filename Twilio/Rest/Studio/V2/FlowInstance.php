@@ -14,17 +14,19 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Studio\V2;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
+use Twilio\Values;
+use Twilio\Version;
+use Twilio\Deserialize;
 use Twilio\Rest\Studio\V2\Flow\ExecutionList;
 use Twilio\Rest\Studio\V2\Flow\FlowRevisionList;
 use Twilio\Rest\Studio\V2\Flow\FlowTestUserList;
-use Twilio\Values;
-use Twilio\Version;
+
 
 /**
  * @property string|null $sid
@@ -45,159 +47,156 @@ use Twilio\Version;
  */
 class FlowInstance extends InstanceResource
 {
-	protected $_executions;
+    protected $_executions;
+    protected $_revisions;
+    protected $_testUsers;
 
-	protected $_revisions;
+    /**
+     * Initialize the FlowInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid The SID of the Flow resource to delete.
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-	protected $_testUsers;
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'definition' => Values::array_get($payload, 'definition'),
+            'status' => Values::array_get($payload, 'status'),
+            'revision' => Values::array_get($payload, 'revision'),
+            'commitMessage' => Values::array_get($payload, 'commit_message'),
+            'valid' => Values::array_get($payload, 'valid'),
+            'errors' => Values::array_get($payload, 'errors'),
+            'warnings' => Values::array_get($payload, 'warnings'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'webhookUrl' => Values::array_get($payload, 'webhook_url'),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
+        ];
 
-	/**
-	 * Initialize the FlowInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $sid The SID of the Flow resource to delete.
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'definition' => Values::array_get($payload, 'definition'),
-			'status' => Values::array_get($payload, 'status'),
-			'revision' => Values::array_get($payload, 'revision'),
-			'commitMessage' => Values::array_get($payload, 'commit_message'),
-			'valid' => Values::array_get($payload, 'valid'),
-			'errors' => Values::array_get($payload, 'errors'),
-			'warnings' => Values::array_get($payload, 'warnings'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'webhookUrl' => Values::array_get($payload, 'webhook_url'),
-			'url' => Values::array_get($payload, 'url'),
-			'links' => Values::array_get($payload, 'links'),
-		];
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return FlowContext Context for this FlowInstance
+     */
+    protected function proxy(): FlowContext
+    {
+        if (!$this->context) {
+            $this->context = new FlowContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+        return $this->context;
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Delete the FlowInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->proxy()->delete();
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the FlowInstance
+     *
+     * @return FlowInstance Fetched FlowInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): FlowInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Update the FlowInstance
+     *
+     * @param string $status
+     * @param array|Options $options Optional Arguments
+     * @return FlowInstance Updated FlowInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $status, array $options = []): FlowInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->update($status, $options);
+    }
 
-		return '[Twilio.Studio.V2.FlowInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Access the executions
+     */
+    protected function getExecutions(): ExecutionList
+    {
+        return $this->proxy()->executions;
+    }
 
-	/**
-	 * Delete the FlowInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Access the revisions
+     */
+    protected function getRevisions(): FlowRevisionList
+    {
+        return $this->proxy()->revisions;
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Access the testUsers
+     */
+    protected function getTestUsers(): FlowTestUserList
+    {
+        return $this->proxy()->testUsers;
+    }
 
-	/**
-	 * Fetch the FlowInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return FlowInstance Fetched FlowInstance
-	 */
-	public function fetch() : FlowInstance
-	{
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		return $this->proxy()->fetch();
-	}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Update the FlowInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return FlowInstance Updated FlowInstance
-	 */
-	public function update(string $status, array $options = []) : FlowInstance
-	{
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		return $this->proxy()->update($status, $options);
-	}
-
-	/**
-	 * Access the executions
-	 */
-	protected function getExecutions() : ExecutionList
-	{
-		return $this->proxy()->executions;
-	}
-
-	/**
-	 * Access the revisions
-	 */
-	protected function getRevisions() : FlowRevisionList
-	{
-		return $this->proxy()->revisions;
-	}
-
-	/**
-	 * Access the testUsers
-	 */
-	protected function getTestUsers() : FlowTestUserList
-	{
-		return $this->proxy()->testUsers;
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return FlowContext Context for this FlowInstance
-	 */
-	protected function proxy() : FlowContext
-	{
-		if (! $this->context) {
-			$this->context = new FlowContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Studio.V2.FlowInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

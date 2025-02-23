@@ -14,120 +14,129 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Trunking\V1\Trunk;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class OriginationUrlContext extends InstanceContext
-	{
-	/**
-	 * Initialize the OriginationUrlContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $trunkSid The SID of the Trunk to associate the resource with.
-	 * @param string $sid The unique string that we created to identify the OriginationUrl resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$trunkSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the OriginationUrlContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $trunkSid The SID of the Trunk to associate the resource with.
+     * @param string $sid The unique string that we created to identify the OriginationUrl resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $trunkSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'trunkSid' => $trunkSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'trunkSid' =>
+            $trunkSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Trunks/' . \rawurlencode($trunkSid)
-		. '/OriginationUrls/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Trunks/' . \rawurlencode($trunkSid)
+        .'/OriginationUrls/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the OriginationUrlInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Trunking.V1.OriginationUrlContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the OriginationUrlInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the OriginationUrlInstance
+     *
+     * @return OriginationUrlInstance Fetched OriginationUrlInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): OriginationUrlInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new OriginationUrlInstance(
+            $this->version,
+            $payload,
+            $this->solution['trunkSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the OriginationUrlInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return OriginationUrlInstance Fetched OriginationUrlInstance
-	 */
-	public function fetch() : OriginationUrlInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the OriginationUrlInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return OriginationUrlInstance Updated OriginationUrlInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): OriginationUrlInstance
+    {
 
-		return new OriginationUrlInstance(
-			$this->version,
-			$payload,
-			$this->solution['trunkSid'],
-			$this->solution['sid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the OriginationUrlInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return OriginationUrlInstance Updated OriginationUrlInstance
-	 */
-	public function update(array $options = []) : OriginationUrlInstance
-	{
+        $data = Values::of([
+            'Weight' =>
+                $options['weight'],
+            'Priority' =>
+                $options['priority'],
+            'Enabled' =>
+                Serialize::booleanToString($options['enabled']),
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'SipUrl' =>
+                $options['sipUrl'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'Weight' => $options['weight'],
-			'Priority' => $options['priority'],
-			'Enabled' => Serialize::booleanToString($options['enabled']),
-			'FriendlyName' => $options['friendlyName'],
-			'SipUrl' => $options['sipUrl'],
-		]);
+        return new OriginationUrlInstance(
+            $this->version,
+            $payload,
+            $this->solution['trunkSid'],
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new OriginationUrlInstance(
-			$this->version,
-			$payload,
-			$this->solution['trunkSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Trunking.V1.OriginationUrlContext ' . \implode(' ', $context) . ']';
+    }
 }

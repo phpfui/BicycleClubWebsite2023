@@ -14,140 +14,142 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Studio\V1\Flow\Engagement;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Studio\V1\Flow\Engagement\Step\StepContextList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Studio\V1\Flow\Engagement\Step\StepContextList;
+
 
 /**
  * @property StepContextList $stepContext
  * @method \Twilio\Rest\Studio\V1\Flow\Engagement\Step\StepContextContext stepContext()
  */
 class StepContext extends InstanceContext
-	{
-	protected $_stepContext;
+    {
+    protected $_stepContext;
 
-	/**
-	 * Initialize the StepContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $flowSid The SID of the Flow with the Step to fetch.
-	 * @param string $engagementSid The SID of the Engagement with the Step to fetch.
-	 * @param string $sid The SID of the Step resource to fetch.
-	 */
-	public function __construct(
-		Version $version,
-		$flowSid,
-		$engagementSid,
-		$sid
-	) {
-		parent::__construct($version);
+    /**
+     * Initialize the StepContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $flowSid The SID of the Flow with the Step to fetch.
+     * @param string $engagementSid The SID of the Engagement with the Step to fetch.
+     * @param string $sid The SID of the Step resource to fetch.
+     */
+    public function __construct(
+        Version $version,
+        $flowSid,
+        $engagementSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'flowSid' => $flowSid,
-			'engagementSid' => $engagementSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'flowSid' =>
+            $flowSid,
+        'engagementSid' =>
+            $engagementSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Flows/' . \rawurlencode($flowSid)
-		. '/Engagements/' . \rawurlencode($engagementSid)
-		. '/Steps/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Flows/' . \rawurlencode($flowSid)
+        .'/Engagements/' . \rawurlencode($engagementSid)
+        .'/Steps/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Fetch the StepInstance
+     *
+     * @return StepInstance Fetched StepInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): StepInstance
+    {
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        return new StepInstance(
+            $this->version,
+            $payload,
+            $this->solution['flowSid'],
+            $this->solution['engagementSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
 
-			return $this->{$method}();
-		}
+    /**
+     * Access the stepContext
+     */
+    protected function getStepContext(): StepContextList
+    {
+        if (!$this->_stepContext) {
+            $this->_stepContext = new StepContextList(
+                $this->version,
+                $this->solution['flowSid'],
+                $this->solution['engagementSid'],
+                $this->solution['sid']
+            );
+        }
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        return $this->_stepContext;
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		return '[Twilio.Studio.V1.StepContext ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-	/**
-	 * Fetch the StepInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return StepInstance Fetched StepInstance
-	 */
-	public function fetch() : StepInstance
-	{
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new StepInstance(
-			$this->version,
-			$payload,
-			$this->solution['flowSid'],
-			$this->solution['engagementSid'],
-			$this->solution['sid']
-		);
-	}
-
-	/**
-	 * Access the stepContext
-	 */
-	protected function getStepContext() : StepContextList
-	{
-		if (! $this->_stepContext) {
-			$this->_stepContext = new StepContextList(
-				$this->version,
-				$this->solution['flowSid'],
-				$this->solution['engagementSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_stepContext;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Studio.V1.StepContext ' . \implode(' ', $context) . ']';
+    }
 }

@@ -14,67 +14,68 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class InsightsUserRolesContext extends InstanceContext
-	{
-	/**
-	 * Initialize the InsightsUserRolesContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the InsightsUserRolesContext
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/Insights/UserRoles';
-	}
+        $this->uri = '/Insights/UserRoles';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the InsightsUserRolesInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return InsightsUserRolesInstance Fetched InsightsUserRolesInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): InsightsUserRolesInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.FlexApi.V1.InsightsUserRolesContext ' . \implode(' ', $context) . ']';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Authorization' => $options['authorization']]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-	/**
-	 * Fetch the InsightsUserRolesInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InsightsUserRolesInstance Fetched InsightsUserRolesInstance
-	 */
-	public function fetch(array $options = []) : InsightsUserRolesInstance
-	{
+        return new InsightsUserRolesInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		$options = new Values($options);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Authorization' => $options['authorization']]);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new InsightsUserRolesInstance(
-			$this->version,
-			$payload
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.FlexApi.V1.InsightsUserRolesContext ' . \implode(' ', $context) . ']';
+    }
 }

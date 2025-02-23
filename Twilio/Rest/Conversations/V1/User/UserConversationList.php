@@ -21,144 +21,148 @@ use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class UserConversationList extends ListResource
-	{
-	/**
-	 * Construct the UserConversationList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $userSid The unique SID identifier of the [User resource](https://www.twilio.com/docs/conversations/api/user-resource). This value can be either the `sid` or the `identity` of the User resource.
-	 */
-	public function __construct(
-		Version $version,
-		string $userSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the UserConversationList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $userSid The unique SID identifier of the [User resource](https://www.twilio.com/docs/conversations/api/user-resource). This value can be either the `sid` or the `identity` of the User resource.
+     */
+    public function __construct(
+        Version $version,
+        string $userSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'userSid' => $userSid,
+        // Path Solution
+        $this->solution = [
+        'userSid' =>
+            $userSid,
+        
+        ];
 
-		];
+        $this->uri = '/Users/' . \rawurlencode($userSid)
+        .'/Conversations';
+    }
 
-		$this->uri = '/Users/' . \rawurlencode($userSid)
-		. '/Conversations';
-	}
+    /**
+     * Reads UserConversationInstance records from the API as a list.
+     * Unlike stream(), this operation is eager and will load `limit` records into
+     * memory before returning.
+     *
+     * @param int $limit Upper limit for the number of records to return. read()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, read()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return UserConversationInstance[] Array of results
+     */
+    public function read(int $limit = null, $pageSize = null): array
+    {
+        return \iterator_to_array($this->stream($limit, $pageSize), false);
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Conversations.V1.UserConversationList]';
-	}
+    /**
+     * Streams UserConversationInstance records from the API as a generator stream.
+     * This operation lazily loads records as efficiently as possible until the
+     * limit
+     * is reached.
+     * The results are returned as a generator, so this operation is memory
+     * efficient.
+     *
+     * @param int $limit Upper limit for the number of records to return. stream()
+     *                   guarantees to never return more than limit.  Default is no
+     *                   limit
+     * @param mixed $pageSize Number of records to fetch per request, when not set
+     *                        will use the default value of 50 records.  If no
+     *                        page_size is defined but a limit is defined, stream()
+     *                        will attempt to read the limit with the most
+     *                        efficient page size, i.e. min(limit, 1000)
+     * @return Stream stream of results
+     */
+    public function stream(int $limit = null, $pageSize = null): Stream
+    {
+        $limits = $this->version->readLimits($limit, $pageSize);
 
-	/**
-	 * Constructs a UserConversationContext
-	 *
-	 * @param string $conversationSid The unique SID identifier of the Conversation. This value can be either the `sid` or the `unique_name` of the [Conversation resource](https://www.twilio.com/docs/conversations/api/conversation-resource).
-	 */
-	public function getContext(
-		string $conversationSid
-	) : UserConversationContext
-	{
-		return new UserConversationContext(
-			$this->version,
-			$this->solution['userSid'],
-			$conversationSid
-		);
-	}
+        $page = $this->page($limits['pageSize']);
 
-	/**
-	 * Retrieve a specific page of UserConversationInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param string $targetUrl API-generated URL for the requested results page
-	 * @return UserConversationPage Page of UserConversationInstance
-	 */
-	public function getPage(string $targetUrl) : UserConversationPage
-	{
-		$response = $this->version->getDomain()->getClient()->request(
-			'GET',
-			$targetUrl
-		);
+        return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
+    }
 
-		return new UserConversationPage($this->version, $response, $this->solution);
-	}
+    /**
+     * Retrieve a single page of UserConversationInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param mixed $pageSize Number of records to return, defaults to 50
+     * @param string $pageToken PageToken provided by the API
+     * @param mixed $pageNumber Page Number, this value is simply for client state
+     * @return UserConversationPage Page of UserConversationInstance
+     */
+    public function page(
+        $pageSize = Values::NONE,
+        string $pageToken = Values::NONE,
+        $pageNumber = Values::NONE
+    ): UserConversationPage
+    {
 
-	/**
-	 * Retrieve a single page of UserConversationInstance records from the API.
-	 * Request is executed immediately
-	 *
-	 * @param mixed $pageSize Number of records to return, defaults to 50
-	 * @param string $pageToken PageToken provided by the API
-	 * @param mixed $pageNumber Page Number, this value is simply for client state
-	 * @return UserConversationPage Page of UserConversationInstance
-	 */
-	public function page(
-		$pageSize = Values::NONE,
-		string $pageToken = Values::NONE,
-		$pageNumber = Values::NONE
-	) : UserConversationPage
-	{
+        $params = Values::of([
+            'PageToken' => $pageToken,
+            'Page' => $pageNumber,
+            'PageSize' => $pageSize,
+        ]);
 
-		$params = Values::of([
-			'PageToken' => $pageToken,
-			'Page' => $pageNumber,
-			'PageSize' => $pageSize,
-		]);
+        $response = $this->version->page('GET', $this->uri, $params);
 
-		$response = $this->version->page('GET', $this->uri, $params);
+        return new UserConversationPage($this->version, $response, $this->solution);
+    }
 
-		return new UserConversationPage($this->version, $response, $this->solution);
-	}
+    /**
+     * Retrieve a specific page of UserConversationInstance records from the API.
+     * Request is executed immediately
+     *
+     * @param string $targetUrl API-generated URL for the requested results page
+     * @return UserConversationPage Page of UserConversationInstance
+     */
+    public function getPage(string $targetUrl): UserConversationPage
+    {
+        $response = $this->version->getDomain()->getClient()->request(
+            'GET',
+            $targetUrl
+        );
 
-	/**
-	 * Reads UserConversationInstance records from the API as a list.
-	 * Unlike stream(), this operation is eager and will load `limit` records into
-	 * memory before returning.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. read()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, read()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return UserConversationInstance[] Array of results
-	 */
-	public function read(?int $limit = null, $pageSize = null) : array
-	{
-		return \iterator_to_array($this->stream($limit, $pageSize), false);
-	}
+        return new UserConversationPage($this->version, $response, $this->solution);
+    }
 
-	/**
-	 * Streams UserConversationInstance records from the API as a generator stream.
-	 * This operation lazily loads records as efficiently as possible until the
-	 * limit
-	 * is reached.
-	 * The results are returned as a generator, so this operation is memory
-	 * efficient.
-	 *
-	 * @param int $limit Upper limit for the number of records to return. stream()
-	 *                   guarantees to never return more than limit.  Default is no
-	 *                   limit
-	 * @param mixed $pageSize Number of records to fetch per request, when not set
-	 *                        will use the default value of 50 records.  If no
-	 *                        page_size is defined but a limit is defined, stream()
-	 *                        will attempt to read the limit with the most
-	 *                        efficient page size, i.e. min(limit, 1000)
-	 * @return Stream stream of results
-	 */
-	public function stream(?int $limit = null, $pageSize = null) : Stream
-	{
-		$limits = $this->version->readLimits($limit, $pageSize);
 
-		$page = $this->page($limits['pageSize']);
+    /**
+     * Constructs a UserConversationContext
+     *
+     * @param string $conversationSid The unique SID identifier of the Conversation. This value can be either the `sid` or the `unique_name` of the [Conversation resource](https://www.twilio.com/docs/conversations/api/conversation-resource).
+     */
+    public function getContext(
+        string $conversationSid
+        
+    ): UserConversationContext
+    {
+        return new UserConversationContext(
+            $this->version,
+            $this->solution['userSid'],
+            $conversationSid
+        );
+    }
 
-		return $this->version->stream($page, $limits['limit'], $limits['pageLimit']);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Conversations.V1.UserConversationList]';
+    }
 }

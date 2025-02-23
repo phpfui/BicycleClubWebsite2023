@@ -14,184 +14,208 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\FlexApi\V1\Interaction;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Rest\FlexApi\V1\Interaction\InteractionChannel\InteractionChannelInviteList;
-use Twilio\Rest\FlexApi\V1\Interaction\InteractionChannel\InteractionChannelParticipantList;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+use Twilio\Rest\FlexApi\V1\Interaction\InteractionChannel\InteractionChannelParticipantList;
+use Twilio\Rest\FlexApi\V1\Interaction\InteractionChannel\InteractionChannelInviteList;
+use Twilio\Rest\FlexApi\V1\Interaction\InteractionChannel\InteractionTransferList;
+
 
 /**
  * @property InteractionChannelParticipantList $participants
  * @property InteractionChannelInviteList $invites
+ * @property InteractionTransferList $transfers
+ * @method \Twilio\Rest\FlexApi\V1\Interaction\InteractionChannel\InteractionTransferContext transfers(string $sid)
  * @method \Twilio\Rest\FlexApi\V1\Interaction\InteractionChannel\InteractionChannelParticipantContext participants(string $sid)
  */
 class InteractionChannelContext extends InstanceContext
-	{
-	protected $_invites;
+    {
+    protected $_participants;
+    protected $_invites;
+    protected $_transfers;
 
-	protected $_participants;
+    /**
+     * Initialize the InteractionChannelContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $interactionSid The unique string created by Twilio to identify an Interaction resource, prefixed with KD.
+     * @param string $sid The unique string created by Twilio to identify an Interaction Channel resource, prefixed with UO.
+     */
+    public function __construct(
+        Version $version,
+        $interactionSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-	/**
-	 * Initialize the InteractionChannelContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $interactionSid The unique string created by Twilio to identify an Interaction resource, prefixed with KD.
-	 * @param string $sid The unique string created by Twilio to identify an Interaction Channel resource, prefixed with UO.
-	 */
-	public function __construct(
-		Version $version,
-		$interactionSid,
-		$sid
-	) {
-		parent::__construct($version);
+        // Path Solution
+        $this->solution = [
+        'interactionSid' =>
+            $interactionSid,
+        'sid' =>
+            $sid,
+        ];
 
-		// Path Solution
-		$this->solution = [
-			'interactionSid' => $interactionSid,
-			'sid' => $sid,
-		];
+        $this->uri = '/Interactions/' . \rawurlencode($interactionSid)
+        .'/Channels/' . \rawurlencode($sid)
+        .'';
+    }
 
-		$this->uri = '/Interactions/' . \rawurlencode($interactionSid)
-		. '/Channels/' . \rawurlencode($sid)
-		. '';
-	}
+    /**
+     * Fetch the InteractionChannelInstance
+     *
+     * @return InteractionChannelInstance Fetched InteractionChannelInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): InteractionChannelInstance
+    {
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        return new InteractionChannelInstance(
+            $this->version,
+            $payload,
+            $this->solution['interactionSid'],
+            $this->solution['sid']
+        );
+    }
 
-		throw new TwilioException('Resource does not have a context');
-	}
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+    /**
+     * Update the InteractionChannelInstance
+     *
+     * @param string $status
+     * @param array|Options $options Optional Arguments
+     * @return InteractionChannelInstance Updated InteractionChannelInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $status, array $options = []): InteractionChannelInstance
+    {
 
-			return $this->{$method}();
-		}
+        $options = new Values($options);
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        $data = Values::of([
+            'Status' =>
+                $status,
+            'Routing' =>
+                Serialize::jsonObject($options['routing']),
+        ]);
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return new InteractionChannelInstance(
+            $this->version,
+            $payload,
+            $this->solution['interactionSid'],
+            $this->solution['sid']
+        );
+    }
 
-		return '[Twilio.FlexApi.V1.InteractionChannelContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Fetch the InteractionChannelInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InteractionChannelInstance Fetched InteractionChannelInstance
-	 */
-	public function fetch() : InteractionChannelInstance
-	{
+    /**
+     * Access the participants
+     */
+    protected function getParticipants(): InteractionChannelParticipantList
+    {
+        if (!$this->_participants) {
+            $this->_participants = new InteractionChannelParticipantList(
+                $this->version,
+                $this->solution['interactionSid'],
+                $this->solution['sid']
+            );
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+        return $this->_participants;
+    }
 
-		return new InteractionChannelInstance(
-			$this->version,
-			$payload,
-			$this->solution['interactionSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Access the invites
+     */
+    protected function getInvites(): InteractionChannelInviteList
+    {
+        if (!$this->_invites) {
+            $this->_invites = new InteractionChannelInviteList(
+                $this->version,
+                $this->solution['interactionSid'],
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Update the InteractionChannelInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InteractionChannelInstance Updated InteractionChannelInstance
-	 */
-	public function update(string $status, array $options = []) : InteractionChannelInstance
-	{
+        return $this->_invites;
+    }
 
-		$options = new Values($options);
+    /**
+     * Access the transfers
+     */
+    protected function getTransfers(): InteractionTransferList
+    {
+        if (!$this->_transfers) {
+            $this->_transfers = new InteractionTransferList(
+                $this->version,
+                $this->solution['interactionSid'],
+                $this->solution['sid']
+            );
+        }
 
-		$data = Values::of([
-			'Status' => $status,
-			'Routing' => Serialize::jsonObject($options['routing']),
-		]);
+        return $this->_transfers;
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return new InteractionChannelInstance(
-			$this->version,
-			$payload,
-			$this->solution['interactionSid'],
-			$this->solution['sid']
-		);
-	}
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-	/**
-	 * Access the invites
-	 */
-	protected function getInvites() : InteractionChannelInviteList
-	{
-		if (! $this->_invites) {
-			$this->_invites = new InteractionChannelInviteList(
-				$this->version,
-				$this->solution['interactionSid'],
-				$this->solution['sid']
-			);
-		}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		return $this->_invites;
-	}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-	/**
-	 * Access the participants
-	 */
-	protected function getParticipants() : InteractionChannelParticipantList
-	{
-		if (! $this->_participants) {
-			$this->_participants = new InteractionChannelParticipantList(
-				$this->version,
-				$this->solution['interactionSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_participants;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.FlexApi.V1.InteractionChannelContext ' . \implode(' ', $context) . ']';
+    }
 }

@@ -14,96 +14,104 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Video\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class RecordingSettingsContext extends InstanceContext
-	{
-	/**
-	 * Initialize the RecordingSettingsContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the RecordingSettingsContext
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/RecordingSettings/Default';
-	}
+        $this->uri = '/RecordingSettings/Default';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Create the RecordingSettingsInstance
+     *
+     * @param string $friendlyName A descriptive string that you create to describe the resource and be shown to users in the console
+     * @param array|Options $options Optional Arguments
+     * @return RecordingSettingsInstance Created RecordingSettingsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $friendlyName, array $options = []): RecordingSettingsInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.Video.V1.RecordingSettingsContext ' . \implode(' ', $context) . ']';
-	}
+        $data = Values::of([
+            'FriendlyName' =>
+                $friendlyName,
+            'AwsCredentialsSid' =>
+                $options['awsCredentialsSid'],
+            'EncryptionKeySid' =>
+                $options['encryptionKeySid'],
+            'AwsS3Url' =>
+                $options['awsS3Url'],
+            'AwsStorageEnabled' =>
+                Serialize::booleanToString($options['awsStorageEnabled']),
+            'EncryptionEnabled' =>
+                Serialize::booleanToString($options['encryptionEnabled']),
+        ]);
 
-	/**
-	 * Create the RecordingSettingsInstance
-	 *
-	 * @param string $friendlyName A descriptive string that you create to describe the resource and be shown to users in the console
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RecordingSettingsInstance Created RecordingSettingsInstance
-	 */
-	public function create(string $friendlyName, array $options = []) : RecordingSettingsInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$options = new Values($options);
+        return new RecordingSettingsInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		$data = Values::of([
-			'FriendlyName' => $friendlyName,
-			'AwsCredentialsSid' => $options['awsCredentialsSid'],
-			'EncryptionKeySid' => $options['encryptionKeySid'],
-			'AwsS3Url' => $options['awsS3Url'],
-			'AwsStorageEnabled' => Serialize::booleanToString($options['awsStorageEnabled']),
-			'EncryptionEnabled' => Serialize::booleanToString($options['encryptionEnabled']),
-		]);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+    /**
+     * Fetch the RecordingSettingsInstance
+     *
+     * @return RecordingSettingsInstance Fetched RecordingSettingsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): RecordingSettingsInstance
+    {
 
-		return new RecordingSettingsInstance(
-			$this->version,
-			$payload
-		);
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-	/**
-	 * Fetch the RecordingSettingsInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RecordingSettingsInstance Fetched RecordingSettingsInstance
-	 */
-	public function fetch() : RecordingSettingsInstance
-	{
+        return new RecordingSettingsInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return new RecordingSettingsInstance(
-			$this->version,
-			$payload
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Video.V1.RecordingSettingsContext ' . \implode(' ', $context) . ']';
+    }
 }

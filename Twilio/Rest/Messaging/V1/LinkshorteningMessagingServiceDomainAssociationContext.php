@@ -14,68 +14,70 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Messaging\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class LinkshorteningMessagingServiceDomainAssociationContext extends InstanceContext
-	{
-	/**
-	 * Initialize the LinkshorteningMessagingServiceDomainAssociationContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $messagingServiceSid Unique string used to identify the Messaging service that this domain should be associated with.
-	 */
-	public function __construct(
-		Version $version,
-		$messagingServiceSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the LinkshorteningMessagingServiceDomainAssociationContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $messagingServiceSid Unique string used to identify the Messaging service that this domain should be associated with.
+     */
+    public function __construct(
+        Version $version,
+        $messagingServiceSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'messagingServiceSid' => $messagingServiceSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'messagingServiceSid' =>
+            $messagingServiceSid,
+        ];
 
-		$this->uri = '/LinkShortening/MessagingServices/' . \rawurlencode($messagingServiceSid)
-		. '/Domain';
-	}
+        $this->uri = '/LinkShortening/MessagingServices/' . \rawurlencode($messagingServiceSid)
+        .'/Domain';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the LinkshorteningMessagingServiceDomainAssociationInstance
+     *
+     * @return LinkshorteningMessagingServiceDomainAssociationInstance Fetched LinkshorteningMessagingServiceDomainAssociationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): LinkshorteningMessagingServiceDomainAssociationInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Messaging.V1.LinkshorteningMessagingServiceDomainAssociationContext ' . \implode(' ', $context) . ']';
-	}
+        return new LinkshorteningMessagingServiceDomainAssociationInstance(
+            $this->version,
+            $payload,
+            $this->solution['messagingServiceSid']
+        );
+    }
 
-	/**
-	 * Fetch the LinkshorteningMessagingServiceDomainAssociationInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return LinkshorteningMessagingServiceDomainAssociationInstance Fetched LinkshorteningMessagingServiceDomainAssociationInstance
-	 */
-	public function fetch() : LinkshorteningMessagingServiceDomainAssociationInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new LinkshorteningMessagingServiceDomainAssociationInstance(
-			$this->version,
-			$payload,
-			$this->solution['messagingServiceSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Messaging.V1.LinkshorteningMessagingServiceDomainAssociationContext ' . \implode(' ', $context) . ']';
+    }
 }

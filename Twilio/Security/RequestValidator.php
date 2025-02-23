@@ -11,155 +11,162 @@ use Twilio\Values;
  * $isFromTwilio = $validator->validate($_SERVER['HTTP_X_TWILIO_SIGNATURE'], 'https://your-example-url.com/api/route/', $_REQUEST);
  * $isFromTwilio // <- if this is true, the request did come from Twilio, if not, it didn't
  */
-class RequestValidator
-{
-	/**
-	 * @access private
-	 * @var string The auth token to the Twilio Account
-	 */
-	private $authToken;
+class RequestValidator {
 
-	/**
-	 * constructor
-	 * @access public
-	 * @param string $authToken the auth token of the Twilio user's account
-	 * Sets the account auth token to be used by the rest of the class
-	 */
-	public function __construct(string $authToken) {
-		$this->authToken = $authToken;
-	}
+    /**
+     * @access private
+     * @var string The auth token to the Twilio Account
+     */
+    private $authToken;
 
-	/**
-	 * Time insensitive compare, function's runtime is governed by the length
-	 * of the first argument, not the difference between the arguments.
-	 *
-	 * @param string $a First part of the comparison pair
-	 * @param string $b Second part of the comparison pair
-	 * @return bool True if $a === $b, false otherwise.
-	 */
-	public static function compare(?string $a, ?string $b) : bool {
-		if ($a && $b) {
-			return \hash_equals($a, $b);
-		}
+    /**
+     * constructor
+     * @access public
+     * @param string $authToken the auth token of the Twilio user's account
+     * Sets the account auth token to be used by the rest of the class
+     */
+    public function __construct(string $authToken) {
+        $this->authToken = $authToken;
+    }
 
-		return false;
-	}
+    /**
+     * Creates the actual base64 encoded signature of the sha1 hash of the concatenated URL and your auth token
+     *
+     * @param string $url the full URL of the request URL you specify for your phone number or app, from the protocol (https...) through the end of the query string (everything after the ?)
+     * @param array $data the Twilio parameters the request was made with
+     * @return string
+     */
+    public function computeSignature(string $url, array $data = []): string {
+        // sort the array by keys
+        \ksort($data);
 
-	/**
-	 * Converts the raw binary output to a hexadecimal return
-	 *
-	 */
-	public static function computeBodyHash(string $data = '') : string {
-		return \bin2hex(\hash('sha256', $data, true));
-	}
+        foreach ($data as $key => $value) {
+            // convert a single value to an array or remove any duplicates
+            $valueArray = \is_array($value) ? \array_unique($value) : array($value);
+            // also sort all the values
+            \sort($valueArray);
 
-	/**
-	 * Creates the actual base64 encoded signature of the sha1 hash of the concatenated URL and your auth token
-	 *
-	 * @param string $url the full URL of the request URL you specify for your phone number or app, from the protocol (https...) through the end of the query string (everything after the ?)
-	 * @param array $data the Twilio parameters the request was made with
-	 */
-	public function computeSignature(string $url, array $data = []) : string {
-		// sort the array by keys
-		\ksort($data);
+            // append them to the data string with no delimiters
+            foreach ($valueArray as $item) {
+                $url .= $key . $item;
+            }
+        }
 
-		foreach ($data as $key => $value) {
-			// convert a single value to an array or remove any duplicates
-			$valueArray = \is_array($value) ? \array_unique($value) : [$value];
-			// also sort all the values
-			\sort($valueArray);
+        // sha1 then base64 the url to the auth token and return the base64-ed string
+        return \base64_encode(\hash_hmac('sha1', $url, $this->authToken, true));
+    }
 
-			// append them to the data string with no delimiters
-			foreach ($valueArray as $item) {
-				$url .= $key . $item;
-			}
-		}
+    /**
+     * Converts the raw binary output to a hexadecimal return
+     *
+     * @param string $data
+     * @return string
+     */
+    public static function computeBodyHash(string $data = ''): string {
+        return \bin2hex(\hash('sha256', $data, true));
+    }
 
-		// sha1 then base64 the url to the auth token and return the base64-ed string
-		return \base64_encode(\hash_hmac('sha1', $url, $this->authToken, true));
-	}
+    /**
+     * The only method the client should be running...takes the Twilio signature, their URL, and the Twilio params and validates the signature
+     *
+     * @param string $expectedSignature
+     * @param string $url
+     * @param array|string $data
+     * @return bool
+     */
+    public function validate(string $expectedSignature, string $url, $data = []): bool {
+        $parsedUrl = \parse_url($url);
 
-	/**
-	 * Builds the URL from its parsed component pieces
-	 *
-	 * @return string Full URL
-	 */
-	public static function unparse_url(array $parsedUrl) : string {
-		$parts = [];
+        $urlWithPort = self::addPort($parsedUrl);
+        $urlWithoutPort = self::removePort($parsedUrl);
+        $validBodyHash = true;  // May not receive body hash, so default succeed
 
-		$parts['scheme'] = isset($parsedUrl['scheme']) ? $parsedUrl['scheme'] . '://' : '';
-		$parts['user'] = $parsedUrl['user'] ?? '';
-		$parts['pass'] = isset($parsedUrl['pass']) ? ':' . $parsedUrl['pass'] : '';
-		$parts['pass'] = ($parts['user'] || $parts['pass']) ? $parts['pass'] . '@' : '';
-		$parts['host'] = $parsedUrl['host'] ?? '';
-		$parts['port'] = isset($parsedUrl['port']) ? ':' . $parsedUrl['port'] : '';
-		$parts['path'] = $parsedUrl['path'] ?? '';
-		$parts['query'] = isset($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
-		$parts['fragment'] = isset($parsedUrl['fragment']) ? '#' . $parsedUrl['fragment'] : '';
+        if (!\is_array($data)) {
+            // handling if the data was passed through as a string instead of an array of params
+            $queryString = \explode('?', $url);
+            $queryString = $queryString[1];
+            \parse_str($queryString, $params);
 
-		return \implode('', $parts);
-	}
+            $validBodyHash = self::compare(self::computeBodyHash($data), Values::array_get($params, 'bodySHA256'));
+            $data = [];
+        }
 
-	/**
-	 * The only method the client should be running...takes the Twilio signature, their URL, and the Twilio params and validates the signature
-	 *
-	 * @param array|string $data
-	 */
-	public function validate(string $expectedSignature, string $url, $data = []) : bool {
-		$parsedUrl = \parse_url($url);
+        /*
+         *  Check signature of the URL with and without port information
+         *  since sig generation on the back end is inconsistent.
+         */
+        $validSignatureWithPort = self::compare(
+            $expectedSignature,
+            $this->computeSignature($urlWithPort, $data)
+        );
+        $validSignatureWithoutPort = self::compare(
+            $expectedSignature,
+            $this->computeSignature($urlWithoutPort, $data)
+        );
 
-		$urlWithPort = self::addPort($parsedUrl);
-		$urlWithoutPort = self::removePort($parsedUrl);
-		$validBodyHash = true;  // May not receive body hash, so default succeed
+        return $validBodyHash && ($validSignatureWithPort || $validSignatureWithoutPort);
+    }
 
-		if (! \is_array($data)) {
-			// handling if the data was passed through as a string instead of an array of params
-			$queryString = \explode('?', $url);
-			$queryString = $queryString[1];
-			\parse_str($queryString, $params);
+    /**
+     * Time insensitive compare, function's runtime is governed by the length
+     * of the first argument, not the difference between the arguments.
+     *
+     * @param string $a First part of the comparison pair
+     * @param string $b Second part of the comparison pair
+     * @return bool True if $a === $b, false otherwise.
+     */
+    public static function compare(?string $a, ?string $b): bool {
+        if ($a && $b) {
+            return hash_equals($a, $b);
+        }
 
-			$validBodyHash = self::compare(self::computeBodyHash($data), Values::array_get($params, 'bodySHA256'));
-			$data = [];
-		}
+        return false;
+    }
 
-		/*
-		 *  Check signature of the URL with and without port information
-		 *  since sig generation on the back end is inconsistent.
-		 */
-		$validSignatureWithPort = self::compare(
-			$expectedSignature,
-			$this->computeSignature($urlWithPort, $data)
-		);
-		$validSignatureWithoutPort = self::compare(
-			$expectedSignature,
-			$this->computeSignature($urlWithoutPort, $data)
-		);
+    /**
+     * Removes the port from the URL
+     *
+     * @param array $parsedUrl
+     * @return string Full URL without the port number
+     */
+    private static function removePort(array $parsedUrl): string {
+        unset($parsedUrl['port']);
+        return self::unparse_url($parsedUrl);
+    }
 
-		return $validBodyHash && ($validSignatureWithPort || $validSignatureWithoutPort);
-	}
+    /**
+     * Adds the port to the URL
+     *
+     * @param array $parsedUrl
+     * @return string Full URL with the port number
+     */
+    private static function addPort(array $parsedUrl): string {
+        if (!isset($parsedUrl['port'])) {
+            $port = ($parsedUrl['scheme'] === 'https') ? 443 : 80;
+            $parsedUrl['port'] = $port;
+        }
+        return self::unparse_url($parsedUrl);
+    }
 
-	/**
-	 * Adds the port to the URL
-	 *
-	 * @return string Full URL with the port number
-	 */
-	private static function addPort(array $parsedUrl) : string {
-		if (! isset($parsedUrl['port'])) {
-			$port = ('https' === $parsedUrl['scheme']) ? 443 : 80;
-			$parsedUrl['port'] = $port;
-		}
+    /**
+     * Builds the URL from its parsed component pieces
+     *
+     * @param array $parsedUrl
+     * @return string Full URL
+     */
+    static function unparse_url(array $parsedUrl): string {
+        $parts = [];
 
-		return self::unparse_url($parsedUrl);
-	}
+        $parts['scheme'] = isset($parsedUrl['scheme']) ? $parsedUrl['scheme'] . '://' : '';
+        $parts['user'] = $parsedUrl['user'] ?? '';
+        $parts['pass'] = isset($parsedUrl['pass']) ? ':' . $parsedUrl['pass'] : '';
+        $parts['pass'] = ($parts['user'] || $parts['pass']) ? $parts['pass'] . '@' : '';
+        $parts['host'] = $parsedUrl['host'] ?? '';
+        $parts['port'] = isset($parsedUrl['port']) ? ':' . $parsedUrl['port'] : '';
+        $parts['path'] = $parsedUrl['path'] ?? '';
+        $parts['query'] = isset($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
+        $parts['fragment'] = isset($parsedUrl['fragment']) ? '#' . $parsedUrl['fragment'] : '';
 
-	/**
-	 * Removes the port from the URL
-	 *
-	 * @return string Full URL without the port number
-	 */
-	private static function removePort(array $parsedUrl) : string {
-		unset($parsedUrl['port']);
-
-		return self::unparse_url($parsedUrl);
-	}
+        return \implode('', $parts);
+    }
 }

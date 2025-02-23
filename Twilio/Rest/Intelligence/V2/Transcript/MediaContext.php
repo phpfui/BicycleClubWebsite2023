@@ -14,77 +14,80 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Intelligence\V2\Transcript;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class MediaContext extends InstanceContext
-	{
-	/**
-	 * Initialize the MediaContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The unique SID identifier of the Transcript.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the MediaContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The unique SID identifier of the Transcript.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Transcripts/' . \rawurlencode($sid)
-		. '/Media';
-	}
+        $this->uri = '/Transcripts/' . \rawurlencode($sid)
+        .'/Media';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the MediaInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return MediaInstance Fetched MediaInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): MediaInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.Intelligence.V2.MediaContext ' . \implode(' ', $context) . ']';
-	}
+        $params = Values::of([
+            'Redacted' =>
+                Serialize::booleanToString($options['redacted']),
+        ]);
 
-	/**
-	 * Fetch the MediaInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return MediaInstance Fetched MediaInstance
-	 */
-	public function fetch(array $options = []) : MediaInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
 
-		$options = new Values($options);
+        return new MediaInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		$params = Values::of([
-			'Redacted' => Serialize::booleanToString($options['redacted']),
-		]);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, $params, [], $headers);
-
-		return new MediaInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Intelligence.V2.MediaContext ' . \implode(' ', $context) . ']';
+    }
 }

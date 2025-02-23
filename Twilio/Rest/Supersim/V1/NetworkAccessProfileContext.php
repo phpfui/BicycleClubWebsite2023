@@ -14,155 +14,157 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Supersim\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Rest\Supersim\V1\NetworkAccessProfile\NetworkAccessProfileNetworkList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Supersim\V1\NetworkAccessProfile\NetworkAccessProfileNetworkList;
+
 
 /**
  * @property NetworkAccessProfileNetworkList $networks
  * @method \Twilio\Rest\Supersim\V1\NetworkAccessProfile\NetworkAccessProfileNetworkContext networks(string $sid)
  */
 class NetworkAccessProfileContext extends InstanceContext
-	{
-	protected $_networks;
+    {
+    protected $_networks;
 
-	/**
-	 * Initialize the NetworkAccessProfileContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The SID of the Network Access Profile resource to fetch.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    /**
+     * Initialize the NetworkAccessProfileContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The SID of the Network Access Profile resource to fetch.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/NetworkAccessProfiles/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/NetworkAccessProfiles/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Fetch the NetworkAccessProfileInstance
+     *
+     * @return NetworkAccessProfileInstance Fetched NetworkAccessProfileInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): NetworkAccessProfileInstance
+    {
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        return new NetworkAccessProfileInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
 
-			return $this->{$method}();
-		}
+    /**
+     * Update the NetworkAccessProfileInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return NetworkAccessProfileInstance Updated NetworkAccessProfileInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): NetworkAccessProfileInstance
+    {
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        $data = Values::of([
+            'UniqueName' =>
+                $options['uniqueName'],
+        ]);
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return '[Twilio.Supersim.V1.NetworkAccessProfileContext ' . \implode(' ', $context) . ']';
-	}
+        return new NetworkAccessProfileInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the NetworkAccessProfileInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return NetworkAccessProfileInstance Fetched NetworkAccessProfileInstance
-	 */
-	public function fetch() : NetworkAccessProfileInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Access the networks
+     */
+    protected function getNetworks(): NetworkAccessProfileNetworkList
+    {
+        if (!$this->_networks) {
+            $this->_networks = new NetworkAccessProfileNetworkList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		return new NetworkAccessProfileInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        return $this->_networks;
+    }
 
-	/**
-	 * Update the NetworkAccessProfileInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return NetworkAccessProfileInstance Updated NetworkAccessProfileInstance
-	 */
-	public function update(array $options = []) : NetworkAccessProfileInstance
-	{
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		$options = new Values($options);
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		$data = Values::of([
-			'UniqueName' => $options['uniqueName'],
-		]);
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		return new NetworkAccessProfileInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
-
-	/**
-	 * Access the networks
-	 */
-	protected function getNetworks() : NetworkAccessProfileNetworkList
-	{
-		if (! $this->_networks) {
-			$this->_networks = new NetworkAccessProfileNetworkList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_networks;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Supersim.V1.NetworkAccessProfileContext ' . \implode(' ', $context) . ']';
+    }
 }

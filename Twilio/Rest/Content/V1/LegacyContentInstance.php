@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Content\V1;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property \DateTime|null $dateCreated
@@ -37,63 +39,63 @@ use Twilio\Version;
  */
 class LegacyContentInstance extends InstanceResource
 {
-	/**
-	 * Initialize the LegacyContentInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 */
-	public function __construct(Version $version, array $payload)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the LegacyContentInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     */
+    public function __construct(Version $version, array $payload)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'language' => Values::array_get($payload, 'language'),
-			'variables' => Values::array_get($payload, 'variables'),
-			'types' => Values::array_get($payload, 'types'),
-			'legacyTemplateName' => Values::array_get($payload, 'legacy_template_name'),
-			'legacyBody' => Values::array_get($payload, 'legacy_body'),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'language' => Values::array_get($payload, 'language'),
+            'variables' => Values::array_get($payload, 'variables'),
+            'types' => Values::array_get($payload, 'types'),
+            'legacyTemplateName' => Values::array_get($payload, 'legacy_template_name'),
+            'legacyBody' => Values::array_get($payload, 'legacy_body'),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = [];
-	}
+        $this->solution = [];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-			return $this->{$method}();
-		}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
-
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Content.V1.LegacyContentInstance]';
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Content.V1.LegacyContentInstance]';
+    }
 }
+

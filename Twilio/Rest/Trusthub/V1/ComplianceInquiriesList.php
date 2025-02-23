@@ -22,75 +22,81 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class ComplianceInquiriesList extends ListResource
-	{
-	/**
-	 * Construct the ComplianceInquiriesList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the ComplianceInquiriesList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/ComplianceInquiries/Customers/Initialize';
-	}
+        $this->uri = '/ComplianceInquiries/Customers/Initialize';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Trusthub.V1.ComplianceInquiriesList]';
-	}
+    /**
+     * Create the ComplianceInquiriesInstance
+     *
+     * @param string $primaryProfileSid The unique SID identifier of the Primary Customer Profile that should be used as a parent. Only necessary when creating a secondary Customer Profile.
+     * @param array|Options $options Optional Arguments
+     * @return ComplianceInquiriesInstance Created ComplianceInquiriesInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $primaryProfileSid, array $options = []): ComplianceInquiriesInstance
+    {
 
-	/**
-	 * Create the ComplianceInquiriesInstance
-	 *
-	 * @param string $primaryProfileSid The unique SID identifier of the Primary Customer Profile that should be used as a parent. Only necessary when creating a secondary Customer Profile.
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ComplianceInquiriesInstance Created ComplianceInquiriesInstance
-	 */
-	public function create(string $primaryProfileSid, array $options = []) : ComplianceInquiriesInstance
-	{
+        $options = new Values($options);
 
-		$options = new Values($options);
+        $data = Values::of([
+            'PrimaryProfileSid' =>
+                $primaryProfileSid,
+            'NotificationEmail' =>
+                $options['notificationEmail'],
+            'ThemeSetId' =>
+                $options['themeSetId'],
+        ]);
 
-		$data = Values::of([
-			'PrimaryProfileSid' => $primaryProfileSid,
-			'NotificationEmail' => $options['notificationEmail'],
-			'ThemeSetId' => $options['themeSetId'],
-		]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return new ComplianceInquiriesInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new ComplianceInquiriesInstance(
-			$this->version,
-			$payload
-		);
-	}
 
-	/**
-	 * Constructs a ComplianceInquiriesContext
-	 *
-	 * @param string $customerId The unique CustomerId matching the Customer Profile/Compliance Inquiry that should be resumed or resubmitted. This value will have been returned by the initial Compliance Inquiry creation call.
-	 */
-	public function getContext(
-		string $customerId
-	) : ComplianceInquiriesContext
-	{
-		return new ComplianceInquiriesContext(
-			$this->version,
-			$customerId
-		);
-	}
+    /**
+     * Constructs a ComplianceInquiriesContext
+     *
+     * @param string $customerId The unique CustomerId matching the Customer Profile/Compliance Inquiry that should be resumed or resubmitted. This value will have been returned by the initial Compliance Inquiry creation call.
+     */
+    public function getContext(
+        string $customerId
+        
+    ): ComplianceInquiriesContext
+    {
+        return new ComplianceInquiriesContext(
+            $this->version,
+            $customerId
+        );
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Trusthub.V1.ComplianceInquiriesList]';
+    }
 }

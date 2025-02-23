@@ -14,21 +14,23 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Messaging\V1;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
-use Twilio\Rest\Messaging\V1\Service\AlphaSenderList;
-use Twilio\Rest\Messaging\V1\Service\ChannelSenderList;
-use Twilio\Rest\Messaging\V1\Service\DestinationAlphaSenderList;
-use Twilio\Rest\Messaging\V1\Service\PhoneNumberList;
-use Twilio\Rest\Messaging\V1\Service\ShortCodeList;
-use Twilio\Rest\Messaging\V1\Service\UsAppToPersonList;
-use Twilio\Rest\Messaging\V1\Service\UsAppToPersonUsecaseList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+use Twilio\Rest\Messaging\V1\Service\AlphaSenderList;
+use Twilio\Rest\Messaging\V1\Service\PhoneNumberList;
+use Twilio\Rest\Messaging\V1\Service\DestinationAlphaSenderList;
+use Twilio\Rest\Messaging\V1\Service\UsAppToPersonUsecaseList;
+use Twilio\Rest\Messaging\V1\Service\ChannelSenderList;
+use Twilio\Rest\Messaging\V1\Service\ShortCodeList;
+use Twilio\Rest\Messaging\V1\Service\UsAppToPersonList;
+
 
 /**
  * @property string|null $sid
@@ -57,207 +59,199 @@ use Twilio\Version;
  */
 class ServiceInstance extends InstanceResource
 {
-	protected $_alphaSenders;
+    protected $_alphaSenders;
+    protected $_phoneNumbers;
+    protected $_destinationAlphaSenders;
+    protected $_usAppToPersonUsecases;
+    protected $_channelSenders;
+    protected $_shortCodes;
+    protected $_usAppToPerson;
 
-	protected $_channelSenders;
+    /**
+     * Initialize the ServiceInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid The SID of the Service resource to delete.
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-	protected $_destinationAlphaSenders;
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'inboundRequestUrl' => Values::array_get($payload, 'inbound_request_url'),
+            'inboundMethod' => Values::array_get($payload, 'inbound_method'),
+            'fallbackUrl' => Values::array_get($payload, 'fallback_url'),
+            'fallbackMethod' => Values::array_get($payload, 'fallback_method'),
+            'statusCallback' => Values::array_get($payload, 'status_callback'),
+            'stickySender' => Values::array_get($payload, 'sticky_sender'),
+            'mmsConverter' => Values::array_get($payload, 'mms_converter'),
+            'smartEncoding' => Values::array_get($payload, 'smart_encoding'),
+            'scanMessageContent' => Values::array_get($payload, 'scan_message_content'),
+            'fallbackToLongCode' => Values::array_get($payload, 'fallback_to_long_code'),
+            'areaCodeGeomatch' => Values::array_get($payload, 'area_code_geomatch'),
+            'synchronousValidation' => Values::array_get($payload, 'synchronous_validation'),
+            'validityPeriod' => Values::array_get($payload, 'validity_period'),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
+            'usecase' => Values::array_get($payload, 'usecase'),
+            'usAppToPersonRegistered' => Values::array_get($payload, 'us_app_to_person_registered'),
+            'useInboundWebhookOnNumber' => Values::array_get($payload, 'use_inbound_webhook_on_number'),
+        ];
 
-	protected $_phoneNumbers;
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	protected $_shortCodes;
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return ServiceContext Context for this ServiceInstance
+     */
+    protected function proxy(): ServiceContext
+    {
+        if (!$this->context) {
+            $this->context = new ServiceContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-	protected $_usAppToPerson;
+        return $this->context;
+    }
 
-	protected $_usAppToPersonUsecases;
+    /**
+     * Delete the ServiceInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-	/**
-	 * Initialize the ServiceInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $sid The SID of the Service resource to delete.
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+        return $this->proxy()->delete();
+    }
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'inboundRequestUrl' => Values::array_get($payload, 'inbound_request_url'),
-			'inboundMethod' => Values::array_get($payload, 'inbound_method'),
-			'fallbackUrl' => Values::array_get($payload, 'fallback_url'),
-			'fallbackMethod' => Values::array_get($payload, 'fallback_method'),
-			'statusCallback' => Values::array_get($payload, 'status_callback'),
-			'stickySender' => Values::array_get($payload, 'sticky_sender'),
-			'mmsConverter' => Values::array_get($payload, 'mms_converter'),
-			'smartEncoding' => Values::array_get($payload, 'smart_encoding'),
-			'scanMessageContent' => Values::array_get($payload, 'scan_message_content'),
-			'fallbackToLongCode' => Values::array_get($payload, 'fallback_to_long_code'),
-			'areaCodeGeomatch' => Values::array_get($payload, 'area_code_geomatch'),
-			'synchronousValidation' => Values::array_get($payload, 'synchronous_validation'),
-			'validityPeriod' => Values::array_get($payload, 'validity_period'),
-			'url' => Values::array_get($payload, 'url'),
-			'links' => Values::array_get($payload, 'links'),
-			'usecase' => Values::array_get($payload, 'usecase'),
-			'usAppToPersonRegistered' => Values::array_get($payload, 'us_app_to_person_registered'),
-			'useInboundWebhookOnNumber' => Values::array_get($payload, 'use_inbound_webhook_on_number'),
-		];
+    /**
+     * Fetch the ServiceInstance
+     *
+     * @return ServiceInstance Fetched ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ServiceInstance
+    {
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Update the ServiceInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return ServiceInstance Updated ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): ServiceInstance
+    {
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->proxy()->update($options);
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Access the alphaSenders
+     */
+    protected function getAlphaSenders(): AlphaSenderList
+    {
+        return $this->proxy()->alphaSenders;
+    }
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+    /**
+     * Access the phoneNumbers
+     */
+    protected function getPhoneNumbers(): PhoneNumberList
+    {
+        return $this->proxy()->phoneNumbers;
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Access the destinationAlphaSenders
+     */
+    protected function getDestinationAlphaSenders(): DestinationAlphaSenderList
+    {
+        return $this->proxy()->destinationAlphaSenders;
+    }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Access the usAppToPersonUsecases
+     */
+    protected function getUsAppToPersonUsecases(): UsAppToPersonUsecaseList
+    {
+        return $this->proxy()->usAppToPersonUsecases;
+    }
 
-		return '[Twilio.Messaging.V1.ServiceInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Access the channelSenders
+     */
+    protected function getChannelSenders(): ChannelSenderList
+    {
+        return $this->proxy()->channelSenders;
+    }
 
-	/**
-	 * Delete the ServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Access the shortCodes
+     */
+    protected function getShortCodes(): ShortCodeList
+    {
+        return $this->proxy()->shortCodes;
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Access the usAppToPerson
+     */
+    protected function getUsAppToPerson(): UsAppToPersonList
+    {
+        return $this->proxy()->usAppToPerson;
+    }
 
-	/**
-	 * Fetch the ServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ServiceInstance Fetched ServiceInstance
-	 */
-	public function fetch() : ServiceInstance
-	{
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		return $this->proxy()->fetch();
-	}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Update the ServiceInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ServiceInstance Updated ServiceInstance
-	 */
-	public function update(array $options = []) : ServiceInstance
-	{
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		return $this->proxy()->update($options);
-	}
-
-	/**
-	 * Access the alphaSenders
-	 */
-	protected function getAlphaSenders() : AlphaSenderList
-	{
-		return $this->proxy()->alphaSenders;
-	}
-
-	/**
-	 * Access the channelSenders
-	 */
-	protected function getChannelSenders() : ChannelSenderList
-	{
-		return $this->proxy()->channelSenders;
-	}
-
-	/**
-	 * Access the destinationAlphaSenders
-	 */
-	protected function getDestinationAlphaSenders() : DestinationAlphaSenderList
-	{
-		return $this->proxy()->destinationAlphaSenders;
-	}
-
-	/**
-	 * Access the phoneNumbers
-	 */
-	protected function getPhoneNumbers() : PhoneNumberList
-	{
-		return $this->proxy()->phoneNumbers;
-	}
-
-	/**
-	 * Access the shortCodes
-	 */
-	protected function getShortCodes() : ShortCodeList
-	{
-		return $this->proxy()->shortCodes;
-	}
-
-	/**
-	 * Access the usAppToPerson
-	 */
-	protected function getUsAppToPerson() : UsAppToPersonList
-	{
-		return $this->proxy()->usAppToPerson;
-	}
-
-	/**
-	 * Access the usAppToPersonUsecases
-	 */
-	protected function getUsAppToPersonUsecases() : UsAppToPersonUsecaseList
-	{
-		return $this->proxy()->usAppToPersonUsecases;
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return ServiceContext Context for this ServiceInstance
-	 */
-	protected function proxy() : ServiceContext
-	{
-		if (! $this->context) {
-			$this->context = new ServiceContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Messaging.V1.ServiceInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

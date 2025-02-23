@@ -21,52 +21,54 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class PortingWebhookConfigurationList extends ListResource
-	{
-	/**
-	 * Construct the PortingWebhookConfigurationList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the PortingWebhookConfigurationList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/Porting/Configuration/Webhook';
-	}
+        $this->uri = '/Porting/Configuration/Webhook';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Numbers.V1.PortingWebhookConfigurationList]';
-	}
+    /**
+     * Create the PortingWebhookConfigurationInstance
+     *
+     * @return PortingWebhookConfigurationInstance Created PortingWebhookConfigurationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(): PortingWebhookConfigurationInstance
+    {
 
-	/**
-	 * Create the PortingWebhookConfigurationInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PortingWebhookConfigurationInstance Created PortingWebhookConfigurationInstance
-	 */
-	public function create() : PortingWebhookConfigurationInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $data = $body->toArray();
+        $headers['Content-Type'] = 'application/json';
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$data = $body->toArray();
-		$headers['Content-Type'] = 'application/json';
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return new PortingWebhookConfigurationInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new PortingWebhookConfigurationInstance(
-			$this->version,
-			$payload
-		);
-	}
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Numbers.V1.PortingWebhookConfigurationList]';
+    }
 }

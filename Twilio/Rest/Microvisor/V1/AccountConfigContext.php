@@ -14,106 +14,110 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Microvisor\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class AccountConfigContext extends InstanceContext
-	{
-	/**
-	 * Initialize the AccountConfigContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $key The config key; up to 100 characters.
-	 */
-	public function __construct(
-		Version $version,
-		$key
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the AccountConfigContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $key The config key; up to 100 characters.
+     */
+    public function __construct(
+        Version $version,
+        $key
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'key' => $key,
-		];
+        // Path Solution
+        $this->solution = [
+        'key' =>
+            $key,
+        ];
 
-		$this->uri = '/Configs/' . \rawurlencode($key)
-		. '';
-	}
+        $this->uri = '/Configs/' . \rawurlencode($key)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the AccountConfigInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Microvisor.V1.AccountConfigContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the AccountConfigInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the AccountConfigInstance
+     *
+     * @return AccountConfigInstance Fetched AccountConfigInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): AccountConfigInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new AccountConfigInstance(
+            $this->version,
+            $payload,
+            $this->solution['key']
+        );
+    }
 
-	/**
-	 * Fetch the AccountConfigInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AccountConfigInstance Fetched AccountConfigInstance
-	 */
-	public function fetch() : AccountConfigInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the AccountConfigInstance
+     *
+     * @param string $value The config value; up to 4096 characters.
+     * @return AccountConfigInstance Updated AccountConfigInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $value): AccountConfigInstance
+    {
 
-		return new AccountConfigInstance(
-			$this->version,
-			$payload,
-			$this->solution['key']
-		);
-	}
+        $data = Values::of([
+            'Value' =>
+                $value,
+        ]);
 
-	/**
-	 * Update the AccountConfigInstance
-	 *
-	 * @param string $value The config value; up to 4096 characters.
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return AccountConfigInstance Updated AccountConfigInstance
-	 */
-	public function update(string $value) : AccountConfigInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'Value' => $value,
-		]);
+        return new AccountConfigInstance(
+            $this->version,
+            $payload,
+            $this->solution['key']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new AccountConfigInstance(
-			$this->version,
-			$payload,
-			$this->solution['key']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Microvisor.V1.AccountConfigContext ' . \implode(' ', $context) . ']';
+    }
 }

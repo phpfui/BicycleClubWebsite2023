@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Intelligence\V2;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $name
@@ -40,103 +42,101 @@ use Twilio\Version;
  */
 class OperatorTypeInstance extends InstanceResource
 {
-	/**
-	 * Initialize the OperatorTypeInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $sid Either a 34 character string that uniquely identifies this Operator Type or the unique name that references an Operator Type.
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the OperatorTypeInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid Either a 34 character string that uniquely identifies this Operator Type or the unique name that references an Operator Type.
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'name' => Values::array_get($payload, 'name'),
-			'sid' => Values::array_get($payload, 'sid'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'description' => Values::array_get($payload, 'description'),
-			'docsLink' => Values::array_get($payload, 'docs_link'),
-			'outputType' => Values::array_get($payload, 'output_type'),
-			'supportedLanguages' => Values::array_get($payload, 'supported_languages'),
-			'provider' => Values::array_get($payload, 'provider'),
-			'availability' => Values::array_get($payload, 'availability'),
-			'configurable' => Values::array_get($payload, 'configurable'),
-			'configSchema' => Values::array_get($payload, 'config_schema'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'name' => Values::array_get($payload, 'name'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'description' => Values::array_get($payload, 'description'),
+            'docsLink' => Values::array_get($payload, 'docs_link'),
+            'outputType' => Values::array_get($payload, 'output_type'),
+            'supportedLanguages' => Values::array_get($payload, 'supported_languages'),
+            'provider' => Values::array_get($payload, 'provider'),
+            'availability' => Values::array_get($payload, 'availability'),
+            'configurable' => Values::array_get($payload, 'configurable'),
+            'configSchema' => Values::array_get($payload, 'config_schema'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return OperatorTypeContext Context for this OperatorTypeInstance
+     */
+    protected function proxy(): OperatorTypeContext
+    {
+        if (!$this->context) {
+            $this->context = new OperatorTypeContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the OperatorTypeInstance
+     *
+     * @return OperatorTypeInstance Fetched OperatorTypeInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): OperatorTypeInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.Intelligence.V2.OperatorTypeInstance ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the OperatorTypeInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return OperatorTypeInstance Fetched OperatorTypeInstance
-	 */
-	public function fetch() : OperatorTypeInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return OperatorTypeContext Context for this OperatorTypeInstance
-	 */
-	protected function proxy() : OperatorTypeContext
-	{
-		if (! $this->context) {
-			$this->context = new OperatorTypeContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Intelligence.V2.OperatorTypeInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

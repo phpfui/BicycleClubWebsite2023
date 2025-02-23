@@ -14,109 +14,113 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Voice\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class IpRecordContext extends InstanceContext
-	{
-	/**
-	 * Initialize the IpRecordContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The Twilio-provided string that uniquely identifies the IP Record resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the IpRecordContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The Twilio-provided string that uniquely identifies the IP Record resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/IpRecords/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/IpRecords/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the IpRecordInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Voice.V1.IpRecordContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the IpRecordInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the IpRecordInstance
+     *
+     * @return IpRecordInstance Fetched IpRecordInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): IpRecordInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new IpRecordInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the IpRecordInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return IpRecordInstance Fetched IpRecordInstance
-	 */
-	public function fetch() : IpRecordInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the IpRecordInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return IpRecordInstance Updated IpRecordInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): IpRecordInstance
+    {
 
-		return new IpRecordInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the IpRecordInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return IpRecordInstance Updated IpRecordInstance
-	 */
-	public function update(array $options = []) : IpRecordInstance
-	{
+        $data = Values::of([
+            'FriendlyName' =>
+                $options['friendlyName'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'FriendlyName' => $options['friendlyName'],
-		]);
+        return new IpRecordInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new IpRecordInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Voice.V1.IpRecordContext ' . \implode(' ', $context) . ']';
+    }
 }

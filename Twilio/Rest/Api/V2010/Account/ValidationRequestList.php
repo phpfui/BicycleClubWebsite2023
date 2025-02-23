@@ -22,69 +22,78 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class ValidationRequestList extends ListResource
-	{
-	/**
-	 * Construct the ValidationRequestList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for the new caller ID resource.
-	 */
-	public function __construct(
-		Version $version,
-		string $accountSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the ValidationRequestList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) responsible for the new caller ID resource.
+     */
+    public function __construct(
+        Version $version,
+        string $accountSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        
+        ];
 
-		];
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+        .'/OutgoingCallerIds.json';
+    }
 
-		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		. '/OutgoingCallerIds.json';
-	}
+    /**
+     * Create the ValidationRequestInstance
+     *
+     * @param string $phoneNumber The phone number to verify in [E.164](https://www.twilio.com/docs/glossary/what-e164) format, which consists of a + followed by the country code and subscriber number.
+     * @param array|Options $options Optional Arguments
+     * @return ValidationRequestInstance Created ValidationRequestInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $phoneNumber, array $options = []): ValidationRequestInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Api.V2010.ValidationRequestList]';
-	}
+        $options = new Values($options);
 
-	/**
-	 * Create the ValidationRequestInstance
-	 *
-	 * @param string $phoneNumber The phone number to verify in [E.164](https://www.twilio.com/docs/glossary/what-e164) format, which consists of a + followed by the country code and subscriber number.
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ValidationRequestInstance Created ValidationRequestInstance
-	 */
-	public function create(string $phoneNumber, array $options = []) : ValidationRequestInstance
-	{
+        $data = Values::of([
+            'PhoneNumber' =>
+                $phoneNumber,
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'CallDelay' =>
+                $options['callDelay'],
+            'Extension' =>
+                $options['extension'],
+            'StatusCallback' =>
+                $options['statusCallback'],
+            'StatusCallbackMethod' =>
+                $options['statusCallbackMethod'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'PhoneNumber' => $phoneNumber,
-			'FriendlyName' => $options['friendlyName'],
-			'CallDelay' => $options['callDelay'],
-			'Extension' => $options['extension'],
-			'StatusCallback' => $options['statusCallback'],
-			'StatusCallbackMethod' => $options['statusCallbackMethod'],
-		]);
+        return new ValidationRequestInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		return new ValidationRequestInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Api.V2010.ValidationRequestList]';
+    }
 }

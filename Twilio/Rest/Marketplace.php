@@ -1,7 +1,5 @@
 <?php
-
 namespace Twilio\Rest;
 
-class Marketplace extends MarketplaceBase
-{
+class Marketplace extends MarketplaceBase {
 }

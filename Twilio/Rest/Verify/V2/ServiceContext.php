@@ -14,22 +14,24 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Verify\V2;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Rest\Verify\V2\Service\AccessTokenList;
-use Twilio\Rest\Verify\V2\Service\EntityList;
-use Twilio\Rest\Verify\V2\Service\MessagingConfigurationList;
-use Twilio\Rest\Verify\V2\Service\RateLimitList;
-use Twilio\Rest\Verify\V2\Service\VerificationCheckList;
-use Twilio\Rest\Verify\V2\Service\VerificationList;
-use Twilio\Rest\Verify\V2\Service\WebhookList;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+use Twilio\Rest\Verify\V2\Service\EntityList;
+use Twilio\Rest\Verify\V2\Service\VerificationCheckList;
+use Twilio\Rest\Verify\V2\Service\VerificationList;
+use Twilio\Rest\Verify\V2\Service\AccessTokenList;
+use Twilio\Rest\Verify\V2\Service\RateLimitList;
+use Twilio\Rest\Verify\V2\Service\WebhookList;
+use Twilio\Rest\Verify\V2\Service\MessagingConfigurationList;
+
 
 /**
  * @property EntityList $entities
@@ -47,275 +49,288 @@ use Twilio\Version;
  * @method \Twilio\Rest\Verify\V2\Service\RateLimitContext rateLimits(string $sid)
  */
 class ServiceContext extends InstanceContext
-	{
-	protected $_accessTokens;
+    {
+    protected $_entities;
+    protected $_verificationChecks;
+    protected $_verifications;
+    protected $_accessTokens;
+    protected $_rateLimits;
+    protected $_webhooks;
+    protected $_messagingConfigurations;
 
-	protected $_entities;
+    /**
+     * Initialize the ServiceContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The Twilio-provided string that uniquely identifies the Verification Service resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-	protected $_messagingConfigurations;
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-	protected $_rateLimits;
+        $this->uri = '/Services/' . \rawurlencode($sid)
+        .'';
+    }
 
-	protected $_verificationChecks;
+    /**
+     * Delete the ServiceInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-	protected $_verifications;
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-	protected $_webhooks;
 
-	/**
-	 * Initialize the ServiceContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The Twilio-provided string that uniquely identifies the Verification Service resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+    /**
+     * Fetch the ServiceInstance
+     *
+     * @return ServiceInstance Fetched ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ServiceInstance
+    {
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		$this->uri = '/Services/' . \rawurlencode($sid)
-		. '';
-	}
+        return new ServiceInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+    /**
+     * Update the ServiceInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return ServiceInstance Updated ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): ServiceInstance
+    {
 
-		throw new TwilioException('Resource does not have a context');
-	}
+        $options = new Values($options);
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        $data = Values::of([
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'CodeLength' =>
+                $options['codeLength'],
+            'LookupEnabled' =>
+                Serialize::booleanToString($options['lookupEnabled']),
+            'SkipSmsToLandlines' =>
+                Serialize::booleanToString($options['skipSmsToLandlines']),
+            'DtmfInputRequired' =>
+                Serialize::booleanToString($options['dtmfInputRequired']),
+            'TtsName' =>
+                $options['ttsName'],
+            'Psd2Enabled' =>
+                Serialize::booleanToString($options['psd2Enabled']),
+            'DoNotShareWarningEnabled' =>
+                Serialize::booleanToString($options['doNotShareWarningEnabled']),
+            'CustomCodeEnabled' =>
+                Serialize::booleanToString($options['customCodeEnabled']),
+            'Push.IncludeDate' =>
+                Serialize::booleanToString($options['pushIncludeDate']),
+            'Push.ApnCredentialSid' =>
+                $options['pushApnCredentialSid'],
+            'Push.FcmCredentialSid' =>
+                $options['pushFcmCredentialSid'],
+            'Totp.Issuer' =>
+                $options['totpIssuer'],
+            'Totp.TimeStep' =>
+                $options['totpTimeStep'],
+            'Totp.CodeLength' =>
+                $options['totpCodeLength'],
+            'Totp.Skew' =>
+                $options['totpSkew'],
+            'DefaultTemplateSid' =>
+                $options['defaultTemplateSid'],
+            'Whatsapp.MsgServiceSid' =>
+                $options['whatsappMsgServiceSid'],
+            'Whatsapp.From' =>
+                $options['whatsappFrom'],
+            'VerifyEventSubscriptionEnabled' =>
+                Serialize::booleanToString($options['verifyEventSubscriptionEnabled']),
+        ]);
 
-			return $this->{$method}();
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        return new ServiceInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Access the entities
+     */
+    protected function getEntities(): EntityList
+    {
+        if (!$this->_entities) {
+            $this->_entities = new EntityList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		return '[Twilio.Verify.V2.ServiceContext ' . \implode(' ', $context) . ']';
-	}
+        return $this->_entities;
+    }
 
-	/**
-	 * Delete the ServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Access the verificationChecks
+     */
+    protected function getVerificationChecks(): VerificationCheckList
+    {
+        if (!$this->_verificationChecks) {
+            $this->_verificationChecks = new VerificationCheckList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        return $this->_verificationChecks;
+    }
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+    /**
+     * Access the verifications
+     */
+    protected function getVerifications(): VerificationList
+    {
+        if (!$this->_verifications) {
+            $this->_verifications = new VerificationList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Fetch the ServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ServiceInstance Fetched ServiceInstance
-	 */
-	public function fetch() : ServiceInstance
-	{
+        return $this->_verifications;
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Access the accessTokens
+     */
+    protected function getAccessTokens(): AccessTokenList
+    {
+        if (!$this->_accessTokens) {
+            $this->_accessTokens = new AccessTokenList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		return new ServiceInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        return $this->_accessTokens;
+    }
 
-	/**
-	 * Update the ServiceInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ServiceInstance Updated ServiceInstance
-	 */
-	public function update(array $options = []) : ServiceInstance
-	{
+    /**
+     * Access the rateLimits
+     */
+    protected function getRateLimits(): RateLimitList
+    {
+        if (!$this->_rateLimits) {
+            $this->_rateLimits = new RateLimitList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		$options = new Values($options);
+        return $this->_rateLimits;
+    }
 
-		$data = Values::of([
-			'FriendlyName' => $options['friendlyName'],
-			'CodeLength' => $options['codeLength'],
-			'LookupEnabled' => Serialize::booleanToString($options['lookupEnabled']),
-			'SkipSmsToLandlines' => Serialize::booleanToString($options['skipSmsToLandlines']),
-			'DtmfInputRequired' => Serialize::booleanToString($options['dtmfInputRequired']),
-			'TtsName' => $options['ttsName'],
-			'Psd2Enabled' => Serialize::booleanToString($options['psd2Enabled']),
-			'DoNotShareWarningEnabled' => Serialize::booleanToString($options['doNotShareWarningEnabled']),
-			'CustomCodeEnabled' => Serialize::booleanToString($options['customCodeEnabled']),
-			'Push.IncludeDate' => Serialize::booleanToString($options['pushIncludeDate']),
-			'Push.ApnCredentialSid' => $options['pushApnCredentialSid'],
-			'Push.FcmCredentialSid' => $options['pushFcmCredentialSid'],
-			'Totp.Issuer' => $options['totpIssuer'],
-			'Totp.TimeStep' => $options['totpTimeStep'],
-			'Totp.CodeLength' => $options['totpCodeLength'],
-			'Totp.Skew' => $options['totpSkew'],
-			'DefaultTemplateSid' => $options['defaultTemplateSid'],
-			'Whatsapp.MsgServiceSid' => $options['whatsappMsgServiceSid'],
-			'Whatsapp.From' => $options['whatsappFrom'],
-			'VerifyEventSubscriptionEnabled' => Serialize::booleanToString($options['verifyEventSubscriptionEnabled']),
-		]);
+    /**
+     * Access the webhooks
+     */
+    protected function getWebhooks(): WebhookList
+    {
+        if (!$this->_webhooks) {
+            $this->_webhooks = new WebhookList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+        return $this->_webhooks;
+    }
 
-		return new ServiceInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Access the messagingConfigurations
+     */
+    protected function getMessagingConfigurations(): MessagingConfigurationList
+    {
+        if (!$this->_messagingConfigurations) {
+            $this->_messagingConfigurations = new MessagingConfigurationList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Access the accessTokens
-	 */
-	protected function getAccessTokens() : AccessTokenList
-	{
-		if (! $this->_accessTokens) {
-			$this->_accessTokens = new AccessTokenList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
+        return $this->_messagingConfigurations;
+    }
 
-		return $this->_accessTokens;
-	}
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Access the entities
-	 */
-	protected function getEntities() : EntityList
-	{
-		if (! $this->_entities) {
-			$this->_entities = new EntityList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		return $this->_entities;
-	}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-	/**
-	 * Access the messagingConfigurations
-	 */
-	protected function getMessagingConfigurations() : MessagingConfigurationList
-	{
-		if (! $this->_messagingConfigurations) {
-			$this->_messagingConfigurations = new MessagingConfigurationList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		return $this->_messagingConfigurations;
-	}
-
-	/**
-	 * Access the rateLimits
-	 */
-	protected function getRateLimits() : RateLimitList
-	{
-		if (! $this->_rateLimits) {
-			$this->_rateLimits = new RateLimitList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_rateLimits;
-	}
-
-	/**
-	 * Access the verificationChecks
-	 */
-	protected function getVerificationChecks() : VerificationCheckList
-	{
-		if (! $this->_verificationChecks) {
-			$this->_verificationChecks = new VerificationCheckList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_verificationChecks;
-	}
-
-	/**
-	 * Access the verifications
-	 */
-	protected function getVerifications() : VerificationList
-	{
-		if (! $this->_verifications) {
-			$this->_verifications = new VerificationList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_verifications;
-	}
-
-	/**
-	 * Access the webhooks
-	 */
-	protected function getWebhooks() : WebhookList
-	{
-		if (! $this->_webhooks) {
-			$this->_webhooks = new WebhookList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_webhooks;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Verify.V2.ServiceContext ' . \implode(' ', $context) . ']';
+    }
 }

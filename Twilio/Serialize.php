@@ -2,86 +2,82 @@
 
 namespace Twilio;
 
-class Serialize
-{
-	public static function booleanToString($boolOrStr) {
-		if (null === $boolOrStr || \is_string($boolOrStr)) {
-			return $boolOrStr;
-		}
+class Serialize {
 
-		return $boolOrStr ? 'true' : 'false';
-	}
+    private static function flatten(array $map, array $result = [], array $previous = []): array {
+        foreach ($map as $key => $value) {
+            if (\is_array($value)) {
+                $result = self::flatten($value, $result, \array_merge($previous, [$key]));
+            } else {
+                $result[\implode('.', \array_merge($previous, [$key]))] = $value;
+            }
+        }
 
-	public static function iso8601Date($dateTime) : string {
-		if (null === $dateTime || Values::NONE === $dateTime) {
-			return Values::NONE;
-		}
+        return $result;
+    }
 
-		if (\is_string($dateTime)) {
-			return $dateTime;
-		}
+    public static function prefixedCollapsibleMap($map, string $prefix): array {
+        if ($map === null || $map === Values::NONE) {
+            return [];
+        }
 
-		$utcDate = clone $dateTime;
-		$utcDate->setTimezone(new \DateTimeZone('+0000'));
+        $flattened = self::flatten($map);
+        $result = [];
+        foreach ($flattened as $key => $value) {
+            $result[$prefix . '.' . $key] = $value;
+        }
 
-		return $utcDate->format('Y-m-d');
-	}
+        return $result;
+    }
 
-	public static function iso8601DateTime($dateTime) : string {
-		if (null === $dateTime || Values::NONE === $dateTime) {
-			return Values::NONE;
-		}
+    public static function iso8601Date($dateTime): string {
+        if ($dateTime === null || $dateTime === Values::NONE) {
+            return Values::NONE;
+        }
 
-		if (\is_string($dateTime)) {
-			return $dateTime;
-		}
+        if (\is_string($dateTime)) {
+            return $dateTime;
+        }
 
-		$utcDate = clone $dateTime;
-		$utcDate->setTimezone(new \DateTimeZone('+0000'));
+        $utcDate = clone $dateTime;
+        $utcDate->setTimezone(new \DateTimeZone('+0000'));
+        return $utcDate->format('Y-m-d');
+    }
 
-		return $utcDate->format('Y-m-d\TH:i:s\Z');
-	}
+    public static function iso8601DateTime($dateTime): string {
+        if ($dateTime === null || $dateTime === Values::NONE) {
+            return Values::NONE;
+        }
 
-	public static function jsonObject($object) {
-		if (\is_array($object)) {
-			return \json_encode($object);
-		}
+        if (\is_string($dateTime)) {
+            return $dateTime;
+        }
 
-		return $object;
-	}
+        $utcDate = clone $dateTime;
+        $utcDate->setTimezone(new \DateTimeZone('+0000'));
+        return $utcDate->format('Y-m-d\TH:i:s\Z');
+    }
 
-	public static function map($values, $map_func) {
-		if (! \is_array($values)) {
-			return $values;
-		}
+    public static function booleanToString($boolOrStr) {
+        if ($boolOrStr === null || \is_string($boolOrStr)) {
+            return $boolOrStr;
+        }
 
-		return \array_map($map_func, $values);
-	}
+        return $boolOrStr ? 'true' : 'false';
+    }
 
-	public static function prefixedCollapsibleMap($map, string $prefix) : array {
-		if (null === $map || Values::NONE === $map) {
-			return [];
-		}
+    public static function jsonObject($object) {
+        if (\is_array($object)) {
+            return \json_encode($object);
+        }
+        return $object;
+    }
 
-		$flattened = self::flatten($map);
-		$result = [];
+    public static function map($values, $map_func) {
+        if (!\is_array($values)) {
+            return $values;
+        }
+        return \array_map($map_func, $values);
+    }
 
-		foreach ($flattened as $key => $value) {
-			$result[$prefix . '.' . $key] = $value;
-		}
-
-		return $result;
-	}
-
-	private static function flatten(array $map, array $result = [], array $previous = []) : array {
-		foreach ($map as $key => $value) {
-			if (\is_array($value)) {
-				$result = self::flatten($value, $result, \array_merge($previous, [$key]));
-			} else {
-				$result[\implode('.', \array_merge($previous, [$key]))] = $value;
-			}
-		}
-
-		return $result;
-	}
 }

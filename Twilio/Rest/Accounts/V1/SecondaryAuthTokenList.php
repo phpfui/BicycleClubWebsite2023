@@ -19,42 +19,43 @@ namespace Twilio\Rest\Accounts\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class SecondaryAuthTokenList extends ListResource
-	{
-	/**
-	 * Construct the SecondaryAuthTokenList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the SecondaryAuthTokenList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Accounts.V1.SecondaryAuthTokenList]';
-	}
+    /**
+     * Constructs a SecondaryAuthTokenContext
+     */
+    public function getContext(
+        
+    ): SecondaryAuthTokenContext
+    {
+        return new SecondaryAuthTokenContext(
+            $this->version
+        );
+    }
 
-	/**
-	 * Constructs a SecondaryAuthTokenContext
-	 */
-	public function getContext(
-
-	) : SecondaryAuthTokenContext
-	{
-		return new SecondaryAuthTokenContext(
-			$this->version
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Accounts.V1.SecondaryAuthTokenList]';
+    }
 }

@@ -62,6 +62,8 @@ class JavascriptRenderer
 
     protected $useRequireJs = false;
 
+    protected $theme = null;
+
     protected $hideEmptyTabs = null;
 
     protected $initialization;
@@ -82,6 +84,8 @@ class JavascriptRenderer
 
     protected $ajaxHandlerEnableTab = false;
 
+    protected $deferDatasets = false;
+
     protected $openHandlerClass = 'PhpDebugBar.OpenHandler';
 
     protected $openHandlerUrl;
@@ -97,15 +101,19 @@ class JavascriptRenderer
     {
         $this->debugBar = $debugBar;
 
-        if ($baseUrl === null) {
-            $baseUrl = '/vendor/maximebf/debugbar/src/DebugBar/Resources';
-        }
-        $this->baseUrl = $baseUrl;
-
         if ($basePath === null) {
             $basePath = __DIR__ . DIRECTORY_SEPARATOR . 'Resources';
         }
         $this->basePath = $basePath;
+
+        if ($baseUrl === null) {
+            if ($basePath && str_contains($basePath, '/vendor/')) {
+                $baseUrl = strstr($basePath, '/vendor/');
+            } else {
+                $baseUrl = '/vendor/php-debugbar/php-debugbar/src/DebugBar/Resources';
+            }
+        }
+        $this->baseUrl = $baseUrl;
 
         // bitwise operations cannot be done in class definition :(
         $this->initialization = self::INITIALIZE_CONSTRUCTOR | self::INITIALIZE_CONTROLS;
@@ -159,6 +167,9 @@ class JavascriptRenderer
         if (array_key_exists('use_requirejs', $options)) {
             $this->setUseRequireJs($options['use_requirejs']);
         }
+        if (array_key_exists('theme', $options)) {
+            $this->setTheme($options['theme']);
+        }
         if (array_key_exists('hide_empty_tabs', $options)) {
             $this->setHideEmptyTabs($options['hide_empty_tabs']);
         }
@@ -188,6 +199,9 @@ class JavascriptRenderer
         }
         if (array_key_exists('ajax_handler_enable_tab', $options)) {
             $this->setAjaxHandlerEnableTab($options['ajax_handler_enable_tab']);
+        }
+        if (array_key_exists('defer_datasets', $options)) {
+            $this->setDeferDatasets($options['defer_datasets']);
         }
         if (array_key_exists('open_handler_classname', $options)) {
             $this->setOpenHandlerClass($options['open_handler_classname']);
@@ -402,6 +416,17 @@ class JavascriptRenderer
         return $this->useRequireJs;
     }
 
+    /**
+     * Sets the default theme
+     *
+     * @param boolean $hide
+     * @return $this
+     */
+    public function setTheme($theme='auto')
+    {
+        $this->theme = $theme;
+        return $this;
+    }
 
     /**
      * Sets whether to hide empty tabs or not
@@ -623,6 +648,28 @@ class JavascriptRenderer
     public function isAjaxHandlerTabEnabled()
     {
         return $this->ajaxHandlerEnableTab;
+    }
+
+
+    /**
+     * Sets whether datasets are directly loaded or deferred
+     *
+     * @param boolean $enabled
+     */
+    public function setDeferDatasets($defer = true)
+    {
+        $this->deferDatasets = $defer;
+        return $this;
+    }
+
+    /**
+     * Check if the datasets are deffered
+     *
+     * @return boolean
+     */
+    public function areDatasetsDeferred()
+    {
+        return $this->deferDatasets;
     }
 
 
@@ -1094,12 +1141,22 @@ class JavascriptRenderer
 
         if ($renderStackedData && $this->debugBar->hasStackedData()) {
             foreach ($this->debugBar->getStackedData() as $id => $data) {
-                $js .= $this->getAddDatasetCode($id, $data, '(stacked)');
+                if ($this->areDatasetsDeferred()) {
+                    $js .= $this->getLoadDatasetCode($id, '(stacked)');
+                } else {
+                    $js .= $this->getAddDatasetCode($id, $data, '(stacked)');
+
+                }
             }
         }
 
         $suffix = !$initialize ? '(ajax)' : null;
-        $js .= $this->getAddDatasetCode($this->debugBar->getCurrentRequestId(), $this->debugBar->getData(), $suffix);
+        if ($this->areDatasetsDeferred()) {
+            $this->debugBar->getData();
+            $js .= $this->getLoadDatasetCode($this->debugBar->getCurrentRequestId(), $suffix);
+        } else {
+            $js .= $this->getAddDatasetCode($this->debugBar->getCurrentRequestId(), $this->debugBar->getData(), $suffix);
+        }
 
         $nonce = $this->getNonceAttribute();
 
@@ -1125,12 +1182,8 @@ class JavascriptRenderer
         $js = '';
 
         if (($this->initialization & self::INITIALIZE_CONSTRUCTOR) === self::INITIALIZE_CONSTRUCTOR) {
-            $js .= sprintf("var %s = new %s();\n", $this->variableName, $this->javascriptClass);
-        }
-
-        if ($this->hideEmptyTabs !== null) {
-            $js .= sprintf("%s.setHideEmptyTabs(%s);\n", $this->variableName,
-                json_encode($this->hideEmptyTabs));
+            $initializeOptions = $this->getInitializeOptions();
+            $js .= sprintf("var %s = new %s(%s);\n", $this->variableName, $this->javascriptClass, $initializeOptions ? json_encode((object) $initializeOptions) : '');
         }
 
         if (($this->initialization & self::INITIALIZE_CONTROLS) === self::INITIALIZE_CONTROLS) {
@@ -1163,6 +1216,21 @@ class JavascriptRenderer
         return $js;
     }
 
+    protected function getInitializeOptions()
+    {
+        $options = [];
+
+        if ($this->theme !== null) {
+            $options['theme'] = $this->theme;
+        }
+
+        if ($this->hideEmptyTabs !== null) {
+            $options['hideEmptyTabs'] = $this->hideEmptyTabs;
+        }
+
+        return $options;
+    }
+
     /**
      * Returns the js code needed to initialized the controls and data mapping of the debug bar
      *
@@ -1187,6 +1255,11 @@ class JavascriptRenderer
             }
         }
         $controls = array_merge($widgets, $this->controls);
+
+        // Allow widgets to be sorted by order if specified
+        uasort($controls, function(array $control){
+            return $control['order'] ?? 0;
+        });
 
         foreach (array_filter($controls) as $name => $options) {
             $opts = array_diff_key($options, array_flip($excludedOptions));
@@ -1246,6 +1319,23 @@ class JavascriptRenderer
         $js = sprintf("%s.addDataSet(%s, \"%s\"%s);\n",
             $this->variableName,
             json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_INVALID_UTF8_IGNORE),
+            $requestId,
+            $suffix ? ", " . json_encode($suffix) : ''
+        );
+        return $js;
+    }
+
+    /**
+     * Returns the js code needed to load a dataset with the OpenHandler
+     *
+     * @param string $requestId
+     * @param mixed $suffix
+     * @return string
+     */
+    protected function getLoadDatasetCode($requestId, $suffix = null)
+    {
+        $js = sprintf("%s.loadDataSet(\"%s\"%s);\n",
+            $this->variableName,
             $requestId,
             $suffix ? ", " . json_encode($suffix) : ''
         );

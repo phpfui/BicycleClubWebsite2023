@@ -19,49 +19,51 @@ namespace Twilio\Rest\FlexApi\V2;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class FlexUserList extends ListResource
-	{
-	/**
-	 * Construct the FlexUserList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the FlexUserList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.FlexApi.V2.FlexUserList]';
-	}
+    /**
+     * Constructs a FlexUserContext
+     *
+     * @param string $instanceSid The unique ID created by Twilio to identify a Flex instance.
+     *
+     * @param string $flexUserSid The unique id for the flex user to be retrieved.
+     */
+    public function getContext(
+        string $instanceSid
+        , string $flexUserSid
+        
+    ): FlexUserContext
+    {
+        return new FlexUserContext(
+            $this->version,
+            $instanceSid,
+            $flexUserSid
+        );
+    }
 
-	/**
-	 * Constructs a FlexUserContext
-	 *
-	 * @param string $instanceSid The unique ID created by Twilio to identify a Flex instance.
-	 *
-	 * @param string $flexUserSid The unique id for the flex user to be retrieved.
-	 */
-	public function getContext(
-		string $instanceSid,
-		string $flexUserSid
-	) : FlexUserContext
-	{
-		return new FlexUserContext(
-			$this->version,
-			$instanceSid,
-			$flexUserSid
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.FlexApi.V2.FlexUserList]';
+    }
 }

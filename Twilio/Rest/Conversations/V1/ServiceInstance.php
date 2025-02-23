@@ -14,20 +14,22 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Conversations\V1;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
-use Twilio\Rest\Conversations\V1\Service\BindingList;
-use Twilio\Rest\Conversations\V1\Service\ConfigurationList;
-use Twilio\Rest\Conversations\V1\Service\ConversationList;
-use Twilio\Rest\Conversations\V1\Service\ConversationWithParticipantsList;
-use Twilio\Rest\Conversations\V1\Service\ParticipantConversationList;
-use Twilio\Rest\Conversations\V1\Service\RoleList;
-use Twilio\Rest\Conversations\V1\Service\UserList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+use Twilio\Rest\Conversations\V1\Service\ParticipantConversationList;
+use Twilio\Rest\Conversations\V1\Service\UserList;
+use Twilio\Rest\Conversations\V1\Service\BindingList;
+use Twilio\Rest\Conversations\V1\Service\ConversationWithParticipantsList;
+use Twilio\Rest\Conversations\V1\Service\ConversationList;
+use Twilio\Rest\Conversations\V1\Service\RoleList;
+use Twilio\Rest\Conversations\V1\Service\ConfigurationList;
+
 
 /**
  * @property string|null $accountSid
@@ -40,178 +42,170 @@ use Twilio\Version;
  */
 class ServiceInstance extends InstanceResource
 {
-	protected $_bindings;
+    protected $_participantConversations;
+    protected $_users;
+    protected $_bindings;
+    protected $_conversationWithParticipants;
+    protected $_conversations;
+    protected $_roles;
+    protected $_configuration;
 
-	protected $_configuration;
+    /**
+     * Initialize the ServiceInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid A 34 character string that uniquely identifies this resource.
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-	protected $_conversations;
+        // Marshaled Properties
+        $this->properties = [
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
+        ];
 
-	protected $_conversationWithParticipants;
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	protected $_participantConversations;
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return ServiceContext Context for this ServiceInstance
+     */
+    protected function proxy(): ServiceContext
+    {
+        if (!$this->context) {
+            $this->context = new ServiceContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-	protected $_roles;
+        return $this->context;
+    }
 
-	protected $_users;
+    /**
+     * Delete the ServiceInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-	/**
-	 * Initialize the ServiceInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $sid A 34 character string that uniquely identifies this resource.
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+        return $this->proxy()->delete();
+    }
 
-		// Marshaled Properties
-		$this->properties = [
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'sid' => Values::array_get($payload, 'sid'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'url' => Values::array_get($payload, 'url'),
-			'links' => Values::array_get($payload, 'links'),
-		];
+    /**
+     * Fetch the ServiceInstance
+     *
+     * @return ServiceInstance Fetched ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ServiceInstance
+    {
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Access the participantConversations
+     */
+    protected function getParticipantConversations(): ParticipantConversationList
+    {
+        return $this->proxy()->participantConversations;
+    }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+    /**
+     * Access the users
+     */
+    protected function getUsers(): UserList
+    {
+        return $this->proxy()->users;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Access the bindings
+     */
+    protected function getBindings(): BindingList
+    {
+        return $this->proxy()->bindings;
+    }
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+    /**
+     * Access the conversationWithParticipants
+     */
+    protected function getConversationWithParticipants(): ConversationWithParticipantsList
+    {
+        return $this->proxy()->conversationWithParticipants;
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Access the conversations
+     */
+    protected function getConversations(): ConversationList
+    {
+        return $this->proxy()->conversations;
+    }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Access the roles
+     */
+    protected function getRoles(): RoleList
+    {
+        return $this->proxy()->roles;
+    }
 
-		return '[Twilio.Conversations.V1.ServiceInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Access the configuration
+     */
+    protected function getConfiguration(): ConfigurationList
+    {
+        return $this->proxy()->configuration;
+    }
 
-	/**
-	 * Delete the ServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		return $this->proxy()->delete();
-	}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Fetch the ServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ServiceInstance Fetched ServiceInstance
-	 */
-	public function fetch() : ServiceInstance
-	{
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Access the bindings
-	 */
-	protected function getBindings() : BindingList
-	{
-		return $this->proxy()->bindings;
-	}
-
-	/**
-	 * Access the configuration
-	 */
-	protected function getConfiguration() : ConfigurationList
-	{
-		return $this->proxy()->configuration;
-	}
-
-	/**
-	 * Access the conversations
-	 */
-	protected function getConversations() : ConversationList
-	{
-		return $this->proxy()->conversations;
-	}
-
-	/**
-	 * Access the conversationWithParticipants
-	 */
-	protected function getConversationWithParticipants() : ConversationWithParticipantsList
-	{
-		return $this->proxy()->conversationWithParticipants;
-	}
-
-	/**
-	 * Access the participantConversations
-	 */
-	protected function getParticipantConversations() : ParticipantConversationList
-	{
-		return $this->proxy()->participantConversations;
-	}
-
-	/**
-	 * Access the roles
-	 */
-	protected function getRoles() : RoleList
-	{
-		return $this->proxy()->roles;
-	}
-
-	/**
-	 * Access the users
-	 */
-	protected function getUsers() : UserList
-	{
-		return $this->proxy()->users;
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return ServiceContext Context for this ServiceInstance
-	 */
-	protected function proxy() : ServiceContext
-	{
-		if (! $this->context) {
-			$this->context = new ServiceContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Conversations.V1.ServiceInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

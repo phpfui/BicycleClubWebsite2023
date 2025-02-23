@@ -14,18 +14,20 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Chat\V2;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
-use Twilio\Rest\Chat\V2\Service\BindingList;
-use Twilio\Rest\Chat\V2\Service\ChannelList;
-use Twilio\Rest\Chat\V2\Service\RoleList;
-use Twilio\Rest\Chat\V2\Service\UserList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+use Twilio\Rest\Chat\V2\Service\ChannelList;
+use Twilio\Rest\Chat\V2\Service\BindingList;
+use Twilio\Rest\Chat\V2\Service\RoleList;
+use Twilio\Rest\Chat\V2\Service\UserList;
+
 
 /**
  * @property string|null $sid
@@ -54,177 +56,172 @@ use Twilio\Version;
  */
 class ServiceInstance extends InstanceResource
 {
-	protected $_bindings;
+    protected $_channels;
+    protected $_bindings;
+    protected $_roles;
+    protected $_users;
 
-	protected $_channels;
+    /**
+     * Initialize the ServiceInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid The SID of the Service resource to delete.
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-	protected $_roles;
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'defaultServiceRoleSid' => Values::array_get($payload, 'default_service_role_sid'),
+            'defaultChannelRoleSid' => Values::array_get($payload, 'default_channel_role_sid'),
+            'defaultChannelCreatorRoleSid' => Values::array_get($payload, 'default_channel_creator_role_sid'),
+            'readStatusEnabled' => Values::array_get($payload, 'read_status_enabled'),
+            'reachabilityEnabled' => Values::array_get($payload, 'reachability_enabled'),
+            'typingIndicatorTimeout' => Values::array_get($payload, 'typing_indicator_timeout'),
+            'consumptionReportInterval' => Values::array_get($payload, 'consumption_report_interval'),
+            'limits' => Values::array_get($payload, 'limits'),
+            'preWebhookUrl' => Values::array_get($payload, 'pre_webhook_url'),
+            'postWebhookUrl' => Values::array_get($payload, 'post_webhook_url'),
+            'webhookMethod' => Values::array_get($payload, 'webhook_method'),
+            'webhookFilters' => Values::array_get($payload, 'webhook_filters'),
+            'preWebhookRetryCount' => Values::array_get($payload, 'pre_webhook_retry_count'),
+            'postWebhookRetryCount' => Values::array_get($payload, 'post_webhook_retry_count'),
+            'notifications' => Values::array_get($payload, 'notifications'),
+            'media' => Values::array_get($payload, 'media'),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
+        ];
 
-	protected $_users;
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Initialize the ServiceInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $sid The SID of the Service resource to delete.
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return ServiceContext Context for this ServiceInstance
+     */
+    protected function proxy(): ServiceContext
+    {
+        if (!$this->context) {
+            $this->context = new ServiceContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'defaultServiceRoleSid' => Values::array_get($payload, 'default_service_role_sid'),
-			'defaultChannelRoleSid' => Values::array_get($payload, 'default_channel_role_sid'),
-			'defaultChannelCreatorRoleSid' => Values::array_get($payload, 'default_channel_creator_role_sid'),
-			'readStatusEnabled' => Values::array_get($payload, 'read_status_enabled'),
-			'reachabilityEnabled' => Values::array_get($payload, 'reachability_enabled'),
-			'typingIndicatorTimeout' => Values::array_get($payload, 'typing_indicator_timeout'),
-			'consumptionReportInterval' => Values::array_get($payload, 'consumption_report_interval'),
-			'limits' => Values::array_get($payload, 'limits'),
-			'preWebhookUrl' => Values::array_get($payload, 'pre_webhook_url'),
-			'postWebhookUrl' => Values::array_get($payload, 'post_webhook_url'),
-			'webhookMethod' => Values::array_get($payload, 'webhook_method'),
-			'webhookFilters' => Values::array_get($payload, 'webhook_filters'),
-			'preWebhookRetryCount' => Values::array_get($payload, 'pre_webhook_retry_count'),
-			'postWebhookRetryCount' => Values::array_get($payload, 'post_webhook_retry_count'),
-			'notifications' => Values::array_get($payload, 'notifications'),
-			'media' => Values::array_get($payload, 'media'),
-			'url' => Values::array_get($payload, 'url'),
-			'links' => Values::array_get($payload, 'links'),
-		];
+        return $this->context;
+    }
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+    /**
+     * Delete the ServiceInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+        return $this->proxy()->delete();
+    }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+    /**
+     * Fetch the ServiceInstance
+     *
+     * @return ServiceInstance Fetched ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ServiceInstance
+    {
 
-			return $this->{$method}();
-		}
+        return $this->proxy()->fetch();
+    }
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+    /**
+     * Update the ServiceInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return ServiceInstance Updated ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): ServiceInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        return $this->proxy()->update($options);
+    }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Access the channels
+     */
+    protected function getChannels(): ChannelList
+    {
+        return $this->proxy()->channels;
+    }
 
-		return '[Twilio.Chat.V2.ServiceInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Access the bindings
+     */
+    protected function getBindings(): BindingList
+    {
+        return $this->proxy()->bindings;
+    }
 
-	/**
-	 * Delete the ServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Access the roles
+     */
+    protected function getRoles(): RoleList
+    {
+        return $this->proxy()->roles;
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Access the users
+     */
+    protected function getUsers(): UserList
+    {
+        return $this->proxy()->users;
+    }
 
-	/**
-	 * Fetch the ServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ServiceInstance Fetched ServiceInstance
-	 */
-	public function fetch() : ServiceInstance
-	{
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		return $this->proxy()->fetch();
-	}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Update the ServiceInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ServiceInstance Updated ServiceInstance
-	 */
-	public function update(array $options = []) : ServiceInstance
-	{
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		return $this->proxy()->update($options);
-	}
-
-	/**
-	 * Access the bindings
-	 */
-	protected function getBindings() : BindingList
-	{
-		return $this->proxy()->bindings;
-	}
-
-	/**
-	 * Access the channels
-	 */
-	protected function getChannels() : ChannelList
-	{
-		return $this->proxy()->channels;
-	}
-
-	/**
-	 * Access the roles
-	 */
-	protected function getRoles() : RoleList
-	{
-		return $this->proxy()->roles;
-	}
-
-	/**
-	 * Access the users
-	 */
-	protected function getUsers() : UserList
-	{
-		return $this->proxy()->users;
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return ServiceContext Context for this ServiceInstance
-	 */
-	protected function proxy() : ServiceContext
-	{
-		if (! $this->context) {
-			$this->context = new ServiceContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Chat.V2.ServiceInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

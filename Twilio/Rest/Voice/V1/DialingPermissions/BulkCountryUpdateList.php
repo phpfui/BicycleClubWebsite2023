@@ -21,55 +21,58 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class BulkCountryUpdateList extends ListResource
-	{
-	/**
-	 * Construct the BulkCountryUpdateList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the BulkCountryUpdateList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/DialingPermissions/BulkCountryUpdates';
-	}
+        $this->uri = '/DialingPermissions/BulkCountryUpdates';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Voice.V1.BulkCountryUpdateList]';
-	}
+    /**
+     * Create the BulkCountryUpdateInstance
+     *
+     * @param string $updateRequest URL encoded JSON array of update objects. example : `[ { \\\"iso_code\\\": \\\"GB\\\", \\\"low_risk_numbers_enabled\\\": \\\"true\\\", \\\"high_risk_special_numbers_enabled\\\":\\\"true\\\", \\\"high_risk_tollfraud_numbers_enabled\\\": \\\"false\\\" } ]`
+     * @return BulkCountryUpdateInstance Created BulkCountryUpdateInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $updateRequest): BulkCountryUpdateInstance
+    {
 
-	/**
-	 * Create the BulkCountryUpdateInstance
-	 *
-	 * @param string $updateRequest URL encoded JSON array of update objects. example : `[ { \\\"iso_code\\\": \\\"GB\\\", \\\"low_risk_numbers_enabled\\\": \\\"true\\\", \\\"high_risk_special_numbers_enabled\\\":\\\"true\\\", \\\"high_risk_tollfraud_numbers_enabled\\\": \\\"false\\\" } ]`
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return BulkCountryUpdateInstance Created BulkCountryUpdateInstance
-	 */
-	public function create(string $updateRequest) : BulkCountryUpdateInstance
-	{
+        $data = Values::of([
+            'UpdateRequest' =>
+                $updateRequest,
+        ]);
 
-		$data = Values::of([
-			'UpdateRequest' => $updateRequest,
-		]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return new BulkCountryUpdateInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new BulkCountryUpdateInstance(
-			$this->version,
-			$payload
-		);
-	}
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Voice.V1.BulkCountryUpdateList]';
+    }
 }

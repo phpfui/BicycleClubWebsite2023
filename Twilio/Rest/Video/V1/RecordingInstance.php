@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Video\V1;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $accountSid
@@ -44,119 +46,117 @@ use Twilio\Version;
  */
 class RecordingInstance extends InstanceResource
 {
-	/**
-	 * Initialize the RecordingInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $sid The SID of the Recording resource to delete.
-	 */
-	public function __construct(Version $version, array $payload, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the RecordingInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $sid The SID of the Recording resource to delete.
+     */
+    public function __construct(Version $version, array $payload, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'status' => Values::array_get($payload, 'status'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'sid' => Values::array_get($payload, 'sid'),
-			'sourceSid' => Values::array_get($payload, 'source_sid'),
-			'size' => Values::array_get($payload, 'size'),
-			'url' => Values::array_get($payload, 'url'),
-			'type' => Values::array_get($payload, 'type'),
-			'duration' => Values::array_get($payload, 'duration'),
-			'containerFormat' => Values::array_get($payload, 'container_format'),
-			'codec' => Values::array_get($payload, 'codec'),
-			'groupingSids' => Values::array_get($payload, 'grouping_sids'),
-			'trackName' => Values::array_get($payload, 'track_name'),
-			'offset' => Values::array_get($payload, 'offset'),
-			'mediaExternalLocation' => Values::array_get($payload, 'media_external_location'),
-			'statusCallback' => Values::array_get($payload, 'status_callback'),
-			'statusCallbackMethod' => Values::array_get($payload, 'status_callback_method'),
-			'links' => Values::array_get($payload, 'links'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'status' => Values::array_get($payload, 'status'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'sid' => Values::array_get($payload, 'sid'),
+            'sourceSid' => Values::array_get($payload, 'source_sid'),
+            'size' => Values::array_get($payload, 'size'),
+            'url' => Values::array_get($payload, 'url'),
+            'type' => Values::array_get($payload, 'type'),
+            'duration' => Values::array_get($payload, 'duration'),
+            'containerFormat' => Values::array_get($payload, 'container_format'),
+            'codec' => Values::array_get($payload, 'codec'),
+            'groupingSids' => Values::array_get($payload, 'grouping_sids'),
+            'trackName' => Values::array_get($payload, 'track_name'),
+            'offset' => Values::array_get($payload, 'offset'),
+            'mediaExternalLocation' => Values::array_get($payload, 'media_external_location'),
+            'statusCallback' => Values::array_get($payload, 'status_callback'),
+            'statusCallbackMethod' => Values::array_get($payload, 'status_callback_method'),
+            'links' => Values::array_get($payload, 'links'),
+        ];
 
-		$this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return RecordingContext Context for this RecordingInstance
+     */
+    protected function proxy(): RecordingContext
+    {
+        if (!$this->context) {
+            $this->context = new RecordingContext(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Delete the RecordingInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->delete();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the RecordingInstance
+     *
+     * @return RecordingInstance Fetched RecordingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): RecordingInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->fetch();
+    }
 
-		return '[Twilio.Video.V1.RecordingInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-	/**
-	 * Delete the RecordingInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->proxy()->delete();
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the RecordingInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RecordingInstance Fetched RecordingInstance
-	 */
-	public function fetch() : RecordingInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return RecordingContext Context for this RecordingInstance
-	 */
-	protected function proxy() : RecordingContext
-	{
-		if (! $this->context) {
-			$this->context = new RecordingContext(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Video.V1.RecordingInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

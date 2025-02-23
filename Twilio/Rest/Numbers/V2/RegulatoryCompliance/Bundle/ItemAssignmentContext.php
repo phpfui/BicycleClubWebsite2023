@@ -14,87 +14,90 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Numbers\V2\RegulatoryCompliance\Bundle;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class ItemAssignmentContext extends InstanceContext
-	{
-	/**
-	 * Initialize the ItemAssignmentContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $bundleSid The unique string that we created to identify the Bundle resource.
-	 * @param string $sid The unique string that we created to identify the Identity resource.
-	 */
-	public function __construct(
-		Version $version,
-		$bundleSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the ItemAssignmentContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $bundleSid The unique string that we created to identify the Bundle resource.
+     * @param string $sid The unique string that we created to identify the Identity resource.
+     */
+    public function __construct(
+        Version $version,
+        $bundleSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'bundleSid' => $bundleSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'bundleSid' =>
+            $bundleSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/RegulatoryCompliance/Bundles/' . \rawurlencode($bundleSid)
-		. '/ItemAssignments/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/RegulatoryCompliance/Bundles/' . \rawurlencode($bundleSid)
+        .'/ItemAssignments/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the ItemAssignmentInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		return '[Twilio.Numbers.V2.ItemAssignmentContext ' . \implode(' ', $context) . ']';
-	}
 
-	/**
-	 * Delete the ItemAssignmentInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Fetch the ItemAssignmentInstance
+     *
+     * @return ItemAssignmentInstance Fetched ItemAssignmentInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ItemAssignmentInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new ItemAssignmentInstance(
+            $this->version,
+            $payload,
+            $this->solution['bundleSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the ItemAssignmentInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ItemAssignmentInstance Fetched ItemAssignmentInstance
-	 */
-	public function fetch() : ItemAssignmentInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new ItemAssignmentInstance(
-			$this->version,
-			$payload,
-			$this->solution['bundleSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Numbers.V2.ItemAssignmentContext ' . \implode(' ', $context) . ']';
+    }
 }

@@ -14,99 +14,106 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\FlexApi\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class InsightsQuestionnairesQuestionContext extends InstanceContext
-	{
-	/**
-	 * Initialize the InsightsQuestionnairesQuestionContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $questionSid The SID of the question
-	 */
-	public function __construct(
-		Version $version,
-		$questionSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the InsightsQuestionnairesQuestionContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $questionSid The SID of the question
+     */
+    public function __construct(
+        Version $version,
+        $questionSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'questionSid' => $questionSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'questionSid' =>
+            $questionSid,
+        ];
 
-		$this->uri = '/Insights/QualityManagement/Questions/' . \rawurlencode($questionSid)
-		. '';
-	}
+        $this->uri = '/Insights/QualityManagement/Questions/' . \rawurlencode($questionSid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the InsightsQuestionnairesQuestionInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(array $options = []): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.FlexApi.V1.InsightsQuestionnairesQuestionContext ' . \implode(' ', $context) . ']';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Authorization' => $options['authorization']]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-	/**
-	 * Delete the InsightsQuestionnairesQuestionInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete(array $options = []) : bool
-	{
 
-		$options = new Values($options);
+    /**
+     * Update the InsightsQuestionnairesQuestionInstance
+     *
+     * @param bool $allowNa The flag to enable for disable NA for answer.
+     * @param array|Options $options Optional Arguments
+     * @return InsightsQuestionnairesQuestionInstance Updated InsightsQuestionnairesQuestionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(bool $allowNa, array $options = []): InsightsQuestionnairesQuestionInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Authorization' => $options['authorization']]);
+        $options = new Values($options);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        $data = Values::of([
+            'AllowNa' =>
+                Serialize::booleanToString($allowNa),
+            'CategorySid' =>
+                $options['categorySid'],
+            'Question' =>
+                $options['question'],
+            'Description' =>
+                $options['description'],
+            'AnswerSetId' =>
+                $options['answerSetId'],
+        ]);
 
-	/**
-	 * Update the InsightsQuestionnairesQuestionInstance
-	 *
-	 * @param bool $allowNa The flag to enable for disable NA for answer.
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InsightsQuestionnairesQuestionInstance Updated InsightsQuestionnairesQuestionInstance
-	 */
-	public function update(bool $allowNa, array $options = []) : InsightsQuestionnairesQuestionInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Authorization' => $options['authorization']]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$options = new Values($options);
+        return new InsightsQuestionnairesQuestionInstance(
+            $this->version,
+            $payload,
+            $this->solution['questionSid']
+        );
+    }
 
-		$data = Values::of([
-			'AllowNa' => Serialize::booleanToString($allowNa),
-			'CategorySid' => $options['categorySid'],
-			'Question' => $options['question'],
-			'Description' => $options['description'],
-			'AnswerSetId' => $options['answerSetId'],
-		]);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Authorization' => $options['authorization']]);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
-
-		return new InsightsQuestionnairesQuestionInstance(
-			$this->version,
-			$payload,
-			$this->solution['questionSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.FlexApi.V1.InsightsQuestionnairesQuestionContext ' . \implode(' ', $context) . ']';
+    }
 }

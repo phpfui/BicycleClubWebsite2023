@@ -14,130 +14,141 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\IpMessaging\V2\Service\Channel;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+
 
 class MessageContext extends InstanceContext
-	{
-	/**
-	 * Initialize the MessageContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid
-	 * @param string $channelSid
-	 * @param string $sid
-	 */
-	public function __construct(
-		Version $version,
-		$serviceSid,
-		$channelSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the MessageContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid 
+     * @param string $channelSid 
+     * @param string $sid 
+     */
+    public function __construct(
+        Version $version,
+        $serviceSid,
+        $channelSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
-			'channelSid' => $channelSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        'channelSid' =>
+            $channelSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/Channels/' . \rawurlencode($channelSid)
-		. '/Messages/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/Channels/' . \rawurlencode($channelSid)
+        .'/Messages/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Delete the MessageInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(array $options = []): bool
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.IpMessaging.V2.MessageContext ' . \implode(' ', $context) . ']';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-	/**
-	 * Delete the MessageInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete(array $options = []) : bool
-	{
 
-		$options = new Values($options);
+    /**
+     * Fetch the MessageInstance
+     *
+     * @return MessageInstance Fetched MessageInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): MessageInstance
+    {
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+        return new MessageInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['channelSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the MessageInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return MessageInstance Fetched MessageInstance
-	 */
-	public function fetch() : MessageInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the MessageInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return MessageInstance Updated MessageInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): MessageInstance
+    {
 
-		return new MessageInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['channelSid'],
-			$this->solution['sid']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the MessageInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return MessageInstance Updated MessageInstance
-	 */
-	public function update(array $options = []) : MessageInstance
-	{
+        $data = Values::of([
+            'Body' =>
+                $options['body'],
+            'Attributes' =>
+                $options['attributes'],
+            'DateCreated' =>
+                Serialize::iso8601DateTime($options['dateCreated']),
+            'DateUpdated' =>
+                Serialize::iso8601DateTime($options['dateUpdated']),
+            'LastUpdatedBy' =>
+                $options['lastUpdatedBy'],
+            'From' =>
+                $options['from'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'Body' => $options['body'],
-			'Attributes' => $options['attributes'],
-			'DateCreated' => Serialize::iso8601DateTime($options['dateCreated']),
-			'DateUpdated' => Serialize::iso8601DateTime($options['dateUpdated']),
-			'LastUpdatedBy' => $options['lastUpdatedBy'],
-			'From' => $options['from'],
-		]);
+        return new MessageInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['channelSid'],
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new MessageInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['channelSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.IpMessaging.V2.MessageContext ' . \implode(' ', $context) . ']';
+    }
 }

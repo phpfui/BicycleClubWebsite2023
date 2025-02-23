@@ -14,16 +14,18 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Proxy\V1\Service;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
-use Twilio\Rest\Proxy\V1\Service\Session\InteractionList;
-use Twilio\Rest\Proxy\V1\Service\Session\ParticipantList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+use Twilio\Rest\Proxy\V1\Service\Session\ParticipantList;
+use Twilio\Rest\Proxy\V1\Service\Session\InteractionList;
+
 
 /**
  * @property string|null $sid
@@ -45,152 +47,149 @@ use Twilio\Version;
  */
 class SessionInstance extends InstanceResource
 {
-	protected $_interactions;
+    protected $_participants;
+    protected $_interactions;
 
-	protected $_participants;
+    /**
+     * Initialize the SessionInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $serviceSid The SID of the parent [Service](https://www.twilio.com/docs/proxy/api/service) resource.
+     * @param string $sid The Twilio-provided string that uniquely identifies the Session resource to delete.
+     */
+    public function __construct(Version $version, array $payload, string $serviceSid, string $sid = null)
+    {
+        parent::__construct($version);
 
-	/**
-	 * Initialize the SessionInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $serviceSid The SID of the parent [Service](https://www.twilio.com/docs/proxy/api/service) resource.
-	 * @param string $sid The Twilio-provided string that uniquely identifies the Session resource to delete.
-	 */
-	public function __construct(Version $version, array $payload, string $serviceSid, ?string $sid = null)
-	{
-		parent::__construct($version);
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'serviceSid' => Values::array_get($payload, 'service_sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'dateStarted' => Deserialize::dateTime(Values::array_get($payload, 'date_started')),
+            'dateEnded' => Deserialize::dateTime(Values::array_get($payload, 'date_ended')),
+            'dateLastInteraction' => Deserialize::dateTime(Values::array_get($payload, 'date_last_interaction')),
+            'dateExpiry' => Deserialize::dateTime(Values::array_get($payload, 'date_expiry')),
+            'uniqueName' => Values::array_get($payload, 'unique_name'),
+            'status' => Values::array_get($payload, 'status'),
+            'closedReason' => Values::array_get($payload, 'closed_reason'),
+            'ttl' => Values::array_get($payload, 'ttl'),
+            'mode' => Values::array_get($payload, 'mode'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
+        ];
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'serviceSid' => Values::array_get($payload, 'service_sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'dateStarted' => Deserialize::dateTime(Values::array_get($payload, 'date_started')),
-			'dateEnded' => Deserialize::dateTime(Values::array_get($payload, 'date_ended')),
-			'dateLastInteraction' => Deserialize::dateTime(Values::array_get($payload, 'date_last_interaction')),
-			'dateExpiry' => Deserialize::dateTime(Values::array_get($payload, 'date_expiry')),
-			'uniqueName' => Values::array_get($payload, 'unique_name'),
-			'status' => Values::array_get($payload, 'status'),
-			'closedReason' => Values::array_get($payload, 'closed_reason'),
-			'ttl' => Values::array_get($payload, 'ttl'),
-			'mode' => Values::array_get($payload, 'mode'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'url' => Values::array_get($payload, 'url'),
-			'links' => Values::array_get($payload, 'links'),
-		];
+        $this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-		$this->solution = ['serviceSid' => $serviceSid, 'sid' => $sid ?: $this->properties['sid'], ];
-	}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return SessionContext Context for this SessionInstance
+     */
+    protected function proxy(): SessionContext
+    {
+        if (!$this->context) {
+            $this->context = new SessionContext(
+                $this->version,
+                $this->solution['serviceSid'],
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+        return $this->context;
+    }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+    /**
+     * Delete the SessionInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-			return $this->{$method}();
-		}
+        return $this->proxy()->delete();
+    }
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+    /**
+     * Fetch the SessionInstance
+     *
+     * @return SessionInstance Fetched SessionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SessionInstance
+    {
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+        return $this->proxy()->fetch();
+    }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Update the SessionInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return SessionInstance Updated SessionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): SessionInstance
+    {
 
-		return '[Twilio.Proxy.V1.SessionInstance ' . \implode(' ', $context) . ']';
-	}
+        return $this->proxy()->update($options);
+    }
 
-	/**
-	 * Delete the SessionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Access the participants
+     */
+    protected function getParticipants(): ParticipantList
+    {
+        return $this->proxy()->participants;
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Access the interactions
+     */
+    protected function getInteractions(): InteractionList
+    {
+        return $this->proxy()->interactions;
+    }
 
-	/**
-	 * Fetch the SessionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SessionInstance Fetched SessionInstance
-	 */
-	public function fetch() : SessionInstance
-	{
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		return $this->proxy()->fetch();
-	}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Update the SessionInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SessionInstance Updated SessionInstance
-	 */
-	public function update(array $options = []) : SessionInstance
-	{
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		return $this->proxy()->update($options);
-	}
-
-	/**
-	 * Access the interactions
-	 */
-	protected function getInteractions() : InteractionList
-	{
-		return $this->proxy()->interactions;
-	}
-
-	/**
-	 * Access the participants
-	 */
-	protected function getParticipants() : ParticipantList
-	{
-		return $this->proxy()->participants;
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return SessionContext Context for this SessionInstance
-	 */
-	protected function proxy() : SessionContext
-	{
-		if (! $this->context) {
-			$this->context = new SessionContext(
-				$this->version,
-				$this->solution['serviceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Proxy.V1.SessionInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

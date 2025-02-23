@@ -19,44 +19,47 @@ namespace Twilio\Rest\Insights\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class CallList extends ListResource
-	{
-	/**
-	 * Construct the CallList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the CallList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Insights.V1.CallList]';
-	}
+    /**
+     * Constructs a CallContext
+     *
+     * @param string $sid 
+     */
+    public function getContext(
+        string $sid
+        
+    ): CallContext
+    {
+        return new CallContext(
+            $this->version,
+            $sid
+        );
+    }
 
-	/**
-	 * Constructs a CallContext
-	 *
-	 */
-	public function getContext(
-		string $sid
-	) : CallContext
-	{
-		return new CallContext(
-			$this->version,
-			$sid
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Insights.V1.CallList]';
+    }
 }

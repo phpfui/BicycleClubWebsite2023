@@ -11,42 +11,41 @@ namespace Twilio\TwiML\Voice;
 
 use Twilio\TwiML\TwiML;
 
-class Stop extends TwiML
-{
-	/**
-	 * Stop constructor.
-	 */
-	public function __construct() {
-		parent::__construct('Stop', null);
-	}
+class Stop extends TwiML {
+    /**
+     * Stop constructor.
+     */
+    public function __construct() {
+        parent::__construct('Stop', null);
+    }
 
-	/**
-	 * Add Siprec child.
-	 *
-	 * @param array $attributes Optional attributes
-	 * @return Siprec Child element.
-	 */
-	public function siprec($attributes = []) : Siprec {
-		return $this->nest(new Siprec($attributes));
-	}
+    /**
+     * Add Stream child.
+     *
+     * @param array $attributes Optional attributes
+     * @return Stream Child element.
+     */
+    public function stream($attributes = []): Stream {
+        return $this->nest(new Stream($attributes));
+    }
 
-	/**
-	 * Add Stream child.
-	 *
-	 * @param array $attributes Optional attributes
-	 * @return Stream Child element.
-	 */
-	public function stream($attributes = []) : Stream {
-		return $this->nest(new Stream($attributes));
-	}
+    /**
+     * Add Siprec child.
+     *
+     * @param array $attributes Optional attributes
+     * @return Siprec Child element.
+     */
+    public function siprec($attributes = []): Siprec {
+        return $this->nest(new Siprec($attributes));
+    }
 
-	/**
-	 * Add Transcription child.
-	 *
-	 * @param array $attributes Optional attributes
-	 * @return Transcription Child element.
-	 */
-	public function transcription($attributes = []) : Transcription {
-		return $this->nest(new Transcription($attributes));
-	}
+    /**
+     * Add Transcription child.
+     *
+     * @param array $attributes Optional attributes
+     * @return Transcription Child element.
+     */
+    public function transcription($attributes = []): Transcription {
+        return $this->nest(new Transcription($attributes));
+    }
 }

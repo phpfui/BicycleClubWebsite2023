@@ -14,73 +14,76 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Numbers\V2\RegulatoryCompliance\Bundle;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class EvaluationContext extends InstanceContext
-	{
-	/**
-	 * Initialize the EvaluationContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $bundleSid The unique string that identifies the Bundle resource.
-	 * @param string $sid The unique string that identifies the Evaluation resource.
-	 */
-	public function __construct(
-		Version $version,
-		$bundleSid,
-		$sid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the EvaluationContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $bundleSid The unique string that identifies the Bundle resource.
+     * @param string $sid The unique string that identifies the Evaluation resource.
+     */
+    public function __construct(
+        Version $version,
+        $bundleSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'bundleSid' => $bundleSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'bundleSid' =>
+            $bundleSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/RegulatoryCompliance/Bundles/' . \rawurlencode($bundleSid)
-		. '/Evaluations/' . \rawurlencode($sid)
-		. '';
-	}
+        $this->uri = '/RegulatoryCompliance/Bundles/' . \rawurlencode($bundleSid)
+        .'/Evaluations/' . \rawurlencode($sid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the EvaluationInstance
+     *
+     * @return EvaluationInstance Fetched EvaluationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): EvaluationInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Numbers.V2.EvaluationContext ' . \implode(' ', $context) . ']';
-	}
+        return new EvaluationInstance(
+            $this->version,
+            $payload,
+            $this->solution['bundleSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Fetch the EvaluationInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return EvaluationInstance Fetched EvaluationInstance
-	 */
-	public function fetch() : EvaluationInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new EvaluationInstance(
-			$this->version,
-			$payload,
-			$this->solution['bundleSid'],
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Numbers.V2.EvaluationContext ' . \implode(' ', $context) . ']';
+    }
 }

@@ -14,17 +14,19 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Notify\V1;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Rest\Notify\V1\Service\BindingList;
-use Twilio\Rest\Notify\V1\Service\NotificationList;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Serialize;
+use Twilio\Rest\Notify\V1\Service\NotificationList;
+use Twilio\Rest\Notify\V1\Service\BindingList;
+
 
 /**
  * @property NotificationList $notifications
@@ -32,184 +34,196 @@ use Twilio\Version;
  * @method \Twilio\Rest\Notify\V1\Service\BindingContext bindings(string $sid)
  */
 class ServiceContext extends InstanceContext
-	{
-	protected $_bindings;
+    {
+    protected $_notifications;
+    protected $_bindings;
 
-	protected $_notifications;
+    /**
+     * Initialize the ServiceContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sid The Twilio-provided string that uniquely identifies the Service resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $sid
+    ) {
+        parent::__construct($version);
 
-	/**
-	 * Initialize the ServiceContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sid The Twilio-provided string that uniquely identifies the Service resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$sid
-	) {
-		parent::__construct($version);
+        // Path Solution
+        $this->solution = [
+        'sid' =>
+            $sid,
+        ];
 
-		// Path Solution
-		$this->solution = [
-			'sid' => $sid,
-		];
+        $this->uri = '/Services/' . \rawurlencode($sid)
+        .'';
+    }
 
-		$this->uri = '/Services/' . \rawurlencode($sid)
-		. '';
-	}
+    /**
+     * Delete the ServiceInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
 
-		throw new TwilioException('Resource does not have a context');
-	}
+    /**
+     * Fetch the ServiceInstance
+     *
+     * @return ServiceInstance Fetched ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ServiceInstance
+    {
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-			return $this->{$method}();
-		}
+        return new ServiceInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Update the ServiceInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return ServiceInstance Updated ServiceInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): ServiceInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.Notify.V1.ServiceContext ' . \implode(' ', $context) . ']';
-	}
+        $data = Values::of([
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'ApnCredentialSid' =>
+                $options['apnCredentialSid'],
+            'GcmCredentialSid' =>
+                $options['gcmCredentialSid'],
+            'MessagingServiceSid' =>
+                $options['messagingServiceSid'],
+            'FacebookMessengerPageId' =>
+                $options['facebookMessengerPageId'],
+            'DefaultApnNotificationProtocolVersion' =>
+                $options['defaultApnNotificationProtocolVersion'],
+            'DefaultGcmNotificationProtocolVersion' =>
+                $options['defaultGcmNotificationProtocolVersion'],
+            'FcmCredentialSid' =>
+                $options['fcmCredentialSid'],
+            'DefaultFcmNotificationProtocolVersion' =>
+                $options['defaultFcmNotificationProtocolVersion'],
+            'LogEnabled' =>
+                Serialize::booleanToString($options['logEnabled']),
+            'AlexaSkillId' =>
+                $options['alexaSkillId'],
+            'DefaultAlexaNotificationProtocolVersion' =>
+                $options['defaultAlexaNotificationProtocolVersion'],
+            'DeliveryCallbackUrl' =>
+                $options['deliveryCallbackUrl'],
+            'DeliveryCallbackEnabled' =>
+                Serialize::booleanToString($options['deliveryCallbackEnabled']),
+        ]);
 
-	/**
-	 * Delete the ServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        return new ServiceInstance(
+            $this->version,
+            $payload,
+            $this->solution['sid']
+        );
+    }
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
 
-	/**
-	 * Fetch the ServiceInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ServiceInstance Fetched ServiceInstance
-	 */
-	public function fetch() : ServiceInstance
-	{
+    /**
+     * Access the notifications
+     */
+    protected function getNotifications(): NotificationList
+    {
+        if (!$this->_notifications) {
+            $this->_notifications = new NotificationList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+        return $this->_notifications;
+    }
 
-		return new ServiceInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+    /**
+     * Access the bindings
+     */
+    protected function getBindings(): BindingList
+    {
+        if (!$this->_bindings) {
+            $this->_bindings = new BindingList(
+                $this->version,
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Update the ServiceInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ServiceInstance Updated ServiceInstance
-	 */
-	public function update(array $options = []) : ServiceInstance
-	{
+        return $this->_bindings;
+    }
 
-		$options = new Values($options);
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		$data = Values::of([
-			'FriendlyName' => $options['friendlyName'],
-			'ApnCredentialSid' => $options['apnCredentialSid'],
-			'GcmCredentialSid' => $options['gcmCredentialSid'],
-			'MessagingServiceSid' => $options['messagingServiceSid'],
-			'FacebookMessengerPageId' => $options['facebookMessengerPageId'],
-			'DefaultApnNotificationProtocolVersion' => $options['defaultApnNotificationProtocolVersion'],
-			'DefaultGcmNotificationProtocolVersion' => $options['defaultGcmNotificationProtocolVersion'],
-			'FcmCredentialSid' => $options['fcmCredentialSid'],
-			'DefaultFcmNotificationProtocolVersion' => $options['defaultFcmNotificationProtocolVersion'],
-			'LogEnabled' => Serialize::booleanToString($options['logEnabled']),
-			'AlexaSkillId' => $options['alexaSkillId'],
-			'DefaultAlexaNotificationProtocolVersion' => $options['defaultAlexaNotificationProtocolVersion'],
-			'DeliveryCallbackUrl' => $options['deliveryCallbackUrl'],
-			'DeliveryCallbackEnabled' => Serialize::booleanToString($options['deliveryCallbackEnabled']),
-		]);
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		return new ServiceInstance(
-			$this->version,
-			$payload,
-			$this->solution['sid']
-		);
-	}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-	/**
-	 * Access the bindings
-	 */
-	protected function getBindings() : BindingList
-	{
-		if (! $this->_bindings) {
-			$this->_bindings = new BindingList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_bindings;
-	}
-
-	/**
-	 * Access the notifications
-	 */
-	protected function getNotifications() : NotificationList
-	{
-		if (! $this->_notifications) {
-			$this->_notifications = new NotificationList(
-				$this->version,
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_notifications;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Notify.V1.ServiceContext ' . \implode(' ', $context) . ']';
+    }
 }

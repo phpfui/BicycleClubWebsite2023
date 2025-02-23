@@ -19,49 +19,51 @@ namespace Twilio\Rest\FlexApi\V1;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class PluginVersionArchiveList extends ListResource
-	{
-	/**
-	 * Construct the PluginVersionArchiveList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the PluginVersionArchiveList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
-	}
+        // Path Solution
+        $this->solution = [
+        ];
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.FlexApi.V1.PluginVersionArchiveList]';
-	}
+    /**
+     * Constructs a PluginVersionArchiveContext
+     *
+     * @param string $pluginSid The SID of the Flex Plugin the resource to belongs to.
+     *
+     * @param string $sid The SID of the Flex Plugin Version resource to archive.
+     */
+    public function getContext(
+        string $pluginSid
+        , string $sid
+        
+    ): PluginVersionArchiveContext
+    {
+        return new PluginVersionArchiveContext(
+            $this->version,
+            $pluginSid,
+            $sid
+        );
+    }
 
-	/**
-	 * Constructs a PluginVersionArchiveContext
-	 *
-	 * @param string $pluginSid The SID of the Flex Plugin the resource to belongs to.
-	 *
-	 * @param string $sid The SID of the Flex Plugin Version resource to archive.
-	 */
-	public function getContext(
-		string $pluginSid,
-		string $sid
-	) : PluginVersionArchiveContext
-	{
-		return new PluginVersionArchiveContext(
-			$this->version,
-			$pluginSid,
-			$sid
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.FlexApi.V1.PluginVersionArchiveList]';
+    }
 }

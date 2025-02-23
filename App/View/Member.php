@@ -33,11 +33,27 @@ class Member
 			$member->profileY = (int)$_POST['profileY'];
 			$member->profileWidth = (int)$_POST['profileWidth'];
 			$member->profileHeight = (int)$_POST['profileHeight'];
-			$member->update();
-			$this->profileModel->update($member->toArray());
-			$this->profileModel->crop();
+			$message = 'Saved';
+			$color = 'Lime';
 
-			$this->page->setResponse('Saved');
+			if ($member->profileWidth < 100)
+				{
+				$message = 'Photo width must be 100 or greater';
+				$color = 'red';
+				}
+			elseif ($member->profileHeight < 100)
+				{
+				$message = 'Photo height must be 100 or greater';
+				$color = 'red';
+				}
+			else
+				{
+				$member->update();
+				$this->profileModel->update($member->toArray());
+				$this->profileModel->crop();
+				}
+
+			$this->page->setResponse($message, $color);
 			}
 		else
 			{

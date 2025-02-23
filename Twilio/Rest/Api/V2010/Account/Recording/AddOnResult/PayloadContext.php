@@ -14,160 +14,163 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Api\V2010\Account\Recording\AddOnResult;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Api\V2010\Account\Recording\AddOnResult\Payload\DataList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Api\V2010\Account\Recording\AddOnResult\Payload\DataList;
+
 
 /**
  * @property DataList $data
  * @method \Twilio\Rest\Api\V2010\Account\Recording\AddOnResult\Payload\DataContext data()
  */
 class PayloadContext extends InstanceContext
-	{
-	protected $_data;
+    {
+    protected $_data;
 
-	/**
-	 * Initialize the PayloadContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Recording AddOnResult Payload resources to delete.
-	 * @param string $referenceSid The SID of the recording to which the AddOnResult resource that contains the payloads to delete belongs.
-	 * @param string $addOnResultSid The SID of the AddOnResult to which the payloads to delete belongs.
-	 * @param string $sid The Twilio-provided string that uniquely identifies the Recording AddOnResult Payload resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$accountSid,
-		$referenceSid,
-		$addOnResultSid,
-		$sid
-	) {
-		parent::__construct($version);
+    /**
+     * Initialize the PayloadContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Recording AddOnResult Payload resources to delete.
+     * @param string $referenceSid The SID of the recording to which the AddOnResult resource that contains the payloads to delete belongs.
+     * @param string $addOnResultSid The SID of the AddOnResult to which the payloads to delete belongs.
+     * @param string $sid The Twilio-provided string that uniquely identifies the Recording AddOnResult Payload resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $accountSid,
+        $referenceSid,
+        $addOnResultSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'accountSid' => $accountSid,
-			'referenceSid' => $referenceSid,
-			'addOnResultSid' => $addOnResultSid,
-			'sid' => $sid,
-		];
+        // Path Solution
+        $this->solution = [
+        'accountSid' =>
+            $accountSid,
+        'referenceSid' =>
+            $referenceSid,
+        'addOnResultSid' =>
+            $addOnResultSid,
+        'sid' =>
+            $sid,
+        ];
 
-		$this->uri = '/Accounts/' . \rawurlencode($accountSid)
-		. '/Recordings/' . \rawurlencode($referenceSid)
-		. '/AddOnResults/' . \rawurlencode($addOnResultSid)
-		. '/Payloads/' . \rawurlencode($sid)
-		. '.json';
-	}
+        $this->uri = '/Accounts/' . \rawurlencode($accountSid)
+        .'/Recordings/' . \rawurlencode($referenceSid)
+        .'/AddOnResults/' . \rawurlencode($addOnResultSid)
+        .'/Payloads/' . \rawurlencode($sid)
+        .'.json';
+    }
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+    /**
+     * Delete the PayloadInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		throw new TwilioException('Resource does not have a context');
-	}
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+    /**
+     * Fetch the PayloadInstance
+     *
+     * @return PayloadInstance Fetched PayloadInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): PayloadInstance
+    {
 
-			return $this->{$method}();
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
+        return new PayloadInstance(
+            $this->version,
+            $payload,
+            $this->solution['accountSid'],
+            $this->solution['referenceSid'],
+            $this->solution['addOnResultSid'],
+            $this->solution['sid']
+        );
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+    /**
+     * Access the data
+     */
+    protected function getData(): DataList
+    {
+        if (!$this->_data) {
+            $this->_data = new DataList(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['referenceSid'],
+                $this->solution['addOnResultSid'],
+                $this->solution['sid']
+            );
+        }
 
-		return '[Twilio.Api.V2010.PayloadContext ' . \implode(' ', $context) . ']';
-	}
+        return $this->_data;
+    }
 
-	/**
-	 * Delete the PayloadInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-	/**
-	 * Fetch the PayloadInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PayloadInstance Fetched PayloadInstance
-	 */
-	public function fetch() : PayloadInstance
-	{
+        throw new TwilioException('Resource does not have a context');
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new PayloadInstance(
-			$this->version,
-			$payload,
-			$this->solution['accountSid'],
-			$this->solution['referenceSid'],
-			$this->solution['addOnResultSid'],
-			$this->solution['sid']
-		);
-	}
-
-	/**
-	 * Access the data
-	 */
-	protected function getData() : DataList
-	{
-		if (! $this->_data) {
-			$this->_data = new DataList(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['referenceSid'],
-				$this->solution['addOnResultSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_data;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.PayloadContext ' . \implode(' ', $context) . ']';
+    }
 }

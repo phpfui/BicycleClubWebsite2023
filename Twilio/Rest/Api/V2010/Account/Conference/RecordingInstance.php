@@ -14,14 +14,16 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Api\V2010\Account\Conference;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $accountSid
@@ -44,135 +46,134 @@ use Twilio\Version;
  */
 class RecordingInstance extends InstanceResource
 {
-	/**
-	 * Initialize the RecordingInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Conference Recording resources to delete.
-	 * @param string $conferenceSid The Conference SID that identifies the conference associated with the recording to delete.
-	 * @param string $sid The Twilio-provided string that uniquely identifies the Conference Recording resource to delete.
-	 */
-	public function __construct(Version $version, array $payload, string $accountSid, string $conferenceSid, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the RecordingInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Conference Recording resources to delete.
+     * @param string $conferenceSid The Conference SID that identifies the conference associated with the recording to delete.
+     * @param string $sid The Twilio-provided string that uniquely identifies the Conference Recording resource to delete.
+     */
+    public function __construct(Version $version, array $payload, string $accountSid, string $conferenceSid, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'apiVersion' => Values::array_get($payload, 'api_version'),
-			'callSid' => Values::array_get($payload, 'call_sid'),
-			'conferenceSid' => Values::array_get($payload, 'conference_sid'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'startTime' => Deserialize::dateTime(Values::array_get($payload, 'start_time')),
-			'duration' => Values::array_get($payload, 'duration'),
-			'sid' => Values::array_get($payload, 'sid'),
-			'price' => Values::array_get($payload, 'price'),
-			'priceUnit' => Values::array_get($payload, 'price_unit'),
-			'status' => Values::array_get($payload, 'status'),
-			'channels' => Values::array_get($payload, 'channels'),
-			'source' => Values::array_get($payload, 'source'),
-			'errorCode' => Values::array_get($payload, 'error_code'),
-			'encryptionDetails' => Values::array_get($payload, 'encryption_details'),
-			'uri' => Values::array_get($payload, 'uri'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'apiVersion' => Values::array_get($payload, 'api_version'),
+            'callSid' => Values::array_get($payload, 'call_sid'),
+            'conferenceSid' => Values::array_get($payload, 'conference_sid'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'startTime' => Deserialize::dateTime(Values::array_get($payload, 'start_time')),
+            'duration' => Values::array_get($payload, 'duration'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'price' => Values::array_get($payload, 'price'),
+            'priceUnit' => Values::array_get($payload, 'price_unit'),
+            'status' => Values::array_get($payload, 'status'),
+            'channels' => Values::array_get($payload, 'channels'),
+            'source' => Values::array_get($payload, 'source'),
+            'errorCode' => Values::array_get($payload, 'error_code'),
+            'encryptionDetails' => Values::array_get($payload, 'encryption_details'),
+            'uri' => Values::array_get($payload, 'uri'),
+        ];
 
-		$this->solution = ['accountSid' => $accountSid, 'conferenceSid' => $conferenceSid, 'sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['accountSid' => $accountSid, 'conferenceSid' => $conferenceSid, 'sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return RecordingContext Context for this RecordingInstance
+     */
+    protected function proxy(): RecordingContext
+    {
+        if (!$this->context) {
+            $this->context = new RecordingContext(
+                $this->version,
+                $this->solution['accountSid'],
+                $this->solution['conferenceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Delete the RecordingInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->delete();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the RecordingInstance
+     *
+     * @return RecordingInstance Fetched RecordingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): RecordingInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->fetch();
+    }
 
-		return '[Twilio.Api.V2010.RecordingInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Update the RecordingInstance
+     *
+     * @param string $status
+     * @param array|Options $options Optional Arguments
+     * @return RecordingInstance Updated RecordingInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $status, array $options = []): RecordingInstance
+    {
 
-	/**
-	 * Delete the RecordingInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        return $this->proxy()->update($status, $options);
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-	/**
-	 * Fetch the RecordingInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RecordingInstance Fetched RecordingInstance
-	 */
-	public function fetch() : RecordingInstance
-	{
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return $this->proxy()->fetch();
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Update the RecordingInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return RecordingInstance Updated RecordingInstance
-	 */
-	public function update(string $status, array $options = []) : RecordingInstance
-	{
-
-		return $this->proxy()->update($status, $options);
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return RecordingContext Context for this RecordingInstance
-	 */
-	protected function proxy() : RecordingContext
-	{
-		if (! $this->context) {
-			$this->context = new RecordingContext(
-				$this->version,
-				$this->solution['accountSid'],
-				$this->solution['conferenceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Api.V2010.RecordingInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

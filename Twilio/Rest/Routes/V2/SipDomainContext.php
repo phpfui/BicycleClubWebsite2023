@@ -14,96 +14,101 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Routes\V2;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class SipDomainContext extends InstanceContext
-	{
-	/**
-	 * Initialize the SipDomainContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $sipDomain
-	 */
-	public function __construct(
-		Version $version,
-		$sipDomain
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the SipDomainContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $sipDomain 
+     */
+    public function __construct(
+        Version $version,
+        $sipDomain
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'sipDomain' => $sipDomain,
-		];
+        // Path Solution
+        $this->solution = [
+        'sipDomain' =>
+            $sipDomain,
+        ];
 
-		$this->uri = '/SipDomains/' . \rawurlencode($sipDomain)
-		. '';
-	}
+        $this->uri = '/SipDomains/' . \rawurlencode($sipDomain)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the SipDomainInstance
+     *
+     * @return SipDomainInstance Fetched SipDomainInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): SipDomainInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		return '[Twilio.Routes.V2.SipDomainContext ' . \implode(' ', $context) . ']';
-	}
+        return new SipDomainInstance(
+            $this->version,
+            $payload,
+            $this->solution['sipDomain']
+        );
+    }
 
-	/**
-	 * Fetch the SipDomainInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SipDomainInstance Fetched SipDomainInstance
-	 */
-	public function fetch() : SipDomainInstance
-	{
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Update the SipDomainInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return SipDomainInstance Updated SipDomainInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): SipDomainInstance
+    {
 
-		return new SipDomainInstance(
-			$this->version,
-			$payload,
-			$this->solution['sipDomain']
-		);
-	}
+        $options = new Values($options);
 
-	/**
-	 * Update the SipDomainInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return SipDomainInstance Updated SipDomainInstance
-	 */
-	public function update(array $options = []) : SipDomainInstance
-	{
+        $data = Values::of([
+            'VoiceRegion' =>
+                $options['voiceRegion'],
+            'FriendlyName' =>
+                $options['friendlyName'],
+        ]);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		$data = Values::of([
-			'VoiceRegion' => $options['voiceRegion'],
-			'FriendlyName' => $options['friendlyName'],
-		]);
+        return new SipDomainInstance(
+            $this->version,
+            $payload,
+            $this->solution['sipDomain']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-		return new SipDomainInstance(
-			$this->version,
-			$payload,
-			$this->solution['sipDomain']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Routes.V2.SipDomainContext ' . \implode(' ', $context) . ']';
+    }
 }

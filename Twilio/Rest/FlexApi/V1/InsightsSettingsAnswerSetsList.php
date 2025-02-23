@@ -22,53 +22,55 @@ use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class InsightsSettingsAnswerSetsList extends ListResource
-	{
-	/**
-	 * Construct the InsightsSettingsAnswerSetsList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the InsightsSettingsAnswerSetsList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/Insights/QualityManagement/Settings/AnswerSets';
-	}
+        $this->uri = '/Insights/QualityManagement/Settings/AnswerSets';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.FlexApi.V1.InsightsSettingsAnswerSetsList]';
-	}
+    /**
+     * Fetch the InsightsSettingsAnswerSetsInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return InsightsSettingsAnswerSetsInstance Fetched InsightsSettingsAnswerSetsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): InsightsSettingsAnswerSetsInstance
+    {
 
-	/**
-	 * Fetch the InsightsSettingsAnswerSetsInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return InsightsSettingsAnswerSetsInstance Fetched InsightsSettingsAnswerSetsInstance
-	 */
-	public function fetch(array $options = []) : InsightsSettingsAnswerSetsInstance
-	{
+        $options = new Values($options);
 
-		$options = new Values($options);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Authorization' => $options['authorization']]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Authorization' => $options['authorization']]);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+        return new InsightsSettingsAnswerSetsInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new InsightsSettingsAnswerSetsInstance(
-			$this->version,
-			$payload
-		);
-	}
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.FlexApi.V1.InsightsSettingsAnswerSetsList]';
+    }
 }

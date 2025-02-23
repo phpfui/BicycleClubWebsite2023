@@ -14,77 +14,80 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\FlexApi\V1\PluginConfiguration;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+
 
 class ConfiguredPluginContext extends InstanceContext
-	{
-	/**
-	 * Initialize the ConfiguredPluginContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $configurationSid The SID of the Flex Plugin Configuration the resource to belongs to.
-	 * @param string $pluginSid The unique string that we created to identify the Flex Plugin resource.
-	 */
-	public function __construct(
-		Version $version,
-		$configurationSid,
-		$pluginSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Initialize the ConfiguredPluginContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $configurationSid The SID of the Flex Plugin Configuration the resource to belongs to.
+     * @param string $pluginSid The unique string that we created to identify the Flex Plugin resource.
+     */
+    public function __construct(
+        Version $version,
+        $configurationSid,
+        $pluginSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'configurationSid' => $configurationSid,
-			'pluginSid' => $pluginSid,
-		];
+        // Path Solution
+        $this->solution = [
+        'configurationSid' =>
+            $configurationSid,
+        'pluginSid' =>
+            $pluginSid,
+        ];
 
-		$this->uri = '/PluginService/Configurations/' . \rawurlencode($configurationSid)
-		. '/Plugins/' . \rawurlencode($pluginSid)
-		. '';
-	}
+        $this->uri = '/PluginService/Configurations/' . \rawurlencode($configurationSid)
+        .'/Plugins/' . \rawurlencode($pluginSid)
+        .'';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Fetch the ConfiguredPluginInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return ConfiguredPluginInstance Fetched ConfiguredPluginInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(array $options = []): ConfiguredPluginInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $options = new Values($options);
 
-		return '[Twilio.FlexApi.V1.ConfiguredPluginContext ' . \implode(' ', $context) . ']';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Flex-Metadata' => $options['flexMetadata']]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-	/**
-	 * Fetch the ConfiguredPluginInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ConfiguredPluginInstance Fetched ConfiguredPluginInstance
-	 */
-	public function fetch(array $options = []) : ConfiguredPluginInstance
-	{
+        return new ConfiguredPluginInstance(
+            $this->version,
+            $payload,
+            $this->solution['configurationSid'],
+            $this->solution['pluginSid']
+        );
+    }
 
-		$options = new Values($options);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Flex-Metadata' => $options['flexMetadata']]);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
-
-		return new ConfiguredPluginInstance(
-			$this->version,
-			$payload,
-			$this->solution['configurationSid'],
-			$this->solution['pluginSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.FlexApi.V1.ConfiguredPluginContext ' . \implode(' ', $context) . ']';
+    }
 }

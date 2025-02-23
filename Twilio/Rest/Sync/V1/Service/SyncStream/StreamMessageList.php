@@ -18,72 +18,77 @@ namespace Twilio\Rest\Sync\V1\Service\SyncStream;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
-use Twilio\Serialize;
 use Twilio\Stream;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Serialize;
+
 
 class StreamMessageList extends ListResource
-	{
-	/**
-	 * Construct the StreamMessageList
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) to create the new Stream Message in.
-	 * @param string $streamSid The SID of the Sync Stream to create the new Stream Message resource for.
-	 */
-	public function __construct(
-		Version $version,
-		string $serviceSid,
-		string $streamSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the StreamMessageList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $serviceSid The SID of the [Sync Service](https://www.twilio.com/docs/sync/api/service) to create the new Stream Message in.
+     * @param string $streamSid The SID of the Sync Stream to create the new Stream Message resource for.
+     */
+    public function __construct(
+        Version $version,
+        string $serviceSid,
+        string $streamSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'serviceSid' => $serviceSid,
+        // Path Solution
+        $this->solution = [
+        'serviceSid' =>
+            $serviceSid,
+        
+        'streamSid' =>
+            $streamSid,
+        
+        ];
 
-			'streamSid' => $streamSid,
+        $this->uri = '/Services/' . \rawurlencode($serviceSid)
+        .'/Streams/' . \rawurlencode($streamSid)
+        .'/Messages';
+    }
 
-		];
+    /**
+     * Create the StreamMessageInstance
+     *
+     * @param array $data A JSON string that represents an arbitrary, schema-less object that makes up the Stream Message body. Can be up to 4 KiB in length.
+     * @return StreamMessageInstance Created StreamMessageInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(array $data): StreamMessageInstance
+    {
 
-		$this->uri = '/Services/' . \rawurlencode($serviceSid)
-		. '/Streams/' . \rawurlencode($streamSid)
-		. '/Messages';
-	}
+        $data = Values::of([
+            'Data' =>
+                Serialize::jsonObject($data),
+        ]);
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Sync.V1.StreamMessageList]';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-	/**
-	 * Create the StreamMessageInstance
-	 *
-	 * @param array $data A JSON string that represents an arbitrary, schema-less object that makes up the Stream Message body. Can be up to 4 KiB in length.
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return StreamMessageInstance Created StreamMessageInstance
-	 */
-	public function create(array $data) : StreamMessageInstance
-	{
+        return new StreamMessageInstance(
+            $this->version,
+            $payload,
+            $this->solution['serviceSid'],
+            $this->solution['streamSid']
+        );
+    }
 
-		$data = Values::of([
-			'Data' => Serialize::jsonObject($data),
-		]);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
-
-		return new StreamMessageInstance(
-			$this->version,
-			$payload,
-			$this->solution['serviceSid'],
-			$this->solution['streamSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Sync.V1.StreamMessageList]';
+    }
 }

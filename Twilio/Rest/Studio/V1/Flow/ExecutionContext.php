@@ -14,15 +14,17 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Studio\V1\Flow;
 
 use Twilio\Exceptions\TwilioException;
-use Twilio\InstanceContext;
 use Twilio\ListResource;
-use Twilio\Rest\Studio\V1\Flow\Execution\ExecutionContextList;
-use Twilio\Rest\Studio\V1\Flow\Execution\ExecutionStepList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\InstanceContext;
+use Twilio\Rest\Studio\V1\Flow\Execution\ExecutionStepList;
+use Twilio\Rest\Studio\V1\Flow\Execution\ExecutionContextList;
+
 
 /**
  * @property ExecutionStepList $steps
@@ -31,176 +33,177 @@ use Twilio\Version;
  * @method \Twilio\Rest\Studio\V1\Flow\Execution\ExecutionStepContext steps(string $sid)
  */
 class ExecutionContext extends InstanceContext
-	{
-	protected $_executionContext;
+    {
+    protected $_steps;
+    protected $_executionContext;
 
-	protected $_steps;
+    /**
+     * Initialize the ExecutionContext
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $flowSid The SID of the Excecution's Flow.
+     * @param string $sid The SID of the Execution resource to delete.
+     */
+    public function __construct(
+        Version $version,
+        $flowSid,
+        $sid
+    ) {
+        parent::__construct($version);
 
-	/**
-	 * Initialize the ExecutionContext
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param string $flowSid The SID of the Excecution's Flow.
-	 * @param string $sid The SID of the Execution resource to delete.
-	 */
-	public function __construct(
-		Version $version,
-		$flowSid,
-		$sid
-	) {
-		parent::__construct($version);
+        // Path Solution
+        $this->solution = [
+        'flowSid' =>
+            $flowSid,
+        'sid' =>
+            $sid,
+        ];
 
-		// Path Solution
-		$this->solution = [
-			'flowSid' => $flowSid,
-			'sid' => $sid,
-		];
+        $this->uri = '/Flows/' . \rawurlencode($flowSid)
+        .'/Executions/' . \rawurlencode($sid)
+        .'';
+    }
 
-		$this->uri = '/Flows/' . \rawurlencode($flowSid)
-		. '/Executions/' . \rawurlencode($sid)
-		. '';
-	}
+    /**
+     * Delete the ExecutionInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-	/**
-	 * Magic caller to get resource contexts
-	 *
-	 * @param string $name Resource to return
-	 * @param array $arguments Context parameters
-	 * @throws TwilioException For unknown resource
-	 * @return InstanceContext The requested resource context
-	 */
-	public function __call(string $name, array $arguments) : InstanceContext
-	{
-		$property = $this->{$name};
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        return $this->version->delete('DELETE', $this->uri, [], [], $headers);
+    }
 
-		if (\method_exists($property, 'getContext')) {
-			return \call_user_func_array([$property, 'getContext'], $arguments);
-		}
 
-		throw new TwilioException('Resource does not have a context');
-	}
+    /**
+     * Fetch the ExecutionInstance
+     *
+     * @return ExecutionInstance Fetched ExecutionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): ExecutionInstance
+    {
 
-	/**
-	 * Magic getter to lazy load subresources
-	 *
-	 * @param string $name Subresource to return
-	 * @throws TwilioException For unknown subresources
-	 * @return ListResource The requested subresource
-	 */
-	public function __get(string $name) : ListResource
-	{
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-			return $this->{$method}();
-		}
+        return new ExecutionInstance(
+            $this->version,
+            $payload,
+            $this->solution['flowSid'],
+            $this->solution['sid']
+        );
+    }
 
-		throw new TwilioException('Unknown subresource ' . $name);
-	}
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Update the ExecutionInstance
+     *
+     * @param string $status
+     * @return ExecutionInstance Updated ExecutionInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(string $status): ExecutionInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        $data = Values::of([
+            'Status' =>
+                $status,
+        ]);
 
-		return '[Twilio.Studio.V1.ExecutionContext ' . \implode(' ', $context) . ']';
-	}
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->update('POST', $this->uri, [], $data, $headers);
 
-	/**
-	 * Delete the ExecutionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+        return new ExecutionInstance(
+            $this->version,
+            $payload,
+            $this->solution['flowSid'],
+            $this->solution['sid']
+        );
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
 
-		return $this->version->delete('DELETE', $this->uri, [], [], $headers);
-	}
+    /**
+     * Access the steps
+     */
+    protected function getSteps(): ExecutionStepList
+    {
+        if (!$this->_steps) {
+            $this->_steps = new ExecutionStepList(
+                $this->version,
+                $this->solution['flowSid'],
+                $this->solution['sid']
+            );
+        }
 
-	/**
-	 * Fetch the ExecutionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ExecutionInstance Fetched ExecutionInstance
-	 */
-	public function fetch() : ExecutionInstance
-	{
+        return $this->_steps;
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+    /**
+     * Access the executionContext
+     */
+    protected function getExecutionContext(): ExecutionContextList
+    {
+        if (!$this->_executionContext) {
+            $this->_executionContext = new ExecutionContextList(
+                $this->version,
+                $this->solution['flowSid'],
+                $this->solution['sid']
+            );
+        }
 
-		return new ExecutionInstance(
-			$this->version,
-			$payload,
-			$this->solution['flowSid'],
-			$this->solution['sid']
-		);
-	}
+        return $this->_executionContext;
+    }
 
-	/**
-	 * Update the ExecutionInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return ExecutionInstance Updated ExecutionInstance
-	 */
-	public function update(string $status) : ExecutionInstance
-	{
+    /**
+     * Magic getter to lazy load subresources
+     *
+     * @param string $name Subresource to return
+     * @return ListResource The requested subresource
+     * @throws TwilioException For unknown subresources
+     */
+    public function __get(string $name): ListResource
+    {
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		$data = Values::of([
-			'Status' => $status,
-		]);
+        throw new TwilioException('Unknown subresource ' . $name);
+    }
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->update('POST', $this->uri, [], $data, $headers);
+    /**
+     * Magic caller to get resource contexts
+     *
+     * @param string $name Resource to return
+     * @param array $arguments Context parameters
+     * @return InstanceContext The requested resource context
+     * @throws TwilioException For unknown resource
+     */
+    public function __call(string $name, array $arguments): InstanceContext
+    {
+        $property = $this->$name;
+        if (\method_exists($property, 'getContext')) {
+            return \call_user_func_array(array($property, 'getContext'), $arguments);
+        }
 
-		return new ExecutionInstance(
-			$this->version,
-			$payload,
-			$this->solution['flowSid'],
-			$this->solution['sid']
-		);
-	}
+        throw new TwilioException('Resource does not have a context');
+    }
 
-	/**
-	 * Access the executionContext
-	 */
-	protected function getExecutionContext() : ExecutionContextList
-	{
-		if (! $this->_executionContext) {
-			$this->_executionContext = new ExecutionContextList(
-				$this->version,
-				$this->solution['flowSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_executionContext;
-	}
-
-	/**
-	 * Access the steps
-	 */
-	protected function getSteps() : ExecutionStepList
-	{
-		if (! $this->_steps) {
-			$this->_steps = new ExecutionStepList(
-				$this->version,
-				$this->solution['flowSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->_steps;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Studio.V1.ExecutionContext ' . \implode(' ', $context) . ']';
+    }
 }

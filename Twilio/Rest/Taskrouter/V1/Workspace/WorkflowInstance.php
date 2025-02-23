@@ -14,17 +14,19 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Taskrouter\V1\Workspace;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Options;
-use Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowCumulativeStatisticsList;
-use Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowRealTimeStatisticsList;
-use Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowStatisticsList;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+use Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowStatisticsList;
+use Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowCumulativeStatisticsList;
+use Twilio\Rest\Taskrouter\V1\Workspace\Workflow\WorkflowRealTimeStatisticsList;
+
 
 /**
  * @property string|null $accountSid
@@ -43,159 +45,155 @@ use Twilio\Version;
  */
 class WorkflowInstance extends InstanceResource
 {
-	protected $_cumulativeStatistics;
+    protected $_statistics;
+    protected $_cumulativeStatistics;
+    protected $_realTimeStatistics;
 
-	protected $_realTimeStatistics;
+    /**
+     * Initialize the WorkflowInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $workspaceSid The SID of the Workspace that the new Workflow to create belongs to.
+     * @param string $sid The SID of the Workflow resource to delete.
+     */
+    public function __construct(Version $version, array $payload, string $workspaceSid, string $sid = null)
+    {
+        parent::__construct($version);
 
-	protected $_statistics;
+        // Marshaled Properties
+        $this->properties = [
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'assignmentCallbackUrl' => Values::array_get($payload, 'assignment_callback_url'),
+            'configuration' => Values::array_get($payload, 'configuration'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'documentContentType' => Values::array_get($payload, 'document_content_type'),
+            'fallbackAssignmentCallbackUrl' => Values::array_get($payload, 'fallback_assignment_callback_url'),
+            'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'sid' => Values::array_get($payload, 'sid'),
+            'taskReservationTimeout' => Values::array_get($payload, 'task_reservation_timeout'),
+            'workspaceSid' => Values::array_get($payload, 'workspace_sid'),
+            'url' => Values::array_get($payload, 'url'),
+            'links' => Values::array_get($payload, 'links'),
+        ];
 
-	/**
-	 * Initialize the WorkflowInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $workspaceSid The SID of the Workspace that the new Workflow to create belongs to.
-	 * @param string $sid The SID of the Workflow resource to delete.
-	 */
-	public function __construct(Version $version, array $payload, string $workspaceSid, ?string $sid = null)
-	{
-		parent::__construct($version);
+        $this->solution = ['workspaceSid' => $workspaceSid, 'sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-		// Marshaled Properties
-		$this->properties = [
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'assignmentCallbackUrl' => Values::array_get($payload, 'assignment_callback_url'),
-			'configuration' => Values::array_get($payload, 'configuration'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
-			'documentContentType' => Values::array_get($payload, 'document_content_type'),
-			'fallbackAssignmentCallbackUrl' => Values::array_get($payload, 'fallback_assignment_callback_url'),
-			'friendlyName' => Values::array_get($payload, 'friendly_name'),
-			'sid' => Values::array_get($payload, 'sid'),
-			'taskReservationTimeout' => Values::array_get($payload, 'task_reservation_timeout'),
-			'workspaceSid' => Values::array_get($payload, 'workspace_sid'),
-			'url' => Values::array_get($payload, 'url'),
-			'links' => Values::array_get($payload, 'links'),
-		];
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return WorkflowContext Context for this WorkflowInstance
+     */
+    protected function proxy(): WorkflowContext
+    {
+        if (!$this->context) {
+            $this->context = new WorkflowContext(
+                $this->version,
+                $this->solution['workspaceSid'],
+                $this->solution['sid']
+            );
+        }
 
-		$this->solution = ['workspaceSid' => $workspaceSid, 'sid' => $sid ?: $this->properties['sid'], ];
-	}
+        return $this->context;
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Delete the WorkflowInstance
+     *
+     * @return bool True if delete succeeds, false otherwise
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function delete(): bool
+    {
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->proxy()->delete();
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the WorkflowInstance
+     *
+     * @return WorkflowInstance Fetched WorkflowInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): WorkflowInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Update the WorkflowInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return WorkflowInstance Updated WorkflowInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function update(array $options = []): WorkflowInstance
+    {
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        return $this->proxy()->update($options);
+    }
 
-		return '[Twilio.Taskrouter.V1.WorkflowInstance ' . \implode(' ', $context) . ']';
-	}
+    /**
+     * Access the statistics
+     */
+    protected function getStatistics(): WorkflowStatisticsList
+    {
+        return $this->proxy()->statistics;
+    }
 
-	/**
-	 * Delete the WorkflowInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return bool True if delete succeeds, false otherwise
-	 */
-	public function delete() : bool
-	{
+    /**
+     * Access the cumulativeStatistics
+     */
+    protected function getCumulativeStatistics(): WorkflowCumulativeStatisticsList
+    {
+        return $this->proxy()->cumulativeStatistics;
+    }
 
-		return $this->proxy()->delete();
-	}
+    /**
+     * Access the realTimeStatistics
+     */
+    protected function getRealTimeStatistics(): WorkflowRealTimeStatisticsList
+    {
+        return $this->proxy()->realTimeStatistics;
+    }
 
-	/**
-	 * Fetch the WorkflowInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return WorkflowInstance Fetched WorkflowInstance
-	 */
-	public function fetch() : WorkflowInstance
-	{
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		return $this->proxy()->fetch();
-	}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-	/**
-	 * Update the WorkflowInstance
-	 *
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return WorkflowInstance Updated WorkflowInstance
-	 */
-	public function update(array $options = []) : WorkflowInstance
-	{
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-		return $this->proxy()->update($options);
-	}
-
-	/**
-	 * Access the cumulativeStatistics
-	 */
-	protected function getCumulativeStatistics() : WorkflowCumulativeStatisticsList
-	{
-		return $this->proxy()->cumulativeStatistics;
-	}
-
-	/**
-	 * Access the realTimeStatistics
-	 */
-	protected function getRealTimeStatistics() : WorkflowRealTimeStatisticsList
-	{
-		return $this->proxy()->realTimeStatistics;
-	}
-
-	/**
-	 * Access the statistics
-	 */
-	protected function getStatistics() : WorkflowStatisticsList
-	{
-		return $this->proxy()->statistics;
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return WorkflowContext Context for this WorkflowInstance
-	 */
-	protected function proxy() : WorkflowContext
-	{
-		if (! $this->context) {
-			$this->context = new WorkflowContext(
-				$this->version,
-				$this->solution['workspaceSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Taskrouter.V1.WorkflowInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

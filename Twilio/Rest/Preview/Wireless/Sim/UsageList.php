@@ -19,46 +19,49 @@ namespace Twilio\Rest\Preview\Wireless\Sim;
 use Twilio\ListResource;
 use Twilio\Version;
 
+
 class UsageList extends ListResource
-	{
-	/**
-	 * Construct the UsageList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version,
-		string $simSid
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the UsageList
+     *
+     * @param Version $version Version that contains the resource
+     * @param string $simSid 
+     */
+    public function __construct(
+        Version $version,
+        string $simSid
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-			'simSid' => $simSid,
+        // Path Solution
+        $this->solution = [
+        'simSid' =>
+            $simSid,
+        
+        ];
+    }
 
-		];
-	}
+    /**
+     * Constructs a UsageContext
+     */
+    public function getContext(
+        
+    ): UsageContext
+    {
+        return new UsageContext(
+            $this->version,
+            $this->solution['simSid']
+        );
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Preview.Wireless.UsageList]';
-	}
-
-	/**
-	 * Constructs a UsageContext
-	 */
-	public function getContext(
-
-	) : UsageContext
-	{
-		return new UsageContext(
-			$this->version,
-			$this->solution['simSid']
-		);
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Preview.Wireless.UsageList]';
+    }
 }

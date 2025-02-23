@@ -14,13 +14,15 @@
  * Do not edit the class manually.
  */
 
+
 namespace Twilio\Rest\Numbers\V2\RegulatoryCompliance\Bundle;
 
-use Twilio\Deserialize;
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
+
 
 /**
  * @property string|null $sid
@@ -34,99 +36,97 @@ use Twilio\Version;
  */
 class EvaluationInstance extends InstanceResource
 {
-	/**
-	 * Initialize the EvaluationInstance
-	 *
-	 * @param Version $version Version that contains the resource
-	 * @param mixed[] $payload The response payload
-	 * @param string $bundleSid The unique string that identifies the Bundle resource.
-	 * @param string $sid The unique string that identifies the Evaluation resource.
-	 */
-	public function __construct(Version $version, array $payload, string $bundleSid, ?string $sid = null)
-	{
-		parent::__construct($version);
+    /**
+     * Initialize the EvaluationInstance
+     *
+     * @param Version $version Version that contains the resource
+     * @param mixed[] $payload The response payload
+     * @param string $bundleSid The unique string that identifies the Bundle resource.
+     * @param string $sid The unique string that identifies the Evaluation resource.
+     */
+    public function __construct(Version $version, array $payload, string $bundleSid, string $sid = null)
+    {
+        parent::__construct($version);
 
-		// Marshaled Properties
-		$this->properties = [
-			'sid' => Values::array_get($payload, 'sid'),
-			'accountSid' => Values::array_get($payload, 'account_sid'),
-			'regulationSid' => Values::array_get($payload, 'regulation_sid'),
-			'bundleSid' => Values::array_get($payload, 'bundle_sid'),
-			'status' => Values::array_get($payload, 'status'),
-			'results' => Values::array_get($payload, 'results'),
-			'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
-			'url' => Values::array_get($payload, 'url'),
-		];
+        // Marshaled Properties
+        $this->properties = [
+            'sid' => Values::array_get($payload, 'sid'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'regulationSid' => Values::array_get($payload, 'regulation_sid'),
+            'bundleSid' => Values::array_get($payload, 'bundle_sid'),
+            'status' => Values::array_get($payload, 'status'),
+            'results' => Values::array_get($payload, 'results'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'url' => Values::array_get($payload, 'url'),
+        ];
 
-		$this->solution = ['bundleSid' => $bundleSid, 'sid' => $sid ?: $this->properties['sid'], ];
-	}
+        $this->solution = ['bundleSid' => $bundleSid, 'sid' => $sid ?: $this->properties['sid'], ];
+    }
 
-	/**
-	 * Magic getter to access properties
-	 *
-	 * @param string $name Property to access
-	 * @throws TwilioException For unknown properties
-	 * @return mixed The requested property
-	 */
-	public function __get(string $name)
-	{
-		if (\array_key_exists($name, $this->properties)) {
-			return $this->properties[$name];
-		}
+    /**
+     * Generate an instance context for the instance, the context is capable of
+     * performing various actions.  All instance actions are proxied to the context
+     *
+     * @return EvaluationContext Context for this EvaluationInstance
+     */
+    protected function proxy(): EvaluationContext
+    {
+        if (!$this->context) {
+            $this->context = new EvaluationContext(
+                $this->version,
+                $this->solution['bundleSid'],
+                $this->solution['sid']
+            );
+        }
 
-		if (\property_exists($this, '_' . $name)) {
-			$method = 'get' . \ucfirst($name);
+        return $this->context;
+    }
 
-			return $this->{$method}();
-		}
+    /**
+     * Fetch the EvaluationInstance
+     *
+     * @return EvaluationInstance Fetched EvaluationInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): EvaluationInstance
+    {
 
-		throw new TwilioException('Unknown property: ' . $name);
-	}
+        return $this->proxy()->fetch();
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		$context = [];
+    /**
+     * Magic getter to access properties
+     *
+     * @param string $name Property to access
+     * @return mixed The requested property
+     * @throws TwilioException For unknown properties
+     */
+    public function __get(string $name)
+    {
+        if (\array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
 
-		foreach ($this->solution as $key => $value) {
-			$context[] = "{$key}={$value}";
-		}
+        if (\property_exists($this, '_' . $name)) {
+            $method = 'get' . \ucfirst($name);
+            return $this->$method();
+        }
 
-		return '[Twilio.Numbers.V2.EvaluationInstance ' . \implode(' ', $context) . ']';
-	}
+        throw new TwilioException('Unknown property: ' . $name);
+    }
 
-	/**
-	 * Fetch the EvaluationInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return EvaluationInstance Fetched EvaluationInstance
-	 */
-	public function fetch() : EvaluationInstance
-	{
-
-		return $this->proxy()->fetch();
-	}
-
-	/**
-	 * Generate an instance context for the instance, the context is capable of
-	 * performing various actions.  All instance actions are proxied to the context
-	 *
-	 * @return EvaluationContext Context for this EvaluationInstance
-	 */
-	protected function proxy() : EvaluationContext
-	{
-		if (! $this->context) {
-			$this->context = new EvaluationContext(
-				$this->version,
-				$this->solution['bundleSid'],
-				$this->solution['sid']
-			);
-		}
-
-		return $this->context;
-	}
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $context = [];
+        foreach ($this->solution as $key => $value) {
+            $context[] = "$key=$value";
+        }
+        return '[Twilio.Numbers.V2.EvaluationInstance ' . \implode(' ', $context) . ']';
+    }
 }
+

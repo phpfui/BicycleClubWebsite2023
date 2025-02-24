@@ -5,7 +5,7 @@ $_SERVER['SERVER_NAME'] = $argv[1] ?? 'localhost';
 
 include __DIR__ . '/../common.php';
 
-echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
+//echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 
 $routeArray = [3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2];
 $THNRouteArray = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2];
@@ -33,12 +33,21 @@ $table = new \PHPFUI\Table();
 $table->setHeaders(['day' => 'Day', 'date' => 'Date', 'cat' => 'Category', 'start' => 'Start', 'mileage' => 'Mileage', 'sunset' => 'Sunset', 'duration' => 'Duration', 'average' => 'Average', ]);
 
 $today = \App\Tools\Date::todayString();
+$j = (int)($_GET['day'] ?? 0);
+
+if (! $j)
+	{
+	array_pop($routeArray);
+	array_pop($routeArray);
+	array_pop($routeArray);
+	array_pop($routeArray);
+	}
 
 foreach ($routeArray as $routeKey => $route)
 	{
-	$date = \gregoriantojd(3, 12, 2024) + $week * 7;
+	$date = \gregoriantojd(3, 11, 2025) + $week * 7  + $j * 2;
 
-	for ($j = 0; $j < 2; ++$j)
+//	for ($j = 0; $j < 2; ++$j)
 		{
 		$jd = \jdtounix($date) + 17.5 * 3600;
 		$info = \date_sun_info(\jdtounix($date), 41.033, -73.763);
@@ -83,11 +92,10 @@ foreach ($routeArray as $routeKey => $route)
 			{
 			continue;
 			}
-		$ride->rideStatus = 0;
+		$ride->rideStatus = \App\Enum\Ride\Status::NOT_YET;
 		$ride->mileage = (string)$mileage;
 		$ride->startTime = $time;
 		$ride->title = $title;
-//		$ride->cueSheetId = $cuesheets[$route];
 		$ride->description = $desc;
 		$ride->elevation = $elevations[$route];
 		$ride->memberId = 2590;
@@ -109,8 +117,8 @@ foreach ($routeArray as $routeKey => $route)
 		$row['duration'] = $daylightString;
 		$hour = $daylight / 60;
 		$row['average'] = \number_format($mileage / $hour, 1);
-		$rideId = $ride->insert();
-		$row['rideId'] = $rideId;
+//		$rideId = $ride->insert();
+//		$row['rideId'] = $rideId;
 		$table->addRow($row);
 		$date += 2;
 		}

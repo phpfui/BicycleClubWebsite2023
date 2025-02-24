@@ -25,4 +25,29 @@ class ReleaseNotes extends \App\Model\File
 
 		return $highestVersionNumber;
 		}
+
+	/**
+	 * @return array<string,string>
+	 */
+	public function getReleaseOrder() : array
+		{
+		$highestVersionNumber = '1.0.0';
+
+		$releases = [];
+
+		foreach ($this->getAll('*.md') as $file)
+			{
+			$versionNumber = \str_replace(['V', '.md'], '', $file);
+			$releases[$versionNumber] = $file;
+			}
+
+		\uksort($releases, [$this, 'versionReversed']);
+
+		return $releases;
+		}
+
+	private function versionReversed(string $a, string $b) : int
+		{
+		return \version_compare($b, $a);
+		}
 	}

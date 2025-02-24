@@ -8,15 +8,14 @@ class ReleaseNotes implements \Countable
 
 	private readonly \PHPFUI\InstaDoc\MarkDownParser $parser;
 
-	/** @var array<string> */
+	/** @var array<string, string> */
 	private array $versions;
 
 	public function __construct()
 		{
 		$this->parser = new \PHPFUI\InstaDoc\MarkDownParser();
 		$this->model = new \App\Model\ReleaseNotes();
-		$this->versions = $this->model->getAll();
-		\rsort($this->versions);
+		$this->versions = $this->model->getReleaseOrder();
 		}
 
 	public function count() : int

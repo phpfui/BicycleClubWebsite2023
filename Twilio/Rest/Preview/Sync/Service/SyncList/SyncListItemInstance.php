@@ -48,7 +48,7 @@ class SyncListItemInstance extends InstanceResource
      * @param string $listSid 
      * @param int $index 
      */
-    public function __construct(Version $version, array $payload, string $serviceSid, string $listSid, int $index = null)
+    public function __construct(Version $version, array $payload, string $serviceSid, string $listSid, ?int $index = null)
     {
         parent::__construct($version);
 

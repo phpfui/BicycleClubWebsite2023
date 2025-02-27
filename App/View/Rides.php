@@ -77,7 +77,7 @@ class Rides
 
 		$checkBoxMenu = new \PHPFUI\Input\CheckBoxMenu('c');
 		$checkBoxMenu->setJavaScriptCallback('categoryMenu');
-		$js = 'function categoryMenu(name,value,active){name="cat-"+name.substring(name.indexOf("[")+1).replace("]","");if(active){$("."+name).show()}else{$("."+name).hide();}};';
+		$js = 'function categoryMenu(name,value,active){name="cat-"+name.substring(name.indexOf("[")+1).replace("]","");if(active){$("."+name).show();}else{$("."+name).hide();}};';
 		$checkBoxMenu->addAll();
 
 		foreach ($categoryTable->getAllCategories() as $category)

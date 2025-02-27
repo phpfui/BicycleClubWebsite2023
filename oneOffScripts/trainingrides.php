@@ -7,10 +7,10 @@ include __DIR__ . '/../common.php';
 
 //echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 
-$routeArray = [3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2];
+$routeArray =    [3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2];
 $THNRouteArray = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2];
-$TNROffset = [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 3, 4, 5, 5];
-$ThNROffset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 4, 4, 5, 5];
+$TNROffset =     [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 3, 4, 5, 5];
+$ThNROffset =    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 4, 4, 5, 5];
 $cuesheets = [1419, 1418, 1420, 1421, 330, 1422];
 $rwgps = [32967573, 32967639, 32967686, 32967698, 32967711, 32967731];
 $elevations = [1200, 1700, 1900, 2500, 2800, 3300];
@@ -23,8 +23,6 @@ $tuesdayRides = [23 => 'Whippoorwill East route, not the whole Whippoorwill clim
 	55 => 'We ride up to Rt 35 and back on Rt 124. The hardest and best ride of the season.'];
 $day = ['Tuesday', 'Thursday'];
 $cats = [12 => 'A', 13 => 'A-'];
-
-\PHPFUI\ORM::execute('delete from ride where memberId=2590 and rideDate>=?', [\App\Tools\Date::todayString()]);
 
 $week = 0;
 $page = new \PHPFUI\Page();
@@ -41,7 +39,15 @@ if (! $j)
 	array_pop($routeArray);
 	array_pop($routeArray);
 	array_pop($routeArray);
+	$member = new \App\Record\Member(['firstName' => 'Ilona', 'lastName' => 'Miller']);
 	}
+else
+	{
+	$member = new \App\Record\Member(['firstName' => 'Bruce', 'lastName' => 'Wells']);
+	}
+
+//$condition = new \PHPFUI\ORM\Condition('memberId', $member->memberId)->and('rideDate', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+//$rideTable = new \App\Table\Ride()->setWhere($condition)->delete();
 
 foreach ($routeArray as $routeKey => $route)
 	{
@@ -98,7 +104,7 @@ foreach ($routeArray as $routeKey => $route)
 		$ride->title = $title;
 		$ride->description = $desc;
 		$ride->elevation = $elevations[$route];
-		$ride->memberId = 2590;
+		$ride->member = $member;
 		$ride->unaffiliated = 1;
 		$ride->dateAdded = \date('Y-m-d H:i:s');
 		$ride->paceId = $catid;
@@ -117,8 +123,8 @@ foreach ($routeArray as $routeKey => $route)
 		$row['duration'] = $daylightString;
 		$hour = $daylight / 60;
 		$row['average'] = \number_format($mileage / $hour, 1);
-//		$rideId = $ride->insert();
-//		$row['rideId'] = $rideId;
+		$rideId = $ride->insert();
+		$row['rideId'] = $rideId;
 		$table->addRow($row);
 		$date += 2;
 		}

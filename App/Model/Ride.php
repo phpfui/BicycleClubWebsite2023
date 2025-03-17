@@ -623,6 +623,7 @@ class Ride
 		{
 		$parameters = $this->cleanProtectedFields($parameters);
 		$parameters = $this->cleanDescription($parameters);
+		$errors = $this->checkForStartTimeConflicts($parameters);
 
 		// if the ride status is not yet, but they have an average pace and riders
 		if (empty($parameters['rideStatus']) && ! empty($parameters['averagePace']) && ! empty($parameters['numberOfRiders']))
@@ -643,7 +644,6 @@ class Ride
 			{
 			$parameters['rideStatus'] = \App\Enum\Ride\Status::LEADER_OPTED_OUT;
 			}
-		$errors = $this->checkForStartTimeConflicts($parameters);
 
 		$differences = $this->getDifferences($parameters);
 		$warningDays = (int)$this->settingTable->value('RideEditedWarningDays');

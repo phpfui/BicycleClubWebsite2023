@@ -85,6 +85,7 @@ foreach ($routeArray as $routeKey => $route)
 		$now = \time();
 		$jd -= $offset * 900;
 		$time = \gmdate('g:ia', $jd);
+		$sqlTime = \gmdate('H:i:00', $jd);
 		$sunsetString = \gmdate('g:ia', $sunset);
 		$daylight = \App\Tools\TimeHelper::fromString($sunsetString) - \App\Tools\TimeHelper::fromString($time);
 		$daylightString = (int)($daylight / 60) . ':' . \sprintf('%02d', (int)($daylight % 60));
@@ -100,7 +101,7 @@ foreach ($routeArray as $routeKey => $route)
 			}
 		$ride->rideStatus = \App\Enum\Ride\Status::NOT_YET;
 		$ride->mileage = (string)$mileage;
-		$ride->startTime = $time;
+		$ride->startTime = $sqlTime;
 		$ride->title = $title;
 		$ride->description = $desc;
 		$ride->elevation = $elevations[$route];

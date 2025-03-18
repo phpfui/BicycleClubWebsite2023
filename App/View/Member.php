@@ -466,19 +466,24 @@ class Member
 			if ($errors)
 				{
 				\App\Model\Session::setFlash('alert', $errors);
+				$this->page->redirect();
 				}
 			elseif ($this->page->isAuthorized('Reset Any Password') || $this->memberModel->verifyPassword($_POST['current'], $member))
 				{
 				$member->password = $this->memberModel->hashPassword($_POST['password']);
 				$member->passwordReset = $member->passwordResetExpires = null;
 				$member->update();
+				\App\Model\Session::destroy();
+				\session_start();
+				\App\Model\Session::registerMember($member);
 				\App\Model\Session::setFlash('success', 'Password Changed');
+				$this->page->redirect('/Home');
 				}
 			else
 				{
 				\App\Model\Session::setFlash('alert', 'Invalid Current Password');
+				$this->page->redirect();
 				}
-			$this->page->redirect();
 			}
 		else
 			{

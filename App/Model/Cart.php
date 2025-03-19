@@ -267,11 +267,16 @@ class Cart
 					}
 				}
 			}
-		$this->discount = $discountCode ? $this->computeDiscount($discountCode) : 0.0;
+		$this->discount = $this->computeDiscount($discountCode);
 		}
 
-	public function computeDiscount(\App\Record\DiscountCode $discountCode) : float
+	public function computeDiscount(?\App\Record\DiscountCode $discountCode) : float
 		{
+		if (! $discountCode)
+			{
+			return 0.0;
+			}
+
 		$this->discountCode = $discountCode;
 		$discount = 0.0;
 

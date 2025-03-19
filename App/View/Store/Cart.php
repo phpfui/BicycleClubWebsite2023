@@ -70,8 +70,9 @@ class Cart
 				$fieldSet = new \PHPFUI\FieldSet('Discount Code');
 				$row = new \PHPFUI\GridX();
 				$cola = new \PHPFUI\Cell(6);
-				$discountCode = $this->cartModel->getDiscountCode();
 				$colb = new \PHPFUI\Cell(6);
+
+				$discountCode = $this->cartModel->getDiscountCode();
 
 				if ($discountCode->empty())
 					{

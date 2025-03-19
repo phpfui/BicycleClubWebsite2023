@@ -104,6 +104,15 @@ class DiscountCode
 
 			return $discountCode->timesUsed;
 			});
+		$view->addCustomColumn('discount', static function(array $discountArray)
+			{
+			if (1 == $discountArray['type'])
+				{
+				return \number_format($discountArray['discount'], 2) . '%';
+				}
+
+			return '$' . \number_format($discountArray['discount'], 2);
+			});
 		$view->addCustomColumn('discountCode', static fn (array $discountCode) => new \PHPFUI\Link('/Store/DiscountCodes/edit/' . $discountCode['discountCodeId'], $discountCode['discountCode'], false));
 		$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, ['del']))->setSortableColumns($headers);
 		$container->add($view);

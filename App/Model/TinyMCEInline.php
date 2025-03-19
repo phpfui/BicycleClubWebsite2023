@@ -24,7 +24,7 @@ class TinyMCEInline implements \PHPFUI\Interfaces\HTMLEditor
 		],
 		'block_formats' => 'Paragraph=p; Heading 1=h1; Heading 2=h2; Heading 3=h3; Heading 4=h4; Heading 5=h5; Heading 6=h6; Preformatted=pre',
 		'valid_elements' => '*[*]',
-//		'license_key' => '"gpl"',
+		'license_key' => 'gpl',
 		'image_advtab' => true,
 	];
 

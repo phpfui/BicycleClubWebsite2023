@@ -7,10 +7,10 @@ include __DIR__ . '/../common.php';
 
 //echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
 
-$routeArray =    [3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2];
+$routeArray = [3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2];
 $THNRouteArray = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2];
-$TNROffset =     [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 3, 4, 5, 5];
-$ThNROffset =    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 4, 4, 5, 5];
+$TNROffset = [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 3, 4, 5, 5];
+$ThNROffset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 4, 4, 5, 5];
 $cuesheets = [1419, 1418, 1420, 1421, 330, 1422];
 $rwgps = [32967573, 32967639, 32967686, 32967698, 32967711, 32967731];
 $elevations = [1200, 1700, 1900, 2500, 2800, 3300];
@@ -35,10 +35,10 @@ $j = (int)($_GET['day'] ?? 0);
 
 if (! $j)
 	{
-	array_pop($routeArray);
-	array_pop($routeArray);
-	array_pop($routeArray);
-	array_pop($routeArray);
+	\array_pop($routeArray);
+	\array_pop($routeArray);
+	\array_pop($routeArray);
+	\array_pop($routeArray);
 	$member = new \App\Record\Member(['firstName' => 'Ilona', 'lastName' => 'Miller']);
 	}
 else
@@ -51,10 +51,10 @@ else
 
 foreach ($routeArray as $routeKey => $route)
 	{
-	$date = \gregoriantojd(3, 11, 2025) + $week * 7  + $j * 2;
+	$date = \gregoriantojd(3, 11, 2025) + $week * 7 + $j * 2;
 
 //	for ($j = 0; $j < 2; ++$j)
-		{
+
 		$jd = \jdtounix($date) + 17.5 * 3600;
 		$info = \date_sun_info(\jdtounix($date), 41.033, -73.763);
 		$sunset = $info['sunset'] - 4 * 3600;
@@ -128,7 +128,7 @@ foreach ($routeArray as $routeKey => $route)
 		$row['rideId'] = $rideId;
 		$table->addRow($row);
 		$date += 2;
-		}
+
 	$week++;
 	}
 $page->add($table);

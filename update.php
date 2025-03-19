@@ -35,7 +35,6 @@ $updater->setIgnoredRepos([
 	'Symplify',
 	'tecnickcom',
 	'theseer',
-	'tinify',
 	'twig',
 ]);
 

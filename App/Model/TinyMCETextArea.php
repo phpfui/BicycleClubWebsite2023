@@ -18,7 +18,7 @@ class TinyMCETextArea implements \PHPFUI\Interfaces\HTMLEditor
 		'toolbar1' => '"bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | styleselect"',
 		'toolbar2' => '"undo redo | link unlink | image | forecolor backcolor | code"',
 		'image_advtab' => true,
-//		'license_key' => '"gpl"',
+		'license_key' => '"gpl"',
 		'valid_elements' => '"*[*]"',
 	];
 

@@ -345,7 +345,7 @@ final class EmailAddress extends AbstractValidator
         $this->setValue($value);
 
         // Split email address up and disallow '..'
-        $split = $this->splitEmailParts($value);
+        $split = self::splitEmailParts($value);
         if ($split === false) {
             $this->error(self::INVALID_FORMAT);
             return false;

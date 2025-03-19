@@ -43,8 +43,10 @@ final class UndisclosedPassword extends AbstractValidator
     ];
 
     // phpcs:enable
-    public function __construct(private ClientInterface $httpClient, private RequestFactoryInterface $makeHttpRequest)
-    {
+    public function __construct(
+        private readonly ClientInterface $httpClient,
+        private readonly RequestFactoryInterface $makeHttpRequest
+    ) {
         parent::__construct();
     }
 

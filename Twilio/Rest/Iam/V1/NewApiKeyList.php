@@ -19,65 +19,71 @@ namespace Twilio\Rest\Iam\V1;
 use Twilio\Exceptions\TwilioException;
 use Twilio\ListResource;
 use Twilio\Options;
-use Twilio\Serialize;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Serialize;
+
 
 class NewApiKeyList extends ListResource
-	{
-	/**
-	 * Construct the NewApiKeyList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the NewApiKeyList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/Keys';
-	}
+        $this->uri = '/Keys';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Iam.V1.NewApiKeyList]';
-	}
+    /**
+     * Create the NewApiKeyInstance
+     *
+     * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Payments resource.
+     * @param array|Options $options Optional Arguments
+     * @return NewApiKeyInstance Created NewApiKeyInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function create(string $accountSid, array $options = []): NewApiKeyInstance
+    {
 
-	/**
-	 * Create the NewApiKeyInstance
-	 *
-	 * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Payments resource.
-	 * @param array|Options $options Optional Arguments
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return NewApiKeyInstance Created NewApiKeyInstance
-	 */
-	public function create(string $accountSid, array $options = []) : NewApiKeyInstance
-	{
+        $options = new Values($options);
 
-		$options = new Values($options);
+        $data = Values::of([
+            'AccountSid' =>
+                $accountSid,
+            'FriendlyName' =>
+                $options['friendlyName'],
+            'KeyType' =>
+                $options['keyType'],
+            'Policy' =>
+                Serialize::jsonObject($options['policy']),
+        ]);
 
-		$data = Values::of([
-			'AccountSid' => $accountSid,
-			'FriendlyName' => $options['friendlyName'],
-			'KeyType' => $options['keyType'],
-			'Policy' => Serialize::jsonObject($options['policy']),
-		]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
+        $payload = $this->version->create('POST', $this->uri, [], $data, $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->create('POST', $this->uri, [], $data, $headers);
+        return new NewApiKeyInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new NewApiKeyInstance(
-			$this->version,
-			$payload
-		);
-	}
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Iam.V1.NewApiKeyList]';
+    }
 }

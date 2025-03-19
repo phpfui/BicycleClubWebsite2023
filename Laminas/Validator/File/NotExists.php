@@ -118,8 +118,11 @@ final class NotExists extends AbstractValidator
             $directories = explode(',', $directories);
         }
 
-        return array_values(array_filter(array_map(static function (string $directory): string {
-            return trim($directory);
-        }, $directories)));
+        return array_values(
+            array_filter(
+                array_map(static fn(string $directory): string
+                => trim($directory), $directories)
+            )
+        );
     }
 }

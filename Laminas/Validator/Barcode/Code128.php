@@ -14,7 +14,7 @@ use function ord;
 
 final class Code128 implements AdapterInterface
 {
-    private StringWrapperInterface $utf8StringWrapper;
+    private readonly StringWrapperInterface $utf8StringWrapper;
 
     public function __construct()
     {

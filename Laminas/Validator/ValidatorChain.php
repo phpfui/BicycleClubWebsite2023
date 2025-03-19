@@ -110,7 +110,10 @@ final class ValidatorChain implements Countable, IteratorAggregate, ValidatorInt
      */
     public function plugin(string $name, array $options = []): ValidatorInterface
     {
-        return $this->getPluginManager()->build($name, $options);
+        $plugin = $this->getPluginManager()->build($name, $options);
+        assert($plugin instanceof ValidatorInterface);
+
+        return $plugin;
     }
 
     /**
@@ -180,7 +183,7 @@ final class ValidatorChain implements Countable, IteratorAggregate, ValidatorInt
             }
         }
 
-        $bc = $bc ?? $breakChainOnFailure;
+        $bc ??= $breakChainOnFailure;
 
         $this->attach($this->plugin($name, $options), $bc, $priority);
     }

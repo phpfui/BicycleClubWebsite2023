@@ -415,7 +415,7 @@ class Join
 
 		$members = \App\Table\Member::membersInMembership($member->membershipId);
 		$renewView = new \App\View\Membership\Renew($this->page, $member->membership, $this->memberView);
-		$container = $renewView->renew(true);
+		$container = $renewView->renew();
 		$allowedMembers = (int)$this->duesModel->MaxMembersOnMembership;
 
 		if (! $allowedMembers || \count($members) < $allowedMembers)

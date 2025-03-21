@@ -379,7 +379,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		}
 
-	public function renew() : void
+	public function renew(string $discountCodeEntered = '') : void
 		{
 		$this->page->setRenewing()->turnOffBanner(); // banners can cause a crash
 
@@ -393,11 +393,11 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			$this->page->addPageContent($content->getDisplayCategoryHTML($title));
 
 			$renewView = new \App\View\Membership\Renew($this->page, \App\Model\Session::signedInMembershipRecord(), $this->memberView);
-			$this->page->addPageContent($renewView->renew());
+			$this->page->addPageContent($renewView->renew($discountCodeEntered));
 			}
 		}
 
-	public function renewCheckout() : void
+	public function renewCheckout(string $discountCodeEntered = '') : void
 		{
 		$this->page->setRenewing();
 
@@ -411,7 +411,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		if ($this->page->addHeader('Pay With PayPal'))
 			{
 			$renewView = new \App\View\Membership\Renew($this->page, \App\Model\Session::signedInMembershipRecord(), $this->memberView);
-			$this->page->addPageContent($renewView->checkout(\App\Model\Session::signedInMemberRecord()));
+			$this->page->addPageContent($renewView->checkout(\App\Model\Session::signedInMemberRecord(), $discountCodeEntered));
 			}
 		}
 

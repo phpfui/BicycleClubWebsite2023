@@ -15,6 +15,13 @@ class Renew
 	 */
 	private readonly \PHPFUI\ORM\RecordCursor $members;
 
+	private readonly string $query;
+
+	/**
+	 * @var array<string,int|float|string>
+	 */
+	private array $requiredParameters = ['years' => 0, 'maxMembers' => 0, 'donation' => 0.0, 'itemDetail' => '', ];
+
 	private readonly \App\Table\Setting $settingTable;
 
 	public function __construct(private readonly \App\View\Page $page, private readonly \App\Record\Membership $membership, private readonly \App\View\Member $memberView)
@@ -24,28 +31,13 @@ class Renew
 		$this->settingTable = new \App\Table\Setting();
 		$this->members = \App\Table\Member::membersInMembership($membership->membershipId);
 		$this->additionalMemberDues = \array_sum($this->duesModel->AdditionalMemberDues);
+		$this->query = \http_build_query(\array_intersect_key($_POST, $this->requiredParameters));
 
-		if (isset($_GET['deleteMember']))
-			{
-			$delete = (int)($_GET['deleteMember']);
-
-			if ($delete != \App\Model\Session::signedInMemberId())
-				{
-				foreach ($this->members as $member)
-					{
-					if ($member['memberId'] == $delete)
-						{
-						$this->memberModel->delete($delete);
-
-						break;
-						}
-					}
-				}
-			$this->page->redirect();
-			}
+		$this->processRequest($_GET);
+		$this->processRequest($_POST);
 		}
 
-	public function checkout(\App\Record\Member $member) : \PHPFUI\HTML5Element
+	public function checkout(\App\Record\Member $member, string $discountCodeEntered = '') : \PHPFUI\HTML5Element
 		{
 		$view = new \App\View\PayPal($this->page, new \App\Model\PayPal('Membership'));
 		$output = new \PHPFUI\HTML5Element('div');
@@ -53,9 +45,8 @@ class Renew
 
 		if (\App\Model\Session::checkCSRF() && ($_POST['submit'] ?? '') == 'Save')
 			{
-			$fields = \array_intersect_key($_POST, ['firstName' => 1, 'lastName' => 1, 'address' => 1, 'town' => 1, 'state' => 1, 'zip' => 1]);
-			$member->setFrom($fields)->update();
-			$member->membership->setFrom($fields)->update();
+			$member->setFrom($_POST, ['firstName', 'lastName'])->update();
+			$member->membership->setFrom($_POST, ['address', 'town', 'state', 'zip'])->update();
 
 			$this->page->redirect();
 			}
@@ -74,9 +65,9 @@ class Renew
 			}
 
 		$output->add($view->getPayPalLogo());
-		$years = \max((int)($_POST['years'] ?? 1), 0);
+		$years = \max((int)($_GET['years'] ?? 1), 0);
 		$additionalMembers = \count($this->members) - 1;
-		$maxMembers = \max((int)($_POST['maxMembers'] ?? 1), 1);
+		$maxMembers = \max((int)($_GET['maxMembers'] ?? 1), 1);
 		$additionalMembers = \max($additionalMembers, $maxMembers - 1);
 
 		$paidMembers = $this->duesModel->PaidMembers;
@@ -126,7 +117,29 @@ class Renew
 			$unpaidBalance = $additionalMembers * $this->duesModel->getAdditionalMemberPriceByYear(1);
 			}
 
-		$donation = (float)($_POST['donation'] ?? 0.0);
+		$discountCode = new \App\Record\DiscountCode(['discountCode' => $discountCodeEntered]);
+		$discountCodeModel = new \App\Model\DiscountCode($discountCode);
+		$discountCodeTable = new \App\Table\DiscountCode();
+
+		$validDiscountCode = new \App\Record\DiscountCode();
+		$validDiscountCodes = $discountCodeTable->getActiveMembershipCodes();
+
+		foreach($validDiscountCodes as $validCode)
+			{
+			if ($discountCodeEntered == $validCode->discountCode)
+				{
+				$validDiscountCode = $discountCode;
+				}
+			}
+
+		if (! $validDiscountCode->empty())
+			{
+			$discount = $this->computeDiscount($validDiscountCode, $years, $additionalMembers);
+			$unpaidBalance -= $discount;
+			$output->add('<br>Discount Applied $' . \number_format($discount, 2));
+			}
+
+		$donation = (float)($_GET['donation'] ?? 0.0);
 		$unpaidBalance += $donation;
 
 		if ($unpaidBalance <= 0.0)
@@ -141,13 +154,13 @@ class Renew
 			$output->add('<br>Additional Donation $' . \number_format($donation, 2));
 			}
 		$output->add('<p><b>Total Due : $' . \number_format($unpaidBalance, 2) . '</b>');
-		$invoice = $this->memberModel->getRenewInvoice($member, $additionalMembers, $unpaidBalance, $years, $donation, $_POST['itemDetail'] ?? '');
+		$invoice = $this->memberModel->getRenewInvoice($member, $additionalMembers, $unpaidBalance, $years, $donation, $_GET['itemDetail'] ?? '', $discountCode);
 		$output->add($view->getCheckoutForm($invoice, $output->getId(), 'Membership Renewal'));
 
 		return $output;
 		}
 
-	public function renew(bool $confirmAndPayButton = true) : \PHPFUI\Container
+	public function renew(string $discountCodeEntered = '') : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 
@@ -159,9 +172,9 @@ class Renew
 
 			if (\App\Model\Session::checkCSRF())
 				{
-				$this->membership->setFrom(\array_intersect_key($_POST, \array_flip(['address', 'town', 'state', 'zip'])));
+				$this->membership->setFrom($_POST, ['address', 'town', 'state', 'zip']);
 				$this->membership->update();
-				$this->page->redirect();
+				$this->page->redirect(parameters:$this->query);
 				}
 			$form->add($this->memberView->getAddress($this->membership));
 			$form->add(new \PHPFUI\Submit('Save and Continue'));
@@ -171,15 +184,29 @@ class Renew
 			return $container;
 			}
 
-		$numberMembers = \count($this->members);
-
 		$form = new \PHPFUI\Form($this->page);
+
+		$discountCode = new \App\Record\DiscountCode(['discountCode' => $discountCodeEntered]);
+		$discountCodeModel = new \App\Model\DiscountCode($discountCode);
+		$discountCodeTable = new \App\Table\DiscountCode();
+
+		$validDiscountCode = new \App\Record\DiscountCode();
+		$validDiscountCodes = $discountCodeTable->getActiveMembershipCodes();
+
+		foreach($validDiscountCodes as $validCode)
+			{
+			if ($discountCodeEntered == $validCode->discountCode)
+				{
+				$validDiscountCode = $discountCode;
+				}
+			}
 
 		if (\PHPFUI\Session::checkCSRF())
 			{
 			$years = (int)($_POST['years'] ?? 0);
 			$maxMembers = (int)($_POST['maxMembers'] ?? 1);
 			$price = $this->duesModel->getTotalMembershipPrice($maxMembers, $years);
+			$price -= $this->computeDiscount($validDiscountCode, $years, $maxMembers - 1);
 			$price += (float)($_POST['donation'] ?? 0);
 			$this->page->setResponse(\number_format($price, 2));
 
@@ -193,6 +220,8 @@ class Renew
 			{
 			$container->add(new \PHPFUI\SubHeader('Renewal Options'));
 			}
+
+		$numberMembers = \count($this->members);
 
 		if ($numberMembers > 1)
 			{
@@ -309,7 +338,6 @@ class Renew
 
 		if ('Manual' == $renewalType || 'Both' == $renewalType)
 			{
-			$form->setAttribute('action', '/Membership/renewCheckout');
 			$multiColumn = new \PHPFUI\MultiColumn();
 			$yearlyRenewal = new \PHPFUI\FieldSet('Yearly Renewal');
 			$yearsField = new \PHPFUI\Input\Select('years', 'Number of years to renew');
@@ -319,9 +347,11 @@ class Renew
 				$yearsField->addOption('No Years, Donation only', '0');
 				}
 
+			$_GET['years'] = (int)($_GET['years'] ?? 1);
+
 			for ($i = 1; $i <= (int)$this->duesModel->MaxRenewalYears; ++$i)
 				{
-				$yearsField->addOption("{$i} Year" . (($i > 1) ? 's' : ''), (string)$i, 1 == $i);
+				$yearsField->addOption("{$i} Year" . (($i > 1) ? 's' : ''), (string)$i, $_GET['years'] == $i);
 				}
 			$yearsField->addAttribute('onchange', 'updatePrice();');
 			$multiColumn->add($yearsField);
@@ -335,9 +365,11 @@ class Renew
 					$maxMembersOnMembership = 10;
 					}
 
+				$_GET['maxMembers'] = (int)($_GET['maxMembers'] ?? 1);
+
 				for ($i = $numberMembers; $i <= $maxMembersOnMembership; ++$i)
 					{
-					$maxMembersField->addOption("{$i} Member" . (($i > 1) ? 's' : ''), (string)$i, $i == $numberMembers);
+					$maxMembersField->addOption("{$i} Member" . (($i > 1) ? 's' : ''), (string)$i, $_GET['maxMembers'] == $i);
 					}
 				$maxMembersField->addAttribute('onchange', 'updatePrice()');
 				$multiColumn->add($maxMembersField);
@@ -350,18 +382,23 @@ class Renew
 			$yearlyRenewal->add($multiColumn);
 			$form->add($yearlyRenewal);
 
+			if ($validDiscountCodes->count())
+				{
+				$form->add(new \App\UI\DiscountCode($validDiscountCode, $discountCodeEntered));
+				}
+
 			if (! $this->duesModel->disableDonations)
 				{
 				$donationSet = new \PHPFUI\FieldSet('Optional Additional Donation');
 				$multiColumn = new \PHPFUI\MultiColumn();
 				$multiColumn->add($this->settingTable->value('donationText'));
-				$donation = new \PHPFUI\Input\Text('donation', 'Donation Amount', '0');
+				$donation = new \PHPFUI\Input\Text('donation', 'Donation Amount', $_GET['donation'] ?? '0');
 				$donationId = $donation->getId();
 				$donation->setToolTip('Your donation will be added to your membership dues.');
 				$donation->addAttribute('onchange', 'updatePrice()');
 				$multiColumn->add($donation);
 				$donationSet->add($multiColumn);
-				$donationSet->add(new \PHPFUI\Input\Text('itemDetail', 'Donation notes or dedications', ''));
+				$donationSet->add(new \PHPFUI\Input\Text('itemDetail', 'Donation notes or dedications', $_GET['itemDetail'] ?? ''));
 				$form->add($donationSet);
 				}
 
@@ -369,11 +406,8 @@ class Renew
 			$maxMembersId = $maxMembersField->getId();
 			$form->add($totalDisplay);
 
-			if ($confirmAndPayButton)
-				{
-				$form->add('<br>');
-				$form->add(new \PHPFUI\Submit('Confirm and Pay'));
-				}
+			$form->add('<br>');
+			$form->add(new \PHPFUI\Submit('Confirm and Pay'));
 			$container->add($form);
 			}
 
@@ -428,5 +462,101 @@ JAVASCRIPT;
 		$this->page->addJavaScript($js);
 
 		return $container;
+		}
+
+	private function computeDiscount(\App\Record\DiscountCode $discountCode, int $years, int $additionalMembers) : float
+		{
+		$discountCodeModel = new \App\Model\DiscountCode($discountCode);
+
+		$items = [];
+		$invoiceItem = new \App\Record\InvoiceItem();
+		$invoiceItem->storeItemId = 1;
+		$invoiceItem->storeItemDetailId = \App\Model\Member::FIRST_MEMBERSHIP;
+
+		if ($years)
+			{
+			$invoiceItem->price = (float)\number_format($this->duesModel->getMembershipPriceByYear($years), 2);
+			}
+		$invoiceItem->quantity = $years;
+
+		$items[] = $invoiceItem->toArray();
+
+		$paidMembers = $this->duesModel->PaidMembers;
+
+		if ('Unlimited' == $paidMembers)
+			{
+			$additionalMembers = 0;
+			}
+		elseif ('Family' == $paidMembers && $additionalMembers)
+			{
+			$additionalMembers = 1;
+			}
+
+		$additionalMemberDues = $this->duesModel->getAdditionalMembershipPrice($additionalMembers + 1, $years);
+
+		if ($additionalMemberDues > 0.0 && $additionalMembers)
+			{
+			$invoiceItem->storeItemId = 1;
+			$invoiceItem->storeItemDetailId = \App\Model\Member::ADDITIONAL_MEMBERSHIP;
+			$invoiceItem->price = (float)\number_format($additionalMemberDues / $additionalMembers, 2);
+			$invoiceItem->quantity = $additionalMembers;
+			$items[] = $invoiceItem->toArray();
+			}
+		$total = 0;
+
+		foreach ($items as $item)
+			{
+			$total += $item['price'] * $item['quantity'];
+			}
+
+		return $discountCodeModel->computeDiscount($items, $total);
+		}
+
+	/**
+	 * @param array<string,array<string,string>|string> $parameters
+	 */
+	private function processRequest(array $parameters) : void
+		{
+		if (isset($parameters['deleteMember']))
+			{
+			$delete = (int)($parameters['deleteMember']);
+
+			if ($delete != \App\Model\Session::signedInMemberId())
+				{
+				foreach ($this->members as $member)
+					{
+					if ($member['memberId'] == $delete)
+						{
+						$this->memberModel->delete($delete);
+
+						break;
+						}
+					}
+				}
+			$this->page->redirect(parameters:$this->query);
+			}
+		elseif (isset($parameters['submit']) && \App\Model\Session::checkCSRF())
+			{
+			$redirect = '';
+
+			switch ($parameters['submit'])
+				{
+				case 'Confirm and Pay':
+					$redirect = '/Membership/renewCheckout/' . $parameters['discountCode'] ?? '';
+
+					break;
+
+				/** @noinspection PhpMissingBreakStatementInspection */
+				case 'Remove':
+					$parameters['discountCode'] = '';
+
+					// Intentionally fall through
+				case 'Apply':
+					$redirect = '/Membership/renew/' . $parameters['discountCode'];
+
+					break;
+				}
+			$this->page->redirect($redirect, $this->query);
+			}
 		}
 	}

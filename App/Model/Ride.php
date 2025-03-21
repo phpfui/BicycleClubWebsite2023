@@ -628,7 +628,7 @@ class Ride
 		// if the ride status is not yet, but they have an average pace and riders
 		if (empty($parameters['rideStatus']) && ! empty($parameters['averagePace']) && ! empty($parameters['numberOfRiders']))
 			{
-			$parameters['rideStatus'] = \App\Enum\Ride\Status::COMPLETED;  // then set the status to completed
+			$parameters['rideStatus'] = \App\Enum\Ride\Status::COMPLETED->value;  // then set the status to completed
 			}
 
 		if (! empty($parameters['memberId']))
@@ -637,12 +637,12 @@ class Ride
 
 			if (\App\Enum\Ride\Status::LEADER_OPTED_OUT == $ride->rideStatus) // was cancelled, but now has leader
 				{
-				$parameters['rideStatus'] = \App\Enum\Ride\Status::NOT_YET;
+				$parameters['rideStatus'] = \App\Enum\Ride\Status::NOT_YET->value;
 				}
 			}
 		else
 			{
-			$parameters['rideStatus'] = \App\Enum\Ride\Status::LEADER_OPTED_OUT;
+			$parameters['rideStatus'] = \App\Enum\Ride\Status::LEADER_OPTED_OUT->value;
 			}
 
 		$differences = $this->getDifferences($parameters);

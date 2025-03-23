@@ -67,32 +67,7 @@ class Cart
 
 			if ($discountCodeTable->getActiveCodes()->count())
 				{
-				$fieldSet = new \PHPFUI\FieldSet('Discount Code');
-				$row = new \PHPFUI\GridX();
-				$cola = new \PHPFUI\Cell(6);
-				$colb = new \PHPFUI\Cell(6);
-
-				$discountCode = $this->cartModel->getDiscountCode();
-
-				if ($discountCode->empty())
-					{
-					if ($badDiscountCode)
-						{
-						$cola->add($badDiscountCode . ' is not valid');
-						}
-					$cola->add(new \PHPFUI\Input\Text('discountCode'));
-					$colb->add(new \PHPFUI\Submit('Apply'));
-					}
-				else
-					{
-					$cola->add(new \PHPFUI\Header($discountCode['discountCode'], 4));
-					$cola->add($discountCode['description']);
-					$colb->add(new \PHPFUI\Submit('Remove'));
-					}
-				$row->add($cola);
-				$row->add($colb);
-				$fieldSet->add($row);
-				$form->add($fieldSet);
+				$form->add(new \App\UI\DiscountCode($this->cartModel->getDiscountCode(), $badDiscountCode));
 				}
 
 			$fieldSet = new \PHPFUI\FieldSet('Special Instructions');

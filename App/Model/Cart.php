@@ -233,7 +233,9 @@ class Cart
 			$this->computed = true;
 			$this->zero();
 
-			foreach ($this->getItems() as $cartItem)
+			$items = $this->getItems();
+
+			foreach ($items as $cartItem)
 				{
 				if (! empty($cartItem['quantity']))
 					{
@@ -266,90 +268,10 @@ class Cart
 					$discountCode = new \App\Record\DiscountCode($cartItem['discountCodeId']);
 					}
 				}
+			$this->discountCode = $discountCode;
+			$discountCodeModel = new \App\Model\DiscountCode($discountCode);
+			$this->discount = $discountCodeModel->computeDiscount($items, $this->getCashAmount());
 			}
-		$this->discount = $this->computeDiscount($discountCode);
-		}
-
-	public function computeDiscount(?\App\Record\DiscountCode $discountCode) : float
-		{
-		if (! $discountCode)
-			{
-			return 0.0;
-			}
-
-		$this->discountCode = $discountCode;
-		$discount = 0.0;
-
-		if ($discountCode->empty())
-			{
-			return $discount;
-			}
-
-		$eligibleCount = 1;
-		$eligibleItemNumbers = [];
-
-		if ($discountCode->validItemNumbers)
-			{
-			$eligibleItemNumbers = \explode(',', $discountCode->validItemNumbers);
-			$eligibleCount = 0;
-			}
-
-		$itemCount = [];
-
-		foreach ($this->getItems() as $cartItem)
-			{
-			if (! empty($cartItem['quantity']))
-				{
-				$id = $cartItem['storeItemId'] . '-' . ($cartItem['storeItemDetailId'] ?? 0);
-
-				if (! isset($itemCount[$id]))
-					{
-					$itemCount[$id] = 0;
-					}
-				$itemCount[$id] += $cartItem['quantity'];
-				}
-			}
-
-		foreach ($eligibleItemNumbers as $eligibleItemNumber)
-			{
-			foreach ($itemCount as $itemNumber => $count)
-				{
-				$eligibleParts = \explode('-', $eligibleItemNumber);
-				/** @noinspection PhpUnusedLocalVariableInspection */
-				[$itemId, $detailId] = \explode('-', $itemNumber);
-
-				if ($itemNumber == $eligibleItemNumber || $itemId == $eligibleItemNumber || ($itemId == $eligibleParts[0] && 1 == \count($eligibleParts)))
-					{
-					$eligibleCount += $count;
-					}
-				}
-			}
-
-		if ($discountCode->cashOnly)
-			{
-			$discountableAmount = $this->getCashAmount();
-			}
-		else // discount on whole price
-			{
-			$discountableAmount = $this->total;
-			}
-
-		if (\App\Enum\Store\DiscountType::PERCENT_OFF == $discountCode->type) // @phpstan-ignore-line
-			{
-			$discount = $discountableAmount * (float)$discountCode->discount / 100;
-			}
-		else
-			{
-			$numberDiscounts = \min($eligibleCount, \max($discountCode->repeatCount, 1));
-			$discount = $numberDiscounts * (float)$discountCode->discount;
-
-			if ($discount > $discountableAmount)
-				{
-				$discount = $discountableAmount;
-				}
-			}
-
-		return $discount;
 		}
 
 	public function delete(\App\Record\CartItem $cartItem) : bool

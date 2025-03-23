@@ -582,7 +582,15 @@ class Member
 		return $this->createInvoice($member, 0, 1);
 		}
 
-	public function getRenewInvoice(\App\Record\Member $member, int $additionalMembers, float $price, int $years, float $donation, string $dedication) : \App\Record\Invoice
+	public function getRenewInvoice(
+		\App\Record\Member $member,
+		int $additionalMembers,
+		float $price,
+		int $years,
+		float $donation,
+		string $dedication,
+		\App\Record\DiscountCode $discountCode = new \App\Record\DiscountCode()
+	) : \App\Record\Invoice
 		{
 		$invoice = new \App\Record\Invoice(['memberId' => $member->memberId,
 			'orderDate' => \App\Tools\Date::todayString(),
@@ -594,7 +602,7 @@ class Member
 			return $invoice;
 			}
 
-		return $this->createInvoice($member, $additionalMembers, $years, $donation, $dedication);
+		return $this->createInvoice($member, $additionalMembers, $years, $donation, $dedication, $discountCode);
 		}
 
 	public function getVerifyCode(string $password) : int
@@ -986,7 +994,7 @@ class Member
 		return \password_verify($passwordToVerify, $member->password ?? \uniqid());
 		}
 
-	private function createInvoice(\App\Record\Member $member, int $additionalMembers, int $years, float $donation = 0.0, string $dedication = '') : \App\Record\Invoice
+	private function createInvoice(\App\Record\Member $member, int $additionalMembers, int $years, float $donation = 0.0, string $dedication = '', \App\Record\DiscountCode $discountCode = new \App\Record\DiscountCode()) : \App\Record\Invoice
 		{
 		$annualDues = $this->duesModel->getMembershipPrice(1, $years);
 		$additionalMemberDues = $this->duesModel->getAdditionalMembershipPrice($additionalMembers + 1, $years);
@@ -998,6 +1006,7 @@ class Member
 		$invoice->totalPrice = $totalPrice;
 		$invoice->totalShipping = 0.0;
 		$invoice->totalTax = 0.0;
+		$invoice->discountCode = $discountCode;
 		$invoice->discount = 0.0;
 		$invoice->paymentDate = null;
 		$invoice->pointsUsed = 0;
@@ -1050,6 +1059,13 @@ class Member
 			$invoiceItem->title = self::MEMBERSHIP_ADDITIONAL_TITLE;
 			$invoiceItem->description = 'One 12 Month Membership for an additional household member';
 			$invoiceItem->insert();
+			}
+
+		if (! $discountCode->empty())
+			{
+			$discountCodeModel = new \App\Model\DiscountCode($discountCode);
+			$invoice->discount = $discountCodeModel->computeDiscount($invoice->InvoiceItemChildren, $totalPrice);
+			$invoice->update();
 			}
 
 		if ($donation)

@@ -13,7 +13,7 @@ class DiscountCode extends \PHPFUI\ORM\Validator
 		'description' => ['maxlength'],
 		'discountCodeId' => ['integer'],
 		'discount' => ['number', 'required', 'minvalue:1'],
-		'discountCode' => ['maxlength', 'required'],
+		'discountCode' => ['maxlength', 'required', 'alpha_numeric'],
 		'expirationDate' => ['required', 'date', 'gte_field:startDate'],
 		'maximumUses' => ['integer'],
 		'repeatCount' => ['integer'],

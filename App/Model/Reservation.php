@@ -82,7 +82,7 @@ class Reservation
 			$invoiceItem->shipping = 0.0;
 			$invoiceItem->tax = 0.0;
 			$invoiceItem->price = $price;
-			$invoiceItem->storeItemId = 1;
+			$invoiceItem->storeItemId = \App\Model\Member::MEMBERSHIP_RENEWAL;
 			$invoiceItem->storeItemDetailId = \App\Model\Member::EVENT_MEMBERSHIP;
 			$invoiceItem->insert();
 			$maxMembers = (int)$duesModel->MaxMembersOnMembership;

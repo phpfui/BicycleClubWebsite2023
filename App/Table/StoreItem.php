@@ -56,4 +56,12 @@ class StoreItem extends \PHPFUI\ORM\Table
 
 		return $this->getRecordCursor();
 		}
+
+	public function getHighest() : \App\Record\StoreItem
+		{
+		$this->setLimit(1);
+		$this->setOrderBy('storeItemId', 'desc');
+
+		return $this->getRecordCursor()->current();
+		}
 	}

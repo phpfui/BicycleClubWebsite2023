@@ -499,9 +499,9 @@ abstract class Record extends DataObject
 		{
 		$this->loaded = $loaded;
 
-		if (count($allowedFields))
+		if (\count($allowedFields))
 			{
-			$fields = \array_intersect_key($fields, \array_flip($allowedFields));
+			$values = \array_intersect_key($values, \array_flip($allowedFields));
 			}
 
 		foreach ($values as $field => $value)

@@ -16,7 +16,7 @@
         }
     },
     "require": {
-        "php": ">=8.2 <8.5",
+        "php": "=8.4",
         "alek13/slack": "^2.0",
         "endroid/qr-code": "^6.0",
         "flowjs/flow-php-server": "^2.0",

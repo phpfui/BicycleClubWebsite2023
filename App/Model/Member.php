@@ -18,6 +18,10 @@ class Member
 
 	final public const MEMBERSHIP_DONATION_TITLE = 'Additional Donation';
 
+	final public const MEMBERSHIP_JOIN = 2;
+
+	final public const MEMBERSHIP_RENEWAL = 1;
+
 	final public const MEMBERSHIP_TITLE = '12 Month Membership';
 
 	/** @var array<string,int> */
@@ -44,11 +48,20 @@ class Member
 
 	private readonly \App\Table\Setting $settingTable;
 
+	private int $storeItemIdType = self::MEMBERSHIP_RENEWAL;
+
 	public function __construct()
 		{
 		$this->memberTable = new \App\Table\Member();
 		$this->settingTable = new \App\Table\Setting();
 		$this->duesModel = new \App\Model\MembershipDues();
+		}
+
+	public function setStoreItemIdType(int $type) : static
+		{
+		$this->storeItemIdType = $type;
+
+		return $this;
 		}
 
 	/**
@@ -1019,7 +1032,7 @@ class Member
 			{
 			$invoiceItem = new \App\Record\InvoiceItem();
 			$invoiceItem->invoice = $invoice;
-			$invoiceItem->storeItemId = 1;
+			$invoiceItem->storeItemId = $this->storeItemIdType;
 			$invoiceItem->storeItemDetailId = self::FIRST_MEMBERSHIP;
 			$invoiceItem->title = self::MEMBERSHIP_TITLE;
 			$invoiceItem->description = '';
@@ -1047,7 +1060,7 @@ class Member
 			{
 			$invoiceItem = new \App\Record\InvoiceItem();
 			$invoiceItem->invoice = $invoice;
-			$invoiceItem->storeItemId = 1;
+			$invoiceItem->storeItemId = $this->storeItemIdType;
 			$invoiceItem->detailLine = '';
 			$invoiceItem->shipping = 0.0;
 			$invoiceItem->type = \App\Enum\Store\Type::MEMBERSHIP;
@@ -1072,7 +1085,7 @@ class Member
 			{
 			$invoiceItem = new \App\Record\InvoiceItem();
 			$invoiceItem->invoice = $invoice;
-			$invoiceItem->storeItemId = 1;
+			$invoiceItem->storeItemId = $this->storeItemIdType;
 			$invoiceItem->storeItemDetailId = self::DONATION;
 			$invoiceItem->title = self::MEMBERSHIP_DONATION_TITLE;
 			$invoiceItem->description = 'Thanks for your contribution. This is your receipt for tax purposes.';

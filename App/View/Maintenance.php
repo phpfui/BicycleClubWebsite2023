@@ -4,7 +4,7 @@ namespace App\View;
 
 class Maintenance extends \PHPFUI\Page implements \PHPFUI\Interfaces\NanoClass
 	{
-	public function __construct(\PHPFUI\Interfaces\NanoController $controller) // @phpstan-ignore constructor.unusedParameter
+	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{
 		parent::__construct();
 		$this->setPageName('OOPS!');

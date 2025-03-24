@@ -392,7 +392,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			$content = new \App\View\Content($this->page);
 			$this->page->addPageContent($content->getDisplayCategoryHTML($title));
 
-			$renewView = new \App\View\Membership\Renew($this->page, \App\Model\Session::signedInMembershipRecord(), $this->memberView);
+			$renewView = new \App\View\Membership\Renew($this->page, \App\Model\Session::signedInMembershipRecord(), $this->memberView, \App\Model\Member::MEMBERSHIP_RENEWAL);
 			$this->page->addPageContent($renewView->renew($discountCodeEntered));
 			}
 		}
@@ -410,7 +410,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 
 		if ($this->page->addHeader('Pay With PayPal'))
 			{
-			$renewView = new \App\View\Membership\Renew($this->page, \App\Model\Session::signedInMembershipRecord(), $this->memberView);
+			$renewView = new \App\View\Membership\Renew($this->page, \App\Model\Session::signedInMembershipRecord(), $this->memberView, \App\Model\Member::MEMBERSHIP_RENEWAL);
 			$this->page->addPageContent($renewView->checkout(\App\Model\Session::signedInMemberRecord(), $discountCodeEntered));
 			}
 		}

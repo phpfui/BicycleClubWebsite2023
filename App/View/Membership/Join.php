@@ -19,6 +19,7 @@ class Join
 	public function __construct(private readonly \App\View\Page $page)
 		{
 		$this->memberModel = new \App\Model\Member();
+		$this->memberModel->setStoreItemIdType(\App\Model\Member::MEMBERSHIP_JOIN);
 		$this->memberView = new \App\View\Member($page);
 		$this->settingTable = new \App\Table\Setting();
 		$this->duesModel = new \App\Model\MembershipDues();
@@ -414,7 +415,7 @@ class Join
 			}
 
 		$members = \App\Table\Member::membersInMembership($member->membershipId);
-		$renewView = new \App\View\Membership\Renew($this->page, $member->membership, $this->memberView);
+		$renewView = new \App\View\Membership\Renew($this->page, $member->membership, $this->memberView, \App\Model\Member::MEMBERSHIP_JOIN);
 		$container = $renewView->renew();
 		$allowedMembers = (int)$this->duesModel->MaxMembersOnMembership;
 
@@ -475,7 +476,7 @@ class Join
 
 		$output = $this->getHeader('Pay With PayPal');
 
-		$renewView = new \App\View\Membership\Renew($this->page, $member->membership, $this->memberView);
+		$renewView = new \App\View\Membership\Renew($this->page, $member->membership, $this->memberView, \App\Model\Member::MEMBERSHIP_JOIN);
 		$output->add($renewView->checkout($member));
 		$output->add($this->getButtonGroup($member->verifiedEmail));
 

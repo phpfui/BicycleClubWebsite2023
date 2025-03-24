@@ -24,7 +24,7 @@ class Renew
 
 	private readonly \App\Table\Setting $settingTable;
 
-	public function __construct(private readonly \App\View\Page $page, private readonly \App\Record\Membership $membership, private readonly \App\View\Member $memberView)
+	public function __construct(private readonly \App\View\Page $page, private readonly \App\Record\Membership $membership, private readonly \App\View\Member $memberView, private readonly int $storeItemIdType)
 		{
 		$this->duesModel = new \App\Model\MembershipDues();
 		$this->memberModel = new \App\Model\Member();
@@ -470,7 +470,7 @@ JAVASCRIPT;
 
 		$items = [];
 		$invoiceItem = new \App\Record\InvoiceItem();
-		$invoiceItem->storeItemId = 1;
+		$invoiceItem->storeItemId = $this->storeItemIdType;
 		$invoiceItem->storeItemDetailId = \App\Model\Member::FIRST_MEMBERSHIP;
 
 		if ($years)
@@ -496,7 +496,7 @@ JAVASCRIPT;
 
 		if ($additionalMemberDues > 0.0 && $additionalMembers)
 			{
-			$invoiceItem->storeItemId = 1;
+			$invoiceItem->storeItemId = $this->storeItemIdType;
 			$invoiceItem->storeItemDetailId = \App\Model\Member::ADDITIONAL_MEMBERSHIP;
 			$invoiceItem->price = (float)\number_format($additionalMemberDues / $additionalMembers, 2);
 			$invoiceItem->quantity = $additionalMembers;

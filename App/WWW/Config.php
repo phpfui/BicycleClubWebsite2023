@@ -10,7 +10,7 @@ class Config implements \PHPFUI\Interfaces\NanoClass, \Stringable
 
 	private string $title = 'Bicycle Club Website Setup';
 
-	public function __construct(\PHPFUI\Interfaces\NanoController $controller) // @phpstan-ignore constructor.unusedParameter
+	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{
 		$this->page = new \App\View\Setup\Page();
 		$this->page->addCSS('body { margin: 1em}')->setPageName($this->title);

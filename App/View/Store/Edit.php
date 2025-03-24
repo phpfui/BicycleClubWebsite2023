@@ -150,7 +150,14 @@ class Edit
 				{
 				$storeItem = new \App\Record\StoreItem();
 				$storeItem->setFrom($_POST);
+
+				// make sure we insert new store items starting at 10 so we have a reserved range
+				if (new \App\Table\StoreItem()->getHighest()->storeItemId < 10)
+					{
+					$storeItem->storeItemId = 10;
+					}
 				$id = $storeItem->insert();
+				// @todo: make sure storeItemId is 10 or greater
 				$this->page->redirect('/Store/edit/' . $id);
 				}
 			}

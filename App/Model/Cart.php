@@ -12,7 +12,7 @@ class Cart
 
 	private float $discount = 0.0;
 
-	private \App\Record\DiscountCode $discountCode;
+	private ?\App\Record\DiscountCode $discountCode;
 
 	/** @var array<array<string, string>> */
 	private array $items = [];

@@ -3680,16 +3680,16 @@
         },
         {
             "name": "phpfui/phpfui",
-            "version": "V6.3.4",
+            "version": "V6.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/phpfui.git",
-                "reference": "f4bb905356d4d05d1b6c9b000f39a1db62098d61"
+                "reference": "763646070f6aa0361a69c8567e636b497e47d222"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/phpfui/zipball/f4bb905356d4d05d1b6c9b000f39a1db62098d61",
-                "reference": "f4bb905356d4d05d1b6c9b000f39a1db62098d61",
+                "url": "https://api.github.com/repos/phpfui/phpfui/zipball/763646070f6aa0361a69c8567e636b497e47d222",
+                "reference": "763646070f6aa0361a69c8567e636b497e47d222",
                 "shasum": ""
             },
             "require": {
@@ -3706,7 +3706,7 @@
                 "phpfui/html-unit-tester": "^1.0",
                 "phpfui/phpunit-syntax-coverage": "dev-master",
                 "phpstan/phpstan": "*",
-                "phpunit/phpunit": "^10.5|^11.0",
+                "phpunit/phpunit": "^10.5|^11.0|^12.0",
                 "roave/security-advisories": "dev-latest"
             },
             "suggest": {
@@ -3744,9 +3744,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/phpfui/issues",
-                "source": "https://github.com/phpfui/phpfui/tree/V6.3.4"
+                "source": "https://github.com/phpfui/phpfui/tree/V6.3.5"
             },
-            "time": "2025-01-09T23:01:13+00:00"
+            "time": "2025-03-26T14:07:33+00:00"
         },
         {
             "name": "phpfui/recaptcha",

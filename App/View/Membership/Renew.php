@@ -542,7 +542,7 @@ JAVASCRIPT;
 			switch ($parameters['submit'])
 				{
 				case 'Confirm and Pay':
-					$redirect = '/Membership/renewCheckout/' . $parameters['discountCode'] ?? '';
+					$redirect = '/Membership/renewCheckout/' . ($parameters['discountCode'] ?? '');
 
 					break;
 

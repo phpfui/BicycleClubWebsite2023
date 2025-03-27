@@ -319,7 +319,12 @@ class Invoice
 			$invoice->totalShipping = $cartModel->getShipping();
 			$invoice->totalTax = 0.0;
 			$invoice->discount = $cartModel->getDiscount();
-			$invoice->discountCode = $cartModel->getDiscountCode();
+			$invoice->discountCodeId = null;
+			$discountCode = $cartModel->getDiscountCode();
+			if ($discountCode)
+				{
+				$invoice->discountCode = $discountCode;
+				}
 			$invoice->paymentDate = null;
 			$invoice->pointsUsed = (int)\round($pointsUsed);
 			$invoice->paypalPaid = 0.0;

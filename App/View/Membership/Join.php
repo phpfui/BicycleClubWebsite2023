@@ -51,7 +51,7 @@ class Join
 			$fullName = $_POST['firstName'] . ' ' . $_POST['lastName'];
 
 			// is it a bot entering the same name twice?
-			if (\str_contains(\strtolower($_POST['lastName']), \strtolower($_POST['firstName'])))
+			if (\strtolower($_POST['lastName']) == \strtolower($_POST['firstName']))
 				{
 				\App\Model\Session::setFlash('alert', 'Please enter different names');
 				$this->page->redirect();
@@ -183,7 +183,7 @@ class Join
 		return $container;
 		}
 
-	public function process(\App\Record\Member $member, int $code = 0) : string | \PHPFUI\HTML5Element
+	public function process(\App\Record\Member $member, int $code = 0, string $discountCode = '') : string | \PHPFUI\HTML5Element
 		{
 		$website = $this->page->getSchemeHost();
 
@@ -193,44 +193,49 @@ class Join
 			}
 
 		$verifyCode = $this->memberModel->getVerifyCode($member->password);
-
 		if (\App\Model\Session::checkCSRF() && isset($_POST['submit']))
 			{
-			if ('Continue' == $_POST['submit'] && ($verifyCode == $code || $member->verifiedEmail >= 2))
+			switch ($_POST['submit'])
 				{
-				$member->verifiedEmail += 1;
-				}
-			elseif ('Join' == $_POST['submit'] && ! empty($_POST['bikeShopId']))
-				{
-				$membership = $member->membership;
-				$bikeShop = new \App\Record\BikeShop($_POST['bikeShopId']);
-				$membership->affiliation = $bikeShop->fullName();
-				$membership->update();
-				\App\Model\Session::unregisterMember();
-				\App\Model\Session::registerMember($member);
-				\App\Model\Session::setFlash('success', 'Welcome to the ' . $this->page->value('clubName'));
+				case 'Continue':
+				case 'Confirm and Pay':
+					if ($verifyCode == $code || $member->verifiedEmail >= 2)
+						{
+						$member->verifiedEmail += 1;
+						}
+					$_POST['membershipId'] = $member->membershipId;
+					$_POST['memberId'] = $member->memberId;
+					$_POST['verifiedEmail'] = $member->verifiedEmail;
+					unset($_POST['expires'], $_POST['subscriptionId'], $_POST['lastRenewed'], $_POST['renews']);
+					$_POST['pending'] = 1;
+					$this->memberModel->saveFromPost($_POST, false);
+					$this->page->redirect();
+					break;
 
-				$this->page->redirect('/Home');
+				case 'Join':
+					if (! empty($_POST['bikeShopId']))
+						{
+						$membership = $member->membership;
+						$bikeShop = new \App\Record\BikeShop($_POST['bikeShopId']);
+						$membership->affiliation = $bikeShop->fullName();
+						$membership->update();
+						\App\Model\Session::unregisterMember();
+						\App\Model\Session::registerMember($member);
+						\App\Model\Session::setFlash('success', 'Welcome to the ' . $this->page->value('clubName'));
 
-				return '';
-				}
-			elseif ('Back' == $_POST['submit'] && $member->verifiedEmail > 2)
-				{
-				$member->verifiedEmail -= 1;
-				}
+						$this->page->redirect('/Home');
 
-			if ('Verify' != $_POST['submit'])
-				{
-				$_POST['membershipId'] = $member->membershipId;
-				$_POST['memberId'] = $member->memberId;
-				$_POST['verifiedEmail'] = $member->verifiedEmail;
-				unset($_POST['expires'], $_POST['subscriptionId'], $_POST['lastRenewed'], $_POST['renews']);
+						return '';
+						}
+					break;
 
-				$_POST['pending'] = 1;
-				$this->memberModel->saveFromPost($_POST, false);
-				$this->page->redirect();
-
-				return '';
+				case 'Back':
+					if ($member->verifiedEmail > 2)
+						{
+						$member->verifiedEmail -= 1;
+						}
+					$member->update();
+					break;
 				}
 			}
 
@@ -241,10 +246,10 @@ class Join
 			3 => $this->getContactInfo($member),
 			4 => $this->getNotifications($member),
 			5 => $this->getPrivacy($member),
-			6 => $this->getMembers($member),
-			7 => $this->getPayPal($member),
+			6 => $this->getMembers($member, $discountCode),
+			7 => $this->getPayPal($member, $discountCode),
 			default => '',
-		};
+			};
 		}
 
 	private function confirmEmail(\App\Record\Member $member, int $code) : \PHPFUI\HTML5Element
@@ -375,7 +380,7 @@ class Join
 		return $output;
 		}
 
-	private function getMembers(\App\Record\Member $member) : \PHPFUI\Container
+	private function getMembers(\App\Record\Member $member, string $discountCode) : \PHPFUI\Container
 		{
 		$membership = $member->membership;
 
@@ -416,7 +421,7 @@ class Join
 
 		$members = \App\Table\Member::membersInMembership($member->membershipId);
 		$renewView = new \App\View\Membership\Renew($this->page, $member->membership, $this->memberView, \App\Model\Member::MEMBERSHIP_JOIN);
-		$container = $renewView->renew();
+		$container = $renewView->renew($discountCode);
 		$allowedMembers = (int)$this->duesModel->MaxMembersOnMembership;
 
 		if (! $allowedMembers || \count($members) < $allowedMembers)
@@ -443,7 +448,7 @@ class Join
 		return $output;
 		}
 
-	private function getPayPal(\App\Record\Member $member) : \PHPFUI\HTML5Element
+	private function getPayPal(\App\Record\Member $member, string $discountCode) : \PHPFUI\HTML5Element
 		{
 		$output = new \PHPFUI\HTML5Element('div');
 
@@ -477,8 +482,7 @@ class Join
 		$output = $this->getHeader('Pay With PayPal');
 
 		$renewView = new \App\View\Membership\Renew($this->page, $member->membership, $this->memberView, \App\Model\Member::MEMBERSHIP_JOIN);
-		$output->add($renewView->checkout($member));
-		$output->add($this->getButtonGroup($member->verifiedEmail));
+		$output->add($renewView->checkout($member, $discountCode));
 
 		return $output;
 		}

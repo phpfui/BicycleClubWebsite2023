@@ -113,6 +113,8 @@ class Page extends \PHPFUI\Page
 			{
 			$testCallout = new \PHPFUI\Callout('alert');
 			$testCallout->add('<b>This site is in <i>TEST MODE</i>. Do not use except for testing.</b>');
+			$testCallout->addAttribute('data-closable');
+			$testCallout->addAttribute('data-close');
 			$this->mainColumn->add("{$testCallout}");
 			}
 		}
@@ -262,6 +264,7 @@ class Page extends \PHPFUI\Page
 
 			$callout = new \PHPFUI\Callout($calloutClass);
 			$callout->addAttribute('data-closable');
+			$callout->addAttribute('data-close');
 
 			if (\is_array($message))
 				{

@@ -6,7 +6,7 @@ class Renew
 	{
 	private float $additionalMemberDues = 0;
 
-	private readonly \App\Model\MembershipDues $duesModel;
+	private \App\Model\MembershipDues $duesModel;
 
 	private readonly \App\Model\Member $memberModel;
 
@@ -24,6 +24,10 @@ class Renew
 
 	private readonly \App\Table\Setting $settingTable;
 
+	private string $checkoutURL;
+
+	private string $renewURL;
+
 	public function __construct(private readonly \App\View\Page $page, private readonly \App\Record\Membership $membership, private readonly \App\View\Member $memberView, private readonly int $storeItemIdType)
 		{
 		$this->duesModel = new \App\Model\MembershipDues();
@@ -32,6 +36,7 @@ class Renew
 		$this->members = \App\Table\Member::membersInMembership($membership->membershipId);
 		$this->additionalMemberDues = \array_sum($this->duesModel->AdditionalMemberDues);
 		$this->query = \http_build_query(\array_intersect_key($_POST, $this->requiredParameters));
+		$this->adjustURLs('');
 
 		$this->processRequest($_GET);
 		$this->processRequest($_POST);
@@ -39,6 +44,7 @@ class Renew
 
 	public function checkout(\App\Record\Member $member, string $discountCodeEntered = '') : \PHPFUI\HTML5Element
 		{
+		$this->adjustURLs($discountCodeEntered);
 		$view = new \App\View\PayPal($this->page, new \App\Model\PayPal('Membership'));
 		$output = new \PHPFUI\HTML5Element('div');
 		$errors = $member->membership->validate();
@@ -122,7 +128,7 @@ class Renew
 		$discountCodeTable = new \App\Table\DiscountCode();
 
 		$validDiscountCode = new \App\Record\DiscountCode();
-		$validDiscountCodes = $discountCodeTable->getActiveMembershipCodes();
+		$validDiscountCodes = $discountCodeTable->getActiveMembershipCodes($this->storeItemIdType);
 
 		foreach($validDiscountCodes as $validCode)
 			{
@@ -142,17 +148,17 @@ class Renew
 		$donation = (float)($_GET['donation'] ?? 0.0);
 		$unpaidBalance += $donation;
 
-		if ($unpaidBalance <= 0.0)
-			{
-			\App\Model\Session::setFlash('alert', 'You have not specified a donation amount');
-
-			$this->page->redirect('/Membership/renew');
-			}
-
 		if (! $this->duesModel->disableDonations)
 			{
+			if ($unpaidBalance <= 0.0)
+				{
+				\App\Model\Session::setFlash('alert', 'You have not specified a donation amount');
+
+				$this->page->redirect($this->renewURL);
+				}
 			$output->add('<br>Additional Donation $' . \number_format($donation, 2));
 			}
+
 		$output->add('<p><b>Total Due : $' . \number_format($unpaidBalance, 2) . '</b>');
 		$invoice = $this->memberModel->getRenewInvoice($member, $additionalMembers, $unpaidBalance, $years, $donation, $_GET['itemDetail'] ?? '', $discountCode);
 		$output->add($view->getCheckoutForm($invoice, $output->getId(), 'Membership Renewal'));
@@ -162,6 +168,7 @@ class Renew
 
 	public function renew(string $discountCodeEntered = '') : \PHPFUI\Container
 		{
+		$this->adjustURLs($discountCodeEntered);
 		$container = new \PHPFUI\Container();
 
 		if (! $this->memberModel->hasValidAddress($this->membership))
@@ -191,7 +198,7 @@ class Renew
 		$discountCodeTable = new \App\Table\DiscountCode();
 
 		$validDiscountCode = new \App\Record\DiscountCode();
-		$validDiscountCodes = $discountCodeTable->getActiveMembershipCodes();
+		$validDiscountCodes = $discountCodeTable->getActiveMembershipCodes($this->storeItemIdType);
 
 		foreach($validDiscountCodes as $validCode)
 			{
@@ -542,21 +549,57 @@ JAVASCRIPT;
 			switch ($parameters['submit'])
 				{
 				case 'Confirm and Pay':
-					$redirect = '/Membership/renewCheckout/' . ($parameters['discountCode'] ?? '');
+					$redirect = $this->checkoutURL . ($parameters['discountCode'] ?? '');
 
 					break;
 
-				/** @noinspection PhpMissingBreakStatementInspection */
 				case 'Remove':
 					$parameters['discountCode'] = '';
-
+					if ($this->storeItemIdType == \App\Model\Member::MEMBERSHIP_JOIN)
+						{
+						$parts = explode('/', $this->renewURL);
+						if (count($parts) > 3)
+							{
+							while (strlen(array_pop($parts)) < 2)
+								{
+								}
+							}
+						$this->renewURL = implode('/', $parts);
+						}
 					// Intentionally fall through
 				case 'Apply':
-					$redirect = '/Membership/renew/' . $parameters['discountCode'];
+					$redirect = $this->renewURL . $parameters['discountCode'];
 
 					break;
 				}
 			$this->page->redirect($redirect, $this->query);
 			}
+		}
+
+	private function adjustURLs(string $discountCode) : static
+		{
+		// No donations when joining
+		if ($this->storeItemIdType == \App\Model\Member::MEMBERSHIP_JOIN)
+			{
+			$this->duesModel->disableDonations = true;
+			$url = $this->page->getBaseURL();
+			if (! str_ends_with($url, '/'))
+				{
+				$url .= '/';
+				}
+			$this->checkoutURL = $this->renewURL = $url;
+
+			if ($discountCode)
+				{
+				$this->checkoutURL = $this->renewURL = str_replace('/' . $discountCode, '', $url);
+				}
+			}
+		else
+			{
+			$this->renewURL = '/Membership/renew/';
+			$this->checkoutURL = '/Membership/renewCheckout/';
+			}
+
+		return $this;
 		}
 	}

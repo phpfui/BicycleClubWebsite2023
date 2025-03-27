@@ -511,13 +511,13 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		$this->page->addPageContent($unsubscribe);
 		}
 
-	public function verify(\App\Record\Member $member = new \App\Record\Member(), int $code = 0) : void
+	public function verify(\App\Record\Member $member = new \App\Record\Member(), int $code = 0, string $discountCode = '') : void
 		{
 		if ($member->loaded())
 			{
 			$joinView = new \App\View\Membership\Join($this->page);
 			$this->page->setPublic();
-			$this->page->addPageContent($joinView->process($member, $code));
+			$this->page->addPageContent($joinView->process($member, $code, $discountCode));
 			}
 		else
 			{

@@ -322,7 +322,7 @@ class Cart
 		return $this->discount;
 		}
 
-	public function getDiscountCode() : \App\Record\DiscountCode
+	public function getDiscountCode() : ?\App\Record\DiscountCode
 		{
 		return $this->discountCode;
 		}

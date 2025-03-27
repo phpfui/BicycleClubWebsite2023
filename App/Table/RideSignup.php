@@ -173,7 +173,6 @@ class RideSignup extends \PHPFUI\ORM\Table
 			\App\Enum\RideSignup\Status::REMOVE->value => 'Remove From Ride',
 			\App\Enum\RideSignup\Status::DEFINITELY_RIDING->value => 'Definitely Riding',
 			\App\Enum\RideSignup\Status::PROBABLY_RIDING->value => 'Probably Riding',
-			3 => 'Probably Riding',
 			\App\Enum\RideSignup\Status::WAIT_LIST->value => 'Wait List',
 			\App\Enum\RideSignup\Status::DEFINITELY_NOT_RIDING->value => "Can't Ride Because",
 			\App\Enum\RideSignup\Status::CANCELLED->value => 'Cancelled',

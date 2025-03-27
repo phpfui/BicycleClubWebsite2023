@@ -57,7 +57,7 @@ class GASignInSheets
 			$widths[] = 50;
 
 			$gaOptionTable = new \App\Table\GaOption();
-			$whereCondition = new \PHPFUI\ORM\Condition('gaeventId', $this->event->gaEventId);
+			$whereCondition = new \PHPFUI\ORM\Condition('gaEventId', $this->event->gaEventId);
 			$whereCondition->and(new \PHPFUI\ORM\Condition('csvField', '', new \PHPFUI\ORM\Operator\GreaterThan()));
 			$gaOptionTable->setWhere($whereCondition);
 			$gaOptionTable->addOrderBy('ordering');

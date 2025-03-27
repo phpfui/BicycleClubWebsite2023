@@ -34,7 +34,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					{
 					if ($active)
 						{
-						$events[] = $gaEventId;
+						$events[] = new \App\Record\GaEvent($gaEventId);
 						}
 					}
 
@@ -46,12 +46,13 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					return;
 					}
 
-				$gaRiderTable = new \App\Table\GaRider();
-				$riders = $gaRiderTable->getForEvents($events);
-
-				foreach ($riders as $rider)
+				foreach ($events as $event)
 					{
-					$csvWriter->outputRow($this->processRider($rider));
+					$gaRiderTable = new \App\Table\GaRider();
+					foreach ($gaRiderTable->getRiderCursor($event) as $rider)
+						{
+						$csvWriter->outputRow($this->processRider($rider));
+						}
 					}
 				}
 			else
@@ -379,7 +380,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	/**
 	 * @return array<string,string>
 	 */
-	private function processRider(\App\Record\GaRider $rider) : array
+	private function processRider(\PHPFUI\ORM\DataObject $rider) : array
 		{
 		$row = $rider->toArray();
 

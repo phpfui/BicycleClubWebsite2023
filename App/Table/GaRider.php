@@ -62,7 +62,7 @@ class GaRider extends \PHPFUI\ORM\Table
 	public function getRiderCursor(\App\Record\GaEvent $event, int $paid = 1) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$gaOptionTable = new \App\Table\GaOption();
-		$whereCondition = new \PHPFUI\ORM\Condition('gaeventId', $event->gaEventId);
+		$whereCondition = new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId);
 		$whereCondition->and(new \PHPFUI\ORM\Condition('csvField', '', new \PHPFUI\ORM\Operator\GreaterThan()));
 		$gaOptionTable->setWhere($whereCondition);
 		$gaOptionTable->addOrderBy('ordering');

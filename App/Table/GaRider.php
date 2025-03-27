@@ -86,6 +86,14 @@ class GaRider extends \PHPFUI\ORM\Table
 			++$joinNumber;
 			}
 
+//		$this->addSelect('invoice.*');
+//		$this->addSelect('discountCode.discountCode');
+//		$invoiceItemJoinCondition = new \PHPFUI\ORM\Condition('invoiceItem.storeItemId', new \PHPFUI\ORM\Literal('gaRider.gaEventId'));
+//		$invoiceItemJoinCondition->and('invoiceItem.storeItemDetailId', new \PHPFUI\ORM\Literal('gaRider.gaRiderId'));
+//		$this->addJoin('invoiceItem', $invoiceItemJoinCondition);
+//		$this->addJoin('invoice', new \PHPFUI\ORM\Condition('invoiceItem.invoiceId', new \PHPFUI\ORM\Literal('invoice.invoiceId'));
+//		$this->addJoin('discountCode', new \PHPFUI\ORM\Condition('discountCode.discountCodeId', new \PHPFUI\ORM\Literal('invoice.discountCodeId'));
+
 		$condition = new \PHPFUI\ORM\Condition('gaRider.gaEventId', $event->gaEventId);
 
 		if (0 === $paid)

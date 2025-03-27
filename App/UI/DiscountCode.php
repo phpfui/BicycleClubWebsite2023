@@ -4,7 +4,7 @@ namespace App\UI;
 
 class DiscountCode
 	{
-	public function __construct(private readonly \App\Record\DiscountCode $currentDiscountCode, private readonly string $badDiscountCode)
+	public function __construct(private readonly ?\App\Record\DiscountCode $currentDiscountCode, private readonly string $badDiscountCode)
 		{
 		}
 
@@ -15,7 +15,7 @@ class DiscountCode
 		$cola = new \PHPFUI\Cell(6);
 		$colb = new \PHPFUI\Cell(6);
 
-		if ($this->currentDiscountCode->empty())
+		if (! $this->currentDiscountCode || $this->currentDiscountCode->empty())
 			{
 			if ($this->badDiscountCode)
 				{

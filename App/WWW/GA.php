@@ -51,11 +51,8 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					$gaRiderTable = new \App\Table\GaRider();
 					foreach ($gaRiderTable->getRiderCursor($event) as $rider)
 						{
-						\App\Tools\Logger::get()->debug($rider);
 						$csvWriter->outputRow($this->processRider($rider));
 						}
-					\App\Tools\Logger::get()->debug($gaRiderTable->getLastSql());
-					\App\Tools\Logger::get()->debug($gaRiderTable->getLastInput());
 					}
 				}
 			else

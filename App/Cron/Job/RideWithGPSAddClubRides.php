@@ -31,6 +31,10 @@ class RideWithGPSAddClubRides extends \App\Cron\BaseJob
 					$record->computeElevationGain();
 					$record->insertOrUpdate();
 					}
+				else
+					{
+					break;
+					}
 				}
 			}
 		}

@@ -24,6 +24,10 @@ class RideWithGPSRemoveLapsed extends \App\Cron\BaseJob
 			}
 
 		$clubMembers = $rwgpsModel->getClubMembers();
+		if (empty($clubMembers))
+			{
+			return;
+			}
 
 		foreach ($memberTable->getRecordCursor() as $member)
 			{
@@ -31,7 +35,10 @@ class RideWithGPSRemoveLapsed extends \App\Cron\BaseJob
 				{
 				if (! $clubMembers[$member->email]['active'])
 					{
-					$rwgpsModel->updateMember($clubMembers[$member->email], active:true);
+					if (! $rwgpsModel->updateMember($clubMembers[$member->email], active:true))
+						{
+						return;
+						}
 					}
 				unset($clubMembers[$member->email]);
 				}
@@ -39,7 +46,10 @@ class RideWithGPSRemoveLapsed extends \App\Cron\BaseJob
 
 		foreach ($clubMembers as $clubMember)
 			{
-			$rwgpsModel->updateMember($clubMember);
+			if (! $rwgpsModel->updateMember($clubMember))
+				{
+				break;
+				}
 			}
 		}
 

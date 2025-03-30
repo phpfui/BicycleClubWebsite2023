@@ -429,6 +429,11 @@ class RideWithGPS extends GPS
 
 	private function getGuzzleClient() : ?\GuzzleHttp\Client
 		{
+		if (! $this->apiKey)
+			{
+			return null;
+			}
+
 		if (! $this->client)
 			{
 			if (! $this->getAuthToken())

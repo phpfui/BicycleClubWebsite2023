@@ -49,7 +49,6 @@ class Info extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				'Soundasleep',
 				'Tinify',
 				'voku',
-				'Webklex',
 				'ZBateson',
 			];
 

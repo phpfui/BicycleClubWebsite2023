@@ -21,8 +21,16 @@ class Home extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			if ($member->verifiedEmail < 9)
 				{
-				$joinView = new \App\View\Membership\Join($this->page);
-				$this->page->addPageContent($joinView->process($member));
+				$memberModel = new \App\Model\Member();
+				if ($member->verifiedEmail < 2)
+					{
+					$memberModel->sendVerifyEmail($member);
+					$this->page->redirect("/Membership/verify/{$member->memberId}");
+					}
+				else
+					{
+					$this->page->redirect("/Membership/verify/{$member->memberId}/" . $memberModel->getVerifyCode($member->password));
+					}
 				}
 			elseif (\App\Model\Session::hasExpired())
 				{

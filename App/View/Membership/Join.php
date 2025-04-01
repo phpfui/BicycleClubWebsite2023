@@ -101,8 +101,7 @@ class Join
 						$membership->expires = \App\Tools\Date::makeString($year, 1, 30);
 						$membership->update();
 						}
-					$verifyCode = $this->memberModel->getVerifyCode($member->password);
-					$this->page->redirect("/Membership/verify/{$id}/{$verifyCode}");
+					$this->page->redirect("/Membership/verify/{$id}");
 					$this->page->setDone();
 
 					return $container;

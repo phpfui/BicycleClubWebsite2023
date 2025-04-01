@@ -44,7 +44,7 @@ $baseFileName = $fileName = $argv[2] ?? 'backup';
 
 if (! \str_contains($baseFileName, '.'))
 	{
-	foreach (['.gz', '.zip', '.sql'] as $extension)
+	foreach (['', '.gz', '.zip', '.sql'] as $extension)
 		{
 		$fullFileName = $baseFileName . $extension;
 

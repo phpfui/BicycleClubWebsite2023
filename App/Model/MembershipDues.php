@@ -68,16 +68,10 @@ class MembershipDues
 	public function getAdditionalMemberPriceByYear(int $years) : float
 		{
 		$dues = $this->AdditionalMemberDues;
-
-		// if no additional member dues, use normal member dues
-		if (! \count($dues))
-			{
-			$dues = $this->AnnualDues;
-			}
-
 		$index = \min(\count($dues), $years) - 1;
 
-		return (float)($dues[$index] ?? 0.0);
+		// if no additional member dues, use normal member dues
+		return (float)($dues[$index] ?? $this->getMembershipPriceByYear($years));
 		}
 
 	public function getAdditionalMembershipPrice(int $totalMembers, int $years = 1) : float

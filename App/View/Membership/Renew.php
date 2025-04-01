@@ -308,7 +308,7 @@ class Renew
 			case 'Family':
 				$headers['Annual Family (2 members) Dues'] = 'Annual Family (2 members) Dues';
 
-				if (\array_sum($additionalDues))
+				if (\array_sum($additionalDues) || $numberMembers > 2)
 					{
 					$headers['Additional Member Dues'] = 'Additional Member Dues';
 					}
@@ -333,7 +333,12 @@ class Renew
 				}
 
 			$row['Cost Per Year'] = $row['Annual Family (2 members) Dues'] = '$' . \number_format((float)$amount, 2);
-			$row['Additional Member Dues'] = '$' . \number_format((float)($additionalDues[$year] ?? 0.0), 2);
+			$additional = (float)($additionalDues[$year] ?? 0.0);
+			if (! $additional)
+				{
+				$additional = (float)$amount;
+				}
+			$row['Additional Member Dues'] = '$' . \number_format($additional, 2);
 			$table->addRow($row);
 			}
 		$membershipRates->add($table);
@@ -363,7 +368,7 @@ class Renew
 			$yearsField->addAttribute('onchange', 'updatePrice();');
 			$multiColumn->add($yearsField);
 
-			if ($this->additionalMemberDues && $maxMembersOnMembership > 1)
+			if (($this->additionalMemberDues || $numberMembers > 1) && $maxMembersOnMembership > 1)
 				{
 				$maxMembersField = new \PHPFUI\Input\Select('maxMembers', 'Number of members on your membership');
 

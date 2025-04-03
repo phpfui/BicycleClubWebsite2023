@@ -67,6 +67,7 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 		foreach ($rides as $rwgps)
 			{
 			$updated = $model->scrape($rwgps);
+
 			if (! $updated)
 				{
 				break;

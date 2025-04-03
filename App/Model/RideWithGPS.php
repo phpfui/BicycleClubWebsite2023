@@ -247,6 +247,7 @@ class RideWithGPS extends GPS
 			{
 			$rwgps->query .= '#' . $urlParts['fragment'];
 			}
+
 		if (! $this->scrape($rwgps, true))
 			{
 			return null;

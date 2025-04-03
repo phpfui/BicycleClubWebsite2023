@@ -6,6 +6,8 @@ class Renew
 	{
 	private float $additionalMemberDues = 0;
 
+	private string $checkoutURL;
+
 	private \App\Model\MembershipDues $duesModel;
 
 	private readonly \App\Model\Member $memberModel;
@@ -17,16 +19,14 @@ class Renew
 
 	private readonly string $query;
 
+	private string $renewURL;
+
 	/**
 	 * @var array<string,int|float|string>
 	 */
 	private array $requiredParameters = ['years' => 0, 'maxMembers' => 0, 'donation' => 0.0, 'itemDetail' => '', ];
 
 	private readonly \App\Table\Setting $settingTable;
-
-	private string $checkoutURL;
-
-	private string $renewURL;
 
 	public function __construct(private readonly \App\View\Page $page, private readonly \App\Record\Membership $membership, private readonly \App\View\Member $memberView, private readonly int $storeItemIdType)
 		{
@@ -334,6 +334,7 @@ class Renew
 
 			$row['Cost Per Year'] = $row['Annual Family (2 members) Dues'] = '$' . \number_format((float)$amount, 2);
 			$additional = (float)($additionalDues[$year] ?? 0.0);
+
 			if (! $additional)
 				{
 				$additional = (float)$amount;
@@ -476,6 +477,34 @@ JAVASCRIPT;
 		return $container;
 		}
 
+	private function adjustURLs(string $discountCode) : static
+		{
+		// No donations when joining
+		if (\App\Model\Member::MEMBERSHIP_JOIN == $this->storeItemIdType)
+			{
+			$this->duesModel->disableDonations = true;
+			$url = $this->page->getBaseURL();
+
+			if (! \str_ends_with($url, '/'))
+				{
+				$url .= '/';
+				}
+			$this->checkoutURL = $this->renewURL = $url;
+
+			if ($discountCode)
+				{
+				$this->checkoutURL = $this->renewURL = \str_replace('/' . $discountCode, '', $url);
+				}
+			}
+		else
+			{
+			$this->renewURL = '/Membership/renew/';
+			$this->checkoutURL = '/Membership/renewCheckout/';
+			}
+
+		return $this;
+		}
+
 	private function computeDiscount(\App\Record\DiscountCode $discountCode, int $years, int $additionalMembers) : float
 		{
 		$discountCodeModel = new \App\Model\DiscountCode($discountCode);
@@ -560,17 +589,20 @@ JAVASCRIPT;
 
 				case 'Remove':
 					$parameters['discountCode'] = '';
-					if ($this->storeItemIdType == \App\Model\Member::MEMBERSHIP_JOIN)
+
+					if (\App\Model\Member::MEMBERSHIP_JOIN == $this->storeItemIdType)
 						{
-						$parts = explode('/', $this->renewURL);
-						if (count($parts) > 3)
+						$parts = \explode('/', $this->renewURL);
+
+						if (\count($parts) > 3)
 							{
-							while (strlen(array_pop($parts)) < 2)
+							while (\strlen(\array_pop($parts)) < 2)
 								{
 								}
 							}
-						$this->renewURL = implode('/', $parts);
+						$this->renewURL = \implode('/', $parts);
 						}
+
 					// Intentionally fall through
 				case 'Apply':
 					$redirect = $this->renewURL . $parameters['discountCode'];
@@ -579,32 +611,5 @@ JAVASCRIPT;
 				}
 			$this->page->redirect($redirect, $this->query);
 			}
-		}
-
-	private function adjustURLs(string $discountCode) : static
-		{
-		// No donations when joining
-		if ($this->storeItemIdType == \App\Model\Member::MEMBERSHIP_JOIN)
-			{
-			$this->duesModel->disableDonations = true;
-			$url = $this->page->getBaseURL();
-			if (! str_ends_with($url, '/'))
-				{
-				$url .= '/';
-				}
-			$this->checkoutURL = $this->renewURL = $url;
-
-			if ($discountCode)
-				{
-				$this->checkoutURL = $this->renewURL = str_replace('/' . $discountCode, '', $url);
-				}
-			}
-		else
-			{
-			$this->renewURL = '/Membership/renew/';
-			$this->checkoutURL = '/Membership/renewCheckout/';
-			}
-
-		return $this;
 		}
 	}

@@ -39,14 +39,15 @@ class Blog extends \PHPFUI\ORM\Table
 	public static function getStoriesForBlog(\App\Record\Blog $blog, bool $signedIn = false, int $year = 0) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$today = \App\Tools\Date::todayString();
-		$sql = 'select s.*,b.blogId,bi.ranking from story s
+		$sql = 'select s.*,b.blogId,bi.*
+			from story s
 			inner join blogItem bi on s.storyId=bi.storyId
 			inner join blog b on b.blogId=bi.blogId
 			where b.blogId=? and (s.startDate<=? or s.startDate is null) and (s.endDate>=? or s.endDate is null)';
 
 		if (! $signedIn)
 			{
-			$sql .= ' and (s.membersOnly=0)';
+			$sql .= ' and (bi.membersOnly=0)';
 			}
 		$input = [$blog->blogId, $today, $today, ];
 
@@ -56,7 +57,7 @@ class Blog extends \PHPFUI\ORM\Table
 			$input[] = "{$year}-01-01";
 			$input[] = "{$year}-12-31";
 			}
-		$sql .= ' order by s.onTop desc, bi.ranking';
+		$sql .= ' order by bi.onTop desc, bi.ranking';
 
 		if ($year)
 			{

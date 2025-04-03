@@ -22,6 +22,7 @@ class Home extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			if ($member->verifiedEmail < 9)
 				{
 				$memberModel = new \App\Model\Member();
+
 				if ($member->verifiedEmail < 2)
 					{
 					$memberModel->sendVerifyEmail($member);

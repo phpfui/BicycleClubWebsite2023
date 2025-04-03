@@ -192,6 +192,7 @@ class Join
 			}
 
 		$verifyCode = $this->memberModel->getVerifyCode($member->password);
+
 		if (\App\Model\Session::checkCSRF() && isset($_POST['submit']))
 			{
 			switch ($_POST['submit'])
@@ -209,6 +210,7 @@ class Join
 					$_POST['pending'] = 1;
 					$this->memberModel->saveFromPost($_POST, false);
 					$this->page->redirect();
+
 					break;
 
 				case 'Join':
@@ -226,6 +228,7 @@ class Join
 
 						return '';
 						}
+
 					break;
 
 				case 'Back':
@@ -234,6 +237,7 @@ class Join
 						$member->verifiedEmail -= 1;
 						}
 					$member->update();
+
 					break;
 				}
 			}

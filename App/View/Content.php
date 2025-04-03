@@ -204,6 +204,9 @@ class Content extends \App\UI\HTMLEditor
 				}
 			else
 				{
+				$editItem = new \PHPFUI\MenuItem('Edit', '/Content/view/' . $storyId);
+				$editItem->setIcon(new \PHPFUI\FAIcon('far', 'edit'));
+				$iconBar->addMenuItem($editItem);
 				$iconBar->addMenuItem($settingsItem);
 				}
 			}
@@ -691,7 +694,7 @@ class Content extends \App\UI\HTMLEditor
 						elseif (empty($blog['storyId']) && isset($activeBlogs[$blog['blogId']])) // was not set, so set it
 							{
 							$blogItem = new \App\Record\BlogItem();
-							$blogItem->setFrom(['blogId' => $blog['blogId'], 'storyId' => $storyId, 'ranking' => 0, ]);
+							$blogItem->setFrom(\array_merge($story->toArray(), ['blogId' => $blog['blogId'], 'ranking' => 0, ]));
 							$blogItem->insert();
 							\App\Table\Blog::renumberBlog($blog['blogId']);  // insert at top of blog and renumber
 							}

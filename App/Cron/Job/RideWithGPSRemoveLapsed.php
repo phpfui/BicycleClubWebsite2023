@@ -24,6 +24,7 @@ class RideWithGPSRemoveLapsed extends \App\Cron\BaseJob
 			}
 
 		$clubMembers = $rwgpsModel->getClubMembers();
+
 		if (empty($clubMembers))
 			{
 			return;

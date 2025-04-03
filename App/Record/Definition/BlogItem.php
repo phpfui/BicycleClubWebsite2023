@@ -7,7 +7,11 @@ namespace App\Record\Definition;
  *
  * @property int $blogId MySQL type int
  * @property \App\Record\Blog $blog related record
+ * @property ?int $membersOnly MySQL type int
+ * @property ?int $noTitle MySQL type int
+ * @property ?int $onTop MySQL type int
  * @property ?int $ranking MySQL type int
+ * @property ?int $showFull MySQL type int
  * @property int $storyId MySQL type int
  * @property \App\Record\Story $story related record
  */
@@ -29,7 +33,11 @@ abstract class BlogItem extends \PHPFUI\ORM\Record
 			{
 			static::$fields = [
 				'blogId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'membersOnly' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'noTitle' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'onTop' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'ranking' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'showFull' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'storyId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 			];
 			}

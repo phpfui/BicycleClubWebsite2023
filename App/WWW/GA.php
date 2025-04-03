@@ -49,6 +49,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				foreach ($events as $event)
 					{
 					$gaRiderTable = new \App\Table\GaRider();
+
 					foreach ($gaRiderTable->getRiderCursor($event) as $rider)
 						{
 						$csvWriter->outputRow($this->processRider($rider));

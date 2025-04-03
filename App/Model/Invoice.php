@@ -321,6 +321,7 @@ class Invoice
 			$invoice->discount = $cartModel->getDiscount();
 			$invoice->discountCodeId = null;
 			$discountCode = $cartModel->getDiscountCode();
+
 			if ($discountCode)
 				{
 				$invoice->discountCode = $discountCode;

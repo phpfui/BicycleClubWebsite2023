@@ -57,13 +57,6 @@ class Member
 		$this->duesModel = new \App\Model\MembershipDues();
 		}
 
-	public function setStoreItemIdType(int $type) : static
-		{
-		$this->storeItemIdType = $type;
-
-		return $this;
-		}
-
 	/**
 	 * @param array<string,mixed> $member
 	 */
@@ -833,6 +826,13 @@ class Member
 		{
 		$permission = $this->settingTable->getStandardPermissionGroup('Normal Member');
 		\App\Table\UserPermission::addPermissionToUser($member->memberId, $permission->permissionId);
+		}
+
+	public function setStoreItemIdType(int $type) : static
+		{
+		$this->storeItemIdType = $type;
+
+		return $this;
 		}
 
 	public function signInMember(string $email, string $password) : string

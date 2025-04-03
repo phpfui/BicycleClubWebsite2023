@@ -1,2 +1,2 @@
 @echo off
-@vendor\bin\php-cs-fixer fix -vv --allow-risky=yes
+vendor\bin\php-cs-fixer fix -vv --allow-risky=yes

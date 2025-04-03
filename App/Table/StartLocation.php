@@ -54,6 +54,8 @@ class StartLocation extends \PHPFUI\ORM\Table
 		$input = ['from' => $from, 'to' => $to, ];
 		$sql = 'update cueSheet set startLocationId=:to where startLocationId=:from';
 		\PHPFUI\ORM::execute($sql, $input);
+		$sql = 'update RWGPS set startLocationId=:to where startLocationId=:from';
+		\PHPFUI\ORM::execute($sql, $input);
 		$sql = 'update ride set startLocationId=:to where startLocationId=:from';
 		\PHPFUI\ORM::execute($sql, $input);
 

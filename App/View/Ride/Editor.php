@@ -626,9 +626,10 @@ class Editor
 			$fieldSet->add($optionalColumns);
 			}
 
+		$RWGPS = new \App\Record\RWGPS($ride->RWGPSId);
 		if ($this->page->isAuthorized('Add / Update RWGPS'))
 			{
-			$RWGPSId = new \PHPFUI\Input\Url('RWGPSurl', 'Ride With GPS Link', $ride->RWGPS->routeLink());
+			$RWGPSId = new \PHPFUI\Input\Url('RWGPSurl', 'Ride With GPS Link', $RWGPS->routeLink());
 			$ajax = new \PHPFUI\AJAX('changeRWGPS');
 			$js = 'if(data.response.miles)$("#' . $this->mileageSelectorId . '").val(data.response.miles);';
 			$js .= '$("#' . $RWGPSId->getId() . '").val(data.response.RWGPSId);';
@@ -636,7 +637,7 @@ class Editor
 			}
 		else
 			{
-			$rwgpsPicker = new \App\UI\RWGPSPicker($this->page, 'RWGPSId', 'RWGPS (start typing to search)', $ride->RWGPS);
+			$rwgpsPicker = new \App\UI\RWGPSPicker($this->page, 'RWGPSId', 'RWGPS (start typing to search)', $RWGPS);
 			$RWGPSId = $rwgpsPicker->getEditControl();
 			$hidden = $RWGPSId->getHiddenField();
 			$ajax = new \PHPFUI\AJAX('changeRWGPSId');

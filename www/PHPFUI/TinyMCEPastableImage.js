@@ -42,7 +42,7 @@ function blobToDataURL(blob) {
  * @returns {Promise<string>} A promise that resolves with the modified HTML string.
  * @throws {Error} If parsing fails or other critical errors occur.
  */
-function uploadImages(htmlString) {
+async function uploadImage(htmlString, storyId, csrf) {
 
   // Use DOMParser to safely parse the HTML string into a document
   const parser = new DOMParser();
@@ -52,7 +52,6 @@ function uploadImages(htmlString) {
   const blobImages = doc.querySelectorAll('img[src^="blob:"]');
 
   if (blobImages.length === 0) {
-    console.log("No images with blob: src found in the HTML string.");
     // Return the original string if no changes are needed
     return htmlString;
   }
@@ -75,56 +74,57 @@ function uploadImages(htmlString) {
 
       // 2. Convert the Blob object to a Base64 Data URL string
       const base64ImageData = await blobToDataURL(blobData);
+			if (storyId > 0) // save it as a url if it is a story
+				{
 
-      // 3. Prepare the JSON payload
-      const payload = {
-        imageData: base64ImageData, // Key 'imageData' expected by API
-				action: 'saveStoryImage',
-				storyId: 10
-      };
+				// 3. Prepare the JSON payload
+				const payload = {};
+				payload['imageData'] = base64ImageData;
+				payload['action'] = 'saveStoryImage';
+				payload['storyId'] = storyId;
+				payload['csrf'] = csrf;
 
-      // 4. Upload the Base64 data (in JSON) to the server API
-      const apiResponse = await fetch('/saveImage.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', // Indicate we're sending JSON
-          'Accept': 'application/json' // Indicate we expect JSON back
-        },
-        body: JSON.stringify(payload), // Send the JSON string
-      });
+				// 4. Upload the Base64 data (in JSON) to the server API
+				const apiResponse = await fetch('/saveImage.php', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json', // Indicate we're sending JSON
+						'Accept': 'application/json' // Indicate we expect JSON back
+					},
+					body: JSON.stringify(payload), // Send the JSON string
+				});
 
-      if (!apiResponse.ok) {
-        // Attempt to get more specific error from API response body if possible
-        let errorText = `API Error: ${apiResponse.status} ${apiResponse.statusText}`;
-        try {
-            const errorBody = await apiResponse.text(); // Try reading as text first
-             // Check if it's JSON before trying to parse
-            try {
-                const errorJson = JSON.parse(errorBody);
-                errorText += ` - ${JSON.stringify(errorJson)}`;
-            } catch (jsonError) {
-                errorText += ` - ${errorBody}`; // Append raw text if not JSON
-            }
-        } catch (_) { /* Ignore if reading body fails */ }
-        throw new Error(errorText);
-      }
+				if (!apiResponse.ok) {
+					// Attempt to get more specific error from API response body if possible
+					let errorText = `API Error: ${apiResponse.status} ${apiResponse.statusText}`;
+					try {
+							const errorBody = await apiResponse.text(); // Try reading as text first
+							 // Check if it's JSON before trying to parse
+							try {
+									const errorJson = JSON.parse(errorBody);
+									errorText += ` - ${JSON.stringify(errorJson)}`;
+							} catch (jsonError) {
+									errorText += ` - ${errorBody}`; // Append raw text if not JSON
+							}
+					} catch (_) { /* Ignore if reading body fails */ }
+					throw new Error(errorText);
+				}
 
-      // 5. Parse the JSON response from the API
-      const result = await apiResponse.json();
+				// 5. Parse the JSON response from the API
+				const result = await apiResponse.json();
 
-			console.log(result);
-      // 6. Extract the new URL and update the image src in the parsed document
-      if (result && result.url) {
-        console.log(`API returned new URL: ${result.url}. Updating src for ${blobUrl}`);
-        imgElement.setAttribute('src', result.url); // Update src with the URL from API
-      } else {
-        throw new Error('API response did not contain a valid "url" property.');
-      }
+				// 6. Extract the new URL and update the image src in the parsed document
+				if (result && result.url) {
+					imgElement.setAttribute('src', result.url); // Update src with the URL from API
+				} else {
+					throw new Error('API response did not contain a valid "url" property.');
+				}
+			}
 
-    } catch (error) {
-      console.error(`Failed to process blob URL ${blobUrl}:`, error);
-      // Image src in the parsed doc will remain the original blob URL on error
-    }
+		} catch (error) {
+			console.error(`Failed to process blob URL ${blobUrl}:`, error);
+			// Image src in the parsed doc will remain the original blob URL on error
+		}
   }); // End of map function
 
   // Wait for all upload and update attempts to complete
@@ -137,3 +137,4 @@ function uploadImages(htmlString) {
 
   return modifiedHtmlString;
 }
+

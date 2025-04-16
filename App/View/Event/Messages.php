@@ -46,8 +46,8 @@ class Messages
 			$form->add($fieldSet);
 			$fieldSet = new \PHPFUI\FieldSet('Payment Instructions');
 			$value = $this->settingTable->value($type . 'Instructions');
-			$textarea = new \PHPFUI\Input\TextArea($type . 'Instructions', '', $value);
-			$textarea->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+			$textarea = new \App\UI\TextAreaImage($type . 'Instructions', '', $value);
+			$textarea->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\Setting()->getLength('value')));
 			$fieldSet->add($textarea);
 			$form->add($fieldSet);
 			$buttonGroup = new \App\UI\CancelButtonGroup();

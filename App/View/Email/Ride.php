@@ -105,8 +105,8 @@ class Ride implements \Stringable
 				$leadersOnly->setToolTip('This will limit the email to just other ride leaders who have signed up for this ride.');
 				$fieldSet->add($leadersOnly);
 				}
-			$message = new \PHPFUI\Input\TextArea('message', 'Message');
-			$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+			$message = new \App\UI\TextAreaImage('message', 'Message');
+			$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\MailItem()->getLength('body')));
 			$message->setToolTip('So what is on your mind?');
 			$message->addAttribute('placeholder', 'So what is on your mind?');
 			$message->setRequired();

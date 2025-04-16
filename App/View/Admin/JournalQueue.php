@@ -56,8 +56,8 @@ class JournalQueue
 		$form->setAreYouSure(false);
 		$form->add(new \PHPFUI\Input\Hidden('journalItemId', $item['journalItemId']));
 		$form->add(new \PHPFUI\Input\Text('title', 'Email Title', $item['title']));
-		$textArea = new \PHPFUI\Input\TextArea('body', 'Email Body', $item['body']);
-		$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$textArea = new \App\UI\TextAreaImage('body', 'Email Body', $item['body']);
+		$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\JournalItem()->getLength('body')));
 		$form->add($textArea);
 		$submit = new \PHPFUI\Submit('Save');
 		$form->add($modal->getButtonAndCancel($submit));

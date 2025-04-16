@@ -58,9 +58,9 @@ class MainMessage
 			$subject->setToolTip('You can the above fields here to insert text specific to the event.');
 			$fieldSet->add($subject);
 			$value = $this->settingTable->value($type . 'Body');
-			$textarea = new \PHPFUI\Input\TextArea($type . 'Body', 'Email Body', $value);
+			$textarea = new \App\UI\TextAreaImage($type . 'Body', 'Email Body', $value);
 			$textarea->setToolTip('You can use ~instructions~ to include payment instructions as well as all the above fields.');
-			$textarea->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+			$textarea->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\Setting()->getLength('value')));
 			$fieldSet->add($textarea);
 			$form->add($fieldSet);
 			$buttonGroup = new \App\UI\CancelButtonGroup();

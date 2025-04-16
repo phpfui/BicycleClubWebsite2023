@@ -221,8 +221,8 @@ class Leader
 		$form->add($multiColumn);
 
 		$fields[] = $field = 'PacePicker';
-		$value = $settingTable->value($field);
-		$pacePicker = new \PHPFUI\Input\RadioGroup($field, 'Category Picker Type', $value);
+		$value = (int)$settingTable->value($field);
+		$pacePicker = new \PHPFUI\Input\RadioGroup($field, 'Category Picker Type', "{$value}");
 		$pacePicker->addButton('Combined Category/Pace Picker', (string)0);
 		$pacePicker->addButton('Separate Category and Pace Picker', (string)1);
 		$pacePicker->setToolTip('The combined picker will show one long list, the separate pickers show only the paces for the chosen category.');
@@ -239,9 +239,9 @@ class Leader
 
 		$fields[] = $field = 'unaffiliatedMessage';
 		$value = $settingTable->value($field);
-		$textArea = new \PHPFUI\Input\TextArea($field, 'Ride Schedule Unaffiliated Message', $value);
+		$textArea = new \App\UI\TextAreaImage($field, 'Ride Schedule Unaffiliated Message', $value);
 		$textArea->setToolTip('This message will be displayed at the end of the ride schedule if any rides listed are unaffiliated, but will not otherwise appear.');
-		$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea(['height' => '"13em"']));
+		$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\Setting()->getLength('value'), ['height' => '"20em"']));
 		$form->add($textArea);
 		$form->add('<br>');
 

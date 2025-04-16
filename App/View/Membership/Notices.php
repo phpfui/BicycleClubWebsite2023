@@ -78,8 +78,8 @@ class Notices
 		$fieldSet->add(new \PHPFUI\MultiColumn($fields, $dayOffsets));
 		$form->add($fieldSet);
 
-		$message = new \PHPFUI\Input\TextArea('body', 'Email Text', $notice->body ?? '');
-		$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$message = new \App\UI\TextAreaImage('body', 'Email Text', $notice->body ?? '');
+		$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea($notice->getLength('body')));
 		$message->setToolTip('Use can use any substitition field from the substitution tab.');
 		$message->setRequired();
 		$tabs = new \PHPFUI\Tabs();

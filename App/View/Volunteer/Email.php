@@ -125,9 +125,9 @@ class Email
 		$title = new \PHPFUI\Input\Text('title', 'Title', $post['title'] ?? '');
 		$title->setRequired();
 		$fieldSet->add($title);
-		$message = new \PHPFUI\Input\TextArea('message', 'Message', $post['message'] ?? '');
+		$message = new \App\UI\TextAreaImage('message', 'Message', $post['message'] ?? '');
 		$message->addAttribute('placeholder', 'Message to volunteers');
-		$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\MailItem()->getLength('body')));
 		$message->setRequired();
 		$fieldSet->add($message);
 		$attachment = new \PHPFUI\Input\File($this->page, 'attachment', 'Attach a File');

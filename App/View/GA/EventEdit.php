@@ -159,8 +159,8 @@ class EventEdit
 		{
 		$container = new \PHPFUI\Container();
 
-		$description = new \PHPFUI\Input\TextArea('description', 'Event Description', \str_replace("\n", '<br>', $event->description ?? ''));
-		$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$description = new \App\UI\TextAreaImage('description', 'Event Description', \str_replace("\n", '<br>', $event->description ?? ''));
+		$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea($event->getLength('description')));
 		$description->setToolTip('This description will be shown on the web site where people go to sign up. It will also be included on confirmation emails.');
 		$container->add($description);
 
@@ -377,9 +377,9 @@ class EventEdit
 		{
 		$container = new \PHPFUI\Container();
 
-		$signupMessage = new \PHPFUI\Input\TextArea('signupMessage', 'Email on Sign Up', \str_replace("\n", '<br>', $event->signupMessage ?? ''));
+		$signupMessage = new \App\UI\TextAreaImage('signupMessage', 'Email on Sign Up', \str_replace("\n", '<br>', $event->signupMessage ?? ''));
 		$signupMessage->setToolTip('This will be sent to people who successfully register for the event.');
-		$signupMessage->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$signupMessage->htmlEditing($this->page, new \App\Model\TinyMCETextArea($event->getLength('signupMessage')));
 		$container->add($signupMessage);
 
 		if ($event->gaEventId)
@@ -398,9 +398,9 @@ class EventEdit
 		{
 		$container = new \PHPFUI\Container();
 
-		$signupMessage = new \PHPFUI\Input\TextArea('waiver', 'Rider Waiver', \str_replace("\n", '<br>', $event->waiver ?? ''));
+		$signupMessage = new \App\UI\TextAreaImage('waiver', 'Rider Waiver', \str_replace("\n", '<br>', $event->waiver ?? ''));
 		$signupMessage->setToolTip('Riders must agree to this waiver to continue registration.');
-		$signupMessage->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$signupMessage->htmlEditing($this->page, new \App\Model\TinyMCETextArea($event->getLength('waiver')));
 		$container->add($signupMessage);
 
 		return $container;

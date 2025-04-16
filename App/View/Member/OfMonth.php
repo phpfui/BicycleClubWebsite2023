@@ -52,8 +52,8 @@ class OfMonth
 		$multiColumn->add($memberEdit);
 		$multiColumn->add($monthPicker);
 		$fieldSet->add($multiColumn);
-		$bio = new \PHPFUI\Input\TextArea('bio', 'Write Up', $memberOfMonth->bio);
-		$bio->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$bio = new \App\UI\TextAreaImage('bio', 'Write Up', $memberOfMonth->bio);
+		$bio->htmlEditing($this->page, new \App\Model\TinyMCETextArea($memberOfMonth->getLength('bio')));
 		$bio->setRequired();
 		$fieldSet->add($bio);
 		$form->add($fieldSet);

@@ -2,7 +2,7 @@
 
 namespace App\UI;
 
-class HTMLEditor
+class ContentEditor
 	{
 	protected \App\Model\TinyMCEInline $tinyMCE;
 

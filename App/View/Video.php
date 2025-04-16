@@ -111,8 +111,8 @@ class Video extends \App\View\Folder
 		$title->setRequired();
 		$fieldSet->add($title);
 
-		$description = new \PHPFUI\Input\TextArea('description', 'Description', \PHPFUI\TextHelper::unhtmlentities($video->description));
-		$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$description = new \App\UI\TextAreaImage('description', 'Description', \PHPFUI\TextHelper::unhtmlentities($video->description));
+		$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea($video->getLength('description')));
 		$description->setRequired();
 		$fieldSet->add($description);
 

@@ -89,11 +89,11 @@ class EmailQueue
 		$form->setAreYouSure(false);
 		$form->add(new \PHPFUI\Input\Hidden('mailItemId', $mailItem['mailItemId']));
 		$form->add(new \PHPFUI\Input\Text('title', 'Email Title', $mailItem['title']));
-		$textArea = new \PHPFUI\Input\TextArea('body', 'Email Body', $mailItem['body']);
+		$textArea = new \App\UI\TextAreaImage('body', 'Email Body', $mailItem['body']);
 
 		if ($mailItem['html'])
 			{
-			$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+			$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\MailItem()->getLength('body')));
 			}
 		$form->add($textArea);
 		$submit = new \PHPFUI\Submit('Save');

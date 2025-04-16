@@ -61,6 +61,7 @@ class Members implements \Stringable
 			$settings = new \App\Table\Setting();
 			$link = $settings->value('homePage');
 			$message = \App\Tools\TextHelper::cleanUserHtml($_POST['message']) . "<p>This email was sent to all members from <a href='{$link}'>{$link}</a> by {$name} {$emailAddress} ";
+			$message = $_POST['message'] . "<p>This email was sent to all members from <a href='{$link}'>{$link}</a> by {$name} {$emailAddress} ";
 			$message .= \PHPFUI\Link::phone($phone);
 			$message .= "</p><p>You can edit your email preferences <a href='{$link}/Membership/myNotifications'>here</a>";
 			$message .= " or <a href='{$link}/Membership/~unsubscribe~'>Unsubscribe Here</a></p>";
@@ -232,8 +233,8 @@ class Members implements \Stringable
 		$subject->setRequired();
 		$subject->addAttribute('placeholder', 'Email Subject');
 		$fieldSet->add($subject);
-		$message = new \PHPFUI\Input\TextArea('message', 'Message', $this->parameters['message'] ?? '');
-		$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$message = new \App\UI\TextAreaImage('message', 'Message', $this->parameters['message'] ?? '');
+		$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\MailItem()->getLength('body')));
 		$message->addAttribute('placeholder', 'Message to all members?');
 		$message->setRequired();
 		$fieldSet->add($message);

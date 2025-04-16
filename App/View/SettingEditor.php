@@ -22,11 +22,11 @@ class SettingEditor implements \Stringable
 		else
 			{
 			$fieldSet = new \PHPFUI\FieldSet('Message');
-			$textarea = new \PHPFUI\Input\TextArea($this->settingName, '', $settingTable->value($this->settingName));
+			$textarea = new \App\UI\TextAreaImage($this->settingName, '', $settingTable->value($this->settingName));
 
 			if ($this->html)
 				{
-				$textarea->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+				$textarea->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\Setting()->getLength('value')));
 				}
 
 			$textarea->setRequired();

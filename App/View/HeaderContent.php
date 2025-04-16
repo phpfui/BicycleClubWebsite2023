@@ -33,8 +33,8 @@ class HeaderContent
 
 		$tabs = new \PHPFUI\Tabs();
 		$tabs->addTab('Details', $this->getDetailsTab($headerContent), true);
-		$htmlEditor = new \PHPFUI\Input\TextArea('content', 'Header Content', $headerContent->content);
-		$htmlEditor->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$htmlEditor = new \App\UI\TextAreaImage('content', 'Header Content', $headerContent->content);
+		$htmlEditor->htmlEditing($this->page, new \App\Model\TinyMCETextArea($headerContent->getLength('content')));
 		$tabs->addTab('HTML', $htmlEditor);
 		$tabs->addTab('CSS', new \PHPFUI\Input\TextArea('css', 'Header CSS', $headerContent->css));
 		$tabs->addTab('JavaScript', new \PHPFUI\Input\TextArea('javaScript', 'Header JavaScript', $headerContent->javaScript));

@@ -90,8 +90,8 @@ class Forum
 
 		$fieldSet->add(new \PHPFUI\MultiColumn($closed, $attachments, $formerMembers));
 
-		$description = new \PHPFUI\Input\TextArea('description', 'Forum Description', $forum->description);
-		$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$description = new \App\UI\TextAreaImage('description', 'Forum Description', $forum->description);
+		$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea($forum->getLength('description')));
 		$description->setRequired();
 		$description->setToolTip('Description of the group displayed on the forum\'s home page.');
 		$fieldSet->add($description);
@@ -131,8 +131,8 @@ class Forum
 		$textMessage = new \PHPFUI\Input\TextArea('textMessage', 'Text Message', $message->textMessage);
 		$textMessage->setRequired();
 		$fieldSet->add($textMessage);
-		$htmlMessage = new \PHPFUI\Input\TextArea('htmlMessage', 'HTML Message', $message->htmlMessage);
-		$htmlMessage->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$htmlMessage = new \App\UI\TextAreaImage('htmlMessage', 'HTML Message', $message->htmlMessage);
+		$htmlMessage->htmlEditing($this->page, new \App\Model\TinyMCETextArea($message->getLength('htmlMessage')));
 		$htmlMessage->setRequired();
 		$fieldSet->add($htmlMessage);
 		$form->add($fieldSet);

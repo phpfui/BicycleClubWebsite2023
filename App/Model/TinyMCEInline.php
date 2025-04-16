@@ -10,6 +10,7 @@ class TinyMCEInline implements \PHPFUI\Interfaces\HTMLEditor
 		'menubar' => true,
 		'relative_urls' => false,
 		'entity_encoding' => 'raw',
+		'paste_data_images' => true,
 		'paste_auto_cleanup_on_paste' => true,
 		'defaultContent' => '&#8203;',
 		'remove_script_host' => false,
@@ -72,5 +73,6 @@ class TinyMCEInline implements \PHPFUI\Interfaces\HTMLEditor
 	public function updatePage(\PHPFUI\Interfaces\Page $page, string $id) : void
 		{
 		$page->addTailScript('tinymce/tinymce.min.js');
+		$page->addTailScript('/PHPFUI/TinyMCEPastableImage.js');
 		}
 	}

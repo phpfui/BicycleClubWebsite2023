@@ -4,7 +4,7 @@ namespace App\View\Store;
 
 class Edit
 	{
-	private readonly \PHPFUI\Input\TextArea $description;
+	private readonly \App\UI\TextAreaImage $description;
 
 	private readonly \App\Table\StorePhoto $storePhotoTable;
 
@@ -14,8 +14,8 @@ class Edit
 		{
 		$this->thumbModel = new \App\Model\StoreImages();
 		$this->storePhotoTable = new \App\Table\StorePhoto();
-		$this->description = new \PHPFUI\Input\TextArea('description', 'Description');
-		$this->description->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$this->description = new \App\UI\TextAreaImage('description', 'Description');
+		$this->description->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\StoreItem()->getLength('description')));
 
 		if (\App\Model\Session::checkCSRF() && isset($_POST['action']))
 			{

@@ -34,7 +34,7 @@ class Test extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$fieldSet = new \PHPFUI\FieldSet('Enter Emojis and press Send');
 		$fieldSet->add(new \PHPFUI\Input\Text('emojiText', 'Normal Text Box', $this->page->value('emojiText')));
 		$fieldSet->add(new \PHPFUI\Input\TextArea('emojiTextArea', 'Normal Text Area', $this->page->value('emojiTextArea')));
-		$html = new \PHPFUI\Input\TextArea('emojiHtmlEditor', 'HTML Editor Area', $this->page->value('emojiHtmlEditor'));
+		$html = new \App\UI\TextAreaImage('emojiHtmlEditor', 'HTML Editor Area', $this->page->value('emojiHtmlEditor'));
 		$html->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
 		$fieldSet->add($html);
 
@@ -49,12 +49,6 @@ class Test extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$captcha = new \PHPFUI\ReCAPTCHA($this->page, $this->settingTable->value('ReCAPTCHAPublicKey'), $this->settingTable->value('ReCAPTCHAPrivateKey'));
 		$this->page->addPageContent($this->getForm($captcha));
 		}
-
-//	public function recaptchaInvisible() : void
-//		{
-//		$this->page->addHeader('Google ReCaptcha V2 Invisible');
-//		$this->page->addPageContent($this->getForm());
-//		}
 
 	public function recaptchaMath() : void
 		{

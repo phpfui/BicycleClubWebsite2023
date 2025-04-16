@@ -36,6 +36,7 @@
         "phpfui/common": "dev-main",
         "phpfui/constantcontact": "dev-main",
         "phpfui/icalendar": "^1.0",
+        "phpfui/php-imap": "dev-main",
         "phpfui/instadoc": "^1.0",
         "phpfui/orm": "^2.0",
         "phpfui/phpfui": "^6.2",
@@ -50,7 +51,6 @@
         "tinify/tinify": "*",
         "tinymce/tinymce": "^7.0",
         "twilio/sdk": "^8.0",
-        "phpfui/php-imap": "dev-main",
         "zbateson/mail-mime-parser": "^3.0"
     },
     "require-dev": {

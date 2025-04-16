@@ -6,7 +6,7 @@ class Editor
 	{
 	private string $cueSheetSelectorId;
 
-	private readonly \PHPFUI\Input\TextArea $description;
+	private readonly \App\UI\TextAreaImage $description;
 
 	private \PHPFUI\Input\Number $elevation;
 
@@ -20,8 +20,8 @@ class Editor
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
-		$this->description = new \PHPFUI\Input\TextArea('description', 'Description');
-		$textArea = new \App\Model\TinyMCETextArea();
+		$this->description = new \App\UI\TextAreaImage('description', 'Description');
+		$textArea = new \App\Model\TinyMCETextArea(new \App\Record\Ride()->getLength('description'));
 		$ems = (int)$this->page->value('RideDescriptionEms');
 
 		if ($ems < 13)
@@ -387,7 +387,7 @@ class Editor
 						$parameters['RWGPSId'] = $cueSheet->RWGPSId;
 						$parameters['memberId'] = \App\Model\Session::signedInMemberId();
 						$parameters['description'] = $cueSheet->description;
-						$parameters['elevation'] = \round($cueSheet->RWGPS->elevationFeet ?? 0.0);
+						$parameters['elevation'] = (int)\round($cueSheet->RWGPS->elevationFeet ?? 0);
 						$parameters['mileage'] = $cueSheet->mileage;
 						$parameters['startLocationId'] = $cueSheet->startLocationId;
 						$parameters['title'] = $cueSheet->name;
@@ -404,7 +404,7 @@ class Editor
 						$parameters['memberId'] = \App\Model\Session::signedInMemberId();
 						$parameters['RWGPSId'] = $rwgps->RWGPSId;
 						$parameters['description'] = $rwgps->description;
-						$parameters['elevation'] = $rwgps->elevationFeet;
+						$parameters['elevation'] = (int)\round($rwgps->elevationFeet);
 						$parameters['mileage'] = $rwgps->miles;
 						$parameters['title'] = $rwgps->title;
 						$parameters = $this->cleanParameters($parameters);
@@ -475,7 +475,7 @@ class Editor
 
 							if ($elevation > 0)
 								{
-								$rwgps->elevationFeet = (float)\round($elevation);
+								$rwgps->elevationFeet = (int)\round($elevation);
 								}
 							$rwgps->miles = (float)\number_format($rwgps->miles ?? 0.0, 1);
 							$data = $rwgps->toArray();
@@ -496,7 +496,7 @@ class Editor
 
 							if ($elevation > 0)
 								{
-								$rwgps->elevationFeet = (float)\round($elevation);
+								$rwgps->elevationFeet = (int)\round($elevation);
 								}
 							}
 						else
@@ -655,7 +655,7 @@ class Editor
 			$multiColumn->add($this->elevation);
 			}
 		$fieldSet->add($multiColumn);
-		$js .= 'if(data.response.elevationFeet)$("#' . $this->elevation->getId() . '").val(data.response.elevationFeet);';
+		$js .= 'if(data.response.elevationFeet)$("#' . $this->elevation->getId() . '").val(Math.round(data.response.elevationFeet));';
 		$ajax->addFunction('success', $js);
 		$this->page->addJavaScript($ajax->getPageJS());
 

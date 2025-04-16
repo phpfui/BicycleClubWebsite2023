@@ -91,8 +91,8 @@ class Email implements \Stringable
 		$pending = new \PHPFUI\Input\CheckBoxBoolean('pending', 'Just Send to Unpaid Riders');
 		$pending->setToolTip('If checked, the email will only go to riders who have signed up, but not paid. Otherwise it only goes to paid riders.');
 		$fieldSet->add($pending);
-		$message = new \PHPFUI\Input\TextArea('message', 'Message', $this->parameters['message'] ?? '');
-		$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$message = new \App\UI\TextAreaImage('message', 'Message', $this->parameters['message'] ?? '');
+		$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\MailItem()->getLength('body')));
 		$message->addAttribute('placeholder', 'Message to all riders');
 		$message->setRequired();
 		$fieldSet->add($message);

@@ -61,29 +61,29 @@ class Waiver implements \Stringable
 			{
 			$waiverHeader = $settings->value($waiverHeaderField);
 			$fieldset = new \PHPFUI\FieldSet('Waiver Acceptance Page Header');
-			$textArea = new \PHPFUI\Input\TextArea($waiverHeaderField, 'Text displayed on page, but not in Waiver', $waiverHeader);
-			$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+			$textArea = new \App\UI\TextAreaImage($waiverHeaderField, 'Text displayed on page, but not in Waiver', $waiverHeader);
+			$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\Setting()->getLength('value')));
 			$fieldset->add($textArea);
 			$form->add($fieldset);
 
 			$waiver = $settings->value($waiverTextField);
 			$fieldset = new \PHPFUI\FieldSet('Waiver Text');
-			$textArea = new \PHPFUI\Input\TextArea($waiverTextField, 'This text will be shown to all new members and existing members each year', $waiver);
-			$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+			$textArea = new \App\UI\TextAreaImage($waiverTextField, 'This text will be shown to all new members and existing members each year', $waiver);
+			$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\Setting()->getLength('value')));
 			$fieldset->add($textArea);
 			$form->add($fieldset);
 
 			$waiver = $settings->value($nonMemberWaiverTextField);
 			$fieldset = new \PHPFUI\FieldSet('Non Member Waiver Text');
-			$textArea = new \PHPFUI\Input\TextArea($nonMemberWaiverTextField, 'This text will be used for non-members', $waiver);
-			$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+			$textArea = new \App\UI\TextAreaImage($nonMemberWaiverTextField, 'This text will be used for non-members', $waiver);
+			$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\Setting()->getLength('value')));
 			$fieldset->add($textArea);
 			$form->add($fieldset);
 
 			$waiver = $settings->value($minorWaiverTextField);
 			$fieldset = new \PHPFUI\FieldSet('Minor Waiver Text');
-			$textArea = new \PHPFUI\Input\TextArea($minorWaiverTextField, 'Minor release waiver text. Printed on the minor release form.', $waiver);
-			$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+			$textArea = new \App\UI\TextAreaImage($minorWaiverTextField, 'Minor release waiver text. Printed on the minor release form.', $waiver);
+			$textArea->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\Setting()->getLength('value')));
 			$fieldset->add($textArea);
 			$form->add($fieldset);
 

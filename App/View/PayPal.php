@@ -187,8 +187,8 @@ PAYPAL
 		$callout = new \PHPFUI\Callout('info');
 		$callout->add('These are instructions to the user when shown the PayPal buttons.  Not required but can avoid stupid user questions.');
 		$fieldSet->add($callout);
-		$editor = new \PHPFUI\Input\TextArea('PayPal_instructions', '', $this->paypalModel->getInstructions());
-		$editor->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$editor = new \App\UI\TextAreaImage('PayPal_instructions', '', $this->paypalModel->getInstructions());
+		$editor->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\Setting()->getLength('value')));
 		$fieldSet->add($editor);
 
 		return $fieldSet;
@@ -236,8 +236,8 @@ PAYPAL
 		$callout = new \PHPFUI\Callout('info');
 		$callout->add('These are the club terms and conditions for using PayPal. Not required but can help avoid PayPal charge backs if users contact the club first instead of PayPal.');
 		$fieldSet->add($callout);
-		$editor = new \PHPFUI\Input\TextArea('PayPalTerm', '', $this->paypalModel->getTermsAndConditions());
-		$editor->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$editor = new \App\UI\TextAreaImage('PayPalTerm', '', $this->paypalModel->getTermsAndConditions());
+		$editor->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\Setting()->getLength('value')));
 		$fieldSet->add($editor);
 
 		return $fieldSet;

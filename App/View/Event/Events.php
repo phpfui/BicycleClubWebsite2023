@@ -199,21 +199,21 @@ class Events
 		$infoFieldSet->add(new \PHPFUI\MultiColumn($requireComment, $showRegistered, $showComments));
 		$informationTab->add($infoFieldSet);
 
-		$information = new \PHPFUI\Input\TextArea('information', 'General Information', \str_replace("\n", '<div></div>', $event->information ?? ''));
-		$information->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$information = new \App\UI\TextAreaImage('information', 'General Information', \str_replace("\n", '<div></div>', $event->information ?? ''));
+		$information->htmlEditing($this->page, new \App\Model\TinyMCETextArea($event->getLength('information')));
 		$informationTab->add($information);
 		$tabs->addTab('General Information', $informationTab);
 
-		$location = new \PHPFUI\Input\TextArea('location', 'Location of Venue', \str_replace("\n", '<div></div>', $event->location ?? ''));
-		$location->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$location = new \App\UI\TextAreaImage('location', 'Location of Venue', \str_replace("\n", '<div></div>', $event->location ?? ''));
+		$location->htmlEditing($this->page, new \App\Model\TinyMCETextArea($event->getLength('location')));
 		$tabs->addTab('Location', $location);
 
 
 		$directions = new \PHPFUI\Container();
 		$directionsUrl = new \PHPFUI\Input\Url('directionsUrl', 'Directions Link', $event->directionsUrl);
 		$directions->add($directionsUrl);
-		$additionalInfo = new \PHPFUI\Input\TextArea('additionalInfo', 'Directions to Venue', \str_replace("\n", '<div></div>', $event->additionalInfo ?? ''));
-		$additionalInfo->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$additionalInfo = new \App\UI\TextAreaImage('additionalInfo', 'Directions to Venue', \str_replace("\n", '<div></div>', $event->additionalInfo ?? ''));
+		$additionalInfo->htmlEditing($this->page, new \App\Model\TinyMCETextArea($event->getLength('additionalInfo')));
 		$directions->add($additionalInfo);
 		$tabs->addTab('Directions', $directions);
 

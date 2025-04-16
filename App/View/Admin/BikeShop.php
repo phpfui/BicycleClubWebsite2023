@@ -87,9 +87,9 @@ class BikeShop
 		$form->add($fieldSet);
 
 		$fieldSet = new \PHPFUI\FieldSet('Notes');
-		$notes = new \PHPFUI\Input\TextArea('notes', 'Notes', $bikeShop->notes);
+		$notes = new \App\UI\TextAreaImage('notes', 'Notes', $bikeShop->notes);
 		$notes->setRows(3)->setAttribute('maxlength', (string)255);
-		$notes->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$notes->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\BikeShop()->getLength('notes')));
 		$fieldSet->add($notes);
 		$form->add($fieldSet);
 		$buttonGroup = new \App\UI\CancelButtonGroup();

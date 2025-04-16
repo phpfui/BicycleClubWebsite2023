@@ -67,8 +67,8 @@ class Board
 			$title = new \PHPFUI\Input\Text('title', 'Board Position', $board->title);
 			$title->setRequired();
 			$fieldSet->add($title);
-			$description = new \PHPFUI\Input\TextArea('description', 'Profile Information', $board->description);
-			$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+			$description = new \App\UI\TextAreaImage('description', 'Profile Information', $board->description);
+			$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea($board->getLength('description')));
 			$fieldSet->add($description);
 			$form->add($fieldSet);
 			$addPhotoButton = new \PHPFUI\Button('Add Photo');

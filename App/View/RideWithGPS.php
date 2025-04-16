@@ -277,12 +277,12 @@ class RideWithGPS
 			if ($this->metric)
 				{
 				$fieldSet->add(new \App\UI\Display('Distance (km)', $rwgps->km ?? 0));
-				$fieldSet->add(new \App\UI\Display('Elevation (m)', \round($rwgps->elevationMeters ?? 0)));
+				$fieldSet->add(new \App\UI\Display('Elevation (m)', (int)\round($rwgps->elevationMeters ?? 0)));
 				}
 			else
 				{
 				$fieldSet->add(new \App\UI\Display('Mileage', $rwgps->miles ?? 0));
-				$fieldSet->add(new \App\UI\Display('Elevation (ft)', \round($rwgps->elevationFeet ?? 0)));
+				$fieldSet->add(new \App\UI\Display('Elevation (ft)', (int)\round($rwgps->elevationFeet ?? 0)));
 				}
 			$fieldSet->add(new \App\UI\Display('Town', $rwgps->town));
 			$fieldSet->add(new \App\UI\Display('State', $rwgps->state));
@@ -430,7 +430,7 @@ class RideWithGPS
 				++$mileageCount;
 				}
 
-			if ($rwgps->elevationFeet > 0)
+			if ($rwgps->elevationFeet > 0.0)
 				{
 				if ($this->metric)
 					{

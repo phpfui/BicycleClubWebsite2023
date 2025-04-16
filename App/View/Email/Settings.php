@@ -16,7 +16,7 @@ class Settings implements \Stringable
 	public function __construct(private readonly \App\View\Page $page, private readonly string $settingName, private readonly \App\DB\Interface\EmailData $data)
 		{
 		$this->settingTable = new \App\Table\Setting();
-		$this->htmlEditor = new \App\Model\TinyMCETextArea();
+		$this->htmlEditor = new \App\Model\TinyMCETextArea(new \App\Record\Setting()->getLength('value'));
 		}
 
 	public function __toString() : string
@@ -51,8 +51,8 @@ class Settings implements \Stringable
 			$fieldSet = new \PHPFUI\FieldSet('Email body');
 			$value = $this->settingTable->value($this->settingName);
 			$value = \str_replace("\n", '<div></div>', $value);
-			$textarea = new \PHPFUI\Input\TextArea('value', '', $value);
-			$textarea->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+			$textarea = new \App\UI\TextAreaImage('value', '', $value);
+			$textarea->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\Setting()->getLength('value')));
 			$fieldSet->add($textarea);
 			$form->add($fieldSet);
 			$buttonGroup = new \App\UI\CancelButtonGroup();

@@ -87,9 +87,9 @@ class Polls
 		$form->add(new \PHPFUI\Input\Hidden('pollId', (string)$poll->pollId));
 		$form->add(new \PHPFUI\Input\Hidden('memberId', (string)$poll->memberId));
 		$questionGroup = new \PHPFUI\FieldSet('Question');
-		$question = new \PHPFUI\Input\TextArea('question', '', $poll->question);
+		$question = new \App\UI\TextAreaImage('question', '', $poll->question);
 		$question->setRequired();
-		$question->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$question->htmlEditing($this->page, new \App\Model\TinyMCETextArea($poll->getLength('question')));
 		$questionGroup->add($question);
 		$form->add($questionGroup);
 		$answerGroup = new \PHPFUI\FieldSet('Answers');

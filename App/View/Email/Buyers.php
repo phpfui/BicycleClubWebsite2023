@@ -89,9 +89,9 @@ class Buyers implements \Stringable
 		$subject->setRequired();
 		$subject->addAttribute('placeholder', 'Email Subject');
 		$fieldSet->add($subject);
-		$message = new \PHPFUI\Input\TextArea('message', 'Message', $post['message'] ?? '');
-		$message->addAttribute('placeholder', 'Message to leaders?');
-		$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea());
+		$message = new \App\UI\TextAreaImage('message', 'Message', $post['message'] ?? '');
+		$message->addAttribute('placeholder', 'Message to buyer?');
+		$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\MailItem()->getLength('body')));
 		$message->setRequired();
 		$fieldSet->add($message);
 		$attachInvoice = new \PHPFUI\Input\CheckBoxBoolean('attach', 'Attach Invoice', $post['attach'] ?? false);

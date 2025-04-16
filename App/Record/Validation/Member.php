@@ -25,7 +25,6 @@ class Member extends \PHPFUI\ORM\Validator
 		'journal' => ['required', 'integer'],
 		'lastLogin' => ['required', 'maxlength', 'datetime'],
 		'lastName' => ['required', 'maxlength'],
-		'license' => ['maxlength'],
 		'loginAttempts' => ['maxlength'],
 		'memberId' => ['integer'],
 		'membershipId' => ['integer'],

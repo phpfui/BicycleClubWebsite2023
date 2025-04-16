@@ -627,6 +627,7 @@ class Editor
 			}
 
 		$RWGPS = new \App\Record\RWGPS($ride->RWGPSId);
+
 		if ($this->page->isAuthorized('Add / Update RWGPS'))
 			{
 			$RWGPSId = new \PHPFUI\Input\Url('RWGPSurl', 'Ride With GPS Link', $RWGPS->routeLink());

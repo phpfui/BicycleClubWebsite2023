@@ -173,7 +173,11 @@ class Content extends \App\UI\HTMLEditor
 				$this->page->addJavaScript($getContent->getPageJS());
 				$this->page->addJavaScript($saveContent->getPageJS());
 				$csrf = \App\Model\Session::csrf('"');
-				$saveContentJS = $saveContent->execute(['id' => '"' . $id . '"', 'csrf' => $csrf, 'body' => '$("#' . $id . '").html()']);
+
+				$bodySelector = '$("#' . $id . '")';
+				$replaceBlobImages = 'src=uploadImages(' . $bodySelector . '.html());console.log("got html:"+src);' . $bodySelector . '.html(src);';
+
+				$saveContentJS = $saveContent->execute(['id' => '"' . $id . '"', 'csrf' => $csrf, 'body' => $bodySelector . '.html()']);
 				$editItem = new \PHPFUI\MenuItem('Edit', '#');
 				$icon = new \PHPFUI\FAIcon('far', 'edit');
 				$iconId = $icon->getId();
@@ -182,7 +186,7 @@ class Content extends \App\UI\HTMLEditor
 				$js = 'var editId=$("#' . $editId . '"),textId=editId.find("span"),iconId=$("#' . $iconId . '");' .
 					'if(iconId.hasClass("fa-edit")){textId.html("Save ");iconId.removeClass("fa-edit");' .
 					'iconId.addClass("fa-save");' . $this->tinyMCE->getActivateCode($this->page, $id) . $getContent->execute(['id' => '"' . $id . '"', 'csrf' => $csrf]) .
-					'}else{var color=$("#' . $settingsItem->getId() . '").css("background-color");' . $saveContentJS .
+					'}else{var color=$("#' . $settingsItem->getId() . '").css("background-color");' . $replaceBlobImages . $saveContentJS .
 					'textId.html("Saved");editId.css("background-color","lime");setTimeout(function(){textId.html("Save ");' .
 					'editId.css("background-color",color)},2000)};return false;';
 				$editItem->addAttribute('onclick', $js);
@@ -624,6 +628,7 @@ class Content extends \App\UI\HTMLEditor
 					[$type, $storyId] = \explode('-', (string)$_POST['id']);
 					$story = new \App\Record\Story($storyId);
 					$story->body = $_POST['body'];
+					\App\Tools\Logger::get()->debug($story);
 					$story->update();
 					$this->page->setResponse($storyId);
 					$this->page->done();

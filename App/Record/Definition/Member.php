@@ -21,7 +21,6 @@ namespace App\Record\Definition;
  * @property int $journal MySQL type tinyint
  * @property string $lastLogin MySQL type datetime
  * @property string $lastName MySQL type varchar(50)
- * @property ?string $license MySQL type char(10)
  * @property ?string $loginAttempts MySQL type varchar(255)
  * @property int $memberId MySQL type int
  * @property \App\Record\Member $member related record
@@ -80,7 +79,6 @@ abstract class Member extends \PHPFUI\ORM\Record
 				'journal' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
 				'lastLogin' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
 				'lastName' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, false, ),
-				'license' => new \PHPFUI\ORM\FieldDefinition('char(10)', 'string', 10, true, ),
 				'loginAttempts' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
 				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'membershipId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),

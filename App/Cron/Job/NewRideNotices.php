@@ -18,12 +18,11 @@ class NewRideNotices extends \App\Cron\BaseJob
 		$y = (int)\App\Tools\Date::year($today);
 		$m = (int)\App\Tools\Date::month($today);
 		$d = (int)\App\Tools\Date::day($today);
-		$endTime = \mktime($hour, $minute, 0, $m, $d, $y);
-		$startTime = \date('Y-m-d H:i:s', $endTime - 3600);
+		$endTime = \mktime($hour, $minute, 0, $m, $d, $y) - 1800;
 
 		$model = new \App\Model\Ride();
 		$rideTable = new \App\Table\Ride();
-		$rides = $rideTable->getNewlyAddedUpcomingRides($startTime);
+		$rides = $rideTable->getNewlyAddedUpcomingRides(\date('Y-m-d H:i:s', $endTime - 3600), \date('Y-m-d H:i:s', $endTime));
 		$todayString = \App\Tools\Date::toString($today);
 
 		foreach ($rides as $ride)

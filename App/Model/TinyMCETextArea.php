@@ -53,9 +53,9 @@ class TinyMCETextArea implements \PHPFUI\Interfaces\HTMLEditor
 	public function updatePage(\PHPFUI\Interfaces\Page $page, string $id) : void
 		{
 		$page->addTailScript('tinymce/tinymce.min.js');
-		$page->addTailScript('/PHPFUI/TinyMCEPastableImage.js');
+		$page->addTailScript('/TinyMCEPastableImage.js');
 
-		$replaceBlobImages = 'editor.save();uploadImage(document.getElementById("' . $id . '").value,-1,' . \App\Model\Session::csrf('"') . ').' .
+		$replaceBlobImages = 'editor.save();uploadImage(document.getElementById("' . $id . '").value,' . \App\Model\Session::csrf('"') . ').' .
 			'then(resultHtml => {document.getElementById("' . $id . '").value=resultHtml;if(resultHtml.length>' .
 			$this->fieldSize . '&&' . $this->fieldSize . '!==0){document.getElementById("' . $this->errorBoxId . '").style.display="block";}else{document.getElementById("' . $this->errorBoxId . '").style.display="none";}});' . "\n\n";
 

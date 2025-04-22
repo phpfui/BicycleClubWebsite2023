@@ -175,7 +175,7 @@ class Content extends \App\UI\ContentEditor
 				$bodySelector = '$("#' . $id . '")';
 				$saveContentJS = $saveContent->execute(['id' => '"' . $id . '"', 'csrf' => $csrf, 'body' => $bodySelector . '.html()']);
 
-				$replaceBlobImages = 'uploadImage(' . $bodySelector . '.html(),' . $story->storyId . ',' . $csrf . ').' .
+				$replaceBlobImages = 'uploadImage(' . $bodySelector . '.html(),' . $csrf . ').' .
 					'then(resultHtml => { ' . $bodySelector . '.html(resultHtml);' . $saveContentJS . '});';
 
 				$editItem = new \PHPFUI\MenuItem('Edit', '#');
@@ -635,7 +635,6 @@ class Content extends \App\UI\ContentEditor
 					[$type, $storyId] = \explode('-', (string)$_POST['id']);
 					$story = new \App\Record\Story($storyId);
 					$story->body = $_POST['body'];
-					\App\Tools\Logger::get()->debug($story);
 					$story->update();
 					$this->page->setResponse($storyId);
 					$this->page->done();

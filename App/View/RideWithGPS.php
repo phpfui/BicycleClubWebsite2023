@@ -207,6 +207,7 @@ class RideWithGPS
 		$submit = new \PHPFUI\Submit();
 		$settingsSaver = new \App\Model\SettingsSaver();
 		$form = new \PHPFUI\Form($this->page, $submit);
+		$form->setAreYouSure(false);
 		$fieldSet = new \PHPFUI\FieldSet('Club RideWithGPS Settings');
 		$fieldSet->add(' You will need your RWGPS Club Id to enable RWGPS integration. Leave the Club Id empty to turn off.');
 		$clubId = $settingsSaver->generateField('RideWithGPSClubId', 'Club Id');
@@ -255,9 +256,32 @@ class RideWithGPS
 			$settingsSaver->save($_POST);
 			$this->page->setResponse('Saved');
 			}
+		elseif (\App\Model\Session::checkCSRF() && isset($_POST['action']))
+			{
+			if ('Test' === $_POST['action'])
+				{
+				$settingsSaver->save($_POST);
+				$rwgpsModel = new \App\Model\RideWithGPS();
+
+				if (! $rwgpsModel->getAuthToken())
+					{
+					\App\Model\Session::setFlash('alert', 'API Credentials appear to be wrong');
+					}
+				else
+					{
+					\App\Model\Session::setFlash('success', 'API Credentials are correct.');
+					}
+				$this->page->setResponse('Tested');
+				$this->page->redirect();
+				}
+			}
 		else
 			{
-			$form->add(new \App\UI\CancelButtonGroup($submit));
+			$buttonGroup = new \App\UI\CancelButtonGroup($submit);
+			$test = new \PHPFUI\Submit('Test', 'action');
+			$test->addClass('warning');
+			$buttonGroup->addButton($test);
+			$form->add($buttonGroup);
 			}
 
 		return $form;

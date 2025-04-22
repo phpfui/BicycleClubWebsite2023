@@ -26,7 +26,6 @@
         "intervention/image": "^3.0",
         "kwn/number-to-words": "^2.8",
         "laminas/laminas-uri": "^2.9",
-        "mobiel-bekeken/php-sparkpost": "~1.0",
         "mpdf/mpdf": "^8.1",
         "nxp/math-executor": "^2.3",
         "php-debugbar/php-debugbar": "^v2",

@@ -73,6 +73,6 @@ class TinyMCEInline implements \PHPFUI\Interfaces\HTMLEditor
 	public function updatePage(\PHPFUI\Interfaces\Page $page, string $id) : void
 		{
 		$page->addTailScript('tinymce/tinymce.min.js');
-		$page->addTailScript('/PHPFUI/TinyMCEPastableImage.js');
+		$page->addTailScript('/TinyMCEPastableImage.js');
 		}
 	}

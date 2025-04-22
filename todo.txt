@@ -1,8 +1,4 @@
-Test normal member permission for free members.
-
 Add new forum permissions to member group.
-
-Delete unpaid general admission and event registrants and email abandon cart messages
 
 Default category
 

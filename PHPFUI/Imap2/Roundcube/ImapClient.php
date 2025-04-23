@@ -122,7 +122,7 @@ class ImapClient
 	 *
 	 * @return string|bool On success APPENDUID response (if available) or True, False on failure
 	 */
-	public function append(?string $mailbox, string|array &$message, array $flags = [], ?string $date = null, bool $binary = false)
+	public function append(?string $mailbox, string|array &$message, array $flags = [], ?string $date = null, bool $binary = false) : string | bool
 	{
 		unset($this->data['APPENDUID']);
 
@@ -314,9 +314,6 @@ class ImapClient
 
 	/**
 	 * Executes CLOSE command
-	 *
-	 * @return bool True on success, False on error
-	 * @since 0.5
 	 */
 	public function close() : bool
 		{
@@ -422,8 +419,6 @@ class ImapClient
 	 * @param string $user     User name
 	 * @param string $password Password
 	 * @param array  $options  Connection and class options
-	 *
-	 * @return bool True on success, False on failure
 	 */
 	public function connect(string $host, string $user, string $password, array $options = []) : bool
 		{
@@ -575,8 +570,6 @@ class ImapClient
 	 * @param string|array $messages Message UID(s)
 	 * @param string       $from     Mailbox name
 	 * @param string       $to       Destination mailbox name
-	 *
-	 * @return bool True on success, False on failure
 	 */
 	public function copy(string|array $messages, string $from, string $to) : bool
 		{
@@ -698,8 +691,6 @@ class ImapClient
 	 *
 	 * @param string $mailbox Mailbox name
 	 * @param array  $types   Optional folder types (RFC 6154)
-	 *
-	 * @return bool True on success, False on error
 	 */
 	public function createFolder(string $mailbox, ?array $types = null) : bool
 		{
@@ -723,10 +714,6 @@ class ImapClient
 	 *
 	 * @param string $mailbox Mailbox name
 	 * @param string $user    User name
-	 *
-	 * @return bool True on success, False on failure
-	 *
-	 * @since 0.5-beta
 	 */
 	public function deleteACL(string $mailbox, string $user) : bool
 		{
@@ -744,8 +731,6 @@ class ImapClient
 	 * Executes DELETE command
 	 *
 	 * @param string $mailbox Mailbox name
-	 *
-	 * @return bool True on success, False on error
 	 */
 	public function deleteFolder(string $mailbox) : bool
 		{
@@ -763,10 +748,6 @@ class ImapClient
 	 *
 	 * @param string $mailbox Mailbox name
 	 * @param array  $entries Entry names array
-	 *
-	 * @return bool True on success, False on failure
-	 *
-	 * @since 0.5-beta
 	 */
 	public function deleteMetadata(string $mailbox, array | string $entries) : bool
 		{
@@ -796,7 +777,6 @@ class ImapClient
 	 * @param mixed $extension Extension name to enable (or array of names)
 	 *
 	 * @return array|bool List of enabled extensions, False on error
-	 * @since 0.6
 	 */
 	public function enable($extension) : array | bool
 		{
@@ -854,7 +834,6 @@ class ImapClient
 	 * @param bool $force_quotes Forces string quoting (for atoms)
 	 *
 	 * @return string String atom, quoted-string or string literal
-	 * @todo lists
 	 */
 	public static function escape(?string $string, bool $force_quotes = false) : string
 	{
@@ -889,7 +868,6 @@ class ImapClient
 	 * @param string $filter    Line filter (regexp)
 	 *
 	 * @return mixed Response code or list of response code and data
-	 * @since 0.5-beta
 	 */
 	public function execute(string $command, ?array $arguments = [], int $options = 0, ?string $filter = null)
 	{
@@ -969,8 +947,6 @@ class ImapClient
 	 *
 	 * @param string       $mailbox  Mailbox name
 	 * @param string|array $messages Message UIDs to expunge
-	 *
-	 * @return bool True on success, False on error
 	 */
 	public function expunge(string $mailbox, string | array | null $messages = null) : bool
 	{
@@ -1015,7 +991,6 @@ class ImapClient
 	 * @param bool   $vanished    Enables VANISHED parameter (RFC5162) for CHANGEDSINCE query
 	 *
 	 * @return array List of rcube_message_header elements, False on error
-	 * @since 0.6
 	 */
 	public function fetch(
 		string $mailbox,
@@ -1567,8 +1542,6 @@ class ImapClient
 	 * @param string       $mailbox  Mailbox name
 	 * @param string|array $messages Message UID(s)
 	 * @param string       $flag     Flag name
-	 *
-	 * @return bool True on success, False on failure
 	 */
 	public function flag(string $mailbox, string | array $messages, string $flag) : bool
 	{
@@ -1581,7 +1554,6 @@ class ImapClient
 	 * @param string $mailbox Mailbox name
 	 *
 	 * @return array User-rights array on success, NULL on error
-	 * @since 0.5-beta
 	 */
 	public function getACL(string $mailbox) : array
 	{
@@ -1622,8 +1594,6 @@ class ImapClient
 	 * @param array  $attribs Attribs names
 	 *
 	 * @return array Annotations result on success, NULL on error
-	 *
-	 * @since 0.5-beta
 	 */
 	public function getAnnotation(string $mailbox, string | array $entries, string | array $attribs) : ?array
 	{
@@ -1782,8 +1752,6 @@ class ImapClient
 	 * @param array  $options Command options (with MAXSIZE and DEPTH keys)
 	 *
 	 * @return array GETMETADATA result on success, NULL on error
-	 *
-	 * @since 0.5-beta
 	 */
 	public function getMetadata(string $mailbox, string | array $entries, array $options = []) : array
 	{
@@ -1969,7 +1937,6 @@ class ImapClient
 	 * @param bool   $is_uid  True if $id is an UID
 	 *
 	 * @return array|bool Body structure array or False on error.
-	 * @since 0.6
 	 */
 	public function getStructure(string $mailbox, int $id, bool $is_uid = false) : array | bool
 	{
@@ -2271,7 +2238,6 @@ class ImapClient
 	 * @param array $items Client identification information key/value hash
 	 *
 	 * @return array|false Server identification information key/value hash, False on error
-	 * @since 0.6
 	 */
 	public function id(array $items = []) : array | false
 	{
@@ -2407,7 +2373,6 @@ class ImapClient
 	 * @param string $user    User name
 	 *
 	 * @return array List of user rights
-	 * @since 0.5-beta
 	 */
 	public function listRights(string $mailbox, string $user) : array
 	{
@@ -2447,9 +2412,9 @@ class ImapClient
 	 *                    is requested, False on error.
 	 */
 	public function listSubscribed(string $ref, string $mailbox, array $return_opts = [])
-	{
+		{
 		return $this->_listMailboxes($ref, $mailbox, true, $return_opts, []);
-	}
+		}
 
 	/**
 	 * Moves message(s) from one folder to another.
@@ -2460,20 +2425,23 @@ class ImapClient
 	 *
 	 * @return bool True on success, False on failure
 	 */
-	public function move($messages, string $from, string $to)
-	{
-		if (! $this->select($from)) {
+	public function move($messages, string $from, string $to) : bool
+		{
+		if (! $this->select($from))
+			{
 			return false;
-		}
+			}
 
-		if (! $this->data['READ-WRITE']) {
+		if (! $this->data['READ-WRITE'])
+			{
 			$this->setError(self::ERROR_READONLY, 'Mailbox is read-only');
 
 			return false;
-		}
+			}
 
 		// use MOVE command (RFC 6851)
-		if ($this->hasCapability('MOVE')) {
+		if ($this->hasCapability('MOVE'))
+			{
 			// Clear last COPYUID data
 			unset($this->data['COPYUID'], $this->data['STATUS:' . $to]);
 
@@ -2489,28 +2457,31 @@ class ImapClient
 			);
 
 			return self::ERROR_OK == $result;
-		}
+			}
 
 		// use COPY + STORE +FLAGS.SILENT \Deleted + EXPUNGE
 		$result = $this->copy($messages, $from, $to);
 
-		if ($result) {
+		if ($result)
+			{
 			// Clear internal status cache
 			unset($this->data['STATUS:' . $from]);
 
 			$result = $this->flag($from, $messages, 'DELETED');
 
-			if ('*' == $messages) {
+			if ('*' == $messages)
+				{
 				// CLOSE+SELECT should be faster than EXPUNGE
 				$this->close();
-			}
-			else {
+				}
+			else
+				{
 				$this->expunge($from, $messages);
+				}
 			}
-		}
 
 		return $result;
-	}
+		}
 
 	/**
 	 * Send the MYRIGHTS command (RFC4314)
@@ -2518,7 +2489,6 @@ class ImapClient
 	 * @param string $mailbox Mailbox name
 	 *
 	 * @return array MYRIGHTS response on success, NULL on error
-	 * @since 0.5-beta
 	 */
 	public function myRights(string $mailbox) : array
 	{
@@ -2541,7 +2511,6 @@ class ImapClient
 	 * Creates next command identifier (tag)
 	 *
 	 * @return string Command identifier
-	 * @since 0.5-beta
 	 */
 	public function nextTag() : string
 		{
@@ -2757,8 +2726,6 @@ class ImapClient
 	 * @param string | array $acl     ACL string or array
 	 *
 	 * @return bool True on success, False on failure
-	 *
-	 * @since 0.5-beta
 	 */
 	public function setACL(string $mailbox, string $user, array | string $acl) : bool
 	{
@@ -2784,7 +2751,6 @@ class ImapClient
 	 *                        three elements: entry name, attribute name, value
 	 *
 	 * @return bool True on success, False on failure
-	 * @since 0.5-beta
 	 */
 	public function setAnnotation(string $mailbox, array $data) : bool
 	{
@@ -2816,8 +2782,6 @@ class ImapClient
 	 *
 	 * @param bool  $debug   New value for the debugging flag.
 	 * @param callable $handler Logging handler function
-	 *
-	 * @since 0.5-stable
 	 */
 	public function setDebug($debug, ?callable $handler = null) : void
 	{
@@ -2843,7 +2807,6 @@ class ImapClient
 	 * @param array  $entries Entry-value array (use NULL value as NIL)
 	 *
 	 * @return bool True on success, False on failure
-	 * @since 0.5-beta
 	 */
 	public function setMetadata(string $mailbox, array $entries) : bool
 	{
@@ -3109,7 +3072,6 @@ class ImapClient
 	 * @param int    $num  Number of tokens to return
 	 *
 	 * @return mixed Tokens array or string if $num=1
-	 * @since 0.5-beta
 	 */
 	public static function tokenizeResponse(&$str, $num = 0)
 	{
@@ -3866,8 +3828,6 @@ class ImapClient
 	 * Write the given debug text to the current debug output handler.
 	 *
 	 * @param string $message Debug message text.
-	 *
-	 * @since 0.5-stable
 	 */
 	protected function debug(string $message) : void
 		{

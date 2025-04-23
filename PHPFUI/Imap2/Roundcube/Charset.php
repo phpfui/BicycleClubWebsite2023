@@ -175,12 +175,8 @@ class Charset
 
 	/**
 	 * Removes non-unicode characters from input.
-	 *
-	 * @param mixed $input String or array.
-	 *
-	 * @return mixed String or array
 	 */
-	public static function clean($input)
+	public static function clean(string | array $input) : string | array
 	{
 		// handle input of type array
 		if (\is_array($input)) {
@@ -272,7 +268,7 @@ class Charset
 	 *
 	 * @return string Converted string
 	 */
-	public static function convert($str, $from, $to = null)
+	public static function convert(string $str, string $from, ?string $to = null) : string
 	{
 		static $iconv_options = null;
 		static $mbstring_sc = null;
@@ -477,7 +473,7 @@ class Charset
 	 *
 	 * @return string The converted string
 	 */
-	public static function utf16_to_utf8($str)
+	public static function utf16_to_utf8(string $str) : string
 	{
 		$len = \strlen($str);
 		$dec = '';
@@ -509,7 +505,7 @@ class Charset
 	 *
 	 * @return string Converted string (UTF-8)
 	 */
-	public static function utf7_to_utf8($str)
+	public static function utf7_to_utf8(string $str) : string
 	{
 		$Index_64 = [
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -576,7 +572,7 @@ class Charset
 	 *
 	 * @return string Output string (UTF-8)
 	 */
-	public static function utf7imap_to_utf8($str)
+	public static function utf7imap_to_utf8(string $str) : string
 	{
 		$Index_64 = [
 			-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -685,7 +681,7 @@ class Charset
 	 *
 	 * @return string Output string (UTF7-IMAP)
 	 */
-	public static function utf8_to_utf7imap($str)
+	public static function utf8_to_utf7imap(string $str) : string
 	{
 		$B64Chars = [
 			'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',

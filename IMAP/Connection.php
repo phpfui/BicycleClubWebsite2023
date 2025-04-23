@@ -11,13 +11,9 @@
 
 namespace IMAP;
 
-use PHPFUI\Imap2\Errors;
-use PHPFUI\Imap2\Functions;
-use PHPFUI\Imap2\Roundcube\ImapClient;
-
 class Connection
 	{
-	protected ImapClient $client;
+	protected \PHPFUI\Imap2\Roundcube\ImapClient $client;
 
 	protected bool $connected;
 
@@ -35,10 +31,10 @@ class Connection
 		{
 		$this->openMailbox($mailbox);
 
-		$this->client = new ImapClient();
+		$this->client = new \PHPFUI\Imap2\Roundcube\ImapClient();
 		}
 
-	public static function close(\IMAP\Connection $imap, int $flags = 0)
+	public static function close(\IMAP\Connection $imap, int $flags = 0) : true
 		{
 		$client = $imap->getClient();
 
@@ -52,34 +48,34 @@ class Connection
 		return true;
 		}
 
-	public function getClient()
+	public function getClient() : \PHPFUI\Imap2\Roundcube\ImapClient
 		{
 		return $this->client;
 		}
 
-	public function getHost()
+	public function getHost() : string
 		{
 		return $this->host;
 		}
 
-	public function getLastError()
+	public function getLastError() : string
 		{
 		$client = $this->getClient();
 
 		return $client->error;
 		}
 
-	public function getMailbox()
+	public function getMailbox() : string
 		{
 		return $this->mailbox;
 		}
 
-	public function getMailboxName()
+	public function getMailboxName() : string
 		{
 		return $this->currentMailbox;
 		}
 
-	public function getRegistryValue($space, $item, $key)
+	public function getRegistryValue(string $space, string $item, $key) : string | false
 		{
 		if (isset($this->registry[$space][$item][$key]))
 			{
@@ -89,12 +85,12 @@ class Connection
 		return false;
 		}
 
-	public function isConnected()
+	public function isConnected() : bool
 		{
 		return $this->connected;
 		}
 
-	public static function isValid(\IMAP\Connection $imap)
+	public static function isValid(\IMAP\Connection $imap) : bool
 		{
 		return $imap->isConnected();
 		}
@@ -104,15 +100,20 @@ class Connection
 	 */
 	public static function open(string $mailbox, string $user, string $password, int $flags = 0, int $retries = 0, array $options = []) : Connection | false
 		{
+		if (! ($flags & 4095) && ! ($flags & CL_EXPUNGE))
+			{
+			throw new \ValueError('imap_open(): Argument #4 ($flags) must be a bitmask of the OP_* constants, and CL_EXPUNGE');
+			}
+
 		$connection = new Connection($mailbox, $user, $password, $flags, $retries, $options);
 
 		$success = $connection->connect();
 
 		if (empty($success))
 			{
-			Errors::appendErrorCanNotOpen($connection->getMailbox(), $connection->getLastError());
+			\PHPFUI\Imap2\Errors::appendErrorCanNotOpen($connection->getMailbox(), $connection->getLastError());
 
-			\trigger_error(Errors::couldNotOpenStream($connection->getMailbox(), \debug_backtrace(), 1), E_USER_WARNING);
+			\trigger_error(\PHPFUI\Imap2\Errors::couldNotOpenStream($connection->getMailbox()), E_USER_WARNING);
 
 			return false;
 			}
@@ -124,11 +125,11 @@ class Connection
 		{
 		$this->mailbox = $mailbox;
 
-		$mailboxParts = Functions::parseMailboxString($mailbox);
+		$mailboxParts = \PHPFUI\Imap2\Functions::parseMailboxString($mailbox);
 
-		$this->host = Functions::getHostFromMailbox($mailboxParts);
-		$this->port = @$mailboxParts['port'];
-		$this->sslMode = Functions::getSslModeFromMailbox($mailboxParts);
+		$this->host = \PHPFUI\Imap2\Functions::getHostFromMailbox($mailboxParts);
+		$this->port = $mailboxParts['port'] ?? 0;
+		$this->sslMode = \PHPFUI\Imap2\Functions::getSslModeFromMailbox($mailboxParts);
 		$this->currentMailbox = $mailboxParts['mailbox'];
 		}
 
@@ -148,7 +149,7 @@ class Connection
 
 		if (empty($success))
 			{
-			\trigger_error('imap2_reopen(): Couldn\'t re-open stream', E_USER_WARNING);
+			\trigger_error('imap_reopen(): Couldn\'t re-open stream', E_USER_WARNING);
 
 			return false;
 			}
@@ -231,7 +232,7 @@ class Connection
 
 	protected function rewriteMailbox(?string $forceMailbox = null) : void
 		{
-		$mailboxParts = Functions::parseMailboxString($this->mailbox);
+		$mailboxParts = \PHPFUI\Imap2\Functions::parseMailboxString($this->mailbox);
 
 		$params = [];
 

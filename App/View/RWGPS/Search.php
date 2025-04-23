@@ -115,8 +115,7 @@ class Search implements \Stringable
 		$fieldSet->add(new \PHPFUI\MultiColumn(new \PHPFUI\Input\Text('town', 'Starting Town', $parameters['town']), new \PHPFUI\Input\CheckBoxBoolean('club', 'Club Routes Only', (bool)$parameters['club'])));
 		$startLocation = new \App\View\StartLocation($this->page);
 		$fieldSet->add($startLocation->getEditControl((int)$parameters['startLocationId']));
-		$fieldSet->add(new \PHPFUI\Input\Text('title', 'Title includes', $parameters['title']));
-		$fieldSet->add(new \PHPFUI\Input\Text('title', 'Title includes', $parameters['title']));
+		$fieldSet->add(new \PHPFUI\Input\Text('title', 'Title Includes', $parameters['title']));
 		$fieldSet->add(new \PHPFUI\Input\Text('description', 'Description includes', $parameters['description']));
 		$fieldSet->add(new \PHPFUI\Input\Text('csv', 'Road Name', $parameters['csv']));
 

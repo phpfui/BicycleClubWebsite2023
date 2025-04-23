@@ -15,9 +15,9 @@ class Errors
   {
   protected static array $alerts = [];
 
-  protected static array $errors = [];
+  protected static array | false $errors = [];
 
-  protected static string $lastError;
+  protected static string | bool $lastError = false;
 
   public static function alerts() : array
 		{
@@ -28,19 +28,24 @@ class Errors
 		return $return;
 		}
 
-  public static function appendError(string $error) : void
+  public static function appendError(string $error) : string
 		{
 		self::$lastError = $error;
 
+		if (! self::$errors)
+			{
+			self::$errors = [];
+			}
 		self::$errors[] = $error;
+
+		return $error;
 		}
 
-  public static function appendErrorCanNotOpen(string $mailbox, string $error) : void
+  public static function appendErrorCanNotOpen(string $mailbox, string $error) : string
 		{
-		if ('{' == $mailbox[0])
+		if (\strlen($mailbox) && '{' == $mailbox[0])
 			{
 			$error = \preg_replace("/^AUTHENTICATE [A-Z]+\d*:\s/i", '', $error);
-			//$error = preg_replace("/^([A-Z]+\d+ )(OK|NO|BAD|BYE|PREAUTH)?\s/i", '', $error);
 			$error = 'Can not authenticate to IMAP server: ' . $error;
 			}
 		else
@@ -48,41 +53,42 @@ class Errors
 			$error = "Can't open mailbox {$mailbox}: no such mailbox";
 			}
 
-		self::appendError($error);
+		return self::appendError($error);
 		}
 
-  public static function badMessageNumber(array $backtrace, int $depth) : string
+  public static function badMessageNumber() : string
 		{
-		if (Functions::isBackportCall($backtrace, $depth))
-			{
-			$depth++;
-			}
+		$backtrace = \debug_backtrace();
+		$error = $backtrace[1]['function'] . '(): Bad message number in '
+				 . $backtrace[1]['file'] . ' on line ' . $backtrace[1]['line'];
 
-		return $backtrace[$depth]['function'] . '(): Bad message number in '
-				 . $backtrace[$depth]['file'] . ' on line ' . $backtrace[$depth]['line'] . '. Source code';
+		return self::appendError($error);
 		}
 
-  public static function couldNotOpenStream(string $mailbox, array $backtrace, int $depth) : string
+  public static function couldNotOpenStream(string $mailbox) : string
 		{
+		$backtrace = \debug_backtrace();
+		$depth = 1;
+
 		if (isset($backtrace[$depth + 1]['function']) && 'imap_open' == $backtrace[$depth + 1]['function'])
 			{
 			$depth++;
 			}
 
 		return $backtrace[$depth]['function'] . '(): Couldn\'t open stream ' . $mailbox
-			 . ' in ' . $backtrace[$depth]['file'] . ' on line ' . $backtrace[$depth]['line'] . '. Source code';
+			 . ' in ' . $backtrace[$depth]['file'] . ' on line ' . $backtrace[$depth]['line'];
 		}
 
-	public static function errors() : array
+	public static function errors() : array | false
 		{
 		$return = self::$errors;
 
-		self::$errors = [];
+		self::$errors = false;
 
 		return $return;
 		}
 
-	public static function lastError() : string
+	public static function lastError() : string | false
 		{
 		return self::$lastError;
 		}

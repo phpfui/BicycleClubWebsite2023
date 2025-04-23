@@ -12,11 +12,9 @@ Revisit privacy policy
 
 Edit start location on day of ride
 
-edit email queue may lose html formatting
-
 Signed up riders over the limit
 
-Embedded images in forum posts not coming through
+Embedded images in forum posts not coming through from emailed content
 
 Suggestion box
 

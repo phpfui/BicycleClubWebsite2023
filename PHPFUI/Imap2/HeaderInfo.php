@@ -12,19 +12,22 @@
 namespace PHPFUI\Imap2;
 
 class HeaderInfo
-{
-	public static function fromMessage($message, $defaultHost) : \stdClass
 	{
+	public static function fromMessage($message, $defaultHost) : \stdClass
+		{
 		$to = Functions::writeAddressFromEnvelope($message->envelope[5]);
 		$cc = Functions::writeAddressFromEnvelope($message->envelope[6]);
 		$from = Functions::writeAddressFromEnvelope($message->envelope[2]);
 		$sender = Functions::writeAddressFromEnvelope($message->envelope[3]);
 
-		if (empty($message->replyto)) {
+		if (empty($message->replyto))
+			{
 			$replyTo = $from;
-		} else {
+			}
+		else
+			{
 			$replyTo = Functions::writeAddressFromEnvelope($message->envelope[4]);
-		}
+			}
 
 		$headerInfo = [
 			'date' => $message->envelope[0],
@@ -56,71 +59,78 @@ class HeaderInfo
 			'udate' => \strtotime($message->internaldate)
 		];
 
-		if (empty($headerInfo['subject'])) {
+		if (empty($headerInfo['subject']))
+			{
 			unset($headerInfo['subject'], $headerInfo['Subject']);
+			}
 
-		}
-
-		if (empty($headerInfo['in_reply_to'])) {
+		if (empty($headerInfo['in_reply_to']))
+			{
 			unset($headerInfo['in_reply_to']);
-		}
+			}
 
-		if (empty($headerInfo['references'])) {
+		if (empty($headerInfo['references']))
+			{
 			unset($headerInfo['references']);
-		}
+			}
 
-		if (empty($headerInfo['to'])) {
+		if (empty($headerInfo['to']))
+			{
 			unset($headerInfo['toaddress'], $headerInfo['to']);
+			}
 
-		}
-
-		if (empty($headerInfo['cc'])) {
+		if (empty($headerInfo['cc']))
+			{
 			unset($headerInfo['ccaddress'], $headerInfo['cc']);
-
-		}
+			}
 
 		return (object)$headerInfo;
-	}
-
-	public static function sanitizeMailDate(string $mailDate) : string
-	{
-		if ('0' == $mailDate[0]) {
-			$mailDate = ' ' . \substr($mailDate, 1);
 		}
 
+	public static function sanitizeMailDate(string $mailDate) : string
+		{
+		if ('0' == $mailDate[0])
+			{
+			$mailDate = ' ' . \substr($mailDate, 1);
+			}
+
 		return $mailDate;
-	}
+		}
 
 	/**
 	 * @return array<\stdClass>
 	 */
 	protected static function parseAddressList(string $address, string $defaultHost) : array
-	{
+		{
 		$addressList = \imap_rfc822_parse_adrlist($address, $defaultHost);
 		$customAddressList = [];
 
-		foreach ($addressList as $objectEntry) {
+		foreach ($addressList as $objectEntry)
+			{
 			$addressEntry = (object)[
 				'personal' => $objectEntry->personal ?? null,
 				'mailbox' => @$objectEntry->mailbox,
 				'host' => @$objectEntry->host,
 			];
 
-			if (empty($addressEntry->personal)) {
+			if (empty($addressEntry->personal))
+				{
 				$addressEntry->personal = null;
-			}
+				}
 
-			if (empty($addressEntry->host)) {
+			if (empty($addressEntry->host))
+				{
 				$addressEntry->host = null;
-			}
+				}
 
-			if (empty($addressEntry->mailbox)) {
+			if (empty($addressEntry->mailbox))
+				{
 				continue;
-			}
+				}
 
 			$customAddressList[] = $addressEntry;
-		}
+			}
 
 		return $customAddressList;
+		}
 	}
-}

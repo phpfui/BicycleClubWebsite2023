@@ -11,18 +11,13 @@
 
 namespace PHPFUI\Imap2;
 
-use PHPFUI\Imap2\Roundcube\ImapClient;
-
 class Mailbox
-{
+	{
 	/**
 	 * Append a string message to a specified mailbox.
-	 *
-	 *
-	 * @return bool
 	 */
-	public static function append(\IMAP\Connection $imap, $folder, $message, $options = null, $internalDate = null)
-	{
+	public static function append(\IMAP\Connection $imap, $folder, $message, $options = null, $internalDate = null) : bool
+		{
 		$folderParts = \explode('}', $folder);
 		$client = $imap->getClient();
 
@@ -31,10 +26,10 @@ class Mailbox
 		$success = $client->append($mailbox, $message);
 
 		return (bool)$success;
-	}
+		}
 
 	public static function check(\IMAP\Connection $imap) : \stdClass
-	{
+		{
 		$imap->selectMailbox();
 
 		$client = $imap->getClient();
@@ -47,123 +42,131 @@ class Mailbox
 			'Nmsgs' => (int)($status['MESSAGES']),
 			'Recent' => (int)($status['RECENT']),
 		];
-	}
+		}
 
 	public static function createMailbox(\IMAP\Connection $imap, string $mailbox) : bool
-	{
+		{
 		$client = $imap->getClient();
 
-		if ('{' == $mailbox[0]) {
+		if ('{' == $mailbox[0])
+			{
 			$mailbox = (string)\preg_replace('/^{.+}/', '', $mailbox);
-		}
+			}
 
 		$success = $client->createFolder($mailbox);
 
-		if (! $success) {
-			Errors::appendError($client->getRawLastLine());
-		}
+		if (! $success)
+			{
+			\PHPFUI\Imap2\Errors::appendError($client->getRawLastLine());
+			}
 
 		return $success;
-	}
+		}
 
 	public static function deleteMailbox(\IMAP\Connection $imap, string $mailbox)
-	{
+		{
 		$client = $imap->getClient();
 
-		if ('{' == $mailbox[0]) {
+		if ('{' == $mailbox[0])
+			{
 			$mailbox = (string)\preg_replace('/^{.+}/', '', $mailbox);
-		}
+			}
 
-		$result = $client->execute('DELETE', [$client->escape($mailbox)], ImapClient::COMMAND_RAW_LASTLINE);
+		$result = $client->execute('DELETE', [$client->escape($mailbox)], \PHPFUI\Imap2\Roundcube\ImapClient::COMMAND_RAW_LASTLINE);
 
-		$success = ImapClient::ERROR_OK == $result[0];
+		$success = \PHPFUI\Imap2\Roundcube\ImapClient::ERROR_OK == $result[0];
 
-		if (! $success && $imap->getRegistryValue('mailbox', $mailbox, 'deleted')) {
-			Errors::appendError($result[1]);
-		} elseif (! $success) {
-			Errors::appendError("Can't delete mailbox {$mailbox}: no such mailbox");
-		} else {
+		if (! $success && $imap->getRegistryValue('mailbox', $mailbox, 'deleted'))
+			{
+			\PHPFUI\Imap2\Errors::appendError($result[1]);
+			}
+		elseif (! $success)
+			{
+			\PHPFUI\Imap2\Errors::appendError("Can't delete mailbox {$mailbox}: no such mailbox");
+			}
+		else
+			{
 			$imap->setRegistryValue('mailbox', $mailbox, 'deleted', true);
-		}
+			}
 
 		return $success;
-	}
+		}
 
-	public static function getMailboxes(\IMAP\Connection $imap, $reference, $pattern)
-	{
+	public static function getMailboxes(\IMAP\Connection $imap, $reference, $pattern) : array | false
+		{
+		if (! $imap->isConnected())
+			{
+			return false;
+			}
+
 		$referenceParts = \explode('}', $reference);
 		$client = $imap->getClient();
-		//$client->setDebug(true);
 		$return = [];
 		$delimiter = $client->getHierarchyDelimiter();
 		$mailboxes = $client->listMailboxes($referenceParts[1], $pattern);
 
-		foreach ($mailboxes as $mailbox) {
+		foreach ($mailboxes as $mailbox)
+			{
 			$attributesValue = Functions::getListAttributesValue($client->data['LIST'][$mailbox]);
 
-			if ('[Gmail]' == $mailbox && 'imap.gmail.com' == $imap->getHost()) {
+			if ('[Gmail]' == $mailbox && 'imap.gmail.com' == $imap->getHost())
+				{
 				$attributesValue = 34;
-			}
+				}
 			$return[] = (object)[
 				'name' => $referenceParts[0] . '}' . $mailbox,
 				'attributes' => $attributesValue,
 				'delimiter' => $delimiter,
 			];
-		}
+			}
 
 		return $return;
-	}
+		}
 
-	public static function getSubscribed(\IMAP\Connection $imap, $mailbox)
-	{
-		$client = $imap->getClient();
-
-		return $client->deleteFolder($mailbox);
-	}
-
-	public static function list(\IMAP\Connection $imap, $reference, $pattern)
-	{
+	public static function list(\IMAP\Connection $imap, $reference, $pattern) : array
+		{
 		$referenceParts = \explode('}', $reference);
 		$client = $imap->getClient();
 		$return = [];
 		$mailboxes = $client->listMailboxes($referenceParts[1], $pattern);
 
-		foreach ($mailboxes as $mailbox) {
-			if (\in_array('\\Noselect', $client->data['LIST'][$mailbox])) {
+		foreach ($mailboxes as $mailbox)
+			{
+			if (\in_array('\\Noselect', $client->data['LIST'][$mailbox]))
+				{
 				continue;
-			}
+				}
 			$return[] = $referenceParts[0] . '}' . $mailbox;
-		}
+			}
 
 		return $return;
-	}
+		}
 
-	public static function listScan(\IMAP\Connection $imap, $reference, $pattern)
-	{
+	public static function listScan(\IMAP\Connection $imap, $reference, $pattern) : array
+		{
 		$referenceParts = \explode('}', $reference);
 		$client = $imap->getClient();
 		$return = [];
 		$mailboxes = $client->listMailboxes($referenceParts[1], $pattern);
 
-		foreach ($mailboxes as $mailbox) {
-			if (\in_array('\\Noselect', $client->data['LIST'][$mailbox])) {
+		foreach ($mailboxes as $mailbox)
+			{
+			if (\in_array('\\Noselect', $client->data['LIST'][$mailbox]))
+				{
 				continue;
-			}
+				}
 			$return[] = $referenceParts[0] . '}' . $mailbox;
-		}
+			}
 
 		return $return;
-	}
+		}
 
-	public static function listSubscribed(\IMAP\Connection $imap, $mailbox)
-	{
-		$client = $imap->getClient();
+	public static function listSubscribed(\IMAP\Connection $imap, $mailbox) : bool
+		{
+		}
 
-		return $client->deleteFolder($mailbox);
-	}
-
-	public static function mailboxMsgInfo(\IMAP\Connection $imap)
-	{
+	public static function mailboxMsgInfo(\IMAP\Connection $imap) : \stdClass
+		{
 		$client = $imap->getClient();
 
 		$imap->selectMailbox();
@@ -189,38 +192,33 @@ class Mailbox
 		];
 
 		return (object)$mailboxInfo;
-	}
+		}
 
-	public static function numMsg(\IMAP\Connection $imap)
-	{
+	public static function numMsg(\IMAP\Connection $imap) : int
+		{
 		$imap->selectMailbox();
 		$client = $imap->getClient();
 
 		$status = $client->status($imap->getMailboxName(), ['MESSAGES']);
 
 		return (int)($status['MESSAGES']);
-	}
+		}
 
-	public static function numRecent(\IMAP\Connection $imap)
-	{
+	public static function numRecent(\IMAP\Connection $imap) : int
+		{
 		$client = $imap->getClient();
 		$imap->selectMailbox();
 
-		return (object)[
-			'Driver' => 'imap',
-			'Mailbox' => $imap->getMailbox(),
-			'Nmsgs' => $client->data['EXISTS'],
-			'Recent' => $client->data['RECENT'],
-		];
-	}
+		return (int)$client->data['RECENT'];
+		}
 
-	public static function renameMailbox(\IMAP\Connection $imap, string $from, string $to)
-	{
+	public static function renameMailbox(\IMAP\Connection $imap, string $from, string $to) : bool
+		{
 		return $imap->getClient()->renameFolder($from, $to);
-	}
+		}
 
-	public static function status(\IMAP\Connection $imap, string $mailbox, int $flags)
-	{
+	public static function status(\IMAP\Connection $imap, string $mailbox, int $flags) : \stdClass | false
+		{
 		$mailboxName = Functions::getMailboxName($mailbox);
 
 		$client = $imap->getClient();
@@ -235,47 +233,54 @@ class Mailbox
 			'UIDVALIDITY' => 'uidvalidity',
 		];
 
-		if ($flags & SA_MESSAGES || $flags & SA_ALL) {
+		if ($flags & SA_MESSAGES || $flags & SA_ALL)
+			{
 			$items[] = 'MESSAGES';
-		}
+			}
 
-		if ($flags & SA_RECENT || $flags & SA_ALL) {
+		if ($flags & SA_RECENT || $flags & SA_ALL)
+			{
 			$items[] = 'RECENT';
-		}
+			}
 
-		if ($flags & SA_UNSEEN || $flags & SA_ALL) {
+		if ($flags & SA_UNSEEN || $flags & SA_ALL)
+			{
 			$items[] = 'UNSEEN';
-		}
+			}
 
-		if ($flags & SA_UIDNEXT || $flags & SA_ALL) {
+		if ($flags & SA_UIDNEXT || $flags & SA_ALL)
+			{
 			$items[] = 'UIDNEXT';
-		}
+			}
 
-		if ($flags & SA_UIDVALIDITY || $flags & SA_ALL) {
+		if ($flags & SA_UIDVALIDITY || $flags & SA_ALL)
+			{
 			$items[] = 'UIDVALIDITY';
-		}
+			}
 
 		$status = $client->status($mailboxName, $items);
 
-		if (empty($status)) {
+		if (empty($status))
+			{
 			return false;
-		}
+			}
 
 		$returnStatus = [];
 
-		foreach ($status as $key => $value) {
+		foreach ($status as $key => $value)
+			{
 			$returnStatus[$statusKeys[$key]] = \is_numeric($value) ? (int)$value : $value;
-		}
+			}
 
 		return (object)$returnStatus;
-	}
+		}
 
-	public static function subscribe(\IMAP\Connection $imap, string $mailbox)
+	public static function subscribe(\IMAP\Connection $imap, string $mailbox) : bool
 		{
 		return $imap->getClient()->deleteFolder($mailbox);
 		}
 
-	public static function unsubscribe(\IMAP\Connection $imap, string $mailbox)
+	public static function unsubscribe(\IMAP\Connection $imap, string $mailbox) : bool
 		{
 		return $imap->getClient()->deleteFolder($mailbox);
 		}

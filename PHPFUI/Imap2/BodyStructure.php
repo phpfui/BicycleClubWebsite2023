@@ -12,7 +12,7 @@
 namespace PHPFUI\Imap2;
 
 class BodyStructure
-{
+	{
 	public const int ENC7BIT = 0;              // 7 bit SMTP semantic data
 
 	public const int ENC8BIT = 1;              // 8 bit SMTP semantic data
@@ -64,23 +64,26 @@ class BodyStructure
 		self::TYPEOTHER => 'X-UNKNOWN'
 	];
 
-	public static function fromMessage($message)
-	{
+	public static function fromMessage($message) : \stdClass | false
+		{
 		return self::extractBodyStructure($message->bodystructure);
-	}
+		}
 
-	protected static function extractBodyStructure($structure) : ?\stdClass
-	{
-
+	protected static function extractBodyStructure($structure) : \stdClass | false
+		{
 		// if NIL
 		if ( null === $structure )
-			return null;
+			{
+			return false;
+			}
 
 		// body structure list
 		$length = \count($structure);
 
 		if ( ! $length)
-			return null;
+			{
+			return false;
+			}
 
 		$body = (object)[
 			'type' => self::TYPEOTHER,
@@ -102,8 +105,8 @@ class BodyStructure
 		];
 
 		// multipart body?
-		if ( \is_array($structure[0]) ) {
-
+		if ( \is_array($structure[0]) )
+			{
 			// yes, set its type
 			$body->type = self::TYPEMULTIPART;
 
@@ -112,50 +115,66 @@ class BodyStructure
 
 			// for each body part
 			while( \is_array($structure[$index]) )
+				{
 				$parts[] = self::extractBodyStructure( $structure[$index++] );
+				}
 
 			// parse subtype
 			if ( $body->subtype = \strtoupper($structure[$index++]) )
+				{
 				$body->ifsubtype = 1;
+				}
 
 			// multipart parameters
-			if ( $index < $length ) {
+			if ( $index < $length )
+				{
 				if ( \count( $body->parameters = self::extractParameters($structure[$index++], []) ) )
+					{
 					$body->ifparameters = 1;
+					}
 				else
+					{
 					$body->parameters = (object)[];
-			}
+					}
+				}
 
 			// disposition
-			if ( $index < $length ) {
-				if ( \is_array($disposition = $structure[$index++]) ) {
+			if ( $index < $length )
+				{
+				if ( \is_array($disposition = $structure[$index++]) )
+					{
 					$body->disposition = $disposition[0];
 					$body->ifdisposition = 1;
 
-					if ( \count( $body->dparameters = self::extractParameters($disposition[1], []) ) )
+					if ( \count( $body->dparameters = self::extractParameters($disposition[1], []) ))
+						{
 						$body->ifdparameters = 1;
-					else {
+						}
+					else
+						{
 						$body->dparameters = null;
+						}
 					}
 				}
-			}
 
 			// location
-			if ( $index < $length ) {
+			if ( $index < $length )
+				{
 				++$index;
-			}
+				}
 
-			while( $index < $length ) {
+			while( $index < $length )
+				{
 				//parse_extension
 				++$index;
-			}
+				}
 
 			$body->parts = $parts;
 
-		}
+			}
 		// not multipart, parse type name
-		else {
-
+		else
+			{
 			// assume unknown type
 			$body->type = self::TYPEOTHER;
 			// and unknown encoding
@@ -163,29 +182,37 @@ class BodyStructure
 
 			// parse type
 			if ( ($type = \array_search(\strtoupper($structure[0]), self::$body_types)) !== false )
+				{
 				$body->type = $type;
+				}
 
 			// encoding always gets uppercase form
 			if ( ($encoding = \array_search(\strtoupper($structure[5]), self::$body_encodings)) !== false )
+				{
 				$body->encoding = $encoding;
+				}
 
 			// parse subtype
 			if ( $body->subtype = \strtoupper($structure[1]) )
+				{
 				$body->ifsubtype = 1;
+				}
 
 			$body->ifdescription = 0;
 
-			if ( ! empty($structure[4]) ) {
+			if ( ! empty($structure[4]) )
+				{
 				$body->ifdescription = 1;
 				$body->description = $structure[4];
-			}
+				}
 
 			$body->ifid = 0;
 
-			if ( ! empty($structure[3]) ) {
+			if ( ! empty($structure[3]) )
+				{
 				$body->ifid = 1;
 				$body->id = $structure[3];
-			}
+				}
 
 			// parse size of contents in bytes
 			$body->bytes = (int)($structure[6]);
@@ -193,8 +220,8 @@ class BodyStructure
 			$index = 7;
 
 			// possible extra stuff
-			switch ( $body->type ) {
-
+			switch ( $body->type )
+				{
 				// message envelope and body
 				case self::TYPEMESSAGE:
 					// non MESSAGE/RFC822 is basic type
@@ -218,48 +245,61 @@ class BodyStructure
 				default:
 					break;
 
-			}
+				}
 
 			// extension data - md5
 			if ( $index < $length )
+				{
 				++$index;
+				}
 
 			// disposition
-			if ( $index < $length ) {
-				if ( \is_array($disposition = $structure[$index++]) ) {
+			if ( $index < $length )
+				{
+				if ( \is_array($disposition = $structure[$index++]) )
+					{
 					$body->disposition = $disposition[0];
 					$body->ifdisposition = 1;
 
 					if ( \count( $body->dparameters = self::extractParameters($disposition[1], []) ) )
+						{
 						$body->ifdparameters = 1;
-					else {
+						}
+					else
+						{
 						$body->dparameters = null;
+						}
 					}
 				}
-			}
 
 			// language
-			if ( $index < $length ) {
+			if ( $index < $length )
+				{
 				//parse_language
 				++$index;
-			}
+				}
 
 			// location
-			if ( $index < $length ) {
+			if ( $index < $length )
+				{
 				++$index;
-			}
+				}
 
-			while( $index < $length ) {
+			while( $index < $length )
+				{
 				//parse_extension
 				++$index;
-			}
+				}
 
 			if ( \count( $body->parameters = self::extractParameters($structure[2], []) ) )
+				{
 				$body->ifparameters = 1;
+				}
 			else
+				{
 				$body->parameters = (object)[];
-
-		}
+				}
+			}
 
 		if ( null === $body->description ) $body->description = null;
 
@@ -272,29 +312,34 @@ class BodyStructure
 		if ( null === $body->parameters ) $body->parameters = null;
 
 		return $body;
-	}
+		}
 
 	protected static function extractParameters(array $attributes, array $parameters) : array
-	{
-		if (empty($attributes)) {
+		{
+		if (empty($attributes))
+			{
 			return [];
-		}
+			}
 
 		$attribute = null;
 
-		foreach ($attributes as $value) {
-			if (empty($attribute)) {
+		foreach ($attributes as $value)
+			{
+			if (empty($attribute))
+				{
 				$attribute = [
 					'attribute' => $value,
 					'value' => null,
 				];
-			} else {
+				}
+			else
+				{
 				$attribute['value'] = $value;
 				$parameters[] = (object)$attribute;
 				$attribute = null;
+				}
 			}
-		}
 
 		return $parameters;
+		}
 	}
-}

@@ -13,10 +13,9 @@ namespace PHPFUI\Imap2;
 
 class Thread
 	{
-	public static function thread(\IMAP\Connection $imap, int $flags = SE_FREE)
+	public static function thread(\IMAP\Connection $imap, int $flags = SE_FREE) : false | array
 		{
 		$client = $imap->getClient();
-
 		$thread = $client->thread($imap->getMailboxName());
 
 		if (empty($thread->count()))

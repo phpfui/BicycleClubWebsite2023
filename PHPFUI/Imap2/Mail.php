@@ -15,10 +15,8 @@ class Mail
 	{
 	/**
 	 * Copy specified messages to a mailbox.
-	 *
-	 * @return false|mixed
 	 */
-	public static function copy(\IMAP\Connection $imap, $messageNums, string $mailbox, int $flags = 0)
+	public static function copy(\IMAP\Connection $imap, $messageNums, string $mailbox, int $flags = 0) : bool
 		{
 		if ($flags & CP_MOVE)
 			{
@@ -40,10 +38,8 @@ class Mail
 
 	/**
 	 * Move specified messages to a mailbox.
-	 *
-	 * @return false|mixed
 	 */
-	public static function move(\IMAP\Connection $imap, string $messageNums, string $mailbox, int $flags = 0)
+	public static function move(\IMAP\Connection $imap, string $messageNums, string $mailbox, int $flags = 0) : bool
 		{
 		$client = $imap->getClient();
 

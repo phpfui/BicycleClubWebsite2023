@@ -100,7 +100,7 @@ class Connection
 	 */
 	public static function open(string $mailbox, string $user, string $password, int $flags = 0, int $retries = 0, array $options = []) : Connection | false
 		{
-		if (! ($flags & 4095) && ! ($flags & CL_EXPUNGE))
+		if ($flags && ! ($flags & 4095) && ! ($flags & CL_EXPUNGE))
 			{
 			throw new \ValueError('imap_open(): Argument #4 ($flags) must be a bitmask of the OP_* constants, and CL_EXPUNGE');
 			}

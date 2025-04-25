@@ -536,6 +536,8 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('Upcoming Events'))
 			{
+			$content = new \App\View\Content($this->page);
+			$this->page->addPageContent($content->getDisplayCategoryHTML('Upcoming Events'));
 			$eventTable = new \App\Table\Event();
 			$eventTable->setUpcomingCursor(false);
 			$cursor = $eventTable->getDataObjectCursor();

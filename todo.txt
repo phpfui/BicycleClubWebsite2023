@@ -1,3 +1,5 @@
+support UTF-8 in emails PHPMailer::$validator = 'eai'
+
 Add new forum permissions to member group.
 
 Default category

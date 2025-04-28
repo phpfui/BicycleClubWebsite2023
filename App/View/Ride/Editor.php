@@ -387,7 +387,7 @@ class Editor
 						$parameters['RWGPSId'] = $cueSheet->RWGPSId;
 						$parameters['memberId'] = \App\Model\Session::signedInMemberId();
 						$parameters['description'] = $cueSheet->description;
-						$parameters['elevation'] = (int)\round($cueSheet->RWGPS->elevationFeet ?? 0);
+						$parameters['elevation'] = \round($cueSheet->RWGPS->elevationFeet ?? 0.0);
 						$parameters['mileage'] = $cueSheet->mileage;
 						$parameters['startLocationId'] = $cueSheet->startLocationId;
 						$parameters['title'] = $cueSheet->name;
@@ -404,7 +404,7 @@ class Editor
 						$parameters['memberId'] = \App\Model\Session::signedInMemberId();
 						$parameters['RWGPSId'] = $rwgps->RWGPSId;
 						$parameters['description'] = $rwgps->description;
-						$parameters['elevation'] = (int)\round($rwgps->elevationFeet);
+						$parameters['elevation'] = \round($rwgps->elevationFeet ?? 0.0);
 						$parameters['mileage'] = $rwgps->miles;
 						$parameters['title'] = $rwgps->title;
 						$parameters = $this->cleanParameters($parameters);
@@ -475,7 +475,7 @@ class Editor
 
 							if ($elevation > 0)
 								{
-								$rwgps->elevationFeet = (int)\round($elevation);
+								$rwgps->elevationFeet = \round($elevation);
 								}
 							$rwgps->miles = (float)\number_format($rwgps->miles ?? 0.0, 1);
 							$data = $rwgps->toArray();
@@ -496,7 +496,7 @@ class Editor
 
 							if ($elevation > 0)
 								{
-								$rwgps->elevationFeet = (int)\round($elevation);
+								$rwgps->elevationFeet = \round($elevation);
 								}
 							}
 						else

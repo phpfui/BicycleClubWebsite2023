@@ -1657,16 +1657,16 @@
         },
         {
             "name": "laminas/laminas-validator",
-            "version": "3.1.1",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-validator.git",
-                "reference": "734d564aea1b71a28d8142620957c40e272435b7"
+                "reference": "5d648b3ac54ef50714009cd3e9d4b1acd5c339e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/734d564aea1b71a28d8142620957c40e272435b7",
-                "reference": "734d564aea1b71a28d8142620957c40e272435b7",
+                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/5d648b3ac54ef50714009cd3e9d4b1acd5c339e6",
+                "reference": "5d648b3ac54ef50714009cd3e9d4b1acd5c339e6",
                 "shasum": ""
             },
             "require": {
@@ -1687,8 +1687,8 @@
                 "laminas/laminas-coding-standard": "^3.0.1",
                 "laminas/laminas-diactoros": "^3.5.0",
                 "phpunit/phpunit": "^10.5.45",
-                "psalm/plugin-phpunit": "^0.19.2",
-                "vimeo/psalm": "^6.8.8"
+                "psalm/plugin-phpunit": "^0.19.5",
+                "vimeo/psalm": "^6.10.0"
             },
             "suggest": {
                 "laminas/laminas-i18n": "Laminas\\I18n component to allow translation of validation error messages",
@@ -1730,7 +1730,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2025-04-13T13:09:24+00:00"
+            "time": "2025-04-28T08:03:29+00:00"
         },
         {
             "name": "laravel/serializable-closure",
@@ -3509,16 +3509,16 @@
         },
         {
             "name": "phpfui/orm",
-            "version": "V2.0.4",
+            "version": "V2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ORM.git",
-                "reference": "92609a64dc14791724573d4bd4e0e25bf02f706b"
+                "reference": "93b41042a4c57e7539d506c42ddb3c003ef935d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ORM/zipball/92609a64dc14791724573d4bd4e0e25bf02f706b",
-                "reference": "92609a64dc14791724573d4bd4e0e25bf02f706b",
+                "url": "https://api.github.com/repos/phpfui/ORM/zipball/93b41042a4c57e7539d506c42ddb3c003ef935d1",
+                "reference": "93b41042a4c57e7539d506c42ddb3c003ef935d1",
                 "shasum": ""
             },
             "require": {
@@ -3566,9 +3566,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ORM/issues",
-                "source": "https://github.com/phpfui/ORM/tree/V2.0.4"
+                "source": "https://github.com/phpfui/ORM/tree/V2.0.5"
             },
-            "time": "2025-04-03T02:25:43+00:00"
+            "time": "2025-04-28T03:33:59+00:00"
         },
         {
             "name": "phpfui/php-imap",
@@ -6465,16 +6465,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.12",
+            "version": "2.1.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "96dde49e967c0c22812bcfa7bda4ff82c09f3b0c"
+                "reference": "e55e03e6d4ac49cd1240907e5b08e5cd378572a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/96dde49e967c0c22812bcfa7bda4ff82c09f3b0c",
-                "reference": "96dde49e967c0c22812bcfa7bda4ff82c09f3b0c",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e55e03e6d4ac49cd1240907e5b08e5cd378572a9",
+                "reference": "e55e03e6d4ac49cd1240907e5b08e5cd378572a9",
                 "shasum": ""
             },
             "require": {
@@ -6519,7 +6519,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-04-16T13:19:18+00:00"
+            "time": "2025-04-27T12:28:25+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -7527,12 +7527,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "3fe23dd6d9c692ec019ba1cff225f960699a0da3"
+                "reference": "c96e48da0eb4ba3f14ca6ab39a6fd5025a5d0838"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/3fe23dd6d9c692ec019ba1cff225f960699a0da3",
-                "reference": "3fe23dd6d9c692ec019ba1cff225f960699a0da3",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/c96e48da0eb4ba3f14ca6ab39a6fd5025a5d0838",
+                "reference": "c96e48da0eb4ba3f14ca6ab39a6fd5025a5d0838",
                 "shasum": ""
             },
             "conflict": {
@@ -7654,7 +7654,7 @@
                 "contao/managed-edition": "<=1.5",
                 "corveda/phpsandbox": "<1.3.5",
                 "cosenary/instagram": "<=2.3",
-                "craftcms/cms": "<4.13.8|>=5,<5.5.5",
+                "craftcms/cms": "<=4.14.14|>=5,<=5.6.16",
                 "croogo/croogo": "<4",
                 "cuyz/valinor": "<0.12",
                 "czim/file-handling": "<1.5|>=2,<2.3",
@@ -7965,7 +7965,7 @@
                 "mojo42/jirafeau": "<4.4",
                 "mongodb/mongodb": ">=1,<1.9.2",
                 "monolog/monolog": ">=1.8,<1.12",
-                "moodle/moodle": "<4.3.10|>=4.4,<4.4.6|>=4.5.0.0-beta,<4.5.2",
+                "moodle/moodle": "<4.3.12|>=4.4,<4.4.8|>=4.5.0.0-beta,<4.5.4",
                 "mos/cimage": "<0.7.19",
                 "movim/moxl": ">=0.8,<=0.10",
                 "movingbytes/social-network": "<=1.2.1",
@@ -8449,7 +8449,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-04-23T02:32:45+00:00"
+            "time": "2025-04-25T17:04:56+00:00"
         },
         {
             "name": "sebastian/cli-parser",

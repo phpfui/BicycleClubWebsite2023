@@ -26,9 +26,10 @@ phpunit.html
 psalmCommitErrors.txt
 test.xml
 tmp/
+logs/
 /vendor/
 composer.phar
 /Flow/Mongo
 /PHPFUI/InstaDoc/Tests/
 zoho
-.vscode
+.vscode/

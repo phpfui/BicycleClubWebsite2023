@@ -58,8 +58,8 @@ class Releases
 				{
 				$container->add('<hr>');
 				$uri = '/System/Releases/releases?' . \http_build_query($queryParameters);
-				$button = new \PHPFUI\Button('Deploy', $uri);
-				$button->setConfirm('Deploy this release?');
+				$button = new \PHPFUI\Button('Install', $uri);
+				$button->setConfirm('Install this release?');
 				$container->add($button);
 				}
 

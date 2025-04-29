@@ -3513,12 +3513,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ORM.git",
-                "reference": "93b41042a4c57e7539d506c42ddb3c003ef935d1"
+                "reference": "9ad75ee84c4817541e610db68b03206e2d71bd39"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ORM/zipball/93b41042a4c57e7539d506c42ddb3c003ef935d1",
-                "reference": "93b41042a4c57e7539d506c42ddb3c003ef935d1",
+                "url": "https://api.github.com/repos/phpfui/ORM/zipball/9ad75ee84c4817541e610db68b03206e2d71bd39",
+                "reference": "9ad75ee84c4817541e610db68b03206e2d71bd39",
                 "shasum": ""
             },
             "require": {
@@ -3568,7 +3568,7 @@
                 "issues": "https://github.com/phpfui/ORM/issues",
                 "source": "https://github.com/phpfui/ORM/tree/V2.0.5"
             },
-            "time": "2025-04-28T03:33:59+00:00"
+            "time": "2025-04-28T14:26:48+00:00"
         },
         {
             "name": "phpfui/php-imap",

@@ -70,7 +70,7 @@ class Versions
 				$csrf = \PHPFUI\Session::csrf();
 				$migrateUrl = "/System/Releases/versions/{$branch}?{$field}={$csrf}&sha1={$hash}";
 				$link = new \PHPFUI\Link($migrateUrl, $commit->getShortHash(), false);
-				$link->setConfirm('Deploy this version?');
+				$link->setConfirm('Install this version?');
 				$row['Commit'] = $link;
 				}
 			$table->addRow($row);

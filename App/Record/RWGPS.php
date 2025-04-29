@@ -12,6 +12,8 @@ class RWGPS extends \App\Record\Definition\RWGPS
 	{
 	use \App\DB\Trait\Directions;
 
+	protected static ?string $units = null;
+
 	/** @var array<string, array<string>> */
 	protected static array $virtualFields = [
 		'alternateRoutes' => [\PHPFUI\ORM\Children::class, \App\Table\RWGPSAlternate::class],
@@ -46,9 +48,52 @@ class RWGPS extends \App\Record\Definition\RWGPS
 		return $this;
 		}
 
+	/**
+	 * @return string distance with correct units depending on setting
+	 */
+	public function distance() : string
+		{
+		$units = $this->getUnits();
+
+		$distance = 'km' == $units ? $this->km : $this->miles;
+
+		return \number_format($distance, 1) . ' ' . $units;
+		}
+
+	/**
+	 * @return string elevation with correct units depending on setting
+	 */
+	public function elevation() : string
+		{
+		$units = $this->getUnits();
+
+		if ('km' == $units)
+			{
+			$units = 'Meters';
+			$elevation = $this->elevationMeters;
+			}
+		else
+			{
+			$units = 'Feet';
+			$elevation = $this->elevationFeet;
+			}
+
+		return \number_format($elevation, 0) . ' ' . $units;
+		}
+
 	public function getCSVReader() : \App\Tools\CSV\Reader
 		{
 		return new \App\Tools\CSV\StringReader($this->csv);
+		}
+
+	public function getUnits() : string
+		{
+		if (null === self::$units)
+			{
+			self::$units = new \App\Record\Setting('RWGPSUnits')->value;
+			}
+
+		return self::$units;
 		}
 
 	public function insert() : int

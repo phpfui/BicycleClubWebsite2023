@@ -104,9 +104,9 @@ class Info
 			$fieldSet->add(new \App\UI\Display('Start Location', $this->startLocationView->getLocationPicker($ride->startLocation)));
 			}
 
-		if ($ride->RWGPSId)
+		foreach ($ride->RWGPSChildren as $RWGPS)
 			{
-			$link = new \PHPFUI\Link("/RWGPS/detail/{$ride->RWGPSId}", \PHPFUI\TextHelper::unhtmlentities($ride->RWGPS->title) . ' - ' . $ride->RWGPSId, false);
+			$link = new \PHPFUI\Link("/RWGPS/detail/{$RWGPS->RWGPSId}", \PHPFUI\TextHelper::unhtmlentities($RWGPS->title) . ' - ' . $RWGPS->distance() . ' - ' . $RWGPS->RWGPSId, false);
 			$link->addAttribute('target', '_blank');
 			$fieldSet->add(new \App\UI\Display('RWGPS Detail', $link));
 			}
@@ -268,7 +268,10 @@ class Info
 			$table->addRow(['Description', $ride->description]);
 			}
 
-		$table->addRow(['RWGPS', $ride->RWGPS->routeLink()]);
+		foreach ($ride->RWGPSChildren as $RWGPS)
+			{
+			$table->addRow(['RWGPS ' . $RWGPS->distance(), $RWGPS->routeLink()]);
+			}
 
 		if ($ride->rideStatus->value)
 			{

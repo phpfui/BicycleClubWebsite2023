@@ -55,7 +55,7 @@ class Statistics extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 
 				$this->page->addPageContent(new \PHPFUI\Header(new \PHPFUI\Link("https://www.google.com/maps/?q={$latitude},{$longitude}", 'Distance from here (Google Maps)'), 5));
 
-				$distanceView = new \App\View\Ride\Lister($this->page);
+				$distanceView = new \App\View\Ride\Distance($this->page);
 				$this->page->addPageContent($distanceView->list($rideTable));
 				}
 			}

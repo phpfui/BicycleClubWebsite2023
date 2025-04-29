@@ -124,7 +124,7 @@ class CueSheet extends \FPDF
 		return $this;
 		}
 
-	public function generateFromRide(\App\Record\Ride $ride) : static
+	public function generateFromRide(\App\Record\Ride $ride, int $routeNumber = 0) : static
 		{
 		if (! $ride->loaded())
 			{
@@ -143,7 +143,18 @@ class CueSheet extends \FPDF
 			$cellPhoneNumber = $member->cellPhone ?? '';
 			}
 
-		return $this->generateFromRWGPS($ride->RWGPS, $ride->title, $leader, $cellPhoneNumber);
+		$count = 0;
+		$RWGPS = new \App\Record\RWGPS();
+
+		foreach ($ride->RWGPSChildren as $RWGPS)
+			{
+			if ($count++ >= $routeNumber)
+				{
+				break;
+				}
+			}
+
+		return $this->generateFromRWGPS($RWGPS, $ride->title, $leader, $cellPhoneNumber);
 		}
 
 	public function generateFromRWGPS(\App\Record\RWGPS $rwgps, ?string $title = '', string $leader = '', string $cellPhoneNumber = '') : static

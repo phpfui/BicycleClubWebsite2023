@@ -2,7 +2,7 @@
 
 namespace App\View\Ride;
 
-class Lister
+class Distance
 	{
 	private readonly bool $metric;
 

@@ -12,8 +12,6 @@ class Editor
 
 	private ?\PHPFUI\ORM\RecordCursor $leaders = null;
 
-	private string $mileageSelectorId;
-
 	private readonly \App\View\Ride\Settings $rideSettingsView;
 
 	private int $startTimeOffset = 15;
@@ -240,7 +238,6 @@ class Editor
 				}
 			$mileage = new \PHPFUI\Input\Number('mileage', 'Mileage', $ride->mileage);
 			$mileage->addAttribute('max', (string)999)->addAttribute('min', (string)0);
-			$this->mileageSelectorId = $mileage->getId();
 			$mileage->setToolTip('Actual mileage for the ride');
 			$mileage->setRequired($afterRide);
 			$multiColumn->add($mileage);
@@ -270,7 +267,7 @@ class Editor
 
 			$form->add($fieldSet);
 			$form->add($this->getLeaderFieldSet($ride, $form));
-			$form->add($this->getOptionalInfo($ride, false));
+			$form->add($this->getOptionalInfo($ride, $form));
 			}
 		else
 			{
@@ -291,7 +288,6 @@ class Editor
 			$category = new \App\View\PacePicker('paceId', 'Category', 'Pace', $ride->paceId);
 			$mileage = new \PHPFUI\Input\Number('mileage', 'Mileage', $ride->mileage);
 			$mileage->addAttribute('max', (string)999)->addAttribute('min', (string)0);
-			$this->mileageSelectorId = $mileage->getId();
 			$mileage->setToolTip('Expected mileage for the ride');
 			$mileage->setRequired();
 			$multiColumn = new \PHPFUI\MultiColumn($category, $mileage);
@@ -313,7 +309,7 @@ class Editor
 			$ajax = new \PHPFUI\AJAX('changeStartLocation');
 
 			// side effect of calling getOptionalInfo is to set $this->cueSheetSelectorId
-			$optionalInfo = $this->getOptionalInfo($ride);
+			$optionalInfo = $this->getOptionalInfo($ride, $form);
 			$ajax->addFunction('success', '$("#' . $this->cueSheetSelectorId . '").html(data.response);');
 
 			$slEdit->addAttribute('onchange', $ajax->execute(['startLocationId' => 'this.value']));
@@ -397,6 +393,29 @@ class Editor
 
 						break;
 
+					case 'Add RWGPS Route':
+						if (isset($_POST['RWGPSId']))
+							{
+							$RWGPSId = (int)$_POST['RWGPSId'];
+							}
+						else
+							{
+							$rwgpsModel = new \App\Model\RideWithGPS();
+							$rwgps = $rwgpsModel->getRWGPSFromLink($_POST['RWGPSurl'] ?? '');
+							$RWGPSId = $rwgps->RWGPSId;
+							}
+
+						if ($RWGPSId)
+							{
+							$rideRWGPS = new \App\Record\RideRWGPS();
+							$rideRWGPS->rideId = (int)$_POST['rideId'];
+							$rideRWGPS->RWGPSId = $RWGPSId;
+							$rideRWGPS->insertOrIgnore();
+							$this->page->redirect();
+							}
+
+						break;
+
 					case 'Add RWGPS Ride':
 
 						$parameters = $_POST;
@@ -462,55 +481,13 @@ class Editor
 
 						break;
 
-					case 'changeRWGPS':
-						$rwgpsModel = new \App\Model\RideWithGPS();
-						$rwgps = $rwgpsModel->getRWGPSFromLink($_POST['RWGPSurl'] ?? '');
+					case 'deleteRWGPS':
+						$rideRWGPS = new \App\Record\RideRWGPS($_POST);
+						$rideRWGPS->delete();
 
-						$data = [];
-
-						if ($rwgps)
-							{
-							$rideTable = new \App\Table\Ride();
-							$elevation = $rideTable->getRWGPSElevation($rwgps);
-
-							if ($elevation > 0)
-								{
-								$rwgps->elevationFeet = \round($elevation);
-								}
-							$rwgps->miles = (float)\number_format($rwgps->miles ?? 0.0, 1);
-							$data = $rwgps->toArray();
-							$data['RWGPSId'] = $rwgps->routeLink();
-							}
-
-						$this->page->setRawResponse(\json_encode(['response' => $data], JSON_THROW_ON_ERROR));
+						$this->page->setRawResponse(\json_encode(['response' => $_POST['count']], JSON_THROW_ON_ERROR));
 
 						break;
-
-					case 'changeRWGPSId':
-						$rwgps = new \App\Record\RWGPS($_POST['RWGPSId'] ?? '');
-
-						if ($rwgps->loaded())
-							{
-							$rideTable = new \App\Table\Ride();
-							$elevation = $rideTable->getRWGPSElevation($rwgps);
-
-							if ($elevation > 0)
-								{
-								$rwgps->elevationFeet = \round($elevation);
-								}
-							}
-						else
-							{
-							$rwgps->elevationFeet = 0.0;
-							}
-						$rwgps->miles = (float)\number_format($rwgps->miles, 1);
-						$data = $rwgps->toArray();
-						$data['RWGPSId'] = $rwgps->RWGPSId;
-
-						$this->page->setRawResponse(\json_encode(['response' => $data], JSON_THROW_ON_ERROR));
-
-						break;
-
 					}
 				}
 			}
@@ -612,7 +589,7 @@ class Editor
 		return $fieldSet;
 		}
 
-	private function getOptionalInfo(\App\Record\Ride $ride, bool $showElevation = true) : \PHPFUI\FieldSet
+	private function getOptionalInfo(\App\Record\Ride $ride, \PHPFUI\Form $form) : \PHPFUI\FieldSet
 		{
 		$fieldSet = new \PHPFUI\FieldSet('Optional Information (recommended)');
 		$this->description->setValue($ride->description ?? '');
@@ -626,36 +603,37 @@ class Editor
 			$fieldSet->add($optionalColumns);
 			}
 
-		if ($this->page->isAuthorized('Add / Update RWGPS'))
-			{
-			$RWGPSId = new \PHPFUI\Input\Url('RWGPSurl', 'Ride With GPS Link', $ride->RWGPS->routeLink());
-			$ajax = new \PHPFUI\AJAX('changeRWGPS');
-			$js = 'if(data.response.miles)$("#' . $this->mileageSelectorId . '").val(data.response.miles);';
-			$js .= '$("#' . $RWGPSId->getId() . '").val(data.response.RWGPSId);';
-			$RWGPSId->addAttribute('onchange', $ajax->execute(['RWGPSurl' => 'this.value']));
-			}
-		else
-			{
-			$rwgpsPicker = new \App\UI\RWGPSPicker($this->page, 'RWGPSId', 'RWGPS (start typing to search)', $ride->RWGPS);
-			$RWGPSId = $rwgpsPicker->getEditControl();
-			$hidden = $RWGPSId->getHiddenField();
-			$ajax = new \PHPFUI\AJAX('changeRWGPSId');
-			$js = 'if(data.response.miles)$("#' . $this->mileageSelectorId . '").val(data.response.miles);';
-			$js .= '$("#' . $hidden->getId() . '").val(data.response.RWGPSId);';
-			$hidden->addAttribute('onchange', $ajax->execute(['RWGPSId' => '$("#' . $hidden->getId() . '").val()']));
-			}
+		$routes = $ride->RWGPSChildren;
 
-		$multiColumn = new \PHPFUI\MultiColumn($RWGPSId);
+		$delete = new \PHPFUI\AJAX('deleteRWGPS');
+		$delete->addFunction('success', '$("#count-"+data.response).css("background-color","red").hide("fast").remove()');
+		$this->page->addJavaScript($delete->getPageJS());
 
-		if ($showElevation)
+		$rwgpsTable = new \PHPFUI\Table();
+		$rwgpsTable->setRecordId('count');
+		$count = 0;
+		$rwgpsTable->setHeaders(['RWGPS' => 'Ride With GSP Link', 'Distance', 'Elevation', 'Delete']);
+
+		foreach ($routes as $RWGPS)
 			{
-			$this->elevation->setValue((string)$ride->elevation);
-			$multiColumn->add($this->elevation);
+			$link = new \PHPFUI\Link($RWGPS->routeLink(), $RWGPS->title);
+			$link->addAttribute('target', '_blank');
+			$row['RWGPS'] = $link;
+			$row['Distance'] = $RWGPS->distance();
+			$row['Elevation'] = $RWGPS->elevation();
+			$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
+			$icon->addAttribute('onclick', $delete->execute(['rideId' => $ride->rideId, 'RWGPSId' => $RWGPS->RWGPSId, 'count' => $count]));
+			$row['Delete'] = $icon;
+			$row['count'] = $count++;
+
+			$rwgpsTable->addRow($row);
 			}
-		$fieldSet->add($multiColumn);
-		$js .= 'if(data.response.elevationFeet)$("#' . $this->elevation->getId() . '").val(Math.round(data.response.elevationFeet));';
-		$ajax->addFunction('success', $js);
-		$this->page->addJavaScript($ajax->getPageJS());
+		$fieldSet->add($rwgpsTable);
+
+		$addRWGPSButton = new \PHPFUI\Button('Add RWGPS');
+		$form->saveOnClick($addRWGPSButton);
+		$this->getRWGPSModal($ride, $addRWGPSButton);
+		$fieldSet->add($addRWGPSButton);
 
 		$div = new \PHPFUI\HTML5Element('div');
 		$div->setId('cuesheet');
@@ -692,5 +670,29 @@ class Editor
 			}
 
 		return $fieldSet;
+		}
+
+	private function getRWGPSModal(\App\Record\Ride $ride, \PHPFUI\HTML5Element $modalLink) : void
+		{
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$title = 'Add RWGPS Route';
+		$modal->add(new \PHPFUI\Header($title, 4));
+		$submit = new \PHPFUI\Submit($title);
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAreYouSure(false);
+		$form->add(new \PHPFUI\Input\Hidden('rideId', (string)$ride->rideId));
+
+		if ($this->page->isAuthorized('Add / Update RWGPS'))
+			{
+			$RWGPSId = new \PHPFUI\Input\Url('RWGPSurl', 'Enter RWGPS URL');
+			}
+		else
+			{
+			$rwgpsPicker = new \App\UI\RWGPSPicker($this->page, 'RWGPSId', 'RWGPS (start typing to search)');
+			$RWGPSId = $rwgpsPicker->getEditControl();
+			}
+		$form->add($RWGPSId);
+		$form->add($modal->getButtonAndCancel($submit));
+		$modal->add($form);
 		}
 	}

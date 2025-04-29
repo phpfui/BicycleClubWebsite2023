@@ -24,10 +24,10 @@ class RWGPS extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function cueSheetRide(\App\Record\Ride $ride = new \App\Record\Ride()) : void
+	public function cueSheetRide(\App\Record\Ride $ride = new \App\Record\Ride(), int $routeNumber = 0) : void
 		{
 		$cueSheet = new \App\Report\CueSheet();
-		$cueSheet->generateFromRide($ride);
+		$cueSheet->generateFromRide($ride, $routeNumber);
 		$cueSheet->output('D', "CueSheet_ride_{$ride->rideId}.pdf");
 		}
 

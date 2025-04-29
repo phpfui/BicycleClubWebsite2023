@@ -223,20 +223,45 @@ class Rides
 		return $view->getRideInfo($ride, $this->getRWGPSMenu($ride));
 		}
 
-	public function getRWGPSMenu(\PHPFUI\ORM\DataObject $ride) : string
+	public function getRWGPSMenu(\PHPFUI\ORM\DataObject $rideObject) : string
 		{
-		if (! $ride->RWGPSId)
+		$ride = new \App\Record\Ride($rideObject);
+		$routes = $ride->RWGPSChildren;
+
+		if (! \count($routes))
 			{
 			return '';
 			}
-		$RWGPSId = $ride->RWGPSId;
-		$menu = new \PHPFUI\Menu();
-		$menu->addClass('simple');
-		$RWGPS = $ride->RWGPS;
-		$rwgps = new \PHPFUI\MenuItem('RWGPS' . ($RWGPS->club ? '*' : ''), $RWGPS->routeLink());
-		$rwgps->getLinkObject()->addAttribute('target', '_blank');
-		$menu->addMenuItem($rwgps);
-		$route = new \App\Record\RWGPS($RWGPSId);
+
+		$route = clone $routes->current();
+		$menu = new \PHPFUI\DropDownMenu();
+
+		if (1 == \count($routes))
+			{
+			$rwgpsMenu = new \PHPFUI\MenuItem('RWGPS' . ($route->club ? '*' : ''), $route->routeLink());
+			$rwgpsMenu->getLinkObject()->addAttribute('target', '_blank');
+			$menu->addMenuItem($rwgpsMenu);
+			}
+		else
+			{
+			$rwgpsMenu = new \PHPFUI\DropDownMenu();
+
+			foreach ($routes as $RWGPS)
+				{
+				$title = $RWGPS->distance();
+
+				if ($RWGPS->club)
+					{
+					$title .= ' *';
+					}
+				$rwgpsMenuItem = new \PHPFUI\MenuItem($title, $RWGPS->routeLink());
+				$rwgpsMenuItem->getLinkObject()->addAttribute('target', '_blank');
+				$rwgpsMenu->addMenuItem($rwgpsMenuItem);
+				}
+			$rwgpsMenu->computeWidth();
+			$menu->addSubMenu(new \PHPFUI\MenuItem('RWGPS', '#'), $rwgpsMenu);
+			}
+
 		$link = $route->directionsUrl();
 
 		if ($link)
@@ -246,16 +271,32 @@ class Rides
 			$menu->addMenuItem($directions);
 			}
 
-		if (! empty($route->csv))
+		if (1 == \count($routes))
 			{
 			$menu->addMenuItem(new \PHPFUI\MenuItem('Cue Sheet', '/RWGPS/cueSheetRide/' . $ride->rideId));
 			}
+		else
+			{
+			$cueSheetMenu = new \PHPFUI\DropDownMenu();
+
+			$count = 0;
+
+			foreach ($routes as $RWGPS)
+				{
+				$title = $RWGPS->distance();
+				$cueSheetMenuItem = new \PHPFUI\MenuItem($title, '/RWGPS/cueSheetRide/' . $ride->rideId . '/' . $count);
+				++$count;
+				$cueSheetMenu->addMenuItem($cueSheetMenuItem);
+				}
+			$cueSheetMenu->computeWidth();
+			$menu->addSubMenu(new \PHPFUI\MenuItem('Cue Sheet', '#'), $cueSheetMenu);
+			}
 
 		$menuItem = new \PHPFUI\MenuItem('Stats', '#');
-		$this->getStatsReveal($menuItem, $RWGPSId);
+		$this->getStatsReveal($menuItem, $route);
 		$menu->addMenuItem($menuItem);
 
-		return "<p>{$menu}<p>";
+		return "{$menu}";
 		}
 
 	public function getSignedUpRidersView(\App\Record\Ride $ride, bool $editSignups, bool $showComments = false, ?\PHPFUI\Button $signup = null) : \PHPFUI\FieldSet
@@ -445,6 +486,7 @@ class Rides
 			{
 			return new \PHPFUI\Header($noRidesMessage, 5);
 			}
+
 		$unaffiliated = '';
 		$lastDate = $rides->current()->rideDate;
 		$dateAccordion = new \App\UI\Accordion();
@@ -486,9 +528,9 @@ class Rides
 			$cat->add($categoryLetter);
 			$row->add($cat);
 
-			$mileage = new \PHPFUI\Cell(1);
-			$mileage->add($this->responsiveMileage($ride->mileage));
-			$row->add($mileage);
+			$mileageCell = new \PHPFUI\Cell(1);
+			$mileageCell->add($this->responsiveMileage($ride->mileage));
+			$row->add($mileageCell);
 			$title = new \PHPFUI\Cell(5 + (int)$showNoLeader * 3);
 
 			if ($ride->unaffiliated)
@@ -559,7 +601,7 @@ class Rides
 				if ($ride->startLocationId)
 					{
 					$link = $this->startLocationView->getLocationPicker($ride->startLocation);
-					$content->add("<p><b>Start:</b> {$link}</p>");
+					$content->add("<div><b>Start:</b> {$link}</div>");
 					}
 
 				$content->add($this->getRWGPSMenu($ride));
@@ -1169,14 +1211,14 @@ class Rides
 		$modal->add($form);
 		}
 
-	private function getStatsReveal(\PHPFUI\HTML5Element $opener, int $RWGPSId) : \PHPFUI\Reveal
+	private function getStatsReveal(\PHPFUI\HTML5Element $opener, \App\Record\RWGPS $RWGPS) : \PHPFUI\Reveal
 		{
 		$reveal = new \PHPFUI\Reveal($this->page, $opener);
 		$reveal->addClass('large');
 		$div = new \PHPFUI\HTML5Element('div');
 		$reveal->add($div);
 		$reveal->add($reveal->getCloseButton());
-		$reveal->loadUrlOnOpen('/RWGPS/stats/' . $RWGPSId, $div->getId());
+		$reveal->loadUrlOnOpen('/RWGPS/stats/' . $RWGPS->RWGPSId, $div->getId());
 
 		return $reveal;
 		}

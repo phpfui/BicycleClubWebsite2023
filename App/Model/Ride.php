@@ -570,9 +570,11 @@ class Ride
 		$description = $this->processDescription($ride->description);
 		$rwgpsLink = '';
 
-		if ($ride->RWGPSId)
+		$routes = $ride->RWGPSChildren;
+
+		if (\count($routes))
 			{
-			$link = new \PHPFUI\Link($ride->RWGPS->routeLink());
+			$link = new \PHPFUI\Link($routes->current()->routeLink());
 			$rwgpsLink = "<p>{$link}</p>";
 			}
 		$message .= "<b>{$title}</b><p>{$description}</p>" . $rwgpsLink . '<p>Sign up for this ride now!</p><br>' . $button . $signup;

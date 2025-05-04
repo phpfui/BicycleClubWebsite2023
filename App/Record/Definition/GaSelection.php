@@ -14,6 +14,7 @@ namespace App\Record\Definition;
  * @property int $gaSelectionId MySQL type int
  * @property \App\Record\GaSelection $gaSelection related record
  * @property int $ordering MySQL type int
+ * @property ?int $selectionActive MySQL type int
  * @property string $selectionName MySQL type varchar(255)
  */
 abstract class GaSelection extends \PHPFUI\ORM\Record
@@ -39,6 +40,7 @@ abstract class GaSelection extends \PHPFUI\ORM\Record
 				'gaOptionId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'gaSelectionId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'ordering' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'selectionActive' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 1, ),
 				'selectionName' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, ),
 			];
 			}

@@ -13,6 +13,7 @@ class Migration_61 extends \PHPFUI\ORM\Migration
 		{
 		$this->addColumn('member', 'license', 'char(10)');
 		$this->dropColumn('gaOption', 'active');
+		$this->dropColumn('gaSelection', 'selectionActive');
 
 		return true;
 		}
@@ -21,6 +22,7 @@ class Migration_61 extends \PHPFUI\ORM\Migration
 		{
 		$this->dropColumn('member', 'license');
 		$this->addColumn('gaOption', 'active', 'int default 1');
+		$this->addColumn('gaSelection', 'selectionActive', 'int default 1');
 
 		return true;
 		}

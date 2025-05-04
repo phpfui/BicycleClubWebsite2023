@@ -20,14 +20,17 @@ class OptionPicker extends \PHPFUI\Input\Select
 
 		foreach ($option->GaSelectionChildren as $selection)
 			{
-			$label = $selection->selectionName;
-			$price = $option->price + $selection->additionalPrice;
-
-			if ($price)
+			if ($selection->selectionActive)
 				{
-				$label .= ' - $' . \number_format($price, 2);
+				$label = $selection->selectionName;
+				$price = $option->price + $selection->additionalPrice;
+
+				if ($price)
+					{
+					$label .= ' - $' . \number_format($price, 2);
+					}
+				$this->addOption($label, (string)$selection->gaSelectionId, $riderSelection->gaSelectionId == $selection->gaSelectionId);
 				}
-			$this->addOption($label, (string)$selection->gaSelectionId, $riderSelection->gaSelectionId == $selection->gaSelectionId);
 			}
 		}
 	}

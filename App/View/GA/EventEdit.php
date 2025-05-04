@@ -325,7 +325,7 @@ class EventEdit
 		$deleteSelection->addFunction('success', "$('#{$recordId}-'+data.response).css('background-color','red').hide('fast').remove()");
 		$this->page->addJavaScript($deleteSelection->getPageJS());
 
-		$headers = ['selectionName' => 'Selection', 'additionalPrice' => 'Additional Price', 'csvValue' => 'CSV Value', 'del' => 'Del', ];
+		$headers = ['selectionName' => 'Selection', 'additionalPrice' => 'Additional Price', 'csvValue' => 'CSV Value', 'selectionActive' => 'Active', 'del' => 'Del', ];
 		$table->setHeaders($headers);
 
 		foreach ($option->GaSelectionChildren as $selection)
@@ -336,6 +336,7 @@ class EventEdit
 			$row['selectionName'] .= new \PHPFUI\Input\Hidden("ordering[{$selection->gaSelectionId}]", (string)$selection->ordering);
 			$row['additionalPrice'] = new \PHPFUI\Input\Number("additionalPrice[{$selection->gaSelectionId}]", '', \number_format($selection->additionalPrice ?? 0.0, 2));
 			$row['csvValue'] = new \PHPFUI\Input\Text("csvValue[{$selection->gaSelectionId}]", '', $selection->csvValue);
+			$row['selectionActive'] = new \PHPFUI\Input\CheckBoxBoolean("selectionActive[{$selection->gaSelectionId}]", '', (bool)$selection->selectionActive);
 
 			if (! \count($selection->GaRiderSelectionChildren))
 				{

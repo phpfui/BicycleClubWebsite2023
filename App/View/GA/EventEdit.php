@@ -174,7 +174,13 @@ class EventEdit
 		$fieldSet->add(new \PHPFUI\Input\Hidden('gaEventId', (string)$option->gaEventId));
 		$nameField = new \PHPFUI\Input\Text('optionName', 'Description', $option->optionName);
 		$nameField->setRequired()->setToolTip('Question text or description of option');
-		$fieldSet->add($nameField);
+
+		$line = new \App\UI\CellColumns();
+		$line->add($nameField, 10);
+		$active = new \PHPFUI\Input\CheckBoxBoolean('active', 'Active', (bool)$option->active);
+		$line->add($active);
+		$fieldSet->add($line);
+
 		$required = new \PHPFUI\Input\CheckBoxBoolean('required', 'Rider must select an option', (bool)$option->required);
 		$required->setToolTip('If not checked, rider will have the choice of leaving this option blank and not make a selection.');
 		$price = new \PHPFUI\Input\Number('price', 'Optional price for this option', \number_format($option->price ?? 0, 2));
@@ -477,6 +483,7 @@ class EventEdit
 					{
 					$option = new \App\Record\GaOption($post['gaOptionId']);
 					$option->optionName = $post['optionName'];
+					$option->active = (int)$post['active'];
 					$option->required = (int)$post['required'];
 					$option->price = (float)$post['price'];
 					$option->maximumAllowed = (int)$post['maximumAllowed'];

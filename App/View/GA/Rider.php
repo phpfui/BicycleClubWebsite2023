@@ -193,8 +193,11 @@ class Rider
 
 		foreach ($options as $option)
 			{
-			$riderSelection = new \App\Record\GaRiderSelection(['gaRiderId' => $rider->gaRiderId, 'gaOptionId' => $option->gaOptionId]);
-			$fieldSet->add(new \App\View\GA\OptionPicker($option, $riderSelection));
+			if ($option->active)
+				{
+				$riderSelection = new \App\Record\GaRiderSelection(['gaRiderId' => $rider->gaRiderId, 'gaOptionId' => $option->gaOptionId]);
+				$fieldSet->add(new \App\View\GA\OptionPicker($option, $riderSelection));
+				}
 			}
 
 		return $fieldSet;

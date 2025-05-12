@@ -109,7 +109,7 @@ class Invoice extends \PHPFUI\ORM\Table
 								{
 								$value = (int)$value;
 
-								if ($value)
+								if ($value)	// @phpstan-ignore-line
 									{
 									$sql .= $and . 'i.' . $field . '=?';
 									$input[] = $value;

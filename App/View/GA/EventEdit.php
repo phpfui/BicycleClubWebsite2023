@@ -8,6 +8,8 @@ class EventEdit
 
 	private readonly \App\Table\GaPriceDate $gaPriceDateTable;
 
+	private string $testIncompleteText = 'Test Incomplete Email';
+
 	private string $testText = 'Test Email';
 
 	public function __construct(private readonly \App\View\Page $page)
@@ -56,6 +58,7 @@ class EventEdit
 		$tabs->addTab('Additional', $this->getAdditional($event));
 		$tabs->addTab('Description', $this->getDescription($event));
 		$tabs->addTab('Email', $this->getSignupEmail($event, $form));
+		$tabs->addTab('Incomplete Email', $this->getIncompleteEmail($event, $form));
 		$tabs->addTab('Waiver', $this->getWaiver($event, $form));
 
 		if ($event->loaded())
@@ -163,6 +166,33 @@ class EventEdit
 		$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea($event->getLength('description')));
 		$description->setToolTip('This description will be shown on the web site where people go to sign up. It will also be included on confirmation emails.');
 		$container->add($description);
+
+		return $container;
+		}
+
+	private function getIncompleteEmail(\App\Record\GaEvent $event, \App\UI\ErrorFormSaver $form) : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+
+		$daysAfter = new \PHPFUI\Input\Text('incompleteDaysAfter', 'Days to wait to send incompelete registration email', $event->incompleteDaysAfter);
+		$daysAfter->setToolTip('Enter number of days, or comma separated list of number of days');
+		$deleteIncomplete = new \PHPFUI\Input\CheckBoxBoolean('deleteIncomplete', 'Delete incomplete registations after last email', (bool)$event->deleteIncomplete);
+		$deleteIncomplete->setToolTip('Delete regstrations after the last number of days listed');
+		$container->add(new \PHPFUI\MultiColumn($daysAfter, $deleteIncomplete));
+
+		$signupMessage = new \App\UI\TextAreaImage('incompleteMessage', 'Email when an incomplete registration is found', \str_replace("\n", '<br>', $event->incompleteMessage ?? ''));
+		$signupMessage->setToolTip('This will be sent to people who have not successfully register for the event.');
+		$signupMessage->htmlEditing($this->page, new \App\Model\TinyMCETextArea($event->getLength('incompleteMessage')));
+		$container->add($signupMessage);
+
+		if ($event->gaEventId)
+			{
+			$testButton = new \PHPFUI\Submit($this->testIncompleteText);
+			$testButton->addClass('warning');
+			$container->add('<hr>');
+			$container->add($testButton);
+			$form->saveOnClick($testButton);
+			}
 
 		return $container;
 		}
@@ -500,7 +530,7 @@ class EventEdit
 					$gaSelectionTable->updateFromTable($post);
 					$this->page->redirect();
 					}
-				elseif ($this->testText == $post['submit'])
+				elseif ($this->testText == $post['submit'] || $this->testIncompleteText == $post['submit'])
 					{
 					$gaEvent = new \App\Record\GaEvent($post['gaEventId']);
 					$model = new \App\Model\GeneralAdmission();
@@ -527,7 +557,14 @@ class EventEdit
 					$rider->town = $membership->town;
 					$rider->zip = $membership->zip;
 
-					$model->addRiderToEmail($gaEvent, $rider);
+					if ($this->testText == $post['submit'])
+						{
+						$model->addRiderToEmail($gaEvent, $rider);
+						}
+					else
+						{
+						$model->addRiderToIncompleteEmail($gaEvent, $rider);
+						}
 					\App\Model\Session::setFlash('success', 'Check your inbox for a test email');
 					$this->page->redirect();
 					}

@@ -7,11 +7,14 @@ namespace App\Record\Definition;
  *
  * @property ?int $allowShopping MySQL type int
  * @property ?int $dayOfRegistration MySQL type int
+ * @property int $deleteIncomplete MySQL type int
  * @property ?string $description MySQL type text
  * @property string $eventDate MySQL type date
  * @property int $gaEventId MySQL type int
  * @property \App\Record\GaEvent $gaEvent related record
  * @property int $includeMembership MySQL type int
+ * @property string $incompleteDaysAfter MySQL type varchar(255)
+ * @property ?string $incompleteMessage MySQL type mediumtext
  * @property string $lastRegistrationDate MySQL type date
  * @property ?string $location MySQL type char(100)
  * @property ?int $maxRegistrants MySQL type int
@@ -45,10 +48,13 @@ abstract class GaEvent extends \PHPFUI\ORM\Record
 			static::$fields = [
 				'allowShopping' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'dayOfRegistration' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'deleteIncomplete' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
 				'description' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
 				'eventDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
 				'gaEventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'includeMembership' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'incompleteDaysAfter' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, '', ),
+				'incompleteMessage' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
 				'lastRegistrationDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
 				'location' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
 				'maxRegistrants' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),

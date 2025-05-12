@@ -43,27 +43,21 @@ class GeneralAdmission
 			$this->message .= "<p>The following riders have been signed up for <strong>{$event->title}</strong>";
 			$this->message .= ' on ' . $event->eventDate . ' starting from ' . $event->location . '.</p>';
 			}
-		$this->email->addToMember($rider->toArray());
-		$this->message .= "<p>Rider: <strong>{$rider->firstName} {$rider->lastName}</strong><br>";
-		$this->message .= "Address: {$rider->address} {$rider->town}, {$rider->state} {$rider->zip}<br>";
-		$this->message .= "Phone:: {$rider->phone}<br>";
-		$this->message .= "Emergency Contact: {$rider->contact} Number: {$rider->contactPhone}<br></p>";
-		$options = $rider->optionsSelected;
+		$this->itemizeRider($rider);
+		}
 
-		if (\count($options))
+	public function addRiderToIncompleteEmail(\App\Record\GaEvent $event, \App\Record\GaRider $rider) : void
+		{
+		if (! $this->email)
 			{
-			$this->message .= '<p><strong>Rider Options Selected:</strong></p>';
-			$ol = new \PHPFUI\OrderedList();
-
-			foreach ($options as $option)
-				{
-				$ol->addItem(new \PHPFUI\ListItem("<strong>{$option->optionName}</strong>"));
-				$ul = new \PHPFUI\UnorderedList();
-				$ul->addItem(new \PHPFUI\ListItem($option->selectionName));
-				$ol->addItem($ul);
-				}
-			$this->message .= $ol;
+			$this->email = new \App\Tools\EMail();
+			$this->email->setSubject('Your Registration is NOT complete for ' . $event->title);
+			$this->email->setFromMember($this->chair);
+			$this->message = $event->incompleteMessage;
+			$this->message .= "<p>The following riders have NOT been signed up for <strong>{$event->title}</strong>";
+			$this->message .= ' on ' . $event->eventDate . ' starting from ' . $event->location . '.</p>';
 			}
+		$this->itemizeRider($rider);
 		}
 
 	public function copy(\App\Record\GaEvent $originalEvent, ?string $newDate, ?string $newTitle) : \App\Record\GaEvent
@@ -287,5 +281,30 @@ class GeneralAdmission
 	public function totalRegistrants(\App\Record\GaEvent $event) : int
 		{
 		return $this->gaRiderTable->totalRegistrants($event);
+		}
+
+	private function itemizeRider(\App\Record\GaRider $rider) : void
+		{
+		$this->email->addToMember($rider->toArray());
+		$this->message .= "<p>Rider: <strong>{$rider->firstName} {$rider->lastName}</strong><br>";
+		$this->message .= "Address: {$rider->address} {$rider->town}, {$rider->state} {$rider->zip}<br>";
+		$this->message .= "Phone:: {$rider->phone}<br>";
+		$this->message .= "Emergency Contact: {$rider->contact} Number: {$rider->contactPhone}<br></p>";
+		$options = $rider->optionsSelected;
+
+		if (\count($options))
+			{
+			$this->message .= '<p><strong>Rider Options Selected:</strong></p>';
+			$ol = new \PHPFUI\OrderedList();
+
+			foreach ($options as $option)
+				{
+				$ol->addItem(new \PHPFUI\ListItem("<strong>{$option->optionName}</strong>"));
+				$ul = new \PHPFUI\UnorderedList();
+				$ul->addItem(new \PHPFUI\ListItem($option->selectionName));
+				$ol->addItem($ul);
+				}
+			$this->message .= $ol;
+			}
 		}
 	}

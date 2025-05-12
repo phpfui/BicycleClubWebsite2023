@@ -71,12 +71,16 @@ class RoomList extends ListResource
                 $options['maxParticipants'],
             'RecordParticipantsOnConnect' =>
                 Serialize::booleanToString($options['recordParticipantsOnConnect']),
+            'TranscribeParticipantsOnConnect' =>
+                Serialize::booleanToString($options['transcribeParticipantsOnConnect']),
             'VideoCodecs' =>
                 $options['videoCodecs'],
             'MediaRegion' =>
                 $options['mediaRegion'],
             'RecordingRules' =>
                 Serialize::jsonObject($options['recordingRules']),
+            'TranscriptionsConfiguration' =>
+                Serialize::jsonObject($options['transcriptionsConfiguration']),
             'AudioOnly' =>
                 Serialize::booleanToString($options['audioOnly']),
             'MaxParticipantDuration' =>

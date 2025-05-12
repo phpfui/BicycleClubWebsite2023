@@ -21,50 +21,52 @@ use Twilio\ListResource;
 use Twilio\Values;
 use Twilio\Version;
 
+
 class PortingWebhookConfigurationFetchList extends ListResource
-	{
-	/**
-	 * Construct the PortingWebhookConfigurationFetchList
-	 *
-	 * @param Version $version Version that contains the resource
-	 */
-	public function __construct(
-		Version $version
-	) {
-		parent::__construct($version);
+    {
+    /**
+     * Construct the PortingWebhookConfigurationFetchList
+     *
+     * @param Version $version Version that contains the resource
+     */
+    public function __construct(
+        Version $version
+    ) {
+        parent::__construct($version);
 
-		// Path Solution
-		$this->solution = [
-		];
+        // Path Solution
+        $this->solution = [
+        ];
 
-		$this->uri = '/Porting/Configuration/Webhook';
-	}
+        $this->uri = '/Porting/Configuration/Webhook';
+    }
 
-	/**
-	 * Provide a friendly representation
-	 *
-	 * @return string Machine friendly representation
-	 */
-	public function __toString() : string
-	{
-		return '[Twilio.Numbers.V1.PortingWebhookConfigurationFetchList]';
-	}
+    /**
+     * Fetch the PortingWebhookConfigurationFetchInstance
+     *
+     * @return PortingWebhookConfigurationFetchInstance Fetched PortingWebhookConfigurationFetchInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function fetch(): PortingWebhookConfigurationFetchInstance
+    {
 
-	/**
-	 * Fetch the PortingWebhookConfigurationFetchInstance
-	 *
-	 * @throws TwilioException When an HTTP error occurs.
-	 * @return PortingWebhookConfigurationFetchInstance Fetched PortingWebhookConfigurationFetchInstance
-	 */
-	public function fetch() : PortingWebhookConfigurationFetchInstance
-	{
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
+        $payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
 
-		$headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded']);
-		$payload = $this->version->fetch('GET', $this->uri, [], [], $headers);
+        return new PortingWebhookConfigurationFetchInstance(
+            $this->version,
+            $payload
+        );
+    }
 
-		return new PortingWebhookConfigurationFetchInstance(
-			$this->version,
-			$payload
-		);
-	}
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        return '[Twilio.Numbers.V1.PortingWebhookConfigurationFetchList]';
+    }
 }

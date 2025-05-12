@@ -1,3 +1,9 @@
+Incomplete registration for General Admission
+
+non member volunteers
+
+Distance to ride fix for RWGPS change
+
 support UTF-8 in emails PHPMailer::$validator = 'eai'
 
 Add new forum permissions to member group.
@@ -15,8 +21,6 @@ Revisit privacy policy
 Edit start location on day of ride
 
 Signed up riders over the limit
-
-Embedded images in forum posts not coming through from emailed content
 
 Suggestion box
 

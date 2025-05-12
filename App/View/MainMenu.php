@@ -221,7 +221,6 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/GA/editRider/0', 'Add Registration');
 			$this->addSub($menu, '/GA/email', 'Email Registrants');
 			$this->addSub($menu, '/GA/labels', 'Mailing Labels');
-			$this->addSub($menu, '/GA/landingPageEditor', 'Landing Page Editor');
 			$this->addSub($menu, '/GA/register', 'Register');
 			$this->addSub($menu, '/GA/find', 'Find Registrants');
 			$this->addSub($menu, '/GA/download', 'Download Registrants');

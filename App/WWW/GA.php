@@ -139,19 +139,6 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function landingPageEditor(string $item = '') : void
-		{
-		$item = \in_array($item, ['Header', 'Footer', 'Global', 'Tab', 'Reorder']) ? $item : '';
-		$page = "Landing Page {$item} Editor";
-		$page = \str_replace('  ', ' ', $page);
-
-		if ($this->page->addHeader($page))
-			{
-			$view = new \App\View\GA\LandingEditor($this->page);
-			$this->page->addPageContent($view->menu($item));
-			}
-		}
-
 	public function manage() : void
 		{
 		if ($this->page->addHeader('Manage Dates'))

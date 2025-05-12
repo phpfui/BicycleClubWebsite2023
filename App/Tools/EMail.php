@@ -388,6 +388,7 @@ class EMail
 			{
 			$this->fromEmail = $from;
 			$this->fromName = \trim($name);
+			$this->setReplyTo($this->fromEmail, $this->fromName);
 			}
 
 		return $this;

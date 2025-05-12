@@ -52,6 +52,7 @@ class Member implements \Stringable
 						$phone = $_POST['phone'];
 						$email->setFrom($emailAddress, $name);
 						}
+					$email->setReplyTo($emailAddress, $name);
 					$email->setBody(\App\Tools\TextHelper::cleanUserHtml($_POST['message']) . "\n\nThis email was sent from {$link} by {$name}\n{$emailAddress}\n{$phone}");
 					$email->send();
 					$this->page->redirect('', 'sent');

@@ -73,14 +73,12 @@ class StartLocation
 	public function startLocationRWGPSIds() : array
 		{
 		$rideTable = new \App\Table\Ride();
-		$condition = new \PHPFUI\ORM\Condition('RWGPSId', 0, new \PHPFUI\ORM\Operator\GreaterThan());
-		$condition->and('startLocationId', 0, new \PHPFUI\ORM\Operator\GreaterThan());
-		$rideTable->setWhere($condition);
-		$rideTable->addOrderBy('RWGPSId');
+		$rideTable->addSelect('startLocationId')->addSelect('ride.RWGPSId');
+		$rideTable->addJoin('rideRWGPS')->setWhere(new \PHPFUI\ORM\Condition('startLocationId', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
 
 		$startLocations = [];
 
-		foreach ($rideTable->getRecordCursor() as $ride)
+		foreach ($rideTable->getDataObjectCursor() as $ride)
 			{
 			if (! \array_key_exists($ride->startLocationId, $startLocations))
 				{

@@ -52,7 +52,7 @@ class RideWithGPSDupes extends \App\Cron\BaseJob
 
 			if ($all && $last->RWGPSId)
 				{
-				$rideTable->changeRWGPSId($last->RWGPSId, $rwgps->RWGPSId);
+				new \App\Table\RideRWGPS()->changeRWGPSId($last, $rwgps);
 				$dups[] = ['Delete' => $this->getLink($last->RWGPS), 'Keep' => $this->getLink($rwgps->RWGPS)];
 				$last->delete();
 				}

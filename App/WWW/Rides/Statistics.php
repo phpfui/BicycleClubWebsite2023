@@ -140,7 +140,8 @@ class Statistics extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			$rideSignupTable->addSelect('RWGPS.elevationMeters', 'Elevation Meters');
 			$rideSignupTable->addSelect('RWGPS.metersPerKm', 'Meters / Km');
 			$rideSignupTable->addSelect('RWGPS.percentPaved', 'Percent Paved');
-			$rwgpsJoin = new \PHPFUI\ORM\Condition('RWGPS.RWGPSId', new \PHPFUI\ORM\Literal('ride.RWGPSId'));
+			$rideSignupTable->addJoin('rideRWGPS');
+			$rwgpsJoin = new \PHPFUI\ORM\Condition('RWGPS.RWGPSId', new \PHPFUI\ORM\Literal('rideRWGPS.RWGPSId'));
 			$rideSignupTable->addJoin('RWGPS', $rwgpsJoin);
 			$rideSignupTable->setGroupBy('RWGPS.RWGPSId');
 			$rideSignupTable->setOrderBy('RWGPS.title');

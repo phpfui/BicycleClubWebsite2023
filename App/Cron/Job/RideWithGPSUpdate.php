@@ -37,8 +37,9 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 
 					$rwgpsLink = new \PHPFUI\Link($updated->routeLink(), 'RWGPS route');
 
+					$rideTable->addJoin('rideRWGPS');
 					$condition = new \PHPFUI\ORM\Condition('rideDate', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
-					$condition->and('RWGPSId', $updated->RWGPSId);
+					$condition->and('rideRWGPS.RWGPSId', $updated->RWGPSId);
 					$rideTable->setWhere($condition);
 
 					foreach ($rideTable->getRecordCursor() as $ride)

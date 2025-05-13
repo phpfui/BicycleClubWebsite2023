@@ -14,14 +14,6 @@ class Ride extends \PHPFUI\ORM\Table
 			'to' => $to, ]);
 		}
 
-	public function changeRWGPSId(int $old, ?int $new) : void
-		{
-		$sql = 'update ride set RWGPSId=:new where RWGPSId=:old';
-		$input = ['new' => $new, 'old' => $old];
-
-		\PHPFUI\ORM::execute($sql, $input);
-		}
-
 	public function distanceToRide(float $latitude, float $longitude, string $startDate, string $endDate) : static
 		{
 		$this->addSelect('ride.rideId');
@@ -34,10 +26,10 @@ class Ride extends \PHPFUI\ORM\Table
 		$this->addSelect('RWGPS.latitude');
 		$this->addSelect('RWGPS.longitude');
 		$this->addSelect(new \PHPFUI\ORM\Literal("ST_Distance_Sphere(POINT(RWGPS.latitude,RWGPS.longitude),POINT({$latitude},{$longitude}))"), 'meters');
-		$this->addJoin('RWGPS');
+		$this->addJoin('rideRWGPS');
+		$this->addJoin('RWGPS', new \PHPFUI\ORM\Condition('RWGPS.RWGPSId', new \PHPFUI\ORM\Field('rideRWGPS.RWGPSId')));
 		$this->addJoin('member');
-
-		$condition = new \PHPFUI\ORM\Condition('ride.RWGPSId', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition = new \PHPFUI\ORM\Condition('RWGPS.RWGPSId', null, new \PHPFUI\ORM\Operator\NotEqual());
 
 		if (\strlen($startDate))
 			{
@@ -447,21 +439,18 @@ class Ride extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [$startDate, $endDate]);
 		}
 
-	public function getRWGPSElevation(\App\Record\RWGPS $RWGPS) : int
-		{
-		$sql = 'select AVG(elevation) from ride where RWGPSId = ? and elevation > 0 and rideStatus = ? and pending=0';
-
-		return (int)\round((int)\PHPFUI\ORM::getValue($sql, [$RWGPS->RWGPSId, \App\Enum\Ride\Status::COMPLETED->value, ]));
-		}
-
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
 	 */
 	public function getRWGPSStats(\App\Record\RWGPS $rwgps) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from ride where RWGPSId = ? and elevation > 0 and rideStatus = ? and pending=0';
+		$this->addJoin('rideRWGPS');
+		$condition = new \PHPFUI\ORM\Condition('rideRWGPS.RWGPSId', $rwgps->RWGPSId);
+		$condition->and('elevation', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition->and('pending', 0);
+		$condition->and('rideStatus', \App\Enum\Ride\Status::COMPLETED->value);
 
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$rwgps->RWGPSId, \App\Enum\Ride\Status::COMPLETED->value, ]);
+		return $this->getRecordCursor();
 		}
 
 	/**

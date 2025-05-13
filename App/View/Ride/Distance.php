@@ -13,6 +13,8 @@ class Distance
 
 	public function list(\App\Table\Ride $rideTable) : \App\UI\ContinuousScrollTable
 		{
+		$rideTable->addJoin('rideRWGPS');
+
 		$metric = $this->metric;
 
 		if ($this->metric)

@@ -292,8 +292,7 @@ class RideWithGPS extends GPS
 			// 404 = not found, 403 = not public
 			if ($status >= 400 && $status < 500 && $rwgps->RWGPSId)
 				{
-				$rideTable = new \App\Table\Ride();
-				$rideTable->changeRWGPSId($rwgps->RWGPSId, null);
+				new \App\Table\RideRWGPS()->changeRWGPSId($rwgps, null);
 				$rwgps->delete();
 				}
 			else

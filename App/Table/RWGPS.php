@@ -37,7 +37,11 @@ class RWGPS extends \PHPFUI\ORM\Table
 	 */
 	public function getUpcomingRWGPS() : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select distinct RWGPS.* from ride left join RWGPS on RWGPS.RWGPSId=ride.RWGPSId where ride.RWGPSId > 0 and rideDate>=:date';
+		$sql = 'select distinct RWGPS.*
+			from ride
+			left join rideRWGPS on rideRWGPS.rideId=ride.rideId
+			left join RWGPS on RWGPS.RWGPSId=rideRWGPS.RWGPSId
+			where rideDate>=:date';
 
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, ['date' => \App\Tools\Date::todayString()]);
 		}

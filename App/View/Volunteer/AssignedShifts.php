@@ -44,12 +44,7 @@ class AssignedShifts implements \Stringable
 
 			$shifts = $this->jobShiftTable->getJobShifts($this->job->jobId);
 
-			$add = new \PHPFUI\Button('Add Volunteer');
-			$add->addClass('success');
-			$this->addVolunteerModal($add, $this->job, $shifts);
-
 			$volunteers = $this->volunteerJobShiftTable->getVolunteers($this->job->jobId);
-			$form->saveOnClick($add);
 			$delete = new \PHPFUI\AJAX('deleteVolunteer', 'Delete this volunteer?');
 			$delete->addFunction('success', '$("#volunteerJobShiftId-"+data.response).css("background-color","red").hide("slow").remove();');
 			$this->page->addJavaScript($delete->getPageJS());
@@ -101,7 +96,19 @@ class AssignedShifts implements \Stringable
 				{
 				$buttonGroup->addButton($submit);
 				}
+
+			$add = new \PHPFUI\Button('Add Volunteer');
+			$add->addClass('success');
+			$this->addVolunteerModal($add, $this->job, $shifts);
+			$form->saveOnClick($add);
 			$buttonGroup->addButton($add);
+
+			$addNonMember = new \PHPFUI\Button('Add Non-Member Volunteer');
+			$addNonMember->addClass('warning');
+			$this->addNonMemberVolunteerModal($addNonMember, $this->job, $shifts);
+			$form->saveOnClick($addNonMember);
+			$buttonGroup->addButton($addNonMember);
+
 			$form->add($buttonGroup);
 			$output = $form;
 			}
@@ -199,6 +206,52 @@ class AssignedShifts implements \Stringable
 
 					break;
 
+				case 'Add Non-Member Volunteer':
+
+					$volunteerJobShift = new \App\Record\VolunteerJobShift();
+
+					if (isset($_POST['email']))
+						{
+						$member = new \App\Record\Member(['email' => $_POST['email']]);
+
+						if (! $member->loaded())
+							{
+							$membership = new \App\Record\Membership();
+							$membership->address = '';
+							$membership->town = '';
+							$membership->state = '';
+							$membership->zip = '';
+							$membership->pending = 0;
+							$membership->affiliation = 'Volunteer';
+							$membership->allowedMembers = 1;
+							$membership->expires = \App\Tools\Date::todayString(-365 * 2);
+							$membership->joined = \App\Tools\Date::todayString();
+
+							$member->setFrom($_POST);
+							$errors = $member->validate();
+
+							if ($errors)
+								{
+								\App\Model\Session::setFlash('alert', $errors);
+								$this->page->redirect();
+
+								break;
+								}
+							$member->membership = $membership;
+							$member->insertOrUpdate();
+							$settingTable = new \App\Table\Setting();
+							$volunteerOnly = $settingTable->getStandardPermissionGroup('Volunteer Only');
+							$nonMember = $settingTable->getStandardPermissionGroup('Non-Member Individual');
+							\App\Table\UserPermission::addPermissionToUser($member->memberId, $volunteerOnly->permissionId);
+							\App\Table\UserPermission::addPermissionToUser($member->memberId, $nonMember->permissionId);
+							}
+						$volunteerJobShift->member = $member;
+						}
+					$volunteerJobShift->setFrom($_POST);
+					$volunteerJobShift->insert();
+					$this->page->redirect();
+
+					break;
 
 				default:
 
@@ -206,6 +259,28 @@ class AssignedShifts implements \Stringable
 
 				}
 			}
+		}
+
+	private function addNonMemberVolunteerModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Job $job, \PHPFUI\ORM\RecordCursor $cursor) : void
+		{
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$modal->addClass('large');
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAreYouSure(false);
+		$fieldSet = new \PHPFUI\FieldSet('Add a Non-Member volunteer for ' . $job->title);
+		$fieldSet->add(new \PHPFUI\Input\Hidden('jobId', (string)$job->jobId));
+		$fieldSet->add(new \PHPFUI\Input\Hidden('jobShiftId', (string)($cursor->current()->jobShiftId)));
+		$fieldSet->add(new \PHPFUI\Input\Hidden('shiftLeader', '0'));
+
+		$firstName = new \PHPFUI\Input\Text('firstName', 'First Name')->setRequired();
+		$lastName = new \PHPFUI\Input\Text('lastName', 'Last Name')->setRequired();
+		$fieldSet->add(new \PHPFUI\MultiColumn($firstName, $lastName));
+		$email = new \PHPFUI\Input\Email('email', 'Email')->setRequired();
+		$cellPhone = new \App\UI\TelUSA($this->page, 'cellPhone', 'Cell Phone')->setRequired();
+		$fieldSet->add(new \PHPFUI\MultiColumn($email, $cellPhone));
+		$form->add($fieldSet);
+		$form->add($modal->getButtonAndCancel(new \PHPFUI\Submit('Add Non-Member Volunteer', 'action')));
+		$modal->add($form);
 		}
 
 	private function addVolunteerModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Job $job, \PHPFUI\ORM\RecordCursor $cursor) : void
@@ -218,7 +293,7 @@ class AssignedShifts implements \Stringable
 		$fieldSet->add(new \PHPFUI\Input\Hidden('jobId', (string)$job->jobId));
 		$fieldSet->add(new \PHPFUI\Input\Hidden('jobShiftId', (string)($cursor->current()->jobShiftId)));
 		$fieldSet->add(new \PHPFUI\Input\Hidden('shiftLeader', '0'));
-		$memberPicker = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPickerNoSave('Volunteer Name'), 'memberId');
+		$memberPicker = new \App\UI\MemberPicker($this->page, new \App\Model\NonMemberPickerNoSave('Volunteer Name'), 'memberId');
 		$fieldSet->add($memberPicker->getEditControl());
 		$form->add($fieldSet);
 		$form->add($modal->getButtonAndCancel(new \PHPFUI\Submit('Add Volunteer', 'action')));

@@ -73,6 +73,8 @@ class PermissionBase
 			'Pending Member' => 'Assigned to members who have not paid yet',
 			'Ride Coordinator' => 'Assistants to the Rides Chair',
 			'Ride Leader' => 'Used for identifying ride leaders',
+			'Non-Member Individual' => 'Non-members with limited access',
+			'Volunteer Only' => 'Used for non-member volunteers',
 			'Super User' => 'God users',
 		];
 		}

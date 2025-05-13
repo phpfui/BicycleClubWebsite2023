@@ -23,7 +23,7 @@ class Member extends \PHPFUI\ORM\Validator
 		'firstName' => ['required', 'maxlength'],
 		'geoLocate' => ['required', 'integer'],
 		'journal' => ['required', 'integer'],
-		'lastLogin' => ['required', 'maxlength', 'datetime'],
+		'lastLogin' => ['maxlength', 'datetime'],
 		'lastName' => ['required', 'maxlength'],
 		'loginAttempts' => ['maxlength'],
 		'memberId' => ['integer'],

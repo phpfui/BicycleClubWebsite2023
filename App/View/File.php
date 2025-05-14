@@ -4,15 +4,12 @@ namespace App\View;
 
 class File extends \App\View\Folder
 	{
-	private static bool $editFile = false;
-
 	private readonly \App\Model\FileFiles $fileFiles;
 
 	public function __construct(\App\View\Page $page)
 		{
 		parent::__construct($page, __CLASS__);
 		$this->fileFiles = new \App\Model\FileFiles();
-		self::$editFile = $page->isAuthorized('Edit File');
 		}
 
 	public function edit(\App\Record\File $file) : \PHPFUI\Container
@@ -104,25 +101,31 @@ class File extends \App\View\Folder
 		return $form;
 		}
 
-	public function listFiles(\App\Table\File $fileTable, bool $allowCut = false, int $folderId = 0) : \App\UI\ContinuousScrollTable
+	public function listFiles(\App\Table\File $fileTable, int $folderId = 0) : \App\UI\ContinuousScrollTable
 		{
 		$view = new \App\UI\ContinuousScrollTable($this->page, $fileTable);
-		$deleter = new \App\Model\DeleteRecord($this->page, $view, $fileTable, 'Are you sure you want to permanently delete this file?');
-		$view->addCustomColumn('del', $deleter->columnCallback(...));
 
 		$this->cuts = $this->getCuts();
+		$that = $this;
 
 		$view->addCustomColumn('uploaded', static fn (array $file) => \date('Y-m-d', \strtotime((string)$file['uploaded'])));
-		$view->addCustomColumn('file', static fn (array $file) => self::$editFile ? new \PHPFUI\Link('/File/edit/' . $file['fileId'], $file['description'], false) : $file['description']);
+		$view->addCustomColumn('description', static fn (array $file) => $that->editItem ? new \PHPFUI\Link('/File/edit/' . $file['fileId'], $file['description'], false) : $file['description']);
 		$view->addCustomColumn('fileName', static fn (array $file) => new \PHPFUI\Link('/File/download/' . $file['fileId'], $file['fileName'], false));
 		$view->addCustomColumn('member', static function(array $file) { $member = new \App\Record\Member($file['memberId']);
 
 return $member->fullName();});
 
 		$headers = ['fileName' => 'Download', 'description' => 'Description', 'uploaded' => 'Uploaded'];
-		$normalHeaders = ['member', 'del'];
+		$normalHeaders = ['member'];
 
-		if ($allowCut)
+		if ($this->deleteItem)
+			{
+			$deleter = new \App\Model\DeleteRecord($this->page, $view, $fileTable, 'Are you sure you want to permanently delete this file?');
+			$view->addCustomColumn('del', $deleter->columnCallback(...));
+			$normalHeaders[] = 'del';
+			}
+
+		if ($this->moveItem)
 			{
 			$normalHeaders[] = 'cut';
 			$view->addCustomColumn('cut', $this->getCut(...));

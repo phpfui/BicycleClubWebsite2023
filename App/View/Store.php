@@ -13,7 +13,6 @@ class Store extends \App\View\Folder
 	public function __construct(\App\View\Page $page)
 		{
 		parent::__construct($page, __CLASS__);
-		$this->allowCuts = false;
 		$this->setItemName('Store Item')->setBrowseSection('Inventory/manage');
 		$this->settingTable = new \App\Table\Setting();
 		$this->thumbnailSize = (int)$this->settingTable->value('thumbnailSize');

@@ -47,7 +47,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			if ($folder->loaded())
 				{
 				$this->table->setWhere(new \PHPFUI\ORM\Condition('folderId', $folder->folderId));
-				$form->add($this->view->listPhotos($this->table, true));
+				$form->add($this->view->listPhotos($this->table));
 				}
 			$this->page->addPageContent($form);
 			}
@@ -73,9 +73,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			foreach ($_POST['cutFolder'] ?? [] as $folderId)
 				{
-				$folder = new \App\Record\Folder($folderId);
-
-				if (! $folder->empty() && $this->page->isAuthorized('Move Folder'))
+				if ($this->page->isAuthorized('Move Folder'))
 					{
 					$photos[] = 0 - $folderId;
 					}

@@ -163,11 +163,9 @@ class Video extends \App\View\Folder
 		return $container;
 		}
 
-	public function list(\App\Table\Video $videoTable, bool $allowCut = false, int $folderId = 0) : \App\UI\ContinuousScrollTable
+	public function list(\App\Table\Video $videoTable, int $folderId = 0) : \App\UI\ContinuousScrollTable
 		{
 		$view = new \App\UI\ContinuousScrollTable($this->page, $videoTable);
-		$deleter = new \App\Model\DeleteRecord($this->page, $view, $videoTable, 'Are you sure you want to permanently delete this video?');
-		$view->addCustomColumn('del', $deleter->columnCallback(...));
 
 		$this->cuts = $this->getCuts();
 
@@ -179,12 +177,19 @@ class Video extends \App\View\Folder
 return $member->fullName();});
 
 		$sortHeaders = ['title' => 'View', 'description' => 'Description', 'videoDate' => 'Date', 'hits' => 'Views'];
-		$normalHeaders = ['member', 'del'];
+		$normalHeaders = ['member'];
 
-		if ($allowCut)
+		if ($this->moveItem)
 			{
 			$normalHeaders[] = 'cut';
 			$view->addCustomColumn('cut', $this->getCut(...));
+			}
+
+		if ($this->deleteItem)
+			{
+			$normalHeaders[] = 'del';
+			$deleter = new \App\Model\DeleteRecord($this->page, $view, $videoTable, 'Are you sure you want to permanently delete this video?');
+			$view->addCustomColumn('del', $deleter->columnCallback(...));
 			}
 
 		$view->setSearchColumns($sortHeaders)->setHeaders(\array_merge($sortHeaders, $normalHeaders))->setSortableColumns(\array_keys($sortHeaders));

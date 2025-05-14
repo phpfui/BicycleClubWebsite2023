@@ -35,11 +35,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$condition = new \PHPFUI\ORM\Condition('folderType', \App\Enum\FolderType::FILE->value);
 			$condition->and('parentFolderId', (int)$folder->folderId);
 			$this->folderTable->setWhere($condition)->addOrderBy('name');
-			$this->page->addPageContent($this->view->clipboard(
-				$folder	/**
-	 * @return array<int,int>
-	 */
-			));
+			$this->page->addPageContent($this->view->clipboard($folder));
 			$form = new \PHPFUI\Form($this->page);
 			$form->setAreYouSure(false);
 			$form->setAttribute('action', '/File/cut');
@@ -48,7 +44,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			if ($folder->loaded())
 				{
 				$this->table->setWhere(new \PHPFUI\ORM\Condition('folderId', $folder->folderId));
-				$form->add($this->view->listFiles($this->table, true, $folder->folderId));
+				$form->add($this->view->listFiles($this->table, $folder->folderId));
 				}
 			$this->page->addPageContent($form);
 			}
@@ -74,9 +70,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			foreach ($_POST['cutFolder'] ?? [] as $folderId)
 				{
-				$folder = new \App\Record\Folder($folderId);
-
-				if (! $folder->empty() && $this->page->isAuthorized('Move Folder'))
+				if ($this->page->isAuthorized('Move Folder'))
 					{
 					$files[] = 0 - $folderId;
 					}

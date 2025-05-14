@@ -4,7 +4,9 @@ namespace App\View;
 
 abstract class Folder
 	{
-	protected bool $allowCuts = true;
+	protected bool $addFolder;
+
+	protected bool $addItem;
 
 	protected string $browseSection = 'browse';
 
@@ -14,6 +16,12 @@ abstract class Folder
 	 * @var array<int,int>
 	 */
 	protected array $cuts = [];
+
+	protected bool $deleteFolder;
+
+	protected bool $deleteItem;
+
+	protected bool $editFolder;
 
 	protected bool $editItem;
 
@@ -36,7 +44,6 @@ abstract class Folder
 		$parts = \explode('\\', $className);
 		$this->className = \array_pop($parts);
 		$this->setItemName($this->className);
-		$this->itemName = $this->className;
 		$this->type = \strtolower($this->className);
 		$this->signedInMember = \App\Model\Session::signedInMemberId();
 
@@ -68,7 +75,7 @@ abstract class Folder
 		{
 		$container = new \PHPFUI\Container();
 
-		if (! $this->allowCuts)
+		if (! $this->moveItem && ! $this->moveFolder)
 			{
 			return $container;
 			}
@@ -131,7 +138,7 @@ abstract class Folder
 
 	public function deleteFolder(string $url, \App\Record\Folder $folder = new \App\Record\Folder()) : void
 		{
-		if (! $folder->empty() && $this->page->isAuthorized("Delete {$this->itemName} Folder"))
+		if (! $folder->empty() && $this->deleteFolder)
 			{
 			if (! $folder->childCount())
 				{
@@ -274,16 +281,25 @@ abstract class Folder
 		{
 		$container = new \PHPFUI\Table();
 
-		$container->setHeaders(['Folder', 'Cut' => $this->allowCuts ? 'Cut/Del' : 'Del']);
+		$headers = ['Folder'];
+
+		if ($this->moveFolder)
+			{
+			$headers[] = 'Cut';
+			}
+
+		if ($this->deleteFolder)
+			{
+			$headers[] = 'Del';
+			}
+		$container->setHeaders($headers);
 		$container->addColumnAttribute('Cut', ['class' => 'float-right']);
 		$buttonGroup = new \PHPFUI\HTML5Element('div');
 		$buttonGroup->addClass('clearfix');
 
-		$permission = 'Add ' . $this->className . ' Folder';
-
-		if ($this->page->isAuthorized($permission))
+		if ($this->addFolder)
 			{
-			$addFolderButton = new \PHPFUI\Button($permission);
+			$addFolderButton = new \PHPFUI\Button("Add {$this->itemName} Folder");
 			$addFolderButton->addClass('secondary');
 			$this->addFolderModal($addFolderButton, $parentFolder);
 			$buttonGroup->add($addFolderButton);
@@ -296,7 +312,7 @@ abstract class Folder
 
 		if ($parentFolder->loaded())
 			{
-			if (null !== $addButtonName && $this->page->isAuthorized('Add ' . $addButtonName))
+			if (null !== $addButtonName && $this->addItem)
 				{
 				$addFileButton = new \PHPFUI\Button('Add ' . $addButtonName);
 				$addFileButton->addClass('success');
@@ -304,28 +320,16 @@ abstract class Folder
 				$buttonGroup->add($addFileButton);
 				}
 
-			$permission = 'Edit ' . $this->className . ' Folder';
-
-			if ($this->page->isAuthorized($permission))
+			if ($this->editFolder)
 				{
-				$renameFolderButton = new \PHPFUI\Button($permission);
+				$renameFolderButton = new \PHPFUI\Button('Edit Folder');
 				$renameFolderButton->addClass('warning');
 				$this->addEditFolderModal($renameFolderButton, $parentFolder);
 				$buttonGroup->add($renameFolderButton);
 				}
 			}
-		else
-			{
-			if (null !== $addButtonName && $this->page->isAuthorized('Add ' . $addButtonName))
-				{
-				$addFileButton = new \PHPFUI\Button('Add ' . $addButtonName);
-				$addFileButton->addClass('success');
-				$addFileButton->setConfirm('You can only add ' . $addButtonName . 's to folders. Create or choose a folder first');
-				$buttonGroup->add($addFileButton);
-				}
-			}
 
-		if ($this->allowCuts && ($this->moveItem || $this->moveFolder))
+		if ($this->moveItem || $this->moveFolder)
 			{
 			$cutButton = new \PHPFUI\Submit('Cut');
 			$cutButton->addClass('alert');
@@ -346,11 +350,12 @@ abstract class Folder
 			$row = [];
 			$row['Folder'] = new \PHPFUI\Link('/' . $this->className . '/' . $this->browseSection . '/' . $folder->folderId, $folder->name, false);
 
-			if (! $folder->childCount())
+			if ($this->deleteFolder && ! $folder->childCount())
 				{
-				$row['Cut'] = new \PHPFUI\FAIcon('fas', 'trash-alt', '/' . $this->className . '/deleteFolder/' . $folder->folderId);
+				$row['Del'] = new \PHPFUI\FAIcon('fas', 'trash-alt', '/' . $this->className . '/deleteFolder/' . $folder->folderId);
 				}
-			elseif ($this->allowCuts && (! isset($cuts[0 - $folder->folderId]) && $this->moveFolder))
+
+			if (! isset($cuts[0 - $folder->folderId]) && $this->moveFolder)
 				{
 				$cb = new \PHPFUI\Input\CheckBox('cutFolder[]', '', $folder->folderId);
 				$row['Cut'] = $cb;
@@ -372,9 +377,14 @@ abstract class Folder
 	public function setItemName(string $itemName) : self
 		{
 		$this->itemName = $itemName;
+		$this->addItem = $this->page->isAuthorized('Add ' . $this->itemName);
 		$this->moveItem = $this->page->isAuthorized('Move ' . $this->itemName);
+		$this->deleteItem = $this->page->isAuthorized('Delete ' . $this->itemName);
 		$this->editItem = $this->page->isAuthorized('Edit ' . $this->itemName);
+		$this->editFolder = $this->page->isAuthorized('Edit ' . $this->itemName . ' Folder');
+		$this->addFolder = $this->page->isAuthorized("Add {$this->itemName} Folder");
 		$this->moveFolder = $this->page->isAuthorized("Move {$this->itemName} Folder");
+		$this->deleteFolder = $this->page->isAuthorized("Delete {$this->itemName} Folder");
 
 		return $this;
 		}

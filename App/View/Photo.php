@@ -442,7 +442,7 @@ JS;
 		return $table;
 		}
 
-	public function listPhotos(\App\Table\Photo $photoTable, bool $allowCut = false) : \App\UI\ContinuousScrollTable
+	public function listPhotos(\App\Table\Photo $photoTable) : \App\UI\ContinuousScrollTable
 		{
 		\App\Model\Session::clearPhotoAlbum();
 
@@ -455,7 +455,6 @@ JS;
 			}
 
 		$this->cuts = $this->getCuts();
-
 		$view->addCustomColumn('uploaded', static fn (array $photo) => \date('Y-m-d', \strtotime((string)$photo['uploaded'])));
 		$view->addCustomColumn('taken', static fn (array $photo) => $photo['taken'] ? \date('D M j, Y, g:i a', \strtotime((string)$photo['taken'])) : '');
 		$view->addCustomColumn(
@@ -471,10 +470,17 @@ JS;
 		$headers = ['description' => 'Caption', 'taken', 'uploaded'];
 		$normalHeaders = [];
 
-		if ($allowCut)
+		if ($this->moveItem)
 			{
-			$normalHeaders = ['cut'];
+			$normalHeaders[] = 'cut';
 			$view->addCustomColumn('cut', $this->getCut(...));
+			}
+
+		if ($this->deleteItem)
+			{
+			$normalHeaders[] = 'del';
+			$deleter = new \App\Model\DeleteRecord($this->page, $view, $photoTable, 'Are you sure you want to permanently delete this photo?');
+			$view->addCustomColumn('del', $deleter->columnCallback(...));
 			}
 
 		$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, $normalHeaders))->setSortableColumns($headers);

@@ -371,10 +371,12 @@ class RideWithGPS
 			}
 		$sortableHeaders['town'] = 'Start';
 		$sortableHeaders['club'] = 'Club';
-		$normalHeaders = $additionalHeaders + ['cuesheet' => 'Cue', 'stats' => 'Stats'];
+		$normalHeaders = $additionalHeaders + ['cuesheet' => 'Cue', 'stats' => 'Stats', 'Del'];
 
 		$view = new \App\UI\ContinuousScrollTable($this->page, $rwgpsTable);
 
+		$deleter = new \App\Model\DeleteRecord($this->page, $view, $rwgpsTable, 'Are you sure you want to permanently delete this RWGPS route?');
+		$view->addCustomColumn('Del', $deleter->columnCallback(...));
 		$view->addCustomColumn('title', static function(array $rwgps)
 			{
 			$name = new \PHPFUI\Link("/RWGPS/detail/{$rwgps['RWGPSId']}", \PHPFUI\TextHelper::unhtmlentities($rwgps['title']) . ' - ' . $rwgps['RWGPSId'], false);

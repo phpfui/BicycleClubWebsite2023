@@ -531,7 +531,7 @@ class CueSheet
 				$led = 'This cuesheet has never been used for a ride';
 				}
 			$detail->add($led);
-			$bg = new \App\UI\CancelButtonGroup();
+			$bg = new \PHPFUI\ButtonGroup();
 
 			if ($this->page->isAuthorized('Edit Cue Sheet') || $cuesheet->memberId == \App\Model\Session::signedInMemberId())
 				{

@@ -8,11 +8,14 @@ class MemberPicker
 
 	private readonly string $name;
 
+	private readonly string $today;
+
 	/**
 	 * @param array<string,string> $initialMember
 	 */
 	public function __construct(private readonly \PHPFUI\Page $page, private readonly \App\Model\MemberPickerBase $model, private string $fieldName = '', array $initialMember = [])
 		{
+		$this->today = \App\Tools\Date::todayString();
 		$this->model->setMember($initialMember);
 		$this->name = $model->getName();
 		}
@@ -85,7 +88,13 @@ class MemberPicker
 			{
 			$member['lastName'] = '';
 			}
+		$lapsed = '';
 
-		return $member['firstName'] . ' ' . $member['lastName'];
+		if ($member['lastName'] && $member['firstName'] && $member['expires'] < $this->today)
+			{
+			$lapsed = ' - Lapsed';
+			}
+
+		return $member['firstName'] . ' ' . $member['lastName'] . $lapsed;
 		}
 	}

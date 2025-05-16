@@ -59,6 +59,7 @@ class EventEdit
 		$tabs->addTab('Description', $this->getDescription($event));
 		$tabs->addTab('Email', $this->getSignupEmail($event, $form));
 		$tabs->addTab('Incomplete Email', $this->getIncompleteEmail($event, $form));
+		$tabs->addTab('Email Fields', $this->getEmailFields());
 		$tabs->addTab('Waiver', $this->getWaiver($event, $form));
 
 		if ($event->loaded())
@@ -167,6 +168,14 @@ class EventEdit
 		$container->add($description);
 
 		return $container;
+		}
+
+	private function getEmailFields() : \PHPFUI\FieldSet
+		{
+		$fieldSet = new \PHPFUI\FieldSet('Substitution Fields');
+		$fieldSet->add(new \App\UI\SubstitutionFields(new \App\Record\GaRider()->toArray()));
+
+		return $fieldSet;
 		}
 
 	private function getIncompleteEmail(\App\Record\GaEvent $event, \App\UI\ErrorFormSaver $form) : \PHPFUI\Container

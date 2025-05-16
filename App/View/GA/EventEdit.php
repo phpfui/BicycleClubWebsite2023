@@ -161,8 +161,7 @@ class EventEdit
 	private function getDescription(\App\Record\GaEvent $event) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
-
-		$description = new \App\UI\TextAreaImage('description', 'Event Description', \str_replace("\n", '<br>', $event->description ?? ''));
+		$description = new \App\UI\TextAreaImage('description', 'Event Description', $event->description ?? '');
 		$description->htmlEditing($this->page, new \App\Model\TinyMCETextArea($event->getLength('description')));
 		$description->setToolTip('This description will be shown on the web site where people go to sign up. It will also be included on confirmation emails.');
 		$container->add($description);
@@ -180,7 +179,7 @@ class EventEdit
 		$deleteIncomplete->setToolTip('Delete regstrations after the last number of days listed');
 		$container->add(new \PHPFUI\MultiColumn($daysAfter, $deleteIncomplete));
 
-		$signupMessage = new \App\UI\TextAreaImage('incompleteMessage', 'Email when an incomplete registration is found', \str_replace("\n", '<br>', $event->incompleteMessage ?? ''));
+		$signupMessage = new \App\UI\TextAreaImage('incompleteMessage', 'Email when an incomplete registration is found', $event->incompleteMessage ?? '');
 		$signupMessage->setToolTip('This will be sent to people who have not successfully register for the event.');
 		$signupMessage->htmlEditing($this->page, new \App\Model\TinyMCETextArea($event->getLength('incompleteMessage')));
 		$container->add($signupMessage);

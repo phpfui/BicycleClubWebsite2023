@@ -25,6 +25,11 @@ abstract class MemberPickerBase
 		return $this->memberTable->findByName($names, $this->currentMember);
 		}
 
+	public function getCurrentMember() : bool
+		{
+		return $this->currentMember;
+		}
+
 	/**
 	 * @return array<string,mixed> member
 	 */

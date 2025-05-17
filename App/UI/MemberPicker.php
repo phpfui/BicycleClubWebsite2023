@@ -90,7 +90,7 @@ class MemberPicker
 			}
 		$lapsed = '';
 
-		if ($member['lastName'] && $member['firstName'] && $member['expires'] < $this->today)
+		if (! $this->model->getCurrentMember() && $member['lastName'] && $member['firstName'] && $member['expires'] < $this->today)
 			{
 			$lapsed = ' - Lapsed';
 			}

@@ -603,6 +603,11 @@ class Editor
 			$fieldSet->add($optionalColumns);
 			}
 
+		if (isset($_GET['RWGPSId']))
+			{
+			$fieldSet->add(new \PHPFUI\Input\Hidden('RWGPSId', $_GET['RWGPSId']));
+			}
+
 		$routes = $ride->RWGPSChildren;
 
 		$delete = new \PHPFUI\AJAX('deleteRWGPS');

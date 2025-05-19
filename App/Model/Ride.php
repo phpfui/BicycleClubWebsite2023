@@ -76,8 +76,7 @@ class Ride
 			}
 		$id = $ride->insert();
 
-		$this->rideSignupTable->deleteOtherSignedUpRides($ride, $ride->member);
-		$this->addLeaderSignups($ride);
+		$this->updateRide($ride, $parameters);
 
 		if ($parameters['pending'])
 			{
@@ -227,40 +226,6 @@ class Ride
 		}
 
 	/**
-	 * @param array<string,mixed> $parameters
-	 *
-	 * @return array<string,mixed>
-	 */
-	public function cleanDescription(array $parameters) : array
-		{
-		$description = $parameters['description'] ?? '';
-		$RWGPSId = $this->stripRideWithGPS($description);
-
-		if (! $RWGPSId)
-			{
-			$rwgpsModel = new \App\Model\RideWithGPS();
-			$RWGPS = $rwgpsModel->getRWGPSFromLink($parameters['RWGPSurl'] ?? '');
-			}
-		else
-			{
-			$RWGPS = new \App\Record\RWGPS($RWGPSId);
-			}
-
-		if (! $RWGPS || ! $RWGPS->loaded())
-			{
-			$RWGPS = new \App\Record\RWGPS((int)($parameters['RWGPSId'] ?? 0));
-			}
-
-		if ($RWGPS->loaded())
-			{
-			$parameters['RWGPSId'] = $RWGPS->RWGPSId;
-			}
-		$parameters['description'] = \App\Tools\TextHelper::cleanUserHtml($description);
-
-		return $parameters;
-		}
-
-	/**
 	 * Compute a ride's duration.  Assume 1/2 hour break.
 	 *
 	 * @return int seconds
@@ -317,6 +282,7 @@ class Ride
 		{
 		$ride = new \App\Record\Ride($rideId);
 		$ride->delete();
+		new \App\Table\RideRWGPS()->setWhere(new \PHPFUI\ORM\Condition('rideId', $rideId))->delete();
 		}
 
 	public function deleteSignup(\App\Record\Ride $ride, \App\Record\Member $member) : void
@@ -700,11 +666,43 @@ class Ride
 
 		$ride->update();
 
-		// leader can't be on another ride
-		$this->rideSignupTable->deleteOtherSignedUpRides($ride, $ride->member);
-		$this->addLeaderSignups($ride);
+		$this->updateRide($ride, $parameters);
 
 		return [];
+		}
+
+	/**
+	 * @param array<string,mixed> $parameters
+	 *
+	 * @return array<string,mixed>
+	 */
+	private function cleanDescription(array $parameters) : array
+		{
+		$description = $parameters['description'] ?? '';
+		$RWGPSId = $this->stripRideWithGPS($description);
+
+		if (! $RWGPSId)
+			{
+			$rwgpsModel = new \App\Model\RideWithGPS();
+			$RWGPS = $rwgpsModel->getRWGPSFromLink($parameters['RWGPSurl'] ?? '');
+			}
+		else
+			{
+			$RWGPS = new \App\Record\RWGPS($RWGPSId);
+			}
+
+		if (! $RWGPS || ! $RWGPS->loaded())
+			{
+			$RWGPS = new \App\Record\RWGPS((int)($parameters['RWGPSId'] ?? 0));
+			}
+
+		if ($RWGPS->loaded())
+			{
+			$parameters['RWGPSId'] = $RWGPS->RWGPSId;
+			}
+		$parameters['description'] = \App\Tools\TextHelper::cleanUserHtml($description);
+
+		return $parameters;
 		}
 
 	/**
@@ -971,5 +969,25 @@ class Ride
 		$description = "{$dom}";
 
 		return $RWGPSId;
+		}
+
+	/**
+	 * @param array<string,mixed> $parameters
+	 */
+	private function updateRide(\App\Record\Ride $ride, array $parameters) : void
+		{
+		$RWGPSId = (int)($parameters['RWGPSId'] ?? 0);
+
+		if ($RWGPSId)
+			{
+			$rideRWGPS = new \App\Record\RideRWGPS();
+			$rideRWGPS->ride = $ride;
+			$rideRWGPS->RWGPSId = $RWGPSId;
+			$rideRWGPS->insertOrIgnore();
+			}
+
+		// leader can't be on another ride
+		$this->rideSignupTable->deleteOtherSignedUpRides($ride, $ride->member);
+		$this->addLeaderSignups($ride);
 		}
 	}

@@ -38,7 +38,7 @@ class GeneralAdmission
 			{
 			$this->email = new \App\Tools\EMail();
 			$this->email->setSubject('Registration Confirmation for ' . $event->title);
-			$this->email->setFromMember($this->chair);
+			$this->email->setFromMember($this->getChair($event->gaEventId));
 			$this->message = \App\Tools\TextHelper::processText($event->signupMessage, $rider->toArray());
 			$this->message .= "<p>The following riders have been signed up for <strong>{$event->title}</strong>";
 			$this->message .= ' on ' . $event->eventDate . ' starting from ' . $event->location . '.</p>';
@@ -52,7 +52,7 @@ class GeneralAdmission
 			{
 			$this->email = new \App\Tools\EMail();
 			$this->email->setSubject('Your Registration is NOT complete for ' . $event->title);
-			$this->email->setFromMember($this->chair);
+			$this->email->setFromMember($this->getChair($event->gaEventId));
 			$this->message = \App\Tools\TextHelper::processText($event->incompleteMessage, $rider->toArray());
 			$this->message .= "<p>The following riders have NOT been signed up for <strong>{$event->title}</strong>";
 			$this->message .= ' on ' . $event->eventDate . ' starting from ' . $event->location . '.</p>';

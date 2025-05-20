@@ -118,6 +118,9 @@ class Membership
 		$lastRecord = [];
 		$lastMembershipId = 0;
 		$count = 0;
+		$settingTable = new \App\Table\Setting();
+		$permission = $settingTable->getStandardPermissionGroup('Normal Member');
+		$normalMemberGroupId = $permission ? $permission->permissionId : 6;
 
 		foreach ($csvReader as $row)
 			{
@@ -176,7 +179,7 @@ class Membership
 			$member->verifiedEmail = 9;
 			$permission = new \App\Record\UserPermission();
 			$permission->member = $member;
-			$permission->permissionGroup = 6;
+			$permission->permissionGroup = $normalMemberGroupId;
 			$permission->insertOrUpdate();
 
 			$lastRecord = $record;

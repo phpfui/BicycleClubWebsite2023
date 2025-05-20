@@ -375,7 +375,7 @@ class Leader
 						$userPermission->setEmpty();
 						$userPermission->setFrom(['memberId' => $_POST['memberId'],
 							'permissionGroup' => $leaderPermission, ]);
-						$userPermission->insert();
+						$userPermission->insertOrIgnore();
 
 						$member = new \App\Record\Member((int)$_POST['memberId']);
 						$member->pendingLeader = 0;

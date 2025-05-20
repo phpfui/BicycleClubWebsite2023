@@ -117,6 +117,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		if ($this->page->addHeader('Clone As Leader') && $ride->canClone())
 			{
 			$view = new \App\View\Ride\Editor($this->page);
+			$view->setRWGPSRoutes($ride);
 			$ride->rideId = 0;
 			$ride->memberId = \App\Model\Session::signedInMemberId();
 			$this->page->addPageContent($view->edit($ride));
@@ -224,6 +225,12 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$this->page->addHeader('Edit Ride', override:$myride);
 			}
 		$view = new \App\View\Ride\Editor($this->page);
+		$RWGPSId = (int)($_GET['RWGPSId'] ?? 0);
+
+		if ($RWGPSId)
+			{
+			$view->addRWGPSRoute($RWGPSId);
+			}
 		$this->page->addPageContent($view->edit($ride));
 		}
 

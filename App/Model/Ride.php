@@ -976,9 +976,9 @@ class Ride
 	 */
 	private function updateRide(\App\Record\Ride $ride, array $parameters) : void
 		{
-		$RWGPSId = (int)($parameters['RWGPSId'] ?? 0);
+		$RWGPSIds = $parameters['RWGPSId'] ?? [];
 
-		if ($RWGPSId)
+		foreach ($RWGPSIds as $RWGPSId)
 			{
 			$rideRWGPS = new \App\Record\RideRWGPS();
 			$rideRWGPS->ride = $ride;

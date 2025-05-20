@@ -58,7 +58,7 @@ class Signup implements \Stringable
 					{
 					$data['shiftLeader'] = $shift->shiftLeader;
 					$data['jobShiftId'] = $jobShiftId;
-					$data['notes'] = $_POST['notes'][$jobShiftId];
+					$data['notes'] = $_POST['notes'][$jobShiftId] ?? '';
 
 					if ($checked)
 						{

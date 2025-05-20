@@ -32,7 +32,7 @@ class Ride extends \App\Record\Definition\Ride
 
 	public function canClone() : bool
 		{
-		return true;//$this->rideDate >= \App\Tools\Date::todayString() && $this->maxRiders && \count($this->waitList);
+		return $this->rideDate >= \App\Tools\Date::todayString() && $this->maxRiders && \count($this->waitList);
 		}
 
 	public function clean() : static

@@ -14,6 +14,11 @@ class Editor
 
 	private readonly \App\View\Ride\Settings $rideSettingsView;
 
+	/**
+	 * @var array<int> $rwgpsRoutes
+	 */
+	private array $rwgpsRoutes = [];
+
 	private int $startTimeOffset = 15;
 
 	public function __construct(private readonly \App\View\Page $page)
@@ -90,6 +95,11 @@ class Editor
 		$form->add($submit);
 
 		return $form;
+		}
+
+	public function addRWGPSRoute(int $RWGPSId) : void
+		{
+		$this->rwgpsRoutes[] = $RWGPSId;
 		}
 
 	public function edit(\App\Record\Ride $ride) : \PHPFUI\Container
@@ -349,6 +359,18 @@ class Editor
 		return $output;
 		}
 
+	public function setRWGPSRoutes(\App\Record\Ride $ride) : void
+		{
+		$this->rwgpsRoutes = [];
+
+		$rideRWGPSTable = new \App\Table\RideRWGPS()->setWhere(new \PHPFUI\ORM\Condition('rideId', $ride->rideId));
+
+		foreach ($rideRWGPSTable->getRecordCursor() as $rideRWGPS)
+			{
+			$this->rwgpsRoutes[] = $rideRWGPS->RWGPSId;
+			}
+		}
+
 	protected function getCancelRideModal(\App\Record\Ride $ride, \PHPFUI\HTML5Element $modalLink) : void
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
@@ -603,9 +625,9 @@ class Editor
 			$fieldSet->add($optionalColumns);
 			}
 
-		if (isset($_GET['RWGPSId']))
+		foreach ($this->rwgpsRoutes as $RWGPSId)
 			{
-			$fieldSet->add(new \PHPFUI\Input\Hidden('RWGPSId', $_GET['RWGPSId']));
+			$fieldSet->add(new \PHPFUI\Input\Hidden('RWGPSId[]', "{$RWGPSId}"));
 			}
 
 		$routes = $ride->RWGPSChildren;

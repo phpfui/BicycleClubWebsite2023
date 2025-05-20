@@ -1171,11 +1171,19 @@ class Rides
 			$returnValue = '<h6>Ride was repeated to the following dates:</h6>';
 			$rideModel = new \App\Model\Ride();
 
+			$RWGPSIds = [];
+			$rideRWGPSTable = new \App\Table\RideRWGPS()->setWhere(new \PHPFUI\ORM\Condition('rideId', $ride->rideId));
+
+			foreach ($rideRWGPSTable->getRecordCursor() as $rideRWGPS)
+				{
+				$RWGPSIds[] = $rideRWGPS->RWGPSId;
+				}
+
 			for ($i = 0; $i < (int)($_POST['cloneCount']); ++$i)
 				{
 				$cloning->rideDate = $startDate;
 				$cloning->memberId = 0;
-				$id = $rideModel->add($cloning->toArray(), true);
+				$id = $rideModel->add(\array_merge($cloning->toArray(), ['RWGPSId' => $RWGPSIds]), true);
 				$date = \App\Tools\Date::formatString('D M j, Y', $startDate);
 				$returnValue .= "<p><a href='/Rides/edit/{$id}' target=_blank>{$date}</a>";
 				$startDate = \App\Tools\Date::increment($startDate, (int)($_POST['cloneDayInterval']));

@@ -57,6 +57,7 @@ class GeneralAdmission
 			$this->message .= "<p>The following riders have NOT been signed up for <strong>{$event->title}</strong>";
 			$this->message .= ' on ' . $event->eventDate . ' starting from ' . $event->location . '.</p>';
 			}
+		$this->email->addBCCMember($this->chair);
 		$this->itemizeRider($rider);
 		}
 

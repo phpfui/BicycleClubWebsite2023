@@ -27,6 +27,39 @@ class Forum
 		$this->processRequest();
 		}
 
+		/**
+		 * @return array<string, string|array<mixed>>
+		 */
+	public function adjustPermissions(\App\Record\Forum $forum, \App\Record\Forum $originalForum, string $redirectOnSuccess) : array
+		{
+		$forum->insertOrUpdate();
+		$suffixes = ['', ' Edit Message', ' Delete Message', ' Members', ' Edit'];
+
+		if (! $originalForum->name)
+			{
+			foreach ($suffixes as $suffix)
+				{
+				$permission = new \App\Record\Permission();
+				$permission->name = $forum->name . $suffix;
+				$permission->menu = 'Forum';
+				$permission->system = 0;
+				$permission->insert();
+				}
+			}
+		elseif ($forum->name != $originalForum->name)
+			{
+			foreach ($suffixes as $suffix)
+				{
+				$permission = new \App\Record\Permission(['name' => $originalForum->name . $suffix]);
+				$permission->name = $forum->name . $suffix;
+				$permission->update();
+				}
+			}
+		$response = ['response' => 'Saved', 'color' => 'lime', 'record' => $forum->toArray(), ];
+
+		return $response;
+		}
+
 	public function attachments(\PHPFUI\ORM\RecordCursor $attachments) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
@@ -64,6 +97,7 @@ class Forum
 			}
 
 		$form = new \App\UI\ErrorFormSaver($this->page, $forum, $submit);
+		$form->setSaveRecordCallback([$this, 'adjustPermissions']);  // @phpstan-ignore-line
 
 		if ($form->save($redirectOnAdd))
 			{

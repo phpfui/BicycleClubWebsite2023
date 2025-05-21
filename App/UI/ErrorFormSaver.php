@@ -9,9 +9,12 @@ class ErrorFormSaver extends \App\UI\ErrorForm
 	 */
 	private ?array $callback = null;
 
+	private readonly \PHPFUI\ORM\Record $originalRecord;
+
 	public function __construct(\PHPFUI\Interfaces\Page $page, private \PHPFUI\ORM\Record $record, ?\PHPFUI\Submit $submit = null)
 		{
 		parent::__construct($page, $submit);
+		$this->originalRecord = clone $record;
 		}
 
 	public function save(string $redirectOnSuccess = '') : bool
@@ -40,17 +43,17 @@ class ErrorFormSaver extends \App\UI\ErrorForm
 
 		if ($this->callback)
 			{
-			$response = \call_user_func($this->callback, $this->record);
+			$response = \call_user_func($this->callback, $this->record, $this->originalRecord, $redirectOnSuccess);
 			}
 		else
 			{
 			$this->record->insertOrUpdate();
 			$response = ['response' => 'Saved', 'color' => 'lime', 'record' => $this->record->toArray(), ];
+			}
 
-			if ($redirectOnSuccess)
-				{
-				$response['redirect'] = $redirectOnSuccess;
-				}
+		if ($redirectOnSuccess && ! isset($response['redirect']))
+			{
+			$response['redirect'] = $redirectOnSuccess;
 			}
 		$this->page->setRawResponse(\json_encode($response));
 

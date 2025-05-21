@@ -26,7 +26,7 @@ class Permissions
 	/**
 	 * @return array<string, string|array<mixed>>
 	 */
-	public function addPermissionGroup(\App\Record\Permission $permission) : array
+	public function addPermissionGroup(\App\Record\Permission $permission, \App\Record\Permission $original, string $redirectOnSuccess) : array
 		{
 		$permissionAdded = $this->permissionModel->addGroup($permission->name);
 		$redirect = '/Admin/Permission/groupEdit/' . $permissionAdded->permissionId;

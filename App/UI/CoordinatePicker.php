@@ -97,14 +97,14 @@ class CoordinatePicker extends \PHPFUI\Reveal
 	public function addRWGPS() : static
 		{
 		$rwgpsPicker = new \App\UI\RWGPSPicker($this->page, 'RWGPSId', 'RWGPS Route');
-		$RWGPSId = $rwgpsPicker->getEditControl();
-		$hidden = $RWGPSId->getHiddenField();
+		$RWGPSInput = $rwgpsPicker->getEditControl();
+		$hidden = $RWGPSInput->getHiddenField();
 		$ajax = new \PHPFUI\AJAX('changeRWGPS');
 		$js = 'if(data.response.latitude)$("#' . $this->latitude->getId() . '").val(data.response.latitude);';
 		$js .= 'if(data.response.longitude)$("#' . $this->longitude->getId() . '").val(data.response.longitude);';
 		$ajax->addFunction('success', $js);
 		$hidden->addAttribute('onchange', $change = 'var value=$("#' . $hidden->getId() . '").val();if(value.length){' . $ajax->execute(['RWGPSId' => '$("#' . $hidden->getId() . '").val()']) . '}');
-		$this->form->add($RWGPSId);
+		$this->form->add($RWGPSInput);
 		$this->page->addJavaScript($ajax->getPageJS());
 
 		return $this;

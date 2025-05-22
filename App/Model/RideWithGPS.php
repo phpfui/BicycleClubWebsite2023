@@ -325,7 +325,7 @@ class RideWithGPS extends GPS
 			$data = $original;
 			}
 
-		$rwgps->RWGPSId = $data['id'];
+		$rwgps->RWGPSId = (int)$data['id'];
 		$rwgps->town = $data['locality'];
 		$state = \App\Tools\TextHelper::properCase($data['administrative_area'] ?? '');
 		$rwgps->state = $this->states[$state] ?? $state;

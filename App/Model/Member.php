@@ -611,7 +611,7 @@ class Member
 		return $this->createInvoice($member, $additionalMembers, $years, $donation, $dedication, $discountCode);
 		}
 
-	public function getVerifyCode(string $password) : int
+	public function getVerifyCode(?string $password) : int
 		{
 		$verifyCode = \preg_replace('/[^0-9]*/', '', $password);
 		$len = \strlen($verifyCode);

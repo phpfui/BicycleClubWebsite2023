@@ -50,6 +50,25 @@ class Join
 			\App\Model\Session::setFlash('post', $_POST);
 			$fullName = $_POST['firstName'] . ' ' . $_POST['lastName'];
 
+			// is the password valid and matching?
+			if ($_POST['password'] != $_POST['confirm'])
+				{
+				\App\Model\Session::setFlash('alert', "Passwords don't match");
+				$this->page->redirect();
+
+				return $container;
+				}
+
+			$passwordPolicy = new \App\Model\PasswordPolicy();
+
+			if ($errors = $passwordPolicy->validate($_POST['password']))
+				{
+				\App\Model\Session::setFlash('alert', $errors);
+				$this->page->redirect();
+
+				return $container;
+				}
+
 			// is it a bot entering the same name twice?
 			if (\strtolower($_POST['lastName']) == \strtolower($_POST['firstName']))
 				{
@@ -259,44 +278,104 @@ class Join
 		{
 		$container = new \PHPFUI\HTML5Element('div');
 
-		$verifyCode = $this->memberModel->getVerifyCode($member->password);
-
-		if ($verifyCode == $code)
+		if ($member->password)
 			{
-			$member->verifiedEmail = 2;
-			$member->update();
-			$permissions = $this->page->getPermissions();
-			$permissions->addPermissionToUser($member->memberId, 'Pending Member');
-			// fake signing in the user so they can use the renew code
-			$_SESSION['userPermissions'] = $permissions->getPermissionsForUser($member->memberId);
-			\App\Model\Session::registerMember($member);
-			$this->page->redirect();
+			$verifyCode = $this->memberModel->getVerifyCode($member->password);
 
-			return $container;
+
+			if ($verifyCode == $code)
+				{
+				$member->verifiedEmail = 2;
+				$member->update();
+				$permissions = $this->page->getPermissions();
+				$permissions->addPermissionToUser($member->memberId, 'Pending Member');
+				// fake signing in the user so they can use the renew code
+				$_SESSION['userPermissions'] = $permissions->getPermissionsForUser($member->memberId);
+				\App\Model\Session::registerMember($member);
+				$this->page->redirect();
+
+				return $container;
+				}
 			}
-		$alert = new \App\UI\Alert('The verification code was incorrect');
-		$alert->addClass('alert');
-		$id = $member->memberId;
 
 		if (\App\Model\Session::checkCSRF())
 			{
 			if (isset($_POST['action']) && 'resendEmail' == $_POST['action'])
 				{
 				$this->memberModel->sendVerifyEmail($member);
-				$this->page->setResponse((string)$id);
+				$this->page->setResponse((string)$member->memberId);
 
 				return $container;
 				}
 			}
-		$container = $this->getHeader('Please Verify Your Email');
-		$resendEmail = new \PHPFUI\AJAX('resendEmail');
-		$resendEmail->addFunction('success', '$("#"+"' . $alert->getId() . '").html("Please check your inbox for a new email.")');
-		$this->page->addJavaScript($resendEmail->getPageJS());
-		$form = new \PHPFUI\Form($this->page);
-		$form->add($alert);
-		$resend = new \PHPFUI\Button('Resend email', '#');
-		$resend->addAttribute('onclick', $resendEmail->execute(['memberId' => $id]));
-		$form->add($resend);
+
+		if (! $member->password)
+			{
+			$submit = new \PHPFUI\Submit('Set Password');
+			$form = new \PHPFUI\Form($this->page);
+
+			if ($form->isMyCallback($submit))
+				{
+				// is the password valid and matching?
+				if ($_POST['password'] != $_POST['confirm'])
+					{
+					\App\Model\Session::setFlash('alert', "Passwords don't match");
+					$this->page->redirect();
+
+					return $container;
+					}
+
+				$passwordPolicy = new \App\Model\PasswordPolicy();
+
+				if ($errors = $passwordPolicy->validate($_POST['password']))
+					{
+					\App\Model\Session::setFlash('alert', $errors);
+					$this->page->redirect();
+
+					return $container;
+					}
+				$member->password = $this->memberModel->hashPassword($_POST['password']);
+				$member->verifiedEmail = 0;
+				$member->update();
+				$this->memberModel->sendVerifyEmail($member);
+				$this->page->redirect();
+
+				return $container;
+				}
+
+			$container = $this->getHeader('Your Password Is Empty');
+			$fieldSet = new \PHPFUI\FieldSet('You need to enter a password');
+			$passwordPolicy = new \App\View\Admin\PasswordPolicy($this->page);
+			$fieldSet->add($passwordPolicy->list());
+			$current = $passwordPolicy->getValidatedPassword('password', 'Password', $member->password);
+			$current->setRequired();
+			$fieldSet->add($current);
+			$confirm = $passwordPolicy->getValidatedPassword('confirm', 'Confirm Password', $member->password);
+			$confirm->addAttribute('data-equalto', $current->getId());
+			$confirm->addErrorMessage('Passwords must match.');
+			$confirm->setRequired();
+			$confirm->setToolTip('You must enter the same password twice to make sure it is correct');
+			$fieldSet->add($confirm);
+			$form->add($fieldSet);
+			$form->add($submit);
+			$form->setAreYouSure(false);
+			}
+		else
+			{
+			$alert = new \App\UI\Alert('The verification code was incorrect');
+			$alert->addClass('alert');
+
+			$container = $this->getHeader('Please Verify Your Email');
+			$resendEmail = new \PHPFUI\AJAX('resendEmail');
+			$resendEmail->addFunction('success', '$("#"+"' . $alert->getId() . '").html("Please check your inbox for a new email.")');
+			$this->page->addJavaScript($resendEmail->getPageJS());
+			$form = new \PHPFUI\Form($this->page);
+
+			$form->add($alert);
+			$resend = new \PHPFUI\Button('Resend email', '#');
+			$resend->addAttribute('onclick', $resendEmail->execute(['memberId' => $member->memberId]));
+			$form->add($resend);
+			}
 		$container->add($form);
 
 		return $container;

@@ -1181,7 +1181,7 @@ class Member
 								$post['email'] = $email;
 								$additionalEmail = new \App\Record\AdditionalEmail();
 								$additionalEmail->setFrom($post);
-								$additionalEmail->insert();
+								$additionalEmail->insertOrIgnore();
 								}
 							}
 						$this->page->redirect();

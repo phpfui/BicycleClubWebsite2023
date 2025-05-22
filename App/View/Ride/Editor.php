@@ -424,7 +424,7 @@ class Editor
 							{
 							$rwgpsModel = new \App\Model\RideWithGPS();
 							$rwgps = $rwgpsModel->getRWGPSFromLink($_POST['RWGPSurl'] ?? '');
-							$RWGPSId = $rwgps->RWGPSId;
+							$RWGPSId = $rwgps ? $rwgps->RWGPSId : 0;
 							}
 
 						if ($RWGPSId)
@@ -711,14 +711,14 @@ class Editor
 
 		if ($this->page->isAuthorized('Add / Update RWGPS'))
 			{
-			$RWGPSId = new \PHPFUI\Input\Url('RWGPSurl', 'Enter RWGPS URL');
+			$RWGPSInput = new \PHPFUI\Input\Url('RWGPSurl', 'Enter RWGPS URL');
 			}
 		else
 			{
 			$rwgpsPicker = new \App\UI\RWGPSPicker($this->page, 'RWGPSId', 'RWGPS (start typing to search)');
-			$RWGPSId = $rwgpsPicker->getEditControl();
+			$RWGPSInput = $rwgpsPicker->getEditControl();
 			}
-		$form->add($RWGPSId);
+		$form->add($RWGPSInput);
 		$form->add($modal->getButtonAndCancel($submit));
 		$modal->add($form);
 		}

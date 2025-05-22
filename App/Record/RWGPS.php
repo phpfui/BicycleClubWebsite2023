@@ -50,7 +50,7 @@ class RWGPS extends \App\Record\Definition\RWGPS
 
 	public function delete() : bool
 		{
-		new \App\Table\CueSheet()->setWhere(new \PHPFUI\ORM\Condition('RWGPSId', $this->RWGPSId))->update(['RWGPS' => null]);
+		new \App\Table\CueSheet()->setWhere(new \PHPFUI\ORM\Condition('RWGPSId', $this->RWGPSId))->update(['RWGPSId' => null]);
 		new \App\Table\RideRWGPS()->setWhere(new \PHPFUI\ORM\Condition('RWGPSId', $this->RWGPSId))->delete();
 
 		return parent::delete();

@@ -982,7 +982,7 @@ class Ride
 			{
 			$rideRWGPS = new \App\Record\RideRWGPS();
 			$rideRWGPS->ride = $ride;
-			$rideRWGPS->RWGPSId = $RWGPSId;
+			$rideRWGPS->RWGPSId = (int)$RWGPSId;
 			$rideRWGPS->insertOrIgnore();
 			}
 

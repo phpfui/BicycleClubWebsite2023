@@ -36,6 +36,7 @@ class My extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$firstYear = (int)$oldestRide->rideDate;
 				$newestYear = (int)$newestRide->rideDate;
+				$year = \min($newestYear, $year);
 
 				$yearMonthNav = new \App\UI\YearMonthSubNav($this->page->getBaseURL(), $year, $month, $firstYear, $newestYear);
 				$this->page->addPageContent($yearMonthNav);

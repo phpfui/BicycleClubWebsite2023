@@ -29,7 +29,7 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 				$updated->insertOrUpdate();
 				$updated->reload();
 
-				// if the ride has been updated, notify call signed up riders
+				// if the ride has been updated, notify all signed up riders
 				if ($original->csv != $updated->csv)
 					{
 					$settingTable = new \App\Table\Setting();

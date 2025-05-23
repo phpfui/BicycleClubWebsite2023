@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-class RideWithGPS extends GPS
+class RideWithGPS extends \App\Model\GPS
 	{
 	private string $apiKey = '';
 
@@ -256,6 +256,26 @@ class RideWithGPS extends GPS
 		$rwgps->insertOrUpdate();
 
 		return $rwgps;
+		}
+
+	public static function normalizeCSV(?string $csv) : ?string
+		{
+		if (null === $csv)
+			{
+			return null;
+			}
+
+		$reader = new \App\Tools\CSV\StringReader($csv);
+		$writer = new \App\Tools\CSV\StringWriter();
+
+		foreach ($reader as $row)
+			{
+			$row['distance'] = \number_format((float)$row['distance'], 2);
+			$row['gox'] = \number_format((float)$row['gox'], 2);
+			$writer->outputRow($row);
+			}
+
+		return (string)$writer;
 		}
 
 	public function scrape(\App\Record\RWGPS $rwgps, bool $alwaysScrape = false) : ?\App\Record\RWGPS

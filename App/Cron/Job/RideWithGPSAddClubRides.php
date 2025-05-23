@@ -27,8 +27,6 @@ class RideWithGPSAddClubRides extends \App\Cron\BaseJob
 				if ($record)
 					{
 					$record->club = 1;
-					$record->clean();
-					$record->computeElevationGain();
 					$record->insertOrUpdate();
 					}
 				else

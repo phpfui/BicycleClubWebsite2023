@@ -29,21 +29,7 @@ class RWGPS extends \App\Record\Definition\RWGPS
 		$this->description = $this->description ?? '';
 		$this->title = $this->title ?? '';
 		$this->club = $this->club ?? 0;
-
-		return $this;
-		}
-
-	public function computeElevationGain() : static
-		{
-		if (! empty($this->elevationFeet) && ! empty($this->miles))
-			{
-			$this->feetPerMile = $this->elevationFeet / $this->miles;
-			}
-
-		if (! empty($this->elevationMeters) && ! empty($this->km))
-			{
-			$this->metersPerKm = $this->elevationMeters / $this->km;
-			}
+		$this->csv = \App\Model\RideWithGPS::normalizeCSV($this->csv);
 
 		return $this;
 		}
@@ -156,5 +142,20 @@ class RWGPS extends \App\Record\Definition\RWGPS
 		$this->computeElevationGain();
 
 		return parent::update();
+		}
+
+	private function computeElevationGain() : static
+		{
+		if (! empty($this->elevationFeet) && ! empty($this->miles))
+			{
+			$this->feetPerMile = $this->elevationFeet / $this->miles;
+			}
+
+		if (! empty($this->elevationMeters) && ! empty($this->km))
+			{
+			$this->metersPerKm = $this->elevationMeters / $this->km;
+			}
+
+		return $this;
 		}
 	}

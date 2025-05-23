@@ -74,7 +74,7 @@ class VolunteerJobShift extends \PHPFUI\ORM\Table
 
 	public function isShiftLeader(\App\Record\Job $job, \App\Record\Member $member) : bool
 		{
-		$sql = 'select count(*) from volunteerJobShift where memberId=? and jobId=?';
+		$sql = 'select count(*) from volunteerJobShift where shiftLeader>0 and memberId=? and jobId=?';
 
 		return (int)\PHPFUI\ORM::getValue($sql, [$member->memberId, $job->jobId]) > 0;
 		}

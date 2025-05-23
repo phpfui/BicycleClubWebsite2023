@@ -41,7 +41,7 @@ class RWGPS extends \PHPFUI\ORM\Table
 			from ride
 			left join rideRWGPS on rideRWGPS.rideId=ride.rideId
 			left join RWGPS on RWGPS.RWGPSId=rideRWGPS.RWGPSId
-			where rideDate>=:date';
+			where rideDate>=:date and rideRWGPS.RWGPSId is not null';
 
 		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, ['date' => \App\Tools\Date::todayString()]);
 		}

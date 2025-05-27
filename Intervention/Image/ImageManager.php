@@ -18,11 +18,12 @@ final class ImageManager implements ImageManagerInterface
     private DriverInterface $driver;
 
     /**
-     * @link https://image.intervention.io/v3/basics/image-manager#create-a-new-image-manager-instance
+     * @link https://image.intervention.io/v3/basics/configuration-drivers#create-a-new-image-manager-instance
+     *
      * @param string|DriverInterface $driver
+     * @param mixed $options
      * @throws DriverException
      * @throws InputException
-     * @param mixed $options
      */
     public function __construct(string|DriverInterface $driver, mixed ...$options)
     {
@@ -32,7 +33,8 @@ final class ImageManager implements ImageManagerInterface
     /**
      * Create image manager with given driver
      *
-     * @link https://image.intervention.io/v3/basics/image-manager
+     * @link https://image.intervention.io/v3/basics/configuration-drivers#static-constructor
+     *
      * @param string|DriverInterface $driver
      * @param mixed $options
      * @throws DriverException
@@ -47,7 +49,8 @@ final class ImageManager implements ImageManagerInterface
     /**
      * Create image manager with GD driver
      *
-     * @link https://image.intervention.io/v3/basics/image-manager#static-gd-driver-constructor
+     * @link https://image.intervention.io/v3/basics/configuration-drivers#static-gd-driver-constructor
+     *
      * @param mixed $options
      * @throws DriverException
      * @throws InputException
@@ -61,7 +64,8 @@ final class ImageManager implements ImageManagerInterface
     /**
      * Create image manager with Imagick driver
      *
-     * @link https://image.intervention.io/v3/basics/image-manager#static-imagick-driver-constructor
+     * @link https://image.intervention.io/v3/basics/configuration-drivers#static-imagick-driver-constructor
+     *
      * @param mixed $options
      * @throws DriverException
      * @throws InputException

@@ -854,10 +854,11 @@ abstract class Record extends DataObject
 				{
 				$definition = static::$fields[$key];
 
-				if (null === $value && null != $definition->defaultValue)
+				if (null === $value && null !== $definition->defaultValue)
 					{
 					continue;
 					}
+				// && \in_array($definition->defaultValue, self::$sqlDefaults))
 
 				if (! static::$autoIncrement || ! (\in_array($key, static::$primaryKeys) && empty($value)))
 					{

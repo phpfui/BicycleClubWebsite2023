@@ -270,8 +270,8 @@ class RideWithGPS extends \App\Model\GPS
 
 		foreach ($reader as $row)
 			{
-			$row['distance'] = \number_format((float)$row['distance'], 2);
-			$row['gox'] = \number_format((float)$row['gox'], 2);
+			$row['distance'] = \number_format((float)\filter_var($row['distance'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION), 2, '.', '');
+			$row['gox'] = \number_format((float)\filter_var($row['gox'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION), 2, '.', '');
 			$writer->outputRow($row);
 			}
 

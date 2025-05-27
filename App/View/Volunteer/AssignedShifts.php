@@ -228,6 +228,7 @@ class AssignedShifts implements \Stringable
 							$membership->joined = \App\Tools\Date::todayString();
 
 							$member->setFrom($_POST);
+							$member->verifiedEmail = 9;
 							$errors = $member->validate();
 
 							if ($errors)

@@ -1,3 +1,5 @@
+edit RWGPS old way on add ride not saving
+
 My past rides for all attended statuses
 
 support UTF-8 in emails PHPMailer::$validator = 'eai'

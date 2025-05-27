@@ -121,6 +121,11 @@ class Settings
 				}
 			}
 
+		if (1 == \count($requiredColumns))
+			{
+			$requiredColumns->add('&nbsp;');
+			}
+
 		return $requiredColumns;
 		}
 	}

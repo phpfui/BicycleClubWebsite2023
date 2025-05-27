@@ -613,7 +613,7 @@ class Member
 
 	public function getVerifyCode(?string $password) : int
 		{
-		$verifyCode = \preg_replace('/[^0-9]*/', '', $password);
+		$verifyCode = \preg_replace('/[^0-9]*/', '', $password ?? '');
 		$len = \strlen($verifyCode);
 		$minLen = 5;
 

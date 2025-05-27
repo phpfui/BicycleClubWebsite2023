@@ -309,16 +309,24 @@ class Ride extends \PHPFUI\ORM\Table
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
 	 */
-	public static function getMyDateRange(string $start, string $end, string $sort = '') : \PHPFUI\ORM\RecordCursor
+	public function getMyDateRange(string $start, string $end, \App\Enum\RideSignup\Attended $status) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select ride.* from ride
-			  left join pace on pace.paceId=ride.paceId
-				left join rideSignup on rideSignup.rideId=ride.rideId
-				where ride.rideDate >= ? and ride.rideDate <= ? and ride.pending=0 and rideSignup.attended=? and rideSignup.memberId=?
-				order by ride.rideDate asc,pace.ordering asc,ride.startTime asc,ride.mileage ' . $sort;
-		$data = [$start, $end, \App\Enum\RideSignup\Attended::CONFIRMED->value, \App\Model\Session::signedInMemberId()];
+		$this->addSelect('ride.*');
+		$this->addJoin('pace');
+		$this->addJoin('rideSignup');
+		$this->addOrderBy('ride.rideDate')->addOrderBy('pace.ordering')->addOrderBy('ride.startTime')->addOrderBy('ride.mileage');
+		$condition = new \PHPFUI\ORM\Condition('ride.rideDate', $start, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('ride.rideDate', $end, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$condition->and('ride.pending', 0);
+		$condition->and('rideSignUp.memberId', \App\Model\Session::signedInMemberId());
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, $data);
+		if (\App\Enum\RideSignup\Attended::SIGNED_UP != $status)
+			{
+			$condition->and('rideSignUp.attended', $status);
+			}
+		$this->setWhere($condition);
+
+		return $this->getRecordCursor();
 		}
 
 	public static function getMyNewest() : \App\Record\Ride

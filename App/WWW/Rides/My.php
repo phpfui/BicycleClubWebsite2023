@@ -28,7 +28,8 @@ class My extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('My Past Rides'))
 			{
-			$noRides = 'You have no online signups';
+			$status = \App\Enum\RideSignup\Attended::from(\min(2, \max((int)($_GET['s'] ?? 0), 0)));
+			$noRides = 'You have no status of <b>' . $status->name() . '</b> for this month';
 			$newestRide = \App\Table\Ride::getMyNewest();
 			$oldestRide = \App\Table\Ride::getMyOldest();
 
@@ -37,6 +38,12 @@ class My extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$firstYear = (int)$oldestRide->rideDate;
 				$newestYear = (int)$newestRide->rideDate;
 				$year = \min($newestYear, $year);
+
+				$fieldSet = new \PHPFUI\FieldSet('Rider Status');
+				$statusInput = new \PHPFUI\Input\RadioGroupEnum('status', '', $status);
+				$this->page->addJavaScript('$(\'input[name="status"]\').change(function(){window.location.assign(window.location.pathname+"?s="+$(\'input[name="status"]:checked\').val());});');
+				$fieldSet->add($statusInput);
+				$this->page->addPageContent($fieldSet);
 
 				$yearMonthNav = new \App\UI\YearMonthSubNav($this->page->getBaseURL(), $year, $month, $firstYear, $newestYear);
 				$this->page->addPageContent($yearMonthNav);
@@ -51,7 +58,8 @@ class My extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 						$month = 1;
 						}
 					$end = \App\Tools\Date::toString(\App\Tools\Date::make($year, $month, 1) - 1);
-					$this->page->addPageContent($this->view->schedule(\App\Table\Ride::getMyDateRange($start, $end), $noRides));
+					$rideTable = new \App\Table\Ride();
+					$this->page->addPageContent($this->view->schedule($rideTable->getMyDateRange($start, $end, $status), $noRides));
 					}
 				}
 			else

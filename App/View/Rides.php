@@ -376,7 +376,7 @@ class Rides
 			$row = new \PHPFUI\GridX();
 			$nameColumn = new \PHPFUI\Cell(8 - (int)$isLeader);
 
-			if (\App\Enum\RideSignup\Attended::UNKNOWN->value == $rider->attended)
+			if (\App\Enum\RideSignup\Attended::SIGNED_UP->value == $rider->attended)
 				{
 				$status = $statusArray[$rider->status];
 				}

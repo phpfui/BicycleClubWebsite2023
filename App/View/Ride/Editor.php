@@ -625,42 +625,67 @@ class Editor
 			$fieldSet->add($optionalColumns);
 			}
 
-		foreach ($this->rwgpsRoutes as $RWGPSId)
+
+		if (! $ride->rideId)	// First time in, use old method of adding a route
 			{
-			$fieldSet->add(new \PHPFUI\Input\Hidden('RWGPSId[]', "{$RWGPSId}"));
+			$RWGPS = new \App\Record\RWGPS();
+
+			if (\count($this->rwgpsRoutes))
+				{
+				$RWGPS->read($this->rwgpsRoutes[0]);
+				}
+
+			if ($this->page->isAuthorized('Add / Update RWGPS'))
+				{
+				$RWGPSInput = new \PHPFUI\Input\Url('RWGPSurl', 'Ride With GPS Link', $RWGPS->routeLink());
+				}
+			else
+				{
+				$rwgpsPicker = new \App\UI\RWGPSPicker($this->page, 'RWGPSId', 'RWGPS (start typing to search)', $RWGPS);
+				$RWGPSInput = $rwgpsPicker->getEditControl();
+				$hidden = $RWGPSInput->getHiddenField();
+				}
+			$fieldSet->add($RWGPSInput);
 			}
-
-		$routes = $ride->RWGPSChildren;
-
-		$delete = new \PHPFUI\AJAX('deleteRWGPS');
-		$delete->addFunction('success', '$("#count-"+data.response).css("background-color","red").hide("fast").remove()');
-		$this->page->addJavaScript($delete->getPageJS());
-
-		$rwgpsTable = new \PHPFUI\Table();
-		$rwgpsTable->setRecordId('count');
-		$count = 0;
-		$rwgpsTable->setHeaders(['RWGPS' => 'Ride With GSP Link', 'Distance', 'Elevation', 'Delete']);
-
-		foreach ($routes as $RWGPS)
+		else	// Editing exitsing ride, use new multi route version
 			{
-			$link = new \PHPFUI\Link($RWGPS->routeLink(), $RWGPS->title);
-			$link->addAttribute('target', '_blank');
-			$row['RWGPS'] = $link;
-			$row['Distance'] = $RWGPS->distance();
-			$row['Elevation'] = $RWGPS->elevation();
-			$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-			$icon->addAttribute('onclick', $delete->execute(['rideId' => $ride->rideId, 'RWGPSId' => $RWGPS->RWGPSId, 'count' => $count]));
-			$row['Delete'] = $icon;
-			$row['count'] = $count++;
+			foreach ($this->rwgpsRoutes as $RWGPSId)
+				{
+				$fieldSet->add(new \PHPFUI\Input\Hidden('RWGPSId[]', "{$RWGPSId}"));
+				}
 
-			$rwgpsTable->addRow($row);
+			$routes = $ride->RWGPSChildren;
+
+			$delete = new \PHPFUI\AJAX('deleteRWGPS');
+			$delete->addFunction('success', '$("#count-"+data.response).css("background-color","red").hide("fast").remove()');
+			$this->page->addJavaScript($delete->getPageJS());
+
+			$rwgpsTable = new \PHPFUI\Table();
+			$rwgpsTable->setRecordId('count');
+			$count = 0;
+			$rwgpsTable->setHeaders(['RWGPS' => 'Ride With GSP Link', 'Distance', 'Elevation', 'Delete']);
+
+			foreach ($routes as $RWGPS)
+				{
+				$link = new \PHPFUI\Link($RWGPS->routeLink(), $RWGPS->title);
+				$link->addAttribute('target', '_blank');
+				$row['RWGPS'] = $link;
+				$row['Distance'] = $RWGPS->distance();
+				$row['Elevation'] = $RWGPS->elevation();
+				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
+				$icon->addAttribute('onclick', $delete->execute(['rideId' => $ride->rideId, 'RWGPSId' => $RWGPS->RWGPSId, 'count' => $count]));
+				$row['Delete'] = $icon;
+				$row['count'] = $count++;
+
+				$rwgpsTable->addRow($row);
+				}
+			$fieldSet->add($rwgpsTable);
+
+			$addRWGPSButton = new \PHPFUI\Button('Add RWGPS');
+			$form->saveOnClick($addRWGPSButton);
+			$this->getRWGPSModal($ride, $addRWGPSButton);
+			$fieldSet->add($addRWGPSButton);
 			}
-		$fieldSet->add($rwgpsTable);
-
-		$addRWGPSButton = new \PHPFUI\Button('Add RWGPS');
-		$form->saveOnClick($addRWGPSButton);
-		$this->getRWGPSModal($ride, $addRWGPSButton);
-		$fieldSet->add($addRWGPSButton);
 
 		$div = new \PHPFUI\HTML5Element('div');
 		$div->setId('cuesheet');

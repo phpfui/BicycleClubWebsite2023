@@ -978,6 +978,11 @@ class Ride
 		{
 		$RWGPSIds = $parameters['RWGPSId'] ?? [];
 
+		if (\is_int($RWGPSIds))
+			{
+			$RWGPSIds = [$RWGPSIds];
+			}
+
 		foreach ($RWGPSIds as $RWGPSId)
 			{
 			$rideRWGPS = new \App\Record\RideRWGPS();

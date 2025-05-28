@@ -61,15 +61,32 @@ class RWGPS extends \App\Record\Definition\RWGPS
 		{
 		$units = $this->getUnits();
 
+		$elevation = 'km' == $units ? $this->elevationMeters : $this->elevationFeet;
+
+		return \number_format(\round($elevation), 0) . ' ' . self::getSmallUnits();
+		}
+
+	/**
+	 * @return float elevation as raw number in correct units depending on setting
+	 */
+	public function elevationFloat() : float
+		{
+		return 'km' == $this->getUnits() ? $this->elevationMeters : $this->elevationFeet;
+		}
+
+	public function gain() : string
+		{
+		$units = $this->getUnits();
+
 		if ('km' == $units)
 			{
-			$units = 'Meters';
-			$elevation = $this->elevationMeters;
+			$units = 'm/km';
+			$elevation = $this->metersPerKm;
 			}
 		else
 			{
-			$units = 'Feet';
-			$elevation = $this->elevationFeet;
+			$units = 'ft/mile';
+			$elevation = $this->feetPerMile;
 			}
 
 		return \number_format($elevation, 0) . ' ' . $units;
@@ -80,7 +97,12 @@ class RWGPS extends \App\Record\Definition\RWGPS
 		return new \App\Tools\CSV\StringReader($this->csv);
 		}
 
-	public function getUnits() : string
+	public static function getSmallUnits() : string
+		{
+		return 'km' == self::getUnits() ? 'Meters' : 'Feet';
+		}
+
+	public static function getUnits() : string
 		{
 		if (null === self::$units)
 			{

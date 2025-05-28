@@ -193,6 +193,32 @@ class RideWithGPS extends \App\Model\GPS
 		return $routes;
 		}
 
+	public static function getElevation(\App\Record\RWGPS $RWGPS) : int
+		{
+		$rideTable = new \App\Table\Ride();
+		$rideTable->addJoin('rideRWGPS');
+		$rideTable->addSelect('AVG(ride.elevation)', 'elevation');
+		$rideTable->addSelect('count(*)', 'count');
+		$condition = new \PHPFUI\ORM\Condition('rideRWGPS.RWGPSId', $RWGPS->RWGPSId);
+		$condition->and('ride.elevation', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition->and('ride.rideStatus', \App\Enum\Ride\Status::COMPLETED);
+		$condition->and('ride.pending', 0);
+		$rideTable->setWhere($condition);
+
+		$row = $rideTable->getRows()[0];
+
+		if ($row['count'])
+			{
+			$elevation = (float)$row['elevation'];
+			}
+		else
+			{
+			$elevation = $RWGPS->elevationFloat();
+			}
+
+		return (int)\round($elevation);
+		}
+
 	public function getRWGPSFromLink(string $link) : ?\App\Record\RWGPS
 		{
 		if (! \strlen($link))

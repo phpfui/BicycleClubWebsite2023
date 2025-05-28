@@ -75,7 +75,7 @@ class SignInSheets
 				{
 				$fileName = \substr((string)$attachmentHeader, \strpos((string)$attachmentHeader, 'name=') + 5);
 				$fileName = \str_replace(['"', "'"], '', $fileName);
-				$extIndex = \strpos($fileName, '.');
+				$extIndex = \strrpos($fileName, '.');
 				$ext = '';
 
 				if ($extIndex)

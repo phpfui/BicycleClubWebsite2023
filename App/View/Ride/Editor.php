@@ -12,6 +12,8 @@ class Editor
 
 	private ?\PHPFUI\ORM\RecordCursor $leaders = null;
 
+	private string $mileageSelectorId;
+
 	private readonly \App\View\Ride\Settings $rideSettingsView;
 
 	/**
@@ -35,7 +37,7 @@ class Editor
 		$this->description->htmlEditing($page, $textArea);
 		$this->rideSettingsView = new \App\View\Ride\Settings($page);
 		$this->startTimeOffset = ((int)$this->page->value('RideStartTimeOffset')) ?: 15;
-		$this->elevation = new \PHPFUI\Input\Number('elevation', 'Elevation Gain (if known)');
+		$this->elevation = new \PHPFUI\Input\Number('elevation', 'Elevation Gain (' . \App\Record\RWGPS::getSmallUnits() . ')');
 		$this->elevation->setToolTip('Just how hilly was this ride?');
 		$this->elevation->addAttribute('min', (string)0)->addAttribute('max', (string)99999)->addAttribute('step', (string)10);
 
@@ -248,6 +250,7 @@ class Editor
 				}
 			$mileage = new \PHPFUI\Input\Number('mileage', 'Mileage', $ride->mileage);
 			$mileage->addAttribute('max', (string)999)->addAttribute('min', (string)0);
+			$this->mileageSelectorId = $mileage->getId();
 			$mileage->setToolTip('Actual mileage for the ride');
 			$mileage->setRequired($afterRide);
 			$multiColumn->add($mileage);
@@ -298,6 +301,7 @@ class Editor
 			$category = new \App\View\PacePicker('paceId', 'Category', 'Pace', $ride->paceId);
 			$mileage = new \PHPFUI\Input\Number('mileage', 'Mileage', $ride->mileage);
 			$mileage->addAttribute('max', (string)999)->addAttribute('min', (string)0);
+			$this->mileageSelectorId = $mileage->getId();
 			$mileage->setToolTip('Expected mileage for the ride');
 			$mileage->setRequired();
 			$multiColumn = new \PHPFUI\MultiColumn($category, $mileage);
@@ -510,6 +514,53 @@ class Editor
 						$this->page->setRawResponse(\json_encode(['response' => $_POST['count']], JSON_THROW_ON_ERROR));
 
 						break;
+
+					case 'changeRWGPS':
+						$rwgpsModel = new \App\Model\RideWithGPS();
+						$rwgps = $rwgpsModel->getRWGPSFromLink($_POST['RWGPSurl'] ?? '');
+
+						$data = [];
+
+						if ($rwgps)
+							{
+							$elevation = \App\Model\RideWithGPS::getElevation($rwgps);
+
+							if ($elevation > 0)
+								{
+								$rwgps->elevationFeet = $elevation;
+								}
+							$rwgps->miles = (float)\number_format($rwgps->miles ?? 0.0, 1);
+							$data = $rwgps->toArray();
+							$data['RWGPSId'] = $rwgps->routeLink();
+							}
+
+						$this->page->setRawResponse(\json_encode(['response' => $data], JSON_THROW_ON_ERROR));
+
+						break;
+
+					case 'changeRWGPSId':
+						$rwgps = new \App\Record\RWGPS($_POST['RWGPSId'] ?? '');
+
+						if ($rwgps->loaded())
+							{
+							$elevation = \App\Model\RideWithGPS::getElevation($rwgps);
+
+							if ($elevation > 0)
+								{
+								$rwgps->elevationFeet = $elevation;
+								}
+							}
+						else
+							{
+							$rwgps->elevationFeet = 0.0;
+							}
+						$rwgps->miles = (float)\number_format($rwgps->miles, 1);
+						$data = $rwgps->toArray();
+						$data['RWGPSId'] = $rwgps->RWGPSId;
+
+						$this->page->setRawResponse(\json_encode(['response' => $data], JSON_THROW_ON_ERROR));
+
+						break;
 					}
 				}
 			}
@@ -638,14 +689,30 @@ class Editor
 			if ($this->page->isAuthorized('Add / Update RWGPS'))
 				{
 				$RWGPSInput = new \PHPFUI\Input\Url('RWGPSurl', 'Ride With GPS Link', $RWGPS->routeLink());
+				$ajax = new \PHPFUI\AJAX('changeRWGPS');
+				$js = 'if(data.response.miles)$("#' . $this->mileageSelectorId . '").val(data.response.miles);';
+				$js .= '$("#' . $RWGPSInput->getId() . '").val(data.response.RWGPSId);';
+				$RWGPSInput->addAttribute('onchange', $ajax->execute(['RWGPSurl' => 'this.value']));
 				}
 			else
 				{
 				$rwgpsPicker = new \App\UI\RWGPSPicker($this->page, 'RWGPSId', 'RWGPS (start typing to search)', $RWGPS);
 				$RWGPSInput = $rwgpsPicker->getEditControl();
 				$hidden = $RWGPSInput->getHiddenField();
+				$ajax = new \PHPFUI\AJAX('changeRWGPSId');
+				$js = 'if(data.response.miles)$("#' . $this->mileageSelectorId . '").val(data.response.miles);';
+				$js .= '$("#' . $hidden->getId() . '").val(data.response.RWGPSId);';
+				$hidden->addAttribute('onchange', $ajax->execute(['RWGPSId' => '$("#' . $hidden->getId() . '").val()']));
 				}
-			$fieldSet->add($RWGPSInput);
+
+			$multiColumn = new \PHPFUI\MultiColumn($RWGPSInput);
+
+			$multiColumn->add($this->elevation);
+			$js .= 'if(data.response.elevationFeet)$("#' . $this->elevation->getId() . '").val(Math.round(data.response.elevationFeet));';
+			$ajax->addFunction('success', $js);
+			$this->page->addJavaScript($ajax->getPageJS());
+
+			$fieldSet->add($multiColumn);
 			}
 		else	// Editing exitsing ride, use new multi route version
 			{
@@ -663,7 +730,7 @@ class Editor
 			$rwgpsTable = new \PHPFUI\Table();
 			$rwgpsTable->setRecordId('count');
 			$count = 0;
-			$rwgpsTable->setHeaders(['RWGPS' => 'Ride With GSP Link', 'Distance', 'Elevation', 'Delete']);
+			$rwgpsTable->setHeaders(['RWGPS' => 'Ride With GSP Link', 'Distance', 'Elevation', 'Average Gain', 'Delete']);
 
 			foreach ($routes as $RWGPS)
 				{
@@ -671,7 +738,8 @@ class Editor
 				$link->addAttribute('target', '_blank');
 				$row['RWGPS'] = $link;
 				$row['Distance'] = $RWGPS->distance();
-				$row['Elevation'] = $RWGPS->elevation();
+				$row['Elevation'] = \App\Model\RideWithGPS::getElevation($RWGPS) . ' ' . $RWGPS->getSmallUnits();
+				$row['Average Gain'] = $RWGPS->gain();
 				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
 				$icon->addAttribute('onclick', $delete->execute(['rideId' => $ride->rideId, 'RWGPSId' => $RWGPS->RWGPSId, 'count' => $count]));
 				$row['Delete'] = $icon;

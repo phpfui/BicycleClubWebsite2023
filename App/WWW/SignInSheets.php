@@ -127,7 +127,7 @@ class SignInSheets extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoC
 		{
 		if ($this->page->addHeader('Approve Sign In Sheets'))
 			{
-			$this->signinSheetTable->setWhere(new \PHPFUI\ORM\Condition('pending', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
+			$this->signinSheetTable->setWhere(new \PHPFUI\ORM\Condition('signinSheet.pending', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
 			$this->page->addPageContent($this->view->show($this->signinSheetTable));
 			}
 		}

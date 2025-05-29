@@ -318,11 +318,11 @@ class Ride extends \PHPFUI\ORM\Table
 		$condition = new \PHPFUI\ORM\Condition('ride.rideDate', $start, new \PHPFUI\ORM\Operator\GreaterThanEqual());
 		$condition->and('ride.rideDate', $end, new \PHPFUI\ORM\Operator\LessThanEqual());
 		$condition->and('ride.pending', 0);
-		$condition->and('rideSignUp.memberId', \App\Model\Session::signedInMemberId());
+		$condition->and('rideSignup.memberId', \App\Model\Session::signedInMemberId());
 
 		if (\App\Enum\RideSignup\Attended::SIGNED_UP != $status)
 			{
-			$condition->and('rideSignUp.attended', $status);
+			$condition->and('rideSignup.attended', $status);
 			}
 		$this->setWhere($condition);
 

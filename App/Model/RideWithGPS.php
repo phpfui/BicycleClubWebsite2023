@@ -197,8 +197,8 @@ class RideWithGPS extends \App\Model\GPS
 		{
 		$rideTable = new \App\Table\Ride();
 		$rideTable->addJoin('rideRWGPS');
-		$rideTable->addSelect('AVG(ride.elevation)', 'elevation');
-		$rideTable->addSelect('count(*)', 'count');
+		$rideTable->addSelect(new \PHPFUI\ORM\Literal('AVG(ride.elevation)'), 'elevation');
+		$rideTable->addSelect(new \PHPFUI\ORM\Literal('count(*)'), 'count');
 		$condition = new \PHPFUI\ORM\Condition('rideRWGPS.RWGPSId', $RWGPS->RWGPSId);
 		$condition->and('ride.elevation', 0, new \PHPFUI\ORM\Operator\GreaterThan());
 		$condition->and('ride.rideStatus', \App\Enum\Ride\Status::COMPLETED);

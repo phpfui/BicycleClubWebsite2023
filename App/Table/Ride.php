@@ -193,13 +193,26 @@ class Ride extends \PHPFUI\ORM\Table
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
 	 */
-	public static function getDateRange(int $start, int $end, string $sort = '') : \PHPFUI\ORM\RecordCursor
+	public static function getDateRange(int $start, int $end) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from ride
-			left join pace on pace.paceId=ride.paceId
-			where rideDate >= ? and rideDate <= ? and pending=0 order by rideDate asc,pace.ordering asc,startTime asc,mileage ' . $sort;
+		$rideTable = new \App\Table\Ride();
+		$rideTable->addSelect('ride.*');
+		$rideTable->addJoin('pace');
+		$rideTable->addOrderBy('rideDate')->addOrderBy('pace.ordering')->addOrderBy('startTime')->addOrderBy('mileage');
+		$condition = new \PHPFUI\ORM\Condition('pending', 0);
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, [\App\Tools\Date::toString($start), \App\Tools\Date::toString($end)]);
+		if ($start)
+			{
+			$condition->and('rideDate', \App\Tools\Date::toString($start), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			}
+
+		if ($end)
+			{
+			$condition->and('rideDate', \App\Tools\Date::toString($end), new \PHPFUI\ORM\Operator\LessThanEqual());
+			}
+		$rideTable->setWhere($condition);
+
+		return $rideTable->getRecordCursor();
 		}
 
 	public static function getFirstRideWithCueSheet() : \App\Record\Ride

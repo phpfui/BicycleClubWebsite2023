@@ -193,7 +193,7 @@ class RideWithGPS extends \App\Model\GPS
 		return $routes;
 		}
 
-	public static function getElevation(\App\Record\RWGPS $RWGPS) : int
+	public static function getElevation(\App\Record\RWGPS $RWGPS) : float
 		{
 		$rideTable = new \App\Table\Ride();
 		$rideTable->addJoin('rideRWGPS');
@@ -216,7 +216,7 @@ class RideWithGPS extends \App\Model\GPS
 			$elevation = $RWGPS->elevationFloat();
 			}
 
-		return (int)\round($elevation);
+		return \round($elevation, 2);
 		}
 
 	public function getRWGPSFromLink(string $link) : ?\App\Record\RWGPS

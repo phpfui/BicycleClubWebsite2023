@@ -738,7 +738,7 @@ class Editor
 				$link->addAttribute('target', '_blank');
 				$row['RWGPS'] = $link;
 				$row['Distance'] = $RWGPS->distance();
-				$row['Elevation'] = \App\Model\RideWithGPS::getElevation($RWGPS) . ' ' . $RWGPS->getSmallUnits();
+				$row['Elevation'] = \number_format(\App\Model\RideWithGPS::getElevation($RWGPS)) . ' ' . $RWGPS->getSmallUnits();
 				$row['Average Gain'] = $RWGPS->gain();
 				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
 				$icon->addAttribute('onclick', $delete->execute(['rideId' => $ride->rideId, 'RWGPSId' => $RWGPS->RWGPSId, 'count' => $count]));

@@ -49,7 +49,7 @@
         "setasign/fpdf": "^1.8",
         "tinify/tinify": "*",
         "tinymce/tinymce": "^7.0",
-        "twilio/sdk": "dev-main",
+        "twilio/sdk": "^8.6.2",
         "zbateson/mail-mime-parser": "^3.0"
     },
     "require-dev": {

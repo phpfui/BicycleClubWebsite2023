@@ -262,7 +262,10 @@ class AssignedShifts implements \Stringable
 			}
 		}
 
-	private function addNonMemberVolunteerModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Job $job, \PHPFUI\ORM\RecordCursor $cursor) : void
+	/**
+	 * @param \PHPFUI\ORM\RecordCursor<\App\Record\JobShift> $shifts
+	 */
+	private function addNonMemberVolunteerModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Job $job, \PHPFUI\ORM\RecordCursor $shifts) : void
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
 		$modal->addClass('large');
@@ -270,7 +273,6 @@ class AssignedShifts implements \Stringable
 		$form->setAreYouSure(false);
 		$fieldSet = new \PHPFUI\FieldSet('Add a Non-Member volunteer for ' . $job->title);
 		$fieldSet->add(new \PHPFUI\Input\Hidden('jobId', (string)$job->jobId));
-		$fieldSet->add(new \PHPFUI\Input\Hidden('jobShiftId', (string)($cursor->current()->jobShiftId)));
 		$fieldSet->add(new \PHPFUI\Input\Hidden('shiftLeader', '0'));
 
 		$firstName = new \PHPFUI\Input\Text('firstName', 'First Name')->setRequired();
@@ -279,12 +281,16 @@ class AssignedShifts implements \Stringable
 		$email = new \PHPFUI\Input\Email('email', 'Email')->setRequired();
 		$cellPhone = new \App\UI\TelUSA($this->page, 'cellPhone', 'Cell Phone')->setRequired();
 		$fieldSet->add(new \PHPFUI\MultiColumn($email, $cellPhone));
+		$fieldSet->add($this->getJobShiftSelect($shifts));
 		$form->add($fieldSet);
 		$form->add($modal->getButtonAndCancel(new \PHPFUI\Submit('Add Non-Member Volunteer', 'action')));
 		$modal->add($form);
 		}
 
-	private function addVolunteerModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Job $job, \PHPFUI\ORM\RecordCursor $cursor) : void
+	/**
+	 * @param \PHPFUI\ORM\RecordCursor<\App\Record\JobShift> $shifts
+	 */
+	private function addVolunteerModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Job $job, \PHPFUI\ORM\RecordCursor $shifts) : void
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
 		$modal->addClass('large');
@@ -292,12 +298,27 @@ class AssignedShifts implements \Stringable
 		$form->setAreYouSure(false);
 		$fieldSet = new \PHPFUI\FieldSet('Add a volunteer for ' . $job->title);
 		$fieldSet->add(new \PHPFUI\Input\Hidden('jobId', (string)$job->jobId));
-		$fieldSet->add(new \PHPFUI\Input\Hidden('jobShiftId', (string)($cursor->current()->jobShiftId)));
 		$fieldSet->add(new \PHPFUI\Input\Hidden('shiftLeader', '0'));
 		$memberPicker = new \App\UI\MemberPicker($this->page, new \App\Model\NonMemberPickerNoSave('Volunteer Name'), 'memberId');
 		$fieldSet->add($memberPicker->getEditControl());
+		$fieldSet->add($this->getJobShiftSelect($shifts));
 		$form->add($fieldSet);
 		$form->add($modal->getButtonAndCancel(new \PHPFUI\Submit('Add Volunteer', 'action')));
 		$modal->add($form);
+		}
+
+	/**
+	 * @param \PHPFUI\ORM\RecordCursor<\App\Record\JobShift> $shifts
+	 */
+	private function getJobShiftSelect(\PHPFUI\ORM\RecordCursor $shifts) : \PHPFUI\Input\Select
+		{
+		$select = new \PHPFUI\Input\Select('jobShiftId', 'Shift');
+
+		foreach ($shifts as $shift)
+			{
+			$select->addOption(self::displayShiftTimes($shift), "{$shift->jobShiftId}");
+			}
+
+		return $select;
 		}
 	}

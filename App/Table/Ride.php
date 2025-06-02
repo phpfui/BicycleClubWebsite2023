@@ -346,10 +346,10 @@ class Ride extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select ride.* from ride
 			left join rideSignup on rideSignup.rideId=ride.rideId
-			where rideSignup.attended=? and rideSignup.memberId=? and pending=0
+			where rideSignup.memberId=? and pending=0
 			order by ride.rideDate desc limit 1';
 
-		$input = [\App\Enum\RideSignup\Attended::CONFIRMED->value, \App\Model\Session::signedInMemberId(), ];
+		$input = [\App\Model\Session::signedInMemberId(), ];
 
 		$ride = new \App\Record\Ride();
 		$ride->loadFromSQL($sql, $input);
@@ -361,10 +361,10 @@ class Ride extends \PHPFUI\ORM\Table
 		{
 		$sql = 'select ride.* from ride
 			left join rideSignup on rideSignup.rideId=ride.rideId
-			where rideSignup.attended=? and rideSignup.memberId=? and pending=0
+			where rideSignup.memberId=? and pending=0
 			order by ride.rideDate asc limit 1';
 
-		$input = [\App\Enum\RideSignup\Attended::CONFIRMED->value, \App\Model\Session::signedInMemberId(), ];
+		$input = [\App\Model\Session::signedInMemberId(), ];
 		$ride = new \App\Record\Ride();
 		$ride->loadFromSQL($sql, $input);
 

@@ -16,6 +16,8 @@ class Newsletter extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			$view = new \App\View\Newsletter($this->page);
 
 			$this->page->addPageContent($view->display($year));
+			$content = new \App\View\Content($this->page);
+			$this->page->addPageContent($content->getDisplayCategoryHTML('Public Newsletter'));
 			}
 		}
 

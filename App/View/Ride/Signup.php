@@ -106,6 +106,9 @@ class Signup
 		$ephone = new \App\UI\TelUSA($this->page, 'emergencyPhone', 'Emergency Phone Number', $this->member->emergencyPhone);
 		$ephone->setToolTip('Phone number of the emergency contact.');
 		$fieldSet->add($ephone);
+		$plate = new \PHPFUI\Input\Text('license', 'Car License Plate', $this->member->license ?: '');
+		$plate->setToolTip('To identify missing riders at the end of the ride.');
+		$fieldSet->add($plate);
 		$rideComments = new \PHPFUI\Input\CheckBoxBoolean('rideComments', 'Subscribe to Ride Comments', (bool)$rider->rideComments);
 		$rideComments->setToolTip('If you check this box, you will receive ride comment updates via email. You can comment on a ride at any time reguardless of this setting. You can also turn this on or off on each comment you post.');
 		$fieldSet->add($rideComments);

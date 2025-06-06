@@ -24,6 +24,10 @@ class Search implements \Stringable
 		$this->fields['phone'] = 'Phone';
 		$this->fields['cellPhone'] = 'Cell';
 
+		if ($this->page->isAuthorized('Ride Leader'))
+			{
+			$this->fields['license'] = 'Plate';
+			}
 		$this->fields['membership_address'] = 'Address';
 		$this->fields['membership_town'] = 'Town';
 		$this->specialFields['firstName'] = 'First Name';

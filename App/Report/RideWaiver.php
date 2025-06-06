@@ -233,6 +233,8 @@ class RideWaiver extends \Mpdf\Mpdf
 			{
 			$this->SetXY($this->startOffset[1], $y);
 			$this->Cell($this->columns[2], $height, \App\Tools\TextHelper::unhtmlentities($member['firstName'] . ' ' . $member['lastName']), 0, 2, 'l');
+			$this->SetXY($this->startOffset[4], $y);
+			$this->Cell($this->columns[5], $height, \App\Tools\TextHelper::unhtmlentities($member['license']), 0, 2, 'C');
 			}
 
 		if (isset($member['emergencyPhone']))

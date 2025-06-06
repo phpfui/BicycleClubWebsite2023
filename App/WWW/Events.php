@@ -194,7 +194,7 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					'membersOnly', 'organizer', 'paypal', 'door', 'checks', 'maxReservations', 'membershipId',
 					'showNothing', 'showNoStreet', 'showNoTown', 'showNoPhone', 'emailAnnouncements',
 					'volunteerPoints', 'rideJournal', 'newRideEmail', 'emergencyContact', 'emergencyPhone',
-					'journal', 'deceased', 'emailNewsletter', 'allowedMembers', ];
+					'journal', 'license', 'deceased', 'emailNewsletter', 'allowedMembers', ];
 
 				foreach ($removedFields as $field)
 					{

@@ -9,12 +9,12 @@ enum HomeNotification : int
 	case CONTENT = 1;
 	case CUESHEET = 2;
 	case EVENT = 3;
+	case HOME_PAGE_HEADER = 9;
 	case MEMBER_OF_MONTH = 4;
 	case NEWSLETTER = 5;
 	case POLL = 6;
 	case RIDE = 7;
 	case VOLUNTEER = 8;
-	case HOME_PAGE_HEADER = 9;
 
 	public function getSettingName() : string
 		{

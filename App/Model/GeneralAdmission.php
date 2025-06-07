@@ -172,13 +172,8 @@ class GeneralAdmission
 				$member = new \App\Record\Member();
 
 				$member->setFrom($rider->toArray());
-				$defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal', 'rideComments', 'geoLocate'];
-				$settingTable = new \App\Table\Setting();
-
-				foreach ($defaultFields as $field)
-					{
-					$member->{$field} = (int)($settingTable->value($field . 'Default') ?: 0);
-					}
+				$memberModel = new \App\Model\Member();
+				$memberModel->setDefaultFields($member);
 				$member->membership = $membership;
 				$member->verifiedEmail = 9;
 				$member->acceptedWaiver = null;

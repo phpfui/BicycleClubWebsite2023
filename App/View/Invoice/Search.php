@@ -18,8 +18,8 @@ class Search implements \Stringable
 
 		if (isset($_GET['shipped']))
 			{
-			$model = new \App\Model\Invoice();
-			$invoiceTable = $model->getInvoiceTable($_GET);
+			$invoiceModel = new \App\Model\Invoice();
+			$invoiceTable = $invoiceModel->getInvoiceTable($_GET);
 			$view = new \App\View\Invoice($this->page);
 			$output = $view->show($invoiceTable);
 

@@ -175,8 +175,8 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$hr = '<hr>';
 				$this->page->addPageContent(new \PHPFUI\Header($event->title));
 				$this->page->addPageContent(\App\Tools\TextHelper::unhtmlentities($event->description));
-				$model = new \App\Model\GeneralAdmission();
-				$spotsLeft = $event->maxRegistrants - $model->totalRegistrants($event);
+				$gaModel = new \App\Model\GeneralAdmission();
+				$spotsLeft = $event->maxRegistrants - $gaModel->totalRegistrants($event);
 				$message = '';
 
 				if ($spotsLeft > 0)
@@ -324,27 +324,6 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function tabEditor(int $tab = 1) : void
-		{
-		if ($this->page->addHeader('Landing Page Tab Editor'))
-			{
-			$settingTable = new \App\Table\Setting();
-			$tabs = \json_decode($settingTable->value('GATabs'), true);
-			$container = new \PHPFUI\Container();
-
-			if (isset($tabs[$tab]))
-				{
-				$container->add(new \PHPFUI\SubHeader('Edit Tab ' . $tabs[$tab]));
-				$container->add(new \App\View\SettingEditor($this->page, 'GATab' . $tab, true));
-				}
-			else
-				{
-				$container->add(new \PHPFUI\SubHeader("Tab {$tab} not found"));
-				}
-			$this->page->addPageContent($container);
-			}
-		}
-
 	public function unsubscribe(\App\Record\GaRider $rider = new \App\Record\GaRider(), string $email = '') : void
 		{
 		$this->page->setPublic();
@@ -389,10 +368,10 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$this->page->addHeader('Sign Up For ' . $event->title, 'GA Sign Up');
 				}
 			$today = \App\Tools\Date::todayString();
-			$model = new \App\Model\GeneralAdmission();
-			$datePrice = $model->getLastRegistrationDateRecord($event);
+			$gaModel = new \App\Model\GeneralAdmission();
+			$datePrice = $gaModel->getLastRegistrationDateRecord($event);
 
-			if ($event->maxRegistrants < $model->totalRegistrants($event))
+			if ($event->maxRegistrants < $gaModel->totalRegistrants($event))
 				{
 				$this->page->addPageContent(new \PHPFUI\SubHeader('This event is sold out!'));
 				}

@@ -63,9 +63,9 @@ class AbandonedGeneralAdmission extends \App\Cron\BaseJob
 				}
 			elseif (\in_array($daysAgo, $daysAfter))
 				{
-				$model = new \App\Model\GeneralAdmission();
-				$model->addRiderToIncompleteEmail($event, $gaRider);
-				unset($model);
+				$gaModel = new \App\Model\GeneralAdmission();
+				$gaModel->addRiderToIncompleteEmail($event, $gaRider);
+				unset($gaModel);
 				}
 			}
 		}

@@ -32,8 +32,8 @@ class Event
 
 		if ($submit->submitted($_POST))
 			{
-			$generalAdmissionModel = new \App\Model\GeneralAdmission();
-			$newEvent = $generalAdmissionModel->copy($gaEvent, $_POST['eventDate'], $_POST['title']);
+			$gaModel = new \App\Model\GeneralAdmission();
+			$newEvent = $gaModel->copy($gaEvent, $_POST['eventDate'], $_POST['title']);
 			$this->page->redirect('/GA/edit/' . $newEvent->gaEventId);
 			}
 

@@ -541,7 +541,7 @@ class EventEdit
 				elseif ($this->testText == $post['submit'] || $this->testIncompleteText == $post['submit'])
 					{
 					$gaEvent = new \App\Record\GaEvent($post['gaEventId']);
-					$model = new \App\Model\GeneralAdmission();
+					$gaModel = new \App\Model\GeneralAdmission();
 					$gaRiderTable = new \App\Table\GaRider();
 					$gaRiderTable->setLimit(1);
 					$gaRiderTable->setWhere(new \PHPFUI\ORM\Condition('gaEventId', (int)$post['gaEventId']));
@@ -567,11 +567,11 @@ class EventEdit
 
 					if ($this->testText == $post['submit'])
 						{
-						$model->addRiderToEmail($gaEvent, $rider);
+						$gaModel->addRiderToEmail($gaEvent, $rider);
 						}
 					else
 						{
-						$model->addRiderToIncompleteEmail($gaEvent, $rider);
+						$gaModel->addRiderToIncompleteEmail($gaEvent, $rider);
 						}
 					\App\Model\Session::setFlash('success', 'Check your inbox for a test email');
 					$this->page->redirect();

@@ -340,17 +340,19 @@ class Cart
 					break;
 
 				case 'Confirm Order And Pay':
-					$invoiceModel = new \App\Model\Invoice();
-					$invoice = $invoiceModel->generateFromCart($this->cartModel);
-					$paypalType = $invoiceModel->getPayPalType();
-					$redirect = '/Store/pay/' . $invoice->invoiceId . '/' . $paypalType;
-
-					break;
-
 				case 'Confirm Order':
 					$invoiceModel = new \App\Model\Invoice();
 					$invoice = $invoiceModel->generateFromCart($this->cartModel);
-					$redirect = '/Store/paid/' . $invoice->invoiceId;
+
+					if ($invoice->unpaidBalance() <= 0.0)
+						{
+						$redirect = '/Store/paid/' . $invoice->invoiceId;
+						}
+					else
+						{
+						$paypalType = $invoiceModel->getPayPalType();
+						$redirect = '/Store/pay/' . $invoice->invoiceId . '/' . $paypalType;
+						}
 
 					break;
 

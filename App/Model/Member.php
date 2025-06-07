@@ -24,6 +24,9 @@ class Member
 
 	final public const MEMBERSHIP_TITLE = '12 Month Membership';
 
+	/** @var	array<string> */
+	protected array $defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal', 'rideComments', 'geoLocate'];
+
 	/** @var array<string,int> */
 	protected array $passwordOptions = ['cost' => 11];
 
@@ -70,19 +73,15 @@ class Member
 		$member['firstName'] = \ucwords((string)$member['firstName']);
 		$member['lastName'] = \ucwords((string)$member['lastName']);
 		$member['expires'] = $member['lastRenewed'] = null;
-		$defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal', 'rideComments', 'geoLocate'];
-
-		foreach ($defaultFields as $field)
-			{
-			$member[$field] = (int)($this->settingTable->value($field . 'Default') ?: 0);
-			}
 		$member['acceptedWaiver'] = null;
 		$member['password'] = $this->hashPassword($member['password']);
 		$membership = new \App\Record\Membership();
 		$membership->setFrom($member);
 		$member['membershipId'] = $membership->insert();
 		$memberRecord = new \App\Record\Member();
+		$this->setDefaultFields($memberRecord);
 		$memberRecord->setFrom($member);
+
 		$id = $memberRecord->insert();
 		$categoryTable = new \App\Table\Category();
 
@@ -820,6 +819,16 @@ class Member
 			$email->setFromMember($membershipChair);
 			$email->send();
 			}
+		}
+
+	public function setDefaultFields(\App\Record\Member $member) : static
+		{
+		foreach ($this->defaultFields as $field)
+			{
+			$member->{$field} = (int)($this->settingTable->value($field . 'Default') ?: 0);
+			}
+
+		return $this;
 		}
 
 	public function setNormalMemberPermission(\App\Record\Member $member) : void

@@ -436,9 +436,20 @@ class Editor
 							$rideRWGPS = new \App\Record\RideRWGPS();
 							$rideRWGPS->rideId = (int)$_POST['rideId'];
 							$rideRWGPS->RWGPSId = $RWGPSId;
-							$rideRWGPS->insertOrIgnore();
-							$this->page->redirect();
+							$rideRWGPS->reload();
+
+							if (! $rideRWGPS->loaded())
+								{
+								\App\Tools\Logger::get()->debug('not loaded');
+								$rideRWGPS->rideId = (int)$_POST['rideId'];
+								$rideRWGPS->RWGPSId = $RWGPSId;
+								$rideRWGPS->insertOrIgnore();
+								\App\Tools\Logger::get()->debug($rideRWGPS);
+								$rideModel = new \App\Model\Ride();
+								$rideModel->emailRWGPSChange($rideRWGPS);
+								}
 							}
+						$this->page->redirect();
 
 						break;
 
@@ -510,6 +521,8 @@ class Editor
 					case 'deleteRWGPS':
 						$rideRWGPS = new \App\Record\RideRWGPS($_POST);
 						$rideRWGPS->delete();
+						$rideModel = new \App\Model\Ride();
+						$rideModel->emailRWGPSChange($rideRWGPS);
 
 						$this->page->setRawResponse(\json_encode(['response' => $_POST['count']], JSON_THROW_ON_ERROR));
 

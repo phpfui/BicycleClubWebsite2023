@@ -71,7 +71,7 @@ class RWGPS extends \App\Record\Definition\RWGPS
 	 */
 	public function elevationFloat() : float
 		{
-		return 'km' == $this->getUnits() ? $this->elevationMeters : $this->elevationFeet;
+		return (float)('km' == $this->getUnits() ? $this->elevationMeters : $this->elevationFeet);
 		}
 
 	public function gain() : string

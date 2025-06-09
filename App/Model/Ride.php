@@ -398,6 +398,46 @@ class Ride
 		$email->bulkSend();
 		}
 
+	public function emailRWGPSChange(\App\Record\RideRWGPS $rideRWGPS) : static
+		{
+		$rwgps = $rideRWGPS->RWGPS;
+
+		$link = $rwgps->routeLink();
+
+		if (! $link)
+			{
+			return $this;
+			}
+
+		$email = new \App\Tools\EMail();
+		$abbrev = $this->clubAbbrev;
+		$email->setSubject("A {$abbrev} ride you have signed up for has changed");
+		$member = \App\Model\Session::getSignedInMember();
+		$email->setFromMember($member);
+		$ride = $rideRWGPS->ride;
+		$body = "<b>{$member['firstName']} {$member['lastName']}</b> updated the ride titled <b>{$ride->title}</b> scheduled for ";
+		$body .= $ride->rideDate;
+		$newRideRWGPS = new \App\Record\RideRWGPS(['rideId' => $rideRWGPS->rideId, 'RWGPSId' => $rideRWGPS->RWGPSId]);
+		$action = $newRideRWGPS->loaded() ? 'added' : 'removed';
+		$body .= '<p>And ' . $action . ' this RWGPS route:</p>';
+
+		$fullLink = new \PHPFUI\Link($link, $rwgps->title);
+
+		$body .= '<p>' . $fullLink . ' ' . $rwgps->distance() . ', ' . $rwgps->elevation() . ' total elevation, ' . $rwgps->gain() . '</p>';
+
+		$email->setBody(\App\Tools\TextHelper::cleanUserHtml($body));
+		$email->setHtml();
+		$members = $this->rideSignupTable->getSignedUpRiders($rideRWGPS->rideId);
+
+		foreach ($members as $member)
+			{
+			$email->addBccMember($member->toArray());
+			}
+		$email->bulkSend();
+
+		return $this;
+		}
+
 	public function getCalendarObject(\App\Record\Ride $ride) : ?\ICalendarOrg\ZCiCal
 		{
 		// create the ical object
@@ -849,17 +889,6 @@ class Ride
 						$to = $this->getMember((int)$parameters[$field]);
 						$from = $this->getMember($value);
 						$name = 'leader';
-
-						break;
-
-
-					case 'RWGPSId':
-
-						$toRWGPS = new \App\Record\RWGPS((int)$parameters[$field]);
-						$to = $toRWGPS->routeLink();
-						$fromRWGPS = new \App\Record\RWGPS((int)$value);
-						$from = $fromRWGPS->routeLink();
-						$name = 'Ride With GPS';
 
 						break;
 

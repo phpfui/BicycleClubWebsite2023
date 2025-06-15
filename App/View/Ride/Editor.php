@@ -440,11 +440,9 @@ class Editor
 
 							if (! $rideRWGPS->loaded())
 								{
-								\App\Tools\Logger::get()->debug('not loaded');
 								$rideRWGPS->rideId = (int)$_POST['rideId'];
 								$rideRWGPS->RWGPSId = $RWGPSId;
 								$rideRWGPS->insertOrIgnore();
-								\App\Tools\Logger::get()->debug($rideRWGPS);
 								$rideModel = new \App\Model\Ride();
 								$rideModel->emailRWGPSChange($rideRWGPS);
 								}

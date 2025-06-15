@@ -80,8 +80,10 @@ class PayPal extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		catch (\Exception $e)
 			{
-			$this->logger->debug($e, __METHOD__);
-			$this->page->setRawResponse(\json_encode([], JSON_PRETTY_PRINT));
+			$json = $e->getMessage();
+			$data = \json_decode($json, true);
+			$this->logger->debug($data, __METHOD__);
+			$this->page->setRawResponse($json);
 
 			return;
 			}

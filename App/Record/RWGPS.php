@@ -51,7 +51,7 @@ class RWGPS extends \App\Record\Definition\RWGPS
 
 		$distance = 'km' == $units ? $this->km : $this->miles;
 
-		return \number_format($distance, 1) . ' ' . $units;
+		return \number_format((float)$distance, 1) . ' ' . $units;
 		}
 
 	/**
@@ -63,7 +63,7 @@ class RWGPS extends \App\Record\Definition\RWGPS
 
 		$elevation = 'km' == $units ? $this->elevationMeters : $this->elevationFeet;
 
-		return \number_format(\round($elevation), 0) . ' ' . self::getSmallUnits();
+		return \number_format(\round((float)$elevation), 0) . ' ' . self::getSmallUnits();
 		}
 
 	/**
@@ -89,7 +89,7 @@ class RWGPS extends \App\Record\Definition\RWGPS
 			$elevation = $this->feetPerMile;
 			}
 
-		return \number_format($elevation, 0) . ' ' . $units;
+		return \number_format((float)$elevation, 0) . ' ' . $units;
 		}
 
 	public function getCSVReader() : \App\Tools\CSV\Reader

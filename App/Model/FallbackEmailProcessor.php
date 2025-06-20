@@ -75,6 +75,7 @@ class FallbackEmailProcessor
 
 		$addresses = $this->getAddresses($message->getHeader('To'), $url);
 		$addresses += $this->getAddresses($message->getHeader('Cc'), $url);
+		$addresses += $this->getAddresses($message->getHeader('Bcc'), $url);
 
 		$blacklist = \explode("\n", $settingTable->value('BlackListedEmails'));
 

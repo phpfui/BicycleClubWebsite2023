@@ -9,6 +9,7 @@ class System
 		$tempFiles = [];
 		$to = $message->getHeader('To');
 		$cc = $message->getHeader('Cc');
+		$bcc = $message->getHeader('Bcc');
 		$found = false;
 		$email = new \App\Tools\EMail();
 		$fromBox = 'webmaster';
@@ -19,7 +20,7 @@ class System
 			{
 			$emailAddress = $system->mailbox . '@' . \emailServerName();
 
-			if (($to && $to->hasAddress($emailAddress)) || ($cc && $cc->hasAddress($emailAddress)))
+			if (($to && $to->hasAddress($emailAddress)) || ($cc && $cc->hasAddress($emailAddress)) || ($bcc && $bcc->hasAddress($emailAddress)))
 				{
 				$fromBox = $system->mailbox;
 				$email->addTo($system->email, $system->name);

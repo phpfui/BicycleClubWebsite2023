@@ -20,6 +20,7 @@ class Forums
 		{
 		$to = $message->getHeader('to');
 		$cc = $message->getHeader('cc');
+		$bcc = $message->getHeader('bcc');
 		$validEmail = false;
 
 		$forumTable = new \App\Table\Forum();
@@ -29,7 +30,7 @@ class Forums
 			{
 			$emailAddress = $forum->email . '@' . \emailServerName();
 
-			if (($to && $to->hasAddress($emailAddress)) || ($cc && $cc->hasAddress($emailAddress)))
+			if (($to && $to->hasAddress($emailAddress)) || ($cc && $cc->hasAddress($emailAddress)) || ($bcc && $bcc->hasAddress($emailAddress)))
 				{
 				$this->processMessage($message, $forum);
 				$validEmail = true;

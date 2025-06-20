@@ -98,7 +98,11 @@ abstract class Reader implements \Iterator
 
 			if ($this->headerRow)
 				{
-				$this->headers = \fgetcsv($this->stream, 0, $this->separator, $this->enclosure, $this->escape);
+				$data = \fgetcsv($this->stream, 0, $this->separator, $this->enclosure, $this->escape);
+				if (is_array($data))
+					{
+					$this->headers = $data;
+					}
 				}
 			}
 		$this->next();

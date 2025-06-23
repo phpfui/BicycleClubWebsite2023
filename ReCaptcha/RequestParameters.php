@@ -55,7 +55,7 @@ class RequestParameters
     /**
      * Array representation.
      *
-     * @return array Array formatted parameters.
+     * @return array<string,mixed> formatted parameters.
      */
     public function toArray(): array
     {

@@ -38,7 +38,7 @@ namespace ReCaptcha;
 /**
  * The response returned from the service.
  */
-class Response
+class Response implements \Psr\Captcha\CaptchaResponseInterface
 {
     /**
      * Build the response from the expected JSON returned by the service.
@@ -77,7 +77,7 @@ class Response
      * @param string $apkPackageName APK package name
      * @param ?float $score Score assigned to the request
      * @param string $action Action as specified by the page
-     * @param array $errorCodes Error code strings.
+     * @param array<string> $errorCodes Error code strings.
      */
     public function __construct(private bool $success, private array $errorCodes = [], private string $hostname = '', private string $challengeTs = '', private string $apkPackageName = '', private ?float $score = null, private string $action = '')
     {
@@ -93,6 +93,8 @@ class Response
 
     /**
      * Get error codes.
+	 *
+	 * @return array<mixed>
      */
     public function getErrorCodes(): array
     {
@@ -139,6 +141,9 @@ class Response
         return $this->action;
     }
 
+	/**
+	 * @return array<string,mixed>
+	 */
     public function toArray(): array
     {
         return [

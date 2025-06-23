@@ -73,24 +73,27 @@ class CurlPost implements RequestMethod
     {
         $handle = $this->curl->init($this->siteVerifyUrl);
 
-        $options = [
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $params->toQueryString(),
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/x-www-form-urlencoded'
-            ],
-            CURLINFO_HEADER_OUT => false,
-            CURLOPT_HEADER => false,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => true
-        ];
-        $this->curl->setoptArray($handle, $options);
+        if ($handle !== false)
+          {
+          $options = [
+              CURLOPT_POST => true,
+              CURLOPT_POSTFIELDS => $params->toQueryString(),
+              CURLOPT_HTTPHEADER => [
+                  'Content-Type: application/x-www-form-urlencoded'
+              ],
+              CURLINFO_HEADER_OUT => false,
+              CURLOPT_HEADER => false,
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_SSL_VERIFYPEER => true
+          ];
+          $this->curl->setoptArray($handle, $options);
 
-        $response = $this->curl->exec($handle);
-        $this->curl->close($handle);
+          $response = $this->curl->exec($handle);
+          $this->curl->close($handle);
 
-        if ($response !== false) {
-            return $response;
+          if ($response !== false) {
+              return $response;
+          }
         }
 
         return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';

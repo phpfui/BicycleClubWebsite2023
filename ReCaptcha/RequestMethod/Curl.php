@@ -42,37 +42,33 @@ class Curl
 {
     /**
      * @see http://php.net/curl_init
-     *
-     * @return \CurlHandle|false cURL handle  *
      */
-    public function init(?string $url = null)
+    public function init(?string $url = null) : \CurlHandle | false
     {
         return curl_init($url);
     }
 
     /**
      * @see http://php.net/curl_setopt_array
-     * @param \CurlHandle|false $ch
+     * @param array<int,mixed> $options
      */
-    public function setoptArray($ch, array $options): bool
+    public function setoptArray(\CurlHandle $ch, array $options): bool
     {
         return curl_setopt_array($ch, $options);
     }
 
     /**
      * @see http://php.net/curl_exec
-     * @param \CurlHandle|false $ch
      */
-    public function exec($ch): mixed
+    public function exec(\CurlHandle $ch): mixed
     {
         return curl_exec($ch);
     }
 
     /**
      * @see http://php.net/curl_close
-     * @param \CurlHandle|false $ch
      */
-    public function close($ch): void
+    public function close(\CurlHandle $ch): void
     {
         curl_close($ch);
     }

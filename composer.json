@@ -39,7 +39,7 @@
         "phpfui/instadoc": "^1.0",
         "phpfui/orm": "^2.0",
         "phpfui/phpfui": "^6.2",
-        "phpfui/recaptcha": "^2.0",
+        "phpfui/recaptcha": "dev-PSR",
         "phpfui/translation": "^1.0",
         "phpmailer/phpmailer": ">=6.0",
         "psr-php7/log": "^1.0",

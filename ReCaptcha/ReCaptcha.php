@@ -38,7 +38,7 @@ namespace ReCaptcha;
 /**
  * reCAPTCHA client.
  */
-class ReCaptcha
+class ReCaptcha implements \Psr\Captcha\CaptchaVerifierInterface
 {
     /**
      * Version of this client library.
@@ -123,12 +123,12 @@ class ReCaptcha
      *
      * @param string $secret The shared key between your site and reCAPTCHA.
      * @param ?RequestMethod $requestMethod method used to send the request. Defaults to POST.
-     * @throws \RuntimeException if $secret is invalid
+     * @throws \Psr\Captcha\CaptchaException if $secret is invalid
      */
     public function __construct(private string $secret, private ?RequestMethod $requestMethod = null)
     {
         if (empty($secret)) {
-            throw new \RuntimeException('No secret provided');
+            throw new \Psr\Captcha\CaptchaException('No secret provided');
         }
 
         if (is_null($requestMethod)) {
@@ -141,7 +141,7 @@ class ReCaptcha
      * CAPTCHA test and additionally runs any specified additional checks
      *
      * @param string $response The user response token provided by reCAPTCHA, verifying the user on your site.
-     * @param string $remoteIp The end user's IP address.
+     * @param ?string $remoteIp The end user's IP address.
      *
      * @return Response Response from the service.
      */

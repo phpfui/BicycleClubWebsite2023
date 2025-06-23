@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c7d1d056aaada8f2a305b07963eb9e23",
+    "content-hash": "a28c3a5e4997784494079be6c2bb324f",
     "packages": [
         {
             "name": "alek13/slack",
@@ -3636,16 +3636,16 @@
         },
         {
             "name": "phpfui/phpfui",
-            "version": "V6.3.5",
+            "version": "V6.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/phpfui.git",
-                "reference": "763646070f6aa0361a69c8567e636b497e47d222"
+                "reference": "da27cd9ae328cb716c0de8b642c73c84a524d580"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/phpfui/zipball/763646070f6aa0361a69c8567e636b497e47d222",
-                "reference": "763646070f6aa0361a69c8567e636b497e47d222",
+                "url": "https://api.github.com/repos/phpfui/phpfui/zipball/da27cd9ae328cb716c0de8b642c73c84a524d580",
+                "reference": "da27cd9ae328cb716c0de8b642c73c84a524d580",
                 "shasum": ""
             },
             "require": {
@@ -3653,7 +3653,6 @@
                 "fortawesome/font-awesome": "^5 | ^6",
                 "igorescobar/jquery-mask-plugin": "^1.14",
                 "php": ">=8.1 <8.5",
-                "phpfui/recaptcha": "^2.0",
                 "zurb/foundation": "^6.6"
             },
             "require-dev": {
@@ -3661,12 +3660,14 @@
                 "mheap/phpunit-github-actions-printer": "^1.5",
                 "phpfui/html-unit-tester": "^1.0",
                 "phpfui/phpunit-syntax-coverage": "dev-master",
+                "phpfui/recaptcha": "dev-PSR",
                 "phpstan/phpstan": "*",
                 "phpunit/phpunit": "^10.5|^11.0|^12.0",
                 "roave/security-advisories": "dev-latest"
             },
             "suggest": {
-                "kwn/number-to-words": "Allows words in addition to numbers for MathCaptcha"
+                "kwn/number-to-words": "Allows words in addition to numbers for MathCaptcha",
+                "phpfui/recaptcha": "Supports PHP 8.4 for Google ReCaptcha"
             },
             "type": "library",
             "autoload": {
@@ -3700,22 +3701,22 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/phpfui/issues",
-                "source": "https://github.com/phpfui/phpfui/tree/V6.3.5"
+                "source": "https://github.com/phpfui/phpfui/tree/V6.3.6"
             },
-            "time": "2025-03-26T14:07:33+00:00"
+            "time": "2025-06-23T14:46:50+00:00"
         },
         {
             "name": "phpfui/recaptcha",
-            "version": "V2.0.0",
+            "version": "dev-PSR",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/recaptcha.git",
-                "reference": "2fa89004beaa8665a8c9109ab95d870354802d5d"
+                "reference": "0e4bd91c926a471c5c79d0903c0c82004acc329c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/recaptcha/zipball/2fa89004beaa8665a8c9109ab95d870354802d5d",
-                "reference": "2fa89004beaa8665a8c9109ab95d870354802d5d",
+                "url": "https://api.github.com/repos/phpfui/recaptcha/zipball/0e4bd91c926a471c5c79d0903c0c82004acc329c",
+                "reference": "0e4bd91c926a471c5c79d0903c0c82004acc329c",
                 "shasum": ""
             },
             "require": {
@@ -3725,12 +3726,13 @@
                 "friendsofphp/php-cs-fixer": "^3.14",
                 "php-coveralls/php-coveralls": "^2.5",
                 "phpstan/phpstan": "^2.1",
-                "phpunit/phpunit": "^11"
+                "phpunit/phpunit": "<=12.0"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "ReCaptcha\\": "src/ReCaptcha"
+                    "ReCaptcha\\": "src/ReCaptcha",
+                    "Psr\\Captcha\\": "src/Captcha"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -3747,9 +3749,10 @@
             ],
             "support": {
                 "forum": "https://groups.google.com/forum/#!forum/recaptcha",
+                "issues": "https://github.com/phpfui/recaptcha/issues",
                 "source": "https://github.com/phpfui/recaptcha"
             },
-            "time": "2025-01-09T22:31:40+00:00"
+            "time": "2025-06-20T15:49:08+00:00"
         },
         {
             "name": "phpfui/translation",
@@ -10428,6 +10431,7 @@
         "phpfui/common": 20,
         "phpfui/constantcontact": 20,
         "phpfui/php-imap": 20,
+        "phpfui/recaptcha": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,

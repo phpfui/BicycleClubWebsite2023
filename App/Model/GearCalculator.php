@@ -679,6 +679,8 @@ class GearCalculator
 		$table->addAttribute('border', '1');
 		$pdf->writeHTML("<style media='print'>table {border-collapse:collapsed;border:1px solid black;text-align:center;}</style>");
 		$pdf->writeHTML($table);
+		$pdf->writeHTML('<h3>Gear Differences</h3>');
+		$pdf->writeHTML($this->getSequentialTable($table->getRows()));
 		$pdf->Output($this->tl ?: 'GearCalculator.pdf', 'I');
 		}
 
@@ -737,6 +739,55 @@ class GearCalculator
 			}
 
 		return $retVal;
+		}
+
+	/**
+	 * @param array<array<string>> $computedGears from the calculated gear table
+	 */
+	private function getSequentialTable(array $computedGears) : \PHPFUI\Table
+		{
+		$table = new \PHPFUI\Table();
+		$table->addAttribute('border', '1');
+		$headers = ['Gear', '&nbsp;&nbsp;&nbsp;Value&nbsp;&nbsp;&nbsp;', '&nbsp;&nbsp;&nbsp;Diff&nbsp;&nbsp;&nbsp;', '&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;&nbsp;&nbsp;&nbsp;', '&nbsp;Dupe&nbsp;'];
+		$table->addRow($headers);
+
+		$gears = \array_shift($computedGears);
+		\array_shift($gears);
+		$rows = [];
+
+		foreach ($computedGears as $row)
+			{
+			$gear = \array_shift($row);
+
+			foreach ($row as $i => $value)
+				{
+				$rows[$gears[$i] . '-' . $gear] = $value;
+				}
+			}
+
+		\arsort($rows);
+
+		$previousValue = (float)\current($rows);
+		$precision = (int)$this->p;
+
+		foreach ($rows as $index => $value)
+			{
+			$value = (float)$value;
+			$diff = $previousValue - $value;
+			$percent = $diff / $previousValue * 100.0;
+
+			if ($diff)
+				{
+				$table->addRow([$index, \number_format($value, $precision), \number_format($diff, $precision), \number_format($percent, $precision), $percent < 1.0 ? '****' : ' ']);
+				}
+			else
+				{
+				$table->addRow([$index, \number_format($value, $precision), ' ', ' ', ' ']);
+				}
+			$previousValue = $value;
+			}
+
+		return $table;
 		}
 
 	/**

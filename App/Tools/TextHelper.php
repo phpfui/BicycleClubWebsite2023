@@ -214,6 +214,8 @@ class TextHelper extends \PHPFUI\TextHelper
 
 		$html = \Htmlawed::filter($html, self::$options);
 
+		$html = \str_ireplace('<br />', '<br>', $html);
+
 		return self::fullyPathImages($html);
 		}
 

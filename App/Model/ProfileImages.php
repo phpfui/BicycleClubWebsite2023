@@ -35,7 +35,7 @@ class ProfileImages extends \App\Model\ThumbnailImageFiles
 
 	public function exists(string $path) : bool
 		{
-		return \file_exists($path) && @\exif_imagetype($path);
+		return \file_exists($path) && \filesize($path) > 100 && @\exif_imagetype($path);
 		}
 
 	public function getCropImg() : ?\PHPFUI\Image

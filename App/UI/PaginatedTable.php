@@ -42,7 +42,7 @@ class PaginatedTable extends \PHPFUI\SortableTable
 
 	private string $sortColumn = '';
 
-	public function __construct(protected ?\PHPFUI\Interfaces\Page $page, private readonly \PHPFUI\ORM\Table $dataTable)
+	public function __construct(protected ?\PHPFUI\Interfaces\Page $page, protected readonly \PHPFUI\ORM\Table $dataTable)
 		{
 		parent::__construct();
 

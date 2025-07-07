@@ -215,6 +215,7 @@ class TextHelper extends \PHPFUI\TextHelper
 		$html = \Htmlawed::filter($html, self::$options);
 
 		$html = \str_ireplace('<br />', '<br>', $html);
+		$html = \str_replace('<br data-mce-bogus="1" />', '<br data-mce-bogus="1">', $html);
 
 		return self::fullyPathImages($html);
 		}

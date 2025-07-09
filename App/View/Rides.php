@@ -162,12 +162,19 @@ class Rides
 			$modalForm->add($fieldSet);
 			$modalForm->add(new \PHPFUI\Submit('Add Rider'));
 			$modal->add($modalForm);
+
 			$buttonGroup = new \PHPFUI\ButtonGroup();
 			$buttonGroup->addButton($submit);
 			$buttonGroup->addButton($add);
+
 			$nonMemberWaiver = new \PHPFUI\Button('Non-Member Waiver', '/Leaders/nonMemberWaiver');
 			$nonMemberWaiver->addClass('info');
 			$buttonGroup->addButton($nonMemberWaiver);
+
+			$editRide = new \PHPFUI\Button('Edit Ride', '/Rides/edit/' . $ride->rideId);
+			$editRide->addClass('success');
+			$buttonGroup->addButton($editRide);
+
 			$form->add($buttonGroup);
 
 			foreach ($riders as $rider)

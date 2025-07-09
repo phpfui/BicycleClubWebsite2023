@@ -25,7 +25,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
             this.$closebtn = $('<a><i class="phpdebugbar-fa phpdebugbar-fa-times"></i></a>');
             this.$table = $('<tbody />');
             $('<div>PHP DebugBar | Open</div>').addClass(csscls('header')).append(this.$closebtn).appendTo(this.$el);
-            $('<table><thead><tr><th width="150">Date</th><th width="55">Method</th><th>URL</th><th width="125">IP</th><th width="100">Filter data</th></tr></thead></table>').append(this.$table).appendTo(this.$el);
+            $('<table><thead><tr><th width="155">Date</th><th width="75">Method</th><th>URL</th><th width="125">IP</th><th width="100">Filter data</th></tr></thead></table>').append(this.$table).appendTo(this.$el);
             this.$actions = $('<div />').addClass(csscls('actions')).appendTo(this.$el);
 
             this.$closebtn.on('click', function() {
@@ -94,9 +94,9 @@ if (typeof(PhpDebugBar) == 'undefined') {
 
             $('<form />')
                 .append('<br/><b>Filter results</b><br/>')
-                .append('Method: <select name="method"><option></option><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select><br/>')
-                .append('Uri: <input type="text" name="uri"><br/>')
-                .append('IP: <input type="text" name="ip"><br/>')
+                .append('<select name="method"><option selected>(Method)</option><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select>')
+                .append('<input type="text" name="uri" placeholder="URI">')
+                .append('<input type="text" name="ip" placeholder="IP">')
                 .append(searchBtn)
                 .appendTo(this.$actions);
         },
@@ -190,7 +190,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
         ajax: function(data, callback) {
             var url = this.get('url');
             if (data) {
-                url = url + '?' + new URLSearchParams(data);
+                url = url + ( url.includes('?') ? '&' : '?' ) + new URLSearchParams(data);
             }
 
             fetch(url, {

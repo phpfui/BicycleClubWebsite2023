@@ -284,9 +284,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
             this.bindAttr('data', function(data) {
                 if (this.has('widget')) {
                     this.get('widget').set('data', data);
-                    if (!$.isEmptyObject(data)) {
-                        this.$tab.show();
-                    }
+                    this.$tab.attr('data-empty', $.isEmptyObject(data) || data.count === 0);
                 }
             })
         }
@@ -323,17 +321,181 @@ if (typeof(PhpDebugBar) == 'undefined') {
                 }
             });
 
+            this.bindAttr('link', function(link) {
+                if (link) {
+                    this.$el.on('click', () => {
+                        this.get('debugbar').showTab(link);
+                    }).css('cursor', 'pointer')
+                } else {
+                    this.$el.off('click', false).css('cursor', '')
+                }
+            });
+
             this.bindAttr(['title', 'data'], $('<span />').addClass(csscls('text')).appendTo(this.$el));
 
             this.$tooltip = $('<span />').addClass(csscls('tooltip disabled')).appendTo(this.$el);
             this.bindAttr('tooltip', function(tooltip) {
                 if (tooltip) {
-                    this.$tooltip.text(tooltip).removeClass(csscls('disabled'));
+                    var dl = $('<dl />');
+                    if (Array.isArray(tooltip) || typeof tooltip === 'object') {
+                        $.each(tooltip, function(key, value) {
+                            $('<dt />').text(key).appendTo(dl);
+                            $('<dd />').text(value).appendTo(dl);
+                        });
+                        this.$tooltip.html(dl).removeClass(csscls('disabled'));
+                    } else {
+                        this.$tooltip.text(tooltip).removeClass(csscls('disabled'));
+                    }
                 } else {
                     this.$tooltip.addClass(csscls('disabled'));
                 }
             });
         }
+
+    });
+
+
+    /**
+     * Displays datasets in a table
+     *
+     */
+    var Settings = Widget.extend({
+
+        tagName: 'form',
+
+        className: csscls('settings'),
+
+        settings: {},
+
+        initialize: function(options) {
+            this.set(options);
+
+            var debugbar = this.get('debugbar');
+            this.settings = JSON.parse(localStorage.getItem('phpdebugbar-settings')) || {};
+
+            $.each(debugbar.options, (key, value)=>  {
+                if (key in this.settings) {
+                    debugbar.options[key] = this.settings[key];
+                }
+
+                // Theme requires dark/light mode detection
+                if (key === 'theme') {
+                    debugbar.setTheme(debugbar.options[key]);
+                } else {
+                    debugbar.$el.attr('data-' + key, debugbar.options[key]);
+                }
+            })
+        },
+
+        clearSettings: function() {
+            var debugbar = this.get('debugbar');
+
+            // Remove item from storage
+            localStorage.removeItem('phpdebugbar-settings');
+            localStorage.removeItem('phpdebugbar-ajaxhandler-autoshow');
+            this.settings = {};
+
+            // Reset options
+            debugbar.options = { ...debugbar.defaultOptions };
+
+            // Reset ajax handler
+            if (debugbar.ajaxHandler) {
+                var autoshow = debugbar.ajaxHandler.defaultAutoShow;
+                debugbar.ajaxHandler.setAutoShow(autoshow);
+                this.set('autoshow', autoshow);
+                if(debugbar.controls['__datasets']) {
+                    debugbar.controls['__datasets'].get('widget').set('autoshow', $(this).is(':checked'));
+                }
+            }
+
+            this.initialize(debugbar.options);
+        },
+
+        storeSetting: function(key, value) {
+            this.settings[key] = value;
+
+            var debugbar = this.get('debugbar');
+            debugbar.options[key] = value;
+            if (key !== 'theme') {
+                debugbar.$el.attr('data-' + key, value);
+            }
+
+            localStorage.setItem('phpdebugbar-settings', JSON.stringify(this.settings));
+        },
+
+        render: function() {
+            this.$el.empty();
+
+            var debugbar = this.get('debugbar');
+            var self = this;
+
+            var fields = {};
+
+            // Set Theme
+            fields["Theme"] = $('<select>' +
+                '<option value="auto">Auto (System preference)</option>' +
+                '<option value="light">Light</option>' +
+                '<option value="dark">Dark</option>' +
+                '</select>')
+                .val(debugbar.options.theme)
+                .on('change', function() {
+                    self.storeSetting('theme', $(this).val())
+                    debugbar.setTheme($(this).val());
+                });
+
+            fields["Open Button Position"] = $('<select>' +
+                '<option value="bottomLeft">Bottom Left</option>' +
+                '<option value="bottomRight">Bottom Right</option>' +
+                '<option value="topLeft">Top Left</option>' +
+                '<option value="topRight">Top Right</option>' +
+                '</select>')
+                .val(debugbar.options.openBtnPosition)
+                .on('change', function() {
+                    self.storeSetting('openBtnPosition', $(this).val())
+                });
+
+            this.$hideEmptyTabs = $('<input type=checkbox>')
+                .prop('checked', debugbar.options.hideEmptyTabs)
+                .on('click', function() {
+                    self.storeSetting('hideEmptyTabs', $(this).is(':checked'));
+                });
+
+            fields["Hide Empty Tabs"] = $('<label/>').append(this.$hideEmptyTabs, 'Hide empty tabs until they have data');
+
+            this.$autoshow = $('<input type=checkbox>')
+                .prop('checked', debugbar.ajaxHandler && debugbar.ajaxHandler.autoShow)
+                .on('click', function() {
+                    if (debugbar.ajaxHandler) {
+                        debugbar.ajaxHandler.setAutoShow($(this).is(':checked'));
+                    }
+                    if (debugbar.controls['__datasets']) {
+                        debugbar.controls['__datasets'].get('widget').set('autoshow', $(this).is(':checked'));
+                    }
+                });
+
+            this.bindAttr('autoshow', function() {
+                this.$autoshow.prop('checked', this.get('autoshow')).closest('.form-row').show();
+            })
+            fields["Autoshow"] = $('<label/>').append(this.$autoshow, 'Automatically show new incoming Ajax requests');
+
+            fields["Reset to defaults"] = $('<button>Reset settings</button>').on('click', function(e) {
+                e.preventDefault();
+                self.clearSettings();
+                self.render();
+            })
+
+            $.each(fields, function(key, value) {
+                $('<div />').addClass(csscls('form-row')).append(
+                    $('<div />').addClass(csscls('form-label')).text(key),
+                    $('<div />').addClass(csscls('form-input')).html(value)
+                ).appendTo(self.$el);
+
+            })
+
+            if (!this.ajaxHandler) {
+                this.$autoshow.closest('.form-row').hide();
+            }
+        },
 
     });
 
@@ -415,25 +577,34 @@ if (typeof(PhpDebugBar) == 'undefined') {
 
         options: {
             bodyMarginBottom: true,
-            bodyMarginBottomHeight: 0
+            theme: 'auto',
+            openBtnPosition: 'bottomLeft',
+            hideEmptyTabs: false,
         },
 
-        initialize: function() {
+        initialize: function(options = {}) {
+            this.options = $.extend(this.options, options);
+            this.defaultOptions = { ...this.options };
             this.controls = {};
             this.dataMap = {};
             this.datasets = {};
             this.firstTabName = null;
             this.activePanelName = null;
             this.activeDatasetId = null;
-            this.hideEmptyTabs = false;
             this.datesetTitleFormater = new DatasetTitleFormater(this);
-            this.options.bodyMarginBottomHeight = parseInt($('body').css('margin-bottom'));
+            this.bodyMarginBottomHeight = parseInt($('body').css('margin-bottom'));
             try {
                 this.isIframe = window.self !== window.top && window.top.phpdebugbar;
             } catch (error) {
                 this.isIframe = false;
             }
             this.registerResizeHandler();
+            this.registerMediaListener();
+
+            // Attach settings
+            this.settings = new PhpDebugBar.DebugBar.Tab({"icon":"sliders", "title":"Settings", "widget": new Settings({
+                    'debugbar': this,
+                })});
         },
 
         /**
@@ -450,10 +621,35 @@ if (typeof(PhpDebugBar) == 'undefined') {
             setTimeout(f, 20);
         },
 
+        registerMediaListener: function() {
+            const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
+            mediaQueryList.addEventListener('change', event => {
+                if (this.options.theme === 'auto') {
+                    this.setTheme('auto');
+                }
+            })
+        },
+
+        setTheme: function(theme) {
+            this.options.theme = theme;
+
+            if (theme === 'auto') {
+                const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
+                theme = mediaQueryList.matches ? 'dark' : 'light';
+            }
+
+            this.$el.attr('data-theme', theme)
+            if (this.openHandler) {
+                this.openHandler.$el.attr('data-theme', theme)
+            }
+        },
+
         /**
          * Resizes the debugbar to fit the current browser window
          */
         resize: function() {
+            if (this.isIframe) return;
+
             var contentSize = this.respCSSSize;
             if (this.respCSSSize == 0) {
                 this.$header.find("> *:visible").each(function () {
@@ -557,6 +753,21 @@ if (typeof(PhpDebugBar) == 'undefined') {
             this.$datasets.change(function() {
                 self.showDataSet(this.value);
             });
+
+            this.controls['__settings'] = this.settings;
+            this.settings.$tab.addClass(csscls('tab-settings'));
+            this.settings.$tab.attr('data-collector', '__settings');
+            this.settings.$el.attr('data-collector', '__settings');
+            this.settings.$tab.insertAfter(this.$minimizebtn).show();
+            this.settings.$tab.click(() => {
+                if (!this.isMinimized() && this.activePanelName == '__settings') {
+                    this.minimize();
+                } else {
+                    this.showTab('__settings');
+                    this.settings.get('widget').render();
+                }
+            });
+            this.settings.$el.appendTo(this.$body);
         },
 
         /**
@@ -568,13 +779,13 @@ if (typeof(PhpDebugBar) == 'undefined') {
          * @this {DebugBar}
          */
         setHeight: function(height) {
-          var min_h = 40;
-          var max_h = $(window).innerHeight() - this.$header.height() - 10;
-          height = Math.min(height, max_h);
-          height = Math.max(height, min_h);
-          this.$body.css('height', height);
-          localStorage.setItem('phpdebugbar-height', height);
-          this.recomputeBottomOffset();
+            var min_h = 40;
+            var max_h = window.innerHeight - this.$header.height() - 10;
+            height = Math.min(height, max_h);
+            height = Math.max(height, min_h);
+            this.$body.css('height', height);
+            localStorage.setItem('phpdebugbar-height', height);
+            this.recomputeBottomOffset();
         },
 
         /**
@@ -645,9 +856,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
                     self.showTab(name);
                 }
             })
-            if (this.hideEmptyTabs) {
-                tab.$tab.hide();
-            }
+            tab.$tab.attr('data-empty', true);
             tab.$tab.attr('data-collector', name);
             tab.$el.attr('data-collector', name);
             tab.$el.appendTo(this.$body);
@@ -665,7 +874,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
          * @this {DebugBar}
          * @param {String} name Internal name
          * @param {String} icon
-         * @param {String} tooltip
+         * @param {String|Object} tooltip
          * @param {String} position "right" or "left", default is "right"
          * @return {Indicator}
          */
@@ -689,6 +898,8 @@ if (typeof(PhpDebugBar) == 'undefined') {
             if (this.isControl(name)) {
                 throw new Error(name + ' already exists');
             }
+
+            indicator.set('debugbar', this);
 
             if (position == 'left') {
                 indicator.$el.insertBefore(this.$headerLeft.children().first());
@@ -874,10 +1085,10 @@ if (typeof(PhpDebugBar) == 'undefined') {
         recomputeBottomOffset: function() {
             if (this.options.bodyMarginBottom) {
                 if (this.isClosed()) {
-                    return $('body').css('margin-bottom', this.options.bodyMarginBottomHeight || '');
+                    return $('body').css('margin-bottom', this.bodyMarginBottomHeight || '');
                 }
 
-                var offset = parseInt(this.$el.height()) + (this.options.bodyMarginBottomHeight || 0);
+                var offset = parseInt(this.$el.height()) + (this.bodyMarginBottomHeight || 0);
                 $('body').css('margin-bottom', offset);
             }
         },
@@ -1055,15 +1266,12 @@ if (typeof(PhpDebugBar) == 'undefined') {
          */
         setOpenHandler: function(handler) {
             this.openHandler = handler;
+            this.openHandler.$el.attr('data-theme', this.$el.attr('data-theme'));
             if (handler !== null) {
                 this.$openbtn.show();
             } else {
                 this.$openbtn.hide();
             }
-        },
-
-        setHideEmptyTabs: function(hideEmpty) {
-            this.hideEmptyTabs = hideEmpty;
         },
 
         /**
@@ -1085,7 +1293,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
             this.datasetTab.$el.attr('data-collector', '__datasets');
             this.datasetTab.$tab.insertAfter(this.$openbtn).hide();
             this.datasetTab.$tab.click(() => {
-                if (!this.isMinimized() && self.activePanelName == '__datasets') {
+                if (!this.isMinimized() && this.activePanelName == '__datasets') {
                     this.minimize();
                 } else {
                     this.showTab('__datasets');
@@ -1094,7 +1302,6 @@ if (typeof(PhpDebugBar) == 'undefined') {
             this.datasetTab.$el.appendTo(this.$body);
             this.controls['__datasets'] = this.datasetTab;
         },
-
     });
 
     DebugBar.Tab = Tab;
@@ -1113,8 +1320,12 @@ if (typeof(PhpDebugBar) == 'undefined') {
         this.debugbar = debugbar;
         this.headerName = headerName || 'phpdebugbar';
         this.autoShow = typeof(autoShow) == 'undefined' ? true : autoShow;
+        this.defaultAutoShow = this.autoShow;
         if (localStorage.getItem('phpdebugbar-ajaxhandler-autoshow') !== null) {
             this.autoShow = localStorage.getItem('phpdebugbar-ajaxhandler-autoshow') == '1';
+        }
+        if (debugbar.controls['__settings']) {
+            debugbar.controls['__settings'].get('widget').set('autoshow', this.autoShow);
         }
     };
 

@@ -15,6 +15,7 @@ class CleanContent extends \App\Cron\BaseJob
 		$storyTable = new \App\Table\Story();
 		$condition = new \PHPFUI\ORM\Condition('body', '%<br %', new \PHPFUI\ORM\Operator\Like());
 		$condition->andNot('body', '%<br data-mce-bogus="1">%', new \PHPFUI\ORM\Operator\Like());
+		$condition->or('body', '%mso%', new \PHPFUI\ORM\Operator\Like());
 		$storyTable->setWhere($condition);
 
 		foreach ($storyTable->getRecordCursor() as $story)

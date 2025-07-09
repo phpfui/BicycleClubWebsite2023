@@ -217,7 +217,7 @@ class TextHelper extends \PHPFUI\TextHelper
 		$html = \str_ireplace('<br />', '<br>', $html);
 		$html = \str_replace('<br data-mce-bogus="1" />', '<br data-mce-bogus="1">', $html);
 
-		return self::fullyPathImages($html);
+		return self::fullyPathImages(self::removeMSStyles($html));
 		}
 
 	/**
@@ -364,6 +364,60 @@ class TextHelper extends \PHPFUI\TextHelper
 			}
 
 		return \ucwords($lower);
+		}
+
+	/**
+	 * Remove MS Styles pasted from MS Word
+	 */
+	public static function removeMSStyles(string $html) : string
+		{
+		$dom = new \voku\helper\HtmlDomParser(\App\Tools\TextHelper::unhtmlentities($html));
+		$tags = ['span', 'div', 'p', 'br', 'table', 'tr', 'td'];
+		$attributes = ['style', 'data-mce-style'];
+
+		$changed = false;
+
+		foreach ($tags as $tag)
+			{
+			foreach ($dom->getElementsByTagName($tag) as $element)
+				{
+				foreach ($attributes as $attribute)
+					{
+					$path = $element->getAttribute($attribute);
+
+					if (\str_contains($path, 'mso-') || \str_contains($path, 'Mso'))
+						{
+						$parts = \explode(';', $path);
+
+						foreach($parts as $index => $part)
+							{
+							if (! \strlen($part) || false !== \strpos($part, 'mso-') || false !== \strpos($part, 'Mso'))
+								{
+								unset($parts[$index]);
+								$changed = true;
+								}
+							}
+
+						if (\count($parts))
+							{
+							$element->setAttribute($attribute, \implode(';', $parts));
+							}
+						else
+							{
+							$changed = true;
+							$element->setAttribute($attribute, null);
+							}
+						}
+					}
+				}
+			}
+
+		if ($changed)
+			{
+			$html = "{$dom}";
+			}
+
+		return $html;
 		}
 
 	/**

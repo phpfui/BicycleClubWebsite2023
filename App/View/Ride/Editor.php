@@ -565,7 +565,7 @@ class Editor
 							{
 							$rwgps->elevationFeet = 0.0;
 							}
-						$rwgps->miles = (float)\number_format($rwgps->miles, 1);
+						$rwgps->miles = (float)\number_format((float)$rwgps->miles, 1);
 						$data = $rwgps->toArray();
 						$data['RWGPSId'] = $rwgps->RWGPSId;
 

@@ -57,7 +57,7 @@
                         .concat(value.namespace ? [value.namespace + '::'] : [])
                         .concat([value.name || value.file])
                         .concat(value.line ? [$span.clone().text(':' + value.line)] : [])
-                    : [$span.clone().text(key + ':'), '&nbsp;', value]
+                    : [$span.clone().text(key + ':'), '&nbsp;', $span.clone().text(value).html()]
                 ).appendTo($ul);
             }
             caption += icon ? ' <i class="phpdebugbar-fa phpdebugbar-fa-' + icon + ' phpdebugbar-text-muted"></i>' : '';
@@ -74,11 +74,6 @@
             var filters = [], self = this;
 
             this.$list = new PhpDebugBar.Widgets.ListWidget({ itemRenderer: function(li, stmt) {
-                if (stmt.type === 'transaction') {
-                    $('<strong />').addClass(csscls('sql')).addClass(csscls('name')).text(stmt.sql).appendTo(li);
-                } else {
-                    $('<code />').addClass(csscls('sql')).html(PhpDebugBar.Widgets.highlight(stmt.sql, 'sql')).appendTo(li);
-                }
                 if (stmt.width_percent) {
                     $('<div />').addClass(csscls('bg-measure')).append(
                         $('<div />').addClass(csscls('value')).css({
@@ -116,10 +111,6 @@
                         }
                     }
                 }
-                if (typeof(stmt.is_success) != 'undefined' && !stmt.is_success) {
-                    li.addClass(csscls('error'));
-                    li.append($('<span />').addClass(csscls('error')).text("[" + stmt.error_code + "] " + stmt.error_message));
-                }
                 if ((!stmt.type || stmt.type === 'query')) {
                     $('<span title="Copy to clipboard" />')
                         .addClass(csscls('copy-clipboard'))
@@ -141,6 +132,15 @@
                         }
                     }).addClass(csscls('editor-link')).appendTo(header);
                     header.appendTo(li);
+                }
+                if (stmt.type === 'transaction') {
+                    $('<strong />').addClass(csscls('sql')).addClass(csscls('name')).text(stmt.sql).appendTo(li);
+                } else {
+                    $('<code />').addClass(csscls('sql')).html(PhpDebugBar.Widgets.highlight(stmt.sql, 'sql')).appendTo(li);
+                }
+                if (typeof(stmt.is_success) != 'undefined' && !stmt.is_success) {
+                    li.addClass(csscls('error'));
+                    li.append($('<span />').addClass(csscls('error')).text("[" + stmt.error_code + "] " + stmt.error_message));
                 }
                 var table = $('<table></table>').addClass(csscls('params'));
                 if (stmt.params && !$.isEmptyObject(stmt.params)) {

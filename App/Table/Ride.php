@@ -470,6 +470,7 @@ class Ride extends \PHPFUI\ORM\Table
 		$condition->and('elevation', 0, new \PHPFUI\ORM\Operator\GreaterThan());
 		$condition->and('pending', 0);
 		$condition->and('rideStatus', \App\Enum\Ride\Status::COMPLETED->value);
+		$this->setWhere($condition);
 
 		return $this->getRecordCursor();
 		}

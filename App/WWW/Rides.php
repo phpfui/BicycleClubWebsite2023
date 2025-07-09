@@ -508,6 +508,12 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$buttonGroup->addButton($cloneButton);
 				}
 
+			if ($ride->memberId == \App\Model\Session::signedInMemberId())
+				{
+				$editButton = new \PHPFUI\Button('Edit Ride', '/Rides/edit/' . $ride->rideId)->addClass('success');
+				$buttonGroup->addButton($editButton);
+				}
+
 			$this->page->addPageContent($buttonGroup);
 
 			if ($this->page->isAuthorized('Ride Comments'))

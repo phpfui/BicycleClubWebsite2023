@@ -3323,12 +3323,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ConstantContact.git",
-                "reference": "5625345daef73892b8e53af793517993366877cb"
+                "reference": "c4d1abed72ccb2096a412719374673959580c863"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ConstantContact/zipball/5625345daef73892b8e53af793517993366877cb",
-                "reference": "5625345daef73892b8e53af793517993366877cb",
+                "url": "https://api.github.com/repos/phpfui/ConstantContact/zipball/c4d1abed72ccb2096a412719374673959580c863",
+                "reference": "c4d1abed72ccb2096a412719374673959580c863",
                 "shasum": ""
             },
             "require": {
@@ -3375,9 +3375,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ConstantContact/issues",
-                "source": "https://github.com/phpfui/ConstantContact/tree/V25.5.1"
+                "source": "https://github.com/phpfui/ConstantContact/tree/V25.7.0"
             },
-            "time": "2025-05-30T05:11:21+00:00"
+            "time": "2025-07-16T05:11:24+00:00"
         },
         {
             "name": "phpfui/icalendar",
@@ -6131,16 +6131,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.83.0",
+            "version": "v3.84.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "b83916e79a6386a1ec43fdd72391aeb13b63282f"
+                "reference": "38dad0767bf2a9b516b976852200ae722fe984ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/b83916e79a6386a1ec43fdd72391aeb13b63282f",
-                "reference": "b83916e79a6386a1ec43fdd72391aeb13b63282f",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/38dad0767bf2a9b516b976852200ae722fe984ca",
+                "reference": "38dad0767bf2a9b516b976852200ae722fe984ca",
                 "shasum": ""
             },
             "require": {
@@ -6224,7 +6224,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.83.0"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.84.0"
             },
             "funding": [
                 {
@@ -6232,7 +6232,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-07-14T15:41:41+00:00"
+            "time": "2025-07-15T18:21:57+00:00"
         },
         {
             "name": "phar-io/manifest",

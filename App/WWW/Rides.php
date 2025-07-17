@@ -570,6 +570,18 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function viewPending() : void
+		{
+		if ($this->page->addHeader('View Pending Rides'))
+			{
+			$rideTable = new \App\Table\Ride();
+			$rideTable->setWhere(new \PHPFUI\ORM\Condition('pending', 1));
+			$rideTable->addOrderBy('rideDate');
+			$rideTable->addOrderBy('mileage');
+			$this->page->addPageContent($this->view->schedule($rideTable->getRecordCursor(), 'There are no pending rides'));
+			}
+		}
+
 	public function waiver(\App\Record\Ride $ride = new \App\Record\Ride(), \App\Record\SigninSheet $signinSheet = new \App\Record\SigninSheet()) : void
 		{
 		if ($this->canPrintSigninSheet($ride))

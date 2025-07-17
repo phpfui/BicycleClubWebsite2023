@@ -16,7 +16,7 @@ namespace App\Record\Definition;
  * @property int $maxRiders MySQL type int
  * @property int $memberId MySQL type int
  * @property \App\Record\Member $member related record
- * @property ?string $mileage MySQL type varchar(8)
+ * @property ?float $mileage MySQL type float
  * @property ?int $numberOfRiders MySQL type int
  * @property int $paceId MySQL type int
  * @property \App\Record\Pace $pace related record
@@ -63,7 +63,7 @@ abstract class Ride extends \PHPFUI\ORM\Record
 				'elevation' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'maxRiders' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
 				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
-				'mileage' => new \PHPFUI\ORM\FieldDefinition('varchar(8)', 'string', 8, true, ),
+				'mileage' => new \PHPFUI\ORM\FieldDefinition('float', 'float', 0, true, ),
 				'numberOfRiders' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'paceId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
 				'pending' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),

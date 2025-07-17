@@ -17,7 +17,7 @@ class PayPal extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$json = \json_decode(\file_get_contents('php://input'), true);
 		$container = new \PHPFUI\Container();
 
-		if ($json['orderID'] ?? 'invalid' == $_SESSION['PayPalId'])
+		if (($json['orderID'] ?? 'invalid') == ($_SESSION['PayPalId'] ?? ''))
 			{
 			$description = \str_replace('_', ' ', $description);
 			$container->add(new \PHPFUI\Header('PayPal Payment Cancelled for ' . $description));

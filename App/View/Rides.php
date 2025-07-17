@@ -1267,29 +1267,20 @@ class Rides
 		return $dropDown;
 		}
 
-	private function responsiveMileage(?string $mileage, int $maxDecimals = 2) : string
+	private function responsiveMileage(?float $mileage, int $maxDecimals = 2) : string
 		{
-		$mileage = \App\Tools\TextHelper::htmlentities($mileage);
+		$small = new \PHPFUI\HTML5Element('span');
+		$small->addClass('show-for-small-only');
+		$small->add(\number_format($mileage, 0));
 
-		$floatMileage = (float)$mileage;
+		$medium = new \PHPFUI\HTML5Element('span');
+		$medium->addClass('show-for-medium-only');
+		$medium->add(\number_format($mileage, \min($maxDecimals, 1)));
 
-		if ($floatMileage == $mileage)
-			{
-			$small = new \PHPFUI\HTML5Element('span');
-			$small->addClass('show-for-small-only');
-			$small->add(\number_format($floatMileage, 0));
+		$large = new \PHPFUI\HTML5Element('span');
+		$large->addClass('show-for-large');
+		$large->add(\number_format($mileage, $maxDecimals));
 
-			$medium = new \PHPFUI\HTML5Element('span');
-			$medium->addClass('show-for-medium-only');
-			$medium->add(\number_format($floatMileage, \min($maxDecimals, 1)));
-
-			$large = new \PHPFUI\HTML5Element('span');
-			$large->addClass('show-for-large');
-			$large->add(\number_format($floatMileage, $maxDecimals));
-
-			return $small . $medium . $large;
-			}
-
-		return $mileage;
+		return $small . $medium . $large;
 		}
 	}

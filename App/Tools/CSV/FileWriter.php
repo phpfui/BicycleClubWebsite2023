@@ -3,7 +3,7 @@
 namespace App\Tools\CSV;
 
 /**
- * \PHPFUI\Tools\CSVWriter: a simple class to output a CSV file given data in an array
+ * \PHPFUI\Tools\CSV\CursorWriter: a simple class to output a CSV file given a data cursor
  *
  * Features:
  *  - User specified delimiter (default: comma)

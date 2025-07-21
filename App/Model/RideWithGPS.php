@@ -433,7 +433,7 @@ class RideWithGPS extends \App\Model\GPS
 			\rewind($stream);
 			$csv = \stream_get_contents($stream);
 
-			if (\is_string($csv))
+			if ($csv)
 				{
 				$rwgps->csv = $csv;
 				}

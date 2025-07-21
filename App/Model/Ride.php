@@ -1007,9 +1007,9 @@ class Ride
 		{
 		$RWGPSIds = $parameters['RWGPSId'] ?? [];
 
-		if (\is_int($RWGPSIds))
+		if (! \is_array($RWGPSIds))
 			{
-			$RWGPSIds = [$RWGPSIds];
+			$RWGPSIds = [(int)$RWGPSIds];
 			}
 
 		foreach ($RWGPSIds as $RWGPSId)

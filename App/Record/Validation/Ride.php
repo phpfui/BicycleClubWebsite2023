@@ -18,7 +18,7 @@ class Ride extends \PHPFUI\ORM\Validator
 		'elevation' => ['integer'],
 		'maxRiders' => ['required', 'integer'],
 		'memberId' => ['required', 'integer'],
-		'mileage' => ['maxlength'],
+		'mileage' => ['required'],
 		'numberOfRiders' => ['integer'],
 		'paceId' => ['required', 'integer'],
 		'pending' => ['required', 'integer'],

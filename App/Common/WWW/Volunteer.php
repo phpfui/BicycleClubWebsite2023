@@ -12,6 +12,15 @@ class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 		$this->volunteerPageButton = new \PHPFUI\Button('Volunteer Page', '/Volunteer');
 		}
 
+	public function add() : void
+		{
+		if ($this->page->addHeader('Add Volunteer Event'))
+			{
+			$view = new \App\View\Volunteer\Event($this->page);
+			$this->page->addPageContent($view->add());
+			}
+		}
+
 	public function edit(\App\Record\JobEvent $jobEvent = new \App\Record\JobEvent()) : void
 		{
 		if ($this->page->addHeader('Volunteer Event Edit'))

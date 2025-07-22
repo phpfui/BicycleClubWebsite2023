@@ -12,6 +12,16 @@ class Event
 		$this->processRequest();
 		}
 
+	public function add() : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+		$add = new \PHPFUI\Button('Add Event');
+		$this->addEventModal($add)->showOnPageLoad();
+		$container->add($add);
+
+		return $container;
+		}
+
 	public function edit(\App\Record\JobEvent $jobEvent) : \App\UI\ErrorFormSaver
 		{
 		$jobEventId = $jobEvent->jobEventId;
@@ -151,7 +161,7 @@ class Event
 		$modal->add($form);
 		}
 
-	private function addEventModal(\PHPFUI\HTML5Element $modalLink) : void
+	private function addEventModal(\PHPFUI\HTML5Element $modalLink) : \PHPFUI\Reveal
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
 		$modal->addClass('large');
@@ -162,6 +172,8 @@ class Event
 		$submit = new \PHPFUI\Submit('Add', 'action');
 		$form->add($modal->getButtonAndCancel($submit));
 		$modal->add($form);
+
+		return $modal;
 		}
 
 	private function getForm(\App\Record\JobEvent $jobEvent, ?\PHPFUI\Submit $submit = null) : \App\UI\ErrorFormSaver

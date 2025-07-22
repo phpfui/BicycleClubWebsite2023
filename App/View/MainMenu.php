@@ -229,6 +229,7 @@ class MainMenu extends \App\UI\MainMenu
 
 		if ($menu = $this->addTopMenu('Volunteer', 'Volunteer'))
 			{
+			$this->addSub($menu, '/Volunteer/add', 'Add Volunteer Event');
 			$this->addSub($menu, '/Volunteer/myJobs', 'My Assignments');
 			$this->addSub($menu, '/Volunteer/events', 'Volunteer Events');
 			$this->addSub($menu, '/Volunteer/myPoints', 'My Points');

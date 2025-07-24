@@ -31,7 +31,7 @@ class GearCalculator
 	private array $rings = [];
 
 	/**
-	 * @param array<string,string> $parameters
+	 * @param array<string,string|int> $parameters
 	 */
 	public function __construct(private array $parameters)
 		{
@@ -82,6 +82,8 @@ class GearCalculator
 			{
 			$this->cogs = [10, 11, 12, 13, 14, 15, 17, 19, 21, 24, 28, 33, ];
 			}
+
+		$this->parameters['p'] = \min(\max((int)($this->parameters['p'] ?? 2), 0), 5);
 		}
 
 	public function __get(string $field) : ?string
@@ -118,17 +120,17 @@ class GearCalculator
 				// the diameter of the drive wheel, times the size of the front sprocket divided by the size of the rear sprocket
 				$gear = (int)$diameter * 0.0393700787 * $ring / $cog;
 
-				return \number_format($gear, \min(\max((int)($this->parameters['p'] ?? 2), 0), 5));
+				return \number_format($gear, $this->p);
 
 			case '1': // gear ratio
 				$gear = $ring / $cog;
 
-				return \number_format($gear, 3);
+				return \number_format($gear, $this->p);
 
 			case '2': // meters development
 				$gear = (int)$diameter * M_PI * $ring / $cog / 1000 ;
 
-				return \number_format($gear, 3);
+				return \number_format($gear, $this->p);
 			}
 
 		// compute speed
@@ -140,7 +142,7 @@ class GearCalculator
 			$gear *= 0.621371;
 			}
 
-		return \number_format($gear, 1) . " {$units}PH";
+		return \number_format($gear, $this->p) . " {$units}PH";
 		}
 
 	public function csv() : void
@@ -405,7 +407,7 @@ class GearCalculator
 				{
 				foreach ($this->rings as $ring)
 					{
-					$ratioString = \number_format($ratio, 3);
+					$ratioString = \number_format($ratio, $this->p);
 					$headers[] = "<b>{$ring}*{$ratioString}</b>";
 					}
 				}
@@ -475,7 +477,7 @@ class GearCalculator
 			{
 			foreach ($this->rings as $ring)
 				{
-				$ratio = \number_format($ratio1, 3);
+				$ratio = \number_format($ratio1, $this->p);
 				$headers[] = "<b>{$ring}*{$gear1}</b>";
 				}
 			--$gear1;
@@ -768,7 +770,6 @@ class GearCalculator
 		\arsort($rows);
 
 		$previousValue = (float)\current($rows);
-		$precision = (int)$this->p;
 
 		foreach ($rows as $index => $value)
 			{
@@ -778,11 +779,11 @@ class GearCalculator
 
 			if ($diff)
 				{
-				$table->addRow([$index, \number_format($value, $precision), \number_format($diff, $precision), \number_format($percent, $precision), $percent < 1.0 ? '****' : ' ']);
+				$table->addRow([$index, \number_format($value, $this->p), \number_format($diff, $this->p), \number_format($percent, $this->p), $percent < 1.0 ? '****' : ' ']);
 				}
 			else
 				{
-				$table->addRow([$index, \number_format($value, $precision), ' ', ' ', ' ']);
+				$table->addRow([$index, \number_format($value, $this->p), ' ', ' ', ' ']);
 				}
 			$previousValue = $value;
 			}

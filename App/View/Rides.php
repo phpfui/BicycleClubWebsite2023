@@ -573,7 +573,7 @@ class Rides
 				}
 			$today = \App\Tools\Date::todayString();
 			$content = new \PHPFUI\Container();
-			$content->add(\App\Tools\TextHelper::addRideLinks($ride->description ?? '', $this->page->isSignedIn()));
+			$content->add(\App\Tools\TextHelper::addRideLinks(\App\Tools\TextHelper::unhtmlentities($ride->description ?? ''), $this->page->isSignedIn()));
 
 			if ($status)
 				{
@@ -1204,7 +1204,7 @@ class Rides
 		$form->add(new \PHPFUI\Input\Hidden('rideId', (string)$ride->rideId));
 		$form->add(new \PHPFUI\Panel('Repeating a ride allows you to copy the ride to another date, or series of dates'));
 		$date = new \PHPFUI\Input\Date($this->page, 'cloneToDate', 'Repeat on this date');
-		$date->setMinDate(\App\Tools\Date::todayString(1));
+		$date->setMinDate(\App\Tools\Date::todayString());
 		$date->setRequired();
 		$date->setToolTip('This is the date where you want to repeat it to, or the start of the series of repeated rides');
 		$form->add($date);

@@ -2586,16 +2586,16 @@
         },
         {
             "name": "php-debugbar/php-debugbar",
-            "version": "v2.2.3",
+            "version": "v2.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-debugbar/php-debugbar.git",
-                "reference": "86eb2323a2a9b7eefb1b63ae5737f778f9fc3a4c"
+                "reference": "3146d04671f51f69ffec2a4207ac3bdcf13a9f35"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-debugbar/php-debugbar/zipball/86eb2323a2a9b7eefb1b63ae5737f778f9fc3a4c",
-                "reference": "86eb2323a2a9b7eefb1b63ae5737f778f9fc3a4c",
+                "url": "https://api.github.com/repos/php-debugbar/php-debugbar/zipball/3146d04671f51f69ffec2a4207ac3bdcf13a9f35",
+                "reference": "3146d04671f51f69ffec2a4207ac3bdcf13a9f35",
                 "shasum": ""
             },
             "require": {
@@ -2653,9 +2653,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-debugbar/php-debugbar/issues",
-                "source": "https://github.com/php-debugbar/php-debugbar/tree/v2.2.3"
+                "source": "https://github.com/php-debugbar/php-debugbar/tree/v2.2.4"
             },
-            "time": "2025-07-21T09:20:28+00:00"
+            "time": "2025-07-22T14:01:30+00:00"
         },
         {
             "name": "php-di/invoker",
@@ -5289,16 +5289,16 @@
         },
         {
             "name": "twilio/sdk",
-            "version": "8.6.5",
+            "version": "8.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twilio/twilio-php",
-                "reference": "4a914d4fcbab9ee6b7ea84f8df171022f208fdf5"
+                "reference": "88b8c4e82943267106424f903ffa881b0fd9074b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/4a914d4fcbab9ee6b7ea84f8df171022f208fdf5",
-                "reference": "4a914d4fcbab9ee6b7ea84f8df171022f208fdf5",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/88b8c4e82943267106424f903ffa881b0fd9074b",
+                "reference": "88b8c4e82943267106424f903ffa881b0fd9074b",
                 "shasum": ""
             },
             "require": {
@@ -5335,7 +5335,7 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2025-07-10T11:52:59+00:00"
+            "time": "2025-07-24T08:04:30+00:00"
         },
         {
             "name": "voku/simple_html_dom",
@@ -7545,12 +7545,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "2699ef22973a999fb9b79ed9e5fe576381068928"
+                "reference": "0b1f127d644a2ff8af1c8bd2955dbe3c11812017"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/2699ef22973a999fb9b79ed9e5fe576381068928",
-                "reference": "2699ef22973a999fb9b79ed9e5fe576381068928",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/0b1f127d644a2ff8af1c8bd2955dbe3c11812017",
+                "reference": "0b1f127d644a2ff8af1c8bd2955dbe3c11812017",
                 "shasum": ""
             },
             "conflict": {
@@ -7875,10 +7875,10 @@
                 "imdbphp/imdbphp": "<=5.1.1",
                 "impresscms/impresscms": "<=1.4.5",
                 "impresspages/impresspages": "<1.0.13",
-                "in2code/femanager": "<5.5.5|>=6,<6.4.1|>=7,<7.4.2|>=8,<8.2.2",
+                "in2code/femanager": "<6.4.2|>=7,<7.5.3|>=8,<8.3.1",
                 "in2code/ipandlanguageredirect": "<5.1.2",
                 "in2code/lux": "<17.6.1|>=18,<24.0.2",
-                "in2code/powermail": "<7.5.1|>=8,<8.5.1|>=9,<10.9.1|>=11,<12.4.1",
+                "in2code/powermail": "<7.5.1|>=8,<8.5.1|>=9,<10.9.1|>=11,<12.5.3|==13",
                 "innologi/typo3-appointments": "<2.0.6",
                 "intelliants/subrion": "<4.2.2",
                 "inter-mediator/inter-mediator": "==5.5",
@@ -7968,6 +7968,7 @@
                 "magneto/core": "<1.9.4.4-dev",
                 "maikuolan/phpmussel": ">=1,<1.6",
                 "mainwp/mainwp": "<=4.4.3.3",
+                "manogi/nova-tiptap": "<=3.2.6",
                 "mantisbt/mantisbt": "<=2.26.3",
                 "marcwillmann/turn": "<0.3.3",
                 "marshmallow/nova-tiptap": "<5.7",
@@ -8496,7 +8497,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-07-21T22:05:55+00:00"
+            "time": "2025-07-22T16:07:09+00:00"
         },
         {
             "name": "sebastian/cli-parser",

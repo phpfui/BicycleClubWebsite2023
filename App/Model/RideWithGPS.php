@@ -97,7 +97,7 @@ class RideWithGPS extends \App\Model\GPS
 			}
 
 		$url = $this->baseUri . '/users/current.json?' . $this->queryString;
-		$json = \file_get_contents($url);
+		$json = @\file_get_contents($url);
 
 		if (false === $json)
 			{
@@ -163,7 +163,7 @@ class RideWithGPS extends \App\Model\GPS
 		$offset = 50;
 		$limit = 50;
 		$url = $this->baseUri . "/clubs/{$this->clubId}/routes.json?" . $this->queryString;
-		$json = \file_get_contents($url);
+		$json = @\file_get_contents($url);
 
 		if (false === $json)
 			{
@@ -179,7 +179,7 @@ class RideWithGPS extends \App\Model\GPS
 				{
 				$routes[(int)$result['id']] = $result;
 				}
-			$result = \file_get_contents($url . '?' . \http_build_query(['offset' => $offset, 'limit' => $limit]));
+			$result = @\file_get_contents($url . '?' . \http_build_query(['offset' => $offset, 'limit' => $limit]));
 
 			if (false === $result)
 				{

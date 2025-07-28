@@ -20,9 +20,13 @@ class Member
 
 	final public const MEMBERSHIP_JOIN = 2;
 
+	final public const MEMBERSHIP_ONE_ADDITIONAL_TITLE = 'Additional Member';
+
 	final public const MEMBERSHIP_RENEWAL = 1;
 
 	final public const MEMBERSHIP_TITLE = '12 Month Membership';
+
+	final public const ONE_ADDITIONAL_MEMBER = 6;
 
 	/** @var	array<string> */
 	protected array $defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal', 'rideComments', 'geoLocate'];
@@ -542,6 +546,18 @@ class Member
 
 				break;
 
+			case self::ONE_ADDITIONAL_MEMBER:
+
+				if ($membership->empty())
+					{
+					$membership = $member->membership;
+					}
+
+				++$membership->allowedMembers;
+				$membership->update();
+
+				break;
+
 			case self::EVENT_ADDITIONAL_MEMBERSHIP:
 
 				if ($membership->empty())
@@ -1037,7 +1053,7 @@ class Member
 		$invoice->instructions = '';
 		$invoiceId = $invoice->insert();
 
-		if ($years)
+		if ($years > 0)
 			{
 			$invoiceItem = new \App\Record\InvoiceItem();
 			$invoiceItem->invoice = $invoice;
@@ -1065,7 +1081,24 @@ class Member
 			$additionalMembers = 1;
 			}
 
-		if ($additionalMemberDues > 0.0 && $additionalMembers)
+		if (-1 == $years)
+			{
+			$invoiceItem = new \App\Record\InvoiceItem();
+			$invoiceItem->invoice = $invoice;
+			$invoiceItem->storeItemId = $this->storeItemIdType;
+			$invoiceItem->detailLine = '';
+			$invoiceItem->shipping = 0.0;
+			$invoiceItem->type = \App\Enum\Store\Type::MEMBERSHIP;
+			$invoiceItem->tax = 0.0;
+
+			$invoiceItem->storeItemDetailId = self::ONE_ADDITIONAL_MEMBER;
+			$invoiceItem->price = (float)\number_format($additionalMemberDues, 2);
+			$invoiceItem->quantity = 1;
+			$invoiceItem->title = self::MEMBERSHIP_ONE_ADDITIONAL_TITLE;
+			$invoiceItem->description = ' Membership for an additional household member';
+			$invoiceItem->insert();
+			}
+		elseif ($additionalMemberDues > 0.0 && $additionalMembers)
 			{
 			$invoiceItem = new \App\Record\InvoiceItem();
 			$invoiceItem->invoice = $invoice;
@@ -1083,7 +1116,7 @@ class Member
 			$invoiceItem->insert();
 			}
 
-		if (! $discountCode->empty())
+		if ($years > 0 && ! $discountCode->empty())
 			{
 			$discountCodeModel = new \App\Model\DiscountCode($discountCode);
 			$invoice->discount = $discountCodeModel->computeDiscount($invoice->InvoiceItemChildren, $totalPrice);

@@ -76,7 +76,7 @@ class MembershipDues
 
 	public function getAdditionalMembershipPrice(int $totalMembers, int $years = 1) : float
 		{
-		if ($years < 1)
+		if (0 == $years)
 			{
 			return 0.0;
 			}
@@ -101,8 +101,16 @@ class MembershipDues
 				return 0.0;
 				}
 			}
-		$additionalMemberDues = $this->getAdditionalMemberPriceByYear($years);
-		$price = $additionalMemberDues * $years * $totalMembers;
+
+		if ($years < 0)
+			{
+			$price = $this->getAdditionalMemberPriceByYear(1);
+			}
+		else
+			{
+			$additionalMemberDues = $this->getAdditionalMemberPriceByYear($years);
+			$price = $additionalMemberDues * $years * $totalMembers;
+			}
 
 		return $price;
 		}

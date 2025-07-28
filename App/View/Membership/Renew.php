@@ -71,7 +71,8 @@ class Renew
 			}
 
 		$output->add($view->getPayPalLogo());
-		$years = \max((int)($_GET['years'] ?? 1), 0);
+		$years = (int)$_GET['years'];
+
 		$additionalMembers = \count($this->members) - 1;
 		$maxMembers = \max((int)($_GET['maxMembers'] ?? 1), 1);
 		$additionalMembers = \max($additionalMembers, $maxMembers - 1);
@@ -81,46 +82,50 @@ class Renew
 		if ($years > 1)
 			{
 			$output->add("<br>You elected to renew for {$years} years");
-			}
-		$output->add("<br>{$paidMembers} Membership is $" . $this->duesModel->getMembershipPriceByYear($years) . ' every 12 months.');
+			$output->add("<br>{$paidMembers} Membership is $" . $this->duesModel->getMembershipPriceByYear($years) . ' every 12 months.');
 
-		if ($additionalMembers && $this->additionalMemberDues)
-			{
-			$output->add('<br>Additional members are $' . $this->duesModel->getAdditionalMemberPriceByYear($years) . ' per year.');
-			$text = "<br>You have {$additionalMembers} additional member";
-
-			if ($additionalMembers > 1)
+			if ($additionalMembers && $this->additionalMemberDues)
 				{
-				$text .= 's';
+				$output->add('<br>Additional members are $' . $this->duesModel->getAdditionalMemberPriceByYear($years) . ' per year.');
+				$text = "<br>You have {$additionalMembers} additional member";
+
+				if ($additionalMembers > 1)
+					{
+					$text .= 's';
+					}
+				$output->add($text);
 				}
-			$output->add($text);
-			}
 
-		if ('Family' == $paidMembers && $additionalMembers > 0)
-			{
-			$additionalMembers = \count($this->members);
-
-			if ($additionalMembers > 2)
+			if ('Family' == $paidMembers && $additionalMembers > 0)
 				{
-				$additionalMembers -= 2;
+				$additionalMembers = \count($this->members);
+
+				if ($additionalMembers > 2)
+					{
+					$additionalMembers -= 2;
+					}
+				else
+					{
+					$additionalMembers = 0;
+					}
 				}
-			else
+			elseif ('Unlimited' == $paidMembers)
 				{
 				$additionalMembers = 0;
 				}
 			}
-		elseif ('Unlimited' == $paidMembers)
-			{
-			$additionalMembers = 0;
-			}
 
-		if ($years)
+		if ($years > 0)
 			{
 			$unpaidBalance = $this->duesModel->getTotalMembershipPrice(\count($this->members), $years);
 			}
+		elseif (-1 == $years)
+			{
+			$unpaidBalance = $this->duesModel->getAdditionalMemberPriceByYear(1);
+			}
 		else
 			{
-			$unpaidBalance = $additionalMembers * $this->duesModel->getAdditionalMemberPriceByYear(1);
+			$unpaidBalance = 0;
 			}
 
 		$discountCode = new \App\Record\DiscountCode(['discountCode' => $discountCodeEntered]);
@@ -150,7 +155,7 @@ class Renew
 
 		if (! $this->duesModel->disableDonations)
 			{
-			if ($unpaidBalance <= 0.0)
+			if ($unpaidBalance <= 0.0 && 0 == $years)
 				{
 				\App\Model\Session::setFlash('alert', 'You have not specified a donation amount');
 
@@ -175,7 +180,7 @@ class Renew
 			{
 			$content = new \App\View\Content($this->page);
 			$container->add($content->getDisplayCategoryHTML('Address Required'));
-			$form = new \PHPFUI\Form($this->page);
+			$form = new \PHPFUI\Form($this->page)->setAreYouSure(false);
 
 			if (\App\Model\Session::checkCSRF())
 				{
@@ -191,7 +196,7 @@ class Renew
 			return $container;
 			}
 
-		$form = new \PHPFUI\Form($this->page);
+		$form = new \PHPFUI\Form($this->page)->setAreYouSure(false);
 
 		$discountCode = new \App\Record\DiscountCode(['discountCode' => $discountCodeEntered]);
 		$discountCodeModel = new \App\Model\DiscountCode($discountCode);
@@ -208,7 +213,7 @@ class Renew
 				}
 			}
 
-		if (\PHPFUI\Session::checkCSRF())
+		if (\PHPFUI\Session::checkCSRF() && isset($_POST['updatePrice']))
 			{
 			$years = (int)($_POST['years'] ?? 0);
 			$maxMembers = (int)($_POST['maxMembers'] ?? 1);
@@ -288,10 +293,13 @@ class Renew
 			$headers['Renewal Term (Years)'] = 'Renewal Term (Years)';
 			}
 
+		$unlimited = false;
+
 		switch ($paidMembers)
 			{
 			case 'Unlimited':
 				$headers['Cost Per Year'] = 'Cost Per Year';
+				$unlimited = true;
 
 				break;
 
@@ -355,6 +363,11 @@ class Renew
 			$yearlyRenewal = new \PHPFUI\FieldSet('Yearly Renewal');
 			$yearsField = new \PHPFUI\Input\Select('years', 'Number of years to renew');
 
+			if ($additionalDues && ! $unlimited)
+				{
+				$yearsField->addOption('Add One Additional Member only, no renewal', '-1');
+				}
+
 			if (! $this->duesModel->disableDonations)
 				{
 				$yearsField->addOption('No Years, Donation only', '0');
@@ -369,14 +382,15 @@ class Renew
 			$yearsField->addAttribute('onchange', 'updatePrice();');
 			$multiColumn->add($yearsField);
 
+
+			if (0 == $maxMembersOnMembership)
+				{
+				$maxMembersOnMembership = 10;
+				}
+
 			if (($this->additionalMemberDues || $numberMembers > 1) && $maxMembersOnMembership > 1)
 				{
 				$maxMembersField = new \PHPFUI\Input\Select('maxMembers', 'Number of members on your membership');
-
-				if (0 !== $maxMembersOnMembership) // @phpstan-ignore-line
-					{
-					$maxMembersOnMembership = 10;
-					}
 
 				$_GET['maxMembers'] = (int)($_GET['maxMembers'] ?? 1);
 
@@ -466,7 +480,7 @@ class Renew
 
 		$js = <<<JAVASCRIPT
 function updatePrice(){var form={$dollar}('#{$formId}');
-var formData=form.serialize();
+var formData=form.serialize() + '&updatePrice=1';
 if (! formData.includes('years')) return;
 $.ajax({type:'POST', dataType:'html', data:formData,
 success:function(response){var data;try{data=JSON.parse(response);}catch(e){alert('Error: '+response);}

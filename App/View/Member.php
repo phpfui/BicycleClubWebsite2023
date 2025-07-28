@@ -141,7 +141,7 @@ class Member
 		$modal = new \PHPFUI\Reveal($this->page, $addMemberButton);
 		$modal->addClass('large');
 		$modal->add(new \PHPFUI\Header($this->addMemberButtonText, 3));
-		$modalForm = new \PHPFUI\Form($this->page);
+		$modalForm = new \PHPFUI\Form($this->page)->setAreYouSure(false);
 		$modalForm->setAreYouSure(false);
 		$modalForm->add(new \PHPFUI\Input\Hidden('membershipId', (string)$membership->membershipId));
 		$member = new \App\Record\Member();

@@ -108,7 +108,6 @@ class FellowRiders implements \Stringable
 
 		$form = new \PHPFUI\Form($this->page);
 
-	//	$form->add(new \PHPFUI\Debug($post));
 		$fieldSet = new \PHPFUI\FieldSet('Select the fellow rider (can be a former member)');
 		$member = new \App\Record\Member($post['memberId'] ?? 0);
 		$memberPicker = new \App\UI\MemberPicker($this->page, new \App\Model\NonMemberPickerNoSave('Fellow Rider'), 'memberId', $member->toArray());

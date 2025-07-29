@@ -16,6 +16,7 @@ class ContentEditor
 		if ($this->editable)
 			{
 			$page->addTailScript('/TinyMCEPastableImage.js');
+
 			if (\App\Model\Session::checkCSRF())
 				{
 				$this->processRequest();

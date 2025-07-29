@@ -170,7 +170,6 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			if ($today <= $event->eventDate)
 				{
-				++$activeEvents;
 				$this->page->addPageContent($hr);
 				$hr = '<hr>';
 				$this->page->addPageContent(new \PHPFUI\Header($event->title));
@@ -178,17 +177,28 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$gaModel = new \App\Model\GeneralAdmission();
 				$spotsLeft = $event->maxRegistrants - $gaModel->totalRegistrants($event);
 				$message = '';
+				$proceed = true;
+				++$activeEvents;
 
-				if ($spotsLeft > 0)
+				if ($event->registrationOpens > $today)
 					{
-					if ($event->showPreregistration && $spotsLeft > 0)
-						{
-						$message = "Only {$spotsLeft} registrations left. Register Today!";
-						}
+					$message = 'Registration opens on ' . $event->registrationOpens;
+					$proceed = $this->page->isAuthorized('Edit GA Event');
 					}
-				else
+				elseif ($event->maxRegistrants)
 					{
-					$message = 'This event is sold out!';
+					if ($spotsLeft > 0)
+						{
+						if ($event->showPreregistration)
+							{
+							$message = "Only {$spotsLeft} registrations left. Register Today!";
+							}
+						}
+					else
+						{
+						$message = 'This event is sold out!';
+						$proceed = false;
+						}
 					}
 
 				if ($message)
@@ -201,19 +211,19 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					$this->page->addPageContent($row);
 					}
 
-				if ($spotsLeft > 0)
+				if ($proceed)
 					{
 					$buttonGroup = new \PHPFUI\ButtonGroup();
 
 					if (\App\Model\Session::isSignedIn())
 						{
-						$buttonGroup->addButton(new \PHPFUI\Button('Continue', '/GA/signUpMember'));
+						$buttonGroup->addButton(new \PHPFUI\Button('Continue', '/GA/signUpMember/' . $event->gaEventId));
 						}
 					else
 						{
 						$this->page->addPageContent(new \PHPFUI\SubHeader('Select a category to register under'));
-						$buttonGroup->addButton(new \PHPFUI\Button('General Public', '/GA/signUp'));
-						$buttonGroup->addButton(new \PHPFUI\Button($clubAbbrev . ' Members', '/GA/signUpMember'));
+						$buttonGroup->addButton(new \PHPFUI\Button('General Public', '/GA/signUp/' . $event->gaEventId));
+						$buttonGroup->addButton(new \PHPFUI\Button($clubAbbrev . ' Members', '/GA/signUpMember/' . $event->gaEventId));
 						}
 					$this->page->addPageContent($buttonGroup);
 					}
@@ -295,16 +305,19 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function signUp(\App\Record\GaEvent $event = new \App\Record\GaEvent()) : void
 		{
-		$this->page->setPublic();
-		$this->page->setShowMenus((bool)$event->allowShopping);
-		$this->signUpCommon($event);
+		if ($this->page->addHeader('Sign Up For ' . $event->title, 'GA Sign Up', true))
+			{
+			$this->page->setPublic();
+			$this->page->setShowMenus((bool)$event->allowShopping);
+			$this->signUpCommon($event);
+			}
 		}
 
 	public function signUpMember(\App\Record\GaEvent $event = new \App\Record\GaEvent()) : void
 		{
 		if ($this->page->addHeader('Sign Up For ' . $event->title, 'GA Sign Up'))
 			{
-			$this->signUpCommon($event, false);
+			$this->signUpCommon($event);
 			}
 		}
 
@@ -359,25 +372,25 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		return $row;
 		}
 
-	private function signUpCommon(\App\Record\GaEvent $event = new \App\Record\GaEvent(), bool $showHeader = true) : void
+	private function signUpCommon(\App\Record\GaEvent $event = new \App\Record\GaEvent()) : void
 		{
 		if ($event->loaded())
 			{
-			if ($showHeader)
-				{
-				$this->page->addHeader('Sign Up For ' . $event->title, 'GA Sign Up');
-				}
 			$today = \App\Tools\Date::todayString();
 			$gaModel = new \App\Model\GeneralAdmission();
 			$datePrice = $gaModel->getLastRegistrationDateRecord($event);
 
-			if ($event->maxRegistrants < $gaModel->totalRegistrants($event))
+			if ($event->registrationOpens > $today && ! $this->page->isAuthorized('Edit GA Event'))
+				{
+				$this->page->addPageContent(new \PHPFUI\SubHeader('Registration opens on ' . $event->registrationOpens));
+				}
+			elseif ($event->maxRegistrants < $gaModel->totalRegistrants($event))
 				{
 				$this->page->addPageContent(new \PHPFUI\SubHeader('This event is sold out!'));
 				}
 			elseif ($today > $event->lastRegistrationDate)
 				{
-				$this->page->addPageContent(new \PHPFUI\SubHeader('Preregistration has ended for this event.'));
+				$this->page->addPageContent(new \PHPFUI\SubHeader('Preregistration has ended for the ' . $event->title));
 
 				if ($event->eventDate >= $today && $event->dayOfRegistration)
 					{

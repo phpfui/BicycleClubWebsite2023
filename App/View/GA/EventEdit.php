@@ -121,7 +121,11 @@ class EventEdit
 		$maxRegistrants = new \PHPFUI\Input\Number('maxRegistrants', 'Max Registrants', $event->maxRegistrants);
 		$maxRegistrants->addAttribute('min', (string)0)->addAttribute('max', (string)99)->addAttribute('step', (string)1);
 		$maxRegistrants->setToolTip('Set to zero for unlimited registrations');
-		$optionsSet->add($maxRegistrants);
+
+		$memberDiscount = new \PHPFUI\Input\Number('memberDiscount', 'Member Discount', $event->memberDiscount);
+
+		$optionsSet->add(new \PHPFUI\MultiColumn($maxRegistrants, $memberDiscount));
+
 		$dayOfRegistration = new \PHPFUI\Input\CheckBoxBoolean('dayOfRegistration', 'Day Of Registration Allowed', (bool)$event->dayOfRegistration);
 		$showPreregistration = new \PHPFUI\Input\CheckBoxBoolean('showPreregistration', 'Show Preregistration Numbers', (bool)$event->showPreregistration);
 		$allowShopping = new \PHPFUI\Input\CheckBoxBoolean('allowShopping', 'Allow Store Shopping at Checkout', (bool)$event->allowShopping);
@@ -324,8 +328,13 @@ class EventEdit
 		$title = new \PHPFUI\Input\Text('title', 'Title', $event->title);
 		$title->setRequired();
 		$requiredFields->add($title);
+
+		$registrationOpens = new \PHPFUI\Input\Date($this->page, 'registrationOpens', 'Registration Opens', $event->registrationOpens);
+		$registrationOpens->setRequired();
+
 		$eventDate = new \PHPFUI\Input\Date($this->page, 'eventDate', 'Event Date', $event->eventDate);
 		$eventDate->setRequired();
+
 		$lastRegDate = new \PHPFUI\Input\Date($this->page, 'lastRegistrationDate', 'Last Registration Date', $event->lastRegistrationDate);
 		$lastRegDate->setRequired();
 
@@ -333,13 +342,14 @@ class EventEdit
 		$gteValidator = new \PHPFUI\Validator\GTE();
 		$this->page->addAbideValidator($lteValidator)->addAbideValidator($gteValidator);
 
+		$registrationOpens->setValidator($lteValidator, 'Must be less than or equal to Last Registration Date', $lastRegDate->getId());
 		$eventDate->setValidator($gteValidator, 'Must be greater or equal to Last Registration Date', $lastRegDate->getId());
 		$lastRegDate->setValidator($lteValidator, 'Must be less than or equal to Event Date', $eventDate->getId());
 
 		$this->page->addJavaScript($lteValidator->getJavaScript());
 		$this->page->addJavaScript($gteValidator->getJavaScript());
 
-		$requiredFields->add(new \PHPFUI\MultiColumn($eventDate, $lastRegDate));
+		$requiredFields->add(new \PHPFUI\MultiColumn($registrationOpens, $eventDate, $lastRegDate));
 		$registrar = new \PHPFUI\Input\Text('registrar', 'Registrar Name', $event->registrar);
 		$registrar->setRequired();
 		$registrarEmail = new \PHPFUI\Input\Email('registrarEmail', 'Registrar Email', $event->registrarEmail);

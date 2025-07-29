@@ -38,7 +38,7 @@ class Register implements \Stringable
 					return;
 					}
 
-				if (\is_array($post['gaOptionId']))
+				if (isset($post['gaOptionId']) && \is_array($post['gaOptionId']))
 					{
 					$post['gaRiderId'] = $id;
 					$gaRiderSelectionTable = new \App\Table\GaRiderSelection();

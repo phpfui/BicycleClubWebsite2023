@@ -18,14 +18,16 @@ namespace App\Record\Definition;
  * @property string $lastRegistrationDate MySQL type date
  * @property ?string $location MySQL type char(100)
  * @property ?int $maxRegistrants MySQL type int
+ * @property ?float $memberDiscount MySQL type decimal(7,2)
  * @property ?string $membershipExpires MySQL type date
  * @property ?int $otherEvent MySQL type int
  * @property ?string $registrar MySQL type char(50)
  * @property ?string $registrarEmail MySQL type char(50)
+ * @property string $registrationOpens MySQL type date
  * @property ?int $showPreregistration MySQL type int
  * @property ?string $signupMessage MySQL type mediumtext
  * @property ?string $title MySQL type char(100)
- * @property ?int $volunteerDiscount MySQL type int
+ * @property ?float $volunteerDiscount MySQL type decimal(7,2)
  * @property ?int $volunteerEvent MySQL type int
  * @property ?string $waiver MySQL type mediumtext
  */
@@ -58,14 +60,16 @@ abstract class GaEvent extends \PHPFUI\ORM\Record
 				'lastRegistrationDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
 				'location' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
 				'maxRegistrants' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'memberDiscount' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, 0.00, ),
 				'membershipExpires' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
 				'otherEvent' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'registrar' => new \PHPFUI\ORM\FieldDefinition('char(50)', 'string', 50, true, ),
 				'registrarEmail' => new \PHPFUI\ORM\FieldDefinition('char(50)', 'string', 50, true, ),
+				'registrationOpens' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
 				'showPreregistration' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'signupMessage' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
 				'title' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
-				'volunteerDiscount' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'volunteerDiscount' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, 0.00, ),
 				'volunteerEvent' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'waiver' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
 			];

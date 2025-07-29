@@ -223,14 +223,23 @@ class GeneralAdmission
 		$gaPriceDate = $this->getCurrentRegistrationRecord($event);
 		$price = (float)$gaPriceDate->price;
 
-		if ($rider->memberId > 0 && $event->volunteerDiscount > 0 && $event->volunteerEvent > 0)
+		if ($rider->memberId > 0)
 			{
-			$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
-			$shifts = $volunteerJobShiftTable->getJobsForMember($rider->memberId, $event->volunteerEvent);
-
-			if (\count($shifts))
+			if ($event->volunteerDiscount > 0 && $event->volunteerEvent > 0)
 				{
-				$price -= (float)$event->volunteerDiscount;
+				$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
+				$shifts = $volunteerJobShiftTable->getJobsForMember($rider->memberId, $event->volunteerEvent);
+
+				if (\count($shifts))
+					{
+					$price -= (float)$event->volunteerDiscount;
+					}
+				}
+			$price -= (float)$event->memberDiscount;
+
+			if ($price < 0.0)
+				{
+				$price = 0.0;
 				}
 			}
 

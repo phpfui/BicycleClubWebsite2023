@@ -379,7 +379,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$this->page->addPageContent(new \PHPFUI\SubHeader('Preregistration has ended for this event.'));
 
-				if ($event->eventDate >= $today)
+				if ($event->eventDate >= $today && $event->dayOfRegistration)
 					{
 					$this->page->addPageContent(new \PHPFUI\SubHeader('But day of registration is open!'));
 					$this->page->addPageContent('<p>Day of registration is $' . $datePrice->price . '. We accept all major credit cards.</p><p>');

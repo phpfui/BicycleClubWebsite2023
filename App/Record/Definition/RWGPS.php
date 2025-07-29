@@ -14,13 +14,13 @@ namespace App\Record\Definition;
  * @property ?float $elevationFeet MySQL type decimal(8,0)
  * @property ?float $elevationMeters MySQL type decimal(8,0)
  * @property ?float $feetPerMile MySQL type decimal(5,1)
- * @property ?float $km MySQL type decimal(4,2)
  * @property ?string $lastSynced MySQL type datetime
  * @property ?string $lastUpdated MySQL type datetime
+ * @property ?float $km MySQL type decimal(10,2)
  * @property ?float $latitude MySQL type decimal(10,6)
  * @property ?float $longitude MySQL type decimal(10,6)
  * @property ?float $metersPerKm MySQL type decimal(5,2)
- * @property ?float $miles MySQL type decimal(4,2)
+ * @property ?float $miles MySQL type decimal(10,2)
  * @property ?int $percentPaved MySQL type int
  * @property ?string $query MySQL type varchar(255)
  * @property ?int $startLocationId MySQL type int
@@ -55,13 +55,13 @@ abstract class RWGPS extends \PHPFUI\ORM\Record
 				'elevationFeet' => new \PHPFUI\ORM\FieldDefinition('decimal(8,0)', 'float', 8, true, ),
 				'elevationMeters' => new \PHPFUI\ORM\FieldDefinition('decimal(8,0)', 'float', 8, true, ),
 				'feetPerMile' => new \PHPFUI\ORM\FieldDefinition('decimal(5,1)', 'float', 5, true, 0.0, ),
-				'km' => new \PHPFUI\ORM\FieldDefinition('decimal(4,2)', 'float', 4, true, ),
 				'lastSynced' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, ),
 				'lastUpdated' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, 'CURRENT_TIMESTAMP', ),
+				'km' => new \PHPFUI\ORM\FieldDefinition('decimal(10,2)', 'float', 10, true, ),
 				'latitude' => new \PHPFUI\ORM\FieldDefinition('decimal(10,6)', 'float', 10, true, ),
 				'longitude' => new \PHPFUI\ORM\FieldDefinition('decimal(10,6)', 'float', 10, true, ),
 				'metersPerKm' => new \PHPFUI\ORM\FieldDefinition('decimal(5,2)', 'float', 5, true, ),
-				'miles' => new \PHPFUI\ORM\FieldDefinition('decimal(4,2)', 'float', 4, true, ),
+				'miles' => new \PHPFUI\ORM\FieldDefinition('decimal(10,2)', 'float', 10, true, ),
 				'percentPaved' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 100, ),
 				'query' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
 				'startLocationId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),

@@ -162,6 +162,7 @@ class Content extends \App\UI\ContentEditor
 
 			$settingsItem = new \PHPFUI\MenuItem('Settings', '#');
 			$settingsItem->setIcon(new \PHPFUI\FAIcon('fas', 'cog'));
+			$story->editorId = \App\Model\Session::signedInMemberId();
 			$this->editSettings(new \App\Record\Story($story), $settingsItem);
 
 			if (! $abbreviated && $story instanceof \App\Record\Story)
@@ -625,7 +626,8 @@ class Content extends \App\UI\ContentEditor
 
 					[$type, $storyId] = \explode('-', (string)$_POST['id']);
 					$story = new \App\Record\Story($storyId);
-					$this->page->setRawResponse(\json_encode(['response' => $story->body, 'id' => $_POST['id'], ], JSON_THROW_ON_ERROR));
+					$body = \str_replace(['&lt;', '&gt;'], ['<', '>'], $story->body);
+					$this->page->setRawResponse(\json_encode(['response' => $body, 'id' => $_POST['id'], ], JSON_THROW_ON_ERROR));
 
 					break;
 
@@ -634,6 +636,7 @@ class Content extends \App\UI\ContentEditor
 
 					[$type, $storyId] = \explode('-', (string)$_POST['id']);
 					$story = new \App\Record\Story($storyId);
+					$story->editorId = \App\Model\Session::signedInMemberId();
 					$story->body = $_POST['body'];
 					$story->update();
 					$this->page->setResponse($storyId);
@@ -680,6 +683,7 @@ class Content extends \App\UI\ContentEditor
 
 					$story = new \App\Record\Story((int)$_POST['storyId']);
 					$story->setFrom($_POST);
+					$story->editorId = \App\Model\Session::signedInMemberId();
 					$story->update();
 					$this->page->redirect();
 					$this->page->done();
@@ -690,6 +694,7 @@ class Content extends \App\UI\ContentEditor
 
 					$story = new \App\Record\Story((int)$_POST['storyId']);
 					$story->setFrom($_POST);
+					$story->editorId = \App\Model\Session::signedInMemberId();
 					$story->update();
 					$blogs = \App\Table\Blog::getBlogsByNameForStory($storyId = $_POST['storyId']);
 					$activeBlogs = \array_flip($_POST['blog'] ?? []);

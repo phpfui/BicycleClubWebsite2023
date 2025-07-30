@@ -20,7 +20,13 @@ class CleanContent extends \App\Cron\BaseJob
 
 		foreach ($storyTable->getRecordCursor() as $story)
 			{
-			$story->update();	// update should clean the html to current standards
+			$body = $story->body;
+			$story->clean(); // update should clean the html to current standards
+
+			if ($body !== $story->body)
+				{
+				$story->update();
+				}
 			}
 		}
 

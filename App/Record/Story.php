@@ -19,7 +19,6 @@ class Story extends \App\Record\Definition\Story
 		{
 		$this->body = \App\Tools\TextHelper::cleanUserHtml($this->body);
 		$this->lastEdited = \App\Tools\Date::todayString();
-		$this->editorId = \App\Model\Session::signedInMemberId();
 
 		return $this;
 		}

@@ -74,7 +74,10 @@ async function uploadImage(htmlString, csrf) {
       // 2. Convert the Blob object to a Base64 Data URL string
       const base64ImageData = await blobToDataURL(blobData);
 			imgElement.setAttribute('src', base64ImageData); // Update src with the data URL
-		} catch (error) {
+			if (! imgElement.hasAttribute('alt') || imgElement.getAttribute('alt').trim() === '') {
+				imgElement.alt = 'image';
+			}
+			} catch (error) {
 			console.error(`Failed to process blob URL ${blobUrl}:`, error);
 			// Image src in the parsed doc will remain the original blob URL on error
 		}

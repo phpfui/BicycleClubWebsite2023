@@ -136,6 +136,7 @@ class Content extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$story->body = 'Enter body here...';
 		$story->headline = 'Headline';
 		$story->author = $member->fullName();
+		$story->editorId = \App\Model\Session::signedInMemberId();
 		$storyId = $story->insert();
 
 		if (! $blog->empty())

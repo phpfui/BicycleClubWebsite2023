@@ -249,6 +249,7 @@ class Content extends \App\UI\ContentEditor
 			}
 
 		$storyDiv->add($storyText);
+		$storyDiv->setAttribute('contentEditable', 'false');
 		$output->add($storyDiv);
 
 		return $output;

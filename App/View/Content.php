@@ -82,6 +82,12 @@ class Content extends \App\UI\ContentEditor
 			{
 			return new \PHPFUI\Header('This content has been deleted', 2);
 			}
+
+		if (888 === $story->storyId)
+			{
+			$this->editable = $this->addContent = false;
+			}
+
 		$abbrevText = '';
 		$blogId = $story->isset('blogId') ? $story->blogId : 0;
 		$storyId = $story->storyId;

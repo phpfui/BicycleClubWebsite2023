@@ -82,12 +82,6 @@ class Content extends \App\UI\ContentEditor
 			{
 			return new \PHPFUI\Header('This content has been deleted', 2);
 			}
-
-		if (888 === $story->storyId)
-			{
-			$this->editable = $this->addContent = false;
-			}
-
 		$abbrevText = '';
 		$blogId = $story->isset('blogId') ? $story->blogId : 0;
 		$storyId = $story->storyId;
@@ -198,11 +192,11 @@ class Content extends \App\UI\ContentEditor
 					'editId.css("background-color",color)},2000)};return false;';
 				$editItem->addAttribute('onclick', $js);
 				$iconBar->addMenuItem($editItem);
-				$settingsItem->addAttribute('onclick', $saveContentJS);
+				$settingsItem->addAttribute('onclick', $replaceBlobImages);
 				$iconBar->addMenuItem($settingsItem);
 
 				$javaScriptButton = new \PHPFUI\MenuItem('Script', '#');
-				$javaScriptButton->addAttribute('onclick', $saveContentJS);
+				$javaScriptButton->addAttribute('onclick', $replaceBlobImages);
 				$javaScriptButton->setIcon(new \PHPFUI\FAIcon('fab', 'js-square'));
 				$this->editJavaScript(new \App\Record\Story($story), $javaScriptButton);
 				$iconBar->addMenuItem($javaScriptButton);
@@ -255,7 +249,6 @@ class Content extends \App\UI\ContentEditor
 			}
 
 		$storyDiv->add($storyText);
-		$storyDiv->setAttribute('contentEditable', 'false');
 		$output->add($storyDiv);
 
 		return $output;
@@ -634,6 +627,17 @@ class Content extends \App\UI\ContentEditor
 					[$type, $storyId] = \explode('-', (string)$_POST['id']);
 					$story = new \App\Record\Story($storyId);
 					$body = \str_replace(['&lt;', '&gt;'], ['<', '>'], $story->body);
+
+					if (\str_contains($body, 'contenteditable'))
+						{
+						$dom = new \voku\helper\HtmlDomParser($body);
+						$div = $dom->findOneOrFalse('div');
+
+						if ($div && $div->hasAttribute('contenteditable'))
+							{
+							$body = $div->innerHtml();
+							}
+						}
 					$this->page->setRawResponse(\json_encode(['response' => $body, 'id' => $_POST['id'], ], JSON_THROW_ON_ERROR));
 
 					break;

@@ -77,7 +77,7 @@ abstract class Ride extends \PHPFUI\ORM\Record
 				'signupNotifications' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, true, 1, ),
 				'startLocationId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'startTime' => new \PHPFUI\ORM\FieldDefinition('time', 'string', 0, true, ),
-				'targetPace' => new \PHPFUI\ORM\FieldDefinition('decimal(3,1)', 'float', 3, true, ),
+				'targetPace' => new \PHPFUI\ORM\FieldDefinition('decimal(3,1)', 'float', 4, true, ),
 				'title' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
 				'unaffiliated' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
 			];

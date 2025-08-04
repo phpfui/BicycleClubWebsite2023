@@ -63,7 +63,7 @@ abstract class GaRider extends \PHPFUI\ORM\Record
 				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'pending' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 1, ),
 				'phone' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, '', ),
-				'pricePaid' => new \PHPFUI\ORM\FieldDefinition('decimal(5,2)', 'float', 5, true, ),
+				'pricePaid' => new \PHPFUI\ORM\FieldDefinition('decimal(5,2)', 'float', 6, true, ),
 				'prize' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'signedUpOn' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
 				'state' => new \PHPFUI\ORM\FieldDefinition('char(2)', 'string', 2, true, ),

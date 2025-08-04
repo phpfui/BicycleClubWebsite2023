@@ -34,7 +34,7 @@ abstract class PaypalRefund extends \PHPFUI\ORM\Record
 		if (! \count(static::$fields))
 			{
 			static::$fields = [
-				'amount' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
+				'amount' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 8, true, ),
 				'createdDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
 				'createdMemberNumber' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'invoiceId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),

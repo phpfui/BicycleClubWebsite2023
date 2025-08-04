@@ -60,7 +60,7 @@ abstract class GaEvent extends \PHPFUI\ORM\Record
 				'lastRegistrationDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
 				'location' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
 				'maxRegistrants' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
-				'memberDiscount' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, 0.00, ),
+				'memberDiscount' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 8, true, 0.00, ),
 				'membershipExpires' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
 				'otherEvent' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'registrar' => new \PHPFUI\ORM\FieldDefinition('char(50)', 'string', 50, true, ),
@@ -69,7 +69,7 @@ abstract class GaEvent extends \PHPFUI\ORM\Record
 				'showPreregistration' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'signupMessage' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
 				'title' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
-				'volunteerDiscount' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, 0.00, ),
+				'volunteerDiscount' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 8, true, 0.00, ),
 				'volunteerEvent' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'waiver' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
 			];

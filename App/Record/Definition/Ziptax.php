@@ -30,7 +30,7 @@ abstract class Ziptax extends \PHPFUI\ORM\Record
 			static::$fields = [
 				'zip_code' => new \PHPFUI\ORM\FieldDefinition('varchar(32)', 'string', 32, true, ),
 				'zip_id' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
-				'zip_tax_rate' => new \PHPFUI\ORM\FieldDefinition('decimal(7,4)', 'float', 7, true, ),
+				'zip_tax_rate' => new \PHPFUI\ORM\FieldDefinition('decimal(7,4)', 'float', 8, true, ),
 				'zipcounty' => new \PHPFUI\ORM\FieldDefinition('varchar(32)', 'string', 32, true, ),
 				'zipstate' => new \PHPFUI\ORM\FieldDefinition('varchar(32)', 'string', 32, true, ),
 			];

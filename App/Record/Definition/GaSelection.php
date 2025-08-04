@@ -34,7 +34,7 @@ abstract class GaSelection extends \PHPFUI\ORM\Record
 		if (! \count(static::$fields))
 			{
 			static::$fields = [
-				'additionalPrice' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
+				'additionalPrice' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 8, true, ),
 				'csvValue' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, ),
 				'gaEventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'gaOptionId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),

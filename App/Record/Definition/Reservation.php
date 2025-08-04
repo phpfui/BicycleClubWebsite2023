@@ -49,7 +49,7 @@ abstract class Reservation extends \PHPFUI\ORM\Record
 				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'paymentId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'phone' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, '', ),
-				'pricePaid' => new \PHPFUI\ORM\FieldDefinition('decimal(6,2)', 'float', 6, false, 0.00, ),
+				'pricePaid' => new \PHPFUI\ORM\FieldDefinition('decimal(6,2)', 'float', 7, false, 0.00, ),
 				'reservationFirstName' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),
 				'reservationId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'reservationLastName' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, ),

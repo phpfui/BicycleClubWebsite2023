@@ -32,7 +32,7 @@ abstract class GaPriceDate extends \PHPFUI\ORM\Record
 				'date' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
 				'gaEventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'gaPriceDateId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
-				'price' => new \PHPFUI\ORM\FieldDefinition('decimal(5,2)', 'float', 5, true, ),
+				'price' => new \PHPFUI\ORM\FieldDefinition('decimal(5,2)', 'float', 6, true, ),
 			];
 			}
 

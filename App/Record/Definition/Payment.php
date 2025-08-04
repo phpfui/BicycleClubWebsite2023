@@ -35,7 +35,7 @@ abstract class Payment extends \PHPFUI\ORM\Record
 		if (! \count(static::$fields))
 			{
 			static::$fields = [
-				'amount' => new \PHPFUI\ORM\FieldDefinition('decimal(6,2)', 'float', 6, true, ),
+				'amount' => new \PHPFUI\ORM\FieldDefinition('decimal(6,2)', 'float', 7, true, ),
 				'dateReceived' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
 				'enteringMemberNumber' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'invoiceId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),

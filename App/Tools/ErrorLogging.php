@@ -55,6 +55,11 @@ class ErrorLogging
 
 		$message = "{$errorText};\nFile: {$file}; Line: {$e->getLine()};";
 
+		if (\str_contains($link, 'localhost'))
+			{
+			echo $message . "\n";
+			}
+
 		$this->sendMessage($message);
 		}
 

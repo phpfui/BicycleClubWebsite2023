@@ -41,7 +41,7 @@ abstract class GaOption extends \PHPFUI\ORM\Record
 				'maximumAllowed' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
 				'optionName' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, ),
 				'ordering' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
-				'price' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
+				'price' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 8, true, ),
 				'required' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
 			];
 			}

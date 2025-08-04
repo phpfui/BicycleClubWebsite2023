@@ -42,7 +42,7 @@ abstract class Invoice extends \PHPFUI\ORM\Record
 		if (! \count(static::$fields))
 			{
 			static::$fields = [
-				'discount' => new \PHPFUI\ORM\FieldDefinition('float(10,2)', 'float', 10, true, ),
+				'discount' => new \PHPFUI\ORM\FieldDefinition('float(10,2)', 'float', 11, true, ),
 				'discountCodeId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'errors' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
 				'fullfillmentDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
@@ -52,12 +52,12 @@ abstract class Invoice extends \PHPFUI\ORM\Record
 				'orderDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
 				'paidByCheck' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
 				'paymentDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
-				'paypalPaid' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
+				'paypalPaid' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 8, true, ),
 				'paypaltx' => new \PHPFUI\ORM\FieldDefinition('varchar(50)', 'string', 50, true, '', ),
 				'pointsUsed' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
-				'totalPrice' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
-				'totalShipping' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
-				'totalTax' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 7, true, ),
+				'totalPrice' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 8, true, ),
+				'totalShipping' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 8, true, ),
+				'totalTax' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 8, true, ),
 			];
 			}
 

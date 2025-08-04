@@ -34,8 +34,8 @@ abstract class RideComment extends \PHPFUI\ORM\Record
 			{
 			static::$fields = [
 				'comment' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
-				'latitude' => new \PHPFUI\ORM\FieldDefinition('decimal(18,15)', 'float', 18, true, ),
-				'longitude' => new \PHPFUI\ORM\FieldDefinition('decimal(18,15)', 'float', 18, true, ),
+				'latitude' => new \PHPFUI\ORM\FieldDefinition('decimal(18,15)', 'float', 19, true, ),
+				'longitude' => new \PHPFUI\ORM\FieldDefinition('decimal(18,15)', 'float', 19, true, ),
 				'memberId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'rideCommentId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'rideId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),

@@ -71,7 +71,7 @@ class Renew
 			}
 
 		$output->add($view->getPayPalLogo());
-		$years = (int)$_GET['years'];
+		$years = (int)($_GET['years'] ?? 1);
 
 		$additionalMembers = \count($this->members) - 1;
 		$maxMembers = \max((int)($_GET['maxMembers'] ?? 1), 1);

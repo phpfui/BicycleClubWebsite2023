@@ -2717,16 +2717,16 @@
         },
         {
             "name": "php-di/php-di",
-            "version": "7.0.11",
+            "version": "7.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-DI/PHP-DI.git",
-                "reference": "32f111a6d214564520a57831d397263e8946c1d2"
+                "reference": "f88054cc052e40dbe7b383c8817c19442d480352"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/32f111a6d214564520a57831d397263e8946c1d2",
-                "reference": "32f111a6d214564520a57831d397263e8946c1d2",
+                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/f88054cc052e40dbe7b383c8817c19442d480352",
+                "reference": "f88054cc052e40dbe7b383c8817c19442d480352",
                 "shasum": ""
             },
             "require": {
@@ -2774,7 +2774,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-DI/PHP-DI/issues",
-                "source": "https://github.com/PHP-DI/PHP-DI/tree/7.0.11"
+                "source": "https://github.com/PHP-DI/PHP-DI/tree/7.1.1"
             },
             "funding": [
                 {
@@ -2786,7 +2786,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-03T07:45:57+00:00"
+            "time": "2025-08-16T11:10:48+00:00"
         },
         {
             "name": "php-http/discovery",
@@ -6869,16 +6869,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "12.3.4",
+            "version": "12.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "429095031bd38cb5070ca44166bd9dd5a9245dd6"
+                "reference": "f10ba5f12a256026ad3c7ee4894ffe47f60d7dc7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/429095031bd38cb5070ca44166bd9dd5a9245dd6",
-                "reference": "429095031bd38cb5070ca44166bd9dd5a9245dd6",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/f10ba5f12a256026ad3c7ee4894ffe47f60d7dc7",
+                "reference": "f10ba5f12a256026ad3c7ee4894ffe47f60d7dc7",
                 "shasum": ""
             },
             "require": {
@@ -6900,7 +6900,7 @@
                 "sebastian/cli-parser": "^4.0.0",
                 "sebastian/comparator": "^7.1.2",
                 "sebastian/diff": "^7.0.0",
-                "sebastian/environment": "^8.0.2",
+                "sebastian/environment": "^8.0.3",
                 "sebastian/exporter": "^7.0.0",
                 "sebastian/global-state": "^8.0.0",
                 "sebastian/object-enumerator": "^7.0.0",
@@ -6946,7 +6946,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.3.4"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.3.5"
             },
             "funding": [
                 {
@@ -6970,7 +6970,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-12T07:35:30+00:00"
+            "time": "2025-08-16T05:20:09+00:00"
         },
         {
             "name": "react/cache",
@@ -7551,12 +7551,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "3aed1e89d8a5e2b6d350f0fdd21db0e7f49ab9dc"
+                "reference": "45efa5832686533f38dc0445a8b185f6d0649c2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/3aed1e89d8a5e2b6d350f0fdd21db0e7f49ab9dc",
-                "reference": "3aed1e89d8a5e2b6d350f0fdd21db0e7f49ab9dc",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/45efa5832686533f38dc0445a8b185f6d0649c2f",
+                "reference": "45efa5832686533f38dc0445a8b185f6d0649c2f",
                 "shasum": ""
             },
             "conflict": {
@@ -7965,7 +7965,7 @@
                 "luyadev/yii-helpers": "<1.2.1",
                 "macropay-solutions/laravel-crud-wizard-free": "<3.4.17",
                 "maestroerror/php-heic-to-jpg": "<1.0.5",
-                "magento/community-edition": "<2.4.5.0-patch13|==2.4.6|>=2.4.6.0-patch1,<2.4.6.0-patch11|>=2.4.7.0-beta1,<2.4.7.0-patch6|>=2.4.8.0-beta1,<2.4.8.0-patch1",
+                "magento/community-edition": "<2.4.5.0-patch14|==2.4.6|>=2.4.6.0-patch1,<2.4.6.0-patch12|>=2.4.7.0-beta1,<2.4.7.0-patch7|>=2.4.8.0-beta1,<2.4.8.0-patch1",
                 "magento/core": "<=1.9.4.5",
                 "magento/magento1ce": "<1.9.4.3-dev",
                 "magento/magento1ee": ">=1,<1.14.4.3-dev",
@@ -8506,7 +8506,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-14T00:22:26+00:00"
+            "time": "2025-08-15T23:05:36+00:00"
         },
         {
             "name": "sebastian/cli-parser",

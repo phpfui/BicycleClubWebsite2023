@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba321a4fc8c3b90f074006adeae30bbd",
+    "content-hash": "12e1c0ebf8ac4f23d90b01272f8bc6a1",
     "packages": [
         {
             "name": "alek13/slack",
@@ -640,6 +640,77 @@
                 "source": "https://github.com/FortAwesome/Font-Awesome"
             },
             "time": "2025-07-22T16:06:19+00:00"
+        },
+        {
+            "name": "frameright/image-metadata-parser",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Frameright/php-image-metadata-parser.git",
+                "reference": "0bdfe9fbc0dfd3461e289302cff893c65e1b31b9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Frameright/php-image-metadata-parser/zipball/0bdfe9fbc0dfd3461e289302cff893c65e1b31b9",
+                "reference": "0bdfe9fbc0dfd3461e289302cff893c65e1b31b9",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xml": "*",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1.6",
+                "phpcompatibility/php-compatibility": "^9.3.5",
+                "phpunit/phpunit": "^9.5.25"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CSD\\Image\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frameright (Coberg Ltd)",
+                    "email": "hello@frameright.io",
+                    "homepage": "https://frameright.io/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Aurelien Lourot",
+                    "email": "software@lourot.dev",
+                    "homepage": "https://lourot.dev/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Daniel Chesterton",
+                    "email": "daniel@chestertondevelopment.com",
+                    "homepage": "http://www.chestertondevelopment.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Image metadata parsing library",
+            "keywords": [
+                "Frameright",
+                "IDC",
+                "IPTC",
+                "Image Display Control",
+                "exif",
+                "image",
+                "metadata",
+                "photo",
+                "xmp"
+            ],
+            "support": {
+                "issues": "https://github.com/Frameright/php-image-metadata-parser/issues",
+                "source": "https://github.com/Frameright/php-image-metadata-parser/tree/1.2.0"
+            },
+            "time": "2025-06-15T16:04:34+00:00"
         },
         {
             "name": "gitonomy/gitlib",
@@ -3159,16 +3230,16 @@
         },
         {
             "name": "phpdocumentor/reflection-docblock",
-            "version": "5.6.2",
+            "version": "5.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "92dde6a5919e34835c506ac8c523ef095a95ed62"
+                "reference": "94f8051919d1b0369a6bcc7931d679a511c03fe9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/92dde6a5919e34835c506ac8c523ef095a95ed62",
-                "reference": "92dde6a5919e34835c506ac8c523ef095a95ed62",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/94f8051919d1b0369a6bcc7931d679a511c03fe9",
+                "reference": "94f8051919d1b0369a6bcc7931d679a511c03fe9",
                 "shasum": ""
             },
             "require": {
@@ -3217,9 +3288,9 @@
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
             "support": {
                 "issues": "https://github.com/phpDocumentor/ReflectionDocBlock/issues",
-                "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/5.6.2"
+                "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/5.6.3"
             },
-            "time": "2025-04-13T19:20:35+00:00"
+            "time": "2025-08-01T19:43:32+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -5295,16 +5366,16 @@
         },
         {
             "name": "twilio/sdk",
-            "version": "8.7.0",
+            "version": "8.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twilio/twilio-php",
-                "reference": "88b8c4e82943267106424f903ffa881b0fd9074b"
+                "reference": "fa2c08f15c6f212de0ec007c175edf5eff7c7d7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/88b8c4e82943267106424f903ffa881b0fd9074b",
-                "reference": "88b8c4e82943267106424f903ffa881b0fd9074b",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/fa2c08f15c6f212de0ec007c175edf5eff7c7d7b",
+                "reference": "fa2c08f15c6f212de0ec007c175edf5eff7c7d7b",
                 "shasum": ""
             },
             "require": {
@@ -5341,7 +5412,7 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2025-07-24T08:04:30+00:00"
+            "time": "2025-08-18T09:05:26+00:00"
         },
         {
             "name": "voku/simple_html_dom",

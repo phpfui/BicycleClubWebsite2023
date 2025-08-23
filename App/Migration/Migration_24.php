@@ -11,14 +11,17 @@ class Migration_24 extends \PHPFUI\ORM\Migration
 
 	public function down() : bool
 		{
-		$this->runSQL('CREATE TABLE `gaincentive` (
+		$this->dropTable('gaIncentive');
+		$this->dropTable('gaAnswer');
+		$this->dropTable('gaRide');
+		$this->runSQL('CREATE TABLE `gaIncentive` (
 				`gaIncentiveId` int NOT NULL AUTO_INCREMENT,
 				`gaEventId` int NOT NULL,
 				`description` char(250) COLLATE utf8mb4_general_ci DEFAULT NULL,
 				PRIMARY KEY (`gaIncentiveId`),
 				KEY `gaEventIdIndex` (`gaEventId`)
 			);
-			CREATE TABLE `gaanswer` (
+			CREATE TABLE `gaAnswer` (
 				`gaAnswerId` int NOT NULL AUTO_INCREMENT,
 				`gaEventId` int NOT NULL,
 				`answer` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -26,7 +29,7 @@ class Migration_24 extends \PHPFUI\ORM\Migration
 				PRIMARY KEY (`gaAnswerId`),
 				KEY `gaEventIdIndex` (`gaEventId`)
 			);
-			CREATE TABLE `garide` (
+			CREATE TABLE `gaRide` (
 				`gaRideId` int NOT NULL AUTO_INCREMENT,
 				`gaEventId` int NOT NULL,
 				`distance` int DEFAULT NULL,

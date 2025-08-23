@@ -16,6 +16,8 @@ class Migration_20 extends \PHPFUI\ORM\Migration
 
 	public function up() : bool
 		{
+		$this->dropTable('headerContent');
+
 		return $this->runSQL('create table headerContent (
 			headerContentId int not null primary key auto_increment,
 			urlPath varchar(255),

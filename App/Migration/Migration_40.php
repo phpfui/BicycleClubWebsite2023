@@ -19,6 +19,7 @@ class Migration_40 extends \PHPFUI\ORM\Migration
 	public function up() : bool
 		{
 		$this->alterColumn('cueSheet', 'terrain', 'int', 'terrainId');
+		$this->dropTable('terrain');
 
 		$this->runSQL('CREATE TABLE `terrain` (`terrainId` int NOT NULL AUTO_INCREMENT,`name` varchar(70) DEFAULT "",PRIMARY KEY (`terrainId`))');
 

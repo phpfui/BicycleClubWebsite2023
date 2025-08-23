@@ -22,6 +22,7 @@ class Migration_35 extends \PHPFUI\ORM\Migration
 		{
 		$this->dropColumn('rideSignup', 'firstRide');
 		$this->dropColumn('rideSignup', 'firstRideInCategory');
+		$this->dropTable('assistantLeaderType');
 		$this->runSQL('CREATE table assistantLeaderType (assistantLeaderTypeId int NOT NULL AUTO_INCREMENT, name varchar(100) not null,volunteerPoints int not null default 0,PRIMARY KEY (`assistantLeaderTypeId`))');
 
 		return $this->addColumn('assistantLeader', 'assistantLeaderTypeId', 'int');

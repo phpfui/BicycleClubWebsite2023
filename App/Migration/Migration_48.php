@@ -14,6 +14,7 @@ class Migration_48 extends \PHPFUI\ORM\Migration
 		$this->alterColumn('file', 'folderId', 'int not null', 'fileFolderId');
 		$this->alterColumn('file', 'description', 'varchar(255)', 'file');
 		$this->executeAlters();
+		$this->dropTable('fileFolder');
 
 		$this->runSQL("CREATE TABLE fileFolder (
 			fileFolderId int NOT NULL AUTO_INCREMENT,

@@ -11,7 +11,9 @@ class Migration_51 extends \PHPFUI\ORM\Migration
 
 	public function down() : bool
 		{
-		$this->runSQL('CREATE TABLE `videotype` (`videoTypeId` int NOT NULL AUTO_INCREMENT,`name` varchar(70) DEFAULT "", PRIMARY KEY (`videoTypeId`))');
+		$this->dropTable('videoType');
+
+		$this->runSQL('CREATE TABLE `videoType` (`videoTypeId` int NOT NULL AUTO_INCREMENT,`name` varchar(70) DEFAULT "", PRIMARY KEY (`videoTypeId`))');
 		$videos = \PHPFUI\ORM::getDataObjectCursor('select distinct folderId,name from folder where folderType=?', [\App\Enum\FolderType::VIDEO->value]);
 
 		foreach ($videos as $video)
@@ -55,6 +57,6 @@ class Migration_51 extends \PHPFUI\ORM\Migration
 		$this->alterColumn('video', 'videoTypeId', 'int', 'folderId');
 		$this->alterColumn('video', 'editor', 'int', 'memberId');
 
-		return $this->dropTable('videotype');
+		return $this->dropTable('videoType');
 		}
 	}

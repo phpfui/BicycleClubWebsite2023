@@ -8,7 +8,7 @@ class Start extends \PHPFUI\Container
 		{
 		$this->add(new \PHPFUI\Header('Welcome to the setup wizard', 4));
 		$loaded = \get_loaded_extensions();
-		$required = ['curl', 'fileinfo', 'gd', 'gmp', 'intl', 'imap', 'mbstring', 'exif', 'openssl', 'pdo_mysql', 'xsl', ];
+		$required = ['curl', 'fileinfo', 'gd', 'gmp', 'intl', 'mbstring', 'exif', 'openssl', 'pdo_mysql', 'xsl', ];
 		$missing = \array_diff($required, $loaded);
 
 	if (\count($missing))

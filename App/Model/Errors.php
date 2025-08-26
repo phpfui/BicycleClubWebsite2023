@@ -106,6 +106,7 @@ class Errors
 
 	public function sendText(string $text) : bool
 		{
+		$retVal = false;
 		$hook = $this->getSlackUrl();
 
 		$_SERVER['SERVER_ADDR'] ??= '::1';
@@ -116,7 +117,7 @@ class Errors
 			$client = new \Maknz\Slack\Client($hook, [], $guzzle);
 			$client->send("{$_SERVER['SERVER_NAME']}\n{$text}");
 
-			return true;
+			$retVal = true;
 			}
 
 		$errorEmail = $this->getErrorEmail();
@@ -129,10 +130,10 @@ class Errors
 			$email->setBody($text);
 			$email->send();
 
-			return true;
+			$retVal = true;
 			}
 
-		return false;
+		return $retVal;
 		}
 
 	public function setErrorEmail(string $email) : void

@@ -159,6 +159,7 @@ class ImportMembers extends \PHPFUI\Container
 
 	private function importWidget(\PHPFUI\Form $form, \App\View\Setup\WizardBar $wizardBar, string $separator, int $count) : string
 		{
+		$separator = \str_replace('TAB', '\t', $separator);
 		$csvReader = new \App\Tools\CSV\FileReader($this->importModel->getFileName(), true, $separator);
 		$headers = \array_keys($csvReader->current());
 		\sort($headers);

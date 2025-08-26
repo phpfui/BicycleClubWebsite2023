@@ -7,7 +7,9 @@ namespace App\Record\Definition;
  *
  * @property int $jobEventId MySQL type int
  * @property \App\Record\JobEvent $jobEvent related record
+ * @property int $ordering MySQL type int
  * @property ?string $question MySQL type text
+ * @property int $required MySQL type int
  * @property int $volunteerPollId MySQL type int
  * @property \App\Record\VolunteerPoll $volunteerPoll related record
  */
@@ -29,7 +31,9 @@ abstract class VolunteerPoll extends \PHPFUI\ORM\Record
 			{
 			static::$fields = [
 				'jobEventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
+				'ordering' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
 				'question' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
+				'required' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
 				'volunteerPollId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 			];
 			}

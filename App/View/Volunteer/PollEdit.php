@@ -18,7 +18,17 @@ class PollEdit
 
 		if ($form->save())
 			{
-			$this->volunteerPollAnswerTable->updateFromTable($_POST);
+			$post = $_POST;
+			$volunteerPoll->setFrom($post);
+			$volunteerPoll->update();
+			$order = 1;
+
+			foreach ($post['volunteerPollAnswerId'] ?? [] as $index => $value)
+				{
+				$post['ordering'][$index] = $order++;
+				}
+
+			$this->volunteerPollAnswerTable->updateFromTable($post);
 
 			return $form;
 			}
@@ -34,24 +44,25 @@ class PollEdit
 		$title = new \PHPFUI\Input\Text('question', 'Poll Question', $volunteerPoll->question ?? '');
 		$title->setRequired()->setToolTip('This is the only thing the person will see for the poll, so make it clear and descriptive');
 		$fieldSet->add($title);
+		$required = new \PHPFUI\Input\CheckBoxBoolean('required', 'Make this poll required', (bool)$volunteerPoll->required);
+		$fieldSet->add($required);
 
 		if ($volunteerPoll->volunteerPollId) // if previously saved, allow editing of poll answers
 			{
-			$answers = $this->volunteerPollAnswerTable->getPollAnswers($volunteerPoll->volunteerPollId);
 			$delete = new \PHPFUI\AJAX('deleteAnswer', 'Permanently delete this answer and all responses?');
 			$delete->addFunction('success', '$("#volunteerPollAnswerId-"+data.response).css("background-color","red").hide("fast").remove();');
 			$this->page->addJavaScript($delete->getPageJS());
-			$table = new \PHPFUI\Table();
+			$table = new \PHPFUI\OrderableTable($this->page);
 			$table->setRecordId('volunteerPollAnswerId');
 			$table->addHeader('answer', 'Answers');
 			$table->addHeader('delete', 'Del');
 
-			foreach ($answers as $answer)
+			foreach ($volunteerPoll->VolunteerPollAnswerChildren as $answer)
 				{
+				$id = $answer->volunteerPollAnswerId;
+				$input = new \PHPFUI\Input\Text("answer[{$id}]", '', $answer->answer);
+				$hidden = new \PHPFUI\Input\Hidden("volunteerPollAnswerId[{$id}]", (string)$answer->volunteerPollAnswerId);
 				$row = $answer->toArray();
-				$id = (int)$row['volunteerPollAnswerId'];
-				$input = new \PHPFUI\Input\Text("answer[{$id}]", '', $row['answer']);
-				$hidden = new \PHPFUI\Input\Hidden("volunteerPollAnswerId[{$id}]", $row['volunteerPollAnswerId']);
 				$row['answer'] = $input . $hidden;
 				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
 				$icon->addAttribute('onclick', $delete->execute(['volunteerPollAnswerId' => (string)$id]));

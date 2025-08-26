@@ -92,7 +92,7 @@ class Signup implements \Stringable
 						$data['answer'] = $value;
 						$volunteerPollResponse = new \App\Record\VolunteerPollResponse();
 						$volunteerPollResponse->setFrom($data);
-						$volunteerPollResponse->insert();
+						$volunteerPollResponse->insertOrUpdate();
 						}
 					}
 				}
@@ -156,16 +156,19 @@ class Signup implements \Stringable
 					$fieldSet->add($row);
 					$row = new \PHPFUI\GridX();
 					$row->addClass('large-2 medium-4 columns');
-					$volunteerPollAnswerTable = new \App\Table\VolunteerPollAnswer();
 					$response = new \App\Record\VolunteerPollResponse(['memberId' => $this->member->memberId,
 						'volunteerPollId' => $poll['volunteerPollId'], ]);
-					$answers = $volunteerPollAnswerTable->getPollAnswers($poll['volunteerPollId']);
+					$volunteerPoll = new \App\Record\VolunteerPoll($poll['volunteerPollId']);
 					$select = new \PHPFUI\Input\Select('poll-' . $poll['volunteerPollId']);
-					$select->addOption('None', (string)0, 0 == $response->answer);
 
-					foreach ($answers as $answer)
+					if (! $volunteerPoll->required)
 						{
-						$select->addOption($answer['answer'], $answer['volunteerPollAnswerId'], $response->answer == $answer['volunteerPollAnswerId']);
+						$select->addOption('None', (string)0, 0 == $response->answer);
+						}
+
+					foreach ($volunteerPoll->VolunteerPollAnswerChildren as $answer)
+						{
+						$select->addOption($answer->answer, (string)$answer->volunteerPollAnswerId, $response->answer == $answer->volunteerPollAnswerId);
 						}
 					$row->add($select);
 					$fieldSet->add($row);

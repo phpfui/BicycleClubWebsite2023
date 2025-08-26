@@ -45,16 +45,17 @@ class JobEvent extends \PHPFUI\ORM\Table
 
 		foreach ($polls as $pollObject)
 			{
-			$newVolunteerPull = new \App\Record\VolunteerPoll($pollObject->toArray());
-			$newVolunteerPull->jobEventId = $newJobEvent->jobEventId;
-			$newVolunteerPull->volunteerPollId = 0;
-			$answers = $volunteerPollAnswerTable->getPollAnswers($pollObject['volunteerPollId']);
+			$newVolunteerPoll = new \App\Record\VolunteerPoll($pollObject->toArray());
+			$newVolunteerPoll->jobEventId = $newJobEvent->jobEventId;
+			$newVolunteerPoll->volunteerPollId = 0;
+			$volunteerPoll = new \App\Record\VolunteerPoll($pollObject);
 
-			foreach ($answers as $answerObject)
+			foreach ($volunteerPoll->VolunteerPollAnswerChildren as $answerObject)
 				{
 				$newVolunteerPollAnswer = new \App\Record\VolunteerPollAnswer();
 				$newVolunteerPollAnswer->setFrom($answerObject->toArray());
-				$newVolunteerPollAnswer->volunteerPoll = $newVolunteerPull;
+				$newVolunteerPollAnswer->volunteerPollAnswerId = 0;
+				$newVolunteerPollAnswer->volunteerPoll = $newVolunteerPoll;
 				$newVolunteerPollAnswer->insert();
 				}
 			}

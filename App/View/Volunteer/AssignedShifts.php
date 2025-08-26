@@ -166,7 +166,7 @@ class AssignedShifts implements \Stringable
 						}
 					}
 				$people[] = $volunteer['firstName'] . ' ' . $volunteer['lastName'];
-				$jobShiftId = $volunteer['jobShiftId'];
+				$jobShiftId = (int)$volunteer['jobShiftId'];
 				}
 			}
 

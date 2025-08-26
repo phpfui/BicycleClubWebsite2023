@@ -11,77 +11,82 @@ class Polls implements \Stringable
 	public function __toString() : string
 		{
 		$output = '';
-		$submit = new \PHPFUI\Submit();
-		$form = new \PHPFUI\Form($this->page, $submit);
+		$rowId = 'volunteerPollId';
+		$submit = new \PHPFUI\Submit('Save')->addClass('sucess');
+		$form = new \App\UI\ErrorFormSaver($this->page, $this->jobEvent, $submit);
+		$volunteerPollTable = new \App\Table\VolunteerPoll();
 
-		if (\App\Model\Session::checkCSRF())
+		$post = $_POST;
+
+		if (($post['action'] ?? '') === 'deletePoll')
 			{
-			switch ($_POST['submit'] ?? $_POST['action'] ?? '')
-				{
-				case 'deletePoll':
+			$volunteerPoll = new \App\Record\VolunteerPoll((int)$post[$rowId]);
+			$volunteerPoll->delete();
+			$this->page->setResponse($post[$rowId])->setDone();
 
-					$volunteerPoll = new \App\Record\VolunteerPoll((int)$_POST['volunteerPollId']);
-					$volunteerPoll->delete();
-					$this->page->setResponse($_POST['volunteerPollId']);
-
-					break;
-
-
-				case 'Add':
-
-					$volunteerPoll = new \App\Record\VolunteerPoll();
-					$volunteerPoll->setFrom($_POST);
-					$volunteerPoll->insert();
-					$this->page->redirect();
-
-					break;
-
-
-				default:
-
-					$this->page->redirect();
-
-				}
+			return '';
 			}
-		else
+		elseif (($post['submit'] ?? '') == 'Add')
 			{
-			$add = new \PHPFUI\Button('Add New Poll');
-			$add->addClass('success');
-			$this->addPollModal($add);
+			$volunteerPoll = new \App\Record\VolunteerPoll();
+			$volunteerPoll->setFrom($post);
+			$volunteerPoll->insert();
+			$this->page->redirect();
 
-			if ($this->jobEvent->empty())
-				{
-				$this->page->redirect('/Volunteer/events');
-				}
-			$form->add(new \PHPFUI\SubHeader($this->jobEvent->name));
-			$form->add(new \App\View\Volunteer\Menu($this->jobEvent, 'Polls'));
-			$volunteerPollTable = new \App\Table\VolunteerPoll();
-			$polls = $volunteerPollTable->getPolls($this->jobEvent);
-			$form->saveOnClick($add);
-			$delete = new \PHPFUI\AJAX('deletePoll', 'Permanently delete this poll?');
-			$delete->addFunction('success', '$("#volunteerPollId-"+data.response).css("background-color","red").hide("fast").remove()');
-			$this->page->addJavaScript($delete->getPageJS());
-			$table = new \PHPFUI\Table();
-			$table->setRecordId('volunteerPollId');
-			$table->addHeader('question', 'Question (click to edit)');
-			$table->addHeader('delete', 'Del');
-
-			foreach ($polls as $poll)
-				{
-				$row = $poll->toArray();
-				$id = $row['volunteerPollId'];
-				$row['question'] = "<a href='/Volunteer/pollEdit/{$id}'>{$row['question']}</a>";
-				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-				$icon->addAttribute('onclick', $delete->execute(['volunteerPollId' => $id]));
-				$row['delete'] = $icon;
-				$table->addRow($row);
-				}
-			$form->add($table);
-			$buttonGroup = new \App\UI\CancelButtonGroup();
-			$buttonGroup->addButton($add);
-			$form->add($buttonGroup);
-			$output = $form;
+			return '';
 			}
+
+		if ($form->save())
+			{
+			$order = 1;
+
+			foreach ($post[$rowId] ?? [] as $index => $value)
+				{
+				$post['ordering'][$index] = $order++;
+				}
+			\App\Tools\Logger::get()->debug($post);
+
+			$volunteerPollTable->updateFromTable($post);
+
+			return $form;
+			}
+
+		$add = new \PHPFUI\Button('Add New Poll')->addClass('success');
+		$this->addPollModal($add);
+
+		if ($this->jobEvent->empty())
+			{
+			$this->page->redirect('/Volunteer/events');
+			}
+		$form->add(new \PHPFUI\SubHeader($this->jobEvent->name));
+		$form->add(new \App\View\Volunteer\Menu($this->jobEvent, 'Polls'));
+		$polls = $volunteerPollTable->getPolls($this->jobEvent);
+		$form->saveOnClick($add);
+
+		$delete = new \PHPFUI\AJAX('deletePoll', 'Permanently delete this poll?');
+		$delete->addFunction('success', '$("#' . $rowId . '-"+data.response).css("background-color","red").hide("fast").remove()');
+		$this->page->addJavaScript($delete->getPageJS());
+		$table = new \PHPFUI\OrderableTable($this->page);
+		$table->setRecordId($rowId);
+		$table->addHeader('question', 'Question (click to edit, or drag and drop to change ordering)');
+		$table->addHeader('delete', 'Del');
+
+		foreach ($polls as $poll)
+			{
+			$row = $poll->toArray();
+			$id = $poll->{$rowId};
+			$row['question'] = "<a href='/Volunteer/pollEdit/{$id}'>{$poll->question}</a>" . new \PHPFUI\Input\Hidden("{$rowId}[{$id}]", (string)$id);
+			$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
+			$icon->addAttribute('onclick', $delete->execute([$rowId => $id]));
+			$row['delete'] = $icon;
+			$table->addRow($row);
+			}
+		$form->add($table);
+		$buttonGroup = new \App\UI\CancelButtonGroup();
+		$buttonGroup->addButton($submit);
+		$buttonGroup->addButton($add);
+		$form->add($buttonGroup);
+		$output = $form;
 
 		return (string)$output;
 		}

@@ -171,6 +171,7 @@ class Membership
 				{
 				$membership = new \App\Record\Membership();
 				$membership->setFrom($record);
+				$membership->pending = 0;
 				$lastMembershipId = $membership->insert();
 				}
 			$member = new \App\Record\Member();

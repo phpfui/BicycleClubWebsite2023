@@ -109,7 +109,7 @@ class RWGPS extends \App\Record\Definition\RWGPS
 			self::$units = new \App\Record\Setting('RWGPSUnits')->value;
 			}
 
-		return self::$units;
+		return (string)self::$units;
 		}
 
 	public function insert() : int

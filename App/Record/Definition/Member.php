@@ -41,6 +41,8 @@ namespace App\Record\Definition;
  * @property int $rideJournal MySQL type tinyint
  * @property int $showNoPhone MySQL type tinyint
  * @property ?int $showNoRideSignup MySQL type int
+ * @property int $showNoSignin MySQL type int
+ * @property int $showNoSocialMedia MySQL type int
  * @property int $showNoStreet MySQL type tinyint
  * @property int $showNoTown MySQL type tinyint
  * @property int $showNothing MySQL type tinyint
@@ -98,6 +100,8 @@ abstract class Member extends \PHPFUI\ORM\Record
 				'rideJournal' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
 				'showNoPhone' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
 				'showNoRideSignup' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'showNoSignin' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'showNoSocialMedia' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
 				'showNoStreet' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
 				'showNoTown' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
 				'showNothing' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),

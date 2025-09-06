@@ -436,6 +436,26 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		}
 
+	public function socialMedia() : void
+		{
+		if ($this->page->addHeader('Social Media Exceptions'))
+			{
+			$memberTable = new \App\Table\Member();
+			$condition = new \PHPFUI\ORM\Condition('showNoSocialMedia', 1);
+			$memberTable->setWhere($condition);
+			$view = new \App\UI\ContinuousScrollTable($this->page, $memberTable);
+			$seachHeaders = ['firstName', 'lastName', 'email', 'cellPhone', ];
+			$headers = $seachHeaders;
+			$headers[] = 'photo';
+			$memberView = new \App\View\Member($this->page);
+			$view->addCustomColumn('photo', static fn(array $member) => $memberView->getImageIcon($member));
+
+			$view->setSearchColumns($seachHeaders)->setHeaders($headers);
+
+			$this->page->addPageContent($view);
+			}
+		}
+
 	public function show(int $memberId = 0) : void
 		{
 		if ($this->page->addHeader('Show Member') && $memberId)

@@ -304,21 +304,51 @@ class Member
 
 		$toolTip = new \PHPFUI\ToolTip('Don’t show the following in the Membership Directory', 'Your personal information may still be shown to ride leaders if you sign up for a ride.');
 		$fieldSet = new \PHPFUI\FieldSet($toolTip);
+		$recentLink = new \PHPFUI\Link('/Membership/recent', 'Recent Sign Ins', false);
 		$fields = ['showNothing' => 'My info',
 			'showNoStreet' => 'Street',
 			'showNoTown' => 'Town, zip',
-			'showNoPhone' => 'Phone', ];
-//			'showNoRideSignup' => 'Don’t Show My Name in the Ride Signup list', ];
+			'showNoPhone' => 'Phone',
+			'showNoRideSignup' => ['Don’t Show My Name in the Ride Signup list', 'Your name will not be shown in the ride signup list, but the ride leader will see your name'],
+			'showNoSignin' => "Don’t Show My Name in the {$recentLink} list",
+			];
 		$multiColumn = new \PHPFUI\MultiColumn();
 
+		$offset = 0;
 		foreach ($fields as $field => $title)
 			{
-			$multiColumn->add(new \PHPFUI\Input\CheckBoxBoolean($field, $title, (bool)$member[$field]));
+			$toolTip = '';
+			if (is_array($title))
+				{
+				$toolTip = $title[1];
+				$title = $title[0];
+				}
+			$field = new \PHPFUI\Input\CheckBoxBoolean($field, $title, (bool)$member[$field]);
+			if ($toolTip)
+				{
+				$field->setToolTip($toolTip);
+				}
+			$multiColumn->add($field);
+			if (! (++$offset % 4))
+				{
+				$fieldSet->add($multiColumn);
+				$multiColumn = new \PHPFUI\MultiColumn();
+				}
 			}
+
+		$this->profileModel->update($member->toArray());
+		if ($this->profileModel->cropExists())
+			{
+			$field = new \PHPFUI\Input\CheckBoxBoolean('showNoSocialMedia', 'Don’t post my image on social media', (bool)$member->showNoSocialMedia);
+			$multiColumn->add($field);
+			}
+		else
+			{
+			$multiColumn->add('To set Social Media preference, you must upload a profile photo');
+			}
+
 		$fieldSet->add($multiColumn);
-		$noRideSignup = new \PHPFUI\Input\CheckBoxBoolean('showNoRideSignup', 'Don’t Show My Name in the Ride Signup list', (bool)$member->showNoRideSignup);
-		$noRideSignup->setToolTip('Your name will not be shown in the ride signup list, but the ride leader will see your name');
-		$fieldSet->add($noRideSignup);
+
 		$container->add($fieldSet);
 
 		$container->add($this->getGeoLocationSelect($member));
@@ -388,7 +418,7 @@ class Member
 		$canEdit = $this->page->isAuthorized('Edit Member');
 		$showAll = $this->page->isAuthorized('Show All Members');
 		$table = new \PHPFUI\Table();
-		$table->setHeaders(['Name', 'Town', 'Joined', 'email']);
+		$table->setHeaders(['Name', 'Town', 'Joined', 'Rides', 'email']);
 
 		foreach ($members as $member)
 			{
@@ -404,10 +434,13 @@ class Member
 				$name = \PHPFUI\Link::localUrl('/Membership/edit/' . $member->memberId, $name);
 				}
 			$town = $member->showNoTown ? '' : $member->town;
-			$table->addRow(['Name' => $name,
+			$table->addRow([
+				'Name' => $name,
 				'Town' => $town,
 				'email' => new \PHPFUI\FAIcon('far', 'envelope', "/Membership/email/{$member->memberId}"),
-				'Joined' => $member->joined, ]);
+				'Joined' => $member->joined,
+				'Rides' => 0,
+			]);
 			}
 
 		return $table;

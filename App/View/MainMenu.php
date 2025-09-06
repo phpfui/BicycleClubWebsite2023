@@ -193,6 +193,7 @@ class MainMenu extends \App\UI\MainMenu
 	//		$this->addSub($menu, '/Membership/Subscription', 'Manage My Subscription');
 			$this->addSub($menu, '/Membership/renew', 'Renew My Membership');
 			$this->addSub($menu, '/Membership/rosterReport', 'Roster Report');
+			$this->addSub($menu, '/Membership/socialMedia', 'Social Media Exceptions');
 
 			if ($configMenu = $this->addMenu($menu, '/Membership/Configure', 'Membership Configuration'))
 				{

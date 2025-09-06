@@ -18,8 +18,6 @@ class ProfileImages extends \App\Model\ThumbnailImageFiles
 		$image = $manager->read($path);
 		$image->crop($member['profileWidth'], $member['profileHeight'], $member['profileX'], $member['profileY']);
 		$image->save($this->getCropPath());
-//		// saving it twice works?
-//		$image->save($this->getCropPath());
 		}
 
 	public function cropExists() : bool

@@ -313,11 +313,21 @@ class Member extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getValue($sql, [(int)$memberId]);
 		}
 
-	public static function getNewMembers(string $start, string $end) : \PHPFUI\ORM\DataObjectCursor
+	public function getNewMembers(string $start, string $end) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectedFields() . ' where s.expires>? and s.joined>=? and s.joined<? order by s.joined desc';
+		$this->addJoin('membership');
+		$this->addJoin('rideSignup');
+		$this->addSelect('member.*');
+		$this->addSelect('membership.*');
+		$this->addSelect(new \PHPFUI\ORM\Literal('count(rideSignup.memberId)'), 'rides');
+		$this->addGroupBy('member.memberId');
+		$condition = new \PHPFUI\ORM\Condition('membership.expires', $start, new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition->and('membership.joined', $start, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('membership.joined', $end, new \PHPFUI\ORM\Operator\LessThan());
+		$this->setWhere($condition);
+		$this->setOrderBy('membership.joined', 'desc');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$start, $start, $end, ]);
+		return $this->getDataObjectCursor();
 		}
 
 	/**

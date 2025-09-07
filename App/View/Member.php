@@ -311,24 +311,28 @@ class Member
 			'showNoPhone' => 'Phone',
 			'showNoRideSignup' => ['Don’t Show My Name in the Ride Signup list', 'Your name will not be shown in the ride signup list, but the ride leader will see your name'],
 			'showNoSignin' => "Don’t Show My Name in the {$recentLink} list",
-			];
+		];
 		$multiColumn = new \PHPFUI\MultiColumn();
 
 		$offset = 0;
+
 		foreach ($fields as $field => $title)
 			{
 			$toolTip = '';
-			if (is_array($title))
+
+			if (\is_array($title))
 				{
 				$toolTip = $title[1];
 				$title = $title[0];
 				}
 			$field = new \PHPFUI\Input\CheckBoxBoolean($field, $title, (bool)$member[$field]);
+
 			if ($toolTip)
 				{
 				$field->setToolTip($toolTip);
 				}
 			$multiColumn->add($field);
+
 			if (! (++$offset % 4))
 				{
 				$fieldSet->add($multiColumn);
@@ -337,6 +341,7 @@ class Member
 			}
 
 		$this->profileModel->update($member->toArray());
+
 		if ($this->profileModel->cropExists())
 			{
 			$field = new \PHPFUI\Input\CheckBoxBoolean('showNoSocialMedia', 'Don’t post my image on social media', (bool)$member->showNoSocialMedia);
@@ -399,7 +404,7 @@ class Member
 				{
 				continue;
 				}
-			$memberRecord = new \App\Record\Member($member->toArray());
+			$memberRecord = new \App\Record\Member($member);
 			$name = $memberRecord->fullName();
 
 			$town = $member->showNoTown ? '' : ' - ' . $member->town;
@@ -409,7 +414,7 @@ class Member
 		return $output;
 		}
 
-	public function list(\PHPFUI\ORM\DataObjectCursor $members) : string | \PHPFUI\Table
+	public function listMembersWithRides(\PHPFUI\ORM\DataObjectCursor $members) : string | \PHPFUI\Table
 		{
 		if (! \count($members))
 			{
@@ -422,12 +427,13 @@ class Member
 
 		foreach ($members as $member)
 			{
+			$memberRecord = new \App\Record\Member($member);
+			$name = $memberRecord->fullName();
+
 			if ($member->showNothing && ! $showAll)
 				{
 				continue;
 				}
-			$memberRecord = new \App\Record\Member($member->toArray());
-			$name = $memberRecord->fullName();
 
 			if ($canEdit)
 				{
@@ -439,7 +445,7 @@ class Member
 				'Town' => $town,
 				'email' => new \PHPFUI\FAIcon('far', 'envelope', "/Membership/email/{$member->memberId}"),
 				'Joined' => $member->joined,
-				'Rides' => 0,
+				'Rides' => $member->rides,
 			]);
 			}
 

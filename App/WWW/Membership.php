@@ -231,7 +231,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			$today = \App\Tools\Date::today();
 			$members = $this->memberTable->getNewMembers(\App\Tools\Date::toString($today - 180), \App\Tools\Date::todayString());
 			$tabs = new \PHPFUI\Tabs();
-			$tabs->addTab('Editable', $this->memberView->list($members), true);
+			$tabs->addTab('Editable', $this->memberView->listMembersWithRides($members), true);
 			$tabs->addTab('Name - Town', $this->memberView->htmlList($members));
 			$this->page->addPageContent($tabs);
 			}
@@ -436,6 +436,15 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		}
 
+	public function show(int $memberId = 0) : void
+		{
+		if ($this->page->addHeader('Show Member') && $memberId)
+			{
+			$view = new \App\View\Member($this->page);
+			$this->page->addPageContent($view->show($this->memberTable->getMembershipCursor($memberId)));
+			}
+		}
+
 	public function socialMedia() : void
 		{
 		if ($this->page->addHeader('Social Media Exceptions'))
@@ -448,20 +457,11 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			$headers = $seachHeaders;
 			$headers[] = 'photo';
 			$memberView = new \App\View\Member($this->page);
-			$view->addCustomColumn('photo', static fn(array $member) => $memberView->getImageIcon($member));
+			$view->addCustomColumn('photo', static fn (array $member) => $memberView->getImageIcon($member));
 
 			$view->setSearchColumns($seachHeaders)->setHeaders($headers);
 
 			$this->page->addPageContent($view);
-			}
-		}
-
-	public function show(int $memberId = 0) : void
-		{
-		if ($this->page->addHeader('Show Member') && $memberId)
-			{
-			$view = new \App\View\Member($this->page);
-			$this->page->addPageContent($view->show($this->memberTable->getMembershipCursor($memberId)));
 			}
 		}
 

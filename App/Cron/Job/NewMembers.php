@@ -21,7 +21,8 @@ class NewMembers extends \App\Cron\BaseJob
 			$month = 12;
 			}
 		$start = \gregoriantojd($month, $this->controller->runningAtDay(), $year);
-		$members = \App\Table\Member::getNewMembers(\App\Tools\Date::toString($start), $this->controller->runningAtDate());
+		$memberTable = new \App\Table\Member();
+		$members = $memberTable->getNewMembers(\App\Tools\Date::toString($start), $this->controller->runningAtDate());
 		$message = '';
 
 		foreach ($members as $member)

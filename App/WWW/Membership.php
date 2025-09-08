@@ -370,7 +370,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			$memberTable->addJoin('membership');
 			$memberTable->addOrderBy('lastLogin', 'DESC');
 			$condition = new \PHPFUI\ORM\Condition('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
-			$condition->and('member.showNoRideSignup', 0);
+			$condition->and('member.showNoSignin', 0);
 			$condition->and('member.showNothing', 0);
 			$memberTable->setWhere($condition);
 			$view = new \App\UI\ContinuousScrollTable($this->page, $memberTable);

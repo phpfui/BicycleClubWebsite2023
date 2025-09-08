@@ -149,9 +149,10 @@ class JobShifts
 
 			if ($shiftLeader)
 				{
-				$buttonGroup->addButton(new \PHPFUI\Button('Email Your Shift', "/Volunteer/emailShift/{$job->jobId}"));
+				$buttonGroup->addButton(new \PHPFUI\Button('Email Your Shift', "/Volunteer/emailShift/{$job->jobId}")->addClass('warning'));
 				}
 			$buttonGroup->addButton(new \PHPFUI\Button('Edit These Shifts', "/Volunteer/signup/{$job->jobId}"));
+			$buttonGroup->addButton(new \PHPFUI\Button('Download ICalendar File', "/Volunteer/icalendar/{$job->jobId}")->addClass('success'));
 			}
 		else
 			{

@@ -185,6 +185,69 @@ class Volunteer
 			}
 		}
 
+	public function getCalendarObject(\App\Record\Job $job, \App\Record\Member $member) : ?\ICalendarOrg\ZCiCal
+		{
+		$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
+		$condition = new \PHPFUI\ORM\Condition('volunteerJobShift.jobId', $job->jobId);
+		$condition->and('memberId', $member->memberId);
+		$volunteerJobShiftTable->setWhere($condition);
+		$volunteerJobShiftTable->addJoin('jobShift');
+		$shiftCursor = $volunteerJobShiftTable->getDataObjectCursor();
+
+		if (! \count($shiftCursor))
+			{
+			return null;
+			}
+
+		// create the ical object
+		$icalobj = new \ICalendarOrg\ZCiCal();
+
+		$suffix = '';
+
+		foreach($shiftCursor as $index => $shift)
+			{
+			// create the event within the ical object
+			$eventobj = new \ICalendarOrg\ZCiCalNode('VEVENT', $icalobj->curnode);
+
+			// add title
+			$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('SUMMARY:' . $job->title));
+	//		$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('METHOD:REQUEST'));
+
+			// add start date
+			$startTime = \App\Tools\Date::getUnixTimeStamp($job->date, $shift->startTime);
+			$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTSTART:' . \ICalendarOrg\ZDateHelper::fromUnixDateTime($startTime)));
+
+			// add end date
+			$endTime = \App\Tools\Date::getUnixTimeStamp($job->date, $shift->endTime);
+			$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTEND:' . \ICalendarOrg\ZDateHelper::fromUnixDateTime($endTime)));
+			// UID is a required item in VEVENT, create unique string for this event
+			// Adding your domain to the end is a good way of creating uniqueness
+			$settingTable = new \App\Table\Setting();
+			$uid = $settingTable->value('homePage') . "/Volunteer/signup/{$job->jobId}{$suffix}";
+			$suffix = '/' . $index;
+			$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('UID:' . $uid));
+
+			// DTSTAMP is a required item in VEVENT
+			$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DTSTAMP:' . \ICalendarOrg\ZDateHelper::fromSqlDateTime()));
+
+	//		$leader = $ride->member;
+	//
+	//		if ($leader->loaded())
+	//			{
+	//			$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode("ORGANIZER;CN={$leader->fullName()}:mailto:{$leader->email}"));
+	//			}
+			$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('LOCATION:' . \ICalendarOrg\ZCiCal::formatContent($job->location)));
+
+			// Add description
+			$description = $job->description . "\nModify: {$uid}";
+			$description = \Soundasleep\Html2Text::convert($description, ['drop_links' => 'href', 'ignore_errors' => true]);
+			$description = \str_replace("\n", ' ', $description);
+			$eventobj->addNode(new \ICalendarOrg\ZCiCalDataNode('DESCRIPTION:' . \ICalendarOrg\ZCiCal::formatContent($description)));
+			}
+
+		return $icalobj;
+		}
+
 	public function saveMemberPoints() : static
 		{
 		$memberTable = new \App\Table\Member();

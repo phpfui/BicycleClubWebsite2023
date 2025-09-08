@@ -114,6 +114,28 @@ class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 			}
 		}
 
+	public function icalendar(\App\Record\Job $job = new \App\Record\Job()) : void
+		{
+		if ($this->page->isAuthorized('My Assignments'))
+			{
+			$volunteerModel = new \App\Model\Volunteer();
+			$icalobj = $volunteerModel->getCalendarObject($job, \App\Model\Session::signedInMemberRecord());
+
+			if ($icalobj)
+				{
+				$filename = 'volunteer_' . $job->date . '_' . $job->jobId . '.ics';
+				$file = $icalobj->export();
+				\header('Content-Type: text/calendar');
+				\header('Content-Length: ' . \strlen($file));
+				\header('Content-Disposition: inline; filename="' . $filename . '"');
+				\header('Cache-Control: private, max-age=0, must-revalidate');
+				\header('Pragma: public');
+				echo $file;
+				$this->page->done();
+				}
+			}
+		}
+
 	public function jobEdit(\App\Record\Job $job = new \App\Record\Job()) : void
 		{
 		if ($this->page->addHeader('Edit A Job'))

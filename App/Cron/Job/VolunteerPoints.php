@@ -15,13 +15,13 @@ class VolunteerPoints extends \App\Cron\BaseJob
 		$model = new \App\Model\Volunteer();
 
 		// points for rides
-		$model->assignRidePoints($parameters['rideDaysOut'] ?? 90);
+		$model->assignRidePoints($parameters['rideDaysOut'] ?? 180);
 
 		// points for RWGPS lead
-		$model->assignRWGPSPoints($parameters['RWGPSDaysOut'] ?? 90);
+		$model->assignRWGPSPoints($parameters['RWGPSDaysOut'] ?? 180);
 
 		// points for volunteers
-		$model->assignVolunteerPoints($parameters['volunteerDaysOut'] ?? 90);
+		$model->assignVolunteerPoints($parameters['volunteerDaysOut'] ?? 180);
 
 		// write out all the points
 		$model->saveMemberPoints();

@@ -10,6 +10,7 @@ $config = include 'vendor/phpfui/phpunit-syntax-coverage/PhpCsFixer.php';
 
 return $config->setFinder(PhpCsFixer\Finder::create()
 			->exclude('vendor')
+			->exclude(__DIR__.'/App/Enum/*.php')
 			->in(__DIR__.'/App')
 			->in(__DIR__.'/oneOffScripts')
 			->in(__DIR__.'/www')

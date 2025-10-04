@@ -59,7 +59,7 @@ class HomePage implements \Stringable
 		if (\count($eventTable))
 			{
 			$output = new \PHPFUI\Container();
-			$output->add(new \PHPFUI\Header('Upcoming Events', 4));
+			$output->add(new \PHPFUI\Header($this->page->value('HomePageUpcoming_Events_Header'), 4));
 			$table = new \PHPFUI\Table();
 			$table->setHeaders(['title' => 'Event', 'date' => 'Date', 'status' => 'Attending']);
 			$first = 0;

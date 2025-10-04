@@ -306,7 +306,7 @@ class RideWithGPS extends \App\Model\GPS
 
 	public function scrape(\App\Record\RWGPS $rwgps, bool $alwaysScrape = false) : ?\App\Record\RWGPS
 		{
-		if (null === $rwgps->RWGPSId || (! $alwaysScrape && ! $rwgps->loaded()))
+		if (0 === $rwgps->RWGPSId || (! $alwaysScrape && ! $rwgps->loaded()))
 			{
 			return null;
 			}
@@ -336,7 +336,7 @@ class RideWithGPS extends \App\Model\GPS
 		if (200 != $status)
 			{
 			// 404 = not found, 403 = not public
-			if ($status >= 400 && $status < 500 && $rwgps->RWGPSId)
+			if ($status >= 400 && $status < 500)
 				{
 				new \App\Table\RideRWGPS()->changeRWGPSId($rwgps, null);
 				$rwgps->delete();

@@ -124,7 +124,7 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Events/messages', 'Manage Messages');
 			$this->addSub($menu, '/Events/manage/All', 'Manage All Events');
 			$this->addSub($menu, '/Events/manage/My', 'Manage My Events');
-			$this->addSub($menu, '/Events/upcoming', 'Upcoming Events');
+			$this->addSub($menu, '/Events/upcoming', $settingTable->value('HomePageUpcoming_Events_Header'));
 			}
 
 		if ($menu = $this->addTopMenu('Leaders', 'Ride Leaders'))

@@ -534,7 +534,9 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$this->page->setPublic();
 
-		if ($this->page->addHeader('Upcoming Events'))
+		$name = $this->page->value('HomePageUpcoming_Events_Header');
+
+		if ($this->page->addHeader($name))
 			{
 			$content = new \App\View\Content($this->page);
 			$this->page->addPageContent($content->getDisplayCategoryHTML('Upcoming Events'));

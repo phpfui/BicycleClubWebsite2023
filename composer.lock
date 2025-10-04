@@ -6501,26 +6501,26 @@
         },
         {
             "name": "phpfui/phpunit-syntax-coverage",
-            "version": "V1.0.18",
+            "version": "V1.0.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/PHPUnitSyntaxCoverage.git",
-                "reference": "395d59c5424050e2fcbc6e0645d7ed2fc05f2312"
+                "reference": "bdd6e2b0639b0cc7f80fafa4dfc525fae86e5dfa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/PHPUnitSyntaxCoverage/zipball/395d59c5424050e2fcbc6e0645d7ed2fc05f2312",
-                "reference": "395d59c5424050e2fcbc6e0645d7ed2fc05f2312",
+                "url": "https://api.github.com/repos/phpfui/PHPUnitSyntaxCoverage/zipball/bdd6e2b0639b0cc7f80fafa4dfc525fae86e5dfa",
+                "reference": "bdd6e2b0639b0cc7f80fafa4dfc525fae86e5dfa",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0 <8.5"
+                "php": ">=8.1 <8.5"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.64",
                 "nikic/php-parser": "^5.0",
-                "phpstan/phpstan": "^1.8",
-                "phpunit/phpunit": "<12.0",
+                "phpstan/phpstan": "^2.0",
+                "phpunit/phpunit": "^9.0|^10.0|^11.0|^12.0",
                 "roave/security-advisories": "dev-latest",
                 "symfony/translation-contracts": ">=2.3"
             },
@@ -6554,9 +6554,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/PHPUnitSyntaxCoverage/issues",
-                "source": "https://github.com/phpfui/PHPUnitSyntaxCoverage/tree/V1.0.18"
+                "source": "https://github.com/phpfui/PHPUnitSyntaxCoverage/tree/V1.0.19"
             },
-            "time": "2024-10-22T23:05:18+00:00"
+            "time": "2025-10-04T19:12:34+00:00"
         },
         {
             "name": "phpstan/phpstan",

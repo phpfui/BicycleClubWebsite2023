@@ -17,12 +17,25 @@ class HomePage
 		$callout->add("Enter the numnber of days to show content on the user's home page, or -1 to turn off");
 		$form->add($callout);
 
+		$multiColumn = new \PHPFUI\MultiColumn();
+
 		foreach (\App\Enum\HomeNotification::cases() as $case)
 			{
 			$name = $case->getSettingName();
 			$field = $settingsSaver->generateField($name, $case->name(), $settingsSaver->value($name));
 			$field->setRequired(false);
-			$form->add($field);
+			$multiColumn->add($field);
+
+			if (4 === \count($multiColumn))
+				{
+				$form->add($multiColumn);
+				$multiColumn = new \PHPFUI\MultiColumn();
+				}
+			}
+
+		if (\count($multiColumn))
+			{
+			$form->add($multiColumn);
 			}
 
 		if ($form->isMyCallback())

@@ -238,7 +238,7 @@ class Volunteer extends \PDF_MC_Table
 					$this->Row([$job['description']]);
 					$this->Row(['']);
 					}
-				$hours = [];
+				$hours = [null => 'No Shift'];
 				$this->SetWidths([20,
 					20,
 					20,
@@ -312,9 +312,9 @@ class Volunteer extends \PDF_MC_Table
 
 						foreach ($volunteers as $shift)
 							{
-							$member = new \App\Record\Member($shift['memberId']);
-							$leader = $shift['shiftLeader'] > 0 ? 'Shift Leader' : '';
-							$this->Row([$hours[$shift['jobShiftId']],
+							$member = new \App\Record\Member($shift->memberId);
+							$leader = $shift->shiftLeader > 0 ? 'Shift Leader' : '';
+							$this->Row([$hours[$shift->jobShiftId],
 								\App\Tools\TextHelper::unhtmlentities($member->firstName . ' ' . $member->lastName),
 								$member->email,
 								$member->phone,

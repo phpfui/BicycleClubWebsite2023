@@ -28,8 +28,12 @@ use Twilio\Rest\Verify\V2\Service\VerificationCheckList;
 use Twilio\Rest\Verify\V2\Service\VerificationList;
 use Twilio\Rest\Verify\V2\Service\AccessTokenList;
 use Twilio\Rest\Verify\V2\Service\RateLimitList;
+use Twilio\Rest\Verify\V2\Service\NewVerifyFactorList;
 use Twilio\Rest\Verify\V2\Service\WebhookList;
+use Twilio\Rest\Verify\V2\Service\NewFactorList;
 use Twilio\Rest\Verify\V2\Service\MessagingConfigurationList;
+use Twilio\Rest\Verify\V2\Service\ApproveChallengeList;
+use Twilio\Rest\Verify\V2\Service\NewChallengeList;
 
 
 /**
@@ -62,8 +66,12 @@ class ServiceInstance extends InstanceResource
     protected $_verifications;
     protected $_accessTokens;
     protected $_rateLimits;
+    protected $_newVerifyFactors;
     protected $_webhooks;
+    protected $_newFactors;
     protected $_messagingConfigurations;
+    protected $_approveChallenge;
+    protected $_newChallenge;
 
     /**
      * Initialize the ServiceInstance
@@ -200,6 +208,14 @@ class ServiceInstance extends InstanceResource
     }
 
     /**
+     * Access the newVerifyFactors
+     */
+    protected function getNewVerifyFactors(): NewVerifyFactorList
+    {
+        return $this->proxy()->newVerifyFactors;
+    }
+
+    /**
      * Access the webhooks
      */
     protected function getWebhooks(): WebhookList
@@ -208,11 +224,35 @@ class ServiceInstance extends InstanceResource
     }
 
     /**
+     * Access the newFactors
+     */
+    protected function getNewFactors(): NewFactorList
+    {
+        return $this->proxy()->newFactors;
+    }
+
+    /**
      * Access the messagingConfigurations
      */
     protected function getMessagingConfigurations(): MessagingConfigurationList
     {
         return $this->proxy()->messagingConfigurations;
+    }
+
+    /**
+     * Access the approveChallenge
+     */
+    protected function getApproveChallenge(): ApproveChallengeList
+    {
+        return $this->proxy()->approveChallenge;
+    }
+
+    /**
+     * Access the newChallenge
+     */
+    protected function getNewChallenge(): NewChallengeList
+    {
+        return $this->proxy()->newChallenge;
     }
 
     /**

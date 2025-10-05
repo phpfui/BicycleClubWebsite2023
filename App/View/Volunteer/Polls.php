@@ -44,7 +44,6 @@ class Polls implements \Stringable
 				{
 				$post['ordering'][$index] = $order++;
 				}
-			\App\Tools\Logger::get()->debug($post);
 
 			$volunteerPollTable->updateFromTable($post);
 

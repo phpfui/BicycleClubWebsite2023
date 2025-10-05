@@ -42,11 +42,17 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$form = new \PHPFUI\Form($this->page);
 			$form->setAreYouSure(false);
 			$form->setAttribute('action', '/Photo/cut');
-			$form->add($this->view->listFolders($this->folderTable, $folder));
+			$form->add($this->view->listFolders($this->folderTable, $folder, ''));
 
 			if ($folder->loaded())
 				{
 				$this->table->setWhere(new \PHPFUI\ORM\Condition('folderId', $folder->folderId));
+				\App\Model\Session::clearPhotoAlbum();
+
+				if ($this->table->count())
+					{
+					$form->add($this->getSlideShowButton($this->page->getController()->getUri()));
+					}
 				$form->add($this->view->listPhotos($this->table));
 				}
 			$this->page->addPageContent($form);
@@ -102,18 +108,18 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->Browse();
 		}
 
-	public function delete(\App\Record\Photo $photo = new \App\Record\Photo()) : void
+	public function delete() : void
 		{
+		$photo = new \App\Record\Photo($_POST['photoId'] ?? 0);
+
 		if (! $photo->empty() && ($photo->memberId == \App\Model\Session::signedInMemberId() || $this->page->isAuthorized('Delete Photo')))
 			{
-			$url = '/Photo/browse/' . $photo->folderId;
 			$photo->delete();
-			\App\Model\Session::setFlash('success', 'Photo deleted.');
-			$this->page->redirect($url);
+			$this->page->setResponse("{$photo->photoId}");
 			}
 		else
 			{
-			\App\Model\Session::setFlash('alert', 'Photo not found.');
+			$this->page->setResponse('error');
 			}
 		}
 
@@ -156,6 +162,12 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				}
 			$this->table->addJoin('photoTag');
 			$this->table->setWhere(new \PHPFUI\ORM\Condition('photoTag.memberId', $member->memberId));
+			\App\Model\Session::clearPhotoAlbum();
+
+			if ($this->table->count())
+				{
+				$this->page->addPageContent($this->getSlideShowButton($this->page->getController()->getUri()));
+				}
 			$this->page->addPageContent($this->view->listPhotos($this->table));
 			}
 		}
@@ -187,6 +199,12 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$this->page->addPageContent($this->getMember($member));
 				}
 			$this->table->setWhere(new \PHPFUI\ORM\Condition('memberId', $member->memberId));
+			\App\Model\Session::clearPhotoAlbum();
+
+			if ($this->table->count())
+				{
+				$this->page->addPageContent($this->getSlideShowButton($this->page->getController()->getUri()));
+				}
 			$this->page->addPageContent($this->view->listPhotos($this->table));
 			}
 		}
@@ -264,15 +282,51 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			if (($_GET['submit'] ?? '') == 'Search')
 				{
 				$showSearch = false;
-				$this->table->search($_GET);
+				$this->table->search(\array_intersect_key($_GET, $searchFields));
 				}
 			$this->page->addPageContent($this->view->getSearchButton($this->table->count(), $searchFields, $_GET, $showSearch));
 
 			if (! $showSearch)
 				{
-				$this->page->addPageContent($this->view->listPhotos($this->table));
+				\App\Model\Session::clearPhotoAlbum();
+
+				if ($this->table->count())
+					{
+					$this->page->addPageContent($this->getSlideShowButton($this->page->getController()->getUri()));
+					}
+				$this->page->addPageContent($this->view->listPhotos($this->table, false));
 				$this->page->addPageContent($this->view->getSearchButton($this->table->count(), $searchFields, $_GET, $showSearch));
 				}
+			}
+		}
+
+	public function slideShow(\App\Record\Photo $photo = new \App\Record\Photo()) : void
+		{
+		$url = '';
+
+		if ($_GET['url'] ?? false)
+			{
+			$url = $_GET['url'];
+			$this->page->addPageContent(new \PHPFUI\Button('Back', $url));
+			}
+		$photos = \App\Model\Session::getPhotoAlbum();
+
+		if (\count($photos))
+			{
+			if (! $photo->loaded())
+				{
+				$photo = new \App\Record\Photo($photos[0]);
+				}
+
+			if ($url)
+				{
+				$url = '?url=' . $url;
+				}
+			$this->page->addPageContent($this->view->getImage($photo, '/Photo/slideShow/~photoId~' . $url));
+			}
+		else
+			{
+			$this->page->addPageContent(new \PHPFUI\SubHeader('No active slideshow'));
 			}
 		}
 
@@ -330,5 +384,15 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$header = $member->empty() ? 'Member Not Found' : $member->fullName();
 
 		return new \PHPFUI\SubHeader($header);
+		}
+
+	private function getSlideShowButton(string $url) : \PHPFUI\Button
+		{
+		if ($_GET['url'] ?? false)
+			{
+			$url = $_GET['url'];
+			}
+
+		return new \PHPFUI\Button('Slide Show', '/Photo/slideShow?url=' . $url)->addClass('success');
 		}
 	}

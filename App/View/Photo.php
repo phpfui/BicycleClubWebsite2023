@@ -101,20 +101,21 @@ class Photo extends \App\View\Folder
 		return $container;
 		}
 
-	public function getImage(\App\Record\Photo $photo) : \PHPFUI\Container
+	public function getImage(\App\Record\Photo $photo, string $url = '/Photo/view/~photoId~') : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 
-		$container->add($this->getNavBar($photo));
+		$container->add($this->getNavBar($photo, $url));
 
 		$gridX = new \PHPFUI\GridX();
 		$cell = new \PHPFUI\Cell(12);
 		$cell->addClass('text-center');
-		$cell->add($photo->getImage());
+		$cell->add($image = $photo->getImage());
+		$image->setId('photoId-' . $photo->photoId);
 		$gridX->add($cell);
 		$container->add($gridX);
 
-		$container->add($this->getNavBar($photo));
+		$container->add($this->getNavBar($photo, $url));
 
 		return $container;
 		}
@@ -233,7 +234,7 @@ class Photo extends \App\View\Folder
 		return $container;
 		}
 
-	public function getNavBar(\App\Record\Photo $photo) : \PHPFUI\GridX
+	public function getNavBar(\App\Record\Photo $photo, string $path) : \PHPFUI\GridX
 		{
 		$album = \App\Model\Session::getPhotoAlbum();
 		$navDiv = new \PHPFUI\GridX();
@@ -269,20 +270,24 @@ class Photo extends \App\View\Folder
 
 		$navDiv->addClass('text-center');
 		$cellLeft = new \PHPFUI\Cell(1);
-		$left = new \PHPFUI\FAIcon('fas', 'caret-square-left', '/Photo/view/' . $previous);
+		$left = new \PHPFUI\FAIcon('fas', 'caret-square-left', \str_replace('~photoId~', "{$previous}", $path));
 		$cellLeft->add($left);
 		$navDiv->add($cellLeft);
 		$cellCenter = new \PHPFUI\Cell(10);
 
 		if ($this->page->isAuthorized('Delete Photo'))
 			{
-			$trash = new \PHPFUI\FAIcon('far', 'trash-alt', '/Photo/delete/' . $photo->photoId);
-			$trash->setConfirm('Delete this photo? This can not be undone.');
+			$delete = new \PHPFUI\AJAX('deletePhoto', 'Delete this photo? This can not be undone.');
+			$delete->addFunction('success', '$("#photoId-"+data.response).css("background-color","red").hide("fast").remove()');
+			$delete->setUrl('/Photo/delete');
+			$this->page->addJavaScript($delete->getPageJS());
+			$trash = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
+			$trash->addAttribute('onclick', $delete->execute(['photoId' => $photoId]));
 			$cellCenter->add($trash);
 			}
 		$navDiv->add($cellCenter);
 		$cellRight = new \PHPFUI\Cell(1);
-		$right = new \PHPFUI\FAIcon('fas', 'caret-square-right', '/Photo/view/' . $next);
+		$right = new \PHPFUI\FAIcon('fas', 'caret-square-right', \str_replace('~photoId~', "{$next}", $path));
 		$cellRight->add($right);
 		$navDiv->add($cellRight);
 
@@ -442,10 +447,8 @@ JS;
 		return $table;
 		}
 
-	public function listPhotos(\App\Table\Photo $photoTable) : \App\UI\ContinuousScrollTable
+	public function listPhotos(\App\Table\Photo $photoTable, bool $searchable = true) : \App\UI\ContinuousScrollTable
 		{
-		\App\Model\Session::clearPhotoAlbum();
-
 		$view = new \App\UI\ContinuousScrollTable($this->page, $photoTable);
 		$cursor = $view->getRawArrayCursor();
 
@@ -467,7 +470,7 @@ JS;
 			}
 		);
 
-		$headers = ['description' => 'Caption', 'taken', 'uploaded'];
+		$headers = ['description' => 'Caption', 'taken' => 'Taken', 'uploaded' => 'Upload'];
 		$normalHeaders = [];
 
 		if ($this->moveItem)
@@ -483,7 +486,12 @@ JS;
 			$view->addCustomColumn('del', $deleter->columnCallback(...));
 			}
 
-		$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, $normalHeaders))->setSortableColumns($headers);
+		$view->setHeaders(\array_merge($headers, $normalHeaders))->setSortableColumns(\array_keys($headers));
+
+		if ($searchable)
+			{
+			$view->setSearchColumns($headers);
+			}
 
 		return $view;
 		}

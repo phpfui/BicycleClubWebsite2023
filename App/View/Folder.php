@@ -277,7 +277,7 @@ abstract class Folder
 		return true;
 		}
 
-	public function listFolders(\App\Table\Folder $folderTable, \App\Record\Folder $parentFolder, ?string $addButtonName = '') : \PHPFUI\Table
+	public function listFolders(\App\Table\Folder $folderTable, \App\Record\Folder $parentFolder, ?string $addButtonName = '', ?\PHPFUI\Button $slideShowButton = null) : \PHPFUI\Table
 		{
 		$container = new \PHPFUI\Table();
 
@@ -327,6 +327,11 @@ abstract class Folder
 				$this->addEditFolderModal($renameFolderButton, $parentFolder);
 				$buttonGroup->add($renameFolderButton);
 				}
+			}
+
+		if ($slideShowButton)
+			{
+			$buttonGroup->add($slideShowButton);
 			}
 
 		if ($this->moveItem || $this->moveFolder)

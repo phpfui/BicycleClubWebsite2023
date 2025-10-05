@@ -96,7 +96,7 @@ class Session extends \PHPFUI\Session
 	 */
 	public static function getPhotoAlbum() : array
 		{
-		return $_SESSION['photosAlbum'] ?? [];
+		return $_SESSION['photoAlbum'] ?? [];
 		}
 
 	/**

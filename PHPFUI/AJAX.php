@@ -7,6 +7,8 @@ class AJAX
 	/** @var array<string, string> */
 	protected array $conditions = [];
 
+	private string $url = '';
+
 	/**
 	 * Set up an AJAX callback
 	 *
@@ -55,6 +57,13 @@ class AJAX
 		return $js . '});';
 		}
 
+	public function setUrl(string $url) : static
+		{
+		$this->url = '"'.$url.'",';
+
+		return $this;
+		}
+
 	/**
 	 * Get the generated JavaScript function to be added to the
 	 * page.
@@ -74,7 +83,7 @@ class AJAX
 			$extra = '}';
 			}
 
-		$js .= 'data["' . $csrfField . '"]="' . $csrf . '";data["action"]="' . $this->name . '";$.ajax({dataType:"json",type:"POST",traditional:true,data:data';
+		$js .= 'data["' . $csrfField . '"]="' . $csrf . '";data["action"]="' . $this->name . '";$.ajax('.$this->url.'{dataType:"json",type:"POST",traditional:true,data:data';
 
 		if (empty($this->conditions['error']))
 			{

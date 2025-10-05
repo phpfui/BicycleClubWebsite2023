@@ -19,19 +19,24 @@ class Photo extends \PHPFUI\ORM\Table
 
 		$condition = new \PHPFUI\ORM\Condition();
 
-		foreach ($tables as $name)
+		foreach ($tables as $tableName)
 			{
-			if (! empty($parameters[$name]))
+			if ('photo' != $tableName)
 				{
-				if ('photo' != $name)
+				$this->addJoin($tableName);
+				}
+
+			foreach ($parameters as $fieldName => $value)
+				{
+				if ($value)
 					{
-					$this->addJoin($name);
+					$condition->or($fieldName, '%' . $value . '%', new \PHPFUI\ORM\Operator\Like());
 					}
-				$condition->and($name, '%' . $parameters[$name] . '%', new \PHPFUI\ORM\Operator\Like());
 				}
 			}
 
 		$this->setWhere($condition);
+		$this->setGroupBy('photo.photoId')->setDistinct();
 
 		return $this;
 		}

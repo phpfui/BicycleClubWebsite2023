@@ -289,7 +289,6 @@ class Member extends \PHPFUI\ORM\Table
 		else
 			{
 			$this->setWhere(new \PHPFUI\ORM\Condition('member.memberId', 0));
-			\App\Tools\Logger::get()->debug($permissionName, 'permission not found');
 			}
 
 		return $this;

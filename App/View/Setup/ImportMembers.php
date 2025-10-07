@@ -60,6 +60,9 @@ class ImportMembers extends \PHPFUI\Container
 
 					break;
 
+				case 'Download Template':
+					$this->doExport();
+
 				case 'Import Members':
 					$this->doImport();
 
@@ -94,6 +97,20 @@ class ImportMembers extends \PHPFUI\Container
 
 		$this->add($wizardBar);
 		$this->add($form);
+		}
+
+	private function doExport() : void
+		{
+		$memberCursor = new \App\Table\Member()->getRecordCursor();
+		if (! count($memberCursor))
+			{
+			$controller = new \App\Cron\Controller(1);
+			$addBruce = new \App\Cron\Job\AddBruce($controller);
+			$addBruce->run();
+			}
+		$csvWriter = new \App\Tools\CSV\FileWriter('importMemberTemplate.csv');
+		$membershipModel = new \App\Model\Membership();
+		$membershipModel->export($csvWriter);
 		}
 
 	private function doImport() : void
@@ -221,6 +238,11 @@ class ImportMembers extends \PHPFUI\Container
 		$separator->addOption('^');
 		$separator->addOption('TAB');
 		$fieldSet->add($separator);
+
+		$downloadButton = new \PHPFUI\Submit('Download Template', 'action');
+		$downloadButton->addClass('warning');
+		$downloadButton->addAttribute('form', $form->getId());
+		$wizardBar->addButton($downloadButton);
 
 		$submit = new \PHPFUI\Submit('Upload', 'action');
 		$submit->addClass('success');

@@ -63,6 +63,7 @@ class ImportMembers extends \PHPFUI\Container
 				case 'Download Template':
 					$this->doExport();
 
+					// Intentionally fall through
 				case 'Import Members':
 					$this->doImport();
 
@@ -102,7 +103,8 @@ class ImportMembers extends \PHPFUI\Container
 	private function doExport() : void
 		{
 		$memberCursor = new \App\Table\Member()->getRecordCursor();
-		if (! count($memberCursor))
+
+		if (! \count($memberCursor))
 			{
 			$controller = new \App\Cron\Controller(1);
 			$addBruce = new \App\Cron\Job\AddBruce($controller);

@@ -16,10 +16,6 @@ class RWGPS extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Add / Update RWGPS'))
 			{
-			if (! $rwgps->empty())
-				{
-				$this->page->addPageContent(new \PHPFUI\SubHeader('Route Added / Updated'));
-				}
 			$this->page->addPageContent($this->view->addUpdate($rwgps));
 			}
 		}

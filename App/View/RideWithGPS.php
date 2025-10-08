@@ -162,12 +162,8 @@ class RideWithGPS
 		return $container;
 		}
 
-	public function addUpdate(\App\Record\RWGPS $rwgps = new \App\Record\RWGPS()) : \PHPFUI\Form | \PHPFUI\FieldSet
+	public function addUpdate(\App\Record\RWGPS $rwgps = new \App\Record\RWGPS()) : \PHPFUI\Form
 		{
-		if ($rwgps->loaded())
-			{
-			return $this->info($rwgps);
-			}
 		$form = new \PHPFUI\Form($this->page);
 
 		$fieldSet = new \PHPFUI\FieldSet('Enter Ride With GPS URL to Add / Update');
@@ -176,6 +172,12 @@ class RideWithGPS
 		$fieldSet->add($rwgpsUrl);
 		$fieldSet->add(new \App\UI\CancelButtonGroup(new \PHPFUI\Submit('Add / Update')));
 		$form->add($fieldSet);
+
+		if ($rwgps->loaded())
+			{
+			$form->add(new \PHPFUI\SubHeader('Route Added / Updated'));
+			$form->add($this->info($rwgps));
+			}
 
 		return $form;
 		}

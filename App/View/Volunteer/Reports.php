@@ -51,6 +51,10 @@ class Reports
 		$pollTable = new \App\Table\VolunteerPoll();
 		$polls = $pollTable->getPolls($jobEvent);
 
+		$fieldSet = new \PHPFUI\FieldSet('Unique Volunteer Report');
+		$fieldSet->add($this->makeCB('uniqueVolunteers', 'Print Unique Volunteers'));
+		$form->add($fieldSet);
+
 		if (\count($polls))
 			{
 			$form->add('<h3>Poll Reports</h3>');

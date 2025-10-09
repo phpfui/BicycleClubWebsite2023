@@ -36,6 +36,7 @@ class Volunteer extends \PDF_MC_Table
 
 	public function generate(\App\Record\JobEvent $jobEvent) : void
 		{
+		$this->uniqueVolunteers($jobEvent);
 		$this->pollReports();
 		$this->volunteerReports($jobEvent);
 		}
@@ -184,6 +185,39 @@ class Volunteer extends \PDF_MC_Table
 			}
 		$now = \App\Tools\Date::todayString();
 		$this->reportName = "JobReport-{$now}.pdf";
+		}
+
+	public function uniqueVolunteers(\App\Record\JobEvent $jobEvent) : void
+		{
+		if (! $this->parameters['uniqueVolunteers'])
+			{
+			return;
+			}
+		$this->AddPage('P', 'Letter');
+		$printed = \App\Tools\Date::todayString();
+		$this->SetDocumentTitle("Unique Volunteers for {$jobEvent->name} as of {$printed}");
+		$this->PrintHeader();
+
+		$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
+		$members = $volunteerJobShiftTable->getUniqueVolunteers($jobEvent);
+
+		$this->SetHeader(['First Name', 'Last Name', 'email', 'Cell', ]);
+		$this->SetAligns(['L', 'L', 'L', 'L']);
+		$this->SetWidths([40, 40, 70, 30, ]);
+		$this->PrintColumnHeaders();
+
+		foreach ($members as $member)
+			{
+			$this->Row([
+				\App\Tools\TextHelper::unhtmlentities($member->firstName),
+				\App\Tools\TextHelper::unhtmlentities($member->lastName),
+				$member->email,
+				$member->cellPhone,
+				'town', ]);
+			}
+		$this->SetWidths([40, 40, 70, 30, ]);
+		$this->Row(['']);
+		$this->Row(['Total Volunteers', \count($members)]);
 		}
 
 	public function volunteerReports(\App\Record\JobEvent $jobEvent) : void

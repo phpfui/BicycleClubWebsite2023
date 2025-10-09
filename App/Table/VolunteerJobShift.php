@@ -41,6 +41,22 @@ class VolunteerJobShift extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$member->memberId, $job->jobId, ]);
 		}
 
+	public function getUniqueVolunteers(\App\Record\JobEvent $jobEvent) : \PHPFUI\ORM\DataObjectCursor
+		{
+		$this->addSelect('member.*');
+		$this->addJoin('member');
+		$this->addJoin('jobShift');
+		$this->addJoin('job', new \PHPFUI\ORM\Condition('job.jobId', new \PHPFUI\ORM\Literal('jobShift.jobId')));
+		$this->addGroupBy('member.memberId');
+		$this->addOrderBy('member.lastName');
+		$this->addOrderBy('member.firstName');
+		$condition = new \PHPFUI\ORM\Condition('job.jobEventId', $jobEvent->jobEventId);
+		$condition->and('member.memberId', null, new \PHPFUI\ORM\Operator\IsNotNull());
+		$this->setWhere($condition);
+
+		return $this->getDataObjectCursor();
+		}
+
 	public function getVolunteers(int $jobId) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'select * from volunteerJobShift vjs left join member m on vjs.memberId=m.memberId where vjs.jobId=? order by vjs.shiftLeader desc,m.lastName,m.firstName';

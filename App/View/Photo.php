@@ -21,6 +21,20 @@ class Photo extends \App\View\Folder
 		$this->photoFiles = new \App\Model\PhotoFiles();
 		$this->photoTagTable = new \App\Table\PhotoTag();
 		$this->deleteComments = $this->page->isAuthorized('Delete Photo Comments');
+
+		if (($_POST['action'] ?? '') == 'Delete Marked')
+			{
+			foreach ($_POST['deletePhoto'] as $photoId => $checked)
+				{
+				if ($checked)
+					{
+					$photo = new \App\Record\Photo();
+					$photo->photoId = $photoId;
+					$photo->delete();
+					}
+				}
+			$this->page->redirect();
+			}
 		}
 
 	public function getComments(\App\Record\Photo $photo) : \PHPFUI\Container
@@ -549,6 +563,49 @@ JS;
 			}
 
 		return $container;
+		}
+
+	public function slideTable(?\App\Record\Folder $photoFolder) : \PHPFUI\Form
+		{
+		$url = '';
+
+		$form = new \PHPFUI\Form($this->page);
+		$buttonGroup = new \PHPFUI\HTML5Element('div');
+		$buttonGroup->addClass('clearfix');
+
+		if ($_GET['url'] ?? false)
+			{
+			$url = $_GET['url'];
+			$buttonGroup->add(new \PHPFUI\Button('Back', $url));
+			}
+
+		$deleteButton = new \PHPFUI\Submit('Delete Marked', 'action');
+		$deleteButton->setConfirm('Are you sure you want to delete all marked photos? This can not be undone');
+		$deleteButton->addClass('alert');
+		$deleteButton->addClass('float-right');
+		$buttonGroup->add($deleteButton);
+		$form->add($buttonGroup);
+
+		$multiColumn = new \PHPFUI\MultiColumn();
+
+		foreach ($photoFolder->photoChildren as $photo)
+			{
+			$checkBox = new \PHPFUI\Input\CheckBoxBoolean("deletePhoto[{$photo->photoId}]", 'Mark For Delete');
+			$multiColumn->add(new \PHPFUI\Thumbnail($photo->getImage()) . $checkBox);
+
+			if (\count($multiColumn) > 5)
+				{
+				$form->add($multiColumn);
+				$multiColumn = new \PHPFUI\MultiColumn();
+				}
+			}
+
+		if (\count($multiColumn))
+			{
+			$form->add($multiColumn);
+			}
+
+		return $form;
 		}
 
 	protected function addModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Folder $folder) : void

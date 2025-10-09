@@ -51,7 +51,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 				if ($this->table->count())
 					{
-					$form->add($this->getSlideShowButton($this->page->getController()->getUri()));
+					$form->add($this->getSlideShowButtonGroup($this->page->getController()->getUri(), $folder));
 					}
 				$form->add($this->view->listPhotos($this->table));
 				}
@@ -166,7 +166,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			if ($this->table->count())
 				{
-				$this->page->addPageContent($this->getSlideShowButton($this->page->getController()->getUri()));
+				$this->page->addPageContent($this->getSlideShowButtonGroup($this->page->getController()->getUri()));
 				}
 			$this->page->addPageContent($this->view->listPhotos($this->table));
 			}
@@ -203,7 +203,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			if ($this->table->count())
 				{
-				$this->page->addPageContent($this->getSlideShowButton($this->page->getController()->getUri()));
+				$this->page->addPageContent($this->getSlideShowButtonGroup($this->page->getController()->getUri()));
 				}
 			$this->page->addPageContent($this->view->listPhotos($this->table));
 			}
@@ -292,7 +292,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 				if ($this->table->count())
 					{
-					$this->page->addPageContent($this->getSlideShowButton($this->page->getController()->getUri()));
+					$this->page->addPageContent($this->getSlideShowButtonGroup($this->page->getController()->getUri()));
 					}
 				$this->page->addPageContent($this->view->listPhotos($this->table, false));
 				$this->page->addPageContent($this->view->getSearchButton($this->table->count(), $searchFields, $_GET, $showSearch));
@@ -315,7 +315,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			{
 			if (! $photo->loaded())
 				{
-				$photo = new \App\Record\Photo($photos[0]);
+				$photo = new \App\Record\Photo(0);
 				}
 
 			if ($url)
@@ -327,6 +327,23 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		else
 			{
 			$this->page->addPageContent(new \PHPFUI\SubHeader('No active slideshow'));
+			}
+		}
+
+	public function slideTable(\App\Record\Folder $photoFolder = new \App\Record\Folder()) : void
+		{
+		$this->page->turnOffBanner();
+
+		if ($this->page->addHeader('Slide Table'))
+			{
+			if ($photoFolder->loaded())
+				{
+				$this->page->addPageContent($this->view->slideTable($photoFolder));
+				}
+			else
+				{
+				$this->page->addPageContent(new \PHPFUI\SubHeader('Folder not found'));
+				}
 			}
 		}
 
@@ -386,13 +403,21 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		return new \PHPFUI\SubHeader($header);
 		}
 
-	private function getSlideShowButton(string $url) : \PHPFUI\Button
+	private function getSlideShowButtonGroup(string $url, ?\App\Record\Folder $folder = null) : \PHPFUI\ButtonGroup
 		{
 		if ($_GET['url'] ?? false)
 			{
 			$url = $_GET['url'];
 			}
 
-		return new \PHPFUI\Button('Slide Show', '/Photo/slideShow?url=' . $url)->addClass('success');
+		$buttonGroup = new \PHPFUI\ButtonGroup();
+		$buttonGroup->add(new \PHPFUI\Button('Slide Show', '/Photo/slideShow?url=' . $url)->addClass('success'));
+
+		if ($folder)
+			{
+			$buttonGroup->add(new \PHPFUI\Button('Slide Table', '/Photo/slideTable/' . $folder->folderId . '?url=' . $url)->addClass('info'));
+			}
+
+		return $buttonGroup;
 		}
 	}

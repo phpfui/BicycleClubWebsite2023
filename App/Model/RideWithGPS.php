@@ -306,7 +306,7 @@ class RideWithGPS extends \App\Model\GPS
 
 	public function scrape(\App\Record\RWGPS $rwgps, bool $alwaysScrape = false) : ?\App\Record\RWGPS
 		{
-		if (0 === $rwgps->RWGPSId || (! $alwaysScrape && ! $rwgps->loaded()))
+		if (! $rwgps->RWGPSId || (! $alwaysScrape && ! $rwgps->loaded()))
 			{
 			return null;
 			}

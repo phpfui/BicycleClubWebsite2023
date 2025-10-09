@@ -143,6 +143,7 @@ class PayPal
 		$breakdown->shipping = new \PHPFUI\PayPal\Currency($invoice->totalShipping);
 
 		$discount = 0.0;
+
 		if (0.0 != $invoice->discount || 0.0 != $invoice->pointsUsed)
 			{
 			$breakdown->discount = new \PHPFUI\PayPal\Currency((float)($discount = $invoice->discount + $invoice->pointsUsed));
@@ -151,11 +152,11 @@ class PayPal
 		$breakdown->item_total = new \PHPFUI\PayPal\Currency($itemTotal);
 
 // "description":"Should equal item_total + tax_total + shipping + handling + insurance - shipping_discount - discount."}]
-		$value = $itemTotal + $invoice->totalTax +  $invoice->totalShipping - $discount;
+		$value = $itemTotal + $invoice->totalTax + $invoice->totalShipping - $discount;
 
 		if ($value != $unpaidBalance)
 			{
-			\App\Tools\Logger::get()->debug("value $value != unpaidBalance $unpaidBalance (itemTotal $itemTotal) (discount $discount)");
+			\App\Tools\Logger::get()->debug("value {$value} != unpaidBalance {$unpaidBalance} (itemTotal {$itemTotal}) (discount {$discount})");
 			\App\Tools\Logger::get()->debug($invoice);
 			}
 

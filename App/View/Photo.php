@@ -573,11 +573,7 @@ JS;
 		$buttonGroup = new \PHPFUI\HTML5Element('div');
 		$buttonGroup->addClass('clearfix');
 
-		if ($_GET['url'] ?? false)
-			{
-			$url = $_GET['url'];
-			$buttonGroup->add(new \PHPFUI\Button('Back', $url));
-			}
+		$buttonGroup->add(new \PHPFUI\Button('Back', '/Photo/Browse/' . $photoFolder->folderId));
 
 		$deleteButton = new \PHPFUI\Submit('Delete Marked', 'action');
 		$deleteButton->setConfirm('Are you sure you want to delete all marked photos? This can not be undone');

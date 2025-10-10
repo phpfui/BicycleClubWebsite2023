@@ -413,7 +413,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$buttonGroup = new \PHPFUI\ButtonGroup();
 		$buttonGroup->add(new \PHPFUI\Button('Slide Show', '/Photo/slideShow?url=' . $url)->addClass('success'));
 
-		if ($folder)
+		if ($folder && $this->page->isAuthorized('Slide Table'))
 			{
 			$buttonGroup->add(new \PHPFUI\Button('Slide Table', '/Photo/slideTable/' . $folder->folderId . '?url=' . $url)->addClass('info'));
 			}

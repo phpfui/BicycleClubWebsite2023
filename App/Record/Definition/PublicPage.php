@@ -8,6 +8,7 @@ namespace App\Record\Definition;
  * @property ?int $banner MySQL type int
  * @property ?int $blog MySQL type int
  * @property ?string $blogAfter MySQL type varchar(100)
+ * @property ?string $endDate MySQL type date
  * @property int $footerMenu MySQL type tinyint
  * @property ?int $header MySQL type int
  * @property ?int $hidden MySQL type int
@@ -18,6 +19,7 @@ namespace App\Record\Definition;
  * @property int $publicPageId MySQL type int
  * @property \App\Record\PublicPage $publicPage related record
  * @property ?int $sequence MySQL type int
+ * @property ?string $startDate MySQL type date
  * @property ?string $url MySQL type varchar(100)
  */
 abstract class PublicPage extends \PHPFUI\ORM\Record
@@ -40,6 +42,7 @@ abstract class PublicPage extends \PHPFUI\ORM\Record
 				'banner' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
 				'blog' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
 				'blogAfter' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
+				'endDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
 				'footerMenu' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
 				'header' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
 				'hidden' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
@@ -49,6 +52,7 @@ abstract class PublicPage extends \PHPFUI\ORM\Record
 				'publicMenu' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 1, ),
 				'publicPageId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'sequence' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'startDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
 				'url' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
 			];
 			}

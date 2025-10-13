@@ -206,6 +206,10 @@ class PublicPageEditor
 		$url->setRequired();
 		$fieldSet->add(new \PHPFUI\MultiColumn($url));
 
+		$startDate = new \PHPFUI\Input\Date($this->page, 'startDate', 'Page is live date', $publicPage->startDate);
+		$endDate = new \PHPFUI\Input\Date($this->page, 'endDate', 'Page is down after date', $publicPage->endDate);
+		$fieldSet->add(new \PHPFUI\MultiColumn($startDate, $endDate));
+
 		$homePageNotification = new \PHPFUI\Input\CheckBoxBoolean(' homePageNotification', 'Home Page Notification', (bool)$publicPage->homePageNotification);
 		$homePageNotification->setToolTip('Latest content headline will be listed on the user Home page');
 		$banner = new \PHPFUI\Input\CheckBoxBoolean('banner', 'Show page with banner', (bool)$publicPage->banner);

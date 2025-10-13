@@ -126,7 +126,8 @@ class HomePage implements \Stringable
 
 		// Public Page Content
 		$publicPageTable = new \App\Table\PublicPage();
-		$publicPageTable->setWhere(new \PHPFUI\ORM\Condition('homePageNotification', 1));
+		$condition = new \PHPFUI\ORM\Condition('homePageNotification', 1);
+		$publicPageTable->setWhere($condition);
 
 		foreach ($publicPageTable->getRecordCursor() as $page)
 			{

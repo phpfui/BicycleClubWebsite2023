@@ -28,8 +28,11 @@ class Footer implements \Stringable
 			}
 
 		$publicPageTable = new \App\Table\PublicPage();
+		$publicPageTable->setDates();
 		$publicPageTable->addOrderBy('sequence');
-		$publicPageTable->setWhere(new \PHPFUI\ORM\Condition('footerMenu', 1));
+		$condition = $publicPageTable->getWhereCondition();
+		$condition->and(new \PHPFUI\ORM\Condition('footerMenu', 1));
+		$publicPageTable->setWhere($condition);
 
 		foreach ($publicPageTable->getRecordCursor() as $page)
 			{

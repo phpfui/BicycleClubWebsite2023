@@ -14,6 +14,7 @@ use function serialize;
 use function sort;
 use function sprintf;
 
+/** @final */
 class CyclicAliasException extends InvalidArgumentException
 {
     /**
@@ -108,7 +109,6 @@ class CyclicAliasException extends InvalidArgumentException
 
     /**
      * @param string[] $detectedCycle
-     * @phpcsSuppress SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedMethod
      */
     private static function printCycle(array $detectedCycle): string
     {

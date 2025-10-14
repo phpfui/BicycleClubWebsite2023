@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Brick\VarExporter\Internal\ObjectExporter\ClosureExporter;
 
+use Override;
 use PhpParser\PrettyPrinter\Standard;
 
 /**
@@ -15,19 +16,12 @@ final class PrettyPrinter extends Standard
 {
     private int $varExporterNestingLevel = 0;
 
-    /**
-     * @param int $level
-     *
-     * @return void
-     */
     public function setVarExporterNestingLevel(int $level) : void
     {
         $this->varExporterNestingLevel = $level;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    #[Override]
     protected function resetState() : void
     {
         parent::resetState();

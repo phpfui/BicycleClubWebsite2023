@@ -10,6 +10,8 @@ use Psr\Container\NotFoundExceptionInterface;
 /**
  * This exception is thrown when the service locator do not manage to find a
  * valid factory to create a service
+ *
+ * @final
  */
 class ServiceNotFoundException extends SplInvalidArgumentException implements
     ExceptionInterface,

@@ -6,6 +6,7 @@ namespace Laminas\ServiceManager\Exception;
 
 use RuntimeException as SplRuntimeException;
 
+/** @final */
 class RuntimeException extends SplRuntimeException
 {
 }

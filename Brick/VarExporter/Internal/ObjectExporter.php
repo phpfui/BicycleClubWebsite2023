@@ -13,14 +13,8 @@ use Brick\VarExporter\ExportException;
  */
 abstract class ObjectExporter
 {
-    /**
-     * @var GenericExporter
-     */
-    protected $exporter;
+    protected GenericExporter $exporter;
 
-    /**
-     * @param GenericExporter $exporter
-     */
     public function __construct(GenericExporter $exporter)
     {
         $this->exporter = $exporter;
@@ -30,8 +24,6 @@ abstract class ObjectExporter
      * Returns whether this exporter supports the given object.
      *
      * @param \ReflectionObject $reflectionObject A reflection of the object.
-     *
-     * @return bool
      */
     abstract public function supports(\ReflectionObject $reflectionObject) : bool;
 
@@ -53,8 +45,6 @@ abstract class ObjectExporter
      * Returns the code to create a new object of the given class.
      *
      * If the class has a constructor, reflection will be used to bypass it.
-     *
-     * @param \ReflectionClass $class
      *
      * @return string[] The lines of code.
      */

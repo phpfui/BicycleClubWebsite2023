@@ -8,6 +8,7 @@ use DomainException;
 
 use function sprintf;
 
+/** @final */
 class ContainerModificationsNotAllowedException extends DomainException implements ExceptionInterface
 {
     /**

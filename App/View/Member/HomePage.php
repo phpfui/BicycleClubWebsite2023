@@ -177,7 +177,7 @@ class HomePage implements \Stringable
 			}
 		$counter = 0;
 
-		foreach ($order as $item)	// @phpstan-ignore-line
+		foreach ($order as $item)
 			{
 			if ($item['priority'] > $this->getDaysCutoff($item['category']))
 				{

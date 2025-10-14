@@ -52,7 +52,7 @@ class Search implements \Stringable
 	/**
 	 * @param array<string,string> $parameters
 	 */
-	protected function getRangeSlider(string $name, array $parameters, int $minValue = 1, int $maxValue = 250, string $subtitle = '') : \PHPFUI\Container
+	protected function getRangeSlider(string $name, array $parameters, int $minValue = 0, int $maxValue = 250, string $subtitle = '') : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 
@@ -103,7 +103,7 @@ class Search implements \Stringable
 
 		if ($this->metric)
 			{
-			$fieldSet->add($this->getRangeSlider('km', $parameters, 1, 350));
+			$fieldSet->add($this->getRangeSlider('km', $parameters, 0, 350));
 			$fieldSet->add($this->getRangeSlider('metersPerKm', $parameters, 0, 100));
 			}
 		else
@@ -144,15 +144,15 @@ class Search implements \Stringable
 
 		if ($this->metric)
 			{
-			$searchFields['km_min'] = 20;
-			$searchFields['km_max'] = 300;
+			$searchFields['km_min'] = 0;
+			$searchFields['km_max'] = 350;
 			$searchFields['metersPerKm_min'] = 1;
 			$searchFields['metersPerKm_max'] = 100;
 			}
 		else
 			{
-			$searchFields['miles_min'] = 20;
-			$searchFields['miles_max'] = 80;
+			$searchFields['miles_min'] = 0;
+			$searchFields['miles_max'] = 105;
 			$searchFields['feetPerMile_min'] = 1;
 			$searchFields['feetPerMile_max'] = 100;
 			}

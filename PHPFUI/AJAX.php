@@ -57,13 +57,6 @@ class AJAX
 		return $js . '});';
 		}
 
-	public function setUrl(string $url) : static
-		{
-		$this->url = '"'.$url.'",';
-
-		return $this;
-		}
-
 	/**
 	 * Get the generated JavaScript function to be added to the
 	 * page.
@@ -83,7 +76,7 @@ class AJAX
 			$extra = '}';
 			}
 
-		$js .= 'data["' . $csrfField . '"]="' . $csrf . '";data["action"]="' . $this->name . '";$.ajax('.$this->url.'{dataType:"json",type:"POST",traditional:true,data:data';
+		$js .= 'data["' . $csrfField . '"]="' . $csrf . '";data["action"]="' . $this->name . '";$.ajax(' . $this->url . '{dataType:"json",type:"POST",traditional:true,data:data';
 
 		if (empty($this->conditions['error']))
 			{
@@ -108,5 +101,15 @@ class AJAX
 	public function isMyCallback(array $post) : bool
 		{
 		return \PHPFUI\Session::checkCSRF() && ($post['action'] ?? '') == $this->name;
+		}
+
+	/**
+	 * Set the url for the request. It defaults to the current page.
+	 */
+	public function setUrl(string $url) : static
+		{
+		$this->url = '"' . $url . '",';
+
+		return $this;
 		}
 	}

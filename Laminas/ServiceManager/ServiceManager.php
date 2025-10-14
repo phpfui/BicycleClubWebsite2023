@@ -32,6 +32,7 @@ use function array_keys;
 use function array_merge;
 use function class_exists;
 use function in_array;
+use function is_array;
 use function is_callable;
 use function is_string;
 use function spl_autoload_register;
@@ -100,7 +101,7 @@ use function sprintf;
  *     services?: array<string,mixed>,
  *     shared?:array<string,bool>,
  *     shared_by_default?: bool,
- *     ...
+ *     ...<string, mixed>,
  * }
  *
  * @final Will be marked as final with v5.0.0
@@ -771,7 +772,8 @@ class ServiceManager implements ServiceLocatorInterface
             }
         }
 
-        if (isset($config['aliases'])) {
+        if (isset($config['aliases']) && is_array($config['aliases'])) {
+            /** @psalm-var string $service */
             foreach (array_keys($config['aliases']) as $service) {
                 if (isset($this->services[$service])) {
                     throw ContainerModificationsNotAllowedException::fromExistingService($service);
@@ -779,7 +781,8 @@ class ServiceManager implements ServiceLocatorInterface
             }
         }
 
-        if (isset($config['invokables'])) {
+        if (isset($config['invokables']) && is_array($config['invokables'])) {
+            /** @psalm-var string $service */
             foreach (array_keys($config['invokables']) as $service) {
                 if (isset($this->services[$service])) {
                     throw ContainerModificationsNotAllowedException::fromExistingService($service);
@@ -787,7 +790,8 @@ class ServiceManager implements ServiceLocatorInterface
             }
         }
 
-        if (isset($config['factories'])) {
+        if (isset($config['factories']) && is_array($config['factories'])) {
+            /** @psalm-var string $service */
             foreach (array_keys($config['factories']) as $service) {
                 if (isset($this->services[$service])) {
                     throw ContainerModificationsNotAllowedException::fromExistingService($service);
@@ -795,7 +799,8 @@ class ServiceManager implements ServiceLocatorInterface
             }
         }
 
-        if (isset($config['delegators'])) {
+        if (isset($config['delegators']) && is_array($config['delegators'])) {
+            /** @psalm-var string $service */
             foreach (array_keys($config['delegators']) as $service) {
                 if (isset($this->services[$service])) {
                     throw ContainerModificationsNotAllowedException::fromExistingService($service);
@@ -803,7 +808,8 @@ class ServiceManager implements ServiceLocatorInterface
             }
         }
 
-        if (isset($config['shared'])) {
+        if (isset($config['shared']) && is_array($config['shared'])) {
+            /** @psalm-var string $service */
             foreach (array_keys($config['shared']) as $service) {
                 if (isset($this->services[$service])) {
                     throw ContainerModificationsNotAllowedException::fromExistingService($service);
@@ -811,7 +817,8 @@ class ServiceManager implements ServiceLocatorInterface
             }
         }
 
-        if (isset($config['lazy_services']['class_map'])) {
+        if (isset($config['lazy_services']['class_map']) && is_array($config['lazy_services']['class_map'])) {
+            /** @psalm-var string $service */
             foreach (array_keys($config['lazy_services']['class_map']) as $service) {
                 if (isset($this->services[$service])) {
                     throw ContainerModificationsNotAllowedException::fromExistingService($service);

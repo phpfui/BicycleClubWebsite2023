@@ -21,7 +21,7 @@ final class GenericExporter
     /**
      * @var ObjectExporter[]
      */
-    private $objectExporters = [];
+    private array $objectExporters = [];
 
     /**
      * The visited objects, to detect circular references.
@@ -34,76 +34,62 @@ final class GenericExporter
 
     /**
      * @psalm-readonly
-     *
-     * @var bool
      */
-    public $addTypeHints;
+    public bool $addTypeHints;
 
     /**
      * @psalm-readonly
-     *
-     * @var bool
      */
-    public $skipDynamicProperties;
+    public bool $skipDynamicProperties;
 
     /**
      * @psalm-readonly
-     *
-     * @var bool
      */
-    public $inlineArray;
+    public bool $inlineArray;
 
     /**
      * @psalm-readonly
-     *
-     * @var bool
      */
-    public $inlineScalarList;
+    public bool $inlineScalarList;
 
     /**
      * @psalm-readonly
-     *
-     * @var bool
      */
-    public $closureSnapshotUses;
+    public bool $closureSnapshotUses;
 
     /**
      * @psalm-readonly
-     *
-     * @var bool
      */
-    public $trailingCommaInArray;
+    public bool $trailingCommaInArray;
 
     /**
      * @psalm-readonly
-     *
-     * @var int
      */
-    public $indentLevel;
+    public int $indentLevel;
 
     public function __construct(int $options, int $indentLevel = 0)
     {
         $this->objectExporters[] = new ObjectExporter\StdClassExporter($this);
 
-        if (! ($options & VarExporter::NO_CLOSURES)) {
+        if (($options & VarExporter::NO_CLOSURES) === 0) {
             $this->objectExporters[] = new ObjectExporter\ClosureExporter($this);
         }
 
-        if (! ($options & VarExporter::NO_SET_STATE)) {
+        if (($options & VarExporter::NO_SET_STATE) === 0) {
             $this->objectExporters[] = new ObjectExporter\SetStateExporter($this);
         }
 
         $this->objectExporters[] = new ObjectExporter\InternalClassExporter($this);
 
-        if (! ($options & VarExporter::NO_SERIALIZE)) {
+        if (($options & VarExporter::NO_SERIALIZE) === 0) {
             $this->objectExporters[] = new ObjectExporter\SerializeExporter($this);
         }
 
-        if (! ($options & VarExporter::NO_ENUMS)) {
+        if (($options & VarExporter::NO_ENUMS) === 0) {
             $this->objectExporters[] = new ObjectExporter\EnumExporter($this);
         }
 
-        if (! ($options & VarExporter::NOT_ANY_OBJECT)) {
+        if (($options & VarExporter::NOT_ANY_OBJECT) === 0) {
             $this->objectExporters[] = new ObjectExporter\AnyObjectExporter($this);
         }
 
@@ -126,31 +112,27 @@ final class GenericExporter
      *
      * @throws ExportException
      */
-    public function export($var, array $path, array $parentIds) : array
+    public function export(mixed $var, array $path, array $parentIds) : array
     {
-        switch ($type = gettype($var)) {
-            case 'boolean':
-            case 'integer':
-            case 'double':
-            case 'string':
-                return [var_export($var, true)];
-
-            case 'NULL':
-                // lowercase null
-                return ['null'];
-
-            case 'array':
-                /** @var array $var */
-                return $this->exportArray($var, $path, $parentIds);
-
-            case 'object':
-                /** @var object $var */
-                return $this->exportObject($var, $path, $parentIds);
-
-            default:
-                // resources
-                throw new ExportException(sprintf('Type "%s" is not supported.', $type), $path);
+        if ($var === null) {
+            return ['null'];
         }
+
+        // bool, int, float, string
+        if (is_scalar($var)) {
+            return [var_export($var, true)];
+        }
+
+        if (is_array($var)) {
+            return $this->exportArray($var, $path, $parentIds);
+        }
+
+        if (is_object($var)) {
+            return $this->exportObject($var, $path, $parentIds);
+        }
+
+        // resources
+        throw new ExportException(sprintf('Type "%s" is not supported.', gettype($var)), $path);
     }
 
     /**
@@ -188,11 +170,7 @@ final class GenericExporter
             $exported = $this->export($value, $newPath, $parentIds);
 
             if ($inline) {
-                if ($isList) {
-                    $result[] = $exported[0];
-                } else {
-                    $result[] = var_export($key, true) . ' => ' . $exported[0];
-                }
+                $result[] = $isList ? $exported[0] : var_export($key, true) . ' => ' . $exported[0];
             } else {
                 $prepend = '';
                 $append = '';
@@ -228,9 +206,6 @@ final class GenericExporter
      * Types considered scalar here are int, bool, float, string and null.
      * If the array is empty, this method returns true.
      *
-     * @param array $array
-     *
-     * @return bool
      */
     private function isScalarList(array $array) : bool
     {
@@ -261,7 +236,7 @@ final class GenericExporter
                 throw new ExportException(sprintf(
                     'Object of class "%s" has a circular reference at %s. ' .
                     'Circular references are currently not supported.',
-                    get_class($object),
+                    $object::class,
                     ExportException::pathToString($this->visitedObjects[$parentId][$id])
                 ), $path);
             }

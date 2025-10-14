@@ -138,7 +138,7 @@ class Info
 			$row = new \PHPFUI\GridX();
 			$row->add('<label><strong>Description</strong></label>');
 			$fieldSet->add($row);
-			$fieldSet->add($ride->description);
+			$fieldSet->add(\App\Tools\TextHelper::unhtmlentities($ride->description));
 			}
 
 		$fieldSet->add($rwgpsMenu);
@@ -265,7 +265,7 @@ class Info
 
 		if ($ride->description)
 			{
-			$table->addRow(['Description', $ride->description]);
+			$table->addRow(['Description', \App\Tools\TextHelper::unhtmlentities($ride->description)]);
 			}
 
 		foreach ($ride->RWGPSChildren as $RWGPS)

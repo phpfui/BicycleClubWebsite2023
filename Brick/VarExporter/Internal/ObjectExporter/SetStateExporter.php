@@ -6,17 +6,16 @@ namespace Brick\VarExporter\Internal\ObjectExporter;
 
 use Brick\VarExporter\ExportException;
 use Brick\VarExporter\Internal\ObjectExporter;
+use Override;
 
 /**
  * Handles instances of classes with a __set_state() method.
  *
  * @internal This class is for internal use, and not part of the public API. It may change at any time without warning.
  */
-class SetStateExporter extends ObjectExporter
+final class SetStateExporter extends ObjectExporter
 {
-    /**
-     * {@inheritDoc}
-     */
+    #[Override]
     public function supports(\ReflectionObject $reflectionObject) : bool
     {
         if ($reflectionObject->hasMethod('__set_state')) {
@@ -28,9 +27,7 @@ class SetStateExporter extends ObjectExporter
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    #[Override]
     public function export(object $object, \ReflectionObject $reflectionObject, array $path, array $parentIds) : array
     {
         $className = $reflectionObject->getName();
@@ -38,9 +35,8 @@ class SetStateExporter extends ObjectExporter
         $vars = $this->getObjectVars($object, $path);
 
         $exportedVars = $this->exporter->exportArray($vars, $path, $parentIds);
-        $exportedVars = $this->exporter->wrap($exportedVars, '\\' . $className . '::__set_state(',  ')');
 
-        return $exportedVars;
+        return $this->exporter->wrap($exportedVars, '\\' . $className . '::__set_state(',  ')');
     }
 
     /**
@@ -76,10 +72,8 @@ class SetStateExporter extends ObjectExporter
                 $name = substr($name, $pos + 1);
             }
 
-            assert($name !== false);
-
             if (array_key_exists($name, $result)) {
-                $className = get_class($object);
+                $className = $object::class;
 
                 throw new ExportException(
                     'Class "' . $className . '" has overridden private property "' . $name . '". ' .
@@ -98,12 +92,6 @@ class SetStateExporter extends ObjectExporter
         return $result;
     }
 
-    /**
-     * @param object $object
-     * @param string $name
-     *
-     * @return bool
-     */
     private function isDynamicProperty(object $object, string $name) : bool
     {
         $reflectionClass = new \ReflectionClass($object);

@@ -96,6 +96,11 @@ class System
 					$fileName = \substr($fileName, 0, $extIndex) . $ext;
 					}
 
+				if (! $fileName)
+					{
+					$fileName = 'Unknown';
+					\App\Tools\Logger::debug($attachmentHeader);
+					}
 				// for some reason TempFile will not work here
 				$mimePart->saveContent($fileName);
 				$email->addAttachment($fileName, $fileName);

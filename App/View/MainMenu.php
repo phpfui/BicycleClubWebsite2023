@@ -253,18 +253,27 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Store/addItem', 'Add Store Item');
 			$this->addSub($menu, '/Store/cart', 'My Cart');
 			$this->addSub($menu, '/Store/checkout', 'Check Out');
-			$this->addSub($menu, '/Store/configuration', 'Store Configuration');
-			$this->addSub($menu, '/Store/DiscountCodes/list', 'Discount Codes');
+
+			if ($configurationMenu = $this->addMenu($menu, '/Store/Configuration', 'Store Configuration'))
+				{
+				$this->addSub($configurationMenu, '/Store/Configuration/settings', 'Store Settings');
+				$this->addSub($configurationMenu, '/Store/Configuration/abandonEmail', 'Abandoned Cart Email');
+				$this->addSub($configurationMenu, '/Store/Options/list', 'Store Options');
+				$this->addSub($configurationMenu, '/Store/Inventory/manage', 'Manage Inventory');
+				$this->addSub($configurationMenu, '/Store/DiscountCodes/list', 'Discount Codes');
+				}
+
+			if ($reportMenu = $this->addMenu($menu, '/Store/Reports', 'Store Reports'))
+				{
+				$this->addSub($reportMenu, '/Store/Inventory/report', 'Inventory Report');
+				$this->addSub($reportMenu, '/Store/Invoice/report', 'Invoice Report');
+				}
 			$this->addSub($menu, '/Store/email', 'Email Buyers');
-			$this->addSub($menu, '/Store/Inventory/manage', 'Manage Inventory');
-			$this->addSub($menu, '/Store/Inventory/report', 'Inventory Report');
 			$this->addSub($menu, '/Store/Invoice/create', 'Create Invoice');
 			$this->addSub($menu, '/Store/Invoice/find', 'Find Invoice');
 			$this->addSub($menu, '/Store/Invoice/myUnpaid', 'My Unpaid Invoices');
-			$this->addSub($menu, '/Store/Invoice/report', 'Invoice Report');
 			$this->addSub($menu, '/Store/Invoice/unshipped', 'Unshipped Invoices');
 			$this->addSub($menu, '/Store/myOrders', 'My Completed Orders');
-			$this->addSub($menu, '/Store/Options/list', 'Store Options');
 			$this->addSub($menu, '/Store/Orders/list', 'Store Orders');
 			$this->addSub($menu, '/Store/shop', 'Shop');
 			}

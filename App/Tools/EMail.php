@@ -202,6 +202,11 @@ class EMail
 		return $email;
 		}
 
+	public function getSubject() : string
+		{
+		return $this->subject;
+		}
+
 	/**
 	 * send the email immediately
 	 *

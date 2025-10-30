@@ -236,8 +236,9 @@ class Invoice extends \PHPFUI\ORM\Table
 	 */
 	public function getUnpaidOn(array $dates) : \PHPFUI\ORM\RecordCursor
 		{
-		$condition = new \PHPFUI\ORM\Condition('paymentDate', null, new \PHPFUI\ORM\Operator\IsNull());
+		$condition = new \PHPFUI\ORM\Condition();//'paymentDate', null, new \PHPFUI\ORM\Operator\IsNull());
 		$condition->and('orderDate', $dates, new \PHPFUI\ORM\Operator\In());
+		$this->setWhere($condition);
 
 		return $this->getRecordCursor();
 		}

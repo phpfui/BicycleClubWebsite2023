@@ -99,7 +99,7 @@ class System
 				if (! $fileName)
 					{
 					$fileName = 'Unknown';
-					\App\Tools\Logger::debug($attachmentHeader);
+					\App\Tools\Logger::get()->debug($attachmentHeader);
 					}
 				// for some reason TempFile will not work here
 				$mimePart->saveContent($fileName);

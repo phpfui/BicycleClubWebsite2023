@@ -155,14 +155,6 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
-	public function configuration() : void
-		{
-		if ($this->page->addHeader('Store Configuration'))
-			{
-			$this->page->addPageContent($this->storeView->configuration());
-			}
-		}
-
 	public function deleteFolder(\App\Record\Folder $folder = new \App\Record\Folder()) : void
 		{
 		$this->storeView->deleteFolder('/Store/Inventory/manage/', $folder);

@@ -75,10 +75,12 @@ class Store extends \App\View\Folder
 		$submit = new \PHPFUI\Submit();
 		$form = new \PHPFUI\Form($this->page, $submit);
 		$storeClosed = 'storeClosedMessage';
+		$abandonCartDaysBack = 'abandonCartDaysBack';
 
 		if ($form->isMyCallback())
 			{
 			$this->settingTable->save($storeClosed, $_POST[$storeClosed]);
+			$this->settingTable->save($abandonCartDaysBack, $_POST[$abandonCartDaysBack]);
 			$this->page->setResponse('Saved');
 
 			return '';
@@ -92,9 +94,14 @@ class Store extends \App\View\Folder
 		$control = $chair->getEditControl();
 		$control->setToolTip('This is the person who will ship any physical merchandise.');
 		$fieldSet->add($control);
+
 		$storeClosedMessage = new \PHPFUI\Input\Text($storeClosed, 'Store Closed Message', $this->settingTable->value($storeClosed));
 		$storeClosedMessage->setToolTip('If a message is entered, the store will be closed and this message displayed');
 		$fieldSet->add($storeClosedMessage);
+
+		$fieldSet->add(new \PHPFUI\Input\Text($abandonCartDaysBack, 'Abandoned Cart Email Days Back Reminder', $this->settingTable->value($abandonCartDaysBack))
+			->setToolTip('The number of days before a abandoned cart reminder is sent. Comma seperated for multiple days, blank for off'));
+
 		$fieldSet->add($submit);
 		$form->add($fieldSet);
 		$container->add($form);

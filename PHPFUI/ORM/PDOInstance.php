@@ -4,6 +4,8 @@ namespace PHPFUI\ORM;
 
 class PDOInstance extends \PDO
 	{
+	public readonly bool $postGre;
+
 	/** @var array<string> */
 	private array $lastError = [];
 
@@ -22,6 +24,7 @@ class PDOInstance extends \PDO
 	 */
 	public function __construct(private string $dsn, ?string $username = null, ?string $password = null, ?array $options = null)
 		{
+		$this->postGre = \str_starts_with($dsn, 'pgsql');
 		parent::__construct($dsn, $username, $password, $options);
 		}
 
@@ -47,15 +50,60 @@ class PDOInstance extends \PDO
 			{
 			$rows = $this->getRows("describe `{$table}`;");
 			}
+		elseif ($this->postGre)
+			{
+			$sql = 'SELECT column_name as "Field",data_type as "Type",character_maximum_length,is_nullable as "Null",column_default as "Default"
+				FROM information_schema.columns
+				WHERE table_schema = \'public\' AND table_name = ?
+				ORDER BY ordinal_position;';
+
+			$rows = $this->getRows($sql, [$table]);
+
+			foreach ($rows as $index => $row)
+				{
+				if ('character varying' == $row['Type'] && null != $row['character_maximum_length'])
+					{
+					$row['Type'] = 'varchar(' . $row['character_maximum_length'] . ')';
+					}
+				elseif ('text' == $row['Type'])
+					{
+					$row['Type'] = 'longtext';
+					}
+				$row['Extra'] = $row['Default'] ? \str_replace('nextval', 'auto_increment', $row['Default']) : '';
+				$rows[$index] = $row;
+				}
+			}
 		else
 			{
 			$autoIncrement = (bool)$this->getValue("SELECT count(*) FROM sqlite_master where tbl_name='{$table}' and sql like '%autoincrement%'");
 			$rows = $this->getRows("pragma table_info('{$table}')");
 			}
 
+		$fields = [];
+
 		foreach ($rows as $row)
 			{
-			$fields[] = new \PHPFUI\ORM\Schema\Field($this, $row, $autoIncrement);
+			$field = new \PHPFUI\ORM\Schema\Field($this, $row, $autoIncrement);
+			$fields[$field->name] = $field;
+			}
+
+		if ($this->postGre)
+			{
+			// get non auto increment primary keys
+			$rows = $this->getRows("SELECT kcu.column_name as name, tc.constraint_type as sql FROM information_schema.table_constraints AS tc
+														 JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name AND tc.table_schema = kcu.table_schema
+														 WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = ?", [$table]);
+
+			foreach ($rows as $row)
+				{
+				$fields[$row['name']]->primaryKey = true;
+				}
+			$row = $this->getRow("SELECT column_name as name,column_default as sql FROM information_schema.columns WHERE table_name = ? AND column_default LIKE 'nextval(%'", [$table]);
+
+			if (\count($row))
+				{
+				$fields[$row['name']]->autoIncrement = true;
+				}
 			}
 
 		return $fields;
@@ -70,9 +118,6 @@ class PDOInstance extends \PDO
 	 */
 	public function execute(string $sql, array $input = []) : bool
 		{
-		$this->lastParameters = $input;
-		$this->lastSql = $sql;
-
 		return null !== $this->run($sql, $input);
 		}
 
@@ -124,10 +169,7 @@ class PDOInstance extends \PDO
 	 */
 	public function getArrayCursor(string $sql = 'select 0 limit 0', array $input = []) : \PHPFUI\ORM\ArrayCursor
 		{
-		$this->lastParameters = $input;
-		$this->lastSql = $sql;
-
-		return new \PHPFUI\ORM\ArrayCursor($this->prepare($sql), $input);
+		return new \PHPFUI\ORM\ArrayCursor($this->getPreparedStatement($sql, $input), $input);
 		}
 
 	/**
@@ -137,10 +179,7 @@ class PDOInstance extends \PDO
 	 */
 	public function getDataObjectCursor(string $sql = 'select 0 limit 0', array $input = []) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$this->lastParameters = $input;
-		$this->lastSql = $sql;
-
-		return new \PHPFUI\ORM\DataObjectCursor($this->prepare($sql), $input);
+		return new \PHPFUI\ORM\DataObjectCursor($this->getPreparedStatement($sql, $input), $input);
 		}
 
 	public function getDSN() : string
@@ -158,6 +197,56 @@ class PDOInstance extends \PDO
 		if (\str_starts_with($this->dsn, 'mysql'))
 			{
 			$rows = $this->getRows('SHOW INDEXES FROM ' . $table);
+			}
+		elseif ($this->postGre)
+			{
+			// get auto increment primary keys
+			$fields = $this->getRow("SELECT column_name as name,column_default as sql FROM information_schema.columns WHERE table_name = ? AND column_default LIKE 'nextval(%'", [$table]);
+
+			if (\count($fields))
+				{
+				$index = new \PHPFUI\ORM\Schema\Index();
+				$index->primaryKey = true;
+				$index->name = $fields['name'];
+				$index->extra = $fields['sql'];
+				$fields[$index->name] = $index;
+				}
+
+			// get non auto increment primary keys
+			$rows = $this->getRows("SELECT kcu.column_name as name, tc.constraint_type as sql FROM information_schema.table_constraints AS tc
+														 JOIN information_schema.key_column_usage AS kcu ON tc.constraint_name = kcu.constraint_name AND tc.table_schema = kcu.table_schema
+														 WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_name = ?", [$table]);
+
+			foreach ($rows as $row)
+				{
+				$index = new \PHPFUI\ORM\Schema\Index();
+				$index->primaryKey = true;
+				$index->name = $fields['name'];
+				$index->extra = $fields['sql'];
+
+				if (! isset($fields[$index->name]))
+					{
+					$fields[$index->name] = $index;
+					}
+				}
+			// get the rest of the index fields
+			$rows = $this->getRows('SELECT * FROM pg_indexes WHERE tablename = ?', [$table]);
+
+			foreach ($rows as $row)
+				{
+				$name = \substr($row['indexname'], \strlen($table) + 1);
+
+				if (! isset($fields[$name]))
+					{
+					$index = new \PHPFUI\ORM\Schema\Index();
+					$index->primaryKey = false;
+					$index->name = $name;
+					$index->extra = $row['indexdef'];
+					$fields[$name] = $index;
+					}
+				}
+
+			return $fields;
 			}
 		else
 			{
@@ -224,10 +313,7 @@ class PDOInstance extends \PDO
 	 */
 	public function getRecordCursor(\PHPFUI\ORM\Record $crud, string $sql = 'select 0 limit 0', array $input = []) : \PHPFUI\ORM\RecordCursor
 		{
-		$this->lastParameters = $input;
-		$this->lastSql = $sql;
-
-		return new \PHPFUI\ORM\RecordCursor($crud, $this->prepare($sql), $input);
+		return new \PHPFUI\ORM\RecordCursor($crud, $this->getPreparedStatement($sql, $input), $input);
 		}
 
 	/**
@@ -237,9 +323,6 @@ class PDOInstance extends \PDO
 	 */
 	public function getRow(string $sql, array $input = []) : array
 		{
-		$this->lastParameters = $input;
-		$this->lastSql = $sql;
-
 		$statement = $this->run($sql, $input);
 
 		if (null === $statement)
@@ -267,8 +350,6 @@ class PDOInstance extends \PDO
 	 */
 	public function getRows(string $sql, array $input = [], int $fetchType = \PDO::FETCH_ASSOC) : array
 		{
-		$this->lastParameters = $input;
-		$this->lastSql = $sql;
 		$statement = $this->run($sql, $input);
 
 		if (null === $statement)
@@ -287,6 +368,10 @@ class PDOInstance extends \PDO
 		if (\str_starts_with($this->dsn, 'mysql'))
 			{
 			$rows = $this->getRows('show tables');
+			}
+		elseif ($this->postGre)
+			{
+			$rows = $this->getRows("SELECT table_name as name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';");
 			}
 		else
 			{
@@ -309,8 +394,6 @@ class PDOInstance extends \PDO
 	 */
 	public function getValue(string $sql, array $input = []) : string
 		{
-		$this->lastParameters = $input;
-		$this->lastSql = $sql;
 		$statement = $this->run($sql, $input);
 
 		if (null === $statement)
@@ -334,8 +417,6 @@ class PDOInstance extends \PDO
 	 */
 	public function getValueArray(string $sql, array $input = []) : array
 		{
-		$this->lastParameters = $input;
-		$this->lastSql = $sql;
 		$statement = $this->run($sql, $input);
 
 		if (null === $statement)
@@ -370,12 +451,28 @@ class PDOInstance extends \PDO
 		}
 
 	/**
+	 * @param array<mixed> $input
+	 */
+	private function getPreparedStatement(string $sql, array $input) : \PDOStatement
+		{
+		$this->lastParameters = $input;
+
+		if ($this->postGre)
+			{
+			$sql = \str_replace('`', '"', $sql);
+			}
+		$this->lastSql = $sql;
+
+		return $this->prepare($sql);
+		}
+
+	/**
 	 * Runs the query and sets and records errors
 	 *
 	 * @param array<mixed> $input
 	 */
-	private function run(string $sql, array $input = []) : ?\PDOStatement
+	private function run(string $sql, array $input) : ?\PDOStatement
 		{
-		return $this->executeStatement($this->prepare($sql), $input);
+		return $this->executeStatement($this->getPreparedStatement($sql, $input), $input);
 		}
 	}

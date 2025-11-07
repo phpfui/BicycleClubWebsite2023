@@ -53,7 +53,8 @@ abstract class Base
 		if (false !== $start)
 			{
 			$precision = \rtrim(\substr($type, $start + 1), ')');
-			if (str_contains($precision, ','))
+
+			if (\str_contains($precision, ','))
 				{
 				$parts = \explode(',', $precision);
 				$precision = ((int)$parts[0]) + 1;
@@ -104,14 +105,19 @@ abstract class Base
 			'tinyint' => 'int',
 			'mediumint' => 'int',
 			'bigint' => 'int',
+			'smallserial' => 'int',
+			'serial' => 'int',
+			'bigserial' => 'int',
 			'decimal' => 'float',
 			'numeric' => 'float',
 			'float' => 'float',
 			'double' => 'float',
+			'real' => 'float',
+			'double precision' => 'float',
+			'money' => 'float',
 			'bit' => 'bool',
+			'boolean' => 'bool',
 			'year' => 'int',
-			'timestamp' => 'string',
-			'datetime' => 'string',
 		];
 		$type = $types[$type] ?? 'string';
 

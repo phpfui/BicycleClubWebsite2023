@@ -4,11 +4,11 @@ namespace PHPFUI\ORM\Schema;
 
 class Index
 	{
-	public readonly string $extra;
+	public string $extra;
 
-	public readonly string $name;
+	public string $name;
 
-	public readonly bool $primaryKey;
+	public bool $primaryKey;
 
 	/**
 	 * @param array<string,mixed> $fields

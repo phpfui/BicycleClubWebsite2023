@@ -160,7 +160,7 @@ class GeneralAdmission
 						break;
 					}
 				}
-			else // if (\App\Enum\GeneralAdmission\IncludeMembership::NEW_MEMBERS_ONLY == $includeMembership)
+			elseif (\App\Enum\GeneralAdmission\IncludeMembership::NEW_MEMBERS_ONLY == $includeMembership)
 				{
 				$memberModel = new \App\Model\Member();
 				$membership = new \App\Record\Membership();
@@ -172,7 +172,6 @@ class GeneralAdmission
 				$member = new \App\Record\Member();
 
 				$member->setFrom($rider->toArray());
-				$memberModel = new \App\Model\Member();
 				$memberModel->setDefaultFields($member);
 				$member->membership = $membership;
 				$member->verifiedEmail = 9;

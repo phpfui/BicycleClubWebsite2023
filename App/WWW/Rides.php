@@ -629,6 +629,22 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function weather(\App\Record\Ride $ride = new \App\Record\Ride()) : void
+		{
+		$timeout = 0;
+		$today = \App\Tools\Date::todayString();
+
+		if ($ride->loaded() && $ride->memberId == \App\Model\Session::signedInMemberId() && $ride->rideDate >= $today && \App\Enum\Ride\Status::NOT_YET == $ride->rideStatus)
+			{
+			$timeout = 5;
+			$rideModel = new \App\Model\Ride();
+			$rideModel->weather($ride);
+			$this->page->addPageContent(new \PHPFUI\SubHeader('You have cancelled your ride due to weather'));
+			$this->page->addPageContent('If you change your mind, you can reinstate the ride on the day of the ride by changing the status to <b>Not Yet</b>.');
+			}
+		$this->page->redirect('/Rides/memberSchedule', timeout: $timeout);
+		}
+
 	private function canEditRideSignups(\App\Record\Ride $ride) : bool
 		{
 		$editSignups = $this->page->isAuthorized('Edit Ride Signups');

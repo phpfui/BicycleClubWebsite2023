@@ -711,6 +711,45 @@ class Ride
 		return [];
 		}
 
+	public function weather(\App\Record\Ride $ride) : void
+		{
+		$leader = $ride->member;
+		$email = new \App\Tools\EMail();
+		$topic = $this->clubAbbrev . " The ride {$ride->title} on " . \App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' has been cancelled for weather reasons';
+		$email->setSubject($topic);
+		$email->setFromMember($leader->toArray());
+		$email->setHtml();
+		$phoneLink = $leader->phone ? 'Phone: ' . \PHPFUI\Link::phone($leader->phone) : '';
+		$cellLink = $leader->cellPhone ? 'Cell: ' . \PHPFUI\Link::phone($leader->cellPhone) : '';
+		$emailLink = $leader->email ? \PHPFUI\Link::email($leader->email, $leader->email, $topic) : '';
+		$location = $ride->startLocation;
+		$locationLink = ! $location->empty() ? new \PHPFUI\Link($location->link, \App\Tools\TextHelper::unhtmlentities($location->name)) : '';
+		$message = "You are receiving this email since you signed up for the following ride:<p><b>{$ride->title}</b><br>" .
+			\App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '<br>' .
+			"{$ride->mileage} miles at a " . $this->getPace($ride->paceId) .
+			" pace.<br>Starting from {$locationLink}<p>Your leader {$leader->fullName()}<br>" .
+			"{$phoneLink} {$cellLink}<br>{$emailLink}<br>has decided to cancel the ride for weather reasons.  " .
+			'Reply to this email to contact the leader.';
+		$footer = "<p>You can change your <a href='{$this->homePage}/Rides/signedUp/{$ride->rideId}'>signup information here.</a>";
+		$message .= $footer;
+		\str_replace('//', '/', $message);
+		$email->setBody($message);
+		$riders = $this->rideSignupTable->getAllSignedUpRiders($ride);
+
+		foreach ($riders as $rider)
+			{
+			$email->addToMember($rider->toArray());
+			}
+
+		$memberPicker = new \App\Model\MemberPicker('Rides Chair');
+		$email->addToMember($memberPicker->getMember());
+		$email->addToMember($ride->pace->category->coordinator->toArray());
+
+		$email->bulkSend();
+		$ride->rideStatus = \App\Enum\Ride\Status::CANCELLED_FOR_WEATHER;
+		$ride->update();
+		}
+
 	/**
 	 * @param array<string,mixed> $parameters
 	 *

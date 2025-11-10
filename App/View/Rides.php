@@ -721,6 +721,13 @@ class Rides
 				$bg->addButton($button);
 				}
 
+			if ($ride->memberId == \App\Model\Session::signedInMemberId() && $ride->rideDate >= $today && \App\Enum\Ride\Status::NOT_YET == $ride->rideStatus)
+				{
+				$button = new \PHPFUI\Button('Weather Cancel', '/Rides/weather/' . $ride->rideId);
+				$button->addClass('warning')->setConfirm('Are you sure you want to cancel this ride for weather reasons?');
+				$bg->addButton($button);
+				}
+
 			if (\count($bg))
 				{
 				$bg->addButtonClass('small');

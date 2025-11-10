@@ -22,7 +22,7 @@ class RideNotices extends \App\Cron\BaseJob
 
 		foreach ($advanceRides as $ride)
 			{
-			if (0 == $ride->pending)
+			if (0 == $ride->pending && $ride->rideStatus == \App\Enum\Ride\Status::NOT_YET)
 				{
 				$rideDescriptions[$ride->rideId] = $model->getRideNoticeBody($ride);
 				}

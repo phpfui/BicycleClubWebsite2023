@@ -27,7 +27,7 @@ class NewRideNotices extends \App\Cron\BaseJob
 
 		foreach ($rides as $ride)
 			{
-			if ($ride->rideDate >= $todayString)
+			if ($ride->rideDate >= $todayString && $ride->rideStatus == \App\Enum\Ride\Status::NOT_YET)
 				{
 				$model->emailNewRideNotice($ride);
 				}

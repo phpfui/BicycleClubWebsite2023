@@ -417,12 +417,10 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/System/cron', 'Cron Jobs');
 			$this->addSub($menu, '/System/redirects', 'Redirects');
 
-			if ($infoMenu = $this->addMenu($menu, '/System/Releases', 'System Info'))
+			if ($infoMenu = $this->addMenu($menu, '/System/Info', 'System Info'))
 				{
 				$this->addSub($infoMenu, '/System/Info/debug', 'Debug Status');
 				$this->addSub($infoMenu, '/System/Info/sessionInfo', 'Session Info');
-				$this->addSub($infoMenu, '/System/Info/inputTest', 'Input Test');
-				$this->addSub($infoMenu, '/System/Info/inputNormal', 'Input Normal');
 				$this->addSub($infoMenu, '/System/Info/pHPInfo', 'PHP Info');
 				$this->addSub($infoMenu, '/System/Info/license', 'License');
 				$this->addSub($infoMenu, '/System/Info/docs', 'PHP Documentation');
@@ -434,6 +432,17 @@ class MainMenu extends \App\UI\MainMenu
 				$this->addSub($releaseMenu, '/System/Releases/releaseNotes', 'Release Notes');
 				$this->addSub($releaseMenu, '/System/Releases/releases', 'Releases');
 				$this->addSub($releaseMenu, '/System/Releases/versions/origin/master', 'Versions');
+				}
+
+			if ($testMenu = $this->addMenu($menu, '/System/Test', 'System Tests'))
+				{
+				$this->addSub($testMenu, '/System/Test/emoji', 'Emoji Test');
+				$this->addSub($testMenu, '/System/Test/flash', 'Flash Test');
+				$this->addSub($testMenu, '/System/Test/recaptcha', 'Google Recaptcha Test');
+				$this->addSub($testMenu, '/System/Test/inputTest', 'HTML Input Test');
+				$this->addSub($testMenu, '/System/Test/inputNormal', 'Input Test');
+				$this->addSub($testMenu, '/System/Test/captchaMath', 'Math Captcha Test');
+				$this->addSub($testMenu, '/System/Test/text', 'Texting Test');
 				}
 			}
 		}

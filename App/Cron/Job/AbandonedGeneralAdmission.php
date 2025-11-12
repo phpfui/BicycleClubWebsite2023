@@ -48,7 +48,7 @@ class AbandonedGeneralAdmission extends \App\Cron\BaseJob
 					}
 				}
 
-			if (! \count($daysAfter))
+			if (! \count($daysAfter))	// @phpstan-ignore-line
 				{
 				continue;
 				}

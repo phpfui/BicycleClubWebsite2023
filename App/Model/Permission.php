@@ -179,7 +179,7 @@ class Permission extends \App\Model\PermissionBase
 			}
 		\fclose($handle);
 		\App\Tools\File::unlink($this->permissionLoaderFile);
-		@\rename($newName, $this->permissionLoaderFile);
+		\rename($newName, $this->permissionLoaderFile);
 		}
 
 	public function generateStandardPermissions() : void

@@ -33,7 +33,6 @@ class AbandonedCart extends \App\Cron\BaseJob
 
 		$clubAbbrev = $settingTable->value('clubAbbrev');
 		$invoiceTable = new \App\Table\Invoice();
-		$unpaidDates[] = \App\Tools\Date::toString($this->controller->runningAtJD() - 4);
 		$invoices = $invoiceTable->getUnpaidOn($unpaidDates);
 		$invoiceModel = new \App\Model\Invoice();
 		$url = $this->controller->getSchemeHost();

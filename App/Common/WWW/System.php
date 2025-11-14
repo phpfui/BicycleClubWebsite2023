@@ -79,13 +79,13 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		if ($this->page->addHeader('Permission Reloader'))
 			{
 			$baseUri = '/System/permission';
-			$reloadNumber = 'fred'; //\App\Model\Session::getFlash('reload');
+			$reloadNumber = \App\Model\Session::getFlash('reload');
 
 			if ($reload && $reloadNumber == $reload)
 				{
 				$this->page->getPermissions()->generatePermissionLoader();
 				\App\Model\Session::setFlash('success', 'Permissions Regerated');
-				$this->page->redirect(str_replace('/' . $reloadNumber, '', $baseUri));
+				$this->page->redirect(\str_replace('/' . $reloadNumber, '', $baseUri));
 				}
 			else
 				{
@@ -94,7 +94,6 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$this->page->addPageContent($callout);
 				$random = \random_int(0, \mt_getrandmax());
 				\App\Model\Session::setFlash('reload', $random);
-				$random = 'fred';
 				$button = new \PHPFUI\Button('Reload Permission File', $baseUri . '/' . $random);
 				$button->addClass('alert');
 				$button->setConfirm('Reloading the permission file may cause users to need to log in again.  Are you sure?');

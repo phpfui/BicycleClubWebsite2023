@@ -88,4 +88,4 @@ catch (Throwable $e)
 	$duck->addMessage($table);
 	echo $duck;
 	}
-session_write_close();
+\session_write_close();

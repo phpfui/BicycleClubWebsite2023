@@ -598,7 +598,7 @@ abstract class Record extends DataObject
 		{
 		$parts = \explode('\\', static::class);
 		$baseName = \array_pop($parts);
-		$class = $this->validator ?: 'App\\Record\\Validation\\' . $baseName;
+		$class = $this->validator ?: \PHPFUI\ORM::$recordNamespace . '\\Validation\\' . $baseName;
 
 		if (! \class_exists($class))
 			{

@@ -168,11 +168,18 @@ class Member
 		{
 		$email = \strtolower(\trim($email ?? ''));
 
-		// Strip dots in gmail domains
+		// Strip dots and + in gmail domains
 		if ($end = \strpos($email, '@gmail.com'))
 			{
+			$email = \substr($email, 0, $end);
 			$email = \str_replace('.', '', $email);
-			$email = \str_replace('@gmailcom', '@gmail.com', $email);
+			$plus = \strpos($email, '+');
+
+			if ($plus)
+				{
+				$email = \substr($email, 0, $plus);
+				}
+			$email .= '@gmail.com';
 			}
 
 		return $email;

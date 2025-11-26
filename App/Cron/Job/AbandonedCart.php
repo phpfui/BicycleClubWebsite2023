@@ -32,6 +32,16 @@ class AbandonedCart extends \App\Cron\BaseJob
 			}
 
 		$clubAbbrev = $settingTable->value('clubAbbrev');
+		$invoiceMode = new \App\Model\Invoice();
+
+		foreach ($invoiceMode->findUnpaidDuplicateInvoices($unpaidDates) as $invoice)
+			{
+			if ($invoice->unpaidBalance()) // double check it is unpaid
+				{
+				$invoice->delete();
+				}
+			}
+
 		$invoiceTable = new \App\Table\Invoice();
 		$invoices = $invoiceTable->getUnpaidOn($unpaidDates);
 		$invoiceModel = new \App\Model\Invoice();

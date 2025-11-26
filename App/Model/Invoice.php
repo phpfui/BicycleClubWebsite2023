@@ -264,6 +264,35 @@ class Invoice
 		return $missing;
 		}
 
+	/**
+	 * @param array<string> $dates
+	 *
+	 * @return array<\App\Record\Invoice>
+	 */
+	public function findUnpaidDuplicateInvoices(array $dates) : array
+		{
+		$unpaidInvoices = [];
+		$invoiceTable = new \App\Table\Invoice();
+		$invoices = $invoiceTable->getUnpaidOn($dates);
+
+		foreach ($invoices as $invoice)
+			{
+			$condition = new \PHPFUI\ORM\Condition('paymentDate', null, new \PHPFUI\ORM\Operator\IsNotNull());
+			$condition->and('memberId', $invoice->memberId);
+			$condition->and('totalPrice', $invoice->totalPrice);
+			$condition->and('paypaltx', '', new \PHPFUI\ORM\Operator\GreaterThan());
+			$condition->and('paypalPaid', null, new \PHPFUI\ORM\Operator\IsNotNull());
+			$invoiceTable->setWhere($condition);
+
+			if (\count($invoiceTable))
+				{
+				$unpaidInvoices[] = clone $invoice;
+				}
+			}
+
+		return $unpaidInvoices;
+		}
+
 	public function generateFromCart(\App\Model\Cart $cartModel) : \App\Record\Invoice
 		{
 		$invoice = new \App\Record\Invoice();

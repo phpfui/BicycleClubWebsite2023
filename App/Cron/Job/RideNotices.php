@@ -45,7 +45,7 @@ class RideNotices extends \App\Cron\BaseJob
 
 			foreach ($advanceRides as $ride)
 				{
-				if ($ride->pending)
+				if ($ride->pending || \App\Enum\Ride\Status::NOT_YET !== $ride->rideStatus)
 					{
 					continue;
 					}

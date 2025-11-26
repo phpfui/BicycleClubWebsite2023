@@ -93,6 +93,29 @@ class ORM
 		}
 
 	/**
+	 * @param array<string, string | resource | null> $data
+	 *
+	 * @return array<string, string> resources converted to strings if using postgre
+	 */
+	public static function expandResources(array $data) : array
+		{
+		if (! self::getInstance()->postGre)
+			{
+			return $data;
+			}
+
+		foreach ($data as $key => $value)
+			{
+			if (\is_resource($value))
+				{
+				$data[$key] = \stream_get_contents($value);
+				}
+			}
+
+		return $data;
+		}
+
+	/**
 	 * @param array<mixed> $input
 	 *
 	 * @return \PHPFUI\ORM\ArrayCursor  tracking the sql and input passed
@@ -133,6 +156,14 @@ class ORM
 	public static function getDataObjectCursor(string $sql = 'select 0 limit 0', array $input = []) : \PHPFUI\ORM\DataObjectCursor
 		{
 		return self::getInstance()->getDataObjectCursor($sql, $input);
+		}
+
+	/**
+	 * @return array<\PHPFUI\ORM\Schema\ForeignKey>
+	 */
+	public static function getForeignKeys(string $table) : array
+		{
+		return self::getInstance()->getForeignKeys($table);
 		}
 
 	/**

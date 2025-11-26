@@ -14,11 +14,15 @@ class Migration_47 extends \PHPFUI\ORM\Migration
 		$this->dropPrimaryKey('folder');
 		$this->dropIndex('folder', 'folderId');
 		$this->renameTable('folder', 'photoFolder');
-		$this->alterColumn('photoFolder', 'folderId', 'int not null', 'photoFolderId');
+		$this->alterColumn('photoFolder', 'folderId', 'int not null');
+		$this->renameColumn('photoFolder', 'folderId', 'photoFolderId');
 		$this->dropColumn('photoFolder', 'folderType');
-		$this->alterColumn('photoFolder', 'name', "varchar(255) NOT NULL DEFAULT ''", 'photoFolder');
-		$this->alterColumn('photo', 'folderId', 'int not null', 'photoFolderId');
-		$this->alterColumn('photo', 'description', 'varchar(255)', 'photo');
+		$this->alterColumn('photoFolder', 'name', "varchar(255) NOT NULL DEFAULT ''");
+		$this->renameColumn('photoFolder', 'name', 'photoFolder');
+		$this->alterColumn('photo', 'folderId', 'int not null');
+		$this->renameColumn('photo', 'folderId', 'photoFolderId');
+		$this->alterColumn('photo', 'description', 'varchar(255)');
+		$this->renameColumn('photo', 'description', 'photo');
 		$this->executeAlters();
 		$this->addIndex('photoFolder', 'photoFolderId');
 
@@ -30,11 +34,15 @@ class Migration_47 extends \PHPFUI\ORM\Migration
 		$this->dropPrimaryKey('photoFolder');
 		$this->dropIndex('photoFolder', 'photoFolderId');
 		$this->renameTable('photoFolder', 'folder');
-		$this->alterColumn('folder', 'photoFolderId', 'int not null', 'folderId');
+		$this->alterColumn('folder', 'photoFolderId', 'int not null');
+		$this->renameColumn('folder', 'photoFolderId', 'folderId');
 		$this->addColumn('folder', 'folderType', 'int not null default "0"');
-		$this->alterColumn('folder', 'photoFolder', "varchar(255) NOT NULL DEFAULT ''", 'name');
-		$this->alterColumn('photo', 'photoFolderId', 'int not null', 'folderId');
-		$this->alterColumn('photo', 'photo', 'varchar(255)', 'description');
+		$this->alterColumn('folder', 'photoFolder', "varchar(255) NOT NULL DEFAULT ''");
+		$this->renameColumn('folder', 'photoFolder', 'name');
+		$this->alterColumn('photo', 'photoFolderId', 'int not null');
+		$this->renameColumn('photo', 'photoFolderId', 'folderId');
+		$this->alterColumn('photo', 'photo', 'varchar(255)');
+		$this->renameColumn('photo', 'photo', 'description');
 		$this->executeAlters();
 		$this->addIndex('folder', 'folderId');
 

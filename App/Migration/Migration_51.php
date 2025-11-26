@@ -23,9 +23,11 @@ class Migration_51 extends \PHPFUI\ORM\Migration
 
 		$this->runSQL('delete from `folder` where folderType=3');
 
-		$this->alterColumn('video', 'memberId', 'int', 'editor');
+		$this->alterColumn('video', 'memberId', 'int');
+		$this->renameColumn('video', 'memberId', 'editor');
+		$this->alterColumn('video', 'folderId', 'int');
 
-		return $this->alterColumn('video', 'folderId', 'int', 'videoTypeId');
+		return $this->renameColumn('video', 'folderId', 'videoTypeId');
 		}
 
 	public function up() : bool
@@ -54,8 +56,10 @@ class Migration_51 extends \PHPFUI\ORM\Migration
 			$this->runSQL('update `video` set videoTypeId=? where videoTypeId=?', [$folder->insert(), $videoType->videoTypeId]);
 			}
 
-		$this->alterColumn('video', 'videoTypeId', 'int', 'folderId');
-		$this->alterColumn('video', 'editor', 'int', 'memberId');
+		$this->alterColumn('video', 'videoTypeId', 'folderId');
+		$this->renameColumn('video', 'videoTypeId', 'folderId');
+		$this->alterColumn('video', 'editor', 'int');
+		$this->renameColumn('video', 'editor', 'memberId');
 
 		return $this->dropTable('videoType');
 		}

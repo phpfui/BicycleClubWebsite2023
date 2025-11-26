@@ -279,6 +279,7 @@ class Invoice
 			{
 			$condition = new \PHPFUI\ORM\Condition('paymentDate', null, new \PHPFUI\ORM\Operator\IsNotNull());
 			$condition->and('memberId', $invoice->memberId);
+			$condition->and('orderDate', \App\Tools\Date::increment($invoice->orderDate, -5), new \PHPFUI\ORM\Operator\GreaterThanEqual());
 			$condition->and('totalPrice', $invoice->totalPrice);
 			$condition->and('paypaltx', '', new \PHPFUI\ORM\Operator\GreaterThan());
 			$condition->and('paypalPaid', null, new \PHPFUI\ORM\Operator\IsNotNull());

@@ -36,7 +36,7 @@
         "phpfui/icalendar": "^1.0",
         "phpfui/php-imap": "dev-main",
         "phpfui/instadoc": "^1.0",
-        "phpfui/orm": "^2.0",
+        "phpfui/orm": "^3.0",
         "phpfui/phpfui": "*",
         "phpfui/recaptcha": "dev-PSR",
         "phpfui/translation": "^1.0",

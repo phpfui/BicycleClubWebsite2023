@@ -14,7 +14,7 @@ class Holiday extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function halloween() : void
 		{
-		if ($this->view->date(10, 31))
+		if ($this->page->isAuthorized('Halloween') || $this->view->date(10, 31))
 			{
 			echo $this->view->halloween();
 
@@ -26,7 +26,7 @@ class Holiday extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function independenceDay() : void
 		{
-		if ($this->view->date(7, 4))
+		if ($this->page->isAuthorized('Independence Day') || $this->view->date(7, 4))
 			{
 			echo $this->view->independenceDay();
 
@@ -38,7 +38,7 @@ class Holiday extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function newYearsDay() : void
 		{
-		if ($this->view->date(1, 1))
+		if ($this->page->isAuthorized('New Years Day') || $this->view->date(1, 1))
 			{
 			echo $this->view->newYearsDay();
 
@@ -54,7 +54,7 @@ class Holiday extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function thanksgiving() : void
 		{
-		if ($this->view->thanksgivingDay())
+		if ($this->page->isAuthorized('Thanksgiving') || $this->view->thanksgivingDay())
 			{
 			echo $this->view->thanksgiving();
 

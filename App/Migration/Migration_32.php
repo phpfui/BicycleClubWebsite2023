@@ -11,11 +11,11 @@ class Migration_32 extends \PHPFUI\ORM\Migration
 
 	public function down() : bool
 		{
-		return $this->alterColumn('category', 'coordinatorId', 'int', 'coordinator');
+		return $this->renameColumn('category', 'coordinatorId', 'coordinator');
 		}
 
 	public function up() : bool
 		{
-		return $this->alterColumn('category', 'coordinator', 'int', 'coordinatorId');
+		return $this->renameColumn('category', 'coordinator', 'coordinatorId');
 		}
 	}

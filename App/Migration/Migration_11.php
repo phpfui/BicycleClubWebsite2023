@@ -16,7 +16,8 @@ class Migration_11 extends \PHPFUI\ORM\Migration
 		{
 		foreach ($this->tables as $table)
 			{
-			$this->alterColumn($table, 'volunteerPoints', 'int NOT NULL DEFAULT "0"', 'leaderPoints');
+			$this->alterColumn($table, 'volunteerPoints', 'int NOT NULL DEFAULT "0"');
+			$this->renameColumn($table, 'volunteerPoints', 'leaderPoints');
 			}
 
 		return true;
@@ -26,7 +27,8 @@ class Migration_11 extends \PHPFUI\ORM\Migration
 		{
 		foreach ($this->tables as $table)
 			{
-			$this->alterColumn($table, 'leaderPoints', 'int NOT NULL DEFAULT "0"', 'volunteerPoints');
+			$this->alterColumn($table, 'leaderPoints', 'int NOT NULL DEFAULT "0"');
+			$this->alterColumn($table, 'leaderPoints', 'volunteerPoints');
 			}
 
 		return true;

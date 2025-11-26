@@ -11,8 +11,10 @@ class Migration_48 extends \PHPFUI\ORM\Migration
 
 	public function down() : bool
 		{
-		$this->alterColumn('file', 'folderId', 'int not null', 'fileFolderId');
-		$this->alterColumn('file', 'description', 'varchar(255)', 'file');
+		$this->alterColumn('file', 'folderId', 'int not null');
+		$this->renameColumn('file', 'folderId', 'fileFolderId');
+		$this->alterColumn('file', 'description', 'varchar(255)');
+		$this->renameColumn('file', 'description', 'file');
 		$this->executeAlters();
 		$this->dropTable('fileFolder');
 
@@ -43,8 +45,10 @@ class Migration_48 extends \PHPFUI\ORM\Migration
 
 	public function up() : bool
 		{
-		$this->alterColumn('file', 'fileFolderId', 'int not null', 'folderId');
-		$this->alterColumn('file', 'file', 'varchar(255)', 'description');
+		$this->alterColumn('file', 'fileFolderId', 'int not null');
+		$this->renameColumn('file', 'fileFolderId', 'folderId');
+		$this->alterColumn('file', 'file', 'varchar(255)');
+		$this->renameColumn('file', 'file', 'description');
 		$this->executeAlters();
 
 		$fileTable = new \App\Table\File();

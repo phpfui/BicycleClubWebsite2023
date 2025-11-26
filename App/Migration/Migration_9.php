@@ -19,8 +19,10 @@ class Migration_9 extends \PHPFUI\ORM\Migration
 		$this->dropColumn('RWGPS', 'lastSynced');
 		$this->dropColumn('RWGPS', 'elevationMeters');
 		$this->alterColumn('RWGPS', 'lastUpdated', 'date');
-		$this->alterColumn('RWGPS', 'miles', 'decimal(4,2)', 'mileage');
-		$this->alterColumn('RWGPS', 'elevationFeet', 'int', 'elevation');
+		$this->alterColumn('RWGPS', 'miles', 'decimal(4,2)');
+		$this->renameColumn('RWGPS', 'miles', 'mileage');
+		$this->alterColumn('RWGPS', 'elevationFeet', 'int');
+		$this->renameColumn('RWGPS', 'elevationFeet', 'elevation');
 
 		return true;
 		}
@@ -35,8 +37,10 @@ class Migration_9 extends \PHPFUI\ORM\Migration
 		$this->alterColumn('RWGPS', 'lastSynced', 'timestamp');
 		$this->alterColumn('RWGPS', 'state', 'varchar(255)');
 		$this->alterColumn('RWGPS', 'lastUpdated', 'timestamp');
-		$this->alterColumn('RWGPS', 'mileage', 'decimal(4,2)', 'miles');
-		$this->alterColumn('RWGPS', 'elevation', 'decimal(8.2)', 'elevationFeet');
+		$this->alterColumn('RWGPS', 'mileage', 'decimal(4,2)');
+		$this->renameColumn('RWGPS', 'mileage', 'miles');
+		$this->alterColumn('RWGPS', 'elevation', 'decimal(8.2)');
+		$this->renameColumn('RWGPS', 'elevation', 'elevationFeet');
 		$this->dropColumn('RWGPS', 'status');
 
 		$rwgpsTable = new \App\Table\RWGPS();

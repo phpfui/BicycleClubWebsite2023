@@ -399,7 +399,21 @@ abstract class Record extends DataObject
 	 */
 	public function insertOrIgnore() : int | bool
 		{
-		return $this->privateInsert(false, 'ignore ');
+		$pdo = \PHPFUI\ORM::pdo();
+
+		if (! $pdo->sqlite && ! $pdo->postGre)
+			{
+			return $this->privateInsert(false, 'ignore ');
+			}
+
+		$id = $this->privateInsert(false);
+
+		if (! $id)
+			{
+			\PHPFUI\ORM::getInstance()->clearErrors();
+			}
+
+		return $id;
 		}
 
 	/**
@@ -409,7 +423,29 @@ abstract class Record extends DataObject
 	 */
 	public function insertOrUpdate() : int | bool
 		{
-		return $this->privateInsert(true);
+		$pdo = \PHPFUI\ORM::pdo();
+
+		if (! $pdo->sqlite)
+			{
+			return $this->privateInsert(true);
+			}
+
+		$id = $this->privateInsert(false);
+
+		if (false === $id)
+			{
+			\PHPFUI\ORM::getInstance()->clearErrors();
+
+			$id = $this->update();
+			$keys = $this->getPrimaryKeyValues();
+
+			if (1 == \count($keys))
+				{
+				$id = \array_shift($keys);
+				}
+			}
+
+		return $id;
 		}
 
 	/**
@@ -496,7 +532,7 @@ abstract class Record extends DataObject
 
 		foreach (static::$fields as $field => $description)
 			{
-			if (null === $description->defaultValue)	// no default value
+			if (null === $description->defaultValue)  // no default value
 				{
 				$this->current[$field] = null; // can't be null, so we can set to null, user must set
 				}
@@ -598,7 +634,7 @@ abstract class Record extends DataObject
 		{
 		$parts = \explode('\\', static::class);
 		$baseName = \array_pop($parts);
-		$class = $this->validator ?: \PHPFUI\ORM::$recordNamespace . '\\Validation\\' . $baseName;
+		$class = $this->validator ?: 'App\\Record\\Validation\\' . $baseName;
 
 		if (! \class_exists($class))
 			{
@@ -847,6 +883,7 @@ abstract class Record extends DataObject
 		$values = [];
 		$whereInput = $input = [];
 		$comma = '';
+		$primaryKey = static::$primaryKeys[0] ?? '';
 
 		foreach ($this->current as $key => $value)
 			{
@@ -874,7 +911,14 @@ abstract class Record extends DataObject
 
 		if ($updateOnDuplicate)
 			{
-			$updateSql = ' on duplicate key update ';
+			if (\PHPFUI\ORM::pdo()->postGre)
+				{
+				$updateSql = " ON CONFLICT ({$primaryKey}) DO UPDATE SET ";
+				}
+			else
+				{
+				$updateSql = ' on duplicate key update ';
+				}
 			$comma = '';
 			$inputCount = \count($input);
 
@@ -905,17 +949,20 @@ abstract class Record extends DataObject
 
 		$returnValue = \PHPFUI\ORM::execute($sql, $input);
 
-		if (static::$autoIncrement && $returnValue)
+		if ($returnValue)
 			{
-			$returnValue = (int)\PHPFUI\ORM::lastInsertId(static::$primaryKeys[0], $table);
-
-			if ($returnValue)
+			if (static::$autoIncrement)
 				{
-				$this->current[static::$primaryKeys[0]] = $returnValue;
-				}
-			}
+				$returnValue = (int)\PHPFUI\ORM::lastInsertId(static::$primaryKeys[0], $table);
 
-		$this->loaded = true;	// record is effectively read from the database now
+				if ($returnValue)
+					{
+					$this->current[static::$primaryKeys[0]] = $returnValue;
+					}
+				}
+
+			$this->loaded = true;	// record is effectively read from the database now
+			}
 
 		return $returnValue;
 		}

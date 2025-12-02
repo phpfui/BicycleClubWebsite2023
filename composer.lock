@@ -2056,16 +2056,16 @@
         },
         {
             "name": "mpdf/mpdf",
-            "version": "v8.2.6",
+            "version": "v8.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mpdf/mpdf.git",
-                "reference": "dd30e3b01061cf8dfe65e7041ab4cc46d8ebdd44"
+                "reference": "b59670a09498689c33ce639bac8f5ba26721dab3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/dd30e3b01061cf8dfe65e7041ab4cc46d8ebdd44",
-                "reference": "dd30e3b01061cf8dfe65e7041ab4cc46d8ebdd44",
+                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/b59670a09498689c33ce639bac8f5ba26721dab3",
+                "reference": "b59670a09498689c33ce639bac8f5ba26721dab3",
                 "shasum": ""
             },
             "require": {
@@ -2133,7 +2133,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-08-18T08:51:51+00:00"
+            "time": "2025-12-01T10:18:02+00:00"
         },
         {
             "name": "mpdf/psr-http-message-shim",
@@ -2354,20 +2354,20 @@
         },
         {
             "name": "nette/utils",
-            "version": "v4.0.9",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/utils.git",
-                "reference": "505a30ad386daa5211f08a318e47015b501cad30"
+                "reference": "fa1f0b8261ed150447979eb22e373b7b7ad5a8e0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/utils/zipball/505a30ad386daa5211f08a318e47015b501cad30",
-                "reference": "505a30ad386daa5211f08a318e47015b501cad30",
+                "url": "https://api.github.com/repos/nette/utils/zipball/fa1f0b8261ed150447979eb22e373b7b7ad5a8e0",
+                "reference": "fa1f0b8261ed150447979eb22e373b7b7ad5a8e0",
                 "shasum": ""
             },
             "require": {
-                "php": "8.0 - 8.5"
+                "php": "8.2 - 8.5"
             },
             "conflict": {
                 "nette/finder": "<3",
@@ -2390,7 +2390,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                    "dev-master": "4.1-dev"
                 }
             },
             "autoload": {
@@ -2437,9 +2437,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/utils/issues",
-                "source": "https://github.com/nette/utils/tree/v4.0.9"
+                "source": "https://github.com/nette/utils/tree/v4.1.0"
             },
-            "time": "2025-10-31T00:45:47+00:00"
+            "time": "2025-12-01T17:49:23+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -3673,16 +3673,16 @@
         },
         {
             "name": "phpfui/phpfui",
-            "version": "V6.3.9",
+            "version": "V6.3.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/phpfui.git",
-                "reference": "31986f88c3bd37c331404100ec9a96a069992537"
+                "reference": "a62aa95c1d53bd67e7076b41f11896d126513136"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/phpfui/zipball/31986f88c3bd37c331404100ec9a96a069992537",
-                "reference": "31986f88c3bd37c331404100ec9a96a069992537",
+                "url": "https://api.github.com/repos/phpfui/phpfui/zipball/a62aa95c1d53bd67e7076b41f11896d126513136",
+                "reference": "a62aa95c1d53bd67e7076b41f11896d126513136",
                 "shasum": ""
             },
             "require": {
@@ -3738,9 +3738,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/phpfui/issues",
-                "source": "https://github.com/phpfui/phpfui/tree/V6.3.9"
+                "source": "https://github.com/phpfui/phpfui/tree/V6.3.10"
             },
-            "time": "2025-11-07T02:30:44+00:00"
+            "time": "2025-11-17T16:35:07+00:00"
         },
         {
             "name": "phpfui/recaptcha",
@@ -5539,16 +5539,16 @@
         },
         {
             "name": "zbateson/mail-mime-parser",
-            "version": "3.0.4",
+            "version": "3.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zbateson/mail-mime-parser.git",
-                "reference": "f0ccec9290a5b9cf014d7b7ea3401d2a4a626e9a"
+                "reference": "ff054c8e05310c445c2028c6128a4319cc9f6aa8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zbateson/mail-mime-parser/zipball/f0ccec9290a5b9cf014d7b7ea3401d2a4a626e9a",
-                "reference": "f0ccec9290a5b9cf014d7b7ea3401d2a4a626e9a",
+                "url": "https://api.github.com/repos/zbateson/mail-mime-parser/zipball/ff054c8e05310c445c2028c6128a4319cc9f6aa8",
+                "reference": "ff054c8e05310c445c2028c6128a4319cc9f6aa8",
                 "shasum": ""
             },
             "require": {
@@ -5611,7 +5611,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-09-03T17:18:36+00:00"
+            "time": "2025-12-02T00:29:16+00:00"
         },
         {
             "name": "zbateson/mb-wrapper",
@@ -6188,16 +6188,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.91.0",
+            "version": "v3.91.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "c4a25f20390337789c26b693ae46faa125040352"
+                "reference": "f171dc216bc8a4192d5a0876a899cce6f9e379d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/c4a25f20390337789c26b693ae46faa125040352",
-                "reference": "c4a25f20390337789c26b693ae46faa125040352",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/f171dc216bc8a4192d5a0876a899cce6f9e379d6",
+                "reference": "f171dc216bc8a4192d5a0876a899cce6f9e379d6",
                 "shasum": ""
             },
             "require": {
@@ -6253,7 +6253,7 @@
                     "PhpCsFixer\\": "src/"
                 },
                 "exclude-from-classmap": [
-                    "src/Fixer/Internal/*"
+                    "src/**/Internal/"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -6279,7 +6279,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.91.0"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.91.2"
             },
             "funding": [
                 {
@@ -6287,7 +6287,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-11-28T22:07:42+00:00"
+            "time": "2025-12-01T20:56:13+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -6913,16 +6913,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "12.4.4",
+            "version": "12.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "9253ec75a672e39fcc9d85bdb61448215b8162c7"
+                "reference": "5af317802efd27d5b9cbe048e3760d4a2f687f45"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/9253ec75a672e39fcc9d85bdb61448215b8162c7",
-                "reference": "9253ec75a672e39fcc9d85bdb61448215b8162c7",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/5af317802efd27d5b9cbe048e3760d4a2f687f45",
+                "reference": "5af317802efd27d5b9cbe048e3760d4a2f687f45",
                 "shasum": ""
             },
             "require": {
@@ -6990,7 +6990,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.4.4"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.4.5"
             },
             "funding": [
                 {
@@ -7014,7 +7014,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-21T07:39:11+00:00"
+            "time": "2025-12-01T07:40:15+00:00"
         },
         {
             "name": "react/cache",

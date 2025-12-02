@@ -29,8 +29,8 @@ namespace App\Record\Definition;
  * @property ?string $publicDate MySQL type date
  * @property ?string $registrationStartDate MySQL type date
  * @property ?int $requireComment MySQL type int
- * @property int $showComments MySQL type tinyint(1)
- * @property int $showRegistered MySQL type tinyint(1)
+ * @property int $showComments MySQL type tinyint
+ * @property int $showRegistered MySQL type tinyint
  * @property ?string $startTime MySQL type varchar(20)
  * @property ?string $title MySQL type varchar(255)
  */
@@ -74,8 +74,8 @@ abstract class Event extends \PHPFUI\ORM\Record
 				'publicDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
 				'registrationStartDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
 				'requireComment' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
-				'showComments' => new \PHPFUI\ORM\FieldDefinition('tinyint(1)', 'int', 1, false, 0, ),
-				'showRegistered' => new \PHPFUI\ORM\FieldDefinition('tinyint(1)', 'int', 1, false, 1, ),
+				'showComments' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
+				'showRegistered' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 1, ),
 				'startTime' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, ),
 				'title' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
 			];

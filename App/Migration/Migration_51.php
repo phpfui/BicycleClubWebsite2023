@@ -24,8 +24,10 @@ class Migration_51 extends \PHPFUI\ORM\Migration
 		$this->runSQL('delete from `folder` where folderType=3');
 
 		$this->alterColumn('video', 'memberId', 'int');
+		$this->executeAlters();
 		$this->renameColumn('video', 'memberId', 'editor');
 		$this->alterColumn('video', 'folderId', 'int');
+		$this->executeAlters();
 
 		return $this->renameColumn('video', 'folderId', 'videoTypeId');
 		}
@@ -56,9 +58,11 @@ class Migration_51 extends \PHPFUI\ORM\Migration
 			$this->runSQL('update `video` set videoTypeId=? where videoTypeId=?', [$folder->insert(), $videoType->videoTypeId]);
 			}
 
-		$this->alterColumn('video', 'videoTypeId', 'folderId');
+		$this->alterColumn('video', 'videoTypeId', 'int');
+		$this->executeAlters();
 		$this->renameColumn('video', 'videoTypeId', 'folderId');
 		$this->alterColumn('video', 'editor', 'int');
+		$this->executeAlters();
 		$this->renameColumn('video', 'editor', 'memberId');
 
 		return $this->dropTable('videoType');

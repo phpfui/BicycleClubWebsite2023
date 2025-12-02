@@ -10,7 +10,7 @@ namespace App\Record\Definition;
  * @property ?int $coordinatorId MySQL type int
  * @property ?string $description MySQL type varchar(100)
  * @property ?string $maxSpeed MySQL type varchar(5)
- * @property int $memberDefault MySQL type tinyint(1)
+ * @property int $memberDefault MySQL type tinyint
  * @property ?string $minSpeed MySQL type varchar(5)
  * @property int $ordering MySQL type int
  */
@@ -36,7 +36,7 @@ abstract class Category extends \PHPFUI\ORM\Record
 				'coordinatorId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'description' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
 				'maxSpeed' => new \PHPFUI\ORM\FieldDefinition('varchar(5)', 'string', 5, true, ),
-				'memberDefault' => new \PHPFUI\ORM\FieldDefinition('tinyint(1)', 'int', 1, false, 0, ),
+				'memberDefault' => new \PHPFUI\ORM\FieldDefinition('tinyint', 'int', 0, false, 0, ),
 				'minSpeed' => new \PHPFUI\ORM\FieldDefinition('varchar(5)', 'string', 5, true, ),
 				'ordering' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 999999, ),
 			];

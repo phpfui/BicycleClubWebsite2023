@@ -138,7 +138,7 @@ class RideWithGPS extends \App\Model\GPS
 
 		foreach ($results as $memberData)
 			{
-			$email = $memberData['user']['real_email'];
+			$email = $memberData['user']['real_email'] ?? '';
 			unset($memberData['user']['real_email']);
 			$memberData['user']['id'] = $memberData['id'];
 			$memberData['user']['active'] = $memberData['active'] ? 1 : 0;

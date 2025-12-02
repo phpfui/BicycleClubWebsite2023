@@ -20,7 +20,7 @@ class Migration_13 extends \PHPFUI\ORM\Migration
 		$this->runSQL('delete from member where membershipid not in (select membershipid from membership);');
 		$this->runSQL('update membership set lastRenewed = null where lastRenewed=joined;');
 		$this->dropTable('memberNotice');
-		$this->runSQL('CREATE TABLE `memberNotice` (`memberNoticeId` int NOT NULL AUTO_INCREMENT primary key,`body` mediumtext,`title` varchar(255) not null,memberId int,`overridePreferences` int default 0,`field` varchar(30) not null,`dayOffsets` varchar(255) not null) ENGINE=InnoDB;');
+		$this->runSQL('CREATE TABLE `memberNotice` (`memberNoticeId` int NOT NULL AUTO_INCREMENT primary key,`body` mediumtext,`title` varchar(255) not null,memberId int,`overridePreferences` int default 0,`field` varchar(30) not null,`dayOffsets` varchar(255) not null, summary int not null default 1) ENGINE=InnoDB;');
 
 		$settingTable = new \App\Table\Setting();
 		$memberPicker = new \App\Model\MemberPicker('Membership Chair');

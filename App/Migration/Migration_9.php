@@ -20,8 +20,10 @@ class Migration_9 extends \PHPFUI\ORM\Migration
 		$this->dropColumn('RWGPS', 'elevationMeters');
 		$this->alterColumn('RWGPS', 'lastUpdated', 'date');
 		$this->alterColumn('RWGPS', 'miles', 'decimal(4,2)');
+		$this->executeAlters();
 		$this->renameColumn('RWGPS', 'miles', 'mileage');
 		$this->alterColumn('RWGPS', 'elevationFeet', 'int');
+		$this->executeAlters();
 		$this->renameColumn('RWGPS', 'elevationFeet', 'elevation');
 
 		return true;
@@ -38,8 +40,10 @@ class Migration_9 extends \PHPFUI\ORM\Migration
 		$this->alterColumn('RWGPS', 'state', 'varchar(255)');
 		$this->alterColumn('RWGPS', 'lastUpdated', 'timestamp');
 		$this->alterColumn('RWGPS', 'mileage', 'decimal(4,2)');
+		$this->executeAlters();
 		$this->renameColumn('RWGPS', 'mileage', 'miles');
 		$this->alterColumn('RWGPS', 'elevation', 'decimal(8.2)');
+		$this->executeAlters();
 		$this->renameColumn('RWGPS', 'elevation', 'elevationFeet');
 		$this->dropColumn('RWGPS', 'status');
 

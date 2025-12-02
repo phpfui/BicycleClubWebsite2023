@@ -24,10 +24,10 @@ class Migration_34 extends \PHPFUI\ORM\Migration
 		$setting = new \App\Record\Setting();
 		$setting->name = 'signupNotifications';
 		$setting->value = '1';
-		$setting->insert();
+		$setting->insertOrIgnore();
 		$setting->name = 'cueSheetFieldName';
 		$setting->value = 'Cue Sheet';
-		$setting->insert();
+		$setting->insertOrIgnore();
 
 		return $this->runSQL('update permission set menu="Ride Leaders" where menu="Leaders"');
 		}

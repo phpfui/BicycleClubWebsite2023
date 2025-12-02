@@ -15,8 +15,8 @@ namespace App\Record\Definition;
  * @property ?float $elevationMeters MySQL type decimal(8,0)
  * @property ?float $feetPerMile MySQL type decimal(5,1)
  * @property ?float $km MySQL type decimal(10,2)
- * @property string $lastSynced MySQL type datetime
- * @property string $lastUpdated MySQL type datetime
+ * @property ?string $lastSynced MySQL type datetime
+ * @property ?string $lastUpdated MySQL type datetime
  * @property ?float $latitude MySQL type decimal(10,6)
  * @property ?float $longitude MySQL type decimal(10,6)
  * @property ?float $metersPerKm MySQL type decimal(5,2)
@@ -56,8 +56,8 @@ abstract class RWGPS extends \PHPFUI\ORM\Record
 				'elevationMeters' => new \PHPFUI\ORM\FieldDefinition('decimal(8,0)', 'float', 9, true, ),
 				'feetPerMile' => new \PHPFUI\ORM\FieldDefinition('decimal(5,1)', 'float', 6, true, 0.0, ),
 				'km' => new \PHPFUI\ORM\FieldDefinition('decimal(10,2)', 'float', 11, true, ),
-				'lastSynced' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, '0000-00-00 00:00:00', ),
-				'lastUpdated' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, false, 'CURRENT_TIMESTAMP', ),
+				'lastSynced' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, ),
+				'lastUpdated' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, 'CURRENT_TIMESTAMP', ),
 				'latitude' => new \PHPFUI\ORM\FieldDefinition('decimal(10,6)', 'float', 11, true, ),
 				'longitude' => new \PHPFUI\ORM\FieldDefinition('decimal(10,6)', 'float', 11, true, ),
 				'metersPerKm' => new \PHPFUI\ORM\FieldDefinition('decimal(5,2)', 'float', 6, true, ),

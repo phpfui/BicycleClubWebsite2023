@@ -12,6 +12,7 @@ class Migration_40 extends \PHPFUI\ORM\Migration
 	public function down() : bool
 		{
 		$this->alterColumn('cueSheet', 'terrainId', 'int');
+		$this->executeAlters();
 		$this->renameColumn('cueSheet', 'terrainId', 'terrain');
 
 		return $this->dropTable('terrain');
@@ -20,6 +21,7 @@ class Migration_40 extends \PHPFUI\ORM\Migration
 	public function up() : bool
 		{
 		$this->alterColumn('cueSheet', 'terrain', 'int');
+		$this->executeAlters();
 		$this->renameColumn('cueSheet', 'terrain', 'terrainId');
 		$this->dropTable('terrain');
 

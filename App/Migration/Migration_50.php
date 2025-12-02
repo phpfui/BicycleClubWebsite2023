@@ -12,6 +12,7 @@ class Migration_50 extends \PHPFUI\ORM\Migration
 	public function down() : bool
 		{
 		$this->alterColumn('storeItem', 'folderId', 'int');
+		$this->executeAlters();
 		$this->renameColumn('storeItem', 'folderId', 'parent');
 		$this->addColumn('storeItem', 'cut', 'char(1)');
 
@@ -22,6 +23,7 @@ class Migration_50 extends \PHPFUI\ORM\Migration
 		{
 		$this->runSQL('delete from storeItem where type>0');
 		$this->alterColumn('storeItem', 'parent', 'int');
+		$this->executeAlters();
 		$this->renameColumn('storeItem', 'parent', 'folderId');
 		$this->dropColumn('storeItem', 'cut');
 

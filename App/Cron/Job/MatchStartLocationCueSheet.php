@@ -26,8 +26,8 @@ class MatchStartLocationCueSheet extends \App\Cron\BaseJob
 
 			foreach ($rideTable->getRecordCursor() as $ride)
 				{
-				$startLocationId = $ride->startLocationId;
-				$cueSheetId = $ride->cueSheetId;
+				$startLocationId = $ride->startLocationId ?? 0;
+				$cueSheetId = $ride->cueSheetId ?? 0;
 
 				if (! isset($startLocationIds[$cueSheetId]))
 					{

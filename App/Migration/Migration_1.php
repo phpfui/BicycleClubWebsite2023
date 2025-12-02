@@ -16,14 +16,15 @@ class Migration_1 extends \PHPFUI\ORM\Migration
 
 		$this->dropColumn('photoFolder', 'permissionId');
 		$this->alterColumn('photoFolder', 'parentFolderId', 'int default 0');
-		$this->renameColumn('photoFolder', 'parentFolderId', 'parentId');
-		$this->dropColumn('fileFolder', 'permissionId');
-		$this->alterColumn('fileFolder', 'parentFolderId', 'int default 0');
-		$this->renameColumn('fileFolder', 'parentFolderId', 'parentId');
-
 		$this->executeAlters();
-
-		$this->addIndex('photoFolder', 'parentId');
+		$this->renameColumn('photoFolder', 'parentFolderId', 'parentId');
+		$this->executeAlters();
+		$this->dropColumn('fileFolder', 'permissionId');
+		$this->executeAlters();
+		$this->alterColumn('fileFolder', 'parentFolderId', 'int default 0');
+		$this->executeAlters();
+		$this->renameColumn('fileFolder', 'parentFolderId', 'parentId');
+		$this->executeAlters();
 
 		return $this->addIndex('fileFolder', 'parentId');
 		}
@@ -35,11 +36,13 @@ class Migration_1 extends \PHPFUI\ORM\Migration
 
 		$this->addColumn('photoFolder', 'permissionId', 'int');
 		$this->alterColumn('photoFolder', 'parentId', 'int default 0');
+		$this->executeAlters();
 		$this->renameColumn('photoFolder', 'parentId', 'parentFolderId');
+		$this->executeAlters();
 		$this->addColumn('fileFolder', 'permissionId', 'int');
 		$this->alterColumn('fileFolder', 'parentId', 'int default 0');
+		$this->executeAlters();
 		$this->renameColumn('fileFolder', 'parentId', 'parentFolderId');
-
 		$this->executeAlters();
 
 		$this->addIndex('photoFolder', 'parentFolderId');

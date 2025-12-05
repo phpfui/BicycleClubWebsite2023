@@ -15,9 +15,8 @@ class Event implements \Stringable
 			$email = new \App\Tools\EMail();
 			$member = \App\Model\Session::getSignedInMember();
 			$email->setSubject($_POST['subject']);
-			$email->setFromMember($member);
+			$email->setFrom($member['email'], $member['firstName'] . ' ' . $member['lastName']);
 			$email->setHtml();
-			$email->setBody(\App\Tools\TextHelper::cleanUserHtml($_POST['message']));
 			$message = 'Unknown command';
 			$status = 'error';
 			$persons = \App\Table\Reservation::getEmails($this->event->eventId, $_POST['status']);
@@ -25,7 +24,9 @@ class Event implements \Stringable
 
 			if ($_POST['submit'] == $this->testMessage)
 				{
-				$email->addBCCMember($member);
+				$body = \str_replace(['~firstName~', '~lastName~', '~email~'], [$member['firstName'], $member['lastName'], $member['email']], $_POST['message']);
+				$email->setBody(\App\Tools\TextHelper::cleanUserHtml($body));
+				$email->setTo($member['email'], $member['firstName'] . ' ' . $member['lastName']);
 				$email->send();
 				$status = 'success';
 				$message = 'Check your inbox for a test email.<br>Your email would be sent to ' . \count($persons) . ' people';
@@ -34,9 +35,11 @@ class Event implements \Stringable
 				{
 				foreach ($persons as $person)
 					{
-					$email->addTo($person['email'], $person['firstName'] . ' ' . $person['lastName']);
+					$body = \str_replace(['~firstName~', '~lastName~', '~email~'], [$person['firstName'], $person['lastName'], $person['email']], $_POST['message']);
+					$email->setBody(\App\Tools\TextHelper::cleanUserHtml($body));
+					$email->setTo($person['email'], $person['firstName'] . ' ' . $person['lastName']);
+					$email->send();
 					}
-				$email->bulkSend();
 				$message = 'Your email was sent to ' . \count($persons) . ' people';
 				$status = 'success';
 				}
@@ -71,6 +74,9 @@ class Event implements \Stringable
 		$message->setRequired();
 		$fieldSet->add($message);
 		$form->add($fieldSet);
+		$div = new \PHPFUI\Callout('info');
+		$div->add('<b>Substitution fields:</b> ~firstName~, ~lastName~, ~email~');
+		$form->add($div);
 		$buttonGroup = new \App\UI\CancelButtonGroup();
 		$emailAll = new \PHPFUI\Submit($this->emailText);
 		$emailAll->addClass('warning');

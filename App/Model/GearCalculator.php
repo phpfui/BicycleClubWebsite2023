@@ -134,7 +134,15 @@ class GearCalculator
 			}
 
 		// compute speed
-		[$rpm, $units] = \explode('~', $unit);
+		if (str_contains($unit, '~'))
+			{
+			[$rpm, $units] = \explode('~', $unit);
+			}
+		else
+			{
+			$rpm = $unit ? : 80;
+			$units = 'M';
+			}
 		$gear = (int)$diameter * M_PI * $ring / $cog * (int)$rpm * 60 / 1000000;
 
 		if ('M' == $units)

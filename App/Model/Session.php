@@ -130,6 +130,12 @@ class Session extends \PHPFUI\Session
 			}
 		}
 
+	public static function reloadPermissions() : void
+		{
+		// next page load will reload current userPermissions
+		unset($_SESSION['userPermissions']);
+		}
+
 	/**
 	 * @param array<\App\Record\CartItem> $cartItems
 	 */

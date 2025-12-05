@@ -37,7 +37,7 @@ class Backup
 		$settings = [];
 		$settings['add-drop-table'] = true;
 		$settings['default-character-set'] = 'utf8mb4';
-		$settings['compress'] = \Ifsnop\Mysqldump\Mysqldump::GZIP; // BZIP2 has unpack client issues, but smaller archive
+		$settings['compress'] = \Druidfi\Mysqldump\Compress\CompressManagerFactory::GZIP;
 
 		if ($schemaOnly)
 			{
@@ -52,7 +52,7 @@ class Backup
 			$settings['single-transaction'] = true;
 			}
 
-		$dump = new \Ifsnop\Mysqldump\Mysqldump($dbSettings->getConnectionString(), $dbSettings->getUser(), $dbSettings->getPassword(), $settings);
+		$dump = new \Druidfi\Mysqldump\Mysqldump($dbSettings->getConnectionString(), $dbSettings->getUser(), $dbSettings->getPassword(), $settings);
 		$dump->start($backupFilename);
 
 		if (! $schemaOnly)

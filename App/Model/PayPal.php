@@ -151,13 +151,14 @@ class PayPal
 		$breakdown->tax_total = new \PHPFUI\PayPal\Currency($invoice->totalTax);
 		$breakdown->item_total = new \PHPFUI\PayPal\Currency($itemTotal);
 
-// "description":"Should equal item_total + tax_total + shipping + handling + insurance - shipping_discount - discount."}]
 		$value = $itemTotal + $invoice->totalTax + $invoice->totalShipping - $discount;
 
-		if ($value != $unpaidBalance)
+		if ($value != $unpaidBalance || ! $itemTotal)
 			{
-			\App\Tools\Logger::get()->debug("value {$value} != unpaidBalance {$unpaidBalance} (itemTotal {$itemTotal}) (discount {$discount})");
-			\App\Tools\Logger::get()->debug($invoice);
+			$this->logger->debug($itemTotal);
+			$this->logger->debug($invoice);
+
+			return null;
 			}
 
 		$amount = new \PHPFUI\PayPal\Amount();

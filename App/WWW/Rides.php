@@ -89,7 +89,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function calendar(\App\Record\Ride $ride) : void
 		{
-		if (! $this->page->isAuthorized('Signed Up Riders'))
+		if (! $this->page->addHeader('Signed Up Riders'))
 			{
 			$this->page->redirect('/Home');
 			}
@@ -424,8 +424,14 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function signedUp(\App\Record\Ride $ride = new \App\Record\Ride()) : void
 		{
-		if ($ride->loaded() && $this->page->addHeader('Signed Up Riders'))
+		if ($this->page->addHeader('Signed Up Riders'))
 			{
+			if (! $ride->loaded())
+				{
+				$this->page->redirect('/Rides/memberSchedule');
+
+				return;
+				}
 			$this->page->addPageContent($this->view->getRideInfo($ride));
 
 			if (\App\Enum\Ride\Status::CANCELLED_FOR_WEATHER == $ride->rideStatus)
@@ -521,10 +527,6 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$rideCommentView = new \App\View\Ride\Comments($this->page, $ride);
 				$this->page->addPageContent($rideCommentView->getRideComments());
 				}
-			}
-		else
-			{
-			$this->page->redirect('/Rides/memberSchedule');
 			}
 		}
 

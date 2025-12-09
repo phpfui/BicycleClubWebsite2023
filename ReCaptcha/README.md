@@ -14,9 +14,7 @@ reCAPTCHA is a free CAPTCHA service that protects websites from spam and abuse. 
 
 ### Notice: This is not an officially supported version of the Google Recaptcha package
 
-It appears that Google is no longer interested in supporting their PHP Open Source packages for newer versions of PHP (8.4 and up). This package is an updated version of the original Google package. It has been updated to GitHub Actions and modern PHP standards. Every effort has been made to not change logic or behavior other than conformating to modern PHP standards.
-
-This package will be retired if Google decides to support modern PHP versions.
+This package is an updated version of the original Google package to support more modern PHP coding standards and versions of PHP and updated to GitHub Actions. Every effort has been made to not change logic or behavior other than conforming to modern PHP standards.
 
 ### Support for earlier versions of PHP
 

@@ -39,7 +39,7 @@
         "phpfui/orm": "^3.0",
         "phpfui/php-imap": "dev-main",
         "phpfui/phpfui": "*",
-        "phpfui/recaptcha": "dev-PSR",
+        "phpfui/recaptcha": "^2.0",
         "phpfui/translation": "^1.0",
         "phpmailer/phpmailer": ">=6.0",
         "psr-php7/log": "^1.0",

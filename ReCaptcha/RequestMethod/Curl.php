@@ -42,34 +42,38 @@ class Curl
 {
     /**
      * @see http://php.net/curl_init
+     *
+     * @return \CurlHandle|false cURL handle  *
      */
-    public function init(?string $url = null) : \CurlHandle | false
+    public function init(?string $url = null)
     {
         return curl_init($url);
     }
 
     /**
      * @see http://php.net/curl_setopt_array
-     * @param array<int,mixed> $options
+     * @param \CurlHandle|false $ch
      */
-    public function setoptArray(\CurlHandle $ch, array $options): bool
+    public function setoptArray($ch, array $options): bool
     {
         return curl_setopt_array($ch, $options);
     }
 
     /**
      * @see http://php.net/curl_exec
+     * @param \CurlHandle|false $ch
      */
-    public function exec(\CurlHandle $ch): mixed
+    public function exec($ch): mixed
     {
         return curl_exec($ch);
     }
 
     /**
      * @see http://php.net/curl_close
+     * @param \CurlHandle|false $ch
      */
-    public function close(\CurlHandle $ch): void
+    public function close($ch): void
     {
-        curl_close($ch);
+    //  curl_close($ch); // curl_close is a noop in PHP 8.0+
     }
 }

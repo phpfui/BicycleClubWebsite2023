@@ -42,9 +42,9 @@ namespace ReCaptcha\RequestMethod;
 class Socket
 {
     /**
-     * @var resource | false
+     * @var resource|false
      */
-    private $handle = false;
+    private $handle = null;
 
     /**
      * fsockopen
@@ -55,7 +55,7 @@ class Socket
      */
     public function fsockopen(string $hostname, int $port = -1, int &$errno = 0, string &$errstr = '', ?float $timeout = null)
     {
-        $this->handle = fsockopen($hostname, $port, $errno, $errstr, (is_null($timeout) ? (float)ini_get("default_socket_timeout") : $timeout));
+        $this->handle = fsockopen($hostname, $port, $errno, $errstr, (is_null($timeout) ? ini_get("default_socket_timeout") : $timeout));
 
         if ($this->handle != false && $errno === 0 && $errstr === '') {
             return $this->handle;
@@ -78,7 +78,7 @@ class Socket
      *
      * @see http://php.net/fgets
      */
-    public function fgets(?int $length = null): string | false
+    public function fgets(?int $length = null): string
     {
         return fgets($this->handle, $length);
     }

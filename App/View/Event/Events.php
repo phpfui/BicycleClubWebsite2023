@@ -696,7 +696,7 @@ class Events
 
 		if (\App\Model\Session::checkCSRF() && isset($_POST['submit']))
 			{
-			if ($this->page->isPublic() && ! $this->captcha->valid())
+			if (! \App\Model\Session::signedInMemberId() && $this->page->isPublic() && ! $this->captcha->valid())
 				{
 				\App\Model\Session::setFlash('alert', 'You appear to be a robot! Please confirm you are not.');
 				$this->page->redirect();
@@ -788,7 +788,7 @@ JAVASCRIPT;
 					$this->page->addJavaScript($js);
 					}
 
-				if ($this->page->isPublic())
+				if (! \App\Model\Session::signedInMemberId() && $this->page->isPublic())
 					{
 					$form->add($this->captcha);
 					}

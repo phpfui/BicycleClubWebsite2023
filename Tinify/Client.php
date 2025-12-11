@@ -112,6 +112,11 @@ class Client {
             if (is_string($response)) {
                 $status = curl_getinfo($request, CURLINFO_HTTP_CODE);
                 $headerSize = curl_getinfo($request, CURLINFO_HEADER_SIZE);
+                if (PHP_VERSION_ID < 80000) {
+                    curl_close($request);
+                } else {
+                    unset($request);
+                }
 
                 $headers = self::parseHeaders(substr($response, 0, $headerSize));
                 $responseBody = substr($response, $headerSize);
@@ -139,6 +144,11 @@ class Client {
                 throw Exception::create($details->message, $details->error, $status);
             } else {
                 $message = sprintf("%s (#%d)", curl_error($request), curl_errno($request));
+                if (PHP_VERSION_ID < 80000) {
+                    curl_close($request);
+                } else {
+                    unset($request);
+                }
                 if ($retries > 0) continue;
                 throw new ConnectionException("Error while connecting: " . $message);
             }

@@ -4,6 +4,8 @@ namespace App\View\Event;
 
 class Events
 	{
+	private readonly \App\UI\Captcha $captcha;
+
 	private \App\Record\Event $event;
 
 	private readonly \App\Table\Event $eventTable;
@@ -12,6 +14,7 @@ class Events
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
+		$this->captcha = new \App\UI\Captcha($this->page);
 		$this->eventTable = new \App\Table\Event();
 		$this->event = new \App\Record\Event();
 		$this->reservationTable = new \App\Table\Reservation();
@@ -693,6 +696,14 @@ class Events
 
 		if (\App\Model\Session::checkCSRF() && isset($_POST['submit']))
 			{
+			if ($this->page->isPublic() && ! $this->captcha->valid())
+				{
+				\App\Model\Session::setFlash('alert', 'You appear to be a robot! Please confirm you are not.');
+				$this->page->redirect();
+
+				return $form;
+				}
+
 			$reservation = new \App\Record\Reservation();
 			$reservation->setFrom($customer->toArray());
 			$reservation->reservationFirstName = $customer->firstName;
@@ -775,6 +786,11 @@ $('#{$currentReservationsId}').val(currentReservations);$('#{$buttonGroupId}').b
 if(numberReservations==currentReservations){ $('#{$addAttendeeId}').hide();}return false;};
 JAVASCRIPT;
 					$this->page->addJavaScript($js);
+					}
+
+				if ($this->page->isPublic())
+					{
+					$form->add($this->captcha);
 					}
 				$form->add($buttonGroup);
 				}

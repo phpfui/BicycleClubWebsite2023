@@ -1181,6 +1181,11 @@ class Rides
 			$cloning->releasePrinted = '';
 			$cloning->memberId = \App\Model\Session::signedInMemberId();
 
+			if ($cloning->unaffiliated && ! $this->page->isAuthorized('Unaffiliated Rides Leader'))
+				{
+				$cloning->unaffiliated = false;
+				}
+
 			$startDate = $_POST['cloneToDate'];
 			$returnValue = '<h6>Ride was repeated to the following dates:</h6>';
 			$rideModel = new \App\Model\Ride();

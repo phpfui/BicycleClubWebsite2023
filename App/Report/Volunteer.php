@@ -272,7 +272,7 @@ class Volunteer extends \PDF_MC_Table
 					$this->Row([$job['description']]);
 					$this->Row(['']);
 					}
-				$hours = [null => 'No Shift'];
+				$hours = ['' => 'No Shift'];
 				$this->SetWidths([20,
 					20,
 					20,
@@ -299,7 +299,7 @@ class Volunteer extends \PDF_MC_Table
 
 				foreach ($shifts as $shift)
 					{
-					$hours[$shift->jobShiftId] = \str_replace(' ', '', \App\Tools\TimeHelper::toSmallTime($shift->startTime) . '-' . \App\Tools\TimeHelper::toSmallTime($shift->endTime));
+					$hours[$shift->jobShiftId ?? ''] = \str_replace(' ', '', \App\Tools\TimeHelper::toSmallTime($shift->startTime) . '-' . \App\Tools\TimeHelper::toSmallTime($shift->endTime));
 					$volunteerJobShiftTable->setWhere(new \PHPFUI\ORM\Condition('jobShiftId', $shift->jobShiftId));
 					$taken = \count($volunteerJobShiftTable);
 
@@ -348,7 +348,7 @@ class Volunteer extends \PDF_MC_Table
 							{
 							$member = new \App\Record\Member($shift->memberId);
 							$leader = $shift->shiftLeader > 0 ? 'Shift Leader' : '';
-							$this->Row([$hours[$shift->jobShiftId],
+							$this->Row([$hours[$shift->jobShiftId ?? ''],
 								\App\Tools\TextHelper::unhtmlentities($member->firstName . ' ' . $member->lastName),
 								$member->email,
 								$member->phone,

@@ -330,61 +330,82 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function registered(\App\Record\Event $event = new \App\Record\Event()) : void
 		{
+		if (! $event->loaded() || ! $event->showRegistered)
+			{
+			$this->page->addPageContent('Event not found');
+
+			return;
+			}
+
+		$showFullName = true;
+
+		if (\App\Enum\Event\MembersOnly::PUBLIC == $event->membersOnly)
+			{
+			$showFullName = false;
+			$this->page->setPublic();
+			}
+
+		if (\App\Model\Session::isSignedIn())
+			{
+			$showFullName = true;
+			}
+
 		if ($this->page->addHeader('Currently Registered'))
 			{
-			if ($event->loaded() && $event->showRegistered)
+			$this->page->addPageContent(new \PHPFUI\SubHeader($event->title));
+			$this->reservationTable->setReservationsCursor($event);
+			$this->reservationTable->addOrderBy('lastName')->addOrderBy('firstName');
+			$participantCursor = $this->reservationTable->getArrayCursor();
+			$table = new \PHPFUI\Table();
+			$table->addHeader('name', 'Name');
+
+			if ($event->showComments)
 				{
-				$this->page->addPageContent(new \PHPFUI\SubHeader($event->title));
-				$this->reservationTable->setReservationsCursor($event);
-				$this->reservationTable->addOrderBy('lastName')->addOrderBy('firstName');
-				$participantCursor = $this->reservationTable->getArrayCursor();
-				$table = new \PHPFUI\Table();
-				$table->addHeader('name', 'Name');
+				$table->addHeader('comments', $event->commentTitle);
+				}
 
-				if ($event->showComments)
+			$attending = 0;
+			$userSignedUp = false;
+
+			foreach ($participantCursor as $participant)
+				{
+				if (! $event->price || ($event->price && $participant['paymentId']))
 					{
-					$table->addHeader('comments', $event->commentTitle);
-					}
+					++$attending;
 
-				$attending = 0;
-				$userSignedUp = false;
-
-				foreach ($participantCursor as $participant)
-					{
-					if (! $event->price || ($event->price && $participant['paymentId']))
+					if ($showFullName)
 						{
-						++$attending;
 						$row = ['name' => $participant['firstName'] . ' ' . $participant['lastName']];
-
-						if ($event->showComments)
-							{
-							$row['comments'] = $participant['comments'];
-							}
-						$table->addRow($row);
 						}
-
-					if ($participant['memberId'] == \App\Model\Session::signedInMemberId())
+					else
 						{
-						$userSignedUp = true;
+						$row = ['name' => $participant['firstName'] . ' ' . ($participant['lastName'][0] ?? '')];
 						}
-					}
-				$row = ['name' => '<b>Total Attending:</b> ' . $attending];
 
-				if ($event->showComments)
-					{
-					$row['comments'] = '';
+					if ($event->showComments)
+						{
+						$row['comments'] = $participant['comments'];
+						}
+					$table->addRow($row);
 					}
-				$table->addRow($row);
-				$this->page->addPageContent($table);
 
-				if (! $userSignedUp)
+				if ($participant['memberId'] == \App\Model\Session::signedInMemberId())
 					{
-					$this->page->addPageContent(new \PHPFUI\Button('Register Now', '/Events/signUp/' . $event->eventId));
+					$userSignedUp = true;
 					}
 				}
-			else
+			$row = ['name' => '<b>Total Attending:</b> ' . $attending];
+
+			if ($event->showComments)
 				{
-				$this->page->addPageContent('Event not found');
+				$row['comments'] = '';
+				}
+			$table->addRow($row);
+			$this->page->addPageContent($table);
+
+			if (! $userSignedUp)
+				{
+				$this->page->addPageContent(new \PHPFUI\Button('Register Now', '/Events/signUp/' . $event->eventId));
 				}
 			}
 		}

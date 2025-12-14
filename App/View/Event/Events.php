@@ -675,7 +675,7 @@ class Events
 				$buttonGroup->addButton($button);
 				}
 
-			if ($this->page->isAuthorized('Currently Registered') && $today >= $event->registrationStartDate && $event->showRegistered)
+			if (($this->page->isAuthorized('Currently Registered') || \App\Enum\Event\MembersOnly::PUBLIC == $event->membersOnly) && $today >= $event->registrationStartDate && $event->showRegistered)
 				{
 				$coming = new \PHPFUI\Button("Who's Coming?", '/Events/registered/' . $event->eventId);
 				$buttonGroup->addButton($coming->addClass('secondary'));

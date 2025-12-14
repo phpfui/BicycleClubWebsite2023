@@ -1183,7 +1183,7 @@ class Rides
 
 			if ($cloning->unaffiliated && ! $this->page->isAuthorized('Unaffiliated Rides Leader'))
 				{
-				$cloning->unaffiliated = false;
+				$cloning->unaffiliated = 0;
 				}
 
 			$startDate = $_POST['cloneToDate'];

@@ -1733,16 +1733,16 @@
         },
         {
             "name": "laminas/laminas-validator",
-            "version": "3.11.0",
+            "version": "3.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-validator.git",
-                "reference": "6450abcaba92711e36bb4cab5630b7e22e7028a8"
+                "reference": "eb972023dfdad6ba87482ccaa3c9e937686ea759"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/6450abcaba92711e36bb4cab5630b7e22e7028a8",
-                "reference": "6450abcaba92711e36bb4cab5630b7e22e7028a8",
+                "url": "https://api.github.com/repos/laminas/laminas-validator/zipball/eb972023dfdad6ba87482ccaa3c9e937686ea759",
+                "reference": "eb972023dfdad6ba87482ccaa3c9e937686ea759",
                 "shasum": ""
             },
             "require": {
@@ -1762,9 +1762,9 @@
             "require-dev": {
                 "laminas/laminas-coding-standard": "^3.1.0",
                 "laminas/laminas-diactoros": "^3.8.0",
-                "phpunit/phpunit": "^10.5.58",
+                "phpunit/phpunit": "^10.5.60",
                 "psalm/plugin-phpunit": "^0.19.5",
-                "vimeo/psalm": "^6.13.1"
+                "vimeo/psalm": "^6.14.2"
             },
             "suggest": {
                 "laminas/laminas-i18n": "Laminas\\I18n component to allow translation of validation error messages",
@@ -1806,7 +1806,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2025-11-15T22:03:14+00:00"
+            "time": "2025-12-15T10:21:07+00:00"
         },
         {
             "name": "laravel/serializable-closure",
@@ -3364,12 +3364,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ConstantContact.git",
-                "reference": "278975f18ba647281f831d9d31bfbc3cbb3c1409"
+                "reference": "9d6403124174b6088278fe9324482b50232629d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ConstantContact/zipball/278975f18ba647281f831d9d31bfbc3cbb3c1409",
-                "reference": "278975f18ba647281f831d9d31bfbc3cbb3c1409",
+                "url": "https://api.github.com/repos/phpfui/ConstantContact/zipball/9d6403124174b6088278fe9324482b50232629d2",
+                "reference": "9d6403124174b6088278fe9324482b50232629d2",
                 "shasum": ""
             },
             "require": {
@@ -3416,9 +3416,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ConstantContact/issues",
-                "source": "https://github.com/phpfui/ConstantContact/tree/main"
+                "source": "https://github.com/phpfui/ConstantContact/tree/V25.12.1"
             },
-            "time": "2025-12-04T19:20:45+00:00"
+            "time": "2025-12-16T06:11:28+00:00"
         },
         {
             "name": "phpfui/icalendar",
@@ -5298,16 +5298,16 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "8.3.0",
+            "version": "8.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "f7f49401cf141bbb9abaff53067db88959969a70"
+                "reference": "d611e7b064eab7808a0d8d581776c5884a5b687a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/f7f49401cf141bbb9abaff53067db88959969a70",
-                "reference": "f7f49401cf141bbb9abaff53067db88959969a70",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/d611e7b064eab7808a0d8d581776c5884a5b687a",
+                "reference": "d611e7b064eab7808a0d8d581776c5884a5b687a",
                 "shasum": ""
             },
             "type": "component",
@@ -5351,22 +5351,22 @@
                 "wysiwyg"
             ],
             "support": {
-                "source": "https://github.com/tinymce/tinymce-dist/tree/8.3.0"
+                "source": "https://github.com/tinymce/tinymce-dist/tree/8.3.1"
             },
-            "time": "2025-12-10T01:56:11+00:00"
+            "time": "2025-12-17T00:53:22+00:00"
         },
         {
             "name": "twilio/sdk",
-            "version": "8.9.0",
+            "version": "8.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twilio/twilio-php",
-                "reference": "7bae72d9066055e714d8b20d0440149068490c43"
+                "reference": "218e4eacedd5e65be5565d7db649d675baafba77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/7bae72d9066055e714d8b20d0440149068490c43",
-                "reference": "7bae72d9066055e714d8b20d0440149068490c43",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/218e4eacedd5e65be5565d7db649d675baafba77",
+                "reference": "218e4eacedd5e65be5565d7db649d675baafba77",
                 "shasum": ""
             },
             "require": {
@@ -5403,7 +5403,7 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2025-12-03T11:18:57+00:00"
+            "time": "2025-12-17T06:41:12+00:00"
         },
         {
             "name": "voku/simple_html_dom",
@@ -6195,16 +6195,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.92.0",
+            "version": "v3.92.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "5646c2cd99b7cb4b658ff681fe27069ba86c7280"
+                "reference": "2ba8f5a60f6f42fb65758cfb3768434fa2d1c7e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/5646c2cd99b7cb4b658ff681fe27069ba86c7280",
-                "reference": "5646c2cd99b7cb4b658ff681fe27069ba86c7280",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/2ba8f5a60f6f42fb65758cfb3768434fa2d1c7e8",
+                "reference": "2ba8f5a60f6f42fb65758cfb3768434fa2d1c7e8",
                 "shasum": ""
             },
             "require": {
@@ -6244,6 +6244,7 @@
                 "php-cs-fixer/phpunit-constraint-isidenticalstring": "^1.6",
                 "php-cs-fixer/phpunit-constraint-xmlmatchesxsd": "^1.6",
                 "phpunit/phpunit": "^9.6.25 || ^10.5.53 || ^11.5.34",
+                "symfony/polyfill-php85": "^1.33",
                 "symfony/var-dumper": "^5.4.48 || ^6.4.24 || ^7.3.2 || ^8.0",
                 "symfony/yaml": "^5.4.45 || ^6.4.24 || ^7.3.2 || ^8.0"
             },
@@ -6286,7 +6287,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.92.0"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.92.3"
             },
             "funding": [
                 {
@@ -6294,7 +6295,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-12-12T10:29:19+00:00"
+            "time": "2025-12-18T10:45:02+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -6920,16 +6921,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "12.5.3",
+            "version": "12.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "6dc2e076d09960efbb0c1272aa9bc156fc80955e"
+                "reference": "4ba0e923f9d3fc655de22f9547c01d15a41fc93a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/6dc2e076d09960efbb0c1272aa9bc156fc80955e",
-                "reference": "6dc2e076d09960efbb0c1272aa9bc156fc80955e",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4ba0e923f9d3fc655de22f9547c01d15a41fc93a",
+                "reference": "4ba0e923f9d3fc655de22f9547c01d15a41fc93a",
                 "shasum": ""
             },
             "require": {
@@ -6997,7 +6998,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.3"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.4"
             },
             "funding": [
                 {
@@ -7021,7 +7022,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-12-11T08:52:59+00:00"
+            "time": "2025-12-15T06:05:34+00:00"
         },
         {
             "name": "react/cache",
@@ -7602,12 +7603,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "1553067758ae7f3df13df7c7e232c62d928e1d23"
+                "reference": "f960b7bc5c3bae7e348f7b65736072f74493bc3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/1553067758ae7f3df13df7c7e232c62d928e1d23",
-                "reference": "1553067758ae7f3df13df7c7e232c62d928e1d23",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/f960b7bc5c3bae7e348f7b65736072f74493bc3a",
+                "reference": "f960b7bc5c3bae7e348f7b65736072f74493bc3a",
                 "shasum": ""
             },
             "conflict": {
@@ -7629,6 +7630,7 @@
                 "alextselegidis/easyappointments": "<1.5.2.0-beta1",
                 "alexusmai/laravel-file-manager": "<=3.3.1",
                 "alt-design/alt-redirect": "<1.6.4",
+                "altcha-org/altcha": "<1.3.1",
                 "alterphp/easyadmin-extension-bundle": ">=1.2,<1.2.11|>=1.3,<1.3.1",
                 "amazing/media2click": ">=1,<1.3.3",
                 "ameos/ameos_tarteaucitron": "<1.2.23",
@@ -7652,14 +7654,14 @@
                 "athlon1600/php-proxy-app": "<=3",
                 "athlon1600/youtube-downloader": "<=4",
                 "austintoddj/canvas": "<=3.4.2",
-                "auth0/auth0-php": ">=3.3,<=8.16",
-                "auth0/login": "<=7.18",
-                "auth0/symfony": "<=5.4.1",
-                "auth0/wordpress": "<=5.3",
+                "auth0/auth0-php": ">=3.3,<8.18",
+                "auth0/login": "<7.20",
+                "auth0/symfony": "<=5.5",
+                "auth0/wordpress": "<=5.4",
                 "automad/automad": "<2.0.0.0-alpha5",
                 "automattic/jetpack": "<9.8",
                 "awesome-support/awesome-support": "<=6.0.7",
-                "aws/aws-sdk-php": "<3.288.1",
+                "aws/aws-sdk-php": "<3.368",
                 "azuracast/azuracast": "<=0.23.1",
                 "b13/seo_basics": "<0.8.2",
                 "backdrop/backdrop": "<=1.32",
@@ -8598,7 +8600,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-12-12T23:06:01+00:00"
+            "time": "2025-12-18T19:06:20+00:00"
         },
         {
             "name": "sebastian/cli-parser",

@@ -543,9 +543,9 @@ class Events
 				{
 				return "<a href='/Membership/email/{$participant['memberId']}'>{$participant['email']}</a>";
 				}
-			elseif (\filter_var($participant['reservationemail'], FILTER_VALIDATE_EMAIL))
+			elseif (\filter_var($participant['reservationemail'], FILTER_VALIDATE_EMAIL) || \filter_var($participant['email'], FILTER_VALIDATE_EMAIL))
 				{
-				return \PHPFUI\Link::email($participant['reservationemail']);
+				return \PHPFUI\Link::email($participant['reservationemail'] ?: $participant['email']);
 				}
 
 			return '';

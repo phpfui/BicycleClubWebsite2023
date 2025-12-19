@@ -62,6 +62,10 @@ class CurlClient implements Client {
                 $responseHeaders[$key] = $value;
             }
 
+            if (PHP_MAJOR_VERSION < 8) {
+                \curl_close($curl);
+            }
+
             if (isset($options[CURLOPT_INFILE]) && \is_resource($options[CURLOPT_INFILE])) {
                 \fclose($options[CURLOPT_INFILE]);
             }
@@ -70,6 +74,10 @@ class CurlClient implements Client {
 
             return $this->lastResponse;
         } catch (\ErrorException $e) {
+            if (PHP_MAJOR_VERSION < 8 && isset($curl) && \is_resource($curl)) {
+                \curl_close($curl);
+            }
+
             if (isset($options[CURLOPT_INFILE]) && \is_resource($options[CURLOPT_INFILE])) {
                 \fclose($options[CURLOPT_INFILE]);
             }

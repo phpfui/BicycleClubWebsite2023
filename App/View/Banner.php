@@ -268,7 +268,7 @@ class Banner
 		$uploadForm = new \PHPFUI\Form($this->page);
 		$uploadForm->setAreYouSure(false);
 		$uploadForm->add(new \PHPFUI\SubHeader('Upload Banner File'));
-		$callout = new \PHPFUI\Callout('warning');
+		$callout = new \PHPFUI\Callout('info');
 		$width = \App\Model\BannerFiles::MIN_WIDTH;
 		$proportion = \App\Model\BannerFiles::PROPORTION;
 		$callout->add("Banner must be at least {$width} pixels wide and have an aspect ratio of {$proportion}:1.");

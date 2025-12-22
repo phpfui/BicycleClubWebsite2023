@@ -51,6 +51,22 @@ class Membership
 
 		$form->add($fieldSet);
 
+		$fieldSet = new \PHPFUI\FieldSet('Privacy Defaults');
+		$multiColumn = new \PHPFUI\MultiColumn();
+		$multiColumn->add($settingsSaver->generateField('showNothingDefault', 'Don\'t show my info', 'CheckBox', false));
+		$multiColumn->add($settingsSaver->generateField('showNoStreetDefault', 'Don\'t show my street', 'CheckBox', false));
+		$multiColumn->add($settingsSaver->generateField('showNoTownDefault', 'Don\'t show my town/zip', 'CheckBox', false));
+		$multiColumn->add($settingsSaver->generateField('showNoPhoneDefault', 'Don\'t show my phone', 'CheckBox', false));
+		$fieldSet->add($multiColumn);
+
+		$multiColumn = new \PHPFUI\MultiColumn();
+		$multiColumn->add($settingsSaver->generateField('showNoRideSignupDefault', 'Don\'t show my ride signup', 'CheckBox', false));
+		$multiColumn->add($settingsSaver->generateField('showNoSigninDefault', 'Don\'t show my recent sign in', 'CheckBox', false));
+		$multiColumn->add($settingsSaver->generateField('showNoSocialMediaDefault', 'Don\'t show my image on social media', 'CheckBox', false));
+		$fieldSet->add($multiColumn);
+
+		$form->add($fieldSet);
+
 		$fieldSet = new \PHPFUI\FieldSet('New Member Question');
 		$extraFields[] = $questionName = 'NewMemberQuestions';
 		$affilations = \json_decode($this->settingTable->value($questionName), true);

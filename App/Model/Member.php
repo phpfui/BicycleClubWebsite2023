@@ -29,7 +29,8 @@ class Member
 	final public const ONE_ADDITIONAL_MEMBER = 6;
 
 	/** @var	array<string> */
-	protected array $defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal', 'rideComments', 'geoLocate'];
+	protected array $defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal', 'rideComments', 'geoLocate',
+		'showNothing', 'showNoStreet', 'showNoTown', 'showNoPhone', 'showNoRideSignup', 'showNoSignin', 'showNoSocialMedia', ];
 
 	/** @var array<string,int> */
 	protected array $passwordOptions = ['cost' => 11];

@@ -20,8 +20,6 @@ class Page extends \PHPFUI\Page
 
 	private bool $displayedFlash = false;
 
-	private bool $done = false;
-
 	private string $forgotPassword = 'forgotPassword';
 
 	private ?\App\Model\HeaderContent $headerContentModel = null;
@@ -201,7 +199,7 @@ class Page extends \PHPFUI\Page
 		{
 		$show = ! \App\Model\Session::hasExpired() || $this->isRenewing();
 
-		if (! $this->getDone() && 0 == \count($this->requiredPages) && ($this->publicPage || ($this->isSignedIn() && $show)))
+		if (! $this->isDone() && 0 == \count($this->requiredPages) && ($this->publicPage || ($this->isSignedIn() && $show)))
 			{
 			$this->mainColumn->add("{$item}");  // force convert to string so all objects execute
 			}
@@ -234,11 +232,6 @@ class Page extends \PHPFUI\Page
 	public function getController() : \App\Model\Controller
 		{
 		return $this->controller;
-		}
-
-	public function getDone() : bool
-		{
-		return $this->done;
 		}
 
 	public function getFlashMessages() : \PHPFUI\Container
@@ -499,13 +492,6 @@ class Page extends \PHPFUI\Page
 			}
 		}
 
-	public function setDone(bool $done = true) : static
-		{
-		$this->done = $done;
-
-		return $this;
-		}
-
 	public function setHeaderContentModel(\App\Model\HeaderContent $model) : static
 		{
 		$this->headerContentModel = $model;
@@ -703,13 +689,13 @@ class Page extends \PHPFUI\Page
 					\App\Model\Session::setFlash('primary', 'If your email address is on file with us, we have emailed you a reset password link.  If you have not received a password, please check your SPAM folder, or try another email address.');
 					}
 				$this->redirect('/Home');
-				$this->done = true;
+				$this->done();
 				}
 			elseif (isset($_POST[$this->forgotPassword]))
 				{
 				\App\Model\Session::setFlash($this->forgotPassword, \App\Model\Member::cleanEmail($_POST['email'] ?? ''));
 				$this->redirect('/Membership/' . $this->forgotPassword);
-				$this->done = true;
+				$this->done();
 				}
 			}
 
@@ -758,7 +744,7 @@ class Page extends \PHPFUI\Page
 		$buttonGroup->addButton($forgot);
 
 		$form->add($buttonGroup);
-		$this->done = true;
+		$this->done();
 
 		return $form;
 		}

@@ -183,6 +183,10 @@ class ImportMembers extends \PHPFUI\Container
 		$headers = \array_keys($csvReader->current());
 		\sort($headers);
 		$container = new \PHPFUI\Container();
+		$callout = new \PHPFUI\Callout('info');
+		$callout->add('If you reimport members, existing members will be updated with the new import data based on email address');
+		$container->add($callout);
+
 		$fieldSet = new \PHPFUI\FieldSet('Match Member Fields To Import');
 		$fieldSet->add($this->getMatchFields($headers, $this->memberTable->getFields()));
 		$container->add($fieldSet);

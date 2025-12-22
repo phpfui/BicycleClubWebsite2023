@@ -22,7 +22,7 @@ class Polls implements \Stringable
 			{
 			$volunteerPoll = new \App\Record\VolunteerPoll((int)$post[$rowId]);
 			$volunteerPoll->delete();
-			$this->page->setResponse($post[$rowId])->setDone();
+			$this->page->setResponse($post[$rowId])->done();
 
 			return '';
 			}

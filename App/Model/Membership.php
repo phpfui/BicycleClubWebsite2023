@@ -167,17 +167,19 @@ class Membership
 					}
 				}
 
-			if ($singleMembership || ($lastRecord['address'] ?? '') != ($record['address'] ?? '') || ($lastRecord['town'] ?? '') != ($record['town'] ?? ''))
+			$record['email'] = \App\Model\Member::cleanEmail($record['email']);
+			$member = new \App\Record\Member(['email' => $record['email']]);
+
+			if (empty($member->membershipId) && ($singleMembership || ($lastRecord['address'] ?? '') != ($record['address'] ?? '') || ($lastRecord['town'] ?? '') != ($record['town'] ?? '')))
 				{
 				$membership = new \App\Record\Membership();
 				$membership->setFrom($record);
 				$membership->pending = 0;
-				$lastMembershipId = $membership->insert();
+				$member->membership = $membership;
 				}
-			$member = new \App\Record\Member();
 			$member->setFrom($record);
-			$member->membershipId = $lastMembershipId;
 			$member->verifiedEmail = 9;
+			$member->insertOrUpdate();
 			$permission = new \App\Record\UserPermission();
 			$permission->member = $member;
 			$permission->permissionGroup = $normalMemberGroupId;

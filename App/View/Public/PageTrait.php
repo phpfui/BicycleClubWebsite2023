@@ -97,7 +97,7 @@ trait PageTrait
 
 	public function Join() : string | \PHPFUI\HTML5Element
 		{
-		if (! isset($_POST['ForgotPassword']) && ! $this->getDone())
+		if (! isset($_POST['ForgotPassword']) && ! $this->isDone())
 			{
 			$join = new \App\View\Membership\Join($this);
 

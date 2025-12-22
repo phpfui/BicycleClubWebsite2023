@@ -121,7 +121,7 @@ class Join
 						$membership->update();
 						}
 					$this->page->redirect("/Membership/verify/{$id}");
-					$this->page->setDone();
+					$this->page->done();
 
 					return $container;
 					}
@@ -135,7 +135,7 @@ class Join
 				}
 			}
 
-		if (! $this->page->getDone())
+		if (! $this->page->isDone())
 			{
 			$container->add($this->page->getFlashMessages());
 			$fieldSet = new \PHPFUI\FieldSet('Required Information');

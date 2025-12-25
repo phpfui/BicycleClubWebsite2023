@@ -389,6 +389,12 @@ class Registration
 					$confirm->addClass('success');
 					$buttonGroup->addButton($confirm);
 					}
+				elseif ($this->page->isAuthorized('Event Participants'))
+					{
+					$save = new \PHPFUI\Submit('Save');
+					$save->addClass('success');
+					$buttonGroup->addButton($save);
+					}
 				}
 			else
 				{

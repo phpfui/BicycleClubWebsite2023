@@ -30,6 +30,18 @@ class Member extends \App\Record\Definition\Member
 		return $this;
 		}
 
+	public function delete() : bool
+		{
+		$auditTrail = new \App\Record\AuditTrail();
+		$auditTrail->memberId = \App\Model\Session::signedInMemberId();
+		$auditTrail->additional = \print_r(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true);
+		$auditTrail->statement = 'Member deleted';
+		$auditTrail->input = \print_r($this->toArray(), true);
+		$auditTrail->insert();
+
+		return parent::delete();
+		}
+
 	public function fullName() : string
 		{
 		return \App\Tools\TextHelper::unhtmlentities(($this->current['firstName'] ?? '') . ' ' . ($this->current['lastName'] ?? ''));

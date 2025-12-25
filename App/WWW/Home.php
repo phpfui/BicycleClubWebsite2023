@@ -55,10 +55,9 @@ class Home extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Login As Other User'))
 			{
-			\App\Model\Session::unregisterMember();
-
 			if ($member->loaded())
 				{
+				\App\Model\Session::unregisterMember();
 				\App\Model\Session::registerMember($member);
 				}
 			}

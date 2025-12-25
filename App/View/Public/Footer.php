@@ -4,23 +4,14 @@ namespace App\View\Public;
 
 class Footer implements \Stringable
 	{
-	private readonly \App\View\Public\Page $publicPage;
-
-	private readonly \App\Table\Setting $settingTable;
-
-	public function __construct(\App\Model\Controller $controller)
-		{
-		$this->settingTable = new \App\Table\Setting();
-		$this->publicPage = new \App\View\Public\Page($controller);
-		}
-
 	public function __toString() : string
 		{
-		$copyright = $this->settingTable->value('clubName') . ' ' . \App\Tools\Date::format('Y');
+		$settingTable = new \App\Table\Setting();
+		$copyright = $settingTable->value('clubName') . ' ' . \App\Tools\Date::format('Y');
 		$topBar = new \PHPFUI\TitleBar();
 		$menu = new \PHPFUI\Menu();
 		$menu->addClass('simple');
-		$byLawsFile = $this->publicPage->value('ByLawsFile');
+		$byLawsFile = $settingTable->value('ByLawsFile');
 
 		if ($byLawsFile)
 			{
@@ -36,7 +27,7 @@ class Footer implements \Stringable
 
 		foreach ($publicPageTable->getRecordCursor() as $page)
 			{
-			$link = $this->publicPage->getUniqueLink($page);
+			$link = \App\View\Public\Page::getUniqueLink($page);
 			$menu->addMenuItem(new \PHPFUI\MenuItem($page->name, $link));
 			}
 		$topBar->addLeft($menu);

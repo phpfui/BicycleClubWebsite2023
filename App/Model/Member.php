@@ -99,7 +99,7 @@ class Member
 			}
 		$this->sendVerifyEmail($memberRecord);
 
-		return $id;
+		return (int)$id;
 		}
 
 	/**
@@ -143,7 +143,7 @@ class Member
 			\App\Model\Session::setFlash('alert', 'No more members are allowed on this membership');
 			}
 
-		return $memberId;
+		return (int)$memberId;
 		}
 
 	public static function addYears(string $date, int $numYears) : string
@@ -192,7 +192,7 @@ class Member
 	public function combineMembers(array $post) : int
 		{
 		$members = [];
-		$memberId = $post['memberId'] ?? 0;
+		$memberId = (int)($post['memberId'] ?? 0);
 
 		$membershipsCombined = null;
 		$tables = null;
@@ -237,6 +237,9 @@ class Member
 
 			// Combine other memberId references
 			$path = PROJECT_ROOT . '/App/Table/*.php';
+			/**
+			 * @var array<\PHPFUI\ORM\Table> $tables
+			 */
 			$tables = [];
 
 			foreach (\glob($path) as $class)
@@ -245,6 +248,9 @@ class Member
 				$class = \str_replace('/', '\\', $class);
 				$class = \substr($class, \strrpos($class, __NAMESPACE__));
 				$class = \substr($class, 0, \strpos($class, '.'));
+				/**
+				 *  @var \PHPFUI\ORM\Table $table
+				 */
 				$table = new $class();
 
 				$tableName = $table->getTableName();
@@ -721,7 +727,7 @@ class Member
 			{
 			$member->passwordReset = \bin2hex(\random_bytes(10));
 			$member->passwordResetExpires = \date('Y-m-d H:i:s', \time() + 3600 * 24);
-			$member->loginAttempts = \json_encode([]);
+			$member->loginAttempts = (string)\json_encode([]);
 			$member->update();
 			$resetLink = $this->settingTable->value('homePage') . '/Membership/passwordNew/' . $member->memberId . '/' . $member->passwordReset;
 

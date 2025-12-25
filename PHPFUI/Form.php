@@ -62,9 +62,11 @@ function formInit(form,submit,submitName,submitValue,successFunction){
 			btn=$(this).find('button.submit');
 			}
 		if(btn[0].name!=submitName||btn[0].value!=submitValue){
+			btn[0].prop('disabled', true);
 			form.submit();/* submit the form if not the button passed for special handling */
 			return 0;
 			}
+		submit.prop('disabled', true);
 		$.ajax({type:'POST',dataType:'html',data:form.serialize()+'&'+btn[0].name+'='+btn[0].value,
 			beforeSend:function(request){
 				submit.html('Saving').css('background-color','black');
@@ -81,12 +83,12 @@ function formInit(form,submit,submitName,submitValue,successFunction){
 			submit.html(data.response).css('background-color',data.color);
 			if(successFunction>'')window[successFunction](data);
 			setTimeout(function(){
-				submit.html(text).css('background-color',color);},3000);
+				submit.html(text).css('background-color',color).prop('disabled', false);},3000);
 			},
 		error:function (xhr, ajaxOptions, thrownError){
 			submit.html(ajaxOptions+': '+xhr.status+' '+thrownError).css('background-color','red');
 			setTimeout(function(){
-				submit.html(text).css('background-color',color);},3000);
+				submit.html(text).css('background-color',color).prop('disabled', false);},3000);
 			},
 		})
 	})

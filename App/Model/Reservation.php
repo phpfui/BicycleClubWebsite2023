@@ -180,6 +180,8 @@ class Reservation
 		if (! $member->loaded())
 			{
 			$member = new \App\Record\Member();
+			$reservationPerson = new \App\Record\ReservationPerson(['reservationId' => $reservation->reservationId]);
+			$member->setFrom($reservationPerson->toArray());
 			}
 		$data = \array_merge($event->toArray(), $reservation->toArray(), $member->toArray());
 

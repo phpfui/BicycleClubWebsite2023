@@ -44,6 +44,7 @@ class Page extends \PHPFUI\Page
 	public function __construct(public \App\Model\Controller $controller)
 		{
 		parent::__construct();
+
 		\header('Access-Control-Allow-Origin: ' . $this->getSchemeHost());
 		\header('Content-Type: text/html; charset=utf-8');
 		$this->cookies = new \App\Tools\Cookies();
@@ -112,7 +113,7 @@ class Page extends \PHPFUI\Page
 			$testCallout->add('<b>This site is in <i>TEST MODE</i>. Do not use except for testing.</b>');
 			$testCallout->addAttribute('data-closable');
 			$testCallout->addAttribute('data-close');
-			$this->mainColumn->add("{$testCallout}");
+			$this->mainColumn->add($testCallout);
 			}
 		}
 
@@ -139,7 +140,7 @@ class Page extends \PHPFUI\Page
 				$slider->addSliderAttribute('arrows', false);
 				$slider->addSliderAttribute('autoplay', true);
 				$slider->addSliderAttribute('autoplaySpeed', 10000);
-				$this->mainColumn->add("{$slider}");
+				$this->mainColumn->add($slider);
 				}
 			}
 		$this->bannerOff = true;
@@ -744,7 +745,6 @@ class Page extends \PHPFUI\Page
 		$buttonGroup->addButton($forgot);
 
 		$form->add($buttonGroup);
-		$this->done();
 
 		return $form;
 		}

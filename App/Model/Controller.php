@@ -46,7 +46,7 @@ class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\Na
 			$this->setHomePageClass(\App\View\Public\HomePage::class);
 			// The PublicMenu also adds routes, so make it in the controller so it is available in Page
 			$this->publicMenu = new \App\View\Public\Menu($this);
-			$this->footer = new \App\View\Public\Footer($this);
+			$this->footer = new \App\View\Public\Footer();
 			}
 		}
 
@@ -110,7 +110,9 @@ class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\Na
 
 		if ($callback)
 			{
-			\call_user_func($callback);
+			$page = new \App\View\Page($this);
+
+			\call_user_func($callback, $page);
 
 			// return the object the method was called on
 			return $callback[0];

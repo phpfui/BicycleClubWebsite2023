@@ -2,80 +2,77 @@
 
 namespace App\View\Public;
 
-class Page extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
+class Page implements \PHPFUI\Interfaces\NanoClass
 	{
 	use PageTrait;
 
-	private readonly \App\View\Content $content;
+	private ?\App\View\Content $content = null;
 
-	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
+	private \App\View\Page $page;
+
+	public function __construct(private \PHPFUI\Interfaces\NanoController $controller) // @phpstan-ignore-line
 		{
-		parent::__construct($controller); // @phpstan-ignore argument.type
-		$this->content = new \App\View\Content($this);
-		$this->setPublic();
 		}
 
-	public function custom() : void
+	public function __toString() : string
 		{
-		$url = \strtolower(\str_replace('/' . \App\Model\Session::csrf(), '', $this->getBaseUrl()));
+		return "{$this->page}";
+		}
+
+	public function custom(\App\View\Page $page) : void
+		{
+		$this->page = $page;
+		$url = \strtolower(\str_replace('/' . \App\Model\Session::csrf(), '', $page->getBaseUrl()));
 		$publicPageTable = new \App\Table\PublicPage();
 		$publicPageTable->setWhere(new \PHPFUI\ORM\Condition('url', $url . '%', new \PHPFUI\ORM\Operator\Like()));
 		$publicPageCursor = $publicPageTable->getRecordCursor();
 
 		if (! \count($publicPageCursor))
 			{
-			$this->addPageContent("Page {$url} is not defined");
+			$page->addPageContent("Page {$url} is not defined");
 
 			return;
 			}
 
 		$publicPage = $publicPageCursor->current();
 
-		$this->setPublic(\App\Enum\Admin\PublicPageVisibility::MEMBER_ONLY != $publicPage->hidden);
+		$page->setPublic(\App\Enum\Admin\PublicPageVisibility::MEMBER_ONLY != $publicPage->hidden);
 
 		if ($publicPage->banner)
 			{
-			$this->addBanners();
+			$page->addBanners();
 			}
 
 		if ($publicPage->header)
 			{
-			$this->addHeader($publicPage->name, banner:$publicPage->banner);
+			$page->addHeader($publicPage->name, banner:$publicPage->banner);
 			}
 
 		if ($publicPage->blog)
 			{
-			$this->addPageContent($this->content->getDisplayCategoryHTML($publicPage->name));
+			if (! $this->content)
+				{
+				$this->content = new \App\View\Content($page);
+				}
+			$page->addPageContent($this->content->getDisplayCategoryHTML($publicPage->name));
 			}
 
 		if ($method = $publicPage->method)
 			{
-			$this->addPageContent($this->{$method}());
+			$page->addPageContent($this->{$method}($page));
 			}
 
 		if ($publicPage->blogAfter)
 			{
-			$this->addPageContent($this->content->getDisplayCategoryHTML($publicPage->blogAfter));
+			if (! $this->content)
+				{
+				$this->content = new \App\View\Content($page);
+				}
+			$page->addPageContent($this->content->getDisplayCategoryHTML($publicPage->blogAfter));
 			}
 		}
 
-	public function emailBoardMember(\App\Record\BoardMember $boardMember = new \App\Record\BoardMember(), string $csrf = '') : void
-		{
-		$this->addBanners();
-
-		if (! $boardMember->empty() && $csrf == \App\Model\Session::csrf())
-			{
-			$this->addPageContent(new \App\View\Email\Member($this, $boardMember->member, 'Board Member'));
-			}
-		else
-			{
-			$this->addPageContent(new \PHPFUI\Header('Contact Us'));
-			$boardMemberTable = new \App\Table\BoardMember();
-			$this->addPageContent(new \App\View\Public\ContactUs($this, $boardMemberTable->getBoardMembers()));
-			}
-		}
-
-	public function getUniqueLink(\App\Record\PublicPage $publicPage) : string
+	public static function getUniqueLink(\App\Record\PublicPage $publicPage) : string
 		{
 		$baseLink = $publicPage->url ?? '';
 

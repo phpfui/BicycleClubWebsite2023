@@ -4,18 +4,18 @@ namespace App\View\Public;
 
 trait PageTrait
 	{
-	public function AreaCyclingCalendar() : \PHPFUI\Container
+	public function AreaCyclingCalendar(\App\View\Page $page) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 		$container->add(new \PHPFUI\Button('Add An Event', '/Calendar/addEvent'));
 		$model = new \App\Model\Calendar();
-		$view = new \App\View\Calendar($this);
+		$view = new \App\View\Calendar($page);
 		$container->add($view->showCalendar($model->getCalendarEntries($_GET), $_GET));
 
 		return $container;
 		}
 
-	public function BikeShops() : \App\UI\Accordion
+	public function BikeShops(\App\View\Page $page) : \App\UI\Accordion
 		{
 		$getShops = static function(int $bikeShopAreaId) : \PHPFUI\Table
 			{
@@ -59,47 +59,48 @@ trait PageTrait
 		return $bikeShopAccordion;
 		}
 
-	public function Board() : \PHPFUI\Container
+	public function Board(\App\View\Page $page) : \PHPFUI\Container
 		{
-		$view = new \App\View\Admin\Board($this);
+		$view = new \App\View\Admin\Board($page);
 
 		return $view->publicView();
 		}
 
-	public function ClubCalendar() : \PHPFUI\Tabs | \PHPFUI\Table
+	public function ClubCalendar(\App\View\Page $page) : \PHPFUI\Tabs | \PHPFUI\Table
 		{
-		$abbrev = $this->settingTable->value('clubAbbrev');
+		$settingTable = new \App\Table\Setting();
+		$abbrev = $settingTable->value('clubAbbrev');
 		$tabs = [$abbrev . ' Only'];
-		new \App\View\Content($this);
+		new \App\View\Content($page);
 		$model = new \App\Model\Calendar();
-		$view = new \App\View\Calendar($this);
+		$view = new \App\View\Calendar($page);
 
 		return $view->showCalendar($model->getCalendarEntries($_GET), $_GET, $tabs);
 		}
 
-	public function ContactUs() : \App\View\Public\ContactUs
+	public function ContactUs(\App\View\Page $page) : \App\View\Public\ContactUs
 		{
 		$boardMemberTable = new \App\Table\BoardMember();
 
-		return new \App\View\Public\ContactUs($this, $boardMemberTable->getBoardMembers());
+		return new \App\View\Public\ContactUs($page, $boardMemberTable->getBoardMembers());
 		}
 
-	public function GearCalculator() : \PHPFUI\Container
+	public function GearCalculator(\App\View\Page $page) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 
-		$view = new \App\UI\GearCalculator($this);
+		$view = new \App\UI\GearCalculator($page);
 
 		$container->add($view->show());
 
 		return $container;
 		}
 
-	public function Join() : string | \PHPFUI\HTML5Element
+	public function Join(\App\View\Page $page) : string | \PHPFUI\HTML5Element
 		{
-		if (! isset($_POST['ForgotPassword']) && ! $this->isDone())
+		if (! isset($_POST['ForgotPassword']) && ! $page->isDone())
 			{
-			$join = new \App\View\Membership\Join($this);
+			$join = new \App\View\Membership\Join($page);
 
 			return $join->getEmail();
 			}
@@ -107,7 +108,7 @@ trait PageTrait
 		return '';
 		}
 
-	public function LeaderInfo() : \PHPFUI\Container
+	public function LeaderInfo(\App\View\Page $page) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
 		$table = new \PHPFUI\Table();
@@ -150,25 +151,25 @@ trait PageTrait
 		return $container;
 		}
 
-	public function MemberOfMonth() : \PHPFUI\GridX
+	public function MemberOfMonth(\App\View\Page $page) : \PHPFUI\GridX
 		{
 		$memberOfMonthTable = new \App\Table\MemberOfMonth();
-		$view = new \App\View\Member\OfMonth($this);
+		$view = new \App\View\Member\OfMonth($page);
 		$MOM = $memberOfMonthTable->current();
 
 		return $view->view($MOM, '');
 		}
 
-	public function Newsletters(int $year = 0) : \PHPFUI\Container
+	public function Newsletters(\App\View\Page $page, int $year = 0) : \PHPFUI\Container
 		{
-		$view = new \App\View\Newsletter($this);
+		$view = new \App\View\Newsletter($page);
 
 		return $view->display($year);
 		}
 
-	public function RideSchedule() : \App\UI\Accordion | \PHPFUI\Header
+	public function RideSchedule(\App\View\Page $page) : \App\UI\Accordion | \PHPFUI\Header
 		{
-		$ridesView = new \App\View\Rides($this);
+		$ridesView = new \App\View\Rides($page);
 
 		$settingTable = new \App\Table\Setting();
 		$limit = (int)$settingTable->value('publicRideListLimit');
@@ -177,16 +178,16 @@ trait PageTrait
 		return $ridesView->schedule(\App\Table\Ride::upcomingRides($limit), showNoLeader:$showNoLeader);
 		}
 
-	public function Store() : \PHPFUI\Container
+	public function Store(\App\View\Page $page) : \PHPFUI\Container
 		{
-		$storeView = new \App\View\Store($this);
+		$storeView = new \App\View\Store($page);
 
 		return $storeView->shop(new \App\Model\Cart());
 		}
 
-	public function UpcomingClubEvents() : \App\UI\Accordion | \PHPFUI\Header
+	public function UpcomingClubEvents(\App\View\Page $page) : \App\UI\Accordion | \PHPFUI\Header
 		{
-		$view = new \App\View\Event\Events($this);
+		$view = new \App\View\Event\Events($page);
 		$eventTable = new \App\Table\Event();
 		$eventTable->setUpcomingCursor(false);
 		$cursor = $eventTable->getDataObjectCursor();

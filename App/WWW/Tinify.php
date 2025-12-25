@@ -39,8 +39,7 @@ class Tinify implements \PHPFUI\Interfaces\NanoClass
 		$this->logger->debug($data);
 
 		$response = ['url' => '/images/pissingCyclist.jpg'];
-		$this->logger->debug(__METHOD__);
-		\App\Tools\Logger::get()->debug($_POST);
+		$this->logger->debug($_POST, __METHOD__);
 		$this->page->setRawResponse(\json_encode($response, JSON_PRETTY_PRINT));
 		}
 	}

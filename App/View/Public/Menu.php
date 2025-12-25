@@ -35,7 +35,7 @@ class Menu extends \PHPFUI\Menu implements \PHPFUI\Interfaces\NanoClass
 			{
 			return;
 			}
-		$link = $this->publicPage->getUniqueLink($page);
+		$link = \App\View\Public\Page::getUniqueLink($page);
 
 		if ($page['publicMenu'])
 			{

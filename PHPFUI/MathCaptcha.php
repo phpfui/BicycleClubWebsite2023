@@ -100,7 +100,6 @@ class MathCaptcha extends \PHPFUI\MultiColumn implements \PHPFUI\Interfaces\Capt
 			\next($answers);
 			}
 		$this->page->addJavaScript('$("#' . \key($answers) . '").toggleClass("hide")');
-		\App\Tools\Logger::get()->debug(\current($answers));
 		\PHPFUI\Session::setFlash($this->fieldName, \current($answers));
 		$answerInput = new \PHPFUI\Input\Number($this->fieldName);
 		$this->add($answerInput);

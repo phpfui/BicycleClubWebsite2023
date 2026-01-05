@@ -33,7 +33,7 @@
         "php-http/discovery": "^1.19",
         "php-http/guzzle7-adapter": "^1.0",
         "php-http/message": "^1.16",
-        "phpfui/constantcontact": "dev-main",
+        "phpfui/constantcontact": ">24.12",
         "phpfui/icalendar": "^1.0",
         "phpfui/instadoc": "^1.0",
         "phpfui/orm": "^3.0",

@@ -778,6 +778,7 @@ class GearCalculator
 		\arsort($rows);
 
 		$previousValue = (float)\current($rows);
+		$bar = '';
 
 		foreach ($rows as $index => $value)
 			{
@@ -791,7 +792,8 @@ class GearCalculator
 				}
 			else
 				{
-				$table->addRow([$index, \number_format($value, $this->p), ' ', ' ', ' ']);
+				$table->addRow([$index, \number_format($value, $this->p), ' ', ' ', $bar]);
+				$bar = '****';
 				}
 			$previousValue = $value;
 			}

@@ -131,10 +131,10 @@ class Registration
 					$person = new \App\Record\ReservationPerson();
 					$person->eventId = $eventId;
 					$person->reservation = $reservation;
-					$person->email = $_POST['reservationemail'];
-					$person->firstName = $_POST['reservationFirstName'];
-					$person->lastName = $_POST['reservationLastName'];
-					$person->comments = $_POST['comments'] ?? '';
+					$person->email = $_POST['email'][0] ?? $_POST['reservationemail'];
+					$person->firstName = $_POST['firstName'][0] ?? $_POST['reservationFirstName'];
+					$person->lastName = $_POST['lastName'][0] ?? $_POST['reservationLastName'];
+					$person->comments = $_POST['comments'][0] ?? '';
 					$person->insert();
 					$this->reservationModel->updatePrices($reservation);
 					$this->page->redirect('/Events/attendees/' . $eventId);
@@ -274,6 +274,17 @@ class Registration
 			$reservationPersonTable->setWhere($condition);
 
 			$personCount = \count($reservationPersonTable);
+			$people = [];
+
+			foreach ($reservationPersonTable->getRecordCursor() as $person)
+				{
+				$people[] = clone $person;
+				}
+
+			if (! \count($people) && $this->canAddAttendee)
+				{
+				$people[] = new \App\Record\ReservationPerson();
+				}
 
 			if (\count($paymentInfo) > 1)
 				{
@@ -291,7 +302,7 @@ class Registration
 				$table->addHeader('delete', 'Del');
 				}
 
-			foreach ($reservationPersonTable->getRecordCursor() as $record)
+			foreach ($people as $record)
 				{
 				$row = $record->toArray();
 				$id = $row[$this->recordId];

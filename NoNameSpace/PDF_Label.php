@@ -42,10 +42,10 @@ class PDF_Label extends FPDF
 	private $_Avery_Labels = [
 		'5160' => ['paper-size' => 'letter', 'metric' => 'mm', 'marginLeft' => 6, 'marginTop' => 12.7, 'NX' => 3,
 			'NY' => 10, 'SpaceX' => 3.175, 'SpaceY' => 0, 'width' => 67, 'height' => 25.4, 'font-size' => 8],
-		'5161' => ['paper-size' => 'letter', 'metric' => 'mm', 'marginLeft' => 0.967, 'marginTop' => 10.7, 'NX' => 2,
-			'NY' => 10, 'SpaceX' => 3.967, 'SpaceY' => 0, 'width' => 101.6, 'height' => 25.4, 'font-size' => 8],
-		'5X163' => ['paper-size' => 'letter', 'metric' => 'mm', 'marginLeft' => 1.762, 'marginTop' => 10.7, 'NX' => 2,
-			'NY' => 5, 'SpaceX' => 3.175, 'SpaceY' => 0, 'width' => 101.6, 'height' => 50.8, 'font-size' => 8],
+		'5161' => ['paper-size' => 'letter', 'metric' => 'mm', 'marginLeft' => 6.35, 'marginTop' => 12.7, 'NX' => 2,
+			'NY' => 10, 'SpaceX' => 0, 'SpaceY' => 0, 'width' => 101.6, 'height' => 25.4, 'font-size' => 8],
+		'5X163' => ['paper-size' => 'letter', 'metric' => 'mm', 'marginLeft' => 6.35, 'marginTop' => 12.7, 'NX' => 2,
+			'NY' => 5, 'SpaceX' => 5, 'SpaceY' => 0, 'width' => 101.6, 'height' => 50.8, 'font-size' => 32],
 		'5164' => ['paper-size' => 'letter', 'metric' => 'mm', 'marginLeft' => 3.759, 'marginTop' => 12.7, 'NX' => 2,
 			'NY' => 3, 'SpaceX' => 5.159, 'SpaceY' => 0, 'width' => 101.6, 'height' => 84.582, 'font-size' => 12],
 		'5383' => ['paper-size' => 'letter', 'metric' => 'mm', 'marginLeft' => 19.05, 'marginTop' => 25.4, 'NX' => 2,
@@ -67,31 +67,31 @@ class PDF_Label extends FPDF
 
 	private string $_Font_Name = 'helvetica';    // Name of the font
 
-	private int $_Height = 0;          // Height of label
+	private float $_Height = 0.0;                // Height of label
 
-	private string $_Image_Filename = '';         // Set to background image
+	private string $_Image_Filename = '';        // Set to background image
 
-	private int $_Image_Width_Percent = 100;  // Image Width Percent
+	private float $_Image_Width_Percent = 100.0; // Image Width Percent
 
-	private int $_Line_Height = 10;         // Default line height
+	private float $_Line_Height = 10.0;          // Default line height
 
-	private int $_Margin_Left = 0;          // Left margin of labels
+	private float $_Margin_Left = 0.0;           // Left margin of labels
 
-	private int $_Margin_Top = 0;          // Top margin of labels
+	private float $_Margin_Top = 0.0;            // Top margin of labels
 
-	private string $_Metric = 'mm';       // Type of metric for labels.. Will help to calculate good values
+	private string $_Metric = 'mm';              // Type of metric for labels.. Will help to calculate good values
 
-	private string $_Metric_Doc = 'mm';       // Type of metric for the document
+	private string $_Metric_Doc = 'mm';          // Type of metric for the document
 
-	private int $_Width = 0;          // Width of label
+	private float $_Width = 0.0;                 // Width of label
 
-	private int $_X_Number = 0;          // Number of labels horizontally
+	private int $_X_Number = 0;                  // Number of labels horizontally
 
-	private int $_X_Space = 0;          // Horizontal space between 2 labels
+	private float $_X_Space = 0.0;               // Horizontal space between 2 labels
 
-	private int $_Y_Number = 0;          // Number of labels vertically
+	private int $_Y_Number = 0;                  // Number of labels vertically
 
-	private int $_Y_Space = 0;          // Vertical space between 2 labels
+	private float $_Y_Space = 0.0;               // Vertical space between 2 labels
 
 	// Constructor
 	public function __construct(string $format = '5160', string $unit = 'mm', int $posX = 1, int $posY = 1)
@@ -147,7 +147,7 @@ class PDF_Label extends FPDF
 	// convert units (in to mm, mm to in)
 	// $src and $dest must be 'in' or 'mm'
 
-	public function _Convert_Metric($value, $src, $dest) : float
+	public function _Convert_Metric(float $value, string $src, string $dest) : float
 		{
 		if ($src != $dest)
 			{
@@ -157,9 +157,7 @@ class PDF_Label extends FPDF
 			return $value * $tab[$dest] / $tab[$src];
 			}
 
-
 			return $value;
-
 		}
 
 	public function _Get_Height_Chars(int $pt) : float
@@ -255,7 +253,7 @@ class PDF_Label extends FPDF
 		$this->_Alignment = $align;
 		}
 
-	public function Set_Background_Image(string $fileName, int $percentageWidth = 100) : void
+	public function Set_Background_Image(string $fileName, float $percentageWidth = 100.0) : void
 		{
 		$this->_Image_Filename = $fileName;
 		$this->_Image_Width_Percent = $percentageWidth;
@@ -284,7 +282,7 @@ class PDF_Label extends FPDF
 
 	// Method to change font name
 
-	public function Set_Max_Font_Size(string $string, int $maxFont) : int
+	public function Set_Max_Font_Size(string $string, int $maxFont = 100) : int
 		{
 		$size = $maxFont;
 		$this->SetFontSize($size); // start with a large font

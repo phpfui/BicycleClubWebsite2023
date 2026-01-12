@@ -46,8 +46,8 @@ class DiscountCode
 		$expires->setToolTip('The discount code will be valid through this date.');
 		$fieldSet->add(new \PHPFUI\MultiColumn($startDate, $expires));
 
-		$validItems = new \PHPFUI\Input\Text('validItemNumbers', 'Valid Item Numbers', $discountCode->validItemNumbers);
-		$validItems->setToolTip('You can limit the items a discount code can be applied to. Enter the item numbers here, comma separated.  If you use just the first number, all versions of the item will get the discount, or list both numbers to restrict the discount to a specific version of the item.');
+		$validItems = new \PHPFUI\Input\Text('validItemNumbers', 'Valid Item/Event Number(s)', $discountCode->validItemNumbers);
+		$validItems->setToolTip('You can limit the items or events a discount code can be applied to. Enter the item numbers here, comma separated.  If you use just the first number, all versions of the item will get the discount, or list both numbers (X-X) to restrict the discount to a specific version of the item.');
 		$fieldSet->add($validItems);
 
 		$discountType = new \PHPFUI\Input\RadioGroupEnum('type', 'Discount Type', $discountCode->type);

@@ -22,6 +22,6 @@ class GPS
 	 */
 	protected static function validGeoLocation(array $route) : bool
 		{
-		return isset($route['latitude']) && isset($route['longitude']) && ((float)$route['latitude'] + (float)$route['longitude']);
+		return isset($route['latitude'], $route['longitude']) && ((float)$route['latitude'] + (float)$route['longitude']);
 		}
 	}

@@ -30,9 +30,8 @@ class Permissions
 		{
 		$permissionAdded = $this->permissionModel->addGroup($permission->name);
 		$redirect = '/Admin/Permission/groupEdit/' . $permissionAdded->permissionId;
-		$response = ['response' => 'Saved', 'color' => 'lime', 'record' => $permissionAdded->toArray(), 'redirect' => $redirect];
 
-		return $response;
+		return ['response' => 'Saved', 'color' => 'lime', 'record' => $permissionAdded->toArray(), 'redirect' => $redirect];
 		}
 
 	public function editMember(\App\Record\Member $member) : \PHPFUI\Form

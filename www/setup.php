@@ -2,6 +2,7 @@
 
 include '../commonbase.php';
 
+// @mago-expect lint:function-name
 function isHttps() : bool
 	{
 	if (\array_key_exists('HTTPS', $_SERVER) && 'on' === $_SERVER['HTTPS'])

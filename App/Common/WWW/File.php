@@ -72,7 +72,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				if ($this->page->isAuthorized('Move Folder'))
 					{
-					$files[] = 0 - $folderId;
+					$files[] = -$folderId;
 					}
 				}
 
@@ -206,7 +206,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 						}
 					else
 						{
-						$folder = new \App\Record\Folder(0 - $fileId);
+						$folder = new \App\Record\Folder(-$fileId);
 						$originalfolderId = $folder->folderId;
 						$folder->parentFolderId = $folderId;
 						$folder->update();

@@ -56,9 +56,9 @@ class Test extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			{
 			$form = new \PHPFUI\Form($this->page);
 
-			if (! empty($_REQUEST))
+			if (! empty($_POST))
 				{
-				\App\Model\Session::setFlash($_REQUEST['flashType'], $_REQUEST['flashText'] ?? 'Test message');
+				\App\Model\Session::setFlash($_POST['flashType'], $_POST['flashText'] ?? 'Test message');
 				$this->page->redirect();
 
 				return;
@@ -72,7 +72,7 @@ class Test extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				}
 			$fieldSet->add($flashType);
 
-			$fieldSet->add(new \PHPFUI\Input\Text('flashText', 'What do you want to flash', ($_REQUEST['flashText'] ?? ''))->setRequired()); // @phpstan-ignore-line
+			$fieldSet->add(new \PHPFUI\Input\Text('flashText', 'What do you want to flash', $_POST['flashText'] ?? '')->setRequired()); // @phpstan-ignore-line
 			$form->add($fieldSet);
 
 			$buttonGroup = new \PHPFUI\ButtonGroup();
@@ -91,22 +91,22 @@ class Test extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			{
 			$form = new \PHPFUI\Form($this->page);
 
-			if (! empty($_REQUEST))
+			if (! empty($_POST))
 				{
-				$debug = new \PHPFUI\Debug($_REQUEST);
+				$debug = new \PHPFUI\Debug($_POST);
 				$callout = new \PHPFUI\Callout('info');
 				$callout->add($debug);
 				$form->add($callout);
 				}
 			$fieldSet = new \PHPFUI\FieldSet('Input Testing');
 			$multiColumn = new \PHPFUI\MultiColumn();
-			$multiColumn->add(new \PHPFUI\Input\Time($this->page, 'time', 'Time Android', $_REQUEST['time'] ?? '12:30 PM'));
-			$multiColumn->add(new \PHPFUI\Input\TimeDigital($this->page, 'timeDigital', 'Time Digital', $_REQUEST['timeDigital'] ?? '4:45 PM'));
+			$multiColumn->add(new \PHPFUI\Input\Time($this->page, 'time', 'Time Android', $_POST['time'] ?? '12:30 PM'));
+			$multiColumn->add(new \PHPFUI\Input\TimeDigital($this->page, 'timeDigital', 'Time Digital', $_POST['timeDigital'] ?? '4:45 PM'));
 			$fieldSet->add($multiColumn);
-			$fieldSet->add(new \PHPFUI\Input\Date($this->page, 'date', 'Date', $_REQUEST['date'] ?? ''));
-			$fieldSet->add(new \PHPFUI\Input\DateTime($this->page, 'string', 'Date Time', $_REQUEST['datetime'] ?? ''));
-			$fieldSet->add(new \PHPFUI\Input\Number('number', 'Number', (float)($_REQUEST['number'] ?? '')));
-			$fieldSet->add(new \PHPFUI\Input\TextArea('textarea', 'TextArea', ($_REQUEST['textarea'] ?? '')));
+			$fieldSet->add(new \PHPFUI\Input\Date($this->page, 'date', 'Date', $_POST['date'] ?? ''));
+			$fieldSet->add(new \PHPFUI\Input\DateTime($this->page, 'string', 'Date Time', $_POST['datetime'] ?? ''));
+			$fieldSet->add(new \PHPFUI\Input\Number('number', 'Number', (float)($_POST['number'] ?? '')));
+			$fieldSet->add(new \PHPFUI\Input\TextArea('textarea', 'TextArea', $_POST['textarea'] ?? ''));
 
 			$form->add($fieldSet);
 			$buttonGroup = new \PHPFUI\ButtonGroup();
@@ -127,9 +127,9 @@ class Test extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$page = new \PHPFUI\VanillaPage();
 			$form = new \PHPFUI\Form($this->page);
 
-			if (! empty($_REQUEST))
+			if (! empty($_POST))
 				{
-				$debug = new \PHPFUI\Debug($_REQUEST);
+				$debug = new \PHPFUI\Debug($_POST);
 				$callout = new \PHPFUI\Callout('info');
 				$callout->add($debug);
 				$form->add($callout);
@@ -147,9 +147,9 @@ class Test extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					$input->addAttribute($attribute, $field);
 					}
 
-				if (isset($_REQUEST[$field]))
+				if (isset($_POST[$field]))
 					{
-					$input->addAttribute('value', $_REQUEST[$field]);
+					$input->addAttribute('value', $_POST[$field]);
 					}
 
 				if ('time' == $field)

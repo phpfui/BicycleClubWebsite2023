@@ -69,7 +69,7 @@ class Invoice extends \FPDF
 		$x = 10;
 		$width = $this->w - ($x * 2);
 		$y = 100;
-		$height = $this->h - 50 - $y;
+		$height = $this->h - 5 - $y;
 		$this->SetXY($x, $y);
 		$this->Rect($x, $y, $width, $height, 'D');
 		$this->Line($x, $y + 6, $x + $width, $y + 6);
@@ -177,7 +177,7 @@ class Invoice extends \FPDF
 		$width = $x + 70;
 		$y = (int)($this->h - 47);
 		$height = $y + 35;
-		$this->RoundedRect($x, $y, ($width - $x), ($height - $y), 2.5, 'D');
+		$this->RoundedRect($x, $y, $width - $x, $height - $y, 2.5, 'D');
 		$y++;
 		$this->SetXY($x, $y);
 		$this->SetFont('Arial', 'B', 10);
@@ -339,7 +339,7 @@ class Invoice extends \FPDF
 		$y = $row;
 		$height = $y + 10;
 		$mid = $y + (($height - $y) / 2);
-		$this->RoundedRect($x, $y, ($width - $x), ($height - $y), 2.5, 'D');
+		$this->RoundedRect($x, $y, $width - $x, $height - $y, 2.5, 'D');
 		$this->Line($x, $mid, $width, $mid);
 		$this->SetXY($x + ($width - $x) / 2 - 5, $y + 1);
 		$this->SetFont('Arial', 'B', 10);

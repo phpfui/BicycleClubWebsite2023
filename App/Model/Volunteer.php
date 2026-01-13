@@ -54,7 +54,7 @@ class Volunteer
 				}
 			elseif (! $ride->rideStatus->value && $ride->pointsAwarded)
 				{
-				$this->addPoints($ride, 0 - $ride->pointsAwarded);
+				$this->addPoints($ride, -$ride->pointsAwarded);
 				$ride->pointsAwarded = 0;
 				$ride->update();
 				$this->addAssistantLeaderPoints($assistantLeaders, $assistPoints, -1);
@@ -116,7 +116,7 @@ class Volunteer
 					}
 				elseif (! $shift->worked && $volunteerPoints->pointsAwarded)
 					{
-					$this->addPoints($volunteerPoints, 0 - $volunteerPoints->pointsAwarded);
+					$this->addPoints($volunteerPoints, -$volunteerPoints->pointsAwarded);
 					$volunteerPoints->pointsAwarded = 0;
 					$volunteerPoints->update();
 					}

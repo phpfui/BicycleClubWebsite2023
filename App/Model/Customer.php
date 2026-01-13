@@ -7,7 +7,7 @@ class Customer
 	public function getNewNumber() : int
 		{
 		$customer = new \App\Record\Customer();
-		$customerNumber = 0 - $customer->insert();
+		$customerNumber = -$customer->insert();
 		$cookie = new \App\Tools\Cookies();
 		\App\Model\Session::setCustomerNumber($customerNumber);
 		$cookie->set('customerNumber', (string)$customerNumber, true);
@@ -60,7 +60,7 @@ class Customer
 
 		if ($customerNumber < 0)
 			{
-			$customer = new \App\Record\Customer(0 - $customerNumber);
+			$customer = new \App\Record\Customer(-$customerNumber);
 			$customer->setFrom($parameters);
 			$customer->update();
 			}
@@ -68,7 +68,7 @@ class Customer
 			{
 			$customer = new \App\Record\Customer();
 			$customer->setFrom($parameters);
-			$customerNumber = 0 - $customer->insert();
+			$customerNumber = -$customer->insert();
 			}
 		$cookie = new \App\Tools\Cookies();
 		$cookie->set('customerNumber', $customerNumber, true);

@@ -107,7 +107,7 @@ class Orders
 		$storeOrderTable->addJoin('storeItem');
 		$storeOrderTable->addJoin('member');
 		$storeOrderTable->addJoin('membership', new \PHPFUI\ORM\Condition('member.membershipId', new \PHPFUI\ORM\Field('membership.membershipId')));
-		$storeOrderTable->addJoin('customer', new \PHPFUI\ORM\Condition('customer.customerId', new \PHPFUI\ORM\Literal('0 - storeOrder.memberId')), 'LEFT OUTER');
+		$storeOrderTable->addJoin('customer', new \PHPFUI\ORM\Condition('customer.customerId', new \PHPFUI\ORM\Literal('-storeOrder.memberId')), 'LEFT OUTER');
 
 		return $storeOrderTable;
 		}

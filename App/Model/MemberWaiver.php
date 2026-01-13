@@ -73,8 +73,7 @@ class MemberWaiver extends \App\Model\File
 	public function getPrettyFileName() : string
 		{
 		$date = $this->member->acceptedWaiver ? \date('Y-m-d', \strtotime($this->member->acceptedWaiver)) : 'unsigned';
-		$file = "Waiver_{$this->member->lastName}_{$this->member->firstName}_{$date}.pdf";
 
-		return $file;
+		return "Waiver_{$this->member->lastName}_{$this->member->firstName}_{$date}.pdf";
 		}
 	}

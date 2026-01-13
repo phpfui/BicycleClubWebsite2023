@@ -273,9 +273,8 @@ class Ride
 			$count = 1;
 			}
 		$average /= $count;
-		$seconds = (int)((float)$mileage / $average * 3600 + 20 * 60);
 
-		return $seconds;
+		return (int)((float)$mileage / $average * 3600 + 20 * 60);
 		}
 
 	public function delete(int $rideId) : void
@@ -990,9 +989,8 @@ class Ride
 		{
 		$description = \App\Tools\TextHelper::unhtmlentities($description ?? '');
 		$url = $this->settingTable->value('homePage');
-		$description = \str_replace('/' . $this->rideImages->getFileType(), $url . '/' . $this->rideImages->getFileType(), $description);
 
-		return $description;
+		return \str_replace('/' . $this->rideImages->getFileType(), $url . '/' . $this->rideImages->getFileType(), $description);
 		}
 
 	/**

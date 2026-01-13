@@ -139,9 +139,7 @@ class MembershipDues
 			}
 		$duesPerYear = $this->getMembershipPriceByYear($years);
 
-		$price = $duesPerYear * $years * $totalMembers;
-
-		return $price;
+		return $duesPerYear * $years * $totalMembers;
 		}
 
 	public function getMembershipPriceByYear(int $years) : float

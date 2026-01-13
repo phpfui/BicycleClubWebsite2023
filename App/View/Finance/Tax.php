@@ -149,7 +149,7 @@ class Tax
 
 		$fieldSet = new \PHPFUI\FieldSet('Example with Volunteer Points Subtracted');
 		$callout = new \PHPFUI\Callout('info');
-		$callout->add('$price * $quantity * $taxRate / 100.00 - $payByPoints * $volunteerPoints');
+		$callout->add('$price * $quantity * $taxRate / 100.0-$payByPoints * $volunteerPoints');
 		$fieldSet->add($callout);
 		$instructions .= $fieldSet;
 

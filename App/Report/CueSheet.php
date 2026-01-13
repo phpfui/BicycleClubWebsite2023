@@ -109,8 +109,8 @@ class CueSheet extends \FPDF
 		{
 		$title = $this->cleanStreet($title, false);
 
-		$topHeight = $this->height / 2.0 - $this->margin * 2.5;
-		$bottomHeight = $this->height / 2.0 - $this->margin * 2;
+		$topHeight = $this->height / 2. - $this->margin * 2.5;
+		$bottomHeight = $this->height / 2. - $this->margin * 2;
 
 		while ($reader->valid())
 			{

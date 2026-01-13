@@ -59,7 +59,7 @@ class AbandonedCart extends \App\Cron\BaseJob
 				}
 			else
 				{
-				$member = new \App\Record\Customer(0 - $memberId);
+				$member = new \App\Record\Customer(-$memberId);
 				$fullUrl = $url . '/Store/pay/' . $invoice->invoiceId . '/Store';
 				$additional = '';
 				}

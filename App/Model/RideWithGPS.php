@@ -249,7 +249,7 @@ class RideWithGPS extends \App\Model\GPS
 				{
 				if (\count($parts) > $index + 1)
 					{
-					$RWGPSId = 0 - (int)$parts[$index + 1];
+					$RWGPSId = -(int)$parts[$index + 1];
 
 					break;
 					}
@@ -395,7 +395,7 @@ class RideWithGPS extends \App\Model\GPS
 			{
 			$rwgps->query = 'privacy_code=' . $data['privacy_code'];
 			}
-		$rwgps->percentPaved = 100 - (int)($data['unpaved_pct'] ?? 0);
+		$rwgps->percentPaved = 10 - (int)($data['unpaved_pct'] ?? 0);
 		$updated_at = (int)$data['updated_at'];
 
 		if ($data['updated_at'] == $updated_at)

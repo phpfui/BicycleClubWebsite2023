@@ -62,7 +62,7 @@ class DataPurge
 
 		if (! $restore->run())
 			{
-			\print_r($restore->getErrors());
+			echo '<pre>' . \print_r($restore->getErrors(), true);
 
 			exit;
 			}
@@ -75,7 +75,7 @@ class DataPurge
 
 		if ($errors)
 			{
-			\print_r($errors);
+			echo '<pre>' . \print_r($errors, true);
 
 			exit;
 			}

@@ -639,7 +639,7 @@ class Member
 				{
 				continue;
 				}
-			$id = isset($memberArray['memberId']) && $member->memberId ? $member->memberId : 0 - ($memberObject->membershipId ?? 0);
+			$id = isset($memberArray['memberId']) && $member->memberId ? $member->memberId : -($memberObject->membershipId ?? 0);
 			$memberArray['category'] = \App\Table\MemberCategory::getRideCategoryStringForMember($id);
 			$row = new \PHPFUI\GridX();
 
@@ -1246,7 +1246,7 @@ class Member
 							}
 						else
 							{
-							$membership = new \App\Record\Membership(0 - $memberId);
+							$membership = new \App\Record\Membership(-$memberId);
 							$membership->delete();
 							}
 						$this->page->setResponse((string)$memberId);

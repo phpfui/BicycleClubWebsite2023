@@ -78,7 +78,7 @@ class Registration
 			$this->saveForm($reservation);
 			$this->page->setResponse('Saved');
 			}
-		elseif (\App\Model\Session::checkCSRF() && isset($_REQUEST['submit']))
+		elseif (\App\Model\Session::checkCSRF() && isset($_POST['submit']))
 			{
 			$this->saveForm($reservation);
 			$paymentOption = $_POST['paymentOption'] ?? 'payPal';
@@ -95,9 +95,9 @@ class Registration
 				$this->page->redirect('/Events/confirmed/' . $reservation->reservationId);
 				}
 			}
-		elseif (\App\Model\Session::checkCSRF() && isset($_REQUEST['action']))
+		elseif (\App\Model\Session::checkCSRF() && isset($_POST['action']))
 			{
-			switch ($_REQUEST['action'])
+			switch ($_POST['action'])
 				{
 				case 'Save':
 					$this->saveForm($reservation);

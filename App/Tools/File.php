@@ -7,7 +7,7 @@ class File
 	/**
 	 * @param ?resource $context
 	 */
-	public static function mkdir(string $directory, int $permissions = 0777, bool $recursive = false, $context = null) : bool
+	public static function mkdir(string $directory, int $permissions = 0o777, bool $recursive = false, $context = null) : bool
 		{
 		if (! \file_exists($directory) && ! \is_dir($directory))
 			{

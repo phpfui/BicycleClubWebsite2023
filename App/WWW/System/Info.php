@@ -97,6 +97,7 @@ class Info extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		if ($this->page->addHeader('PHP Info'))
 			{
 			\ob_start();
+			// @mago-expect lint:no-debug-symbols
 			\phpinfo();
 			$info = \ob_get_contents();
 			$body = '<body>';

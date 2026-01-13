@@ -21,9 +21,8 @@ abstract class BaseJob
 	public function getName() : string
 		{
 		$class = static::class;
-		$class = \substr($class, \strrpos($class, '\\') + 1);
 
-		return $class;
+		return \substr($class, \strrpos($class, '\\') + 1);
 		}
 
 	public function isDisabled() : bool

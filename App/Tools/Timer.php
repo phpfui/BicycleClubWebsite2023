@@ -31,7 +31,7 @@ class Timer
 
 	public function get(int $decimals = 8) : string
 		{
-		return \number_format(($this->get_time() - $this->start), $decimals);
+		return \number_format($this->get_time() - $this->start, $decimals);
 		}
 
 	/**

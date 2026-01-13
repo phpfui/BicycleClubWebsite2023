@@ -81,7 +81,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				if ($this->page->isAuthorized('Move Folder'))
 					{
-					$photos[] = 0 - $folderId;
+					$photos[] = -$folderId;
 					}
 				}
 
@@ -243,7 +243,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 						}
 					else
 						{
-						$folder = new \App\Record\Folder(0 - $photoId);
+						$folder = new \App\Record\Folder(-$photoId);
 						$originalfolderId = $folder->folderId;
 						$folder->parentFolderId = $folderId;
 						$folder->update();

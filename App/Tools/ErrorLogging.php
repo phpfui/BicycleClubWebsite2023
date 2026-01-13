@@ -76,6 +76,7 @@ class ErrorLogging
 			}
 		catch (\Exception $e)
 			{
+			return;
 			}
 		}
 

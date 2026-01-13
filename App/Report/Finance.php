@@ -61,7 +61,7 @@ class Finance
 
 				if ($payment->membershipId < 0)
 					{
-					$member = new \App\Record\Customer(0 - $payment->membershipId);
+					$member = new \App\Record\Customer(-$payment->membershipId);
 					$row[] = $member->fullName();
 					$row[] = $member->address . ' ' . $member->town . ', ' . $member->zip;
 					}

@@ -1,0 +1,186 @@
+# Welcome to Mago!
+# For full documentation, see https://mago.carthage.software/tools/overview
+php-version = "8.4.0"
+
+[source]
+workspace = "."
+paths = [
+	"App"
+	,"www"
+	]
+includes = [
+	"vendor",
+	]
+excludes = [
+	"files",
+	]
+
+[formatter]
+preset = "hack"
+
+[linter]
+integrations = ["phpunit"]
+
+[linter.rules]
+#ambiguous-function-call = { enabled = false }
+#use-dedicated-expectation = { enabled = false }
+#use-simpler-expectation = { enabled = false }
+#use-specific-expectations = { enabled = false }
+#assert-description = { enabled = false }
+#assertion-style = { enabled = false }
+#block-statement = { enabled = false }
+#braced-string-interpolation = { enabled = false }
+class-name = { enabled = false }
+#combine-consecutive-issets = { enabled = false }
+#constant-name = { enabled = false }
+#constant-type = { enabled = false }
+cyclomatic-complexity = { enabled = false }
+#disallowed-functions = { enabled = false }
+#enum-name = { enabled = false }
+excessive-nesting = { enabled = false }
+excessive-parameter-list = { enabled = false }
+#final-controller = { enabled = false }
+halstead = { enabled = false }
+kan-defect = { enabled = false }
+literal-named-argument = { enabled = false }
+loop-does-not-iterate = { enabled = false }
+#lowercase-keyword = { enabled = false }
+#no-debug-symbols = { enabled = false }
+#no-request-variable = { enabled = false }
+#no-shell-execute-string = { enabled = false }
+#no-short-opening-tag = { enabled = false }
+no-shorthand-ternary = { enabled = false }
+#no-sprintf-concat = { enabled = false }
+#optional-param-order = { enabled = false }
+#prefer-anonymous-migration = { enabled = false }
+#prefer-first-class-callable = { enabled = false }
+#no-void-reference-return = { enabled = false }
+#no-underscore-class = { enabled = false }
+#no-trailing-space = { enabled = false }
+#no-redundant-write-visibility = { enabled = false }
+#no-redundant-string-concat = { enabled = false }
+#no-redundant-parentheses = { enabled = false }
+#no-redundant-method-override = { enabled = false }
+#no-redundant-nullsafe = { enabled = false }
+#no-redundant-math = { enabled = false }
+#no-redundant-label = { enabled = false }
+#no-redundant-literal-return = { enabled = false }
+#no-redundant-final = { enabled = false }
+#no-redundant-readonly = { enabled = false }
+#no-redundant-file = { enabled = false }
+#no-redundant-continue = { enabled = false }
+#no-redundant-block = { enabled = false }
+#no-redundant-use = { enabled = false }
+#no-redundant-yield-from = { enabled = false }
+#no-self-assignment = { enabled = false }
+#no-protected-in-final = { enabled = false }
+#no-php-tag-terminator = { enabled = false }
+#no-noop = { enabled = false }
+#no-only = { enabled = false }
+no-multi-assignments = { enabled = false }
+#no-nested-ternary = { enabled = false }
+#no-hash-emoji = { enabled = false }
+#no-hash-comment = { enabled = false }
+#no-variable-variable = { enabled = false }
+#no-goto = { enabled = false }
+#no-global = { enabled = false }
+#no-ffi = { enabled = false }
+#no-eval = { enabled = false }
+no-error-control-operator = { enabled = false }
+no-empty = { enabled = false }
+#no-empty-loop = { enabled = false }
+#no-empty-comment = { enabled = false }
+#no-empty-catch-clause = { enabled = false }
+no-else-clause = { enabled = false }
+#no-closing-tag = { enabled = false }
+#no-boolean-literal-comparison = { enabled = false }
+no-boolean-flag-parameter = { enabled = false }
+#no-assign-in-argument = { enabled = false }
+no-assign-in-condition = { enabled = false }
+#no-alias-function = { enabled = false }
+#lowercase-type-hint = { enabled = false }
+identity-comparison = { enabled = false }
+#ineffective-format-ignore-next = { enabled = false }
+#ineffective-format-ignore-region = { enabled = false }
+#inline-variable-return = { enabled = false }
+#instanceof-stringable = { enabled = false }
+#interface-name = { enabled = false }
+#invalid-open-tag = { enabled = false }
+#function-name = { enabled = false }
+#explicit-nullable-param = { enabled = false }
+#explicit-octal = { enabled = false }
+prefer-arrow-function = { enabled = false }
+prefer-early-continue = { enabled = false }
+#prefer-interface = { enabled = false }
+#prefer-static-closure = { enabled = false }
+#prefer-view-array = { enabled = false }
+#prefer-while-loop = { enabled = false }
+#psl-array-functions = { enabled = false }
+#psl-data-structures = { enabled = false }
+#psl-datetime = { enabled = false }
+#psl-math-functions = { enabled = false }
+#psl-output = { enabled = false }
+#psl-randomness-functions = { enabled = false }
+#psl-regex-functions = { enabled = false }
+#psl-sleep-functions = { enabled = false }
+#psl-string-functions = { enabled = false }
+#return-type = { enabled = false }
+#str-contains = { enabled = false }
+#str-starts-with = { enabled = false }
+strict-behavior = { enabled = false }
+strict-types = { enabled = false }
+#tagged-fixme = { enabled = false }
+#tagged-todo = { enabled = false }
+#too-many-enum-cases = { enabled = false }
+too-many-methods = { enabled = false }
+too-many-properties = { enabled = false }
+#trait-name = { enabled = false }
+#valid-docblock = { enabled = false }
+#variable-name = { enabled = false }
+#constant-condition = { enabled = false }
+#no-ini-set = { enabled = false }
+#no-insecure-comparison = { enabled = false }
+#no-literal-password = { enabled = false }
+#tainted-data-to-sink = { enabled = false }
+#sensitive-parameter = { enabled = false }
+#parameter-type = { enabled = false }
+#property-name = { enabled = false }
+#property-type = { enabled = false }
+#no-unsafe-finally = { enabled = false }
+#strict-assertions = { enabled = false }
+#use-specific-assertions = { enabled = false }
+#no-request-all = { enabled = false }
+#middleware-in-routes = { enabled = false }
+#use-compound-assignment = { enabled = false }
+#require-preg-quote-delimiter = { enabled = false }
+#require-namespace = { enabled = false }
+#readable-literal = { enabled = false }
+#yoda-conditions = { enabled = false }
+use-wp-functions = { enabled = false }
+no-direct-db-query = { enabled = false }
+no-db-schema-change = { enabled = false }
+no-unescaped-output = { enabled = false }
+no-roles-as-capabilities = { enabled = false }
+
+# = { enabled = false }
+# = { enabled = false }
+# = { enabled = false }
+# = { enabled = false }
+# = { enabled = false }
+# = { enabled = false }
+
+[analyzer]
+plugins = []
+find-unused-definitions = true
+find-unused-expressions = true
+analyze-dead-code = false
+memoize-properties = true
+allow-possibly-undefined-array-keys = false
+check-throws = true
+check-missing-override = true
+find-unused-parameters = true
+strict-list-index-checks = true
+no-boolean-literal-comparison = false
+check-missing-type-hints = false
+register-super-globals = true
+#`excludes`, `ignore`, `baseline`, `baseline-variant`, `disable-default-plugins`, `plugins`, `find-unused-expressions`, `find-unused-definitions`, `analyze-dead-code`, `memoize-properties`, `allow-possibly-undefined-array-keys`, `check-throws`, `unchecked-exceptions`, `unchecked-exception-classes`, `strict-list-index-checks`, `no-boolean-literal-comparison`, `check-missing-type-hints`, `check-closure-missing-type-hints`, `check-arrow-function-missing-type-hints`, `register-super-globals`, `check-missing-override`, `find-unused-parameters`, `trust-existence-checks`, `class-initializers`, `check-property-initialization`, `check-use-statements`, `perform-heuristic-checks`, `performance` for key `analyzer`

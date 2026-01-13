@@ -155,7 +155,9 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		foreach ($this->theMenu as $key => $menu)
 			{
 			foreach ($menu->getMenuItems() as $menuItem)
-			$returnValue[] = $menuItem->getLink();
+				{
+				$returnValue[] = $menuItem->getLink();
+				}
 			}
 
 		return $returnValue;

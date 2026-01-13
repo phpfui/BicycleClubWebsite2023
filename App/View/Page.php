@@ -225,9 +225,7 @@ class Page extends \PHPFUI\Page
 	public function getBaseURL() : string
 		{
 		// first character could be lower case, so upper case it to match class
-		$url = '/' . \ucfirst(\substr(parent::getBaseURL(), 1));
-
-		return $url;
+		$return = '/' . \ucfirst(\substr(parent::getBaseURL(), 1));
 		}
 
 	public function getController() : \App\Model\Controller

@@ -610,6 +610,7 @@ JAVASCRIPT;
 
 						if (\count($parts) > 3)
 							{
+							// @mago-expect lint:no-empty-loop
 							while (\strlen(\array_pop($parts)) < 2)
 								{
 								}

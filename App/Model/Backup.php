@@ -28,7 +28,7 @@ class Backup
 			{
 			$dir = $this->basePath . $directory;
 
-			\App\Tools\File::mkdir($dir, 0777, true);
+			\App\Tools\File::mkdir($dir, 0o777, true);
 			}
 		$backupFilename = $this->basePath . $baseFileName . '.gz';
 		\App\Tools\File::unlink($backupFilename);

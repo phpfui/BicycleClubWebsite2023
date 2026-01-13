@@ -36,7 +36,7 @@ class MemberCustomer implements \ArrayAccess
 			}
 		else
 			{
-			$this->customer = new \App\Record\Customer(0 - $primaryKey);
+			$this->customer = new \App\Record\Customer(-$primaryKey);
 			$this->member = new \App\Record\Member();
 			$this->membership = new \App\Record\Membership();
 			}

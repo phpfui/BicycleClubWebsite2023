@@ -504,6 +504,7 @@ class Scrapper
 			$pos += 12;
 			$end = ++$pos;
 
+			// @mago-expect lint:no-empty-loop
 			while (++$end < $len && "'" != $html[$end]) // find the ending '
 				{
 				}

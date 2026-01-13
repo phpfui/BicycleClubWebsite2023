@@ -58,9 +58,7 @@ class AveragePace extends \PHPFUI\Base
 		$link->addAttribute('href', '#');
 		$link->add(\number_format($totalSpeed / $totalRides, 1));
 
-		$dropDown = new \PHPFUI\DropDown($link, $table);
-
-		return $dropDown;
+		return new \PHPFUI\DropDown($link, $table);
 		}
 
 	protected function getEnd() : string

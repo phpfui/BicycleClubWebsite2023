@@ -457,6 +457,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			$headers = $seachHeaders;
 			$headers[] = 'photo';
 			$memberView = new \App\View\Member($this->page);
+			// @mago-expect lint:prefer-first-class-callable
 			$view->addCustomColumn('photo', static fn (array $member) => $memberView->getImageIcon($member));
 
 			$view->setSearchColumns($seachHeaders)->setHeaders($headers);

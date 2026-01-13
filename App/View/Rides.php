@@ -1106,8 +1106,6 @@ class Rides
 			{
 			if ($this->paceTable->getCategoryIdFromPaceId($ride->paceId) == $paceId)
 				{
-				$ride->averagePace = $ride->averagePace;
-
 				if ($ride->averagePace > 0)
 					{
 					$pace = \number_format($ride->averagePace, 1);

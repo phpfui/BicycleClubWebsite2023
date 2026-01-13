@@ -97,7 +97,7 @@ abstract class Folder
 				{
 				if ($itemId < 0)
 					{
-					$folder = new \App\Record\Folder(0 - $itemId);
+					$folder = new \App\Record\Folder(-$itemId);
 					$name = $folder->name;
 					$multiSelect->addOption('Folder: ' . $name, (string)$itemId);
 					}
@@ -360,7 +360,7 @@ abstract class Folder
 				$row['Del'] = new \PHPFUI\FAIcon('fas', 'trash-alt', '/' . $this->className . '/deleteFolder/' . $folder->folderId);
 				}
 
-			if (! isset($cuts[0 - $folder->folderId]) && $this->moveFolder)
+			if (! isset($cuts[-$folder->folderId]) && $this->moveFolder)
 				{
 				$cb = new \PHPFUI\Input\CheckBox('cutFolder[]', '', $folder->folderId);
 				$row['Cut'] = $cb;

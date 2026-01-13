@@ -55,9 +55,8 @@ class Forum
 				$permission->update();
 				}
 			}
-		$response = ['response' => 'Saved', 'color' => 'lime', 'record' => $forum->toArray(), ];
 
-		return $response;
+		return ['response' => 'Saved', 'color' => 'lime', 'record' => $forum->toArray(), ];
 		}
 
 	public function attachments(\PHPFUI\ORM\RecordCursor $attachments) : \PHPFUI\Container

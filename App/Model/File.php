@@ -62,7 +62,7 @@ abstract class File
 			$downloadName = (string)$name . $extension;
 			}
 		$downloadName = $this->prettify($downloadName);
-		$filename = "{$this->directory}$name$extension";
+		$filename = $this->directory . $name . $extension;
 
 		if (! \file_exists($filename))
 			{

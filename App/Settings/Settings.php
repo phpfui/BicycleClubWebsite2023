@@ -139,7 +139,7 @@ abstract class Settings
 
 	private function getFileName(string $fileName) : string
 		{
-		if (false == \strpos($fileName, '.php'))
+		if (! \str_ends_with($fileName, '.php'))
 			{
 			$fileName .= '.php';
 			}

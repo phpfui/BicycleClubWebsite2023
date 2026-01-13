@@ -99,9 +99,10 @@ class TextHelper extends \PHPFUI\TextHelper
 				//truncate with new len last word
 				$html = \substr($html, 0, $lastWord);
 				//finds last character
-				$last_character = (\substr($html, -1, 1));
+				$last_character = \substr($html, -1, 1);
 				//add the end text
-				$truncated_html = ('.' == $last_character ? $html : (',' == $last_character ? \substr($html, 0, -1) : $html));
+				// @mago-expect lint:no-nested-ternary
+				$truncated_html = '.' == $last_character ? $html : (',' == $last_character ? \substr($html, 0, -1) : $html);
 				}
 			//restore any open tags
 			$truncated_html .= $closeTags;
@@ -178,9 +179,7 @@ class TextHelper extends \PHPFUI\TextHelper
 			$newLinks[$link] = $text;
 			}
 
-		$content = \str_replace(\array_keys($newLinks), \array_values($newLinks), $content);
-
-		return $content;
+		return \str_replace(\array_keys($newLinks), \array_values($newLinks), $content);
 		}
 
 	/**
@@ -391,7 +390,7 @@ class TextHelper extends \PHPFUI\TextHelper
 
 						foreach($parts as $index => $part)
 							{
-							if (! \strlen($part) || false !== \strpos($part, 'mso-') || false !== \strpos($part, 'Mso'))
+							if (! \strlen($part) || \str_contains($part, 'mso-') || \str_contains($part, 'Mso'))
 								{
 								unset($parts[$index]);
 								$changed = true;

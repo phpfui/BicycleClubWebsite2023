@@ -842,7 +842,7 @@ class Invoice
 			$pdf = $this->generatePDF($invoice);
 			$tempName = new \App\Tools\TempFile();
 			$pdf->Output($tempName, 'F');
-			$message = 'Thanks for your recent purchase from our online store.  I have just packaged this order and will get ' . 'it in the mail shortly.  You should receive it in 3-4 days.  Please see attached invoice.  If you have ' . "any questions, please reply to this email.\n\n{$chair['firstName']} {$chair['lastName']}";
+			$message = 'Thanks for your recent purchase from our online store.  I have just packaged this order and will get it in the mail shortly.  You should receive it in 3-4 days.  Please see attached invoice.  If you have ' . "any questions, please reply to this email.\n\n{$chair['firstName']} {$chair['lastName']}";
 			$email = new \App\Tools\EMail();
 			$email->setBody($message);
 			$email->setSubject('Your ' . $this->settingTable->value('clubAbbrev') . ' order has shipped');

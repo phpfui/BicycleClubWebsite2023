@@ -194,7 +194,7 @@ class Date
 
 	public static function makeString(int | string $year, int | string $month, int | string $day) : string
 		{
-		return \sprintf('%04d', (int)$year) . '-' . \sprintf('%02d', (int)$month) . '-' . \sprintf('%02d', (int)$day);
+		return \sprintf('%04d-%02d-%02d', (int)$year, (int)$month, (int)$day);
 		}
 
 	public static function month(int $date) : string

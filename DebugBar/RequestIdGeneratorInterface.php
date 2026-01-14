@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of the DebugBar package.
  *
@@ -16,10 +19,8 @@ interface RequestIdGeneratorInterface
      * Generates a unique id for the current request.  If called repeatedly, a new unique id must
      * always be returned on each call to generate() - even across different object instances.
      *
-     * To avoid any potential confusion in ID --> value maps, the returned value must be
-     * guaranteed to not be all-numeric.
+     * It MUST be a Lexicographically Sortable string.
      *
-     * @return string
      */
-    function generate();
+    public function generate(): string;
 }

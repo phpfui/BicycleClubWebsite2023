@@ -16,10 +16,10 @@ class TwilioSettings
 		$fieldSet = new \PHPFUI\FieldSet('Twilio Settings');
 		$fieldSet->add('You need to set up a paid <b>Twilio SMS</b> account to send SMS messages. Leave the <b>Account SID</b> field blank to disable SMS.
 										You can set up a <a href="https://www.twilio.com/" target="_blank">Twilio account here</a>.');
-		$sid = $settingsSaver->generateField('TwilioSID', 'Account SID (leave blank for no SMS support)');
+		$sid = $settingsSaver->generateField('TwilioSID', 'Account SID (leave blank for no SMS support)', 'PasswordEye', required:false);
 		$sid->setRequired(false);
 		$fieldSet->add($sid);
-		$token = $settingsSaver->generateField('TwilioToken', 'Auth Token');
+		$token = $settingsSaver->generateField('TwilioToken', 'Auth Token', 'PasswordEye', required:false);
 		$token->setRequired(false);
 		$fieldSet->add($token);
 		$tel = new \App\UI\TelUSA($this->page, 'TwilioNumber', 'SMS Phone Number');

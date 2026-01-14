@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of the DebugBar package.
  *
@@ -13,73 +16,80 @@ namespace DebugBar\Storage;
 /**
  * Stores collected data into files
  */
-class FileStorage implements StorageInterface
+class FileStorage extends AbstractStorage
 {
-    protected $dirname;
+    protected string $dirname;
 
     /**
      * @param string $dirname Directories where to store files
      */
-    public function __construct($dirname)
+    public function __construct(string $dirname)
     {
         $this->dirname = rtrim($dirname, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function save($id, $data)
+    public function save(string $id, array $data): void
     {
         if (!file_exists($this->dirname)) {
-            mkdir($this->dirname, 0777, true);
+            mkdir($this->dirname, 0o755, true);
+            file_put_contents($this->dirname . '.gitignore', "*\n!.gitignore\n");
         }
         file_put_contents($this->makeFilename($id), json_encode($data));
+
+        $this->autoPrune();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function get($id)
+    public function get(string $id): array
     {
         $fileName = $this->makeFilename($id);
         if (!file_exists($fileName)) {
             return [];
         }
 
-        return json_decode(file_get_contents($fileName), true);
+        $content = file_get_contents($fileName);
+        if ($content === false) {
+            throw new \RuntimeException("Unable to read file $fileName");
+        }
+
+        return json_decode($content, true);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function find(array $filters = array(), $max = 20, $offset = 0)
+    public function find(array $filters = [], int $max = 20, int $offset = 0): array
     {
-        //Loop through all .json files and remember the modified time and id.
-        $files = array();
-        foreach (new \DirectoryIterator($this->dirname) as $file) {
-            if ($file->getExtension() == 'json') {
-                $files[] = array(
-                    'time' => $file->getMTime(),
-                    'id' => $file->getBasename('.json')
-                );
+        //Load the metadata and filter the results.
+        $results = [];
+        $ids = [];
+        $i = 0;
+
+        $files = new \FilesystemIterator($this->dirname, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::CURRENT_AS_PATHNAME);
+        foreach ($files as $path) {
+            if (str_ends_with($path, '.json')) {
+                $ids[] = basename($path, '.json');
             }
         }
 
-        //Sort the files, newest first
-        usort($files, function ($a, $b) {
-                return $a['time'] < $b['time'] ? 1 : -1;
-            });
+        // Sort by id
+        sort($ids, SORT_STRING);
+        $ids = array_reverse($ids);
 
-        //Load the metadata and filter the results.
-        $results = array();
-        $i = 0;
-        foreach ($files as $file) {
+        foreach ($ids as $id) {
             //When filter is empty, skip loading the offset
-            if ($i++ < $offset && empty($filters)) {
+            if ($i++ < $offset && !$filters) {
                 $results[] = null;
                 continue;
             }
-            $data = $this->get($file['id']);
+
+            $data = $this->get($id);
+            if (!isset($data['__meta'])) {
+                continue;
+            }
+
             $meta = $data['__meta'];
             unset($data);
             if ($this->filter($meta, $filters)) {
@@ -95,12 +105,10 @@ class FileStorage implements StorageInterface
 
     /**
      * Filter the metadata for matches.
-     * 
-     * @param  array $meta
-     * @param  array $filters
-     * @return bool
+     *
+     *
      */
-    protected function filter($meta, $filters)
+    protected function filter(array $meta, array $filters): bool
     {
         foreach ($filters as $key => $value) {
             if (!isset($meta[$key]) || fnmatch($value, $meta[$key]) === false) {
@@ -113,21 +121,36 @@ class FileStorage implements StorageInterface
     /**
      * {@inheritdoc}
      */
-    public function clear()
+    public function clear(): void
     {
-        foreach (new \DirectoryIterator($this->dirname) as $file) {
-            if (substr($file->getFilename(), 0, 1) !== '.') {
-                unlink($file->getPathname());
+        foreach (new \FilesystemIterator($this->dirname, \FilesystemIterator::CURRENT_AS_PATHNAME | \FilesystemIterator::SKIP_DOTS) as $path) {
+            if (is_file($path) && str_ends_with($path, '.json')) {
+                unlink($path);
             }
         }
     }
 
-    /**
-     * @param  string $id
-     * @return string 
-     */
-    public function makeFilename($id)
+    public function makeFilename(string $id): string
     {
-        return $this->dirname . basename($id). ".json";
+        return $this->dirname . basename($id) . ".json";
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prune(int $hours = 24): void
+    {
+        $cutoffTime = time() - $hours * 3600;
+
+        if (!is_dir($this->dirname)) {
+            return;
+        }
+
+        /** @var \DirectoryIterator $file */
+        foreach (new \FilesystemIterator($this->dirname, \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::SKIP_DOTS) as $file) {
+            if ($file->isFile() && str_ends_with($file->getFilename(), '.json') && $file->getMTime() < $cutoffTime) {
+                unlink($file->getPathname());
+            }
+        }
     }
 }

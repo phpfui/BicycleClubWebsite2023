@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of the DebugBar package.
  *
@@ -15,11 +18,21 @@ namespace DebugBar;
  */
 class RequestIdGenerator implements RequestIdGeneratorInterface
 {
-    /**
-     * @return string
-     */
-    public function generate()
+    public function generate(): string
     {
-        return 'X'.bin2hex(random_bytes(16));
+        // 48-bit millisecond timestamp (lexical sort = time sort)
+        $t = (int) (microtime(true) * 1000);
+
+        $time
+            = chr(($t >> 40) & 0xFF)
+            . chr(($t >> 32) & 0xFF)
+            . chr(($t >> 24) & 0xFF)
+            . chr(($t >> 16) & 0xFF)
+            . chr(($t >>  8) & 0xFF)
+            . chr(($t >>  0) & 0xFF);
+
+        $rand = random_bytes(10);
+
+        return bin2hex($time . $rand);
     }
 }

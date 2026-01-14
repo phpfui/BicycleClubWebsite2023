@@ -14,11 +14,16 @@ class Leaders implements \Stringable
 			{
 			$message = 'Unknown command';
 			$status = 'error';
-			\App\Model\Session::setFlash('post', $_POST);
-			$type = empty($_POST['coordinatorsOnly']) ? 'Ride Leader' : 'Ride Coordinator';
-			$leaders = \App\Table\Member::getLeaders($_POST['categories'] ?? [], $type, $_POST['fromDate'] ?? \App\Tools\Date::todayString(), $_POST['toDate'] ?? \App\Tools\Date::todayString(100));
+			$post = $_POST;
+			$post['categories'] ??= [];
+			$post['fromDate'] ??= \App\Tools\Date::todayString();
+			$post['toDate'] ??= \App\Tools\Date::todayString(100);
+			\App\Model\Session::setFlash('post', $post);
+
+			$type = empty($post['coordinatorsOnly']) ? 'Ride Leader' : 'Ride Coordinator';
+			$leaders = \App\Table\Member::getLeaders($post['categories'], $type, $post['fromDate'], $post['toDate'], $post['timesLed']);
 			$email = new \App\Tools\EMail();
-			$email->setSubject($_POST['subject']);
+			$email->setSubject($post['subject']);
 			$member = \App\Model\Session::getSignedInMember();
 			$name = $member['firstName'] . ' ' . $member['lastName'];
 			$emailAddress = $member['email'];
@@ -27,9 +32,9 @@ class Leaders implements \Stringable
 			$settings = new \App\Table\Setting();
 			$link = $settings->value('homePage');
 			$email->setHtml();
-			$email->setBody(\App\Tools\TextHelper::cleanUserHtml($_POST['message']) . "<p>This email was sent to ride leaders from {$link} by {$name}\n{$emailAddress}\n{$phone}");
+			$email->setBody(\App\Tools\TextHelper::cleanUserHtml($post['message']) . "<p>This email was sent to ride leaders from {$link} by {$name}\n{$emailAddress}\n{$phone}");
 
-			if ($_POST['submit'] == $this->emailText)
+			if ($post['submit'] == $this->emailText)
 				{
 				foreach ($leaders as $leader)
 					{
@@ -39,11 +44,32 @@ class Leaders implements \Stringable
 				$message = 'Your email was sent to ' . \count($leaders) . ' leaders';
 				$status = 'success';
 				}
-			elseif ($_POST['submit'] == $this->testText)
+			elseif ($post['submit'] == $this->testText)
 				{
 				$email->setToMember($member);
 				$email->send();
-				$message = 'Check your inbox for a test email.<br>Your email would be sent to ' . \count($leaders) . ' leaders';
+				$message = '<b>Check your inbox for a test email. Your email would be sent to the following ' . \count($leaders) . ' leaders:</b>';
+				$multiColumn = new \PHPFUI\MultiColumn();
+
+				foreach ($leaders as $leader)
+					{
+					$multiColumn->add($leader->fullName());
+
+					if (4 == \count($multiColumn))
+						{
+						$message .= $multiColumn;
+						$multiColumn = new \PHPFUI\MultiColumn();
+						}
+					}
+
+				if (\count($multiColumn))
+					{
+					while (\count($multiColumn) < 4)
+						{
+						$multiColumn->add('&nbsp;');
+						}
+					$message .= $multiColumn;
+					}
 				$status = 'success';
 				}
 			\App\Model\Session::setFlash($status, $message);
@@ -57,22 +83,35 @@ class Leaders implements \Stringable
 
 		$form = new \PHPFUI\Form($this->page);
 		$fieldSet = new \PHPFUI\FieldSet('Selection Criteria');
+
+		$accordion = new \PHPFUI\Accordion();
+		$accordion->addAttribute('data-multi-expand', 'true');
+		$accordion->addAttribute('data-allow-all-closed', 'true');
+
+		$fieldSet->add($accordion);
 		$picker = new \App\UI\MultiCategoryPicker('categories', 'Category Restriction', $post['categories'] ?? []);
 		$picker->setToolTip('Pick specific categories if you to restrict the email, optional');
-		$columna = new \PHPFUI\Cell(12, 6);
-		$columna->add($picker);
-		$columnb = new \PHPFUI\Cell(12, 6);
+		$accordion->addTab('Category Restriction', $picker);
+
 		$coordinatorsOnly = new \PHPFUI\Input\CheckBoxBoolean('coordinatorsOnly', 'Ride Coordinators Only', $post['coordinatorsOnly'] ?? false);
-		$columnb->add($coordinatorsOnly);
+		$timesLed = new \PHPFUI\Input\Number('timesLed', 'Minimum Number of Leads in Date Range', $post['timesLed'] ?? '0');
+		$timesLed->addAttribute('min', '0');
+		$timesLed->addAttribute('step', '1');
+		$coordinators = new \PHPFUI\MultiColumn($coordinatorsOnly, $timesLed);
+		$accordion->addTab('Coordinators and Times Led', $coordinators);
+
+		$dates = new \PHPFUI\MultiColumn();
 		$from = new \PHPFUI\Input\Date($this->page, 'fromDate', 'Leading Rides From', $post['fromDate'] ?? '');
 		$from->setToolTip('Only leaders leading a ride from this date and beyond will get the email');
-		$columnb->add($from);
+		$dates->add($from);
 		$to = new \PHPFUI\Input\Date($this->page, 'toDate', 'Leading Rides Until', $post['toDate'] ?? '');
 		$to->setToolTip('Only leaders leading a ride upto this date will get the email');
-		$columnb->add($to);
-		$fieldSet->add($columna);
-		$fieldSet->add($columnb);
+		$dates->add($to);
+		$accordion->addTab('Led Rides Dates', $dates);
+
+
 		$form->add($fieldSet);
+
 		$fieldSet = new \PHPFUI\FieldSet('Email');
 		$subject = new \PHPFUI\Input\Text('subject', 'Subject', $post['subject'] ?? '');
 		$subject->setRequired();

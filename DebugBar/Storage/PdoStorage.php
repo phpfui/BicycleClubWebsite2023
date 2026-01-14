@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of the DebugBar package.
  *
@@ -15,123 +18,192 @@ use PDO;
 /**
  * Stores collected data into a database using PDO
  */
-class PdoStorage implements StorageInterface
+class PdoStorage extends AbstractStorage
 {
-    protected $pdo;
+    protected PDO $pdo;
 
-    protected $tableName;
+    protected string $tableName;
 
-    protected $sqlQueries = array(
+    protected array $sqlQueries = [
         'save' => "INSERT INTO %tablename% (id, data, meta_utime, meta_datetime, meta_uri, meta_ip, meta_method) VALUES (?, ?, ?, ?, ?, ?, ?)",
         'get' => "SELECT data FROM %tablename% WHERE id = ?",
         'find' => "SELECT data FROM %tablename% %where% ORDER BY meta_datetime DESC LIMIT %limit% OFFSET %offset%",
-        'clear' => "DELETE FROM %tablename%"
-    );
+        'clear' => "DELETE FROM %tablename%",
+    ];
 
-    /**
-     * @param \PDO $pdo The PDO instance
-     * @param string $tableName
-     * @param array $sqlQueries
-     */
-    public function __construct(PDO $pdo, $tableName = 'phpdebugbar', array $sqlQueries = array())
-    {
+    public function __construct(
+        PDO $pdo,
+        string $tableName = 'phpdebugbar'
+    ) {
         $this->pdo = $pdo;
+        if (!preg_match('/^[A-Za-z0-9_]+$/', $tableName)) {
+            throw new \InvalidArgumentException('Invalid table name: ' . $tableName);
+        }
         $this->tableName = $tableName;
-        $this->setSqlQueries($sqlQueries);
-    }
-
-    /**
-     * Sets the sql queries to be used
-     *
-     * @param array $queries
-     */
-    public function setSqlQueries(array $queries)
-    {
-        $this->sqlQueries = array_merge($this->sqlQueries, $queries);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function save($id, $data)
+    public function save(string $id, array $data): void
     {
-        $sql = $this->getSqlQuery('save');
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->pdo->prepare($this->getSqlQuery('save'));
+
         $meta = $data['__meta'];
-        $stmt->execute(array($id, serialize($data), $meta['utime'], $meta['datetime'], $meta['uri'], $meta['ip'], $meta['method']));
+        $stmt->execute([
+            $id,
+            json_encode($data),
+            $meta['utime'],
+            $meta['datetime'] ?? null,
+            $meta['uri'] ?? null,
+            $meta['ip'] ?? null,
+            $meta['method'] ?? null,
+        ]);
+
+        $this->autoPrune();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function get($id)
+    public function get(string $id): array
     {
-        $sql = $this->getSqlQuery('get');
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(array($id));
+        $stmt = $this->pdo->prepare($this->getSqlQuery('get'));
+        $stmt->execute([$id]);
+
         if (($data = $stmt->fetchColumn(0)) !== false) {
-            return unserialize($data);
+            return json_decode($data, true);
         }
-        return null;
+
+        return [];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function find(array $filters = array(), $max = 20, $offset = 0)
+    public function find(array $filters = [], int $max = 20, int $offset = 0): array
     {
-        $where = array();
-        $params = array();
+        $where = [];
+        $params = [];
+
+        $max = max(1, min(200, $max));
+        $offset = max(0, $offset);
+
         foreach ($filters as $key => $value) {
-            $where[] = "meta_$key = ?";
-            $params[] = $value;
-        }
-        if (count($where)) {
-            $where = " WHERE " . implode(' AND ', $where);
-        } else {
-            $where = '';
+            if (in_array($key, ['utime', 'datetime', 'uri', 'ip', 'method'], true)) {
+                $where[] = "meta_$key = ?";
+                $params[] = $value;
+            }
         }
 
-        $sql = $this->getSqlQuery('find', array(
-            'where' => $where,
-            'offset' => $offset,
-            'limit' => $max
-        ));
+        $where = count($where) ? ' WHERE ' . implode(' AND ', $where) : '';
 
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->pdo->prepare(
+            $this->getSqlQuery('find', [
+                'where' => $where,
+                'offset' => (string) $offset,
+                'limit' => (string) $max,
+            ])
+        );
         $stmt->execute($params);
 
-        $results = array();
-        foreach ($stmt->fetchAll() as $row) {
-            $data = unserialize($row['data']);
+        $results = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $data = json_decode($row['data'], true);
             $results[] = $data['__meta'];
             unset($data);
         }
+
         return $results;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function clear()
+    public function clear(): void
     {
         $this->pdo->exec($this->getSqlQuery('clear'));
     }
 
     /**
+     * Gets the number of entries in storage
+     */
+    public function count(): int
+    {
+        $result = $this->pdo->query("SELECT COUNT(*) FROM {$this->tableName}");
+        return (int) $result->fetchColumn(0);
+    }
+
+    public function prune(int $hours = 24): void
+    {
+        // Delete entries older than lifetime
+        $cutoffTime = microtime(true) - $hours * 3600;
+        $stmt = $this->pdo->prepare("DELETE FROM {$this->tableName} WHERE meta_utime <= ?");
+        $stmt->execute([$cutoffTime]);
+    }
+
+    /**
+     * Gets the PDO instance
+     */
+    public function getPdo(): PDO
+    {
+        return $this->pdo;
+    }
+
+    /**
+     * Gets the table name
+     */
+    public function getTableName(): string
+    {
+        return $this->tableName;
+    }
+    /**
+     *
+     * Sets the sql queries to be used
+     *
+     */
+    public function setSqlQueries(array $queries): void
+    {
+        $this->sqlQueries = array_merge($this->sqlQueries, $queries);
+    }
+
+    /**
      * Get a SQL Query for a task, with the variables replaced
      *
-     * @param  string $name
-     * @param  array  $vars
-     * @return string
+     *
      */
-    protected function getSqlQuery($name, array $vars = array())
+    protected function getSqlQuery(string $name, array $vars = []): string
     {
         $sql = $this->sqlQueries[$name];
-        $vars = array_merge(array('tablename' => $this->tableName), $vars);
+        $vars = array_merge(['tablename' => $this->getTableName()], $vars);
         foreach ($vars as $k => $v) {
             $sql = str_replace("%$k%", $v, $sql);
         }
         return $sql;
+    }
+
+    /**
+     * Creates the table and indexes if they don't exist
+     */
+    protected function createTable(): void
+    {
+        $tableName = $this->getTableName();
+
+        $this->getPdo()->exec("CREATE TABLE IF NOT EXISTS {$tableName} (
+            id TEXT PRIMARY KEY,
+            data TEXT,
+            meta_utime DOUBLE,
+            meta_datetime TEXT,
+            meta_uri TEXT,
+            meta_ip TEXT,
+            meta_method TEXT
+        )");
+
+        // Create indexes for better query performance
+        $this->getPdo()->exec("CREATE INDEX IF NOT EXISTS idx_{$tableName}_utime ON {$tableName} (meta_utime)");
+        $this->getPdo()->exec("CREATE INDEX IF NOT EXISTS idx_{$tableName}_datetime ON {$tableName} (meta_datetime)");
+        $this->getPdo()->exec("CREATE INDEX IF NOT EXISTS idx_{$tableName}_uri ON {$tableName} (meta_uri)");
+        $this->getPdo()->exec("CREATE INDEX IF NOT EXISTS idx_{$tableName}_ip ON {$tableName} (meta_ip)");
+        $this->getPdo()->exec("CREATE INDEX IF NOT EXISTS idx_{$tableName}_method ON {$tableName} (meta_method)");
     }
 }

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of the DebugBar package.
  *
@@ -11,6 +14,7 @@
 namespace DebugBar;
 
 use DebugBar\DataCollector\AssetProvider;
+use DebugBar\DataCollector\DataCollector;
 use DebugBar\DataCollector\Renderable;
 
 /**
@@ -20,97 +24,149 @@ use DebugBar\DataCollector\Renderable;
  */
 class JavascriptRenderer
 {
-    const INITIALIZE_CONSTRUCTOR = 2;
+    public const INITIALIZE_CONSTRUCTOR = 2;
 
-    const INITIALIZE_CONTROLS = 4;
+    public const INITIALIZE_CONTROLS = 4;
 
-    const REPLACEABLE_TAG = "{--DEBUGBAR_OB_START_REPLACE_ME--}";
+    public const REPLACEABLE_TAG = "{--DEBUGBAR_OB_START_REPLACE_ME--}";
 
-    const RELATIVE_PATH = 'path';
+    public const RELATIVE_PATH = 'path';
 
-    const RELATIVE_URL = 'url';
+    public const RELATIVE_URL = 'url';
 
-    protected $debugBar;
+    protected DebugBar $debugBar;
 
-    protected $baseUrl;
+    protected ?string $baseUrl;
 
-    protected $basePath;
+    protected string $basePath;
 
-    protected $cssVendors = array(
-        'fontawesome' => 'vendor/font-awesome/css/font-awesome.min.css',
-        'highlightjs' => 'vendor/highlightjs/styles/github.css'
-    );
+    /** @var array<string, string>  */
+    protected array $cssVendors = [
 
-    protected $jsVendors = array(
-        'jquery' => 'vendor/jquery/dist/jquery.min.js',
-        'highlightjs' => 'vendor/highlightjs/highlight.pack.js'
-    );
+    ];
 
-    protected $includeVendors = true;
+    /** @var array<string, string>  */
+    protected array $jsVendors = [
+        'highlightjs' => 'vendor/highlightjs/highlight.pack.js',
+        'sql-formatter' => 'vendor/sql-formatter/sql-formatter.min.js',
+    ];
 
-    protected $cssFiles = array('debugbar.css', 'widgets.css', 'openhandler.css');
+    protected bool|array $includeVendors = true;
 
-    protected $jsFiles = array('debugbar.js', 'widgets.js', 'openhandler.js');
+    /** @var string[]  */
+    protected array $cssFiles = ['debugbar.css', 'icons.css', 'widgets.css', 'openhandler.css', 'highlight.css'];
 
-    protected $additionalAssets = array();
+    /** @var string[]  */
+    protected array $jsFiles = ['debugbar.js', 'widgets.js', 'openhandler.js'];
 
-    protected $javascriptClass = 'PhpDebugBar.DebugBar';
+    protected bool $useDistFiles = true;
 
-    protected $variableName = 'phpdebugbar';
+    /** @var string[]  */
+    protected array $distCssFiles = ['../dist/debugbar.min.css'];
 
-    protected $enableJqueryNoConflict = true;
-
-    protected $useRequireJs = false;
-
-    protected $theme = null;
-
-    protected $hideEmptyTabs = null;
-
-    protected $initialization;
-
-    protected $controls = array();
-
-    protected $ignoredCollectors = array();
-
-    protected $ajaxHandlerClass = 'PhpDebugBar.AjaxHandler';
-
-    protected $ajaxHandlerBindToFetch = false;
-
-    protected $ajaxHandlerBindToJquery = false;
-
-    protected $ajaxHandlerBindToXHR = true;
-
-    protected $ajaxHandlerAutoShow = true;
-
-    protected $ajaxHandlerEnableTab = false;
-
-    protected $deferDatasets = false;
-
-    protected $openHandlerClass = 'PhpDebugBar.OpenHandler';
-
-    protected $openHandlerUrl;
-
-    protected $cspNonce;
+    /** @var string[]  */
+    protected array $distJsFiles = ['../dist/debugbar.min.js'];
 
     /**
-     * @param \DebugBar\DebugBar $debugBar
-     * @param string $baseUrl
-     * @param string $basePath
+     * These files are included in the dist files. When using source, they are added by collectors if needed.
+     *
+     * @var array<int, string>
      */
-    public function __construct(DebugBar $debugBar, $baseUrl = null, $basePath = null)
+    protected array $distIncludedAssets = [
+        'vendor/highlightjs/highlight.pack.js',
+        'vendor/sql-formatter/sql-formatter.min.js',
+        'debugbar.js',
+        'icons.css',
+        'debugbar.css',
+        'widgets.js',
+        'widgets.css',
+        'openhandler.js',
+        'openhandler.css',
+        'widgets/mails/widget.css',
+        'widgets/mails/widget.js',
+        'widgets/sqlqueries/widget.css',
+        'widgets/sqlqueries/widget.js',
+        'widgets/templates/widget.css',
+        'widgets/templates/widget.js',
+        'widgets/http/widget.js',
+        'highlight.css',
+    ];
+
+    /** @var list<array{
+     *   base_path?: string|null,
+     *   base_url?: string|null,
+     *   css?: string|array<int|string, string>,
+     *   js?: string|array<int|string, string>,
+     *   inline_css?: array<int|string, string>,
+     *   inline_js?: array<int|string, string>,
+     *   inline_head?: array<int|string, string>
+     * }>
+     */
+    protected array $additionalAssets = [];
+
+    protected string $javascriptClass = 'PhpDebugBar.DebugBar';
+
+    protected string $variableName = 'phpdebugbar';
+
+    protected ?string $theme = null;
+
+    protected ?bool $hideEmptyTabs = null;
+
+    protected int $initialization;
+
+    /**
+     * @var array<string, null|array{
+     *    icon?: string,
+     *    tooltip?: string,
+     *    tab?: string,
+     *    widget?: class-string,
+     *    title?: string,
+     *    map?: string,
+     *    default?: string,
+     *    indicator?: string,
+     *    position?: 'left'|'right',
+     *    order?: int
+     *  }>
+     */
+    protected array $controls = [];
+
+    protected array $ignoredCollectors = [];
+
+    protected ?string $ajaxHandlerClass = 'PhpDebugBar.AjaxHandler';
+
+    protected bool $ajaxHandlerBindToFetch = true;
+
+    protected bool $ajaxHandlerBindToXHR = true;
+
+    protected bool $ajaxHandlerAutoShow = true;
+
+    protected bool $ajaxHandlerEnableTab = false;
+
+    protected bool $deferDatasets = false;
+
+    protected string $openHandlerClass = 'PhpDebugBar.OpenHandler';
+
+    protected ?string $openHandlerUrl = null;
+
+    protected ?string $assetHandlerUrl = null;
+
+    protected ?string $cspNonce = null;
+
+    public function __construct(DebugBar $debugBar, ?string $baseUrl = null, ?string $basePath = null)
     {
         $this->debugBar = $debugBar;
 
         if ($basePath === null) {
-            $basePath = __DIR__ . DIRECTORY_SEPARATOR . 'Resources';
+            $basePath = __DIR__ . '/../resources';
         }
         $this->basePath = $basePath;
 
         if ($baseUrl === null) {
-            if ($basePath && str_contains($basePath, '/vendor/')) {
-                $baseUrl = strstr($basePath, '/vendor/');
+            $pos = strpos($basePath, '/vendor/');
+            if ($pos !== false) {
+                $baseUrl = substr($basePath, $pos);
             } else {
-                $baseUrl = '/vendor/php-debugbar/php-debugbar/src/DebugBar/Resources';
+                $baseUrl = '/vendor/php-debugbar/php-debugbar/resources';
             }
         }
         $this->baseUrl = $baseUrl;
@@ -120,28 +176,40 @@ class JavascriptRenderer
     }
 
     /**
-     * Sets options from an array
-     *
-     * Options:
-     *  - base_path
-     *  - base_url
-     *  - include_vendors
-     *  - javascript_class
-     *  - variable_name
-     *  - initialization
-     *  - enable_jquery_noconflict
-     *  - controls
-     *  - disable_controls
-     *  - ignore_collectors
-     *  - ajax_handler_classname
-     *  - ajax_handler_bind_to_jquery
-     *  - ajax_handler_auto_show
-     *  - open_handler_classname
-     *  - open_handler_url
-     *
-     * @param array $options [description]
+     * @param array{
+     *   base_path?: string,
+     *   base_url?: string|null,
+     *   include_vendors?: bool|array|string,
+     *   javascript_class?: string,
+     *   variable_name?: string,
+     *   initialization?: int,
+     *   use_dist_files?: bool,
+     *   theme?: string|null,
+     *   hide_empty_tabs?: bool,
+     *   controls?: array<string, array{
+     *     icon?: string,
+     *     tooltip?: string,
+     *     tab?: string,
+     *     widget?: class-string,
+     *     title?: string,
+     *     map?: string,
+     *     default?: string,
+     *     indicator?: string,
+     *     position?: string,
+     *     order?: int
+     *   }>,
+     *   disable_controls?: string[],
+     *   ignore_collectors?: string|string[],
+     *   ajax_handler_classname?: string,
+     *   ajax_handler_auto_show?: bool,
+     *   ajax_handler_enable_tab?: bool,
+     *   defer_datasets?: bool,
+     *   open_handler_classname?: string,
+     *   open_handler_url?: string,
+     *   csp_nonce?: string|null
+     * } $options
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         if (array_key_exists('base_path', $options)) {
             $this->setBasePath($options['base_path']);
@@ -161,11 +229,8 @@ class JavascriptRenderer
         if (array_key_exists('initialization', $options)) {
             $this->setInitialization($options['initialization']);
         }
-        if (array_key_exists('enable_jquery_noconflict', $options)) {
-            $this->setEnableJqueryNoConflict($options['enable_jquery_noconflict']);
-        }
-        if (array_key_exists('use_requirejs', $options)) {
-            $this->setUseRequireJs($options['use_requirejs']);
+        if (array_key_exists('use_dist_files', $options)) {
+            $this->setUseDistFiles($options['use_dist_files']);
         }
         if (array_key_exists('theme', $options)) {
             $this->setTheme($options['theme']);
@@ -191,9 +256,6 @@ class JavascriptRenderer
         if (array_key_exists('ajax_handler_classname', $options)) {
             $this->setAjaxHandlerClass($options['ajax_handler_classname']);
         }
-        if (array_key_exists('ajax_handler_bind_to_jquery', $options)) {
-            $this->setBindAjaxHandlerToJquery($options['ajax_handler_bind_to_jquery']);
-        }
         if (array_key_exists('ajax_handler_auto_show', $options)) {
             $this->setAjaxHandlerAutoShow($options['ajax_handler_auto_show']);
         }
@@ -212,14 +274,15 @@ class JavascriptRenderer
         if (array_key_exists('csp_nonce', $options)) {
             $this->setCspNonce($options['csp_nonce']);
         }
+
+        return $this;
     }
 
     /**
      * Sets the path which assets are relative to
      *
-     * @param string $path
      */
-    public function setBasePath($path)
+    public function setBasePath(string $path): static
     {
         $this->basePath = $path;
         return $this;
@@ -228,9 +291,8 @@ class JavascriptRenderer
     /**
      * Returns the path which assets are relative to
      *
-     * @return string
      */
-    public function getBasePath()
+    public function getBasePath(): ?string
     {
         return $this->basePath;
     }
@@ -238,9 +300,8 @@ class JavascriptRenderer
     /**
      * Sets the base URL from which assets will be served
      *
-     * @param string $url
      */
-    public function setBaseUrl($url)
+    public function setBaseUrl(?string $url): static
     {
         $this->baseUrl = $url;
         return $this;
@@ -249,9 +310,8 @@ class JavascriptRenderer
     /**
      * Returns the base URL from which assets will be served
      *
-     * @return string
      */
-    public function getBaseUrl()
+    public function getBaseUrl(): ?string
     {
         return $this->baseUrl;
     }
@@ -262,19 +322,14 @@ class JavascriptRenderer
      * You can only include js or css vendors using
      * setIncludeVendors('css') or setIncludeVendors('js')
      *
-     * @param boolean $enabled
+     * @param boolean|string|array $enabled
      */
-    public function setIncludeVendors($enabled = true)
+    public function setIncludeVendors(bool|string|array $enabled = true): static
     {
         if (is_string($enabled)) {
-            $enabled = array($enabled);
+            $enabled = [$enabled];
         }
         $this->includeVendors = $enabled;
-
-        if (!$enabled || (is_array($enabled) && !in_array('js', $enabled))) {
-            // no need to call jQuery.noConflict() if we do not include our own version
-            $this->enableJqueryNoConflict = false;
-        }
 
         return $this;
     }
@@ -284,7 +339,7 @@ class JavascriptRenderer
      *
      * @return boolean
      */
-    public function areVendorsIncluded()
+    public function areVendorsIncluded(): bool
     {
         return $this->includeVendors !== false;
     }
@@ -292,11 +347,10 @@ class JavascriptRenderer
     /**
      * Disable a specific vendor's assets.
      *
-     * @param  string $name "jquery", "fontawesome", "highlightjs"
+     * @param string $name "highlightjs"
      *
-     * @return void
      */
-    public function disableVendor($name)
+    public function disableVendor(string $name): static
     {
         if (array_key_exists($name, $this->cssVendors)) {
             unset($this->cssVendors[$name]);
@@ -304,14 +358,33 @@ class JavascriptRenderer
         if (array_key_exists($name, $this->jsVendors)) {
             unset($this->jsVendors[$name]);
         }
+        return $this;
+    }
+
+    /**
+     * Enables or disables using dist files instead of source files
+     *
+     */
+    public function setUseDistFiles(bool $useDistFiles = true): static
+    {
+        $this->useDistFiles = $useDistFiles;
+        return $this;
+    }
+
+    /**
+     * Returns the usage of dist files.
+     *
+     */
+    public function getUseDistFiles(): bool
+    {
+        return $this->useDistFiles;
     }
 
     /**
      * Sets the javascript class name
      *
-     * @param string $className
      */
-    public function setJavascriptClass($className)
+    public function setJavascriptClass(string $className): static
     {
         $this->javascriptClass = $className;
         return $this;
@@ -320,9 +393,8 @@ class JavascriptRenderer
     /**
      * Returns the javascript class name
      *
-     * @return string
      */
-    public function getJavascriptClass()
+    public function getJavascriptClass(): string
     {
         return $this->javascriptClass;
     }
@@ -330,9 +402,8 @@ class JavascriptRenderer
     /**
      * Sets the variable name of the class instance
      *
-     * @param string $name
      */
-    public function setVariableName($name)
+    public function setVariableName(string $name): static
     {
         $this->variableName = $name;
         return $this;
@@ -341,9 +412,8 @@ class JavascriptRenderer
     /**
      * Returns the variable name of the class instance
      *
-     * @return string
      */
-    public function getVariableName()
+    public function getVariableName(): string
     {
         return $this->variableName;
     }
@@ -357,7 +427,7 @@ class JavascriptRenderer
      *
      * @param integer $init
      */
-    public function setInitialization($init)
+    public function setInitialization(int $init): static
     {
         $this->initialization = $init;
         return $this;
@@ -368,84 +438,29 @@ class JavascriptRenderer
      *
      * @return integer
      */
-    public function getInitialization()
+    public function getInitialization(): int
     {
         return $this->initialization;
     }
 
-    /**
-     * Sets whether to call jQuery.noConflict()
-     *
-     * @param boolean $enabled
-     */
-    public function setEnableJqueryNoConflict($enabled = true)
-    {
-        $this->enableJqueryNoConflict = $enabled;
-        return $this;
-    }
-
-    /**
-     * Checks if jQuery.noConflict() will be called
-     *
-     * @return boolean
-     */
-    public function isJqueryNoConflictEnabled()
-    {
-        return $this->enableJqueryNoConflict;
-    }
-
-    /**
-     * Sets whether to use RequireJS or not
-     *
-     * @param boolean $enabled
-     * @return $this
-     */
-    public function setUseRequireJs($enabled = true)
-    {
-        $this->useRequireJs = $enabled;
-        return $this;
-    }
-
-    /**
-     * Checks if RequireJS is used
-     *
-     * @return boolean
-     */
-    public function isRequireJsUsed()
-    {
-        return $this->useRequireJs;
-    }
-
-    /**
-     * Sets the default theme
-     *
-     * @param boolean $hide
-     * @return $this
-     */
-    public function setTheme($theme='auto')
+    public function setTheme(?string $theme = 'auto'): static
     {
         $this->theme = $theme;
         return $this;
     }
 
-    /**
-     * Sets whether to hide empty tabs or not
-     *
-     * @param boolean $hide
-     * @return $this
-     */
-    public function setHideEmptyTabs($hide = true)
+    public function getTheme(): ?string
+    {
+        return $this->theme;
+    }
+
+    public function setHideEmptyTabs(bool $hide = true): static
     {
         $this->hideEmptyTabs = $hide;
         return $this;
     }
 
-    /**
-     * Checks if empty tabs are hidden or not
-     *
-     * @return boolean
-     */
-    public function areEmptyTabsHidden()
+    public function areEmptyTabsHidden(): ?bool
     {
         return $this->hideEmptyTabs;
     }
@@ -463,12 +478,24 @@ class JavascriptRenderer
      *
      * "icon" or "widget" are at least needed
      *
-     * @param string $name
-     * @param array $options
+     * @param array{
+     *   icon?: string,
+     *   tooltip?: string,
+     *   widget?: class-string,
+     *   tab?: string,
+     *   title?: string,
+     *   map?: string,
+     *   default?: string,
+     *   indicator?: string,
+     *   position?: 'left'|'right',
+     *   order?: int
+     * } $options
+     *
+     * @phpstan-assert (array{icon: string}|array{widget: class-string}) $options
      */
-    public function addControl($name, array $options)
+    public function addControl(string $name, array $options): static
     {
-        if (count(array_intersect(array_keys($options), array('icon', 'widget', 'tab', 'indicator'))) === 0) {
+        if (count(array_intersect(array_keys($options), ['icon', 'widget', 'tab', 'indicator'])) === 0) {
             throw new DebugBarException("Not enough options for control '$name'");
         }
         $this->controls[$name] = $options;
@@ -478,9 +505,8 @@ class JavascriptRenderer
     /**
      * Disables a control
      *
-     * @param string $name
      */
-    public function disableControl($name)
+    public function disableControl(string $name): static
     {
         $this->controls[$name] = null;
         return $this;
@@ -491,9 +517,8 @@ class JavascriptRenderer
      *
      * This does not include controls provided by collectors
      *
-     * @return array
      */
-    public function getControls()
+    public function getControls(): array
     {
         return $this->controls;
     }
@@ -501,9 +526,8 @@ class JavascriptRenderer
     /**
      * Ignores widgets provided by a collector
      *
-     * @param string $name
      */
-    public function ignoreCollector($name)
+    public function ignoreCollector(string $name): static
     {
         $this->ignoredCollectors[] = $name;
         return $this;
@@ -512,9 +536,8 @@ class JavascriptRenderer
     /**
      * Returns the list of ignored collectors
      *
-     * @return array
      */
-    public function getIgnoredCollectors()
+    public function getIgnoredCollectors(): array
     {
         return $this->ignoredCollectors;
     }
@@ -522,11 +545,10 @@ class JavascriptRenderer
     /**
      * Sets the class name of the ajax handler
      *
-     * Set to false to disable
+     * Set to null to disable
      *
-     * @param string $className
      */
-    public function setAjaxHandlerClass($className)
+    public function setAjaxHandlerClass(?string $className): static
     {
         $this->ajaxHandlerClass = $className;
         return $this;
@@ -535,9 +557,8 @@ class JavascriptRenderer
     /**
      * Returns the class name of the ajax handler
      *
-     * @return string
      */
-    public function getAjaxHandlerClass()
+    public function getAjaxHandlerClass(): ?string
     {
         return $this->ajaxHandlerClass;
     }
@@ -547,7 +568,7 @@ class JavascriptRenderer
      *
      * @param boolean $bind
      */
-    public function setBindAjaxHandlerToFetch($bind = true)
+    public function setBindAjaxHandlerToFetch(bool $bind = true): static
     {
         $this->ajaxHandlerBindToFetch = $bind;
         return $this;
@@ -558,32 +579,9 @@ class JavascriptRenderer
      *
      * @return boolean
      */
-    public function isAjaxHandlerBoundToFetch()
+    public function isAjaxHandlerBoundToFetch(): bool
     {
         return $this->ajaxHandlerBindToFetch;
-    }
-
-    /**
-     * Sets whether to call bindToJquery() on the ajax handler
-     *
-     * @param boolean $bind
-     * @deprecated use setBindAjaxHandlerToXHR
-     */
-    public function setBindAjaxHandlerToJquery($bind = true)
-    {
-        $this->ajaxHandlerBindToJquery = $bind;
-        return $this;
-    }
-
-    /**
-     * Checks whether bindToJquery() will be called on the ajax handler
-     *
-     * @return boolean
-     * @deprecated use isAjaxHandlerBoundToXHR
-     */
-    public function isAjaxHandlerBoundToJquery()
-    {
-        return $this->ajaxHandlerBindToJquery;
     }
 
     /**
@@ -591,7 +589,7 @@ class JavascriptRenderer
      *
      * @param boolean $bind
      */
-    public function setBindAjaxHandlerToXHR($bind = true)
+    public function setBindAjaxHandlerToXHR(bool $bind = true): static
     {
         $this->ajaxHandlerBindToXHR = $bind;
         return $this;
@@ -602,7 +600,7 @@ class JavascriptRenderer
      *
      * @return boolean
      */
-    public function isAjaxHandlerBoundToXHR()
+    public function isAjaxHandlerBoundToXHR(): bool
     {
         return $this->ajaxHandlerBindToXHR;
     }
@@ -613,7 +611,7 @@ class JavascriptRenderer
      *
      * @param boolean $autoShow
      */
-    public function setAjaxHandlerAutoShow($autoShow = true)
+    public function setAjaxHandlerAutoShow(bool $autoShow = true): static
     {
         $this->ajaxHandlerAutoShow = $autoShow;
         return $this;
@@ -624,7 +622,7 @@ class JavascriptRenderer
      *
      * @return boolean
      */
-    public function isAjaxHandlerAutoShow()
+    public function isAjaxHandlerAutoShow(): bool
     {
         return $this->ajaxHandlerAutoShow;
     }
@@ -634,7 +632,7 @@ class JavascriptRenderer
      *
      * @param boolean $enabled
      */
-    public function setAjaxHandlerEnableTab($enabled = true)
+    public function setAjaxHandlerEnableTab(bool $enabled = true): static
     {
         $this->ajaxHandlerEnableTab = $enabled;
         return $this;
@@ -645,18 +643,17 @@ class JavascriptRenderer
      *
      * @return boolean
      */
-    public function isAjaxHandlerTabEnabled()
+    public function isAjaxHandlerTabEnabled(): bool
     {
         return $this->ajaxHandlerEnableTab;
     }
 
-
     /**
      * Sets whether datasets are directly loaded or deferred
      *
-     * @param boolean $enabled
+     * @param boolean $defer
      */
-    public function setDeferDatasets($defer = true)
+    public function setDeferDatasets(bool $defer = true): static
     {
         $this->deferDatasets = $defer;
         return $this;
@@ -667,18 +664,16 @@ class JavascriptRenderer
      *
      * @return boolean
      */
-    public function areDatasetsDeferred()
+    public function areDatasetsDeferred(): bool
     {
         return $this->deferDatasets;
     }
 
-
     /**
      * Sets the class name of the js open handler
      *
-     * @param string $className
      */
-    public function setOpenHandlerClass($className)
+    public function setOpenHandlerClass(string $className): static
     {
         $this->openHandlerClass = $className;
         return $this;
@@ -687,9 +682,8 @@ class JavascriptRenderer
     /**
      * Returns the class name of the js open handler
      *
-     * @return string
      */
-    public function getOpenHandlerClass()
+    public function getOpenHandlerClass(): string
     {
         return $this->openHandlerClass;
     }
@@ -697,9 +691,8 @@ class JavascriptRenderer
     /**
      * Sets the url of the open handler
      *
-     * @param string $url
      */
-    public function setOpenHandlerUrl($url)
+    public function setOpenHandlerUrl(?string $url): static
     {
         $this->openHandlerUrl = $url;
         return $this;
@@ -708,20 +701,38 @@ class JavascriptRenderer
     /**
      * Returns the url for the open handler
      *
-     * @return string
      */
-    public function getOpenHandlerUrl()
+    public function getOpenHandlerUrl(): ?string
     {
         return $this->openHandlerUrl;
     }
 
     /**
+     * Sets the url of the asset handler
+     *
+     */
+    public function setAssetHandlerUrl(?string $url): static
+    {
+        $this->assetHandlerUrl = $url;
+        return $this;
+    }
+
+    /**
+     * Returns the url for the asset handler
+     *
+     */
+    public function getAssetHandlerUrl(): ?string
+    {
+        return $this->assetHandlerUrl;
+    }
+
+    /**
      * Sets the CSP Nonce (or remove it by setting to null)
      *
-     * @param string|null $nonce
+     *
      * @return $this
      */
-    public function setCspNonce($nonce = null)
+    public function setCspNonce(?string $nonce): static
     {
         $this->cspNonce = $nonce;
         return $this;
@@ -730,9 +741,8 @@ class JavascriptRenderer
     /**
      * Get the CSP Nonce
      *
-     * @return string|null
      */
-    public function getCspNonce()
+    public function getCspNonce(): ?string
     {
         return $this->cspNonce;
     }
@@ -740,20 +750,21 @@ class JavascriptRenderer
     /**
      * Add assets stored in files to render in the head
      *
-     * @param array $cssFiles An array of filenames
-     * @param array $jsFiles  An array of filenames
-     * @param string $basePath Base path of those files
-     * @param string $baseUrl  Base url of those files
+     * @param string[]|string $cssFiles An array of filenames
+     * @param string[]|string $jsFiles  An array of filenames
+     * @param ?string         $basePath Base path of those files
+     * @param ?string         $baseUrl  Base url of those files
+     *
      * @return $this
      */
-    public function addAssets($cssFiles, $jsFiles, $basePath = null, $baseUrl = null)
+    public function addAssets(array|string $cssFiles = [], array|string $jsFiles = [], ?string $basePath = null, ?string $baseUrl = null): static
     {
-        $this->additionalAssets[] = array(
+        $this->additionalAssets[] = [
             'base_path' => $basePath,
             'base_url' => $baseUrl,
-            'css' => (array) $cssFiles,
-            'js' => (array) $jsFiles
-        );
+            'css' => is_string($cssFiles) ? [$cssFiles] : $cssFiles,
+            'js' => is_string($jsFiles) ? [$jsFiles] : $jsFiles,
+        ];
         return $this;
     }
 
@@ -768,71 +779,90 @@ class JavascriptRenderer
      * added.  Inline assets from all collectors are merged together into the same array, so these
      * content IDs effectively deduplicate the inline assets.
      *
-     * @param array $inlineCss  An array map of content ID to inline CSS content (not including <style> tag)
-     * @param array $inlineJs   An array map of content ID to inline JS content (not including <script> tag)
-     * @param array $inlineHead An array map of content ID to arbitrary inline HTML content (typically
-     *                          <style>/<script> tags); it must be embedded within the <head> element
+     * @param string[]|string $inlineCss  An array map of content ID to inline CSS content (not including <style> tag)
+     * @param string[]|string $inlineJs   An array map of content ID to inline JS content (not including <script> tag)
+     * @param string[]|string $inlineHead An array map of content ID to arbitrary inline HTML content (typically
+     *                                    <style>/<script> tags); it must be embedded within the <head> element
+     *
      * @return $this
      */
-    public function addInlineAssets($inlineCss, $inlineJs, $inlineHead)
+    public function addInlineAssets(array|string $inlineCss, array|string $inlineJs, array|string $inlineHead): static
     {
-        $this->additionalAssets[] = array(
-            'inline_css' => (array) $inlineCss,
-            'inline_js' => (array) $inlineJs,
-            'inline_head' => (array) $inlineHead
-        );
+        $this->additionalAssets[] = [
+            'inline_css' => is_string($inlineCss) ? [$inlineCss] : $inlineCss,
+            'inline_js' => is_string($inlineJs) ? [$inlineJs] : $inlineJs,
+            'inline_head' => is_string($inlineHead) ? [$inlineHead] : $inlineHead,
+        ];
         return $this;
     }
 
     /**
      * Returns the list of asset files
      *
-     * @param string $type 'css', 'js', 'inline_css', 'inline_js', 'inline_head', or null for all
-     * @param string $relativeTo The type of path to which filenames must be relative (path, url or null)
-     * @return array
+     * @param string|null $relativeTo The type of path to which filenames must be relative (path, url or null)
+     *
+     * @return array{css: string[], js: string[], inline_css: string[], inline_js: string[], inline_head: string[]}
      */
-    public function getAssets($type = null, $relativeTo = self::RELATIVE_PATH)
+    public function getAssets(?string $relativeTo = self::RELATIVE_PATH): array
     {
         $cssFiles = $this->cssFiles;
         $jsFiles = $this->jsFiles;
-        $inlineCss = array();
-        $inlineJs = array();
-        $inlineHead = array();
+
+        $inlineCss = [];
+        $inlineJs = [];
+        $inlineHead = [];
 
         if ($this->includeVendors !== false) {
-            if ($this->includeVendors === true || in_array('css', $this->includeVendors)) {
+            if ($this->includeVendors === true || in_array('css', $this->includeVendors, true)) {
                 $cssFiles = array_merge($this->cssVendors, $cssFiles);
             }
-            if ($this->includeVendors === true || in_array('js', $this->includeVendors)) {
+            if ($this->includeVendors === true || in_array('js', $this->includeVendors, true)) {
                 $jsFiles = array_merge($this->jsVendors, $jsFiles);
             }
         }
 
+        if ($this->useDistFiles) {
+            $cssFiles = array_filter(array_merge($this->distCssFiles, $cssFiles), function ($file): bool {
+                return !in_array($file, $this->distIncludedAssets, true);
+            });
+            $jsFiles = array_filter(array_merge($this->distJsFiles, $jsFiles), function ($file): bool {
+                return !in_array($file, $this->distIncludedAssets, true);
+            });
+        }
+
         if ($relativeTo) {
             $root = $this->getRelativeRoot($relativeTo, $this->basePath, $this->baseUrl);
-            $cssFiles = $this->makeUriRelativeTo($cssFiles, $root);
-            $jsFiles = $this->makeUriRelativeTo($jsFiles, $root);
+            $cssFiles = $this->makeUrisRelativeTo($cssFiles, $root);
+            $jsFiles = $this->makeUrisRelativeTo($jsFiles, $root);
         }
 
         $additionalAssets = $this->additionalAssets;
         // finds assets provided by collectors
         foreach ($this->debugBar->getCollectors() as $collector) {
-            if (($collector instanceof AssetProvider) && !in_array($collector->getName(), $this->ignoredCollectors)) {
+            if (($collector instanceof AssetProvider) && !in_array($collector->getName(), $this->ignoredCollectors, true)) {
                 $additionalAssets[] = $collector->getAssets();
+            }
+            if (($collector instanceof DataCollector) && !in_array($collector->getName(), $this->ignoredCollectors, true)) {
+                $formatter = $collector->getDataFormatter();
+                if ($formatter instanceof AssetProvider) {
+                    $additionalAssets[] = $formatter->getAssets();
+                }
             }
         }
 
         foreach ($additionalAssets as $assets) {
-            $basePath = isset($assets['base_path']) ? $assets['base_path'] : '';
-            $baseUrl = isset($assets['base_url']) ? $assets['base_url'] : '';
-            $root = $this->getRelativeRoot($relativeTo,
+            $basePath = $assets['base_path'] ?? '';
+            $baseUrl = $assets['base_url'] ?? '';
+            $root = $this->getRelativeRoot(
+                $relativeTo,
                 $this->makeUriRelativeTo($basePath, $this->basePath),
-                $this->makeUriRelativeTo($baseUrl, $this->baseUrl));
-            if (isset($assets['css'])) {
-                $cssFiles = array_merge($cssFiles, $this->makeUriRelativeTo((array) $assets['css'], $root));
+                $this->makeUriRelativeTo($baseUrl, $this->baseUrl),
+            );
+            if (isset($assets['css']) && !($this->useDistFiles && $basePath === '' && in_array($assets['css'], $this->distIncludedAssets, true))) {
+                $cssFiles = array_merge($cssFiles, $this->makeUrisRelativeTo(is_string($assets['css']) ? [$assets['css']] : $assets['css'], $root));
             }
-            if (isset($assets['js'])) {
-                $jsFiles = array_merge($jsFiles, $this->makeUriRelativeTo((array) $assets['js'], $root));
+            if (isset($assets['js']) && !($this->useDistFiles && $basePath === '' && in_array($assets['js'], $this->distIncludedAssets, true))) {
+                $jsFiles = array_merge($jsFiles, $this->makeUrisRelativeTo(is_string($assets['js']) ? [$assets['js']] : $assets['js'], $root));
             }
 
             if (isset($assets['inline_css'])) {
@@ -850,160 +880,128 @@ class JavascriptRenderer
         $cssFiles = array_unique($cssFiles);
         $jsFiles = array_unique($jsFiles);
 
-        return $this->filterAssetArray(array($cssFiles, $jsFiles, $inlineCss, $inlineJs, $inlineHead), $type ?? '');
+        return [
+            'css' => $cssFiles,
+            'js' => $jsFiles,
+            'inline_css' => $inlineCss,
+            'inline_js' => $inlineJs,
+            'inline_head' => $inlineHead,
+        ];
+    }
+
+    /**
+     * @return array{css: string[], js: string[]}
+     */
+    public function getDistIncludedAssets(?string $relativeTo = self::RELATIVE_PATH): array
+    {
+        $cssFiles = [];
+        $jsFiles = [];
+        foreach ($this->distIncludedAssets as $asset) {
+            $ext = strtolower(pathinfo($asset, PATHINFO_EXTENSION));
+            if ($ext === 'css') {
+                $cssFiles[] = $asset;
+            } elseif ($ext === 'js') {
+                $jsFiles[] = $asset;
+            }
+        }
+
+        if ($relativeTo) {
+            $root = $this->getRelativeRoot($relativeTo, $this->basePath, $this->baseUrl);
+            $cssFiles = $this->makeUrisRelativeTo($cssFiles, $root);
+            $jsFiles = $this->makeUrisRelativeTo($jsFiles, $root);
+        }
+
+        return [
+            'css' => $cssFiles,
+            'js' => $jsFiles,
+        ];
     }
 
     /**
      * Returns the correct base according to the type
      *
-     * @param string $relativeTo
-     * @param string $basePath
-     * @param string $baseUrl
-     * @return string
+     *
      */
-    protected function getRelativeRoot($relativeTo, $basePath, $baseUrl)
+    protected function getRelativeRoot(?string $relativeTo, string $basePath, ?string $baseUrl): ?string
     {
         if ($relativeTo === self::RELATIVE_PATH) {
             return $basePath;
         }
-        if ($relativeTo === self::RELATIVE_URL) {
+        if ($baseUrl && $relativeTo === self::RELATIVE_URL) {
             return $baseUrl;
         }
         return null;
     }
 
     /**
-     * Makes a URI relative to another
+     * @param string[] $uris
      *
-     * @param string|array $uri
-     * @param string $root
-     * @return string
+     * @return string[]
      */
-    protected function makeUriRelativeTo($uri, $root)
+    protected function makeUrisRelativeTo(array $uris, ?string $root): array
     {
-        if (!$root) {
-            return $uri;
-        }
-
-        if (is_array($uri)) {
-            $uris = array();
-            foreach ($uri as $u) {
-                $uris[] = $this->makeUriRelativeTo($u, $root);
-            }
+        if ($root === null) {
             return $uris;
         }
 
-        $uri = $uri ?? '';
+        $relativeUris = [];
+        foreach ($uris as $u) {
+            $relativeUris[] = $this->makeUriRelativeTo($u, $root);
+        }
 
-        if (substr($uri, 0, 1) === '/' || preg_match('/^([a-zA-Z]+:\/\/|[a-zA-Z]:\/|[a-zA-Z]:\\\)/', $uri)) {
+        return $relativeUris;
+    }
+
+    protected function makeUriRelativeTo(string $uri, ?string $root): string
+    {
+        if ($root === null) {
             return $uri;
         }
+
+        if (str_starts_with($uri, '/') || preg_match('/^([a-zA-Z]+:\/\/|[a-zA-Z]:\/|[a-zA-Z]:\\\)/', $uri)) {
+            return $uri;
+        }
+
         return rtrim($root, '/') . "/$uri";
-    }
-
-    /**
-     * Filters a tuple of (css, js, inline_css, inline_js, inline_head) assets according to $type
-     *
-     * @param array $array
-     * @param string $type 'css', 'js', 'inline_css', 'inline_js', 'inline_head', or null for all
-     * @return array
-     */
-    protected function filterAssetArray($array, $type = '')
-    {
-        $types = array('css', 'js', 'inline_css', 'inline_js', 'inline_head');
-        $typeIndex = array_search(strtolower($type ?? ''), $types);
-        return $typeIndex !== false ? $array[$typeIndex] : $array;
-    }
-
-    /**
-     * Returns an array where all items are Assetic AssetCollection:
-     *  - The first one contains the CSS files
-     *  - The second one contains the JS files
-     *  - The third one contains arbitrary inline HTML (typically composed of <script>/<style>
-     *    elements); it must be embedded within the <head> element
-     *
-     * @param string $type Optionally return only 'css', 'js', or 'inline_head' collection
-     * @return array|\Assetic\Asset\AssetCollection
-     */
-    public function getAsseticCollection($type = null)
-    {
-        $types = array('css', 'js', 'inline_head');
-        $typeIndex = array_search(strtolower($type), $types);
-
-        list($cssFiles, $jsFiles, $inlineCss, $inlineJs, $inlineHead) = $this->getAssets();
-        $collections = array(
-            $this->createAsseticCollection($cssFiles, $inlineCss),
-            $this->createAsseticCollection($jsFiles, $inlineJs),
-            $this->createAsseticCollection(null, $inlineHead)
-        );
-        return $typeIndex !== false ? $collections[$typeIndex] : $collections;
-    }
-
-    /**
-     * Create an Assetic AssetCollection with the given content.
-     * Filenames will be converted to absolute path using
-     * the base path.
-     *
-     * @param array|null $files Array of asset filenames.
-     * @param array|null $content Array of inline asset content.
-     * @return \Assetic\Asset\AssetCollection
-     */
-    protected function createAsseticCollection($files = null, $content = null)
-    {
-        $assets = array();
-        if ($files) {
-            foreach ($files as $file) {
-                $assets[] = new \Assetic\Asset\FileAsset($file);
-            }
-        }
-        if ($content) {
-            foreach ($content as $item) {
-                $assets[] = new \Assetic\Asset\StringAsset($item);
-            }
-        }
-        return new \Assetic\Asset\AssetCollection($assets);
     }
 
     /**
      * Write all CSS assets to standard output or in a file
      *
-     * @param string $targetFilename
      */
-    public function dumpCssAssets($targetFilename = null)
+    public function dumpCssAssets(?string $targetFilename = null, bool $echo = true): string
     {
-        $this->dumpAssets($this->getAssets('css'), $this->getAssets('inline_css'), $targetFilename);
+        $assets = $this->getAssets();
+        return $this->dumpAssets($assets['css'], $assets['inline_css'], $targetFilename, $echo);
     }
 
     /**
      * Write all JS assets to standard output or in a file
      *
-     * @param string $targetFilename
      */
-    public function dumpJsAssets($targetFilename = null)
+    public function dumpJsAssets(?string $targetFilename = null, bool $echo = true): string
     {
-        $this->dumpAssets($this->getAssets('js'), $this->getAssets('inline_js'), $targetFilename, $this->useRequireJs);
+        $assets = $this->getAssets();
+        return $this->dumpAssets($assets['js'], $assets['inline_js'], $targetFilename, $echo);
     }
 
     /**
      * Write all inline HTML header assets to standard output or in a file (only returns assets not
      * already returned by dumpCssAssets or dumpJsAssets)
      *
-     * @param string $targetFilename
      */
-    public function dumpHeadAssets($targetFilename = null)
+    public function dumpHeadAssets(?string $targetFilename = null, bool $echo = true): string
     {
-        $this->dumpAssets(null, $this->getAssets('inline_head'), $targetFilename);
+        return $this->dumpAssets(null, $this->getAssets()['inline_head'], $targetFilename, $echo);
     }
 
     /**
      * Write assets to standard output or in a file
      *
-     * @param array|null $files Filenames containing assets
-     * @param array|null $content Inline content to dump
-     * @param string $targetFilename
-     * @param bool $useRequireJs
+     * @param string[]|null $files   Filenames containing assets
+     * @param string[]|null $content Inline content to dump
      */
-    protected function dumpAssets($files = null, $content = null, $targetFilename = null, $useRequireJs = false)
+    public function dumpAssets(?array $files = null, ?array $content = null, ?string $targetFilename = null, bool $echo = true): string
     {
         $dumpedContent = '';
         if ($files) {
@@ -1016,26 +1014,37 @@ class JavascriptRenderer
                 $dumpedContent .= $item . "\n";
             }
         }
-        if ($useRequireJs) {
-            $dumpedContent = "define('debugbar', ['jquery'], function($){\r\n" . $dumpedContent . "\r\n return PhpDebugBar; \r\n});";
-        }
+
         if ($targetFilename !== null) {
             file_put_contents($targetFilename, $dumpedContent);
-        } else {
-            echo $dumpedContent;
+        } elseif ($echo) {
+            $this->debugBar->getHttpDriver()->output($dumpedContent);
         }
+
+        return $dumpedContent;
     }
 
     /**
      * Renders the html to include needed assets
      *
-     * Only useful if Assetic is not used
      *
-     * @return string
      */
-    public function renderHead()
+    public function renderHead(): string
     {
-        list($cssFiles, $jsFiles, $inlineCss, $inlineJs, $inlineHead) = $this->getAssets(null, self::RELATIVE_URL);
+        [
+            'css' => $cssFiles,
+            'js' => $jsFiles,
+            'inline_css' => $inlineCss,
+            'inline_js' => $inlineJs,
+            'inline_head' => $inlineHead,
+        ] = $this->getAssets(self::RELATIVE_URL);
+
+        if ($this->assetHandlerUrl !== null) {
+            $url = $this->assetHandlerUrl;
+            $assets = $this->getAssets(self::RELATIVE_PATH);
+            $cssFiles = [$url . (str_contains($url, '?') ? '&' : '?') . 'type=css&mtime=' . $this->getFilesModifiedTime($assets['css'])];
+            $jsFiles = [$url . (str_contains($url, '?') ? '&' : '?') . 'type=js&hash=' . $this->getFilesModifiedTime($assets['js'])];
+        }
         $html = '';
 
         $nonce = $this->getNonceAttribute();
@@ -1045,7 +1054,7 @@ class JavascriptRenderer
         }
 
         foreach ($inlineCss as $content) {
-            $html .= sprintf('<style type="text/css">%s</style>' . "\n", $content);
+            $html .= sprintf('<style%s>%s</style>' . "\n", $nonce, $content);
         }
 
         foreach ($jsFiles as $file) {
@@ -1057,34 +1066,65 @@ class JavascriptRenderer
         }
 
         foreach ($inlineHead as $content) {
-            $html .= $content . "\n";
-        }
+            if ($nonce !== '') {
+                $content =  preg_replace(
+                    '/<(script|style)(?![^>]*nonce=)/i',
+                    '<$1' . $nonce,
+                    $content
+                );
+            }
 
-        if ($this->enableJqueryNoConflict && !$this->useRequireJs) {
-            $html .= '<script type="text/javascript"' . $nonce . '>jQuery.noConflict(true);</script>' . "\n";
+            $html .= $content . "\n";
         }
 
         return $html;
     }
 
     /**
+     * @param string[] $files
+     */
+    protected function getFilesModifiedTime(array $files): int
+    {
+        $modifiedTime = 0;
+        foreach ($files as $file) {
+            $fileTime = filemtime($file);
+            $modifiedTime = $fileTime !== false ? max($modifiedTime, $fileTime) : $modifiedTime;
+        }
+        return $modifiedTime;
+    }
+
+    public function injectInHtmlResponse(string $content, bool $withHead = true): string
+    {
+        $widget = "<!-- Laravel Debugbar Widget -->\n" . ($withHead ? $this->renderHead() : '') . $this->render();
+
+        // Try to put the widget at the end, directly before the </body>
+        $pos = strripos($content, '</body>');
+        if (false !== $pos) {
+            $content = substr($content, 0, $pos) . $widget . substr($content, $pos);
+        } else {
+            $content = $content . $widget;
+        }
+
+        return $content;
+    }
+
+    /**
      * Register shutdown to display the debug bar
      *
-     * @param boolean $here Set position of HTML. True if is to current position or false for end file
+     * @param boolean $here       Set position of HTML. True if is to current position or false for end file
      * @param boolean $initialize Whether to render the de bug bar initialization code
-     * @param bool $renderStackedData
-     * @param bool $head
+     *
      * @return string Return "{--DEBUGBAR_OB_START_REPLACE_ME--}" or return an empty string if $here == false
      */
-    public function renderOnShutdown($here = true, $initialize = true, $renderStackedData = true, $head = false)
+    public function renderOnShutdown(bool $here = true, bool $initialize = true, bool $renderStackedData = true, bool $head = false): string
     {
-        register_shutdown_function(array($this, "replaceTagInBuffer"), $here, $initialize, $renderStackedData, $head);
+        register_shutdown_function([$this, "replaceTagInBuffer"], $here, $initialize, $renderStackedData, $head);
 
         if (ob_get_level() === 0) {
             ob_start();
         }
 
-        return ($here) ? self::REPLACEABLE_TAG : "";
+        return $here ? self::REPLACEABLE_TAG : "";
     }
 
     /**
@@ -1093,9 +1133,9 @@ class JavascriptRenderer
      * @param boolean $here
      * @param boolean $initialize
      * @param boolean $renderStackedData
-     * @return string
+     *
      */
-    public function renderOnShutdownWithHead($here = true, $initialize = true, $renderStackedData = true)
+    public function renderOnShutdownWithHead(bool $here = true, bool $initialize = true, bool$renderStackedData = true): string
     {
         return $this->renderOnShutdown($here, $initialize, $renderStackedData, true);
     }
@@ -1103,19 +1143,17 @@ class JavascriptRenderer
     /**
      * Is callback function for register_shutdown_function(...)
      *
-     * @param boolean $here Set position of HTML. True if is to current position or false for end file
+     * @param boolean $here       Set position of HTML. True if is to current position or false for end file
      * @param boolean $initialize Whether to render the de bug bar initialization code
-     * @param bool $renderStackedData
-     * @param bool $head
      */
-    public function replaceTagInBuffer($here = true, $initialize = true, $renderStackedData = true, $head = false)
+    public function replaceTagInBuffer(bool $here = true, bool $initialize = true, bool $renderStackedData = true, bool $head = false): void
     {
         $render = ($head ? $this->renderHead() : "")
             . $this->render($initialize, $renderStackedData);
 
         $current = ($here && ob_get_level() > 0) ? ob_get_clean() : self::REPLACEABLE_TAG;
 
-        echo str_replace(self::REPLACEABLE_TAG, $render, $current, $count);
+        echo str_replace(self::REPLACEABLE_TAG, $render, $current ?: '', $count);
 
         if ($count === 0) {
             echo $render;
@@ -1127,24 +1165,20 @@ class JavascriptRenderer
      *
      * AJAX request should not render the initialization code.
      *
-     * @param boolean $initialize Whether or not to render the debug bar initialization code
+     * @param boolean $initialize        Whether or not to render the debug bar initialization code
      * @param boolean $renderStackedData Whether or not to render the stacked data
-     * @return string
+     *
      */
-    public function render($initialize = true, $renderStackedData = true)
+    public function render(bool $initialize = true, bool $renderStackedData = true): string
     {
-        $js = '';
-
-        if ($initialize) {
-            $js = $this->getJsInitializationCode();
-        }
+        $js = $initialize ? $this->getJsInitializationCode() : '';
 
         if ($renderStackedData && $this->debugBar->hasStackedData()) {
             foreach ($this->debugBar->getStackedData() as $id => $data) {
                 if ($this->areDatasetsDeferred()) {
-                    $js .= $this->getLoadDatasetCode($id, '(stacked)');
+                    $js .= $this->getLoadDatasetCode($id, '(stacked)', false);
                 } else {
-                    $js .= $this->getAddDatasetCode($id, $data, '(stacked)');
+                    $js .= $this->getAddDatasetCode($id, $data, '(stacked)', false);
 
                 }
             }
@@ -1160,30 +1194,33 @@ class JavascriptRenderer
 
         $nonce = $this->getNonceAttribute();
 
-        if ($nonce != '') {
-            $js = preg_replace("/<script>/", "<script nonce='{$this->cspNonce}'>", $js);
-        }
+        return "<script type=\"text/javascript\"{$nonce}>
+(function () {
+    const renderDebugbar = function () {
+$js
+    window.PhpDebugBar.instance = {$this->getVariableName()};
+    };
 
-        if ($this->useRequireJs){
-            return "<script type=\"text/javascript\"{$nonce}>\nrequire(['debugbar'], function(PhpDebugBar){ $js });\n</script>\n";
-        } else {
-            return "<script type=\"text/javascript\"{$nonce}>\n$js\n</script>\n";
-        }
-
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderDebugbar, { once: true });
+    } else {
+        renderDebugbar();
+    }
+})();
+</script>";
     }
 
     /**
      * Returns the js code needed to initialize the debug bar
      *
-     * @return string
      */
-    protected function getJsInitializationCode()
+    protected function getJsInitializationCode(): string
     {
         $js = '';
 
         if (($this->initialization & self::INITIALIZE_CONSTRUCTOR) === self::INITIALIZE_CONSTRUCTOR) {
             $initializeOptions = $this->getInitializeOptions();
-            $js .= sprintf("var %s = new %s(%s);\n", $this->variableName, $this->javascriptClass, $initializeOptions ? json_encode((object) $initializeOptions) : '');
+            $js .= sprintf("const %s = new %s(%s);\n", $this->variableName, $this->javascriptClass, $initializeOptions ? json_encode((object) $initializeOptions) : '');
         }
 
         if (($this->initialization & self::INITIALIZE_CONTROLS) === self::INITIALIZE_CONTROLS) {
@@ -1191,32 +1228,34 @@ class JavascriptRenderer
         }
 
         if ($this->ajaxHandlerClass) {
-            $js .= sprintf("%s.ajaxHandler = new %s(%s, undefined, %s);\n",
+            $js .= sprintf(
+                "%s.ajaxHandler = new %s(%s, undefined, %s);\n",
                 $this->variableName,
                 $this->ajaxHandlerClass,
                 $this->variableName,
-                $this->ajaxHandlerAutoShow ? 'true' : 'false'
+                $this->ajaxHandlerAutoShow ? 'true' : 'false',
             );
             if ($this->ajaxHandlerBindToFetch) {
                 $js .= sprintf("%s.ajaxHandler.bindToFetch();\n", $this->variableName);
             }
             if ($this->ajaxHandlerBindToXHR) {
                 $js .= sprintf("%s.ajaxHandler.bindToXHR();\n", $this->variableName);
-            } elseif ($this->ajaxHandlerBindToJquery) {
-                $js .= sprintf("if (jQuery) %s.ajaxHandler.bindToJquery(jQuery);\n", $this->variableName);
             }
         }
 
         if ($this->openHandlerUrl !== null) {
-            $js .= sprintf("%s.setOpenHandler(new %s(%s));\n", $this->variableName,
+            $js .= sprintf(
+                "%s.setOpenHandler(new %s(%s));\n",
+                $this->variableName,
                 $this->openHandlerClass,
-                json_encode(array("url" => $this->openHandlerUrl)));
+                json_encode(["url" => $this->openHandlerUrl]),
+            );
         }
 
         return $js;
     }
 
-    protected function getInitializeOptions()
+    protected function getInitializeOptions(): array
     {
         $options = [];
 
@@ -1236,19 +1275,18 @@ class JavascriptRenderer
      *
      * Controls can be defined by collectors themselves or using {@see addControl()}
      *
-     * @param string $varname Debug bar's variable name
-     * @return string
+     *
      */
-    protected function getJsControlsDefinitionCode($varname)
+    protected function getJsControlsDefinitionCode(string $varname): string
     {
         $js = '';
-        $dataMap = array();
-        $excludedOptions = array('indicator', 'tab', 'map', 'default', 'widget', 'position');
+        $dataMap = [];
+        $excludedOptions = ['indicator', 'tab', 'map', 'default', 'widget', 'position'];
 
         // finds controls provided by collectors
-        $widgets = array();
+        $widgets = [];
         foreach ($this->debugBar->getCollectors() as $collector) {
-            if (($collector instanceof Renderable) && !in_array($collector->getName(), $this->ignoredCollectors)) {
+            if (($collector instanceof Renderable) && !in_array($collector->getName(), $this->ignoredCollectors, true)) {
                 if ($w = $collector->getWidgets()) {
                     $widgets = array_merge($widgets, $w);
                 }
@@ -1257,7 +1295,7 @@ class JavascriptRenderer
         $controls = array_merge($widgets, $this->controls);
 
         // Allow widgets to be sorted by order if specified
-        uasort($controls, function(array $controlA, array $controlB){
+        uasort($controls, function (mixed $controlA, mixed $controlB): int {
             return ($controlA['order'] ?? 0) <=> ($controlB['order'] ?? 0);
         });
 
@@ -1268,30 +1306,34 @@ class JavascriptRenderer
                 if (!isset($opts['title'])) {
                     $opts['title'] = ucfirst(str_replace('_', ' ', $name));
                 }
-                $js .= sprintf("%s.addTab(\"%s\", new %s({%s%s}));\n",
+                $jsonOpts = json_encode($opts, JSON_FORCE_OBJECT);
+                $js .= sprintf(
+                    "%s.addTab(\"%s\", new %s({%s%s}));\n",
                     $varname,
                     $name,
-                    isset($options['tab']) ? $options['tab'] : 'PhpDebugBar.DebugBar.Tab',
-                    substr(json_encode($opts, JSON_FORCE_OBJECT), 1, -1),
-                    isset($options['widget']) ? sprintf('%s"widget": new %s()', count($opts) ? ', ' : '', $options['widget']) : ''
+                    $options['tab'] ?? 'PhpDebugBar.DebugBar.Tab',
+                    substr($jsonOpts === false ? '' : $jsonOpts, 1, -1),
+                    isset($options['widget']) ? sprintf(', "widget": new %s()', $options['widget']) : '',
                 );
             } elseif (isset($options['indicator']) || isset($options['icon'])) {
-                $js .= sprintf("%s.addIndicator(\"%s\", new %s(%s), \"%s\");\n",
+                $jsonOpts = json_encode($opts, JSON_FORCE_OBJECT);
+                $js .= sprintf(
+                    "%s.addIndicator(\"%s\", new %s(%s), \"%s\");\n",
                     $varname,
                     $name,
-                    isset($options['indicator']) ? $options['indicator'] : 'PhpDebugBar.DebugBar.Indicator',
-                    json_encode($opts, JSON_FORCE_OBJECT),
-                    isset($options['position']) ? $options['position'] : 'right'
+                    $options['indicator'] ?? 'PhpDebugBar.DebugBar.Indicator',
+                    $jsonOpts === false ? '' : $jsonOpts,
+                    $options['position'] ?? 'right',
                 );
             }
 
             if (isset($options['map']) && isset($options['default'])) {
-                $dataMap[$name] = array($options['map'], $options['default']);
+                $dataMap[$name] = [$options['map'], $options['default']];
             }
         }
 
         // creates the data mapping object
-        $mapJson = array();
+        $mapJson = [];
         foreach ($dataMap as $name => $values) {
             $mapJson[] = sprintf('"%s": ["%s", %s]', $name, $values[0], $values[1]);
         }
@@ -1309,18 +1351,17 @@ class JavascriptRenderer
     /**
      * Returns the js code needed to add a dataset
      *
-     * @param string $requestId
-     * @param array $data
-     * @param mixed $suffix
-     * @return string
+     *
      */
-    protected function getAddDatasetCode($requestId, $data, $suffix = null)
+    protected function getAddDatasetCode(string $requestId, array $data, ?string $suffix = null, bool $show = true): string
     {
-        $js = sprintf("%s.addDataSet(%s, \"%s\"%s);\n",
+        $js = sprintf(
+            "%s.addDataSet(%s, %s, %s, %s);\n",
             $this->variableName,
             json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_INVALID_UTF8_IGNORE),
-            $requestId,
-            $suffix ? ", " . json_encode($suffix) : ''
+            json_encode($requestId),
+            json_encode($suffix ?: ''),
+            json_encode($show),
         );
         return $js;
     }
@@ -1328,28 +1369,28 @@ class JavascriptRenderer
     /**
      * Returns the js code needed to load a dataset with the OpenHandler
      *
-     * @param string $requestId
-     * @param mixed $suffix
-     * @return string
+     *
      */
-    protected function getLoadDatasetCode($requestId, $suffix = null)
+    protected function getLoadDatasetCode(string $requestId, ?string $suffix = null, bool $show = true): string
     {
-        $js = sprintf("%s.loadDataSet(\"%s\"%s);\n",
+        $js = sprintf(
+            "%s.loadDataSet(%s, %s, null, %s);\n",
             $this->variableName,
-            $requestId,
-            $suffix ? ", " . json_encode($suffix) : ''
+            json_encode($requestId),
+            json_encode($suffix ?: ''),
+            json_encode($show),
         );
         return $js;
     }
 
     /**
      * If a nonce it set, create the correct attribute
-     * @return string
+     *
      */
-    protected function getNonceAttribute()
+    protected function getNonceAttribute(): ?string
     {
         if ($nonce = $this->getCspNonce()) {
-            return ' nonce="' . $nonce .'"';
+            return ' nonce="' . $nonce . '"';
         }
 
         return '';

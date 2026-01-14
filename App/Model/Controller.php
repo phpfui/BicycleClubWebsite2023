@@ -97,12 +97,14 @@ class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\Na
 
 		if ($this->debugBar)
 			{
-			$errorModel = new \App\Model\Errors();
-			$errors = $errorModel->getErrors();
-
-			foreach ($errors as $error)
+			foreach (new \App\Model\Errors()->getErrors() as $error)
 				{
-				$this->debugBar['messages']->error($error);
+				$collector = $this->debugBar->getCollector('messages');
+
+				if ($collector instanceof \DebugBar\DataCollector\MessagesCollector)
+					{
+					$collector->addMessage($error, 'error');
+					}
 				}
 			}
 		$uri = \strtolower($uri);

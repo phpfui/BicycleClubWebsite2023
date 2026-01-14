@@ -67,8 +67,7 @@ class Page extends \PHPFUI\Page
 
 		if ($debugBar)
 			{
-			$this->debugBarRenderer = $debugBar->getJavascriptRenderer();
-			$this->debugBarRenderer->getBaseUrl();
+			$this->debugBarRenderer = $debugBar->getJavascriptRenderer(basePath: PROJECT_ROOT . '/DebugBar/dist');
 			$this->addHeadJavascript($this->getOutputBuffer([$this->debugBarRenderer, 'dumpJsAssets']));
 			$this->addCss(\str_replace('../fonts/', '/fonts/', $this->getOutputBuffer([$this->debugBarRenderer, 'dumpCssAssets'])));
 			}
@@ -225,7 +224,7 @@ class Page extends \PHPFUI\Page
 	public function getBaseURL() : string
 		{
 		// first character could be lower case, so upper case it to match class
-		$return = '/' . \ucfirst(\substr(parent::getBaseURL(), 1));
+		return '/' . \ucfirst(\substr(parent::getBaseURL(), 1));
 		}
 
 	public function getController() : \App\Model\Controller

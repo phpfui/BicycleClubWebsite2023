@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of the DebugBar package.
  *
@@ -14,42 +17,23 @@ use DebugBar\DataCollector\DataCollector;
 
 trait HasDataFormatter
 {
-    // The HTML var dumper requires debug bar users to support the new inline assets, which not all
-    // may support yet - so return false by default for now.
-    protected $useHtmlVarDumper = false;
-    protected $dataFormater;
-    protected $varDumper;
-
-    /**
-     * Sets a flag indicating whether the Symfony HtmlDumper will be used to dump variables for
-     * rich variable rendering.
-     *
-     * @param bool $value
-     * @return $this
-     */
-    public function useHtmlVarDumper($value = true)
-    {
-        $this->useHtmlVarDumper = $value;
-        return $this;
-    }
+    protected ?DataFormatterInterface $dataFormatter = null;
 
     /**
      * Indicates whether the Symfony HtmlDumper will be used to dump variables for rich variable
      * rendering.
      *
-     * @return mixed
      */
-    public function isHtmlVarDumperUsed()
+    public function isHtmlVarDumperUsed(): bool
     {
-        return $this->useHtmlVarDumper;
+        return $this->dataFormatter instanceof HtmlDataFormatter;
     }
 
     /**
      * Sets the default data formater instance used by all collectors subclassing this class
      *
-     * @param DataFormatterInterface $formater
      */
-    public static function setDefaultDataFormatter(DataFormatterInterface $formater)
+    public static function setDefaultDataFormatter(DataFormatterInterface $formater): void
     {
         DataCollector::$defaultDataFormatter = $formater;
     }
@@ -57,12 +41,11 @@ trait HasDataFormatter
     /**
      * Returns the default data formater
      *
-     * @return DataFormatterInterface
      */
-    public static function getDefaultDataFormatter()
+    public static function getDefaultDataFormatter(): DataFormatterInterface
     {
         if (DataCollector::$defaultDataFormatter === null) {
-            DataCollector::$defaultDataFormatter = new DataFormatter();
+            DataCollector::$defaultDataFormatter = new HtmlDataFormatter();
         }
         return DataCollector::$defaultDataFormatter;
     }
@@ -70,95 +53,19 @@ trait HasDataFormatter
     /**
      * Sets the data formater instance used by this collector
      *
-     * @param DataFormatterInterface $formater
      * @return $this
      */
-    public function setDataFormatter(DataFormatterInterface $formater)
+    public function setDataFormatter(DataFormatterInterface $formatter): static
     {
-        $this->dataFormater = $formater;
+        $this->dataFormatter = $formatter;
         return $this;
     }
 
-    /**
-     * @return DataFormatterInterface
-     */
-    public function getDataFormatter()
+    public function getDataFormatter(): DataFormatterInterface
     {
-        if ($this->dataFormater === null) {
-            $this->dataFormater = DataCollector::getDefaultDataFormatter();
+        if ($this->dataFormatter === null) {
+            $this->dataFormatter = DataCollector::getDefaultDataFormatter();
         }
-        return $this->dataFormater;
-    }
-    /**
-     * Sets the default variable dumper used by all collectors subclassing this class
-     *
-     * @param DebugBarVarDumper $varDumper
-     */
-    public static function setDefaultVarDumper(DebugBarVarDumper $varDumper)
-    {
-        DataCollector::$defaultVarDumper = $varDumper;
-    }
-
-    /**
-     * Returns the default variable dumper
-     *
-     * @return DebugBarVarDumper
-     */
-    public static function getDefaultVarDumper()
-    {
-        if (DataCollector::$defaultVarDumper === null) {
-            DataCollector::$defaultVarDumper = new DebugBarVarDumper();
-        }
-        return DataCollector::$defaultVarDumper;
-    }
-
-    /**
-     * Sets the variable dumper instance used by this collector
-     *
-     * @param DebugBarVarDumper $varDumper
-     * @return $this
-     */
-    public function setVarDumper(DebugBarVarDumper $varDumper)
-    {
-        $this->varDumper = $varDumper;
-        return $this;
-    }
-
-    /**
-     * Gets the variable dumper instance used by this collector; note that collectors using this
-     * instance need to be sure to return the static assets provided by the variable dumper.
-     *
-     * @return DebugBarVarDumper
-     */
-    public function getVarDumper()
-    {
-        if ($this->varDumper === null) {
-            $this->varDumper = DataCollector::getDefaultVarDumper();
-        }
-        return $this->varDumper;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function formatVar($var)
-    {
-        return $this->getDataFormatter()->formatVar($var);
-    }
-
-    /**
-     * @deprecated
-     */
-    public function formatDuration($seconds)
-    {
-        return $this->getDataFormatter()->formatDuration($seconds);
-    }
-
-    /**
-     * @deprecated
-     */
-    public function formatBytes($size, $precision = 2)
-    {
-        return $this->getDataFormatter()->formatBytes($size, $precision);
+        return $this->dataFormatter;
     }
 }

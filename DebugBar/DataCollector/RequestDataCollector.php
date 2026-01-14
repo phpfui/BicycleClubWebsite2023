@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of the DebugBar package.
  *
@@ -13,123 +16,99 @@ namespace DebugBar\DataCollector;
 /**
  * Collects info about the current request
  */
-class RequestDataCollector extends DataCollector implements Renderable, AssetProvider
+class RequestDataCollector extends DataCollector implements Renderable
 {
-    /**
-     * @var array[]
-     */
-    private $blacklist = [
-        '_GET' => [],
-        '_POST' => [],
-        '_COOKIE' => [],
-        '_SESSION' => [],
-    ];
-
-    /**
-     * @return array
-     */
-    public function collect()
+    public function __construct()
     {
-        $vars = array_keys($this->blacklist);
-        $data = array();
+        $this->addMaskedKeys([
+            'PHP_AUTH_PW',
+            'php-auth-pw',
+        ]);
+    }
 
-        foreach ($vars as $var) {
-            if (! isset($GLOBALS[$var])) {
-                continue;
-            }
+    protected bool $showUriIndicator = false;
 
-            $key = "$" . $var;
-            $value = $this->masked($GLOBALS[$var], $var);
+    public function collect(): array
+    {
+        $data = [
+            '$_GET' => $_GET,
+            '$_POST' => $_POST,
+            '$_COOKIE' => $_COOKIE,
+            '$_SESSION' => $_SESSION ?? [],
+        ];
 
-            if ($this->isHtmlVarDumperUsed()) {
-                $data[$key] = $this->getVarDumper()->renderVar($value);
-            } else {
-                $data[$key] = $this->getDataFormatter()->formatVar($value);
-            }
+        if ($requestUri = $_SERVER['REQUEST_URI'] ?? null) {
+            $data = ['uri' => $requestUri] + $data;
         }
 
-        return $data;
+        $data = $this->hideMaskedValues($data);
+
+        foreach ($data as $name => $global) {
+            if (is_string($global)) {
+                continue;
+            }
+            $data[$name] = $this->getDataFormatter()->formatVar($global);
+        }
+
+        return [
+            'data' => $data,
+            'tooltip' => null,
+            'badge' => null,
+        ];
+    }
+
+    public function setShowUriIndicator(bool $showUriIndicator = true): void
+    {
+        $this->showUriIndicator = $showUriIndicator;
     }
 
     /**
      * Hide a sensitive value within one of the superglobal arrays.
      *
-     * @param string $superGlobalName The name of the superglobal array, e.g. '_GET'
-     * @param string|array $key       The key within the superglobal
-     * @return void
+     * @deprecated use addMaskedKeys($keys)
      */
-    public function hideSuperglobalKeys($superGlobalName, $keys)
+    public function hideSuperglobalKeys(string $superGlobalName, string|array $keys): void
     {
-        if (!is_array($keys)) {
-            $keys = [$keys];
-        }
-
-        if (!isset($this->blacklist[$superGlobalName])) {
-            $this->blacklist[$superGlobalName] = [];
-        }
-
-        foreach ($keys as $key) {
-            $this->blacklist[$superGlobalName][] = $key;
-        }
+        $this->addMaskedKeys((array) $keys);
     }
 
-    /**
-     * Checks all values within the given superGlobal array.
-     *
-     * Blacklisted values will be replaced by a equal length string containing
-     * only '*' characters for string values.
-     * Non-string values will be replaced with a fixed asterisk count.
-     *
-     * @param array|\ArrayAccess  $superGlobal     One of the superglobal arrays
-     * @param string $superGlobalName The name of the superglobal array, e.g. '_GET'
-     *
-     * @return array $values without sensitive data
-     */
-    private function masked($superGlobal, $superGlobalName)
-    {
-        $blacklisted = $this->blacklist[$superGlobalName];
-
-        $values = $superGlobal;
-
-        foreach ($blacklisted as $key) {
-            if (isset($superGlobal[$key])) {
-                $values[$key] = str_repeat('*', is_string($superGlobal[$key]) ? strlen($superGlobal[$key]) : 3);
-            }
-        }
-
-        return $values;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'request';
     }
 
-    /**
-     * @return array
-     */
-    public function getAssets() {
-        return $this->isHtmlVarDumperUsed() ? $this->getVarDumper()->getAssets() : array();
-    }
-
-    /**
-     * @return array
-     */
-    public function getWidgets()
+    public function getWidgets(): array
     {
         $widget = $this->isHtmlVarDumperUsed()
             ? "PhpDebugBar.Widgets.HtmlVariableListWidget"
             : "PhpDebugBar.Widgets.VariableListWidget";
-        return array(
-            "request" => array(
-                "icon" => "tags",
+
+        $widgets = [
+            "request" => [
+                "icon" => "arrows-left-right",
                 "widget" => $widget,
-                "map" => "request",
-                "default" => "{}"
-            )
-        );
+                "map" => "request.data",
+                "default" => "{}",
+            ],
+            'request:badge' => [
+                "map" => "request.badge",
+                "default" => "null",
+            ],
+        ];
+
+        if ($this->showUriIndicator) {
+            $widgets['request_uri'] = [
+                "icon" => "share-3",
+                "map" => "request.data.uri",
+                "link" => "request",
+                "default" => "",
+            ];
+            $widgets['request_uri:tooltip'] = [
+                "map" => "request.tooltip",
+                "default" => "{}",
+            ];
+        }
+
+        return $widgets;
     }
 }

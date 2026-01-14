@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of the DebugBar package.
  *
@@ -16,37 +19,33 @@ use DebugBar\DebugBarException;
  * Collects info about the request duration as well as providing
  * a way to log duration of any operations
  */
-class TimeDataCollector extends DataCollector implements Renderable
+class TimeDataCollector extends DataCollector implements Renderable, Resettable
 {
-    /**
-     * @var float
-     */
-    protected $requestStartTime;
+    protected float $requestStartTime;
 
-    /**
-     * @var float
-     */
-    protected $requestEndTime;
+    protected ?float $requestEndTime = null;
 
-    /**
-     * @var array
-     */
-    protected $startedMeasures = array();
+    protected array $startedMeasures = [];
 
-    /**
-     * @var array
-     */
-    protected $measures = array();
+    protected array $measures = [];
 
-    /**
-     * @var bool
-     */
-    protected $memoryMeasure = false;
+    protected bool $memoryMeasure = false;
 
-    /**
-     * @param float $requestStartTime
-     */
-    public function __construct($requestStartTime = null)
+    public function __construct(?float $requestStartTime = null)
+    {
+        $this->setRequestStartTime($requestStartTime);
+        static::getDefaultDataFormatter(); // initializes formatter for lineal timeline
+    }
+
+    public function reset(): void
+    {
+        $this->measures = [];
+        $this->startedMeasures = [];
+        $this->setRequestStartTime(microtime(true));
+        $this->requestEndTime = null;
+    }
+
+    public function setRequestStartTime(?float $requestStartTime = null): void
     {
         if ($requestStartTime === null) {
             if (isset($_SERVER['REQUEST_TIME_FLOAT'])) {
@@ -55,45 +54,36 @@ class TimeDataCollector extends DataCollector implements Renderable
                 $requestStartTime = microtime(true);
             }
         }
-        $this->requestStartTime = (float)$requestStartTime;
-        static::getDefaultDataFormatter(); // initializes formatter for lineal timeline
+        $this->requestStartTime = (float) $requestStartTime;
     }
 
     /**
      * Starts memory measuring
      */
-    public function showMemoryUsage()
+    public function showMemoryUsage(): void
     {
         $this->memoryMeasure = true;
     }
 
     /**
      * Starts a measure
-     *
-     * @param string $name Internal name, used to stop the measure
-     * @param string|null $label Public name
-     * @param string|null $collector The source of the collector
-     * @param string|null $group The group for aggregates
      */
-    public function startMeasure($name, $label = null, $collector = null, $group = null)
+    public function startMeasure(string $name, ?string $label = null, ?string $collector = null, ?string $group = null): void
     {
         $start = microtime(true);
-        $this->startedMeasures[$name] = array(
+        $this->startedMeasures[$name] = [
             'label' => $label ?: $name,
             'start' => $start,
             'memory' => $this->memoryMeasure ? memory_get_usage(false) : null,
             'collector' => $collector,
             'group' => $group,
-        );
+        ];
     }
 
     /**
      * Check a measure exists
-     *
-     * @param string $name
-     * @return bool
      */
-    public function hasStartedMeasure($name)
+    public function hasStartedMeasure(string $name): bool
     {
         return isset($this->startedMeasures[$name]);
     }
@@ -101,11 +91,9 @@ class TimeDataCollector extends DataCollector implements Renderable
     /**
      * Stops a measure
      *
-     * @param string $name
-     * @param array $params
      * @throws DebugBarException
      */
-    public function stopMeasure($name, $params = array())
+    public function stopMeasure(string $name, array $params = []): void
     {
         $end = microtime(true);
         if (!$this->hasStartedMeasure($name)) {
@@ -120,29 +108,25 @@ class TimeDataCollector extends DataCollector implements Renderable
             $end,
             $params,
             $this->startedMeasures[$name]['collector'],
-            $this->startedMeasures[$name]['group']
+            $this->startedMeasures[$name]['group'],
         );
         unset($this->startedMeasures[$name]);
     }
 
     /**
      * Adds a measure
-     *
-     * @param string $label
-     * @param float $start
-     * @param float $end
-     * @param array $params
-     * @param string|null $collector
-     * @param string|null $group
      */
-    public function addMeasure($label, $start, $end, $params = array(), $collector = null, $group = null)
+    public function addMeasure(string $label, ?float $start = null, ?float $end = null, array $params = [], ?string $collector = null, ?string $group = null): void
     {
+        $start ??= microtime(true);
+        $end ??= $start;
+
         if (isset($params['memoryUsage'])) {
             $memory = $this->memoryMeasure ? $params['memoryUsage'] : 0;
             unset($params['memoryUsage']);
         }
 
-        $this->measures[] = array(
+        $this->measures[] = [
             'label' => $label,
             'start' => $start,
             'relative_start' => $start - $this->requestStartTime,
@@ -152,67 +136,53 @@ class TimeDataCollector extends DataCollector implements Renderable
             'duration_str' => $this->getDataFormatter()->formatDuration($end - $start),
             'memory' => $memory ?? 0,
             'memory_str' => $this->getDataFormatter()->formatBytes($memory ?? 0),
-            'params' => $params,
+            'params' => array_map([$this->getDataFormatter(), 'formatVar'], $params),
             'collector' => $collector,
             'group' => $group,
-        );
+        ];
     }
 
     /**
      * Utility function to measure the execution of a Closure
-     *
-     * @param string $label
-     * @param \Closure $closure
-     * @param string|null $collector
-     * @param string|null $group
-     * @return mixed
      */
-    public function measure($label, \Closure $closure, $collector = null, $group = null)
+    public function measure(string $label, \Closure $closure, ?string $collector = null, ?string $group = null): mixed
     {
         $name = spl_object_hash($closure);
         $this->startMeasure($name, $label, $collector, $group);
         $result = $closure();
-        $params = is_array($result) ? $result : array();
+        $params = is_array($result) ? $result : [];
         $this->stopMeasure($name, $params);
         return $result;
     }
 
     /**
      * Returns an array of all measures
-     *
-     * @return array
      */
-    public function getMeasures()
+    public function getMeasures(): array
     {
         return $this->measures;
     }
 
     /**
      * Returns the request start time
-     *
-     * @return float
      */
-    public function getRequestStartTime()
+    public function getRequestStartTime(): float
     {
         return $this->requestStartTime;
     }
 
     /**
      * Returns the request end time
-     *
-     * @return float
      */
-    public function getRequestEndTime()
+    public function getRequestEndTime(): ?float
     {
         return $this->requestEndTime;
     }
 
     /**
      * Returns the duration of a request
-     *
-     * @return float
      */
-    public function getRequestDuration()
+    public function getRequestDuration(): float
     {
         if ($this->requestEndTime !== null) {
             return $this->requestEndTime - $this->requestStartTime;
@@ -221,60 +191,53 @@ class TimeDataCollector extends DataCollector implements Renderable
     }
 
     /**
-     * @return array
      * @throws DebugBarException
      */
-    public function collect()
+    public function collect(): array
     {
         $this->requestEndTime = microtime(true);
         foreach (array_keys($this->startedMeasures) as $name) {
             $this->stopMeasure($name);
         }
 
-        usort($this->measures, function($a, $b) {
-            if ($a['start'] == $b['start']) {
+        usort($this->measures, function ($a, $b): int {
+            if ($a['start'] === $b['start']) {
                 return 0;
             }
             return $a['start'] < $b['start'] ? -1 : 1;
         });
 
-        return array(
+        return [
             'count' => count($this->measures),
             'start' => $this->requestStartTime,
             'end' => $this->requestEndTime,
             'duration' => $this->getRequestDuration(),
             'duration_str' => $this->getDataFormatter()->formatDuration($this->getRequestDuration()),
-            'measures' => array_values($this->measures)
-        );
+            'measures' => $this->measures,
+        ];
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'time';
     }
 
-    /**
-     * @return array
-     */
-    public function getWidgets()
+    public function getWidgets(): array
     {
-        return array(
-            "time" => array(
-                "icon" => "clock-o",
+        return [
+            "time" => [
+                "icon" => "clock",
                 "tooltip" => "Request Duration",
                 "map" => "time.duration_str",
                 'link' => 'timeline',
-                "default" => "'0ms'"
-            ),
-            "timeline" => array(
-                "icon" => "tasks",
+                "default" => "'0ms'",
+            ],
+            "timeline" => [
+                "icon" => "chart-infographic",
                 "widget" => "PhpDebugBar.Widgets.TimelineWidget",
                 "map" => "time",
-                "default" => "{}"
-            )
-        );
+                "default" => "{}",
+            ],
+        ];
     }
 }

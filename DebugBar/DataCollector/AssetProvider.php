@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of the DebugBar package.
  *
@@ -37,7 +40,15 @@ interface AssetProvider
      * the same asset provider are used.  Inline assets from all collectors are merged together into
      * the same array, so these content IDs effectively deduplicate the inline assets.
      *
-     * @return array
+     * @return array{
+     *    base_path?: string|null,
+     *    base_url?: string|null,
+     *    css?: string|array<int|string, string>,
+     *    js?: string|array<int|string, string>,
+     *    inline_css?: array<int|string, string>,
+     *    inline_js?: array<int|string, string>,
+     *    inline_head?: array<int|string, string>
+     * }
      */
-    function getAssets();
+    public function getAssets(): array;
 }

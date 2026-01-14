@@ -219,40 +219,58 @@ class Member extends \PHPFUI\ORM\Table
 	 *
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Member>
 	 */
-	public static function getLeaders(array $categories = [], string $type = 'Ride Leader', string $fromDate = '1000-01-01', string $toDate = '1000-01-01') : \PHPFUI\ORM\RecordCursor
+	public static function getLeaders(array $categories = [], string $type = 'Ride Leader', ?string $fromDate = null, ?string $toDate = null, ?int $timesLed = null) : \PHPFUI\ORM\RecordCursor
 		{
+		$type = new \App\Table\Setting()->getStandardPermissionGroup($type)->name ?? 'Ride Leader';
+
 		if (1 == \count($categories) && 0 == \current($categories))
 			{
 			$categories = []; // all categories requested
 			}
-		$sql = 'select m.* from member m left join userPermission u on u.memberId = m.memberId left join membership s on s.membershipId = m.membershipId left join permission p on p.name=? ';
-		$input = [$type];
+		$table = new \App\Table\Member();
+		$table->addSelect('member.*');
+		$table->addGroupBy('member.memberId');
+		$table->addOrderBy('member.lastName');
+		$table->addOrderBy('member.firstName');
+		$table->addJoin('userPermission');
+		$table->addJoin('membership');
+		$table->addJoin('permission', new \PHPFUI\ORM\Condition('permission.name', $type));
+		$where = new \PHPFUI\ORM\Condition('userPermission.permissionGroup', new \PHPFUI\ORM\Field('permission.permissionId'));
+		$where->and('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
 
 		if ($categories)
 			{
-			$sql .= 'left join memberCategory c on c.memberId=m.memberId ';
-			}
-		$sql .= 'where u.permissionGroup = p.permissionId and s.expires>=? ';
-		$input[] = \App\Tools\Date::todayString();
-
-		if ($categories)
-			{
-			$sql .= 'and c.categoryId in (' . \implode(',', $categories) . ') ';
+			$table->addJoin('memberCategory');
+			$where->and('memberCategory.categoryId', $categories, new \PHPFUI\ORM\Operator\In());
 			}
 
-		if ($fromDate > '1000-01-01')
+		if (null !== $timesLed || null !== $fromDate || null !== $toDate)
 			{
-			if ('1000-01-01' > $toDate)
+			$rideTable = new \App\Table\Ride();
+			$rideTable->addSelect('memberId');
+			$rideTable->addGroupBy('memberId');
+			$rideWhere = new \PHPFUI\ORM\Condition();
+			$rideTable->setWhere($rideWhere);
+
+			if (null !== $fromDate)
 				{
-				$toDate = '2999-12-31';
+				$rideWhere->and('rideDate', $fromDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
 				}
-			$sql .= 'and m.memberId in (select memberId from ride where rideDate>=? and rideDate<=?) ';
-			$input[] = $fromDate;
-			$input[] = $toDate;
-			}
-		$sql .= 'group by m.memberId order by m.lastName, m.firstName';
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Member(), $sql, $input);
+			if (null !== $toDate)
+				{
+				$rideWhere->and('rideDate', $toDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+				}
+
+			if (null !== $timesLed)
+				{
+				$rideTable->setHaving(new \PHPFUI\ORM\Condition(new \PHPFUI\ORM\Literal('count(*)'), $timesLed, new \PHPFUI\ORM\Operator\GreaterThanEqual()));
+				}
+			$where->and('member.memberId', $rideTable, new \PHPFUI\ORM\Operator\In());
+			}
+		$table->setWhere($where);
+
+		return $table->getRecordCursor();
 		}
 
 	/**

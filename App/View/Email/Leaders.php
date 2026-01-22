@@ -21,7 +21,7 @@ class Leaders implements \Stringable
 			\App\Model\Session::setFlash('post', $post);
 
 			$type = empty($post['coordinatorsOnly']) ? 'Ride Leader' : 'Ride Coordinator';
-			$leaders = \App\Table\Member::getLeaders($post['categories'], $type, $post['fromDate'], $post['toDate'], $post['timesLed']);
+			$leaders = \App\Table\Member::getLeaders($post['categories'], $type, $post['fromDate'], $post['toDate'], $post['minLed'], $post['maxLed']);
 			$email = new \App\Tools\EMail();
 			$email->setSubject($post['subject']);
 			$member = \App\Model\Session::getSignedInMember();
@@ -94,10 +94,13 @@ class Leaders implements \Stringable
 		$accordion->addTab('Category Restriction', $picker);
 
 		$coordinatorsOnly = new \PHPFUI\Input\CheckBoxBoolean('coordinatorsOnly', 'Ride Coordinators Only', $post['coordinatorsOnly'] ?? false);
-		$timesLed = new \PHPFUI\Input\Number('timesLed', 'Minimum Number of Leads in Date Range', $post['timesLed'] ?? '0');
-		$timesLed->addAttribute('min', '0');
-		$timesLed->addAttribute('step', '1');
-		$coordinators = new \PHPFUI\MultiColumn($coordinatorsOnly, $timesLed);
+		$minLed = new \PHPFUI\Input\Number('minLed', 'Minimum Number of Leads in Date Range', $post['minLed'] ?? '');
+		$minLed->addAttribute('min', '0');
+		$minLed->addAttribute('step', '1');
+		$maxLed = new \PHPFUI\Input\Number('maxLed', 'Maximum Number of Leads in Date Range', $post['maxLed'] ?? '');
+		$maxLed->addAttribute('min', '0');
+		$maxLed->addAttribute('step', '1');
+		$coordinators = new \PHPFUI\MultiColumn($coordinatorsOnly, $minLed, $maxLed);
 		$accordion->addTab('Coordinators and Times Led', $coordinators);
 
 		$dates = new \PHPFUI\MultiColumn();

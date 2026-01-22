@@ -219,7 +219,7 @@ class Member extends \PHPFUI\ORM\Table
 	 *
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Member>
 	 */
-	public static function getLeaders(array $categories = [], string $type = 'Ride Leader', ?string $fromDate = null, ?string $toDate = null, ?int $timesLed = null) : \PHPFUI\ORM\RecordCursor
+	public static function getLeaders(array $categories = [], string $type = 'Ride Leader', ?string $fromDate = null, ?string $toDate = null, ?string $minLed = null, ?string $maxLed = null) : \PHPFUI\ORM\RecordCursor
 		{
 		$type = new \App\Table\Setting()->getStandardPermissionGroup($type)->name ?? 'Ride Leader';
 
@@ -244,7 +244,7 @@ class Member extends \PHPFUI\ORM\Table
 			$where->and('memberCategory.categoryId', $categories, new \PHPFUI\ORM\Operator\In());
 			}
 
-		if (null !== $timesLed || null !== $fromDate || null !== $toDate)
+		if (null !== $minLed || null !== $maxLed || null !== $fromDate || null !== $toDate)
 			{
 			$rideTable = new \App\Table\Ride();
 			$rideTable->addSelect('memberId');
@@ -252,19 +252,31 @@ class Member extends \PHPFUI\ORM\Table
 			$rideWhere = new \PHPFUI\ORM\Condition();
 			$rideTable->setWhere($rideWhere);
 
-			if (null !== $fromDate)
+			if (! empty($fromDate))
 				{
 				$rideWhere->and('rideDate', $fromDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
 				}
 
-			if (null !== $toDate)
+			if (! empty($toDate))
 				{
 				$rideWhere->and('rideDate', $toDate, new \PHPFUI\ORM\Operator\LessThanEqual());
 				}
 
-			if (null !== $timesLed)
+			$havingCondition = new \PHPFUI\ORM\Condition();
+
+			if (\strlen($minLed))
 				{
-				$rideTable->setHaving(new \PHPFUI\ORM\Condition(new \PHPFUI\ORM\Literal('count(*)'), $timesLed, new \PHPFUI\ORM\Operator\GreaterThanEqual()));
+				$havingCondition->and(new \PHPFUI\ORM\Literal('count(*)'), $minLed, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+				}
+
+			if (\strlen($maxLed))
+				{
+				$havingCondition->and(new \PHPFUI\ORM\Literal('count(*)'), $maxLed, new \PHPFUI\ORM\Operator\LessThanEqual());
+				}
+
+			if (\count($havingCondition))
+				{
+				$rideTable->setHaving($havingCondition);
 				}
 			$where->and('member.memberId', $rideTable, new \PHPFUI\ORM\Operator\In());
 			}

@@ -4,7 +4,7 @@ namespace App\Tools;
 
 class MyMailer extends \PHPMailer\PHPMailer\PHPMailer
 	{
-	public function __construct($exceptions = null)
+	public function __construct(?bool $exceptions = null)
 		{
 		parent::__construct($exceptions);
 		// add in click tracking

@@ -52,7 +52,7 @@ class SuperUsers extends \PHPFUI\Container
 			{
 			$view = new \App\UI\ContinuousScrollTable($this->page, $memberTable);
 			$page = $this->page;
-			$view->addCustomColumn('del', static fn (array $user) => new \PHPFUI\FAIcon('far', 'trash-alt', $page->getBaseURL() . '?remove=' . $user['memberId']));
+			$view->addCustomColumn('del', static fn (array $user) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'trash-alt', $page->getBaseURL() . '?remove=' . $user['memberId']));
 
 			$headers = ['firstName', 'lastName', ];
 			$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, ['del']))->setSortableColumns($headers);
@@ -112,12 +112,7 @@ class SuperUsers extends \PHPFUI\Container
 		else
 			{
 			$view = new \App\UI\ContinuousScrollTable($this->page, $memberTable);
-			$view->addCustomColumn('email', static function(array $user) {
-				$cb = new \PHPFUI\Input\CheckBox("email[{$user['memberId']}]");
-				$cb->addClass('checkAll');
-
-				return $cb;});
-
+			$view->addCustomColumn('email', static fn (array $user) : \PHPFUI\Input\CheckBox => new \PHPFUI\Input\CheckBox("email[{$user['memberId']}]")->addClass('checkAll'));
 			$checkAll = new \App\UI\CheckAll('.checkAll');
 			$headers = ['firstName', 'lastName', 'email' => $checkAll];
 			$view->setSearchColumns($headers)->setHeaders($headers);

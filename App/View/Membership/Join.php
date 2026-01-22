@@ -51,7 +51,7 @@ class Join
 			$fullName = $_POST['firstName'] . ' ' . $_POST['lastName'];
 
 			// is the password valid and matching?
-			if ($_POST['password'] != $_POST['confirm'])
+			if ($_POST['password'] !== $_POST['confirm']) // @mago-expect lint:no-insecure-comparison
 				{
 				\App\Model\Session::setFlash('alert', "Passwords don't match");
 				$this->page->redirect();
@@ -317,7 +317,7 @@ class Join
 			if ($form->isMyCallback($submit))
 				{
 				// is the password valid and matching?
-				if ($_POST['password'] != $_POST['confirm'])
+				if ($_POST['password'] !== $_POST['confirm']) // @mago-expect lint:no-insecure-comparison
 					{
 					\App\Model\Session::setFlash('alert', "Passwords don't match");
 					$this->page->redirect();

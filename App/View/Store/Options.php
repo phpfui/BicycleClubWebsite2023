@@ -147,7 +147,7 @@ class Options
 
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $storeOptionTable, 'Are you sure you want to permanently delete this store option?');
 		$view->addCustomColumn('del', $deleter->columnCallback(...));
-		$view->addCustomColumn('optionName', static fn (array $storeOption) => new \PHPFUI\Link('/Store/Options/edit/' . $storeOption['storeOptionId'], $storeOption['optionName'], false));
+		$view->addCustomColumn('optionName', static fn (array $storeOption) : \PHPFUI\Link => new \PHPFUI\Link('/Store/Options/edit/' . $storeOption['storeOptionId'], $storeOption['optionName'], false));
 		$view->setSearchColumns($headers)->setSortableColumns(\array_keys($headers))->setHeaders(\array_merge($headers, ['del']));
 		$container->add($view);
 

@@ -273,7 +273,7 @@ class CueSheet extends \FPDF
 		$height = $lineHeight;
 		$this->setXY($x, $y);
 
-		$row['street'] = $row['street'] ?? '';
+		$row['street'] ??= '';
 		$street = $this->cleanStreet($row['street']);
 		$streetWidth = 65;
 		$currentBorder = $border;

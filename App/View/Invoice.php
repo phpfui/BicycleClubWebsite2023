@@ -112,23 +112,13 @@ class Invoice
 
 		$view = new \App\UI\ContinuousScrollTable($this->page, $invoiceTable);
 
-		$view->addCustomColumn('label', static fn (array $invoice) => new \PHPFUI\Link('/Store/mailingLabel/' . $invoice['invoiceId'], 'Print', false));
-		$view->addCustomColumn('view', static fn (array $invoice) => new \PHPFUI\FAIcon('fas', 'file-download', '/Store/Invoice/download/' . $invoice['invoiceId']));
+		$view->addCustomColumn('label', static fn (array $invoice) : \PHPFUI\Link => new \PHPFUI\Link('/Store/mailingLabel/' . $invoice['invoiceId'], 'Print', false));
+		$view->addCustomColumn('view', static fn (array $invoice) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('fas', 'file-download', '/Store/Invoice/download/' . $invoice['invoiceId']));
 		$view->addCustomColumn('cancel', $this->getCancelColumn(...));
 		$view->addCustomColumn('paymentDate', $this->getPaymentDate(...));
 		$view->addCustomColumn('fullfillmentDate', $this->getFullfillmentDate(...));
-		$view->addCustomColumn('firstName', static function(array $invoice) use ($customerModel)
-			{
-			$member = $customerModel->read((int)$invoice['memberId']);
-
-			return $member->firstName;
-			});
-		$view->addCustomColumn('lastName', static function(array $invoice) use ($customerModel)
-			{
-			$member = $customerModel->read((int)$invoice['memberId']);
-
-			return $member->lastName;
-			});
+		$view->addCustomColumn('firstName', static fn (array $invoice) : string => $customerModel->read((int)$invoice['memberId'])->firstName);
+		$view->addCustomColumn('lastName', static fn (array $invoice) : string => $customerModel->read((int)$invoice['memberId'])->lastName);
 
 		$view->setHeaders(\array_merge($headers, $extraHeaders));
 		$view->setSearchColumns(\array_keys($headers));

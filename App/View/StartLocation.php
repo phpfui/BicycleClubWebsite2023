@@ -357,17 +357,17 @@ class StartLocation
 		$view = new \App\UI\ContinuousScrollTable($this->page, $startLocationTable);
 
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $startLocationTable, 'Are you sure you want to permanently delete this start location?');
-		$deleter->setConditionalCallback(static fn (array $location) => empty($rides[$location['startLocationId']]['count']) && empty($cuesheets[$location['startLocationId']]['count']));
+		$deleter->setConditionalCallback(static fn (array $location) : bool => empty($rides[$location['startLocationId']]['count']) && empty($cuesheets[$location['startLocationId']]['count']));
 		$view->addCustomColumn('del', $deleter->columnCallback(...));
-		$view->addCustomColumn('active', static fn (array $location) => $location['active'] ? '<b>&check;</b>' : '');
-		$view->addCustomColumn('link', static function(array $location)
+		$view->addCustomColumn('active', static fn (array $location) : string => $location['active'] ? '<b>&check;</b>' : '');
+		$view->addCustomColumn('link', static function(array $location) : string
 			{
 			$url = \parse_url($location['link'] ?? '', PHP_URL_HOST);
 
 			return $url ? new \PHPFUI\Link($location['link'], $url) : '';
 			});
 
-		$view->addCustomColumn('map', static function(array $location)
+		$view->addCustomColumn('map', static function(array $location) : string
 			{
 			if ($location['latitude'] && $location['longitude'])
 				{
@@ -377,24 +377,21 @@ class StartLocation
 			return '';
 			});
 
-		$view->addCustomColumn('rides', static function(array $location) use ($rides)
+		$view->addCustomColumn('rides', static function(array $location) use ($rides) : string
 			{
 			$count = $rides[$location['startLocationId']]['count'] ?? 0;
 
 			if (! $count)
 				{
-				return $count;
+				return (string)$count;
 				}
 
 			return new \PHPFUI\Link('/Rides/forLocation/' . $location['startLocationId'], (string)$count, false);
 			});
 
-		$view->addCustomColumn('RWGPS', static function(array $location)
-			{
-			return new \PHPFUI\FAIcon('fas', 'location-crosshairs', '/RWGPS/forLocation/' . $location['startLocationId']);
-			});
+		$view->addCustomColumn('RWGPS', static fn (array $location) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('fas', 'location-crosshairs', '/RWGPS/forLocation/' . $location['startLocationId']));
 
-		$view->addCustomColumn('cuesheets', static function(array $location) use ($cuesheets)
+		$view->addCustomColumn('cuesheets', static function(array $location) use ($cuesheets) : \PHPFUI\Link | int
 			{
 			$count = $cuesheets[$location['startLocationId']]['count'] ?? 0;
 
@@ -406,7 +403,7 @@ class StartLocation
 			return new \PHPFUI\Link("/CueSheets/find?startLocation={$location['startLocationId']}&order=A", (string)$count, false);
 			});
 
-		$view->addCustomColumn('name', static function(array $location)
+		$view->addCustomColumn('name', static function(array $location) : \PHPFUI\Link | \PHPFUI\ToolTip
 			{
 			$editLink = new \PHPFUI\Link('/Locations/edit/' . $location['startLocationId'], $location['name'], false);
 

@@ -4,7 +4,7 @@ namespace App\Model;
 
 class ReleaseTag
 	{
-	final public const VERSION_PREFIX = 'V';
+	final public const string VERSION_PREFIX = 'V';
 
 	private string $error = '';
 

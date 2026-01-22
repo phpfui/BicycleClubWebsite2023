@@ -22,7 +22,7 @@ class RidePullList
 		$pdf->headerFontSize = 20;
 		$pdf->AddPage('L', 'Letter');
 		$settings = new \App\Table\Setting();
-		$pdf->SetDocumentTitle($abbrev = $settings->value('clubAbbrev') . ' Ride Pull Report for rides on ' . $date);
+		$pdf->SetDocumentTitle($settings->value('clubAbbrev') . ' Ride Pull Report for rides on ' . $date);
 		$pdf->SetAutoPageBreak(true, 2);
 		$pdf->SetWidths([80,
 			40,

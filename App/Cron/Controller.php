@@ -9,23 +9,23 @@ class Controller
 	{
 	use \App\Tools\SchemeHost;
 
-	final public const LOG_CRITICAL = 1;
+	final public const int LOG_CRITICAL = 1;
 
-	final public const LOG_EXCEPTION = 0;
+	final public const int LOG_EXCEPTION = 0;
 
-	final public const LOG_IMPORTANT = 2;
+	final public const int LOG_IMPORTANT = 2;
 
-	final public const LOG_LOW = 4;
+	final public const int LOG_LOW = 4;
 
-	final public const LOG_MINOR = 5;
+	final public const int LOG_MINOR = 5;
 
-	final public const LOG_NORMAL = 3;
+	final public const int LOG_NORMAL = 3;
 
 	/** @var int Unix time stamp of when the cron script should stop */
 	private int $endTime;
 
-	/** @var callable Logger function.  Takes a string parameter */
-	private $logger = null;
+	/** @var ?callable logger function.  Takes a string parameter */
+	private $logger = null; // @mago-expect lint:property-type
 
 	/** @var int Debug level, higher is more verbose. Default: LOG_NORMAL */
 	private int $logLevel = 3;
@@ -133,9 +133,9 @@ class Controller
 	 * @param int $priority Specify the priorty.  Higher is lower.
 	 * @param string $message Message to log
 	 */
-	public function log($priority, $message) : static
+	public function log(int $priority, string $message) : static
 		{
-		if ($this->logger && $priority <= $this->logLevel) // @phpstan-ignore booleanAnd.leftAlwaysTrue
+		if ($this->logger && $priority <= $this->logLevel)
 			{
 			\call_user_func($this->logger, $message);
 			}

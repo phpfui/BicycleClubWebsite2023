@@ -7,17 +7,17 @@ class Search implements \Stringable
 	/**
 	 * @var array<string,string>
 	 */
-	protected $exceptions = [];
+	protected array $exceptions = [];
 
 	/**
 	 * @var array<string,string>
 	 */
-	protected $fields = [];
+	protected array $fields = [];
 
 	/**
 	 * @var array<string,string>
 	 */
-	protected $specialFields = [];
+	protected array $specialFields = [];
 
 	public function __construct(private readonly \App\View\Page $page)
 		{

@@ -73,21 +73,15 @@ class Event
 
 		$that = $this;
 
-		$table->addCustomColumn('copy', static function(array $event) use ($that)
+		$table->addCustomColumn('copy', static function(array $event) use ($that) : \PHPFUI\FAIcon
 			{
 			$copyIcon = new \PHPFUI\FAIcon('far', 'clone', '#');
 			$that->addCopyEventModal($copyIcon, $event);
 
 			return $copyIcon;
 			});
-		$table->addCustomColumn('del', static function(array $event) use ($recordId, $delete)
-			{
-			$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-			$icon->addAttribute('onclick', $delete->execute([$recordId => $event[$recordId]]));
-
-			return $icon;
-			});
-		$table->addCustomColumn('name', static fn (array $event) => new \PHPFUI\Link('/Volunteer/edit/' . $event[$recordId], $event['name'], false));
+		$table->addCustomColumn('del', static fn (array $event) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'trash-alt', '#')->addAttribute('onclick', $delete->execute([$recordId => $event[$recordId]])));
+		$table->addCustomColumn('name', static fn (array $event) : \PHPFUI\Link => new \PHPFUI\Link('/Volunteer/edit/' . $event[$recordId], $event['name'], false));
 
 		$container = new \PHPFUI\Container();
 		$container->add($table);

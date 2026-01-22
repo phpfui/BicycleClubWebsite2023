@@ -284,7 +284,7 @@ class Permissions
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $this->permissionTable, 'Are you sure you want to permanently delete this permission group?');
 		$view->addCustomColumn('del', $deleter->columnCallback(...));
 		new \App\Model\EditIcon($view, $this->permissionTable, '/Admin/Permission/groupEdit/');
-		$view->addCustomColumn('members', static fn (array $permission) => new \PHPFUI\FAIcon('fas', 'users', '/Admin/Permission/groupMembers/' . $permission['permissionId']));
+		$view->addCustomColumn('members', static fn (array $permission) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('fas', 'users', '/Admin/Permission/groupMembers/' . $permission['permissionId']));
 //		$view->addCustomColumn('system', static function(array $permission) { return $permission['system'] ? 'Yes' : 'No';});
 
 		$view->setHeaders(\array_merge($searchHeaders, $normalHeaders));
@@ -311,8 +311,8 @@ class Permissions
 		{
 		$permissionTable = new \App\Table\Permission();
 		$view = new \App\UI\ContinuousScrollTable($this->page, $permissionTable);
-		$view->addCustomColumn('members', static fn (array $row) => new \PHPFUI\FAIcon('fas', 'user', '/Admin/Permission/permissionMembers/' . $row['permissionId']));
-		$view->addCustomColumn('groups', static fn (array $row) => new \PHPFUI\FAIcon('fas', 'users', '/Admin/Permission/groupsWithPermission/' . $row['permissionId']));
+		$view->addCustomColumn('members', static fn (array $row) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('fas', 'user', '/Admin/Permission/permissionMembers/' . $row['permissionId']));
+		$view->addCustomColumn('groups', static fn (array $row) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('fas', 'users', '/Admin/Permission/groupsWithPermission/' . $row['permissionId']));
 		$headers = ['name' => 'Permission Name', 'menu' => 'Menu', 'members' => 'Members', 'groups' => 'Groups'];
 
 		if ($this->page->isAuthorized('Delete Permission'))
@@ -454,13 +454,7 @@ class Permissions
 			$delete = new \PHPFUI\AJAX('deleteMember');
 			$delete->addFunction('success', "$('#memberId-'+data.response).css('background-color','red').hide('fast').remove()");
 			$this->page->addJavaScript($delete->getPageJS());
-			$view->addCustomColumn('remove', static function(array $member) use ($delete, $permission)
-				{
-				$trash = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-				$trash->addAttribute('onclick', $delete->execute(['memberId' => $member['memberId'], 'permissionGroup' => $permission->permissionId]));
-
-				return $trash;
-				});
+			$view->addCustomColumn('remove', static fn (array $member) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'trash-alt', '#')->addAttribute('onclick', $delete->execute(['memberId' => $member['memberId'], 'permissionGroup' => $permission->permissionId])));
 
 			$add = new \PHPFUI\Button('Add Member With This Permission');
 			$this->getAddMemberModal($add);

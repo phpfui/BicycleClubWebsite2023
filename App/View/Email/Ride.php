@@ -7,7 +7,7 @@ class Ride implements \Stringable
 	/**
 	 * @var array<int>
 	 */
-	protected $leadersOnRide = [];
+	protected array $leadersOnRide = [];
 
 	protected string $title;
 

@@ -4,9 +4,9 @@ namespace App\View;
 
 class AccidentReport
 	{
-	final public const FILE = 'accidefile';
+	final public const string FILE = 'accidefile';
 
-	final public const MAIL = 'accidemail';
+	final public const string MAIL = 'accidemail';
 
 	public static function output(\App\View\Page $page) : string
 		{

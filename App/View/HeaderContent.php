@@ -66,8 +66,8 @@ class HeaderContent
 			$view = new \App\UI\ContinuousScrollTable($this->page, $headerContentTable);
 			$deleter = new \App\Model\DeleteRecord($this->page, $view, $headerContentTable, 'Permanently delete this header?');
 			$view->addCustomColumn('del', $deleter->columnCallback(...));
-			$view->addCustomColumn('urlPath', static fn (array $row) => new \PHPFUI\Link('/Content/Header/edit/' . $row['headerContentId'], $row['urlPath'], false));
-			$view->addCustomColumn('active', static fn (array $row) => $row['active'] ? '&check;' : '');
+			$view->addCustomColumn('urlPath', static fn (array $row) : \PHPFUI\Link => new \PHPFUI\Link('/Content/Header/edit/' . $row['headerContentId'], $row['urlPath'], false));
+			$view->addCustomColumn('active', static fn (array $row) : string => $row['active'] ? '&check;' : '');
 			$headers = ['urlPath', 'name', 'startDate', 'endDate', 'active'];
 			$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, ['del']))->setSortableColumns($headers);
 			$container->add($view);

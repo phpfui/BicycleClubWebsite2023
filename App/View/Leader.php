@@ -411,33 +411,21 @@ class Leader
 			$delete->addFunction('success', '$("#memberId-"+data.response).css("background-color","red").hide("fast").remove()');
 			$this->page->addJavaScript($delete->getPageJS());
 
-			$table->addCustomColumn('Del', static function(array $member) use ($delete)
-				{
-				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-				$icon->addAttribute('onclick', $delete->execute(['memberId' => $member['memberId']]));
-
-				return $icon;
-				});
+			$table->addCustomColumn('Del', static fn (array $member) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'trash-alt', '#')->addAttribute('onclick', $delete->execute(['memberId' => $member['memberId']])));
 
 			$approve = new \PHPFUI\AJAX('approveLeader', 'Promote this member to a ride leader?');
 			$approve->addFunction('success', '$("#memberId-"+data.response).css("background-color","green").hide("fast").remove()');
 			$this->page->addJavaScript($approve->getPageJS());
-			$table->addCustomColumn('Accept', static function(array $member) use ($approve)
-				{
-				$icon = new \PHPFUI\FAIcon('far', 'thumbs-up', '#');
-				$icon->addAttribute('onclick', $approve->execute(['memberId' => $member['memberId']]));
+			$table->addCustomColumn('Accept', static fn (array $member) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'thumbs-up', '#')->addAttribute('onclick', $approve->execute(['memberId' => $member['memberId']])));
 
-				return $icon;
-				});
+			$table->addCustomColumn('firstName', static fn (array $member) : string => "<a href='/Membership/edit/{$member['memberId']}'>{$member['firstName']}</a>");
 
-			$table->addCustomColumn('firstName', static fn (array $member) => "<a href='/Membership/edit/{$member['memberId']}'>{$member['firstName']}</a>");
+			$table->addCustomColumn('lastName', static fn (array $member) : string => "<a href='/Membership/edit/{$member['memberId']}'>{$member['lastName']}</a>");
 
-			$table->addCustomColumn('lastName', static fn (array $member) => "<a href='/Membership/edit/{$member['memberId']}'>{$member['lastName']}</a>");
-
-			$table->addCustomColumn('email', static fn (array $member) => new \PHPFUI\FAIcon('far', 'envelope', '/Membership/email/' . $member['memberId']));
+			$table->addCustomColumn('email', static fn (array $member) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'envelope', '/Membership/email/' . $member['memberId']));
 
 			$assistantLeaderTable = new \App\Table\AssistantLeader();
-			$table->addCustomColumn('assistantLeads', static function(array $member) use ($assistantLeaderTable)
+			$table->addCustomColumn('assistantLeads', static function(array $member) use ($assistantLeaderTable) : string
 				{
 				$assistantLeaderTable->setWhere(new \PHPFUI\ORM\Condition('memberId', $member['memberId']));
 
@@ -521,12 +509,12 @@ class Leader
 		$fields = ['firstName', 'lastName'];
 		$table->setSearchColumns($fields)->setSortableColumns($fields)->setHeaders($headers);
 
-		$table->addCustomColumn('upcoming', static fn (array $leader) => new \PHPFUI\Link('/Leaders/leaderUpcoming/' . $leader['memberId'], 'Upcoming', false));
-		$table->addCustomColumn('past', static fn (array $leader) => new \PHPFUI\Link('/Leaders/leaderYear/' . $leader['memberId'], 'Past', false));
-		$table->addCustomColumn('first', static fn (array $leader) => new \PHPFUI\Link('/Leaders/stats/' . $leader['memberId'], $leader['firstName'], false));
-		$table->addCustomColumn('last', static fn (array $leader) => new \PHPFUI\Link('/Leaders/stats/' . $leader['memberId'], $leader['lastName'], false));
-		$table->addCustomColumn('email', static fn (array $leader) => new \PHPFUI\FAIcon('far', 'envelope', '/Leaders/emailLeader/' . $leader['memberId']));
-		$table->addCustomColumn('phone', static function(array $leader)
+		$table->addCustomColumn('upcoming', static fn (array $leader) : \PHPFUI\Link => new \PHPFUI\Link('/Leaders/leaderUpcoming/' . $leader['memberId'], 'Upcoming', false));
+		$table->addCustomColumn('past', static fn (array $leader) : \PHPFUI\Link => new \PHPFUI\Link('/Leaders/leaderYear/' . $leader['memberId'], 'Past', false));
+		$table->addCustomColumn('first', static fn (array $leader) : \PHPFUI\Link => new \PHPFUI\Link('/Leaders/stats/' . $leader['memberId'], $leader['firstName'], false));
+		$table->addCustomColumn('last', static fn (array $leader) : \PHPFUI\Link => new \PHPFUI\Link('/Leaders/stats/' . $leader['memberId'], $leader['lastName'], false));
+		$table->addCustomColumn('email', static fn (array $leader) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'envelope', '/Leaders/emailLeader/' . $leader['memberId']));
+		$table->addCustomColumn('phone', static function(array $leader) : string
 			{
 			$phone = $leader['phone'];
 
@@ -542,7 +530,7 @@ class Leader
 
 			return \PHPFUI\Link::phone($phone);
 			});
-		$table->addCustomColumn('categories', static fn (array $leader) => \App\Table\MemberCategory::getRideCategoryStringForMember($leader['memberId']));
+		$table->addCustomColumn('categories', static fn (array $leader) : string => \App\Table\MemberCategory::getRideCategoryStringForMember($leader['memberId']));
 
 		$container->add($table);
 

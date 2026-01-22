@@ -16,8 +16,8 @@ class Orders
 
 			foreach ($view->getArrayCursor() as $row)
 				{
-				$row['firstName'] = $row['firstName'] ?? $row['customer_firstName'];
-				$row['lastName'] = $row['lastName'] ?? $row['customer_lastName'];
+				$row['firstName'] ??= $row['customer_firstName'];
+				$row['lastName'] ??= $row['customer_lastName'];
 
 				if ('Stock' == $_POST['labelType'])
 					{
@@ -63,21 +63,9 @@ class Orders
 
 		$headers = ['title' => 'Item', 'optionsSelected' => 'Selected Options', 'quantity' => 'Quantity', 'invoiceId' => 'Invoice', 'firstName' => 'First Name', 'lastName' => 'Last Name', 'added' => 'Date Added'];
 
-		$view->addCustomColumn('invoiceId', static function(array $storeOrder)
-			{
-			$link = new \PHPFUI\Link('/Store/Invoice/download/' . $storeOrder['invoiceId'], $storeOrder['invoiceId'], false);
-			$link->addAttribute('target', '_blank');
-
-			return $link;
-			});
-		$view->addCustomColumn('firstName', static function(array $storeOrder)
-			{
-			return $storeOrder['firstName'] ?? $storeOrder['customer_firstName'];
-			});
-		$view->addCustomColumn('lastName', static function(array $storeOrder)
-			{
-			return $storeOrder['lastName'] ?? $storeOrder['customer_lastName'];
-			});
+		$view->addCustomColumn('invoiceId', static fn (array $storeOrder) : \PHPFUI\Link => new \PHPFUI\Link('/Store/Invoice/download/' . $storeOrder['invoiceId'], $storeOrder['invoiceId'], false)->addAttribute('target', '_blank'));
+		$view->addCustomColumn('firstName', static fn (array $storeOrder) : string => $storeOrder['firstName'] ?? $storeOrder['customer_firstName']);
+		$view->addCustomColumn('lastName', static fn (array $storeOrder) : string => $storeOrder['lastName'] ?? $storeOrder['customer_lastName']);
 		$view->setSearchColumns($headers)->setSortableColumns(\array_keys($headers))->setHeaders($headers);
 		$labelButton = new \PHPFUI\Button('Labels');
 		$labelButton->addClass('secondary');

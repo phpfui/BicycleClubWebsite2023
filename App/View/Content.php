@@ -263,13 +263,8 @@ class Content extends \App\UI\ContentEditor
 		{
 		$view = new \App\UI\ContinuousScrollTable($this->page, $storyTable);
 		$record = $storyTable->getRecord();
-		$view->addCustomColumn('headline', static fn (array $row) => new \PHPFUI\Link('/Content/view/' . $row['storyId'], $row['headline'], false));
-		$view->addCustomColumn('Editor', static function(array $row)
-			{
-			$member = new \App\Record\Member($row['editorId'] ?? 0);
-
-			return $member->fullName();
-			});
+		$view->addCustomColumn('headline', static fn (array $row) : \PHPFUI\Link => new \PHPFUI\Link('/Content/view/' . $row['storyId'], $row['headline'], false));
+		$view->addCustomColumn('Editor', static fn (array $row) : string => new \App\Record\Member($row['editorId'] ?? 0)->fullName());
 
 		$headers = ['headline', 'author', 'startDate', 'endDate', 'lastEdited', ];
 
@@ -305,13 +300,8 @@ class Content extends \App\UI\ContentEditor
 
 		$view = new \App\UI\ContinuousScrollTable($this->page, $storyTable);
 		$record = $storyTable->getRecord();
-		$view->addCustomColumn('headline', static fn (array $row) => new \PHPFUI\Link('/Content/view/' . $row['storyId'], $row['headline'], false));
-		$view->addCustomColumn('Editor', static function(array $row)
-			{
-			$member = new \App\Record\Member($row['editorId'] ?? 0);
-
-			return $member->fullName();
-			});
+		$view->addCustomColumn('headline', static fn (array $row) : \PHPFUI\Link => new \PHPFUI\Link('/Content/view/' . $row['storyId'], $row['headline'], false));
+		$view->addCustomColumn('Editor', static fn (array $row) : string => new \App\Record\Member($row['editorId'] ?? 0)->fullName());
 
 		$headers = ['headline', 'startDate', 'endDate', 'lastEdited', ];
 

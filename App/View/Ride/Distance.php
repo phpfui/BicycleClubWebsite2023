@@ -31,20 +31,10 @@ class Distance
 		$view = new \App\UI\ContinuousScrollTable($this->page, $rideTable);
 		$view->setHavingColumns(['meters', 'name']);
 
-		$view->addCustomColumn('name', static function(array $ride)
-			{
-			$name = new \PHPFUI\Link("/Rides/signedUp/{$ride['rideId']}", \PHPFUI\TextHelper::unhtmlentities($ride['name']), false);
-			$name->addAttribute('target', '_blank');
+		$view->addCustomColumn('name', static fn (array $ride) : \PHPFUI\Link => new \PHPFUI\Link("/Rides/signedUp/{$ride['rideId']}", \PHPFUI\TextHelper::unhtmlentities($ride['name']), false)->addAttribute('target', '_blank'));
+		$view->addCustomColumn('lastName', static fn (array $ride) : string => \PHPFUI\TextHelper::unhtmlentities($ride['firstName'] . ' ' . $ride['lastName']));
 
-			return $name;
-			});
-
-		$view->addCustomColumn('lastName', static function(array $ride)
-			{
-			return \PHPFUI\TextHelper::unhtmlentities($ride['firstName'] . ' ' . $ride['lastName']);
-			});
-
-		$view->addCustomColumn('title', static function(array $ride)
+		$view->addCustomColumn('title', static function(array $ride) : string
 			{
 			if (! $ride['RWGPSId'])
 				{
@@ -57,7 +47,7 @@ class Distance
 			return $name;
 			});
 
-		$view->addCustomColumn('meters', static function(array $ride) use ($metric)
+		$view->addCustomColumn('meters', static function(array $ride) use ($metric) : string
 			{
 			if ($metric)
 				{

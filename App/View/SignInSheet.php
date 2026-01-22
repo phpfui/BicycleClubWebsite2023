@@ -164,14 +164,9 @@ JAVASCRIPT;
 
 		new \App\Model\EditIcon($view, $signinSheetTable, '/SignInSheets/edit/');
 
-		$view->addCustomColumn('pending', static fn (array $sheet) => $sheet['pending'] ? 'Pending' : 'Approved');
-		$view->addCustomColumn('memberId', static fn (array $sheet) => $sheet['firstName'] . ' ' . $sheet['lastName']);
-
-		$view->addCustomColumn('view', static function(array $sheet) {
-			$type = '.pdf' == $sheet['ext'] ? 'file-pdf' : 'image';
-
-			return new \PHPFUI\FAIcon('fas', $type, '/SignInSheets/download/' . $sheet['signinSheetId']);
-		});
+		$view->addCustomColumn('pending', static fn (array $sheet) : string => $sheet['pending'] ? 'Pending' : 'Approved');
+		$view->addCustomColumn('memberId', static fn (array $sheet) : string => $sheet['firstName'] . ' ' . $sheet['lastName']);
+		$view->addCustomColumn('view', static fn (array $sheet) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('fas', '.pdf' == $sheet['ext'] ? 'file-pdf' : 'image', '/SignInSheets/download/' . $sheet['signinSheetId']));
 
 		$view->setHeaders(\array_merge($sortableHeaders, $otherHeaders))
 			->setSortableColumns(\array_keys($sortableHeaders));

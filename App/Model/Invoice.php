@@ -55,7 +55,7 @@ class Invoice
 
 						if ($storeItemDetail->loaded())
 							{
-							$storeItemDetail->quantity = $storeItemDetail->quantity + $invoiceItem->quantity;
+							$storeItemDetail->quantity += $invoiceItem->quantity;
 							$storeItemDetail->update();
 							}
 
@@ -165,7 +165,7 @@ class Invoice
 			$invoice->update();
 			$invoicePDF = $this->generatePDF($invoice);
 			$invoiceString = $invoicePDF->Output('', 'S');
-			$customer = $this->customerModel->read($memberId = $invoice->memberId);
+			$customer = $this->customerModel->read($invoice->memberId);
 			// email member and chairs
 			$email = new \App\Tools\EMail();
 			$message = "Dear {$customer->firstName},";
@@ -178,14 +178,10 @@ class Invoice
 			$email->addAttachment($invoiceString, $this->getFileName($invoice));
 			// copy the affected chairs
 
-			foreach ($emails as $address => $name)
-				{
-				$email->setFrom($address, $name);
-				$email->setReplyTo($address, $name);
-
-				// email is from the first person with an item on the invoice.  Good enough.
-				break;
-				}
+			$address = \array_key_first($emails);
+			$name = \array_first($emails);
+			$email->setFrom($address, $name);
+			$email->setReplyTo($address, $name);
 
 			foreach ($affectedMembers as $member)
 				{
@@ -441,7 +437,7 @@ class Invoice
 							if (\App\Enum\Store\Type::STORE->value == $cartItem['type'])
 								{
 								// remove from inventory
-								$storeItemDetail->quantity = $storeItemDetail->quantity - (int)$cartItem['quantity'];
+								$storeItemDetail->quantity -= (int)$cartItem['quantity'];
 								$storeItemDetail->update();
 								}
 							}

@@ -6,7 +6,7 @@ include PROJECT_ROOT . '/PHPFUI/Imap2/IMAPStubs.php';
 
 class IMAP implements \Countable
 	{
-	private $mbox = null; // @phpstan-ignore missingType.property
+	private ?\IMAP\Connection $mbox = null;
 
 	private readonly \App\Table\Setting $settingTable;
 

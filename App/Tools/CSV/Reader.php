@@ -28,7 +28,7 @@ abstract class Reader implements \Iterator
 	/**
 	 * @param ?resource $stream
 	 */
-	public function __construct(protected $stream, private readonly bool $headerRow, private readonly string $separator, private string $enclosure, private string $escape)
+	public function __construct(protected $stream, private readonly bool $headerRow, private readonly string $separator, private string $enclosure, private string $escape) // @mago-expect lint:parameter-type
 		{
 		$this->rewind();
 		}

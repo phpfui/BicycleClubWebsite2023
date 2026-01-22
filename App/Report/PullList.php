@@ -35,7 +35,7 @@ class PullList
 		$pdf->headerFontSize = 20;
 		$pdf->AddPage('L', 'Letter');
 		$settings = new \App\Table\Setting();
-		$pdf->SetDocumentTitle($abbrev = $settings->value('clubAbbrev') . ' Store Pull Report Printed On ' . \App\Tools\Date::todayString());
+		$pdf->SetDocumentTitle($settings->value('clubAbbrev') . ' Store Pull Report Printed On ' . \App\Tools\Date::todayString());
 		$pdf->SetAutoPageBreak(true, 2);
 		$pdf->SetWidths([30,
 			// item number

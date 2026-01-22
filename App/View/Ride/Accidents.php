@@ -33,18 +33,9 @@ class Accidents
 
 		$view = new \App\UI\ContinuousScrollTable($this->page, $rideTable);
 
-		$view->addCustomColumn('lastName', static function(array $ride)
-			{
-			return \PHPFUI\TextHelper::unhtmlentities($ride['firstName'] . ' ' . $ride['lastName']);
-			});
+		$view->addCustomColumn('lastName', static fn (array $ride) : string => \PHPFUI\TextHelper::unhtmlentities($ride['firstName'] . ' ' . $ride['lastName']));
 
-		$view->addCustomColumn('rideDate', static function(array $ride)
-			{
-			$name = new \PHPFUI\Link("/Rides/signedup/{$ride['rideId']}", $ride['rideDate'], false);
-			$name->addAttribute('target', '_blank');
-
-			return $name;
-			});
+		$view->addCustomColumn('rideDate', static fn (array $ride) : \PHPFUI\Link => new \PHPFUI\Link("/Rides/signedup/{$ride['rideId']}", $ride['rideDate'], false)->addAttribute('target', '_blank'));
 
 		$view->setHeaders($headers)->setSortableColumns(\array_keys($headers))->setSearchColumns($headers);
 

@@ -3,6 +3,7 @@
 include '../commonbase.php';
 
 // @mago-expect lint:function-name
+// @mago-expect lint:require-namespace
 function isHttps() : bool
 	{
 	if (\array_key_exists('HTTPS', $_SERVER) && 'on' === $_SERVER['HTTPS'])

@@ -337,18 +337,9 @@ class Forum
 		$delete->addFunction('success', '$("#' . $recordId . '-"+data.response).css("background-color","red").hide("slow").remove()');
 		$this->page->addJavaScript($delete->getPageJS());
 
-		$view->addCustomColumn('title', static fn (array $message) => new \PHPFUI\Link("/Forums/post/{$message['forumId']}/{$message['forumMessageId']}", $message['title'] ?? '', false));
-		$view->addCustomColumn('Author', static function(array $message) {
-			$member = new \App\Record\Member($message['memberId']);
-
-			return $member->fullName();
-			});
-		$view->addCustomColumn('Del', static function(array $message) use ($recordId, $delete) {
-			$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-			$icon->addAttribute('onclick', $delete->execute([$recordId => $message[$recordId], 'deleteId' => $message[$recordId]]));
-
-			return $icon;
-			});
+		$view->addCustomColumn('title', static fn (array $message) : \PHPFUI\Link => new \PHPFUI\Link("/Forums/post/{$message['forumId']}/{$message['forumMessageId']}", $message['title'] ?? '', false));
+		$view->addCustomColumn('Author', static fn (array $message) : string => new \App\Record\Member($message['memberId'])->fullName());
+		$view->addCustomColumn('Del', static fn (array $message) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'trash-alt', '#')->addAttribute('onclick', $delete->execute([$recordId => $message[$recordId], 'deleteId' => $message[$recordId]])));
 		$headers = ['title', 'posted'];
 		$view->setSortableColumns($headers)->setSearchColumns($headers);
 		$headers[] = 'Author';
@@ -537,14 +528,8 @@ class Forum
 			$this->page->addJavaScript('function changeSubscription(id,value){$.ajax({method:"POST",dataType:"json",data:{memberId:id,emailType:value,submit:"Save",csrf:"' . \PHPFUI\Session::csrf() . '"}})}');
 			$deleter = new \App\Model\DeleteRecord($this->page, $table, $forumMemberTable, 'Are you sure you want to delete this member from the forum?');
 			$table->addCustomColumn('delete', $deleter->columnCallback(...));
-			$table->addCustomColumn('forumId_memberId', static fn (array $member) => $member['forumId'] . '_' . $member['memberId']);
-			$table->addCustomColumn('setting', static function(array $member)
-				{
-				$select = new \PHPFUI\Input\SelectEnum("emailType[{$member['memberId']}]", '', \App\Enum\Forum\SubscriptionType::from((int)$member['emailType']));
-				$select->addAttribute('onchange', 'changeSubscription(' . $member['memberId'] . ', this.value)');
-
-				return $select;
-				});
+			$table->addCustomColumn('forumId_memberId', static fn (array $member) : string => $member['forumId'] . '_' . $member['memberId']);
+			$table->addCustomColumn('setting', static fn (array $member) : \PHPFUI\Input\SelectEnum => new \PHPFUI\Input\SelectEnum("emailType[{$member['memberId']}]", '', \App\Enum\Forum\SubscriptionType::from((int)$member['emailType']))->addAttribute('onchange', 'changeSubscription(' . $member['memberId'] . ', this.value)'));
 			}
 		$addMemberButton = new \PHPFUI\Button('Add Member');
 		$this->getAddMemberModal($addMemberButton, $forum);

@@ -49,11 +49,8 @@ class Rides
 	 * Anyone with "Delete Past Rides" can delete past rides.
 	 * If you are the leader, you can delete your own ride if date
 	 * is before opt out window
-	 *
-	 *
-	 * @return bool
 	 */
-	public function canDelete(\PHPFUI\ORM\DataObject $ride)
+	public function canDelete(\PHPFUI\ORM\DataObject $ride) : bool
 		{
 		if (! $this->page->isAuthorized('Delete Past Rides') && \App\Tools\Date::fromString($ride->rideDate) - $this->deletePastDays <= \App\Tools\Date::today())
 			{
@@ -899,9 +896,9 @@ class Rides
 				$riderCounts[$paceId] += (int)$ride->numberOfRiders;
 				}
 			}
-		\uksort($mainCategoryCounts, static fn ($a, $b) => $a <=> $b);
-		\uksort($rideTotals, static fn ($a, $b) => $a <=> $b);
-		\uksort($ridesWithRiders, static fn ($a, $b) => $a <=> $b);
+		\uksort($mainCategoryCounts, static fn (int $a, int $b) : int => $a <=> $b);
+		\uksort($rideTotals, static fn (int $a, int $b) : int => $a <=> $b);
+		\uksort($ridesWithRiders, static fn (int $a, int $b) : int => $a <=> $b);
 		$output = '<h3>There were ' . \count($rides) . ' rides led in ' . $year . '.</h3>';
 		$table = new \PHPFUI\Table();
 		$table->addHeader((string)0, 'Main Category');

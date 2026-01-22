@@ -63,7 +63,7 @@ class PayPal
 		{
 		$baseDirectory = '/images/paypal/';
 
-		foreach (\glob(PUBLIC_ROOT . $baseDirectory . '*.*') as $file)
+		foreach (\glob(PUBLIC_ROOT . $baseDirectory . '*.*') as $file) // @mago-expect lint:loop-does-not-iterate
 			{
 			return $baseDirectory . \basename((string)$file);
 			}

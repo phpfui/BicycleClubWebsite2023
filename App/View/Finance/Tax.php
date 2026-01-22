@@ -197,10 +197,7 @@ class Tax
 
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $zipTaxTable, 'Are you sure you want to permanently delete this zip tax rate?');
 		$view->addCustomColumn('Del', $deleter->columnCallback(...));
-		$view->addCustomColumn('Edit', static function(array $zipTax)
-			{
-			return new \PHPFUI\FAIcon('far', 'edit', '/Finance/editZiptax/' . $zipTax['zip_id']);
-			});
+		$view->addCustomColumn('Edit', static fn (array $zipTax) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'edit', '/Finance/editZiptax/' . $zipTax['zip_id']));
 
 		$view->setSearchColumns(\array_keys($searchableHeaders));
 		$view->setSortableColumns(\array_keys($searchableHeaders));

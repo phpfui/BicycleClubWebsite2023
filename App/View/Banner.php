@@ -122,8 +122,8 @@ class Banner
 			$view = new \App\UI\ContinuousScrollTable($this->page, $bannerTable);
 			$deleter = new \App\Model\DeleteRecord($this->page, $view, $bannerTable, 'Are you sure you want to permanently delete this banner?');
 			$view->addCustomColumn('del', $deleter->columnCallback(...));
-			$view->addCustomColumn('description', static fn (array $row) => new \PHPFUI\Link('/Banners/edit/' . $row['bannerId'], $row['description'], false));
-			$view->addCustomColumn('pending', static fn (array $row) => $row['pending'] ? new \PHPFUI\FAIcon('fas', 'asterisk') : '');
+			$view->addCustomColumn('description', static fn (array $row) : \PHPFUI\Link => new \PHPFUI\Link('/Banners/edit/' . $row['bannerId'], $row['description'], false));
+			$view->addCustomColumn('pending', static fn (array $row) : string => $row['pending'] ? new \PHPFUI\FAIcon('fas', 'asterisk') : '');
 			$headers = ['startDate', 'endDate', 'description'];
 			$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, ['pending', 'del']))->setSortableColumns($headers);
 			$container->add($view);

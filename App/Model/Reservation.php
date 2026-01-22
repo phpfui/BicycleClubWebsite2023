@@ -210,7 +210,7 @@ class Reservation
 		if (\App\Model\Event::newMemberDiscountQualified($event))
 			{
 			$member = $reservation->member;
-			$member->discountCount = $member->discountCount + 1;
+			$member->discountCount += 1;
 			$member->update();
 			}
 		}

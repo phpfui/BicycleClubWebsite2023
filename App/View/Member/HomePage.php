@@ -140,7 +140,7 @@ class HomePage implements \Stringable
 				}
 			}
 
-		\usort($order, static fn ($a, $b) => $a['priority'] <=> $b['priority']);
+		\usort($order, static fn (array $a, array $b) : int => $a['priority'] <=> $b['priority']);
 
 		$output = new \PHPFUI\Container();
 		$ol = new \PHPFUI\UnorderedList();

@@ -561,7 +561,7 @@ class Member
 			$passwordValidator = new \App\Model\PasswordPolicy();
 			$errors = $passwordValidator->validate($_POST['password'] ?? '');
 
-			if (isset($_POST['confirm'], $_POST['password']) && $_POST['confirm'] == $_POST['password'] && ! $errors)
+			if (isset($_POST['confirm'], $_POST['password']) && $_POST['confirm'] === $_POST['password'] && ! $errors) // @mago-expect lint:no-insecure-comparison
 				{
 				$member->password = $this->memberModel->hashPassword($_POST['password']);
 				$member->passwordReset = $member->passwordResetExpires = null;

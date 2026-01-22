@@ -472,16 +472,11 @@ JS;
 			}
 
 		$this->cuts = $this->getCuts();
-		$view->addCustomColumn('uploaded', static fn (array $photo) => \date('Y-m-d', \strtotime((string)$photo['uploaded'])));
-		$view->addCustomColumn('taken', static fn (array $photo) => $photo['taken'] ? \date('D M j, Y, g:i a', \strtotime((string)$photo['taken'])) : '');
+		$view->addCustomColumn('uploaded', static fn (array $photo) : string => \date('Y-m-d', \strtotime((string)$photo['uploaded'])));
+		$view->addCustomColumn('taken', static fn (array $photo) : string => $photo['taken'] ? \date('D M j, Y, g:i a', \strtotime((string)$photo['taken'])) : '');
 		$view->addCustomColumn(
 			'description',
-			static function(array $photo)
-			{
-			$name = empty($photo['description']) ? $photo['photoId'] : $photo['description'];
-
-			return new \PHPFUI\Link('/Photo/view/' . $photo['photoId'], $name, false);
-			}
+			static fn (array $photo) : \PHPFUI\Link => new \PHPFUI\Link('/Photo/view/' . $photo['photoId'], empty($photo['description']) ? $photo['photoId'] : $photo['description'], false)
 		);
 
 		$headers = ['description' => 'Caption', 'taken' => 'Taken', 'uploaded' => 'Upload'];

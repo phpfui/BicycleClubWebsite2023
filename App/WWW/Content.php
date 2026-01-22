@@ -215,7 +215,7 @@ class Content extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Search Content'))
 			{
-			$this->page->addPageContent($view = new \App\View\Content\Search($this->page));
+			$this->page->addPageContent(new \App\View\Content\Search($this->page));
 			}
 		}
 

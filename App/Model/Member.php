@@ -4,29 +4,29 @@ namespace App\Model;
 
 class Member
 	{
-	final public const ADDITIONAL_MEMBERSHIP = 2;
+	final public const int ADDITIONAL_MEMBERSHIP = 2;
 
-	final public const DONATION = 3;
+	final public const int DONATION = 3;
 
-	final public const EVENT_ADDITIONAL_MEMBERSHIP = 5;
+	final public const int EVENT_ADDITIONAL_MEMBERSHIP = 5;
 
-	final public const EVENT_MEMBERSHIP = 4;
+	final public const int EVENT_MEMBERSHIP = 4;
 
-	final public const FIRST_MEMBERSHIP = 1;
+	final public const int FIRST_MEMBERSHIP = 1;
 
-	final public const MEMBERSHIP_ADDITIONAL_TITLE = '12 Month Membership Additional Member';
+	final public const string MEMBERSHIP_ADDITIONAL_TITLE = '12 Month Membership Additional Member';
 
-	final public const MEMBERSHIP_DONATION_TITLE = 'Additional Donation';
+	final public const string MEMBERSHIP_DONATION_TITLE = 'Additional Donation';
 
-	final public const MEMBERSHIP_JOIN = 2;
+	final public const int MEMBERSHIP_JOIN = 2;
 
-	final public const MEMBERSHIP_ONE_ADDITIONAL_TITLE = 'Additional Member';
+	final public const string MEMBERSHIP_ONE_ADDITIONAL_TITLE = 'Additional Member';
 
-	final public const MEMBERSHIP_RENEWAL = 1;
+	final public const int MEMBERSHIP_RENEWAL = 1;
 
-	final public const MEMBERSHIP_TITLE = '12 Month Membership';
+	final public const string MEMBERSHIP_TITLE = '12 Month Membership';
 
-	final public const ONE_ADDITIONAL_MEMBER = 6;
+	final public const int ONE_ADDITIONAL_MEMBER = 6;
 
 	/** @var	array<string> */
 	protected array $defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal', 'rideComments', 'geoLocate',
@@ -381,7 +381,7 @@ class Member
 
 		foreach ($additionalEmailTable->getRecordCursor() as $email)
 			{
-			if ($emailHash == \hash('sha512', (string)$email->email))
+			if (\hash('sha512', (string)$email->email) === $emailHash)
 				{
 				$email->verified = 1;
 				$email->update();

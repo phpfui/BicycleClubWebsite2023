@@ -128,11 +128,9 @@ class Notices
 		$table->setHeaders($headers);
 		$deleter = new \App\Model\DeleteRecord($this->page, $table, $memberNoticeTable, 'Are you sure you want to permanently delete this notice email?');
 		$table->addCustomColumn('Del', $deleter->columnCallback(...));
-		$table->addCustomColumn('summary', static fn (array $row) => self::$summary[$row['summary']] ?? 'Off');
-		$table->addCustomColumn('title', static fn (array $row) => new \PHPFUI\Link('/Membership/notifications/' . $row['memberNoticeId'], $row['title'], false));
-		$table->addCustomColumn('Member', static function(array $row) {$member = new \App\Record\Member($row['memberId']);
-
-			return $member->loaded() ? $member->fullName() : 'Ride Chair';});
+		$table->addCustomColumn('summary', static fn (array $row) : string => self::$summary[$row['summary']] ?? 'Off');
+		$table->addCustomColumn('title', static fn (array $row) : \PHPFUI\Link => new \PHPFUI\Link('/Membership/notifications/' . $row['memberNoticeId'], $row['title'], false));
+		$table->addCustomColumn('Member', static fn (array $row) : string => new \App\Record\Member($row['memberId'])->fullName() ?? 'Ride Chair');
 
 		return $table;
 		}

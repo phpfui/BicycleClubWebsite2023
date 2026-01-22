@@ -16,7 +16,7 @@ class Settings
 	 */
 	public function sendSettingEmail(string $setting, array $toMember, string $subject) : void
 		{
-		$callback = function($key) use ($toMember)
+		$callback = function(string $key) use ($toMember) : string
 			{
 			if (isset($toMember[$key]))
 				{

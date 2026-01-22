@@ -219,7 +219,7 @@ class Video extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Find Videos'))
 			{
-			$this->page->addPageContent($view = new \App\View\VideoSearch($this->page));
+			$this->page->addPageContent(new \App\View\VideoSearch($this->page));
 			}
 		}
 

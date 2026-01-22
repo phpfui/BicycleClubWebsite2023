@@ -33,7 +33,7 @@ class Calendar extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		if ($this->calendarName)
 			{
 			$this->page->setPublic();
-			$this->page->addHeader($title = 'Add Calendar Event');
+			$this->page->addHeader('Add Calendar Event');
 			$this->page->addPageContent($this->view->edit(new \App\Record\Calendar()));
 			}
 		}

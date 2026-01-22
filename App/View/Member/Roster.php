@@ -80,16 +80,16 @@ class Roster
 			$years[$firstYear] = $firstYear;
 			}
 
-		$alphaCondition = static fn ($field, $char) : \PHPFUI\ORM\Condition => new \PHPFUI\ORM\Condition($field, $char . '%', new \PHPFUI\ORM\Operator\Like());
+		$alphaCondition = static fn (string $field, string $char) : \PHPFUI\ORM\Condition => new \PHPFUI\ORM\Condition($field, $char . '%', new \PHPFUI\ORM\Operator\Like());
 
-		$townCondition = static function($field, $char) : \PHPFUI\ORM\Condition
+		$townCondition = static function(string $field, string $char) : \PHPFUI\ORM\Condition
 			{
 			$condition = new \PHPFUI\ORM\Condition($field, $char . '%', new \PHPFUI\ORM\Operator\Like());
 
 			return $condition->and(new \PHPFUI\ORM\Condition('member.showNoTown', 0));
 			};
 
-		$yearCondition = static function($field, $year) : \PHPFUI\ORM\Condition
+		$yearCondition = static function(string $field, string $year) : \PHPFUI\ORM\Condition
 			{
 			$start = \App\Tools\Date::makeString((int)$year, 1, 1);
 			$end = \App\Tools\Date::makeString((int)$year, 12, 31);
@@ -100,11 +100,7 @@ class Roster
 			return $condition;
 			};
 
-		$categoryCondition = static function($field, $cat) : \PHPFUI\ORM\Condition
-			{
-			return new \PHPFUI\ORM\Condition($field, $cat);
-//			return " left join memberCategory c on c.memberId=m.memberId where {$field}={$cat}";
-			};
+		$categoryCondition = static fn (string $field, string $cat) : \PHPFUI\ORM\Condition => new \PHPFUI\ORM\Condition($field, $cat);
 
 		$subnav = new \App\UI\SubNav();
 		$sections = [

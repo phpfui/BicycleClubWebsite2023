@@ -65,7 +65,7 @@ class Configure extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 				{
 				$settings = new \App\View\Email\Settings($this->page, $email, new \App\Model\Email\Membership());
 
-				if ('New Password' == $type)
+				if ('New Password' === $type) // @mago-expect lint:no-insecure-comparison
 					{
 					$settings->addSetting('relative_urls', true);
 					}

@@ -118,16 +118,16 @@ class RideWithGPS
 		$canDeleteAlternate = $this->page->isAuthorized('Delete Alternate RWGPS Route');
 
 		$deleter = new \App\Model\DeleteRecord($this->page, $alternateRouteTable, new \App\Table\RWGPSAlternate(), 'Are you sure you want to permanently delete this alternate route?');
-		$deleter->setConditionalCallback(static fn (array $comment) => $comment['memberId'] == \App\Model\Session::signedInMemberId() || $canDeleteAlternate);
-		$alternateRouteTable->addCustomColumn('RWGPSId_RWGPSAlternateId', static fn (array $alternate) => $alternate['RWGPSId'] . '_' . $alternate['RWGPSAlternateId']);
-		$alternateRouteTable->addCustomColumn('Route', static function(array $alternate) {$rwgps = new \App\Record\RWGPS($alternate['RWGPSAlternateId']);
+		$deleter->setConditionalCallback(static fn (array $comment) : bool => $comment['memberId'] == \App\Model\Session::signedInMemberId() || $canDeleteAlternate);
+		$alternateRouteTable->addCustomColumn('RWGPSId_RWGPSAlternateId', static fn (array $alternate) : string => $alternate['RWGPSId'] . '_' . $alternate['RWGPSAlternateId']);
+		$alternateRouteTable->addCustomColumn('Route', static function(array $alternate) : \PHPFUI\Link {$rwgps = new \App\Record\RWGPS($alternate['RWGPSAlternateId']);
 
 			$link = new \PHPFUI\Link("/RWGPS/detail/{$rwgps->RWGPSId}", \PHPFUI\TextHelper::unhtmlentities($rwgps->title) . ' - ' . $rwgps->RWGPSId, false);
 			$link->addAttribute('target', '_blank');
 
 			return $link;});
 		$alternateRouteTable->addCustomColumn('Del', $deleter->columnCallback(...));
-		$alternateRouteTable->addCustomColumn('Member', static function(array $alternate) {$member = new \App\Record\Member($alternate['memberId']);
+		$alternateRouteTable->addCustomColumn('Member', static function(array $alternate) : string {$member = new \App\Record\Member($alternate['memberId']);
 
 			return $member->fullName();});
 		$alternateRouteTable->setHeaders($headers);
@@ -143,14 +143,12 @@ class RideWithGPS
 		$canDeleteComment = $this->page->isAuthorized('Delete RWGPS Comment');
 
 		$deleter = new \App\Model\DeleteRecord($this->page, $commentTable, new \App\Table\RWGPSComment(), 'Are you sure you want to permanently delete this comment?');
-		$deleter->setConditionalCallback(static fn (array $comment) => $comment['memberId'] == \App\Model\Session::signedInMemberId() || $canDeleteComment);
-		$commentTable->addCustomColumn('RWGPSId_memberId', static fn (array $comment) => $comment['RWGPSId'] . '_' . $comment['memberId']);
+		$deleter->setConditionalCallback(static fn (array $comment) : bool => $comment['memberId'] == \App\Model\Session::signedInMemberId() || $canDeleteComment);
+		$commentTable->addCustomColumn('RWGPSId_memberId', static fn (array $comment) : string => $comment['RWGPSId'] . '_' . $comment['memberId']);
 		$commentTable->addCustomColumn('Del', $deleter->columnCallback(...));
-		$commentTable->addCustomColumn('Comments', static fn (array $comment) => \str_replace("\n", '<br>', $comment['comments']));
-		$commentTable->addCustomColumn('Member', static function(array $comment) {$member = new \App\Record\Member($comment['memberId']);
-
-			return $member->fullName();});
-		$commentTable->addCustomColumn('At', static fn (array $comments) => $comments['lastEdited']);
+		$commentTable->addCustomColumn('Comments', static fn (array $comment) : string => \str_replace("\n", '<br>', $comment['comments']));
+		$commentTable->addCustomColumn('Member', static fn (array $comment) : string => new \App\Record\Member($comment['memberId'])->fullName());
+		$commentTable->addCustomColumn('At', static fn (array $comments) : string => $comments['lastEdited']);
 		$commentTable->setHeaders($headers);
 		$commentSet->add($commentTable);
 
@@ -383,14 +381,14 @@ class RideWithGPS
 			$deleter = new \App\Model\DeleteRecord($this->page, $view, $rwgpsTable, 'Are you sure you want to permanently delete this RWGPS route?');
 			$view->addCustomColumn('Del', $deleter->columnCallback(...));
 			}
-		$view->addCustomColumn('title', static function(array $rwgps)
+		$view->addCustomColumn('title', static function(array $rwgps) : \PHPFUI\Link
 			{
 			$name = new \PHPFUI\Link("/RWGPS/detail/{$rwgps['RWGPSId']}", \PHPFUI\TextHelper::unhtmlentities($rwgps['title']) . ' - ' . $rwgps['RWGPSId'], false);
 			$name->addAttribute('target', '_blank');
 
 			return $name;
 			});
-		$view->addCustomColumn('town', static function(array $rwgps)
+		$view->addCustomColumn('town', static function(array $rwgps) : string
 			{
 			$rwgpsRecord = new \App\Record\RWGPS();
 			$rwgpsRecord->setFrom($rwgps);
@@ -406,7 +404,7 @@ class RideWithGPS
 			return $start;
 			});
 
-		$view->addCustomColumn('meters', static function(array $rwgps) use ($metric)
+		$view->addCustomColumn('meters', static function(array $rwgps) use ($metric) : string
 			{
 			if (! ($rwgps['meters'] ?? 0))
 				{
@@ -421,9 +419,9 @@ class RideWithGPS
 			return \number_format($rwgps['meters'] * 0.000621371192, 2);
 			});
 
-		$view->addCustomColumn('club', static fn (array $rwgps) => $rwgps['club'] ? '<b>&check;</b>' : '');
+		$view->addCustomColumn('club', static fn (array $rwgps) : string => $rwgps['club'] ? '<b>&check;</b>' : '');
 		$view->addCustomColumn('stats', $this->getStatsReveal(...));
-		$view->addCustomColumn('cuesheet', static function(array $rwgps)
+		$view->addCustomColumn('cuesheet', static function(array $rwgps) : string
 			{
 			if (empty($rwgps['csv']))
 				{
@@ -432,7 +430,7 @@ class RideWithGPS
 
 			return new \PHPFUI\FAIcon('fas', 'file-download', '/RWGPS/cueSheetRWGPS/' . $rwgps['RWGPSId']);
 			});
-		$view->addCustomColumn('date', static fn (array $rwgps) => $rwgps['rideDate'] ?? '');
+		$view->addCustomColumn('date', static fn (array $rwgps) : string => $rwgps['rideDate'] ?? '');
 
 		$view->setHeaders($sortableHeaders + $normalHeaders)->setSortableColumns(\array_keys($sortableHeaders));
 		unset($sortableHeaders['club']);

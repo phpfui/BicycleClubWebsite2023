@@ -4,7 +4,7 @@ namespace App\Model;
 
 class Session extends \PHPFUI\Session
 	{
-	final public const DEBUG_BAR = 4;
+	final public const int DEBUG_BAR = 4;
 
 	private static ?\App\Record\Member $signedInMember = null;
 

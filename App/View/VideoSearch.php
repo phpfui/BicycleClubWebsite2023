@@ -8,7 +8,7 @@ class VideoSearch
 		{
 		}
 
-	public function __toString()
+	public function __toString() : string
 		{
 		$button = new \PHPFUI\Button('Search Videos');
 		$modal = $this->getSearchModal($button);

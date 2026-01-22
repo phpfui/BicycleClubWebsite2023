@@ -60,10 +60,10 @@ class AuditTrail
 		$view->setHeaders($headers);
 		unset($headers['firstName'], $headers['lastName'], $headers['ca']);
 		$view->setSearchColumns($headers)->setSortableColumns(\array_keys($headers));
-		$view->addCustomColumn('statement', static fn (array $trail) => \str_replace(',', ',<wbr>', (string)$trail['statement']));
-		$view->addCustomColumn('input', static fn (array $trail) => \str_replace(',', ',<wbr>', (string)$trail['input']));
-		$view->addCustomColumn('additional', static fn (array $trail) => \str_replace('#', '<br>#', (string)$trail['additional']));
-		$view->addCustomColumn('ca', static function(array $trail) {$cb = new \PHPFUI\Input\CheckBoxBoolean("ca[{$trail['auditTrailId']}]");$cb->addClass('checkAll');
+		$view->addCustomColumn('statement', static fn (array $trail) : string => \str_replace(',', ',<wbr>', (string)$trail['statement']));
+		$view->addCustomColumn('input', static fn (array $trail) : string => \str_replace(',', ',<wbr>', (string)$trail['input']));
+		$view->addCustomColumn('additional', static fn (array $trail) : string => \str_replace('#', '<br>#', (string)$trail['additional']));
+		$view->addCustomColumn('ca', static function(array $trail) : \PHPFUI\Input\CheckBoxBoolean {$cb = new \PHPFUI\Input\CheckBoxBoolean("ca[{$trail['auditTrailId']}]");$cb->addClass('checkAll');
 
 return $cb;});
 		$form->add($view);

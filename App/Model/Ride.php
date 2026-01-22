@@ -148,7 +148,7 @@ class Ride
 			'Reply to this email to contact the former leader.';
 		$footer = '<p>There may be other riders interested in doing this ride.<br>You can email all the other signed up riders on this ride by ' .
 			"<a href='{$this->homePage}/Rides/emailRide/{$ride->rideId}'>clicking here.</a><br>";
-		$footer = $footer . "<p>You can change your <a href='{$this->homePage}/Rides/signedUp/{$ride->rideId}'>signup information here.</a>";
+		$footer .= "<p>You can change your <a href='{$this->homePage}/Rides/signedUp/{$ride->rideId}'>signup information here.</a>";
 		$message .= $footer;
 		\str_replace('//', '/', $message);
 		$email->setBody($message);

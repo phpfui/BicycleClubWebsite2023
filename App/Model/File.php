@@ -194,7 +194,7 @@ abstract class File
 		{
 		\usort(
 			$files,
-			function($lhs, $rhs) use ($sort, $dir)
+			function(string $lhs, string $rhs) use ($sort, $dir) : int
 			{
 			if ('time' == $sort)
 				{

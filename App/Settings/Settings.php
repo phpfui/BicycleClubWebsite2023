@@ -28,9 +28,8 @@ abstract class Settings
 	/**
 	 * @param array<mixed> $args
 	 *
-	 * @return ?string
 	 */
-	public function __call(string $name, array $args)
+	public function __call(string $name, array $args) : ?string
 		{
 		$this->load();
 
@@ -50,7 +49,7 @@ abstract class Settings
 	 *
 	 * @return ?mixed
 	 */
-	public function __get(string $field)
+	public function __get(string $field) // @mago-expect lint:return-type
 		{
 		$this->load();
 

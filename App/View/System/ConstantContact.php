@@ -91,7 +91,7 @@ class ConstantContact
 			}
 		elseif ($client)
 			{
-			if ('token' == $authorize)
+			if ('token' === $authorize) // @mago-expect lint:no-insecure-comparison
 				{
 				$error = ! $client->acquireAccessToken($_GET);
 

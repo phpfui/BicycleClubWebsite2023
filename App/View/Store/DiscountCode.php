@@ -97,14 +97,8 @@ class DiscountCode
 
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $discountCodeTable, 'Are you sure you want to permanently delete this discound code?');
 		$view->addCustomColumn('del', $deleter->columnCallback(...));
-		$view->addCustomColumn('used', static function(array $discountArray)
-			{
-			$discountCode = new \App\Record\DiscountCode();
-			$discountCode->setFrom($discountArray);
-
-			return $discountCode->timesUsed;
-			});
-		$view->addCustomColumn('discount', static function(array $discountArray)
+		$view->addCustomColumn('used', static fn (array $discountArray) : int => new \App\Record\DiscountCode()->setFrom($discountArray)->timesUsed);
+		$view->addCustomColumn('discount', static function(array $discountArray) : string
 			{
 			if (1 == $discountArray['type'])
 				{
@@ -113,7 +107,7 @@ class DiscountCode
 
 			return '$' . \number_format($discountArray['discount'], 2);
 			});
-		$view->addCustomColumn('discountCode', static fn (array $discountCode) => new \PHPFUI\Link('/Store/DiscountCodes/edit/' . $discountCode['discountCodeId'], $discountCode['discountCode'], false));
+		$view->addCustomColumn('discountCode', static fn (array $discountCode) : \PHPFUI\Link => new \PHPFUI\Link('/Store/DiscountCodes/edit/' . $discountCode['discountCodeId'], $discountCode['discountCode'], false));
 		$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, ['del']))->setSortableColumns($headers);
 		$container->add($view);
 

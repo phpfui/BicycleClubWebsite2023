@@ -110,7 +110,7 @@ class BikeShop
 
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $bikeShopTable, 'Are you sure you want to permanently delete this bike shop?');
 		$view->addCustomColumn('del', $deleter->columnCallback(...));
-		$view->addCustomColumn('name', static fn (array $bikeShop) => new \PHPFUI\Link('/Admin/bikeShopEdit/' . $bikeShop['bikeShopId'], $bikeShop['name'], false));
+		$view->addCustomColumn('name', static fn (array $bikeShop) : \PHPFUI\Link => new \PHPFUI\Link('/Admin/bikeShopEdit/' . $bikeShop['bikeShopId'], $bikeShop['name'], false));
 		$headers = ['name', 'town', 'state', 'zip', ];
 		$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, ['del']))->setSortableColumns($headers);
 		$container->add($view);

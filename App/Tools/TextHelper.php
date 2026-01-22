@@ -47,11 +47,11 @@ class TextHelper extends \PHPFUI\TextHelper
 		while (! empty($matches[$i]) && $matches[$i][0][1] < $maxChars)
 			{
 
-			$maxChars = $maxChars + \strlen($matches[$i][0][0]);
+			$maxChars += \strlen($matches[$i][0][0]);
 
 			if ('&' == \substr($matches[$i][0][0], 0, 1))
 				{
-				$maxChars = $maxChars - 1;
+				--$maxChars;
 				}
 
 			//if $matches[$i][2] is undefined then its an html entity, want to ignore those for tag counting

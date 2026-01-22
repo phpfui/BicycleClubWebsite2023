@@ -23,7 +23,7 @@ class API
 				{
 				return $form;
 				}
-			elseif (\App\Model\Session::checkCSRF() && ($_POST['submit'] ?? '') == 'Change Password')
+			elseif (\App\Model\Session::checkCSRF() && ($_POST['submit'] ?? '') === 'Change Password') // @mago-expect lint:no-insecure-comparison
 				{
 				$user->setPassword($_POST['password']);
 				$user->update();
@@ -181,12 +181,10 @@ class API
 			$view = new \App\UI\ContinuousScrollTable($this->page, $table);
 			$deleter = new \App\Model\DeleteRecord($this->page, $view, $table, 'Are you sure you want to permanently delete this user?');
 			$view->addCustomColumn('del', $deleter->columnCallback(...));
-			$view->addCustomColumn('member', static function(array $row) {$member = new \App\Record\Member($row['memberId']);
-
-				return $member->fullName();});
-			$view->addCustomColumn('edit', static fn (array $row) => new \PHPFUI\FAIcon('fas', 'edit', '/System/API/edit/' . $row['oauthUserId']));
-			$view->addCustomColumn('passwordSet', static fn (array $row) => $row['password'] ? 'Yes' : 'No');
-			$view->addCustomColumn('permissions', static fn (array $row) => new \PHPFUI\FAIcon('fas', 'check-square', '/System/API/permissions/' . $row['oauthUserId']));
+			$view->addCustomColumn('member', static fn (array $row) : string => new \App\Record\Member($row['memberId'])->fullName());
+			$view->addCustomColumn('edit', static fn (array $row) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('fas', 'edit', '/System/API/edit/' . $row['oauthUserId']));
+			$view->addCustomColumn('passwordSet', static fn (array $row) : string => $row['password'] ? 'Yes' : 'No');
+			$view->addCustomColumn('permissions', static fn (array $row) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('fas', 'check-square', '/System/API/permissions/' . $row['oauthUserId']));
 			$headers = ['userName', 'lastLogin'];
 			$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, ['member', 'passwordSet', 'edit', 'permissions', 'del']))->setSortableColumns($headers);
 			$container->add($view);

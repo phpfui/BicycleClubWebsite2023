@@ -329,8 +329,8 @@ class Events
 		$delete = new \PHPFUI\AJAX('deleteEvent', 'Permanently delete this event?');
 		$delete->addFunction('success', "$('#eventId-'+data.response).css('background-color','red').hide('fast').remove()");
 		$this->page->addJavaScript($delete->getPageJS());
-		$view->addCustomColumn('title', static fn (array $event) => new \PHPFUI\Link('/Events/edit/' . $event['eventId'], $event['title'] ?? 'Missing', false));
-		$view->addCustomColumn('attendees', static function(array $event) use ($delete)
+		$view->addCustomColumn('title', static fn (array $event) : \PHPFUI\Link => new \PHPFUI\Link('/Events/edit/' . $event['eventId'], $event['title'] ?? 'Missing', false));
+		$view->addCustomColumn('attendees', static function(array $event) use ($delete) : string
 			{
 			$eventId = $event['eventId'];
 
@@ -348,7 +348,7 @@ class Events
 				return $icon . $addIcon;
 			});
 		$page = $this->page;
-		$view->addCustomColumn('links', static function(array $event) use ($page)
+		$view->addCustomColumn('links', static function(array $event) use ($page) : \PHPFUI\FAIcon
 			{
 			$icon = new \PHPFUI\FAIcon('fas', 'link');
 			$reveal = new \PHPFUI\Reveal($page, $icon);
@@ -537,7 +537,7 @@ class Events
 		$view->setSortableColumns(\array_keys($sortableHeaders));
 
 		$editColumn = new \App\Model\EditIcon($view, $this->reservationTable, '/Events/editReservation/');
-		$view->addCustomColumn('reservationemail', static function(array $participant)
+		$view->addCustomColumn('reservationemail', static function(array $participant) : string
 			{
 			if ($participant['memberId'] > 0 && $participant['email'])
 				{
@@ -551,7 +551,7 @@ class Events
 			return '';
 			});
 
-		$view->addCustomColumn('firstName', static function(array $participant)
+		$view->addCustomColumn('firstName', static function(array $participant) : string
 			{
 			if (empty($participant['firstName']))
 				{
@@ -561,7 +561,7 @@ class Events
 			return $participant['firstName'];
 			});
 
-		$view->addCustomColumn('lastName', static function(array $participant)
+		$view->addCustomColumn('lastName', static function(array $participant) : string
 			{
 			if (empty($participant['lastName']))
 				{
@@ -576,7 +576,7 @@ class Events
 		$this->page->addJavaScript($delete->getPageJS());
 
 		$paymentTypes = \App\Table\Payment::getPaymentTypes();
-		$view->addCustomColumn('pricePaid', static function(array $participant) use ($paymentTypes)
+		$view->addCustomColumn('pricePaid', static function(array $participant) use ($paymentTypes) : string
 			{
 			$participant['pricePaid'] = (float)$participant['pricePaid'];
 			$amount = '$' . \number_format($participant['pricePaid'], 2);
@@ -589,7 +589,7 @@ class Events
 			return $amount;
 			});
 
-		$view->addCustomColumn('del', static function(array $participant) use ($delete)
+		$view->addCustomColumn('del', static function(array $participant) use ($delete) : \PHPFUI\FAIcon | \PHPFUI\Button
 			{
 			if (! $participant['paymentId'])
 				{

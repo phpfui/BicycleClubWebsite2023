@@ -78,10 +78,8 @@ class Points
 
 		$sortableHeaders = ['time' => 'Time', 'volunteerPoints' => 'Leader Points', 'oldLeaderPoints' => 'Pre Edit Points', ];
 		$normalHeaders = ['member' => 'Member', 'editorId' => 'Editor'];
-		$table->addCustomColumn('member', static function(array $row) {$member = new \App\Record\Member($row['memberId']);
-
-			return $member->fullName();});
-		$table->addCustomColumn('editorId', static function(array $row) {if (empty($row['editorId'])) { return 'System';} $member = new \App\Record\Member($row['editorId']);
+		$table->addCustomColumn('member', static fn (array $row) : string => new \App\Record\Member($row['memberId'])->fullName());
+		$table->addCustomColumn('editorId', static function(array $row) : string {if (empty($row['editorId'])) { return 'System';} $member = new \App\Record\Member($row['editorId']);
 
 return $member->fullName();});
 		$table->setSortableColumns(\array_keys($sortableHeaders))->setHeaders($normalHeaders + $sortableHeaders)->setSearchColumns($sortableHeaders);

@@ -23,12 +23,12 @@ class RWGPS extends \App\Record\Definition\RWGPS
 
 	public function clean() : static
 		{
-		$this->town = $this->town ?? '';
-		$this->state = $this->state ?? '';
-		$this->zip = $this->zip ?? '';
-		$this->description = $this->description ?? '';
-		$this->title = $this->title ?? '';
-		$this->club = $this->club ?? 0;
+		$this->town ??= '';
+		$this->state ??= '';
+		$this->zip ??= '';
+		$this->description ??= '';
+		$this->title ??= '';
+		$this->club ??= 0;
 		$this->csv = \App\Model\RideWithGPS::normalizeCSV($this->csv);
 
 		return $this;

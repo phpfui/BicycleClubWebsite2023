@@ -110,11 +110,11 @@ class EventPicker implements \Stringable
 
 					$deleter = new \App\Model\DeleteRecord($this->page, $view, $gaEventTable, 'Permanently delete this event and all associated data?');
 					$view->addCustomColumn('del', $deleter->columnCallback(...));
-					$view->addCustomColumn('title', static fn (array $event) => (string)new \PHPFUI\Link('/GA/edit/' . $event['gaEventId'], $event['title'] ?? 'Missing', false));
-					$view->addCustomColumn('stats', static fn (array $event) => (string)new \PHPFUI\FAIcon('fas', 'chart-bar', '/GA/statistics/' . $event['gaEventId']));
-					$view->addCustomColumn('signs', static fn (array $event) => (string)new \PHPFUI\FAIcon('fas', 'sign-hanging', '/GA/signs/' . $event['gaEventId']));
-					$view->addCustomColumn('sheets', static fn (array $event) => (string)new \PHPFUI\FAIcon('fas', 'file-signature', '/GA/signIn/' . $event['gaEventId']));
-					$view->addCustomColumn('copy', static fn (array $event) => (string)new \PHPFUI\FAIcon('fas', 'copy', '/GA/copy/' . $event['gaEventId']));
+					$view->addCustomColumn('title', static fn (array $event) : string => (string)new \PHPFUI\Link('/GA/edit/' . $event['gaEventId'], $event['title'] ?? 'Missing', false));
+					$view->addCustomColumn('stats', static fn (array $event) : string => (string)new \PHPFUI\FAIcon('fas', 'chart-bar', '/GA/statistics/' . $event['gaEventId']));
+					$view->addCustomColumn('signs', static fn (array $event) : string => (string)new \PHPFUI\FAIcon('fas', 'sign-hanging', '/GA/signs/' . $event['gaEventId']));
+					$view->addCustomColumn('sheets', static fn (array $event) : string => (string)new \PHPFUI\FAIcon('fas', 'file-signature', '/GA/signIn/' . $event['gaEventId']));
+					$view->addCustomColumn('copy', static fn (array $event) : string => (string)new \PHPFUI\FAIcon('fas', 'copy', '/GA/copy/' . $event['gaEventId']));
 
 					$view->setSearchColumns($searchableHeaders)->setSortableColumns(\array_keys($searchableHeaders));
 					$view->setHeaders(\array_merge($searchableHeaders, $countHeaders));

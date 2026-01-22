@@ -4,7 +4,7 @@ namespace App\UI;
 
 class Font extends \PHPFUI\Input\Select
 	{
-	public function __construct($name = 'font', $label = 'Font', string $value = '')
+	public function __construct(string $name = 'font', string $label = 'Font', string $value = '')
 		{
 		parent::__construct($name, $label);
 

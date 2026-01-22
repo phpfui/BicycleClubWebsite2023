@@ -45,7 +45,7 @@ class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 
 	public function editVolunteers(\App\Record\Job $job = new \App\Record\Job()) : void
 		{
-		if ($this->page->addHeader($text = 'Job Volunteers'))
+		if ($this->page->addHeader('Job Volunteers'))
 			{
 			$this->page->addPageContent(new \App\View\Volunteer\AssignedShifts($this->page, $job));
 			}
@@ -196,7 +196,7 @@ class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 
 	public function pollEdit(\App\Record\VolunteerPoll $volunteerPoll = new \App\Record\VolunteerPoll()) : void
 		{
-		if ($this->page->addHeader($text = 'Edit A Poll'))
+		if ($this->page->addHeader('Edit A Poll'))
 			{
 			$view = new \App\View\Volunteer\PollEdit($this->page);
 			$this->page->addPageContent($view->output($volunteerPoll));
@@ -205,7 +205,7 @@ class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 
 	public function polls(\App\Record\JobEvent $jobEvent = new \App\Record\JobEvent()) : void
 		{
-		if ($this->page->addHeader($text = 'Polls For Event'))
+		if ($this->page->addHeader('Polls For Event'))
 			{
 			$this->page->addPageContent(new \App\View\Volunteer\Polls($this->page, $jobEvent));
 			}

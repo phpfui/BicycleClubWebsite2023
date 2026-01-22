@@ -103,7 +103,7 @@ class CoordinatePicker extends \PHPFUI\Reveal
 		$js = 'if(data.response.latitude)$("#' . $this->latitude->getId() . '").val(data.response.latitude);';
 		$js .= 'if(data.response.longitude)$("#' . $this->longitude->getId() . '").val(data.response.longitude);';
 		$ajax->addFunction('success', $js);
-		$hidden->addAttribute('onchange', $change = 'var value=$("#' . $hidden->getId() . '").val();if(value.length){' . $ajax->execute(['RWGPSId' => '$("#' . $hidden->getId() . '").val()']) . '}');
+		$hidden->addAttribute('onchange', 'var value=$("#' . $hidden->getId() . '").val();if(value.length){' . $ajax->execute(['RWGPSId' => '$("#' . $hidden->getId() . '").val()']) . '}');
 		$this->form->add($RWGPSInput);
 		$this->page->addJavaScript($ajax->getPageJS());
 
@@ -119,7 +119,7 @@ class CoordinatePicker extends \PHPFUI\Reveal
 		$js = 'if(data.response.latitude)$("#' . $this->latitude->getId() . '").val(data.response.latitude);';
 		$js .= 'if(data.response.longitude)$("#' . $this->longitude->getId() . '").val(data.response.longitude);';
 		$ajax->addFunction('success', $js);
-		$hidden->addAttribute('onchange', $change = 'var value=$("#' . $hidden->getId() . '").val();if(value.length){' . $ajax->execute(['startLocationId' => '$("#' . $hidden->getId() . '").val()']) . '}');
+		$hidden->addAttribute('onchange', 'var value=$("#' . $hidden->getId() . '").val();if(value.length){' . $ajax->execute(['startLocationId' => '$("#' . $hidden->getId() . '").val()']) . '}');
 		$this->form->add($control);
 		$this->page->addJavaScript($ajax->getPageJS());
 

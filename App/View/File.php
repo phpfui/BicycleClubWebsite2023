@@ -108,12 +108,10 @@ class File extends \App\View\Folder
 		$this->cuts = $this->getCuts();
 		$that = $this;
 
-		$view->addCustomColumn('uploaded', static fn (array $file) => \date('Y-m-d', \strtotime((string)$file['uploaded'])));
-		$view->addCustomColumn('description', static fn (array $file) => $that->editItem ? new \PHPFUI\Link('/File/edit/' . $file['fileId'], $file['description'], false) : $file['description']);
-		$view->addCustomColumn('fileName', static fn (array $file) => new \PHPFUI\Link('/File/download/' . $file['fileId'], $file['fileName'], false));
-		$view->addCustomColumn('member', static function(array $file) { $member = new \App\Record\Member($file['memberId']);
-
-return $member->fullName();});
+		$view->addCustomColumn('uploaded', static fn (array $file) : string => \date('Y-m-d', \strtotime((string)$file['uploaded'])));
+		$view->addCustomColumn('description', static fn (array $file) : string => $that->editItem ? new \PHPFUI\Link('/File/edit/' . $file['fileId'], $file['description'], false) : $file['description']);
+		$view->addCustomColumn('fileName', static fn (array $file) : \PHPFUI\Link => new \PHPFUI\Link('/File/download/' . $file['fileId'], $file['fileName'], false));
+		$view->addCustomColumn('member', static fn (array $file) : string => new \App\Record\Member($file['memberId'])->fullName());
 
 		$headers = ['fileName' => 'Download', 'description' => 'Description', 'uploaded' => 'Uploaded'];
 		$normalHeaders = ['member'];

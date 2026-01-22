@@ -4,11 +4,11 @@ namespace App\Report;
 
 class GASignInSheets
 	{
-	final public const CSV = 2;
+	final public const int CSV = 2;
 
-	final public const PAGED = 1;
+	final public const int PAGED = 1;
 
-	final public const SINGLE = 0;
+	final public const int SINGLE = 0;
 
 	public function __construct(private readonly \App\Record\GaEvent $event, private readonly int $type, private readonly int $paid, private int $tagNumber = 0)
 		{

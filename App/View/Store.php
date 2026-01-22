@@ -380,8 +380,8 @@ class Store extends \App\View\Folder
 		$view = new \App\UI\ContinuousScrollTable($this->page, $storeItemTable);
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $storeItemTable, 'Are you sure you want to permanently delete this item and all its sizes?');
 		$view->addCustomColumn('del', $deleter->columnCallback(...));
-		$view->addCustomColumn('title', static fn (array $storeItem) => new \PHPFUI\Link('/Store/edit/' . $storeItem['storeItemId'], $storeItem['title'], false));
-		$view->addCustomColumn('active', static fn (array $storeItem) => $storeItem['active'] ? '<b>&check;</b>' : '');
+		$view->addCustomColumn('title', static fn (array $storeItem) : \PHPFUI\Link => new \PHPFUI\Link('/Store/edit/' . $storeItem['storeItemId'], $storeItem['title'], false));
+		$view->addCustomColumn('active', static fn (array $storeItem) : string => $storeItem['active'] ? '<b>&check;</b>' : '');
 
 		$view->setHeaders($headers);
 		unset($headers['del']);

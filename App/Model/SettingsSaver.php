@@ -148,7 +148,7 @@ class SettingsSaver
 
 			foreach ($post as $key => $value)
 				{
-				if ($this->JSONName == \substr($key, 0, $length))
+				if (\substr($key, 0, $length) === $this->JSONName)
 					{
 					$json[$key] = $value;
 					}

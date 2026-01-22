@@ -71,7 +71,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$photo = new \App\Record\Photo($photoId);
 
-				if (! $photo->empty() && ($photo->memberId == \App\Model\Session::signedInMemberId() || $this->page->isAuthorized('Move Photo')))
+				if (! $photo->empty() && ($photo->memberId === \App\Model\Session::signedInMemberId() || $this->page->isAuthorized('Move Photo')))
 					{
 					$photos[] = $photoId;
 					}

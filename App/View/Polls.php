@@ -177,11 +177,9 @@ class Polls
 		$headers = ['question', 'endDate'];
 
 		$view = new \App\UI\ContinuousScrollTable($this->page, $pollResponseTable);
-		$view->addCustomColumn('question', fn (array $vote) => $this->minimizeQuestion($vote['question'] ?? ''));
-		$view->addCustomColumn('pollId', static fn (array $vote) => new \PHPFUI\FAIcon('fas', 'check-square', '/Polls/vote/' . $vote['pollId']));
-		$view->addCustomColumn('memberId', static function(array $vote) { $member = new \App\Record\Member($vote['memberId']);
-
-return $member->fullName();});
+		$view->addCustomColumn('question', fn (array $vote) : string => $this->minimizeQuestion($vote['question'] ?? ''));
+		$view->addCustomColumn('pollId', static fn (array $vote) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('fas', 'check-square', '/Polls/vote/' . $vote['pollId']));
+		$view->addCustomColumn('memberId', static fn (array $vote) : string => new \App\Record\Member($vote['memberId'])->fullName());
 		$view->setSearchColumns($headers);
 		$headers[] = 'answer';
 		$view->setSortableColumns($headers);
@@ -245,8 +243,8 @@ return $member->fullName();});
 			{
 			$view->setSearchColumns($headers)->setSortableColumns($headers);
 			}
-		$view->addCustomColumn('firstName', static fn (array $response) => $response['memberId'] ? $response['firstName'] : \App\Table\Membership::getMembershipsLastNames($response['membershipId']));
-		$view->addCustomColumn('lastName', static fn (array $response) => $response['memberId'] ? $response['lastName'] : 'Membership');
+		$view->addCustomColumn('firstName', static fn (array $response) : string => $response['memberId'] ? $response['firstName'] : \App\Table\Membership::getMembershipsLastNames($response['membershipId']));
+		$view->addCustomColumn('lastName', static fn (array $response) : string => $response['memberId'] ? $response['lastName'] : 'Membership');
 		$container->add($view);
 
 		$container->add(new \App\UI\Display('Total Votes', $numberVoters));

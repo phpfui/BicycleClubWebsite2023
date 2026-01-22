@@ -316,11 +316,9 @@ class SlideShow
 			$view = new \App\UI\ContinuousScrollTable($this->page, $slideShowTable);
 			$deleter = new \App\Model\DeleteRecord($this->page, $view, $slideShowTable, 'Permanently delete this slide show and all it\'s photos?');
 			$view->addCustomColumn('del', $deleter->columnCallback(...));
-			$view->addCustomColumn('name', static fn (array $row) => new \PHPFUI\Link('/Content/SlideShow/edit/' . $row['slideShowId'], $row['name'], false));
-			$view->addCustomColumn('active', static fn (array $row) => $row['active'] ? '&check;' : '');
-			$view->addCustomColumn('Author', static function(array $row) {$member = new \App\Record\Member($row['memberId']);
-
-return $member->fullName();});
+			$view->addCustomColumn('name', static fn (array $row) : \PHPFUI\Link => new \PHPFUI\Link('/Content/SlideShow/edit/' . $row['slideShowId'], $row['name'], false));
+			$view->addCustomColumn('active', static fn (array $row) : string => $row['active'] ? '&check;' : '');
+			$view->addCustomColumn('Author', static fn (array $row) : string => new \App\Record\Member($row['memberId'])->fullName());
 
 			$headers = ['name', 'startDate', 'endDate', 'active'];
 			$view->setSearchColumns($headers)->setHeaders(\array_merge($headers, ['Author', 'del']))->setSortableColumns($headers);

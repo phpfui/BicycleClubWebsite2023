@@ -4,9 +4,9 @@ namespace App\Model;
 
 class BannerFiles extends \App\Model\TinifyImage
 	{
-	final public const MIN_WIDTH = 1200;
+	final public const int MIN_WIDTH = 1200;
 
-	final public const PROPORTION = 6;
+	final public const int PROPORTION = 6;
 
 	public function __construct()
 		{

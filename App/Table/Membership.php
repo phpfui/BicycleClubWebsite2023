@@ -6,24 +6,18 @@ class Membership extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Membership::class;
 
-	/**
-	 * @return null|scalar
-	 */
-	public static function currentMembershipCount()
+	public static function currentMembershipCount() : ?string
 		{
 		$sql = 'SELECT count(*) FROM membership where expires>=?';
 
 		return \PHPFUI\ORM::getValue($sql, [\App\Tools\Date::todayString()]);
 		}
 
-	/**
-	 * @return null|scalar
-	 */
-	public static function currentSubscriptionCount()
+	public static function currentSubscriptionCount() : int
 		{
 		$sql = 'SELECT count(*) FROM membership where renews>=?';
 
-		return \PHPFUI\ORM::getValue($sql, [\App\Tools\Date::todayString()]);
+		return (int)\PHPFUI\ORM::getValue($sql, [\App\Tools\Date::todayString()]);
 		}
 
 	public function getExpiringMemberships(string $start, string $end) : \PHPFUI\ORM\DataObjectCursor

@@ -131,9 +131,9 @@ class Rider
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $gaRiderTable, 'Are you sure you want to permanently delete this rider?');
 		$view->addCustomColumn('del', $deleter->columnCallback(...));
 
-		$view->addCustomColumn('pending', static fn (array $rider) => $rider['pending'] ? '' : '&check;');
+		$view->addCustomColumn('pending', static fn (array $rider) : string => $rider['pending'] ? '' : '&check;');
 
-		$view->addCustomColumn('phone', static fn (array $rider) => \PHPFUI\Link::phone($rider['phone']));
+		$view->addCustomColumn('phone', static fn (array $rider) : \PHPFUI\Link => \PHPFUI\Link::phone($rider['phone']));
 
 		$view->setHeaders(\array_merge($sortableHeaders, $otherHeaders))->setSortableColumns(\array_keys($sortableHeaders));
 		unset($sortableHeaders['pending']);

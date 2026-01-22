@@ -71,14 +71,8 @@ class SMS extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 
 		// if member is not a ride leader, then we send the text to the ride leader only.
-		foreach ($signups as $signup)
-			{
-			$ride = new \App\Record\Ride($signup['rideId']);
-			$leader = $ride->member;
-			$smsModel->textMember($leader);
-
-			return;
-			}
-
+		$signup = $signups->current();
+		$ride = new \App\Record\Ride($signup['rideId']);
+		$smsModel->textMember($ride->member);
 		}
 	}

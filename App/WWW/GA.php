@@ -93,7 +93,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function email() : void
 		{
-		if ($this->page->addHeader($label = 'Email Registrants'))
+		if ($this->page->addHeader('Email Registrants'))
 			{
 			$this->page->addPageContent(new \App\View\GA\Email($this->page));
 			}
@@ -349,7 +349,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->page->setPublic();
 		$this->page->setShowMenus((bool)$rider->gaEvent->allowShopping);
 
-		if ($this->page->isAuthorized('Edit Rider') || $rider->memberId == \abs($_SESSION['customerNumber'] ?? 0))
+		if ($this->page->isAuthorized('Edit Rider') || (\abs($_SESSION['customerNumber'] ?? 0) === $rider->memberId))
 			{
 			$this->page->addPageContent(new \PHPFUI\Header('Update Rider'));
 			$view = new \App\View\GA\Rider($this->page);

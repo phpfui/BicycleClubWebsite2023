@@ -269,8 +269,9 @@ class CueSheets extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 		{
 		if ($this->page->addHeader('Cuesheet Terrain'))
 			{
-			$view = new \App\UI\TableEditor($this->page, 'Terrain', 'terrainId');
-			$view->setHeaders(['name' => 'Name', 'delete' => 'Del']);
+			$table = new \App\Table\Terrain();
+			$table->setOrderBy('terrainId');
+			$view = new \App\UI\TableEditor($this->page, $table, ['name' => 'Name', 'delete' => 'Del']);
 			$view->setRelatedTable(new \App\Table\CueSheet());
 			$this->page->addPageContent($view->edit());
 			}

@@ -4,23 +4,16 @@ namespace App\UI;
 
 class TableEditor
 	{
-	/**
-	 * @var array<string,string>
-	 */
-	private array $headers = ['name' => 'Name', 'shortName' => 'Short Name', 'abbrev' => 'Abbrevation', 'delete' => 'Del'];
-
-	private string $name;
+	private string $primaryKey;
 
 	private ?\PHPFUI\ORM\Table $relatedTable = null;
 
-	private \PHPFUI\ORM\Table $table;
-
-	public function __construct(private \App\View\Page $page, string $table, string $orderBy = 'name')
+	/**
+	 * @param array<string,string> $headers
+	 */
+	public function __construct(private \App\View\Page $page, private \PHPFUI\ORM\Table $table, private array $headers = [])
 		{
-		$class = "\\App\\Table\\{$table}";
-		$this->table = new $class();
-		$this->table->addOrderBy($orderBy);
-		$this->name = \lcfirst($table);
+		$this->primaryKey = $this->table->getPrimaryKeys()[0];
 		}
 
 	public function edit() : \PHPFUI\Form | string
@@ -41,10 +34,11 @@ class TableEditor
 			switch ($_POST['action'])
 				{
 				case 'deleteRecord':
-					$fieldName = $this->name . 'Id';
-					$id = (int)$_POST[$fieldName];
-					$this->table->setWhere(new \PHPFUI\ORM\Condition($fieldName, $id))->delete();
-					$this->page->setResponse((string)$id);
+					$fieldName = $this->primaryKey;
+					$record = $this->table->getRecord();
+					$record->{$fieldName} = (int)$_POST[$fieldName];
+					$record->delete();
+					$this->page->setResponse($_POST[$fieldName]);
 
 					break;
 
@@ -61,45 +55,43 @@ class TableEditor
 			}
 		else
 			{
-			$recordId = $this->name . 'Id';
-			$types = $this->table->getArrayCursor();
 			$delete = new \PHPFUI\AJAX('deleteRecord', 'Permanently delete this?');
-			$delete->addFunction('success', '$("#' . $recordId . '-"+data.response).css("background-color","red").hide("fast").remove()');
+			$delete->addFunction('success', '$("#' . $this->primaryKey . '-"+data.response).css("background-color","red").hide("fast").remove()');
 			$this->page->addJavaScript($delete->getPageJS());
 			$table = new \PHPFUI\Table();
 			$table->addAttribute('style', 'width: 100%;');
-			$table->setRecordId($recordId);
+			$table->setRecordId($this->primaryKey);
 			$table->setHeaders($this->headers);
 
-			foreach ($types as $row)
+			$records = $this->table->getArrayCursor();
+
+			foreach ($records as $row)
 				{
-				$id = $row[$recordId];
-				$name = new \PHPFUI\Input\Text("name[{$id}]", '', $row['name']);
-				$hidden = new \PHPFUI\Input\Hidden("{$recordId}[{$id}]", $id);
-				$row['name'] = $name . $hidden;
+				$id = $row[$this->primaryKey];
+				$hidden = new \PHPFUI\Input\Hidden("{$this->primaryKey}[{$id}]", $id);
 
-				if (isset($this->headers['shortName']))
+				foreach ($this->headers as $field => $name)
 					{
-					$row['shortName'] = new \PHPFUI\Input\Text("shortName[{$id}]", '', $row['shortName']);
-					}
-
-				if (isset($this->headers['abbrev']))
-					{
-					$row['abbrev'] = new \PHPFUI\Input\Text("abbrev[{$id}]", '', $row['abbrev']);
+					if ('delete' === $field)
+						{
+						continue;
+						}
+					$input = new \PHPFUI\Input\Text($field . "[{$id}]", '', $row[$field]);
+					$row[$field] = $input . $hidden;
+					$hidden = null;
 					}
 				$deleteable = true;
 
 				if ($this->relatedTable)
 					{
-					$primaryKey = $this->table->getPrimaryKeys()[0];
-					$this->relatedTable->setWhere(new \PHPFUI\ORM\Condition($primaryKey, $row[$primaryKey]));
+					$this->relatedTable->setWhere(new \PHPFUI\ORM\Condition($this->primaryKey, $row[$this->primaryKey]));
 					$deleteable = 0 == $this->relatedTable->count();
 					}
 
 				if ($deleteable)
 					{
 					$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
-					$icon->addAttribute('onclick', $delete->execute([$recordId => $id]));
+					$icon->addAttribute('onclick', $delete->execute([$this->primaryKey => $id]));
 					$row['delete'] = $icon;
 					}
 				$table->addRow($row);
@@ -107,15 +99,15 @@ class TableEditor
 
 			$form->add($table);
 			$add = new \PHPFUI\Button('Add');
+			$add->addClass('success');
 
-			if (\count($types))
+			if (\count($records))
 				{
 				$form->saveOnClick($add);
 				$form->add($submit);
 				}
 
 			$this->addModal($add);
-			$form->add(' &nbsp; ');
 			$form->add($add);
 			}
 
@@ -145,19 +137,16 @@ class TableEditor
 		$modal->addClass('large');
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
-		$fieldSet = new \PHPFUI\FieldSet('Add ' . \ucfirst($this->name));
-		$name = new \PHPFUI\Input\Text('name', 'Name');
-		$fieldSet->add($name);
+		$fieldSet = new \PHPFUI\FieldSet('Add ' . \ucfirst($this->table->getTableName()));
 		$multiColumn = new \PHPFUI\MultiColumn();
 
-		if (isset($this->headers['shortName']))
+		foreach ($this->headers as $field => $name)
 			{
-			$multiColumn->add(new \PHPFUI\Input\Text('shortName', 'Short Name'));
-			}
-
-		if (isset($this->headers['abbrev']))
-			{
-			$abbrev = new \PHPFUI\Input\Text('abbrev', 'Abbreviation');
+			if ('delete' === $field)
+				{
+				continue;
+				}
+			$multiColumn->add(new \PHPFUI\Input\Text($field, $this->headers[$field]));
 			}
 
 		if (\count($multiColumn))

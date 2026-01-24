@@ -13,6 +13,8 @@ class AuditTrail
 		$deleteChecked = new \PHPFUI\Submit('Delete Selected');
 		$deleteChecked->setConfirm('Delete all selected audit trail entries?');
 		$deleteChecked->addClass('alert');
+		$grid = new \PHPFUI\GridX();
+		$grid->add($deleteChecked)->addClass('align-right');
 
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
@@ -40,7 +42,7 @@ class AuditTrail
 			return $form;
 			}
 
-		$form->add($deleteChecked);
+		$form->add($grid);
 		$checkAll = new \App\UI\CheckAll('.checkAll');
 
 		$headers = [

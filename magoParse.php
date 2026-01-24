@@ -7,6 +7,7 @@ $only = $argc > 1 ? $argv[1] : '';
 $count = findErrors('error[', $lines, $only);
 $count += findErrors('warning[', $lines, $only);
 $count += findErrors('help[', $lines, $only);
+$count += findErrors('note[', $lines, $only);
 
 echo "{$count} issues found\n";
 

@@ -93,7 +93,7 @@ no-empty-comment = { enabled = true }
 no-empty-catch-clause = { enabled = true }
 no-else-clause = { enabled = false }
 no-closing-tag = { enabled = true }
-no-boolean-literal-comparison = { enabled = true }
+no-boolean-literal-comparison = { enabled = false }
 no-boolean-flag-parameter = { enabled = false }
 no-assign-in-argument = { enabled = false }
 no-assign-in-condition = { enabled = false }

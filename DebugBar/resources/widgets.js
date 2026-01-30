@@ -369,6 +369,7 @@
                 if (!data.data) {
                     return;
                 }
+                let hasXdebuglinks = false;
                 for (const [key, values] of Object.entries(data.data)) {
                     const tr = document.createElement('tr');
                     tr.classList.add(csscls('item'));
@@ -416,8 +417,8 @@
                         }
                         filename.append(link);
 
-                        if (!data.xdebug_link) {
-                            data.xdebug_link = true;
+                        if (!hasXdebuglinks) {
+                            hasXdebuglinks = true;
                             header.append(document.createElement('td'));
                         }
                     }
@@ -449,7 +450,7 @@
                     }
                 }
 
-                if (data.xdebug_link) {
+                if (hasXdebuglinks) {
                     summaryTr.append(document.createElement('td'));
                 }
             });
@@ -538,7 +539,7 @@
                                 val.classList.remove(csscls('pretty'));
                                 val.classList.add(csscls('truncated'));
                             } else {
-                                prettyVal = prettyVal || createCodeBlock(value.message, 'php');
+                                prettyVal = prettyVal || createCodeBlock(value.message);
                                 val.classList.add(csscls('pretty'));
                                 val.classList.remove(csscls('truncated'));
                                 val.innerHTML = '';
@@ -1078,6 +1079,7 @@
 
             // Refresh button
             this.refreshBtn = document.createElement('a');
+            this.refreshBtn.tabIndex = 0;
             this.refreshBtn.classList.add(csscls('datasets-refresh-btn'));
             this.refreshBtn.innerHTML = '<i class="phpdebugbar-icon phpdebugbar-icon-refresh"></i>';
             this.refreshBtn.title = 'Auto-scan for new datasets';
@@ -1102,6 +1104,7 @@
 
             // Clear button
             const clearBtn = document.createElement('a');
+            clearBtn.tabIndex = 0;
             clearBtn.classList.add(csscls('datasets-clear-btn'));
             clearBtn.textContent = 'Clear';
             clearBtn.addEventListener('click', () => {
@@ -1387,7 +1390,7 @@
                 }
             };
 
-            debugbar.openHandler.find({}, 0, (data, err) => {
+            debugbar.openHandler.find({ utime: latestUtime }, 0, (data, err) => {
                 // Abort on explicit error argument
                 if (err) {
                     console.error('scanForNewDatasets: find() failed', err);
@@ -1402,6 +1405,9 @@
                         meta => meta.utime > latestUtime && !datasets[meta.id]
                     );
 
+                    // Reverse to load oldest first (since find() returns newest first)
+                    newDatasets.reverse();
+
                     const loadNext = (index = 0) => {
                         if (index >= newDatasets.length) {
                             scheduleNextScan();
@@ -1409,11 +1415,12 @@
                         }
 
                         const { id } = newDatasets[index];
+                        const isLast = index === newDatasets.length - 1;
                         debugbar.loadDataSet(
                             id,
                             '(scan)',
                             () => loadNext(index + 1),
-                            this.autoshowCheckbox.checked
+                            this.autoshowCheckbox.checked && isLast
                         );
                     };
 

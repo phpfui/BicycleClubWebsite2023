@@ -45,9 +45,9 @@ class ResultThread
 	 * Object constructor.
 	 */
 	public function __construct(protected ?string $mailbox = null, ?string $data = null)
-	{
+		{
 		$this->init($data);
-	}
+		}
 
 	/**
 	 * Returns number of elements (threads) in the result
@@ -55,22 +55,28 @@ class ResultThread
 	 * @return int Number of elements
 	 */
 	public function count() : int
-	{
-		if (isset($this->meta['count']) && null !== $this->meta['count'])
+		{
+		if (isset($this->meta['count']))
+			{
 			return (int)$this->meta['count'];
+			}
 
-		if (empty($this->raw_data)) {
+		if (empty($this->raw_data))
+			{
 			$this->meta['count'] = 0;
-		}
-		else {
+			}
+		else
+			{
 			$this->meta['count'] = 1 + \substr_count($this->raw_data, self::SEPARATOR_ELEMENT);
-		}
+			}
 
 		if (! $this->meta['count'])
+			{
 			$this->meta['messages'] = 0;
+			}
 
 		return (int)$this->meta['count'];
-	}
+		}
 
 	/**
 	 * Returns number of all messages in the result
@@ -78,24 +84,30 @@ class ResultThread
 	 * @return int Number of elements
 	 */
 	public function count_messages() : int
-	{
+		{
 		if (null !== $this->meta['messages'])
+			{
 			return $this->meta['messages'];
+			}
 
-		if (empty($this->raw_data)) {
+		if (empty($this->raw_data))
+			{
 			$this->meta['messages'] = 0;
-		}
-		else {
+			}
+		else
+			{
 			$this->meta['messages'] = 1
 				+ \substr_count($this->raw_data, self::SEPARATOR_ELEMENT)
 				+ \substr_count($this->raw_data, self::SEPARATOR_ITEM);
-		}
+			}
 
 		if (0 == $this->meta['messages'] || 1 == $this->meta['messages'])
+			{
 			$this->meta['count'] = $this->meta['messages'];
+			}
 
 		return $this->meta['messages'];
-	}
+		}
 
 	/**
 	 * Filters data set. Removes threads not listed in $roots list.

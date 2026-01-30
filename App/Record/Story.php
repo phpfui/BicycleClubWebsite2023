@@ -22,4 +22,13 @@ class Story extends \App\Record\Definition\Story
 
 		return $this;
 		}
+
+	public function delete() : bool
+		{
+		$condition = new \PHPFUI\ORM\Condition('storyId', $this->storyId);
+		$blogItemTable = new \App\Table\BlogItem()->setWhere($condition)->delete();
+		$pollTable = new \App\Table\Poll()->setWhere($condition)->update(['storyId' => null]);
+
+		return parent::delete();
+		}
 	}

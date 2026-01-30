@@ -79,7 +79,7 @@ class Files
 
 		if (! \count($files))
 			{
-			$container->add(new \PHPFUI\SubHeader('No waivers found'));
+			$container->add(new \PHPFUI\SubHeader('No images found'));
 			}
 		$container->add($table);
 

@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 /**
  * PHP version of mysqldump cli that comes with MySQL.
@@ -16,9 +15,10 @@ declare(strict_types=1);
 
 namespace Druidfi\Mysqldump;
 
+use Druidfi\Mysqldump\Compress\CompressInterface;
+use Druidfi\Mysqldump\Compress\CompressManagerFactory;
 use Druidfi\Mysqldump\TypeAdapter\TypeAdapterInterface;
 use Druidfi\Mysqldump\TypeAdapter\TypeAdapterMysql;
-use Druidfi\Mysqldump\ObjectDumper as ObjectDumper;
 use Exception;
 use PDO;
 
@@ -27,7 +27,7 @@ class Mysqldump
     // Database
     private DatabaseConnector $connector;
     private ?PDO $conn = null;
-    private DumpWriter $writer;
+    private CompressInterface $io;
     private TypeAdapterInterface $db;
 
     private static string $adapterClass = TypeAdapterMysql::class;
@@ -73,7 +73,6 @@ class Mysqldump
     {
         $this->connector = new DatabaseConnector($dsn, $user, $pass, $pdoOptions);
         $this->settings = new DumpSettings($settings);
-        $this->writer = new DumpWriter($this->settings);
     }
 
 
@@ -82,7 +81,7 @@ class Mysqldump
      *
      * @throws Exception
      */
-    private function connect(): void
+    private function connect()
     {
         $this->conn = $this->connector->connect();
         $this->db = $this->getAdapter($this->conn);
@@ -95,7 +94,7 @@ class Mysqldump
 
     private function write(string $data): int
     {
-        return $this->writer->write($data);
+        return $this->io->write($data);
     }
 
     private function getInsertType(): string
@@ -117,7 +116,7 @@ class Mysqldump
      * @param string|null $filename Name of file to write sql dump to
      * @throws Exception
      */
-    public function start(?string $filename = ''): void
+    public function start(?string $filename = '')
     {
         $destination = 'php://stdout';
 
@@ -129,8 +128,14 @@ class Mysqldump
         // Connect to database
         $this->connect();
 
-        // Initialize the writer with the destination
-        $this->writer->initialize($destination);
+        // Create a new compressManager to manage compressed output
+        $this->io = CompressManagerFactory::create(
+            $this->settings->getCompressMethod(),
+            $this->settings->getCompressLevel()
+        );
+
+        // Create output file
+        $this->io->open($destination);
 
         // Write some basic info to output file
         if (!$this->settings->skipComments()) {
@@ -174,62 +179,12 @@ class Mysqldump
             throw new Exception($message);
         }
 
-        // Use dedicated dumpers for different object types
-        $tablesDumper = new ObjectDumper\TablesDumper(
-            function () { return $this->iterateTables(); },
-            function (string $name, array $arr) { return $this->matches($name, $arr); },
-            function (string $table) { $this->getTableStructure($table); },
-            function (string $table) { 
-                $no_data = $this->settings->isEnabled('no-data');
-                if (!$no_data) { 
-                    $this->listValues($table);
-                } elseif ($no_data || $this->matches($table, $this->settings->getNoData())) {
-                    return; 
-                } else {
-                    $this->listValues($table);
-                }
-            },
-            function () { return $this->settings->getExcludedTables(); },
-            function () { return $this->settings->getNoData(); }
-        );
-        $tablesDumper->dump();
-
-        $triggersDumper = new ObjectDumper\TriggersDumper(
-            function () { return $this->iterateTriggers(); },
-            function (string $name) { $this->getTriggerStructure($name); }
-        );
-        $triggersDumper->dump();
-
-        $routinesDumper = new ObjectDumper\RoutinesDumper(
-            function () { return $this->iterateProcedures(); },
-            function () { return $this->iterateFunctions(); },
-            function (string $name) { $this->getProcedureStructure($name); },
-            function (string $name) { $this->getFunctionStructure($name); }
-        );
-        $routinesDumper->dump();
-
-        $viewsDumper = new ObjectDumper\ViewsDumper(
-            function () { return $this->iterateViews(); },
-            function (string $name, array $arr) { return $this->matches($name, $arr); },
-            function (string $name) {
-                if ($this->settings->isEnabled('no-create-info')) { return; }
-                if ($this->matches($name, $this->settings->getExcludedTables())) { return; }
-                $this->tableColumnTypes[$name] = $this->getTableColumnTypes($name);
-                $this->getViewStructureTable($name);
-            },
-            function (string $name) {
-                if ($this->settings->isEnabled('no-create-info')) { return; }
-                if ($this->matches($name, $this->settings->getExcludedTables())) { return; }
-                $this->getViewStructureView($name);
-            }
-        );
-        $viewsDumper->dump();
-
-        $eventsDumper = new ObjectDumper\EventsDumper(
-            function () { return $this->iterateEvents(); },
-            function (string $name) { $this->getEventStructure($name); }
-        );
-        $eventsDumper->dump();
+        $this->exportTables();
+        $this->exportTriggers();
+        $this->exportFunctions();
+        $this->exportProcedures();
+        $this->exportViews();
+        $this->exportEvents();
 
         // Restore saved parameters.
         $this->write($this->db->restoreParameters());
@@ -245,7 +200,7 @@ class Mysqldump
         }
 
         // Close output file.
-        $this->writer->close();
+        $this->io->close();
     }
 
     /**
@@ -293,66 +248,104 @@ class Mysqldump
     /**
      * Reads table names from database. Fills $this->tables array so they will be dumped later.
      */
-    private function getDatabaseStructureTables(): void
+    private function getDatabaseStructureTables()
     {
-        // Optimize memory by not storing all table names; just validate included-tables
         $includedTables = $this->settings->getIncludedTables();
-        if (!empty($includedTables)) {
-            $stmtTables = $this->conn->query($this->db->showTables($this->connector->getDbName()));
-            foreach ($stmtTables as $row) {
-                $name = current($row);
-                if (in_array($name, $includedTables, true)) {
-                    $elem = array_search($name, $includedTables, true);
-                    if ($elem !== false) {
-                        unset($includedTables[$elem]);
-                    }
+
+        // Listing all tables from database
+        if (empty($includedTables)) {
+            // include all tables for now, blacklisting happens later
+            foreach ($this->conn->query($this->db->showTables($this->connector->getDbName())) as $row) {
+                $this->tables[] = current($row);
+            }
+        } else {
+            // include only the tables mentioned in include-tables
+            foreach ($this->conn->query($this->db->showTables($this->connector->getDbName())) as $row) {
+                if (in_array(current($row), $includedTables, true)) {
+                    $this->tables[] = current($row);
+                    $elem = array_search(current($row), $includedTables);
+                    unset($includedTables[$elem]);
+                    $this->settings->setIncludedTables($includedTables);
                 }
             }
-            $stmtTables->closeCursor();
-            // Update remaining included tables for the later missing-check
-            $this->settings->setIncludedTables($includedTables);
         }
-        // $this->tables is intentionally left empty to avoid retaining the full list in memory.
     }
 
     /**
      * Reads view names from database. Fills $this->tables array so they will be dumped later.
      */
-    private function getDatabaseStructureViews(): void
+    private function getDatabaseStructureViews()
     {
-        // No need to store view names; validation for include-views happens in iterateViews()
+        $includedViews = $this->settings->getIncludedViews();
+
+        // Listing all views from database
+        if (empty($includedViews)) {
+            // include all views for now, blacklisting happens later
+            foreach ($this->conn->query($this->db->showViews($this->connector->getDbName())) as $row) {
+                $this->views[] = current($row);
+            }
+        } else {
+            // include only the tables mentioned in include-tables
+            foreach ($this->conn->query($this->db->showViews($this->connector->getDbName())) as $row) {
+                if (in_array(current($row), $includedViews, true)) {
+                    $this->views[] = current($row);
+                    $elem = array_search(current($row), $includedViews);
+                    unset($includedViews[$elem]);
+                }
+            }
+        }
     }
 
     /**
      * Reads trigger names from database. Fills $this->tables array so they will be dumped later.
      */
-    private function getDatabaseStructureTriggers(): void
+    private function getDatabaseStructureTriggers()
     {
-        // No need to store trigger names; iteration happens in iterateTriggers()
+        // Listing all triggers from database
+        if (!$this->settings->skipTriggers()) {
+            foreach ($this->conn->query($this->db->showTriggers($this->connector->getDbName())) as $row) {
+                $this->triggers[] = $row['Trigger'];
+            }
+        }
     }
 
     /**
      * Reads procedure names from database. Fills $this->tables array so they will be dumped later.
      */
-    private function getDatabaseStructureProcedures(): void
+    private function getDatabaseStructureProcedures()
     {
-        // No need to store procedure names; iteration happens in iterateProcedures()
+        // Listing all procedures from database
+        if ($this->settings->isEnabled('routines')) {
+            foreach ($this->conn->query($this->db->showProcedures($this->connector->getDbName())) as $row) {
+                $this->procedures[] = $row['procedure_name'];
+            }
+        }
     }
 
     /**
      * Reads functions names from database. Fills $this->tables array so they will be dumped later.
      */
-    private function getDatabaseStructureFunctions(): void
+    private function getDatabaseStructureFunctions()
     {
-        // No need to store function names; iteration happens in iterateFunctions()
+        // Listing all functions from database
+        if ($this->settings->isEnabled('routines')) {
+            foreach ($this->conn->query($this->db->showFunctions($this->connector->getDbName())) as $row) {
+                $this->functions[] = $row['function_name'];
+            }
+        }
     }
 
     /**
      * Reads event names from database. Fills $this->tables array so they will be dumped later.
      */
-    private function getDatabaseStructureEvents(): void
+    private function getDatabaseStructureEvents()
     {
-        // No need to store event names; iteration happens in iterateEvents()
+        // Listing all events from database
+        if ($this->settings->isEnabled('events')) {
+            foreach ($this->conn->query($this->db->showEvents($this->connector->getDbName())) as $row) {
+                $this->events[] = $row['event_name'];
+            }
+        }
     }
 
     /**
@@ -376,120 +369,12 @@ class Mysqldump
     }
 
     /**
-     * Stream table names from the database without storing them in memory.
-     * Applies include-tables if provided, otherwise yields all tables.
-     */
-    private function iterateTables(): \Generator
-    {
-        $includedTables = $this->settings->getIncludedTables();
-        $restrict = !empty($includedTables);
-        $stmt = $this->conn->query($this->db->showTables($this->connector->getDbName()));
-        $names = [];
-        foreach ($stmt as $row) {
-            $name = current($row);
-            if (!$restrict || in_array($name, $includedTables, true)) {
-                $names[] = $name;
-            }
-        }
-        $stmt->closeCursor();
-        foreach ($names as $name) {
-            yield $name;
-        }
-    }
-
-    private function iterateViews(): \Generator
-    {
-        $included = $this->settings->getIncludedViews();
-        $restrict = !empty($included);
-        $stmt = $this->conn->query($this->db->showViews($this->connector->getDbName()));
-        $names = [];
-        foreach ($stmt as $row) {
-            $name = current($row);
-            if (!$restrict || in_array($name, $included, true)) {
-                $names[] = $name;
-            }
-        }
-        $stmt->closeCursor();
-        foreach ($names as $name) {
-            yield $name;
-        }
-    }
-
-    private function iterateTriggers(): \Generator
-    {
-        if ($this->settings->skipTriggers()) {
-            yield from [];
-            return;
-        }
-        $stmt = $this->conn->query($this->db->showTriggers($this->connector->getDbName()));
-        $names = [];
-        foreach ($stmt as $row) {
-            $names[] = $row['Trigger'];
-        }
-        $stmt->closeCursor();
-        foreach ($names as $name) {
-            yield $name;
-        }
-    }
-
-    private function iterateProcedures(): \Generator
-    {
-        if (!$this->settings->isEnabled('routines')) {
-            yield from [];
-            return;
-        }
-        $stmt = $this->conn->query($this->db->showProcedures($this->connector->getDbName()));
-        $names = [];
-        foreach ($stmt as $row) {
-            $names[] = $row['procedure_name'];
-        }
-        $stmt->closeCursor();
-        foreach ($names as $name) {
-            yield $name;
-        }
-    }
-
-    private function iterateFunctions(): \Generator
-    {
-        if (!$this->settings->isEnabled('routines')) {
-            yield from [];
-            return;
-        }
-        $stmt = $this->conn->query($this->db->showFunctions($this->connector->getDbName()));
-        $names = [];
-        foreach ($stmt as $row) {
-            $names[] = $row['function_name'];
-        }
-        $stmt->closeCursor();
-        foreach ($names as $name) {
-            yield $name;
-        }
-    }
-
-    private function iterateEvents(): \Generator
-    {
-        if (!$this->settings->isEnabled('events')) {
-            yield from [];
-            return;
-        }
-        $stmt = $this->conn->query($this->db->showEvents($this->connector->getDbName()));
-        $names = [];
-        foreach ($stmt as $row) {
-            $names[] = $row['event_name'];
-        }
-        $stmt->closeCursor();
-        foreach ($names as $name) {
-            yield $name;
-        }
-    }
-
-    /**
      * Exports all the tables selected from database
      */
-    private function exportTables(): void
+    private function exportTables()
     {
-        // Exporting tables one by one using streaming iteration to reduce memory footprint
-        foreach ($this->iterateTables() as $table) {
+        // Exporting tables one by one
+        foreach ($this->tables as $table) {
             if ($this->matches($table, $this->settings->getExcludedTables())) {
                 continue;
             }
@@ -510,22 +395,24 @@ class Mysqldump
     /**
      * Exports all the views found in database.
      */
-    private function exportViews(): void
+    private function exportViews()
     {
         if (false === $this->settings->isEnabled('no-create-info')) {
-            // First pass: stand-in tables for views
-            foreach ($this->iterateViews() as $view) {
+            // Exporting views one by one
+            foreach ($this->views as $view) {
                 if ($this->matches($view, $this->settings->getExcludedTables())) {
                     continue;
                 }
+
                 $this->tableColumnTypes[$view] = $this->getTableColumnTypes($view);
                 $this->getViewStructureTable($view);
             }
-            // Second pass: actual views
-            foreach ($this->iterateViews() as $view) {
+
+            foreach ($this->views as $view) {
                 if ($this->matches($view, $this->settings->getExcludedTables())) {
                     continue;
                 }
+
                 $this->getViewStructureView($view);
             }
         }
@@ -534,9 +421,9 @@ class Mysqldump
     /**
      * Exports all the triggers found in database.
      */
-    private function exportTriggers(): void
+    private function exportTriggers()
     {
-        foreach ($this->iterateTriggers() as $trigger) {
+        foreach ($this->triggers as $trigger) {
             $this->getTriggerStructure($trigger);
         }
     }
@@ -544,9 +431,9 @@ class Mysqldump
     /**
      * Exports all the procedures found in database.
      */
-    private function exportProcedures(): void
+    private function exportProcedures()
     {
-        foreach ($this->iterateProcedures() as $procedure) {
+        foreach ($this->procedures as $procedure) {
             $this->getProcedureStructure($procedure);
         }
     }
@@ -554,9 +441,9 @@ class Mysqldump
     /**
      * Exports all the functions found in database.
      */
-    private function exportFunctions(): void
+    private function exportFunctions()
     {
-        foreach ($this->iterateFunctions() as $function) {
+        foreach ($this->functions as $function) {
             $this->getFunctionStructure($function);
         }
     }
@@ -565,9 +452,9 @@ class Mysqldump
      * Exports all the events found in database.
      * @throws Exception
      */
-    private function exportEvents(): void
+    private function exportEvents()
     {
-        foreach ($this->iterateEvents() as $event) {
+        foreach ($this->events as $event) {
             $this->getEventStructure($event);
         }
     }
@@ -593,8 +480,7 @@ class Mysqldump
 
             $stmt = $this->db->showCreateTable($tableName);
 
-            $stmtCT = $this->conn->query($stmt);
-            foreach ($stmtCT as $r) {
+            foreach ($this->conn->query($stmt) as $r) {
                 $this->write($ret);
 
                 if ($this->settings->isEnabled('add-drop-table')) {
@@ -605,7 +491,6 @@ class Mysqldump
 
                 break;
             }
-            $stmtCT->closeCursor();
         }
 
         $this->tableColumnTypes[$tableName] = $this->getTableColumnTypes($tableName);
@@ -633,7 +518,6 @@ class Mysqldump
                 'is_virtual' => $types['is_virtual']
             ];
         }
-        $columns->closeCursor();
 
         return $columnTypes;
     }
@@ -658,8 +542,7 @@ class Mysqldump
         $stmt = $this->db->showCreateView($viewName);
 
         // create views as tables, to resolve dependencies
-        $stmtSCV = $this->conn->query($stmt);
-        foreach ($stmtSCV as $r) {
+        foreach ($this->conn->query($stmt) as $r) {
             if ($this->settings->isEnabled('add-drop-table')) {
                 $this->write($this->db->dropView($viewName));
             }
@@ -668,7 +551,6 @@ class Mysqldump
 
             break;
         }
-        $stmtSCV->closeCursor();
     }
 
     /**
@@ -714,15 +596,13 @@ class Mysqldump
         $stmt = $this->db->showCreateView($viewName);
 
         // Create views, to resolve dependencies replacing tables with views
-        $stmtSCV2 = $this->conn->query($stmt);
-        foreach ($stmtSCV2 as $r) {
+        foreach ($this->conn->query($stmt) as $r) {
             // Because we must replace table with view, we should delete it
             $this->write($this->db->dropView($viewName));
             $this->write($this->db->createView($r));
 
             break;
         }
-        $stmtSCV2->closeCursor();
     }
 
     /**
@@ -734,18 +614,15 @@ class Mysqldump
     {
         $stmt = $this->db->showCreateTrigger($triggerName);
 
-        $stmtSCT = $this->conn->query($stmt);
-        foreach ($stmtSCT as $r) {
+        foreach ($this->conn->query($stmt) as $r) {
             if ($this->settings->isEnabled('add-drop-trigger')) {
                 $this->write($this->db->addDropTrigger($triggerName));
             }
 
             $this->write($this->db->createTrigger($r));
 
-            $stmtSCT->closeCursor();
             return;
         }
-        $stmtSCT->closeCursor();
     }
 
     /**
@@ -764,13 +641,11 @@ class Mysqldump
 
         $stmt = $this->db->showCreateProcedure($procedureName);
 
-        $stmtSCP = $this->conn->query($stmt);
-        foreach ($stmtSCP as $r) {
+        foreach ($this->conn->query($stmt) as $r) {
             $this->write($this->db->createProcedure($r));
-            $stmtSCP->closeCursor();
+
             return;
         }
-        $stmtSCP->closeCursor();
     }
 
     /**
@@ -789,13 +664,11 @@ class Mysqldump
 
         $stmt = $this->db->showCreateFunction($functionName);
 
-        $stmtSCF = $this->conn->query($stmt);
-        foreach ($stmtSCF as $r) {
+        foreach ($this->conn->query($stmt) as $r) {
             $this->write($this->db->createFunction($r));
-            $stmtSCF->closeCursor();
+
             return;
         }
-        $stmtSCF->closeCursor();
     }
 
     /**
@@ -815,13 +688,11 @@ class Mysqldump
 
         $stmt = $this->db->showCreateEvent($eventName);
 
-        $stmtSCE = $this->conn->query($stmt);
-        foreach ($stmtSCE as $r) {
+        foreach ($this->conn->query($stmt) as $r) {
             $this->write($this->db->createEvent($r));
-            $stmtSCE->closeCursor();
+
             return;
         }
-        $stmtSCE->closeCursor();
     }
 
     /**
@@ -1103,12 +974,12 @@ class Mysqldump
      * Keyed by table name, with the value as the conditions:
      * e.g. 'users' => 'date_registered > NOW() - INTERVAL 6 MONTH AND deleted=0'
      */
-    public function setTableWheres(array $tableWheres): void
+    public function setTableWheres(array $tableWheres)
     {
         $this->tableWheres = $tableWheres;
     }
 
-    public function getTableWhere(string $tableName): string|false
+    public function getTableWhere(string $tableName)
     {
         if (!empty($this->tableWheres[$tableName])) {
             return $this->tableWheres[$tableName];
@@ -1122,7 +993,7 @@ class Mysqldump
     /**
      * Keyed by table name, with the value as the numeric limit: e.g. 'users' => 3000
      */
-    public function setTableLimits(array $tableLimits): void
+    public function setTableLimits(array $tableLimits)
     {
         $this->tableLimits = $tableLimits;
     }
@@ -1130,7 +1001,7 @@ class Mysqldump
     /**
      * Returns the LIMIT for the table. Must be numeric to be returned.
      */
-    public function getTableLimit(string $tableName): int|string|false
+    public function getTableLimit(string $tableName)
     {
         if (!isset($this->tableLimits[$tableName])) {
             return false;
@@ -1157,7 +1028,7 @@ class Mysqldump
      *
      * @throws Exception
      */
-    public function addTypeAdapter(string $adapterClassName): void
+    public function addTypeAdapter(string $adapterClassName)
     {
         if (!is_a($adapterClassName, TypeAdapterInterface::class, true)) {
             $message = sprintf('Adapter %s is not instance of %s', $adapterClassName, TypeAdapterInterface::class);
@@ -1170,7 +1041,7 @@ class Mysqldump
     /**
      * Set a callable that will be used to transform table rows.
      */
-    public function setTransformTableRowHook(callable $callable): void
+    public function setTransformTableRowHook(callable $callable)
     {
         $this->transformTableRowCallable = $callable;
     }
@@ -1178,7 +1049,7 @@ class Mysqldump
     /**
      * Set a callable that will be used to report dump information.
      */
-    public function setInfoHook(callable $callable): void
+    public function setInfoHook(callable $callable)
     {
         $this->infoCallable = $callable;
     }

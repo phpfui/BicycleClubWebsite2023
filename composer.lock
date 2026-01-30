@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e892ef018ee2fee6e09588d1a0e44e44",
+    "content-hash": "a71baa4b7e20fdafb40e684e12029356",
     "packages": [
         {
             "name": "alek13/slack",
@@ -529,16 +529,16 @@
         },
         {
             "name": "endroid/qr-code",
-            "version": "6.1.0",
+            "version": "6.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/endroid/qr-code.git",
-                "reference": "5a74873ba8873ddcc557d22755c914ac899563ae"
+                "reference": "b44cb6ef32201102e6e518e30a3be661314e6f93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/endroid/qr-code/zipball/5a74873ba8873ddcc557d22755c914ac899563ae",
-                "reference": "5a74873ba8873ddcc557d22755c914ac899563ae",
+                "url": "https://api.github.com/repos/endroid/qr-code/zipball/b44cb6ef32201102e6e518e30a3be661314e6f93",
+                "reference": "b44cb6ef32201102e6e518e30a3be661314e6f93",
                 "shasum": ""
             },
             "require": {
@@ -589,7 +589,7 @@
             ],
             "support": {
                 "issues": "https://github.com/endroid/qr-code/issues",
-                "source": "https://github.com/endroid/qr-code/tree/6.1.0"
+                "source": "https://github.com/endroid/qr-code/tree/6.1.1"
             },
             "funding": [
                 {
@@ -597,7 +597,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-11-25T10:47:45+00:00"
+            "time": "2026-02-04T19:04:33+00:00"
         },
         {
             "name": "flowjs/flow-php-server",
@@ -704,77 +704,6 @@
                 "source": "https://github.com/FortAwesome/Font-Awesome"
             },
             "time": "2025-10-01T19:14:40+00:00"
-        },
-        {
-            "name": "frameright/image-metadata-parser",
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Frameright/php-image-metadata-parser.git",
-                "reference": "0bdfe9fbc0dfd3461e289302cff893c65e1b31b9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Frameright/php-image-metadata-parser/zipball/0bdfe9fbc0dfd3461e289302cff893c65e1b31b9",
-                "reference": "0bdfe9fbc0dfd3461e289302cff893c65e1b31b9",
-                "shasum": ""
-            },
-            "require": {
-                "ext-xml": "*",
-                "php": ">=5.5"
-            },
-            "require-dev": {
-                "mockery/mockery": "~1.6",
-                "phpcompatibility/php-compatibility": "^9.3.5",
-                "phpunit/phpunit": "^9.5.25"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "CSD\\Image\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Frameright (Coberg Ltd)",
-                    "email": "hello@frameright.io",
-                    "homepage": "https://frameright.io/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Aurelien Lourot",
-                    "email": "software@lourot.dev",
-                    "homepage": "https://lourot.dev/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Daniel Chesterton",
-                    "email": "daniel@chestertondevelopment.com",
-                    "homepage": "http://www.chestertondevelopment.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Image metadata parsing library",
-            "keywords": [
-                "Frameright",
-                "IDC",
-                "IPTC",
-                "Image Display Control",
-                "exif",
-                "image",
-                "metadata",
-                "photo",
-                "xmp"
-            ],
-            "support": {
-                "issues": "https://github.com/Frameright/php-image-metadata-parser/issues",
-                "source": "https://github.com/Frameright/php-image-metadata-parser/tree/1.2.0"
-            },
-            "time": "2025-06-15T16:04:34+00:00"
         },
         {
             "name": "gitonomy/gitlib",
@@ -1811,27 +1740,27 @@
         },
         {
             "name": "laravel/serializable-closure",
-            "version": "v2.0.8",
+            "version": "v2.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/serializable-closure.git",
-                "reference": "7581a4407012f5f53365e11bafc520fd7f36bc9b"
+                "reference": "8f631589ab07b7b52fead814965f5a800459cb3e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/7581a4407012f5f53365e11bafc520fd7f36bc9b",
-                "reference": "7581a4407012f5f53365e11bafc520fd7f36bc9b",
+                "url": "https://api.github.com/repos/laravel/serializable-closure/zipball/8f631589ab07b7b52fead814965f5a800459cb3e",
+                "reference": "8f631589ab07b7b52fead814965f5a800459cb3e",
                 "shasum": ""
             },
             "require": {
                 "php": "^8.1"
             },
             "require-dev": {
-                "illuminate/support": "^10.0|^11.0|^12.0",
+                "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
                 "nesbot/carbon": "^2.67|^3.0",
                 "pestphp/pest": "^2.36|^3.0|^4.0",
                 "phpstan/phpstan": "^2.0",
-                "symfony/var-dumper": "^6.2.0|^7.0.0"
+                "symfony/var-dumper": "^6.2.0|^7.0.0|^8.0.0"
             },
             "type": "library",
             "extra": {
@@ -1868,7 +1797,7 @@
                 "issues": "https://github.com/laravel/serializable-closure/issues",
                 "source": "https://github.com/laravel/serializable-closure"
             },
-            "time": "2026-01-08T16:22:46+00:00"
+            "time": "2026-02-03T06:55:34+00:00"
         },
         {
             "name": "league/commonmark",
@@ -5834,16 +5763,16 @@
     "packages-dev": [
         {
             "name": "carthage-software/mago",
-            "version": "1.4.0",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/carthage-software/mago.git",
-                "reference": "443859f04c948192677b9e1f8530a4568b53ffb7"
+                "reference": "0ce3f5d230f8ae330617b04299700347d3ca6806"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/carthage-software/mago/zipball/443859f04c948192677b9e1f8530a4568b53ffb7",
-                "reference": "443859f04c948192677b9e1f8530a4568b53ffb7",
+                "url": "https://api.github.com/repos/carthage-software/mago/zipball/0ce3f5d230f8ae330617b04299700347d3ca6806",
+                "reference": "0ce3f5d230f8ae330617b04299700347d3ca6806",
                 "shasum": ""
             },
             "require": {
@@ -5881,7 +5810,7 @@
             ],
             "support": {
                 "issues": "https://github.com/carthage-software/mago/issues",
-                "source": "https://github.com/carthage-software/mago/tree/1.4.0"
+                "source": "https://github.com/carthage-software/mago/tree/1.5.0"
             },
             "funding": [
                 {
@@ -5889,7 +5818,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-03T16:08:18+00:00"
+            "time": "2026-02-04T21:37:39+00:00"
         },
         {
             "name": "clue/ndjson-react",
@@ -7707,12 +7636,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "57534122edd70a2b3dbb02b65f2091efc57e4ab7"
+                "reference": "258cd5fdcb59c29f421927b2cf77f48de9458a98"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/57534122edd70a2b3dbb02b65f2091efc57e4ab7",
-                "reference": "57534122edd70a2b3dbb02b65f2091efc57e4ab7",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/258cd5fdcb59c29f421927b2cf77f48de9458a98",
+                "reference": "258cd5fdcb59c29f421927b2cf77f48de9458a98",
                 "shasum": ""
             },
             "conflict": {
@@ -8334,7 +8263,7 @@
                 "prestashop/blockwishlist": ">=2,<2.1.1",
                 "prestashop/contactform": ">=1.0.1,<4.3",
                 "prestashop/gamification": "<2.3.2",
-                "prestashop/prestashop": "<8.2.3",
+                "prestashop/prestashop": "<8.2.4|>=9.0.0.0-alpha1,<9.0.3",
                 "prestashop/productcomments": "<5.0.2",
                 "prestashop/ps_checkout": "<4.4.1|>=5,<5.0.5",
                 "prestashop/ps_contactinfo": "<=3.3.2",
@@ -8609,7 +8538,7 @@
                 "wikimedia/parsoid": "<0.12.2",
                 "willdurand/js-translation-bundle": "<2.1.1",
                 "winter/wn-backend-module": "<1.2.4",
-                "winter/wn-cms-module": "<1.0.476|>=1.1,<1.1.11|>=1.2,<1.2.7",
+                "winter/wn-cms-module": "<=1.2.9",
                 "winter/wn-dusk-plugin": "<2.1",
                 "winter/wn-system-module": "<1.2.4",
                 "wintercms/winter": "<=1.2.3",
@@ -8718,7 +8647,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-03T19:20:38+00:00"
+            "time": "2026-02-04T22:06:32+00:00"
         },
         {
             "name": "sebastian/cli-parser",

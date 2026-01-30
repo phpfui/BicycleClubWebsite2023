@@ -10,6 +10,8 @@ class Content extends \App\UI\ContentEditor
 
 	protected \App\Model\ContentFiles $contentFileModel;
 
+	protected ?bool $editable;
+
 	protected int $next = 0;
 
 	protected int $prior = 0;
@@ -18,9 +20,10 @@ class Content extends \App\UI\ContentEditor
 
 	public function __construct(\App\View\Page $page)
 		{
-		parent::__construct($page, $page->getPermissions()->isAuthorized('Edit Content', 'Content'));
+		$this->addContent = $page->isAuthorized('Add Content', 'Content');
+		$this->editable = $page->isAuthorized('Edit Content', 'Content');
+		parent::__construct($page, $this->editable);
 		$this->contentFileModel = new \App\Model\ContentFiles();
-		$this->addContent = $page->getPermissions()->isAuthorized('Add Content', 'Content');
 
 		if (! self::$processed && ($this->editable || $this->addContent))
 			{
@@ -30,6 +33,198 @@ class Content extends \App\UI\ContentEditor
 				self::$processed = true;
 				}
 			}
+		}
+
+	public function add(\App\Record\Blog $blog) : \PHPFUI\Form
+		{
+		$submit = new \PHPFUI\Submit('Add Content', 'action')->addClass('success');
+
+		$form = new \PHPFUI\Form($this->page);
+		$storyText = 'Edit content here...';
+
+		$storyDiv = new \PHPFUI\HTML5Element('div');
+		$storyDiv->setId($id = 'body');
+		$this->makeEditable($id);
+		$this->page->addJavaScript($this->tinyMCE->getActivateCode($this->page, $id));
+
+		$csrf = \App\Model\Session::csrf('"');
+		$bodySelector = '$("#' . $id . '")';
+
+		$replaceBlobImages = 'uploadImage(' . $bodySelector . '.html(),' . $csrf . ').' .
+			'then(resultHtml => { ' . $bodySelector . '.html(resultHtml);});console.log("done on click"+' . $bodySelector . '.html());';
+
+		$js = $replaceBlobImages . 'return true;';
+		$submit->addAttribute('onclick', $js);
+		$form->add($submit);
+
+		$storyDiv->add($storyText);
+		$form->add($storyDiv);
+
+		if ($form->isMyCallback($submit))
+			{
+			$story = new \App\Record\Story();
+			$story->body = $_POST['body'];
+			$story->editorId = \App\Model\Session::signedInMemberId();
+			$story->insert();
+
+			$blogId = $blog->blogId;
+
+			if ($blogId)
+				{
+				$blogItem = new \App\Record\BlogItem();
+				$blogItem->story = $story;
+				$blogItem->blogId = $blogId;
+				$blogItem->insert();
+				}
+			$this->page->redirect("/Content/edit/{$story->storyId}/{$blogId}");
+			}
+
+		return $form;
+		}
+
+	public function edit(\App\Record\Story $story, \App\Record\Blog $blog) : \PHPFUI\HTML5Element
+		{
+		$storyId = $story->storyId;
+		$headline = $story->headline ?? '';
+		$subhead = $story->subhead ?? '';
+		$noTitle = $story->noTitle ?? 0;
+		$author = $story->author ?? '';
+		$date = '';
+
+		if (! empty($story->javaScript))
+			{
+			$this->page->addJavaScript($story->javaScript);
+			}
+
+		if ((int)$story->lastEdited && $story->lastEdited !== $story->date)
+			{
+			$date = 'updated ' . $story->lastEdited;
+			}
+		$byline = '';
+
+		if ((int)$story->date)
+			{
+			$byline = 'on ' . $story->date;
+			}
+		$output = new \PHPFUI\HTML5Element('div');
+		$output->addClass('row');
+		$output->setId("storyId-{$storyId}");
+
+		if (! $noTitle && \strlen($headline))
+			{
+			$output->add(new \PHPFUI\SubHeader($headline));
+
+			if (\strlen($subhead))
+				{
+				$output->add("<h5>{$subhead}</h5>");
+				}
+			}
+
+		if (\strlen($author))
+			{
+			$authorDiv = new \PHPFUI\HTML5Element('div');
+			$authorDiv->addClass('row');
+			$authorDiv->add("By <strong>{$author}</strong> {$byline} {$date}");
+
+			$output->add($authorDiv);
+			}
+		$iconBar = new \PHPFUI\Menu();
+		$iconBar->setIconAlignment('top');
+
+		if ($story->loaded())
+			{
+			$storyText = \App\Tools\TextHelper::unhtmlentities($story->body);
+			}
+		else
+			{
+			$storyText = 'Edit content here...';
+			}
+
+
+		if (\str_contains($storyText, 'contenteditable'))
+			{
+			$dom = new \voku\helper\HtmlDomParser($storyText);
+			$div = $dom->findOneOrFalse('div');
+
+			if ($div && $div->hasAttribute('contenteditable'))
+				{
+				$storyText = $div->innerHtml();
+				}
+			}
+
+		$view = new \App\View\SlideShow($this->page);
+
+		while (($pos = \strpos($storyText, $view->getInsertionText())) !== false)
+			{
+			$endShow = (int)\strpos($storyText, '~', $pos + 1);
+			$show = \substr($storyText, $pos, $endShow - $pos + 1);
+			$parts = \explode('-', \trim($show, '~'));
+			$slideShow = new \App\Record\SlideShow($parts[1] ?? 0);
+			$slideShowHtml = $view->show($slideShow, true);
+			$storyText = \str_replace($show, (string)$slideShowHtml, $storyText);
+			}
+
+		$id = '';
+		$storyDiv = new \PHPFUI\HTML5Element('div');
+
+		$id = 'story-' . $story->storyId;
+		$storyDiv->setId($id);
+		$this->makeEditable($id);
+		$saveContent = new \PHPFUI\AJAX('saveContent');
+		$this->page->addJavaScript($saveContent->getPageJS());
+		$this->page->addJavaScript($this->tinyMCE->getActivateCode($this->page, $id));
+
+		$csrf = \App\Model\Session::csrf('"');
+		$bodySelector = '$("#' . $id . '")';
+		$parameters = ['id' => '"' . $id . '"', 'csrf' => $csrf, 'body' => $bodySelector . '.html()'];
+		$saveContentJS = $saveContent->execute($parameters);
+
+		$replaceBlobImages = 'uploadImage(' . $bodySelector . '.html(),' . $csrf . ').' .
+			'then(resultHtml => { ' . $bodySelector . '.html(resultHtml);' . $saveContentJS . '});';
+
+		$editItem = new \PHPFUI\MenuItem('Save', '#');
+		$icon = new \PHPFUI\FAIcon('far', 'save');
+		$editItem->setIcon($icon);
+		$editId = $editItem->getId();
+		$js = 'var editId=$("#' . $editId . '"),textId=editId.find("span");' .
+			'{var color=$("#' . $editId . '").css("background-color");' . $replaceBlobImages .
+			'textId.html("Saved");editId.css("background-color","lime");setTimeout(function(){textId.html("Save ");' .
+			'editId.css("background-color",color)},2000)};return false;';
+		$editItem->addAttribute('onclick', $js);
+		$iconBar->addMenuItem($editItem);
+
+		if ($story->loaded())
+			{
+			$settingsItem = new \PHPFUI\MenuItem('Settings', '#');
+			$settingsItem->setIcon(new \PHPFUI\FAIcon('fas', 'cog'));
+			$story->editorId = \App\Model\Session::signedInMemberId();
+			$this->editSettings($story, $blog, $settingsItem);
+			$settingsItem->addAttribute('onclick', $replaceBlobImages);
+			$iconBar->addMenuItem($settingsItem);
+
+			$javaScriptButton = new \PHPFUI\MenuItem('Script', '#');
+			$javaScriptButton->addAttribute('onclick', $replaceBlobImages);
+			$javaScriptButton->setIcon(new \PHPFUI\FAIcon('fab', 'js-square'));
+			$this->editJavaScript($story, $javaScriptButton);
+			$iconBar->addMenuItem($javaScriptButton);
+
+			if ($this->page->isAuthorized('Delete Content', 'Content'))
+				{
+				$deleteContent = new \PHPFUI\AJAX('deleteContent', 'Permanently delete! Are you sure?');
+				$deleteContent->addFunction('success', '$("#storyId-"+data.response).css("background-color","red").hide("fast").remove()');
+				$this->page->addJavaScript($deleteContent->getPageJS());
+				$deleteItem = new \PHPFUI\MenuItem('Delete', '#');
+				$deleteItem->addAttribute('onclick', $deleteContent->execute(['storyId' => $storyId]));
+				$deleteItem->setIcon(new \PHPFUI\FAIcon('far', 'trash-alt'));
+				$iconBar->addMenuItem($deleteItem);
+				}
+			}
+		$output->add($iconBar);
+
+		$storyDiv->add($storyText);
+		$output->add($storyDiv);
+
+		return $output;
 		}
 
 	public function getDisplayCategoryHTML(string $pageName, int | string $year = 0) : \PHPFUI\Container
@@ -156,66 +351,16 @@ class Content extends \App\UI\ContentEditor
 
 		if ($this->editable)
 			{
-			$id = 'story-' . $story->storyId;
-			$storyDiv->setId($id);
-			$this->makeEditable($id);
-
-			$settingsItem = new \PHPFUI\MenuItem('Settings', '#');
-			$settingsItem->setIcon(new \PHPFUI\FAIcon('fas', 'cog'));
-			$story->editorId = \App\Model\Session::signedInMemberId();
-			$this->editSettings(new \App\Record\Story($story), $settingsItem);
-
-			if (! $abbreviated && $story instanceof \App\Record\Story)
-				{
-				$getContent = new \PHPFUI\AJAX('getContent');
-				$getContent->addFunction('success', '$("#" + data.id).html(data.response);');
-				$saveContent = new \PHPFUI\AJAX('saveContent');
-				$this->page->addJavaScript($getContent->getPageJS());
-				$this->page->addJavaScript($saveContent->getPageJS());
-				$csrf = \App\Model\Session::csrf('"');
-				$bodySelector = '$("#' . $id . '")';
-				$saveContentJS = $saveContent->execute(['id' => '"' . $id . '"', 'csrf' => $csrf, 'body' => $bodySelector . '.html()']);
-
-				$replaceBlobImages = 'uploadImage(' . $bodySelector . '.html(),' . $csrf . ').' .
-					'then(resultHtml => { ' . $bodySelector . '.html(resultHtml);' . $saveContentJS . '});';
-
-				$editItem = new \PHPFUI\MenuItem('Edit', '#');
-				$icon = new \PHPFUI\FAIcon('far', 'edit');
-				$iconId = $icon->getId();
-				$editItem->setIcon($icon);
-				$editId = $editItem->getId();
-				$js = 'var editId=$("#' . $editId . '"),textId=editId.find("span"),iconId=$("#' . $iconId . '");' .
-					'if(iconId.hasClass("fa-edit")){textId.html("Save ");iconId.removeClass("fa-edit");' .
-					'iconId.addClass("fa-save");' . $this->tinyMCE->getActivateCode($this->page, $id) . $getContent->execute(['id' => '"' . $id . '"', 'csrf' => $csrf]) .
-					'}else{var color=$("#' . $settingsItem->getId() . '").css("background-color");' . $replaceBlobImages .
-					'textId.html("Saved");editId.css("background-color","lime");setTimeout(function(){textId.html("Save ");' .
-					'editId.css("background-color",color)},2000)};return false;';
-				$editItem->addAttribute('onclick', $js);
-				$iconBar->addMenuItem($editItem);
-				$settingsItem->addAttribute('onclick', $replaceBlobImages);
-				$iconBar->addMenuItem($settingsItem);
-
-				$javaScriptButton = new \PHPFUI\MenuItem('Script', '#');
-				$javaScriptButton->addAttribute('onclick', $replaceBlobImages);
-				$javaScriptButton->setIcon(new \PHPFUI\FAIcon('fab', 'js-square'));
-				$this->editJavaScript(new \App\Record\Story($story), $javaScriptButton);
-				$iconBar->addMenuItem($javaScriptButton);
-				}
-			else
-				{
-				$editItem = new \PHPFUI\MenuItem('Edit', '/Content/view/' . $storyId);
-				$editItem->setIcon(new \PHPFUI\FAIcon('far', 'edit'));
-				$iconBar->addMenuItem($editItem);
-				}
+			$editItem = new \PHPFUI\MenuItem('Edit', "/Content/edit/{$storyId}/{$blogId}");
+			$editItem->setIcon(new \PHPFUI\FAIcon('far', 'edit'));
+			$iconBar->addMenuItem($editItem);
 			}
-
-		\App\Model\Session::csrf();
 
 		if ($blogId)
 			{
 			$url = $this->page->getBaseURL();
 
-			if ($this->page->getPermissions()->isAuthorized('Delete Item From Blog', 'Content'))
+			if ($this->page->isAuthorized('Delete Item From Blog', 'Content'))
 				{
 				$deleteFromPage = new \PHPFUI\AJAX('removeContentFromPage', 'Are you sure you want to remove this story from the page? You can get it back in the Content section.');
 				$deleteFromPage->addFunction('success', '$("#storyId-"+data.response).css("background-color","red").hide("fast").remove()');
@@ -228,22 +373,12 @@ class Content extends \App\UI\ContentEditor
 				}
 			$this->prior = $storyId;
 			}
-		elseif ($this->page->getPermissions()->isAuthorized('Delete Content', 'Content'))
-			{
-			$deleteContent = new \PHPFUI\AJAX('deleteContent', 'Permanently delete! Are you sure?');
-			$deleteContent->addFunction('success', '$("#storyId-"+data.response).css("background-color","red").hide("fast").remove()');
-			$this->page->addJavaScript($deleteContent->getPageJS());
-			$deleteItem = new \PHPFUI\MenuItem('Delete', '#');
-			$deleteItem->addAttribute('onclick', $deleteContent->execute(['storyId' => $storyId]));
-			$deleteItem->setIcon(new \PHPFUI\FAIcon('far', 'trash-alt'));
-			$iconBar->addMenuItem($deleteItem);
-			}
 		$output->add($iconBar);
 
 		if ($abbreviated)
 			{
 			$output->add($abbrevText);
-			$output->add(new \PHPFUI\Link("/Content/view/{$storyId}", "({$headline} continues ...)", false));
+			$output->add(new \PHPFUI\Link("/Content/view/{$storyId}/{$blogId}", "({$headline} continues ...)", false));
 
 			return $output;
 			}
@@ -263,7 +398,7 @@ class Content extends \App\UI\ContentEditor
 		{
 		$view = new \App\UI\ContinuousScrollTable($this->page, $storyTable);
 		$record = $storyTable->getRecord();
-		$view->addCustomColumn('headline', static fn (array $row) : \PHPFUI\Link => new \PHPFUI\Link('/Content/view/' . $row['storyId'], $row['headline'], false));
+		$view->addCustomColumn('headline', static fn (array $row) : \PHPFUI\Link => new \PHPFUI\Link('/Content/view/' . $row['storyId'], $row['headline'] ?? 'No Headline', false));
 		$view->addCustomColumn('Editor', static fn (array $row) : string => new \App\Record\Member($row['editorId'] ?? 0)->fullName());
 
 		$headers = ['headline', 'author', 'startDate', 'endDate', 'lastEdited', ];
@@ -332,14 +467,19 @@ class Content extends \App\UI\ContentEditor
 		$modal->add($form);
 		}
 
-	private function editSettings(\App\Record\Story $story, \PHPFUI\HTML5Element $modalLink) : void
+	private function editSettings(\App\Record\Story $story, \App\Record\Blog $blog, \PHPFUI\HTML5Element $modalLink) : void
 		{
-		$storyId = $story->storyId;
+		$storyId = $story->storyId ?? 0;
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
 		$modal->addClass('large');
 		$form = new \PHPFUI\Form($this->page);
 		$form->setAreYouSure(false);
 		$form->add(new \PHPFUI\Input\Hidden('storyId', (string)$story->storyId));
+
+		if ($blog->loaded())
+			{
+			$form->add(new \PHPFUI\Input\Hidden('blogId', (string)$blog->blogId));
+			}
 		$form->add(new \PHPFUI\Input\Hidden('action', 'saveSettings'));
 		$fieldSet = new \PHPFUI\FieldSet('Headlines');
 		$headline = new \PHPFUI\Input\Text('headline', 'Headline', $story->headline);
@@ -393,7 +533,7 @@ class Content extends \App\UI\ContentEditor
 		$fieldSet->add($column);
 		$tabs->addTab('Special Handling', $fieldSet);
 
-		$blogs = \App\Table\Blog::getBlogsByNameForStory($storyId);
+		$blogs = \App\Table\Blog::getBlogsByNameForStory((int)$storyId);
 		$multiSelect = new \PHPFUI\Input\MultiSelect('blog', 'Assign to Pages');
 		$multiSelect->setColumns(3);
 
@@ -485,7 +625,7 @@ class Content extends \App\UI\ContentEditor
 			$page = $story->toArray();
 			$storyId = $story->storyId;
 			$hidden = new \PHPFUI\Input\Hidden("{$rowId}[]", $storyId);
-			$link = new \PHPFUI\Link('/Content/view/' . $storyId, $story->headline, false);
+			$link = new \PHPFUI\Link("/Content/view/{$storyId}/{$blog->blogId}", $story->headline, false);
 			$page['headline'] = $hidden . $link;
 			$trash = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
 			$trash->addAttribute('onclick', $delete->execute([$rowId => $storyId]));
@@ -606,32 +746,11 @@ class Content extends \App\UI\ContentEditor
 						$blogItem->onTop = (int)$_POST['onTop'][$storyId];
 						$blogItem->showFull = (int)$_POST['showFull'][$storyId];
 
-						$blogItem->update();
+						$blogItem->insertOrUpdate();
 						}
 					$this->page->setResponse('Saved');
 
 					break;
-
-				case 'getContent':
-
-					[$type, $storyId] = \explode('-', (string)$_POST['id']);
-					$story = new \App\Record\Story($storyId);
-					$body = \str_replace(['&lt;', '&gt;'], ['<', '>'], $story->body);
-
-					if (\str_contains($body, 'contenteditable'))
-						{
-						$dom = new \voku\helper\HtmlDomParser($body);
-						$div = $dom->findOneOrFalse('div');
-
-						if ($div && $div->hasAttribute('contenteditable'))
-							{
-							$body = $div->innerHtml();
-							}
-						}
-					$this->page->setRawResponse(\json_encode(['response' => $body, 'id' => $_POST['id'], ], JSON_THROW_ON_ERROR));
-
-					break;
-
 
 				case 'saveContent':
 
@@ -639,7 +758,7 @@ class Content extends \App\UI\ContentEditor
 					$story = new \App\Record\Story($storyId);
 					$story->editorId = \App\Model\Session::signedInMemberId();
 					$story->body = $_POST['body'];
-					$story->update();
+					$story->insertOrUpdate();
 					$this->page->setResponse($storyId);
 					$this->page->done();
 
@@ -649,7 +768,7 @@ class Content extends \App\UI\ContentEditor
 
 					$id = -1;
 
-					if ($this->page->getPermissions()->isAuthorized('Delete Item From Blog', 'Content'))
+					if ($this->page->isAuthorized('Delete Item From Blog', 'Content'))
 						{
 						$blogItem = new \App\Record\BlogItem();
 						$blogItem->setFrom($_POST);
@@ -663,7 +782,7 @@ class Content extends \App\UI\ContentEditor
 
 				case 'deleteContent':
 
-					if ($this->page->getPermissions()->isAuthorized('Delete Content', 'Content'))
+					if ($this->page->isAuthorized('Delete Content', 'Content'))
 						{
 						$story = new \App\Record\Story((int)$_POST['storyId']);
 						$story->delete();
@@ -697,24 +816,31 @@ class Content extends \App\UI\ContentEditor
 					$story->setFrom($_POST);
 					$story->editorId = \App\Model\Session::signedInMemberId();
 					$story->update();
-					$blogs = \App\Table\Blog::getBlogsByNameForStory($storyId = $_POST['storyId']);
+					$blogs = \App\Table\Blog::getBlogsByNameForStory($storyId = (int)$_POST['storyId']);
 					$activeBlogs = \array_flip($_POST['blog'] ?? []);
 
 					foreach ($blogs as $blog)
 						{
-						if ($blog['storyId'] && ! isset($activeBlogs[$blog['blogId']])) // previouly existed, not now, delete
+						if ($blog->storyId && ! isset($activeBlogs[$blog->blogId])) // previouly existed, not now, delete
 							{
 							$blogItem = new \App\Record\BlogItem();
-							$blogItem->setFrom(['blogId' => $blog['blogId'], 'storyId' => $blog['storyId']]);
+							$blogItem->setFrom(['blogId' => $blog->blogId, 'storyId' => $blog->storyId]);
 							$blogItem->delete();
 							}
-						elseif (empty($blog['storyId']) && isset($activeBlogs[$blog['blogId']])) // was not set, so set it
+						elseif (empty($blog->storyId) && isset($activeBlogs[$blog->blogId])) // was not set, so set it
 							{
 							$blogItem = new \App\Record\BlogItem();
-							$blogItem->setFrom(\array_merge($story->toArray(), ['blogId' => $blog['blogId'], 'ranking' => 0, ]));
+							$blogItem->setFrom(\array_merge($story->toArray(), ['blogId' => $blog->blogId, 'ranking' => 0, ]));
 							$blogItem->insert();
-							\App\Table\Blog::renumberBlog($blog['blogId']);  // insert at top of blog and renumber
+							\App\Table\Blog::renumberBlog($blog->blogId);  // insert at top of blog and renumber
 							}
+						}
+
+					if (! empty($_POST['blogId']))
+						{
+						$blogItem = new \App\Record\BlogItem();
+						$blogItem->setFrom(\array_merge($story->toArray(), ['blogId' => $_POST['blogId'], 'ranking' => 0, ]));
+						$blogItem->insertOrUpdate();
 						}
 					$this->page->redirect();
 					$this->page->done();

@@ -142,7 +142,7 @@ class ComposerUpdate
 		{
 		foreach ($sources as $sourceDir)
 			{
-			//echo $name . ": sourceDir {$sourceDir} => destDir {$destDir}\n";
+//			echo "Copy package {$name} : sourceDir {$sourceDir} => destDir {$destDir}\n";
 
 			if ($destDir)
 				{

@@ -67,7 +67,7 @@ class Page extends \PHPFUI\Page
 
 		if ($debugBar)
 			{
-			$this->debugBarRenderer = $debugBar->getJavascriptRenderer(basePath: PROJECT_ROOT . '/DebugBar/dist');
+			$this->debugBarRenderer = $debugBar->getJavascriptRenderer(basePath: PROJECT_ROOT . '/DebugBar/resources');
 			$this->addHeadJavascript($this->getOutputBuffer([$this->debugBarRenderer, 'dumpJsAssets']));
 			$this->addCss(\str_replace('../fonts/', '/fonts/', $this->getOutputBuffer([$this->debugBarRenderer, 'dumpCssAssets'])));
 			}

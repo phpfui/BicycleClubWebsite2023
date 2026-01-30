@@ -7,14 +7,18 @@ namespace Endroid\QrCode\Writer;
 use Endroid\QrCode\Label\LabelInterface;
 use Endroid\QrCode\Logo\LogoInterface;
 use Endroid\QrCode\QrCodeInterface;
-use Endroid\QrCode\Writer\Result\GdResult;
 use Endroid\QrCode\Writer\Result\PngResult;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 
-final readonly class PngWriter extends AbstractGdWriter
+final readonly class PngWriter implements WriterInterface, ValidatingWriterInterface
 {
     public const WRITER_OPTION_COMPRESSION_LEVEL = 'compression_level';
     public const WRITER_OPTION_NUMBER_OF_COLORS = 'number_of_colors';
+
+    public function __construct(
+        private GdWriter $gdWriter = new GdWriter(),
+    ) {
+    }
 
     public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, array $options = []): ResultInterface
     {
@@ -30,8 +34,7 @@ final readonly class PngWriter extends AbstractGdWriter
             };
         }
 
-        /** @var GdResult $gdResult */
-        $gdResult = parent::write($qrCode, $logo, $label, $options);
+        $gdResult = $this->gdWriter->write($qrCode, $logo, $label, $options);
 
         return new PngResult(
             $gdResult->getMatrix(),
@@ -39,5 +42,10 @@ final readonly class PngWriter extends AbstractGdWriter
             $options[self::WRITER_OPTION_COMPRESSION_LEVEL],
             $options[self::WRITER_OPTION_NUMBER_OF_COLORS]
         );
+    }
+
+    public function validateResult(ResultInterface $result, string $expectedData): void
+    {
+        $this->gdWriter->validateResult($result, $expectedData);
     }
 }

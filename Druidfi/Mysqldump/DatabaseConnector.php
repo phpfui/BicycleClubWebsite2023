@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace Druidfi\Mysqldump;
 
@@ -14,18 +13,39 @@ use PDOException;
  */
 class DatabaseConnector
 {
+    /**
+     * @var string DSN connection string
+     */
     private string $dsn;
 
+    /**
+     * @var string|null Username for database connection
+     */
     private ?string $user;
 
+    /**
+     * @var string|null Password for database connection
+     */
     private ?string $pass;
 
+    /**
+     * @var array PDO options
+     */
     private array $pdoOptions;
 
+    /**
+     * @var string Database host
+     */
     private string $host;
 
+    /**
+     * @var string Database name
+     */
     private string $dbName;
 
+    /**
+     * @var PDO|null PDO connection
+     */
     private ?PDO $conn = null;
 
     /**
@@ -108,27 +128,13 @@ class DatabaseConnector
         }
 
         try {
-            // Build default PDO options with compatibility for PHP 8.5 deprecations
-            $defaultOptions = [
+            $options = array_replace_recursive([
                 PDO::ATTR_PERSISTENT => true,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 // Don't convert empty strings to SQL NULL values on data fetches.
                 PDO::ATTR_ORACLE_NULLS => PDO::NULL_NATURAL,
-            ];
-
-            // Handle deprecated PDO::MYSQL_ATTR_USE_BUFFERED_QUERY in PHP 8.5.
-            // Prefer Pdo\Mysql::ATTR_USE_BUFFERED_QUERY when available; fall back otherwise.
-            $mysqlBufferedQueryAttr = null;
-            if (class_exists('Pdo\\Mysql') && defined('Pdo\\Mysql::ATTR_USE_BUFFERED_QUERY')) {
-                $mysqlBufferedQueryAttr = constant('Pdo\\Mysql::ATTR_USE_BUFFERED_QUERY');
-            } elseif (defined('PDO::MYSQL_ATTR_USE_BUFFERED_QUERY')) {
-                $mysqlBufferedQueryAttr = constant('PDO::MYSQL_ATTR_USE_BUFFERED_QUERY');
-            }
-            if ($mysqlBufferedQueryAttr !== null) {
-                $defaultOptions[$mysqlBufferedQueryAttr] = false;
-            }
-
-            $options = array_replace_recursive($defaultOptions, $this->pdoOptions);
+                PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false,
+            ], $this->pdoOptions);
 
             $this->conn = new PDO($this->dsn, $this->user, $this->pass, $options);
         } catch (PDOException $e) {
@@ -139,11 +145,21 @@ class DatabaseConnector
         return $this->conn;
     }
 
+    /**
+     * Get the database host.
+     *
+     * @return string
+     */
     public function getHost(): string
     {
         return $this->host;
     }
 
+    /**
+     * Get the database name.
+     *
+     * @return string
+     */
     public function getDbName(): string
     {
         return $this->dbName;

@@ -7,17 +7,25 @@ namespace Endroid\QrCode\Writer;
 use Endroid\QrCode\Label\LabelInterface;
 use Endroid\QrCode\Logo\LogoInterface;
 use Endroid\QrCode\QrCodeInterface;
-use Endroid\QrCode\Writer\Result\GdResult;
 use Endroid\QrCode\Writer\Result\GifResult;
 use Endroid\QrCode\Writer\Result\ResultInterface;
 
-final readonly class GifWriter extends AbstractGdWriter
+final readonly class GifWriter implements WriterInterface, ValidatingWriterInterface
 {
+    public function __construct(
+        private GdWriter $gdWriter = new GdWriter(),
+    ) {
+    }
+
     public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, array $options = []): ResultInterface
     {
-        /** @var GdResult $gdResult */
-        $gdResult = parent::write($qrCode, $logo, $label, $options);
+        $gdResult = $this->gdWriter->write($qrCode, $logo, $label, $options);
 
         return new GifResult($gdResult->getMatrix(), $gdResult->getImage());
+    }
+
+    public function validateResult(ResultInterface $result, string $expectedData): void
+    {
+        $this->gdWriter->validateResult($result, $expectedData);
     }
 }

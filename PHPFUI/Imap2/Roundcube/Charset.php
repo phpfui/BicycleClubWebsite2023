@@ -177,37 +177,44 @@ class Charset
 	 * Removes non-unicode characters from input.
 	 */
 	public static function clean(string | array $input) : string | array
-	{
+		{
 		// handle input of type array
-		if (\is_array($input)) {
-			foreach ($input as $idx => $val) {
+		if (\is_array($input))
+			{
+			foreach ($input as $idx => $val)
+				{
 				$input[$idx] = self::clean($val);
+				}
+
+			return $input;
 			}
 
+		if ('' == $input)
+			{
 			return $input;
-		}
-
-		if (! \is_string($input) || '' == $input) {
-			return $input;
-		}
+			}
 
 		// iconv/mbstring are much faster (especially with long strings)
-		if (\function_exists('mb_convert_encoding')) {
+		if (\function_exists('mb_convert_encoding'))
+			{
 			$msch = \mb_substitute_character();
 			\mb_substitute_character('none');
 			$res = \mb_convert_encoding($input, 'UTF-8', 'UTF-8');
 			\mb_substitute_character($msch);
 
-			if (false !== $res) { // @phpstan-ignore-line
+			if (false !== $res) // @phpstan-ignore-line
+				{
 				return $res;
+				}
 			}
-		}
 
-		if (\function_exists('iconv')) {
-			if (($res = @\iconv('UTF-8', 'UTF-8//IGNORE', $input)) !== false) {
+		if (\function_exists('iconv'))
+			{
+			if (($res = @\iconv('UTF-8', 'UTF-8//IGNORE', $input)) !== false)
+				{
 				return $res;
+				}
 			}
-		}
 
 		$seq = '';
 		$out = '';
@@ -223,40 +230,47 @@ class Charset
 			'|\xF4[\x80-\x8F][\x80-\xBF][\x80-\xBF]' .       // UTF8-4
 			')$/';
 
-		for ($i = 0, $len = \strlen($input); $i < $len; $i++) {
+		for ($i = 0, $len = \strlen($input); $i < $len; $i++)
+			{
 			$chr = $input[$i];
 			$ord = \ord($chr);
 
 			// 1-byte character
-			if ($ord <= 0x7F) {
-				if ('' !== $seq) {
+			if ($ord <= 0x7F)
+				{
+				if ('' !== $seq)
+					{
 					$out .= \preg_match($regexp, $seq) ? $seq : '';
 					$seq = '';
-				}
+					}
 
 				$out .= $chr;
-			}
+				}
 			// first byte of multibyte sequence
-			elseif ($ord >= 0xC0) {
-				if ('' !== $seq) {
+			elseif ($ord >= 0xC0)
+				{
+				if ('' !== $seq)
+					{
 					$out .= \preg_match($regexp, $seq) ? $seq : '';
 					$seq = '';
-				}
+					}
 
 				$seq = $chr;
-			}
+				}
 			// next byte of multibyte sequence
-			elseif ('' !== $seq) {
+			elseif ('' !== $seq)
+				{
 				$seq .= $chr;
+				}
 			}
-		}
 
-		if ('' !== $seq) {
+		if ('' !== $seq)
+			{
 			$out .= \preg_match($regexp, $seq) ? $seq : '';
-		}
+			}
 
 		return $out;
-	}
+		}
 
 	/**
 	 * Convert a string from one charset to another.

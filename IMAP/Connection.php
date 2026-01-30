@@ -211,7 +211,7 @@ class Connection
 			{
 			$mailboxes = $this->client->listMailboxes('', '*');
 
-			if (false === $mailboxes)
+			if (empty($mailboxes))
 				{
 				return false;
 				}

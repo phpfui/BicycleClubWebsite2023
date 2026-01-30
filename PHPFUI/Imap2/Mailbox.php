@@ -163,6 +163,7 @@ class Mailbox
 
 	public static function listSubscribed(\IMAP\Connection $imap, $mailbox) : bool
 		{
+		return false;
 		}
 
 	public static function mailboxMsgInfo(\IMAP\Connection $imap) : \stdClass

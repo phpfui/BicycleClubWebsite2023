@@ -76,6 +76,21 @@ class Content extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->page->addPageContent($this->view->showStoriesInTable($storyTable, "{$category} Content"));
 		}
 
+	public function edit(\App\Record\Story $story = new \App\Record\Story(), \App\Record\Blog $blog = new \App\Record\Blog()) : void
+		{
+		if ($this->page->addHeader('Edit Content'))
+			{
+			if ($story->loaded())
+				{
+				$this->page->addPageContent($this->view->edit($story, $blog));
+				}
+			else
+				{
+				$this->page->addPageContent(new \PHPFUI\SubHeader('Story not found'));
+				}
+			}
+		}
+
 	public function imageDelete(string $category = '') : void
 		{
 		$result = [];
@@ -130,24 +145,7 @@ class Content extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			return;
 			}
-		$this->view->setCharsToShow(0);
-		$story = new \App\Record\Story();
-		$member = \App\Model\Session::signedInMemberRecord();
-		$story->body = 'Enter body here...';
-		$story->headline = 'Headline';
-		$story->author = $member->fullName();
-		$story->editorId = \App\Model\Session::signedInMemberId();
-		$storyId = $story->insert();
-
-		if (! $blog->empty())
-			{
-			$blogItem = new \App\Record\BlogItem();
-			$blogItem->story = $story;
-			$blogItem->blog = $blog;
-			$blogItem->ranking = 100;
-			$blogItem->insert();
-			}
-		$this->page->redirect("/Content/view/{$storyId}");
+		$this->page->addPageContent($this->view->add($blog));
 		}
 
 	public function orphan() : void

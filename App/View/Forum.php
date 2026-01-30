@@ -581,7 +581,7 @@ class Forum
 
 			foreach ($forums as $forum)
 				{
-				if ($forum->closed || ! $this->page->getPermissions()->isAuthorized($forum->name, 'Forums'))
+				if ($forum->closed || ! $this->page->isAuthorized($forum->name, 'Forums'))
 					{
 					continue;
 					}

@@ -40,7 +40,6 @@ $updater->setIgnoredRepos([
 
 $updater->setBaseDirectory(PROJECT_ROOT . '/');
 $updater->update();
-$updater->copyDirectory(__DIR__ . '/vendor/php-debugbar/php-debugbar/dist', __DIR__ . '/DebugBar/dist');
 $updater->copyDirectory(__DIR__ . '/vendor/php-debugbar/php-debugbar/resources', __DIR__ . '/DebugBar/resources');
 $updater->deleteNamespace('Symfony\Polyfill');
 $updater->deleteNamespace('HighlightUtilities');

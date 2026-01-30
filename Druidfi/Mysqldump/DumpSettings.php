@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 namespace Druidfi\Mysqldump;
 
@@ -145,7 +144,7 @@ class DumpSettings
         return isset($this->settings[$option]) && $this->settings[$option] === true;
     }
 
-    public function setCompleteInsert(bool $value = true): void
+    public function setCompleteInsert(bool $value = true)
     {
         $this->settings['complete-insert'] = $value;
     }

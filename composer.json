@@ -21,7 +21,6 @@
         "druidfi/mysqldump-php": "^2.0",
         "endroid/qr-code": "^6.0",
         "flowjs/flow-php-server": "^2.0",
-        "frameright/image-metadata-parser": "^1.0",
         "gitonomy/gitlib": "^1.0",
         "guzzlehttp/guzzle": "^7.9",
         "intervention/image": "^3.0",

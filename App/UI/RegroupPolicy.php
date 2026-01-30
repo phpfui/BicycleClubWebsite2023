@@ -11,6 +11,7 @@ class RegroupPolicy
 	public function __construct(private \PHPFUI\Page $page, private ?string $policy = null)
 		{
 		$this->settingsSaver = new \App\Model\SettingsSaver();
+		$this->policy = \trim($policy);
 		}
 
 	public function edit() : \PHPFUI\Form
@@ -49,6 +50,7 @@ class RegroupPolicy
 
 			foreach ($options as $value)
 				{
+				$value = \trim($value);
 				$control->addOption($value, $value, $value == $this->policy);
 				}
 			}

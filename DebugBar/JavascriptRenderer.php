@@ -62,10 +62,10 @@ class JavascriptRenderer
     protected bool $useDistFiles = true;
 
     /** @var string[]  */
-    protected array $distCssFiles = ['../dist/debugbar.min.css'];
+    protected array $distCssFiles = ['dist/debugbar.min.css'];
 
     /** @var string[]  */
-    protected array $distJsFiles = ['../dist/debugbar.min.js'];
+    protected array $distJsFiles = ['dist/debugbar.min.js'];
 
     /**
      * These files are included in the dist files. When using source, they are added by collectors if needed.
@@ -1050,7 +1050,7 @@ class JavascriptRenderer
         $nonce = $this->getNonceAttribute();
 
         foreach ($cssFiles as $file) {
-            $html .= sprintf('<link rel="stylesheet" type="text/css" href="%s">' . "\n", $file);
+            $html .= sprintf('<link rel="stylesheet" type="text/css"%s href="%s">' . "\n", $nonce, $file);
         }
 
         foreach ($inlineCss as $content) {
@@ -1058,7 +1058,7 @@ class JavascriptRenderer
         }
 
         foreach ($jsFiles as $file) {
-            $html .= sprintf('<script type="text/javascript" src="%s"></script>' . "\n", $file);
+            $html .= sprintf('<script type="text/javascript"%s src="%s"></script>' . "\n", $nonce, $file);
         }
 
         foreach ($inlineJs as $content) {
@@ -1193,12 +1193,14 @@ class JavascriptRenderer
         }
 
         $nonce = $this->getNonceAttribute();
+        $varName = $this->getVariableName();
 
         return "<script type=\"text/javascript\"{$nonce}>
 (function () {
     const renderDebugbar = function () {
 $js
-    window.PhpDebugBar.instance = {$this->getVariableName()};
+    window.PhpDebugBar.instance = {$varName};
+    window.{$varName} = {$varName};
     };
 
     if (document.readyState === 'loading') {

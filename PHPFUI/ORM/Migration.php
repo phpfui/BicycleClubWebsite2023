@@ -187,7 +187,7 @@ abstract class Migration
 			$sql .= ' ON UPDATE ' . $onUpdate;
 			}
 
-		$this->alters[$table][] = $sql;
+		$this->addAlter($table, $sql);
 
 		return true;
 		}
@@ -228,7 +228,7 @@ abstract class Migration
 		{
 		$this->dropPrimaryKey($table);
 		$keys = \implode('`, `', $fields);
-		$this->alters[$table] = ["ADD PRIMARY KEY (`{$keys}`)"];
+		$this->addAlter($table, "ADD PRIMARY KEY (`{$keys}`)");
 
 		return true;
 		}
@@ -248,7 +248,7 @@ abstract class Migration
 			$newFieldName = $field;
 			}
 		$this->dropPrimaryKey($table);
-		$this->alters[$table] = ["change `{$field}` `{$newFieldName}` int NOT NULL primary key auto_increment"];
+		$this->addAlter($table, "change `{$field}` `{$newFieldName}` int NOT NULL primary key auto_increment");
 
 		return true;
 		}
@@ -361,7 +361,7 @@ abstract class Migration
 			}
 
 		$sql = 'DROP FOREIGN KEY ' . $index;
-		$this->alters[$table][] = $sql;
+		$this->addAlter($table, $sql);
 
 		return true;
 		}
@@ -479,7 +479,15 @@ abstract class Migration
 		{
 		$indexes = \PHPFUI\ORM::getIndexes($table);
 
-		return isset($indexes[$indexName]);
+		foreach ($indexes as $index)
+			{
+			if ($index->keyName === $indexName)
+				{
+				return true;
+				}
+			}
+
+		return false;
 		}
 
 	/**
@@ -492,7 +500,7 @@ abstract class Migration
 		if ($fieldInfo)
 			{
 			$sql = "RENAME COLUMN `{$field}` TO `{$newName}`";
-			$this->alters[$table][] = $sql;
+			$this->addAlter($table, $sql);
 			}
 
 		return true;
@@ -522,6 +530,11 @@ abstract class Migration
 			$sql .= ' ' . $extra;
 			}
 
+		$this->addAlter($table, $sql);
+		}
+
+	private function addAlter(string $table, $sql) : void
+		{
 		if (! isset($this->alters[$table]))
 			{
 			$this->alters[$table] = [];

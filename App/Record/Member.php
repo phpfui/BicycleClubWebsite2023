@@ -42,11 +42,11 @@ class Member extends \App\Record\Definition\Member
 		return parent::delete();
 		}
 
-	public function fullName() : ?string
+	public function fullName() : string
 		{
 		if (! $this->loaded())
 			{
-			return null;
+			return "Member({$this->memberId} Not Found";
 			}
 
 		return \App\Tools\TextHelper::unhtmlentities(($this->current['firstName'] ?? '') . ' ' . ($this->current['lastName'] ?? ''));

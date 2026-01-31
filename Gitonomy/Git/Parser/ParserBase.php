@@ -25,7 +25,7 @@ abstract class ParserBase
     public function parse($content)
     {
         $this->cursor = 0;
-        $this->content = $content;
+        $this->content = $content ?? '';
         $this->length = strlen($this->content);
 
         $this->doParse();
@@ -135,5 +135,19 @@ abstract class ParserBase
         $this->cursor += $length;
 
         return $this->consumeTo("\n\n");
+    }
+
+    protected function consumeMergeTag()
+    {
+        $expected = "\nmergetag ";
+        $length = strlen($expected);
+        $actual = substr($this->content, $this->cursor, $length);
+        if ($actual != $expected) {
+            return '';
+        }
+        $this->cursor += $length;
+
+        $this->consumeTo('-----END PGP SIGNATURE-----');
+        $this->consume('-----END PGP SIGNATURE-----');
     }
 }

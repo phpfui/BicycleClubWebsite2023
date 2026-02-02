@@ -156,7 +156,10 @@ class MainMenu extends \PHPFUI\AccordionMenu
 			{
 			foreach ($menu->getMenuItems() as $menuItem)
 				{
-				$returnValue[] = $menuItem->getLink();
+				if ($menuItem instanceof \PHPFUI\MenuItem) // @phpstan-ignore-line
+					{
+					$returnValue[] = $menuItem->getLink();
+					}
 				}
 			}
 

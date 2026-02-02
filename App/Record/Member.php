@@ -44,7 +44,7 @@ class Member extends \App\Record\Definition\Member
 
 	public function fullName() : string
 		{
-		if (! $this->loaded())
+		if ($this->empty())
 			{
 			return "Member({$this->memberId} Not Found";
 			}

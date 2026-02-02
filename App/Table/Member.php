@@ -6,18 +6,15 @@ class Member extends \PHPFUI\ORM\Table
 {
 	protected static string $className = '\\' . \App\Record\Member::class;
 
-	public function abandoned() : \PHPFUI\ORM\DataObjectCursor
+	public function abandoned() : static
 		{
-		$sql = self::getSelectedFields() . ' where s.expires is null and s.pending=1 and verifiedEmail<9';
+		$this->setSelectedFields();
+		$condition = new \PHPFUI\ORM\Condition('membership.expires', null);
+		$condition->and('membership.pending', 1);
+		$condition->and('member.verifiedEmail', 9, new \PHPFUI\ORM\Operator\LessThan());
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql);
-		}
-
-	public function badExpirations() : \PHPFUI\ORM\DataObjectCursor
-		{
-		$sql = self::getSelectedFields() . ' WHERE s.expires is null';
-
-		return \PHPFUI\ORM::getDataObjectCursor($sql);
+		return $this;
 		}
 
 	public static function currentMemberCount() : int
@@ -423,32 +420,29 @@ class Member extends \PHPFUI\ORM\Table
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Member(), $sql, [$membershipId]);
 		}
 
-	public function missingNames() : \PHPFUI\ORM\DataObjectCursor
+	public function missingNames() : static
 		{
-		$sql = self::getSelectedFields() . " where s.pending=0 and s.expires>=? and m.firstName<='' or m.lastName<=''";
+		$this->setSelectedFields();
+		$condition = new \PHPFUI\ORM\Condition('membership.expires', null);
+		$condition->and('membership.pending', 0);
+		$missingName = new \PHPFUI\ORM\Condition('member.firstName', '', new \PHPFUI\ORM\Operator\LessThanEqual());
+		$missingName->or('member.firstName', null);
+		$missingName->or('member.lastName', null);
+		$missingName->or('member.lastName', '', new \PHPFUI\ORM\Operator\LessThanEqual());
+		$condition->and($missingName);
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString()]);
+		return $this;
 		}
 
-	public function noMembers() : \PHPFUI\ORM\DataObjectCursor
+	public function noPermissions() : static
 		{
-		$sql = 'select "Missing" as memberName,m.* from membership m where membershipId not in (select membershipId from member) order by joined';
+		$this->setSelectedFields();
+		$permissionTable = new \App\Table\UserPermission()->addSelect('memberId');
+		$condition = new \PHPFUI\ORM\Condition('member.memberId', $permissionTable, new \PHPFUI\ORM\Operator\NotIn());
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql);
-		}
-
-	public function noPayments() : \PHPFUI\ORM\DataObjectCursor
-		{
-		$sql = self::getSelectedFields() . ' where s.expires>=? and s.pending=0 and s.membershipId NOT IN (SELECT membershipId from payment)';
-
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString()]);
-		}
-
-	public function noPermissions() : \PHPFUI\ORM\DataObjectCursor
-		{
-		$sql = self::getSelectedFields() . ' WHERE m.memberId NOT IN (SELECT memberId from userPermission)';
-
-		return \PHPFUI\ORM::getDataObjectCursor($sql);
+		return $this;
 		}
 
 	public static function outstandingPoints(string $sort) : \PHPFUI\ORM\ArrayCursor
@@ -475,5 +469,14 @@ class Member extends \PHPFUI\ORM\Table
 	private static function getSelectedFields() : string
 		{
 		return 'select m.*,s.* from member m left join membership s on s.membershipId=m.membershipId ';
+		}
+
+	private function setSelectedFields() : static
+		{
+		$this->addJoin('membership');
+		$this->addSelect('member.*');
+		$this->addSelect('membership.*');
+
+		return $this;
 		}
 	}

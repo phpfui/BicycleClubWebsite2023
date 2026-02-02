@@ -4,23 +4,20 @@ namespace App\WWW\Membership;
 
 class Audit extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
-	private readonly \App\Table\Member $memberTable;
-
 	private readonly \App\View\Member $memberView;
 
 	public function __construct(\PHPFUI\Interfaces\NanoController $controller)
 		{
 		parent::__construct($controller);
 		$this->memberView = new \App\View\Member($this->page);
-		$this->memberTable = new \App\Table\Member();
 		}
 
 	public function abandoned() : void
 		{
 		if ($this->page->addHeader('Abandoned Member Signups'))
 			{
-			$members = $this->memberTable->abandoned();
-			$this->page->addPageContent($this->memberView->show($members, 'No Abandoned Members'));
+			$memberTable = new \App\Table\Member()->abandoned();
+			$this->page->addPageContent($this->memberView->showWithDelete($memberTable, 'No Abandoned Members'));
 			}
 		}
 
@@ -28,8 +25,8 @@ class Audit extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Memberships with Bad Expirations'))
 			{
-			$members = $this->memberTable->badExpirations();
-			$this->page->addPageContent($this->memberView->show($members, 'No members with bad expirations'));
+			$membershipTable = new \App\Table\Membership()->badExpirations();
+			$this->page->addPageContent($this->memberView->showWithDelete($membershipTable, 'No members with bad expirations'));
 			}
 		}
 
@@ -37,8 +34,8 @@ class Audit extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Memberships with Missing Names'))
 			{
-			$members = $this->memberTable->missingNames();
-			$this->page->addPageContent($this->memberView->show($members, 'All members have names'));
+			$memberTable = new \App\Table\Member()->missingNames();
+			$this->page->addPageContent($this->memberView->showWithDelete($memberTable, 'All members have names'));
 			}
 		}
 
@@ -46,8 +43,8 @@ class Audit extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Memberships with No Members'))
 			{
-			$members = $this->memberTable->noMembers();
-			$this->page->addPageContent($this->memberView->show($members, 'All memberships have members'));
+			$membershipTable = new \App\Table\Membership()->noMembers();
+			$this->page->addPageContent($this->memberView->showWithDelete($membershipTable, 'All memberships have members'));
 			}
 		}
 
@@ -55,8 +52,8 @@ class Audit extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Memberships with No Payments'))
 			{
-			$members = $this->memberTable->noPayments();
-			$this->page->addPageContent($this->memberView->show($members, 'Everyone has paid'));
+			$membershipTable = new \App\Table\Membership()->noPayments();
+			$this->page->addPageContent($this->memberView->showWithDelete($membershipTable, 'Everyone has paid'));
 			}
 		}
 
@@ -64,8 +61,8 @@ class Audit extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Memberships with No Permissions'))
 			{
-			$members = $this->memberTable->noPermissions();
-			$this->page->addPageContent($this->memberView->show($members, 'All members have permissions'));
+			$memberTable = new \App\Table\Member()->noPermissions();
+			$this->page->addPageContent($this->memberView->showWithDelete($memberTable, 'All members have permissions'));
 			}
 		}
 	}

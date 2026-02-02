@@ -6,6 +6,14 @@ class Membership extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Membership::class;
 
+	public function badExpirations() : static
+		{
+		$this->setSelectedFields();
+		$this->setWhere(new \PHPFUI\ORM\Condition('expires', null));
+
+		return $this;
+		}
+
 	public static function currentMembershipCount() : ?string
 		{
 		$sql = 'SELECT count(*) FROM membership where expires>=?';
@@ -79,5 +87,35 @@ class Membership extends \PHPFUI\ORM\Table
 				where s.renews=?';
 
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$date]);
+		}
+
+	public function noMembers() : static
+		{
+		$this->setSelectedFields();
+		$memberTable = new \App\Table\Member()->addSelect('membershipId');
+		$this->setWhere(new \PHPFUI\ORM\Condition('membership.membershipId', $memberTable, new \PHPFUI\ORM\Operator\NotIn()));
+
+		return $this;
+		}
+
+	public function noPayments() : static
+		{
+		$this->setSelectedFields();
+		$condition = new \PHPFUI\ORM\Condition('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('membership.pending', 0);
+		$paymentTable = new \App\Table\Payment()->addSelect('membershipId');
+		$condition->and('membership.membershipId', $paymentTable, new \PHPFUI\ORM\Operator\NotIn());
+		$this->setWhere($condition);
+
+		return $this;
+		}
+
+	private function setSelectedFields() : static
+		{
+		$this->addJoin('member');
+		$this->addSelect('member.*');
+		$this->addSelect('membership.*');
+
+		return $this;
 		}
 	}

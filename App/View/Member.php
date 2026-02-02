@@ -727,6 +727,39 @@ class Member
 		return $header . $accordion;
 		}
 
+	public function showWithDelete(\PHPFUI\ORM\Table $table, string $noMembers = 'No members found') : \PHPFUI\Container
+		{
+		$container = new \PHPFUI\Container();
+
+		$cursor = $table->getDataObjectCursor();
+		$count = \count($cursor);
+
+		if ($count)
+			{
+			$submit = new \PHPFUI\Submit('Delete All', 'delete')->addClass('alert')->setConfirm('As you should want to delete all the the below records?');
+			$form = new \PHPFUI\Form($this->page);
+			$form->add($submit);
+
+			if ($form->isMyCallback($submit))
+				{
+				foreach ($table->getRecordCursor() as $record)
+					{
+					$record->delete();
+					}
+				\App\Model\Session::setFlash('success', $count . ' Records Deleted');
+				$this->page->done();
+				$this->page->redirect();
+
+				return $container;
+				}
+			$container->add($form);
+			}
+
+		$container->add($this->show($cursor, $noMembers));
+
+		return $container;
+		}
+
 	private function addEmailModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Member $member) : void
 		{
 		$modal = new \PHPFUI\Reveal($this->page, $modalLink);

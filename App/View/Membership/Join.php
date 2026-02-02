@@ -4,7 +4,7 @@ namespace App\View\Membership;
 
 class Join
 	{
-	private ?\PHPFUI\ReCAPTCHA $captcha = null;
+	private ?\App\UI\Captcha $captcha = null;
 
 	private readonly \App\Model\MembershipDues $duesModel;
 
@@ -26,7 +26,7 @@ class Join
 
 		if ('127.0.0.1' != $_SERVER['SERVER_ADDR'] && '::1' != $_SERVER['SERVER_ADDR'])
 			{
-			$this->captcha = new \PHPFUI\ReCAPTCHA($this->page, $this->settingTable->value('ReCAPTCHAPublicKey'), $this->settingTable->value('ReCAPTCHAPrivateKey'));
+			$this->captcha = new \App\UI\Captcha($this->page);
 			}
 		}
 

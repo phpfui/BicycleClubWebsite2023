@@ -129,13 +129,13 @@ class Member extends \PHPFUI\ORM\Table
 	/**
 	 * @param array<int> $categories
 	 */
-	public static function getEmailableMembers(bool $all, bool $current, int $monthsPast = 0, int $monthsNew = 0, array $categories = [], string $extra = '') : \PHPFUI\ORM\ArrayCursor
+	public static function getEmailableMembers(bool $all, bool $current, int $monthsPast = 0, int $monthsNew = 0, array $categories = [], string $extra = '') : \PHPFUI\ORM\RecordCursor
 		{
 		if (1 == \count($categories) && 0 == $categories[0])
 			{
 			$categories = []; // all categories requested
 			}
-		$sql = 'select distinct m.firstName,m.lastName,m.email,m.memberId from member m left join membership s on m.membershipId=s.membershipId ';
+		$sql = 'select distinct * from member m left join membership s on m.membershipId=s.membershipId ';
 
 		if ($categories)
 			{
@@ -188,7 +188,7 @@ class Member extends \PHPFUI\ORM\Table
 			}
 		$sql .= $extra;
 
-		return \PHPFUI\ORM::getArrayCursor($sql, $input);
+		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Member(), $sql, $input);
 		}
 
 	public static function getJournalMembers(string $expires) : \PHPFUI\ORM\ArrayCursor

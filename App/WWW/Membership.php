@@ -502,6 +502,14 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		}
 
+	public function textAll() : void
+		{
+		if ($this->page->addHeader('Text All Members'))
+			{
+			$this->page->addPageContent(new \App\View\Text\Members($this->page));
+			}
+		}
+
 	public function thumbnail(\App\Record\Member $member = new \App\Record\Member()) : void
 		{
 		if ($this->page->isAuthorized('Member Photo Thumbnail'))

@@ -8,6 +8,8 @@ class MainMenu extends \App\UI\MainMenu
 		{
 		parent::__construct($permissions, $activeLink);
 
+		$smsModel = new \App\Model\SMS();
+
 		if ($menu = $this->addTopMenu('Rides', 'Rides'))
 			{
 			$this->addSub($menu, '/Rides/edit/0', 'Add A Ride');
@@ -134,6 +136,11 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Leaders/pending', 'Pending Ride Leaders');
 			$this->addSub($menu, '/Leaders/apply', 'Become A Ride Leader');
 			$this->addSub($menu, '/Leaders/email', 'Email All Ride Leaders');
+
+			if ($smsModel->enabled())
+				{
+				$this->addSub($menu, '/Leaders/text', 'Text All Ride Leaders');
+				}
 			$this->addSub($menu, '/Leaders/report', 'Ride Leader Report');
 			$this->addSub($menu, '/Leaders/pastRides', 'My Past Leads');
 			$this->addSub($menu, '/Leaders/myRides', 'My Upcoming Leads');
@@ -185,6 +192,11 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Membership/password', 'Change My Password');
 			$this->addSub($menu, '/Membership/card', 'Membership Card');
 			$this->addSub($menu, '/Membership/emailAll', 'Email All Members');
+
+			if ($smsModel->enabled())
+				{
+				$this->addSub($menu, '/Membership/textAll', 'Text All Members');
+				}
 			$this->addSub($menu, '/Membership/emailFellow', 'Email Fellow Riders');
 			$this->addSub($menu, '/Membership/minor', 'Print Minor Release');
 			$this->addSub($menu, '/Membership/mom/' . \App\Tools\Date::year(\App\Tools\Date::today()), 'Member Of The Month');

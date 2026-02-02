@@ -20,8 +20,6 @@ class SMS
 
 	private readonly string $number;
 
-	private readonly \App\Table\RideSignup $rideSignupTable;
-
 	public function __construct(string $body = '')
 		{
 		$settingsSaver = new \App\Model\SettingsSaver('Twilio');
@@ -32,7 +30,6 @@ class SMS
 			}
 		$this->number = $settingsSaver->getValue('TwilioNumber');
 		$this->defaultAreaCode = $settingsSaver->getValue('TwilioDefaultAreaCode');
-		$this->rideSignupTable = new \App\Table\RideSignup();
 		$this->setBody($body);
 		}
 
@@ -197,7 +194,7 @@ class SMS
 		$rideComment->member = $this->fromMember;
 		$rideComment->insert();
 
-		foreach ($this->rideSignupTable->getAllSignedUpRiders($ride) as $rider)
+		foreach (new \App\Table\RideSignup()->getAllSignedUpRiders($ride) as $rider)
 			{
 			if (\App\Enum\RideSignup\Attended::NO_SHOW->value != $rider['attended'])
 				{

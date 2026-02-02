@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Email;
+namespace App\View\Text;
 
 class Leaders implements \Stringable
 	{
-	private string $emailText = 'Email All Ride Leaders';
+	private string $testText = 'Sent Test Text';
 
-	private string $testText = 'Sent Test Email';
+	private string $textText = 'Text All Ride Leaders';
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
@@ -22,33 +22,24 @@ class Leaders implements \Stringable
 
 			$type = empty($post['coordinatorsOnly']) ? 'Ride Leader' : 'Ride Coordinator';
 			$leaders = \App\Table\Member::getLeaders($post['categories'], $type, $post['fromDate'], $post['toDate'], $post['minLed'], $post['maxLed']);
-			$email = new \App\Tools\EMail();
-			$email->setSubject($post['subject']);
-			$member = \App\Model\Session::getSignedInMember();
-			$name = $member['firstName'] . ' ' . $member['lastName'];
-			$emailAddress = $member['email'];
-			$phone = $member['phone'];
-			$email->setFromMember($member);
-			$settings = new \App\Table\Setting();
-			$link = $settings->value('homePage');
-			$email->setHtml();
-			$email->setBody(\App\Tools\TextHelper::cleanUserHtml($post['message']) . "<p>This email was sent to ride leaders from {$link} by {$name}\n{$emailAddress}\n{$phone}");
+			$smsModel = new \App\Model\SMS();
+			$member = \App\Model\Session::signedInMemberRecord();
+			$smsModel->setFromMember($member);
+			$smsModel->setBody(\App\Tools\TextHelper::cleanUserHtml($post['message']));
 
-			if ($post['submit'] == $this->emailText)
+			if ($post['submit'] == $this->textText)
 				{
 				foreach ($leaders as $leader)
 					{
-					$email->addBCCMember($leader->toArray());
+					$smsModel->textMember($leader);
 					}
-				$email->bulkSend();
-				$message = 'Your email was sent to ' . \count($leaders) . ' leaders';
+				$message = 'Your text was sent to ' . \count($leaders) . ' leaders';
 				$status = 'success';
 				}
 			elseif ($post['submit'] == $this->testText)
 				{
-				$email->setToMember($member);
-				$email->send();
-				$message = '<b>Check your inbox for a test email. Your email would be sent to the following ' . \count($leaders) . ' leaders:</b>';
+				$smsModel->textMember($member);
+				$message = '<b>Check your phone for a test text. Your text would be sent to the following ' . \count($leaders) . ' leaders:</b>';
 				$multiColumn = new \PHPFUI\MultiColumn();
 
 				foreach ($leaders as $leader)
@@ -84,22 +75,18 @@ class Leaders implements \Stringable
 		$form = new \PHPFUI\Form($this->page);
 
 		$selectionCriteria = new \App\View\Leader\SelectionCriteria($this->page);
-		$form->add($selectionCriteria->get($post));
 
-		$fieldSet = new \PHPFUI\FieldSet('Email');
-		$subject = new \PHPFUI\Input\Text('subject', 'Subject', $post['subject'] ?? '');
-		$subject->setRequired();
-		$subject->addAttribute('placeholder', 'Email Subject');
-		$fieldSet->add($subject);
-		$message = new \App\UI\TextAreaImage('message', 'Message', $post['message'] ?? '');
+		$form->add($selectionCriteria->get($post ?? []));
+
+		$fieldSet = new \PHPFUI\FieldSet('Text (1600 characters max)');
+		$message = new \PHPFUI\Input\TextArea('message', 'Message', $post['message'] ?? '');
 		$message->addAttribute('placeholder', 'Message to leaders?');
-		$message->htmlEditing($this->page, new \App\Model\TinyMCETextArea(new \App\Record\MailItem()->getLength('body')));
-		$message->setRequired();
+		$message->setRequired()->addAttribute('maxlength', '1600');
 		$fieldSet->add($message);
 		$form->add($fieldSet);
 		$buttonGroup = new \App\UI\CancelButtonGroup();
-		$sendButton = new \PHPFUI\Submit($this->emailText);
-		$sendButton->setConfirm('Email all leaders?');
+		$sendButton = new \PHPFUI\Submit($this->textText);
+		$sendButton->setConfirm('Text all leaders?');
 		$sendButton->addClass('warning');
 		$buttonGroup->addButton($sendButton);
 		$testButton = new \PHPFUI\Submit($this->testText);

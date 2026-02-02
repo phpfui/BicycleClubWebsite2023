@@ -16,7 +16,7 @@
         }
     },
     "require": {
-        "php": ">=8.4",
+        "php": ">=8.5",
         "alek13/slack": "^2.0",
         "druidfi/mysqldump-php": "^2.0",
         "endroid/qr-code": "^6.0",

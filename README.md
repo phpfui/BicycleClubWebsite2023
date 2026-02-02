@@ -27,7 +27,7 @@ A mobile friendly website to manage a bicycle club.
 * Cue Sheet support including multiple versions
 * Full REST API
 * Payments via PayPal
-* SparkPost integration for mass mailing support
+* SparkPost and SMTP integration for mass mailing support
 * Texting support via Twillo
 * Automatic release versioning and updates
 
@@ -42,5 +42,6 @@ A mobile friendly website to manage a bicycle club.
 * [Architecture](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/06.%20Architecture.md)
 * [Philosophy](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/07.%20Philosophy.md)
 * [Database](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/08.%20Database.md)
+* [FAQ](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/10.%20FAQ.md)
 * [GNU AGPLv3 License](License.md)
 

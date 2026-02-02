@@ -441,6 +441,14 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function text() : void
+		{
+		if ($this->page->addHeader('Text All Ride Leaders'))
+			{
+			$this->page->addPageContent(new \App\View\Text\Leaders($this->page));
+			}
+		}
+
 	public function unreported() : void
 		{
 		if ($this->page->addHeader('My Unreported Leads'))

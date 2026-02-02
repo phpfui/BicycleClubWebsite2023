@@ -355,8 +355,8 @@ class Member
 				// is there any time left on the membership?
 				if ($days)
 					{
-					$year = \App\Tools\Date::year(\App\Tools\Date::today() + $days);
-					$month = \App\Tools\Date::month(\App\Tools\Date::today() + $days);
+					$year = (int)\App\Tools\Date::year(\App\Tools\Date::today() + $days);
+					$month = (int)\App\Tools\Date::month(\App\Tools\Date::today() + $days);
 
 					if (++$month > 12)
 						{

@@ -131,7 +131,7 @@ class Members implements \Stringable
 					{
 					foreach ($members as $member)
 						{
-						$email->addBCCMember($member);
+						$email->addBCCMember($member->toArray());
 						}
 					$email->bulkSend();
 					}
@@ -239,7 +239,6 @@ class Members implements \Stringable
 		$message->setRequired();
 		$fieldSet->add($message);
 		$fieldSet->add(new \PHPFUI\Input\File($this->page, 'file', 'Optional file to attach'));
-		$settingTable = new \App\Table\Setting();
 		$form->add($fieldSet);
 		$buttonGroup = new \App\UI\CancelButtonGroup();
 		$emailAll = new \PHPFUI\Submit('Email All Members');

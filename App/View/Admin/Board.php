@@ -183,7 +183,7 @@ class Board
 			$delete->addFunction('success', "$('#id{$index}-'+data.response).css('background-color','red').hide('fast').remove()");
 			$this->page->addJavaScript($delete->getPageJS());
 
-			$add = new \PHPFUI\Button('Add Board Member');
+			$add = new \PHPFUI\Button('Add Board Member')->addClass('warning');
 			$form->saveOnClick($add);
 			$this->addBoardMemberModal($add);
 			$form->add($add);

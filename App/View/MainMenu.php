@@ -209,11 +209,20 @@ class MainMenu extends \App\UI\MainMenu
 				{
 				$this->addSub($maintenanceMenu, '/Membership/Maintenance/subscriptions', 'Update Subscriptions');
 				$this->addSub($maintenanceMenu, '/Membership/Maintenance/addMembership', 'Add New Membership');
-				$this->addSub($maintenanceMenu, '/Membership/Maintenance/audit', 'Membership Audit');
 				$this->addSub($maintenanceMenu, '/Membership/Maintenance/combineMemberships', 'Combine Memberships');
 				$this->addSub($maintenanceMenu, '/Membership/Maintenance/combineMembers', 'Combine Members');
 				$this->addSub($maintenanceMenu, '/Membership/Maintenance/confirm', 'Membership Confirm');
 				$this->addSub($maintenanceMenu, '/Membership/Maintenance/extend', 'Extend Memberships');
+				}
+
+			if ($auditMenu = $this->addMenu($maintenanceMenu, '/Membership/Audit', 'Membership Audits'))
+				{
+				$this->addSub($auditMenu, '/Membership/Audit/noPayments', 'Memberships with No Payments');
+				$this->addSub($auditMenu, '/Membership/Audit/noMembers', 'Memberships with No Members');
+				$this->addSub($auditMenu, '/Membership/Audit/badExpirations', 'Memberships with Bad Expirations');
+				$this->addSub($auditMenu, '/Membership/Audit/missingNames', 'Memberships with Missing Names');
+				$this->addSub($auditMenu, '/Membership/Audit/noPermissions', 'Memberships with No Permissions');
+				$this->addSub($auditMenu, '/Membership/Audit/abandoned', 'Abandoned Member Signups');
 				}
 			}
 

@@ -35,7 +35,7 @@ class Captcha extends \PHPFUI\Container
 			}
 		}
 
-	public function valid() : bool
+	public function isValid() : bool
 		{
 		if (! $this->active)
 			{

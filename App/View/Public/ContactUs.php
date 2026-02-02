@@ -26,7 +26,7 @@ class ContactUs implements \Stringable
 			{
 			\App\Model\Session::setFlash('post', $_POST);
 
-			if ($this->captcha->valid())
+			if ($this->captcha->isValid())
 				{
 				$link = $settings->value('homePage');
 				$email = new \App\Tools\EMail();

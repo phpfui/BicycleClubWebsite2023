@@ -28,7 +28,7 @@ class Member implements \Stringable
 
 			if (\App\Model\Session::checkCSRF() && isset($_POST['submit']))
 				{
-				if ($this->captcha->valid())
+				if ($this->captcha->isValid())
 					{
 					$settings = new \App\Table\Setting();
 					$link = $settings->value('homePage');

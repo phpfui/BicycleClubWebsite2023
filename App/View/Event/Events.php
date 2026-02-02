@@ -696,7 +696,7 @@ class Events
 
 		if (\App\Model\Session::checkCSRF() && isset($_POST['submit']))
 			{
-			if (! \App\Model\Session::signedInMemberId() && $this->page->isPublic() && ! $this->captcha->valid())
+			if (! \App\Model\Session::signedInMemberId() && $this->page->isPublic() && ! $this->captcha->isValid())
 				{
 				\App\Model\Session::setFlash('alert', 'You appear to be a robot! Please confirm you are not.');
 				$this->page->redirect();

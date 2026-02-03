@@ -133,7 +133,7 @@ class Ride
 		$email = new \App\Tools\EMail();
 		$topic = $this->clubAbbrev . " The ride {$ride->title} on " . \App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' is now leaderless';
 		$email->setSubject($topic);
-		$email->setFromMember($leader->toArray());
+		$email->setFromMember($leader);
 		$email->setHtml();
 		$phoneLink = $leader->phone ? 'Phone: ' . \PHPFUI\Link::phone($leader->phone) : '';
 		$cellLink = $leader->cellPhone ? 'Cell: ' . \PHPFUI\Link::phone($leader->cellPhone) : '';
@@ -156,12 +156,12 @@ class Ride
 
 		foreach ($riders as $rider)
 			{
-			$email->addToMember($rider->toArray());
+			$email->addToMember($rider);
 			}
 
 		$memberPicker = new \App\Model\MemberPicker('Rides Chair');
 		$email->addToMember($memberPicker->getMember());
-		$email->addToMember($ride->pace->category->coordinator->toArray());
+		$email->addToMember($ride->pace->category->coordinator);
 
 		$email->bulkSend();
 		$this->deleteSignup($ride, $leader);
@@ -350,7 +350,7 @@ class Ride
 			'<br>Enter 0 under Ride Reminder Settings to turn this feature off.</p>';
 		$email = new \App\Tools\EMail();
 		$email->setSubject($title);
-		$email->setFromMember($leader->toArray());
+		$email->setFromMember($leader);
 		$email->setBody($message);
 		$email->setHtml();
 		$calendar = $this->getCalendarObject($ride);
@@ -393,7 +393,7 @@ class Ride
 		$email->setFromMember(\App\Model\Session::getSignedInMember());
 		$email->setBody($message);
 		$email->setHtml();
-		$email->addToMember($leader->toArray());
+		$email->addToMember($leader);
 		$email->bulkSend();
 		}
 
@@ -716,7 +716,7 @@ class Ride
 		$email = new \App\Tools\EMail();
 		$topic = $this->clubAbbrev . " The ride {$ride->title} on " . \App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' has been cancelled for weather reasons';
 		$email->setSubject($topic);
-		$email->setFromMember($leader->toArray());
+		$email->setFromMember($leader);
 		$email->setHtml();
 		$phoneLink = $leader->phone ? 'Phone: ' . \PHPFUI\Link::phone($leader->phone) : '';
 		$cellLink = $leader->cellPhone ? 'Cell: ' . \PHPFUI\Link::phone($leader->cellPhone) : '';
@@ -737,12 +737,12 @@ class Ride
 
 		foreach ($riders as $rider)
 			{
-			$email->addToMember($rider->toArray());
+			$email->addToMember($rider);
 			}
 
 		$memberPicker = new \App\Model\MemberPicker('Rides Chair');
 		$email->addToMember($memberPicker->getMember());
-		$email->addToMember($ride->pace->category->coordinator->toArray());
+		$email->addToMember($ride->pace->category->coordinator);
 
 		$email->bulkSend();
 		$ride->rideStatus = \App\Enum\Ride\Status::CANCELLED_FOR_WEATHER;
@@ -815,7 +815,7 @@ class Ride
 
 		$email = new \App\Tools\EMail();
 		$email->setSubject($title);
-		$email->setFromMember($leader->toArray());
+		$email->setFromMember($leader);
 		$email->setBody($message);
 		$email->setHtml();
 
@@ -823,7 +823,7 @@ class Ride
 
 		if ($coordinator->loaded())
 			{
-			$email->addToMember($coordinator->toArray());
+			$email->addToMember($coordinator);
 			}
 		else
 			{
@@ -832,7 +832,7 @@ class Ride
 
 			foreach ($memberTable->getRecordCursor() as $member)
 				{
-				$email->addToMember($member->toArray());
+				$email->addToMember($member);
 				}
 			}
 		$email->bulkSend();

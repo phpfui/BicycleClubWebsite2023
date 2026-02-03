@@ -88,7 +88,7 @@ class ForumJournal extends \App\Cron\BaseJob
 
 				foreach ($members as $member)
 					{
-					$email->addBCCMember($member->toArray());
+					$email->addBCCMember($member);
 					}
 				$email->bulkSend();
 				}

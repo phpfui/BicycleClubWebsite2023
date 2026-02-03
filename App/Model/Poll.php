@@ -91,7 +91,7 @@ class Poll
 			$email->setSubject($title);
 			$email->setHtml();
 			$email->setBody($message);
-			$email->setFromMember($secretary->toArray());
+			$email->setFromMember($secretary);
 			$email->addBCC('voting@' . \emailServerName());
 			$email->addToMember($voter);
 			$email->send();

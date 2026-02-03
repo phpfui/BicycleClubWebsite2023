@@ -289,7 +289,7 @@ class GeneralAdmission
 
 	private function itemizeRider(\App\Record\GaRider $rider) : void
 		{
-		$this->email->addToMember($rider->toArray());
+		$this->email->addToMember($rider);
 		$this->message .= "<p>Rider: <strong>{$rider->firstName} {$rider->lastName}</strong><br>";
 		$this->message .= "Address: {$rider->address} {$rider->town}, {$rider->state} {$rider->zip}<br>";
 		$this->message .= "Phone:: {$rider->phone}<br>";

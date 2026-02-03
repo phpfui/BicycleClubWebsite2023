@@ -50,7 +50,7 @@ class ContactUs implements \Stringable
 
 						if ($member->loaded())
 							{
-							$email->setToMember($member->toArray());
+							$email->setToMember($member);
 							$name = \strip_tags((string)$_POST['name']);
 							$emailAddress = \filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
 							$phone = \strip_tags((string)$_POST['phone']);

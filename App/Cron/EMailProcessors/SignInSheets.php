@@ -49,7 +49,7 @@ class SignInSheets
 			}
 		$attachmentCount = 0;
 		$email = new \App\Tools\EMail();
-		$email->setToMember($member->toArray());
+		$email->setToMember($member);
 		$email->setHtml();
 		$settingTable = new \App\Table\Setting();
 		$tips = $settingTable->value('signInSheetTips');

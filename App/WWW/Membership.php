@@ -256,7 +256,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 				$email->setSubject($title);
 				$email->setFromMember(\App\Model\Session::getSignedInMember());
 				$email->addAttachment($fileModel->get($newsletter->newsletterId . '.pdf'), $fileModel->getPrettyFileName());
-				$email->addToMember($member->toArray());
+				$email->addToMember($member);
 				$email->send();
 				$this->page->addPageContent("The {$title} was sent to {$member->fullName()}");
 				}

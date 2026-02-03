@@ -35,7 +35,7 @@ class Member implements \Stringable
 					$email = new \App\Tools\EMail();
 					$subject = \Soundasleep\Html2Text::convert($_POST['subject'] ?? 'No Subject', ['drop_links' => 'href', 'ignore_errors' => true]);
 					$email->setSubject($subject);
-					$email->addToMember($member->toArray());
+					$email->addToMember($member);
 
 					if ($this->signedInMemberId)
 						{
@@ -43,7 +43,7 @@ class Member implements \Stringable
 						$name = $member->fullName();
 						$emailAddress = $member->email;
 						$phone = $member->phone;
-						$email->setFromMember($member->toArray());
+						$email->setFromMember($member);
 						}
 					else
 						{

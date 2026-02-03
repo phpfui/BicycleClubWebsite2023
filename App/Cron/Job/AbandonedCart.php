@@ -77,7 +77,7 @@ class AbandonedCart extends \App\Cron\BaseJob
 					continue;
 					}
 
-				$email->setToMember($member->toArray());
+				$email->setToMember($member);
 				$email->setFromMember($storeManagerArray);
 				$pdf = $invoiceModel->generatePDF($invoice);
 				$email->addAttachment($pdf->Output('S'), $invoiceModel->getFileName($invoice));

@@ -86,11 +86,11 @@ class Comments
 					$body .= "<p><a href='{$site}/Rides/rideComments/{$this->ride->rideId}?unsubscribe&unsubscribeAll'>Unsubscribe from all future ride comments</a><p>";
 					$email->setBody($body);
 					$email->setSubject($this->sender->fullName() . ' commented on ' . $this->ride->title);
-					$email->setFromMember($this->sender->toArray());
+					$email->setFromMember($this->sender);
 
 					if ($this->rideSignup->loaded() && ! $_POST['rideComments'])
 						{
-						$email->setToMember($this->sender->toArray());
+						$email->setToMember($this->sender);
 						}
 					$members = $this->rideSignupTable->getAllSignedUpRiders($this->ride, false);
 
@@ -98,7 +98,7 @@ class Comments
 						{
 						if ($member->rideComments)
 							{
-							$email->addBCCMember($member->toArray());
+							$email->addBCCMember($member);
 							}
 						}
 					$email->setHtml();

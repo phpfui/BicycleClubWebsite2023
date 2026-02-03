@@ -744,7 +744,7 @@ class Member
 				$member->password = $resetLink;
 				$email->setBody(\App\Tools\TextHelper::processText($body, $member->toArray()));
 				$email->setHtml();
-				$email->addToMember($member->toArray());
+				$email->addToMember($member);
 				$email->setFrom($this->settingTable->value('Web_MasterEmail'), $this->settingTable->value('Web_MasterName'));
 				$email->send();
 				}

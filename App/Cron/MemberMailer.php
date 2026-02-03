@@ -18,7 +18,7 @@ abstract class MemberMailer extends \App\Cron\BaseJob
 			if (\filter_var($member['email'], FILTER_VALIDATE_EMAIL))
 				{
 				$email->setBody(\App\Tools\TextHelper::processText($message, $member->toArray()));
-				$email->setToMember($member->toArray());
+				$email->setToMember($member);
 				$email->bulkSend();
 				}
 			}

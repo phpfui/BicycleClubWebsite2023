@@ -38,7 +38,7 @@ class Leaders implements \Stringable
 				{
 				foreach ($leaders as $leader)
 					{
-					$email->addBCCMember($leader->toArray());
+					$email->addBCCMember($leader);
 					}
 				$email->bulkSend();
 				$message = 'Your email was sent to ' . \count($leaders) . ' leaders';

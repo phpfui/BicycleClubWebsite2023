@@ -45,7 +45,7 @@ class RideStatusRequest
 
 		if ($leader->loaded())
 			{
-			$email->addToMember($leader->toArray());
+			$email->addToMember($leader);
 			$email->bulkSend();
 			}
 		}

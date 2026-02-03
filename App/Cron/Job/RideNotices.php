@@ -69,7 +69,7 @@ class RideNotices extends \App\Cron\BaseJob
 				{
 				$member = $pair['member'];
 				$email = new \App\Tools\EMail();
-				$email->addToMember($member->toArray());
+				$email->addToMember($member);
 				$email->setSubject($abbrev . ' Ride Notification Journal');
 				$body = "Dear {$member['firstName']} {$member['lastName']},<p>Here are your upcoming rides per your request:</p><hr>";
 

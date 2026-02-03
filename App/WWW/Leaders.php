@@ -65,7 +65,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$member->pendingLeader = 1;
 				$member->update();
 				$email = new \App\Tools\EMail();
-				$email->setFromMember($member->toArray());
+				$email->setFromMember($member);
 				$email->setSubject('Request to become a Ride Leader');
 				$body = "A member has requested to become a ride leader.\n\nYou can approve them here: " . $this->settingTable->value('homePage') . '/Leaders/pending';
 				$email->setBody($body);

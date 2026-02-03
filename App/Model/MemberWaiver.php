@@ -48,7 +48,7 @@ class MemberWaiver extends \App\Model\File
 		$email->setFromMember($fromMember);
 		$email->setHtml();
 		$email->setBody(\App\Tools\TextHelper::processText($settingTable->value('WaiverText'), $this->member->toArray()));
-		$email->setToMember($this->member->toArray());
+		$email->setToMember($this->member);
 		$file = $this->member->memberId . '.pdf';
 		$email->addAttachment($this->get($file), $this->prettify($this->getPrettyFileName()));
 		$email->send();

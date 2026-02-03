@@ -43,7 +43,7 @@ class Buyers implements \Stringable
 						$email = new \App\Tools\EMail();
 						$email->setSubject($_POST['subject']);
 						$email->setFromMember($member);
-						$email->addToMember($buyer->toArray());
+						$email->addToMember($buyer);
 						$email->setHtml();
 						$email->setBody($message);
 

@@ -62,7 +62,7 @@ class Ride implements \Stringable
 				{
 				if (! $leadersOnly || \in_array($rider->memberId, $this->leadersOnRide))
 					{
-					$email->addBCCMember($rider->toArray());
+					$email->addBCCMember($rider);
 					}
 				}
 			$email->bulkSend();

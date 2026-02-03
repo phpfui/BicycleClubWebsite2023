@@ -24,7 +24,7 @@ class CueSheet
 			}
 		$cuesheet->update();
 		$email = new \App\Model\Email('acceptCue', new \App\Model\Email\CueSheet($cuesheet));
-		$email->setToMember($cuesheet->member->toArray());
+		$email->setToMember($cuesheet->member);
 		$email->setFromMember(\App\Model\Session::getSignedInMember());
 		$email->send();
 		}
@@ -108,7 +108,7 @@ class CueSheet
 		if ($submitter->loaded())
 			{
 			$email = new \App\Model\Email('rejectCue', new \App\Model\Email\CueSheet($cuesheet, $message));
-			$email->setToMember($submitter->toArray());
+			$email->setToMember($submitter);
 			$email->setFromMember(\App\Model\Session::getSignedInMember());
 			$email->send();
 			}

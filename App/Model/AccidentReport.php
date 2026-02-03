@@ -79,11 +79,11 @@ class AccidentReport
 					}
 				}
 
-			$email->addToMember($leader->toArray());
+			$email->addToMember($leader);
 
 			foreach (\App\Table\AssistantLeader::getForRide($ride) as $assistant)
 				{
-				$email->addToMember($assistant->toArray());
+				$email->addToMember($assistant);
 				}
 			}
 		else

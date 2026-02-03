@@ -58,8 +58,8 @@ class SMTPSettings
 				{
 				case 'Test':
 					$email = new \App\Tools\EMail(false);
-					$email->addToMember($member->toArray());
-					$email->setFromMember($member->toArray());
+					$email->addToMember($member);
+					$email->setFromMember($member);
 					$email->setSubject('SMTP Setup test email from ' . \emailServerName());
 					$email->setBody('Your SMTP setup is correct!');
 					$error = $email->send();

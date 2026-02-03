@@ -86,9 +86,9 @@ class RideSignup
 			$container->add('If you can\'t make it, please remove yourself from the ride at the link above.<br><br>Thank you.');
 			$email->setHtml();
 			$email->setBody($container);
-			$email->setToMember($member->toArray());
+			$email->setToMember($member);
 			$leader = $this->ride->member;
-			$email->setFromMember($leader->toArray());
+			$email->setFromMember($leader);
 
 			if ($this->ride->signupNotifications)
 				{
@@ -210,13 +210,13 @@ class RideSignup
 				if ($this->member->memberId != \App\Model\Session::signedInMemberId())
 					{
 					$changer = \App\Model\Session::signedInMemberRecord();
-					$email->addToMember($changer->toArray());
-					$email->addToMember($this->member->toArray());
+					$email->addToMember($changer);
+					$email->addToMember($this->member);
 					$body .= '<br><br>This change was made by ' . $changer->fullName();
 					}
 				$email->setBody($body);
-				$email->addToMember($leader->toArray());
-				$email->setFromMember($this->member->toArray());
+				$email->addToMember($leader);
+				$email->setFromMember($this->member);
 				$email->setHtml();
 				$email->send();
 				}
@@ -236,8 +236,8 @@ class RideSignup
 				$email->setSubject($title);
 				$message = \App\Tools\TextHelper::processText($this->settingTable->value('newRiderEmail'), $this->member->toArray());
 				$email->setBody($message);
-				$email->setToMember($this->member->toArray());
-				$email->setFromMember($this->ride->member->toArray());
+				$email->setToMember($this->member);
+				$email->setFromMember($this->ride->member);
 				$email->setHtml();
 				$email->send();
 				}

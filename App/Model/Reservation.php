@@ -258,13 +258,13 @@ class Reservation
 		$message .= "Thanks for your cooperation,<p>{$coordinator['firstName']} {$coordinator['lastName']}";
 		$email->setBody($message);
 		$email->setHtml();
-		$email->setFromMember($coordinator->toArray());
+		$email->setFromMember($coordinator);
 		$email->addCCMember($treasurer);
-		$email->addBCCMember($coordinator->toArray());
+		$email->addBCCMember($coordinator);
 
 		foreach ($attendees as $attendee)
 			{
-			$email->addToMember($attendee->toArray());
+			$email->addToMember($attendee);
 			}
 		$email->send();
 		$payment->delete();

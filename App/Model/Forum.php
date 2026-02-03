@@ -166,7 +166,7 @@ class Forum
 
 		foreach ($members as $member)
 			{
-			$this->email->addBCCMember($member->toArray());
+			$this->email->addBCCMember($member);
 			}
 
 		return $insertedId;

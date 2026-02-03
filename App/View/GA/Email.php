@@ -64,7 +64,7 @@ class Email implements \Stringable
 					{
 					$riderData = new \App\Model\Email\GaRider($_POST['gaEventId'], $rider);
 					$email->setBody(\App\Tools\TextHelper::processText($clean, $riderData->toArray()) . $appendMessage);
-					$email->setToMember($rider->toArray());
+					$email->setToMember($rider);
 					$email->bulkSend();
 					}
 				\App\Model\Session::setFlash('success', 'You emailed ' . \count($riders) . ' riders.');

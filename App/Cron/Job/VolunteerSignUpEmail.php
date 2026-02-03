@@ -28,9 +28,9 @@ class VolunteerSignUpEmail extends \App\Cron\BaseJob
 			$member = $shift->member;
 			$email = new \App\Tools\EMail();
 			$email->setSubject("Thanks for volunteering for {$jobEvent->name} on {$job->date}");
-			$email->setFromMember($fromMember->toArray());
-			$email->addBccMember($fromMember->toArray());
-			$email->setToMember($member->toArray());
+			$email->setFromMember($fromMember);
+			$email->addBccMember($fromMember);
+			$email->setToMember($member);
 			$body = '<p>You have signed up for the following shift:<p>';
 			$body .= $view->showJobShiftsFor($job, $member, false);
 			$body .= "<p><a href='{$server}/Volunteer/myJobs'>See all your shift details here</a>";

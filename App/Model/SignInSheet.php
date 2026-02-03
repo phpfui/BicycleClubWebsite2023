@@ -19,7 +19,7 @@ class SignInSheet
 		$email = new \App\Model\Email('acceptSignInSheet', new \App\Model\Email\SignInSheet($signinSheet));
 		$email->setHtml();
 		$email->setFromMember(\App\Model\Session::getSignedInMember());
-		$email->addToMember($signinSheet->member->toArray());
+		$email->addToMember($signinSheet->member);
 		$prettyName = "SignInSheet-{$signinSheet->signinSheetId}{$signinSheet->ext}";
 		$email->addAttachment($this->fileModel->get($signinSheet->signinSheetId . $signinSheet->ext), $prettyName);
 		$email->send();
@@ -87,7 +87,7 @@ class SignInSheet
 			$email->setBody($rejectMessage);
 			$email->setHtml();
 			$email->setFromMember(\App\Model\Session::getSignedInMember());
-			$email->addToMember($submitter->toArray());
+			$email->addToMember($submitter);
 			$prettyName = "SignInSheet-{$signinSheet->signinSheetId}{$signinSheet->ext}";
 			$email->addAttachment($this->fileModel->get($signinSheet->signinSheetId . $signinSheet->ext), $prettyName);
 			$email->send();

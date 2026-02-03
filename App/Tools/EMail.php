@@ -83,7 +83,7 @@ class EMail
 		}
 
 	/** @param array<string,mixed> $member */
-	public function addBCCMember(array $member) : EMail
+	public function addBCCMember(array | \PHPFUI\ORM\DataObject $member) : EMail
 		{
 		if (empty($member['memberId']))
 			{
@@ -99,7 +99,7 @@ class EMail
 		}
 
 	/** @param array<string,mixed> $member */
-	public function addCCMember(array $member) : EMail
+	public function addCCMember(array | \PHPFUI\ORM\DataObject $member) : EMail
 		{
 		if (empty($member['memberId']))
 			{
@@ -115,7 +115,7 @@ class EMail
 		}
 
 	/** @param array<string,mixed> $member */
-	public function addToMember(array $member) : static
+	public function addToMember(array | \PHPFUI\ORM\DataObject $member) : static
 		{
 		if (empty($member['email']))
 			{
@@ -400,7 +400,7 @@ class EMail
 		}
 
 	/** @param array<string,mixed> $member */
-	public function setFromMember(array $member) : static
+	public function setFromMember(array | \PHPFUI\ORM\DataObject $member) : static
 		{
 		$this->fromMember = $member;
 		$name = ($this->fromMember['firstName'] ?? '') . ' ' . ($this->fromMember['lastName'] ?? '');
@@ -442,7 +442,7 @@ class EMail
 		}
 
 	/** @param array<string,mixed> $member */
-	public function setToMember(array $member) : static
+	public function setToMember(array | \PHPFUI\ORM\DataObject $member) : static
 		{
 		$this->to = [];
 

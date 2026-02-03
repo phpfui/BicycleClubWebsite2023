@@ -45,7 +45,7 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 					foreach ($rideTable->getRecordCursor() as $ride)
 						{
 						$email = new \App\Tools\EMail();
-						$email->setFromMember($ride->member->toArray());
+						$email->setFromMember($ride->member);
 						$email->setSubject('The RWGPS route has changed for the ride ' . $ride->title);
 						$link = new \PHPFUI\Link($url . '/Rides/signedUp/' . $ride->rideId, $ride->title);
 						$updatedAt = \date('g:i a', \strtotime($updated->lastUpdated)) . ' on ' . $updatedAt = \date('F j', \strtotime($updated->lastUpdated));
@@ -55,7 +55,7 @@ class RideWithGPSUpdate extends \App\Cron\BaseJob
 
 						foreach ($ride->rideSignups as $rider)
 							{
-							$email->addBCCMember($rider->member->toArray());
+							$email->addBCCMember($rider->member);
 							}
 						$email->bulkSend();
 						}

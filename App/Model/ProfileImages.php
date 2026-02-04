@@ -9,7 +9,7 @@ class ProfileImages extends \App\Model\ThumbnailImageFiles
 		parent::__construct('../files/profiles', 'memberId', $item);
 		}
 
-	public function crop() : void
+	public function crop() : static
 		{
 		// create an image manager instance with favored driver
 		$manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
@@ -18,6 +18,8 @@ class ProfileImages extends \App\Model\ThumbnailImageFiles
 		$image = $manager->read($path);
 		$image->crop($member['profileWidth'], $member['profileHeight'], $member['profileX'], $member['profileY']);
 		$image->save($this->getCropPath());
+
+		return $this;
 		}
 
 	public function cropExists() : bool
@@ -28,7 +30,14 @@ class ProfileImages extends \App\Model\ThumbnailImageFiles
 	public function delete(string | int $id = '') : void
 		{
 		\App\Tools\File::unlink($this->getPhotoFilePath());
+		$this->deleteCrop();
+		}
+
+	public function deleteCrop() : static
+		{
 		\App\Tools\File::unlink($this->getCropPath());
+
+		return $this;
 		}
 
 	public function exists(string $path) : bool

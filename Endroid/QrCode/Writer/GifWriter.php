@@ -12,20 +12,12 @@ use Endroid\QrCode\Writer\Result\ResultInterface;
 
 final readonly class GifWriter implements WriterInterface, ValidatingWriterInterface
 {
-    public function __construct(
-        private GdWriter $gdWriter = new GdWriter(),
-    ) {
-    }
+    use GdTrait;
 
     public function write(QrCodeInterface $qrCode, ?LogoInterface $logo = null, ?LabelInterface $label = null, array $options = []): ResultInterface
     {
-        $gdResult = $this->gdWriter->write($qrCode, $logo, $label, $options);
+        $gdResult = $this->writeGd($qrCode, $logo, $label, $options);
 
         return new GifResult($gdResult->getMatrix(), $gdResult->getImage());
-    }
-
-    public function validateResult(ResultInterface $result, string $expectedData): void
-    {
-        $this->gdWriter->validateResult($result, $expectedData);
     }
 }

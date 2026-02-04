@@ -1,5 +1,7 @@
 <?php
 
+\copy('.htaccess.local', 'www\\.htaccess');
+
 if ('WIN' === \strtoupper(\substr(PHP_OS, 0, 3)))
 	{
 	$php = 'php';

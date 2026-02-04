@@ -1164,17 +1164,19 @@ class Member
 				}
 			else
 				{
-				\App\Model\Session::setFlash('success', 'Add a profile photo!');
+				\App\Model\Session::setFlash('success', 'Added a profile photo!');
 				}
 			$extension = $this->profileModel->getExtension();
 
 			if ($extension)
 				{
+				$this->profileModel->deleteCrop();
 				$member->extension = $extension;
-				$member->profileWidth = $member->profileHeight = 0;
+				$member->profileX = $member->profileY = $member->profileWidth = $member->profileHeight = 0;
 				$member->update();
 				}
 
+			$this->page->done();
 			$this->page->redirect('', 'tab=Photo');
 			}
 		else

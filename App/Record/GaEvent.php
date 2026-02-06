@@ -9,7 +9,6 @@ namespace App\Record;
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\GaPriceDate> $GaPriceDateChildren
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\GaSelection> $GaSelectionChildren
  * @property \PHPFUI\ORM\RecordCursor<\App\Record\GaOption> $GaOptionChildren
- * @property \App\Enum\GeneralAdmission\IncludeMembership $includeMembership
  */
 class GaEvent extends \App\Record\Definition\GaEvent
 	{
@@ -19,7 +18,6 @@ class GaEvent extends \App\Record\Definition\GaEvent
 		'GaPriceDateChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaPriceDate::class, 'date'],
 		'GaRiderChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaRider::class],
 		'GaSelectionChildren' => [\PHPFUI\ORM\Children::class, \App\Table\GaSelection::class, 'ordering'],
-		'includeMembership' => [\PHPFUI\ORM\Enum::class, \App\Enum\GeneralAdmission\IncludeMembership::class],
 	];
 
 	public function clean() : static

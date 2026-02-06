@@ -79,7 +79,7 @@ class Leaders implements \Stringable
 
 	public function __toString() : string
 		{
-		$post = \App\Model\Session::getFlash('post');
+		$post = \App\Model\Session::getFlash('post') ?? [];
 
 		$form = new \PHPFUI\Form($this->page);
 

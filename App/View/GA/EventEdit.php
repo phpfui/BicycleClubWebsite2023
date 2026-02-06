@@ -116,31 +116,47 @@ class EventEdit
 	private function getAdditional(\App\Record\GaEvent $event) : \PHPFUI\Container
 		{
 		$container = new \PHPFUI\Container();
-		$optionsSet = new \PHPFUI\FieldSet('Options');
+		$optionsSet = new \PHPFUI\FieldSet('Store Options');
 
 		$maxRegistrants = new \PHPFUI\Input\Number('maxRegistrants', 'Max Registrants', $event->maxRegistrants);
 		$maxRegistrants->addAttribute('min', (string)0)->addAttribute('max', (string)99)->addAttribute('step', (string)1);
 		$maxRegistrants->setToolTip('Set to zero for unlimited registrations');
 
 		$memberDiscount = new \PHPFUI\Input\Number('memberDiscount', 'Member Discount', $event->memberDiscount);
-
-		$optionsSet->add(new \PHPFUI\MultiColumn($maxRegistrants, $memberDiscount));
-
 		$dayOfRegistration = new \PHPFUI\Input\CheckBoxBoolean('dayOfRegistration', 'Day Of Registration Allowed', (bool)$event->dayOfRegistration);
+
+		$optionsSet->add(new \PHPFUI\MultiColumn($maxRegistrants, $memberDiscount, $dayOfRegistration));
+
+		$container->add($optionsSet);
+
+		$optionsSet = new \PHPFUI\FieldSet('Display Options');
 		$showPreregistration = new \PHPFUI\Input\CheckBoxBoolean('showPreregistration', 'Show Preregistration Numbers', (bool)$event->showPreregistration);
 		$allowShopping = new \PHPFUI\Input\CheckBoxBoolean('allowShopping', 'Allow Store Shopping at Checkout', (bool)$event->allowShopping);
 		$otherEvent = new \PHPFUI\Input\CheckBoxBoolean('otherEvent', 'Not Signature Event', (bool)$event->otherEvent);
-		$optionsSet->add(new \PHPFUI\MultiColumn($allowShopping, $dayOfRegistration, $showPreregistration, $otherEvent));
+		$optionsSet->add(new \PHPFUI\MultiColumn($dayOfRegistration, $showPreregistration, $otherEvent));
+		$container->add($optionsSet);
 
-		$includeMembership = new \PHPFUI\Input\RadioGroupEnum('includeMembership', 'Include Membership with Event Purchase', $event->includeMembership);
-		$includeMembership->setToolTip('All options other than "No" add / update a membership.
-			 "New Members Only" will not extend memberships for existing members.
-			 "Extend" will make sure membership is good through expires date.
-			 "Renew" will update lapsed members to new expiration date.');
+		$optionsSet = new \PHPFUI\FieldSet('Membership Options');
+		$membershipFields = [
+			'extendMembership' => ['Extend Membership', 'Make sure membership is good through expires date.'],
+			'newMembersOnly' => ['New Membership Included', 'Event comes with a new membership through expires date.'],
+			'renewMembership' => ['Renew Expired Memberships', 'Current memberships get extended through expires date'],
+		];
+
+		$multiColumn = new \PHPFUI\MultiColumn();
+
+		foreach ($membershipFields as $field => $options)
+			{
+			[$title, $help] = $options;
+			$multiColumn->add(new \PHPFUI\Input\CheckBoxBoolean($field, $title, (bool)$event->{$field})->setToolTip($help));
+			}
 
 		$membershipExpiresDate = new \PHPFUI\Input\Date($this->page, 'membershipExpires', 'Membership Expires', $event->membershipExpires);
 		$membershipExpiresDate->setToolTip('If a membership is included, this is when it will expire. Leave blank for the end of the year.');
-		$optionsSet->add(new \PHPFUI\MultiColumn($includeMembership, $membershipExpiresDate));
+		$multiColumn->add($membershipExpiresDate);
+
+		$optionsSet->add('<hr>');
+		$optionsSet->add($multiColumn);
 
 		$container->add($optionsSet);
 		$volunteerSet = new \PHPFUI\FieldSet('Volunteer Options');

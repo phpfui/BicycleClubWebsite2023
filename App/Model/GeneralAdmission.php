@@ -126,64 +126,50 @@ class GeneralAdmission
 			$this->email->addAttachment($fileName, \str_replace(' ', '_', $event->title . ' Waiver for ' . $rider->fullName() . '.pdf'));
 			}
 
-		$includeMembership = $event->includeMembership;
+		$today = \App\Tools\Date::todayString();
+		$goodThrough = empty($event->membershipExpires) ? \App\Tools\Date::makeString(\date('Y'), 12, 31) : $event->membershipExpires;
+		$existingMember = new \App\Record\Member(['email' => $rider->email]);
 
-		if (\App\Enum\GeneralAdmission\IncludeMembership::NO != $includeMembership)
+		if ($existingMember->loaded())
 			{
-			$today = \App\Tools\Date::todayString();
-			$goodThrough = empty($event->membershipExpires) ? \App\Tools\Date::makeString(\date('Y'), 12, 31) : $event->membershipExpires;
-			$existingMember = new \App\Record\Member(['email' => $rider->email]);
+			$rider->member = $existingMember;
+			$membership = $existingMember->membership;
 
-			if ($existingMember->loaded())
+			if ($event->extendMembership && $membership->expires < $goodThrough)
 				{
-				$rider->member = $existingMember;
-				$membership = $existingMember->membership;
-
-				switch ($includeMembership)
-					{
-					case \App\Enum\GeneralAdmission\IncludeMembership::EXTEND_MEMBERSHIP:
-						if ($membership->expires < $goodThrough)
-							{
-							$membership->expires = $goodThrough;
-							$membership->update();
-							}
-
-						break;
-
-					case \App\Enum\GeneralAdmission\IncludeMembership::RENEW_MEMBERSHIP:
-						if ($membership->expires < $today)
-							{
-							$membership->expires = $goodThrough;
-							$membership->update();
-							}
-
-						break;
-					}
-				}
-			elseif (\App\Enum\GeneralAdmission\IncludeMembership::NEW_MEMBERS_ONLY == $includeMembership)
-				{
-				$memberModel = new \App\Model\Member();
-				$membership = new \App\Record\Membership();
-				$membership->setFrom($rider->toArray());
-				$membership->pending = 0;
-				$membership->joined = \App\Tools\Date::todayString();
-				$membership->affiliation = $event->title;
 				$membership->expires = $goodThrough;
-				$member = new \App\Record\Member();
-
-				$member->setFrom($rider->toArray());
-				$memberModel->setDefaultFields($member);
-				$member->membership = $membership;
-				$member->verifiedEmail = 9;
-				$member->acceptedWaiver = null;
-				$member->emergencyContact = $rider->contact;
-				$member->emergencyPhone = $rider->contactPhone;
-				$member->cellPhone = $rider->phone;
-				$member->password = $memberModel->hashPassword(\uniqid());  // will not match password for sure
-				$member->insert();
-				$memberModel->setNormalMemberPermission($member);
-				$rider->member = $member;
+				$membership->update();
 				}
+
+			if ($event->renewMembership && $membership->expires < $today)
+				{
+				$membership->expires = $goodThrough;
+				$membership->update();
+				}
+			}
+		elseif ($event->newMembersOnly)
+			{
+			$memberModel = new \App\Model\Member();
+			$membership = new \App\Record\Membership();
+			$membership->setFrom($rider->toArray());
+			$membership->pending = 0;
+			$membership->joined = \App\Tools\Date::todayString();
+			$membership->affiliation = $event->title;
+			$membership->expires = $goodThrough;
+			$member = new \App\Record\Member();
+
+			$member->setFrom($rider->toArray());
+			$memberModel->setDefaultFields($member);
+			$member->membership = $membership;
+			$member->verifiedEmail = 9;
+			$member->acceptedWaiver = null;
+			$member->emergencyContact = $rider->contact;
+			$member->emergencyPhone = $rider->contactPhone;
+			$member->cellPhone = $rider->phone;
+			$member->password = $memberModel->hashPassword(\uniqid());  // will not match password for sure
+			$member->insert();
+			$memberModel->setNormalMemberPermission($member);
+			$rider->member = $member;
 			}
 		$rider->update();
 

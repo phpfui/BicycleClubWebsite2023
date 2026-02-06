@@ -308,7 +308,8 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 				{
 				$member = \App\Model\Session::signedInMemberRecord();
 				}
-			$this->page->addPageContent($this->memberView->password($member));
+			$view = new \App\View\Password($this->page);
+			$this->page->addPageContent($view->password($member));
 			}
 		}
 
@@ -320,7 +321,8 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			{
 			$this->page->addHeader('Reset My Password');
 			$this->page->addPageContent(new \PHPFUI\SubHeader('Enter a new password'));
-			$this->page->addPageContent($this->memberView->passwordNew($member));
+			$view = new \App\View\Password($this->page);
+			$this->page->addPageContent($view->passwordNew($member));
 			}
 		else
 			{
@@ -334,8 +336,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			{
 			if ($member->loaded())
 				{
-				$memberModel = new \App\Model\Member();
-				$memberModel->resetPassword($member->email, (bool)$text);
+				\App\Model\PasswordPolicy::resetPassword($member->email, (bool)$text);
 				$this->page->addPageContent("A password reset email was sent to {$member->fullName()}");
 				}
 			else

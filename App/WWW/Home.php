@@ -30,7 +30,7 @@ class Home extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					}
 				else
 					{
-					$this->page->redirect("/Membership/verify/{$member->memberId}/" . $memberModel->getVerifyCode($member->password));
+					$this->page->redirect("/Membership/verify/{$member->memberId}/" . \App\Model\PasswordPolicy::getVerifyCode($member->password));
 					}
 				}
 			elseif (\App\Model\Session::hasExpired())

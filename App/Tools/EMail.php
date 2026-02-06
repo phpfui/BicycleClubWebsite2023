@@ -402,7 +402,7 @@ class EMail
 	/** @param array<string,mixed> $member */
 	public function setFromMember(array | \PHPFUI\ORM\DataObject $member) : static
 		{
-		if (is_array($member))
+		if (\is_array($member))
 			{
 			$this->fromMember = $member;
 			}

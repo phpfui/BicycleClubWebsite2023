@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7c1514cfd2099f4720d1302d359d6e7c",
+    "content-hash": "a71baa4b7e20fdafb40e684e12029356",
     "packages": [
         {
             "name": "alek13/slack",
@@ -418,29 +418,29 @@
         },
         {
             "name": "doctrine/deprecations",
-            "version": "1.1.5",
+            "version": "1.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/deprecations.git",
-                "reference": "459c2f5dd3d6a4633d3b5f46ee2b1c40f57d3f38"
+                "reference": "d4fe3e6fd9bb9e72557a19674f44d8ac7db4c6ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/459c2f5dd3d6a4633d3b5f46ee2b1c40f57d3f38",
-                "reference": "459c2f5dd3d6a4633d3b5f46ee2b1c40f57d3f38",
+                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/d4fe3e6fd9bb9e72557a19674f44d8ac7db4c6ca",
+                "reference": "d4fe3e6fd9bb9e72557a19674f44d8ac7db4c6ca",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1 || ^8.0"
             },
             "conflict": {
-                "phpunit/phpunit": "<=7.5 || >=13"
+                "phpunit/phpunit": "<=7.5 || >=14"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^9 || ^12 || ^13",
-                "phpstan/phpstan": "1.4.10 || 2.1.11",
+                "doctrine/coding-standard": "^9 || ^12 || ^14",
+                "phpstan/phpstan": "1.4.10 || 2.1.30",
                 "phpstan/phpstan-phpunit": "^1.0 || ^2",
-                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.6 || ^10.5 || ^11.5 || ^12",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.6 || ^10.5 || ^11.5 || ^12.4 || ^13.0",
                 "psr/log": "^1 || ^2 || ^3"
             },
             "suggest": {
@@ -460,13 +460,13 @@
             "homepage": "https://www.doctrine-project.org/",
             "support": {
                 "issues": "https://github.com/doctrine/deprecations/issues",
-                "source": "https://github.com/doctrine/deprecations/tree/1.1.5"
+                "source": "https://github.com/doctrine/deprecations/tree/1.1.6"
             },
-            "time": "2025-04-07T20:06:18+00:00"
+            "time": "2026-02-07T07:09:04+00:00"
         },
         {
             "name": "druidfi/mysqldump-php",
-            "version": "dev-main",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/druidfi/mysqldump-php.git",
@@ -488,7 +488,6 @@
                 "rector/rector": "^2.3",
                 "squizlabs/php_codesniffer": "3.*"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -525,7 +524,7 @@
             ],
             "support": {
                 "issues": "https://github.com/druidfi/mysqldump-php/issues",
-                "source": "https://github.com/druidfi/mysqldump-php/tree/main"
+                "source": "https://github.com/druidfi/mysqldump-php/tree/2.0.2"
             },
             "time": "2026-01-27T10:52:30+00:00"
         },
@@ -2600,16 +2599,16 @@
         },
         {
             "name": "php-debugbar/php-debugbar",
-            "version": "v3.3.0",
+            "version": "v3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-debugbar/php-debugbar.git",
-                "reference": "e22287890107602af6a113dc7975b3d77c542e5f"
+                "reference": "afdaa2e56aca9d56b5bb2bad041bd2f6002017cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-debugbar/php-debugbar/zipball/e22287890107602af6a113dc7975b3d77c542e5f",
-                "reference": "e22287890107602af6a113dc7975b3d77c542e5f",
+                "url": "https://api.github.com/repos/php-debugbar/php-debugbar/zipball/afdaa2e56aca9d56b5bb2bad041bd2f6002017cf",
+                "reference": "afdaa2e56aca9d56b5bb2bad041bd2f6002017cf",
                 "shasum": ""
             },
             "require": {
@@ -2686,7 +2685,7 @@
             ],
             "support": {
                 "issues": "https://github.com/php-debugbar/php-debugbar/issues",
-                "source": "https://github.com/php-debugbar/php-debugbar/tree/v3.3.0"
+                "source": "https://github.com/php-debugbar/php-debugbar/tree/v3.3.1"
             },
             "funding": [
                 {
@@ -2698,7 +2697,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-01-28T12:57:47+00:00"
+            "time": "2026-02-06T21:09:38+00:00"
         },
         {
             "name": "php-di/invoker",
@@ -5765,16 +5764,16 @@
     "packages-dev": [
         {
             "name": "carthage-software/mago",
-            "version": "1.5.0",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/carthage-software/mago.git",
-                "reference": "0ce3f5d230f8ae330617b04299700347d3ca6806"
+                "reference": "089c4257ef6e854d5ec04d9cf3000cc92caea443"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/carthage-software/mago/zipball/0ce3f5d230f8ae330617b04299700347d3ca6806",
-                "reference": "0ce3f5d230f8ae330617b04299700347d3ca6806",
+                "url": "https://api.github.com/repos/carthage-software/mago/zipball/089c4257ef6e854d5ec04d9cf3000cc92caea443",
+                "reference": "089c4257ef6e854d5ec04d9cf3000cc92caea443",
                 "shasum": ""
             },
             "require": {
@@ -5812,7 +5811,7 @@
             ],
             "support": {
                 "issues": "https://github.com/carthage-software/mago/issues",
-                "source": "https://github.com/carthage-software/mago/tree/1.5.0"
+                "source": "https://github.com/carthage-software/mago/tree/1.6.0"
             },
             "funding": [
                 {
@@ -5820,7 +5819,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-02-04T21:37:39+00:00"
+            "time": "2026-02-07T00:46:32+00:00"
         },
         {
             "name": "clue/ndjson-react",
@@ -6610,16 +6609,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "12.5.2",
+            "version": "12.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "4a9739b51cbcb355f6e95659612f92e282a7077b"
+                "reference": "b015312f28dd75b75d3422ca37dff2cd1a565e8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/4a9739b51cbcb355f6e95659612f92e282a7077b",
-                "reference": "4a9739b51cbcb355f6e95659612f92e282a7077b",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/b015312f28dd75b75d3422ca37dff2cd1a565e8d",
+                "reference": "b015312f28dd75b75d3422ca37dff2cd1a565e8d",
                 "shasum": ""
             },
             "require": {
@@ -6675,7 +6674,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
                 "security": "https://github.com/sebastianbergmann/php-code-coverage/security/policy",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/12.5.2"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/12.5.3"
             },
             "funding": [
                 {
@@ -6695,7 +6694,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-12-24T07:03:04+00:00"
+            "time": "2026-02-06T06:01:44+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -7639,12 +7638,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "258cd5fdcb59c29f421927b2cf77f48de9458a98"
+                "reference": "7ea2d110787f6807213e27a1255c6b858ad99d89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/258cd5fdcb59c29f421927b2cf77f48de9458a98",
-                "reference": "258cd5fdcb59c29f421927b2cf77f48de9458a98",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/7ea2d110787f6807213e27a1255c6b858ad99d89",
+                "reference": "7ea2d110787f6807213e27a1255c6b858ad99d89",
                 "shasum": ""
             },
             "conflict": {
@@ -8124,7 +8123,7 @@
                 "microsoft/microsoft-graph": ">=1.16,<1.109.1|>=2,<2.0.1",
                 "microsoft/microsoft-graph-beta": "<2.0.1",
                 "microsoft/microsoft-graph-core": "<2.0.2",
-                "microweber/microweber": "<=2.0.19",
+                "microweber/microweber": "<2.0.20",
                 "mikehaertl/php-shellcommand": "<1.6.1",
                 "mineadmin/mineadmin": "<=3.0.9",
                 "miniorange/miniorange-saml": "<1.4.3",
@@ -8650,7 +8649,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-04T22:06:32+00:00"
+            "time": "2026-02-05T22:08:29+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -10768,7 +10767,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "druidfi/mysqldump-php": 20,
         "phpfui/php-imap": 20,
         "roave/security-advisories": 20
     },

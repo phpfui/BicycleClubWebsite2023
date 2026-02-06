@@ -24,7 +24,11 @@ class SuperUsers extends \PHPFUI\Container
 			}
 		elseif (! empty($_POST['memberId']))
 			{
-			\App\Table\UserPermission::addPermissionToUser($_POST['memberId'], 1);
+			$memberId = (int)$_POST['memberId'];
+			\App\Table\UserPermission::addPermissionToUser($memberId, 1);
+			$member = new \App\Record\Member($memberId);
+			$member->verifiedEmail = 10;
+			$member->update();
 			\PHPFUI\Session::setFlash('success', 'Super User added');
 			$this->page->redirect();
 
@@ -85,7 +89,7 @@ class SuperUsers extends \PHPFUI\Container
 			foreach ($_POST['email'] as $memberId => $checked)
 				{
 				$member = new \App\Record\Member($memberId);
-				$memberModel->resetPassword($member->email);
+				\App\Model\PasswordPolicy::resetPassword($member->email);
 				++$count;
 				}
 			\PHPFUI\Session::setFlash('success', $count . ' Super Users emailed password resets');

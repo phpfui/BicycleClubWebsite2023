@@ -166,7 +166,7 @@ class GeneralAdmission
 			$member->emergencyContact = $rider->contact;
 			$member->emergencyPhone = $rider->contactPhone;
 			$member->cellPhone = $rider->phone;
-			$member->password = $memberModel->hashPassword(\uniqid());  // will not match password for sure
+			$member->password = \App\Model\PasswordPolicy::hashPassword(\uniqid());  // will not match password for sure
 			$member->insert();
 			$memberModel->setNormalMemberPermission($member);
 			$rider->member = $member;

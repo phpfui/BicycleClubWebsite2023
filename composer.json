@@ -18,7 +18,7 @@
     "require": {
         "php": ">=8.5",
         "alek13/slack": "^2.0",
-        "druidfi/mysqldump-php": "dev-main",
+        "druidfi/mysqldump-php": "^2.0",
         "endroid/qr-code": "^6.0",
         "flowjs/flow-php-server": "^2.0",
         "gitonomy/gitlib": "^1.0",

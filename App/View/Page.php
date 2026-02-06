@@ -675,7 +675,7 @@ class Page extends \PHPFUI\Page
 				{
 				self::$passwordReset = true;
 				$text = \str_contains((string)$_POST['resetPassword'], 'Text');
-				$memberModel->resetPassword(\App\Model\Member::cleanEmail($_POST['email']), $text);
+				\App\Model\PasswordPolicy::resetPassword(\App\Model\Member::cleanEmail($_POST['email']), $text);
 				$this->cookies->delete('Password');
 
 				if ($text)

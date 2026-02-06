@@ -32,9 +32,6 @@ class Member
 	protected array $defaultFields = ['rideJournal', 'newRideEmail', 'emailNewsletter', 'emailAnnouncements', 'journal', 'rideComments', 'geoLocate',
 		'showNothing', 'showNoStreet', 'showNoTown', 'showNoPhone', 'showNoRideSignup', 'showNoSignin', 'showNoSocialMedia', ];
 
-	/** @var array<string,int> */
-	protected array $passwordOptions = ['cost' => 11];
-
 	/** @var array<string> */
 	protected array $supervisorFields = [
 		'lastLogin',
@@ -79,7 +76,7 @@ class Member
 		$member['lastName'] = \ucwords((string)$member['lastName']);
 		$member['expires'] = $member['lastRenewed'] = null;
 		$member['acceptedWaiver'] = null;
-		$member['password'] = $this->hashPassword($member['password']);
+		$member['password'] = \App\Model\PasswordPolicy::hashPassword($member['password']);
 		$membership = new \App\Record\Membership();
 		$membership->setFrom($member);
 		$member['membershipId'] = $membership->insert();
@@ -450,7 +447,7 @@ class Member
 					$payment->membership = $membership;
 					$payment->update();
 					}
-				$this->resetPassword($customer['email']);
+				\App\Model\PasswordPolicy::resetPassword($customer['email']);
 
 				// Intentionally fall through
 			case self::FIRST_MEMBERSHIP:
@@ -640,25 +637,6 @@ class Member
 		return $this->createInvoice($member, $additionalMembers, $years, $donation, $dedication, $discountCode);
 		}
 
-	public function getVerifyCode(?string $password) : int
-		{
-		$verifyCode = \preg_replace('/[^0-9]*/', '', $password ?? '');
-		$len = \strlen($verifyCode);
-		$minLen = 5;
-
-		if ($len > $minLen)
-			{
-			$verifyCode = \substr($verifyCode, $len - $minLen, $minLen);
-			}
-
-		return (int)$verifyCode;
-		}
-
-	public function hashPassword(string $password) : ?string
-		{
-		return \password_hash(\trim($password), PASSWORD_DEFAULT, $this->passwordOptions);
-		}
-
 	public function hasValidAddress(\App\Record\Membership $membership) : bool
 		{
 		$fields = ['address', 'town', 'state', 'zip'];
@@ -719,43 +697,6 @@ class Member
 			}
 		}
 
-	public function resetPassword(string $email, bool $text = false) : void
-		{
-		$member = new \App\Record\Member(['email' => static::cleanEmail($email)]);
-
-		if ($member->loaded())
-			{
-			$member->passwordReset = \bin2hex(\random_bytes(10));
-			$member->passwordResetExpires = \date('Y-m-d H:i:s', \time() + 3600 * 24);
-			$member->loginAttempts = (string)\json_encode([]);
-			$member->update();
-			$resetLink = $this->settingTable->value('homePage') . '/Membership/passwordNew/' . $member->memberId . '/' . $member->passwordReset;
-
-			if ($text && $member->cellPhone)
-				{
-				$sms = new \App\Model\SMS("Here is your requested password reset link:\n\n{$resetLink}");
-				$sms->textMember($member);
-				}
-			else
-				{
-				$email = new \App\Tools\EMail();
-				$email->setSubject('Reset your ' . $this->settingTable->value('clubName') . ' password');
-				$body = $this->settingTable->value('NewPasswordEmail') ?: '<a href="~password~">Click here to enter a new password</a>';
-				$member->password = $resetLink;
-				$email->setBody(\App\Tools\TextHelper::processText($body, $member->toArray()));
-				$email->setHtml();
-				$email->addToMember($member);
-				$email->setFrom($this->settingTable->value('Web_MasterEmail'), $this->settingTable->value('Web_MasterName'));
-				$email->send();
-				}
-
-			if ($member->verifiedEmail <= 1)
-				{
-				$this->sendVerifyEmail($member);
-				}
-			}
-		}
-
 	/**
 	 * set full save to false if not validating user access to supervisor fields
 	 *
@@ -771,7 +712,7 @@ class Member
 
 		if (! empty($member['password']))
 			{
-			$member['password'] = $this->hashPassword($member['password']);
+			$member['password'] = \App\Model\PasswordPolicy::hashPassword($member['password']);
 			}
 
 		if (! empty($member['updateCategories']))
@@ -833,7 +774,7 @@ class Member
 		{
 		if ($member->loaded())
 			{
-			$verifyCode = $this->getVerifyCode($member->password);
+			$verifyCode = \App\Model\PasswordPolicy::getVerifyCode($member->password);
 			$body = '<p>Thanks for your interest in joining the ' . $this->settingTable->value('clubName') . '</p>';
 			$body .= '<p>We need to verify your email address.</p>';
 			$home = $this->settingTable->value('homePage');
@@ -914,10 +855,10 @@ class Member
 						$member->lastLogin = \date('Y-m-d H:i:s');
 
 						// Check if a newer hashing algorithm is available or the cost has changed
-						if (\password_needs_rehash($hash, PASSWORD_DEFAULT, $this->passwordOptions))
+						if (\App\Model\PasswordPolicy::needsRehash($hash))
 							{
 							// If so, create a new hash, and replace the old one
-							$member->password = $this->hashPassword($password);
+							$member->password = \App\Model\PasswordPolicy::hashPassword($password);
 							}
 						\App\Model\Session::registerMember($member);
 						$member->update();
@@ -991,23 +932,6 @@ class Member
 		return $updateCount;
 		}
 
-	/**
-	 * @return array<string> errors
-	 */
-	public function validatePassword(string $passwordToValidate) : array
-		{
-		$policy = new \App\Model\PasswordPolicy();
-
-		$errors = $policy->validate($passwordToValidate);
-
-		if ($errors)
-			{
-			\App\Model\Session::setFlash('alert', $errors);
-			}
-
-		return $errors;
-		}
-
 	public function verifyEmail(string $verifyEmail) : bool
 		{
 		$additionalEmailTable = new \App\Table\AdditionalEmail();
@@ -1039,11 +963,6 @@ class Member
 			}
 
 		return false;
-		}
-
-	public function verifyPassword(string $passwordToVerify, \App\Record\Member $member) : bool
-		{
-		return \password_verify($passwordToVerify, $member->password ?? \uniqid());
 		}
 
 	private function createInvoice(\App\Record\Member $member, int $additionalMembers, int $years, float $donation = 0.0, string $dedication = '', \App\Record\DiscountCode $discountCode = new \App\Record\DiscountCode()) : \App\Record\Invoice

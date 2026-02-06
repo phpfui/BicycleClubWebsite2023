@@ -13,16 +13,17 @@ class PasswordPolicy extends \App\Model\PasswordPolicy
 		{
 		$submit = new \PHPFUI\Submit();
 		$form = new \PHPFUI\Form($this->page, $submit);
-		$form->add($this->settingsSaver->generateField($this->prefix . 'Length', 'Minimum Password Length', 'Number', false));
-		$form->add($this->settingsSaver->generateField($this->prefix . 'Upper', 'Require Upper Case Characters', 'CheckBox', false));
-		$form->add($this->settingsSaver->generateField($this->prefix . 'Lower', 'Require Lower Case Characters', 'CheckBox', false));
-		$form->add($this->settingsSaver->generateField($this->prefix . 'Numbers', 'Require Numbers (0-9)', 'CheckBox', false));
-		$form->add($this->settingsSaver->generateField($this->prefix . 'Punctuation', 'Require Punctuation', 'CheckBox', false));
+		$settingSaver = new \App\Model\SettingsSaver(static::$prefix);
+		$form->add($settingSaver->generateField(static::$prefix . 'Length', 'Minimum Password Length', 'Number', false));
+		$form->add($settingSaver->generateField(static::$prefix . 'Upper', 'Require Upper Case Characters', 'CheckBox', false));
+		$form->add($settingSaver->generateField(static::$prefix . 'Lower', 'Require Lower Case Characters', 'CheckBox', false));
+		$form->add($settingSaver->generateField(static::$prefix . 'Numbers', 'Require Numbers (0-9)', 'CheckBox', false));
+		$form->add($settingSaver->generateField(static::$prefix . 'Punctuation', 'Require Punctuation', 'CheckBox', false));
 		$form->add($submit);
 
 		if ($form->isMyCallback($submit))
 			{
-			$this->settingsSaver->save($_POST);
+			$settingSaver->save($_POST);
 			$this->page->setResponse('Saved');
 			}
 
@@ -31,37 +32,35 @@ class PasswordPolicy extends \App\Model\PasswordPolicy
 
 	public function getErrorMessage() : string
 		{
-		$values = $this->settingsSaver->getValues();
-
-		if (! $values)
+		if (! static::$values)
 			{
 			return '';
 			}
 
 		$messages = [];
-		$value = (int)$values[$this->prefix . 'Length'];
+		$value = (int)static::$values[static::$prefix . 'Length'];
 
 		if ($value)
 			{
 			$messages[] = "be at least {$value} characters long";
 			}
 
-		if ($values[$this->prefix . 'Upper'])
+		if (static::$values[static::$prefix . 'Upper'])
 			{
 			$messages[] = 'have UPPER case';
 			}
 
-		if ($values[$this->prefix . 'Lower'])
+		if (static::$values[static::$prefix . 'Lower'])
 			{
 			$messages[] = 'have lower case';
 			}
 
-		if ($values[$this->prefix . 'Numbers'])
+		if (static::$values[static::$prefix . 'Numbers'])
 			{
 			$messages[] = 'have numbers';
 			}
 
-		if ($values[$this->prefix . 'Punctuation'])
+		if (static::$values[static::$prefix . 'Punctuation'])
 			{
 			$messages[] = 'have punctuation';
 			}
@@ -78,37 +77,35 @@ class PasswordPolicy extends \App\Model\PasswordPolicy
 		{
 		$validator = new \PHPFUI\Validator('password');
 
-		$values = $this->settingsSaver->getValues();
-
-		if (! $values)
+		if (! static::$values)
 			{
 			return null;
 			}
 
 		$js = [];
-		$value = (int)$values[$this->prefix . 'Length'];
+		$value = (int)static::$values[static::$prefix . 'Length'];
 
 		if ($value)
 			{
 			$js[] = "(to.length>={$value})";
 			}
 
-		if ($values[$this->prefix . 'Upper'])
+		if (static::$values[static::$prefix . 'Upper'])
 			{
 			$js[] = '((/[A-Z]/).test(to))';
 			}
 
-		if ($values[$this->prefix . 'Lower'])
+		if (static::$values[static::$prefix . 'Lower'])
 			{
 			$js[] = '((/[a-z]/).test(to))';
 			}
 
-		if ($values[$this->prefix . 'Numbers'])
+		if (static::$values[static::$prefix . 'Numbers'])
 			{
 			$js[] = '((/[0-9]/).test(to))';
 			}
 
-		if ($values[$this->prefix . 'Punctuation'])
+		if (static::$values[static::$prefix . 'Punctuation'])
 			{
 			$js[] = '((/[^A-Za-z0-9]/).test(to))';
 			}
@@ -147,16 +144,15 @@ class PasswordPolicy extends \App\Model\PasswordPolicy
 	public function list() : ?\PHPFUI\UnorderedList
 		{
 		$ul = new \PHPFUI\UnorderedList();
-		$values = $this->settingsSaver->getValues();
 
-		if (! $values)
+		if (! static::$values)
 			{
 			return null;
 			}
 
-		foreach ($this->fields as $name => $parameters)
+		foreach (static::$fields as $name => $parameters)
 			{
-			$value = (int)$values[$this->prefix . $name];
+			$value = (int)static::$values[static::$prefix . $name];
 
 			if (! empty($value))
 				{

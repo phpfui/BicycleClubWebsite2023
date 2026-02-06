@@ -210,7 +210,7 @@ class Join
 			$this->page->setPublic();
 			}
 
-		$verifyCode = $this->memberModel->getVerifyCode($member->password);
+		$verifyCode = \App\Model\PasswordPolicy::getVerifyCode($member->password);
 
 		if (\App\Model\Session::checkCSRF() && isset($_POST['submit']))
 			{
@@ -280,7 +280,7 @@ class Join
 
 		if ($member->password)
 			{
-			$verifyCode = $this->memberModel->getVerifyCode($member->password);
+			$verifyCode = \App\Model\PasswordPolicy::getVerifyCode($member->password);
 
 
 			if ($verifyCode == $code)
@@ -334,7 +334,7 @@ class Join
 
 					return $container;
 					}
-				$member->password = $this->memberModel->hashPassword($_POST['password']);
+				$member->password = \App\Model\PasswordPolicy::hashPassword($_POST['password']);
 				$member->verifiedEmail = 0;
 				$member->update();
 				$this->memberModel->sendVerifyEmail($member);

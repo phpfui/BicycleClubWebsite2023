@@ -402,7 +402,14 @@ class EMail
 	/** @param array<string,mixed> $member */
 	public function setFromMember(array | \PHPFUI\ORM\DataObject $member) : static
 		{
-		$this->fromMember = $member;
+		if (is_array($member))
+			{
+			$this->fromMember = $member;
+			}
+		else
+			{
+			$this->fromMember = $member->toArray();
+			}
 		$name = ($this->fromMember['firstName'] ?? '') . ' ' . ($this->fromMember['lastName'] ?? '');
 		$this->setReplyTo($this->fromMember['email'] ?? '', $name);
 

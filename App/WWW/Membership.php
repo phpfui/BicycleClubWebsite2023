@@ -267,37 +267,6 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		}
 
-	public function notifications(int $id = -1, string $test = '') : void
-		{
-		if ($this->page->addHeader('Membership Notifications'))
-			{
-			$view = new \App\View\Membership\Notices($this->page);
-
-			if (-1 != $id)
-				{
-				$notice = new \App\Record\MemberNotice($id);
-
-				if ('test' === $test)
-					{
-					$email = new \App\Model\Email\Notice($notice, new \App\Model\Email\Member());
-					$email->addToMember(\App\Model\Session::getSignedInMember());
-					$email->send();
-					\App\Model\Session::setFlash('success', 'Check your inbox for a test email.');
-					$this->page->redirect('/Membership/notifications/' . $id);
-					}
-				else
-					{
-					$this->page->addPageContent($view->edit($notice));
-					}
-				}
-			else
-				{
-				$this->page->addPageContent(new \PHPFUI\Button('Add Notification', '/Membership/notifications/0'));
-				$this->page->addPageContent($view->list());
-				}
-			}
-		}
-
 	public function password(\App\Record\Member $member = new \App\Record\Member()) : void
 		{
 		$this->page->setRenewing();

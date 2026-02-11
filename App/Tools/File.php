@@ -7,7 +7,7 @@ class File
 	/**
 	 * @param ?resource $context
 	 */
-	public static function mkdir(string $directory, int $permissions = 0o777, bool $recursive = false, $context = null) : bool // @mago-expect lint:parameter-type
+	public static function mkdir(string $directory, int $permissions = 0o777, bool $recursive = false, $context = null) : bool
 		{
 		if (! \file_exists($directory) && ! \is_dir($directory))
 			{
@@ -22,7 +22,7 @@ class File
 	 *
 	 * @param ?resource $context
 	 */
-	public static function unlink(string $fileName, $context = null) : bool // @mago-expect lint:parameter-type
+	public static function unlink(string $fileName, $context = null) : bool
 		{
 		if (\file_exists($fileName) && ! \is_dir($fileName))
 			{

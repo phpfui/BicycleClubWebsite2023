@@ -15,7 +15,7 @@ class FileWriter extends Writer
 	/**
 	 * @var resource $out opened output file stream
 	 */
-	private $out; // @mago-expect lint:property-type
+	private $out;
 
 	/**
 	 * Make a \CSV\File\Writer.

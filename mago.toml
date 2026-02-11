@@ -33,7 +33,6 @@ braced-string-interpolation = { enabled = true }
 class-name = { enabled = false }
 combine-consecutive-issets = { enabled = true }
 constant-name = { enabled = true }
-constant-type = { enabled = true }
 cyclomatic-complexity = { enabled = false }
 disallowed-functions = { enabled = true }
 enum-name = { enabled = true }
@@ -93,7 +92,6 @@ no-empty-comment = { enabled = true }
 no-empty-catch-clause = { enabled = true }
 no-else-clause = { enabled = false }
 no-closing-tag = { enabled = true }
-no-boolean-literal-comparison = { enabled = false }
 no-boolean-flag-parameter = { enabled = false }
 no-assign-in-argument = { enabled = false }
 no-assign-in-condition = { enabled = false }
@@ -124,7 +122,6 @@ psl-randomness-functions = { enabled = true }
 psl-regex-functions = { enabled = true }
 psl-sleep-functions = { enabled = true }
 psl-string-functions = { enabled = true }
-return-type = { enabled = true }
 str-contains = { enabled = true }
 str-starts-with = { enabled = true }
 strict-behavior = { enabled = false }
@@ -141,11 +138,10 @@ constant-condition = { enabled = true }
 no-ini-set = { enabled = false }
 no-insecure-comparison = { enabled = true }
 no-literal-password = { enabled = false }
+no-isset = { enabled = false }
 tainted-data-to-sink = { enabled = true }
 sensitive-parameter = { enabled = false }
-parameter-type = { enabled = true }
 property-name = { enabled = false }
-property-type = { enabled = true }
 no-unsafe-finally = { enabled = true }
 strict-assertions = { enabled = true }
 use-specific-assertions = { enabled = true }

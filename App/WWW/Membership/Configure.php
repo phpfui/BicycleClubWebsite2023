@@ -82,7 +82,7 @@ class Configure extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 					{
 					$landingPage->addLink("/Membership/Configure/emails/{$link}", "{$header} Email");
 					}
-				$landingPage->addLink('/Membership/notifications', 'Membership Notifications');
+				$landingPage->addLink('/Membership/Configure/notifications', 'Membership Notifications');
 				$landingPage->sort();
 				$this->page->addPageContent($landingPage);
 				}
@@ -110,7 +110,7 @@ class Configure extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 					$email->addToMember(\App\Model\Session::getSignedInMember());
 					$email->send();
 					\App\Model\Session::setFlash('success', 'Check your inbox for a test email.');
-					$this->page->redirect('/Membership/notifications/' . $id);
+					$this->page->redirect('/Membership/Configure/notifications/' . $id);
 					}
 				else
 					{
@@ -119,7 +119,7 @@ class Configure extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 				}
 			else
 				{
-				$this->page->addPageContent(new \PHPFUI\Button('Add Notification', '/Membership/notifications/0'));
+				$this->page->addPageContent(new \PHPFUI\Button('Add Notification', '/Membership/Configure/notifications/0'));
 				$this->page->addPageContent($view->list());
 				}
 			}

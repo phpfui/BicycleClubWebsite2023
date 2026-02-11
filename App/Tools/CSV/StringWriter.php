@@ -12,7 +12,7 @@ class StringWriter extends Writer implements \Stringable
 	/**
 	 * @var resource $out stream for output
 	 */
-	private $out; // @mago-expect lint:property-type
+	private $out;
 
 	/**
 	 * Create a \CSV\StringWriter

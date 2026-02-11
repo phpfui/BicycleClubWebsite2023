@@ -209,12 +209,18 @@ class MainMenu extends \App\UI\MainMenu
 
 			if ($configMenu = $this->addMenu($menu, '/Membership/Configure', 'Membership Configuration'))
 				{
-				$this->addSub($configMenu, '/Membership/Configure/emails', 'Membership Emails');
 				$this->addSub($configMenu, '/Membership/Configure/qrCodes', 'Membership QR Codes');
 				$this->addSub($configMenu, '/Membership/Configure/configure', 'Membership Configuration');
-				$this->addSub($configMenu, '/Membership/Configure/notifications', 'Membership Notifications');
 				$this->addSub($configMenu, '/Membership/Configure/dues', 'Membership Dues');
 				$this->addSub($configMenu, '/Membership/Configure/csv', 'Download CSV');
+
+				if ($emailMenu = $this->addMenu($configMenu, '/Membership/Configure/emails', 'Membership Emails'))
+					{
+					$this->addSub($emailMenu, '/Membership/Configure/notifications', 'Membership Notifications');
+					$this->addSub($emailMenu, '/Membership/Configure/emails/newPasswordEmail', 'New Password Email');
+					$this->addSub($emailMenu, '/Membership/Configure/emails/newsletter', 'Newsletter Email');
+					$this->addSub($emailMenu, '/Membership/Configure/emails/Waiver', 'Waiver Accepted Email');
+					}
 				}
 
 			if ($maintenanceMenu = $this->addMenu($menu, '/Membership/Maintenance', 'Membership Maintenance'))

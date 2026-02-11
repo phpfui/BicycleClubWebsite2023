@@ -4,7 +4,6 @@ namespace App\Model;
 
 class DeleteRecord
 	{
-	// @mago-expect lint:property-type
 	/** @var ?callable */
 	private $conditionalCallBack = null;
 

@@ -25,7 +25,7 @@ class Controller
 	private int $endTime;
 
 	/** @var ?callable logger function.  Takes a string parameter */
-	private $logger = null; // @mago-expect lint:property-type
+	private $logger = null;
 
 	/** @var int Debug level, higher is more verbose. Default: LOG_NORMAL */
 	private int $logLevel = 3;

@@ -4,7 +4,6 @@ namespace App\Tools;
 
 class TempFile implements \Stringable
 	{
-	// @mago-expect lint:property-type
 	/** @var ?resource */
 	protected $handle = null;
 
@@ -45,7 +44,7 @@ class TempFile implements \Stringable
 	/**
 	 * @return false|resource
 	 */
-	public function open(string $flags = 'w') // @mago-expect lint:return-type
+	public function open(string $flags = 'w')
 		{
 		$this->handle = \fopen($this->name, $flags);
 

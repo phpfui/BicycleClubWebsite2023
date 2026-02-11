@@ -36,7 +36,7 @@ class Notices
 				$notice->memberNoticeId = 0;
 				$notice->insert();
 
-				$this->page->redirect('/Membership/notifications');
+				$this->page->redirect('/Membership/Configure/notifications');
 
 				return $form;
 				}
@@ -94,12 +94,12 @@ class Notices
 
 		if ($notice->loaded())
 			{
-			$testButton = new \PHPFUI\Button('Test Email', '/Membership/notifications/' . $notice->memberNoticeId . '/test');
+			$testButton = new \PHPFUI\Button('Test Email', '/Membership/Configure/notifications/' . $notice->memberNoticeId . '/test');
 			$testButton->addClass('warning');
 			$form->saveOnClick($testButton);
 			$buttonGroup->addButton($testButton);
 			}
-		$backButton = new \PHPFUI\Button('Member Notifications', '/Membership/notifications');
+		$backButton = new \PHPFUI\Button('Member Notifications', '/Membership/Configure/notifications');
 		$backButton->addClass('hollow secondary');
 		$buttonGroup->addButton($backButton);
 
@@ -129,7 +129,7 @@ class Notices
 		$deleter = new \App\Model\DeleteRecord($this->page, $table, $memberNoticeTable, 'Are you sure you want to permanently delete this notice email?');
 		$table->addCustomColumn('Del', $deleter->columnCallback(...));
 		$table->addCustomColumn('summary', static fn (array $row) : string => self::$summary[$row['summary']] ?? 'Off');
-		$table->addCustomColumn('title', static fn (array $row) : \PHPFUI\Link => new \PHPFUI\Link('/Membership/notifications/' . $row['memberNoticeId'], $row['title'], false));
+		$table->addCustomColumn('title', static fn (array $row) : \PHPFUI\Link => new \PHPFUI\Link('/Membership/Configure/notifications/' . $row['memberNoticeId'], $row['title'], false));
 		$table->addCustomColumn('Member', static fn (array $row) : string => new \App\Record\Member($row['memberId'])->fullName());
 
 		return $table;

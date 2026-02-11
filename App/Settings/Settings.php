@@ -49,7 +49,7 @@ abstract class Settings
 	 *
 	 * @return ?mixed
 	 */
-	public function __get(string $field) // @mago-expect lint:return-type
+	public function __get(string $field)
 		{
 		$this->load();
 

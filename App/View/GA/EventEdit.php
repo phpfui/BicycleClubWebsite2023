@@ -133,7 +133,7 @@ class EventEdit
 		$showPreregistration = new \PHPFUI\Input\CheckBoxBoolean('showPreregistration', 'Show Preregistration Numbers', (bool)$event->showPreregistration);
 		$allowShopping = new \PHPFUI\Input\CheckBoxBoolean('allowShopping', 'Allow Store Shopping at Checkout', (bool)$event->allowShopping);
 		$otherEvent = new \PHPFUI\Input\CheckBoxBoolean('otherEvent', 'Not Signature Event', (bool)$event->otherEvent);
-		$optionsSet->add(new \PHPFUI\MultiColumn($dayOfRegistration, $showPreregistration, $otherEvent));
+		$optionsSet->add(new \PHPFUI\MultiColumn($showPreregistration, $allowShopping, $otherEvent));
 		$container->add($optionsSet);
 
 		$optionsSet = new \PHPFUI\FieldSet('Membership Options');

@@ -97,7 +97,14 @@ class RideWithGPS extends \App\Model\GPS
 			}
 
 		$url = $this->baseUri . '/users/current.json?' . $this->queryString;
-		$json = @\file_get_contents($url);
+		try
+			{
+			$json = @\file_get_contents($url);
+			}
+		catch (...)
+			{
+			$json = false;
+			}
 
 		if (false === $json)
 			{
@@ -335,15 +342,11 @@ class RideWithGPS extends \App\Model\GPS
 
 		if (200 != $status)
 			{
-			// 404 = not found, 403 = not public
+			// 404 = not found, 403 = not public, so just delete it
 			if ($status >= 400 && $status < 500)
 				{
 				new \App\Table\RideRWGPS()->changeRWGPSId($rwgps, null);
 				$rwgps->delete();
-				}
-			else
-				{
-				\App\Tools\Logger::get()->debug("RWGPS returned {$status} for {$url}");
 				}
 
 			return null;

@@ -186,6 +186,25 @@ class Invoice
 				$row[$index] = '$' . $row[$index];
 				}
 			$table->addRow($row);
+
+			if (\App\Enum\Store\Type::GENERAL_ADMISSION == $item->type)
+				{
+				$rider = new \App\Record\GaRider($item->storeItemDetailId);
+
+				foreach ($rider->optionsSelected as $option)
+					{
+					$price = $option->price + $option->additionalPrice;
+					$row = ['title' => $option->optionName,
+						'detailLine' => $option->selectionName,
+						'quantity' => 1,
+						'price' => '$' . \number_format($price, 2),
+						'shipping' => '',
+						'tax' => '',
+					];
+					$table->addRow($row);
+					}
+				}
+
 			}
 		$fieldSet->add($table);
 		$container->add($fieldSet);

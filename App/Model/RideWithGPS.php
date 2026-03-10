@@ -97,11 +97,12 @@ class RideWithGPS extends \App\Model\GPS
 			}
 
 		$url = $this->baseUri . '/users/current.json?' . $this->queryString;
+
 		try
 			{
 			$json = @\file_get_contents($url);
 			}
-		catch (...)
+		catch (\Exception $e)
 			{
 			$json = false;
 			}

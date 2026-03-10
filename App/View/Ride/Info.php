@@ -24,21 +24,6 @@ class Info
 		{
 		$fieldSet = new \PHPFUI\FieldSet('Ride Information');
 
-		if ($ride->dateAdded)
-			{
-			$fieldSet->add(new \App\UI\Display('Date / Time Added', \date('n/j/Y g:i a', \strtotime($ride->dateAdded))));
-			}
-
-		if ($ride->releasePrinted)
-			{
-			$fieldSet->add(new \App\UI\Display('Sign In Sheet Printed', \date('n/j/Y g:i a', \strtotime($ride->releasePrinted))));
-			}
-
-		if ($ride->pointsAwarded)
-			{
-			$fieldSet->add(new \App\UI\Display('Volunteer Points Credited', $ride->pointsAwarded));
-			}
-
 		if ($ride->rideDate)
 			{
 			$fieldSet->add(new \App\UI\Display('Date', \App\Tools\Date::formatString('l, F j, Y', $ride->rideDate)));
@@ -158,6 +143,21 @@ class Info
 			$fieldSet->add(new \App\UI\Display('Reported Crash', 'Yes'));
 			}
 
+		if ($ride->dateAdded)
+			{
+			$fieldSet->add(new \App\UI\Display('Date / Time Added', \date('n/j/Y g:i a', \strtotime($ride->dateAdded))));
+			}
+
+		if ($ride->releasePrinted)
+			{
+			$fieldSet->add(new \App\UI\Display('Sign In Sheet Printed', \date('n/j/Y g:i a', \strtotime($ride->releasePrinted))));
+			}
+
+		if ($ride->pointsAwarded)
+			{
+			$fieldSet->add(new \App\UI\Display('Volunteer Points Credited', $ride->pointsAwarded));
+			}
+
 		return $fieldSet;
 		}
 
@@ -170,21 +170,6 @@ class Info
 		$fieldSet = new \PHPFUI\FieldSet('Ride Information');
 		$container->add($fieldSet);
 		$table = new \PHPFUI\Table();
-
-		if ($ride->dateAdded)
-			{
-			$table->addRow(['Date / Time Added', \date('n/j/Y g:i a', \strtotime($ride->dateAdded))]);
-			}
-
-		if ($ride->releasePrinted)
-			{
-			$table->addRow(['Sign In Sheet Printed', \date('n/j/Y g:i a', \strtotime($ride->releasePrinted))]);
-			}
-
-		if ($ride->pointsAwarded)
-			{
-			$table->addRow(['Volunteer Points Credited', $ride->pointsAwarded]);
-			}
 
 		if ($ride->rideDate)
 			{
@@ -276,6 +261,21 @@ class Info
 		if ($ride->rideStatus->value)
 			{
 			$table->addRow(['Ride Status', $ride->rideStatus->name()]);
+			}
+
+		if ($ride->dateAdded)
+			{
+			$table->addRow(['Date / Time Added', \date('n/j/Y g:i a', \strtotime($ride->dateAdded))]);
+			}
+
+		if ($ride->releasePrinted)
+			{
+			$table->addRow(['Sign In Sheet Printed', \date('n/j/Y g:i a', \strtotime($ride->releasePrinted))]);
+			}
+
+		if ($ride->pointsAwarded)
+			{
+			$table->addRow(['Volunteer Points Credited', $ride->pointsAwarded]);
 			}
 
 		$fieldSet->add($table);

@@ -49,10 +49,10 @@
         "tinify/tinify": "*",
         "tinymce/tinymce": "^8.0",
         "twilio/sdk": "^8.6.2",
-        "zbateson/mail-mime-parser": "^3.0"
+        "zbateson/mail-mime-parser": "^4.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^12.0",
+        "phpunit/phpunit": "^13.0",
         "phpfui/html-unit-tester": "^1.0",
         "roave/security-advisories": "dev-latest",
         "phpfui/phpunit-syntax-coverage": "^1.0",

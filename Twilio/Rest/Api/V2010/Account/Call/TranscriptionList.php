@@ -97,6 +97,10 @@ class TranscriptionList extends ListResource
                 Serialize::booleanToString($options['enableAutomaticPunctuation']),
             'IntelligenceService' =>
                 $options['intelligenceService'],
+            'ConversationConfiguration' =>
+                $options['conversationConfiguration'],
+            'ConversationId' =>
+                $options['conversationId'],
             'EnableProviderData' =>
                 Serialize::booleanToString($options['enableProviderData']),
         ]);

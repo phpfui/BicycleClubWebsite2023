@@ -137,7 +137,7 @@ class DBInit extends \PHPFUI\Container
 			$callout->add('This appears to be an empty database, which is good!<br><br>Click on the Initialize Database button to continue.');
 			$initDB = true;
 			}
-		elseif (! \count($missingTables) && \count($extraTables))
+		elseif (! \count($missingTables) && \count($extraTables))	// @phpstan-ignore-line
 			{
 			$callout = new \PHPFUI\Callout('warning');
 			$callout->add('All required tables are present, but these tables are extra:<p>');

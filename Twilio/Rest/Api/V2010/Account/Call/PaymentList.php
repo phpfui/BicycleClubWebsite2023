@@ -103,6 +103,10 @@ class PaymentList extends ListResource
                 $options['tokenType'],
             'ValidCardTypes' =>
                 $options['validCardTypes'],
+            'RequireMatchingInputs' =>
+                $options['requireMatchingInputs'],
+            'Confirmation' =>
+                $options['confirmation'],
         ]);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);

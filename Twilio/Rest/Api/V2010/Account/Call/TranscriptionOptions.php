@@ -35,6 +35,8 @@ abstract class TranscriptionOptions
      * @param string $hints A Phrase contains words and phrase \\\"hints\\\" so that the speech recognition engine is more likely to recognize them.
      * @param bool $enableAutomaticPunctuation The provider will add punctuation to recognition result
      * @param string $intelligenceService The SID or unique name of the [Intelligence Service](https://www.twilio.com/docs/conversational-intelligence/api/service-resource) for persisting transcripts and running post-call Language Operators
+     * @param string $conversationConfiguration The ID of the Conversations Configuration for customizing conversation behavior in Intelligence Service
+     * @param string $conversationId The ID of the Conversation for associating this Transcription with an existing Conversation in Intelligence Service
      * @param bool $enableProviderData Whether the callback includes raw provider data.
      * @return CreateTranscriptionOptions Options builder
      */
@@ -54,6 +56,8 @@ abstract class TranscriptionOptions
         string $hints = Values::NONE,
         bool $enableAutomaticPunctuation = Values::BOOL_NONE,
         string $intelligenceService = Values::NONE,
+        string $conversationConfiguration = Values::NONE,
+        string $conversationId = Values::NONE,
         bool $enableProviderData = Values::BOOL_NONE
 
     ): CreateTranscriptionOptions
@@ -73,6 +77,8 @@ abstract class TranscriptionOptions
             $hints,
             $enableAutomaticPunctuation,
             $intelligenceService,
+            $conversationConfiguration,
+            $conversationId,
             $enableProviderData
         );
     }
@@ -97,6 +103,8 @@ class CreateTranscriptionOptions extends Options
      * @param string $hints A Phrase contains words and phrase \\\"hints\\\" so that the speech recognition engine is more likely to recognize them.
      * @param bool $enableAutomaticPunctuation The provider will add punctuation to recognition result
      * @param string $intelligenceService The SID or unique name of the [Intelligence Service](https://www.twilio.com/docs/conversational-intelligence/api/service-resource) for persisting transcripts and running post-call Language Operators
+     * @param string $conversationConfiguration The ID of the Conversations Configuration for customizing conversation behavior in Intelligence Service
+     * @param string $conversationId The ID of the Conversation for associating this Transcription with an existing Conversation in Intelligence Service
      * @param bool $enableProviderData Whether the callback includes raw provider data.
      */
     public function __construct(
@@ -115,6 +123,8 @@ class CreateTranscriptionOptions extends Options
         string $hints = Values::NONE,
         bool $enableAutomaticPunctuation = Values::BOOL_NONE,
         string $intelligenceService = Values::NONE,
+        string $conversationConfiguration = Values::NONE,
+        string $conversationId = Values::NONE,
         bool $enableProviderData = Values::BOOL_NONE
 
     ) {
@@ -132,6 +142,8 @@ class CreateTranscriptionOptions extends Options
         $this->options['hints'] = $hints;
         $this->options['enableAutomaticPunctuation'] = $enableAutomaticPunctuation;
         $this->options['intelligenceService'] = $intelligenceService;
+        $this->options['conversationConfiguration'] = $conversationConfiguration;
+        $this->options['conversationId'] = $conversationId;
         $this->options['enableProviderData'] = $enableProviderData;
     }
 
@@ -298,6 +310,30 @@ class CreateTranscriptionOptions extends Options
     public function setIntelligenceService(string $intelligenceService): self
     {
         $this->options['intelligenceService'] = $intelligenceService;
+        return $this;
+    }
+
+    /**
+     * The ID of the Conversations Configuration for customizing conversation behavior in Intelligence Service
+     *
+     * @param string $conversationConfiguration The ID of the Conversations Configuration for customizing conversation behavior in Intelligence Service
+     * @return $this Fluent Builder
+     */
+    public function setConversationConfiguration(string $conversationConfiguration): self
+    {
+        $this->options['conversationConfiguration'] = $conversationConfiguration;
+        return $this;
+    }
+
+    /**
+     * The ID of the Conversation for associating this Transcription with an existing Conversation in Intelligence Service
+     *
+     * @param string $conversationId The ID of the Conversation for associating this Transcription with an existing Conversation in Intelligence Service
+     * @return $this Fluent Builder
+     */
+    public function setConversationId(string $conversationId): self
+    {
+        $this->options['conversationId'] = $conversationId;
         return $this;
     }
 

@@ -1,8 +1,7 @@
 <?php
 
 // set the server name which determains which db to use
-$_SERVER['SERVER_NAME'] = $argv[1] ?? 'localhost';
-
+//$_SERVER['SERVER_NAME'] = $argv[1] ?? 'localhost';
 include __DIR__ . '/../common.php';
 
 //echo "Loaded settings file {$dbSettings->getLoadedFileName()}\n";
@@ -10,7 +9,7 @@ include __DIR__ . '/../common.php';
 $routeArray = [3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2];
 $THNRouteArray = [0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2];
 $TNROffset = [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 3, 4, 5, 5];
-$ThNROffset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 4, 4, 5, 5];
+$ThNROffset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 3, 4, 4, 5, 6];
 $cuesheets = [1419, 1418, 1420, 1421, 330, 1422];
 $rwgps = [32967573, 32967639, 32967686, 32967698, 32967711, 32967731];
 $elevations = [1200, 1700, 1900, 2500, 2800, 3300];
@@ -31,7 +30,7 @@ $table = new \PHPFUI\Table();
 $table->setHeaders(['day' => 'Day', 'date' => 'Date', 'cat' => 'Category', 'start' => 'Start', 'mileage' => 'Mileage', 'sunset' => 'Sunset', 'duration' => 'Duration', 'average' => 'Average', ]);
 
 $today = \App\Tools\Date::todayString();
-$j = (int)($_GET['day'] ?? 0);
+$j = (int)($_GET['day'] ?? 1);
 
 if (! $j)
 	{
@@ -46,12 +45,14 @@ else
 	$member = new \App\Record\Member(['firstName' => 'Bruce', 'lastName' => 'Wells']);
 	}
 
-//$condition = new \PHPFUI\ORM\Condition('memberId', $member->memberId)->and('rideDate', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
-//$rideTable = new \App\Table\Ride()->setWhere($condition)->delete();
+$condition = new \PHPFUI\ORM\Condition('memberId', $member->memberId)
+	->and('rideDate', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual())
+	->and('title', 'Thursday Night Training Ride');
+$rideTable = new \App\Table\Ride()->setWhere($condition)->delete();
 
 foreach ($routeArray as $routeKey => $route)
 	{
-	$date = \gregoriantojd(3, 11, 2025) + $week * 7 + $j * 2;
+	$date = \gregoriantojd(3, 10, 2026) + $week * 7 + $j * 2;
 
 //	for ($j = 0; $j < 2; ++$j)
 
@@ -100,7 +101,7 @@ foreach ($routeArray as $routeKey => $route)
 			continue;
 			}
 		$ride->rideStatus = \App\Enum\Ride\Status::NOT_YET;
-		$ride->mileage = (string)$mileage;
+		$ride->mileage = (float)$mileage;
 		$ride->startTime = $sqlTime;
 		$ride->title = $title;
 		$ride->description = $desc;
@@ -112,7 +113,6 @@ foreach ($routeArray as $routeKey => $route)
 		$ride->startLocationId = 26;
 		$ride->targetPace = 20.0 - $j;
 		$ride->regrouping = 'At lights';
-		$ride->RWGPSId = $rwgps[$route];
 
 		$row = [];
 		$row['day'] = \App\Tools\Date::format('D', $date);
@@ -124,8 +124,10 @@ foreach ($routeArray as $routeKey => $route)
 		$row['duration'] = $daylightString;
 		$hour = $daylight / 60;
 		$row['average'] = \number_format($mileage / $hour, 1);
-		$rideId = $ride->insert();
-		$row['rideId'] = $rideId;
+		$rideRWGPS = new \App\Record\RideRWGPS();
+		$rideRWGPS->RWGPSId = $rwgps[$route];
+		$rideRWGPS->ride = $ride;
+		$rideRWGPS->insert();
 		$table->addRow($row);
 		$date += 2;
 

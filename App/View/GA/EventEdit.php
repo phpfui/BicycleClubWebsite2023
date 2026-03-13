@@ -140,7 +140,7 @@ class EventEdit
 		$membershipFields = [
 			'extendMembership' => ['Extend Membership', 'Make sure membership is good through expires date.'],
 			'newMembersOnly' => ['New Membership Included', 'Event comes with a new membership through expires date.'],
-			'renewMembership' => ['Renew Expired Memberships', 'Current memberships get extended through expires date'],
+			'renewMembership' => ['Renew Expired Memberships', 'Lapsed memberships get extended through expires date'],
 		];
 
 		$multiColumn = new \PHPFUI\MultiColumn();

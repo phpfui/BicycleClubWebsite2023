@@ -127,8 +127,16 @@ class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\Na
 
 	private function checkRedirects(string $url) : bool
 		{
-		$url = \parse_url($url, PHP_URL_PATH);
-		$url = \strtolower(\trim($url ?? '', '/'));
+		try
+			{
+			$uri = new \Uri\Rfc3986\Uri($url);
+			}
+		catch (\Uri\InvalidUriException $e)
+			{
+			return false;
+			}
+
+		$url = \strtolower(\trim($uri->getPath(), '/'));
 
 		if (empty($url))
 			{

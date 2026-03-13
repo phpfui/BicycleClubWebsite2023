@@ -234,7 +234,15 @@ class RideWithGPS extends \App\Model\GPS
 			return null;
 			}
 		$parts = \explode('/', $link);
-		$urlParts = \parse_url($link);
+
+		try
+			{
+			$uri = new \Uri\Rfc3986\Uri($link);
+			}
+		catch (\Uri\InvalidUriException $e)
+			{
+			return null;
+			}
 		$RWGPSId = 0;
 
 		foreach ($parts as $index => $part)
@@ -272,14 +280,14 @@ class RideWithGPS extends \App\Model\GPS
 		$rwgps = new \App\Record\RWGPS($RWGPSId);
 		$rwgps->RWGPSId = $RWGPSId;
 
-		if (isset($urlParts['query']))
+		if ($uri->getQuery())
 			{
-			$rwgps->query = $urlParts['query'];
+			$rwgps->query = $uri->getQuery();
 			}
 
-		if (isset($urlParts['fragment']))
+		if ($uri->getFragment())
 			{
-			$rwgps->query .= '#' . $urlParts['fragment'];
+			$rwgps->query .= '#' . $uri->getFragment();
 			}
 
 		if (! $this->scrape($rwgps, true))

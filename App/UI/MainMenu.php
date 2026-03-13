@@ -40,14 +40,18 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		{
 		if ($this->permissions->isAuthorized($name, $this->currentMenu))
 			{
-			$urlParts = \parse_url($page);
-
 			$target = '';
-
-			if (isset($urlParts['scheme']))
+			try
 				{
-				// do nothing, outside link
-				$target = '_blank';
+				$uri = new \Uri\Rfc3986\Uri($page);
+				if ($uri->getScheme())
+					{
+					// do nothing, outside link
+					$target = '_blank';
+					}
+				}
+			catch (\Uri\InvalidUriException $e)
+				{
 				}
 
 			$menuItem = new \PHPFUI\MenuItem($name, $page);

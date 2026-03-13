@@ -362,9 +362,15 @@ class StartLocation
 		$view->addCustomColumn('active', static fn (array $location) : string => $location['active'] ? '<b>&check;</b>' : '');
 		$view->addCustomColumn('link', static function(array $location) : string
 			{
-			$url = \parse_url($location['link'] ?? '', PHP_URL_HOST);
-
-			return $url ? new \PHPFUI\Link($location['link'], $url) : '';
+			try
+				{
+				$uri = new \Uri\Rfc3986\Uri($location['link'] ?? '');
+				}
+			catch (\Uri\InvalidUriException $e)
+				{
+				return '';
+				}
+			return new \PHPFUI\Link($uri->toString());
 			});
 
 		$view->addCustomColumn('map', static function(array $location) : string

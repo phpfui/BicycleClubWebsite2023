@@ -1,5 +1,5 @@
 <?php
-$requiredVersion = '8.4.0';
+$requiredVersion = '8.5.0';
 if (version_compare(PHP_VERSION, $requiredVersion) < 0)
 	{
 	echo "PHP Version {$requiredVersion} or higher is required. You are on version: " . PHP_VERSION . "\n";

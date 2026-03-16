@@ -370,6 +370,7 @@ class StartLocation
 				{
 				return '';
 				}
+
 			return new \PHPFUI\Link($uri->toString());
 			});
 

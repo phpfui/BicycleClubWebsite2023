@@ -9,22 +9,16 @@ class SparkPostException extends \Exception
     /**
      * Variable to hold json decoded body from http response.
      */
-    private $body = null;
-
-    /**
-     * Array with the request values sent.
-     */
-    private $request;
+    private ?array $body = null;
 
     /**
      * Sets up the custom exception and copies over original exception values.
      *
-     * @param Exception $exception - the exception to be wrapped
+	 * @param Exception $exception - the exception to be wrapped
+	 * @param ?array $request Array with the request values sent.
      */
-    public function __construct(\Exception $exception, $request = null)
+    public function __construct(private \Exception $exception, private ?array $request = null)
     {
-        $this->request = $request;
-
         $message = $exception->getMessage();
         $code = $exception->getCode();
         if ($exception instanceof HttpException) {
@@ -41,7 +35,7 @@ class SparkPostException extends \Exception
      *
      * @return array $request
      */
-    public function getRequest()
+    public function getRequest() : array
     {
         return $this->request;
     }
@@ -49,9 +43,9 @@ class SparkPostException extends \Exception
     /**
      * Returns the body.
      *
-     * @return array $body - the json decoded body from the http response
+     * @return ?array $body - the json decoded body from the http response
      */
-    public function getBody()
+    public function getBody() : ?array
     {
         return $this->body;
     }

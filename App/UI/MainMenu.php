@@ -41,9 +41,11 @@ class MainMenu extends \PHPFUI\AccordionMenu
 		if ($this->permissions->isAuthorized($name, $this->currentMenu))
 			{
 			$target = '';
+
 			try
 				{
 				$uri = new \Uri\Rfc3986\Uri($page);
+
 				if ($uri->getScheme())
 					{
 					// do nothing, outside link

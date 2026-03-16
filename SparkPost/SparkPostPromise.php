@@ -7,24 +7,13 @@ use Http\Promise\Promise as HttpPromise;
 class SparkPostPromise implements HttpPromise
 {
     /**
-     * HttpPromise to be wrapped by SparkPostPromise.
-     */
-    private $promise;
-
-    /**
-     * Array with the request values sent.
-     */
-    private $request;
-
-    /**
      * set the promise to be wrapped.
      *
-     * @param HttpPromise $promise
+	 * @param HttpPromise $promise HttpPromise to be wrapped by SparkPostPromise
+	 * @param ?array $request Array with the request values sent
      */
-    public function __construct(HttpPromise $promise, $request = null)
+    public function __construct(private HttpPromise $promise, private ?array $request = null)
     {
-        $this->promise = $promise;
-        $this->request = $request;
     }
 
     /**
@@ -51,7 +40,7 @@ class SparkPostPromise implements HttpPromise
     /**
      * Hand back the state.
      *
-     * @return $state - returns the state of the promise
+     * @return returns the state of the promise
      */
     public function getState()
     {
@@ -60,8 +49,6 @@ class SparkPostPromise implements HttpPromise
 
     /**
      * Wraps the wait function and returns a custom response or throws a custom exception.
-     *
-     * @param bool $unwrap
      *
      * @return SparkPostResponse
      *

@@ -761,6 +761,7 @@ class Rides
 		$riderMiles = 0;
 		$totalRiders = 0;
 		$riderRides = 0;
+		$totalLedMiles = 0;
 
 		foreach ($rides as $ride)
 			{
@@ -795,6 +796,7 @@ class Rides
 				{
 				$mileage[$paceId] = 0;
 				}
+			$totalLedMiles += (int)$ride->mileage;
 			$mileage[$paceId] += (int)$ride->mileage;
 			$ride->averagePace ??= 0.0;
 
@@ -899,7 +901,7 @@ class Rides
 		\uksort($mainCategoryCounts, static fn (int $a, int $b) : int => $a <=> $b);
 		\uksort($rideTotals, static fn (int $a, int $b) : int => $a <=> $b);
 		\uksort($ridesWithRiders, static fn (int $a, int $b) : int => $a <=> $b);
-		$output = '<h3>There were ' . \count($rides) . ' rides led in ' . $year . '.</h3>';
+		$output = '<h3>There were ' . \number_format(\count($rides)) . ' rides led in ' . $year . ' for a total of ' . \number_format($totalLedMiles) . ' miles led.</h3>';
 		$table = new \PHPFUI\Table();
 		$table->addHeader((string)0, 'Main Category');
 		$table->addHeader((string)1, 'Total Rides');

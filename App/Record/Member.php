@@ -46,7 +46,7 @@ class Member extends \App\Record\Definition\Member
 		{
 		if ($this->empty())
 			{
-			return "Member({$this->memberId} Not Found";
+			return '';
 			}
 
 		return \App\Tools\TextHelper::unhtmlentities(($this->current['firstName'] ?? '') . ' ' . ($this->current['lastName'] ?? ''));

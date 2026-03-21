@@ -79,9 +79,9 @@ class File extends \App\View\Folder
 			}
 
 		$form->add($multiColumn);
-		$caption = new \PHPFUI\Input\Text('description', 'File Description', $file->description);
-		$caption->setToolTip('This description will also be shown in the folder list view.');
-		$form->add($caption);
+		$description = new \PHPFUI\Input\Text('description', 'File Description', $file->description);
+		$description->setToolTip('This description will also be shown in the folder list view.');
+		$form->add($description);
 
 		if ($file->loaded())
 			{
@@ -89,14 +89,19 @@ class File extends \App\View\Folder
 			$fileName = new \PHPFUI\Input\Text('fileName', 'File Name on Download', $file->fileName);
 			$fileName->setToolTip('This will be the file name when downloaded.  Do not include an extension.');
 			$form->add($fileName);
-			$file = new \PHPFUI\Input\File($this->page, 'file', 'File To Update (if needed)');
+			$fileInput = new \PHPFUI\Input\File($this->page, 'file', 'File To Update (if needed)');
 			}
 		else
 			{
-			$file = new \PHPFUI\Input\File($this->page, 'file', 'File To Add');
-			$file->setRequired();
+			$fileInput = new \PHPFUI\Input\File($this->page, 'file', 'File To Add');
+			$fileInput->setRequired();
 			}
-		$form->add($file);
+		$form->add($fileInput);
+
+		if ($file->extension)
+			{
+			$form->add(new \App\UI\Display('File Type', $file->extension));
+			}
 
 		return $form;
 		}
@@ -113,7 +118,7 @@ class File extends \App\View\Folder
 		$view->addCustomColumn('fileName', static fn (array $file) : \PHPFUI\Link => new \PHPFUI\Link('/File/download/' . $file['fileId'], $file['fileName'], false));
 		$view->addCustomColumn('member', static fn (array $file) : string => new \App\Record\Member($file['memberId'])->fullName());
 
-		$headers = ['fileName' => 'Download', 'description' => 'Description', 'uploaded' => 'Uploaded'];
+		$headers = ['fileName' => 'Download', 'description' => 'Description', 'extension' => 'Type', 'uploaded' => 'Uploaded'];
 		$normalHeaders = ['member'];
 
 		if ($this->deleteItem)

@@ -557,7 +557,7 @@ class EventEdit
 					$gaSelectionTable = new \App\Table\GaSelection();
 					$ordering = 0;
 
-					foreach ($post['ordering'] as &$value)
+					foreach ($post['ordering'] ?? [] as &$value)
 						{
 						$value = ++$ordering;
 						}

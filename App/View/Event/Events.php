@@ -572,7 +572,7 @@ class Events
 			});
 
 		$delete = new \PHPFUI\AJAX('deleteReservation', 'Permanently delete this reservation?');
-		$delete->addFunction('success', "$('#reservationId-'+data.response).css('background-color','red').hide('fast').remove();location.reload();");
+		$delete->addFunction('success', "$('#reservationId-'+data.response).css('background-color','red').hide('fast').remove();");
 		$this->page->addJavaScript($delete->getPageJS());
 
 		$paymentTypes = \App\Table\Payment::getPaymentTypes();
@@ -818,13 +818,15 @@ JAVASCRIPT;
 
 					case 'deleteEvent':
 						$event = new \App\Record\Event((int)$_POST['eventId']);
+						$event->eventId = (int)$_POST['eventId'];
 						$event->delete();
 						$this->page->setResponse($_POST['eventId']);
 
 						break;
 
 					case 'deleteReservation':
-						$reservation = new \App\Record\Reservation((int)$_POST['reservationId']);
+						$reservation = new \App\Record\Reservation();
+						$reservation->reservationId = (int)$_POST['reservationId'];
 						$reservation->delete();
 						$this->page->setResponse($_POST['reservationId']);
 

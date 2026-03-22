@@ -5829,16 +5829,16 @@
     "packages-dev": [
         {
             "name": "carthage-software/mago",
-            "version": "1.15.2",
+            "version": "1.15.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/carthage-software/mago.git",
-                "reference": "6caa9a633f012dd484bb5a394e97c01a451b129a"
+                "reference": "fe9ed0b20fd1ad40083348c8f8e408cee10a9cb0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/carthage-software/mago/zipball/6caa9a633f012dd484bb5a394e97c01a451b129a",
-                "reference": "6caa9a633f012dd484bb5a394e97c01a451b129a",
+                "url": "https://api.github.com/repos/carthage-software/mago/zipball/fe9ed0b20fd1ad40083348c8f8e408cee10a9cb0",
+                "reference": "fe9ed0b20fd1ad40083348c8f8e408cee10a9cb0",
                 "shasum": ""
             },
             "require": {
@@ -5873,7 +5873,7 @@
             ],
             "support": {
                 "issues": "https://github.com/carthage-software/mago/issues",
-                "source": "https://github.com/carthage-software/mago/tree/1.15.2"
+                "source": "https://github.com/carthage-software/mago/tree/1.15.3"
             },
             "funding": [
                 {
@@ -5881,7 +5881,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-19T02:27:43+00:00"
+            "time": "2026-03-20T19:19:36+00:00"
         },
         {
             "name": "clue/ndjson-react",
@@ -6501,16 +6501,16 @@
         },
         {
             "name": "phpfui/html-unit-tester",
-            "version": "V1.0.13",
+            "version": "V1.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/HTMLUnitTester.git",
-                "reference": "40827d1c99ac7bf8866d44a6b589200c6c46250a"
+                "reference": "447fa356d6741078b1c8c43b3edbccc37060fd07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/HTMLUnitTester/zipball/40827d1c99ac7bf8866d44a6b589200c6c46250a",
-                "reference": "40827d1c99ac7bf8866d44a6b589200c6c46250a",
+                "url": "https://api.github.com/repos/phpfui/HTMLUnitTester/zipball/447fa356d6741078b1c8c43b3edbccc37060fd07",
+                "reference": "447fa356d6741078b1c8c43b3edbccc37060fd07",
                 "shasum": ""
             },
             "require": {
@@ -6521,7 +6521,7 @@
                 "friendsofphp/php-cs-fixer": "*",
                 "phpfui/phpunit-syntax-coverage": ">=1.0",
                 "phpstan/phpstan": "*",
-                "phpunit/phpunit": "<=12.0",
+                "phpunit/phpunit": "<14",
                 "roave/security-advisories": "dev-latest"
             },
             "type": "library",
@@ -6553,9 +6553,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/HTMLUnitTester/issues",
-                "source": "https://github.com/phpfui/HTMLUnitTester/tree/V1.0.13"
+                "source": "https://github.com/phpfui/HTMLUnitTester/tree/V1.0.14"
             },
-            "time": "2025-11-07T02:12:34+00:00"
+            "time": "2026-03-20T16:59:35+00:00"
         },
         {
             "name": "phpfui/phpunit-syntax-coverage",
@@ -7736,12 +7736,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "77a1ab6669c846b4a82a962c9b6dbb1f5db74ea3"
+                "reference": "e19b0f27b204991af95a5fefad00630bc3e376ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/77a1ab6669c846b4a82a962c9b6dbb1f5db74ea3",
-                "reference": "77a1ab6669c846b4a82a962c9b6dbb1f5db74ea3",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/e19b0f27b204991af95a5fefad00630bc3e376ae",
+                "reference": "e19b0f27b204991af95a5fefad00630bc3e376ae",
                 "shasum": ""
             },
             "conflict": {
@@ -7797,6 +7797,7 @@
                 "auth0/wordpress": "<=5.4",
                 "automad/automad": "<2.0.0.0-alpha5",
                 "automattic/jetpack": "<9.8",
+                "avideo/avideo": "<=26",
                 "awesome-support/awesome-support": "<=6.0.7",
                 "aws/aws-sdk-php": "<3.368",
                 "ayacoo/redirect-tab": "<2.1.2|>=3,<3.1.7|>=4,<4.0.5",
@@ -7931,6 +7932,7 @@
                 "dolibarr/dolibarr": "<21.0.3",
                 "dompdf/dompdf": "<2.0.4",
                 "doublethreedigital/guest-entries": "<3.1.2",
+                "dreamfactory/df-core": "<1.0.4",
                 "drupal-pattern-lab/unified-twig-extensions": "<=0.1",
                 "drupal/access_code": "<2.0.5",
                 "drupal/acquia_dam": "<1.1.5",
@@ -8768,7 +8770,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-03-19T21:13:45+00:00"
+            "time": "2026-03-20T22:08:23+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -9082,16 +9084,16 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "9.0.1",
+            "version": "9.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "e26e9a944bd9d27b3a38a82fc2093d440951bfbe"
+                "reference": "c4a2dc54b1a24e13ef1839cbb5947b967cbae853"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/e26e9a944bd9d27b3a38a82fc2093d440951bfbe",
-                "reference": "e26e9a944bd9d27b3a38a82fc2093d440951bfbe",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/c4a2dc54b1a24e13ef1839cbb5947b967cbae853",
+                "reference": "c4a2dc54b1a24e13ef1839cbb5947b967cbae853",
                 "shasum": ""
             },
             "require": {
@@ -9106,7 +9108,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "9.0-dev"
+                    "dev-main": "9.1-dev"
                 }
             },
             "autoload": {
@@ -9134,7 +9136,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/environment/issues",
                 "security": "https://github.com/sebastianbergmann/environment/security/policy",
-                "source": "https://github.com/sebastianbergmann/environment/tree/9.0.1"
+                "source": "https://github.com/sebastianbergmann/environment/tree/9.1.0"
             },
             "funding": [
                 {
@@ -9154,7 +9156,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-03-15T07:13:02+00:00"
+            "time": "2026-03-22T06:31:50+00:00"
         },
         {
             "name": "sebastian/exporter",

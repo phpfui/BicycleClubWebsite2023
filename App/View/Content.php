@@ -305,7 +305,7 @@ class Content extends \App\UI\ContentEditor
 		$output->addClass('row');
 		$output->setId("storyId-{$storyId}");
 
-		if (! $noTitle && \strlen($headline))
+		if (! $noTitle && \strlen("{$headline}"))
 			{
 			$output->add(new \PHPFUI\SubHeader($headline));
 
@@ -315,7 +315,7 @@ class Content extends \App\UI\ContentEditor
 				}
 			}
 
-		if (\strlen($author))
+		if (\strlen("{$author}"))
 			{
 			$authorDiv = new \PHPFUI\HTML5Element('div');
 			$authorDiv->addClass('row');

@@ -83,7 +83,7 @@ class Leader extends \PDF_MC_Table
 		$this->firstYear = $this->currentYear - 4;
 		$this->addHeader('cat', 'Categories', 'L', 30);
 		$this->addHeader('leader', 'Leader', 'L', 45);
-		$this->addHeader('phone', 'Phone', 'R', 25);
+		$this->addHeader('cellPhone', 'Mobile', 'R', 25);
 		$this->addHeader('email', 'email', 'L', 55);
 
 		for ($i = 0; $i < 5; $i++)
@@ -149,6 +149,10 @@ class Leader extends \PDF_MC_Table
 			}
 		else
 			{
+			$this->addHeader('address', 'Address');
+			$this->addHeader('town', 'Town');
+			$this->addHeader('state', 'State');
+			$this->addHeader('zip', 'Zip');
 			$this->outputCSV();
 			}
 		}
@@ -341,7 +345,7 @@ class Leader extends \PDF_MC_Table
 		$pdf->Output(\str_replace(' ', '', $this->reportName) . '.pdf', 'I');
 		}
 
-	private function addHeader(string $index, string $header, string $align, int $size) : void
+	private function addHeader(string $index, string $header, string $align = 'L', int $size = 40) : void
 		{
 		$this->headerTitles[$index] = $header;
 		$this->columnWidths[$index] = $size;
@@ -379,8 +383,13 @@ class Leader extends \PDF_MC_Table
 				$row['nextRide'] = $this->nextLead;
 				$row['cat'] = \App\Table\MemberCategory::getRideCategoryStringForMember($this->lastLeader);
 				$row['leader'] = \App\Tools\TextHelper::unhtmlentities($leader->fullName());
-				$row['phone'] = $leader->phone;
+				$row['cellPhone'] = $leader->cellPhone;
 				$row['email'] = $leader->email;
+				$membership = $leader->membership;
+				$row['address'] = $membership->address;
+				$row['town'] = $membership->town;
+				$row['state'] = $membership->state;
+				$row['zip'] = $membership->zip;
 				$this->rows[] = $row;
 				$this->nextLead = '';
 				$this->lastLead = '';

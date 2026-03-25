@@ -18,7 +18,7 @@ class Customer
 	public function getNumber() : int
 		{
 		$cookie = new \App\Tools\Cookies();
-		$memberId = \App\Model\Session::signedInMemberId();
+		$memberId = \App\Model\Session::getSignedInMemberId();
 
 		if ($memberId)
 			{

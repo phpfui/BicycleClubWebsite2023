@@ -38,7 +38,7 @@ class Poll
 
 		if (! $poll->membershipOnly)
 			{
-			$key['memberId'] = \App\Model\Session::signedInMemberId();
+			$key['memberId'] = \App\Model\Session::getSignedInMemberId();
 			}
 		$vote = new \App\Record\PollResponse($key);
 
@@ -54,13 +54,13 @@ class Poll
 
 		if (! $poll->membershipOnly)
 			{
-			$key['memberId'] = \App\Model\Session::signedInMemberId();
+			$key['memberId'] = \App\Model\Session::getSignedInMemberId();
 			}
 		$oldPollResponse = new \App\Record\PollResponse($key);
 		$oldAnswer = $oldPollResponse->answer ?? 0;
 		$oldPollResponse->delete();
 		$key['answer'] = $get['answer'];
-		$key['memberId'] = \App\Model\Session::signedInMemberId();
+		$key['memberId'] = \App\Model\Session::getSignedInMemberId();
 		$newPollResponse = new \App\Record\PollResponse();
 		$newPollResponse->setFrom($key);
 		$newPollResponse->insert();

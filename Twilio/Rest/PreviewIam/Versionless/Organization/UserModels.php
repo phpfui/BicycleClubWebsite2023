@@ -66,6 +66,25 @@ abstract class UserModels
         return new ScimUser($payload);
     }
 
+    /**
+     * @property string $op The operation to perform
+     * @property string $path
+     * @property array $value
+    */
+    public static function createScimPatchOperation(array $payload = []): ScimPatchOperation
+    {
+        return new ScimPatchOperation($payload);
+    }
+
+    /**
+     * @property string[] $schemas
+     * @property ScimPatchOperation[] $operations
+    */
+    public static function createScimPatchRequest(array $payload = []): ScimPatchRequest
+    {
+        return new ScimPatchRequest($payload);
+    }
+
 }
 
 class ScimName implements \JsonSerializable
@@ -261,6 +280,76 @@ class ScimUser implements \JsonSerializable
         }
         if (isset($this->meta)) {
             $jsonString['meta'] = $this->meta;
+        }
+        return $jsonString;
+    }
+}
+
+class ScimPatchOperation implements \JsonSerializable
+{
+    /**
+     * @property string $op The operation to perform
+     * @property string $path
+     * @property array $value
+    */
+        protected $op;
+        protected $path;
+        protected $value;
+    public function __construct(array $payload = []) {
+        $this->op = Values::array_get($payload, 'op');
+        $this->path = Values::array_get($payload, 'path');
+        $this->value = Values::array_get($payload, 'value');
+    }
+
+    public function toArray(): array
+    {
+        return $this->jsonSerialize();
+    }
+
+    public function jsonSerialize(): array
+    {
+        $jsonString = [
+        ];
+        if (isset($this->op)) {
+            $jsonString['op'] = $this->op;
+        }
+        if (isset($this->path)) {
+            $jsonString['path'] = $this->path;
+        }
+        if (isset($this->value)) {
+            $jsonString['value'] = $this->value;
+        }
+        return $jsonString;
+    }
+}
+
+class ScimPatchRequest implements \JsonSerializable
+{
+    /**
+     * @property string[] $schemas
+     * @property ScimPatchOperation[] $operations
+    */
+        protected $schemas;
+        protected $operations;
+    public function __construct(array $payload = []) {
+        $this->schemas = Values::array_get($payload, 'schemas');
+        $this->operations = Values::array_get($payload, 'Operations');
+    }
+
+    public function toArray(): array
+    {
+        return $this->jsonSerialize();
+    }
+
+    public function jsonSerialize(): array
+    {
+        $jsonString = [
+        ];
+        if (isset($this->schemas)) {
+            $jsonString['schemas'] = $this->schemas;
+        }
+        if (isset($this->operations)) {
+            $jsonString['Operations'] = $this->operations;
         }
         return $jsonString;
     }

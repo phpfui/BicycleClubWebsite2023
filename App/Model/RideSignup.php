@@ -190,7 +190,7 @@ class RideSignup
 			}
 
 		// if they are updating their own info, then save it
-		if (\App\Model\Session::signedInMemberId() == $this->member->memberId)
+		if (\App\Model\Session::getSignedInMemberId() == $this->member->memberId)
 			{
 			$this->member->setFrom($fields);
 			$this->member->update();
@@ -207,7 +207,7 @@ class RideSignup
 				$body = 'For your ride on ' . $this->ride->rideDate;
 				$body .= ", {$this->member->fullName()} has {$action}.";
 
-				if ($this->member->memberId != \App\Model\Session::signedInMemberId())
+				if ($this->member->memberId != \App\Model\Session::getSignedInMemberId())
 					{
 					$changer = \App\Model\Session::signedInMemberRecord();
 					$email->addToMember($changer);

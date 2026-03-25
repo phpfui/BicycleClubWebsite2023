@@ -14,7 +14,7 @@ class JobEvent extends \PHPFUI\ORM\Table
 		$newJobEvent->cutoffDate = \App\Tools\Date::increment($fromJobEvent->cutoffDate, $dateDiff);
 		$newJobEvent->name = $title;
 		$newJobEvent->date = $toDate;
-		$newJobEvent->organizer = \App\Model\Session::signedInMemberId();
+		$newJobEvent->organizer = \App\Model\Session::getSignedInMemberId();
 		$newJobEvent->jobEventId = 0;
 		$newJobEvent->insert();
 

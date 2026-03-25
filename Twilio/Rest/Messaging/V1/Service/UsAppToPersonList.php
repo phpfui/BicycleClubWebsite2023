@@ -106,9 +106,13 @@ class UsAppToPersonList extends ListResource
                 Serialize::booleanToString($options['ageGated']),
             'DirectLending' =>
                 Serialize::booleanToString($options['directLending']),
+            'PrivacyPolicyUrl' =>
+                $options['privacyPolicyUrl'],
+            'TermsAndConditionsUrl' =>
+                $options['termsAndConditionsUrl'],
         ]);
 
-        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
+        $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' , 'X-Twilio-Api-Version' => $options['xTwilioApiVersion']]);
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
     }
 

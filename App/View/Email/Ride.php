@@ -99,7 +99,7 @@ class Ride implements \Stringable
 			$subject->setRequired();
 			$fieldSet->add($subject);
 
-			if (\in_array(\App\Model\Session::signedInMemberId(), $this->leadersOnRide))
+			if (\in_array(\App\Model\Session::getSignedInMemberId(), $this->leadersOnRide))
 				{
 				$leadersOnly = new \PHPFUI\Input\CheckBoxBoolean('leadersOnly', 'Send to Ride Leaders only');
 				$leadersOnly->setToolTip('This will limit the email to just other ride leaders who have signed up for this ride.');

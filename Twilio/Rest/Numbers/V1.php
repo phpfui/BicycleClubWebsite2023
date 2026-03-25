@@ -20,12 +20,14 @@ use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceContext;
 use Twilio\Rest\Numbers\V1\BulkEligibilityList;
 use Twilio\Rest\Numbers\V1\EligibilityList;
+use Twilio\Rest\Numbers\V1\EmbeddedSessionList;
 use Twilio\Rest\Numbers\V1\PortingAllPortInList;
 use Twilio\Rest\Numbers\V1\PortingPortInList;
 use Twilio\Rest\Numbers\V1\PortingPortInPhoneNumberList;
 use Twilio\Rest\Numbers\V1\PortingPortabilityList;
 use Twilio\Rest\Numbers\V1\PortingWebhookConfigurationList;
 use Twilio\Rest\Numbers\V1\PortingWebhookConfigurationDeleteList;
+use Twilio\Rest\Numbers\V1\SenderIdRegistrationList;
 use Twilio\Rest\Numbers\V1\SigningRequestConfigurationList;
 use Twilio\Rest\Numbers\V1\WebhookList;
 use Twilio\Version;
@@ -33,12 +35,14 @@ use Twilio\Version;
 /**
  * @property BulkEligibilityList $bulkEligibilities
  * @property EligibilityList $eligibilities
+ * @property EmbeddedSessionList $embeddedSessions
  * @property PortingAllPortInList $portingAllPortIns
  * @property PortingPortInList $portingPortIns
  * @property PortingPortInPhoneNumberList $portingPortInPhoneNumber
  * @property PortingPortabilityList $portingPortabilities
  * @property PortingWebhookConfigurationList $portingWebhookConfigurations
  * @property PortingWebhookConfigurationDeleteList $portingWebhookConfigurationsDelete
+ * @property SenderIdRegistrationList $senderIdRegistrations
  * @property SigningRequestConfigurationList $signingRequestConfigurations
  * @property WebhookList $webhook
  * @method \Twilio\Rest\Numbers\V1\BulkEligibilityContext bulkEligibilities(string $requestId)
@@ -51,12 +55,14 @@ class V1 extends Version
 {
     protected $_bulkEligibilities;
     protected $_eligibilities;
+    protected $_embeddedSessions;
     protected $_portingAllPortIns;
     protected $_portingPortIns;
     protected $_portingPortInPhoneNumber;
     protected $_portingPortabilities;
     protected $_portingWebhookConfigurations;
     protected $_portingWebhookConfigurationsDelete;
+    protected $_senderIdRegistrations;
     protected $_signingRequestConfigurations;
     protected $_webhook;
 
@@ -85,6 +91,14 @@ class V1 extends Version
             $this->_eligibilities = new EligibilityList($this);
         }
         return $this->_eligibilities;
+    }
+
+    protected function getEmbeddedSessions(): EmbeddedSessionList
+    {
+        if (!$this->_embeddedSessions) {
+            $this->_embeddedSessions = new EmbeddedSessionList($this);
+        }
+        return $this->_embeddedSessions;
     }
 
     protected function getPortingAllPortIns(): PortingAllPortInList
@@ -133,6 +147,14 @@ class V1 extends Version
             $this->_portingWebhookConfigurationsDelete = new PortingWebhookConfigurationDeleteList($this);
         }
         return $this->_portingWebhookConfigurationsDelete;
+    }
+
+    protected function getSenderIdRegistrations(): SenderIdRegistrationList
+    {
+        if (!$this->_senderIdRegistrations) {
+            $this->_senderIdRegistrations = new SenderIdRegistrationList($this);
+        }
+        return $this->_senderIdRegistrations;
     }
 
     protected function getSigningRequestConfigurations(): SigningRequestConfigurationList

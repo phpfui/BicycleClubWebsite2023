@@ -194,7 +194,7 @@ class Rides
 
 				if (empty($rider->attended))
 					{
-					if ($rider->memberId == \App\Model\Session::signedInMemberId())
+					if ($rider->memberId == \App\Model\Session::getSignedInMemberId())
 						{
 						$attended = \App\Enum\RideSignup\Attended::CONFIRMED;
 						}
@@ -372,7 +372,7 @@ class Rides
 		$row->add($editColumn);
 		$fieldSet->add($row);
 
-		$isLeader = ($ride->memberId ?? 0) == \App\Model\Session::signedInMemberId();
+		$isLeader = ($ride->memberId ?? 0) == \App\Model\Session::getSignedInMemberId();
 		$this->page->addJavaScript('function selectRiderContactMethod(v){if(v>"")if(v[0]=="/"||v.startsWith("tel:")){window.location=v}else{window.open(v)}}');
 
 		foreach ($riders as $rider)
@@ -395,7 +395,7 @@ class Rides
 
 			$private = false;
 
-			if ($rider->showNoRideSignup && $rider->memberId != \App\Model\Session::signedInMemberId() && ! $isLeader)
+			if ($rider->showNoRideSignup && $rider->memberId != \App\Model\Session::getSignedInMemberId() && ! $isLeader)
 				{
 				$nameColumn->add("<b>Private</b><br>{$status}");
 				$row->add($nameColumn);
@@ -422,7 +422,7 @@ class Rides
 
 			$selectColumn = new \PHPFUI\Cell(4);
 
-			if ($rider->memberId != \App\Model\Session::signedInMemberId())
+			if ($rider->memberId != \App\Model\Session::getSignedInMemberId())
 				{
 				$select = new \PHPFUI\Input\Select('action');
 				$select->addAttribute('onchange', 'selectRiderContactMethod(this.value)');
@@ -448,7 +448,7 @@ class Rides
 					$select->addOption('Emergency: ' . $rider->emergencyContact, 'tel:' . $rider->emergencyPhone);
 					}
 
-				if ($waiver || $rider->memberId == \App\Model\Session::signedInMemberId())
+				if ($waiver || $rider->memberId == \App\Model\Session::getSignedInMemberId())
 					{
 					$select->addOption('Download Waiver', "/Rides/riderWaiver/{$ride->rideId}/{$rider->memberId}");
 					}
@@ -718,7 +718,7 @@ class Rides
 				$bg->addButton($button);
 				}
 
-			if ($ride->memberId == \App\Model\Session::signedInMemberId() && $ride->rideDate >= $today && \App\Enum\Ride\Status::NOT_YET == $ride->rideStatus)
+			if ($ride->memberId == \App\Model\Session::getSignedInMemberId() && $ride->rideDate >= $today && \App\Enum\Ride\Status::NOT_YET == $ride->rideStatus)
 				{
 				$button = new \PHPFUI\Button('Weather Cancel', '/Rides/weather/' . $ride->rideId);
 				$button->addClass('warning')->setConfirm('Are you sure you want to cancel this ride for weather reasons?');
@@ -1176,7 +1176,7 @@ class Rides
 			$cloning->averagePace = null;
 			$cloning->rideStatus = \App\Enum\Ride\Status::NOT_YET;
 			$cloning->releasePrinted = '';
-			$cloning->memberId = \App\Model\Session::signedInMemberId();
+			$cloning->memberId = \App\Model\Session::getSignedInMemberId();
 
 			if ($cloning->unaffiliated && ! $this->page->isAuthorized('Unaffiliated Rides Leader'))
 				{

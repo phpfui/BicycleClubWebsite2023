@@ -453,7 +453,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('My Unreported Leads'))
 			{
-			$rides = \App\Table\Ride::unreportedRidesForMember(\App\Model\Session::signedInMemberId());
+			$rides = \App\Table\Ride::unreportedRidesForMember(\App\Model\Session::getSignedInMemberId());
 			$view = new \App\View\Rides($this->page);
 			$this->page->addPageContent($view->schedule($rides, 'You have no unreported leads!'));
 			}

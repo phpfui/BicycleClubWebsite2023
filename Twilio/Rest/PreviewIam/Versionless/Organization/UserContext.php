@@ -152,6 +152,68 @@ class UserContext extends InstanceContext
 
 
     /**
+     * Helper function for Patch
+     *
+     * @param ScimPatchRequest $scimPatchRequest
+     * @param array|Options $options Optional Arguments
+     * @return Response Patchd Response
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    private function _patch(ScimPatchRequest $scimPatchRequest, array $options = []): Response
+    {
+        $options = new Values($options);
+
+        $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/scim+json' , 'If-Match' => $options['ifMatch']]);
+        $data = $scimPatchRequest->toArray();
+        return $this->version->handleRequest('PATCH', $this->uri, [], $data, $headers, "patch");
+    }
+
+    /**
+     * Patch the UserInstance
+     *
+     * @param ScimPatchRequest $scimPatchRequest
+     * @param array|Options $options Optional Arguments
+     * @return UserInstance Patchd UserInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function patch(ScimPatchRequest $scimPatchRequest, array $options = []): UserInstance
+    {
+        $response = $this->_patch( $scimPatchRequest, $options);
+        return new UserInstance(
+            $this->version,
+            $response->getContent(),
+            $this->solution['organizationSid'],
+            $this->solution['id']
+        );
+        
+    }
+
+    /**
+     * Patch the UserInstance with Metadata
+     *
+     * @param ScimPatchRequest $scimPatchRequest
+     * @param array|Options $options Optional Arguments
+     * @return ResourceMetadata The Patchd Resource with Metadata
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function patchWithMetadata(ScimPatchRequest $scimPatchRequest, array $options = []): ResourceMetadata
+    {
+        $response = $this->_patch( $scimPatchRequest, $options);
+        $resource = new UserInstance(
+                        $this->version,
+                        $response->getContent(),
+                        $this->solution['organizationSid'],
+                        $this->solution['id']
+                    );
+        return new ResourceMetadata(
+            $resource,
+            $response->getStatusCode(),
+            $response->getHeaders()
+        );
+    }
+
+
+    /**
      * Helper function for Update
      *
      * @param ScimUser $scimUser

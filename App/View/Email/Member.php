@@ -13,7 +13,7 @@ class Member implements \Stringable
 	public function __construct(private \App\View\Page $page, \App\Record\Member $member, string $title = '')
 		{
 		$this->captcha = new \App\UI\Captcha($this->page, ! $this->page->isSignedIn());
-		$this->signedInMemberId = \App\Model\Session::signedInMemberId();
+		$this->signedInMemberId = \App\Model\Session::getSignedInMemberId();
 
 		if ($member->loaded())
 			{

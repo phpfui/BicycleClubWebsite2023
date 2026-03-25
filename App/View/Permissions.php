@@ -53,7 +53,7 @@ class Permissions
 			if (! $permissions->isAuthorized('Super User'))
 				{
 				$newResult = [];
-				$userPermissions = $permissions->getPermissionsForUser(\App\Model\Session::signedInMemberId());
+				$userPermissions = $permissions->getPermissionsForUser(\App\Model\Session::getSignedInMemberId());
 
 				foreach ($result as $permission)
 					{

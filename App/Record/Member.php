@@ -33,7 +33,7 @@ class Member extends \App\Record\Definition\Member
 	public function delete() : bool
 		{
 		$auditTrail = new \App\Record\AuditTrail();
-		$auditTrail->memberId = \App\Model\Session::signedInMemberId();
+		$auditTrail->memberId = \App\Model\Session::getSignedInMemberId();
 		$auditTrail->additional = \print_r(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), true);
 		$auditTrail->statement = 'Member deleted';
 		$auditTrail->input = \print_r($this->toArray(), true);

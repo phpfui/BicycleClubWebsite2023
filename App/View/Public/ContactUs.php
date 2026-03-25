@@ -73,7 +73,7 @@ class ContactUs implements \Stringable
 			{
 			if (\count($this->boardMembers))
 				{
-				$form->add(new \PHPFUI\Input\Hidden('memberId', (string)\App\Model\Session::signedInmemberId()));
+				$form->add(new \PHPFUI\Input\Hidden('memberId', (string)\App\Model\Session::getSignedInmemberId()));
 				$fieldSet = new \PHPFUI\FieldSet('Your Information');
 				$name = new \PHPFUI\Input\Text('name', 'Your Name', $post['name'] ?? '');
 				$name->setToolTip('We need to know who you are so we can address you by name');

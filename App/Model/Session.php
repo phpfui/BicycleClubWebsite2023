@@ -106,7 +106,12 @@ class Session extends \PHPFUI\Session
 		{
 		$memberTable = new \App\Table\Member();
 
-		return $memberTable->getMembership(self::signedInMemberId());
+		return $memberTable->getMembership(self::getSignedInMemberId());
+		}
+
+	public static function getSignedInMemberId() : int
+		{
+		return ! empty($_SESSION['memberId']) ? $_SESSION['memberId'] : 0;
 		}
 
 	public static function hasExpired() : bool
@@ -180,14 +185,9 @@ class Session extends \PHPFUI\Session
 		$_SESSION['memberId'] = $memberId;
 		}
 
-	public static function signedInMemberId() : int
-		{
-		return ! empty($_SESSION['memberId']) ? $_SESSION['memberId'] : 0;
-		}
-
 	public static function signedInMemberRecord() : \App\Record\Member
 		{
-		return self::$signedInMember ?: self::$signedInMember = new \App\Record\Member(self::signedInMemberId());
+		return self::$signedInMember ?: self::$signedInMember = new \App\Record\Member(self::getSignedInMemberId());
 		}
 
 	public static function signedInMembershipId() : int

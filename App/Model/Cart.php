@@ -154,6 +154,7 @@ class Cart
 
 		// are they a current member, if so, use that memberId instead of customer number
 		$member = new \App\Record\Member(['email' => $gaRider->email]);
+
 		if ($member->loaded() && $member->membership->expires >= \App\Tools\Date::todayString())
 			{
 			$this->memberId = $member->memberId;

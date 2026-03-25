@@ -20,7 +20,7 @@ class CueSheet
 
 		if (empty($cuesheet->memberId))
 			{
-			$cuesheet->memberId = \App\Model\Session::signedInMemberId();
+			$cuesheet->memberId = \App\Model\Session::getSignedInMemberId();
 			}
 		$cuesheet->update();
 		$email = new \App\Model\Email('acceptCue', new \App\Model\Email\CueSheet($cuesheet));

@@ -8,7 +8,7 @@ class Volunteer extends \App\Common\WWW\Volunteer
 		{
 		if ($member->empty() || ! $this->page->isAuthorized('Outstanding Volunteer Points'))
 			{
-			$member = new \App\Record\Member(\App\Model\Session::signedInMemberId());
+			$member = new \App\Record\Member(\App\Model\Session::getSignedInMemberId());
 			}
 
 		if ($this->page->addHeader('My Points'))
@@ -49,9 +49,9 @@ class Volunteer extends \App\Common\WWW\Volunteer
 		{
 		$memberId = $_GET['memberId'] ?? 0;
 
-		if ($memberId != \App\Model\Session::signedInMemberId() || ! $this->page->isAuthorized('Outstanding Volunteer Points'))
+		if ($memberId != \App\Model\Session::getSignedInMemberId() || ! $this->page->isAuthorized('Outstanding Volunteer Points'))
 			{
-			$memberId = \App\Model\Session::signedInMemberId();
+			$memberId = \App\Model\Session::getSignedInMemberId();
 			}
 
 		if ((int)($_GET['pointsAwarded'] ?? 0) > 0)

@@ -45,7 +45,7 @@ class ForumMessage extends \App\Record\Definition\ForumMessage
 	public function update() : bool
 		{
 		$this->lastEdited = \date('Y-m-d H:i:s');
-		$this->lastEditorId = \App\Model\Session::signedInMemberId();
+		$this->lastEditorId = \App\Model\Session::getSignedInMemberId();
 
 		return parent::update();
 		}

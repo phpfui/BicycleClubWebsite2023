@@ -71,7 +71,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$photo = new \App\Record\Photo($photoId);
 
-				if (! $photo->empty() && ($photo->memberId === \App\Model\Session::signedInMemberId() || $this->page->isAuthorized('Move Photo')))
+				if (! $photo->empty() && ($photo->memberId === \App\Model\Session::getSignedInMemberId() || $this->page->isAuthorized('Move Photo')))
 					{
 					$photos[] = $photoId;
 					}
@@ -112,7 +112,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$photo = new \App\Record\Photo($_POST['photoId'] ?? 0);
 
-		if (! $photo->empty() && ($photo->memberId == \App\Model\Session::signedInMemberId() || $this->page->isAuthorized('Delete Photo')))
+		if (! $photo->empty() && ($photo->memberId == \App\Model\Session::getSignedInMemberId() || $this->page->isAuthorized('Delete Photo')))
 			{
 			$photo->delete();
 			$this->page->setResponse("{$photo->photoId}");
@@ -152,9 +152,9 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('In Photos'))
 			{
-			if ($member->empty() || ($member->memberId != \App\Model\Session::signedInMemberId() && ! $this->page->isAuthorized('View Member Photos')))
+			if ($member->empty() || ($member->memberId != \App\Model\Session::getSignedInMemberId() && ! $this->page->isAuthorized('View Member Photos')))
 				{
-				$member = new \App\Record\Member(\App\Model\Session::signedInMemberId());
+				$member = new \App\Record\Member(\App\Model\Session::getSignedInMemberId());
 				}
 			else
 				{
@@ -190,9 +190,9 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('My Photos'))
 			{
-			if ($member->empty() || ($member->memberId != \App\Model\Session::signedInMemberId() && ! $this->page->isAuthorized('View Member Photos')))
+			if ($member->empty() || ($member->memberId != \App\Model\Session::getSignedInMemberId() && ! $this->page->isAuthorized('View Member Photos')))
 				{
-				$member = new \App\Record\Member(\App\Model\Session::signedInMemberId());
+				$member = new \App\Record\Member(\App\Model\Session::getSignedInMemberId());
 				}
 			else
 				{

@@ -45,7 +45,7 @@ abstract class Folder
 		$this->className = \array_pop($parts);
 		$this->setItemName($this->className);
 		$this->type = \strtolower($this->className);
-		$this->signedInMember = \App\Model\Session::signedInMemberId();
+		$this->signedInMember = \App\Model\Session::getSignedInMemberId();
 
 		switch ($this->className)
 			{

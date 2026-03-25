@@ -10,7 +10,7 @@ class Signup implements \Stringable
 		{
 		if ($member->empty() || ! $page->isAuthorized('Edit Volunteers'))
 			{
-			$this->member = new \App\Record\Member(\App\Model\Session::signedInMemberId());
+			$this->member = new \App\Record\Member(\App\Model\Session::getSignedInMemberId());
 			}
 		$this->volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
 		}

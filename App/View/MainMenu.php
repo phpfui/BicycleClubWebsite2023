@@ -324,12 +324,19 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Content/purge', 'Purge Expired Content');
 			}
 
+		if ($menu = $this->addTopMenu('Surveys', 'Surveys'))
+			{
+			$this->addSub($menu, '/Surveys/list', 'All Surveys');
+			$this->addSub($menu, '/Surveys/show', 'Survey Results');
+			$this->addSub($menu, '/Surveys/edit/0', 'Add Survey');
+			}
+
 		if ($menu = $this->addTopMenu('Polls', 'Polls'))
 			{
 			$this->addSub($menu, '/Polls/edit/0', 'Add Poll');
 			$this->addSub($menu, '/Polls/past', 'Past Polls');
 			$this->addSub($menu, '/Polls/current', 'Current Polls');
-			$this->addSub($menu, '/Polls/future', 'Future Polls');
+			$this->addSub($menu, '/Poblls/future', 'Future Polls');
 			$this->addSub($menu, '/Polls/myVotes', 'My Votes');
 			$this->addSub($menu, '/Polls/myMembershipVotes', 'My Membership Votes');
 			}

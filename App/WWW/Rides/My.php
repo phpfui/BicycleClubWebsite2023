@@ -88,7 +88,7 @@ class My extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$rideSignupTable->addOrderBy('member.lastName');
 			$rideSignupTable->addOrderBy('member.firstName');
 			$rideSignupTable->addOrderBy('ride.rideDate');
-			$condition = new \PHPFUI\ORM\Condition('member.memberId', \App\Model\Session::signedInMemberId());
+			$condition = new \PHPFUI\ORM\Condition('member.memberId', \App\Model\Session::getSignedInMemberId());
 			$condition->and('ride.rideId', null, new \PHPFUI\ORM\Operator\IsNotNull());
 			$condition->and('ride.rideDate', '2023-01-01', new \PHPFUI\ORM\Operator\GreaterThanEqual());
 			$rideSignupTable->addSelect('member.firstName');

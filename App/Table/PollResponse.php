@@ -43,9 +43,9 @@ class PollResponse extends \PHPFUI\ORM\Table
 		$this->addJoin('pollAnswer', $pollAnswerCondition);
 
 		$memberCondition = new \PHPFUI\ORM\Condition('pollResponse.membershipId', \App\Model\Session::signedInMembershipId());
-		$memberCondition->and('pollResponse.memberId', \App\Model\Session::signedInMemberId(), new \PHPFUI\ORM\Operator\NotEqual());
+		$memberCondition->and('pollResponse.memberId', \App\Model\Session::getSignedInMemberId(), new \PHPFUI\ORM\Operator\NotEqual());
 
-		$whereCondition = new \PHPFUI\ORM\Condition('pollResponse.memberId', \App\Model\Session::signedInMemberId());
+		$whereCondition = new \PHPFUI\ORM\Condition('pollResponse.memberId', \App\Model\Session::getSignedInMemberId());
 		$this->setWhere($whereCondition);
 
 		$this->addSelect('poll.pollId');

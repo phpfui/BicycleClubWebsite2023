@@ -12,7 +12,7 @@ class AuditTrail extends \PHPFUI\ORM\Table
 	public static function log(string $sql, array $input = []) : void
 		{
 		$auditTrail = new \App\Record\AuditTrail();
-		$auditTrail->setFrom(['memberId' => \App\Model\Session::signedInMemberId(),
+		$auditTrail->setFrom(['memberId' => \App\Model\Session::getSignedInMemberId(),
 			'statement' => $sql, 'input' => \json_encode($input, JSON_THROW_ON_ERROR), 'additional' => \App\Tools\Logger::get()->formatTrace(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS))]);
 		$auditTrail->insert();
 		}

@@ -62,7 +62,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$file = new \App\Record\File($fileId);
 
-				if (! $file->empty() && ($file->memberId == \App\Model\Session::signedInMemberId() || $this->page->isAuthorized('Move File')))
+				if (! $file->empty() && ($file->memberId == \App\Model\Session::getSignedInMemberId() || $this->page->isAuthorized('Move File')))
 					{
 					$files[] = $fileId;
 					}
@@ -96,7 +96,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function delete(\App\Record\File $file = new \App\Record\File()) : void
 		{
-		if (! $file->empty() && ($file->memberId == \App\Model\Session::signedInMemberId() || $this->page->isAuthorized('Delete File')))
+		if (! $file->empty() && ($file->memberId == \App\Model\Session::getSignedInMemberId() || $this->page->isAuthorized('Delete File')))
 			{
 			$url = '/File/browse/' . $file->folderId;
 			$file->delete();
@@ -159,9 +159,9 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('My Files'))
 			{
-			if ($member->empty() || ($member->memberId != \App\Model\Session::signedInMemberId() && ! $this->page->isAuthorized('View Member Files')))
+			if ($member->empty() || ($member->memberId != \App\Model\Session::getSignedInMemberId() && ! $this->page->isAuthorized('View Member Files')))
 				{
-				$member = new \App\Record\Member(\App\Model\Session::signedInMemberId());
+				$member = new \App\Record\Member(\App\Model\Session::getSignedInMemberId());
 				}
 			else
 				{

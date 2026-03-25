@@ -70,7 +70,7 @@ class Polls
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add', 'action');
-			$poll->memberId = \App\Model\Session::signedInMemberId();
+			$poll->memberId = \App\Model\Session::getSignedInMemberId();
 			$form = new \App\UI\ErrorFormSaver($this->page, $poll);
 			}
 

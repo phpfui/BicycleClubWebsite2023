@@ -252,7 +252,7 @@ class Renew
 				{
 				$edit = new \PHPFUI\FAIcon('far', 'edit', "/Membership/edit/{$member['memberId']}");
 
-				if ($member['memberId'] != \App\Model\Session::signedInMemberId())
+				if ($member['memberId'] != \App\Model\Session::getSignedInMemberId())
 					{
 					$url = $this->page->getBaseURL();
 					$delete = new \PHPFUI\FAIcon('far', 'trash-alt', $url . '?deleteMember=' . $member['memberId']);
@@ -576,7 +576,7 @@ JAVASCRIPT;
 			{
 			$delete = (int)($parameters['deleteMember']);
 
-			if ($delete != \App\Model\Session::signedInMemberId())
+			if ($delete != \App\Model\Session::getSignedInMemberId())
 				{
 				foreach ($this->members as $member)
 					{

@@ -119,7 +119,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$view = new \App\View\Ride\Editor($this->page);
 			$view->setRWGPSRoutes($ride);
 			$ride->rideId = 0;
-			$ride->memberId = \App\Model\Session::signedInMemberId();
+			$ride->memberId = \App\Model\Session::getSignedInMemberId();
 			$this->page->addPageContent($view->edit($ride));
 			}
 		else
@@ -208,9 +208,9 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if (! $ride->memberId && $canAddRide && ! $afterRide)
 			{
-			$ride->memberId = \App\Model\Session::signedInMemberId();
+			$ride->memberId = \App\Model\Session::getSignedInMemberId();
 			}
-		$myride = $ride->memberId == \App\Model\Session::signedInMemberId();
+		$myride = $ride->memberId == \App\Model\Session::getSignedInMemberId();
 
 		if (! $ride->loaded())
 			{
@@ -274,7 +274,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			if ($this->page->isAuthorized('Ride Schedule Filter'))
 				{
-				$categories = \App\Table\MemberCategory::getRideCategoriesForMember(\App\Model\Session::signedInMemberId());
+				$categories = \App\Table\MemberCategory::getRideCategoriesForMember(\App\Model\Session::getSignedInMemberId());
 				$this->page->addPageContent($this->view->categorySelector($categories));
 				}
 			$this->page->addPageContent($this->view->schedule(\App\Table\Ride::upcomingRides()));
@@ -292,7 +292,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$this->page->addPageContent('<h2>You have opted out of this ride</h2>');
 				$this->page->addPageContent($this->view->getRideInfo($ride));
 				}
-			elseif ($ride->memberId == \App\Model\Session::signedInMemberId())
+			elseif ($ride->memberId == \App\Model\Session::getSignedInMemberId())
 				{
 				$this->Edit($ride);
 				}
@@ -353,7 +353,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$rideTable->addJoin('pace');
 			$rideTable->addJoin('category', new \PHPFUI\ORM\Condition('category.categoryId', new \PHPFUI\ORM\Field('pace.categoryId')));
 			$where = new \PHPFUI\ORM\Condition('pending', 1);
-			$where->and('category.coordinatorId', \App\Model\Session::signedInMemberId());
+			$where->and('category.coordinatorId', \App\Model\Session::getSignedInMemberId());
 			$rideTable->setWhere($where);
 			$rideTable->addOrderBy('rideDate');
 			$rideTable->addOrderBy('mileage');
@@ -388,7 +388,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function riderWaiver(\App\Record\Ride $ride = new \App\Record\Ride(), \App\Record\Member $member = new \App\Record\Member()) : void
 		{
-		if ($ride->loaded() && ($this->page->isAuthorized('Download Rider Waiver') || $member->loaded() && $member->memberId == \App\Model\Session::signedInMemberId()))
+		if ($ride->loaded() && ($this->page->isAuthorized('Download Rider Waiver') || $member->loaded() && $member->memberId == \App\Model\Session::getSignedInMemberId()))
 			{
 			$waiver = new \App\Report\RideWaiver();
 			$waiver->generateRideSignupWaiver($member, $ride);
@@ -495,7 +495,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$buttonGroup->addButton($textAll);
 				}
 
-			$rideSignup = new \App\Record\RideSignup(['memberId' => \App\Model\Session::signedInMemberId(), 'rideId' => $ride->rideId]);
+			$rideSignup = new \App\Record\RideSignup(['memberId' => \App\Model\Session::getSignedInMemberId(), 'rideId' => $ride->rideId]);
 
 			if ($rideSignup->signedUpTime)
 				{
@@ -514,7 +514,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$buttonGroup->addButton($cloneButton);
 				}
 
-			if ($ride->memberId == \App\Model\Session::signedInMemberId())
+			if ($ride->memberId == \App\Model\Session::getSignedInMemberId())
 				{
 				$editButton = new \PHPFUI\Button('Edit Ride', '/Rides/edit/' . $ride->rideId)->addClass('success');
 				$buttonGroup->addButton($editButton);
@@ -636,7 +636,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$timeout = 0;
 		$today = \App\Tools\Date::todayString();
 
-		if ($ride->loaded() && $ride->memberId == \App\Model\Session::signedInMemberId() && $ride->rideDate >= $today && \App\Enum\Ride\Status::NOT_YET == $ride->rideStatus)
+		if ($ride->loaded() && $ride->memberId == \App\Model\Session::getSignedInMemberId() && $ride->rideDate >= $today && \App\Enum\Ride\Status::NOT_YET == $ride->rideStatus)
 			{
 			$timeout = 5;
 			$rideModel = new \App\Model\Ride();
@@ -650,10 +650,10 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	private function canEditRideSignups(\App\Record\Ride $ride) : bool
 		{
 		$editSignups = $this->page->isAuthorized('Edit Ride Signups');
-		$editSignups |= ($ride->memberId ?? 0) == \App\Model\Session::signedInMemberId();
+		$editSignups |= ($ride->memberId ?? 0) == \App\Model\Session::getSignedInMemberId();
 		$assistantLeaderTable = new \App\Table\AssistantLeader();
 		$condition = new \PHPFUI\ORM\Condition('rideId', $ride->rideId ?? 0);
-		$condition->and('memberId', \App\Model\Session::signedInMemberId());
+		$condition->and('memberId', \App\Model\Session::getSignedInMemberId());
 		$assistantLeaderTable->setWhere($condition);
 		$editSignups |= \count($assistantLeaderTable);
 
@@ -667,6 +667,6 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	private function canSeeRiderComments(\App\Record\Ride $ride) : bool
 		{
-		return $ride->memberId == \App\Model\Session::signedInMemberId() || $this->page->isAuthorized('Can See Rider Comments');
+		return $ride->memberId == \App\Model\Session::getSignedInMemberId() || $this->page->isAuthorized('Can See Rider Comments');
 		}
 	}

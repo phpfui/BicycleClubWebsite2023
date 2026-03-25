@@ -27,7 +27,7 @@ class SlideShow
 
 		if ($form->save())
 			{
-			$slideShow->memberId = \App\Model\Session::signedInMemberId();
+			$slideShow->memberId = \App\Model\Session::getSignedInMemberId();
 
 			// convert settings to correct type
 			foreach ($fields as $name => $value)
@@ -483,7 +483,7 @@ class SlideShow
 					case 'Add':
 						unset($_POST['slideShowId']);
 						$_POST['settings'] = \json_encode($_POST['settings'], JSON_THROW_ON_ERROR);
-						$_POST['memberId'] = \App\Model\Session::signedInMemberId();
+						$_POST['memberId'] = \App\Model\Session::getSignedInMemberId();
 						$slideShow = new \App\Record\SlideShow();
 						$slideShow->setFrom($_POST);
 						$id = $slideShow->insert();
@@ -505,7 +505,7 @@ class SlideShow
 							if ($imageModel->upload($slide->slideId, 'photo', $_FILES))
 								{
 								$slide->extension = $imageModel->getExtension();
-								$slide->memberId = \App\Model\Session::signedInMemberId();
+								$slide->memberId = \App\Model\Session::getSignedInMemberId();
 								$slide->update();
 								$imageModel->update($slide->toArray());
 								$imageModel->createThumb(250);
@@ -555,7 +555,7 @@ class SlideShow
 								if ($imageModel->upload($slide->slideId, 'photo', $_FILES))
 									{
 									$slide->extension = $imageModel->getExtension();
-									$slide->memberId = \App\Model\Session::signedInMemberId();
+									$slide->memberId = \App\Model\Session::getSignedInMemberId();
 									$slide->update();
 									$imageModel->update($slide->toArray());
 									$imageModel->createThumb(250);

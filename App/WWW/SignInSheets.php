@@ -71,7 +71,7 @@ class SignInSheets extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoC
 		{
 		if (! $signinSheet->empty())
 			{
-			if ($this->page->addHeader('Edit Sign In Sheet', '', $signinSheet->memberId == \App\Model\Session::signedInMemberId()))
+			if ($this->page->addHeader('Edit Sign In Sheet', '', $signinSheet->memberId == \App\Model\Session::getSignedInMemberId()))
 				{
 				$this->page->addPageContent($this->view->Edit($signinSheet));
 				}
@@ -118,7 +118,7 @@ class SignInSheets extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoC
 		{
 		if ($this->page->addHeader('My Sign In Sheets'))
 			{
-			$this->signinSheetTable->setWhere(new \PHPFUI\ORM\Condition('member.memberId', \App\Model\Session::signedInMemberId()));
+			$this->signinSheetTable->setWhere(new \PHPFUI\ORM\Condition('member.memberId', \App\Model\Session::getSignedInMemberId()));
 			$this->page->addPageContent($this->view->show($this->signinSheetTable));
 			}
 		}

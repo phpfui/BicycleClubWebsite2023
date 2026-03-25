@@ -82,7 +82,7 @@ class Poll extends \PHPFUI\ORM\Table
 	public static function myPolls() : \PHPFUI\ORM\RecordCursor
 		{
 		$pollTable = new \App\Table\Poll();
-		$condition = new \PHPFUI\ORM\Condition('memberId', \App\Model\Session::signedInMemberId());
+		$condition = new \PHPFUI\ORM\Condition('memberId', \App\Model\Session::getSignedInMemberId());
 		$pollTable->setWhere($condition);
 		$pollTable->setOrderBy('startDate');
 

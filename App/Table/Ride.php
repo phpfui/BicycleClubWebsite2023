@@ -331,7 +331,7 @@ class Ride extends \PHPFUI\ORM\Table
 		$condition = new \PHPFUI\ORM\Condition('ride.rideDate', $start, new \PHPFUI\ORM\Operator\GreaterThanEqual());
 		$condition->and('ride.rideDate', $end, new \PHPFUI\ORM\Operator\LessThanEqual());
 		$condition->and('ride.pending', 0);
-		$condition->and('rideSignup.memberId', \App\Model\Session::signedInMemberId());
+		$condition->and('rideSignup.memberId', \App\Model\Session::getSignedInMemberId());
 
 		if (\App\Enum\RideSignup\Attended::SIGNED_UP != $status)
 			{
@@ -349,7 +349,7 @@ class Ride extends \PHPFUI\ORM\Table
 			where rideSignup.memberId=? and pending=0
 			order by ride.rideDate desc limit 1';
 
-		$input = [\App\Model\Session::signedInMemberId(), ];
+		$input = [\App\Model\Session::getSignedInMemberId(), ];
 
 		$ride = new \App\Record\Ride();
 		$ride->loadFromSQL($sql, $input);
@@ -364,7 +364,7 @@ class Ride extends \PHPFUI\ORM\Table
 			where rideSignup.memberId=? and pending=0
 			order by ride.rideDate asc limit 1';
 
-		$input = [\App\Model\Session::signedInMemberId(), ];
+		$input = [\App\Model\Session::getSignedInMemberId(), ];
 		$ride = new \App\Record\Ride();
 		$ride->loadFromSQL($sql, $input);
 

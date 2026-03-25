@@ -25,7 +25,7 @@ class Payment extends \PHPFUI\ORM\Table
 		if ($userOnly)
 			{
 			$sql .= ' and enteringMemberNumber=?';
-			$input[] = \App\Model\Session::signedInMemberId();
+			$input[] = \App\Model\Session::getSignedInMemberId();
 			}
 		$sql .= ' order by dateReceived,paymentDated';
 

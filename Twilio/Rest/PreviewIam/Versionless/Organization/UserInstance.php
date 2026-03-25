@@ -113,6 +113,20 @@ class UserInstance extends InstanceResource
     }
 
     /**
+     * Patch the UserInstance
+     *
+     * @param ScimPatchRequest $scimPatchRequest
+     * @param array|Options $options Optional Arguments
+     * @return UserInstance Patchd UserInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function patch(ScimPatchRequest $scimPatchRequest, array $options = []): UserInstance
+    {
+
+        return $this->proxy()->patch($scimPatchRequest, $options);
+    }
+
+    /**
      * Update the UserInstance
      *
      * @param ScimUser $scimUser

@@ -64,7 +64,7 @@ class Editor
 		$picker = $cueSheetPicker->getEditControl();
 		$picker->setRequired();
 		$fieldSet->add($picker);
-		$fieldSet->add(new \PHPFUI\Input\Hidden('memberId', (string)\App\Model\Session::signedInMemberId()));
+		$fieldSet->add(new \PHPFUI\Input\Hidden('memberId', (string)\App\Model\Session::getSignedInMemberId()));
 		$form->add($fieldSet);
 		$form->add($submit);
 
@@ -92,7 +92,7 @@ class Editor
 		$picker = $rwgpsPicker->getEditControl();
 		$picker->setRequired();
 		$fieldSet->add($picker);
-		$fieldSet->add(new \PHPFUI\Input\Hidden('memberId', (string)\App\Model\Session::signedInMemberId()));
+		$fieldSet->add(new \PHPFUI\Input\Hidden('memberId', (string)\App\Model\Session::getSignedInMemberId()));
 		$form->add($fieldSet);
 		$form->add($submit);
 
@@ -215,14 +215,14 @@ class Editor
 
 		if (! $ride->memberId && \App\Model\Ride::canAddRide($this->page->getPermissions()) && ! $afterRide)
 			{
-			$ride->memberId = \App\Model\Session::signedInMemberId();
+			$ride->memberId = \App\Model\Session::getSignedInMemberId();
 			}
 
 		if (! $ride->rideId)
 			{
 			$content = new \App\View\Content($this->page);
 			$output->add($content->getDisplayCategoryHTML('Add A Ride'));
-			$ride->memberId = \App\Model\Session::signedInMemberId();
+			$ride->memberId = \App\Model\Session::getSignedInMemberId();
 			}
 
 		if ($afterRide)
@@ -407,7 +407,7 @@ class Editor
 						$parameters = $_POST;
 						$cueSheet = new \App\Record\CueSheet($parameters['cueSheetId']);
 						$parameters['RWGPSId'] = $cueSheet->RWGPSId;
-						$parameters['memberId'] = \App\Model\Session::signedInMemberId();
+						$parameters['memberId'] = \App\Model\Session::getSignedInMemberId();
 						$parameters['description'] = $cueSheet->description;
 						$parameters['elevation'] = \round($cueSheet->RWGPS->elevationFeet ?? 0.0);
 						$parameters['mileage'] = $cueSheet->mileage;
@@ -455,7 +455,7 @@ class Editor
 
 						$parameters = $_POST;
 						$rwgps = new \App\Record\RWGPS($parameters['RWGPSId']);
-						$parameters['memberId'] = \App\Model\Session::signedInMemberId();
+						$parameters['memberId'] = \App\Model\Session::getSignedInMemberId();
 						$parameters['RWGPSId'] = $rwgps->RWGPSId;
 						$parameters['description'] = $rwgps->description;
 						$parameters['elevation'] = \round($rwgps->elevationFeet ?? 0.0);

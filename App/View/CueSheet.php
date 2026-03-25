@@ -78,7 +78,7 @@ class CueSheet
 
 				if (empty($cuesheet->memberId))
 					{
-					$cuesheet->memberId = \App\Model\Session::signedInMemberId();
+					$cuesheet->memberId = \App\Model\Session::getSignedInMemberId();
 					}
 				$cuesheet->revisionDate = $cuesheet->dateAdded = \App\Tools\Date::todayString();
 				$cuesheet->pending = 1;
@@ -87,10 +87,10 @@ class CueSheet
 				}
 			elseif (isset($_POST['action']) && 'Add' == $_POST['action'])
 				{
-				$author = \App\Model\Session::signedInMemberId();
+				$author = \App\Model\Session::getSignedInMemberId();
 				$cueSheetVersion = new \App\Record\CueSheetVersion();
 				$cueSheetVersion->cueSheetId = $id;
-				$cueSheetVersion->memberId = \App\Model\Session::signedInMemberId();
+				$cueSheetVersion->memberId = \App\Model\Session::getSignedInMemberId();
 				$cueSheetVersion->dateAdded = \App\Tools\Date::todayString();
 				$cueSheetVersion->link = $_POST['link'];
 				$versionId = $cueSheetVersion->insert();
@@ -533,7 +533,7 @@ class CueSheet
 			$detail->add($led);
 			$bg = new \PHPFUI\ButtonGroup();
 
-			if ($this->page->isAuthorized('Edit Cue Sheet') || $cuesheet->memberId == \App\Model\Session::signedInMemberId())
+			if ($this->page->isAuthorized('Edit Cue Sheet') || $cuesheet->memberId == \App\Model\Session::getSignedInMemberId())
 				{
 				$button = new \PHPFUI\Button('Edit', '/CueSheets/edit/' . $cuesheet->cueSheetId);
 				$bg->addButton($button);
@@ -542,7 +542,7 @@ class CueSheet
 
 			$tab = $accordion->getTab($row);
 
-			if (! $this->cueSheetVersionTable->count() && ! \App\Table\Ride::getCueSheetRideCount($cuesheet) && ($this->page->isAuthorized('Delete Cue Sheet') || $cuesheet->memberId == \App\Model\Session::signedInMemberId()))
+			if (! $this->cueSheetVersionTable->count() && ! \App\Table\Ride::getCueSheetRideCount($cuesheet) && ($this->page->isAuthorized('Delete Cue Sheet') || $cuesheet->memberId == \App\Model\Session::getSignedInMemberId()))
 				{
 				$deleteButton = new \PHPFUI\Button('Del', '#');
 				$deleteButton->addClass('alert');
@@ -616,7 +616,7 @@ class CueSheet
 		{
 		$delete = 0;
 
-		if ($this->page->isAuthorized('Delete Cue Sheet Version') || $cuesheet->member->memberId == \App\Model\Session::signedInMemberId())
+		if ($this->page->isAuthorized('Delete Cue Sheet Version') || $cuesheet->member->memberId == \App\Model\Session::getSignedInMemberId())
 			{
 			if (! $this->deleteVersion)
 				{
@@ -626,7 +626,7 @@ class CueSheet
 				}
 			$delete = $this->deleteVersion;
 			}
-		$canEdit = $this->page->isAuthorized('Edit Cue Sheet Version') || $cuesheet->memberId == \App\Model\Session::signedInMemberId();
+		$canEdit = $this->page->isAuthorized('Edit Cue Sheet Version') || $cuesheet->memberId == \App\Model\Session::getSignedInMemberId();
 		$revisionAccordion = new \App\UI\Accordion();
 
 		foreach ($revisions->getRecordCursor() as $revision)
@@ -665,7 +665,7 @@ class CueSheet
 				}
 			$revisionDetail->add($htmlLink);
 
-			if ($revision->link && ($canEdit || $revision->memberId == \App\Model\Session::signedInMemberId()))
+			if ($revision->link && ($canEdit || $revision->memberId == \App\Model\Session::getSignedInMemberId()))
 				{
 				$editColumn = new \PHPFUI\Cell(1);
 				$editIcon = new \PHPFUI\FAIcon('far', 'edit', '#');

@@ -77,7 +77,7 @@ class Video extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$video = new \App\Record\Video($fileId);
 
-				if (! $video->empty() && ($video->memberId == \App\Model\Session::signedInMemberId() || $this->page->isAuthorized('Move Video')))
+				if (! $video->empty() && ($video->memberId == \App\Model\Session::getSignedInMemberId() || $this->page->isAuthorized('Move Video')))
 					{
 					$files[] = $fileId;
 					}
@@ -111,7 +111,7 @@ class Video extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function delete(\App\Record\Video $video = new \App\Record\Video()) : void
 		{
-		if (! $video->empty() && ($video->memberId == \App\Model\Session::signedInMemberId() || $this->page->isAuthorized('Edit Video')))
+		if (! $video->empty() && ($video->memberId == \App\Model\Session::getSignedInMemberId() || $this->page->isAuthorized('Edit Video')))
 			{
 			$url = '/Video/browse/' . $video->folderId;
 			$video->delete();

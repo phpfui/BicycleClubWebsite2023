@@ -63,7 +63,7 @@ class Ride
 
 		if (empty($parameters['memberId']))
 			{
-			$parameters['memberId'] = \App\Model\Session::signedInMemberId();
+			$parameters['memberId'] = \App\Model\Session::getSignedInMemberId();
 			}
 		$ride = new \App\Record\Ride();
 		$ride->setFrom($parameters);
@@ -601,7 +601,7 @@ class Ride
 		{
 		if (! $memberId)
 			{
-			$memberId = \App\Model\Session::signedInMemberId();
+			$memberId = \App\Model\Session::getSignedInMemberId();
 			}
 
 		if ($ride->memberId == $memberId)

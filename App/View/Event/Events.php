@@ -58,7 +58,7 @@ class Events
 		else
 			{
 			$submit = new \PHPFUI\Submit('Add', 'action');
-			$event->organizer = \App\Model\Session::signedInMemberId();
+			$event->organizer = \App\Model\Session::getSignedInMemberId();
 			$form = new \App\UI\ErrorFormSaver($this->page, $event);
 			}
 
@@ -642,7 +642,7 @@ class Events
 			$container = new \PHPFUI\Container();
 			$container->add(\str_replace("\n", '<br>', (string)$event->information));
 			$container->add('<p>');
-			$memberId = \App\Model\Session::signedInMemberId();
+			$memberId = \App\Model\Session::getSignedInMemberId();
 			$reservation = new \App\Record\Reservation();
 
 			if ($memberId)
@@ -696,7 +696,7 @@ class Events
 
 		if (\App\Model\Session::checkCSRF() && isset($_POST['submit']))
 			{
-			if (! \App\Model\Session::signedInMemberId() && $this->page->isPublic() && ! $this->captcha->isValid())
+			if (! \App\Model\Session::getSignedInMemberId() && $this->page->isPublic() && ! $this->captcha->isValid())
 				{
 				\App\Model\Session::setFlash('alert', 'You appear to be a robot! Please confirm you are not.');
 				$this->page->redirect();
@@ -788,7 +788,7 @@ JAVASCRIPT;
 					$this->page->addJavaScript($js);
 					}
 
-				if (! \App\Model\Session::signedInMemberId() && $this->page->isPublic())
+				if (! \App\Model\Session::getSignedInMemberId() && $this->page->isPublic())
 					{
 					$form->add($this->captcha);
 					}

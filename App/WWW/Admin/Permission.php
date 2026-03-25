@@ -41,7 +41,7 @@ class Permission extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		{
 		if ($this->page->addHeader('My Permissions'))
 			{
-			$permissions = \App\Table\UserPermission::forMember(\App\Model\Session::signedInMemberId());
+			$permissions = \App\Table\UserPermission::forMember(\App\Model\Session::getSignedInMemberId());
 			$misc = [];
 			$accordion = new \App\UI\Accordion();
 

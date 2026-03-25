@@ -112,7 +112,7 @@ class Registration
 						$payment = new \App\Record\Payment();
 						$payment->setFrom($_POST);
 						$payment->dateReceived = \App\Tools\Date::todayString();
-						$payment->enteringMemberNumber = \App\Model\Session::signedInMemberId();
+						$payment->enteringMemberNumber = \App\Model\Session::getSignedInMemberId();
 						$reservation->payment = $payment;
 						$reservation->update();
 						}
@@ -127,7 +127,7 @@ class Registration
 					$reservation = new \App\Record\Reservation();
 					$reservation->setFrom($_POST);
 					$reservation->signedUpAt = \date('Y-m-d H:i:s');  // this should default, but does not
-					$reservation->memberId = \App\Model\Session::signedInMemberId();
+					$reservation->memberId = \App\Model\Session::getSignedInMemberId();
 					$person = new \App\Record\ReservationPerson();
 					$person->eventId = $eventId;
 					$person->reservation = $reservation;

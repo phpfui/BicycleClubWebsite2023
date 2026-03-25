@@ -166,14 +166,14 @@ class Volunteer extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 			{
 			$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
 			$view = new \App\View\Volunteer\JobShifts($this->page);
-			$jobs = $volunteerJobShiftTable->getJobsForMember(\App\Model\Session::signedInMemberId());
+			$jobs = $volunteerJobShiftTable->getJobsForMember(\App\Model\Session::getSignedInMemberId());
 			$hr = '';
 
 			foreach ($jobs as $job)
 				{
 				$this->page->addPageContent($hr);
 				$hr = '<hr>';
-				$this->page->addPageContent($view->showJobShiftsFor(new \App\Record\Job($job['jobId']), new \App\Record\Member(\App\Model\Session::signedInMemberId())));
+				$this->page->addPageContent($view->showJobShiftsFor(new \App\Record\Job($job['jobId']), new \App\Record\Member(\App\Model\Session::getSignedInMemberId())));
 				}
 
 			if (! \count($jobs))

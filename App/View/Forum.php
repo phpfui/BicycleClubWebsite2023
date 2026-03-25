@@ -367,7 +367,7 @@ class Forum
 
 		if (! $forum->closed)
 			{
-			$key = ['forumId' => $forum->forumId, 'memberId' => \App\Model\Session::signedInMemberId()];
+			$key = ['forumId' => $forum->forumId, 'memberId' => \App\Model\Session::getSignedInMemberId()];
 			$member = new \App\Record\ForumMember($key);
 
 			if ($member->loaded())
@@ -569,7 +569,7 @@ class Forum
 
 		if (\count($forums))
 			{
-			$key = ['memberId' => \App\Model\Session::signedInMemberId()];
+			$key = ['memberId' => \App\Model\Session::getSignedInMemberId()];
 
 			$table = new \PHPFUI\Table();
 			$table->setRecordId('forumId');
@@ -862,7 +862,7 @@ class Forum
 						break;
 
 					case 'Save':
-						$_POST['memberId'] = \App\Model\Session::signedInMemberId();
+						$_POST['memberId'] = \App\Model\Session::getSignedInMemberId();
 
 						// Intentionally fall through
 					case 'Add Member':

@@ -73,7 +73,7 @@ class HomePage implements \Stringable
 					$first = \App\Tools\Date::fromString($event['eventDate']);
 					}
 
-				$reservation = new \App\Record\Reservation(['eventId' => $event['eventId'], 'memberId' => \App\Model\Session::signedInMemberId()]);
+				$reservation = new \App\Record\Reservation(['eventId' => $event['eventId'], 'memberId' => \App\Model\Session::getSignedInMemberId()]);
 
 				if (! $reservation->loaded() || ((float)$event['price'] > 0.0 && ! $reservation->paymentId))
 					{

@@ -36,7 +36,7 @@ class RideWithGPS
 		{
 		$container = new \PHPFUI\Container();
 
-		$key = ['RWGPSId' => $rwgps->RWGPSId, 'memberId' => \App\Model\Session::signedInMemberId()];
+		$key = ['RWGPSId' => $rwgps->RWGPSId, 'memberId' => \App\Model\Session::getSignedInMemberId()];
 		$rwgpsRating = new \App\Record\RWGPSRating($key);
 		$rwgpsComment = new \App\Record\RWGPSComment($key);
 
@@ -61,7 +61,7 @@ class RideWithGPS
 				$alternateRoute = new \App\Record\RWGPSAlternate();
 				$alternateRoute->RWGPS = $rwgps;
 				$alternateRoute->RWGPSAlternateId = (int)$_POST['RWGPSAlternateId'];
-				$alternateRoute->memberId = \App\Model\Session::signedInMemberId();
+				$alternateRoute->memberId = \App\Model\Session::getSignedInMemberId();
 				$alternateRoute->insertOrIgnore();
 
 				$this->page->redirect();
@@ -118,7 +118,7 @@ class RideWithGPS
 		$canDeleteAlternate = $this->page->isAuthorized('Delete Alternate RWGPS Route');
 
 		$deleter = new \App\Model\DeleteRecord($this->page, $alternateRouteTable, new \App\Table\RWGPSAlternate(), 'Are you sure you want to permanently delete this alternate route?');
-		$deleter->setConditionalCallback(static fn (array $comment) : bool => $comment['memberId'] == \App\Model\Session::signedInMemberId() || $canDeleteAlternate);
+		$deleter->setConditionalCallback(static fn (array $comment) : bool => $comment['memberId'] == \App\Model\Session::getSignedInMemberId() || $canDeleteAlternate);
 		$alternateRouteTable->addCustomColumn('RWGPSId_RWGPSAlternateId', static fn (array $alternate) : string => $alternate['RWGPSId'] . '_' . $alternate['RWGPSAlternateId']);
 		$alternateRouteTable->addCustomColumn('Route', static function(array $alternate) : \PHPFUI\Link {$rwgps = new \App\Record\RWGPS($alternate['RWGPSAlternateId']);
 
@@ -143,7 +143,7 @@ class RideWithGPS
 		$canDeleteComment = $this->page->isAuthorized('Delete RWGPS Comment');
 
 		$deleter = new \App\Model\DeleteRecord($this->page, $commentTable, new \App\Table\RWGPSComment(), 'Are you sure you want to permanently delete this comment?');
-		$deleter->setConditionalCallback(static fn (array $comment) : bool => $comment['memberId'] == \App\Model\Session::signedInMemberId() || $canDeleteComment);
+		$deleter->setConditionalCallback(static fn (array $comment) : bool => $comment['memberId'] == \App\Model\Session::getSignedInMemberId() || $canDeleteComment);
 		$commentTable->addCustomColumn('RWGPSId_memberId', static fn (array $comment) : string => $comment['RWGPSId'] . '_' . $comment['memberId']);
 		$commentTable->addCustomColumn('Del', $deleter->columnCallback(...));
 		$commentTable->addCustomColumn('Comments', static fn (array $comment) : string => \str_replace("\n", '<br>', $comment['comments']));

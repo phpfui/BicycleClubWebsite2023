@@ -40,6 +40,21 @@ abstract class UserOptions
 
     /**
      * @param string $ifMatch
+     * @return PatchUserOptions Options builder
+     */
+    public static function patch(
+        
+        string $ifMatch = Values::NONE
+
+    ): PatchUserOptions
+    {
+        return new PatchUserOptions(
+            $ifMatch
+        );
+    }
+
+    /**
+     * @param string $ifMatch
      * @return UpdateUserOptions Options builder
      */
     public static function update(
@@ -90,6 +105,41 @@ class ReadUserOptions extends Options
     {
         $options = \http_build_query(Values::of($this->options), '', ' ');
         return '[Twilio.PreviewIam.Versionless.ReadUserOptions ' . $options . ']';
+    }
+}
+
+class PatchUserOptions extends Options
+    {
+    /**
+     * @param string $ifMatch
+     */
+    public function __construct(
+        
+        string $ifMatch = Values::NONE
+
+    ) {
+        $this->options['ifMatch'] = $ifMatch;
+    }
+
+    /**
+     * @param string $ifMatch
+     * @return $this Fluent Builder
+     */
+    public function setIfMatch(string $ifMatch): self
+    {
+        $this->options['ifMatch'] = $ifMatch;
+        return $this;
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.PreviewIam.Versionless.PatchUserOptions ' . $options . ']';
     }
 }
 

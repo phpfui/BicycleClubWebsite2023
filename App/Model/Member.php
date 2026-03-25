@@ -372,7 +372,7 @@ class Member
 	public function confirmEmail(string $emailHash) : bool
 		{
 		$additionalEmailTable = new \App\Table\AdditionalEmail();
-		$condition = new \PHPFUI\ORM\Condition('memberId', \App\Model\Session::signedInMemberId());
+		$condition = new \PHPFUI\ORM\Condition('memberId', \App\Model\Session::getSignedInMemberId());
 		$condition->and('verified', 0);
 		$additionalEmailTable->setWhere($condition);
 
@@ -747,7 +747,7 @@ class Member
 				{
 				$pointHistory = new \App\Record\PointHistory();
 				$pointHistory->setFrom($member);
-				$pointHistory->editorId = \App\Model\Session::signedInMemberId();
+				$pointHistory->editorId = \App\Model\Session::getSignedInMemberId();
 				$pointHistory->oldLeaderPoints = $oldMember->volunteerPoints;
 				$pointHistory->insert();
 				}
@@ -935,7 +935,7 @@ class Member
 	public function verifyEmail(string $verifyEmail) : bool
 		{
 		$additionalEmailTable = new \App\Table\AdditionalEmail();
-		$condition = new \PHPFUI\ORM\Condition('memberId', \App\Model\Session::signedInMemberId());
+		$condition = new \PHPFUI\ORM\Condition('memberId', \App\Model\Session::getSignedInMemberId());
 		$condition->and('verified', 0);
 		$additionalEmailTable->setWhere($condition);
 

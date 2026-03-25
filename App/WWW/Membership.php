@@ -25,7 +25,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		{
 		if ($this->page->isAuthorized('Membership Card'))
 			{
-			$member = $this->memberTable->getMembership(\App\Model\Session::signedInMemberId());
+			$member = $this->memberTable->getMembership(\App\Model\Session::getSignedInMemberId());
 
 			$container = new \PHPFUI\HTML5Element('span');
 			$container->addClass('text-center');
@@ -450,7 +450,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 //
 //		if ($this->addHeader('Manage My Subscription'))
 //			{
-//			$view = new \App\View\Subscription($this, \App\Model\Session::signedInMemberId());
+//			$view = new \App\View\Subscription($this, \App\Model\Session::getSignedInMemberId());
 //			$this->addPageContent($view->subscribe());
 //			}
 //		}
@@ -554,7 +554,7 @@ class Membership extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			}
 		$waiverModel = new \App\Model\MemberWaiver($member);
 
-		if ($member->memberId == \App\Model\Session::signedInMemberId() && $this->page->isAuthorized('Waiver Exempt'))
+		if ($member->memberId == \App\Model\Session::getSignedInMemberId() && $this->page->isAuthorized('Waiver Exempt'))
 			{
 			$waiverModel->generate();
 			}

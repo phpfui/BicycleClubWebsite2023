@@ -64,7 +64,7 @@ class Content extends \App\UI\ContentEditor
 			{
 			$story = new \App\Record\Story();
 			$story->body = $_POST['body'];
-			$story->editorId = \App\Model\Session::signedInMemberId();
+			$story->editorId = \App\Model\Session::getSignedInMemberId();
 			$story->insert();
 
 			$blogId = $blog->blogId;
@@ -197,7 +197,7 @@ class Content extends \App\UI\ContentEditor
 			{
 			$settingsItem = new \PHPFUI\MenuItem('Settings', '#');
 			$settingsItem->setIcon(new \PHPFUI\FAIcon('fas', 'cog'));
-			$story->editorId = \App\Model\Session::signedInMemberId();
+			$story->editorId = \App\Model\Session::getSignedInMemberId();
 			$this->editSettings($story, $blog, $settingsItem);
 			$settingsItem->addAttribute('onclick', $replaceBlobImages);
 			$iconBar->addMenuItem($settingsItem);
@@ -756,7 +756,7 @@ class Content extends \App\UI\ContentEditor
 
 					[$type, $storyId] = \explode('-', (string)$_POST['id']);
 					$story = new \App\Record\Story($storyId);
-					$story->editorId = \App\Model\Session::signedInMemberId();
+					$story->editorId = \App\Model\Session::getSignedInMemberId();
 					$story->body = $_POST['body'];
 					$story->insertOrUpdate();
 					$this->page->setResponse($storyId);
@@ -803,7 +803,7 @@ class Content extends \App\UI\ContentEditor
 
 					$story = new \App\Record\Story((int)$_POST['storyId']);
 					$story->setFrom($_POST);
-					$story->editorId = \App\Model\Session::signedInMemberId();
+					$story->editorId = \App\Model\Session::getSignedInMemberId();
 					$story->update();
 					$this->page->redirect();
 					$this->page->done();
@@ -814,7 +814,7 @@ class Content extends \App\UI\ContentEditor
 
 					$story = new \App\Record\Story((int)$_POST['storyId']);
 					$story->setFrom($_POST);
-					$story->editorId = \App\Model\Session::signedInMemberId();
+					$story->editorId = \App\Model\Session::getSignedInMemberId();
 					$story->update();
 					$blogs = \App\Table\Blog::getBlogsByNameForStory($storyId = (int)$_POST['storyId']);
 					$activeBlogs = \array_flip($_POST['blog'] ?? []);

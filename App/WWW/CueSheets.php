@@ -153,7 +153,7 @@ class CueSheets extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 		{
 		if ($cuesheet->loaded())
 			{
-			if ($this->page->addHeader('Edit Cue Sheet', '', $cuesheet->memberId == \App\Model\Session::signedInMemberId()))
+			if ($this->page->addHeader('Edit Cue Sheet', '', $cuesheet->memberId == \App\Model\Session::getSignedInMemberId()))
 				{
 				$this->page->addPageContent($this->view->edit($cuesheet));
 				}
@@ -185,7 +185,7 @@ class CueSheets extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClas
 		if ($this->page->addHeader('My Cue Sheets'))
 			{
 			$cuesheetTable = new \App\Table\CueSheet();
-			$cuesheetTable->setFromMemberCursor(\App\Model\Session::signedInMemberId());
+			$cuesheetTable->setFromMemberCursor(\App\Model\Session::getSignedInMemberId());
 
 			$this->page->addPageContent($this->view->show($cuesheetTable));
 			}

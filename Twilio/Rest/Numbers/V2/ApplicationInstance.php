@@ -21,17 +21,32 @@ use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
 use Twilio\Values;
 use Twilio\Version;
+use Twilio\Deserialize;
 
 
 /**
  * @property string $sid
- * @property string $bundleSid
  * @property string $applicationRequirementsSid
+ * @property int $applicationRequirementsVersion
+ * @property string $accountSid
+ * @property string $bundleSid
+ * @property string $reviewer
+ * @property string $zendeskTicketId
  * @property string $friendlyName
+ * @property string[] $notificationEmails
  * @property string $isoCountry
  * @property string $state
+ * @property string $setup
+ * @property string $businessInformation
+ * @property string $userSignUp
+ * @property string $complianceKeywords
+ * @property string $contentExamples
+ * @property string $smsCampaignDetails
+ * @property \DateTime $dateCreated
+ * @property \DateTime $dateUpdated
+ * @property string $createdBy
+ * @property string $updatedBy
  * @property string $sid
- * @property string $isoCountry
  */
 class ApplicationInstance extends InstanceResource
 {
@@ -49,13 +64,27 @@ class ApplicationInstance extends InstanceResource
         // Marshaled Properties
         $this->properties = [
             'sid' => Values::array_get($payload, 'sid'),
-            'bundleSid' => Values::array_get($payload, 'bundle_sid'),
             'applicationRequirementsSid' => Values::array_get($payload, 'application_requirements_sid'),
+            'applicationRequirementsVersion' => Values::array_get($payload, 'application_requirements_version'),
+            'accountSid' => Values::array_get($payload, 'account_sid'),
+            'bundleSid' => Values::array_get($payload, 'bundle_sid'),
+            'reviewer' => Values::array_get($payload, 'reviewer'),
+            'zendeskTicketId' => Values::array_get($payload, 'zendesk_ticket_id'),
             'friendlyName' => Values::array_get($payload, 'friendly_name'),
+            'notificationEmails' => Values::array_get($payload, 'notification_emails'),
             'isoCountry' => Values::array_get($payload, 'iso_country'),
             'state' => Values::array_get($payload, 'state'),
+            'setup' => Values::array_get($payload, 'setup'),
+            'businessInformation' => Values::array_get($payload, 'business_information'),
+            'userSignUp' => Values::array_get($payload, 'user_sign_up'),
+            'complianceKeywords' => Values::array_get($payload, 'compliance_keywords'),
+            'contentExamples' => Values::array_get($payload, 'content_examples'),
+            'smsCampaignDetails' => Values::array_get($payload, 'sms_campaign_details'),
+            'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
+            'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'createdBy' => Values::array_get($payload, 'created_by'),
+            'updatedBy' => Values::array_get($payload, 'updated_by'),
             'sid' => Values::array_get($payload, 'sid'),
-            'isoCountry' => Values::array_get($payload, 'iso_country'),
         ];
 
         $this->solution = ['sid' => $sid ?: $this->properties['sid'], ];

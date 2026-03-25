@@ -55,7 +55,7 @@ class TollfreeVerificationList extends ListResource
      * @param string $businessName The name of the business or organization using the Tollfree number.
      * @param string $businessWebsite The website of the business or organization using the Tollfree number.
      * @param string $notificationEmail The email address to receive the notification about the verification result. .
-     * @param string[] $useCaseCategories The category of the use case for the Tollfree Number. List as many are applicable..
+     * @param string[] $useCaseCategories The category of the use case for the Tollfree Number. List as many as are applicable.
      * @param string $useCaseSummary Use this to further explain how messaging is used by the business or organization.
      * @param string $productionMessageSample An example of message content, i.e. a sample message.
      * @param string[] $optInImageUrls Link to an image that shows the opt-in workflow. Multiple images allowed and must be a publicly hosted URL.
@@ -157,7 +157,7 @@ class TollfreeVerificationList extends ListResource
      * @param string $businessName The name of the business or organization using the Tollfree number.
      * @param string $businessWebsite The website of the business or organization using the Tollfree number.
      * @param string $notificationEmail The email address to receive the notification about the verification result. .
-     * @param string[] $useCaseCategories The category of the use case for the Tollfree Number. List as many are applicable..
+     * @param string[] $useCaseCategories The category of the use case for the Tollfree Number. List as many as are applicable.
      * @param string $useCaseSummary Use this to further explain how messaging is used by the business or organization.
      * @param string $productionMessageSample An example of message content, i.e. a sample message.
      * @param string[] $optInImageUrls Link to an image that shows the opt-in workflow. Multiple images allowed and must be a publicly hosted URL.
@@ -184,7 +184,7 @@ class TollfreeVerificationList extends ListResource
      * @param string $businessName The name of the business or organization using the Tollfree number.
      * @param string $businessWebsite The website of the business or organization using the Tollfree number.
      * @param string $notificationEmail The email address to receive the notification about the verification result. .
-     * @param string[] $useCaseCategories The category of the use case for the Tollfree Number. List as many are applicable..
+     * @param string[] $useCaseCategories The category of the use case for the Tollfree Number. List as many as are applicable.
      * @param string $useCaseSummary Use this to further explain how messaging is used by the business or organization.
      * @param string $productionMessageSample An example of message content, i.e. a sample message.
      * @param string[] $optInImageUrls Link to an image that shows the opt-in workflow. Multiple images allowed and must be a publicly hosted URL.

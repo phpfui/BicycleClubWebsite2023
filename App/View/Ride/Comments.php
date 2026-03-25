@@ -28,7 +28,7 @@ class Comments
 		$this->smsModel = new \App\Model\SMS();
 
 		$this->deleteComments = $this->page->isAuthorized('Delete Ride Comments') ||
-				$this->ride->memberId == \App\Model\Session::signedInMemberId();
+				$this->ride->memberId == \App\Model\Session::getSignedInMemberId();
 		}
 
 	public function getRideComments() : string | \PHPFUI\Container

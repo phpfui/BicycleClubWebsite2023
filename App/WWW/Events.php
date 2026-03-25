@@ -42,12 +42,12 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function cancelUnpaid(\App\Record\Reservation $reservation = new \App\Record\Reservation()) : void
 		{
-		if ($reservation->memberId == \App\Model\Session::signedInMemberId() && ! $reservation->paymentId && ! $reservation->invoiceId)
+		if ($reservation->memberId == \App\Model\Session::getSignedInMemberId() && ! $reservation->paymentId && ! $reservation->invoiceId)
 			{
 			$reservation->delete();
 			$this->page->redirect('/Events');
 			}
-		elseif ($reservation->memberId != \App\Model\Session::signedInMemberId())
+		elseif ($reservation->memberId != \App\Model\Session::getSignedInMemberId())
 			{
 			$this->page->addPageContent(new \PHPFUI\Header('This reservation can not be cancelled'));
 			$this->page->addPageContent(new \PHPFUI\SubHeader("You can not cancel another person's reservation"));
@@ -166,7 +166,7 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			if ('All' != $type)
 				{
-				$eventTable->setWhere(new \PHPFUI\ORM\Condition('organizer', \App\Model\Session::signedInMemberId()));
+				$eventTable->setWhere(new \PHPFUI\ORM\Condition('organizer', \App\Model\Session::getSignedInMemberId()));
 				}
 
 			$this->page->addPageContent($this->view->listEvents($eventTable));
@@ -389,7 +389,7 @@ class Events extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					$table->addRow($row);
 					}
 
-				if ($participant['memberId'] == \App\Model\Session::signedInMemberId())
+				if ($participant['memberId'] == \App\Model\Session::getSignedInMemberId())
 					{
 					$userSignedUp = true;
 					}

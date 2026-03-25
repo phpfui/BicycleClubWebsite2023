@@ -73,7 +73,7 @@ class Member
 			$buttonGroup->addButton($submit);
 			$link = '/Membership/edit/' . $member->memberId;
 
-			if ($member->memberId == \App\Model\Session::signedInMemberId())
+			if ($member->memberId == \App\Model\Session::getSignedInMemberId())
 				{
 				$link = '/Membership/myInfo';
 				}
@@ -609,7 +609,7 @@ class Member
 				}
 
 			// delete
-			if (($canDelete || $member->membershipId == \App\Model\Session::signedInMembershipId()) && $id != \App\Model\Session::signedInMemberId())
+			if (($canDelete || $member->membershipId == \App\Model\Session::signedInMembershipId()) && $id != \App\Model\Session::getSignedInMemberId())
 				{
 				$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
 				$icon->addAttribute('onclick', $delete->execute(['memberId' => $id]));
@@ -715,7 +715,7 @@ class Member
 					$payment->dateReceived = \date('Y-m-d');
 					$payment->paymentNumber = $post['paymentNumber'];
 					$payment->paymentDated = $post['paymentDate'];
-					$payment->enteringMemberNumber = \App\Model\Session::signedInMemberId();
+					$payment->enteringMemberNumber = \App\Model\Session::getSignedInMemberId();
 					$payment->insert();
 					$post['lastRenewed'] = \date('Y-m-d');
 					$post['pending'] = 0;
@@ -1166,7 +1166,7 @@ class Member
 							$member = $this->memberModel->get($memberId);
 
 							if ($member && ($this->page->isAuthorized('Delete Member') || $member['membershipId'] == \App\Model\Session::signedInMembershipId())
-									&& $member['memberId'] != \App\Model\Session::signedInMemberId())
+									&& $member['memberId'] != \App\Model\Session::getSignedInMemberId())
 								{
 								$this->memberModel->delete($memberId);
 								}

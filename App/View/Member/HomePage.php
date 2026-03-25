@@ -52,6 +52,45 @@ class HomePage implements \Stringable
 				}
 			}
 
+		// upcoming general admission
+		$gaEventTable = new \App\Table\GaEvent();
+		$upcomingEvents = $gaEventTable->getCurrentEvents();
+
+		if (\count($upcomingEvents))
+			{
+			$output = new \PHPFUI\Container();
+			$output->add(new \PHPFUI\Header($this->page->value('HomePageUpcoming_General_Admission_Header'), 4));
+			$table = new \PHPFUI\Table();
+			$table->setHeaders(['title' => 'Event', 'date' => 'Date', 'status' => 'Attending']);
+			$first = 0;
+
+			foreach ($upcomingEvents as $gaEvent)
+				{
+				$event = $gaEvent->toArray();
+				$event['date'] = $gaEvent->eventDate;
+
+				if (! $first)
+					{
+					$first = \App\Tools\Date::fromString($gaEvent->eventDate);
+					}
+
+				$reservation = new \App\Record\GaRider(['gaEventId' => $gaEvent->gaEventId, 'memberId' => \App\Model\Session::getSignedInMemberId()]);
+
+				if (! $reservation->loaded())
+					{
+					$event['status'] = new \PHPFUI\Button('Sign Up', '/GA/Register');
+					}
+				else
+					{
+					$event['status'] = '<b>Attending</b>';
+					}
+				$table->addRow($event);
+				}
+			$output->add($table);
+			$daysOut = $first - $today;
+			$order[] = ['priority' => $daysOut, 'html' => $output, 'category' => \App\Enum\HomeNotification::GENERAL_ADMISSION->value, ];
+			}
+
 		// upcoming events
 		$eventTable = new \App\Table\Event();
 		$eventTable->setUpcomingCursor(false);

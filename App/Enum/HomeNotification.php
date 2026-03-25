@@ -14,8 +14,10 @@ enum HomeNotification : int
 	case POLL = 6;
 	case RIDE = 7;
 	case VOLUNTEER = 8;
-	case HOME_PAGE_HEADER = 9;
-	case UPCOMING_EVENTS_HEADER = 10;
+	case GENERAL_ADMISSION = 9;
+	case HOME_PAGE_HEADER = 10;
+	case UPCOMING_EVENTS_HEADER = 11;
+	case UPCOMING_GENERAL_ADMISSION_HEADER = 12;
 
 	public function getSettingName() : string
 		{

@@ -26,7 +26,7 @@ class HomePage
 			$field->setRequired(false);
 			$multiColumn->add($field);
 
-			if (4 === \count($multiColumn))
+			if (3 === \count($multiColumn))
 				{
 				$form->add($multiColumn);
 				$multiColumn = new \PHPFUI\MultiColumn();

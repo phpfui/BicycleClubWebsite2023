@@ -78,7 +78,7 @@ class HomePage implements \Stringable
 
 				if (! $reservation->loaded())
 					{
-					$event['status'] = new \PHPFUI\Button('Sign Up', '/GA/Register');
+					$event['status'] = new \PHPFUI\Button('Register', '/GA/register');
 					}
 				else
 					{

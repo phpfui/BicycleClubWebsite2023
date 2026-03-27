@@ -162,7 +162,7 @@ class Polls
 				$icon->setConfirm('Are you sure you want to delete this poll?');
 				$poll['del'] = $icon;
 				}
-			$poll['question'] = $this->minimizeQuestion($pollObject->question);
+			$poll['question'] = self::minimizeQuestion($pollObject->question);
 			$poll['voted'] = new \PHPFUI\FAIcon('fas', 'users', '/Polls/voted/' . $pollObject->pollId);
 			$poll['vote'] = new \PHPFUI\FAIcon('fas', 'check-square', '/Polls/vote/' . $pollObject->pollId);
 			$poll['edit'] = new \PHPFUI\FAIcon('far', 'edit', '/Polls/edit/' . $pollObject->pollId);
@@ -177,7 +177,7 @@ class Polls
 		$headers = ['question', 'endDate'];
 
 		$view = new \App\UI\ContinuousScrollTable($this->page, $pollResponseTable);
-		$view->addCustomColumn('question', fn (array $vote) : string => $this->minimizeQuestion($vote['question'] ?? ''));
+		$view->addCustomColumn('question', static fn (array $vote) : string => self::minimizeQuestion($vote['question']));
 		$view->addCustomColumn('pollId', static fn (array $vote) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('fas', 'check-square', '/Polls/vote/' . $vote['pollId']));
 		$view->addCustomColumn('memberId', static fn (array $vote) : string => new \App\Record\Member($vote['memberId'])->fullName());
 		$view->setSearchColumns($headers);
@@ -306,8 +306,12 @@ class Polls
 		return $container;
 		}
 
-	private function minimizeQuestion(string $question) : string
+	private static function minimizeQuestion(?string $question) : string
 		{
+		if (! $question)
+			{
+			return '';
+			}
 		$length = 50;
 		$question = \substr($question, 0, $length);
 

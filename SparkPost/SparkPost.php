@@ -59,11 +59,11 @@ class SparkPost
     public function request(string $method = 'GET', string $uri = '', array $payload = [], array $headers = []): SparkPostPromise | SparkPostResponse
     {
         if ($this->options['async'] === true)
-		{
+        {
             return $this->asyncRequest($method, $uri, $payload, $headers);
         }
 
-		return $this->syncRequest($method, $uri, $payload, $headers);
+        return $this->syncRequest($method, $uri, $payload, $headers);
     }
 
     /**

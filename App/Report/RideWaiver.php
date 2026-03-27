@@ -74,9 +74,9 @@ class RideWaiver extends \Mpdf\Mpdf
 			$container = new \PHPFUI\Container();
 			$container->add(new \PHPFUI\SubHeader('The above was signed as follows:'));
 			$table = new \PHPFUI\Table();
-			$table->addRow($this->format('Name:', $member->firstName . ' ' . $member->lastName));
-			$table->addRow($this->format('Phone:', $member->phone));
-			$table->addRow($this->format('Cell Phone:', $member->cellPhone));
+			$table->addRow($this->format('Name:', $member->fullName()));
+			$table->addRow($this->format('Phone:', $member->phone ?? 'none'));
+			$table->addRow($this->format('Cell Phone:', $member->cellPhone ?? 'none'));
 			$table->addRow($this->format('email:', $member->email));
 			$table->addRow($this->format('Signed At:', \date('l jS \of F Y h:i:s A', \strtotime($rideSignup->signedUpTime))));
 			$table->addRow($this->format('Printed At:', \date('l jS \of F Y h:i:s A')));

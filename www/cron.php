@@ -5,11 +5,20 @@
 // for losers not using classes
 include $_SERVER['DOCUMENT_ROOT'] . '/../common.php';
 
+if (isset($_GET['display']))
+  {
+	$logLevel = \App\Cron\Controller::LOG_NORMAL;
+	$logger = new \App\Cron\Display();
+	}
+else
+	{
+	$logger = new \App\Tools\Logger();
+	$logger->setAlwaysFlush();
+	$logLevel = \App\Cron\Controller::LOG_IMPORTANT;
+	}
 // setup a logger and controller
-$logger = new \App\Tools\Logger();
-$logger->setAlwaysFlush();
 $controller = new \App\Cron\Controller(5, [$logger, 'debug', ]);
-$controller->setLogLevel(\App\Cron\Controller::LOG_IMPORTANT);
+$controller->setLogLevel($logLevel);
 // always run error reporting no matter what.
 $error = new \App\Cron\Job\PHPErrorReporter($controller);
 $error->run();

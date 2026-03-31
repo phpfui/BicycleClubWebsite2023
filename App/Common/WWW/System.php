@@ -17,6 +17,7 @@ class System extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Cron Jobs'))
 			{
+			$this->page->addPageContent(new \PHPFUI\Button('Run Scheduled Cron Jobs Now', '/cron.php?display=1')->addAttribute('target', '_blank'));
 			$cronView = new \App\View\System\Cron($this->page);
 			$this->page->addPageContent($cronView->list());
 			}

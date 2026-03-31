@@ -208,12 +208,22 @@ class GeneralAdmission
 		$gaPriceDate = $this->getCurrentRegistrationRecord($event);
 		$price = (float)$gaPriceDate->price;
 
-		if ($rider->memberId > 0)
+		$memberId = $rider->memberId;
+
+		// are they a current member, but not signed in, if so, use that memberId instead of customer number
+		$member = new \App\Record\Member(['email' => $rider->email]);
+
+		if ($member->loaded() && $member->membership->expires >= \App\Tools\Date::todayString())
+			{
+			$memberId = $member->memberId;
+			}
+
+		if ($memberId > 0)
 			{
 			if ($event->volunteerDiscount > 0 && $event->volunteerEvent > 0)
 				{
 				$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
-				$shifts = $volunteerJobShiftTable->getJobsForMember($rider->memberId, $event->volunteerEvent);
+				$shifts = $volunteerJobShiftTable->getJobsForMember($memberId, $event->volunteerEvent);
 
 				if (\count($shifts))
 					{

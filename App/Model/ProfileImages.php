@@ -15,7 +15,7 @@ class ProfileImages extends \App\Model\ThumbnailImageFiles
 		$manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
 		$path = $this->getPhotoFilePath();
 		$member = $this->getItem();
-		$image = $manager->read($path);
+		$image = $manager->decode($path);
 		$image->crop($member['profileWidth'], $member['profileHeight'], $member['profileX'], $member['profileY']);
 		$image->save($this->getCropPath());
 

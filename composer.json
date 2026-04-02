@@ -23,7 +23,7 @@
         "flowjs/flow-php-server": "^2.0",
         "gitonomy/gitlib": "^1.0",
         "guzzlehttp/guzzle": "^7.9",
-        "intervention/image": "^3.0",
+        "intervention/image": "^4.0",
         "kwn/number-to-words": "^2.8",
         "laminas/laminas-uri": "^2.9",
         "mpdf/mpdf": "^8.1",

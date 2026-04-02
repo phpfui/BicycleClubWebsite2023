@@ -294,7 +294,11 @@ class RideWithGPS
 		if ($rwgps->loaded())
 			{
 			$idLink = new \PHPFUI\Link($rwgps->routeLink());
-			$fieldSet->add(new \App\UI\Display('Ride With GPS Link', $idLink));
+			$copyButton = new \PHPFUI\Button('Copy To Clipboard')->addClass('tiny info');
+			$copiedButton = new \PHPFUI\Button('URL Copied!');
+			$copiedButton->addClass('success hide tiny');
+			$this->page->addCopyToClipboard($rwgps->routeLink(), $copyButton, $copiedButton);
+			$fieldSet->add(new \App\UI\Display('Ride With GPS Link', $idLink . ' &nbsp; &nbsp; ' . $copyButton . ' &nbsp; &nbsp; ' . $copiedButton));
 			$fieldSet->add(new \App\UI\Display('Title', $rwgps->title));
 			$fieldSet->add(new \App\UI\Display('Description', $rwgps->description));
 

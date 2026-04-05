@@ -159,10 +159,6 @@ class CrossTab
 
 					break;
 
-				default:
-
-					$this->page->redirect();
-
 				}
 			}
 		}

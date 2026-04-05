@@ -41,7 +41,7 @@ class Forum
 				{
 				$permission = new \App\Record\Permission();
 				$permission->name = $forum->name . $suffix;
-				$permission->menu = 'Forum';
+				$permission->menu = 'Forums';
 				$permission->system = 0;
 				$permission->insert();
 				}

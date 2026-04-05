@@ -307,10 +307,6 @@ class Survey
 
 					break;
 
-				default:
-
-					$this->page->redirect();
-
 				}
 			}
 		}

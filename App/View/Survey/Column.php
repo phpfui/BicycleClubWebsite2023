@@ -19,7 +19,7 @@ class Column
 
 		foreach ($reader as $row)
 			{
-			$value = $row[$surveyQuestion->columnName];
+			$value = \ucfirst($row[$surveyQuestion->columnName]);
 
 				if ('' === $value)
 					{

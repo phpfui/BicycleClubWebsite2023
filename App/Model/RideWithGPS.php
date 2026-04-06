@@ -4,8 +4,6 @@ namespace App\Model;
 
 class RideWithGPS extends \App\Model\GPS
 	{
-	private static bool $runFailed = false;
-
 	private string $apiKey = '';
 
 	private string $authToken = '';
@@ -17,6 +15,8 @@ class RideWithGPS extends \App\Model\GPS
 	private readonly string $clubId;
 
 	private readonly string $queryString;
+
+	private static bool $runFailed = false;
 
 	/** @var array<string,string> */
 	private array $states = [

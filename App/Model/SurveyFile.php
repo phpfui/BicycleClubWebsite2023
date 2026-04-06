@@ -130,7 +130,7 @@ class SurveyFile extends \App\Model\File
 				{
 				foreach ($row as $value)
 					{
-					$data[] = [$rowQuestion->columnName => $value];
+					$data[] = [$rowQuestion->columnName => \ucfirst($value)];
 					}
 				}
 			else
@@ -139,7 +139,7 @@ class SurveyFile extends \App\Model\File
 					{
 					foreach ($row as $rowValue)
 						{
-						$data[] = [$rowQuestion->columnName => $rowValue, $columnQuestion->columnName => $columnValue];
+						$data[] = [$rowQuestion->columnName => \ucfirst($rowValue), $columnQuestion->columnName => \ucfirst($columnValue)];
 						}
 					}
 				}

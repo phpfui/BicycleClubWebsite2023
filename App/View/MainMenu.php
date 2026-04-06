@@ -326,8 +326,8 @@ class MainMenu extends \App\UI\MainMenu
 
 		if ($menu = $this->addTopMenu('Surveys', 'Surveys'))
 			{
-			$this->addSub($menu, '/Survey/list', 'All Surveys');
-			$this->addSub($menu, '/Survey/edit/0', 'Add Survey');
+			$this->addSub($menu, '/Surveys/list', 'All Surveys');
+			$this->addSub($menu, '/Surveys/edit/0', 'Add Survey');
 			}
 
 		if ($menu = $this->addTopMenu('Polls', 'Polls'))

@@ -4,6 +4,8 @@ namespace App\Model;
 
 class RideWithGPS extends \App\Model\GPS
 	{
+	private static bool $runFailed = false;
+
 	private string $apiKey = '';
 
 	private string $authToken = '';
@@ -488,7 +490,7 @@ class RideWithGPS extends \App\Model\GPS
 
 	private function getGuzzleClient() : ?\GuzzleHttp\Client
 		{
-		if (! $this->apiKey)
+		if (! $this->apiKey || self::$runFailed)
 			{
 			return null;
 			}
@@ -497,7 +499,7 @@ class RideWithGPS extends \App\Model\GPS
 			{
 			if (! $this->getAuthToken())
 				{
-				\App\Tools\Logger::get()->debug('Can not get RWGPS Auth Token, check settings');
+				self::$runFailed = true;	// ignore subsequent errors for batch jobs
 
 				return null;
 				}

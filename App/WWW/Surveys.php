@@ -2,7 +2,7 @@
 
 namespace App\WWW;
 
-class Survey extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
+class Surveys extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 	{
 	private readonly \App\View\Survey $view;
 
@@ -32,7 +32,7 @@ class Survey extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function download(\App\Record\Survey $survey = new \App\Record\Survey()) : void
 		{
-		if ($this->page->isAuthorized('Download Survey'))
+		if ($this->page->isAuthorized('Download Survey CSV File'))
 			{
 			$surveyFileModel = new \App\Model\SurveyFile();
 			$surveyFileModel->download($survey->surveyId, '.csv', $survey->name . '.csv');

@@ -71,7 +71,7 @@ class CrossTab
 			$id = $row[$recordId];
 			$row['columnName'] .= new \PHPFUI\Input\Hidden("{$recordId}[{$id}]", "{$id}");
 			$row['stats'] = $this->getCrossTabReveal($surveyCrossTab, new \PHPFUI\FAIcon('fas', 'table-cells'));
-			$row['edit'] = new \PHPFUI\FAIcon('far', 'edit', '/Survey/editCrossTab/' . $id);
+			$row['edit'] = new \PHPFUI\FAIcon('far', 'edit', '/Surveys/editCrossTab/' . $id);
 			$icon = new \PHPFUI\FAIcon('far', 'trash-alt', '#');
 			$icon->addAttribute('onclick', $delete->execute([$recordId => $id]));
 			$row['del'] = $icon;
@@ -88,8 +88,8 @@ class CrossTab
 
 		$buttonGroup = new \PHPFUI\ButtonGroup();
 		$buttonGroup->addButton($submit);
-		$buttonGroup->addButton(new \PHPFUI\Button('Edit Survey', '/Survey/edit/' . $survey->surveyId)->addClass('info'));
-		$buttonGroup->addButton(new \PHPFUI\Button('All Surveys', '/Survey/list')->addClass('secondary'));
+		$buttonGroup->addButton(new \PHPFUI\Button('Edit Survey', '/Surveys/edit/' . $survey->surveyId)->addClass('info'));
+		$buttonGroup->addButton(new \PHPFUI\Button('All Surveys', '/Surveys/list')->addClass('secondary'));
 
 		$form->add($buttonGroup);
 
@@ -118,8 +118,8 @@ class CrossTab
 		$form->saveOnClick($testButton);
 		$this->getCrossTabReveal($crossTab, $testButton);
 		$buttonGroup->addButton($testButton);
-		$buttonGroup->addButton(new \PHPFUI\Button('All CrossTabs', '/Survey/editCrossTabs/' . $survey->surveyId)->addClass('info'));
-		$buttonGroup->addButton(new \PHPFUI\Button('All Surveys', '/Survey/list')->addClass('secondary'));
+		$buttonGroup->addButton(new \PHPFUI\Button('All CrossTabs', '/Surveys/editCrossTabs/' . $survey->surveyId)->addClass('info'));
+		$buttonGroup->addButton(new \PHPFUI\Button('All Surveys', '/Surveys/list')->addClass('secondary'));
 
 		$form->add($buttonGroup);
 
@@ -226,7 +226,7 @@ class CrossTab
 		$container = new \PHPFUI\HTML5Element('div');
 		$reveal->add($container);
 		$reveal->add($reveal->getCloseButton());
-		$reveal->loadUrlOnOpen('/Survey/crossTab/' . $surveyCrossTab->surveyCrossTabId, $container->getId());
+		$reveal->loadUrlOnOpen('/Surveys/crossTab/' . $surveyCrossTab->surveyCrossTabId, $container->getId());
 
 		return $opener;
 		}

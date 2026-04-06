@@ -18,7 +18,7 @@ class Survey
 
 		if ($survey->loaded())
 			{
-			$downloadButton = new \PHPFUI\Button('Download CVS File', '/Survey/download/' . $survey->surveyId)->addClass('success');
+			$downloadButton = new \PHPFUI\Button('Download CVS File', '/Surveys/download/' . $survey->surveyId)->addClass('success');
 			$uploadButton = new \PHPFUI\Button('Update CSV File')->addClass('warning');
 			$this->addUpdateCSVModal($uploadButton, $survey);
 			$multiColumn = new \PHPFUI\MultiColumn('<b>CSV Uploaded</b>', $survey->uploaded, $uploadButton, $downloadButton);
@@ -59,7 +59,7 @@ class Survey
 
 		if ($survey->loaded())
 			{
-			$form->add(new \PHPFUI\Button('Edit Cross Tabs', '/Survey/editCrossTabs/' . $survey->surveyId));
+			$form->add(new \PHPFUI\Button('Edit Cross Tabs', '/Surveys/editCrossTabs/' . $survey->surveyId));
 
 			$fieldSet = new \PHPFUI\FieldSet('Survey Columns');
 			$table = new \PHPFUI\Table();
@@ -101,7 +101,7 @@ class Survey
 
 		$buttonGroup = new \PHPFUI\ButtonGroup();
 		$buttonGroup->addButton($submit);
-		$buttonGroup->addButton(new \PHPFUI\Button('All Surveys', '/Survey/list')->addClass('info'));
+		$buttonGroup->addButton(new \PHPFUI\Button('All Surveys', '/Surveys/list')->addClass('info'));
 
 		$form->add($buttonGroup);
 
@@ -123,7 +123,7 @@ class Survey
 		if ($this->page->isAuthorized('Edit Survey'))
 			{
 			$headers[] = 'edit';
-			$table->addCustomColumn('edit', static fn (array $survey) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'edit', '/Survey/edit/' . $survey[$recordId]));
+			$table->addCustomColumn('edit', static fn (array $survey) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'edit', '/Surveys/edit/' . $survey[$recordId]));
 			}
 
 		if ($this->page->isAuthorized('Edit Survey'))
@@ -134,7 +134,7 @@ class Survey
 
 		$table->setHeaders($headers);
 
-		$table->addCustomColumn('name', static fn (array $survey) : \PHPFUI\Link => new \PHPFUI\Link('/Survey/show/' . $survey[$recordId], $survey['name'], false));
+		$table->addCustomColumn('name', static fn (array $survey) : \PHPFUI\Link => new \PHPFUI\Link('/Surveys/show/' . $survey[$recordId], $survey['name'], false));
 
 		$container = new \PHPFUI\Container();
 		$container->add($table);
@@ -154,13 +154,13 @@ class Survey
 		{
 		$container = new \PHPFUI\Container();
 
-		$surveyFileModel = new \App\Model\SurveyFile();
+		$view = new \App\View\Survey\CrossTab($this->page);
 		$container->add($survey->description);
 
 		foreach ($survey->CrossTabChildren as $crossTab)
 			{
 			$container->add('<hr>');
-			$container->add($surveyFileModel->getCrossTabStats($crossTab));
+			$container->add($view->crossTab($crossTab));
 			}
 
 		return $container;
@@ -295,7 +295,7 @@ class Survey
 							$surveyQuestion->columnName = $surveyQuestion->displayName = $field;
 							$surveyQuestion->insert();
 							}
-						$url = "/Survey/edit/{$id}";
+						$url = "/Surveys/edit/{$id}";
 						}
 					else
 						{
@@ -412,7 +412,7 @@ class Survey
 
 		$reveal->add($form);
 
-		$reveal->loadUrlOnOpen('/Survey/filter/' . $surveyQuestion->surveyQuestionId, $container->getId());
+		$reveal->loadUrlOnOpen('/Surveys/filter/' . $surveyQuestion->surveyQuestionId, $container->getId());
 
 		return $opener;
 		}
@@ -425,7 +425,7 @@ class Survey
 		$container = new \PHPFUI\HTML5Element('div');
 		$reveal->add($container);
 		$reveal->add($reveal->getCloseButton());
-		$reveal->loadUrlOnOpen('/Survey/quickStats/' . $surveyQuestion->surveyQuestionId, $container->getId());
+		$reveal->loadUrlOnOpen('/Surveys/quickStats/' . $surveyQuestion->surveyQuestionId, $container->getId());
 
 		return $opener;
 		}

@@ -55,6 +55,8 @@ class SurveyFile extends \App\Model\File
 				$headers[] = 'Percent';
 				}
 			$table->setHeaders($headers);
+			$table->addColumnAttribute('Count', ['style' => 'width:10%']);
+			$table->addColumnAttribute('Percent', ['style' => 'width:10%']);
 
 			$percentTotal = 0.0;
 

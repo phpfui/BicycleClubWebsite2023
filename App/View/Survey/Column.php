@@ -82,7 +82,7 @@ class Column
 		if ($this->page->isAuthorized('Edit Survey'))
 			{
 			$headers[] = 'edit';
-			$table->addCustomColumn('edit', static fn (array $survey) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'edit', '/Survey/edit/' . $survey[$recordId]));
+			$table->addCustomColumn('edit', static fn (array $survey) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'edit', '/Surveys/edit/' . $survey[$recordId]));
 			}
 
 		if ($this->page->isAuthorized('Edit Survey'))
@@ -93,14 +93,14 @@ class Column
 
 		$table->setHeaders($headers);
 
-		$table->addCustomColumn('name', static fn (array $survey) : \PHPFUI\Link => new \PHPFUI\Link('/Survey/show/' . $survey[$recordId], $survey['name'], false));
+		$table->addCustomColumn('name', static fn (array $survey) : \PHPFUI\Link => new \PHPFUI\Link('/Surveys/show/' . $survey[$recordId], $survey['name'], false));
 
 		$container = new \PHPFUI\Container();
 		$container->add($table);
 
 		if ($this->page->isAuthorized('Add Survey'))
 			{
-			$container->add(new \PHPFUI\Button('Add Survey', '/Survey/edit/0')->addClass('success'));
+			$container->add(new \PHPFUI\Button('Add Survey', '/Surveys/edit/0')->addClass('success'));
 			}
 
 		return $container;

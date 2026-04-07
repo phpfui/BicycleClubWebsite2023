@@ -138,9 +138,9 @@ class EventEdit
 
 		$optionsSet = new \PHPFUI\FieldSet('Membership Options');
 		$membershipFields = [
-			'extendMembership' => ['Extend Membership', 'Make sure membership is good through expires date.'],
-			'newMembersOnly' => ['New Membership Included', 'Event comes with a new membership through expires date.'],
-			'renewMembership' => ['Renew Expired Memberships', 'Lapsed memberships get extended through expires date'],
+			'extendMembershipDate' => ['Extend Membership Till', 'Make sure membership is good'],
+			'newMembersOnlyDate' => ['New Membership Included Till', 'Event comes with a new membership'],
+			'renewMembershipDate' => ['Renew Expired Memberships Till', 'Lapsed memberships get extended'],
 		];
 
 		$multiColumn = new \PHPFUI\MultiColumn();
@@ -148,14 +148,9 @@ class EventEdit
 		foreach ($membershipFields as $field => $options)
 			{
 			[$title, $help] = $options;
-			$multiColumn->add(new \PHPFUI\Input\CheckBoxBoolean($field, $title, (bool)$event->{$field})->setToolTip($help));
+			$multiColumn->add(new \PHPFUI\Input\Date($this->page, $field, $title, $event->{$field})->setToolTip($help . ' through this date. Leave blank for no change.'));
 			}
 
-		$membershipExpiresDate = new \PHPFUI\Input\Date($this->page, 'membershipExpires', 'Membership Expires', $event->membershipExpires);
-		$membershipExpiresDate->setToolTip('If a membership is included, this is when it will expire. Leave blank for the end of the year.');
-		$multiColumn->add($membershipExpiresDate);
-
-		$optionsSet->add('<hr>');
 		$optionsSet->add($multiColumn);
 
 		$container->add($optionsSet);

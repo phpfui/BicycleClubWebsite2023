@@ -10,7 +10,7 @@ namespace App\Record\Definition;
  * @property int $deleteIncomplete MySQL type int
  * @property ?string $description MySQL type text
  * @property string $eventDate MySQL type date
- * @property int $extendMembership MySQL type int
+ * @property ?string $extendMembershipDate MySQL type date
  * @property int $gaEventId MySQL type int
  * @property \App\Record\GaEvent $gaEvent related record
  * @property string $incompleteDaysAfter MySQL type varchar(255)
@@ -19,13 +19,12 @@ namespace App\Record\Definition;
  * @property ?string $location MySQL type char(100)
  * @property ?int $maxRegistrants MySQL type int
  * @property ?float $memberDiscount MySQL type decimal(7,2)
- * @property ?string $membershipExpires MySQL type date
- * @property int $newMembersOnly MySQL type int
+ * @property ?string $newMembersOnlyDate MySQL type date
  * @property ?int $otherEvent MySQL type int
  * @property ?string $registrar MySQL type char(50)
  * @property ?string $registrarEmail MySQL type char(50)
  * @property string $registrationOpens MySQL type date
- * @property int $renewMembership MySQL type int
+ * @property ?string $renewMembershipDate MySQL type date
  * @property ?int $showPreregistration MySQL type int
  * @property ?string $signupMessage MySQL type mediumtext
  * @property ?string $title MySQL type char(100)
@@ -55,7 +54,7 @@ abstract class GaEvent extends \PHPFUI\ORM\Record
 				'deleteIncomplete' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
 				'description' => new \PHPFUI\ORM\FieldDefinition('text', 'string', 65535, true, ),
 				'eventDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
-				'extendMembership' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'extendMembershipDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
 				'gaEventId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'incompleteDaysAfter' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, '', ),
 				'incompleteMessage' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
@@ -63,13 +62,12 @@ abstract class GaEvent extends \PHPFUI\ORM\Record
 				'location' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
 				'maxRegistrants' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'memberDiscount' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 8, true, 0.00, ),
-				'membershipExpires' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
-				'newMembersOnly' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'newMembersOnlyDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
 				'otherEvent' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'registrar' => new \PHPFUI\ORM\FieldDefinition('char(50)', 'string', 50, true, ),
 				'registrarEmail' => new \PHPFUI\ORM\FieldDefinition('char(50)', 'string', 50, true, ),
 				'registrationOpens' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
-				'renewMembership' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'renewMembershipDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
 				'showPreregistration' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'signupMessage' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
 				'title' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),

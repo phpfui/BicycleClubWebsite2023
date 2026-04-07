@@ -26,20 +26,12 @@
      */
     let dumpRenderer;
     const renderValue = PhpDebugBar.Widgets.renderValue = function (value, prettify) {
-        // Dump node (from JsonDataFormatter via VarDumper)
-        if (value && typeof value === 'object' && '_sd' in value) {
-            if (!dumpRenderer) {
-                dumpRenderer = new PhpDebugBar.Widgets.VarDumpRenderer();
-            }
-            return dumpRenderer.render(value);
-        }
-
-        // Plain array/object (from JsonDataFormatter fast path) → render as tree
+        // Arrays and objects → render as interactive tree
         if (value && typeof value === 'object') {
             if (!dumpRenderer) {
                 dumpRenderer = new PhpDebugBar.Widgets.VarDumpRenderer();
             }
-            return dumpRenderer.renderPlain(value);
+            return dumpRenderer.render(value);
         }
 
         if (typeof value !== 'string') {
@@ -712,7 +704,16 @@
                 }
 
                 this.get('data').forEach((item) => {
-                    const message = caseless ? item.message.toLowerCase() : item.message;
+                    let message = item.message;
+                    if (item.message_json) {
+                        message = JSON.stringify(item.message_json);
+                    } else if (item.message_html) {
+                        message = item.message_html.replace(/<[^>]*>/g, '');
+                    }
+
+                    if (caseless) {
+                        message = message.toLowerCase();
+                    }
 
                     if (
                         !excludelabel.includes(item.label || undefined)

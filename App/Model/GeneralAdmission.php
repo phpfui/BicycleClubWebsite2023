@@ -79,7 +79,9 @@ class GeneralAdmission
 			$newEvent->eventDate = $newDate;
 			}
 		$newEvent->lastRegistrationDate = \App\Tools\Date::increment($newEvent->lastRegistrationDate, $dateDiff);
-		$newEvent->membershipExpires = \App\Tools\Date::increment($newEvent->membershipExpires, $dateDiff);
+		$newEvent->extendMembershipDate = \App\Tools\Date::increment($newEvent->extendMembershipDate, $dateDiff);
+		$newEvent->newMembersOnlyDate = \App\Tools\Date::increment($newEvent->newMembersOnlyDate, $dateDiff);
+		$newEvent->renewMembershipDate = \App\Tools\Date::increment($newEvent->renewMembershipDate, $dateDiff);
 		$newEvent->insert();
 
 		$where = new \PHPFUI\ORM\Condition('gaEventId', $originalEvent->gaEventId);
@@ -127,7 +129,6 @@ class GeneralAdmission
 			}
 
 		$today = \App\Tools\Date::todayString();
-		$goodThrough = empty($event->membershipExpires) ? \App\Tools\Date::makeString(\date('Y'), 12, 31) : $event->membershipExpires;
 		$existingMember = new \App\Record\Member(['email' => $rider->email]);
 
 		if ($existingMember->loaded())
@@ -135,19 +136,25 @@ class GeneralAdmission
 			$rider->member = $existingMember;
 			$membership = $existingMember->membership;
 
-			if ($event->extendMembership && $membership->expires < $goodThrough)
+			// do we we extend expired membership?
+			if ($membership->expires < $today)
 				{
-				$membership->expires = $goodThrough;
-				$membership->update();
+				if ($event->renewMembershipDate && $membership->expires < $event->renewMembershipDate)
+					{
+					$membership->expires = $event->renewMembershipDate;
+					$membership->update();
+					}
 				}
-
-			if ($event->renewMembership && $membership->expires < $today)
+			else // otherwise we can extend a membership if exend date is greater than current membership expires date
 				{
-				$membership->expires = $goodThrough;
-				$membership->update();
+				if ($event->extendMembershipDate && $membership->expires < $event->extendMembershipDate)
+					{
+					$membership->expires = $event->extendMembershipDate;
+					$membership->update();
+					}
 				}
 			}
-		elseif ($event->newMembersOnly)
+		elseif ($event->newMembersOnlyDate)
 			{
 			$memberModel = new \App\Model\Member();
 			$membership = new \App\Record\Membership();
@@ -155,7 +162,7 @@ class GeneralAdmission
 			$membership->pending = 0;
 			$membership->joined = \App\Tools\Date::todayString();
 			$membership->affiliation = $event->title;
-			$membership->expires = $goodThrough;
+			$membership->expires = $event->newMembersOnlyDate;
 			$member = new \App\Record\Member();
 
 			$member->setFrom($rider->toArray());

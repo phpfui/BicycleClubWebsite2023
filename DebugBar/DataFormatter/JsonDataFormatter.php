@@ -23,6 +23,11 @@ class JsonDataFormatter extends DataFormatter implements AssetProvider
 
     protected ?array $dumperOptions = null;
 
+    /** Resolved limits — cached on first formatVar call to avoid repeated lookups */
+    private ?int $maxString = null;
+    private ?int $maxItems = null;
+    private int $maxDepth = 5;
+
     /**
      * Returns the raw value for scalars/short strings, or a dump node array for complex types.
      *
@@ -33,31 +38,39 @@ class JsonDataFormatter extends DataFormatter implements AssetProvider
      */
     public function formatVar(mixed $data, bool $deep = true): mixed
     {
+        // Resolve limits once (reset to null when cloner options change)
+        if ($this->maxString === null) {
+            $opts = $this->getClonerOptions();
+            $this->maxString = $opts['max_string'] ?? 10000;
+            $this->maxItems = $opts['max_items'] ?? 1000;
+            $this->maxDepth = $opts['max_depth'] ?? 5;
+        }
+
+        return $this->formatValue($data, $deep);
+    }
+
+    private function formatValue(mixed $data, bool $deep): mixed
+    {
         if (is_string($data)) {
-            $maxLength = $this->getClonerOptions()['max_string'] ?? 10000;
-            if (strlen($data) <= $maxLength) {
+            if (strlen($data) <= $this->maxString) {
                 return $data;
             }
-            return substr($data, 0, $maxLength) . '[truncated ' . (strlen($data) - $maxLength) . ' chars]';
+            return substr($data, 0, $this->maxString) . '[..' . (strlen($data) - $this->maxString) . ']';
         }
 
-        if ($this->isSimpleValue($data)) {
+        if ($data === null || is_bool($data) || is_int($data) || is_float($data)) {
             return $data;
         }
 
-        $maxItems = $this->getClonerOptions()['max_items'] ?? 1000;
-        if ($deep && is_array($data) && $this->isSimpleArray($data, $maxItems)) {
-            return $data;
+        if (is_array($data)) {
+            $result = $this->formatArray($data, $deep);
+            if ($result !== null) {
+                return $result;
+            }
+            // Bail: complex value found — send entire array through VarCloner
         }
 
-        $dumper = $this->getDumper();
-        if ($dumper instanceof DebugBarJsonDumper) {
-            $result = $dumper->dumpAsArray($this->cloneVar($data, $deep));
-            $result['_sd'] = $this->getDumperOptions()['expanded_depth'] ?? 0;
-            return $result;
-        }
-
-        return parent::formatVar($data, $deep);
+        return $this->formatComplex($data, $deep);
     }
 
     protected function cloneVar(mixed $data, bool $deep): Data
@@ -76,43 +89,63 @@ class JsonDataFormatter extends DataFormatter implements AssetProvider
     }
 
     /**
-     * Check if an array contains only simple values (scalars/strings)
-     * and can be passed through as plain JSON without the dump node structure.
+     * Format an array in a single pass. Each element is formatted inline:
+     * scalars/strings pass through, nested arrays recurse, objects go through VarCloner.
+     * Adds '_cut' when max_items is exceeded.
      */
-    private function isSimpleArray(array $data, int &$budget = 1000): bool
+    /**
+     * Format an array in a single pass. Scalars/strings/nested arrays are handled inline.
+     * If any complex value (object/resource) is encountered, bail and send the entire
+     * original array through VarCloner.
+     *
+     * @return array|null null signals a bail — caller should use formatComplex instead
+     */
+    private function formatArray(array $data, bool $deep, int $depth = 0): ?array
     {
-        foreach ($data as $v) {
-            if (--$budget < 0) {
-                return false;
+        $maxDepth = $deep ? $this->maxDepth : 1;
+        $result = [];
+        $count = 0;
+
+        foreach ($data as $k => $v) {
+            if ($count >= $this->maxItems) {
+                $result['_cut'] = count($data) - $count;
+                break;
             }
-            if (is_array($v)) {
-                if (!$this->isSimpleArray($v, $budget)) {
-                    return false;
+            if (is_string($v)) {
+                $result[$k] = strlen($v) <= $this->maxString ? $v : substr($v, 0, $this->maxString) . '[..' . (strlen($v) - $this->maxString) . ']';
+            } elseif (is_int($v) || is_float($v) || is_bool($v) || $v === null) {
+                $result[$k] = $v;
+            } elseif (is_array($v)) {
+                if ($depth >= $maxDepth) {
+                    $n = count($v);
+                    $result[$k] = $n > 0 ? ['_cut' => $n] : [];
+                } else {
+                    $inner = $this->formatArray($v, $deep, $depth + 1);
+                    if ($inner === null) {
+                        return null; // bail — complex value found deeper
+                    }
+                    $result[$k] = $inner;
                 }
-            } elseif (!$this->isSimpleValue($v)) {
-                return false;
+            } else {
+                return null; // bail — object/resource encountered
             }
+            $count++;
         }
-        return true;
+
+        return $result;
     }
 
     /**
-     * Check if a value can be represented as plain JSON without the Symfony dump structure.
-     * Only scalars, null, and short strings qualify — arrays always go through the dumper
-     * to preserve type info (array vs object) and element counts.
+     * Format a non-array, non-scalar value (objects, resources, etc.) through the full dumper.
      */
-    private function isSimpleValue(mixed $data): bool
+    private function formatComplex(mixed $data, bool $deep): mixed
     {
-        if ($data === null || is_bool($data) || is_int($data) || is_float($data)) {
-            return true;
+        $dumper = $this->getDumper();
+        if ($dumper instanceof DebugBarJsonDumper) {
+            return $dumper->dumpAsArray($this->cloneVar($data, $deep));
         }
 
-        if (is_string($data)) {
-            $maxString = $this->getClonerOptions()['max_string'] ?? 10000;
-            return strlen($data) <= $maxString;
-        }
-
-        return false;
+        return parent::formatVar($data, $deep);
     }
 
     protected function getDumper(): DataDumperInterface
@@ -129,6 +162,18 @@ class JsonDataFormatter extends DataFormatter implements AssetProvider
             $this->dumperOptions = static::$defaultDumperOptions;
         }
         return $this->dumperOptions;
+    }
+
+    public function mergeClonerOptions(array $options): void
+    {
+        parent::mergeClonerOptions($options);
+        $this->maxString = null; // reset cache
+    }
+
+    public function resetClonerOptions(?array $options = null): void
+    {
+        parent::resetClonerOptions($options);
+        $this->maxString = null; // reset cache
     }
 
     public function mergeDumperOptions(array $options): void

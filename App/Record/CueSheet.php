@@ -14,6 +14,13 @@ class CueSheet extends \App\Record\Definition\CueSheet
 		'CueSheetVersionChildren' => [\PHPFUI\ORM\Children::class, \App\Table\CueSheetVersion::class],
 	];
 
+	public function clean() : static
+		{
+		$this->dateAdded ??= \App\Tools\Date::todayString();
+
+		return $this;
+		}
+
 	public function getFullNameLink() : string
 		{
 		$settingTable = new \App\Table\Setting();

@@ -388,7 +388,7 @@ class Controller
 
 	private function compute() : void
 		{
-		$this->endTime = $this->startTime + $this->cronInterval * 6 - 10;
+		$this->endTime = $this->startTime + $this->cronInterval * 60 - 10;
 		$date = \date('Y,N,j,n,G,i', $this->startTime);
 
 		$parts = \explode(',', $date);

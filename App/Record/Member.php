@@ -20,6 +20,8 @@ class Member extends \App\Record\Definition\Member
 		{
 		$this->cleanEmail('email');
 		$this->email = \App\Model\Member::cleanEmail($this->email);
+		$this->lastName ??= 'Unknown';
+		$this->firstName ??= 'Unknown';
 		$this->cleanProperName('lastName');
 		$this->cleanProperName('firstName');
 		$this->cleanProperName('emergencyContact');

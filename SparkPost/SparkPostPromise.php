@@ -30,8 +30,8 @@ class SparkPostPromise implements HttpPromise
     /**
      * Hand off the response functions to the original promise and return a custom response or exception.
      *
-     * @param ?callable $onFulfilled - function to be called if the promise is fulfilled
-     * @param ?callable $onRejected  - function to be called if the promise is rejected
+     * @param callable $onFulfilled - function to be called if the promise is fulfilled
+     * @param callable $onRejected  - function to be called if the promise is rejected
      */
     public function then(?callable $onFulfilled = null, ?callable $onRejected = null)
     {

@@ -53,6 +53,8 @@ $updater->deleteFileInNamespace('NoNameSpace', 'fpdf.php');
 $updater->deleteFileInNamespace('Laminas\ServiceManager', 'autoload.php');
 $updater->deleteFileInNamespace('Laminas\ServiceManager', 'copyright.md');
 $updater->deleteFileInNamespace('Laminas\ServiceManager', 'readme.md');
+$updater->deleteFileInNamespace('SparkPost', 'AUTHORS.md');
+$updater->deleteFileInNamespace('SparkPost', 'MIGRATION.md');
 $updater->deleteFileInNamespace('Twilio', 'autoload.php');
 $updater->deleteFileInNamespace('setasign\Fpdi', 'autoload.php');
 $updater->deleteFileInNamespace('DeepCopy', 'deep_copy.php');

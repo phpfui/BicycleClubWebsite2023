@@ -1314,6 +1314,65 @@ trait Mixin
     }
 
     /**
+     * @template T
+     * @psalm-assert T|null $value
+     *
+     * @param T|null $value
+     *
+     * @return T|null
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function nullOrIsNotInstanceOfAny(mixed $value, mixed $classes, string $message = ''): mixed
+    {
+        null === $value || static::isNotInstanceOfAny($value, $classes, $message);
+
+        return $value;
+    }
+
+    /**
+     * @template T
+     * @psalm-assert iterable<T> $value
+     *
+     * @param iterable<T> $value
+     *
+     * @return iterable<T>
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function allIsNotInstanceOfAny(mixed $value, mixed $classes, string $message = ''): iterable
+    {
+        static::isIterable($value);
+
+        foreach ($value as $entry) {
+            static::isNotInstanceOfAny($entry, $classes, $message);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @template T
+     * @psalm-assert iterable<T|null> $value
+     *
+     * @param iterable<T|null> $value
+     *
+     * @return iterable<T|null>
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function allNullOrIsNotInstanceOfAny(mixed $value, mixed $classes, string $message = ''): iterable
+    {
+        static::isIterable($value);
+
+        foreach ($value as $entry) {
+            null === $entry || static::isNotInstanceOfAny($entry, $classes, $message);
+        }
+
+        return $value;
+    }
+
+    /**
      * @psalm-pure
      *
      * @template T of object

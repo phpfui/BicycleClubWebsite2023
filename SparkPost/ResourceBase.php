@@ -8,13 +8,25 @@ namespace SparkPost;
 class ResourceBase
 {
     /**
+     * SparkPost object used to make requests.
+     */
+    protected $sparkpost;
+
+    /**
+     * The api endpoint that gets prepended to all requests send through this resource.
+     */
+    protected $endpoint;
+
+    /**
      * Sets up the Resource.
      *
      * @param SparkPost $sparkpost - the sparkpost instance that this resource is attached to
      * @param string    $endpoint  - the endpoint that this resource wraps
      */
-    public function __construct(protected SparkPost $sparkpost, protected string $endpoint)
+    public function __construct(SparkPost $sparkpost, $endpoint)
     {
+        $this->sparkpost = $sparkpost;
+        $this->endpoint = $endpoint;
     }
 
     /**
@@ -22,7 +34,7 @@ class ResourceBase
      *
      * @see SparkPost->request()
      */
-    public function get(string | array $uri = '', array $payload = [], array $headers = []): SparkPostResponse | SparkPostPromise
+    public function get($uri = '', $payload = [], $headers = [])
     {
         return $this->request('GET', $uri, $payload, $headers);
     }
@@ -32,7 +44,7 @@ class ResourceBase
      *
      * @see SparkPost->request()
      */
-    public function put(string | array $uri = '', array $payload = [], array $headers = []): SparkPostResponse | SparkPostPromise
+    public function put($uri = '', $payload = [], $headers = [])
     {
         return $this->request('PUT', $uri, $payload, $headers);
     }
@@ -42,7 +54,7 @@ class ResourceBase
      *
      * @see SparkPost->request()
      */
-    public function post(array $payload = [], array $headers = []): SparkPostResponse | SparkPostPromise
+    public function post($payload = [], $headers = [])
     {
         return $this->request('POST', '', $payload, $headers);
     }
@@ -52,7 +64,7 @@ class ResourceBase
      *
      * @see SparkPost->request()
      */
-    public function delete(string | array $uri = '', array $payload = [], array $headers = []): SparkPostResponse | SparkPostPromise
+    public function delete($uri = '', $payload = [], $headers = [])
     {
         return $this->request('DELETE', $uri, $payload, $headers);
     }
@@ -62,9 +74,9 @@ class ResourceBase
      *
      * @see SparkPost->request()
      *
-     * @return SparkPostPromise | SparkPostResponse depending on sync or async request
+     * @return SparkPostPromise or SparkPostResponse depending on sync or async request
      */
-    public function request(string $method = 'GET', string | array $uri = '', array $payload = [], array $headers = []): SparkPostResponse | SparkPostPromise
+    public function request($method = 'GET', $uri = '', $payload = [], $headers = [])
     {
         if (is_array($uri)) {
             $headers = $payload;
@@ -72,7 +84,7 @@ class ResourceBase
             $uri = '';
         }
 
-        $uri = rtrim($this->endpoint.'/'.$uri, '/');
+        $uri = $this->endpoint.'/'.$uri;
 
         return $this->sparkpost->request($method, $uri, $payload, $headers);
     }

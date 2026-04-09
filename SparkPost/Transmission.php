@@ -4,9 +4,9 @@ namespace SparkPost;
 
 class Transmission extends ResourceBase
 {
-    public function __construct(SparkPost $sparkpost, string $endpoint = 'transmissions')
+    public function __construct(SparkPost $sparkpost)
     {
-        parent::__construct($sparkpost, $endpoint);
+        parent::__construct($sparkpost, 'transmissions');
     }
 
     /**
@@ -14,10 +14,9 @@ class Transmission extends ResourceBase
      *
      * @return SparkPostPromise or SparkPostResponse depending on sync or async request
      */
-    public function post(array $payload = [], array $headers = []): SparkPostResponse | SparkPostPromise
+    public function post($payload = [], $headers = [])
     {
-        if (isset($payload['recipients']) && !isset($payload['recipients']['list_id']))
-        {
+        if (isset($payload['recipients']) && !isset($payload['recipients']['list_id'])) {
             $payload = $this->formatPayload($payload);
         }
 
@@ -31,7 +30,7 @@ class Transmission extends ResourceBase
      *
      * @return array - the modified request body
      */
-    public function formatPayload(array $payload) : array
+    public function formatPayload($payload)
     {
         $payload = $this->formatBlindCarbonCopy($payload); //Fixes BCCs into payload
         $payload = $this->formatCarbonCopy($payload); //Fixes CCs into payload
@@ -47,7 +46,7 @@ class Transmission extends ResourceBase
      *
      * @return array - the modified request body
      */
-    private function formatBlindCarbonCopy(array $payload) : array
+    private function formatBlindCarbonCopy($payload)
     {
 
         //If there's a list of BCC recipients, move them into the correct format
@@ -65,7 +64,7 @@ class Transmission extends ResourceBase
      *
      * @return array - the modified request body
      */
-    private function formatCarbonCopy(array $payload) : array
+    private function formatCarbonCopy($payload)
     {
         if (isset($payload['cc'])) {
             $ccAddresses = [];
@@ -91,7 +90,7 @@ class Transmission extends ResourceBase
      *
      * @return array - the modified request body
      */
-    private function formatShorthandRecipients(array $payload) : array
+    private function formatShorthandRecipients($payload)
     {
         if (isset($payload['content']['from'])) {
             $payload['content']['from'] = $this->toAddressObject($payload['content']['from']);
@@ -112,7 +111,7 @@ class Transmission extends ResourceBase
      *
      * @return array - the modified request body
      */
-    private function addListToRecipients(array $payload, array $listName) : array
+    private function addListToRecipients($payload, $listName)
     {
         $originalAddress = $this->toAddressString($payload['recipients'][0]['address']);
         foreach ($payload[$listName] as $recipient) {
@@ -140,7 +139,7 @@ class Transmission extends ResourceBase
      *
      * @return array - the longhand form of an email address [ "name" => "John", "email" => "john@exmmple.com" ]
      */
-    private function toAddressObject(string $address) : array
+    private function toAddressObject($address)
     {
         $formatted = $address;
         if (is_string($formatted)) {
@@ -166,7 +165,7 @@ class Transmission extends ResourceBase
      * @param $address - the longhand form of an email address [ "name" => "John", "email" => "john@exmmple.com" ]
      * @param string - the shorthand form of an email address "Name <Email address>"
      */
-    private function toAddressString(array $address) : string
+    private function toAddressString($address)
     {
         // convert object to string
         if (!is_string($address)) {
@@ -182,14 +181,16 @@ class Transmission extends ResourceBase
 
     /**
      * Checks if a string is an email.
+     *
+     * @param string $email - a string that might be an email address
+     * @param bool - true if the given string is an email
      */
-    private function isEmail(string $email): bool
+    private function isEmail($email)
     {
-        if (filter_var($email, FILTER_VALIDATE_EMAIL))
-        {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 }

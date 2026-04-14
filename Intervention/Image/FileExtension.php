@@ -12,6 +12,8 @@ enum FileExtension: string
 {
     case JPG = 'jpg';
     case JPEG = 'jpeg';
+    case PJPG = 'pjpg';
+    case PJPEG = 'pjpeg';
     case WEBP = 'webp';
     case AVIF = 'avif';
     case BMP = 'bmp';
@@ -97,7 +99,9 @@ enum FileExtension: string
     {
         return match ($this) {
             self::JPEG,
-            self::JPG => Format::JPEG,
+            self::JPG,
+            self::PJPEG,
+            self::PJPG => Format::JPEG,
             self::WEBP => Format::WEBP,
             self::GIF => Format::GIF,
             self::PNG => Format::PNG,
@@ -121,7 +125,7 @@ enum FileExtension: string
     }
 
     /**
-     * Return media types for the current format.
+     * Return media types for the current file extension.
      *
      * @return array<MediaType>
      */
@@ -131,7 +135,7 @@ enum FileExtension: string
     }
 
     /**
-     * Return the first found media type for the current format.
+     * Return the first found media type for the current file extension.
      *
      * @throws NotSupportedException
      */

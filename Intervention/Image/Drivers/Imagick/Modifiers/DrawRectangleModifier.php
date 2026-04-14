@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Intervention\Image\Drivers\Imagick\Modifiers;
 
 use ImagickDraw;
+use ImagickDrawException;
 use ImagickException;
+use Intervention\Image\Exceptions\ColorDecoderException;
 use Intervention\Image\Exceptions\ModifierException;
 use Intervention\Image\Exceptions\StateException;
 use Intervention\Image\Interfaces\ImageInterface;
@@ -17,6 +19,7 @@ class DrawRectangleModifier extends GenericDrawRectangleModifier implements Spec
     /**
      * @throws ModifierException
      * @throws StateException
+     * @throws ColorDecoderException
      */
     public function apply(ImageInterface $image): ImageInterface
     {
@@ -47,7 +50,7 @@ class DrawRectangleModifier extends GenericDrawRectangleModifier implements Spec
                 $this->drawable->position()->x() + $this->drawable->width(),
                 $this->drawable->position()->y() + $this->drawable->height()
             );
-        } catch (ImagickException $e) {
+        } catch (ImagickException | ImagickDrawException $e) {
             throw new ModifierException(
                 'Failed to apply ' . self::class . ', unable to build ImagickDraw object',
                 previous: $e

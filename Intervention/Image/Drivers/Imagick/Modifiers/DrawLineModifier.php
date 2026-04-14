@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Intervention\Image\Drivers\Imagick\Modifiers;
 
 use ImagickDraw;
+use ImagickDrawException;
 use ImagickException;
+use Intervention\Image\Exceptions\ColorDecoderException;
 use Intervention\Image\Exceptions\ModifierException;
 use Intervention\Image\Exceptions\StateException;
 use Intervention\Image\Interfaces\ImageInterface;
@@ -17,6 +19,7 @@ class DrawLineModifier extends GenericDrawLineModifier implements SpecializedInt
     /**
      * @throws ModifierException
      * @throws StateException
+     * @throws ColorDecoderException
      */
     public function apply(ImageInterface $image): ImageInterface
     {
@@ -39,7 +42,7 @@ class DrawLineModifier extends GenericDrawLineModifier implements SpecializedInt
                 $this->drawable->end()->x(),
                 $this->drawable->end()->y(),
             );
-        } catch (ImagickException $e) {
+        } catch (ImagickException | ImagickDrawException $e) {
             throw new ModifierException(
                 'Failed to apply ' . self::class . ', unable to build ImagickDraw object',
                 previous: $e

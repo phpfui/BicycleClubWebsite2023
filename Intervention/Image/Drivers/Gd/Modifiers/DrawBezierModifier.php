@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Intervention\Image\Drivers\Gd\Modifiers;
 
+use Intervention\Image\Exceptions\ColorDecoderException;
 use Intervention\Image\Exceptions\InvalidArgumentException;
 use Intervention\Image\Exceptions\ModifierException;
 use Intervention\Image\Exceptions\StateException;
@@ -21,6 +22,7 @@ class DrawBezierModifier extends GenericDrawBezierModifier implements Specialize
      * @throws InvalidArgumentException
      * @throws ModifierException
      * @throws StateException
+     * @throws ColorDecoderException
      */
     public function apply(ImageInterface $image): ImageInterface
     {
@@ -160,6 +162,7 @@ class DrawBezierModifier extends GenericDrawBezierModifier implements Specialize
      * Calculate the points needed to draw a quadratic or cubic bezier with optional border/stroke
      *
      * @throws InvalidArgumentException
+     * @throws ModifierException
      * @return array{0: array<mixed>, 1: array<mixed>}
      */
     private function calculateBezierPoints(): array
@@ -202,6 +205,11 @@ class DrawBezierModifier extends GenericDrawBezierModifier implements Specialize
                     $dx = $polygon[$i + 2] - $polygon[$i];
                     $dy = $polygon[$i + 3] - $polygon[$i + 1];
                     $dxySqrt = ($dx * $dx + $dy * $dy) ** 0.5;
+
+                    // prevent division by zero
+                    if ($dxySqrt == 0) {
+                        throw new ModifierException('Failed to apply ' . self::class . ', division by zero');
+                    }
 
                     // inner polygon
                     $scale = $offset / $dxySqrt;

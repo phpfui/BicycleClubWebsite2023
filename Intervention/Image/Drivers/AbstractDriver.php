@@ -11,7 +11,6 @@ use Intervention\Image\Exceptions\ImageDecoderException;
 use Intervention\Image\Exceptions\InvalidArgumentException;
 use Intervention\Image\Exceptions\MissingDependencyException;
 use Intervention\Image\Exceptions\NotSupportedException;
-use Intervention\Image\Exceptions\StateException;
 use Intervention\Image\InputHandler;
 use Intervention\Image\Interfaces\AnalyzerInterface;
 use Intervention\Image\Interfaces\ColorInterface;
@@ -51,21 +50,20 @@ abstract class AbstractDriver implements DriverInterface
      * @throws InvalidArgumentException
      * @throws ImageDecoderException
      * @throws DriverException
-     * @throws NotSupportedException
      */
     public function decodeImage(mixed $input, ?array $decoders = null): ImageInterface
     {
         $decoders = $decoders === null ? InputHandler::IMAGE_DECODERS : $decoders;
 
         if (count($decoders) === 0) {
-            throw new StateException('No decoders in stack');
+            throw new InvalidArgumentException('No decoders in array');
         }
 
         try {
             $result = InputHandler::usingDecoders($decoders, $this)->handle($input);
         } catch (NotSupportedException) {
             $type = is_object($input) ? $input::class : gettype($input);
-            throw new NotSupportedException('Unsupported image source type "' . $type . '"');
+            throw new InvalidArgumentException('Unsupported image source type "' . $type . '"');
         }
 
         if (!$result instanceof ImageInterface) {
@@ -83,20 +81,19 @@ abstract class AbstractDriver implements DriverInterface
      * @throws InvalidArgumentException
      * @throws ColorDecoderException
      * @throws DriverException
-     * @throws NotSupportedException
      */
     public function decodeColor(mixed $input, ?array $decoders = null): ColorInterface
     {
         $decoders = $decoders === null ? InputHandler::COLOR_DECODERS : $decoders;
 
         if (count($decoders) === 0) {
-            throw new StateException('No decoders in stack');
+            throw new InvalidArgumentException('No decoders in array');
         }
 
         try {
             $result = InputHandler::usingDecoders($decoders, $this)->handle($input);
         } catch (NotSupportedException) {
-            throw new NotSupportedException('Unsupported color format');
+            throw new ColorDecoderException('Unknown color format');
         }
 
         if (!$result instanceof ColorInterface) {

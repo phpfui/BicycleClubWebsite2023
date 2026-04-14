@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Intervention\Image\Drivers\Imagick\Modifiers;
 
 use ImagickDraw;
+use ImagickDrawException;
 use ImagickException;
 use ImagickPixel;
+use ImagickPixelException;
+use Intervention\Image\Exceptions\ColorDecoderException;
 use Intervention\Image\Exceptions\ModifierException;
 use Intervention\Image\Exceptions\StateException;
 use Intervention\Image\Interfaces\ImageInterface;
@@ -18,6 +21,7 @@ class DrawPolygonModifier extends GenericDrawPolygonModifier implements Speciali
     /**
      * @throws ModifierException
      * @throws StateException
+     * @throws ColorDecoderException
      */
     public function apply(ImageInterface $image): ImageInterface
     {
@@ -43,7 +47,7 @@ class DrawPolygonModifier extends GenericDrawPolygonModifier implements Speciali
             }
 
             $drawing->polygon($this->points());
-        } catch (ImagickException $e) {
+        } catch (ImagickException | ImagickDrawException | ImagickPixelException $e) {
             throw new ModifierException(
                 'Failed to apply ' . self::class . ', unable to build ImagickDraw object',
                 previous: $e

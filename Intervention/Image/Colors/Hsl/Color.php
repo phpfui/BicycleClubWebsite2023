@@ -9,11 +9,13 @@ use Intervention\Image\Colors\Hsl\Channels\Alpha;
 use Intervention\Image\Colors\Hsl\Channels\Hue;
 use Intervention\Image\Colors\Hsl\Channels\Luminance;
 use Intervention\Image\Colors\Hsl\Channels\Saturation;
+use Intervention\Image\Colors\Hsl\Decoders\StringColorDecoder;
 use Intervention\Image\Colors\Rgb\Colorspace as Rgb;
-use Intervention\Image\Exceptions\ColorDecoderException;
+use Intervention\Image\Exceptions\ColorException;
 use Intervention\Image\Exceptions\DriverException;
 use Intervention\Image\Exceptions\InvalidArgumentException;
 use Intervention\Image\Exceptions\NotSupportedException;
+use Intervention\Image\InputHandler;
 use Intervention\Image\Interfaces\ColorChannelInterface;
 use Intervention\Image\Interfaces\ColorspaceInterface;
 
@@ -21,6 +23,8 @@ class Color extends AbstractColor
 {
     /**
      * Create new color object.
+     *
+     * @throws InvalidArgumentException
      */
     public function __construct(int|Hue $h, int|Saturation $s, int|Luminance $l, float|Alpha $a = 1)
     {
@@ -38,12 +42,36 @@ class Color extends AbstractColor
      * @see ColorInterface::create()
      *
      * @throws InvalidArgumentException
-     * @throws DriverException
-     * @throws ColorDecoderException
      */
     public static function create(int|Hue $h, int|Saturation $s, int|Luminance $l, float|Alpha $a = 1): self
     {
         return new self($h, $s, $l, $a);
+    }
+
+    /**
+     * Parse HSL color from string.
+     *
+     * @throws InvalidArgumentException
+     * @throws ColorException
+     */
+    public static function parse(string $input): self
+    {
+        try {
+            $color = InputHandler::usingDecoders([
+                StringColorDecoder::class,
+            ])->handle($input);
+        } catch (NotSupportedException | DriverException $e) {
+            throw new InvalidArgumentException(
+                'Unable to parse HSL color from input "' . $input . '"',
+                previous: $e,
+            );
+        }
+
+        if (!$color instanceof self) {
+            throw new ColorException('Result must be instance of ' . self::class);
+        }
+
+        return $color;
     }
 
     /**
@@ -101,6 +129,7 @@ class Color extends AbstractColor
      */
     public function toHex(bool $prefix = false): string
     {
+        // @phpstan-ignore missingType.checkedException
         return $this->toColorspace(Rgb::class)->toHex($prefix);
     }
 

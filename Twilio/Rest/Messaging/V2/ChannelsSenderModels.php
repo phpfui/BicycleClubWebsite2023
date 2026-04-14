@@ -23,7 +23,7 @@ abstract class ChannelsSenderModels
      * @property string|null $verificationMethod The verification method.
      * @property string|null $verificationCode The verification code.
      * @property string|null $voiceApplicationSid The SID of the Twilio Voice application.
-     * @property string|null $accountType The account type for ISV Account Type Migration. Set to 'ISV' or 'ISVSubAccount' to configure, null or empty string to clear, or omit to preserve the existing value.
+     * @property string|null $accountType The account type for ISV Account Type Migration. Set to 'ISV' or 'ISVSubAccount' to configure, empty string to clear, or omit to preserve the existing value.
     */
     public static function createMessagingV2ChannelsSenderConfiguration(array $payload = []): MessagingV2ChannelsSenderConfiguration
     {
@@ -93,7 +93,7 @@ class MessagingV2ChannelsSenderConfiguration implements \JsonSerializable
      * @property string|null $verificationMethod The verification method.
      * @property string|null $verificationCode The verification code.
      * @property string|null $voiceApplicationSid The SID of the Twilio Voice application.
-     * @property string|null $accountType The account type for ISV Account Type Migration. Set to 'ISV' or 'ISVSubAccount' to configure, null or empty string to clear, or omit to preserve the existing value.
+     * @property string|null $accountType The account type for ISV Account Type Migration. Set to 'ISV' or 'ISVSubAccount' to configure, empty string to clear, or omit to preserve the existing value.
     */
         protected $wabaId;
         protected $verificationMethod;

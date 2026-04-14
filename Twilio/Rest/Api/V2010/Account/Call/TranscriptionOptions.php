@@ -37,6 +37,7 @@ abstract class TranscriptionOptions
      * @param string $intelligenceService The SID or unique name of the [Intelligence Service](https://www.twilio.com/docs/conversational-intelligence/api/service-resource) for persisting transcripts and running post-call Language Operators
      * @param string $conversationConfiguration The ID of the Conversations Configuration for customizing conversation behavior in Intelligence Service
      * @param string $conversationId The ID of the Conversation for associating this Transcription with an existing Conversation in Intelligence Service
+     * @param string $configurationId The ID of the RealTimeTranscription Configuration for configuring all the non-default behaviors in one go.
      * @param bool $enableProviderData Whether the callback includes raw provider data.
      * @return CreateTranscriptionOptions Options builder
      */
@@ -58,6 +59,7 @@ abstract class TranscriptionOptions
         string $intelligenceService = Values::NONE,
         string $conversationConfiguration = Values::NONE,
         string $conversationId = Values::NONE,
+        string $configurationId = Values::NONE,
         bool $enableProviderData = Values::BOOL_NONE
 
     ): CreateTranscriptionOptions
@@ -79,6 +81,7 @@ abstract class TranscriptionOptions
             $intelligenceService,
             $conversationConfiguration,
             $conversationId,
+            $configurationId,
             $enableProviderData
         );
     }
@@ -105,6 +108,7 @@ class CreateTranscriptionOptions extends Options
      * @param string $intelligenceService The SID or unique name of the [Intelligence Service](https://www.twilio.com/docs/conversational-intelligence/api/service-resource) for persisting transcripts and running post-call Language Operators
      * @param string $conversationConfiguration The ID of the Conversations Configuration for customizing conversation behavior in Intelligence Service
      * @param string $conversationId The ID of the Conversation for associating this Transcription with an existing Conversation in Intelligence Service
+     * @param string $configurationId The ID of the RealTimeTranscription Configuration for configuring all the non-default behaviors in one go.
      * @param bool $enableProviderData Whether the callback includes raw provider data.
      */
     public function __construct(
@@ -125,6 +129,7 @@ class CreateTranscriptionOptions extends Options
         string $intelligenceService = Values::NONE,
         string $conversationConfiguration = Values::NONE,
         string $conversationId = Values::NONE,
+        string $configurationId = Values::NONE,
         bool $enableProviderData = Values::BOOL_NONE
 
     ) {
@@ -144,6 +149,7 @@ class CreateTranscriptionOptions extends Options
         $this->options['intelligenceService'] = $intelligenceService;
         $this->options['conversationConfiguration'] = $conversationConfiguration;
         $this->options['conversationId'] = $conversationId;
+        $this->options['configurationId'] = $configurationId;
         $this->options['enableProviderData'] = $enableProviderData;
     }
 
@@ -334,6 +340,18 @@ class CreateTranscriptionOptions extends Options
     public function setConversationId(string $conversationId): self
     {
         $this->options['conversationId'] = $conversationId;
+        return $this;
+    }
+
+    /**
+     * The ID of the RealTimeTranscription Configuration for configuring all the non-default behaviors in one go.
+     *
+     * @param string $configurationId The ID of the RealTimeTranscription Configuration for configuring all the non-default behaviors in one go.
+     * @return $this Fluent Builder
+     */
+    public function setConfigurationId(string $configurationId): self
+    {
+        $this->options['configurationId'] = $configurationId;
         return $this;
     }
 

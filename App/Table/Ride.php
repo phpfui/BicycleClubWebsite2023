@@ -698,4 +698,24 @@ class Ride extends \PHPFUI\ORM\Table
 
 		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Ride(), $sql, $input);
 		}
+
+	/**
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
+	 */
+	public function with(\App\Record\Member $with) : \PHPFUI\ORM\RecordCursor
+		{
+		$this->addSelect('ride.*');
+		$meCondition = new \PHPFUI\ORM\Condition('ride.rideId', new \PHPFUI\ORM\Literal('me.rideId'));
+		$meCondition->and('me.memberId', \App\Model\Session::getSignedInMemberId());
+		$this->addJoin('rideSignup', $meCondition, as: 'me');
+
+		$themCondition = new \PHPFUI\ORM\Condition('ride.rideId', new \PHPFUI\ORM\Literal('them.rideId'));
+		$themCondition->and('them.memberId', $with->memberId);
+		$this->addJoin('rideSignup', $themCondition, as: 'them');
+
+		$this->setWhere(new \PHPFUI\ORM\Condition('me.rideId', new \PHPFUI\ORM\Literal('them.rideId')));
+		$this->addOrderBy('rideDate', 'desc');
+
+		return $this->getRecordCursor();
+		}
 	}

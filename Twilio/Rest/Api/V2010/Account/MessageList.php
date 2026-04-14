@@ -108,6 +108,8 @@ class MessageList extends ListResource
                 $options['riskCheck'],
             'From' =>
                 $options['from'],
+            'FallbackFrom' =>
+                $options['fallbackFrom'],
             'MessagingServiceSid' =>
                 $options['messagingServiceSid'],
             'Body' =>

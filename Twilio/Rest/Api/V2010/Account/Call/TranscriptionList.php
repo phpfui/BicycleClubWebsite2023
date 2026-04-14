@@ -101,6 +101,8 @@ class TranscriptionList extends ListResource
                 $options['conversationConfiguration'],
             'ConversationId' =>
                 $options['conversationId'],
+            'ConfigurationId' =>
+                $options['configurationId'],
             'EnableProviderData' =>
                 Serialize::booleanToString($options['enableProviderData']),
         ]);

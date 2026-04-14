@@ -19,8 +19,8 @@ use Twilio\Values;
 abstract class ReportModels
 {
     /**
-     * @property \DateTime $startTime Start time of the report
-     * @property \DateTime $endTime End time of the report
+     * @property \DateTime $startDatetime Start date time of the report
+     * @property \DateTime $endDatetime End date time of the report
     */
     public static function createInsightsV2CreateAccountReportRequestTimeRange(array $payload = []): InsightsV2CreateAccountReportRequestTimeRange
     {
@@ -50,14 +50,14 @@ abstract class ReportModels
 class InsightsV2CreateAccountReportRequestTimeRange implements \JsonSerializable
 {
     /**
-     * @property \DateTime $startTime Start time of the report
-     * @property \DateTime $endTime End time of the report
+     * @property \DateTime $startDatetime Start date time of the report
+     * @property \DateTime $endDatetime End date time of the report
     */
-        protected $startTime;
-        protected $endTime;
+        protected $startDatetime;
+        protected $endDatetime;
     public function __construct(array $payload = []) {
-        $this->startTime = Values::array_get($payload, 'start_time');
-        $this->endTime = Values::array_get($payload, 'end_time');
+        $this->startDatetime = Values::array_get($payload, 'start_datetime');
+        $this->endDatetime = Values::array_get($payload, 'end_datetime');
     }
 
     public function toArray(): array
@@ -69,11 +69,11 @@ class InsightsV2CreateAccountReportRequestTimeRange implements \JsonSerializable
     {
         $jsonString = [
         ];
-        if (isset($this->startTime)) {
-            $jsonString['start_time'] = $this->startTime;
+        if (isset($this->startDatetime)) {
+            $jsonString['start_datetime'] = $this->startDatetime;
         }
-        if (isset($this->endTime)) {
-            $jsonString['end_time'] = $this->endTime;
+        if (isset($this->endDatetime)) {
+            $jsonString['end_datetime'] = $this->endDatetime;
         }
         return $jsonString;
     }

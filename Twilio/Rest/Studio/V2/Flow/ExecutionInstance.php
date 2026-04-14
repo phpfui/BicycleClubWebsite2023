@@ -37,6 +37,7 @@ use Twilio\Rest\Studio\V2\Flow\Execution\ExecutionContextList;
  * @property string $status
  * @property \DateTime|null $dateCreated
  * @property \DateTime|null $dateUpdated
+ * @property string|null $initiatedBy
  * @property string|null $url
  * @property array|null $links
  */
@@ -69,6 +70,7 @@ class ExecutionInstance extends InstanceResource
             'status' => Values::array_get($payload, 'status'),
             'dateCreated' => Deserialize::dateTime(Values::array_get($payload, 'date_created')),
             'dateUpdated' => Deserialize::dateTime(Values::array_get($payload, 'date_updated')),
+            'initiatedBy' => Values::array_get($payload, 'initiated_by'),
             'url' => Values::array_get($payload, 'url'),
             'links' => Values::array_get($payload, 'links'),
         ];

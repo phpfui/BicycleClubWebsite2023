@@ -647,6 +647,14 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->page->redirect('/Rides/memberSchedule', timeout: $timeout);
 		}
 
+	public function with() : void
+		{
+		if ($this->page->addHeader('Rides With'))
+			{
+			$this->page->addPageContent(new \App\View\Ride\With($this->page, $_GET));
+			}
+		}
+
 	private function canEditRideSignups(\App\Record\Ride $ride) : bool
 		{
 		$editSignups = $this->page->isAuthorized('Edit Ride Signups');

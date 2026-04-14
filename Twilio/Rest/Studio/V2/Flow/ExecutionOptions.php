@@ -38,18 +38,21 @@ abstract class ExecutionOptions
 
 
     /**
+     * @param string $status Only show Execution resources with the given status. Can be: `active` or `ended`.
      * @param \DateTime $dateCreatedFrom Only show Execution resources starting on or after this [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time, given as `YYYY-MM-DDThh:mm:ss-hh:mm`.
      * @param \DateTime $dateCreatedTo Only show Execution resources starting before this [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time, given as `YYYY-MM-DDThh:mm:ss-hh:mm`.
      * @return ReadExecutionOptions Options builder
      */
     public static function read(
         
+        string $status = Values::NONE,
         ?\DateTime $dateCreatedFrom = null,
         ?\DateTime $dateCreatedTo = null
 
     ): ReadExecutionOptions
     {
         return new ReadExecutionOptions(
+            $status,
             $dateCreatedFrom,
             $dateCreatedTo
         );
@@ -100,17 +103,32 @@ class CreateExecutionOptions extends Options
 class ReadExecutionOptions extends Options
     {
     /**
+     * @param string $status Only show Execution resources with the given status. Can be: `active` or `ended`.
      * @param \DateTime $dateCreatedFrom Only show Execution resources starting on or after this [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time, given as `YYYY-MM-DDThh:mm:ss-hh:mm`.
      * @param \DateTime $dateCreatedTo Only show Execution resources starting before this [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) date-time, given as `YYYY-MM-DDThh:mm:ss-hh:mm`.
      */
     public function __construct(
         
+        string $status = Values::NONE,
         ?\DateTime $dateCreatedFrom = null,
         ?\DateTime $dateCreatedTo = null
 
     ) {
+        $this->options['status'] = $status;
         $this->options['dateCreatedFrom'] = $dateCreatedFrom;
         $this->options['dateCreatedTo'] = $dateCreatedTo;
+    }
+
+    /**
+     * Only show Execution resources with the given status. Can be: `active` or `ended`.
+     *
+     * @param string $status Only show Execution resources with the given status. Can be: `active` or `ended`.
+     * @return $this Fluent Builder
+     */
+    public function setStatus(string $status): self
+    {
+        $this->options['status'] = $status;
+        return $this;
     }
 
     /**

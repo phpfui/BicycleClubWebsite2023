@@ -254,4 +254,61 @@ class ConversationRelay extends TwiML {
     public function setDebug($debug): self {
         return $this->setAttribute('debug', $debug);
     }
+
+    /**
+     * Add Backgroundnoisereduction attribute.
+     *
+     * @param string $backgroundnoisereduction This parameters enables background
+     *                                         noise filtering on the audio stream
+     *                                         before it reaches the STT engine,
+     *                                         improving transcription accuracy in
+     *                                         noisy environments
+     */
+    public function setBackgroundnoisereduction($backgroundnoisereduction): self {
+        return $this->setAttribute('backgroundnoisereduction', $backgroundnoisereduction);
+    }
+
+    /**
+     * Add Speechtimeout attribute.
+     *
+     * @param string $speechtimeout Set the duration of silence that indicates the
+     *                              end of speech
+     */
+    public function setSpeechtimeout($speechtimeout): self {
+        return $this->setAttribute('speechtimeout', $speechtimeout);
+    }
+
+    /**
+     * Add Deepgramsmartformat attribute.
+     *
+     * @param string $deepgramsmartformat This parameter enables Deepgram's smart
+     *                                    formatting feature, which automatically
+     *                                    applies punctuation, capitalization, and
+     *                                    formatting (e.g. numbers, dates,
+     *                                    currency) to transcripts
+     */
+    public function setDeepgramsmartformat($deepgramsmartformat): self {
+        return $this->setAttribute('deepgramsmartformat', $deepgramsmartformat);
+    }
+
+    /**
+     * Add Ignorebackchannel attribute.
+     *
+     * @param string $ignorebackchannel This parameter brief caller acknowledgments
+     *                                  (e.g. "yeah", "uh-huh") are ignored and
+     *                                  will not interrupt the agent while it is
+     *                                  speaking.
+     */
+    public function setIgnorebackchannel($ignorebackchannel): self {
+        return $this->setAttribute('ignorebackchannel', $ignorebackchannel);
+    }
+
+    /**
+     * Add Events attribute.
+     *
+     * @param string $events This parameter allows you to enable event subscriptions
+     */
+    public function setEvents($events): self {
+        return $this->setAttribute('events', $events);
+    }
 }

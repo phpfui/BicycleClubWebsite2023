@@ -26,11 +26,16 @@ class With
 			$paceTable = new \App\Table\Pace();
 			$rides = $rideTable->with($this->member);
 
+			$callout = new \PHPFUI\Callout('info');
+			$callout->add("You have ridden {$rides->count()} times with {$this->member->fullName()}");
+			$form->add($callout);
+
 			$tabs = new \PHPFUI\Tabs(true);
 			$startYear = '';
 			$table = new \PHPFUI\Table();
 			$table = new \PHPFUI\Table()->setHeaders(['Date', 'Time', 'Category', 'Ride Signup']);
 			$active = true;
+			$yearCount = 0;
 
 			foreach ($rides as $ride)
 				{
@@ -40,12 +45,20 @@ class With
 					{
 					if ($startYear)
 						{
+						$table->addRow([
+							'Date' => "<b>Total Rides in {$startYear}:</b>",
+							'Time' => "<b>{$yearCount}</b>",
+							'Category' => '',
+							'Ride Signup' => '',
+						]);
 						$tabs->addTab($startYear, $table, $active);
+						$yearCount = 0;
 						$active = false;
 						$table = new \PHPFUI\Table()->setHeaders(['Date', 'Time', 'Category', 'Ride Signup']);
 						}
 					$startYear = $year;
 					}
+				++$yearCount;
 				$table->addRow([
 					'Date' => \date('D M j', \App\Tools\Date::getUnixTimeStamp($ride->rideDate, '00:00:00')),
 					'Time' => \App\Tools\TimeHelper::toSmallTime($ride->startTime),

@@ -514,7 +514,7 @@ class Leader
 		$table->addCustomColumn('first', static fn (array $leader) : \PHPFUI\Link => new \PHPFUI\Link('/Leaders/stats/' . $leader['memberId'], $leader['firstName'], false));
 		$table->addCustomColumn('last', static fn (array $leader) : \PHPFUI\Link => new \PHPFUI\Link('/Leaders/stats/' . $leader['memberId'], $leader['lastName'], false));
 		$table->addCustomColumn('email', static fn (array $leader) : \PHPFUI\FAIcon => new \PHPFUI\FAIcon('far', 'envelope', '/Leaders/emailLeader/' . $leader['memberId']));
-		$table->addCustomColumn('phone', static function(array $leader) : string
+		$table->addCustomColumn('phone', static function(array $leader) : ?string
 			{
 			$phone = $leader['phone'];
 

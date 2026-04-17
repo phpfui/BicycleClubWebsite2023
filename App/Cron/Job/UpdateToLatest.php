@@ -12,9 +12,22 @@ class UpdateToLatest extends \App\Cron\BaseJob
 	/** @param array<string, string> $parameters */
 	public function run(array $parameters = []) : void
 		{
-		$repo = new \Gitonomy\Git\Repository(PROJECT_ROOT);
-		$deployer = new \App\Model\Deploy($repo);
-		$deployer->updateToLatest();
+		$retries = 5;
+
+		while ($retries-- > 0)
+			{
+			try
+				{
+				$repo = new \Gitonomy\Git\Repository(PROJECT_ROOT);
+				$deployer = new \App\Model\Deploy($repo);
+				$deployer->updateToLatest();
+				$retries = 0;
+				}
+			catch (\Exception $e)
+				{
+				\App\Tools\Logger::get()->debug($e, 'Deploy error');
+				}
+			}
 		}
 
 	public function willRun() : bool

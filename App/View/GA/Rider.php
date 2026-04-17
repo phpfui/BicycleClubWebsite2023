@@ -133,7 +133,7 @@ class Rider
 
 		$view->addCustomColumn('pending', static fn (array $rider) : string => $rider['pending'] ? '' : '&check;');
 
-		$view->addCustomColumn('phone', static fn (array $rider) : \PHPFUI\Link => \PHPFUI\Link::phone($rider['phone']));
+		$view->addCustomColumn('phone', static fn (array $rider) : ?\PHPFUI\Link => \PHPFUI\Link::phone($rider['phone']));
 
 		$view->setHeaders(\array_merge($sortableHeaders, $otherHeaders))->setSortableColumns(\array_keys($sortableHeaders));
 		unset($sortableHeaders['pending']);

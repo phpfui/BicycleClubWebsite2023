@@ -29,18 +29,14 @@ class DrawBezierModifier extends GenericDrawBezierModifier implements Specialize
             throw new InvalidArgumentException('You must specify either 3 or 4 points to create a bezier curve');
         }
 
-        $drawing = new ImagickDraw();
-
-        if ($this->drawable->hasBackgroundColor()) {
-            $backgroundColor = $this->driver()->colorProcessor($image)->export(
-                $this->backgroundColor()
-            );
-        } else {
-            $backgroundColor = 'transparent';
-        }
-
         try {
-            $drawing->setFillColor($backgroundColor);
+            $drawing = new ImagickDraw();
+
+            $drawing->setFillColor(
+                $this->driver()->colorProcessor($image)->export(
+                    $this->backgroundColor()
+                )
+            );
 
             if ($this->drawable->hasBorder() && $this->drawable->borderSize() > 0) {
                 $borderColor = $this->driver()->colorProcessor($image)->export(

@@ -6,11 +6,13 @@ namespace PHPFUI\ConstantContact\Definition;
 
 /**
  * @property string $href
+ * @property \PHPFUI\ConstantContact\Definition\Next2 $next Contains the next page link, if applicable.
  */
-class PartnersLink extends \PHPFUI\ConstantContact\Definition\Base
+class Links4 extends \PHPFUI\ConstantContact\Definition\Base
 	{
 	protected static array $fields = [
 		'href' => 'string',
+		'next' => '\PHPFUI\ConstantContact\Definition\Next2',
 
 	];
 	}

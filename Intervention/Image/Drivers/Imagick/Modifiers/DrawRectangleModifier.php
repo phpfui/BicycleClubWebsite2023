@@ -25,14 +25,11 @@ class DrawRectangleModifier extends GenericDrawRectangleModifier implements Spec
     {
         try {
             $drawing = new ImagickDraw();
-
-            if ($this->drawable->hasBackgroundColor()) {
-                $backgroundColor = $this->driver()->colorProcessor($image)->export(
+            $drawing->setFillColor(
+                $this->driver()->colorProcessor($image)->export(
                     $this->backgroundColor()
-                );
-
-                $drawing->setFillColor($backgroundColor);
-            }
+                )
+            );
 
             if ($this->drawable->hasBorder()) {
                 $borderColor = $this->driver()->colorProcessor($image)->export(

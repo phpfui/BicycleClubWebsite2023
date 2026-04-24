@@ -160,7 +160,11 @@ class Invoice
 					$memberPicker = new \App\Model\MemberPicker($chairName);
 					$chair = $memberPicker->getMember();
 					}
-				$emails[$chair['email']] = $chair['firstName'] . ' ' . $chair['lastName'];
+
+				if ($chair['email'])
+					{
+					$emails[$chair['email']] = $chair['firstName'] . ' ' . $chair['lastName'];
+					}
 				}
 			$invoice->update();
 			$invoicePDF = $this->generatePDF($invoice);

@@ -67,6 +67,17 @@ class With
 				]);
 				}
 
+			if ($yearCount)
+				{
+				$table->addRow([
+					'Date' => "<b>Total Rides in {$startYear}:</b>",
+					'Time' => "<b>{$yearCount}</b>",
+					'Category' => '',
+					'Ride Signup' => '',
+					]);
+				$tabs->addTab($startYear, $table, $active);
+				}
+
 			$gridX = new \PHPFUI\GridX();
 			$yearCell = new \PHPFUI\Cell(2, 2, 3)->add($tabs->getTabs());
 			$rideCell = new \PHPFUI\Cell(10, 10, 9)->add($tabs->getContent());

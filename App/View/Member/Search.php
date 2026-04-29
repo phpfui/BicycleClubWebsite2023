@@ -45,13 +45,15 @@ class Search implements \Stringable
 
 	public function __toString() : string
 		{
+		$get = $_GET;
+		$get['email'] = \App\Model\Member::cleanEmail($get['email'] ?? '');
 		$button = new \PHPFUI\Button('Search Members');
-		$modal = $this->getSearchModal($button, $_GET);
+		$modal = $this->getSearchModal($button, $get);
 		$output = '';
 		$row = new \PHPFUI\GridX();
 		$row->add('<br>');
 
-		if (! empty($_GET['submit']))
+		if (! empty($get['submit']))
 			{
 			$view = new \App\View\Member($this->page);
 			$memberTable = new \App\Table\Member();
@@ -63,7 +65,7 @@ class Search implements \Stringable
 				$condition = $memberTable->getWhereCondition();
 				$condition->and('showNothing', 0);
 
-				foreach ($_GET as $field => $value)
+				foreach ($get as $field => $value)
 					{
 					$excludeField = $this->exceptions[$field] ?? '';
 
@@ -73,8 +75,8 @@ class Search implements \Stringable
 						}
 					}
 				}
-			$_GET['pending'] = 0;
-			$members = $memberTable->find($_GET);
+			$get['pending'] = 0;
+			$members = $memberTable->find($get);
 			$output = $view->show($members);
 
 			if (\count($members))

@@ -74,7 +74,7 @@ class With
 					'Time' => "<b>{$yearCount}</b>",
 					'Category' => '',
 					'Ride Signup' => '',
-					]);
+				]);
 				$tabs->addTab($startYear, $table, $active);
 				}
 

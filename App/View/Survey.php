@@ -226,7 +226,7 @@ class Survey
 
 					if (empty($_POST['displayName']))
 						{
-						$_POST['displayName'] = $_POST['colunmName'];
+						$_POST['displayName'] = $_POST['columnName'];
 						}
 					$surveyQuestion->setFrom($_POST);
 					$surveyQuestion->insert();

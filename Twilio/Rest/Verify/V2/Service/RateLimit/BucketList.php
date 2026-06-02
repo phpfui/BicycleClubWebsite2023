@@ -53,7 +53,6 @@ class BucketList extends ListResource
             $rateLimitSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/RateLimits/' . \rawurlencode($rateLimitSid)
         .'/Buckets';
@@ -62,13 +61,18 @@ class BucketList extends ListResource
     /**
      * Helper function for Create
      *
+     
+     
      * @param int $max Maximum number of requests permitted in during the interval.
+     
      * @param int $interval Number of seconds that the rate limit will be enforced over.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(int $max, int $interval): Response
     {
+        
         $data = Values::of([
             'Max' =>
                 $max,
@@ -83,8 +87,12 @@ class BucketList extends ListResource
     /**
      * Create the BucketInstance
      *
+     
+     
      * @param int $max Maximum number of requests permitted in during the interval.
+     
      * @param int $interval Number of seconds that the rate limit will be enforced over.
+     
      * @return BucketInstance Created BucketInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -103,8 +111,12 @@ class BucketList extends ListResource
     /**
      * Create the BucketInstance with Metadata
      *
+     
+     
      * @param int $max Maximum number of requests permitted in during the interval.
+     
      * @param int $interval Number of seconds that the rate limit will be enforced over.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -117,6 +129,7 @@ class BucketList extends ListResource
                         $this->solution['serviceSid'],
                         $this->solution['rateLimitSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -130,6 +143,7 @@ class BucketList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -150,6 +164,7 @@ class BucketList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

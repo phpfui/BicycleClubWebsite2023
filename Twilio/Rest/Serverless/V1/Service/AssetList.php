@@ -48,7 +48,6 @@ class AssetList extends ListResource
             $serviceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Assets';
     }
@@ -56,12 +55,15 @@ class AssetList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $friendlyName A descriptive string that you create to describe the Asset resource. It can be a maximum of 255 characters.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName): Response
     {
+        
         $data = Values::of([
             'FriendlyName' =>
                 $friendlyName,
@@ -74,7 +76,9 @@ class AssetList extends ListResource
     /**
      * Create the AssetInstance
      *
+     
      * @param string $friendlyName A descriptive string that you create to describe the Asset resource. It can be a maximum of 255 characters.
+     
      * @return AssetInstance Created AssetInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,7 +96,9 @@ class AssetList extends ListResource
     /**
      * Create the AssetInstance with Metadata
      *
+     
      * @param string $friendlyName A descriptive string that you create to describe the Asset resource. It can be a maximum of 255 characters.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -104,6 +110,7 @@ class AssetList extends ListResource
                         $response->getContent(),
                         $this->solution['serviceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -117,6 +124,7 @@ class AssetList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -137,6 +145,7 @@ class AssetList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

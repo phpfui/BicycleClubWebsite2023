@@ -45,7 +45,6 @@ class TokenList extends ListResource
             $accountSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Tokens.json';
     }
@@ -59,6 +58,7 @@ class TokenList extends ListResource
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -103,6 +103,7 @@ class TokenList extends ListResource
                         $response->getContent(),
                         $this->solution['accountSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

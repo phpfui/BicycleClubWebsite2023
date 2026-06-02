@@ -59,12 +59,15 @@ class TaskQueueStatisticsContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $params = Values::of([
@@ -87,6 +90,8 @@ class TaskQueueStatisticsContext extends InstanceContext
     /**
      * Fetch the TaskQueueStatisticsInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return TaskQueueStatisticsInstance Fetched TaskQueueStatisticsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -106,6 +111,8 @@ class TaskQueueStatisticsContext extends InstanceContext
     /**
      * Fetch the TaskQueueStatisticsInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -119,6 +126,7 @@ class TaskQueueStatisticsContext extends InstanceContext
                         $this->solution['workspaceSid'],
                         $this->solution['taskQueueSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

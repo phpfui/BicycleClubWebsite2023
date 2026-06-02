@@ -43,6 +43,7 @@ class UsecasePage extends Page
         return new UsecaseInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

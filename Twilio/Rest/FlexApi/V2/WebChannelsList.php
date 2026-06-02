@@ -40,7 +40,6 @@ class WebChannelsList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/WebChats';
     }
 
@@ -48,12 +47,14 @@ class WebChannelsList extends ListResource
      * Helper function for Create
      *
      * @param string $addressSid The SID of the Conversations Address. See [Address Configuration Resource](https://www.twilio.com/docs/conversations/api/address-configuration-resource) for configuration details. When a conversation is created on the Flex backend, the callback URL will be set to the corresponding Studio Flow SID or webhook URL in your address configuration.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $addressSid, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -77,6 +78,7 @@ class WebChannelsList extends ListResource
      * Create the WebChannelsInstance
      *
      * @param string $addressSid The SID of the Conversations Address. See [Address Configuration Resource](https://www.twilio.com/docs/conversations/api/address-configuration-resource) for configuration details. When a conversation is created on the Flex backend, the callback URL will be set to the corresponding Studio Flow SID or webhook URL in your address configuration.
+     
      * @param array|Options $options Optional Arguments
      * @return WebChannelsInstance Created WebChannelsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -95,6 +97,7 @@ class WebChannelsList extends ListResource
      * Create the WebChannelsInstance with Metadata
      *
      * @param string $addressSid The SID of the Conversations Address. See [Address Configuration Resource](https://www.twilio.com/docs/conversations/api/address-configuration-resource) for configuration details. When a conversation is created on the Flex backend, the callback URL will be set to the corresponding Studio Flow SID or webhook URL in your address configuration.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -106,6 +109,7 @@ class WebChannelsList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

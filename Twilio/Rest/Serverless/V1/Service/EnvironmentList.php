@@ -49,7 +49,6 @@ class EnvironmentList extends ListResource
             $serviceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Environments';
     }
@@ -57,13 +56,16 @@ class EnvironmentList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $uniqueName A user-defined string that uniquely identifies the Environment resource. It can be a maximum of 100 characters.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $uniqueName, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -80,7 +82,9 @@ class EnvironmentList extends ListResource
     /**
      * Create the EnvironmentInstance
      *
+     
      * @param string $uniqueName A user-defined string that uniquely identifies the Environment resource. It can be a maximum of 100 characters.
+     
      * @param array|Options $options Optional Arguments
      * @return EnvironmentInstance Created EnvironmentInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -99,7 +103,9 @@ class EnvironmentList extends ListResource
     /**
      * Create the EnvironmentInstance with Metadata
      *
+     
      * @param string $uniqueName A user-defined string that uniquely identifies the Environment resource. It can be a maximum of 100 characters.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -112,6 +118,7 @@ class EnvironmentList extends ListResource
                         $response->getContent(),
                         $this->solution['serviceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -125,6 +132,7 @@ class EnvironmentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -145,6 +153,7 @@ class EnvironmentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

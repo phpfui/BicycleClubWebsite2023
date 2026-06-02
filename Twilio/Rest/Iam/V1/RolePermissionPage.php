@@ -43,6 +43,7 @@ class RolePermissionPage extends Page
         return new RolePermissionInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

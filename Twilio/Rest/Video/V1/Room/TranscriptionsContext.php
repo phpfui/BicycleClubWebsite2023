@@ -59,11 +59,14 @@ class TranscriptionsContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -71,6 +74,8 @@ class TranscriptionsContext extends InstanceContext
     /**
      * Fetch the TranscriptionsInstance
      *
+     
+     
      * @return TranscriptionsInstance Fetched TranscriptionsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -89,6 +94,8 @@ class TranscriptionsContext extends InstanceContext
     /**
      * Fetch the TranscriptionsInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -101,6 +108,7 @@ class TranscriptionsContext extends InstanceContext
                         $this->solution['roomSid'],
                         $this->solution['ttid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -112,12 +120,15 @@ class TranscriptionsContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -134,6 +145,8 @@ class TranscriptionsContext extends InstanceContext
     /**
      * Update the TranscriptionsInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return TranscriptionsInstance Updated TranscriptionsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -153,6 +166,8 @@ class TranscriptionsContext extends InstanceContext
     /**
      * Update the TranscriptionsInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -166,6 +181,7 @@ class TranscriptionsContext extends InstanceContext
                         $this->solution['roomSid'],
                         $this->solution['ttid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

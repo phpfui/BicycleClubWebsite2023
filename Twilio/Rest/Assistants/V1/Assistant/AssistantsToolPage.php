@@ -43,6 +43,7 @@ class AssistantsToolPage extends Page
         return new AssistantsToolInstance($this->version, $payload, $this->solution['assistantId']);
     }
 
+
     /**
      * Provide a friendly representation
      *

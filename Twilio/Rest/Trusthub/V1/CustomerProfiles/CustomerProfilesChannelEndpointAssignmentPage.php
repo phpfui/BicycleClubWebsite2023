@@ -43,6 +43,7 @@ class CustomerProfilesChannelEndpointAssignmentPage extends Page
         return new CustomerProfilesChannelEndpointAssignmentInstance($this->version, $payload, $this->solution['customerProfileSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

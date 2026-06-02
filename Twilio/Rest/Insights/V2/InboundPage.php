@@ -43,6 +43,7 @@ class InboundPage extends Page
         return new InboundInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -43,6 +43,7 @@ class SubscribeRulesPage extends Page
         return new SubscribeRulesInstance($this->version, $payload, $this->solution['roomSid'], $this->solution['participantSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

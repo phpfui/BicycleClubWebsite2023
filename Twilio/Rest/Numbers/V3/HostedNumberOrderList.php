@@ -43,21 +43,24 @@ class HostedNumberOrderList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
-        $this->uri = '/HostedNumbers/HostedNumberOrders';
     }
 
     /**
      * Helper function for Create
      *
      * @param string $phoneNumber The number to host in [+E.164](https://en.wikipedia.org/wiki/E.164) format
+     
      * @param bool $smsCapability Used to specify that the SMS capability will be hosted on Twilio's platform.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $phoneNumber, bool $smsCapability, array $options = []): Response
     {
+        
+        $uri = '/HostedNumbers/HostedNumberOrders';
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -98,22 +101,24 @@ class HostedNumberOrderList extends ListResource
         ]);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
-        return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
+        return $this->version->handleRequest('POST', $uri, [], $data, $headers, "create");
     }
 
     /**
-     * Create the HostedNumberOrderInstance
+     * Create the NumbersV3HostedNumbersHostedNumberOrderInstance
      *
      * @param string $phoneNumber The number to host in [+E.164](https://en.wikipedia.org/wiki/E.164) format
+     
      * @param bool $smsCapability Used to specify that the SMS capability will be hosted on Twilio's platform.
+     
      * @param array|Options $options Optional Arguments
-     * @return HostedNumberOrderInstance Created HostedNumberOrderInstance
+     * @return NumbersV3HostedNumbersHostedNumberOrderInstance Created NumbersV3HostedNumbersHostedNumberOrderInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function create(string $phoneNumber, bool $smsCapability, array $options = []): HostedNumberOrderInstance
+    public function create(string $phoneNumber, bool $smsCapability, array $options = []): NumbersV3HostedNumbersHostedNumberOrderInstance
     {
         $response = $this->_create( $phoneNumber,  $smsCapability, $options);
-        return new HostedNumberOrderInstance(
+        return new NumbersV3HostedNumbersHostedNumberOrderInstance(
             $this->version,
             $response->getContent()
         );
@@ -121,10 +126,12 @@ class HostedNumberOrderList extends ListResource
     }
 
     /**
-     * Create the HostedNumberOrderInstance with Metadata
+     * Create the NumbersV3HostedNumbersHostedNumberOrderInstance with Metadata
      *
      * @param string $phoneNumber The number to host in [+E.164](https://en.wikipedia.org/wiki/E.164) format
+     
      * @param bool $smsCapability Used to specify that the SMS capability will be hosted on Twilio's platform.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -132,10 +139,11 @@ class HostedNumberOrderList extends ListResource
     public function createWithMetadata(string $phoneNumber, bool $smsCapability, array $options = []): ResourceMetadata
     {
         $response = $this->_create( $phoneNumber,  $smsCapability, $options);
-        $resource = new HostedNumberOrderInstance(
+        $resource = new NumbersV3HostedNumbersHostedNumberOrderInstance(
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

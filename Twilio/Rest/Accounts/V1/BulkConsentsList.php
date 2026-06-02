@@ -40,7 +40,6 @@ class BulkConsentsList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Consents/Bulk';
     }
 
@@ -48,11 +47,13 @@ class BulkConsentsList extends ListResource
      * Helper function for Create
      *
      * @param array[] $items This is a list of objects that describes a contact's opt-in status. Each object contains the following fields: `contact_id`, which must be a string representing phone number in [E.164 format](https://www.twilio.com/docs/glossary/what-e164); `correlation_id`, a unique 32-character UUID used to uniquely map the request item with the response item; `sender_id`, which can be either a valid messaging service SID or a from phone number; `status`, a string representing the consent status. Can be one of [`opt-in`, `opt-out`]; `source`, a string indicating the medium through which the consent was collected. Can be one of [`website`, `offline`, `opt-in-message`, `opt-out-message`, `others`]; `date_of_consent`, an optional datetime string field in ISO-8601 format that captures the exact date and time when the user gave or revoked consent. If not provided, it will be empty.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $items): Response
     {
+        
         $data = Values::of([
             'Items' =>
                 Serialize::map($items,function ($e) { return Serialize::jsonObject($e); }),
@@ -66,6 +67,7 @@ class BulkConsentsList extends ListResource
      * Create the BulkConsentsInstance
      *
      * @param array[] $items This is a list of objects that describes a contact's opt-in status. Each object contains the following fields: `contact_id`, which must be a string representing phone number in [E.164 format](https://www.twilio.com/docs/glossary/what-e164); `correlation_id`, a unique 32-character UUID used to uniquely map the request item with the response item; `sender_id`, which can be either a valid messaging service SID or a from phone number; `status`, a string representing the consent status. Can be one of [`opt-in`, `opt-out`]; `source`, a string indicating the medium through which the consent was collected. Can be one of [`website`, `offline`, `opt-in-message`, `opt-out-message`, `others`]; `date_of_consent`, an optional datetime string field in ISO-8601 format that captures the exact date and time when the user gave or revoked consent. If not provided, it will be empty.
+     
      * @return BulkConsentsInstance Created BulkConsentsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -83,6 +85,7 @@ class BulkConsentsList extends ListResource
      * Create the BulkConsentsInstance with Metadata
      *
      * @param array[] $items This is a list of objects that describes a contact's opt-in status. Each object contains the following fields: `contact_id`, which must be a string representing phone number in [E.164 format](https://www.twilio.com/docs/glossary/what-e164); `correlation_id`, a unique 32-character UUID used to uniquely map the request item with the response item; `sender_id`, which can be either a valid messaging service SID or a from phone number; `status`, a string representing the consent status. Can be one of [`opt-in`, `opt-out`]; `source`, a string indicating the medium through which the consent was collected. Can be one of [`website`, `offline`, `opt-in-message`, `opt-out-message`, `others`]; `date_of_consent`, an optional datetime string field in ISO-8601 format that captures the exact date and time when the user gave or revoked consent. If not provided, it will be empty.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -93,6 +96,7 @@ class BulkConsentsList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

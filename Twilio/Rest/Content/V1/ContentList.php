@@ -43,7 +43,6 @@ class ContentList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Content';
     }
 
@@ -51,11 +50,13 @@ class ContentList extends ListResource
      * Helper function for Create
      *
      * @param ContentCreateRequest $contentCreateRequest
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(ContentCreateRequest $contentCreateRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $contentCreateRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -65,6 +66,7 @@ class ContentList extends ListResource
      * Create the ContentInstance
      *
      * @param ContentCreateRequest $contentCreateRequest
+     
      * @return ContentInstance Created ContentInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -82,6 +84,7 @@ class ContentList extends ListResource
      * Create the ContentInstance with Metadata
      *
      * @param ContentCreateRequest $contentCreateRequest
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,6 +95,7 @@ class ContentList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -105,6 +109,7 @@ class ContentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -125,6 +130,7 @@ class ContentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

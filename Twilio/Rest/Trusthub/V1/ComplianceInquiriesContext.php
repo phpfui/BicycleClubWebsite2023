@@ -53,13 +53,16 @@ class ComplianceInquiriesContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param string $primaryProfileSid The unique SID identifier of the Primary Customer Profile that should be used as a parent. Only necessary when creating a secondary Customer Profile.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $primaryProfileSid, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -76,7 +79,9 @@ class ComplianceInquiriesContext extends InstanceContext
     /**
      * Update the ComplianceInquiriesInstance
      *
+     
      * @param string $primaryProfileSid The unique SID identifier of the Primary Customer Profile that should be used as a parent. Only necessary when creating a secondary Customer Profile.
+     
      * @param array|Options $options Optional Arguments
      * @return ComplianceInquiriesInstance Updated ComplianceInquiriesInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -95,7 +100,9 @@ class ComplianceInquiriesContext extends InstanceContext
     /**
      * Update the ComplianceInquiriesInstance with Metadata
      *
+     
      * @param string $primaryProfileSid The unique SID identifier of the Primary Customer Profile that should be used as a parent. Only necessary when creating a secondary Customer Profile.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -108,6 +115,7 @@ class ComplianceInquiriesContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['customerId']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

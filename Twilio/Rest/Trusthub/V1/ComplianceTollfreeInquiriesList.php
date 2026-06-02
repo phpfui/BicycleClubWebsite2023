@@ -41,7 +41,6 @@ class ComplianceTollfreeInquiriesList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/ComplianceInquiries/Tollfree/Initialize';
     }
 
@@ -49,13 +48,16 @@ class ComplianceTollfreeInquiriesList extends ListResource
      * Helper function for Create
      *
      * @param string $tollfreePhoneNumber The Tollfree phone number to be verified
+     
      * @param string $notificationEmail The email address to receive the notification about the verification result.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $tollfreePhoneNumber, string $notificationEmail, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -145,7 +147,9 @@ class ComplianceTollfreeInquiriesList extends ListResource
      * Create the ComplianceTollfreeInquiriesInstance
      *
      * @param string $tollfreePhoneNumber The Tollfree phone number to be verified
+     
      * @param string $notificationEmail The email address to receive the notification about the verification result.
+     
      * @param array|Options $options Optional Arguments
      * @return ComplianceTollfreeInquiriesInstance Created ComplianceTollfreeInquiriesInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -164,7 +168,9 @@ class ComplianceTollfreeInquiriesList extends ListResource
      * Create the ComplianceTollfreeInquiriesInstance with Metadata
      *
      * @param string $tollfreePhoneNumber The Tollfree phone number to be verified
+     
      * @param string $notificationEmail The email address to receive the notification about the verification result.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -176,6 +182,7 @@ class ComplianceTollfreeInquiriesList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -65,11 +65,13 @@ class CredentialListContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -77,6 +79,7 @@ class CredentialListContext extends InstanceContext
     /**
      * Delete the CredentialListInstance
      *
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -90,12 +93,14 @@ class CredentialListContext extends InstanceContext
     /**
      * Delete the CredentialListInstance with Metadata
      *
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -108,11 +113,13 @@ class CredentialListContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -120,6 +127,7 @@ class CredentialListContext extends InstanceContext
     /**
      * Fetch the CredentialListInstance
      *
+     
      * @return CredentialListInstance Fetched CredentialListInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -138,6 +146,7 @@ class CredentialListContext extends InstanceContext
     /**
      * Fetch the CredentialListInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -150,6 +159,7 @@ class CredentialListContext extends InstanceContext
                         $this->solution['accountSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -161,12 +171,15 @@ class CredentialListContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param string $friendlyName A human readable descriptive text for a CredentialList, up to 64 characters long.
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $friendlyName): Response
     {
+        
         $data = Values::of([
             'FriendlyName' =>
                 $friendlyName,
@@ -179,7 +192,9 @@ class CredentialListContext extends InstanceContext
     /**
      * Update the CredentialListInstance
      *
+     
      * @param string $friendlyName A human readable descriptive text for a CredentialList, up to 64 characters long.
+     
      * @return CredentialListInstance Updated CredentialListInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -198,7 +213,9 @@ class CredentialListContext extends InstanceContext
     /**
      * Update the CredentialListInstance with Metadata
      *
+     
      * @param string $friendlyName A human readable descriptive text for a CredentialList, up to 64 characters long.
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -211,6 +228,7 @@ class CredentialListContext extends InstanceContext
                         $this->solution['accountSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

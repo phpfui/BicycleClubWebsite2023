@@ -43,6 +43,7 @@ class PortingPortabilityPage extends Page
         return new PortingPortabilityInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

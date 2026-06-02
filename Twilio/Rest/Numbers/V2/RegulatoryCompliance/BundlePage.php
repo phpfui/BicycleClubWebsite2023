@@ -43,6 +43,7 @@ class BundlePage extends Page
         return new BundleInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

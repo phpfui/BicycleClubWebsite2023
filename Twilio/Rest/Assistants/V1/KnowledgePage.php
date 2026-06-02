@@ -43,6 +43,7 @@ class KnowledgePage extends Page
         return new KnowledgeInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

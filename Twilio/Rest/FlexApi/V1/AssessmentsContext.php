@@ -53,15 +53,20 @@ class AssessmentsContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param string $offset The offset of the conversation
+     
      * @param string $answerText The answer text selected by user
+     
      * @param string $answerId The id of the answer selected by user
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $offset, string $answerText, string $answerId, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -80,9 +85,13 @@ class AssessmentsContext extends InstanceContext
     /**
      * Update the AssessmentsInstance
      *
+     
      * @param string $offset The offset of the conversation
+     
      * @param string $answerText The answer text selected by user
+     
      * @param string $answerId The id of the answer selected by user
+     
      * @param array|Options $options Optional Arguments
      * @return AssessmentsInstance Updated AssessmentsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -101,9 +110,13 @@ class AssessmentsContext extends InstanceContext
     /**
      * Update the AssessmentsInstance with Metadata
      *
+     
      * @param string $offset The offset of the conversation
+     
      * @param string $answerText The answer text selected by user
+     
      * @param string $answerId The id of the answer selected by user
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -116,6 +129,7 @@ class AssessmentsContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['assessmentSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -45,7 +45,6 @@ class InstalledAddOnList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/InstalledAddOns';
     }
 
@@ -53,13 +52,16 @@ class InstalledAddOnList extends ListResource
      * Helper function for Create
      *
      * @param string $availableAddOnSid The SID of the AvaliableAddOn to install.
+     
      * @param bool $acceptTermsOfService Whether the Terms of Service were accepted.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $availableAddOnSid, bool $acceptTermsOfService, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -81,7 +83,9 @@ class InstalledAddOnList extends ListResource
      * Create the InstalledAddOnInstance
      *
      * @param string $availableAddOnSid The SID of the AvaliableAddOn to install.
+     
      * @param bool $acceptTermsOfService Whether the Terms of Service were accepted.
+     
      * @param array|Options $options Optional Arguments
      * @return InstalledAddOnInstance Created InstalledAddOnInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -100,7 +104,9 @@ class InstalledAddOnList extends ListResource
      * Create the InstalledAddOnInstance with Metadata
      *
      * @param string $availableAddOnSid The SID of the AvaliableAddOn to install.
+     
      * @param bool $acceptTermsOfService Whether the Terms of Service were accepted.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -112,6 +118,7 @@ class InstalledAddOnList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -125,6 +132,7 @@ class InstalledAddOnList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -145,6 +153,7 @@ class InstalledAddOnList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

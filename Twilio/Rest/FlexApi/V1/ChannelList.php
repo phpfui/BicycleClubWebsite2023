@@ -45,7 +45,6 @@ class ChannelList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Channels';
     }
 
@@ -53,15 +52,20 @@ class ChannelList extends ListResource
      * Helper function for Create
      *
      * @param string $flexFlowSid The SID of the Flex Flow.
+     
      * @param string $identity The `identity` value that uniquely identifies the new resource's chat User.
+     
      * @param string $chatUserFriendlyName The chat participant's friendly name.
+     
      * @param string $chatFriendlyName The chat channel's friendly name.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $flexFlowSid, string $identity, string $chatUserFriendlyName, string $chatFriendlyName, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -95,9 +99,13 @@ class ChannelList extends ListResource
      * Create the ChannelInstance
      *
      * @param string $flexFlowSid The SID of the Flex Flow.
+     
      * @param string $identity The `identity` value that uniquely identifies the new resource's chat User.
+     
      * @param string $chatUserFriendlyName The chat participant's friendly name.
+     
      * @param string $chatFriendlyName The chat channel's friendly name.
+     
      * @param array|Options $options Optional Arguments
      * @return ChannelInstance Created ChannelInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -116,9 +124,13 @@ class ChannelList extends ListResource
      * Create the ChannelInstance with Metadata
      *
      * @param string $flexFlowSid The SID of the Flex Flow.
+     
      * @param string $identity The `identity` value that uniquely identifies the new resource's chat User.
+     
      * @param string $chatUserFriendlyName The chat participant's friendly name.
+     
      * @param string $chatFriendlyName The chat channel's friendly name.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -130,6 +142,7 @@ class ChannelList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -143,6 +156,7 @@ class ChannelList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -163,6 +177,7 @@ class ChannelList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

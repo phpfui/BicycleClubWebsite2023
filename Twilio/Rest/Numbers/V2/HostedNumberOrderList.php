@@ -45,7 +45,6 @@ class HostedNumberOrderList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/HostedNumber/Orders';
     }
 
@@ -53,15 +52,20 @@ class HostedNumberOrderList extends ListResource
      * Helper function for Create
      *
      * @param string $phoneNumber The number to host in [+E.164](https://en.wikipedia.org/wiki/E.164) format
+     
      * @param string $contactPhoneNumber The contact phone number of the person authorized to sign the Authorization Document.
+     
      * @param string $addressSid Optional. A 34 character string that uniquely identifies the Address resource that represents the address of the owner of this phone number.
+     
      * @param string $email Optional. Email of the owner of this phone number that is being hosted.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $phoneNumber, string $contactPhoneNumber, string $addressSid, string $email, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -107,9 +111,13 @@ class HostedNumberOrderList extends ListResource
      * Create the HostedNumberOrderInstance
      *
      * @param string $phoneNumber The number to host in [+E.164](https://en.wikipedia.org/wiki/E.164) format
+     
      * @param string $contactPhoneNumber The contact phone number of the person authorized to sign the Authorization Document.
+     
      * @param string $addressSid Optional. A 34 character string that uniquely identifies the Address resource that represents the address of the owner of this phone number.
+     
      * @param string $email Optional. Email of the owner of this phone number that is being hosted.
+     
      * @param array|Options $options Optional Arguments
      * @return HostedNumberOrderInstance Created HostedNumberOrderInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -128,9 +136,13 @@ class HostedNumberOrderList extends ListResource
      * Create the HostedNumberOrderInstance with Metadata
      *
      * @param string $phoneNumber The number to host in [+E.164](https://en.wikipedia.org/wiki/E.164) format
+     
      * @param string $contactPhoneNumber The contact phone number of the person authorized to sign the Authorization Document.
+     
      * @param string $addressSid Optional. A 34 character string that uniquely identifies the Address resource that represents the address of the owner of this phone number.
+     
      * @param string $email Optional. Email of the owner of this phone number that is being hosted.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -142,6 +154,7 @@ class HostedNumberOrderList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -155,6 +168,7 @@ class HostedNumberOrderList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -176,6 +190,7 @@ class HostedNumberOrderList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

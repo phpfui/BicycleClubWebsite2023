@@ -53,7 +53,6 @@ class CredentialListMappingList extends ListResource
             $domainSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/SIP/Domains/' . \rawurlencode($domainSid)
         .'/CredentialListMappings.json';
@@ -62,12 +61,15 @@ class CredentialListMappingList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $credentialListSid A 34 character string that uniquely identifies the CredentialList resource to map to the SIP domain.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $credentialListSid): Response
     {
+        
         $data = Values::of([
             'CredentialListSid' =>
                 $credentialListSid,
@@ -80,7 +82,9 @@ class CredentialListMappingList extends ListResource
     /**
      * Create the CredentialListMappingInstance
      *
+     
      * @param string $credentialListSid A 34 character string that uniquely identifies the CredentialList resource to map to the SIP domain.
+     
      * @return CredentialListMappingInstance Created CredentialListMappingInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -99,7 +103,9 @@ class CredentialListMappingList extends ListResource
     /**
      * Create the CredentialListMappingInstance with Metadata
      *
+     
      * @param string $credentialListSid A 34 character string that uniquely identifies the CredentialList resource to map to the SIP domain.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -112,6 +118,7 @@ class CredentialListMappingList extends ListResource
                         $this->solution['accountSid'],
                         $this->solution['domainSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -125,6 +132,7 @@ class CredentialListMappingList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -145,6 +153,7 @@ class CredentialListMappingList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

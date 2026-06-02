@@ -43,6 +43,7 @@ class UserPage extends Page
         return new UserInstance($this->version, $payload, $this->solution['chatServiceSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

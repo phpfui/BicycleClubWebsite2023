@@ -58,12 +58,15 @@ class PluginVersionArchiveContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' , 'Flex-Metadata' => $options['flexMetadata']]);
@@ -73,6 +76,8 @@ class PluginVersionArchiveContext extends InstanceContext
     /**
      * Update the PluginVersionArchiveInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return PluginVersionArchiveInstance Updated PluginVersionArchiveInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -92,6 +97,8 @@ class PluginVersionArchiveContext extends InstanceContext
     /**
      * Update the PluginVersionArchiveInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -105,6 +112,7 @@ class PluginVersionArchiveContext extends InstanceContext
                         $this->solution['pluginSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

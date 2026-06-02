@@ -50,7 +50,6 @@ class AddressList extends ListResource
             $accountSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Addresses.json';
     }
@@ -59,17 +58,24 @@ class AddressList extends ListResource
      * Helper function for Create
      *
      * @param string $customerName The name to associate with the new address.
+     
      * @param string $street The number and street address of the new address.
+     
      * @param string $city The city of the new address.
+     
      * @param string $region The state or region of the new address.
+     
      * @param string $postalCode The postal code of the new address.
+     
      * @param string $isoCountry The ISO country code of the new address.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $customerName, string $street, string $city, string $region, string $postalCode, string $isoCountry, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -103,11 +109,17 @@ class AddressList extends ListResource
      * Create the AddressInstance
      *
      * @param string $customerName The name to associate with the new address.
+     
      * @param string $street The number and street address of the new address.
+     
      * @param string $city The city of the new address.
+     
      * @param string $region The state or region of the new address.
+     
      * @param string $postalCode The postal code of the new address.
+     
      * @param string $isoCountry The ISO country code of the new address.
+     
      * @param array|Options $options Optional Arguments
      * @return AddressInstance Created AddressInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -127,11 +139,17 @@ class AddressList extends ListResource
      * Create the AddressInstance with Metadata
      *
      * @param string $customerName The name to associate with the new address.
+     
      * @param string $street The number and street address of the new address.
+     
      * @param string $city The city of the new address.
+     
      * @param string $region The state or region of the new address.
+     
      * @param string $postalCode The postal code of the new address.
+     
      * @param string $isoCountry The ISO country code of the new address.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -144,6 +162,7 @@ class AddressList extends ListResource
                         $response->getContent(),
                         $this->solution['accountSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -157,6 +176,7 @@ class AddressList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -178,6 +198,7 @@ class AddressList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

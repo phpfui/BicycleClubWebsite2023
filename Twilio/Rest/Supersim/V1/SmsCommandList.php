@@ -44,7 +44,6 @@ class SmsCommandList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/SmsCommands';
     }
 
@@ -52,13 +51,16 @@ class SmsCommandList extends ListResource
      * Helper function for Create
      *
      * @param string $sim The `sid` or `unique_name` of the [SIM](https://www.twilio.com/docs/iot/supersim/api/sim-resource) to send the SMS Command to.
+     
      * @param string $payload The message body of the SMS Command.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $sim, string $payload, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -80,7 +82,9 @@ class SmsCommandList extends ListResource
      * Create the SmsCommandInstance
      *
      * @param string $sim The `sid` or `unique_name` of the [SIM](https://www.twilio.com/docs/iot/supersim/api/sim-resource) to send the SMS Command to.
+     
      * @param string $payload The message body of the SMS Command.
+     
      * @param array|Options $options Optional Arguments
      * @return SmsCommandInstance Created SmsCommandInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -99,7 +103,9 @@ class SmsCommandList extends ListResource
      * Create the SmsCommandInstance with Metadata
      *
      * @param string $sim The `sid` or `unique_name` of the [SIM](https://www.twilio.com/docs/iot/supersim/api/sim-resource) to send the SMS Command to.
+     
      * @param string $payload The message body of the SMS Command.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -111,6 +117,7 @@ class SmsCommandList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -124,6 +131,7 @@ class SmsCommandList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -145,6 +153,7 @@ class SmsCommandList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

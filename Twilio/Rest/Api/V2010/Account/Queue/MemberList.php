@@ -51,7 +51,6 @@ class MemberList extends ListResource
             $queueSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Queues/' . \rawurlencode($queueSid)
         .'/Members.json';
@@ -62,6 +61,7 @@ class MemberList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -82,6 +82,7 @@ class MemberList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

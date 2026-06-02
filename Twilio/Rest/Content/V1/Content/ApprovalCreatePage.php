@@ -43,6 +43,7 @@ class ApprovalCreatePage extends Page
         return new ApprovalCreateInstance($this->version, $payload, $this->solution['contentSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

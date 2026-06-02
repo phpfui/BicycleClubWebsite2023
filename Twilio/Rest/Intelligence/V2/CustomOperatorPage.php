@@ -43,6 +43,7 @@ class CustomOperatorPage extends Page
         return new CustomOperatorInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

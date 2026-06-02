@@ -44,7 +44,6 @@ class NewFactorList extends ListResource
             $serviceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Passkeys/Factors';
     }
@@ -52,12 +51,15 @@ class NewFactorList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param CreateNewPasskeysFactorRequest $createNewPasskeysFactorRequest
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(CreateNewPasskeysFactorRequest $createNewPasskeysFactorRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $createNewPasskeysFactorRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -66,7 +68,9 @@ class NewFactorList extends ListResource
     /**
      * Create the NewFactorInstance
      *
+     
      * @param CreateNewPasskeysFactorRequest $createNewPasskeysFactorRequest
+     
      * @return NewFactorInstance Created NewFactorInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -84,7 +88,9 @@ class NewFactorList extends ListResource
     /**
      * Create the NewFactorInstance with Metadata
      *
+     
      * @param CreateNewPasskeysFactorRequest $createNewPasskeysFactorRequest
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -96,6 +102,7 @@ class NewFactorList extends ListResource
                         $response->getContent(),
                         $this->solution['serviceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

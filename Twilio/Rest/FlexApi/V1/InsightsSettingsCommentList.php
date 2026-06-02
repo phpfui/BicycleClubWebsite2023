@@ -40,7 +40,6 @@ class InsightsSettingsCommentList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Insights/QualityManagement/Settings/CommentTags';
     }
 
@@ -53,6 +52,7 @@ class InsightsSettingsCommentList extends ListResource
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' , 'Authorization' => $options['authorization']]);
@@ -90,6 +90,7 @@ class InsightsSettingsCommentList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

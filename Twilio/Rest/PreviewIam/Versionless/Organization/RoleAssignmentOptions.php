@@ -25,18 +25,24 @@ abstract class RoleAssignmentOptions
     /**
      * @param string $identity
      * @param string $scope
+     * @param string $resourceType Filter by resource type for resource-level role assignments
+     * @param string $resourceId Filter by resource id for resource-level role assignments
      * @return ReadRoleAssignmentOptions Options builder
      */
     public static function read(
         
         string $identity = Values::NONE,
-        string $scope = Values::NONE
+        string $scope = Values::NONE,
+        string $resourceType = Values::NONE,
+        string $resourceId = Values::NONE
 
     ): ReadRoleAssignmentOptions
     {
         return new ReadRoleAssignmentOptions(
             $identity,
-            $scope
+            $scope,
+            $resourceType,
+            $resourceId
         );
     }
 
@@ -49,15 +55,21 @@ class ReadRoleAssignmentOptions extends Options
     /**
      * @param string $identity
      * @param string $scope
+     * @param string $resourceType Filter by resource type for resource-level role assignments
+     * @param string $resourceId Filter by resource id for resource-level role assignments
      */
     public function __construct(
         
         string $identity = Values::NONE,
-        string $scope = Values::NONE
+        string $scope = Values::NONE,
+        string $resourceType = Values::NONE,
+        string $resourceId = Values::NONE
 
     ) {
         $this->options['identity'] = $identity;
         $this->options['scope'] = $scope;
+        $this->options['resourceType'] = $resourceType;
+        $this->options['resourceId'] = $resourceId;
     }
 
     /**
@@ -77,6 +89,30 @@ class ReadRoleAssignmentOptions extends Options
     public function setScope(string $scope): self
     {
         $this->options['scope'] = $scope;
+        return $this;
+    }
+
+    /**
+     * Filter by resource type for resource-level role assignments
+     *
+     * @param string $resourceType Filter by resource type for resource-level role assignments
+     * @return $this Fluent Builder
+     */
+    public function setResourceType(string $resourceType): self
+    {
+        $this->options['resourceType'] = $resourceType;
+        return $this;
+    }
+
+    /**
+     * Filter by resource id for resource-level role assignments
+     *
+     * @param string $resourceId Filter by resource id for resource-level role assignments
+     * @return $this Fluent Builder
+     */
+    public function setResourceId(string $resourceId): self
+    {
+        $this->options['resourceId'] = $resourceId;
         return $this;
     }
 

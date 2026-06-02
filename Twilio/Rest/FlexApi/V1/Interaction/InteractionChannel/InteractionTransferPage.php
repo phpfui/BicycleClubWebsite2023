@@ -43,6 +43,7 @@ class InteractionTransferPage extends Page
         return new InteractionTransferInstance($this->version, $payload, $this->solution['interactionSid'], $this->solution['channelSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

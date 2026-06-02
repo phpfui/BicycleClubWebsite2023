@@ -50,7 +50,6 @@ class UserDefinedMessageList extends ListResource
             $callSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Calls/' . \rawurlencode($callSid)
         .'/UserDefinedMessages.json';
@@ -59,13 +58,16 @@ class UserDefinedMessageList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $content The User Defined Message in the form of URL-encoded JSON string.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $content, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -82,7 +84,9 @@ class UserDefinedMessageList extends ListResource
     /**
      * Create the UserDefinedMessageInstance
      *
+     
      * @param string $content The User Defined Message in the form of URL-encoded JSON string.
+     
      * @param array|Options $options Optional Arguments
      * @return UserDefinedMessageInstance Created UserDefinedMessageInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -102,7 +106,9 @@ class UserDefinedMessageList extends ListResource
     /**
      * Create the UserDefinedMessageInstance with Metadata
      *
+     
      * @param string $content The User Defined Message in the form of URL-encoded JSON string.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -116,6 +122,7 @@ class UserDefinedMessageList extends ListResource
                         $this->solution['accountSid'],
                         $this->solution['callSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -43,6 +43,7 @@ class PaymentPage extends Page
         return new PaymentInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['callSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

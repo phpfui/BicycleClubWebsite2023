@@ -43,6 +43,7 @@ class ApproveChallengePage extends Page
         return new ApproveChallengeInstance($this->version, $payload, $this->solution['serviceSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

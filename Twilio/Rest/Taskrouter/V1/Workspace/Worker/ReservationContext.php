@@ -64,11 +64,15 @@ class ReservationContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -76,6 +80,9 @@ class ReservationContext extends InstanceContext
     /**
      * Fetch the ReservationInstance
      *
+     
+     
+     
      * @return ReservationInstance Fetched ReservationInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -95,6 +102,9 @@ class ReservationContext extends InstanceContext
     /**
      * Fetch the ReservationInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -108,6 +118,7 @@ class ReservationContext extends InstanceContext
                         $this->solution['workerSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -119,12 +130,16 @@ class ReservationContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -241,6 +256,9 @@ class ReservationContext extends InstanceContext
     /**
      * Update the ReservationInstance
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ReservationInstance Updated ReservationInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -261,6 +279,9 @@ class ReservationContext extends InstanceContext
     /**
      * Update the ReservationInstance with Metadata
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -275,6 +296,7 @@ class ReservationContext extends InstanceContext
                         $this->solution['workerSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

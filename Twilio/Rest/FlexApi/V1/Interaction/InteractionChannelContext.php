@@ -74,11 +74,14 @@ class InteractionChannelContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -86,6 +89,8 @@ class InteractionChannelContext extends InstanceContext
     /**
      * Fetch the InteractionChannelInstance
      *
+     
+     
      * @return InteractionChannelInstance Fetched InteractionChannelInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -104,6 +109,8 @@ class InteractionChannelContext extends InstanceContext
     /**
      * Fetch the InteractionChannelInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -116,6 +123,7 @@ class InteractionChannelContext extends InstanceContext
                         $this->solution['interactionSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -127,13 +135,17 @@ class InteractionChannelContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param string $status
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $status, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -150,7 +162,10 @@ class InteractionChannelContext extends InstanceContext
     /**
      * Update the InteractionChannelInstance
      *
+     
+     
      * @param string $status
+     
      * @param array|Options $options Optional Arguments
      * @return InteractionChannelInstance Updated InteractionChannelInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -170,7 +185,10 @@ class InteractionChannelContext extends InstanceContext
     /**
      * Update the InteractionChannelInstance with Metadata
      *
+     
+     
      * @param string $status
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -184,6 +202,7 @@ class InteractionChannelContext extends InstanceContext
                         $this->solution['interactionSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

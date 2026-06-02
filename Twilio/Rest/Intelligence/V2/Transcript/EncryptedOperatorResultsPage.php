@@ -43,6 +43,7 @@ class EncryptedOperatorResultsPage extends Page
         return new EncryptedOperatorResultsInstance($this->version, $payload, $this->solution['transcriptSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

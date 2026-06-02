@@ -53,11 +53,13 @@ class RoleContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -65,6 +67,7 @@ class RoleContext extends InstanceContext
     /**
      * Delete the RoleInstance
      *
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -78,12 +81,14 @@ class RoleContext extends InstanceContext
     /**
      * Delete the RoleInstance with Metadata
      *
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -96,11 +101,13 @@ class RoleContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -108,6 +115,7 @@ class RoleContext extends InstanceContext
     /**
      * Fetch the RoleInstance
      *
+     
      * @return RoleInstance Fetched RoleInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -125,6 +133,7 @@ class RoleContext extends InstanceContext
     /**
      * Fetch the RoleInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -136,6 +145,7 @@ class RoleContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -147,12 +157,15 @@ class RoleContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param string[] $permission A permission that you grant to the role. Only one permission can be granted per parameter. To assign more than one permission, repeat this parameter for each permission value. Note that the update action replaces all previously assigned permissions with those defined in the update action. To remove a permission, do not include it in the subsequent update action. The values for this parameter depend on the role's `type`.
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $permission): Response
     {
+        
         $data = Values::of([
             'Permission' =>
                 Serialize::map($permission,function ($e) { return $e; }),
@@ -165,7 +178,9 @@ class RoleContext extends InstanceContext
     /**
      * Update the RoleInstance
      *
+     
      * @param string[] $permission A permission that you grant to the role. Only one permission can be granted per parameter. To assign more than one permission, repeat this parameter for each permission value. Note that the update action replaces all previously assigned permissions with those defined in the update action. To remove a permission, do not include it in the subsequent update action. The values for this parameter depend on the role's `type`.
+     
      * @return RoleInstance Updated RoleInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -183,7 +198,9 @@ class RoleContext extends InstanceContext
     /**
      * Update the RoleInstance with Metadata
      *
+     
      * @param string[] $permission A permission that you grant to the role. Only one permission can be granted per parameter. To assign more than one permission, repeat this parameter for each permission value. Note that the update action replaces all previously assigned permissions with those defined in the update action. To remove a permission, do not include it in the subsequent update action. The values for this parameter depend on the role's `type`.
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -195,6 +212,7 @@ class RoleContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

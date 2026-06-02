@@ -43,6 +43,7 @@ class FunctionPage extends Page
         return new FunctionInstance($this->version, $payload, $this->solution['serviceSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

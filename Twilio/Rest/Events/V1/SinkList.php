@@ -45,7 +45,6 @@ class SinkList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Sinks';
     }
 
@@ -53,13 +52,17 @@ class SinkList extends ListResource
      * Helper function for Create
      *
      * @param string $description A human readable description for the Sink **This value should not contain PII.**
+     
      * @param array $sinkConfiguration The information required for Twilio to connect to the provided Sink encoded as JSON.
+     
      * @param string $sinkType
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $description, array $sinkConfiguration, string $sinkType): Response
     {
+        
         $data = Values::of([
             'Description' =>
                 $description,
@@ -77,8 +80,11 @@ class SinkList extends ListResource
      * Create the SinkInstance
      *
      * @param string $description A human readable description for the Sink **This value should not contain PII.**
+     
      * @param array $sinkConfiguration The information required for Twilio to connect to the provided Sink encoded as JSON.
+     
      * @param string $sinkType
+     
      * @return SinkInstance Created SinkInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -96,8 +102,11 @@ class SinkList extends ListResource
      * Create the SinkInstance with Metadata
      *
      * @param string $description A human readable description for the Sink **This value should not contain PII.**
+     
      * @param array $sinkConfiguration The information required for Twilio to connect to the provided Sink encoded as JSON.
+     
      * @param string $sinkType
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -108,6 +117,7 @@ class SinkList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -121,6 +131,7 @@ class SinkList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -142,6 +153,7 @@ class SinkList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

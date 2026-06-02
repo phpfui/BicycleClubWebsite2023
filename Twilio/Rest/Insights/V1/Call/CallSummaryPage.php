@@ -43,6 +43,7 @@ class CallSummaryPage extends Page
         return new CallSummaryInstance($this->version, $payload, $this->solution['callSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

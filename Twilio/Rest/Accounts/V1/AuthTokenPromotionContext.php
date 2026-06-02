@@ -52,6 +52,7 @@ class AuthTokenPromotionContext extends InstanceContext
      */
     private function _update(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('POST', $this->uri, [], [], $headers, "update");
     }
@@ -85,6 +86,7 @@ class AuthTokenPromotionContext extends InstanceContext
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

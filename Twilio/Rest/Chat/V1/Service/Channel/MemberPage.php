@@ -43,6 +43,7 @@ class MemberPage extends Page
         return new MemberInstance($this->version, $payload, $this->solution['serviceSid'], $this->solution['channelSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

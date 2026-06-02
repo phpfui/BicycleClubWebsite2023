@@ -45,7 +45,6 @@ class CustomOperatorList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Operators/Custom';
     }
 
@@ -53,13 +52,17 @@ class CustomOperatorList extends ListResource
      * Helper function for Create
      *
      * @param string $friendlyName A human readable description of the new Operator, up to 64 characters.
+     
      * @param string $operatorType Operator Type for this Operator. References an existing Operator Type resource.
+     
      * @param array $config Operator configuration, following the schema defined by the Operator Type.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, string $operatorType, array $config): Response
     {
+        
         $data = Values::of([
             'FriendlyName' =>
                 $friendlyName,
@@ -77,8 +80,11 @@ class CustomOperatorList extends ListResource
      * Create the CustomOperatorInstance
      *
      * @param string $friendlyName A human readable description of the new Operator, up to 64 characters.
+     
      * @param string $operatorType Operator Type for this Operator. References an existing Operator Type resource.
+     
      * @param array $config Operator configuration, following the schema defined by the Operator Type.
+     
      * @return CustomOperatorInstance Created CustomOperatorInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -96,8 +102,11 @@ class CustomOperatorList extends ListResource
      * Create the CustomOperatorInstance with Metadata
      *
      * @param string $friendlyName A human readable description of the new Operator, up to 64 characters.
+     
      * @param string $operatorType Operator Type for this Operator. References an existing Operator Type resource.
+     
      * @param array $config Operator configuration, following the schema defined by the Operator Type.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -108,6 +117,7 @@ class CustomOperatorList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -121,6 +131,7 @@ class CustomOperatorList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -142,6 +153,7 @@ class CustomOperatorList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

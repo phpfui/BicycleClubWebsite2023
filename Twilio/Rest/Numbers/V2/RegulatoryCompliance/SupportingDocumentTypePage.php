@@ -43,6 +43,7 @@ class SupportingDocumentTypePage extends Page
         return new SupportingDocumentTypeInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -43,6 +43,7 @@ class CompositionHookPage extends Page
         return new CompositionHookInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

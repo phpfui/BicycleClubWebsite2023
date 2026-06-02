@@ -45,7 +45,6 @@ class InsightsQuestionnairesQuestionList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Insights/QualityManagement/Questions';
     }
 
@@ -53,15 +52,20 @@ class InsightsQuestionnairesQuestionList extends ListResource
      * Helper function for Create
      *
      * @param string $categorySid The SID of the category
+     
      * @param string $question The question.
+     
      * @param string $answerSetId The answer_set for the question.
+     
      * @param bool $allowNa The flag to enable for disable NA for answer.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $categorySid, string $question, string $answerSetId, bool $allowNa, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -85,9 +89,13 @@ class InsightsQuestionnairesQuestionList extends ListResource
      * Create the InsightsQuestionnairesQuestionInstance
      *
      * @param string $categorySid The SID of the category
+     
      * @param string $question The question.
+     
      * @param string $answerSetId The answer_set for the question.
+     
      * @param bool $allowNa The flag to enable for disable NA for answer.
+     
      * @param array|Options $options Optional Arguments
      * @return InsightsQuestionnairesQuestionInstance Created InsightsQuestionnairesQuestionInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -106,9 +114,13 @@ class InsightsQuestionnairesQuestionList extends ListResource
      * Create the InsightsQuestionnairesQuestionInstance with Metadata
      *
      * @param string $categorySid The SID of the category
+     
      * @param string $question The question.
+     
      * @param string $answerSetId The answer_set for the question.
+     
      * @param bool $allowNa The flag to enable for disable NA for answer.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -120,6 +132,7 @@ class InsightsQuestionnairesQuestionList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -133,6 +146,7 @@ class InsightsQuestionnairesQuestionList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -154,6 +168,7 @@ class InsightsQuestionnairesQuestionList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

@@ -46,7 +46,6 @@ class NotificationList extends ListResource
             $serviceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Notifications';
     }
@@ -54,12 +53,14 @@ class NotificationList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -108,6 +109,7 @@ class NotificationList extends ListResource
     /**
      * Create the NotificationInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return NotificationInstance Created NotificationInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -126,6 +128,7 @@ class NotificationList extends ListResource
     /**
      * Create the NotificationInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -138,6 +141,7 @@ class NotificationList extends ListResource
                         $response->getContent(),
                         $this->solution['serviceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

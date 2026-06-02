@@ -43,6 +43,7 @@ class BulkCountryUpdatePage extends Page
         return new BulkCountryUpdateInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

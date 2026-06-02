@@ -45,7 +45,6 @@ class CompositionList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Compositions';
     }
 
@@ -53,12 +52,14 @@ class CompositionList extends ListResource
      * Helper function for Create
      *
      * @param string $roomSid The SID of the Group Room with the media tracks to be used as composition sources.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $roomSid, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -90,6 +91,7 @@ class CompositionList extends ListResource
      * Create the CompositionInstance
      *
      * @param string $roomSid The SID of the Group Room with the media tracks to be used as composition sources.
+     
      * @param array|Options $options Optional Arguments
      * @return CompositionInstance Created CompositionInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -108,6 +110,7 @@ class CompositionList extends ListResource
      * Create the CompositionInstance with Metadata
      *
      * @param string $roomSid The SID of the Group Room with the media tracks to be used as composition sources.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -119,6 +122,7 @@ class CompositionList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -132,6 +136,7 @@ class CompositionList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -153,6 +158,7 @@ class CompositionList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

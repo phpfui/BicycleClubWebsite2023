@@ -16,14 +16,17 @@ use Twilio\Domain;
 use Twilio\Exceptions\TwilioException;
 use Twilio\Rest\Insights\V1;
 use Twilio\Rest\Insights\V2;
+use Twilio\Rest\Insights\V3;
 
 /**
  * @property \Twilio\Rest\Insights\V1 $v1
  * @property \Twilio\Rest\Insights\V2 $v2
+ * @property \Twilio\Rest\Insights\V3 $v3
  */
 class InsightsBase extends Domain {
     protected $_v1;
     protected $_v2;
+    protected $_v3;
 
     /**
      * Construct the Insights Domain
@@ -55,6 +58,16 @@ class InsightsBase extends Domain {
             $this->_v2 = new V2($this);
         }
         return $this->_v2;
+    }
+
+    /**
+     * @return V3 Version v3 of insights
+     */
+    protected function getV3(): V3 {
+        if (!$this->_v3) {
+            $this->_v3 = new V3($this);
+        }
+        return $this->_v3;
     }
 
     /**

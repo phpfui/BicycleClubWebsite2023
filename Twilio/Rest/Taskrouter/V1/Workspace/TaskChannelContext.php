@@ -59,11 +59,14 @@ class TaskChannelContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -71,6 +74,8 @@ class TaskChannelContext extends InstanceContext
     /**
      * Delete the TaskChannelInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -84,12 +89,15 @@ class TaskChannelContext extends InstanceContext
     /**
      * Delete the TaskChannelInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -102,11 +110,14 @@ class TaskChannelContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -114,6 +125,8 @@ class TaskChannelContext extends InstanceContext
     /**
      * Fetch the TaskChannelInstance
      *
+     
+     
      * @return TaskChannelInstance Fetched TaskChannelInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -132,6 +145,8 @@ class TaskChannelContext extends InstanceContext
     /**
      * Fetch the TaskChannelInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -144,6 +159,7 @@ class TaskChannelContext extends InstanceContext
                         $this->solution['workspaceSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -155,12 +171,15 @@ class TaskChannelContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -177,6 +196,8 @@ class TaskChannelContext extends InstanceContext
     /**
      * Update the TaskChannelInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return TaskChannelInstance Updated TaskChannelInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -196,6 +217,8 @@ class TaskChannelContext extends InstanceContext
     /**
      * Update the TaskChannelInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -209,6 +232,7 @@ class TaskChannelContext extends InstanceContext
                         $this->solution['workspaceSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

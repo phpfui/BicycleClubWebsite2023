@@ -43,6 +43,7 @@ class ConnectAppPage extends Page
         return new ConnectAppInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

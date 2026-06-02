@@ -52,11 +52,13 @@ class ToolContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -64,6 +66,7 @@ class ToolContext extends InstanceContext
     /**
      * Delete the ToolInstance
      *
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -77,12 +80,14 @@ class ToolContext extends InstanceContext
     /**
      * Delete the ToolInstance with Metadata
      *
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -95,11 +100,13 @@ class ToolContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -107,6 +114,7 @@ class ToolContext extends InstanceContext
     /**
      * Fetch the ToolInstance
      *
+     
      * @return ToolInstance Fetched ToolInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -124,6 +132,7 @@ class ToolContext extends InstanceContext
     /**
      * Fetch the ToolInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -135,6 +144,7 @@ class ToolContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['id']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -146,25 +156,30 @@ class ToolContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     * @param ?AssistantsV1ServiceUpdateToolRequest $assistantsV1ServiceUpdateToolRequest
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _update(): Response
+    private function _update(?AssistantsV1ServiceUpdateToolRequest $assistantsV1ServiceUpdateToolRequest = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $assistantsV1ServiceUpdateToolRequest->toArray();
+        $data = $assistantsV1ServiceUpdateToolRequest ? $assistantsV1ServiceUpdateToolRequest->toArray() : [];
         return $this->version->handleRequest('PUT', $this->uri, [], $data, $headers, "update");
     }
 
     /**
      * Update the ToolInstance
      *
+     
+     * @param ?AssistantsV1ServiceUpdateToolRequest $assistantsV1ServiceUpdateToolRequest
      * @return ToolInstance Updated ToolInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function update(): ToolInstance
+    public function update(?AssistantsV1ServiceUpdateToolRequest $assistantsV1ServiceUpdateToolRequest = null): ToolInstance
     {
-        $response = $this->_update();
+        $response = $this->_update($assistantsV1ServiceUpdateToolRequest);
         return new ToolInstance(
             $this->version,
             $response->getContent(),
@@ -176,17 +191,20 @@ class ToolContext extends InstanceContext
     /**
      * Update the ToolInstance with Metadata
      *
+     
+     * @param ?AssistantsV1ServiceUpdateToolRequest $assistantsV1ServiceUpdateToolRequest
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function updateWithMetadata(): ResourceMetadata
+    public function updateWithMetadata(?AssistantsV1ServiceUpdateToolRequest $assistantsV1ServiceUpdateToolRequest = null): ResourceMetadata
     {
-        $response = $this->_update();
+        $response = $this->_update($assistantsV1ServiceUpdateToolRequest);
         $resource = new ToolInstance(
                         $this->version,
                         $response->getContent(),
                         $this->solution['id']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

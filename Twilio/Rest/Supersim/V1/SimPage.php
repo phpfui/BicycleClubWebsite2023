@@ -43,6 +43,7 @@ class SimPage extends Page
         return new SimInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

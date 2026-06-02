@@ -43,6 +43,7 @@ class WorkerChannelPage extends Page
         return new WorkerChannelInstance($this->version, $payload, $this->solution['workspaceSid'], $this->solution['workerSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -51,25 +51,28 @@ class ReportContext extends InstanceContext
     /**
      * Helper function for Create
      *
+     * @param ?InsightsV2CreateAccountReportRequest $insightsV2CreateAccountReportRequest
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _create(): Response
+    private function _create(?InsightsV2CreateAccountReportRequest $insightsV2CreateAccountReportRequest = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $insightsV2CreateAccountReportRequest->toArray();
+        $data = $insightsV2CreateAccountReportRequest ? $insightsV2CreateAccountReportRequest->toArray() : [];
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
     }
 
     /**
      * Create the ReportInstance
      *
+     * @param ?InsightsV2CreateAccountReportRequest $insightsV2CreateAccountReportRequest
      * @return ReportInstance Created ReportInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function create(): ReportInstance
+    public function create(?InsightsV2CreateAccountReportRequest $insightsV2CreateAccountReportRequest = null): ReportInstance
     {
-        $response = $this->_create();
+        $response = $this->_create($insightsV2CreateAccountReportRequest);
         return new ReportInstance(
             $this->version,
             $response->getContent()
@@ -80,16 +83,18 @@ class ReportContext extends InstanceContext
     /**
      * Create the ReportInstance with Metadata
      *
+     * @param ?InsightsV2CreateAccountReportRequest $insightsV2CreateAccountReportRequest
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function createWithMetadata(): ResourceMetadata
+    public function createWithMetadata(?InsightsV2CreateAccountReportRequest $insightsV2CreateAccountReportRequest = null): ResourceMetadata
     {
-        $response = $this->_create();
+        $response = $this->_create($insightsV2CreateAccountReportRequest);
         $resource = new ReportInstance(
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -101,11 +106,13 @@ class ReportContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -113,6 +120,7 @@ class ReportContext extends InstanceContext
     /**
      * Fetch the ReportInstance
      *
+     
      * @return ReportInstance Fetched ReportInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -130,6 +138,7 @@ class ReportContext extends InstanceContext
     /**
      * Fetch the ReportInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -141,6 +150,7 @@ class ReportContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['reportId']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

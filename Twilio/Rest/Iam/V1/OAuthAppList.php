@@ -39,7 +39,6 @@ class OAuthAppList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Account/OAuthApps';
     }
 
@@ -47,11 +46,13 @@ class OAuthAppList extends ListResource
      * Helper function for Create
      *
      * @param IamV1AccountVendorOauthAppCreateRequest $iamV1AccountVendorOauthAppCreateRequest
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(IamV1AccountVendorOauthAppCreateRequest $iamV1AccountVendorOauthAppCreateRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $iamV1AccountVendorOauthAppCreateRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -61,6 +62,7 @@ class OAuthAppList extends ListResource
      * Create the OAuthAppInstance
      *
      * @param IamV1AccountVendorOauthAppCreateRequest $iamV1AccountVendorOauthAppCreateRequest
+     
      * @return OAuthAppInstance Created OAuthAppInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -78,6 +80,7 @@ class OAuthAppList extends ListResource
      * Create the OAuthAppInstance with Metadata
      *
      * @param IamV1AccountVendorOauthAppCreateRequest $iamV1AccountVendorOauthAppCreateRequest
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -88,6 +91,7 @@ class OAuthAppList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

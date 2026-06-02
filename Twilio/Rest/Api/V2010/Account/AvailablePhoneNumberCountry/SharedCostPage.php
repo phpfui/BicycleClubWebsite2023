@@ -43,6 +43,7 @@ class SharedCostPage extends Page
         return new SharedCostInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['countryCode']);
     }
 
+
     /**
      * Provide a friendly representation
      *

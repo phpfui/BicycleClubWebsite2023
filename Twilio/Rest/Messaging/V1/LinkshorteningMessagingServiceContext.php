@@ -57,11 +57,14 @@ class LinkshorteningMessagingServiceContext extends InstanceContext
     /**
      * Helper function for Create
      *
+     
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('POST', $this->uri, [], [], $headers, "create");
     }
@@ -69,6 +72,8 @@ class LinkshorteningMessagingServiceContext extends InstanceContext
     /**
      * Create the LinkshorteningMessagingServiceInstance
      *
+     
+     
      * @return LinkshorteningMessagingServiceInstance Created LinkshorteningMessagingServiceInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -87,6 +92,8 @@ class LinkshorteningMessagingServiceContext extends InstanceContext
     /**
      * Create the LinkshorteningMessagingServiceInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -99,6 +106,7 @@ class LinkshorteningMessagingServiceContext extends InstanceContext
                         $this->solution['domainSid'],
                         $this->solution['messagingServiceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -110,11 +118,14 @@ class LinkshorteningMessagingServiceContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -122,6 +133,8 @@ class LinkshorteningMessagingServiceContext extends InstanceContext
     /**
      * Delete the LinkshorteningMessagingServiceInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -135,12 +148,15 @@ class LinkshorteningMessagingServiceContext extends InstanceContext
     /**
      * Delete the LinkshorteningMessagingServiceInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,

@@ -135,13 +135,14 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$cartView = new \App\View\Store\Cart($this->page, $model);
 
 		$errors = $this->customer->validate();
+		unset($errors['email']);	// no need to make email unique at this point
 
 		$this->page->setShowMenus($model->getShowMenus());
 
 		if ($errors)
 			{
 			$customerView = new \App\View\Customer($this->page, $this->customerModel);
-			$form = $customerView->edit($this->customerId, false);
+			$form = $customerView->edit($this->customerId);
 
 			$output = new \PHPFUI\Container();
 			$output->add(new \PHPFUI\Header('Please correct the following errors', 4));

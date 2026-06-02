@@ -44,7 +44,6 @@ class BrandRegistrationOtpList extends ListResource
             $brandRegistrationSid,
         
         ];
-
         $this->uri = '/a2p/BrandRegistrations/' . \rawurlencode($brandRegistrationSid)
         .'/SmsOtp';
     }
@@ -52,11 +51,13 @@ class BrandRegistrationOtpList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('POST', $this->uri, [], [], $headers, "create");
     }
@@ -64,6 +65,7 @@ class BrandRegistrationOtpList extends ListResource
     /**
      * Create the BrandRegistrationOtpInstance
      *
+     
      * @return BrandRegistrationOtpInstance Created BrandRegistrationOtpInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -81,6 +83,7 @@ class BrandRegistrationOtpList extends ListResource
     /**
      * Create the BrandRegistrationOtpInstance with Metadata
      *
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,6 +95,7 @@ class BrandRegistrationOtpList extends ListResource
                         $response->getContent(),
                         $this->solution['brandRegistrationSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

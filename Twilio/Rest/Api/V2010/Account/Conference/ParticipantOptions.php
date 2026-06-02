@@ -57,6 +57,7 @@ abstract class ParticipantOptions
      * @param string $callerId The phone number, Client identifier, or username portion of SIP address that made this call. Phone numbers are in [E.164](https://www.twilio.com/docs/glossary/what-e164) format (e.g., +16175551212). Client identifiers are formatted `client:name`. If using a phone number, it must be a Twilio number or a Verified [outgoing caller id](https://www.twilio.com/docs/voice/api/outgoing-caller-ids) for your account. If the `to` parameter is a phone number, `callerId` must also be a phone number. If `to` is sip address, this value of `callerId` should be a username portion to be used to populate the From header that is passed to the SIP endpoint.
      * @param string $callReason The Reason for the outgoing call. Use it to specify the purpose of the call that is presented on the called party's phone. (Branded Calls Beta)
      * @param string $recordingTrack The audio track to record for the call. Can be: `inbound`, `outbound` or `both`. The default is `both`. `inbound` records the audio that is received by Twilio. `outbound` records the audio that is sent from Twilio. `both` records the audio that is received and sent by Twilio.
+     * @param string $recordingConfigurationId The identifier of the configuration to be used when creating and processing the recording
      * @param int $timeLimit The maximum duration of the call in seconds. Constraints depend on account and configuration.
      * @param string $machineDetection Whether to detect if a human, answering machine, or fax has picked up the call. Can be: `Enable` or `DetectMessageEnd`. Use `Enable` if you would like us to return `AnsweredBy` as soon as the called party is identified. Use `DetectMessageEnd`, if you would like to leave a message on an answering machine. For more information, see [Answering Machine Detection](https://www.twilio.com/docs/voice/answering-machine-detection).
      * @param int $machineDetectionTimeout The number of seconds that we should attempt to detect an answering machine before timing out and sending a voice request with `AnsweredBy` of `unknown`. The default timeout is 30 seconds.
@@ -109,6 +110,7 @@ abstract class ParticipantOptions
         string $callerId = Values::NONE,
         string $callReason = Values::NONE,
         string $recordingTrack = Values::NONE,
+        string $recordingConfigurationId = Values::NONE,
         int $timeLimit = Values::INT_NONE,
         string $machineDetection = Values::NONE,
         int $machineDetectionTimeout = Values::INT_NONE,
@@ -161,6 +163,7 @@ abstract class ParticipantOptions
             $callerId,
             $callReason,
             $recordingTrack,
+            $recordingConfigurationId,
             $timeLimit,
             $machineDetection,
             $machineDetectionTimeout,
@@ -288,6 +291,7 @@ class CreateParticipantOptions extends Options
      * @param string $callerId The phone number, Client identifier, or username portion of SIP address that made this call. Phone numbers are in [E.164](https://www.twilio.com/docs/glossary/what-e164) format (e.g., +16175551212). Client identifiers are formatted `client:name`. If using a phone number, it must be a Twilio number or a Verified [outgoing caller id](https://www.twilio.com/docs/voice/api/outgoing-caller-ids) for your account. If the `to` parameter is a phone number, `callerId` must also be a phone number. If `to` is sip address, this value of `callerId` should be a username portion to be used to populate the From header that is passed to the SIP endpoint.
      * @param string $callReason The Reason for the outgoing call. Use it to specify the purpose of the call that is presented on the called party's phone. (Branded Calls Beta)
      * @param string $recordingTrack The audio track to record for the call. Can be: `inbound`, `outbound` or `both`. The default is `both`. `inbound` records the audio that is received by Twilio. `outbound` records the audio that is sent from Twilio. `both` records the audio that is received and sent by Twilio.
+     * @param string $recordingConfigurationId The identifier of the configuration to be used when creating and processing the recording
      * @param int $timeLimit The maximum duration of the call in seconds. Constraints depend on account and configuration.
      * @param string $machineDetection Whether to detect if a human, answering machine, or fax has picked up the call. Can be: `Enable` or `DetectMessageEnd`. Use `Enable` if you would like us to return `AnsweredBy` as soon as the called party is identified. Use `DetectMessageEnd`, if you would like to leave a message on an answering machine. For more information, see [Answering Machine Detection](https://www.twilio.com/docs/voice/answering-machine-detection).
      * @param int $machineDetectionTimeout The number of seconds that we should attempt to detect an answering machine before timing out and sending a voice request with `AnsweredBy` of `unknown`. The default timeout is 30 seconds.
@@ -339,6 +343,7 @@ class CreateParticipantOptions extends Options
         string $callerId = Values::NONE,
         string $callReason = Values::NONE,
         string $recordingTrack = Values::NONE,
+        string $recordingConfigurationId = Values::NONE,
         int $timeLimit = Values::INT_NONE,
         string $machineDetection = Values::NONE,
         int $machineDetectionTimeout = Values::INT_NONE,
@@ -389,6 +394,7 @@ class CreateParticipantOptions extends Options
         $this->options['callerId'] = $callerId;
         $this->options['callReason'] = $callReason;
         $this->options['recordingTrack'] = $recordingTrack;
+        $this->options['recordingConfigurationId'] = $recordingConfigurationId;
         $this->options['timeLimit'] = $timeLimit;
         $this->options['machineDetection'] = $machineDetection;
         $this->options['machineDetectionTimeout'] = $machineDetectionTimeout;
@@ -832,6 +838,18 @@ class CreateParticipantOptions extends Options
     public function setRecordingTrack(string $recordingTrack): self
     {
         $this->options['recordingTrack'] = $recordingTrack;
+        return $this;
+    }
+
+    /**
+     * The identifier of the configuration to be used when creating and processing the recording
+     *
+     * @param string $recordingConfigurationId The identifier of the configuration to be used when creating and processing the recording
+     * @return $this Fluent Builder
+     */
+    public function setRecordingConfigurationId(string $recordingConfigurationId): self
+    {
+        $this->options['recordingConfigurationId'] = $recordingConfigurationId;
         return $this;
     }
 

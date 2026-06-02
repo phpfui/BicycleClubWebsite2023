@@ -39,7 +39,6 @@ class TypingIndicatorList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Indicators/Typing.json';
     }
 
@@ -47,11 +46,13 @@ class TypingIndicatorList extends ListResource
      * Helper function for Create
      *
      * @param TypingIndicatorRequest $typingIndicatorRequest
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(TypingIndicatorRequest $typingIndicatorRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $typingIndicatorRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -61,6 +62,7 @@ class TypingIndicatorList extends ListResource
      * Create the TypingIndicatorInstance
      *
      * @param TypingIndicatorRequest $typingIndicatorRequest
+     
      * @return TypingIndicatorInstance Created TypingIndicatorInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -78,6 +80,7 @@ class TypingIndicatorList extends ListResource
      * Create the TypingIndicatorInstance with Metadata
      *
      * @param TypingIndicatorRequest $typingIndicatorRequest
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -88,6 +91,7 @@ class TypingIndicatorList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

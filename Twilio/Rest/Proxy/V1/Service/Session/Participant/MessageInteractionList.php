@@ -60,7 +60,6 @@ class MessageInteractionList extends ListResource
             $participantSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Sessions/' . \rawurlencode($sessionSid)
         .'/Participants/' . \rawurlencode($participantSid)
@@ -70,12 +69,16 @@ class MessageInteractionList extends ListResource
     /**
      * Helper function for Create
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -92,6 +95,9 @@ class MessageInteractionList extends ListResource
     /**
      * Create the MessageInteractionInstance
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return MessageInteractionInstance Created MessageInteractionInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -112,6 +118,9 @@ class MessageInteractionList extends ListResource
     /**
      * Create the MessageInteractionInstance with Metadata
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -126,6 +135,7 @@ class MessageInteractionList extends ListResource
                         $this->solution['sessionSid'],
                         $this->solution['participantSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -139,6 +149,7 @@ class MessageInteractionList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -159,6 +170,7 @@ class MessageInteractionList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

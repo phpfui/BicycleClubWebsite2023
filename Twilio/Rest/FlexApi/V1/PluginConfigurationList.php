@@ -45,7 +45,6 @@ class PluginConfigurationList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/PluginService/Configurations';
     }
 
@@ -53,12 +52,14 @@ class PluginConfigurationList extends ListResource
      * Helper function for Create
      *
      * @param string $name The Flex Plugin Configuration's name.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $name, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -78,6 +79,7 @@ class PluginConfigurationList extends ListResource
      * Create the PluginConfigurationInstance
      *
      * @param string $name The Flex Plugin Configuration's name.
+     
      * @param array|Options $options Optional Arguments
      * @return PluginConfigurationInstance Created PluginConfigurationInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -96,6 +98,7 @@ class PluginConfigurationList extends ListResource
      * Create the PluginConfigurationInstance with Metadata
      *
      * @param string $name The Flex Plugin Configuration's name.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -107,6 +110,7 @@ class PluginConfigurationList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -120,6 +124,7 @@ class PluginConfigurationList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -140,6 +145,7 @@ class PluginConfigurationList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

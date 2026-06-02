@@ -43,6 +43,7 @@ class PluginVersionsPage extends Page
         return new PluginVersionsInstance($this->version, $payload, $this->solution['pluginSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

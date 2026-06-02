@@ -44,7 +44,6 @@ class IpCommandList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/IpCommands';
     }
 
@@ -52,14 +51,18 @@ class IpCommandList extends ListResource
      * Helper function for Create
      *
      * @param string $sim The `sid` or `unique_name` of the [Super SIM](https://www.twilio.com/docs/iot/supersim/api/sim-resource) to send the IP Command to.
+     
      * @param string $payload The data that will be sent to the device. The payload cannot exceed 1300 bytes. If the PayloadType is set to text, the payload is encoded in UTF-8. If PayloadType is set to binary, the payload is encoded in Base64.
+     
      * @param int $devicePort The device port to which the IP Command will be sent.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $sim, string $payload, int $devicePort, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -85,8 +88,11 @@ class IpCommandList extends ListResource
      * Create the IpCommandInstance
      *
      * @param string $sim The `sid` or `unique_name` of the [Super SIM](https://www.twilio.com/docs/iot/supersim/api/sim-resource) to send the IP Command to.
+     
      * @param string $payload The data that will be sent to the device. The payload cannot exceed 1300 bytes. If the PayloadType is set to text, the payload is encoded in UTF-8. If PayloadType is set to binary, the payload is encoded in Base64.
+     
      * @param int $devicePort The device port to which the IP Command will be sent.
+     
      * @param array|Options $options Optional Arguments
      * @return IpCommandInstance Created IpCommandInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -105,8 +111,11 @@ class IpCommandList extends ListResource
      * Create the IpCommandInstance with Metadata
      *
      * @param string $sim The `sid` or `unique_name` of the [Super SIM](https://www.twilio.com/docs/iot/supersim/api/sim-resource) to send the IP Command to.
+     
      * @param string $payload The data that will be sent to the device. The payload cannot exceed 1300 bytes. If the PayloadType is set to text, the payload is encoded in UTF-8. If PayloadType is set to binary, the payload is encoded in Base64.
+     
      * @param int $devicePort The device port to which the IP Command will be sent.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -118,6 +127,7 @@ class IpCommandList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -131,6 +141,7 @@ class IpCommandList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -152,6 +163,7 @@ class IpCommandList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

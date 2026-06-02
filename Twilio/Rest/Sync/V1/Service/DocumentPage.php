@@ -43,6 +43,7 @@ class DocumentPage extends Page
         return new DocumentInstance($this->version, $payload, $this->solution['serviceSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

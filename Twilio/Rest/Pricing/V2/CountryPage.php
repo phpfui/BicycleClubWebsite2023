@@ -43,6 +43,7 @@ class CountryPage extends Page
         return new CountryInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

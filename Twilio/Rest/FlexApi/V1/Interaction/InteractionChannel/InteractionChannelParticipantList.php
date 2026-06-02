@@ -55,7 +55,6 @@ class InteractionChannelParticipantList extends ListResource
             $channelSid,
         
         ];
-
         $this->uri = '/Interactions/' . \rawurlencode($interactionSid)
         .'/Channels/' . \rawurlencode($channelSid)
         .'/Participants';
@@ -64,14 +63,19 @@ class InteractionChannelParticipantList extends ListResource
     /**
      * Helper function for Create
      *
+     
+     
      * @param string $type
+     
      * @param array $mediaProperties JSON representing the Media Properties for the new Participant.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $type, array $mediaProperties, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -90,8 +94,12 @@ class InteractionChannelParticipantList extends ListResource
     /**
      * Create the InteractionChannelParticipantInstance
      *
+     
+     
      * @param string $type
+     
      * @param array $mediaProperties JSON representing the Media Properties for the new Participant.
+     
      * @param array|Options $options Optional Arguments
      * @return InteractionChannelParticipantInstance Created InteractionChannelParticipantInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -111,8 +119,12 @@ class InteractionChannelParticipantList extends ListResource
     /**
      * Create the InteractionChannelParticipantInstance with Metadata
      *
+     
+     
      * @param string $type
+     
      * @param array $mediaProperties JSON representing the Media Properties for the new Participant.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -126,6 +138,7 @@ class InteractionChannelParticipantList extends ListResource
                         $this->solution['interactionSid'],
                         $this->solution['channelSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -139,6 +152,7 @@ class InteractionChannelParticipantList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -159,6 +173,7 @@ class InteractionChannelParticipantList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

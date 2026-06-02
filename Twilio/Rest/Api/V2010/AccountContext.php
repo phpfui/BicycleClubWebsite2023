@@ -151,6 +151,7 @@ class AccountContext extends InstanceContext
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -186,6 +187,7 @@ class AccountContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -203,6 +205,7 @@ class AccountContext extends InstanceContext
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -249,6 +252,7 @@ class AccountContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

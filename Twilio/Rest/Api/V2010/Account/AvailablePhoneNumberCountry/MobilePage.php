@@ -43,6 +43,7 @@ class MobilePage extends Page
         return new MobileInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['countryCode']);
     }
 
+
     /**
      * Provide a friendly representation
      *

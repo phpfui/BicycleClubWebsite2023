@@ -59,11 +59,14 @@ class UsAppToPersonContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -71,6 +74,8 @@ class UsAppToPersonContext extends InstanceContext
     /**
      * Delete the UsAppToPersonInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -84,12 +89,15 @@ class UsAppToPersonContext extends InstanceContext
     /**
      * Delete the UsAppToPersonInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -102,12 +110,15 @@ class UsAppToPersonContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' , 'X-Twilio-Api-Version' => $options['xTwilioApiVersion']]);
@@ -117,6 +128,8 @@ class UsAppToPersonContext extends InstanceContext
     /**
      * Fetch the UsAppToPersonInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return UsAppToPersonInstance Fetched UsAppToPersonInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -136,6 +149,8 @@ class UsAppToPersonContext extends InstanceContext
     /**
      * Fetch the UsAppToPersonInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -149,6 +164,7 @@ class UsAppToPersonContext extends InstanceContext
                         $this->solution['messagingServiceSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -160,19 +176,29 @@ class UsAppToPersonContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param bool $hasEmbeddedLinks Indicates that this SMS campaign will send messages that contain links.
+     
      * @param bool $hasEmbeddedPhone Indicates that this SMS campaign will send messages that contain phone numbers.
+     
      * @param string[] $messageSamples An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars.
+     
      * @param string $messageFlow Required for all Campaigns. Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum.
+     
      * @param string $description A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters.
+     
      * @param bool $ageGated A boolean that specifies whether campaign requires age gate for federally legal content.
+     
      * @param bool $directLending A boolean that specifies whether campaign allows direct lending or not.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(bool $hasEmbeddedLinks, bool $hasEmbeddedPhone, array $messageSamples, string $messageFlow, string $description, bool $ageGated, bool $directLending, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -203,13 +229,22 @@ class UsAppToPersonContext extends InstanceContext
     /**
      * Update the UsAppToPersonInstance
      *
+     
+     
      * @param bool $hasEmbeddedLinks Indicates that this SMS campaign will send messages that contain links.
+     
      * @param bool $hasEmbeddedPhone Indicates that this SMS campaign will send messages that contain phone numbers.
+     
      * @param string[] $messageSamples An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars.
+     
      * @param string $messageFlow Required for all Campaigns. Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum.
+     
      * @param string $description A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters.
+     
      * @param bool $ageGated A boolean that specifies whether campaign requires age gate for federally legal content.
+     
      * @param bool $directLending A boolean that specifies whether campaign allows direct lending or not.
+     
      * @param array|Options $options Optional Arguments
      * @return UsAppToPersonInstance Updated UsAppToPersonInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -229,13 +264,22 @@ class UsAppToPersonContext extends InstanceContext
     /**
      * Update the UsAppToPersonInstance with Metadata
      *
+     
+     
      * @param bool $hasEmbeddedLinks Indicates that this SMS campaign will send messages that contain links.
+     
      * @param bool $hasEmbeddedPhone Indicates that this SMS campaign will send messages that contain phone numbers.
+     
      * @param string[] $messageSamples An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars.
+     
      * @param string $messageFlow Required for all Campaigns. Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum.
+     
      * @param string $description A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters.
+     
      * @param bool $ageGated A boolean that specifies whether campaign requires age gate for federally legal content.
+     
      * @param bool $directLending A boolean that specifies whether campaign allows direct lending or not.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -249,6 +293,7 @@ class UsAppToPersonContext extends InstanceContext
                         $this->solution['messagingServiceSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

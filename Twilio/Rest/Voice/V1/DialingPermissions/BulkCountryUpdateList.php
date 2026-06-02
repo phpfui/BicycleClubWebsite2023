@@ -39,7 +39,6 @@ class BulkCountryUpdateList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/DialingPermissions/BulkCountryUpdates';
     }
 
@@ -47,11 +46,13 @@ class BulkCountryUpdateList extends ListResource
      * Helper function for Create
      *
      * @param string $updateRequest URL encoded JSON array of update objects. example : `[ { \\\"iso_code\\\": \\\"GB\\\", \\\"low_risk_numbers_enabled\\\": \\\"true\\\", \\\"high_risk_special_numbers_enabled\\\":\\\"true\\\", \\\"high_risk_tollfraud_numbers_enabled\\\": \\\"false\\\" } ]`
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $updateRequest): Response
     {
+        
         $data = Values::of([
             'UpdateRequest' =>
                 $updateRequest,
@@ -65,6 +66,7 @@ class BulkCountryUpdateList extends ListResource
      * Create the BulkCountryUpdateInstance
      *
      * @param string $updateRequest URL encoded JSON array of update objects. example : `[ { \\\"iso_code\\\": \\\"GB\\\", \\\"low_risk_numbers_enabled\\\": \\\"true\\\", \\\"high_risk_special_numbers_enabled\\\":\\\"true\\\", \\\"high_risk_tollfraud_numbers_enabled\\\": \\\"false\\\" } ]`
+     
      * @return BulkCountryUpdateInstance Created BulkCountryUpdateInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -82,6 +84,7 @@ class BulkCountryUpdateList extends ListResource
      * Create the BulkCountryUpdateInstance with Metadata
      *
      * @param string $updateRequest URL encoded JSON array of update objects. example : `[ { \\\"iso_code\\\": \\\"GB\\\", \\\"low_risk_numbers_enabled\\\": \\\"true\\\", \\\"high_risk_special_numbers_enabled\\\":\\\"true\\\", \\\"high_risk_tollfraud_numbers_enabled\\\": \\\"false\\\" } ]`
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,6 +95,7 @@ class BulkCountryUpdateList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -49,7 +49,6 @@ class TriggerList extends ListResource
             $accountSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Usage/Triggers.json';
     }
@@ -58,14 +57,18 @@ class TriggerList extends ListResource
      * Helper function for Create
      *
      * @param string $callbackUrl The URL we should call using `callback_method` when the trigger fires.
+     
      * @param string $triggerValue The usage value at which the trigger should fire.  For convenience, you can use an offset value such as `+30` to specify a trigger_value that is 30 units more than the current usage value. Be sure to urlencode a `+` as `%2B`.
+     
      * @param string $usageCategory The usage category that the trigger should watch.  Use one of the supported [usage categories](https://www.twilio.com/docs/usage/api/usage-record#usage-categories) for this value.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $callbackUrl, string $triggerValue, string $usageCategory, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -93,8 +96,11 @@ class TriggerList extends ListResource
      * Create the TriggerInstance
      *
      * @param string $callbackUrl The URL we should call using `callback_method` when the trigger fires.
+     
      * @param string $triggerValue The usage value at which the trigger should fire.  For convenience, you can use an offset value such as `+30` to specify a trigger_value that is 30 units more than the current usage value. Be sure to urlencode a `+` as `%2B`.
+     
      * @param string $usageCategory The usage category that the trigger should watch.  Use one of the supported [usage categories](https://www.twilio.com/docs/usage/api/usage-record#usage-categories) for this value.
+     
      * @param array|Options $options Optional Arguments
      * @return TriggerInstance Created TriggerInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -114,8 +120,11 @@ class TriggerList extends ListResource
      * Create the TriggerInstance with Metadata
      *
      * @param string $callbackUrl The URL we should call using `callback_method` when the trigger fires.
+     
      * @param string $triggerValue The usage value at which the trigger should fire.  For convenience, you can use an offset value such as `+30` to specify a trigger_value that is 30 units more than the current usage value. Be sure to urlencode a `+` as `%2B`.
+     
      * @param string $usageCategory The usage category that the trigger should watch.  Use one of the supported [usage categories](https://www.twilio.com/docs/usage/api/usage-record#usage-categories) for this value.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -128,6 +137,7 @@ class TriggerList extends ListResource
                         $response->getContent(),
                         $this->solution['accountSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -141,6 +151,7 @@ class TriggerList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -162,6 +173,7 @@ class TriggerList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

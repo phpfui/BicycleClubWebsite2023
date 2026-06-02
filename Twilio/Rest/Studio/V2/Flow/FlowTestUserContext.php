@@ -53,11 +53,13 @@ class FlowTestUserContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -65,6 +67,7 @@ class FlowTestUserContext extends InstanceContext
     /**
      * Fetch the FlowTestUserInstance
      *
+     
      * @return FlowTestUserInstance Fetched FlowTestUserInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -82,6 +85,7 @@ class FlowTestUserContext extends InstanceContext
     /**
      * Fetch the FlowTestUserInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -93,6 +97,7 @@ class FlowTestUserContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -104,12 +109,15 @@ class FlowTestUserContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param string[] $testUsers List of test user identities that can test draft versions of the flow.
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $testUsers): Response
     {
+        
         $data = Values::of([
             'TestUsers' =>
                 Serialize::map($testUsers,function ($e) { return $e; }),
@@ -122,7 +130,9 @@ class FlowTestUserContext extends InstanceContext
     /**
      * Update the FlowTestUserInstance
      *
+     
      * @param string[] $testUsers List of test user identities that can test draft versions of the flow.
+     
      * @return FlowTestUserInstance Updated FlowTestUserInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -140,7 +150,9 @@ class FlowTestUserContext extends InstanceContext
     /**
      * Update the FlowTestUserInstance with Metadata
      *
+     
      * @param string[] $testUsers List of test user identities that can test draft versions of the flow.
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -152,6 +164,7 @@ class FlowTestUserContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

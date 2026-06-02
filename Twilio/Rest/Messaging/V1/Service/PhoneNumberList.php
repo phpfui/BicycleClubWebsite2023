@@ -48,7 +48,6 @@ class PhoneNumberList extends ListResource
             $serviceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/PhoneNumbers';
     }
@@ -56,12 +55,15 @@ class PhoneNumberList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $phoneNumberSid The SID of the Phone Number being added to the Service.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $phoneNumberSid): Response
     {
+        
         $data = Values::of([
             'PhoneNumberSid' =>
                 $phoneNumberSid,
@@ -74,7 +76,9 @@ class PhoneNumberList extends ListResource
     /**
      * Create the PhoneNumberInstance
      *
+     
      * @param string $phoneNumberSid The SID of the Phone Number being added to the Service.
+     
      * @return PhoneNumberInstance Created PhoneNumberInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,7 +96,9 @@ class PhoneNumberList extends ListResource
     /**
      * Create the PhoneNumberInstance with Metadata
      *
+     
      * @param string $phoneNumberSid The SID of the Phone Number being added to the Service.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -104,6 +110,7 @@ class PhoneNumberList extends ListResource
                         $response->getContent(),
                         $this->solution['serviceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -117,6 +124,7 @@ class PhoneNumberList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -137,6 +145,7 @@ class PhoneNumberList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

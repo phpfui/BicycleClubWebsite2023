@@ -62,11 +62,14 @@ class AuthRegistrationsCredentialListMappingContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -74,6 +77,8 @@ class AuthRegistrationsCredentialListMappingContext extends InstanceContext
     /**
      * Delete the AuthRegistrationsCredentialListMappingInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -87,12 +92,15 @@ class AuthRegistrationsCredentialListMappingContext extends InstanceContext
     /**
      * Delete the AuthRegistrationsCredentialListMappingInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -105,11 +113,14 @@ class AuthRegistrationsCredentialListMappingContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -117,6 +128,8 @@ class AuthRegistrationsCredentialListMappingContext extends InstanceContext
     /**
      * Fetch the AuthRegistrationsCredentialListMappingInstance
      *
+     
+     
      * @return AuthRegistrationsCredentialListMappingInstance Fetched AuthRegistrationsCredentialListMappingInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -136,6 +149,8 @@ class AuthRegistrationsCredentialListMappingContext extends InstanceContext
     /**
      * Fetch the AuthRegistrationsCredentialListMappingInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -149,6 +164,7 @@ class AuthRegistrationsCredentialListMappingContext extends InstanceContext
                         $this->solution['domainSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

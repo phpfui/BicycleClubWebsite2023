@@ -54,12 +54,14 @@ class RegulationContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $params = Values::of([
@@ -74,6 +76,7 @@ class RegulationContext extends InstanceContext
     /**
      * Fetch the RegulationInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return RegulationInstance Fetched RegulationInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -92,6 +95,7 @@ class RegulationContext extends InstanceContext
     /**
      * Fetch the RegulationInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -104,6 +108,7 @@ class RegulationContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

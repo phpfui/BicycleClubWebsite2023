@@ -43,6 +43,7 @@ class RecordingSettingsPage extends Page
         return new RecordingSettingsInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

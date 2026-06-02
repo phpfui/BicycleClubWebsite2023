@@ -43,6 +43,7 @@ class PublishedTrackPage extends Page
         return new PublishedTrackInstance($this->version, $payload, $this->solution['roomSid'], $this->solution['participantSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

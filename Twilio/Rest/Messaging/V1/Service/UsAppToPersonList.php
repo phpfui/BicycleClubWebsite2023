@@ -50,7 +50,6 @@ class UsAppToPersonList extends ListResource
             $messagingServiceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($messagingServiceSid)
         .'/Compliance/Usa2p';
     }
@@ -58,19 +57,28 @@ class UsAppToPersonList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $brandRegistrationSid A2P Brand Registration SID
+     
      * @param string $description A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters.
+     
      * @param string $messageFlow Required for all Campaigns. Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum.
+     
      * @param string[] $messageSamples An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars.
+     
      * @param string $usAppToPersonUsecase A2P Campaign Use Case. Examples: [ 2FA, EMERGENCY, MARKETING..]
+     
      * @param bool $hasEmbeddedLinks Indicates that this SMS campaign will send messages that contain links.
+     
      * @param bool $hasEmbeddedPhone Indicates that this SMS campaign will send messages that contain phone numbers.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $brandRegistrationSid, string $description, string $messageFlow, array $messageSamples, string $usAppToPersonUsecase, bool $hasEmbeddedLinks, bool $hasEmbeddedPhone, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -119,13 +127,21 @@ class UsAppToPersonList extends ListResource
     /**
      * Create the UsAppToPersonInstance
      *
+     
      * @param string $brandRegistrationSid A2P Brand Registration SID
+     
      * @param string $description A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters.
+     
      * @param string $messageFlow Required for all Campaigns. Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum.
+     
      * @param string[] $messageSamples An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars.
+     
      * @param string $usAppToPersonUsecase A2P Campaign Use Case. Examples: [ 2FA, EMERGENCY, MARKETING..]
+     
      * @param bool $hasEmbeddedLinks Indicates that this SMS campaign will send messages that contain links.
+     
      * @param bool $hasEmbeddedPhone Indicates that this SMS campaign will send messages that contain phone numbers.
+     
      * @param array|Options $options Optional Arguments
      * @return UsAppToPersonInstance Created UsAppToPersonInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -144,13 +160,21 @@ class UsAppToPersonList extends ListResource
     /**
      * Create the UsAppToPersonInstance with Metadata
      *
+     
      * @param string $brandRegistrationSid A2P Brand Registration SID
+     
      * @param string $description A short description of what this SMS campaign does. Min length: 40 characters. Max length: 4096 characters.
+     
      * @param string $messageFlow Required for all Campaigns. Details around how a consumer opts-in to their campaign, therefore giving consent to receive their messages. If multiple opt-in methods can be used for the same campaign, they must all be listed. 40 character minimum. 2048 character maximum.
+     
      * @param string[] $messageSamples An array of sample message strings, min two and max five. Min length for each sample: 20 chars. Max length for each sample: 1024 chars.
+     
      * @param string $usAppToPersonUsecase A2P Campaign Use Case. Examples: [ 2FA, EMERGENCY, MARKETING..]
+     
      * @param bool $hasEmbeddedLinks Indicates that this SMS campaign will send messages that contain links.
+     
      * @param bool $hasEmbeddedPhone Indicates that this SMS campaign will send messages that contain phone numbers.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -163,6 +187,7 @@ class UsAppToPersonList extends ListResource
                         $response->getContent(),
                         $this->solution['messagingServiceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -176,6 +201,7 @@ class UsAppToPersonList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -196,6 +222,7 @@ class UsAppToPersonList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

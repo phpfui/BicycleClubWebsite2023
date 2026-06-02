@@ -63,11 +63,14 @@ class MemberContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -75,6 +78,8 @@ class MemberContext extends InstanceContext
     /**
      * Fetch the MemberInstance
      *
+     
+     
      * @return MemberInstance Fetched MemberInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -94,6 +99,8 @@ class MemberContext extends InstanceContext
     /**
      * Fetch the MemberInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -107,6 +114,7 @@ class MemberContext extends InstanceContext
                         $this->solution['queueSid'],
                         $this->solution['callSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -118,13 +126,17 @@ class MemberContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param string $url The absolute URL of the Queue resource.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $url, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -141,7 +153,10 @@ class MemberContext extends InstanceContext
     /**
      * Update the MemberInstance
      *
+     
+     
      * @param string $url The absolute URL of the Queue resource.
+     
      * @param array|Options $options Optional Arguments
      * @return MemberInstance Updated MemberInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -162,7 +177,10 @@ class MemberContext extends InstanceContext
     /**
      * Update the MemberInstance with Metadata
      *
+     
+     
      * @param string $url The absolute URL of the Queue resource.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -177,6 +195,7 @@ class MemberContext extends InstanceContext
                         $this->solution['queueSid'],
                         $this->solution['callSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

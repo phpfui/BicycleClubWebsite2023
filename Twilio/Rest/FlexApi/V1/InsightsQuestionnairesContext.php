@@ -54,12 +54,14 @@ class InsightsQuestionnairesContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Authorization' => $options['authorization']]);
@@ -69,6 +71,7 @@ class InsightsQuestionnairesContext extends InstanceContext
     /**
      * Delete the InsightsQuestionnairesInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
@@ -83,6 +86,7 @@ class InsightsQuestionnairesContext extends InstanceContext
     /**
      * Delete the InsightsQuestionnairesInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -90,6 +94,7 @@ class InsightsQuestionnairesContext extends InstanceContext
     public function deleteWithMetadata(array $options = []): ResourceMetadata
     {
         $response = $this->_delete($options);
+        
         
         return new ResourceMetadata(
             null,
@@ -102,12 +107,14 @@ class InsightsQuestionnairesContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' , 'Authorization' => $options['authorization']]);
@@ -117,6 +124,7 @@ class InsightsQuestionnairesContext extends InstanceContext
     /**
      * Fetch the InsightsQuestionnairesInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return InsightsQuestionnairesInstance Fetched InsightsQuestionnairesInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -135,6 +143,7 @@ class InsightsQuestionnairesContext extends InstanceContext
     /**
      * Fetch the InsightsQuestionnairesInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -147,6 +156,7 @@ class InsightsQuestionnairesContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['questionnaireSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -158,13 +168,16 @@ class InsightsQuestionnairesContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param bool $active The flag to enable or disable questionnaire
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(bool $active, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -185,7 +198,9 @@ class InsightsQuestionnairesContext extends InstanceContext
     /**
      * Update the InsightsQuestionnairesInstance
      *
+     
      * @param bool $active The flag to enable or disable questionnaire
+     
      * @param array|Options $options Optional Arguments
      * @return InsightsQuestionnairesInstance Updated InsightsQuestionnairesInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -204,7 +219,9 @@ class InsightsQuestionnairesContext extends InstanceContext
     /**
      * Update the InsightsQuestionnairesInstance with Metadata
      *
+     
      * @param bool $active The flag to enable or disable questionnaire
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -217,6 +234,7 @@ class InsightsQuestionnairesContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['questionnaireSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

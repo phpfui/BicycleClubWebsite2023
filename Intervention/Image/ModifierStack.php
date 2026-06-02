@@ -14,9 +14,19 @@ class ModifierStack implements ModifierInterface
      *
      * @param array<ModifierInterface> $modifiers
      */
-    public function __construct(protected array $modifiers)
+    public function __construct(protected array $modifiers = [])
     {
         //
+    }
+
+    /**
+     * Create new modifier stack object statically.
+     *
+     * @param array<ModifierInterface> $modifiers
+     */
+    public static function create(array $modifiers = []): self
+    {
+        return new self($modifiers);
     }
 
     /**

@@ -70,11 +70,15 @@ class FunctionVersionContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -82,6 +86,9 @@ class FunctionVersionContext extends InstanceContext
     /**
      * Fetch the FunctionVersionInstance
      *
+     
+     
+     
      * @return FunctionVersionInstance Fetched FunctionVersionInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -101,6 +108,9 @@ class FunctionVersionContext extends InstanceContext
     /**
      * Fetch the FunctionVersionInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -114,6 +124,7 @@ class FunctionVersionContext extends InstanceContext
                         $this->solution['functionSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

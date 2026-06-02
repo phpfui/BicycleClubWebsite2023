@@ -49,7 +49,6 @@ class RoleList extends ListResource
             $serviceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Roles';
     }
@@ -57,14 +56,19 @@ class RoleList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $friendlyName 
+     
      * @param string $type
+     
      * @param string[] $permission 
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, string $type, array $permission): Response
     {
+        
         $data = Values::of([
             'FriendlyName' =>
                 $friendlyName,
@@ -81,9 +85,13 @@ class RoleList extends ListResource
     /**
      * Create the RoleInstance
      *
+     
      * @param string $friendlyName 
+     
      * @param string $type
+     
      * @param string[] $permission 
+     
      * @return RoleInstance Created RoleInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -101,9 +109,13 @@ class RoleList extends ListResource
     /**
      * Create the RoleInstance with Metadata
      *
+     
      * @param string $friendlyName 
+     
      * @param string $type
+     
      * @param string[] $permission 
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -115,6 +127,7 @@ class RoleList extends ListResource
                         $response->getContent(),
                         $this->solution['serviceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -128,6 +141,7 @@ class RoleList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -148,6 +162,7 @@ class RoleList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

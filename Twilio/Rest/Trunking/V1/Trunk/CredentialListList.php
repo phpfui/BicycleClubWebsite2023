@@ -48,7 +48,6 @@ class CredentialListList extends ListResource
             $trunkSid,
         
         ];
-
         $this->uri = '/Trunks/' . \rawurlencode($trunkSid)
         .'/CredentialLists';
     }
@@ -56,12 +55,15 @@ class CredentialListList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $credentialListSid The SID of the [Credential List](https://www.twilio.com/docs/voice/sip/api/sip-credentiallist-resource) that you want to associate with the trunk. Once associated, we will authenticate access to the trunk against this list.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $credentialListSid): Response
     {
+        
         $data = Values::of([
             'CredentialListSid' =>
                 $credentialListSid,
@@ -74,7 +76,9 @@ class CredentialListList extends ListResource
     /**
      * Create the CredentialListInstance
      *
+     
      * @param string $credentialListSid The SID of the [Credential List](https://www.twilio.com/docs/voice/sip/api/sip-credentiallist-resource) that you want to associate with the trunk. Once associated, we will authenticate access to the trunk against this list.
+     
      * @return CredentialListInstance Created CredentialListInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,7 +96,9 @@ class CredentialListList extends ListResource
     /**
      * Create the CredentialListInstance with Metadata
      *
+     
      * @param string $credentialListSid The SID of the [Credential List](https://www.twilio.com/docs/voice/sip/api/sip-credentiallist-resource) that you want to associate with the trunk. Once associated, we will authenticate access to the trunk against this list.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -104,6 +110,7 @@ class CredentialListList extends ListResource
                         $response->getContent(),
                         $this->solution['trunkSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -117,6 +124,7 @@ class CredentialListList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -137,6 +145,7 @@ class CredentialListList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

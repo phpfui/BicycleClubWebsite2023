@@ -43,6 +43,7 @@ class RoomRecordingPage extends Page
         return new RoomRecordingInstance($this->version, $payload, $this->solution['roomSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

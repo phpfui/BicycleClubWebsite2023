@@ -43,6 +43,7 @@ class UserBindingPage extends Page
         return new UserBindingInstance($this->version, $payload, $this->solution['serviceSid'], $this->solution['userSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

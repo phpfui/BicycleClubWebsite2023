@@ -43,7 +43,6 @@ class SourceIpMappingList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/SourceIpMappings';
     }
 
@@ -51,12 +50,15 @@ class SourceIpMappingList extends ListResource
      * Helper function for Create
      *
      * @param string $ipRecordSid The Twilio-provided string that uniquely identifies the IP Record resource to map from.
+     
      * @param string $sipDomainSid The SID of the SIP Domain that the IP Record should be mapped to.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $ipRecordSid, string $sipDomainSid): Response
     {
+        
         $data = Values::of([
             'IpRecordSid' =>
                 $ipRecordSid,
@@ -72,7 +74,9 @@ class SourceIpMappingList extends ListResource
      * Create the SourceIpMappingInstance
      *
      * @param string $ipRecordSid The Twilio-provided string that uniquely identifies the IP Record resource to map from.
+     
      * @param string $sipDomainSid The SID of the SIP Domain that the IP Record should be mapped to.
+     
      * @return SourceIpMappingInstance Created SourceIpMappingInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -90,7 +94,9 @@ class SourceIpMappingList extends ListResource
      * Create the SourceIpMappingInstance with Metadata
      *
      * @param string $ipRecordSid The Twilio-provided string that uniquely identifies the IP Record resource to map from.
+     
      * @param string $sipDomainSid The SID of the SIP Domain that the IP Record should be mapped to.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -101,6 +107,7 @@ class SourceIpMappingList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -114,6 +121,7 @@ class SourceIpMappingList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -134,6 +142,7 @@ class SourceIpMappingList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

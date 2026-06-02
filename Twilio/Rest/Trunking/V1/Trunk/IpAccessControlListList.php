@@ -48,7 +48,6 @@ class IpAccessControlListList extends ListResource
             $trunkSid,
         
         ];
-
         $this->uri = '/Trunks/' . \rawurlencode($trunkSid)
         .'/IpAccessControlLists';
     }
@@ -56,12 +55,15 @@ class IpAccessControlListList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $ipAccessControlListSid The SID of the [IP Access Control List](https://www.twilio.com/docs/voice/sip/api/sip-ipaccesscontrollist-resource) that you want to associate with the trunk.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $ipAccessControlListSid): Response
     {
+        
         $data = Values::of([
             'IpAccessControlListSid' =>
                 $ipAccessControlListSid,
@@ -74,7 +76,9 @@ class IpAccessControlListList extends ListResource
     /**
      * Create the IpAccessControlListInstance
      *
+     
      * @param string $ipAccessControlListSid The SID of the [IP Access Control List](https://www.twilio.com/docs/voice/sip/api/sip-ipaccesscontrollist-resource) that you want to associate with the trunk.
+     
      * @return IpAccessControlListInstance Created IpAccessControlListInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,7 +96,9 @@ class IpAccessControlListList extends ListResource
     /**
      * Create the IpAccessControlListInstance with Metadata
      *
+     
      * @param string $ipAccessControlListSid The SID of the [IP Access Control List](https://www.twilio.com/docs/voice/sip/api/sip-ipaccesscontrollist-resource) that you want to associate with the trunk.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -104,6 +110,7 @@ class IpAccessControlListList extends ListResource
                         $response->getContent(),
                         $this->solution['trunkSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -117,6 +124,7 @@ class IpAccessControlListList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -137,6 +145,7 @@ class IpAccessControlListList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

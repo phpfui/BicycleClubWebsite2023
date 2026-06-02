@@ -43,6 +43,7 @@ class PluginPage extends Page
         return new PluginInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

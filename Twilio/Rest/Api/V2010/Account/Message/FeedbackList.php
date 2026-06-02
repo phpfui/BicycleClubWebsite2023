@@ -50,7 +50,6 @@ class FeedbackList extends ListResource
             $messageSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Messages/' . \rawurlencode($messageSid)
         .'/Feedback.json';
@@ -59,12 +58,14 @@ class FeedbackList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -79,6 +80,7 @@ class FeedbackList extends ListResource
     /**
      * Create the FeedbackInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return FeedbackInstance Created FeedbackInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -98,6 +100,7 @@ class FeedbackList extends ListResource
     /**
      * Create the FeedbackInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -111,6 +114,7 @@ class FeedbackList extends ListResource
                         $this->solution['accountSid'],
                         $this->solution['messageSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

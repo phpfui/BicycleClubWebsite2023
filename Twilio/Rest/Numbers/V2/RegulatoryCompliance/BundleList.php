@@ -45,7 +45,6 @@ class BundleList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/RegulatoryCompliance/Bundles';
     }
 
@@ -53,13 +52,16 @@ class BundleList extends ListResource
      * Helper function for Create
      *
      * @param string $friendlyName The string that you assigned to describe the resource.
+     
      * @param string $email The email address that will receive updates when the Bundle resource changes status.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, string $email, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -89,7 +91,9 @@ class BundleList extends ListResource
      * Create the BundleInstance
      *
      * @param string $friendlyName The string that you assigned to describe the resource.
+     
      * @param string $email The email address that will receive updates when the Bundle resource changes status.
+     
      * @param array|Options $options Optional Arguments
      * @return BundleInstance Created BundleInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -108,7 +112,9 @@ class BundleList extends ListResource
      * Create the BundleInstance with Metadata
      *
      * @param string $friendlyName The string that you assigned to describe the resource.
+     
      * @param string $email The email address that will receive updates when the Bundle resource changes status.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -120,6 +126,7 @@ class BundleList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -133,6 +140,7 @@ class BundleList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -154,6 +162,7 @@ class BundleList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

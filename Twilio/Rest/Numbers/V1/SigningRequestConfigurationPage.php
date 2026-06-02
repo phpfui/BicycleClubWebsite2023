@@ -43,6 +43,7 @@ class SigningRequestConfigurationPage extends Page
         return new SigningRequestConfigurationInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

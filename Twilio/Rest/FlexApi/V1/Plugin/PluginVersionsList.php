@@ -50,7 +50,6 @@ class PluginVersionsList extends ListResource
             $pluginSid,
         
         ];
-
         $this->uri = '/PluginService/Plugins/' . \rawurlencode($pluginSid)
         .'/Versions';
     }
@@ -58,14 +57,18 @@ class PluginVersionsList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $version The Flex Plugin Version's version.
+     
      * @param string $pluginUrl The URL of the Flex Plugin Version bundle
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $version, string $pluginUrl, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -90,8 +93,11 @@ class PluginVersionsList extends ListResource
     /**
      * Create the PluginVersionsInstance
      *
+     
      * @param string $version The Flex Plugin Version's version.
+     
      * @param string $pluginUrl The URL of the Flex Plugin Version bundle
+     
      * @param array|Options $options Optional Arguments
      * @return PluginVersionsInstance Created PluginVersionsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -110,8 +116,11 @@ class PluginVersionsList extends ListResource
     /**
      * Create the PluginVersionsInstance with Metadata
      *
+     
      * @param string $version The Flex Plugin Version's version.
+     
      * @param string $pluginUrl The URL of the Flex Plugin Version bundle
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -124,6 +133,7 @@ class PluginVersionsList extends ListResource
                         $response->getContent(),
                         $this->solution['pluginSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -137,6 +147,7 @@ class PluginVersionsList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -157,6 +168,7 @@ class PluginVersionsList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

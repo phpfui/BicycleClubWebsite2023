@@ -43,6 +43,7 @@ class BrandRegistrationOtpPage extends Page
         return new BrandRegistrationOtpInstance($this->version, $payload, $this->solution['brandRegistrationSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

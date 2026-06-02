@@ -43,6 +43,7 @@ class PluginConfigurationPage extends Page
         return new PluginConfigurationInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

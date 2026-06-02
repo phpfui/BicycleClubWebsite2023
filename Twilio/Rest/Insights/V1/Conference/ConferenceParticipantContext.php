@@ -58,12 +58,15 @@ class ConferenceParticipantContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $params = Values::of([
@@ -80,6 +83,8 @@ class ConferenceParticipantContext extends InstanceContext
     /**
      * Fetch the ConferenceParticipantInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ConferenceParticipantInstance Fetched ConferenceParticipantInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -99,6 +104,8 @@ class ConferenceParticipantContext extends InstanceContext
     /**
      * Fetch the ConferenceParticipantInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -112,6 +119,7 @@ class ConferenceParticipantContext extends InstanceContext
                         $this->solution['conferenceSid'],
                         $this->solution['participantSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -43,6 +43,7 @@ class SipDomainPage extends Page
         return new SipDomainInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

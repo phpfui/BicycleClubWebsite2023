@@ -39,32 +39,34 @@ class QueryList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/batch/query';
     }
 
     /**
      * Helper function for Create
      *
+     * @param ?LookupRequest $lookupRequest
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _create(): Response
+    private function _create(?LookupRequest $lookupRequest = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $lookupRequest->toArray();
+        $data = $lookupRequest ? $lookupRequest->toArray() : [];
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
     }
 
     /**
      * Create the QueryInstance
      *
+     * @param ?LookupRequest $lookupRequest
      * @return QueryInstance Created QueryInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function create(): QueryInstance
+    public function create(?LookupRequest $lookupRequest = null): QueryInstance
     {
-        $response = $this->_create();
+        $response = $this->_create($lookupRequest);
         return new QueryInstance(
             $this->version,
             $response->getContent()
@@ -75,16 +77,18 @@ class QueryList extends ListResource
     /**
      * Create the QueryInstance with Metadata
      *
+     * @param ?LookupRequest $lookupRequest
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function createWithMetadata(): ResourceMetadata
+    public function createWithMetadata(?LookupRequest $lookupRequest = null): ResourceMetadata
     {
-        $response = $this->_create();
+        $response = $this->_create($lookupRequest);
         $resource = new QueryInstance(
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -43,6 +43,7 @@ class NewVerifyFactorPage extends Page
         return new NewVerifyFactorInstance($this->version, $payload, $this->solution['serviceSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

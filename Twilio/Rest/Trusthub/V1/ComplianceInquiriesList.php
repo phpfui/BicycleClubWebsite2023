@@ -40,7 +40,6 @@ class ComplianceInquiriesList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/ComplianceInquiries/Customers/Initialize';
     }
 
@@ -53,6 +52,7 @@ class ComplianceInquiriesList extends ListResource
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -99,6 +99,7 @@ class ComplianceInquiriesList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

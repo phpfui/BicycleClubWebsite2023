@@ -45,7 +45,6 @@ class TranscriptList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Transcripts';
     }
 
@@ -53,13 +52,16 @@ class TranscriptList extends ListResource
      * Helper function for Create
      *
      * @param string $serviceSid The unique SID identifier of the Service.
+     
      * @param array $channel JSON object describing Media Channel including Source and Participants
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $serviceSid, array $channel, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -81,7 +83,9 @@ class TranscriptList extends ListResource
      * Create the TranscriptInstance
      *
      * @param string $serviceSid The unique SID identifier of the Service.
+     
      * @param array $channel JSON object describing Media Channel including Source and Participants
+     
      * @param array|Options $options Optional Arguments
      * @return TranscriptInstance Created TranscriptInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -100,7 +104,9 @@ class TranscriptList extends ListResource
      * Create the TranscriptInstance with Metadata
      *
      * @param string $serviceSid The unique SID identifier of the Service.
+     
      * @param array $channel JSON object describing Media Channel including Source and Participants
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -112,6 +118,7 @@ class TranscriptList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -125,6 +132,7 @@ class TranscriptList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -146,6 +154,7 @@ class TranscriptList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

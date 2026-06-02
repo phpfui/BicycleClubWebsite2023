@@ -50,7 +50,6 @@ class SiprecList extends ListResource
             $callSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Calls/' . \rawurlencode($callSid)
         .'/Siprec.json';
@@ -59,12 +58,14 @@ class SiprecList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -483,6 +484,7 @@ class SiprecList extends ListResource
     /**
      * Create the SiprecInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return SiprecInstance Created SiprecInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -502,6 +504,7 @@ class SiprecList extends ListResource
     /**
      * Create the SiprecInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -515,6 +518,7 @@ class SiprecList extends ListResource
                         $this->solution['accountSid'],
                         $this->solution['callSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

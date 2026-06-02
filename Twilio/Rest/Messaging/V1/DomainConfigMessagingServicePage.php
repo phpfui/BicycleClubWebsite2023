@@ -43,6 +43,7 @@ class DomainConfigMessagingServicePage extends Page
         return new DomainConfigMessagingServiceInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

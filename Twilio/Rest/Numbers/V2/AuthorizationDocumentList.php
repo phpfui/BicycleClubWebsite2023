@@ -45,7 +45,6 @@ class AuthorizationDocumentList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/HostedNumber/AuthorizationDocuments';
     }
 
@@ -53,15 +52,20 @@ class AuthorizationDocumentList extends ListResource
      * Helper function for Create
      *
      * @param string $addressSid A 34 character string that uniquely identifies the Address resource that is associated with this AuthorizationDocument.
+     
      * @param string $email Email that this AuthorizationDocument will be sent to for signing.
+     
      * @param string $contactPhoneNumber The contact phone number of the person authorized to sign the Authorization Document.
+     
      * @param string[] $hostedNumberOrderSids A list of HostedNumberOrder sids that this AuthorizationDocument will authorize for hosting phone number capabilities on Twilio's platform.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $addressSid, string $email, string $contactPhoneNumber, array $hostedNumberOrderSids, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -87,9 +91,13 @@ class AuthorizationDocumentList extends ListResource
      * Create the AuthorizationDocumentInstance
      *
      * @param string $addressSid A 34 character string that uniquely identifies the Address resource that is associated with this AuthorizationDocument.
+     
      * @param string $email Email that this AuthorizationDocument will be sent to for signing.
+     
      * @param string $contactPhoneNumber The contact phone number of the person authorized to sign the Authorization Document.
+     
      * @param string[] $hostedNumberOrderSids A list of HostedNumberOrder sids that this AuthorizationDocument will authorize for hosting phone number capabilities on Twilio's platform.
+     
      * @param array|Options $options Optional Arguments
      * @return AuthorizationDocumentInstance Created AuthorizationDocumentInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -108,9 +116,13 @@ class AuthorizationDocumentList extends ListResource
      * Create the AuthorizationDocumentInstance with Metadata
      *
      * @param string $addressSid A 34 character string that uniquely identifies the Address resource that is associated with this AuthorizationDocument.
+     
      * @param string $email Email that this AuthorizationDocument will be sent to for signing.
+     
      * @param string $contactPhoneNumber The contact phone number of the person authorized to sign the Authorization Document.
+     
      * @param string[] $hostedNumberOrderSids A list of HostedNumberOrder sids that this AuthorizationDocument will authorize for hosting phone number capabilities on Twilio's platform.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -122,6 +134,7 @@ class AuthorizationDocumentList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -135,6 +148,7 @@ class AuthorizationDocumentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -156,6 +170,7 @@ class AuthorizationDocumentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

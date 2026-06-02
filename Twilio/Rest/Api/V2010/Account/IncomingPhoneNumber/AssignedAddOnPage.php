@@ -43,6 +43,7 @@ class AssignedAddOnPage extends Page
         return new AssignedAddOnInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['resourceSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

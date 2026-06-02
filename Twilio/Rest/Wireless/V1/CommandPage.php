@@ -43,6 +43,7 @@ class CommandPage extends Page
         return new CommandInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -45,7 +45,6 @@ class ServiceList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Services';
     }
 
@@ -58,6 +57,7 @@ class ServiceList extends ListResource
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -112,6 +112,7 @@ class ServiceList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -125,6 +126,7 @@ class ServiceList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -145,6 +147,7 @@ class ServiceList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

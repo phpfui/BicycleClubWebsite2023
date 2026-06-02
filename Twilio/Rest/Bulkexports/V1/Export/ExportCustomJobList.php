@@ -49,7 +49,6 @@ class ExportCustomJobList extends ListResource
             $resourceType,
         
         ];
-
         $this->uri = '/Exports/' . \rawurlencode($resourceType)
         .'/Jobs';
     }
@@ -57,15 +56,20 @@ class ExportCustomJobList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $startDay The start day for the custom export specified as a string in the format of yyyy-mm-dd
+     
      * @param string $endDay The end day for the custom export specified as a string in the format of yyyy-mm-dd. End day is inclusive and must be 2 days earlier than the current UTC day.
+     
      * @param string $friendlyName The friendly name specified when creating the job
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $startDay, string $endDay, string $friendlyName, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -90,9 +94,13 @@ class ExportCustomJobList extends ListResource
     /**
      * Create the ExportCustomJobInstance
      *
+     
      * @param string $startDay The start day for the custom export specified as a string in the format of yyyy-mm-dd
+     
      * @param string $endDay The end day for the custom export specified as a string in the format of yyyy-mm-dd. End day is inclusive and must be 2 days earlier than the current UTC day.
+     
      * @param string $friendlyName The friendly name specified when creating the job
+     
      * @param array|Options $options Optional Arguments
      * @return ExportCustomJobInstance Created ExportCustomJobInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -111,9 +119,13 @@ class ExportCustomJobList extends ListResource
     /**
      * Create the ExportCustomJobInstance with Metadata
      *
+     
      * @param string $startDay The start day for the custom export specified as a string in the format of yyyy-mm-dd
+     
      * @param string $endDay The end day for the custom export specified as a string in the format of yyyy-mm-dd. End day is inclusive and must be 2 days earlier than the current UTC day.
+     
      * @param string $friendlyName The friendly name specified when creating the job
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -126,6 +138,7 @@ class ExportCustomJobList extends ListResource
                         $response->getContent(),
                         $this->solution['resourceType']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -139,6 +152,7 @@ class ExportCustomJobList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -159,6 +173,7 @@ class ExportCustomJobList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

@@ -43,6 +43,7 @@ class CustomerProfilesPage extends Page
         return new CustomerProfilesInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

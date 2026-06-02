@@ -52,11 +52,13 @@ class SourceIpMappingContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -64,6 +66,7 @@ class SourceIpMappingContext extends InstanceContext
     /**
      * Delete the SourceIpMappingInstance
      *
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -77,12 +80,14 @@ class SourceIpMappingContext extends InstanceContext
     /**
      * Delete the SourceIpMappingInstance with Metadata
      *
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -95,11 +100,13 @@ class SourceIpMappingContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -107,6 +114,7 @@ class SourceIpMappingContext extends InstanceContext
     /**
      * Fetch the SourceIpMappingInstance
      *
+     
      * @return SourceIpMappingInstance Fetched SourceIpMappingInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -124,6 +132,7 @@ class SourceIpMappingContext extends InstanceContext
     /**
      * Fetch the SourceIpMappingInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -135,6 +144,7 @@ class SourceIpMappingContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -146,12 +156,15 @@ class SourceIpMappingContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param string $sipDomainSid The SID of the SIP Domain that the IP Record should be mapped to.
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $sipDomainSid): Response
     {
+        
         $data = Values::of([
             'SipDomainSid' =>
                 $sipDomainSid,
@@ -164,7 +177,9 @@ class SourceIpMappingContext extends InstanceContext
     /**
      * Update the SourceIpMappingInstance
      *
+     
      * @param string $sipDomainSid The SID of the SIP Domain that the IP Record should be mapped to.
+     
      * @return SourceIpMappingInstance Updated SourceIpMappingInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -182,7 +197,9 @@ class SourceIpMappingContext extends InstanceContext
     /**
      * Update the SourceIpMappingInstance with Metadata
      *
+     
      * @param string $sipDomainSid The SID of the SIP Domain that the IP Record should be mapped to.
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -194,6 +211,7 @@ class SourceIpMappingContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

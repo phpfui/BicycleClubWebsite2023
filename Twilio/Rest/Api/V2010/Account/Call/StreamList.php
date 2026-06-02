@@ -51,7 +51,6 @@ class StreamList extends ListResource
             $callSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Calls/' . \rawurlencode($callSid)
         .'/Streams.json';
@@ -60,13 +59,16 @@ class StreamList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $url Relative or absolute URL where WebSocket connection will be established.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $url, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -485,7 +487,9 @@ class StreamList extends ListResource
     /**
      * Create the StreamInstance
      *
+     
      * @param string $url Relative or absolute URL where WebSocket connection will be established.
+     
      * @param array|Options $options Optional Arguments
      * @return StreamInstance Created StreamInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -505,7 +509,9 @@ class StreamList extends ListResource
     /**
      * Create the StreamInstance with Metadata
      *
+     
      * @param string $url Relative or absolute URL where WebSocket connection will be established.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -519,6 +525,7 @@ class StreamList extends ListResource
                         $this->solution['accountSid'],
                         $this->solution['callSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

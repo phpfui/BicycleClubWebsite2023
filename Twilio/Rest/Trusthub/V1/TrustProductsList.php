@@ -44,7 +44,6 @@ class TrustProductsList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/TrustProducts';
     }
 
@@ -52,14 +51,18 @@ class TrustProductsList extends ListResource
      * Helper function for Create
      *
      * @param string $friendlyName The string that you assigned to describe the resource.
+     
      * @param string $email The email address that will receive updates when the Trust Product resource changes status.
+     
      * @param string $policySid The unique string of a policy that is associated to the Trust Product resource.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, string $email, string $policySid, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -81,8 +84,11 @@ class TrustProductsList extends ListResource
      * Create the TrustProductsInstance
      *
      * @param string $friendlyName The string that you assigned to describe the resource.
+     
      * @param string $email The email address that will receive updates when the Trust Product resource changes status.
+     
      * @param string $policySid The unique string of a policy that is associated to the Trust Product resource.
+     
      * @param array|Options $options Optional Arguments
      * @return TrustProductsInstance Created TrustProductsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -101,8 +107,11 @@ class TrustProductsList extends ListResource
      * Create the TrustProductsInstance with Metadata
      *
      * @param string $friendlyName The string that you assigned to describe the resource.
+     
      * @param string $email The email address that will receive updates when the Trust Product resource changes status.
+     
      * @param string $policySid The unique string of a policy that is associated to the Trust Product resource.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -114,6 +123,7 @@ class TrustProductsList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -127,6 +137,7 @@ class TrustProductsList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -148,6 +159,7 @@ class TrustProductsList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

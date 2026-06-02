@@ -43,6 +43,7 @@ class PluginArchivePage extends Page
         return new PluginArchiveInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -43,6 +43,7 @@ class CredentialPage extends Page
         return new CredentialInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['credentialListSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

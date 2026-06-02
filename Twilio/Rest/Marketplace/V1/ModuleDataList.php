@@ -40,7 +40,6 @@ class ModuleDataList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Listings';
     }
 
@@ -53,6 +52,7 @@ class ModuleDataList extends ListResource
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -97,6 +97,7 @@ class ModuleDataList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -113,6 +114,7 @@ class ModuleDataList extends ListResource
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -146,6 +148,7 @@ class ModuleDataList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

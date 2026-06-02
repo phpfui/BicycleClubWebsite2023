@@ -44,32 +44,34 @@ class SigningRequestConfigurationList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/SigningRequest/Configuration';
     }
 
     /**
      * Helper function for Create
      *
+     * @param ?array $body
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _create(): Response
+    private function _create(?array $body = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $body->toArray();
+        $data = $body ? $body->toArray() : [];
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
     }
 
     /**
      * Create the SigningRequestConfigurationInstance
      *
+     * @param ?array $body
      * @return SigningRequestConfigurationInstance Created SigningRequestConfigurationInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function create(): SigningRequestConfigurationInstance
+    public function create(?array $body = null): SigningRequestConfigurationInstance
     {
-        $response = $this->_create();
+        $response = $this->_create($body);
         return new SigningRequestConfigurationInstance(
             $this->version,
             $response->getContent()
@@ -80,16 +82,18 @@ class SigningRequestConfigurationList extends ListResource
     /**
      * Create the SigningRequestConfigurationInstance with Metadata
      *
+     * @param ?array $body
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function createWithMetadata(): ResourceMetadata
+    public function createWithMetadata(?array $body = null): ResourceMetadata
     {
-        $response = $this->_create();
+        $response = $this->_create($body);
         $resource = new SigningRequestConfigurationInstance(
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -103,6 +107,7 @@ class SigningRequestConfigurationList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -124,6 +129,7 @@ class SigningRequestConfigurationList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

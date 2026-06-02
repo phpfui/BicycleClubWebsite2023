@@ -22,7 +22,7 @@ class Customer
 			}
 		}
 
-	public function edit(int $id, bool $email = true) : \PHPFUI\Form
+	public function edit(int $id) : \PHPFUI\Form
 		{
 		$form = new \PHPFUI\Form($this->page);
 		$customer = $this->customerModel->read($id);
@@ -34,13 +34,6 @@ class Customer
 		$lastName = new \PHPFUI\Input\Text('lastName', 'Last Name', $customer->lastName);
 		$lastName->setRequired();
 		$fieldSet->add(new \PHPFUI\MultiColumn($firstName, $lastName));
-
-		if ($email)
-			{
-			$email = new \PHPFUI\Input\Email('email', 'email', $customer->email);
-			$email->setRequired();
-			$fieldSet->add($email);
-			}
 		$address = new \PHPFUI\Input\Text('address', 'Address', $customer->address);
 		$address->setRequired();
 		$town = new \PHPFUI\Input\Text('town', 'Town', $customer->town);

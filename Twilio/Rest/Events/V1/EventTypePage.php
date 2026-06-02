@@ -43,6 +43,7 @@ class EventTypePage extends Page
         return new EventTypeInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

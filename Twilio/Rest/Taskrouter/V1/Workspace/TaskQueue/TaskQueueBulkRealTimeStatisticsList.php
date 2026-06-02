@@ -44,7 +44,6 @@ class TaskQueueBulkRealTimeStatisticsList extends ListResource
             $workspaceSid,
         
         ];
-
         $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
         .'/TaskQueues/RealTimeStatistics';
     }
@@ -52,25 +51,30 @@ class TaskQueueBulkRealTimeStatisticsList extends ListResource
     /**
      * Helper function for Create
      *
+     
+     * @param ?array $body
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _create(): Response
+    private function _create(?array $body = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $body->toArray();
+        $data = $body ? $body->toArray() : [];
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
     }
 
     /**
      * Create the TaskQueueBulkRealTimeStatisticsInstance
      *
+     
+     * @param ?array $body
      * @return TaskQueueBulkRealTimeStatisticsInstance Created TaskQueueBulkRealTimeStatisticsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function create(): TaskQueueBulkRealTimeStatisticsInstance
+    public function create(?array $body = null): TaskQueueBulkRealTimeStatisticsInstance
     {
-        $response = $this->_create();
+        $response = $this->_create($body);
         return new TaskQueueBulkRealTimeStatisticsInstance(
             $this->version,
             $response->getContent(),
@@ -82,17 +86,20 @@ class TaskQueueBulkRealTimeStatisticsList extends ListResource
     /**
      * Create the TaskQueueBulkRealTimeStatisticsInstance with Metadata
      *
+     
+     * @param ?array $body
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function createWithMetadata(): ResourceMetadata
+    public function createWithMetadata(?array $body = null): ResourceMetadata
     {
-        $response = $this->_create();
+        $response = $this->_create($body);
         $resource = new TaskQueueBulkRealTimeStatisticsInstance(
                         $this->version,
                         $response->getContent(),
                         $this->solution['workspaceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -67,11 +67,15 @@ class DataContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -79,6 +83,9 @@ class DataContext extends InstanceContext
     /**
      * Fetch the DataInstance
      *
+     
+     
+     
      * @return DataInstance Fetched DataInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -99,6 +106,9 @@ class DataContext extends InstanceContext
     /**
      * Fetch the DataInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -113,6 +123,7 @@ class DataContext extends InstanceContext
                         $this->solution['addOnResultSid'],
                         $this->solution['payloadSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

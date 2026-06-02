@@ -43,6 +43,7 @@ class FeedbackPage extends Page
         return new FeedbackInstance($this->version, $payload, $this->solution['id']);
     }
 
+
     /**
      * Provide a friendly representation
      *

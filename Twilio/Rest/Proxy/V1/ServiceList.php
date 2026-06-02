@@ -44,7 +44,6 @@ class ServiceList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Services';
     }
 
@@ -52,12 +51,14 @@ class ServiceList extends ListResource
      * Helper function for Create
      *
      * @param string $uniqueName An application-defined string that uniquely identifies the resource. This value must be 191 characters or fewer in length and be unique. **This value should not have PII.**
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $uniqueName, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -87,6 +88,7 @@ class ServiceList extends ListResource
      * Create the ServiceInstance
      *
      * @param string $uniqueName An application-defined string that uniquely identifies the resource. This value must be 191 characters or fewer in length and be unique. **This value should not have PII.**
+     
      * @param array|Options $options Optional Arguments
      * @return ServiceInstance Created ServiceInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -105,6 +107,7 @@ class ServiceList extends ListResource
      * Create the ServiceInstance with Metadata
      *
      * @param string $uniqueName An application-defined string that uniquely identifies the resource. This value must be 191 characters or fewer in length and be unique. **This value should not have PII.**
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -116,6 +119,7 @@ class ServiceList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -129,6 +133,7 @@ class ServiceList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -149,6 +154,7 @@ class ServiceList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

@@ -60,11 +60,13 @@ class RoomContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -72,6 +74,7 @@ class RoomContext extends InstanceContext
     /**
      * Fetch the RoomInstance
      *
+     
      * @return RoomInstance Fetched RoomInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -89,6 +92,7 @@ class RoomContext extends InstanceContext
     /**
      * Fetch the RoomInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -100,6 +104,7 @@ class RoomContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['roomSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

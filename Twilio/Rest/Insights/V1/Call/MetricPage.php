@@ -43,6 +43,7 @@ class MetricPage extends Page
         return new MetricInstance($this->version, $payload, $this->solution['callSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

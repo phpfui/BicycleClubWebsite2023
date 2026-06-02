@@ -45,7 +45,6 @@ class ValidationRequestList extends ListResource
             $accountSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/OutgoingCallerIds.json';
     }
@@ -54,12 +53,14 @@ class ValidationRequestList extends ListResource
      * Helper function for Create
      *
      * @param string $phoneNumber The phone number to verify in [E.164](https://www.twilio.com/docs/glossary/what-e164) format, which consists of a + followed by the country code and subscriber number.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $phoneNumber, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -85,6 +86,7 @@ class ValidationRequestList extends ListResource
      * Create the ValidationRequestInstance
      *
      * @param string $phoneNumber The phone number to verify in [E.164](https://www.twilio.com/docs/glossary/what-e164) format, which consists of a + followed by the country code and subscriber number.
+     
      * @param array|Options $options Optional Arguments
      * @return ValidationRequestInstance Created ValidationRequestInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -104,6 +106,7 @@ class ValidationRequestList extends ListResource
      * Create the ValidationRequestInstance with Metadata
      *
      * @param string $phoneNumber The phone number to verify in [E.164](https://www.twilio.com/docs/glossary/what-e164) format, which consists of a + followed by the country code and subscriber number.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -116,6 +119,7 @@ class ValidationRequestList extends ListResource
                         $response->getContent(),
                         $this->solution['accountSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

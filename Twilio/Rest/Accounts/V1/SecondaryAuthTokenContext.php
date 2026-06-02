@@ -52,6 +52,7 @@ class SecondaryAuthTokenContext extends InstanceContext
      */
     private function _create(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('POST', $this->uri, [], [], $headers, "create");
     }
@@ -85,6 +86,7 @@ class SecondaryAuthTokenContext extends InstanceContext
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -101,6 +103,7 @@ class SecondaryAuthTokenContext extends InstanceContext
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -127,6 +130,7 @@ class SecondaryAuthTokenContext extends InstanceContext
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,

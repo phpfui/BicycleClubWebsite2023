@@ -15,12 +15,15 @@ namespace Twilio\Rest;
 use Twilio\Domain;
 use Twilio\Exceptions\TwilioException;
 use Twilio\Rest\Voice\V1;
+use Twilio\Rest\Voice\V3;
 
 /**
  * @property \Twilio\Rest\Voice\V1 $v1
+ * @property \Twilio\Rest\Voice\V3 $v3
  */
 class VoiceBase extends Domain {
     protected $_v1;
+    protected $_v3;
 
     /**
      * Construct the Voice Domain
@@ -42,6 +45,16 @@ class VoiceBase extends Domain {
             $this->_v1 = new V1($this);
         }
         return $this->_v1;
+    }
+
+    /**
+     * @return V3 Version v3 of voice
+     */
+    protected function getV3(): V3 {
+        if (!$this->_v3) {
+            $this->_v3 = new V3($this);
+        }
+        return $this->_v3;
     }
 
     /**

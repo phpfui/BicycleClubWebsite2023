@@ -54,6 +54,7 @@ class InsightsSessionContext extends InstanceContext
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' , 'Authorization' => $options['authorization']]);
@@ -91,6 +92,7 @@ class InsightsSessionContext extends InstanceContext
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

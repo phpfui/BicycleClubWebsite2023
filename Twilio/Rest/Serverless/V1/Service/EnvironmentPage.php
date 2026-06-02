@@ -43,6 +43,7 @@ class EnvironmentPage extends Page
         return new EnvironmentInstance($this->version, $payload, $this->solution['serviceSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

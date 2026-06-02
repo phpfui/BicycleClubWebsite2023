@@ -45,7 +45,6 @@ class UsAppToPersonUsecaseList extends ListResource
             $messagingServiceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($messagingServiceSid)
         .'/Compliance/Usa2p/Usecases';
     }
@@ -53,12 +52,14 @@ class UsAppToPersonUsecaseList extends ListResource
     /**
      * Helper function for Fetch
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $params = Values::of([
@@ -73,6 +74,7 @@ class UsAppToPersonUsecaseList extends ListResource
     /**
      * Fetch the UsAppToPersonUsecaseInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return UsAppToPersonUsecaseInstance Fetched UsAppToPersonUsecaseInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -91,6 +93,7 @@ class UsAppToPersonUsecaseList extends ListResource
     /**
      * Fetch the UsAppToPersonUsecaseInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -103,6 +106,7 @@ class UsAppToPersonUsecaseList extends ListResource
                         $response->getContent(),
                         $this->solution['messagingServiceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

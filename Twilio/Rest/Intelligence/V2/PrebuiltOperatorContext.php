@@ -52,11 +52,13 @@ class PrebuiltOperatorContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -64,6 +66,7 @@ class PrebuiltOperatorContext extends InstanceContext
     /**
      * Fetch the PrebuiltOperatorInstance
      *
+     
      * @return PrebuiltOperatorInstance Fetched PrebuiltOperatorInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -81,6 +84,7 @@ class PrebuiltOperatorContext extends InstanceContext
     /**
      * Fetch the PrebuiltOperatorInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,6 +96,7 @@ class PrebuiltOperatorContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

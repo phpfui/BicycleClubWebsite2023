@@ -52,11 +52,13 @@ class ChannelsSenderContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -64,6 +66,7 @@ class ChannelsSenderContext extends InstanceContext
     /**
      * Delete the ChannelsSenderInstance
      *
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -77,12 +80,14 @@ class ChannelsSenderContext extends InstanceContext
     /**
      * Delete the ChannelsSenderInstance with Metadata
      *
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -95,11 +100,13 @@ class ChannelsSenderContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -107,6 +114,7 @@ class ChannelsSenderContext extends InstanceContext
     /**
      * Fetch the ChannelsSenderInstance
      *
+     
      * @return ChannelsSenderInstance Fetched ChannelsSenderInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -124,6 +132,7 @@ class ChannelsSenderContext extends InstanceContext
     /**
      * Fetch the ChannelsSenderInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -135,6 +144,7 @@ class ChannelsSenderContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -146,25 +156,30 @@ class ChannelsSenderContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     * @param ?MessagingV2ChannelsSenderRequestsUpdate $messagingV2ChannelsSenderRequestsUpdate
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _update(): Response
+    private function _update(?MessagingV2ChannelsSenderRequestsUpdate $messagingV2ChannelsSenderRequestsUpdate = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $messagingV2ChannelsSenderRequestsUpdate->toArray();
+        $data = $messagingV2ChannelsSenderRequestsUpdate ? $messagingV2ChannelsSenderRequestsUpdate->toArray() : [];
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "update");
     }
 
     /**
      * Update the ChannelsSenderInstance
      *
+     
+     * @param ?MessagingV2ChannelsSenderRequestsUpdate $messagingV2ChannelsSenderRequestsUpdate
      * @return ChannelsSenderInstance Updated ChannelsSenderInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function update(): ChannelsSenderInstance
+    public function update(?MessagingV2ChannelsSenderRequestsUpdate $messagingV2ChannelsSenderRequestsUpdate = null): ChannelsSenderInstance
     {
-        $response = $this->_update();
+        $response = $this->_update($messagingV2ChannelsSenderRequestsUpdate);
         return new ChannelsSenderInstance(
             $this->version,
             $response->getContent(),
@@ -176,17 +191,20 @@ class ChannelsSenderContext extends InstanceContext
     /**
      * Update the ChannelsSenderInstance with Metadata
      *
+     
+     * @param ?MessagingV2ChannelsSenderRequestsUpdate $messagingV2ChannelsSenderRequestsUpdate
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function updateWithMetadata(): ResourceMetadata
+    public function updateWithMetadata(?MessagingV2ChannelsSenderRequestsUpdate $messagingV2ChannelsSenderRequestsUpdate = null): ResourceMetadata
     {
-        $response = $this->_update();
+        $response = $this->_update($messagingV2ChannelsSenderRequestsUpdate);
         $resource = new ChannelsSenderInstance(
                         $this->version,
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

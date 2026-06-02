@@ -44,7 +44,6 @@ class NewVerifyFactorList extends ListResource
             $serviceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Passkeys/VerifyFactor';
     }
@@ -52,12 +51,15 @@ class NewVerifyFactorList extends ListResource
     /**
      * Helper function for Update
      *
+     
      * @param VerifyPasskeysFactorRequest $verifyPasskeysFactorRequest
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(VerifyPasskeysFactorRequest $verifyPasskeysFactorRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $verifyPasskeysFactorRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "update");
@@ -66,7 +68,9 @@ class NewVerifyFactorList extends ListResource
     /**
      * Update the NewVerifyFactorInstance
      *
+     
      * @param VerifyPasskeysFactorRequest $verifyPasskeysFactorRequest
+     
      * @return NewVerifyFactorInstance Updated NewVerifyFactorInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -84,7 +88,9 @@ class NewVerifyFactorList extends ListResource
     /**
      * Update the NewVerifyFactorInstance with Metadata
      *
+     
      * @param VerifyPasskeysFactorRequest $verifyPasskeysFactorRequest
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -96,6 +102,7 @@ class NewVerifyFactorList extends ListResource
                         $response->getContent(),
                         $this->solution['serviceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

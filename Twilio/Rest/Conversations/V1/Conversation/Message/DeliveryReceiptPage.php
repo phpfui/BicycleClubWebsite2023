@@ -43,6 +43,7 @@ class DeliveryReceiptPage extends Page
         return new DeliveryReceiptInstance($this->version, $payload, $this->solution['conversationSid'], $this->solution['messageSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

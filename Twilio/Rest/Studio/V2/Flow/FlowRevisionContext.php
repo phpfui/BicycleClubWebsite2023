@@ -57,11 +57,14 @@ class FlowRevisionContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -69,6 +72,8 @@ class FlowRevisionContext extends InstanceContext
     /**
      * Fetch the FlowRevisionInstance
      *
+     
+     
      * @return FlowRevisionInstance Fetched FlowRevisionInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -87,6 +92,8 @@ class FlowRevisionContext extends InstanceContext
     /**
      * Fetch the FlowRevisionInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -99,6 +106,7 @@ class FlowRevisionContext extends InstanceContext
                         $this->solution['sid'],
                         $this->solution['revision']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -63,11 +63,15 @@ class SyncListPermissionContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -75,6 +79,9 @@ class SyncListPermissionContext extends InstanceContext
     /**
      * Delete the SyncListPermissionInstance
      *
+     
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -88,12 +95,16 @@ class SyncListPermissionContext extends InstanceContext
     /**
      * Delete the SyncListPermissionInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -106,11 +117,15 @@ class SyncListPermissionContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -118,6 +133,9 @@ class SyncListPermissionContext extends InstanceContext
     /**
      * Fetch the SyncListPermissionInstance
      *
+     
+     
+     
      * @return SyncListPermissionInstance Fetched SyncListPermissionInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -137,6 +155,9 @@ class SyncListPermissionContext extends InstanceContext
     /**
      * Fetch the SyncListPermissionInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -150,6 +171,7 @@ class SyncListPermissionContext extends InstanceContext
                         $this->solution['listSid'],
                         $this->solution['identity']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -161,14 +183,21 @@ class SyncListPermissionContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
+     
      * @param bool $read Whether the identity can read the Sync List and its Items. Default value is `false`.
+     
      * @param bool $write Whether the identity can create, update, and delete Items in the Sync List. Default value is `false`.
+     
      * @param bool $manage Whether the identity can delete the Sync List. Default value is `false`.
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(bool $read, bool $write, bool $manage): Response
     {
+        
         $data = Values::of([
             'Read' =>
                 Serialize::booleanToString($read),
@@ -185,9 +214,15 @@ class SyncListPermissionContext extends InstanceContext
     /**
      * Update the SyncListPermissionInstance
      *
+     
+     
+     
      * @param bool $read Whether the identity can read the Sync List and its Items. Default value is `false`.
+     
      * @param bool $write Whether the identity can create, update, and delete Items in the Sync List. Default value is `false`.
+     
      * @param bool $manage Whether the identity can delete the Sync List. Default value is `false`.
+     
      * @return SyncListPermissionInstance Updated SyncListPermissionInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -207,9 +242,15 @@ class SyncListPermissionContext extends InstanceContext
     /**
      * Update the SyncListPermissionInstance with Metadata
      *
+     
+     
+     
      * @param bool $read Whether the identity can read the Sync List and its Items. Default value is `false`.
+     
      * @param bool $write Whether the identity can create, update, and delete Items in the Sync List. Default value is `false`.
+     
      * @param bool $manage Whether the identity can delete the Sync List. Default value is `false`.
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -223,6 +264,7 @@ class SyncListPermissionContext extends InstanceContext
                         $this->solution['listSid'],
                         $this->solution['identity']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

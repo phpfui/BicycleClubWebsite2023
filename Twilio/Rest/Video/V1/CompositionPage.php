@@ -43,6 +43,7 @@ class CompositionPage extends Page
         return new CompositionInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -52,9 +52,15 @@ catch (Throwable $e)
 		}
 	$email = 'webmaster@' . $_SERVER['SERVER_NAME'] ?? 'localhost';
 	$logger = \App\Tools\Logger::get();
-	$logger->debug($e->getMessage());
-	$logger->debug($e->getFile());
-	$logger->debug($e->getLine());
+	$message = $e->getMessage();
+	$logger->debug($message);
+	$found = \strpos($message, 'max_user_connections') > 0 || \strpos($message, \PHPFUI\ORM::class) > 0;
+
+	if (! $found)
+		{
+		$logger->debug($e->getFile());
+		$logger->debug($e->getLine());
+		}
 
 	foreach ($e->getTrace() as $row)
 		{
@@ -69,7 +75,7 @@ catch (Throwable $e)
 			$row[$key] = \str_replace(PROJECT_ROOT, '', $value);
 			}
 
-		if ($row)
+		if ($row && ! $found)
 			{
 			$logger->debug($row);
 			}

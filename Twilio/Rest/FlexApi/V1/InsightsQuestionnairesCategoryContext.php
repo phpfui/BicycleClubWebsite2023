@@ -53,12 +53,14 @@ class InsightsQuestionnairesCategoryContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Authorization' => $options['authorization']]);
@@ -68,6 +70,7 @@ class InsightsQuestionnairesCategoryContext extends InstanceContext
     /**
      * Delete the InsightsQuestionnairesCategoryInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
@@ -82,6 +85,7 @@ class InsightsQuestionnairesCategoryContext extends InstanceContext
     /**
      * Delete the InsightsQuestionnairesCategoryInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -89,6 +93,7 @@ class InsightsQuestionnairesCategoryContext extends InstanceContext
     public function deleteWithMetadata(array $options = []): ResourceMetadata
     {
         $response = $this->_delete($options);
+        
         
         return new ResourceMetadata(
             null,
@@ -101,13 +106,16 @@ class InsightsQuestionnairesCategoryContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param string $name The name of this category.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $name, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -122,7 +130,9 @@ class InsightsQuestionnairesCategoryContext extends InstanceContext
     /**
      * Update the InsightsQuestionnairesCategoryInstance
      *
+     
      * @param string $name The name of this category.
+     
      * @param array|Options $options Optional Arguments
      * @return InsightsQuestionnairesCategoryInstance Updated InsightsQuestionnairesCategoryInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -141,7 +151,9 @@ class InsightsQuestionnairesCategoryContext extends InstanceContext
     /**
      * Update the InsightsQuestionnairesCategoryInstance with Metadata
      *
+     
      * @param string $name The name of this category.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -154,6 +166,7 @@ class InsightsQuestionnairesCategoryContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['categorySid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

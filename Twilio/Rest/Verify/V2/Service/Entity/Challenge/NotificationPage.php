@@ -43,6 +43,7 @@ class NotificationPage extends Page
         return new NotificationInstance($this->version, $payload, $this->solution['serviceSid'], $this->solution['identity'], $this->solution['challengeSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

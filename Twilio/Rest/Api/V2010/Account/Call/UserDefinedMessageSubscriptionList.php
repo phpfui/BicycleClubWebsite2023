@@ -50,7 +50,6 @@ class UserDefinedMessageSubscriptionList extends ListResource
             $callSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Calls/' . \rawurlencode($callSid)
         .'/UserDefinedMessageSubscriptions.json';
@@ -59,13 +58,16 @@ class UserDefinedMessageSubscriptionList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $callback The URL we should call using the `method` to send user defined events to your application. URLs must contain a valid hostname (underscores are not permitted).
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $callback, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -84,7 +86,9 @@ class UserDefinedMessageSubscriptionList extends ListResource
     /**
      * Create the UserDefinedMessageSubscriptionInstance
      *
+     
      * @param string $callback The URL we should call using the `method` to send user defined events to your application. URLs must contain a valid hostname (underscores are not permitted).
+     
      * @param array|Options $options Optional Arguments
      * @return UserDefinedMessageSubscriptionInstance Created UserDefinedMessageSubscriptionInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -104,7 +108,9 @@ class UserDefinedMessageSubscriptionList extends ListResource
     /**
      * Create the UserDefinedMessageSubscriptionInstance with Metadata
      *
+     
      * @param string $callback The URL we should call using the `method` to send user defined events to your application. URLs must contain a valid hostname (underscores are not permitted).
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -118,6 +124,7 @@ class UserDefinedMessageSubscriptionList extends ListResource
                         $this->solution['accountSid'],
                         $this->solution['callSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

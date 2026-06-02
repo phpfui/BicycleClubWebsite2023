@@ -43,6 +43,7 @@ class DeactivationsPage extends Page
         return new DeactivationsInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

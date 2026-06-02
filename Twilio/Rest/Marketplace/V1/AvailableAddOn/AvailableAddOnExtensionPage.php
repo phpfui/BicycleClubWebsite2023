@@ -43,6 +43,7 @@ class AvailableAddOnExtensionPage extends Page
         return new AvailableAddOnExtensionInstance($this->version, $payload, $this->solution['availableAddOnSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -43,6 +43,7 @@ class InstalledAddOnExtensionPage extends Page
         return new InstalledAddOnExtensionInstance($this->version, $payload, $this->solution['installedAddOnSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

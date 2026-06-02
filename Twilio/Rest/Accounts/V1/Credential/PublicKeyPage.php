@@ -43,6 +43,7 @@ class PublicKeyPage extends Page
         return new PublicKeyInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

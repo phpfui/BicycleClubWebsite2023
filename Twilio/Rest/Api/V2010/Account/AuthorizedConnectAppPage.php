@@ -43,6 +43,7 @@ class AuthorizedConnectAppPage extends Page
         return new AuthorizedConnectAppInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

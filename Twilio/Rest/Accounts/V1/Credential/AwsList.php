@@ -44,7 +44,6 @@ class AwsList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Credentials/AWS';
     }
 
@@ -52,12 +51,14 @@ class AwsList extends ListResource
      * Helper function for Create
      *
      * @param string $credentials A string that contains the AWS access credentials in the format `<AWS_ACCESS_KEY_ID>:<AWS_SECRET_ACCESS_KEY>`. For example, `AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $credentials, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -77,6 +78,7 @@ class AwsList extends ListResource
      * Create the AwsInstance
      *
      * @param string $credentials A string that contains the AWS access credentials in the format `<AWS_ACCESS_KEY_ID>:<AWS_SECRET_ACCESS_KEY>`. For example, `AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`
+     
      * @param array|Options $options Optional Arguments
      * @return AwsInstance Created AwsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -95,6 +97,7 @@ class AwsList extends ListResource
      * Create the AwsInstance with Metadata
      *
      * @param string $credentials A string that contains the AWS access credentials in the format `<AWS_ACCESS_KEY_ID>:<AWS_SECRET_ACCESS_KEY>`. For example, `AKIAIOSFODNN7EXAMPLE:wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -106,6 +109,7 @@ class AwsList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -119,6 +123,7 @@ class AwsList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -139,6 +144,7 @@ class AwsList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

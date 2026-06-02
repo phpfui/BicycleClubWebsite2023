@@ -45,7 +45,6 @@ class EsimProfileList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/ESimProfiles';
     }
 
@@ -58,6 +57,7 @@ class EsimProfileList extends ListResource
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -106,6 +106,7 @@ class EsimProfileList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -119,6 +120,7 @@ class EsimProfileList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -140,6 +142,7 @@ class EsimProfileList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

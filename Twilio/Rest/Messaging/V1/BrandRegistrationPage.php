@@ -43,6 +43,7 @@ class BrandRegistrationPage extends Page
         return new BrandRegistrationInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

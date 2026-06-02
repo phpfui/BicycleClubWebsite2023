@@ -70,11 +70,14 @@ class SyncListContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -82,6 +85,8 @@ class SyncListContext extends InstanceContext
     /**
      * Delete the SyncListInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -95,12 +100,15 @@ class SyncListContext extends InstanceContext
     /**
      * Delete the SyncListInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -113,11 +121,14 @@ class SyncListContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -125,6 +136,8 @@ class SyncListContext extends InstanceContext
     /**
      * Fetch the SyncListInstance
      *
+     
+     
      * @return SyncListInstance Fetched SyncListInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -143,6 +156,8 @@ class SyncListContext extends InstanceContext
     /**
      * Fetch the SyncListInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -155,6 +170,7 @@ class SyncListContext extends InstanceContext
                         $this->solution['serviceSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -166,12 +182,15 @@ class SyncListContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -188,6 +207,8 @@ class SyncListContext extends InstanceContext
     /**
      * Update the SyncListInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return SyncListInstance Updated SyncListInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -207,6 +228,8 @@ class SyncListContext extends InstanceContext
     /**
      * Update the SyncListInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -220,6 +243,7 @@ class SyncListContext extends InstanceContext
                         $this->solution['serviceSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

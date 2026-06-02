@@ -43,6 +43,7 @@ class AddressConfigurationPage extends Page
         return new AddressConfigurationInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

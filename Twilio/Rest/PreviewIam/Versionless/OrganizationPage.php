@@ -43,6 +43,7 @@ class OrganizationPage extends Page
         return new OrganizationInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

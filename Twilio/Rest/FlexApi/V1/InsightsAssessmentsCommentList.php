@@ -44,7 +44,6 @@ class InsightsAssessmentsCommentList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Insights/QualityManagement/Assessments/Comments';
     }
 
@@ -52,17 +51,24 @@ class InsightsAssessmentsCommentList extends ListResource
      * Helper function for Create
      *
      * @param string $categoryId The ID of the category
+     
      * @param string $categoryName The name of the category
+     
      * @param string $comment The Assessment comment.
+     
      * @param string $segmentId The id of the segment.
+     
      * @param string $agentId The id of the agent.
+     
      * @param string $offset The offset
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $categoryId, string $categoryName, string $comment, string $segmentId, string $agentId, string $offset, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -88,11 +94,17 @@ class InsightsAssessmentsCommentList extends ListResource
      * Create the InsightsAssessmentsCommentInstance
      *
      * @param string $categoryId The ID of the category
+     
      * @param string $categoryName The name of the category
+     
      * @param string $comment The Assessment comment.
+     
      * @param string $segmentId The id of the segment.
+     
      * @param string $agentId The id of the agent.
+     
      * @param string $offset The offset
+     
      * @param array|Options $options Optional Arguments
      * @return InsightsAssessmentsCommentInstance Created InsightsAssessmentsCommentInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -111,11 +123,17 @@ class InsightsAssessmentsCommentList extends ListResource
      * Create the InsightsAssessmentsCommentInstance with Metadata
      *
      * @param string $categoryId The ID of the category
+     
      * @param string $categoryName The name of the category
+     
      * @param string $comment The Assessment comment.
+     
      * @param string $segmentId The id of the segment.
+     
      * @param string $agentId The id of the agent.
+     
      * @param string $offset The offset
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -127,6 +145,7 @@ class InsightsAssessmentsCommentList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -140,6 +159,7 @@ class InsightsAssessmentsCommentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -161,6 +181,7 @@ class InsightsAssessmentsCommentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

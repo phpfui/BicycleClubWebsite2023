@@ -43,12 +43,13 @@ class RideWaiver extends \Mpdf\Mpdf
 		$memberTable->addOrderBy('lastName');
 		$memberTable->setWhere(new \PHPFUI\ORM\Condition('rideId', $ride->rideId));
 		$this->AddPage();
-		$this->SetMargins(12, 12, 5);
+		$this->SetMargins(10, 10, 5);
 
 		$status = \App\Table\RideSignup::getRiderStatus();
 
 		$table = new \PHPFUI\Table();
-		$table->setHeaders(['firstName' => 'First Name', 'lastName' => 'Last Name', 'status' => 'Signuped As', 'cellPhone' => 'Rider Cell', 'emergencyContact' => 'Contact', 'emergencyPhone' => 'Contact Phone']);
+		$table->setHeaders(['firstName' => 'First Name', 'lastName' => 'Last Name', 'status' => 'Signuped As', 'cellPhone' => 'Rider Cell',
+			'emergencyContact' => 'Contact', 'emergencyPhone' => 'Contact Phone', 'license' => 'Plate']);
 
 		foreach ($memberTable->getArrayCursor() as $rider)
 			{

@@ -57,7 +57,6 @@ class WorkerList extends ListResource
             $workspaceSid,
         
         ];
-
         $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
         .'/Workers';
     }
@@ -65,13 +64,16 @@ class WorkerList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $friendlyName A descriptive string that you create to describe the new Worker. It can be up to 64 characters long.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -90,7 +92,9 @@ class WorkerList extends ListResource
     /**
      * Create the WorkerInstance
      *
+     
      * @param string $friendlyName A descriptive string that you create to describe the new Worker. It can be up to 64 characters long.
+     
      * @param array|Options $options Optional Arguments
      * @return WorkerInstance Created WorkerInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -109,7 +113,9 @@ class WorkerList extends ListResource
     /**
      * Create the WorkerInstance with Metadata
      *
+     
      * @param string $friendlyName A descriptive string that you create to describe the new Worker. It can be up to 64 characters long.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -122,6 +128,7 @@ class WorkerList extends ListResource
                         $response->getContent(),
                         $this->solution['workspaceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -135,6 +142,7 @@ class WorkerList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -156,6 +164,7 @@ class WorkerList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

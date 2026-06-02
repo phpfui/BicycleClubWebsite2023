@@ -43,6 +43,7 @@ class NewChallengePage extends Page
         return new NewChallengeInstance($this->version, $payload, $this->solution['serviceSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -129,4 +129,13 @@ class Record extends TwiML {
     public function setTranscribeCallback($transcribeCallback): self {
         return $this->setAttribute('transcribeCallback', $transcribeCallback);
     }
+
+    /**
+     * Add RecordingConfigurationId attribute.
+     *
+     * @param string $recordingConfigurationId Configuration for the recording
+     */
+    public function setRecordingConfigurationId($recordingConfigurationId): self {
+        return $this->setAttribute('recordingConfigurationId', $recordingConfigurationId);
+    }
 }

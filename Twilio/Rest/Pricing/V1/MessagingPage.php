@@ -43,6 +43,7 @@ class MessagingPage extends Page
         return new MessagingInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

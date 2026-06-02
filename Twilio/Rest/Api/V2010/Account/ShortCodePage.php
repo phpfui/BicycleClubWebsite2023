@@ -43,6 +43,7 @@ class ShortCodePage extends Page
         return new ShortCodeInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

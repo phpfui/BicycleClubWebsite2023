@@ -41,7 +41,6 @@ class MessagingGeopermissionsList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Messaging/GeoPermissions';
     }
 
@@ -54,6 +53,7 @@ class MessagingGeopermissionsList extends ListResource
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $params = Values::of([
@@ -96,6 +96,7 @@ class MessagingGeopermissionsList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -108,11 +109,13 @@ class MessagingGeopermissionsList extends ListResource
      * Helper function for Update
      *
      * @param array[] $permissions A list of objects where each object represents the Geo Permission to be updated. Each object contains the following fields: `country_code`, unique code for each country of Geo Permission; `type`, permission type of the Geo Permission i.e. country; `enabled`, configure true for enabling the Geo Permission, false for disabling the Geo Permission.
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $permissions): Response
     {
+        
         $data = Values::of([
             'Permissions' =>
                 Serialize::map($permissions,function ($e) { return Serialize::jsonObject($e); }),
@@ -126,6 +129,7 @@ class MessagingGeopermissionsList extends ListResource
      * Update the MessagingGeopermissionsInstance
      *
      * @param array[] $permissions A list of objects where each object represents the Geo Permission to be updated. Each object contains the following fields: `country_code`, unique code for each country of Geo Permission; `type`, permission type of the Geo Permission i.e. country; `enabled`, configure true for enabling the Geo Permission, false for disabling the Geo Permission.
+     
      * @return MessagingGeopermissionsInstance Updated MessagingGeopermissionsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -143,6 +147,7 @@ class MessagingGeopermissionsList extends ListResource
      * Update the MessagingGeopermissionsInstance with Metadata
      *
      * @param array[] $permissions A list of objects where each object represents the Geo Permission to be updated. Each object contains the following fields: `country_code`, unique code for each country of Geo Permission; `type`, permission type of the Geo Permission i.e. country; `enabled`, configure true for enabling the Geo Permission, false for disabling the Geo Permission.
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -153,6 +158,7 @@ class MessagingGeopermissionsList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

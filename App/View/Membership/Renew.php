@@ -61,7 +61,7 @@ class Renew
 			{
 			$customerModel = new \App\Model\Customer();
 			$customerView = new \App\View\Customer($this->page, $customerModel);
-			$form = $customerView->edit($member->memberId, false);
+			$form = $customerView->edit($member->memberId);
 
 			$output->add(new \PHPFUI\Header('Please correct the following errors', 4));
 			$output->add(new \App\UI\ErrorCallout($errors));

@@ -49,7 +49,6 @@ class SyncMapList extends ListResource
             $serviceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Maps';
     }
@@ -57,12 +56,14 @@ class SyncMapList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -81,6 +82,7 @@ class SyncMapList extends ListResource
     /**
      * Create the SyncMapInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return SyncMapInstance Created SyncMapInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -99,6 +101,7 @@ class SyncMapList extends ListResource
     /**
      * Create the SyncMapInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -111,6 +114,7 @@ class SyncMapList extends ListResource
                         $response->getContent(),
                         $this->solution['serviceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -124,6 +128,7 @@ class SyncMapList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -144,6 +149,7 @@ class SyncMapList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

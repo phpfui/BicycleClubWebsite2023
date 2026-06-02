@@ -43,6 +43,7 @@ class SyncListPage extends Page
         return new SyncListInstance($this->version, $payload, $this->solution['serviceSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

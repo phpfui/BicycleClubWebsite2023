@@ -39,7 +39,6 @@ class SenderIdRegistrationList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/SenderIdRegistrations';
     }
 
@@ -47,11 +46,13 @@ class SenderIdRegistrationList extends ListResource
      * Helper function for Create
      *
      * @param NumbersV1CreateEmbeddedRegistrationRequest $numbersV1CreateEmbeddedRegistrationRequest
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(NumbersV1CreateEmbeddedRegistrationRequest $numbersV1CreateEmbeddedRegistrationRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $numbersV1CreateEmbeddedRegistrationRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -61,6 +62,7 @@ class SenderIdRegistrationList extends ListResource
      * Create the SenderIdRegistrationInstance
      *
      * @param NumbersV1CreateEmbeddedRegistrationRequest $numbersV1CreateEmbeddedRegistrationRequest
+     
      * @return SenderIdRegistrationInstance Created SenderIdRegistrationInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -78,6 +80,7 @@ class SenderIdRegistrationList extends ListResource
      * Create the SenderIdRegistrationInstance with Metadata
      *
      * @param NumbersV1CreateEmbeddedRegistrationRequest $numbersV1CreateEmbeddedRegistrationRequest
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -88,6 +91,7 @@ class SenderIdRegistrationList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

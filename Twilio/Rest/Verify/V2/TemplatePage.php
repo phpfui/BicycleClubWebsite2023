@@ -43,6 +43,7 @@ class TemplatePage extends Page
         return new TemplateInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

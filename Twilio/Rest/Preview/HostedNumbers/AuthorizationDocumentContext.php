@@ -61,11 +61,13 @@ class AuthorizationDocumentContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -73,6 +75,7 @@ class AuthorizationDocumentContext extends InstanceContext
     /**
      * Fetch the AuthorizationDocumentInstance
      *
+     
      * @return AuthorizationDocumentInstance Fetched AuthorizationDocumentInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -90,6 +93,7 @@ class AuthorizationDocumentContext extends InstanceContext
     /**
      * Fetch the AuthorizationDocumentInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -101,6 +105,7 @@ class AuthorizationDocumentContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -112,12 +117,14 @@ class AuthorizationDocumentContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -144,6 +151,7 @@ class AuthorizationDocumentContext extends InstanceContext
     /**
      * Update the AuthorizationDocumentInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return AuthorizationDocumentInstance Updated AuthorizationDocumentInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -162,6 +170,7 @@ class AuthorizationDocumentContext extends InstanceContext
     /**
      * Update the AuthorizationDocumentInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -174,6 +183,7 @@ class AuthorizationDocumentContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

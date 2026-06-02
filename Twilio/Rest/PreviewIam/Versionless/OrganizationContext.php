@@ -71,11 +71,13 @@ class OrganizationContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/scim+json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -83,6 +85,7 @@ class OrganizationContext extends InstanceContext
     /**
      * Fetch the OrganizationInstance
      *
+     
      * @return OrganizationInstance Fetched OrganizationInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -100,6 +103,7 @@ class OrganizationContext extends InstanceContext
     /**
      * Fetch the OrganizationInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -111,6 +115,7 @@ class OrganizationContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['organizationSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

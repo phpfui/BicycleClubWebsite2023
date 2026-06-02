@@ -43,6 +43,7 @@ class InsightsConversationsPage extends Page
         return new InsightsConversationsInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

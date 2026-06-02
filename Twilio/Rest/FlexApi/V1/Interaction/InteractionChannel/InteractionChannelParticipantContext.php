@@ -62,12 +62,17 @@ class InteractionChannelParticipantContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
+     
      * @param string $status
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $status): Response
     {
+        
         $data = Values::of([
             'Status' =>
                 $status,
@@ -80,7 +85,11 @@ class InteractionChannelParticipantContext extends InstanceContext
     /**
      * Update the InteractionChannelParticipantInstance
      *
+     
+     
+     
      * @param string $status
+     
      * @return InteractionChannelParticipantInstance Updated InteractionChannelParticipantInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -100,7 +109,11 @@ class InteractionChannelParticipantContext extends InstanceContext
     /**
      * Update the InteractionChannelParticipantInstance with Metadata
      *
+     
+     
+     
      * @param string $status
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -114,6 +127,7 @@ class InteractionChannelParticipantContext extends InstanceContext
                         $this->solution['channelSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

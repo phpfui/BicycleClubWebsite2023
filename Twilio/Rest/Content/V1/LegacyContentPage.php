@@ -43,6 +43,7 @@ class LegacyContentPage extends Page
         return new LegacyContentInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

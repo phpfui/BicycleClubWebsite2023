@@ -43,6 +43,7 @@ class ContentAndApprovalsPage extends Page
         return new ContentAndApprovalsInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

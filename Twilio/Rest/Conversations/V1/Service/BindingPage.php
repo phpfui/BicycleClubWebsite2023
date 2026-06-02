@@ -43,6 +43,7 @@ class BindingPage extends Page
         return new BindingInstance($this->version, $payload, $this->solution['chatServiceSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

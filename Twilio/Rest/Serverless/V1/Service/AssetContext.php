@@ -65,11 +65,14 @@ class AssetContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -77,6 +80,8 @@ class AssetContext extends InstanceContext
     /**
      * Delete the AssetInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -90,12 +95,15 @@ class AssetContext extends InstanceContext
     /**
      * Delete the AssetInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -108,11 +116,14 @@ class AssetContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -120,6 +131,8 @@ class AssetContext extends InstanceContext
     /**
      * Fetch the AssetInstance
      *
+     
+     
      * @return AssetInstance Fetched AssetInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -138,6 +151,8 @@ class AssetContext extends InstanceContext
     /**
      * Fetch the AssetInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -150,6 +165,7 @@ class AssetContext extends InstanceContext
                         $this->solution['serviceSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -161,12 +177,16 @@ class AssetContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param string $friendlyName A descriptive string that you create to describe the Asset resource. It can be a maximum of 255 characters.
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $friendlyName): Response
     {
+        
         $data = Values::of([
             'FriendlyName' =>
                 $friendlyName,
@@ -179,7 +199,10 @@ class AssetContext extends InstanceContext
     /**
      * Update the AssetInstance
      *
+     
+     
      * @param string $friendlyName A descriptive string that you create to describe the Asset resource. It can be a maximum of 255 characters.
+     
      * @return AssetInstance Updated AssetInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -198,7 +221,10 @@ class AssetContext extends InstanceContext
     /**
      * Update the AssetInstance with Metadata
      *
+     
+     
      * @param string $friendlyName A descriptive string that you create to describe the Asset resource. It can be a maximum of 255 characters.
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -211,6 +237,7 @@ class AssetContext extends InstanceContext
                         $this->solution['serviceSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

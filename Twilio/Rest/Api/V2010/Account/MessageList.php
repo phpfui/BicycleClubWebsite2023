@@ -50,7 +50,6 @@ class MessageList extends ListResource
             $accountSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Messages.json';
     }
@@ -59,12 +58,14 @@ class MessageList extends ListResource
      * Helper function for Create
      *
      * @param string $to The recipient's phone number in [E.164](https://www.twilio.com/docs/glossary/what-e164) format (for SMS/MMS) or [channel address](https://www.twilio.com/docs/messaging/channels), e.g. `whatsapp:+15552229999`.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $to, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -128,6 +129,7 @@ class MessageList extends ListResource
      * Create the MessageInstance
      *
      * @param string $to The recipient's phone number in [E.164](https://www.twilio.com/docs/glossary/what-e164) format (for SMS/MMS) or [channel address](https://www.twilio.com/docs/messaging/channels), e.g. `whatsapp:+15552229999`.
+     
      * @param array|Options $options Optional Arguments
      * @return MessageInstance Created MessageInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -147,6 +149,7 @@ class MessageList extends ListResource
      * Create the MessageInstance with Metadata
      *
      * @param string $to The recipient's phone number in [E.164](https://www.twilio.com/docs/glossary/what-e164) format (for SMS/MMS) or [channel address](https://www.twilio.com/docs/messaging/channels), e.g. `whatsapp:+15552229999`.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -159,6 +162,7 @@ class MessageList extends ListResource
                         $response->getContent(),
                         $this->solution['accountSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -172,6 +176,7 @@ class MessageList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -193,6 +198,7 @@ class MessageList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

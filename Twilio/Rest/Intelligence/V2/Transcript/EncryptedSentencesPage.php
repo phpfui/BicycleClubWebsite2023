@@ -43,6 +43,7 @@ class EncryptedSentencesPage extends Page
         return new EncryptedSentencesInstance($this->version, $payload, $this->solution['transcriptSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

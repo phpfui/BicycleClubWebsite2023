@@ -43,6 +43,7 @@ class TranscriptPage extends Page
         return new TranscriptInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

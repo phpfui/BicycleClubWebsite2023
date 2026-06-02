@@ -43,6 +43,7 @@ class SenderIdRegistrationPage extends Page
         return new SenderIdRegistrationInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

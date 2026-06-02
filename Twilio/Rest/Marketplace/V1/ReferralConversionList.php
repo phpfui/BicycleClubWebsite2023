@@ -39,7 +39,6 @@ class ReferralConversionList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/ReferralConversion';
     }
 
@@ -47,11 +46,13 @@ class ReferralConversionList extends ListResource
      * Helper function for Create
      *
      * @param CreateReferralConversionRequest $createReferralConversionRequest
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(CreateReferralConversionRequest $createReferralConversionRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $createReferralConversionRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -61,6 +62,7 @@ class ReferralConversionList extends ListResource
      * Create the ReferralConversionInstance
      *
      * @param CreateReferralConversionRequest $createReferralConversionRequest
+     
      * @return ReferralConversionInstance Created ReferralConversionInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -78,6 +80,7 @@ class ReferralConversionList extends ListResource
      * Create the ReferralConversionInstance with Metadata
      *
      * @param CreateReferralConversionRequest $createReferralConversionRequest
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -88,6 +91,7 @@ class ReferralConversionList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

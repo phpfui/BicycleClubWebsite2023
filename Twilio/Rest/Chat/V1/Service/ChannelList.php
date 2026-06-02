@@ -49,7 +49,6 @@ class ChannelList extends ListResource
             $serviceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Channels';
     }
@@ -57,12 +56,14 @@ class ChannelList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -83,6 +84,7 @@ class ChannelList extends ListResource
     /**
      * Create the ChannelInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ChannelInstance Created ChannelInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -101,6 +103,7 @@ class ChannelList extends ListResource
     /**
      * Create the ChannelInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -113,6 +116,7 @@ class ChannelList extends ListResource
                         $response->getContent(),
                         $this->solution['serviceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -126,6 +130,7 @@ class ChannelList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -147,6 +152,7 @@ class ChannelList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

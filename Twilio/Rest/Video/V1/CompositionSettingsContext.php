@@ -50,12 +50,14 @@ class CompositionSettingsContext extends InstanceContext
      * Helper function for Create
      *
      * @param string $friendlyName A descriptive string that you create to describe the resource and show to the user in the console
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -81,6 +83,7 @@ class CompositionSettingsContext extends InstanceContext
      * Create the CompositionSettingsInstance
      *
      * @param string $friendlyName A descriptive string that you create to describe the resource and show to the user in the console
+     
      * @param array|Options $options Optional Arguments
      * @return CompositionSettingsInstance Created CompositionSettingsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -99,6 +102,7 @@ class CompositionSettingsContext extends InstanceContext
      * Create the CompositionSettingsInstance with Metadata
      *
      * @param string $friendlyName A descriptive string that you create to describe the resource and show to the user in the console
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -110,6 +114,7 @@ class CompositionSettingsContext extends InstanceContext
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -126,6 +131,7 @@ class CompositionSettingsContext extends InstanceContext
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -159,6 +165,7 @@ class CompositionSettingsContext extends InstanceContext
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

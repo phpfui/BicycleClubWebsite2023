@@ -43,6 +43,7 @@ class InstalledAddOnPage extends Page
         return new InstalledAddOnInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

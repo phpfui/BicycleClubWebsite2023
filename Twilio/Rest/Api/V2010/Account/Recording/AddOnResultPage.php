@@ -43,6 +43,7 @@ class AddOnResultPage extends Page
         return new AddOnResultInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['referenceSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

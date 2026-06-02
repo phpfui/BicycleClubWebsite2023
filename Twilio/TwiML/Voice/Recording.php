@@ -76,4 +76,13 @@ class Recording extends TwiML {
     public function setChannels($channels): self {
         return $this->setAttribute('channels', $channels);
     }
+
+    /**
+     * Add RecordingConfigurationId attribute.
+     *
+     * @param string $recordingConfigurationId Configuration for the recording
+     */
+    public function setRecordingConfigurationId($recordingConfigurationId): self {
+        return $this->setAttribute('recordingConfigurationId', $recordingConfigurationId);
+    }
 }

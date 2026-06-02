@@ -49,7 +49,6 @@ class BrandVettingList extends ListResource
             $brandSid,
         
         ];
-
         $this->uri = '/a2p/BrandRegistrations/' . \rawurlencode($brandSid)
         .'/Vettings';
     }
@@ -57,13 +56,16 @@ class BrandVettingList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $vettingProvider
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $vettingProvider, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -80,7 +82,9 @@ class BrandVettingList extends ListResource
     /**
      * Create the BrandVettingInstance
      *
+     
      * @param string $vettingProvider
+     
      * @param array|Options $options Optional Arguments
      * @return BrandVettingInstance Created BrandVettingInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -99,7 +103,9 @@ class BrandVettingList extends ListResource
     /**
      * Create the BrandVettingInstance with Metadata
      *
+     
      * @param string $vettingProvider
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -112,6 +118,7 @@ class BrandVettingList extends ListResource
                         $response->getContent(),
                         $this->solution['brandSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -125,6 +132,7 @@ class BrandVettingList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -146,6 +154,7 @@ class BrandVettingList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

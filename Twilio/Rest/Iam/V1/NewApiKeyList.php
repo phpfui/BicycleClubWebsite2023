@@ -41,7 +41,6 @@ class NewApiKeyList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Keys';
     }
 
@@ -49,12 +48,14 @@ class NewApiKeyList extends ListResource
      * Helper function for Create
      *
      * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Payments resource.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $accountSid, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -76,6 +77,7 @@ class NewApiKeyList extends ListResource
      * Create the NewApiKeyInstance
      *
      * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Payments resource.
+     
      * @param array|Options $options Optional Arguments
      * @return NewApiKeyInstance Created NewApiKeyInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -94,6 +96,7 @@ class NewApiKeyList extends ListResource
      * Create the NewApiKeyInstance with Metadata
      *
      * @param string $accountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) that created the Payments resource.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -105,6 +108,7 @@ class NewApiKeyList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

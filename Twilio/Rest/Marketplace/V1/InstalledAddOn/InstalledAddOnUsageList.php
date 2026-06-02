@@ -44,7 +44,6 @@ class InstalledAddOnUsageList extends ListResource
             $installedAddOnSid,
         
         ];
-
         $this->uri = '/InstalledAddOns/' . \rawurlencode($installedAddOnSid)
         .'/Usage';
     }
@@ -52,12 +51,15 @@ class InstalledAddOnUsageList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param MarketplaceV1InstalledAddOnInstalledAddOnUsage $marketplaceV1InstalledAddOnInstalledAddOnUsage
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(MarketplaceV1InstalledAddOnInstalledAddOnUsage $marketplaceV1InstalledAddOnInstalledAddOnUsage): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $marketplaceV1InstalledAddOnInstalledAddOnUsage->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -66,7 +68,9 @@ class InstalledAddOnUsageList extends ListResource
     /**
      * Create the InstalledAddOnUsageInstance
      *
+     
      * @param MarketplaceV1InstalledAddOnInstalledAddOnUsage $marketplaceV1InstalledAddOnInstalledAddOnUsage
+     
      * @return InstalledAddOnUsageInstance Created InstalledAddOnUsageInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -84,7 +88,9 @@ class InstalledAddOnUsageList extends ListResource
     /**
      * Create the InstalledAddOnUsageInstance with Metadata
      *
+     
      * @param MarketplaceV1InstalledAddOnInstalledAddOnUsage $marketplaceV1InstalledAddOnInstalledAddOnUsage
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -96,6 +102,7 @@ class InstalledAddOnUsageList extends ListResource
                         $response->getContent(),
                         $this->solution['installedAddOnSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

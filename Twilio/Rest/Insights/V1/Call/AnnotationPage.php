@@ -43,6 +43,7 @@ class AnnotationPage extends Page
         return new AnnotationInstance($this->version, $payload, $this->solution['callSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

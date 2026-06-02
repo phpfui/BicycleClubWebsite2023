@@ -43,6 +43,7 @@ class AuthTokenPromotionPage extends Page
         return new AuthTokenPromotionInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

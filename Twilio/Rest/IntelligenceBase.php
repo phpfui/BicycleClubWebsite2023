@@ -15,12 +15,15 @@ namespace Twilio\Rest;
 use Twilio\Domain;
 use Twilio\Exceptions\TwilioException;
 use Twilio\Rest\Intelligence\V2;
+use Twilio\Rest\Intelligence\V3;
 
 /**
  * @property \Twilio\Rest\Intelligence\V2 $v2
+ * @property \Twilio\Rest\Intelligence\V3 $v3
  */
 class IntelligenceBase extends Domain {
     protected $_v2;
+    protected $_v3;
 
     /**
      * Construct the Intelligence Domain
@@ -42,6 +45,16 @@ class IntelligenceBase extends Domain {
             $this->_v2 = new V2($this);
         }
         return $this->_v2;
+    }
+
+    /**
+     * @return V3 Version v3 of intelligence
+     */
+    protected function getV3(): V3 {
+        if (!$this->_v3) {
+            $this->_v3 = new V3($this);
+        }
+        return $this->_v3;
     }
 
     /**

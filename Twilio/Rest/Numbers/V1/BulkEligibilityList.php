@@ -39,32 +39,34 @@ class BulkEligibilityList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/HostedNumber/Eligibility/Bulk';
     }
 
     /**
      * Helper function for Create
      *
+     * @param ?array $body
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _create(): Response
+    private function _create(?array $body = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $body->toArray();
+        $data = $body ? $body->toArray() : [];
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
     }
 
     /**
      * Create the BulkEligibilityInstance
      *
+     * @param ?array $body
      * @return BulkEligibilityInstance Created BulkEligibilityInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function create(): BulkEligibilityInstance
+    public function create(?array $body = null): BulkEligibilityInstance
     {
-        $response = $this->_create();
+        $response = $this->_create($body);
         return new BulkEligibilityInstance(
             $this->version,
             $response->getContent()
@@ -75,16 +77,18 @@ class BulkEligibilityList extends ListResource
     /**
      * Create the BulkEligibilityInstance with Metadata
      *
+     * @param ?array $body
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function createWithMetadata(): ResourceMetadata
+    public function createWithMetadata(?array $body = null): ResourceMetadata
     {
-        $response = $this->_create();
+        $response = $this->_create($body);
         $resource = new BulkEligibilityInstance(
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

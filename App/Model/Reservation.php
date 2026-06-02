@@ -264,7 +264,7 @@ class Reservation
 
 		foreach ($attendees as $attendee)
 			{
-			$email->addToMember($attendee);
+			$email->addTo($attendee->email, $attendee->fullName());
 			}
 		$email->send();
 		$payment->delete();

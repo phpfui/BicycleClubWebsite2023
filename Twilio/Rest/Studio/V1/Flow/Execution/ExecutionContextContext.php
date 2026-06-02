@@ -57,11 +57,14 @@ class ExecutionContextContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -69,6 +72,8 @@ class ExecutionContextContext extends InstanceContext
     /**
      * Fetch the ExecutionContextInstance
      *
+     
+     
      * @return ExecutionContextInstance Fetched ExecutionContextInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -87,6 +92,8 @@ class ExecutionContextContext extends InstanceContext
     /**
      * Fetch the ExecutionContextInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -99,6 +106,7 @@ class ExecutionContextContext extends InstanceContext
                         $this->solution['flowSid'],
                         $this->solution['executionSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -59,12 +59,15 @@ class OperatorResultContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $params = Values::of([
@@ -79,6 +82,8 @@ class OperatorResultContext extends InstanceContext
     /**
      * Fetch the OperatorResultInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return OperatorResultInstance Fetched OperatorResultInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -98,6 +103,8 @@ class OperatorResultContext extends InstanceContext
     /**
      * Fetch the OperatorResultInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -111,6 +118,7 @@ class OperatorResultContext extends InstanceContext
                         $this->solution['transcriptSid'],
                         $this->solution['operatorSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

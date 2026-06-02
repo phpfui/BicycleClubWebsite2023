@@ -43,6 +43,7 @@ class VerificationAttemptsSummaryPage extends Page
         return new VerificationAttemptsSummaryInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

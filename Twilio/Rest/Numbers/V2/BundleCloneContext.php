@@ -54,13 +54,16 @@ class BundleCloneContext extends InstanceContext
     /**
      * Helper function for Create
      *
+     
      * @param string $targetAccountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) where the bundle needs to be cloned.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $targetAccountSid, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -79,7 +82,9 @@ class BundleCloneContext extends InstanceContext
     /**
      * Create the BundleCloneInstance
      *
+     
      * @param string $targetAccountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) where the bundle needs to be cloned.
+     
      * @param array|Options $options Optional Arguments
      * @return BundleCloneInstance Created BundleCloneInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -98,7 +103,9 @@ class BundleCloneContext extends InstanceContext
     /**
      * Create the BundleCloneInstance with Metadata
      *
+     
      * @param string $targetAccountSid The SID of the [Account](https://www.twilio.com/docs/iam/api/account) where the bundle needs to be cloned.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -111,6 +118,7 @@ class BundleCloneContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['bundleSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

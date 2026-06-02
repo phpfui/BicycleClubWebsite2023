@@ -49,7 +49,6 @@ class WorkflowList extends ListResource
             $workspaceSid,
         
         ];
-
         $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
         .'/Workflows';
     }
@@ -57,14 +56,18 @@ class WorkflowList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $friendlyName A descriptive string that you create to describe the Workflow resource. For example, `Inbound Call Workflow` or `2014 Outbound Campaign`.
+     
      * @param string $configuration A JSON string that contains the rules to apply to the Workflow. See [Configuring Workflows](https://www.twilio.com/docs/taskrouter/workflow-configuration) for more information.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, string $configuration, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -87,8 +90,11 @@ class WorkflowList extends ListResource
     /**
      * Create the WorkflowInstance
      *
+     
      * @param string $friendlyName A descriptive string that you create to describe the Workflow resource. For example, `Inbound Call Workflow` or `2014 Outbound Campaign`.
+     
      * @param string $configuration A JSON string that contains the rules to apply to the Workflow. See [Configuring Workflows](https://www.twilio.com/docs/taskrouter/workflow-configuration) for more information.
+     
      * @param array|Options $options Optional Arguments
      * @return WorkflowInstance Created WorkflowInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -107,8 +113,11 @@ class WorkflowList extends ListResource
     /**
      * Create the WorkflowInstance with Metadata
      *
+     
      * @param string $friendlyName A descriptive string that you create to describe the Workflow resource. For example, `Inbound Call Workflow` or `2014 Outbound Campaign`.
+     
      * @param string $configuration A JSON string that contains the rules to apply to the Workflow. See [Configuring Workflows](https://www.twilio.com/docs/taskrouter/workflow-configuration) for more information.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -121,6 +130,7 @@ class WorkflowList extends ListResource
                         $response->getContent(),
                         $this->solution['workspaceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -134,6 +144,7 @@ class WorkflowList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -155,6 +166,7 @@ class WorkflowList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

@@ -71,11 +71,15 @@ class ChallengeContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -83,6 +87,9 @@ class ChallengeContext extends InstanceContext
     /**
      * Fetch the ChallengeInstance
      *
+     
+     
+     
      * @return ChallengeInstance Fetched ChallengeInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -102,6 +109,9 @@ class ChallengeContext extends InstanceContext
     /**
      * Fetch the ChallengeInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -115,6 +125,7 @@ class ChallengeContext extends InstanceContext
                         $this->solution['identity'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -126,12 +137,16 @@ class ChallengeContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -148,6 +163,9 @@ class ChallengeContext extends InstanceContext
     /**
      * Update the ChallengeInstance
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ChallengeInstance Updated ChallengeInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -168,6 +186,9 @@ class ChallengeContext extends InstanceContext
     /**
      * Update the ChallengeInstance with Metadata
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -182,6 +203,7 @@ class ChallengeContext extends InstanceContext
                         $this->solution['identity'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

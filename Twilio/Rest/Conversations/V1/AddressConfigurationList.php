@@ -45,7 +45,6 @@ class AddressConfigurationList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Configuration/Addresses';
     }
 
@@ -53,13 +52,16 @@ class AddressConfigurationList extends ListResource
      * Helper function for Create
      *
      * @param string $type
+     
      * @param string $address The unique address to be configured. The address can be a whatsapp address or phone number
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $type, string $address, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -97,7 +99,9 @@ class AddressConfigurationList extends ListResource
      * Create the AddressConfigurationInstance
      *
      * @param string $type
+     
      * @param string $address The unique address to be configured. The address can be a whatsapp address or phone number
+     
      * @param array|Options $options Optional Arguments
      * @return AddressConfigurationInstance Created AddressConfigurationInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -116,7 +120,9 @@ class AddressConfigurationList extends ListResource
      * Create the AddressConfigurationInstance with Metadata
      *
      * @param string $type
+     
      * @param string $address The unique address to be configured. The address can be a whatsapp address or phone number
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -128,6 +134,7 @@ class AddressConfigurationList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -141,6 +148,7 @@ class AddressConfigurationList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -162,6 +170,7 @@ class AddressConfigurationList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

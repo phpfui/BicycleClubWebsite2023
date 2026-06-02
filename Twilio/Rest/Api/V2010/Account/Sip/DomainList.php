@@ -50,7 +50,6 @@ class DomainList extends ListResource
             $accountSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/SIP/Domains.json';
     }
@@ -59,12 +58,14 @@ class DomainList extends ListResource
      * Helper function for Create
      *
      * @param string $domainName The unique address you reserve on Twilio to which you route your SIP traffic. Domain names can contain letters, digits, and \\\"-\\\" and must end with `sip.twilio.com`.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $domainName, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -104,6 +105,7 @@ class DomainList extends ListResource
      * Create the DomainInstance
      *
      * @param string $domainName The unique address you reserve on Twilio to which you route your SIP traffic. Domain names can contain letters, digits, and \\\"-\\\" and must end with `sip.twilio.com`.
+     
      * @param array|Options $options Optional Arguments
      * @return DomainInstance Created DomainInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -123,6 +125,7 @@ class DomainList extends ListResource
      * Create the DomainInstance with Metadata
      *
      * @param string $domainName The unique address you reserve on Twilio to which you route your SIP traffic. Domain names can contain letters, digits, and \\\"-\\\" and must end with `sip.twilio.com`.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -135,6 +138,7 @@ class DomainList extends ListResource
                         $response->getContent(),
                         $this->solution['accountSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -148,6 +152,7 @@ class DomainList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -168,6 +173,7 @@ class DomainList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

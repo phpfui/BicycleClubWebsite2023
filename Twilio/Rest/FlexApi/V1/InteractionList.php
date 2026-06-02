@@ -41,7 +41,6 @@ class InteractionList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Interactions';
     }
 
@@ -49,12 +48,14 @@ class InteractionList extends ListResource
      * Helper function for Create
      *
      * @param array $channel The Interaction's channel.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $channel, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -76,6 +77,7 @@ class InteractionList extends ListResource
      * Create the InteractionInstance
      *
      * @param array $channel The Interaction's channel.
+     
      * @param array|Options $options Optional Arguments
      * @return InteractionInstance Created InteractionInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -94,6 +96,7 @@ class InteractionList extends ListResource
      * Create the InteractionInstance with Metadata
      *
      * @param array $channel The Interaction's channel.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -105,6 +108,7 @@ class InteractionList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -67,12 +67,15 @@ class MessageContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'X-Twilio-Webhook-Enabled' => $options['xTwilioWebhookEnabled']]);
@@ -82,6 +85,8 @@ class MessageContext extends InstanceContext
     /**
      * Delete the MessageInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
@@ -96,6 +101,8 @@ class MessageContext extends InstanceContext
     /**
      * Delete the MessageInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -103,6 +110,7 @@ class MessageContext extends InstanceContext
     public function deleteWithMetadata(array $options = []): ResourceMetadata
     {
         $response = $this->_delete($options);
+        
         
         return new ResourceMetadata(
             null,
@@ -115,11 +123,14 @@ class MessageContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -127,6 +138,8 @@ class MessageContext extends InstanceContext
     /**
      * Fetch the MessageInstance
      *
+     
+     
      * @return MessageInstance Fetched MessageInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -145,6 +158,8 @@ class MessageContext extends InstanceContext
     /**
      * Fetch the MessageInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -157,6 +172,7 @@ class MessageContext extends InstanceContext
                         $this->solution['conversationSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -168,12 +184,15 @@ class MessageContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -198,6 +217,8 @@ class MessageContext extends InstanceContext
     /**
      * Update the MessageInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return MessageInstance Updated MessageInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -217,6 +238,8 @@ class MessageContext extends InstanceContext
     /**
      * Update the MessageInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -230,6 +253,7 @@ class MessageContext extends InstanceContext
                         $this->solution['conversationSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

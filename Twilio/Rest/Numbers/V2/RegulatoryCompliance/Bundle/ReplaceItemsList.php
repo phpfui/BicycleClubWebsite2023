@@ -44,7 +44,6 @@ class ReplaceItemsList extends ListResource
             $bundleSid,
         
         ];
-
         $this->uri = '/RegulatoryCompliance/Bundles/' . \rawurlencode($bundleSid)
         .'/ReplaceItems';
     }
@@ -52,12 +51,15 @@ class ReplaceItemsList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $fromBundleSid The source bundle sid to copy the item assignments from.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $fromBundleSid): Response
     {
+        
         $data = Values::of([
             'FromBundleSid' =>
                 $fromBundleSid,
@@ -70,7 +72,9 @@ class ReplaceItemsList extends ListResource
     /**
      * Create the ReplaceItemsInstance
      *
+     
      * @param string $fromBundleSid The source bundle sid to copy the item assignments from.
+     
      * @return ReplaceItemsInstance Created ReplaceItemsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -88,7 +92,9 @@ class ReplaceItemsList extends ListResource
     /**
      * Create the ReplaceItemsInstance with Metadata
      *
+     
      * @param string $fromBundleSid The source bundle sid to copy the item assignments from.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -100,6 +106,7 @@ class ReplaceItemsList extends ListResource
                         $response->getContent(),
                         $this->solution['bundleSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

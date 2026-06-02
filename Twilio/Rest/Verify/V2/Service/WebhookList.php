@@ -50,7 +50,6 @@ class WebhookList extends ListResource
             $serviceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Webhooks';
     }
@@ -58,15 +57,20 @@ class WebhookList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $friendlyName The string that you assigned to describe the webhook. **This value should not contain PII.**
+     
      * @param string[] $eventTypes The array of events that this Webhook is subscribed to. Possible event types: `*, factor.deleted, factor.created, factor.verified, challenge.approved, challenge.denied`
+     
      * @param string $webhookUrl The URL associated with this Webhook.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, array $eventTypes, string $webhookUrl, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -89,9 +93,13 @@ class WebhookList extends ListResource
     /**
      * Create the WebhookInstance
      *
+     
      * @param string $friendlyName The string that you assigned to describe the webhook. **This value should not contain PII.**
+     
      * @param string[] $eventTypes The array of events that this Webhook is subscribed to. Possible event types: `*, factor.deleted, factor.created, factor.verified, challenge.approved, challenge.denied`
+     
      * @param string $webhookUrl The URL associated with this Webhook.
+     
      * @param array|Options $options Optional Arguments
      * @return WebhookInstance Created WebhookInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -110,9 +118,13 @@ class WebhookList extends ListResource
     /**
      * Create the WebhookInstance with Metadata
      *
+     
      * @param string $friendlyName The string that you assigned to describe the webhook. **This value should not contain PII.**
+     
      * @param string[] $eventTypes The array of events that this Webhook is subscribed to. Possible event types: `*, factor.deleted, factor.created, factor.verified, challenge.approved, challenge.denied`
+     
      * @param string $webhookUrl The URL associated with this Webhook.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -125,6 +137,7 @@ class WebhookList extends ListResource
                         $response->getContent(),
                         $this->solution['serviceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -138,6 +151,7 @@ class WebhookList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -158,6 +172,7 @@ class WebhookList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

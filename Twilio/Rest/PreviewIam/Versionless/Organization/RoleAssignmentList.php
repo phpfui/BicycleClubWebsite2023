@@ -49,7 +49,6 @@ class RoleAssignmentList extends ListResource
             $organizationSid,
         
         ];
-
         $this->uri = '/' . \rawurlencode($organizationSid)
         .'/RoleAssignments';
     }
@@ -57,12 +56,15 @@ class RoleAssignmentList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param PublicApiCreateRoleAssignmentRequest $publicApiCreateRoleAssignmentRequest
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(PublicApiCreateRoleAssignmentRequest $publicApiCreateRoleAssignmentRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $publicApiCreateRoleAssignmentRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -71,7 +73,9 @@ class RoleAssignmentList extends ListResource
     /**
      * Create the RoleAssignmentInstance
      *
+     
      * @param PublicApiCreateRoleAssignmentRequest $publicApiCreateRoleAssignmentRequest
+     
      * @return RoleAssignmentInstance Created RoleAssignmentInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -89,7 +93,9 @@ class RoleAssignmentList extends ListResource
     /**
      * Create the RoleAssignmentInstance with Metadata
      *
+     
      * @param PublicApiCreateRoleAssignmentRequest $publicApiCreateRoleAssignmentRequest
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -101,6 +107,7 @@ class RoleAssignmentList extends ListResource
                         $response->getContent(),
                         $this->solution['organizationSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -114,6 +121,7 @@ class RoleAssignmentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -135,6 +143,7 @@ class RoleAssignmentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -241,7 +250,11 @@ class RoleAssignmentList extends ListResource
                 $options['identity'],
             'Scope' =>
                 $options['scope'],
-                                    
+            'ResourceType' =>
+                $options['resourceType'],
+            'ResourceId' =>
+                $options['resourceId'],
+                                                            
             'PageToken' => $pageToken,
             'Page' => $pageNumber,
             'PageSize' => $pageSize,

@@ -191,6 +191,15 @@ class Dial extends TwiML {
     }
 
     /**
+     * Add RecordingConfigurationId attribute.
+     *
+     * @param string $recordingConfigurationId Configuration for the recording
+     */
+    public function setRecordingConfigurationId($recordingConfigurationId): self {
+        return $this->setAttribute('recordingConfigurationId', $recordingConfigurationId);
+    }
+
+    /**
      * Add RecordingStatusCallbackMethod attribute.
      *
      * @param string $recordingStatusCallbackMethod Recording status callback URL

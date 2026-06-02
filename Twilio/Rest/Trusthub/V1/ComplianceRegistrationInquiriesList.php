@@ -41,7 +41,6 @@ class ComplianceRegistrationInquiriesList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/ComplianceInquiries/Registration/RegulatoryCompliance/GB/Initialize';
     }
 
@@ -49,13 +48,16 @@ class ComplianceRegistrationInquiriesList extends ListResource
      * Helper function for Create
      *
      * @param string $endUserType
+     
      * @param string $phoneNumberType
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $endUserType, string $phoneNumberType, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -147,7 +149,9 @@ class ComplianceRegistrationInquiriesList extends ListResource
      * Create the ComplianceRegistrationInquiriesInstance
      *
      * @param string $endUserType
+     
      * @param string $phoneNumberType
+     
      * @param array|Options $options Optional Arguments
      * @return ComplianceRegistrationInquiriesInstance Created ComplianceRegistrationInquiriesInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -166,7 +170,9 @@ class ComplianceRegistrationInquiriesList extends ListResource
      * Create the ComplianceRegistrationInquiriesInstance with Metadata
      *
      * @param string $endUserType
+     
      * @param string $phoneNumberType
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -178,6 +184,7 @@ class ComplianceRegistrationInquiriesList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

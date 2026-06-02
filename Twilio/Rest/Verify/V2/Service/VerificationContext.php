@@ -57,11 +57,14 @@ class VerificationContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -69,6 +72,8 @@ class VerificationContext extends InstanceContext
     /**
      * Fetch the VerificationInstance
      *
+     
+     
      * @return VerificationInstance Fetched VerificationInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -87,6 +92,8 @@ class VerificationContext extends InstanceContext
     /**
      * Fetch the VerificationInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -99,6 +106,7 @@ class VerificationContext extends InstanceContext
                         $this->solution['serviceSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -110,12 +118,16 @@ class VerificationContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param string $status
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $status): Response
     {
+        
         $data = Values::of([
             'Status' =>
                 $status,
@@ -128,7 +140,10 @@ class VerificationContext extends InstanceContext
     /**
      * Update the VerificationInstance
      *
+     
+     
      * @param string $status
+     
      * @return VerificationInstance Updated VerificationInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -147,7 +162,10 @@ class VerificationContext extends InstanceContext
     /**
      * Update the VerificationInstance with Metadata
      *
+     
+     
      * @param string $status
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -160,6 +178,7 @@ class VerificationContext extends InstanceContext
                         $this->solution['serviceSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

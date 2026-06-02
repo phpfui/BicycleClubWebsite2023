@@ -51,7 +51,6 @@ class WorkerChannelList extends ListResource
             $workerSid,
         
         ];
-
         $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
         .'/Workers/' . \rawurlencode($workerSid)
         .'/Channels';
@@ -62,6 +61,7 @@ class WorkerChannelList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -82,6 +82,7 @@ class WorkerChannelList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

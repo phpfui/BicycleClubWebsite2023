@@ -43,6 +43,7 @@ class ReportPage extends Page
         return new ReportInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -43,7 +43,6 @@ class AssistantList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Assistants';
     }
 
@@ -51,11 +50,13 @@ class AssistantList extends ListResource
      * Helper function for Create
      *
      * @param AssistantsV1ServiceCreateAssistantRequest $assistantsV1ServiceCreateAssistantRequest
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(AssistantsV1ServiceCreateAssistantRequest $assistantsV1ServiceCreateAssistantRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $assistantsV1ServiceCreateAssistantRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -65,6 +66,7 @@ class AssistantList extends ListResource
      * Create the AssistantInstance
      *
      * @param AssistantsV1ServiceCreateAssistantRequest $assistantsV1ServiceCreateAssistantRequest
+     
      * @return AssistantInstance Created AssistantInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -82,6 +84,7 @@ class AssistantList extends ListResource
      * Create the AssistantInstance with Metadata
      *
      * @param AssistantsV1ServiceCreateAssistantRequest $assistantsV1ServiceCreateAssistantRequest
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,6 +95,7 @@ class AssistantList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -105,6 +109,7 @@ class AssistantList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -125,6 +130,7 @@ class AssistantList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

@@ -40,7 +40,6 @@ class AuthorizeList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/authorize';
     }
 
@@ -53,6 +52,7 @@ class AuthorizeList extends ListResource
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $params = Values::of([
@@ -103,6 +103,7 @@ class AuthorizeList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

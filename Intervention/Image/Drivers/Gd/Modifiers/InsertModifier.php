@@ -4,20 +4,15 @@ declare(strict_types=1);
 
 namespace Intervention\Image\Drivers\Gd\Modifiers;
 
+use Intervention\Image\Exceptions\ImageException;
 use Intervention\Image\Exceptions\ModifierException;
-use Intervention\Image\Exceptions\RuntimeException;
 use Intervention\Image\Exceptions\StateException;
-use Intervention\Image\Interfaces\FrameInterface;
 use Intervention\Image\Interfaces\ImageInterface;
-use Intervention\Image\Interfaces\PointInterface;
 use Intervention\Image\Interfaces\SpecializedInterface;
 use Intervention\Image\Modifiers\InsertModifier as GenericInsertModifier;
-use Intervention\Image\Traits\CanConvertRange;
 
 class InsertModifier extends GenericInsertModifier implements SpecializedInterface
 {
-    use CanConvertRange;
-
     /**
      * {@inheritdoc}
      *
@@ -28,102 +23,81 @@ class InsertModifier extends GenericInsertModifier implements SpecializedInterfa
      */
     public function apply(ImageInterface $image): ImageInterface
     {
-        $watermark = $this->driver()->decodeImage($this->image);
+        $watermark = $this->watermark();
         $position = $this->position($image, $watermark);
+        $watermarkSize = $watermark->size();
 
         foreach ($image as $frame) {
             imagealphablending($frame->native(), true);
-
-            if ($this->transparency === 1.0) {
-                $this->insertOpaque($frame, $watermark, $position);
-            } else {
-                $this->insertTransparent($frame, $watermark, $position);
-            }
+            imagecopy(
+                $frame->native(),
+                $watermark->core()->native(),
+                $position->x(),
+                $position->y(),
+                0,
+                0,
+                $watermarkSize->width(),
+                $watermarkSize->height(),
+            );
         }
 
         return $image;
     }
 
     /**
-     * Insert watermark with 100% opacity
+     * Build watermark image.
      *
      * @throws ModifierException
      */
-    private function insertOpaque(FrameInterface $frame, ImageInterface $watermark, PointInterface $position): void
+    private function watermark(): ImageInterface
     {
-        imagecopy(
-            $frame->native(),
-            $watermark->core()->native(),
-            $position->x(),
-            $position->y(),
-            0,
-            0,
-            $watermark->width(),
-            $watermark->height()
-        );
+        try {
+            $watermark = $this->driver()->decodeImage($this->image);
+
+            return $this->transparency === 1.0 ? $watermark : $this->fadeWatermark($watermark);
+        } catch (ImageException $e) {
+            throw new ModifierException('Failed to build watermark', previous: $e);
+        }
     }
 
     /**
-     * Insert watermark transparent with current transparency
-     *
-     * Unfortunately, the original PHP function imagecopymerge does not work reliably.
-     * For example, any transparency of the image to be inserted is not applied correctly.
-     * For this reason, a new GDImage is created into which the original image is inserted
-     * in the first step and the watermark is inserted with 100% opacity in the second
-     * step. This combination is then transferred to the original image again with the
-     * respective opacity.
-     *
-     * Please note: Unfortunately, there is still an edge case, when a transparent image
-     * is inserted on a transparent background, the "double" transparent areas appear opaque!
+     * Build a faded copy of the watermark by scaling each pixel's alpha
+     * by the requested transparency factor of the modifier. Created once
+     * and reused for every frame.
      *
      * @throws ModifierException
      */
-    private function insertTransparent(FrameInterface $frame, ImageInterface $watermark, PointInterface $position): void
+    private function fadeWatermark(ImageInterface $watermark): ImageInterface
     {
-        $cut = imagecreatetruecolor($watermark->width(), $watermark->height());
+        $width = $watermark->width();
+        $height = $watermark->height();
 
-        if ($cut === false) {
-            throw new ModifierException('Failed to insert image');
+        $faded = imagecreatetruecolor($width, $height);
+
+        if ($faded === false) {
+            throw new ModifierException('Failed to build watermark image');
         }
 
-        imagecopy(
-            $cut,
-            $frame->native(),
-            0,
-            0,
-            $position->x(),
-            $position->y(),
-            imagesx($cut),
-            imagesy($cut)
-        );
+        imagealphablending($faded, false);
+        imagesavealpha($faded, true);
 
-        imagecopy(
-            $cut,
-            $watermark->core()->native(),
-            0,
-            0,
-            0,
-            0,
-            imagesx($cut),
-            imagesy($cut)
-        );
+        $watermarkNative = $watermark->core()->native();
+
+        for ($y = 0; $y < $height; $y++) {
+            for ($x = 0; $x < $width; $x++) {
+                $color = imagecolorat($watermarkNative, $x, $y);
+                $alpha = ($color >> 24) & 0x7F;
+                // GD stores alpha as 0 (opaque) … 127 (transparent), so scale
+                // the opacity (127 - alpha) and flip back to GD's convention.
+                $newAlpha = 127 - (int) round((127 - $alpha) * $this->transparency);
+                imagesetpixel($faded, $x, $y, ($newAlpha << 24) | ($color & 0xFFFFFF));
+            }
+        }
 
         try {
-            $transparency = (int) round(self::convertRange($this->transparency, 0, 1, 0, 100));
-        } catch (RuntimeException $e) {
-            throw new ModifierException('Failed to convert transparency', previous: $e);
+            return $this->driver()->decodeImage($faded);
+        } catch (StateException $e) {
+            throw new ModifierException('Failed to build watermark', previous: $e);
         }
-
-        imagecopymerge(
-            $frame->native(),
-            $cut,
-            $position->x(),
-            $position->y(),
-            0,
-            0,
-            $watermark->width(),
-            $watermark->height(),
-            $transparency,
-        );
     }
 }

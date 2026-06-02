@@ -64,11 +64,15 @@ class UserChannelContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -76,6 +80,9 @@ class UserChannelContext extends InstanceContext
     /**
      * Delete the UserChannelInstance
      *
+     
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -89,12 +96,16 @@ class UserChannelContext extends InstanceContext
     /**
      * Delete the UserChannelInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -107,11 +118,15 @@ class UserChannelContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -119,6 +134,9 @@ class UserChannelContext extends InstanceContext
     /**
      * Fetch the UserChannelInstance
      *
+     
+     
+     
      * @return UserChannelInstance Fetched UserChannelInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -138,6 +156,9 @@ class UserChannelContext extends InstanceContext
     /**
      * Fetch the UserChannelInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -151,6 +172,7 @@ class UserChannelContext extends InstanceContext
                         $this->solution['userSid'],
                         $this->solution['channelSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -162,12 +184,16 @@ class UserChannelContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -186,6 +212,9 @@ class UserChannelContext extends InstanceContext
     /**
      * Update the UserChannelInstance
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return UserChannelInstance Updated UserChannelInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -206,6 +235,9 @@ class UserChannelContext extends InstanceContext
     /**
      * Update the UserChannelInstance with Metadata
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -220,6 +252,7 @@ class UserChannelContext extends InstanceContext
                         $this->solution['userSid'],
                         $this->solution['channelSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

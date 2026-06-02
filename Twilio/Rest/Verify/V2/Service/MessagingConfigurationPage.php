@@ -43,6 +43,7 @@ class MessagingConfigurationPage extends Page
         return new MessagingConfigurationInstance($this->version, $payload, $this->solution['serviceSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

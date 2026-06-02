@@ -58,11 +58,14 @@ class UserContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -70,6 +73,8 @@ class UserContext extends InstanceContext
     /**
      * Delete the UserInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -83,12 +88,15 @@ class UserContext extends InstanceContext
     /**
      * Delete the UserInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -101,11 +109,14 @@ class UserContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/scim+json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -113,6 +124,8 @@ class UserContext extends InstanceContext
     /**
      * Fetch the UserInstance
      *
+     
+     
      * @return UserInstance Fetched UserInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -131,6 +144,8 @@ class UserContext extends InstanceContext
     /**
      * Fetch the UserInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -143,6 +158,7 @@ class UserContext extends InstanceContext
                         $this->solution['organizationSid'],
                         $this->solution['id']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -154,13 +170,17 @@ class UserContext extends InstanceContext
     /**
      * Helper function for Patch
      *
+     
+     
      * @param ScimPatchRequest $scimPatchRequest
+     
      * @param array|Options $options Optional Arguments
      * @return Response Patchd Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _patch(ScimPatchRequest $scimPatchRequest, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/scim+json' , 'If-Match' => $options['ifMatch']]);
@@ -171,7 +191,10 @@ class UserContext extends InstanceContext
     /**
      * Patch the UserInstance
      *
+     
+     
      * @param ScimPatchRequest $scimPatchRequest
+     
      * @param array|Options $options Optional Arguments
      * @return UserInstance Patchd UserInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -191,7 +214,10 @@ class UserContext extends InstanceContext
     /**
      * Patch the UserInstance with Metadata
      *
+     
+     
      * @param ScimPatchRequest $scimPatchRequest
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Patchd Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -205,6 +231,7 @@ class UserContext extends InstanceContext
                         $this->solution['organizationSid'],
                         $this->solution['id']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -216,13 +243,17 @@ class UserContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param ScimUser $scimUser
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(ScimUser $scimUser, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/scim+json' , 'If-Match' => $options['ifMatch']]);
@@ -233,7 +264,10 @@ class UserContext extends InstanceContext
     /**
      * Update the UserInstance
      *
+     
+     
      * @param ScimUser $scimUser
+     
      * @param array|Options $options Optional Arguments
      * @return UserInstance Updated UserInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -253,7 +287,10 @@ class UserContext extends InstanceContext
     /**
      * Update the UserInstance with Metadata
      *
+     
+     
      * @param ScimUser $scimUser
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -267,6 +304,7 @@ class UserContext extends InstanceContext
                         $this->solution['organizationSid'],
                         $this->solution['id']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

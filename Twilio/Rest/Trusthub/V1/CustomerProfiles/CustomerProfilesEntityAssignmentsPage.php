@@ -43,6 +43,7 @@ class CustomerProfilesEntityAssignmentsPage extends Page
         return new CustomerProfilesEntityAssignmentsInstance($this->version, $payload, $this->solution['customerProfileSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

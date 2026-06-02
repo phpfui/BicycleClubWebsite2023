@@ -45,7 +45,6 @@ class CommandList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Commands';
     }
 
@@ -53,12 +52,14 @@ class CommandList extends ListResource
      * Helper function for Create
      *
      * @param string $command The message body of the Command. Can be plain text in text mode or a Base64 encoded byte string in binary mode.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $command, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -86,6 +87,7 @@ class CommandList extends ListResource
      * Create the CommandInstance
      *
      * @param string $command The message body of the Command. Can be plain text in text mode or a Base64 encoded byte string in binary mode.
+     
      * @param array|Options $options Optional Arguments
      * @return CommandInstance Created CommandInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -104,6 +106,7 @@ class CommandList extends ListResource
      * Create the CommandInstance with Metadata
      *
      * @param string $command The message body of the Command. Can be plain text in text mode or a Base64 encoded byte string in binary mode.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -115,6 +118,7 @@ class CommandList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -128,6 +132,7 @@ class CommandList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -149,6 +154,7 @@ class CommandList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

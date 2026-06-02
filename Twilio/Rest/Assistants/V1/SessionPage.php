@@ -43,6 +43,7 @@ class SessionPage extends Page
         return new SessionInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

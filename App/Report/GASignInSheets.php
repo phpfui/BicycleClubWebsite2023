@@ -72,8 +72,13 @@ class GASignInSheets
 			$pdf->SetWidths($widths);
 			$pdf->SetHeader($headers);
 
+			$lastName = ' ';
 			$title = $titleBase = $this->event->title;
-			$lastName = $riders->current()['lastName'];
+			$current = $riders->current();
+			if (isset($current->lastName))
+				{
+				$lastName = $current->lastName;
+				}
 			$pageChar = $lastName[0];
 
 			if (self::PAGED == $this->type)

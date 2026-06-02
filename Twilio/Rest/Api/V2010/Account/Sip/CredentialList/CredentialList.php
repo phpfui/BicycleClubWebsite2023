@@ -53,7 +53,6 @@ class CredentialList extends ListResource
             $credentialListSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/SIP/CredentialLists/' . \rawurlencode($credentialListSid)
         .'/Credentials.json';
@@ -62,13 +61,17 @@ class CredentialList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $username The username that will be passed when authenticating SIP requests. The username should be sent in response to Twilio's challenge of the initial INVITE. It can be up to 32 characters long.
+     
      * @param string $password The password that the username will use when authenticating SIP requests. The password must be a minimum of 12 characters, contain at least 1 digit, and have mixed case. (eg `IWasAtSignal2018`)
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $username, string $password): Response
     {
+        
         $data = Values::of([
             'Username' =>
                 $username,
@@ -83,8 +86,11 @@ class CredentialList extends ListResource
     /**
      * Create the CredentialInstance
      *
+     
      * @param string $username The username that will be passed when authenticating SIP requests. The username should be sent in response to Twilio's challenge of the initial INVITE. It can be up to 32 characters long.
+     
      * @param string $password The password that the username will use when authenticating SIP requests. The password must be a minimum of 12 characters, contain at least 1 digit, and have mixed case. (eg `IWasAtSignal2018`)
+     
      * @return CredentialInstance Created CredentialInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -103,8 +109,11 @@ class CredentialList extends ListResource
     /**
      * Create the CredentialInstance with Metadata
      *
+     
      * @param string $username The username that will be passed when authenticating SIP requests. The username should be sent in response to Twilio's challenge of the initial INVITE. It can be up to 32 characters long.
+     
      * @param string $password The password that the username will use when authenticating SIP requests. The password must be a minimum of 12 characters, contain at least 1 digit, and have mixed case. (eg `IWasAtSignal2018`)
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -117,6 +126,7 @@ class CredentialList extends ListResource
                         $this->solution['accountSid'],
                         $this->solution['credentialListSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -130,6 +140,7 @@ class CredentialList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -150,6 +161,7 @@ class CredentialList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

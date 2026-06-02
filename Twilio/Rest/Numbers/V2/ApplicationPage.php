@@ -43,6 +43,7 @@ class ApplicationPage extends Page
         return new ApplicationInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

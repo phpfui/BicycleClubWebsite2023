@@ -39,7 +39,6 @@ class TypingIndicatorList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Indicators/Typing.json';
     }
 
@@ -47,12 +46,15 @@ class TypingIndicatorList extends ListResource
      * Helper function for Create
      *
      * @param string $channel Shared channel identifier
+     
      * @param string $messageId Message SID that identifies the conversation thread for the typing indicator. Must be a valid Twilio Message SID (SM*) or Media SID (MM*) from an existing WhatsApp conversation.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $channel, string $messageId): Response
     {
+        
         $data = Values::of([
             'channel' =>
                 $channel,
@@ -68,7 +70,9 @@ class TypingIndicatorList extends ListResource
      * Create the TypingIndicatorInstance
      *
      * @param string $channel Shared channel identifier
+     
      * @param string $messageId Message SID that identifies the conversation thread for the typing indicator. Must be a valid Twilio Message SID (SM*) or Media SID (MM*) from an existing WhatsApp conversation.
+     
      * @return TypingIndicatorInstance Created TypingIndicatorInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -86,7 +90,9 @@ class TypingIndicatorList extends ListResource
      * Create the TypingIndicatorInstance with Metadata
      *
      * @param string $channel Shared channel identifier
+     
      * @param string $messageId Message SID that identifies the conversation thread for the typing indicator. Must be a valid Twilio Message SID (SM*) or Media SID (MM*) from an existing WhatsApp conversation.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -97,6 +103,7 @@ class TypingIndicatorList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

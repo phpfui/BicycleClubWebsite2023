@@ -43,6 +43,7 @@ class TodayPage extends Page
         return new TodayInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

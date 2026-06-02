@@ -54,12 +54,14 @@ class MediaContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $params = Values::of([
@@ -74,6 +76,7 @@ class MediaContext extends InstanceContext
     /**
      * Fetch the MediaInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return MediaInstance Fetched MediaInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -92,6 +95,7 @@ class MediaContext extends InstanceContext
     /**
      * Fetch the MediaInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -104,6 +108,7 @@ class MediaContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

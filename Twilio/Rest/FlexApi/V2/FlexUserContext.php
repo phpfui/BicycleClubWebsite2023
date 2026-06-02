@@ -58,11 +58,14 @@ class FlexUserContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -70,6 +73,8 @@ class FlexUserContext extends InstanceContext
     /**
      * Fetch the FlexUserInstance
      *
+     
+     
      * @return FlexUserInstance Fetched FlexUserInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -88,6 +93,8 @@ class FlexUserContext extends InstanceContext
     /**
      * Fetch the FlexUserInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -100,6 +107,7 @@ class FlexUserContext extends InstanceContext
                         $this->solution['instanceSid'],
                         $this->solution['flexUserSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -111,12 +119,15 @@ class FlexUserContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -135,6 +146,8 @@ class FlexUserContext extends InstanceContext
     /**
      * Update the FlexUserInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return FlexUserInstance Updated FlexUserInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -154,6 +167,8 @@ class FlexUserContext extends InstanceContext
     /**
      * Update the FlexUserInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -167,6 +182,7 @@ class FlexUserContext extends InstanceContext
                         $this->solution['instanceSid'],
                         $this->solution['flexUserSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

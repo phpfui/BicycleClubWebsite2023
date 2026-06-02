@@ -57,11 +57,14 @@ class CustomerProfilesEntityAssignmentsContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -69,6 +72,8 @@ class CustomerProfilesEntityAssignmentsContext extends InstanceContext
     /**
      * Delete the CustomerProfilesEntityAssignmentsInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -82,12 +87,15 @@ class CustomerProfilesEntityAssignmentsContext extends InstanceContext
     /**
      * Delete the CustomerProfilesEntityAssignmentsInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -100,11 +108,14 @@ class CustomerProfilesEntityAssignmentsContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -112,6 +123,8 @@ class CustomerProfilesEntityAssignmentsContext extends InstanceContext
     /**
      * Fetch the CustomerProfilesEntityAssignmentsInstance
      *
+     
+     
      * @return CustomerProfilesEntityAssignmentsInstance Fetched CustomerProfilesEntityAssignmentsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -130,6 +143,8 @@ class CustomerProfilesEntityAssignmentsContext extends InstanceContext
     /**
      * Fetch the CustomerProfilesEntityAssignmentsInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -142,6 +157,7 @@ class CustomerProfilesEntityAssignmentsContext extends InstanceContext
                         $this->solution['customerProfileSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

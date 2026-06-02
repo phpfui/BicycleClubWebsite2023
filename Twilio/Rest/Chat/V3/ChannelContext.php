@@ -58,12 +58,15 @@ class ChannelContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -80,6 +83,8 @@ class ChannelContext extends InstanceContext
     /**
      * Update the ChannelInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ChannelInstance Updated ChannelInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -99,6 +104,8 @@ class ChannelContext extends InstanceContext
     /**
      * Update the ChannelInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -112,6 +119,7 @@ class ChannelContext extends InstanceContext
                         $this->solution['serviceSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -43,6 +43,7 @@ class JobPage extends Page
         return new JobInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -40,7 +40,6 @@ class TokenList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/token';
     }
 
@@ -48,13 +47,16 @@ class TokenList extends ListResource
      * Helper function for Create
      *
      * @param string $grantType Grant type is a credential representing resource owner's authorization which can be used by client to obtain access token.
+     
      * @param string $clientId A 34 character string that uniquely identifies this OAuth App.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $grantType, string $clientId, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -84,7 +86,9 @@ class TokenList extends ListResource
      * Create the TokenInstance
      *
      * @param string $grantType Grant type is a credential representing resource owner's authorization which can be used by client to obtain access token.
+     
      * @param string $clientId A 34 character string that uniquely identifies this OAuth App.
+     
      * @param array|Options $options Optional Arguments
      * @return TokenInstance Created TokenInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -103,7 +107,9 @@ class TokenList extends ListResource
      * Create the TokenInstance with Metadata
      *
      * @param string $grantType Grant type is a credential representing resource owner's authorization which can be used by client to obtain access token.
+     
      * @param string $clientId A 34 character string that uniquely identifies this OAuth App.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -115,6 +121,7 @@ class TokenList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

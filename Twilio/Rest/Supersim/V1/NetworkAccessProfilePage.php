@@ -43,6 +43,7 @@ class NetworkAccessProfilePage extends Page
         return new NetworkAccessProfileInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

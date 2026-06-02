@@ -57,11 +57,14 @@ class AnonymizeContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('POST', $this->uri, [], [], $headers, "update");
     }
@@ -69,6 +72,8 @@ class AnonymizeContext extends InstanceContext
     /**
      * Update the AnonymizeInstance
      *
+     
+     
      * @return AnonymizeInstance Updated AnonymizeInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -87,6 +92,8 @@ class AnonymizeContext extends InstanceContext
     /**
      * Update the AnonymizeInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -99,6 +106,7 @@ class AnonymizeContext extends InstanceContext
                         $this->solution['roomSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

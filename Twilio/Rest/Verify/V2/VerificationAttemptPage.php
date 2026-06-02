@@ -43,6 +43,7 @@ class VerificationAttemptPage extends Page
         return new VerificationAttemptInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

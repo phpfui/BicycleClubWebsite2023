@@ -51,7 +51,6 @@ class StreamMessageList extends ListResource
             $streamSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Streams/' . \rawurlencode($streamSid)
         .'/Messages';
@@ -60,12 +59,16 @@ class StreamMessageList extends ListResource
     /**
      * Helper function for Create
      *
+     
+     
      * @param array $data A JSON string that represents an arbitrary, schema-less object that makes up the Stream Message body. Can be up to 4 KiB in length.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $data): Response
     {
+        
         $data = Values::of([
             'Data' =>
                 Serialize::jsonObject($data),
@@ -78,7 +81,10 @@ class StreamMessageList extends ListResource
     /**
      * Create the StreamMessageInstance
      *
+     
+     
      * @param array $data A JSON string that represents an arbitrary, schema-less object that makes up the Stream Message body. Can be up to 4 KiB in length.
+     
      * @return StreamMessageInstance Created StreamMessageInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -97,7 +103,10 @@ class StreamMessageList extends ListResource
     /**
      * Create the StreamMessageInstance with Metadata
      *
+     
+     
      * @param array $data A JSON string that represents an arbitrary, schema-less object that makes up the Stream Message body. Can be up to 4 KiB in length.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -110,6 +119,7 @@ class StreamMessageList extends ListResource
                         $this->solution['serviceSid'],
                         $this->solution['streamSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

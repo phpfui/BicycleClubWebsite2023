@@ -46,7 +46,6 @@ class ConversationWithParticipantsList extends ListResource
             $chatServiceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($chatServiceSid)
         .'/ConversationWithParticipants';
     }
@@ -54,12 +53,14 @@ class ConversationWithParticipantsList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -96,6 +97,7 @@ class ConversationWithParticipantsList extends ListResource
     /**
      * Create the ConversationWithParticipantsInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ConversationWithParticipantsInstance Created ConversationWithParticipantsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -114,6 +116,7 @@ class ConversationWithParticipantsList extends ListResource
     /**
      * Create the ConversationWithParticipantsInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -126,6 +129,7 @@ class ConversationWithParticipantsList extends ListResource
                         $response->getContent(),
                         $this->solution['chatServiceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

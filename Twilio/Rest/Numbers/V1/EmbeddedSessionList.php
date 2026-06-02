@@ -39,7 +39,6 @@ class EmbeddedSessionList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/SenderIdRegistrations/' . \rawurlencode($bundleSid)
         .'/EmbeddedSessions';
     }
@@ -47,12 +46,15 @@ class EmbeddedSessionList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param NumbersV1CreateEmbeddedSessionRequest $numbersV1CreateEmbeddedSessionRequest
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(NumbersV1CreateEmbeddedSessionRequest $numbersV1CreateEmbeddedSessionRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $numbersV1CreateEmbeddedSessionRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -61,7 +63,9 @@ class EmbeddedSessionList extends ListResource
     /**
      * Create the EmbeddedSessionInstance
      *
+     
      * @param NumbersV1CreateEmbeddedSessionRequest $numbersV1CreateEmbeddedSessionRequest
+     
      * @return EmbeddedSessionInstance Created EmbeddedSessionInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -79,7 +83,9 @@ class EmbeddedSessionList extends ListResource
     /**
      * Create the EmbeddedSessionInstance with Metadata
      *
+     
      * @param NumbersV1CreateEmbeddedSessionRequest $numbersV1CreateEmbeddedSessionRequest
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -91,6 +97,7 @@ class EmbeddedSessionList extends ListResource
                         $response->getContent(),
                         $this->solution['bundleSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

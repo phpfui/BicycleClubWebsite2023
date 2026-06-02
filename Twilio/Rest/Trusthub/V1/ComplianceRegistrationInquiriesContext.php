@@ -54,12 +54,14 @@ class ComplianceRegistrationInquiriesContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -76,6 +78,7 @@ class ComplianceRegistrationInquiriesContext extends InstanceContext
     /**
      * Update the ComplianceRegistrationInquiriesInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ComplianceRegistrationInquiriesInstance Updated ComplianceRegistrationInquiriesInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -94,6 +97,7 @@ class ComplianceRegistrationInquiriesContext extends InstanceContext
     /**
      * Update the ComplianceRegistrationInquiriesInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -106,6 +110,7 @@ class ComplianceRegistrationInquiriesContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['registrationId']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -43,6 +43,7 @@ class EmbeddedSessionPage extends Page
         return new EmbeddedSessionInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

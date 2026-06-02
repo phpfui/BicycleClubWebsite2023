@@ -43,6 +43,7 @@ class SubscribedEventPage extends Page
         return new SubscribedEventInstance($this->version, $payload, $this->solution['subscriptionSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

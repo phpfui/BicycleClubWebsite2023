@@ -44,7 +44,6 @@ class ApproveChallengeList extends ListResource
             $serviceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Passkeys/ApproveChallenge';
     }
@@ -52,12 +51,15 @@ class ApproveChallengeList extends ListResource
     /**
      * Helper function for Update
      *
+     
      * @param ApprovePasskeysChallengeRequest $approvePasskeysChallengeRequest
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(ApprovePasskeysChallengeRequest $approvePasskeysChallengeRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $approvePasskeysChallengeRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "update");
@@ -66,7 +68,9 @@ class ApproveChallengeList extends ListResource
     /**
      * Update the ApproveChallengeInstance
      *
+     
      * @param ApprovePasskeysChallengeRequest $approvePasskeysChallengeRequest
+     
      * @return ApproveChallengeInstance Updated ApproveChallengeInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -84,7 +88,9 @@ class ApproveChallengeList extends ListResource
     /**
      * Update the ApproveChallengeInstance with Metadata
      *
+     
      * @param ApprovePasskeysChallengeRequest $approvePasskeysChallengeRequest
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -96,6 +102,7 @@ class ApproveChallengeList extends ListResource
                         $response->getContent(),
                         $this->solution['serviceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

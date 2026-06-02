@@ -43,6 +43,7 @@ class LocalPage extends Page
         return new LocalInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['countryCode']);
     }
 
+
     /**
      * Provide a friendly representation
      *

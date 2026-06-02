@@ -43,6 +43,7 @@ class WorkflowStatisticsPage extends Page
         return new WorkflowStatisticsInstance($this->version, $payload, $this->solution['workspaceSid'], $this->solution['workflowSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

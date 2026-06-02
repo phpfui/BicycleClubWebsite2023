@@ -43,6 +43,7 @@ class InsightsSettingsAnswerSetsPage extends Page
         return new InsightsSettingsAnswerSetsInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

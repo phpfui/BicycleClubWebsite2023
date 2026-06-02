@@ -43,6 +43,7 @@ class BuildStatusPage extends Page
         return new BuildStatusInstance($this->version, $payload, $this->solution['serviceSid'], $this->solution['sid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -45,7 +45,6 @@ class FleetList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Fleets';
     }
 
@@ -53,12 +52,14 @@ class FleetList extends ListResource
      * Helper function for Create
      *
      * @param string $networkAccessProfile The SID or unique name of the Network Access Profile that will control which cellular networks the Fleet's SIMs can connect to.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $networkAccessProfile, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -90,6 +91,7 @@ class FleetList extends ListResource
      * Create the FleetInstance
      *
      * @param string $networkAccessProfile The SID or unique name of the Network Access Profile that will control which cellular networks the Fleet's SIMs can connect to.
+     
      * @param array|Options $options Optional Arguments
      * @return FleetInstance Created FleetInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -108,6 +110,7 @@ class FleetList extends ListResource
      * Create the FleetInstance with Metadata
      *
      * @param string $networkAccessProfile The SID or unique name of the Network Access Profile that will control which cellular networks the Fleet's SIMs can connect to.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -119,6 +122,7 @@ class FleetList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -132,6 +136,7 @@ class FleetList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -153,6 +158,7 @@ class FleetList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

@@ -43,6 +43,7 @@ class BulkContactsPage extends Page
         return new BulkContactsInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

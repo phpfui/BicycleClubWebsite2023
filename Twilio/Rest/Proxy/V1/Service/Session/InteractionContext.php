@@ -62,11 +62,15 @@ class InteractionContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -74,6 +78,9 @@ class InteractionContext extends InstanceContext
     /**
      * Delete the InteractionInstance
      *
+     
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -87,12 +94,16 @@ class InteractionContext extends InstanceContext
     /**
      * Delete the InteractionInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -105,11 +116,15 @@ class InteractionContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -117,6 +132,9 @@ class InteractionContext extends InstanceContext
     /**
      * Fetch the InteractionInstance
      *
+     
+     
+     
      * @return InteractionInstance Fetched InteractionInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -136,6 +154,9 @@ class InteractionContext extends InstanceContext
     /**
      * Fetch the InteractionInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -149,6 +170,7 @@ class InteractionContext extends InstanceContext
                         $this->solution['sessionSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

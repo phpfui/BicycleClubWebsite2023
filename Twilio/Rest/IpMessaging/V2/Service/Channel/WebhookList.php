@@ -55,7 +55,6 @@ class WebhookList extends ListResource
             $channelSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Channels/' . \rawurlencode($channelSid)
         .'/Webhooks';
@@ -64,13 +63,17 @@ class WebhookList extends ListResource
     /**
      * Helper function for Create
      *
+     
+     
      * @param string $type
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $type, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -97,7 +100,10 @@ class WebhookList extends ListResource
     /**
      * Create the WebhookInstance
      *
+     
+     
      * @param string $type
+     
      * @param array|Options $options Optional Arguments
      * @return WebhookInstance Created WebhookInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -117,7 +123,10 @@ class WebhookList extends ListResource
     /**
      * Create the WebhookInstance with Metadata
      *
+     
+     
      * @param string $type
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -131,6 +140,7 @@ class WebhookList extends ListResource
                         $this->solution['serviceSid'],
                         $this->solution['channelSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -144,6 +154,7 @@ class WebhookList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -164,6 +175,7 @@ class WebhookList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

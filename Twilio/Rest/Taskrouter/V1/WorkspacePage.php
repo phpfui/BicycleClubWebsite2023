@@ -43,6 +43,7 @@ class WorkspacePage extends Page
         return new WorkspaceInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

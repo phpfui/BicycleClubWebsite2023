@@ -43,6 +43,7 @@ class AllTimePage extends Page
         return new AllTimeInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

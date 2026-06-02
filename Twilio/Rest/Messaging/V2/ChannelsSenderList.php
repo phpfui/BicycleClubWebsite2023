@@ -44,7 +44,6 @@ class ChannelsSenderList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Channels/Senders';
     }
 
@@ -52,11 +51,13 @@ class ChannelsSenderList extends ListResource
      * Helper function for Create
      *
      * @param MessagingV2ChannelsSenderRequestsCreate $messagingV2ChannelsSenderRequestsCreate
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(MessagingV2ChannelsSenderRequestsCreate $messagingV2ChannelsSenderRequestsCreate): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $messagingV2ChannelsSenderRequestsCreate->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -66,6 +67,7 @@ class ChannelsSenderList extends ListResource
      * Create the ChannelsSenderInstance
      *
      * @param MessagingV2ChannelsSenderRequestsCreate $messagingV2ChannelsSenderRequestsCreate
+     
      * @return ChannelsSenderInstance Created ChannelsSenderInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -83,6 +85,7 @@ class ChannelsSenderList extends ListResource
      * Create the ChannelsSenderInstance with Metadata
      *
      * @param MessagingV2ChannelsSenderRequestsCreate $messagingV2ChannelsSenderRequestsCreate
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -93,6 +96,7 @@ class ChannelsSenderList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -106,6 +110,7 @@ class ChannelsSenderList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -127,6 +132,7 @@ class ChannelsSenderList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

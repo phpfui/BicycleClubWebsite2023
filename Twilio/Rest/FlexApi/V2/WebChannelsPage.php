@@ -43,6 +43,7 @@ class WebChannelsPage extends Page
         return new WebChannelsInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

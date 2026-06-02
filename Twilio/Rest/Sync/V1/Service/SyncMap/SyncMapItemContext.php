@@ -64,12 +64,16 @@ class SyncMapItemContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'If-Match' => $options['ifMatch']]);
@@ -79,6 +83,9 @@ class SyncMapItemContext extends InstanceContext
     /**
      * Delete the SyncMapItemInstance
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
@@ -93,6 +100,9 @@ class SyncMapItemContext extends InstanceContext
     /**
      * Delete the SyncMapItemInstance with Metadata
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -100,6 +110,7 @@ class SyncMapItemContext extends InstanceContext
     public function deleteWithMetadata(array $options = []): ResourceMetadata
     {
         $response = $this->_delete($options);
+        
         
         return new ResourceMetadata(
             null,
@@ -112,11 +123,15 @@ class SyncMapItemContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -124,6 +139,9 @@ class SyncMapItemContext extends InstanceContext
     /**
      * Fetch the SyncMapItemInstance
      *
+     
+     
+     
      * @return SyncMapItemInstance Fetched SyncMapItemInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -143,6 +161,9 @@ class SyncMapItemContext extends InstanceContext
     /**
      * Fetch the SyncMapItemInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -156,6 +177,7 @@ class SyncMapItemContext extends InstanceContext
                         $this->solution['mapSid'],
                         $this->solution['key']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -167,12 +189,16 @@ class SyncMapItemContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -193,6 +219,9 @@ class SyncMapItemContext extends InstanceContext
     /**
      * Update the SyncMapItemInstance
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return SyncMapItemInstance Updated SyncMapItemInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -213,6 +242,9 @@ class SyncMapItemContext extends InstanceContext
     /**
      * Update the SyncMapItemInstance with Metadata
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -227,6 +259,7 @@ class SyncMapItemContext extends InstanceContext
                         $this->solution['mapSid'],
                         $this->solution['key']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

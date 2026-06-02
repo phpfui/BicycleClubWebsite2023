@@ -48,7 +48,6 @@ class ItemAssignmentList extends ListResource
             $bundleSid,
         
         ];
-
         $this->uri = '/RegulatoryCompliance/Bundles/' . \rawurlencode($bundleSid)
         .'/ItemAssignments';
     }
@@ -56,12 +55,15 @@ class ItemAssignmentList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $objectSid The SID of an object bag that holds information of the different items.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $objectSid): Response
     {
+        
         $data = Values::of([
             'ObjectSid' =>
                 $objectSid,
@@ -74,7 +76,9 @@ class ItemAssignmentList extends ListResource
     /**
      * Create the ItemAssignmentInstance
      *
+     
      * @param string $objectSid The SID of an object bag that holds information of the different items.
+     
      * @return ItemAssignmentInstance Created ItemAssignmentInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,7 +96,9 @@ class ItemAssignmentList extends ListResource
     /**
      * Create the ItemAssignmentInstance with Metadata
      *
+     
      * @param string $objectSid The SID of an object bag that holds information of the different items.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -104,6 +110,7 @@ class ItemAssignmentList extends ListResource
                         $response->getContent(),
                         $this->solution['bundleSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -117,6 +124,7 @@ class ItemAssignmentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -137,6 +145,7 @@ class ItemAssignmentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

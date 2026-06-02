@@ -39,32 +39,34 @@ class PortingWebhookConfigurationList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Porting/Configuration/Webhook';
     }
 
     /**
      * Helper function for Create
      *
+     * @param ?array $body
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _create(): Response
+    private function _create(?array $body = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $body->toArray();
+        $data = $body ? $body->toArray() : [];
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
     }
 
     /**
      * Create the PortingWebhookConfigurationInstance
      *
+     * @param ?array $body
      * @return PortingWebhookConfigurationInstance Created PortingWebhookConfigurationInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function create(): PortingWebhookConfigurationInstance
+    public function create(?array $body = null): PortingWebhookConfigurationInstance
     {
-        $response = $this->_create();
+        $response = $this->_create($body);
         return new PortingWebhookConfigurationInstance(
             $this->version,
             $response->getContent()
@@ -75,16 +77,18 @@ class PortingWebhookConfigurationList extends ListResource
     /**
      * Create the PortingWebhookConfigurationInstance with Metadata
      *
+     * @param ?array $body
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function createWithMetadata(): ResourceMetadata
+    public function createWithMetadata(?array $body = null): ResourceMetadata
     {
-        $response = $this->_create();
+        $response = $this->_create($body);
         $resource = new PortingWebhookConfigurationInstance(
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

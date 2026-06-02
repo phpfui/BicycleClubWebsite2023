@@ -70,11 +70,13 @@ class AssistantContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -82,6 +84,7 @@ class AssistantContext extends InstanceContext
     /**
      * Delete the AssistantInstance
      *
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -95,12 +98,14 @@ class AssistantContext extends InstanceContext
     /**
      * Delete the AssistantInstance with Metadata
      *
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -113,11 +118,13 @@ class AssistantContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -125,6 +132,7 @@ class AssistantContext extends InstanceContext
     /**
      * Fetch the AssistantInstance
      *
+     
      * @return AssistantInstance Fetched AssistantInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -142,6 +150,7 @@ class AssistantContext extends InstanceContext
     /**
      * Fetch the AssistantInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -153,6 +162,7 @@ class AssistantContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['id']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -164,25 +174,30 @@ class AssistantContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     * @param ?AssistantsV1ServiceUpdateAssistantRequest $assistantsV1ServiceUpdateAssistantRequest
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _update(): Response
+    private function _update(?AssistantsV1ServiceUpdateAssistantRequest $assistantsV1ServiceUpdateAssistantRequest = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $assistantsV1ServiceUpdateAssistantRequest->toArray();
+        $data = $assistantsV1ServiceUpdateAssistantRequest ? $assistantsV1ServiceUpdateAssistantRequest->toArray() : [];
         return $this->version->handleRequest('PUT', $this->uri, [], $data, $headers, "update");
     }
 
     /**
      * Update the AssistantInstance
      *
+     
+     * @param ?AssistantsV1ServiceUpdateAssistantRequest $assistantsV1ServiceUpdateAssistantRequest
      * @return AssistantInstance Updated AssistantInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function update(): AssistantInstance
+    public function update(?AssistantsV1ServiceUpdateAssistantRequest $assistantsV1ServiceUpdateAssistantRequest = null): AssistantInstance
     {
-        $response = $this->_update();
+        $response = $this->_update($assistantsV1ServiceUpdateAssistantRequest);
         return new AssistantInstance(
             $this->version,
             $response->getContent(),
@@ -194,17 +209,20 @@ class AssistantContext extends InstanceContext
     /**
      * Update the AssistantInstance with Metadata
      *
+     
+     * @param ?AssistantsV1ServiceUpdateAssistantRequest $assistantsV1ServiceUpdateAssistantRequest
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function updateWithMetadata(): ResourceMetadata
+    public function updateWithMetadata(?AssistantsV1ServiceUpdateAssistantRequest $assistantsV1ServiceUpdateAssistantRequest = null): ResourceMetadata
     {
-        $response = $this->_update();
+        $response = $this->_update($assistantsV1ServiceUpdateAssistantRequest);
         $resource = new AssistantInstance(
                         $this->version,
                         $response->getContent(),
                         $this->solution['id']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

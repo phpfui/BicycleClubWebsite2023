@@ -43,6 +43,7 @@ class CredentialListMappingPage extends Page
         return new CredentialListMappingInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['domainSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

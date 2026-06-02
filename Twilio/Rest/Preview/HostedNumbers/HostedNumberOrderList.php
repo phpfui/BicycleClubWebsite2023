@@ -45,7 +45,6 @@ class HostedNumberOrderList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/HostedNumberOrders';
     }
 
@@ -53,13 +52,16 @@ class HostedNumberOrderList extends ListResource
      * Helper function for Create
      *
      * @param string $phoneNumber The number to host in [+E.164](https://en.wikipedia.org/wiki/E.164) format
+     
      * @param bool $smsCapability Used to specify that the SMS capability will be hosted on Twilio's platform.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $phoneNumber, bool $smsCapability, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -107,7 +109,9 @@ class HostedNumberOrderList extends ListResource
      * Create the HostedNumberOrderInstance
      *
      * @param string $phoneNumber The number to host in [+E.164](https://en.wikipedia.org/wiki/E.164) format
+     
      * @param bool $smsCapability Used to specify that the SMS capability will be hosted on Twilio's platform.
+     
      * @param array|Options $options Optional Arguments
      * @return HostedNumberOrderInstance Created HostedNumberOrderInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -126,7 +130,9 @@ class HostedNumberOrderList extends ListResource
      * Create the HostedNumberOrderInstance with Metadata
      *
      * @param string $phoneNumber The number to host in [+E.164](https://en.wikipedia.org/wiki/E.164) format
+     
      * @param bool $smsCapability Used to specify that the SMS capability will be hosted on Twilio's platform.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -138,6 +144,7 @@ class HostedNumberOrderList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -151,6 +158,7 @@ class HostedNumberOrderList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -172,6 +180,7 @@ class HostedNumberOrderList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

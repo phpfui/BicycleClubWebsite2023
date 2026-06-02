@@ -43,6 +43,7 @@ class AnonymizePage extends Page
         return new AnonymizeInstance($this->version, $payload, $this->solution['roomSid'], $this->solution['sid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -43,6 +43,7 @@ class ComplianceInquiriesPage extends Page
         return new ComplianceInquiriesInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

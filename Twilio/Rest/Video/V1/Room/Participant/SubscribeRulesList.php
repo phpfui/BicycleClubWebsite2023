@@ -51,7 +51,6 @@ class SubscribeRulesList extends ListResource
             $participantSid,
         
         ];
-
         $this->uri = '/Rooms/' . \rawurlencode($roomSid)
         .'/Participants/' . \rawurlencode($participantSid)
         .'/SubscribeRules';
@@ -60,11 +59,14 @@ class SubscribeRulesList extends ListResource
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -72,6 +74,8 @@ class SubscribeRulesList extends ListResource
     /**
      * Fetch the SubscribeRulesInstance
      *
+     
+     
      * @return SubscribeRulesInstance Fetched SubscribeRulesInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -90,6 +94,8 @@ class SubscribeRulesList extends ListResource
     /**
      * Fetch the SubscribeRulesInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -102,6 +108,7 @@ class SubscribeRulesList extends ListResource
                         $this->solution['roomSid'],
                         $this->solution['participantSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -113,12 +120,15 @@ class SubscribeRulesList extends ListResource
     /**
      * Helper function for Update
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -133,6 +143,8 @@ class SubscribeRulesList extends ListResource
     /**
      * Update the SubscribeRulesInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return SubscribeRulesInstance Updated SubscribeRulesInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -152,6 +164,8 @@ class SubscribeRulesList extends ListResource
     /**
      * Update the SubscribeRulesInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -165,6 +179,7 @@ class SubscribeRulesList extends ListResource
                         $this->solution['roomSid'],
                         $this->solution['participantSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

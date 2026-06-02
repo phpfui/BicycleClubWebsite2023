@@ -15,12 +15,15 @@ namespace Twilio\Rest;
 use Twilio\Domain;
 use Twilio\Exceptions\TwilioException;
 use Twilio\Rest\Knowledge\V1;
+use Twilio\Rest\Knowledge\V2;
 
 /**
  * @property \Twilio\Rest\Knowledge\V1 $v1
+ * @property \Twilio\Rest\Knowledge\V2 $v2
  */
 class KnowledgeBase extends Domain {
     protected $_v1;
+    protected $_v2;
 
     /**
      * Construct the Knowledge Domain
@@ -42,6 +45,16 @@ class KnowledgeBase extends Domain {
             $this->_v1 = new V1($this);
         }
         return $this->_v1;
+    }
+
+    /**
+     * @return V2 Version v2 of knowledge
+     */
+    protected function getV2(): V2 {
+        if (!$this->_v2) {
+            $this->_v2 = new V2($this);
+        }
+        return $this->_v2;
     }
 
     /**

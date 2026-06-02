@@ -58,11 +58,14 @@ class InstalledAddOnExtensionContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -70,6 +73,8 @@ class InstalledAddOnExtensionContext extends InstanceContext
     /**
      * Fetch the InstalledAddOnExtensionInstance
      *
+     
+     
      * @return InstalledAddOnExtensionInstance Fetched InstalledAddOnExtensionInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -88,6 +93,8 @@ class InstalledAddOnExtensionContext extends InstanceContext
     /**
      * Fetch the InstalledAddOnExtensionInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -100,6 +107,7 @@ class InstalledAddOnExtensionContext extends InstanceContext
                         $this->solution['installedAddOnSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -111,12 +119,16 @@ class InstalledAddOnExtensionContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param bool $enabled Whether the Extension should be invoked.
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(bool $enabled): Response
     {
+        
         $data = Values::of([
             'Enabled' =>
                 Serialize::booleanToString($enabled),
@@ -129,7 +141,10 @@ class InstalledAddOnExtensionContext extends InstanceContext
     /**
      * Update the InstalledAddOnExtensionInstance
      *
+     
+     
      * @param bool $enabled Whether the Extension should be invoked.
+     
      * @return InstalledAddOnExtensionInstance Updated InstalledAddOnExtensionInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -148,7 +163,10 @@ class InstalledAddOnExtensionContext extends InstanceContext
     /**
      * Update the InstalledAddOnExtensionInstance with Metadata
      *
+     
+     
      * @param bool $enabled Whether the Extension should be invoked.
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -161,6 +179,7 @@ class InstalledAddOnExtensionContext extends InstanceContext
                         $this->solution['installedAddOnSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

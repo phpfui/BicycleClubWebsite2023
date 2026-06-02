@@ -66,11 +66,14 @@ class SyncStreamContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -78,6 +81,8 @@ class SyncStreamContext extends InstanceContext
     /**
      * Delete the SyncStreamInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -91,12 +96,15 @@ class SyncStreamContext extends InstanceContext
     /**
      * Delete the SyncStreamInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -109,11 +117,14 @@ class SyncStreamContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -121,6 +132,8 @@ class SyncStreamContext extends InstanceContext
     /**
      * Fetch the SyncStreamInstance
      *
+     
+     
      * @return SyncStreamInstance Fetched SyncStreamInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -139,6 +152,8 @@ class SyncStreamContext extends InstanceContext
     /**
      * Fetch the SyncStreamInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -151,6 +166,7 @@ class SyncStreamContext extends InstanceContext
                         $this->solution['serviceSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -162,12 +178,15 @@ class SyncStreamContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -182,6 +201,8 @@ class SyncStreamContext extends InstanceContext
     /**
      * Update the SyncStreamInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return SyncStreamInstance Updated SyncStreamInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -201,6 +222,8 @@ class SyncStreamContext extends InstanceContext
     /**
      * Update the SyncStreamInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -214,6 +237,7 @@ class SyncStreamContext extends InstanceContext
                         $this->solution['serviceSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

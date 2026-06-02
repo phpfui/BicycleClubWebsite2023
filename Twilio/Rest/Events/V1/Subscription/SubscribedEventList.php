@@ -49,7 +49,6 @@ class SubscribedEventList extends ListResource
             $subscriptionSid,
         
         ];
-
         $this->uri = '/Subscriptions/' . \rawurlencode($subscriptionSid)
         .'/SubscribedEvents';
     }
@@ -57,13 +56,16 @@ class SubscribedEventList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $type Type of event being subscribed to.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $type, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -80,7 +82,9 @@ class SubscribedEventList extends ListResource
     /**
      * Create the SubscribedEventInstance
      *
+     
      * @param string $type Type of event being subscribed to.
+     
      * @param array|Options $options Optional Arguments
      * @return SubscribedEventInstance Created SubscribedEventInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -99,7 +103,9 @@ class SubscribedEventList extends ListResource
     /**
      * Create the SubscribedEventInstance with Metadata
      *
+     
      * @param string $type Type of event being subscribed to.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -112,6 +118,7 @@ class SubscribedEventList extends ListResource
                         $response->getContent(),
                         $this->solution['subscriptionSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -125,6 +132,7 @@ class SubscribedEventList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -145,6 +153,7 @@ class SubscribedEventList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

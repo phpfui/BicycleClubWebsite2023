@@ -49,7 +49,6 @@ class OriginationUrlList extends ListResource
             $trunkSid,
         
         ];
-
         $this->uri = '/Trunks/' . \rawurlencode($trunkSid)
         .'/OriginationUrls';
     }
@@ -57,16 +56,23 @@ class OriginationUrlList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param int $weight The value that determines the relative share of the load the URI should receive compared to other URIs with the same priority. Can be an integer from 1 to 65535, inclusive, and the default is 10. URLs with higher values receive more load than those with lower ones with the same priority.
+     
      * @param int $priority The relative importance of the URI. Can be an integer from 0 to 65535, inclusive, and the default is 10. The lowest number represents the most important URI.
+     
      * @param bool $enabled Whether the URL is enabled. The default is `true`.
+     
      * @param string $friendlyName A descriptive string that you create to describe the resource. It can be up to 64 characters long.
+     
      * @param string $sipUrl The SIP address you want Twilio to route your Origination calls to. This must be a `sip:` schema.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(int $weight, int $priority, bool $enabled, string $friendlyName, string $sipUrl): Response
     {
+        
         $data = Values::of([
             'Weight' =>
                 $weight,
@@ -87,11 +93,17 @@ class OriginationUrlList extends ListResource
     /**
      * Create the OriginationUrlInstance
      *
+     
      * @param int $weight The value that determines the relative share of the load the URI should receive compared to other URIs with the same priority. Can be an integer from 1 to 65535, inclusive, and the default is 10. URLs with higher values receive more load than those with lower ones with the same priority.
+     
      * @param int $priority The relative importance of the URI. Can be an integer from 0 to 65535, inclusive, and the default is 10. The lowest number represents the most important URI.
+     
      * @param bool $enabled Whether the URL is enabled. The default is `true`.
+     
      * @param string $friendlyName A descriptive string that you create to describe the resource. It can be up to 64 characters long.
+     
      * @param string $sipUrl The SIP address you want Twilio to route your Origination calls to. This must be a `sip:` schema.
+     
      * @return OriginationUrlInstance Created OriginationUrlInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -109,11 +121,17 @@ class OriginationUrlList extends ListResource
     /**
      * Create the OriginationUrlInstance with Metadata
      *
+     
      * @param int $weight The value that determines the relative share of the load the URI should receive compared to other URIs with the same priority. Can be an integer from 1 to 65535, inclusive, and the default is 10. URLs with higher values receive more load than those with lower ones with the same priority.
+     
      * @param int $priority The relative importance of the URI. Can be an integer from 0 to 65535, inclusive, and the default is 10. The lowest number represents the most important URI.
+     
      * @param bool $enabled Whether the URL is enabled. The default is `true`.
+     
      * @param string $friendlyName A descriptive string that you create to describe the resource. It can be up to 64 characters long.
+     
      * @param string $sipUrl The SIP address you want Twilio to route your Origination calls to. This must be a `sip:` schema.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -125,6 +143,7 @@ class OriginationUrlList extends ListResource
                         $response->getContent(),
                         $this->solution['trunkSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -138,6 +157,7 @@ class OriginationUrlList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -158,6 +178,7 @@ class OriginationUrlList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

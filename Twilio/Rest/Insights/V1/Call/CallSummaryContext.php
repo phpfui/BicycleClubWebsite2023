@@ -53,12 +53,14 @@ class CallSummaryContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $params = Values::of([
@@ -73,6 +75,7 @@ class CallSummaryContext extends InstanceContext
     /**
      * Fetch the CallSummaryInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return CallSummaryInstance Fetched CallSummaryInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -91,6 +94,7 @@ class CallSummaryContext extends InstanceContext
     /**
      * Fetch the CallSummaryInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -103,6 +107,7 @@ class CallSummaryContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['callSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -43,6 +43,7 @@ class AuthTypesPage extends Page
         return new AuthTypesInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['domainSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

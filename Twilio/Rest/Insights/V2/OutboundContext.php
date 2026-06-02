@@ -51,25 +51,28 @@ class OutboundContext extends InstanceContext
     /**
      * Helper function for Create
      *
+     * @param ?InsightsV2CreatePhoneNumbersReportRequest $insightsV2CreatePhoneNumbersReportRequest
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _create(): Response
+    private function _create(?InsightsV2CreatePhoneNumbersReportRequest $insightsV2CreatePhoneNumbersReportRequest = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $insightsV2CreatePhoneNumbersReportRequest->toArray();
+        $data = $insightsV2CreatePhoneNumbersReportRequest ? $insightsV2CreatePhoneNumbersReportRequest->toArray() : [];
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
     }
 
     /**
      * Create the OutboundInstance
      *
+     * @param ?InsightsV2CreatePhoneNumbersReportRequest $insightsV2CreatePhoneNumbersReportRequest
      * @return OutboundInstance Created OutboundInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function create(): OutboundInstance
+    public function create(?InsightsV2CreatePhoneNumbersReportRequest $insightsV2CreatePhoneNumbersReportRequest = null): OutboundInstance
     {
-        $response = $this->_create();
+        $response = $this->_create($insightsV2CreatePhoneNumbersReportRequest);
         return new OutboundInstance(
             $this->version,
             $response->getContent()
@@ -80,16 +83,18 @@ class OutboundContext extends InstanceContext
     /**
      * Create the OutboundInstance with Metadata
      *
+     * @param ?InsightsV2CreatePhoneNumbersReportRequest $insightsV2CreatePhoneNumbersReportRequest
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function createWithMetadata(): ResourceMetadata
+    public function createWithMetadata(?InsightsV2CreatePhoneNumbersReportRequest $insightsV2CreatePhoneNumbersReportRequest = null): ResourceMetadata
     {
-        $response = $this->_create();
+        $response = $this->_create($insightsV2CreatePhoneNumbersReportRequest);
         $resource = new OutboundInstance(
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

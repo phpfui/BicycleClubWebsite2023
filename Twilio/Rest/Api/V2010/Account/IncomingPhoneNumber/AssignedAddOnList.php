@@ -53,7 +53,6 @@ class AssignedAddOnList extends ListResource
             $resourceSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/IncomingPhoneNumbers/' . \rawurlencode($resourceSid)
         .'/AssignedAddOns.json';
@@ -62,12 +61,15 @@ class AssignedAddOnList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $installedAddOnSid The SID that identifies the Add-on installation.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $installedAddOnSid): Response
     {
+        
         $data = Values::of([
             'InstalledAddOnSid' =>
                 $installedAddOnSid,
@@ -80,7 +82,9 @@ class AssignedAddOnList extends ListResource
     /**
      * Create the AssignedAddOnInstance
      *
+     
      * @param string $installedAddOnSid The SID that identifies the Add-on installation.
+     
      * @return AssignedAddOnInstance Created AssignedAddOnInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -99,7 +103,9 @@ class AssignedAddOnList extends ListResource
     /**
      * Create the AssignedAddOnInstance with Metadata
      *
+     
      * @param string $installedAddOnSid The SID that identifies the Add-on installation.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -112,6 +118,7 @@ class AssignedAddOnList extends ListResource
                         $this->solution['accountSid'],
                         $this->solution['resourceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -125,6 +132,7 @@ class AssignedAddOnList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -145,6 +153,7 @@ class AssignedAddOnList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

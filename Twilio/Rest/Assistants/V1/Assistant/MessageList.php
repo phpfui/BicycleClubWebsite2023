@@ -44,7 +44,6 @@ class MessageList extends ListResource
             $id,
         
         ];
-
         $this->uri = '/Assistants/' . \rawurlencode($id)
         .'/Messages';
     }
@@ -52,12 +51,15 @@ class MessageList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param AssistantsV1ServiceAssistantSendMessageRequest $assistantsV1ServiceAssistantSendMessageRequest
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(AssistantsV1ServiceAssistantSendMessageRequest $assistantsV1ServiceAssistantSendMessageRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $assistantsV1ServiceAssistantSendMessageRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -66,7 +68,9 @@ class MessageList extends ListResource
     /**
      * Create the MessageInstance
      *
+     
      * @param AssistantsV1ServiceAssistantSendMessageRequest $assistantsV1ServiceAssistantSendMessageRequest
+     
      * @return MessageInstance Created MessageInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -84,7 +88,9 @@ class MessageList extends ListResource
     /**
      * Create the MessageInstance with Metadata
      *
+     
      * @param AssistantsV1ServiceAssistantSendMessageRequest $assistantsV1ServiceAssistantSendMessageRequest
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -96,6 +102,7 @@ class MessageList extends ListResource
                         $response->getContent(),
                         $this->solution['id']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

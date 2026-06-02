@@ -62,12 +62,16 @@ class TranscriptionContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param string $status
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $status): Response
     {
+        
         $data = Values::of([
             'Status' =>
                 $status,
@@ -80,7 +84,10 @@ class TranscriptionContext extends InstanceContext
     /**
      * Update the TranscriptionInstance
      *
+     
+     
      * @param string $status
+     
      * @return TranscriptionInstance Updated TranscriptionInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -100,7 +107,10 @@ class TranscriptionContext extends InstanceContext
     /**
      * Update the TranscriptionInstance with Metadata
      *
+     
+     
      * @param string $status
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -114,6 +124,7 @@ class TranscriptionContext extends InstanceContext
                         $this->solution['callSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

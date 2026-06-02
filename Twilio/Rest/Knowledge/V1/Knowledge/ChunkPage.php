@@ -43,6 +43,7 @@ class ChunkPage extends Page
         return new ChunkInstance($this->version, $payload, $this->solution['id']);
     }
 
+
     /**
      * Provide a friendly representation
      *

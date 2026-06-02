@@ -52,11 +52,13 @@ class DomainCertsContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -64,6 +66,7 @@ class DomainCertsContext extends InstanceContext
     /**
      * Delete the DomainCertsInstance
      *
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -77,12 +80,14 @@ class DomainCertsContext extends InstanceContext
     /**
      * Delete the DomainCertsInstance with Metadata
      *
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -95,11 +100,13 @@ class DomainCertsContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -107,6 +114,7 @@ class DomainCertsContext extends InstanceContext
     /**
      * Fetch the DomainCertsInstance
      *
+     
      * @return DomainCertsInstance Fetched DomainCertsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -124,6 +132,7 @@ class DomainCertsContext extends InstanceContext
     /**
      * Fetch the DomainCertsInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -135,6 +144,7 @@ class DomainCertsContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['domainSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -146,12 +156,15 @@ class DomainCertsContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param string $tlsCert Contains the full TLS certificate and private for this domain in PEM format: https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail. Twilio uses this information to process HTTPS traffic sent to your domain.
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $tlsCert): Response
     {
+        
         $data = Values::of([
             'TlsCert' =>
                 $tlsCert,
@@ -164,7 +177,9 @@ class DomainCertsContext extends InstanceContext
     /**
      * Update the DomainCertsInstance
      *
+     
      * @param string $tlsCert Contains the full TLS certificate and private for this domain in PEM format: https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail. Twilio uses this information to process HTTPS traffic sent to your domain.
+     
      * @return DomainCertsInstance Updated DomainCertsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -182,7 +197,9 @@ class DomainCertsContext extends InstanceContext
     /**
      * Update the DomainCertsInstance with Metadata
      *
+     
      * @param string $tlsCert Contains the full TLS certificate and private for this domain in PEM format: https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail. Twilio uses this information to process HTTPS traffic sent to your domain.
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -194,6 +211,7 @@ class DomainCertsContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['domainSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -48,7 +48,6 @@ class EvaluationList extends ListResource
             $bundleSid,
         
         ];
-
         $this->uri = '/RegulatoryCompliance/Bundles/' . \rawurlencode($bundleSid)
         .'/Evaluations';
     }
@@ -56,11 +55,13 @@ class EvaluationList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('POST', $this->uri, [], [], $headers, "create");
     }
@@ -68,6 +69,7 @@ class EvaluationList extends ListResource
     /**
      * Create the EvaluationInstance
      *
+     
      * @return EvaluationInstance Created EvaluationInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -85,6 +87,7 @@ class EvaluationList extends ListResource
     /**
      * Create the EvaluationInstance with Metadata
      *
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -96,6 +99,7 @@ class EvaluationList extends ListResource
                         $response->getContent(),
                         $this->solution['bundleSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -109,6 +113,7 @@ class EvaluationList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -129,6 +134,7 @@ class EvaluationList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

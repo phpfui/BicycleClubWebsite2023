@@ -40,7 +40,6 @@ class InsightsSettingsAnswerSetsList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Insights/QualityManagement/Settings/AnswerSets';
     }
 
@@ -53,6 +52,7 @@ class InsightsSettingsAnswerSetsList extends ListResource
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' , 'Authorization' => $options['authorization']]);
@@ -90,6 +90,7 @@ class InsightsSettingsAnswerSetsList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -41,7 +41,6 @@ class FlowValidateList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Flows/Validate';
     }
 
@@ -49,14 +48,18 @@ class FlowValidateList extends ListResource
      * Helper function for Update
      *
      * @param string $friendlyName The string that you assigned to describe the Flow.
+     
      * @param string $status
+     
      * @param array $definition JSON representation of flow definition.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $friendlyName, string $status, array $definition, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -78,8 +81,11 @@ class FlowValidateList extends ListResource
      * Update the FlowValidateInstance
      *
      * @param string $friendlyName The string that you assigned to describe the Flow.
+     
      * @param string $status
+     
      * @param array $definition JSON representation of flow definition.
+     
      * @param array|Options $options Optional Arguments
      * @return FlowValidateInstance Updated FlowValidateInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -98,8 +104,11 @@ class FlowValidateList extends ListResource
      * Update the FlowValidateInstance with Metadata
      *
      * @param string $friendlyName The string that you assigned to describe the Flow.
+     
      * @param string $status
+     
      * @param array $definition JSON representation of flow definition.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -111,6 +120,7 @@ class FlowValidateList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -43,6 +43,7 @@ class LogPage extends Page
         return new LogInstance($this->version, $payload, $this->solution['serviceSid'], $this->solution['environmentSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

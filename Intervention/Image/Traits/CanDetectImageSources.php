@@ -27,9 +27,9 @@ trait CanDetectImageSources
             return true;
         }
 
-        $decoded = base64_decode($input);
+        $decoded = base64_decode($input, strict: true);
 
-        if (!$decoded) {
+        if ($decoded === false) {
             return false;
         }
 

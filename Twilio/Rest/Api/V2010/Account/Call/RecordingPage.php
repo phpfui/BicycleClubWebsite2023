@@ -43,6 +43,7 @@ class RecordingPage extends Page
         return new RecordingInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['callSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

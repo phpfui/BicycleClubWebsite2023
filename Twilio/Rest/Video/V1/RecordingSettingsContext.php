@@ -50,12 +50,14 @@ class RecordingSettingsContext extends InstanceContext
      * Helper function for Create
      *
      * @param string $friendlyName A descriptive string that you create to describe the resource and be shown to users in the console
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -81,6 +83,7 @@ class RecordingSettingsContext extends InstanceContext
      * Create the RecordingSettingsInstance
      *
      * @param string $friendlyName A descriptive string that you create to describe the resource and be shown to users in the console
+     
      * @param array|Options $options Optional Arguments
      * @return RecordingSettingsInstance Created RecordingSettingsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -99,6 +102,7 @@ class RecordingSettingsContext extends InstanceContext
      * Create the RecordingSettingsInstance with Metadata
      *
      * @param string $friendlyName A descriptive string that you create to describe the resource and be shown to users in the console
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -110,6 +114,7 @@ class RecordingSettingsContext extends InstanceContext
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -126,6 +131,7 @@ class RecordingSettingsContext extends InstanceContext
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -159,6 +165,7 @@ class RecordingSettingsContext extends InstanceContext
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

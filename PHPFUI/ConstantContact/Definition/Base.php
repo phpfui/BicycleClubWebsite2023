@@ -2,7 +2,7 @@
 
 namespace PHPFUI\ConstantContact\Definition;
 
-abstract class Base
+abstract class Base implements \JsonSerializable
 	{
 	/**
 	 * @var array<string, string | array> $fields indexed by field name containing field type.
@@ -257,7 +257,7 @@ abstract class Base
 
 		foreach (static::$requiredFields as $field)
 			{
-			if (! empty($this->setFields[$field]))
+			if (empty($this->setFields[$field]))
 				{
 				throw new \PHPFUI\ConstantContact\Exception\RequiredField(static::class . "::{$field} is required but not set.");
 				}
@@ -313,6 +313,16 @@ abstract class Base
 		{
 		return \json_encode($this->getData(), JSON_PRETTY_PRINT);
 		}
+
+	/**
+	 * Impliment JsonSerializable
+	 *
+	 * @return array representation of data
+	 */
+  public function jsonSerialize() : array
+	{
+	return $this->getData();
+	}
 
 	/**
 	 * More descriptive alternative to getData()

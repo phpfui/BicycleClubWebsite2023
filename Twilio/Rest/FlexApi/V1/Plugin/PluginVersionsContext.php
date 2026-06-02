@@ -58,12 +58,15 @@ class PluginVersionsContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' , 'Flex-Metadata' => $options['flexMetadata']]);
@@ -73,6 +76,8 @@ class PluginVersionsContext extends InstanceContext
     /**
      * Fetch the PluginVersionsInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return PluginVersionsInstance Fetched PluginVersionsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -92,6 +97,8 @@ class PluginVersionsContext extends InstanceContext
     /**
      * Fetch the PluginVersionsInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -105,6 +112,7 @@ class PluginVersionsContext extends InstanceContext
                         $this->solution['pluginSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

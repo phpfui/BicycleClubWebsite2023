@@ -44,7 +44,6 @@ class SinkTestList extends ListResource
             $sid,
         
         ];
-
         $this->uri = '/Sinks/' . \rawurlencode($sid)
         .'/Test';
     }
@@ -52,11 +51,13 @@ class SinkTestList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('POST', $this->uri, [], [], $headers, "create");
     }
@@ -64,6 +65,7 @@ class SinkTestList extends ListResource
     /**
      * Create the SinkTestInstance
      *
+     
      * @return SinkTestInstance Created SinkTestInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -81,6 +83,7 @@ class SinkTestList extends ListResource
     /**
      * Create the SinkTestInstance with Metadata
      *
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,6 +95,7 @@ class SinkTestList extends ListResource
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

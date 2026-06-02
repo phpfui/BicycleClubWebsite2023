@@ -15,4 +15,14 @@ class ReservationPerson extends \App\Record\Definition\ReservationPerson
 
 		return $this;
 		}
+
+	public function fullName() : string
+	 {
+	 if ($this->empty())
+		 {
+		 return '';
+		 }
+
+	 return \App\Tools\TextHelper::unhtmlentities(($this->current['firstName'] ?? '') . ' ' . ($this->current['lastName'] ?? ''));
+	 }
 	}

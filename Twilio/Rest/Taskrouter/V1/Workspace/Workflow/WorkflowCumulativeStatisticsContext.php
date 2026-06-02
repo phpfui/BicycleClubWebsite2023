@@ -59,12 +59,15 @@ class WorkflowCumulativeStatisticsContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $params = Values::of([
@@ -87,6 +90,8 @@ class WorkflowCumulativeStatisticsContext extends InstanceContext
     /**
      * Fetch the WorkflowCumulativeStatisticsInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return WorkflowCumulativeStatisticsInstance Fetched WorkflowCumulativeStatisticsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -106,6 +111,8 @@ class WorkflowCumulativeStatisticsContext extends InstanceContext
     /**
      * Fetch the WorkflowCumulativeStatisticsInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -119,6 +126,7 @@ class WorkflowCumulativeStatisticsContext extends InstanceContext
                         $this->solution['workspaceSid'],
                         $this->solution['workflowSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -57,25 +57,32 @@ class LookupOverrideContext extends InstanceContext
     /**
      * Helper function for Create
      *
+     
+     
+     * @param ?OverridesRequest $overridesRequest
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _create(): Response
+    private function _create(?OverridesRequest $overridesRequest = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $overridesRequest->toArray();
+        $data = $overridesRequest ? $overridesRequest->toArray() : [];
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
     }
 
     /**
      * Create the LookupOverrideInstance
      *
+     
+     
+     * @param ?OverridesRequest $overridesRequest
      * @return LookupOverrideInstance Created LookupOverrideInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function create(): LookupOverrideInstance
+    public function create(?OverridesRequest $overridesRequest = null): LookupOverrideInstance
     {
-        $response = $this->_create();
+        $response = $this->_create($overridesRequest);
         return new LookupOverrideInstance(
             $this->version,
             $response->getContent(),
@@ -88,18 +95,22 @@ class LookupOverrideContext extends InstanceContext
     /**
      * Create the LookupOverrideInstance with Metadata
      *
+     
+     
+     * @param ?OverridesRequest $overridesRequest
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function createWithMetadata(): ResourceMetadata
+    public function createWithMetadata(?OverridesRequest $overridesRequest = null): ResourceMetadata
     {
-        $response = $this->_create();
+        $response = $this->_create($overridesRequest);
         $resource = new LookupOverrideInstance(
                         $this->version,
                         $response->getContent(),
                         $this->solution['field'],
                         $this->solution['phoneNumber']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -111,11 +122,14 @@ class LookupOverrideContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -123,6 +137,8 @@ class LookupOverrideContext extends InstanceContext
     /**
      * Delete the LookupOverrideInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -136,12 +152,15 @@ class LookupOverrideContext extends InstanceContext
     /**
      * Delete the LookupOverrideInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -154,11 +173,14 @@ class LookupOverrideContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -166,6 +188,8 @@ class LookupOverrideContext extends InstanceContext
     /**
      * Fetch the LookupOverrideInstance
      *
+     
+     
      * @return LookupOverrideInstance Fetched LookupOverrideInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -184,6 +208,8 @@ class LookupOverrideContext extends InstanceContext
     /**
      * Fetch the LookupOverrideInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -196,6 +222,7 @@ class LookupOverrideContext extends InstanceContext
                         $this->solution['field'],
                         $this->solution['phoneNumber']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -207,25 +234,32 @@ class LookupOverrideContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
+     * @param ?OverridesRequest $overridesRequest
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _update(): Response
+    private function _update(?OverridesRequest $overridesRequest = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $overridesRequest->toArray();
+        $data = $overridesRequest ? $overridesRequest->toArray() : [];
         return $this->version->handleRequest('PUT', $this->uri, [], $data, $headers, "update");
     }
 
     /**
      * Update the LookupOverrideInstance
      *
+     
+     
+     * @param ?OverridesRequest $overridesRequest
      * @return LookupOverrideInstance Updated LookupOverrideInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function update(): LookupOverrideInstance
+    public function update(?OverridesRequest $overridesRequest = null): LookupOverrideInstance
     {
-        $response = $this->_update();
+        $response = $this->_update($overridesRequest);
         return new LookupOverrideInstance(
             $this->version,
             $response->getContent(),
@@ -238,18 +272,22 @@ class LookupOverrideContext extends InstanceContext
     /**
      * Update the LookupOverrideInstance with Metadata
      *
+     
+     
+     * @param ?OverridesRequest $overridesRequest
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function updateWithMetadata(): ResourceMetadata
+    public function updateWithMetadata(?OverridesRequest $overridesRequest = null): ResourceMetadata
     {
-        $response = $this->_update();
+        $response = $this->_update($overridesRequest);
         $resource = new LookupOverrideInstance(
                         $this->version,
                         $response->getContent(),
                         $this->solution['field'],
                         $this->solution['phoneNumber']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -43,6 +43,7 @@ class InvitePage extends Page
         return new InviteInstance($this->version, $payload, $this->solution['serviceSid'], $this->solution['channelSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

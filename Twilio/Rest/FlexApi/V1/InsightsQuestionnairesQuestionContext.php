@@ -54,12 +54,14 @@ class InsightsQuestionnairesQuestionContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' , 'Authorization' => $options['authorization']]);
@@ -69,6 +71,7 @@ class InsightsQuestionnairesQuestionContext extends InstanceContext
     /**
      * Delete the InsightsQuestionnairesQuestionInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
@@ -83,6 +86,7 @@ class InsightsQuestionnairesQuestionContext extends InstanceContext
     /**
      * Delete the InsightsQuestionnairesQuestionInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -90,6 +94,7 @@ class InsightsQuestionnairesQuestionContext extends InstanceContext
     public function deleteWithMetadata(array $options = []): ResourceMetadata
     {
         $response = $this->_delete($options);
+        
         
         return new ResourceMetadata(
             null,
@@ -102,13 +107,16 @@ class InsightsQuestionnairesQuestionContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param bool $allowNa The flag to enable for disable NA for answer.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(bool $allowNa, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -131,7 +139,9 @@ class InsightsQuestionnairesQuestionContext extends InstanceContext
     /**
      * Update the InsightsQuestionnairesQuestionInstance
      *
+     
      * @param bool $allowNa The flag to enable for disable NA for answer.
+     
      * @param array|Options $options Optional Arguments
      * @return InsightsQuestionnairesQuestionInstance Updated InsightsQuestionnairesQuestionInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -150,7 +160,9 @@ class InsightsQuestionnairesQuestionContext extends InstanceContext
     /**
      * Update the InsightsQuestionnairesQuestionInstance with Metadata
      *
+     
      * @param bool $allowNa The flag to enable for disable NA for answer.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -163,6 +175,7 @@ class InsightsQuestionnairesQuestionContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['questionSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

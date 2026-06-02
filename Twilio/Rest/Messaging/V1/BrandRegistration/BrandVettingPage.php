@@ -43,6 +43,7 @@ class BrandVettingPage extends Page
         return new BrandVettingInstance($this->version, $payload, $this->solution['brandSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

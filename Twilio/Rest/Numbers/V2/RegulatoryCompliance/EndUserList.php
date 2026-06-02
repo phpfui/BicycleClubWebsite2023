@@ -45,7 +45,6 @@ class EndUserList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/RegulatoryCompliance/EndUsers';
     }
 
@@ -53,13 +52,16 @@ class EndUserList extends ListResource
      * Helper function for Create
      *
      * @param string $friendlyName The string that you assigned to describe the resource.
+     
      * @param string $type
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, string $type, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -79,7 +81,9 @@ class EndUserList extends ListResource
      * Create the EndUserInstance
      *
      * @param string $friendlyName The string that you assigned to describe the resource.
+     
      * @param string $type
+     
      * @param array|Options $options Optional Arguments
      * @return EndUserInstance Created EndUserInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -98,7 +102,9 @@ class EndUserList extends ListResource
      * Create the EndUserInstance with Metadata
      *
      * @param string $friendlyName The string that you assigned to describe the resource.
+     
      * @param string $type
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -110,6 +116,7 @@ class EndUserList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -123,6 +130,7 @@ class EndUserList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -143,6 +151,7 @@ class EndUserList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

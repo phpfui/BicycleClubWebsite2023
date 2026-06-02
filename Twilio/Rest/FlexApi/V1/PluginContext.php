@@ -61,12 +61,14 @@ class PluginContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' , 'Flex-Metadata' => $options['flexMetadata']]);
@@ -76,6 +78,7 @@ class PluginContext extends InstanceContext
     /**
      * Fetch the PluginInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return PluginInstance Fetched PluginInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -94,6 +97,7 @@ class PluginContext extends InstanceContext
     /**
      * Fetch the PluginInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -106,6 +110,7 @@ class PluginContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -117,12 +122,14 @@ class PluginContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -139,6 +146,7 @@ class PluginContext extends InstanceContext
     /**
      * Update the PluginInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return PluginInstance Updated PluginInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -157,6 +165,7 @@ class PluginContext extends InstanceContext
     /**
      * Update the PluginInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -169,6 +178,7 @@ class PluginContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -49,7 +49,6 @@ class QueueList extends ListResource
             $accountSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Queues.json';
     }
@@ -58,12 +57,14 @@ class QueueList extends ListResource
      * Helper function for Create
      *
      * @param string $friendlyName A descriptive string that you created to describe this resource. It can be up to 64 characters long.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -81,6 +82,7 @@ class QueueList extends ListResource
      * Create the QueueInstance
      *
      * @param string $friendlyName A descriptive string that you created to describe this resource. It can be up to 64 characters long.
+     
      * @param array|Options $options Optional Arguments
      * @return QueueInstance Created QueueInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -100,6 +102,7 @@ class QueueList extends ListResource
      * Create the QueueInstance with Metadata
      *
      * @param string $friendlyName A descriptive string that you created to describe this resource. It can be up to 64 characters long.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -112,6 +115,7 @@ class QueueList extends ListResource
                         $response->getContent(),
                         $this->solution['accountSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -125,6 +129,7 @@ class QueueList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -145,6 +150,7 @@ class QueueList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

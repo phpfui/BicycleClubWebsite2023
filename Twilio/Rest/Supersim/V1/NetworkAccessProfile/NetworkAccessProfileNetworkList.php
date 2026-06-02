@@ -48,7 +48,6 @@ class NetworkAccessProfileNetworkList extends ListResource
             $networkAccessProfileSid,
         
         ];
-
         $this->uri = '/NetworkAccessProfiles/' . \rawurlencode($networkAccessProfileSid)
         .'/Networks';
     }
@@ -56,12 +55,15 @@ class NetworkAccessProfileNetworkList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $network The SID of the Network resource to be added to the Network Access Profile resource.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $network): Response
     {
+        
         $data = Values::of([
             'Network' =>
                 $network,
@@ -74,7 +76,9 @@ class NetworkAccessProfileNetworkList extends ListResource
     /**
      * Create the NetworkAccessProfileNetworkInstance
      *
+     
      * @param string $network The SID of the Network resource to be added to the Network Access Profile resource.
+     
      * @return NetworkAccessProfileNetworkInstance Created NetworkAccessProfileNetworkInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,7 +96,9 @@ class NetworkAccessProfileNetworkList extends ListResource
     /**
      * Create the NetworkAccessProfileNetworkInstance with Metadata
      *
+     
      * @param string $network The SID of the Network resource to be added to the Network Access Profile resource.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -104,6 +110,7 @@ class NetworkAccessProfileNetworkList extends ListResource
                         $response->getContent(),
                         $this->solution['networkAccessProfileSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -117,6 +124,7 @@ class NetworkAccessProfileNetworkList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -137,6 +145,7 @@ class NetworkAccessProfileNetworkList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

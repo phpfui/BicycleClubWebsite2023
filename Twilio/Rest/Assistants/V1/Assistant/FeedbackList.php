@@ -48,7 +48,6 @@ class FeedbackList extends ListResource
             $id,
         
         ];
-
         $this->uri = '/Assistants/' . \rawurlencode($id)
         .'/Feedbacks';
     }
@@ -56,12 +55,15 @@ class FeedbackList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param AssistantsV1ServiceCreateFeedbackRequest $assistantsV1ServiceCreateFeedbackRequest
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(AssistantsV1ServiceCreateFeedbackRequest $assistantsV1ServiceCreateFeedbackRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $assistantsV1ServiceCreateFeedbackRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -70,7 +72,9 @@ class FeedbackList extends ListResource
     /**
      * Create the FeedbackInstance
      *
+     
      * @param AssistantsV1ServiceCreateFeedbackRequest $assistantsV1ServiceCreateFeedbackRequest
+     
      * @return FeedbackInstance Created FeedbackInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -88,7 +92,9 @@ class FeedbackList extends ListResource
     /**
      * Create the FeedbackInstance with Metadata
      *
+     
      * @param AssistantsV1ServiceCreateFeedbackRequest $assistantsV1ServiceCreateFeedbackRequest
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -100,6 +106,7 @@ class FeedbackList extends ListResource
                         $response->getContent(),
                         $this->solution['id']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -113,6 +120,7 @@ class FeedbackList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -133,6 +141,7 @@ class FeedbackList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

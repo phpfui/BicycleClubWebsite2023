@@ -3,14 +3,14 @@
 /*******************************************************************************
  * FPDF                                                                         *
  *                                                                              *
- * Version: 1.86                                                                *
- * Date:    2023-06-25                                                          *
- * Author:  Olivier PLATHEY                                                     *
+ * Version: 1.9                                                                 *
+ * Date:    2026-05-31                                                          *
+ * Author:  Olivier Plathey                                                     *
  *******************************************************************************/
 
 class FPDF
 {
-public const VERSION = '1.86';
+public const VERSION = '1.9';
 
 public $FontFamily;         // current font family
 
@@ -242,7 +242,7 @@ public function AddFont($family, $style = '', $file = '', $dir = '') : void
 	$family = \strtolower($family);
 
 	if('' == $file)
-		$file = \str_replace(' ', '', $family) . \strtolower($style) . '.php';
+		$file = \str_replace(' ', '', $family) . \strtolower($style) . '.json';
 	$style = \strtoupper($style);
 
 	if('IB' == $style)
@@ -551,11 +551,10 @@ public function Image($file, $x = null, $y = null, $w = 0, $h = 0, $type = '', $
 		// First use of this image, get info
 		if('' == $type)
 		{
-			$pos = \strrpos($file, '.');
+			$type = \pathinfo($file, PATHINFO_EXTENSION);
 
-			if(! $pos)
+			if(! $type)
 				$this->Error('Image file has no extension and no type was specified: ' . $file);
-			$type = \substr($file, $pos + 1);
 		}
 		$type = \strtolower($type);
 
@@ -1398,6 +1397,46 @@ protected function _isascii($s)
 protected function _loadfont($path)
 {
 	// Load a font definition file
+	$ext = \pathinfo($path, PATHINFO_EXTENSION);
+
+	if('json' == $ext)
+		return $this->_loadjsonfont($path);
+	elseif('php' == $ext)
+		return $this->_loadphpfont($path);
+
+		$this->Error('Invalid file extension: ' . $ext);
+}
+
+protected function _loadjsonfont($path)
+{
+	$json = \file_get_contents($path);
+
+	if(false === $json)
+		$this->Error('Could not load font definition file: ' . $path);
+	$info = \json_decode($json, true);
+
+	if(null === $info)
+		$this->Error('Invalid JSON file: ' . $path);
+
+	if(! isset($info['name']))
+		$this->Error('Invalid font definition file: ' . $path);
+
+	foreach($info['cw'] as $c => $w)
+		$cw[\chr($c)] = $w;
+	$info['cw'] = $cw;
+
+	if(isset($info['enc']))
+		$info['enc'] = \strtolower($info['enc']);
+
+	if(! isset($info['subsetted']))
+		$info['subsetted'] = false;
+
+	return $info;
+}
+
+protected function _loadphpfont($path)
+{
+	\trigger_error('PHP font definition files are deprecated, use the JSON format instead', E_USER_DEPRECATED);
 	include $path;
 
 	if(! isset($name))
@@ -1445,12 +1484,11 @@ protected function _parsegif($file)
 	$im = \imagecreatefromgif($file);
 
 	if(! $im)
-		$this->Error('Missing or incorrect image file: ' . $file);
+		$this->Error('Missing or incorrect GIF file: ' . $file);
 	\imageinterlace($im, 0);
 	\ob_start();
 	\imagepng($im);
 	$data = \ob_get_clean();
-	\imagedestroy($im);
 	$f = \fopen('php://temp', 'rb+');
 
 	if(! $f)
@@ -1469,9 +1507,9 @@ protected function _parsejpg($file)
 	$a = \getimagesize($file);
 
 	if(! $a)
-		$this->Error('Missing or incorrect image file: ' . $file);
+		$this->Error('Missing or incorrect JPEG file: ' . $file);
 
-	if(2 != $a[2])
+	if(IMAGETYPE_JPEG != $a[2])
 		$this->Error('Not a JPEG file: ' . $file);
 
 	if(! isset($a['channels']) || 3 == $a['channels'])
@@ -1637,6 +1675,31 @@ protected function _parsepngstream($f, $file)
 			$this->PDFVersion = '1.4';
 	}
 	$info['data'] = $data;
+
+	return $info;
+}
+
+protected function _parsewebp($file)
+{
+	// Extract info from a WebP file (via JPEG conversion)
+	if(! \function_exists('imagejpeg'))
+		$this->Error('GD extension is required for WebP support');
+
+	if(! \function_exists('imagecreatefromwebp'))
+		$this->Error('GD has no WebP support');
+	$im = \imagecreatefromwebp($file);
+
+	if(! $im)
+		$this->Error('Missing or incorrect WebP file: ' . $file);
+	$tmp = \tempnam(\sys_get_temp_dir(), 'jpg');
+
+	if(false === $tmp)
+		$this->Error('Could not create temp file');
+
+	if(! \imagejpeg($im, $tmp))
+		$this->Error('Could not save to file: ' . $tmp);
+	$info = $this->_parsejpg($tmp);
+	\unlink($tmp);
 
 	return $info;
 }

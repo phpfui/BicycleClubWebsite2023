@@ -41,7 +41,6 @@ class RateLimitList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/RateLimits';
     }
 
@@ -54,6 +53,7 @@ class RateLimitList extends ListResource
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $params = Values::of([
@@ -96,6 +96,7 @@ class RateLimitList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

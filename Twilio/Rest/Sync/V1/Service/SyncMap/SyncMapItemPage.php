@@ -43,6 +43,7 @@ class SyncMapItemPage extends Page
         return new SyncMapItemInstance($this->version, $payload, $this->solution['serviceSid'], $this->solution['mapSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

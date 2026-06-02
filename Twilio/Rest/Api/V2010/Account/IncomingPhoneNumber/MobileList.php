@@ -50,7 +50,6 @@ class MobileList extends ListResource
             $accountSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/IncomingPhoneNumbers/Mobile.json';
     }
@@ -59,12 +58,14 @@ class MobileList extends ListResource
      * Helper function for Create
      *
      * @param string $phoneNumber The phone number to purchase specified in [E.164](https://www.twilio.com/docs/glossary/what-e164) format.  E.164 phone numbers consist of a + followed by the country code and subscriber number without punctuation characters. For example, +14155551234.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $phoneNumber, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -124,6 +125,7 @@ class MobileList extends ListResource
      * Create the MobileInstance
      *
      * @param string $phoneNumber The phone number to purchase specified in [E.164](https://www.twilio.com/docs/glossary/what-e164) format.  E.164 phone numbers consist of a + followed by the country code and subscriber number without punctuation characters. For example, +14155551234.
+     
      * @param array|Options $options Optional Arguments
      * @return MobileInstance Created MobileInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -143,6 +145,7 @@ class MobileList extends ListResource
      * Create the MobileInstance with Metadata
      *
      * @param string $phoneNumber The phone number to purchase specified in [E.164](https://www.twilio.com/docs/glossary/what-e164) format.  E.164 phone numbers consist of a + followed by the country code and subscriber number without punctuation characters. For example, +14155551234.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -155,6 +158,7 @@ class MobileList extends ListResource
                         $response->getContent(),
                         $this->solution['accountSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -168,6 +172,7 @@ class MobileList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -189,6 +194,7 @@ class MobileList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

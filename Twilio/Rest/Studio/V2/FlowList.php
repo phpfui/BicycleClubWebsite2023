@@ -45,7 +45,6 @@ class FlowList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Flows';
     }
 
@@ -53,14 +52,18 @@ class FlowList extends ListResource
      * Helper function for Create
      *
      * @param string $friendlyName The string that you assigned to describe the Flow.
+     
      * @param string $status
+     
      * @param array $definition JSON representation of flow definition.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, string $status, array $definition, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -72,6 +75,8 @@ class FlowList extends ListResource
                 Serialize::jsonObject($definition),
             'CommitMessage' =>
                 $options['commitMessage'],
+            'AuthorSid' =>
+                $options['authorSid'],
         ]);
 
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
@@ -82,8 +87,11 @@ class FlowList extends ListResource
      * Create the FlowInstance
      *
      * @param string $friendlyName The string that you assigned to describe the Flow.
+     
      * @param string $status
+     
      * @param array $definition JSON representation of flow definition.
+     
      * @param array|Options $options Optional Arguments
      * @return FlowInstance Created FlowInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -102,8 +110,11 @@ class FlowList extends ListResource
      * Create the FlowInstance with Metadata
      *
      * @param string $friendlyName The string that you assigned to describe the Flow.
+     
      * @param string $status
+     
      * @param array $definition JSON representation of flow definition.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -115,6 +126,7 @@ class FlowList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -128,6 +140,7 @@ class FlowList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -148,6 +161,7 @@ class FlowList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

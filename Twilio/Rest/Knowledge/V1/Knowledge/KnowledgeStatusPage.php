@@ -43,6 +43,7 @@ class KnowledgeStatusPage extends Page
         return new KnowledgeStatusInstance($this->version, $payload, $this->solution['id']);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -62,11 +62,15 @@ class LogContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -74,6 +78,9 @@ class LogContext extends InstanceContext
     /**
      * Fetch the LogInstance
      *
+     
+     
+     
      * @return LogInstance Fetched LogInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -93,6 +100,9 @@ class LogContext extends InstanceContext
     /**
      * Fetch the LogInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -106,6 +116,7 @@ class LogContext extends InstanceContext
                         $this->solution['environmentSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

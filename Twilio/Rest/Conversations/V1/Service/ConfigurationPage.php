@@ -43,6 +43,7 @@ class ConfigurationPage extends Page
         return new ConfigurationInstance($this->version, $payload, $this->solution['chatServiceSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

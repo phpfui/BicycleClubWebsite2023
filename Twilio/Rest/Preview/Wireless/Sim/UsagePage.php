@@ -43,6 +43,7 @@ class UsagePage extends Page
         return new UsageInstance($this->version, $payload, $this->solution['simSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

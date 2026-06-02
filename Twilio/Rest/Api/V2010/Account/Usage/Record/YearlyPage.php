@@ -43,6 +43,7 @@ class YearlyPage extends Page
         return new YearlyInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -43,6 +43,7 @@ class MemberPage extends Page
         return new MemberInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['queueSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

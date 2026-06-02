@@ -43,6 +43,7 @@ class VoicePage extends Page
         return new VoiceInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

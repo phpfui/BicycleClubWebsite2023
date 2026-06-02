@@ -63,11 +63,15 @@ class FactorContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -75,6 +79,9 @@ class FactorContext extends InstanceContext
     /**
      * Delete the FactorInstance
      *
+     
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -88,12 +95,16 @@ class FactorContext extends InstanceContext
     /**
      * Delete the FactorInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -106,11 +117,15 @@ class FactorContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -118,6 +133,9 @@ class FactorContext extends InstanceContext
     /**
      * Fetch the FactorInstance
      *
+     
+     
+     
      * @return FactorInstance Fetched FactorInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -137,6 +155,9 @@ class FactorContext extends InstanceContext
     /**
      * Fetch the FactorInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -150,6 +171,7 @@ class FactorContext extends InstanceContext
                         $this->solution['identity'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -161,12 +183,16 @@ class FactorContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -197,6 +223,9 @@ class FactorContext extends InstanceContext
     /**
      * Update the FactorInstance
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return FactorInstance Updated FactorInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -217,6 +246,9 @@ class FactorContext extends InstanceContext
     /**
      * Update the FactorInstance with Metadata
      *
+     
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -231,6 +263,7 @@ class FactorContext extends InstanceContext
                         $this->solution['identity'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

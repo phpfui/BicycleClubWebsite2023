@@ -39,32 +39,34 @@ class EligibilityList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/HostedNumber/Eligibility';
     }
 
     /**
      * Helper function for Create
      *
+     * @param ?array $body
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _create(): Response
+    private function _create(?array $body = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $body->toArray();
+        $data = $body ? $body->toArray() : [];
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
     }
 
     /**
      * Create the EligibilityInstance
      *
+     * @param ?array $body
      * @return EligibilityInstance Created EligibilityInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function create(): EligibilityInstance
+    public function create(?array $body = null): EligibilityInstance
     {
-        $response = $this->_create();
+        $response = $this->_create($body);
         return new EligibilityInstance(
             $this->version,
             $response->getContent()
@@ -75,16 +77,18 @@ class EligibilityList extends ListResource
     /**
      * Create the EligibilityInstance with Metadata
      *
+     * @param ?array $body
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function createWithMetadata(): ResourceMetadata
+    public function createWithMetadata(?array $body = null): ResourceMetadata
     {
-        $response = $this->_create();
+        $response = $this->_create($body);
         $resource = new EligibilityInstance(
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

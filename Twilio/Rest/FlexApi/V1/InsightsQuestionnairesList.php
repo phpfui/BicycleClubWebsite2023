@@ -45,7 +45,6 @@ class InsightsQuestionnairesList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Insights/QualityManagement/Questionnaires';
     }
 
@@ -53,12 +52,14 @@ class InsightsQuestionnairesList extends ListResource
      * Helper function for Create
      *
      * @param string $name The name of this questionnaire
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $name, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -80,6 +81,7 @@ class InsightsQuestionnairesList extends ListResource
      * Create the InsightsQuestionnairesInstance
      *
      * @param string $name The name of this questionnaire
+     
      * @param array|Options $options Optional Arguments
      * @return InsightsQuestionnairesInstance Created InsightsQuestionnairesInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -98,6 +100,7 @@ class InsightsQuestionnairesList extends ListResource
      * Create the InsightsQuestionnairesInstance with Metadata
      *
      * @param string $name The name of this questionnaire
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -109,6 +112,7 @@ class InsightsQuestionnairesList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -122,6 +126,7 @@ class InsightsQuestionnairesList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -143,6 +148,7 @@ class InsightsQuestionnairesList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

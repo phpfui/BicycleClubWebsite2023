@@ -57,11 +57,14 @@ class CustomerProfilesEvaluationsContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -69,6 +72,8 @@ class CustomerProfilesEvaluationsContext extends InstanceContext
     /**
      * Fetch the CustomerProfilesEvaluationsInstance
      *
+     
+     
      * @return CustomerProfilesEvaluationsInstance Fetched CustomerProfilesEvaluationsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -87,6 +92,8 @@ class CustomerProfilesEvaluationsContext extends InstanceContext
     /**
      * Fetch the CustomerProfilesEvaluationsInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -99,6 +106,7 @@ class CustomerProfilesEvaluationsContext extends InstanceContext
                         $this->solution['customerProfileSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

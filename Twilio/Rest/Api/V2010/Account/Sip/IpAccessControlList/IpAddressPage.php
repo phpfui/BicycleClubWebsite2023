@@ -43,6 +43,7 @@ class IpAddressPage extends Page
         return new IpAddressInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['ipAccessControlListSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

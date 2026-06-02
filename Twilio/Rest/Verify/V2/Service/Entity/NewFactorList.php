@@ -51,7 +51,6 @@ class NewFactorList extends ListResource
             $identity,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Entities/' . \rawurlencode($identity)
         .'/Factors';
@@ -60,14 +59,19 @@ class NewFactorList extends ListResource
     /**
      * Helper function for Create
      *
+     
+     
      * @param string $friendlyName The friendly name of this Factor. This can be any string up to 64 characters, meant for humans to distinguish between Factors. For `factor_type` `push`, this could be a device name. For `factor_type` `totp`, this value is used as the “account name” in constructing the `binding.uri` property. At the same time, we recommend avoiding providing PII.
+     
      * @param string $factorType
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, string $factorType, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -108,8 +112,12 @@ class NewFactorList extends ListResource
     /**
      * Create the NewFactorInstance
      *
+     
+     
      * @param string $friendlyName The friendly name of this Factor. This can be any string up to 64 characters, meant for humans to distinguish between Factors. For `factor_type` `push`, this could be a device name. For `factor_type` `totp`, this value is used as the “account name” in constructing the `binding.uri` property. At the same time, we recommend avoiding providing PII.
+     
      * @param string $factorType
+     
      * @param array|Options $options Optional Arguments
      * @return NewFactorInstance Created NewFactorInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -129,8 +137,12 @@ class NewFactorList extends ListResource
     /**
      * Create the NewFactorInstance with Metadata
      *
+     
+     
      * @param string $friendlyName The friendly name of this Factor. This can be any string up to 64 characters, meant for humans to distinguish between Factors. For `factor_type` `push`, this could be a device name. For `factor_type` `totp`, this value is used as the “account name” in constructing the `binding.uri` property. At the same time, we recommend avoiding providing PII.
+     
      * @param string $factorType
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -144,6 +156,7 @@ class NewFactorList extends ListResource
                         $this->solution['serviceSid'],
                         $this->solution['identity']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -43,6 +43,7 @@ class StreamMessagePage extends Page
         return new StreamMessageInstance($this->version, $payload, $this->solution['serviceSid'], $this->solution['streamSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

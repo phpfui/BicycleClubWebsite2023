@@ -45,7 +45,6 @@ class FlexFlowList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/FlexFlows';
     }
 
@@ -53,14 +52,18 @@ class FlexFlowList extends ListResource
      * Helper function for Create
      *
      * @param string $friendlyName A descriptive string that you create to describe the Flex Flow resource.
+     
      * @param string $chatServiceSid The SID of the chat service.
+     
      * @param string $channelType
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, string $chatServiceSid, string $channelType, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -108,8 +111,11 @@ class FlexFlowList extends ListResource
      * Create the FlexFlowInstance
      *
      * @param string $friendlyName A descriptive string that you create to describe the Flex Flow resource.
+     
      * @param string $chatServiceSid The SID of the chat service.
+     
      * @param string $channelType
+     
      * @param array|Options $options Optional Arguments
      * @return FlexFlowInstance Created FlexFlowInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -128,8 +134,11 @@ class FlexFlowList extends ListResource
      * Create the FlexFlowInstance with Metadata
      *
      * @param string $friendlyName A descriptive string that you create to describe the Flex Flow resource.
+     
      * @param string $chatServiceSid The SID of the chat service.
+     
      * @param string $channelType
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -141,6 +150,7 @@ class FlexFlowList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -154,6 +164,7 @@ class FlexFlowList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -175,6 +186,7 @@ class FlexFlowList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

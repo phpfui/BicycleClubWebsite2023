@@ -43,6 +43,7 @@ class ReservationPage extends Page
         return new ReservationInstance($this->version, $payload, $this->solution['workspaceSid'], $this->solution['workerSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

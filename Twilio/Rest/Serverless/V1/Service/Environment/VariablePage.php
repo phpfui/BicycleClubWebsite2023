@@ -43,6 +43,7 @@ class VariablePage extends Page
         return new VariableInstance($this->version, $payload, $this->solution['serviceSid'], $this->solution['environmentSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

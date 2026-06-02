@@ -43,6 +43,7 @@ class CallSummariesPage extends Page
         return new CallSummariesInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

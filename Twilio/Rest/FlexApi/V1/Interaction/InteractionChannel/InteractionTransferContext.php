@@ -62,11 +62,15 @@ class InteractionTransferContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -74,6 +78,9 @@ class InteractionTransferContext extends InstanceContext
     /**
      * Fetch the InteractionTransferInstance
      *
+     
+     
+     
      * @return InteractionTransferInstance Fetched InteractionTransferInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -93,6 +100,9 @@ class InteractionTransferContext extends InstanceContext
     /**
      * Fetch the InteractionTransferInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -106,6 +116,7 @@ class InteractionTransferContext extends InstanceContext
                         $this->solution['channelSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -117,25 +128,34 @@ class InteractionTransferContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
+     
+     * @param ?array $body
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _update(): Response
+    private function _update(?array $body = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $body->toArray();
+        $data = $body ? $body->toArray() : [];
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "update");
     }
 
     /**
      * Update the InteractionTransferInstance
      *
+     
+     
+     
+     * @param ?array $body
      * @return InteractionTransferInstance Updated InteractionTransferInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function update(): InteractionTransferInstance
+    public function update(?array $body = null): InteractionTransferInstance
     {
-        $response = $this->_update();
+        $response = $this->_update($body);
         return new InteractionTransferInstance(
             $this->version,
             $response->getContent(),
@@ -149,12 +169,16 @@ class InteractionTransferContext extends InstanceContext
     /**
      * Update the InteractionTransferInstance with Metadata
      *
+     
+     
+     
+     * @param ?array $body
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function updateWithMetadata(): ResourceMetadata
+    public function updateWithMetadata(?array $body = null): ResourceMetadata
     {
-        $response = $this->_update();
+        $response = $this->_update($body);
         $resource = new InteractionTransferInstance(
                         $this->version,
                         $response->getContent(),
@@ -162,6 +186,7 @@ class InteractionTransferContext extends InstanceContext
                         $this->solution['channelSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

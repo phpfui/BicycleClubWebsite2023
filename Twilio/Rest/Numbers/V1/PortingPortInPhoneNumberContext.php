@@ -57,11 +57,14 @@ class PortingPortInPhoneNumberContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -69,6 +72,8 @@ class PortingPortInPhoneNumberContext extends InstanceContext
     /**
      * Delete the PortingPortInPhoneNumberInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -82,12 +87,15 @@ class PortingPortInPhoneNumberContext extends InstanceContext
     /**
      * Delete the PortingPortInPhoneNumberInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -100,11 +108,14 @@ class PortingPortInPhoneNumberContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -112,6 +123,8 @@ class PortingPortInPhoneNumberContext extends InstanceContext
     /**
      * Fetch the PortingPortInPhoneNumberInstance
      *
+     
+     
      * @return PortingPortInPhoneNumberInstance Fetched PortingPortInPhoneNumberInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -130,6 +143,8 @@ class PortingPortInPhoneNumberContext extends InstanceContext
     /**
      * Fetch the PortingPortInPhoneNumberInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -142,6 +157,7 @@ class PortingPortInPhoneNumberContext extends InstanceContext
                         $this->solution['portInRequestSid'],
                         $this->solution['phoneNumberSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -43,6 +43,7 @@ class NewApiKeyPage extends Page
         return new NewApiKeyInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

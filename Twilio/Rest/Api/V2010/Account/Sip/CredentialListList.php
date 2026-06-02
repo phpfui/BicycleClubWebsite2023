@@ -49,7 +49,6 @@ class CredentialListList extends ListResource
             $accountSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/SIP/CredentialLists.json';
     }
@@ -58,11 +57,13 @@ class CredentialListList extends ListResource
      * Helper function for Create
      *
      * @param string $friendlyName A human readable descriptive text that describes the CredentialList, up to 64 characters long.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName): Response
     {
+        
         $data = Values::of([
             'FriendlyName' =>
                 $friendlyName,
@@ -76,6 +77,7 @@ class CredentialListList extends ListResource
      * Create the CredentialListInstance
      *
      * @param string $friendlyName A human readable descriptive text that describes the CredentialList, up to 64 characters long.
+     
      * @return CredentialListInstance Created CredentialListInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -94,6 +96,7 @@ class CredentialListList extends ListResource
      * Create the CredentialListInstance with Metadata
      *
      * @param string $friendlyName A human readable descriptive text that describes the CredentialList, up to 64 characters long.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -105,6 +108,7 @@ class CredentialListList extends ListResource
                         $response->getContent(),
                         $this->solution['accountSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -118,6 +122,7 @@ class CredentialListList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -138,6 +143,7 @@ class CredentialListList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

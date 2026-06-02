@@ -50,7 +50,6 @@ class CallList extends ListResource
             $accountSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Calls.json';
     }
@@ -59,13 +58,16 @@ class CallList extends ListResource
      * Helper function for Create
      *
      * @param string $to The phone number, SIP address, or client identifier to call.
+     
      * @param string $from The phone number or client identifier to use as the caller id. If using a phone number, it must be a Twilio number or a Verified [outgoing caller id](https://www.twilio.com/docs/voice/api/outgoing-caller-ids) for your account. If the `to` parameter is a phone number, `From` must also be a phone number.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $to, string $from, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -97,6 +99,8 @@ class CallList extends ListResource
                 $options['recordingStatusCallback'],
             'RecordingStatusCallbackMethod' =>
                 $options['recordingStatusCallbackMethod'],
+            'RecordingConfigurationId' =>
+                $options['recordingConfigurationId'],
             'SipAuthUsername' =>
                 $options['sipAuthUsername'],
             'SipAuthPassword' =>
@@ -151,7 +155,9 @@ class CallList extends ListResource
      * Create the CallInstance
      *
      * @param string $to The phone number, SIP address, or client identifier to call.
+     
      * @param string $from The phone number or client identifier to use as the caller id. If using a phone number, it must be a Twilio number or a Verified [outgoing caller id](https://www.twilio.com/docs/voice/api/outgoing-caller-ids) for your account. If the `to` parameter is a phone number, `From` must also be a phone number.
+     
      * @param array|Options $options Optional Arguments
      * @return CallInstance Created CallInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -171,7 +177,9 @@ class CallList extends ListResource
      * Create the CallInstance with Metadata
      *
      * @param string $to The phone number, SIP address, or client identifier to call.
+     
      * @param string $from The phone number or client identifier to use as the caller id. If using a phone number, it must be a Twilio number or a Verified [outgoing caller id](https://www.twilio.com/docs/voice/api/outgoing-caller-ids) for your account. If the `to` parameter is a phone number, `From` must also be a phone number.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -184,6 +192,7 @@ class CallList extends ListResource
                         $response->getContent(),
                         $this->solution['accountSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -197,6 +206,7 @@ class CallList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -218,6 +228,7 @@ class CallList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

@@ -43,6 +43,7 @@ class BulkEligibilityPage extends Page
         return new BulkEligibilityInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

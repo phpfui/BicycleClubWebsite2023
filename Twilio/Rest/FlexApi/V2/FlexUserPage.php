@@ -43,6 +43,7 @@ class FlexUserPage extends Page
         return new FlexUserInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

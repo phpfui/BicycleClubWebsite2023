@@ -46,7 +46,6 @@ class VerificationList extends ListResource
             $serviceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Verifications';
     }
@@ -54,14 +53,18 @@ class VerificationList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $to The phone number or [email](https://www.twilio.com/docs/verify/email) to verify. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
+     
      * @param string $channel The verification method to use. One of: [`email`](https://www.twilio.com/docs/verify/email), `sms`, `whatsapp`, `call`, `sna` or `auto`.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $to, string $channel, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -110,8 +113,11 @@ class VerificationList extends ListResource
     /**
      * Create the VerificationInstance
      *
+     
      * @param string $to The phone number or [email](https://www.twilio.com/docs/verify/email) to verify. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
+     
      * @param string $channel The verification method to use. One of: [`email`](https://www.twilio.com/docs/verify/email), `sms`, `whatsapp`, `call`, `sna` or `auto`.
+     
      * @param array|Options $options Optional Arguments
      * @return VerificationInstance Created VerificationInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -130,8 +136,11 @@ class VerificationList extends ListResource
     /**
      * Create the VerificationInstance with Metadata
      *
+     
      * @param string $to The phone number or [email](https://www.twilio.com/docs/verify/email) to verify. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
+     
      * @param string $channel The verification method to use. One of: [`email`](https://www.twilio.com/docs/verify/email), `sms`, `whatsapp`, `call`, `sna` or `auto`.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -144,6 +153,7 @@ class VerificationList extends ListResource
                         $response->getContent(),
                         $this->solution['serviceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

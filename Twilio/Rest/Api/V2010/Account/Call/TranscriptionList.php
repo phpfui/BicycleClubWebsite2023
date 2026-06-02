@@ -51,7 +51,6 @@ class TranscriptionList extends ListResource
             $callSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Calls/' . \rawurlencode($callSid)
         .'/Transcriptions.json';
@@ -60,12 +59,14 @@ class TranscriptionList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -101,8 +102,8 @@ class TranscriptionList extends ListResource
                 $options['conversationConfiguration'],
             'ConversationId' =>
                 $options['conversationId'],
-            'ConfigurationId' =>
-                $options['configurationId'],
+            'TranscriptionConfigurationId' =>
+                $options['transcriptionConfigurationId'],
             'EnableProviderData' =>
                 Serialize::booleanToString($options['enableProviderData']),
         ]);
@@ -114,6 +115,7 @@ class TranscriptionList extends ListResource
     /**
      * Create the TranscriptionInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return TranscriptionInstance Created TranscriptionInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -133,6 +135,7 @@ class TranscriptionList extends ListResource
     /**
      * Create the TranscriptionInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -146,6 +149,7 @@ class TranscriptionList extends ListResource
                         $this->solution['accountSid'],
                         $this->solution['callSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

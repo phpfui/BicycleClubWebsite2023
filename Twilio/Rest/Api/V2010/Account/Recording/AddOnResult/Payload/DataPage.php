@@ -43,6 +43,7 @@ class DataPage extends Page
         return new DataInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['referenceSid'], $this->solution['addOnResultSid'], $this->solution['payloadSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

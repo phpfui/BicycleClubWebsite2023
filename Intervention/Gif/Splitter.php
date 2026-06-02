@@ -41,14 +41,22 @@ class Splitter implements IteratorAggregate
 
     /**
      * Create new instance.
+     *
+     * @throws SplitterException
      */
     public function __construct(protected GifDataStream $gif)
     {
-        $this->loops = $gif->mainApplicationExtension()?->loops() ?: 0;
+        try {
+            $this->loops = $gif->mainApplicationExtension()?->loops() ?: 0;
+        } catch (DecoderException $e) {
+            throw new SplitterException('Failed to create instance from ' . GifDataStream::class, previous: $e);
+        }
     }
 
     /**
      * Create splitter instance from gif data stream object.
+     *
+     * @throws SplitterException
      */
     public static function create(GifDataStream $stream): self
     {
@@ -58,6 +66,7 @@ class Splitter implements IteratorAggregate
     /**
      * Create splitter instance from raw binary gif image data.
      *
+     * @throws SplitterException
      * @throws InvalidArgumentException
      * @throws StreamException
      * @throws DecoderException
@@ -144,7 +153,8 @@ class Splitter implements IteratorAggregate
             }
 
             // check if working stream has global color table
-            if ($table = $this->gif->globalColorTable()) {
+            $table = $this->gif->globalColorTable();
+            if ($table !== null) {
                 $gif->setGlobalColorTable($table);
                 $gif->logicalScreenDescriptor()->setGlobalColorTableExistance(true);
 
@@ -183,7 +193,7 @@ class Splitter implements IteratorAggregate
     }
 
     /**
-     * Transform current frames to an a rray of transparency flattened GDImage objects for each frame.
+     * Transform current frames to an a rray of transparency flattened GdImage objects for each frame.
      *
      * @throws SplitterException
      * @throws CoreException
@@ -224,7 +234,7 @@ class Splitter implements IteratorAggregate
                         throw new CoreException('Failed to create new image instance for animation frame #' . $key);
                     }
 
-                    if (imagecolortransparent($gdImage) != -1) {
+                    if (imagecolortransparent($gdImage) !== -1) {
                         $transparent = imagecolortransparent($gdImage);
                     } else {
                         $transparent = imagecolorallocatealpha($gdImage, 255, 0, 255, 127);
@@ -275,14 +285,14 @@ class Splitter implements IteratorAggregate
                     throw new CoreException('Failed to create new image instance for animation frame #' . $key);
                 }
 
-                if (imagecolortransparent($gdImage) != -1) {
+                if (imagecolortransparent($gdImage) !== -1) {
                     $transparent = imagecolortransparent($gdImage);
                 } else {
                     $transparent = imagecolorallocatealpha($gdImage, 255, 0, 255, 127);
                 }
 
                 if (!is_int($transparent)) {
-                    throw new CoreException('Animation frames cannot be converted into GDImage objects');
+                    throw new CoreException('Animation frames cannot be converted into GdImage objects');
                 }
 
                 // fill with transparent
@@ -312,9 +322,10 @@ class Splitter implements IteratorAggregate
     }
 
     /**
-     * Return array of GDImage objects for each frame.
+     * Return array of GdImage objects for each frame.
      *
      * @throws CoreException
+     * @throws SplitterException
      * @return array<GdImage>
      */
     private function extractFrames(): array
@@ -325,11 +336,11 @@ class Splitter implements IteratorAggregate
             try {
                 $gdImage = imagecreatefromstring($frame->encode());
             } catch (EncoderException) {
-                throw new CoreException('Failed to extract animation frame to GDImage object');
+                throw new CoreException('Failed to extract animation frame to GdImage object');
             }
 
             if ($gdImage === false) {
-                throw new CoreException('Failed to extract animation frame to GDImage object');
+                throw new CoreException('Failed to extract animation frame to GdImage object');
             }
 
             imagepalettetotruecolor($gdImage);
@@ -365,10 +376,10 @@ class Splitter implements IteratorAggregate
             throw new SplitterException('No frames available. Run ' . $this::class . '::split() first');
         }
 
-        // if any frame is instanceof GDImage, frame was already flattened
+        // if any frame is instanceof GdImage, frame was already flattened
         $processed = count(array_filter(
             $this->frames,
-            fn(GDImage|GifDataStream $frame): bool => $frame instanceof GDImage,
+            fn(GdImage|GifDataStream $frame): bool => $frame instanceof GdImage,
         )) > 0;
 
         if ($processed) {

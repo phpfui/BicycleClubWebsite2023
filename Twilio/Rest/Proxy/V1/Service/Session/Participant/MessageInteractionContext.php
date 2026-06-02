@@ -67,11 +67,16 @@ class MessageInteractionContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -79,6 +84,10 @@ class MessageInteractionContext extends InstanceContext
     /**
      * Fetch the MessageInteractionInstance
      *
+     
+     
+     
+     
      * @return MessageInteractionInstance Fetched MessageInteractionInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -99,6 +108,10 @@ class MessageInteractionContext extends InstanceContext
     /**
      * Fetch the MessageInteractionInstance with Metadata
      *
+     
+     
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -113,6 +126,7 @@ class MessageInteractionContext extends InstanceContext
                         $this->solution['participantSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

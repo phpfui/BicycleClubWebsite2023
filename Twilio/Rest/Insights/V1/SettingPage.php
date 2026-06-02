@@ -43,6 +43,7 @@ class SettingPage extends Page
         return new SettingInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -44,7 +44,6 @@ class WebChannelList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/WebChannels';
     }
 
@@ -52,15 +51,20 @@ class WebChannelList extends ListResource
      * Helper function for Create
      *
      * @param string $flexFlowSid The SID of the Flex Flow.
+     
      * @param string $identity The chat identity.
+     
      * @param string $customerFriendlyName The chat participant's friendly name.
+     
      * @param string $chatFriendlyName The chat channel's friendly name.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $flexFlowSid, string $identity, string $customerFriendlyName, string $chatFriendlyName, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -86,9 +90,13 @@ class WebChannelList extends ListResource
      * Create the WebChannelInstance
      *
      * @param string $flexFlowSid The SID of the Flex Flow.
+     
      * @param string $identity The chat identity.
+     
      * @param string $customerFriendlyName The chat participant's friendly name.
+     
      * @param string $chatFriendlyName The chat channel's friendly name.
+     
      * @param array|Options $options Optional Arguments
      * @return WebChannelInstance Created WebChannelInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -107,9 +115,13 @@ class WebChannelList extends ListResource
      * Create the WebChannelInstance with Metadata
      *
      * @param string $flexFlowSid The SID of the Flex Flow.
+     
      * @param string $identity The chat identity.
+     
      * @param string $customerFriendlyName The chat participant's friendly name.
+     
      * @param string $chatFriendlyName The chat channel's friendly name.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -121,6 +133,7 @@ class WebChannelList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -134,6 +147,7 @@ class WebChannelList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -154,6 +168,7 @@ class WebChannelList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

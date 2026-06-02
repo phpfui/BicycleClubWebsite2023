@@ -48,7 +48,6 @@ class ChannelSenderList extends ListResource
             $messagingServiceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($messagingServiceSid)
         .'/ChannelSenders';
     }
@@ -56,12 +55,15 @@ class ChannelSenderList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $sid The SID of the Channel Sender being added to the Service.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $sid): Response
     {
+        
         $data = Values::of([
             'Sid' =>
                 $sid,
@@ -74,7 +76,9 @@ class ChannelSenderList extends ListResource
     /**
      * Create the ChannelSenderInstance
      *
+     
      * @param string $sid The SID of the Channel Sender being added to the Service.
+     
      * @return ChannelSenderInstance Created ChannelSenderInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,7 +96,9 @@ class ChannelSenderList extends ListResource
     /**
      * Create the ChannelSenderInstance with Metadata
      *
+     
      * @param string $sid The SID of the Channel Sender being added to the Service.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -104,6 +110,7 @@ class ChannelSenderList extends ListResource
                         $response->getContent(),
                         $this->solution['messagingServiceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -117,6 +124,7 @@ class ChannelSenderList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -137,6 +145,7 @@ class ChannelSenderList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

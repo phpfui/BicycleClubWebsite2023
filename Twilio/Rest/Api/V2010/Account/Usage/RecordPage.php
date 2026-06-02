@@ -43,6 +43,7 @@ class RecordPage extends Page
         return new RecordInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

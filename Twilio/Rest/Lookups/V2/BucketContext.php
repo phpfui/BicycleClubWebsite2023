@@ -57,11 +57,14 @@ class BucketContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -69,6 +72,8 @@ class BucketContext extends InstanceContext
     /**
      * Delete the BucketInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -82,12 +87,15 @@ class BucketContext extends InstanceContext
     /**
      * Delete the BucketInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -100,11 +108,14 @@ class BucketContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -112,6 +123,8 @@ class BucketContext extends InstanceContext
     /**
      * Fetch the BucketInstance
      *
+     
+     
      * @return BucketInstance Fetched BucketInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -130,6 +143,8 @@ class BucketContext extends InstanceContext
     /**
      * Fetch the BucketInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -142,6 +157,7 @@ class BucketContext extends InstanceContext
                         $this->solution['field'],
                         $this->solution['bucket']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -153,25 +169,32 @@ class BucketContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
+     * @param ?RateLimitRequest $rateLimitRequest
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _update(): Response
+    private function _update(?RateLimitRequest $rateLimitRequest = null): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
-        $data = $rateLimitRequest->toArray();
+        $data = $rateLimitRequest ? $rateLimitRequest->toArray() : [];
         return $this->version->handleRequest('PUT', $this->uri, [], $data, $headers, "update");
     }
 
     /**
      * Update the BucketInstance
      *
+     
+     
+     * @param ?RateLimitRequest $rateLimitRequest
      * @return BucketInstance Updated BucketInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function update(): BucketInstance
+    public function update(?RateLimitRequest $rateLimitRequest = null): BucketInstance
     {
-        $response = $this->_update();
+        $response = $this->_update($rateLimitRequest);
         return new BucketInstance(
             $this->version,
             $response->getContent(),
@@ -184,18 +207,22 @@ class BucketContext extends InstanceContext
     /**
      * Update the BucketInstance with Metadata
      *
+     
+     
+     * @param ?RateLimitRequest $rateLimitRequest
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function updateWithMetadata(): ResourceMetadata
+    public function updateWithMetadata(?RateLimitRequest $rateLimitRequest = null): ResourceMetadata
     {
-        $response = $this->_update();
+        $response = $this->_update($rateLimitRequest);
         $resource = new BucketInstance(
                         $this->version,
                         $response->getContent(),
                         $this->solution['field'],
                         $this->solution['bucket']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

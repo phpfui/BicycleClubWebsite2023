@@ -43,6 +43,7 @@ class EndUserTypePage extends Page
         return new EndUserTypeInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

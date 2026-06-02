@@ -49,7 +49,6 @@ class UserList extends ListResource
             $organizationSid,
         
         ];
-
         $this->uri = '/' . \rawurlencode($organizationSid)
         .'/scim/Users';
     }
@@ -57,12 +56,15 @@ class UserList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param ScimUser $scimUser
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(ScimUser $scimUser): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/scim+json' ]);
         $data = $scimUser->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -71,7 +73,9 @@ class UserList extends ListResource
     /**
      * Create the UserInstance
      *
+     
      * @param ScimUser $scimUser
+     
      * @return UserInstance Created UserInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -89,7 +93,9 @@ class UserList extends ListResource
     /**
      * Create the UserInstance with Metadata
      *
+     
      * @param ScimUser $scimUser
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -101,6 +107,7 @@ class UserList extends ListResource
                         $response->getContent(),
                         $this->solution['organizationSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -114,6 +121,7 @@ class UserList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -135,6 +143,7 @@ class UserList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

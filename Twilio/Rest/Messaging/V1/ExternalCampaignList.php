@@ -41,7 +41,6 @@ class ExternalCampaignList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Services/PreregisteredUsa2p';
     }
 
@@ -49,13 +48,16 @@ class ExternalCampaignList extends ListResource
      * Helper function for Create
      *
      * @param string $campaignId ID of the preregistered campaign.
+     
      * @param string $messagingServiceSid The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) that the resource is associated with.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $campaignId, string $messagingServiceSid, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -75,7 +77,9 @@ class ExternalCampaignList extends ListResource
      * Create the ExternalCampaignInstance
      *
      * @param string $campaignId ID of the preregistered campaign.
+     
      * @param string $messagingServiceSid The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) that the resource is associated with.
+     
      * @param array|Options $options Optional Arguments
      * @return ExternalCampaignInstance Created ExternalCampaignInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -94,7 +98,9 @@ class ExternalCampaignList extends ListResource
      * Create the ExternalCampaignInstance with Metadata
      *
      * @param string $campaignId ID of the preregistered campaign.
+     
      * @param string $messagingServiceSid The SID of the [Messaging Service](https://www.twilio.com/docs/messaging/api/service-resource) that the resource is associated with.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -106,6 +112,7 @@ class ExternalCampaignList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

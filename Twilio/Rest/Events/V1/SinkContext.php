@@ -62,11 +62,13 @@ class SinkContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -74,6 +76,7 @@ class SinkContext extends InstanceContext
     /**
      * Delete the SinkInstance
      *
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -87,12 +90,14 @@ class SinkContext extends InstanceContext
     /**
      * Delete the SinkInstance with Metadata
      *
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -105,11 +110,13 @@ class SinkContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -117,6 +124,7 @@ class SinkContext extends InstanceContext
     /**
      * Fetch the SinkInstance
      *
+     
      * @return SinkInstance Fetched SinkInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -134,6 +142,7 @@ class SinkContext extends InstanceContext
     /**
      * Fetch the SinkInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -145,6 +154,7 @@ class SinkContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -156,12 +166,15 @@ class SinkContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param string $description A human readable description for the Sink **This value should not contain PII.**
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $description): Response
     {
+        
         $data = Values::of([
             'Description' =>
                 $description,
@@ -174,7 +187,9 @@ class SinkContext extends InstanceContext
     /**
      * Update the SinkInstance
      *
+     
      * @param string $description A human readable description for the Sink **This value should not contain PII.**
+     
      * @return SinkInstance Updated SinkInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -192,7 +207,9 @@ class SinkContext extends InstanceContext
     /**
      * Update the SinkInstance with Metadata
      *
+     
      * @param string $description A human readable description for the Sink **This value should not contain PII.**
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -204,6 +221,7 @@ class SinkContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

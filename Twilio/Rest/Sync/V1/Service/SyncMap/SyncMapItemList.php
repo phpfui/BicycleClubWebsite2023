@@ -55,7 +55,6 @@ class SyncMapItemList extends ListResource
             $mapSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Maps/' . \rawurlencode($mapSid)
         .'/Items';
@@ -64,14 +63,19 @@ class SyncMapItemList extends ListResource
     /**
      * Helper function for Create
      *
+     
+     
      * @param string $key The unique, user-defined key for the Map Item. Can be up to 320 characters long.
+     
      * @param array $data A JSON string that represents an arbitrary, schema-less object that the Map Item stores. Can be up to 16 KiB in length.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $key, array $data, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -94,8 +98,12 @@ class SyncMapItemList extends ListResource
     /**
      * Create the SyncMapItemInstance
      *
+     
+     
      * @param string $key The unique, user-defined key for the Map Item. Can be up to 320 characters long.
+     
      * @param array $data A JSON string that represents an arbitrary, schema-less object that the Map Item stores. Can be up to 16 KiB in length.
+     
      * @param array|Options $options Optional Arguments
      * @return SyncMapItemInstance Created SyncMapItemInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -115,8 +123,12 @@ class SyncMapItemList extends ListResource
     /**
      * Create the SyncMapItemInstance with Metadata
      *
+     
+     
      * @param string $key The unique, user-defined key for the Map Item. Can be up to 320 characters long.
+     
      * @param array $data A JSON string that represents an arbitrary, schema-less object that the Map Item stores. Can be up to 16 KiB in length.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -130,6 +142,7 @@ class SyncMapItemList extends ListResource
                         $this->solution['serviceSid'],
                         $this->solution['mapSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -143,6 +156,7 @@ class SyncMapItemList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -164,6 +178,7 @@ class SyncMapItemList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

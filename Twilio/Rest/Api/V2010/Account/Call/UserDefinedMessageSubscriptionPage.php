@@ -43,6 +43,7 @@ class UserDefinedMessageSubscriptionPage extends Page
         return new UserDefinedMessageSubscriptionInstance($this->version, $payload, $this->solution['accountSid'], $this->solution['callSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

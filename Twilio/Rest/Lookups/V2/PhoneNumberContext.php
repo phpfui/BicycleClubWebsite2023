@@ -53,12 +53,14 @@ class PhoneNumberContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $params = Values::of([
@@ -101,6 +103,7 @@ class PhoneNumberContext extends InstanceContext
     /**
      * Fetch the PhoneNumberInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return PhoneNumberInstance Fetched PhoneNumberInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -119,6 +122,7 @@ class PhoneNumberContext extends InstanceContext
     /**
      * Fetch the PhoneNumberInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -131,6 +135,7 @@ class PhoneNumberContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['phoneNumber']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

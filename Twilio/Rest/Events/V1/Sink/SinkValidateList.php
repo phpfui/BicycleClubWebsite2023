@@ -44,7 +44,6 @@ class SinkValidateList extends ListResource
             $sid,
         
         ];
-
         $this->uri = '/Sinks/' . \rawurlencode($sid)
         .'/Validate';
     }
@@ -52,12 +51,15 @@ class SinkValidateList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $testId A 34 character string that uniquely identifies the test event for a Sink being validated.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $testId): Response
     {
+        
         $data = Values::of([
             'TestId' =>
                 $testId,
@@ -70,7 +72,9 @@ class SinkValidateList extends ListResource
     /**
      * Create the SinkValidateInstance
      *
+     
      * @param string $testId A 34 character string that uniquely identifies the test event for a Sink being validated.
+     
      * @return SinkValidateInstance Created SinkValidateInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -88,7 +92,9 @@ class SinkValidateList extends ListResource
     /**
      * Create the SinkValidateInstance with Metadata
      *
+     
      * @param string $testId A 34 character string that uniquely identifies the test event for a Sink being validated.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -100,6 +106,7 @@ class SinkValidateList extends ListResource
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

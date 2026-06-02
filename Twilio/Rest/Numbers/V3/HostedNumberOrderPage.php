@@ -45,6 +45,7 @@ class HostedNumberOrderPage extends TokenPaginationPage
         return new HostedNumberOrderInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

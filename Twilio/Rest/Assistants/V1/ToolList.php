@@ -44,7 +44,6 @@ class ToolList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Tools';
     }
 
@@ -52,11 +51,13 @@ class ToolList extends ListResource
      * Helper function for Create
      *
      * @param AssistantsV1ServiceCreateToolRequest $assistantsV1ServiceCreateToolRequest
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(AssistantsV1ServiceCreateToolRequest $assistantsV1ServiceCreateToolRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $assistantsV1ServiceCreateToolRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -66,6 +67,7 @@ class ToolList extends ListResource
      * Create the ToolInstance
      *
      * @param AssistantsV1ServiceCreateToolRequest $assistantsV1ServiceCreateToolRequest
+     
      * @return ToolInstance Created ToolInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -83,6 +85,7 @@ class ToolList extends ListResource
      * Create the ToolInstance with Metadata
      *
      * @param AssistantsV1ServiceCreateToolRequest $assistantsV1ServiceCreateToolRequest
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -93,6 +96,7 @@ class ToolList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -106,6 +110,7 @@ class ToolList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -127,6 +132,7 @@ class ToolList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

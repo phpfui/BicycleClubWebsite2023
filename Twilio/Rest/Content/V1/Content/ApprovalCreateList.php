@@ -44,7 +44,6 @@ class ApprovalCreateList extends ListResource
             $contentSid,
         
         ];
-
         $this->uri = '/Content/' . \rawurlencode($contentSid)
         .'/ApprovalRequests/whatsapp';
     }
@@ -52,12 +51,15 @@ class ApprovalCreateList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param ContentApprovalRequest $contentApprovalRequest
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(ContentApprovalRequest $contentApprovalRequest): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/json', 'Accept' => 'application/json' ]);
         $data = $contentApprovalRequest->toArray();
         return $this->version->handleRequest('POST', $this->uri, [], $data, $headers, "create");
@@ -66,7 +68,9 @@ class ApprovalCreateList extends ListResource
     /**
      * Create the ApprovalCreateInstance
      *
+     
      * @param ContentApprovalRequest $contentApprovalRequest
+     
      * @return ApprovalCreateInstance Created ApprovalCreateInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -84,7 +88,9 @@ class ApprovalCreateList extends ListResource
     /**
      * Create the ApprovalCreateInstance with Metadata
      *
+     
      * @param ContentApprovalRequest $contentApprovalRequest
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -96,6 +102,7 @@ class ApprovalCreateList extends ListResource
                         $response->getContent(),
                         $this->solution['contentSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

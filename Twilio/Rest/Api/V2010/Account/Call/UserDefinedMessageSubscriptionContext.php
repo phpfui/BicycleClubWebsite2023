@@ -62,11 +62,14 @@ class UserDefinedMessageSubscriptionContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -74,6 +77,8 @@ class UserDefinedMessageSubscriptionContext extends InstanceContext
     /**
      * Delete the UserDefinedMessageSubscriptionInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -87,12 +92,15 @@ class UserDefinedMessageSubscriptionContext extends InstanceContext
     /**
      * Delete the UserDefinedMessageSubscriptionInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,

@@ -22,6 +22,8 @@ abstract class RoleAssignmentModels
      * @property string $roleSid Twilio Role Sid representing assigned role
      * @property string $scope Twilio Sid representing scope of this assignment
      * @property string $identity Twilio Sid representing identity of this assignment
+     * @property string|null $resourceType The resource type for resource-level role assignments
+     * @property string|null $resourceId The resource id for resource-level role assignments
     */
     public static function createPublicApiCreateRoleAssignmentRequest(array $payload = []): PublicApiCreateRoleAssignmentRequest
     {
@@ -36,14 +38,20 @@ class PublicApiCreateRoleAssignmentRequest implements \JsonSerializable
      * @property string $roleSid Twilio Role Sid representing assigned role
      * @property string $scope Twilio Sid representing scope of this assignment
      * @property string $identity Twilio Sid representing identity of this assignment
+     * @property string|null $resourceType The resource type for resource-level role assignments
+     * @property string|null $resourceId The resource id for resource-level role assignments
     */
         protected $roleSid;
         protected $scope;
         protected $identity;
+        protected $resourceType;
+        protected $resourceId;
     public function __construct(array $payload = []) {
         $this->roleSid = Values::array_get($payload, 'role_sid');
         $this->scope = Values::array_get($payload, 'scope');
         $this->identity = Values::array_get($payload, 'identity');
+        $this->resourceType = Values::array_get($payload, 'resource_type');
+        $this->resourceId = Values::array_get($payload, 'resource_id');
     }
 
     public function toArray(): array
@@ -58,6 +66,12 @@ class PublicApiCreateRoleAssignmentRequest implements \JsonSerializable
             'scope' => $this->scope,
             'identity' => $this->identity
         ];
+        if (isset($this->resourceType)) {
+            $jsonString['resource_type'] = $this->resourceType;
+        }
+        if (isset($this->resourceId)) {
+            $jsonString['resource_id'] = $this->resourceId;
+        }
         return $jsonString;
     }
 }

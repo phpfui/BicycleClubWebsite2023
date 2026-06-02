@@ -43,6 +43,7 @@ class ThisMonthPage extends Page
         return new ThisMonthInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

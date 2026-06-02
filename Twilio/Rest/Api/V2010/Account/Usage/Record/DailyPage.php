@@ -43,6 +43,7 @@ class DailyPage extends Page
         return new DailyInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

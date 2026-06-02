@@ -39,7 +39,6 @@ class WebhookList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Porting/Configuration/Webhook';
     }
 
@@ -51,6 +50,7 @@ class WebhookList extends ListResource
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -84,6 +84,7 @@ class WebhookList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

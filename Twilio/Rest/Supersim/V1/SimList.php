@@ -44,7 +44,6 @@ class SimList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Sims';
     }
 
@@ -52,12 +51,15 @@ class SimList extends ListResource
      * Helper function for Create
      *
      * @param string $iccid The [ICCID](https://en.wikipedia.org/wiki/Subscriber_identity_module#ICCID) of the Super SIM to be added to your Account.
+     
      * @param string $registrationCode The 10-digit code required to claim the Super SIM for your Account.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $iccid, string $registrationCode): Response
     {
+        
         $data = Values::of([
             'Iccid' =>
                 $iccid,
@@ -73,7 +75,9 @@ class SimList extends ListResource
      * Create the SimInstance
      *
      * @param string $iccid The [ICCID](https://en.wikipedia.org/wiki/Subscriber_identity_module#ICCID) of the Super SIM to be added to your Account.
+     
      * @param string $registrationCode The 10-digit code required to claim the Super SIM for your Account.
+     
      * @return SimInstance Created SimInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -91,7 +95,9 @@ class SimList extends ListResource
      * Create the SimInstance with Metadata
      *
      * @param string $iccid The [ICCID](https://en.wikipedia.org/wiki/Subscriber_identity_module#ICCID) of the Super SIM to be added to your Account.
+     
      * @param string $registrationCode The 10-digit code required to claim the Super SIM for your Account.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -102,6 +108,7 @@ class SimList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -115,6 +122,7 @@ class SimList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -136,6 +144,7 @@ class SimList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

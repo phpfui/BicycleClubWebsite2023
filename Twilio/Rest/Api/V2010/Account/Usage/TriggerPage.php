@@ -43,6 +43,7 @@ class TriggerPage extends Page
         return new TriggerInstance($this->version, $payload, $this->solution['accountSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

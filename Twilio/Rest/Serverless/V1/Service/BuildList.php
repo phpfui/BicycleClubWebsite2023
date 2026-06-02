@@ -50,7 +50,6 @@ class BuildList extends ListResource
             $serviceSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Builds';
     }
@@ -58,12 +57,14 @@ class BuildList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -84,6 +85,7 @@ class BuildList extends ListResource
     /**
      * Create the BuildInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return BuildInstance Created BuildInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -102,6 +104,7 @@ class BuildList extends ListResource
     /**
      * Create the BuildInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -114,6 +117,7 @@ class BuildList extends ListResource
                         $response->getContent(),
                         $this->solution['serviceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -127,6 +131,7 @@ class BuildList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -147,6 +152,7 @@ class BuildList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

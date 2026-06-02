@@ -43,6 +43,7 @@ class AssetVersionPage extends Page
         return new AssetVersionInstance($this->version, $payload, $this->solution['serviceSid'], $this->solution['assetSid']);
     }
 
+
     /**
      * Provide a friendly representation
      *

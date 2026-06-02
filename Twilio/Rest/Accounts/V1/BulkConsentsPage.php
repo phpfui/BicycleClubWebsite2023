@@ -43,6 +43,7 @@ class BulkConsentsPage extends Page
         return new BulkConsentsInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

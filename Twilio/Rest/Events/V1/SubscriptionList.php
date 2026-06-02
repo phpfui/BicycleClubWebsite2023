@@ -45,7 +45,6 @@ class SubscriptionList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Subscriptions';
     }
 
@@ -53,13 +52,17 @@ class SubscriptionList extends ListResource
      * Helper function for Create
      *
      * @param string $description A human readable description for the Subscription **This value should not contain PII.**
+     
      * @param string $sinkSid The SID of the sink that events selected by this subscription should be sent to. Sink must be active for the subscription to be created.
+     
      * @param array[] $types An array of objects containing the subscribed Event Types
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $description, string $sinkSid, array $types): Response
     {
+        
         $data = Values::of([
             'Description' =>
                 $description,
@@ -77,8 +80,11 @@ class SubscriptionList extends ListResource
      * Create the SubscriptionInstance
      *
      * @param string $description A human readable description for the Subscription **This value should not contain PII.**
+     
      * @param string $sinkSid The SID of the sink that events selected by this subscription should be sent to. Sink must be active for the subscription to be created.
+     
      * @param array[] $types An array of objects containing the subscribed Event Types
+     
      * @return SubscriptionInstance Created SubscriptionInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -96,8 +102,11 @@ class SubscriptionList extends ListResource
      * Create the SubscriptionInstance with Metadata
      *
      * @param string $description A human readable description for the Subscription **This value should not contain PII.**
+     
      * @param string $sinkSid The SID of the sink that events selected by this subscription should be sent to. Sink must be active for the subscription to be created.
+     
      * @param array[] $types An array of objects containing the subscribed Event Types
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -108,6 +117,7 @@ class SubscriptionList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -121,6 +131,7 @@ class SubscriptionList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -142,6 +153,7 @@ class SubscriptionList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

@@ -43,6 +43,7 @@ class ComplianceTollfreeInquiriesPage extends Page
         return new ComplianceTollfreeInquiriesInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

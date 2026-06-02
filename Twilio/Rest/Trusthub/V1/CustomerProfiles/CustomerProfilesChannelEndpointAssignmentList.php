@@ -49,7 +49,6 @@ class CustomerProfilesChannelEndpointAssignmentList extends ListResource
             $customerProfileSid,
         
         ];
-
         $this->uri = '/CustomerProfiles/' . \rawurlencode($customerProfileSid)
         .'/ChannelEndpointAssignments';
     }
@@ -57,13 +56,17 @@ class CustomerProfilesChannelEndpointAssignmentList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $channelEndpointType The type of channel endpoint. eg: phone-number
+     
      * @param string $channelEndpointSid The SID of an channel endpoint
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $channelEndpointType, string $channelEndpointSid): Response
     {
+        
         $data = Values::of([
             'ChannelEndpointType' =>
                 $channelEndpointType,
@@ -78,8 +81,11 @@ class CustomerProfilesChannelEndpointAssignmentList extends ListResource
     /**
      * Create the CustomerProfilesChannelEndpointAssignmentInstance
      *
+     
      * @param string $channelEndpointType The type of channel endpoint. eg: phone-number
+     
      * @param string $channelEndpointSid The SID of an channel endpoint
+     
      * @return CustomerProfilesChannelEndpointAssignmentInstance Created CustomerProfilesChannelEndpointAssignmentInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -97,8 +103,11 @@ class CustomerProfilesChannelEndpointAssignmentList extends ListResource
     /**
      * Create the CustomerProfilesChannelEndpointAssignmentInstance with Metadata
      *
+     
      * @param string $channelEndpointType The type of channel endpoint. eg: phone-number
+     
      * @param string $channelEndpointSid The SID of an channel endpoint
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -110,6 +119,7 @@ class CustomerProfilesChannelEndpointAssignmentList extends ListResource
                         $response->getContent(),
                         $this->solution['customerProfileSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -123,6 +133,7 @@ class CustomerProfilesChannelEndpointAssignmentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -144,6 +155,7 @@ class CustomerProfilesChannelEndpointAssignmentList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

@@ -54,11 +54,13 @@ class ApiKeyContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -66,6 +68,7 @@ class ApiKeyContext extends InstanceContext
     /**
      * Delete the ApiKeyInstance
      *
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -79,12 +82,14 @@ class ApiKeyContext extends InstanceContext
     /**
      * Delete the ApiKeyInstance with Metadata
      *
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -97,11 +102,13 @@ class ApiKeyContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -109,6 +116,7 @@ class ApiKeyContext extends InstanceContext
     /**
      * Fetch the ApiKeyInstance
      *
+     
      * @return ApiKeyInstance Fetched ApiKeyInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -126,6 +134,7 @@ class ApiKeyContext extends InstanceContext
     /**
      * Fetch the ApiKeyInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -137,6 +146,7 @@ class ApiKeyContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -148,12 +158,14 @@ class ApiKeyContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -170,6 +182,7 @@ class ApiKeyContext extends InstanceContext
     /**
      * Update the ApiKeyInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ApiKeyInstance Updated ApiKeyInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -188,6 +201,7 @@ class ApiKeyContext extends InstanceContext
     /**
      * Update the ApiKeyInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -200,6 +214,7 @@ class ApiKeyContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

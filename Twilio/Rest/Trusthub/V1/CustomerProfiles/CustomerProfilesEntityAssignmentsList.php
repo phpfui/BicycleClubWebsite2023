@@ -49,7 +49,6 @@ class CustomerProfilesEntityAssignmentsList extends ListResource
             $customerProfileSid,
         
         ];
-
         $this->uri = '/CustomerProfiles/' . \rawurlencode($customerProfileSid)
         .'/EntityAssignments';
     }
@@ -57,12 +56,15 @@ class CustomerProfilesEntityAssignmentsList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $objectSid The SID of an object bag that holds information of the different items.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $objectSid): Response
     {
+        
         $data = Values::of([
             'ObjectSid' =>
                 $objectSid,
@@ -75,7 +77,9 @@ class CustomerProfilesEntityAssignmentsList extends ListResource
     /**
      * Create the CustomerProfilesEntityAssignmentsInstance
      *
+     
      * @param string $objectSid The SID of an object bag that holds information of the different items.
+     
      * @return CustomerProfilesEntityAssignmentsInstance Created CustomerProfilesEntityAssignmentsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -93,7 +97,9 @@ class CustomerProfilesEntityAssignmentsList extends ListResource
     /**
      * Create the CustomerProfilesEntityAssignmentsInstance with Metadata
      *
+     
      * @param string $objectSid The SID of an object bag that holds information of the different items.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -105,6 +111,7 @@ class CustomerProfilesEntityAssignmentsList extends ListResource
                         $response->getContent(),
                         $this->solution['customerProfileSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -118,6 +125,7 @@ class CustomerProfilesEntityAssignmentsList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -139,6 +147,7 @@ class CustomerProfilesEntityAssignmentsList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

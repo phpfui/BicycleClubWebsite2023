@@ -62,12 +62,16 @@ class SiprecContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param string $status
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $status): Response
     {
+        
         $data = Values::of([
             'Status' =>
                 $status,
@@ -80,7 +84,10 @@ class SiprecContext extends InstanceContext
     /**
      * Update the SiprecInstance
      *
+     
+     
      * @param string $status
+     
      * @return SiprecInstance Updated SiprecInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -100,7 +107,10 @@ class SiprecContext extends InstanceContext
     /**
      * Update the SiprecInstance with Metadata
      *
+     
+     
      * @param string $status
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -114,6 +124,7 @@ class SiprecContext extends InstanceContext
                         $this->solution['callSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -55,7 +55,6 @@ class SyncListItemList extends ListResource
             $listSid,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Lists/' . \rawurlencode($listSid)
         .'/Items';
@@ -64,13 +63,17 @@ class SyncListItemList extends ListResource
     /**
      * Helper function for Create
      *
+     
+     
      * @param array $data A JSON string that represents an arbitrary, schema-less object that the List Item stores. Can be up to 16 KiB in length.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $data, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -91,7 +94,10 @@ class SyncListItemList extends ListResource
     /**
      * Create the SyncListItemInstance
      *
+     
+     
      * @param array $data A JSON string that represents an arbitrary, schema-less object that the List Item stores. Can be up to 16 KiB in length.
+     
      * @param array|Options $options Optional Arguments
      * @return SyncListItemInstance Created SyncListItemInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -111,7 +117,10 @@ class SyncListItemList extends ListResource
     /**
      * Create the SyncListItemInstance with Metadata
      *
+     
+     
      * @param array $data A JSON string that represents an arbitrary, schema-less object that the List Item stores. Can be up to 16 KiB in length.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -125,6 +134,7 @@ class SyncListItemList extends ListResource
                         $this->solution['serviceSid'],
                         $this->solution['listSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -138,6 +148,7 @@ class SyncListItemList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -159,6 +170,7 @@ class SyncListItemList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

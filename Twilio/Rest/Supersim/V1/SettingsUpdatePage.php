@@ -43,6 +43,7 @@ class SettingsUpdatePage extends Page
         return new SettingsUpdateInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

@@ -43,6 +43,7 @@ class ReferralConversionPage extends Page
         return new ReferralConversionInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

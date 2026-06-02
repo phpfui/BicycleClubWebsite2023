@@ -40,7 +40,6 @@ class BulkContactsList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Contacts/Bulk';
     }
 
@@ -48,11 +47,13 @@ class BulkContactsList extends ListResource
      * Helper function for Create
      *
      * @param array[] $items A list of objects where each object represents a contact's details. Each object includes the following fields: `contact_id`, which must be a string representing phone number in [E.164 format](https://www.twilio.com/docs/glossary/what-e164); `correlation_id`, a unique 32-character UUID that maps the response to the original request; `country_iso_code`, a string representing the country using the ISO format (e.g., US for the United States); and `zip_code`, a string representing the postal code.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(array $items): Response
     {
+        
         $data = Values::of([
             'Items' =>
                 Serialize::map($items,function ($e) { return Serialize::jsonObject($e); }),
@@ -66,6 +67,7 @@ class BulkContactsList extends ListResource
      * Create the BulkContactsInstance
      *
      * @param array[] $items A list of objects where each object represents a contact's details. Each object includes the following fields: `contact_id`, which must be a string representing phone number in [E.164 format](https://www.twilio.com/docs/glossary/what-e164); `correlation_id`, a unique 32-character UUID that maps the response to the original request; `country_iso_code`, a string representing the country using the ISO format (e.g., US for the United States); and `zip_code`, a string representing the postal code.
+     
      * @return BulkContactsInstance Created BulkContactsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -83,6 +85,7 @@ class BulkContactsList extends ListResource
      * Create the BulkContactsInstance with Metadata
      *
      * @param array[] $items A list of objects where each object represents a contact's details. Each object includes the following fields: `contact_id`, which must be a string representing phone number in [E.164 format](https://www.twilio.com/docs/glossary/what-e164); `correlation_id`, a unique 32-character UUID that maps the response to the original request; `country_iso_code`, a string representing the country using the ISO format (e.g., US for the United States); and `zip_code`, a string representing the postal code.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -93,6 +96,7 @@ class BulkContactsList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -59,11 +59,14 @@ class OriginationUrlContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -71,6 +74,8 @@ class OriginationUrlContext extends InstanceContext
     /**
      * Delete the OriginationUrlInstance
      *
+     
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -84,12 +89,15 @@ class OriginationUrlContext extends InstanceContext
     /**
      * Delete the OriginationUrlInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -102,11 +110,14 @@ class OriginationUrlContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -114,6 +125,8 @@ class OriginationUrlContext extends InstanceContext
     /**
      * Fetch the OriginationUrlInstance
      *
+     
+     
      * @return OriginationUrlInstance Fetched OriginationUrlInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -132,6 +145,8 @@ class OriginationUrlContext extends InstanceContext
     /**
      * Fetch the OriginationUrlInstance with Metadata
      *
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -144,6 +159,7 @@ class OriginationUrlContext extends InstanceContext
                         $this->solution['trunkSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -155,12 +171,15 @@ class OriginationUrlContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -183,6 +202,8 @@ class OriginationUrlContext extends InstanceContext
     /**
      * Update the OriginationUrlInstance
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return OriginationUrlInstance Updated OriginationUrlInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -202,6 +223,8 @@ class OriginationUrlContext extends InstanceContext
     /**
      * Update the OriginationUrlInstance with Metadata
      *
+     
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -215,6 +238,7 @@ class OriginationUrlContext extends InstanceContext
                         $this->solution['trunkSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

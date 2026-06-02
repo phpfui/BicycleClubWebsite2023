@@ -39,7 +39,6 @@ class SafelistList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/SafeList/Numbers';
     }
 
@@ -47,11 +46,13 @@ class SafelistList extends ListResource
      * Helper function for Create
      *
      * @param string $phoneNumber The phone number to be added in SafeList. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $phoneNumber): Response
     {
+        
         $data = Values::of([
             'PhoneNumber' =>
                 $phoneNumber,
@@ -65,6 +66,7 @@ class SafelistList extends ListResource
      * Create the SafelistInstance
      *
      * @param string $phoneNumber The phone number to be added in SafeList. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
+     
      * @return SafelistInstance Created SafelistInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -82,6 +84,7 @@ class SafelistList extends ListResource
      * Create the SafelistInstance with Metadata
      *
      * @param string $phoneNumber The phone number to be added in SafeList. Phone numbers must be in [E.164 format](https://www.twilio.com/docs/glossary/what-e164).
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,6 +95,7 @@ class SafelistList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

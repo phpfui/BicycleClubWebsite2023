@@ -59,7 +59,6 @@ class TaskQueueList extends ListResource
             $workspaceSid,
         
         ];
-
         $this->uri = '/Workspaces/' . \rawurlencode($workspaceSid)
         .'/TaskQueues';
     }
@@ -67,13 +66,16 @@ class TaskQueueList extends ListResource
     /**
      * Helper function for Create
      *
+     
      * @param string $friendlyName A descriptive string that you create to describe the TaskQueue. For example `Support-Tier 1`, `Sales`, or `Escalation`.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -98,7 +100,9 @@ class TaskQueueList extends ListResource
     /**
      * Create the TaskQueueInstance
      *
+     
      * @param string $friendlyName A descriptive string that you create to describe the TaskQueue. For example `Support-Tier 1`, `Sales`, or `Escalation`.
+     
      * @param array|Options $options Optional Arguments
      * @return TaskQueueInstance Created TaskQueueInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -117,7 +121,9 @@ class TaskQueueList extends ListResource
     /**
      * Create the TaskQueueInstance with Metadata
      *
+     
      * @param string $friendlyName A descriptive string that you create to describe the TaskQueue. For example `Support-Tier 1`, `Sales`, or `Escalation`.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -130,6 +136,7 @@ class TaskQueueList extends ListResource
                         $response->getContent(),
                         $this->solution['workspaceSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -143,6 +150,7 @@ class TaskQueueList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -164,6 +172,7 @@ class TaskQueueList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

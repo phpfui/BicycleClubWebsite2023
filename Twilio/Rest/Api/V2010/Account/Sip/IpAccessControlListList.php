@@ -48,7 +48,6 @@ class IpAccessControlListList extends ListResource
             $accountSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/SIP/IpAccessControlLists.json';
     }
@@ -57,11 +56,13 @@ class IpAccessControlListList extends ListResource
      * Helper function for Create
      *
      * @param string $friendlyName A human readable descriptive text that describes the IpAccessControlList, up to 255 characters long.
+     
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $friendlyName): Response
     {
+        
         $data = Values::of([
             'FriendlyName' =>
                 $friendlyName,
@@ -75,6 +76,7 @@ class IpAccessControlListList extends ListResource
      * Create the IpAccessControlListInstance
      *
      * @param string $friendlyName A human readable descriptive text that describes the IpAccessControlList, up to 255 characters long.
+     
      * @return IpAccessControlListInstance Created IpAccessControlListInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -93,6 +95,7 @@ class IpAccessControlListList extends ListResource
      * Create the IpAccessControlListInstance with Metadata
      *
      * @param string $friendlyName A human readable descriptive text that describes the IpAccessControlList, up to 255 characters long.
+     
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -104,6 +107,7 @@ class IpAccessControlListList extends ListResource
                         $response->getContent(),
                         $this->solution['accountSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -117,6 +121,7 @@ class IpAccessControlListList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit
@@ -137,6 +142,7 @@ class IpAccessControlListList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
      *                   limit

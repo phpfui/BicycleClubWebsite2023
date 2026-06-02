@@ -62,11 +62,15 @@ class SubscribedTrackContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
+     
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -74,6 +78,9 @@ class SubscribedTrackContext extends InstanceContext
     /**
      * Fetch the SubscribedTrackInstance
      *
+     
+     
+     
      * @return SubscribedTrackInstance Fetched SubscribedTrackInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -93,6 +100,9 @@ class SubscribedTrackContext extends InstanceContext
     /**
      * Fetch the SubscribedTrackInstance with Metadata
      *
+     
+     
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -106,6 +116,7 @@ class SubscribedTrackContext extends InstanceContext
                         $this->solution['participantSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -55,7 +55,6 @@ class ChallengeList extends ListResource
             $identity,
         
         ];
-
         $this->uri = '/Services/' . \rawurlencode($serviceSid)
         .'/Entities/' . \rawurlencode($identity)
         .'/Challenges';
@@ -64,13 +63,17 @@ class ChallengeList extends ListResource
     /**
      * Helper function for Create
      *
+     
+     
      * @param string $factorSid The unique SID identifier of the Factor.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $factorSid, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -95,7 +98,10 @@ class ChallengeList extends ListResource
     /**
      * Create the ChallengeInstance
      *
+     
+     
      * @param string $factorSid The unique SID identifier of the Factor.
+     
      * @param array|Options $options Optional Arguments
      * @return ChallengeInstance Created ChallengeInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -115,7 +121,10 @@ class ChallengeList extends ListResource
     /**
      * Create the ChallengeInstance with Metadata
      *
+     
+     
      * @param string $factorSid The unique SID identifier of the Factor.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -129,6 +138,7 @@ class ChallengeList extends ListResource
                         $this->solution['serviceSid'],
                         $this->solution['identity']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -142,6 +152,7 @@ class ChallengeList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no
@@ -163,6 +174,7 @@ class ChallengeList extends ListResource
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     
      * @param array|Options $options Optional Arguments
      * @param int $limit Upper limit for the number of records to return. read()
      *                   guarantees to never return more than limit.  Default is no

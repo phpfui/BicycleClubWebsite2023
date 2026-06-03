@@ -221,7 +221,7 @@ class Cart
 			{
 			$cart->add($this->summaryLine('<b>Available Points</b>', '$' . $this->cartModel->getVolunteerPoints()));
 			$cart->add($this->summaryLine('<b>Payable By Points</b>', '$' . \number_format($this->cartModel->getPayableByPoints(), 2)));
-			$cart->add($this->summaryLine('<b>Applied Points</b>', '-$' . \number_format(\min($this->cartModel->getPayableByPoints(), $this->cartModel->getVolunteerPoints()), 2)));
+			$cart->add($this->summaryLine('<b>Applied Points</b>', '-$' . \number_format($this->cartModel->getAppliedPoints(), 2)));
 			}
 		$cart->add($this->summaryLine('<b>Shipping</b>', '$' . \number_format($this->cartModel->getShipping(), 2)));
 		$cart->add($this->summaryLine('<b>Tax</b>', '$' . \number_format($this->cartModel->getTax(), 2)));

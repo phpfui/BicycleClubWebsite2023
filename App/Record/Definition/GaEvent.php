@@ -16,6 +16,7 @@ namespace App\Record\Definition;
  * @property string $incompleteDaysAfter MySQL type varchar(255)
  * @property ?string $incompleteMessage MySQL type mediumtext
  * @property string $lastRegistrationDate MySQL type date
+ * @property ?string $lastRegistrationTime MySQL type time
  * @property ?string $location MySQL type char(100)
  * @property ?int $maxRegistrants MySQL type int
  * @property ?float $memberDiscount MySQL type decimal(7,2)
@@ -59,6 +60,7 @@ abstract class GaEvent extends \PHPFUI\ORM\Record
 				'incompleteDaysAfter' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, '', ),
 				'incompleteMessage' => new \PHPFUI\ORM\FieldDefinition('mediumtext', 'string', 16777215, true, ),
 				'lastRegistrationDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
+				'lastRegistrationTime' => new \PHPFUI\ORM\FieldDefinition('time', 'string', 0, true, ),
 				'location' => new \PHPFUI\ORM\FieldDefinition('char(100)', 'string', 100, true, ),
 				'maxRegistrants' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'memberDiscount' => new \PHPFUI\ORM\FieldDefinition('decimal(7,2)', 'float', 8, true, 0.00, ),

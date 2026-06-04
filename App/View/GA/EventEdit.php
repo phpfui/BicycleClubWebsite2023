@@ -360,7 +360,10 @@ class EventEdit
 		$this->page->addJavaScript($lteValidator->getJavaScript());
 		$this->page->addJavaScript($gteValidator->getJavaScript());
 
-		$requiredFields->add(new \PHPFUI\MultiColumn($registrationOpens, $eventDate, $lastRegDate));
+		$lastRegTime = new \PHPFUI\Input\Time($this->page, 'lastRegistrationTime', 'Last Registration Time', $event->lastRegistrationTime);
+		$lastRegTime->setRequired();
+
+		$requiredFields->add(new \PHPFUI\MultiColumn($registrationOpens, $eventDate, $lastRegDate, $lastRegTime));
 		$registrar = new \PHPFUI\Input\Text('registrar', 'Registrar Name', $event->registrar);
 		$registrar->setRequired();
 		$registrarEmail = new \PHPFUI\Input\Email('registrarEmail', 'Registrar Email', $event->registrarEmail);

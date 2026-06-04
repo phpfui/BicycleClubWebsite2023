@@ -75,6 +75,7 @@ class GASignInSheets
 			$lastName = ' ';
 			$title = $titleBase = $this->event->title;
 			$current = $riders->current();
+
 			if (isset($current->lastName))
 				{
 				$lastName = $current->lastName;

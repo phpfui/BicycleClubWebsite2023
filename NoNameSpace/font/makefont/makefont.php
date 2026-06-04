@@ -557,11 +557,11 @@ function SaveToFile($file, $s, $mode) : void
 	\fclose($f);
 	}
 
-function makeJsonFile(string $file)
+function makeJsonFile(string $file) : void
 	{
 	include $file;
-	$json = json_encode(get_defined_vars(),  JSON_PRETTY_PRINT);
-	$file = str_replace('.php', '.json', $file);
+	$json = \json_encode(\get_defined_vars(), JSON_PRETTY_PRINT);
+	$file = \str_replace('.php', '.json', $file);
 	\SaveToFile($file, $json, 't');
 	}
 
@@ -662,6 +662,5 @@ function MakeDefinitionFile($file, $type, $enc, $embed, $subset, $map, $info) : 
 
 	$s .= "?>\n";
 	\SaveToFile($file, $s, 't');
-	makeJsonFile($file);
+	\makeJsonFile($file);
 	}
-

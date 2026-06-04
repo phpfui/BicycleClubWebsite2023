@@ -377,6 +377,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		if ($event->loaded())
 			{
 			$today = \App\Tools\Date::todayString();
+			$time = \date('H:i:s');
 			$gaModel = new \App\Model\GeneralAdmission();
 			$datePrice = $gaModel->getLastRegistrationDateRecord($event);
 
@@ -388,7 +389,7 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$this->page->addPageContent(new \PHPFUI\SubHeader('This event is sold out!'));
 				}
-			elseif ($today > $event->lastRegistrationDate)
+			elseif ($today > $event->lastRegistrationDate || ($today == $event->lastRegistrationDate && $time > $event->lastRegistrationTime))
 				{
 				$this->page->addPageContent(new \PHPFUI\SubHeader('Preregistration has ended for the ' . $event->title));
 

@@ -289,6 +289,16 @@ class Cart
 		return $cartItem->delete();
 		}
 
+	public function getAppliedPoints() : int
+		{
+		if ($this->volunteerPoints)
+			{
+			return (int)\min($this->payableByPoints, $this->volunteerPoints);
+			}
+
+		return 0;
+		}
+
 	public function getCashAmount() : float
 		{
 		$total = $this->total - $this->getAppliedPoints();
@@ -320,15 +330,6 @@ class Cart
 	public function getDiscountCode() : ?\App\Record\DiscountCode
 		{
 		return $this->discountCode;
-		}
-
-	public function getAppliedPoints() : int
-		{
-		if ($this->volunteerPoints)
-			{
-			return (int)\min($this->payableByPoints, $this->volunteerPoints);
-			}
-		return 0;
 		}
 
 	public function getGrandTotal() : float
@@ -439,6 +440,7 @@ class Cart
 	public function getTax() : float
 		{
 		$total = $this->total + $this->shipping + $this->discount - $this->getAppliedPoints();
+
 		if ($total <= 0.0)
 			{
 			$this->tax = 0.0;

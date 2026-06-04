@@ -23,19 +23,15 @@ function makeJsonFile(string $includeFile) : void
 	include $includeFile;
 	$newCW = [];
 
-	foreach ($cw as $index => $value)
+	foreach ($cw as $value)
 		{
-		if ($index >= \chr(126))
-			{
-			$index = \mb_chr(\ord($index), 'UTF-8');
-			}
-		$newCW[$index] = $value;
+		$newCW[] = $value;
 		}
 	$cw = $newCW;
-	unset($newCW);
+	unset($value, $newCW, $newCW);
 	$array = \get_defined_vars();
 	unset($array['includeFile']);
-	$json = \json_encode($array, JSON_PRETTY_PRINT);
+	$json = \json_encode($array, JSON_PRETTY_PRINT | JSON_PARTIAL_OUTPUT_ON_ERROR);
 	$jsonFileName = \str_replace('.php', '.json', $includeFile);
 	\file_put_contents($jsonFileName, $json);
 	}

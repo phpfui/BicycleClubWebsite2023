@@ -204,8 +204,11 @@ class RideSignup
 				{
 				$email = new \App\Tools\EMail();
 				$email->setSubject('Rider signup change');
-				$body = 'For your ride on ' . $this->ride->rideDate;
-				$body .= ", {$this->member->fullName()} has {$action}.";
+				$url = $this->settingTable->value('homePage');
+
+				$link = new \PHPFUI\Link($url . '/Rides/signedUp/' . $this->ride->rideId, $this->ride->title);
+
+				$body = "For your ride {$link} on {$this->ride->rideDate}, {$this->member->fullName()} has {$action}.";
 
 				if ($this->member->memberId != \App\Model\Session::getSignedInMemberId())
 					{

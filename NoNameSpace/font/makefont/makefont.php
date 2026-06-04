@@ -8,6 +8,49 @@
  * Author:  Olivier PLATHEY                                                     *
  *******************************************************************************/
 require 'ttfparser.php';
+
+if (PHP_SAPI == 'cli')
+	{
+	// Command-line interface
+	\ini_set('log_errors', '0');
+
+	if (1 == $argc)
+		{
+		exit("Usage: php makefont.php fontfile [encoding] [embed] [subset]\n");
+		}
+
+	$fontfile = $argv[1];
+
+	if ($argc >= 3)
+		{
+		$enc = $argv[2];
+		}
+	else
+		{
+		$enc = 'cp1252';
+		}
+
+	if ($argc >= 4)
+		{
+		$embed = ('true' == $argv[3] || '1' == $argv[3]);
+		}
+	else
+		{
+		$embed = true;
+		}
+
+	if ($argc >= 5)
+		{
+		$subset = ('true' == $argv[4] || '1' == $argv[4]);
+		}
+	else
+		{
+		$subset = true;
+		}
+
+	\MakeFont($fontfile, $enc, $embed, $subset);
+	}
+
 function Message($txt, $severity = '') : void
 	{
 	if (PHP_SAPI == 'cli')
@@ -514,47 +557,12 @@ function SaveToFile($file, $s, $mode) : void
 	\fclose($f);
 	}
 
-function MakeDefinitionFile($file, $type, $enc, $embed, $subset, $map, $info) : void
+function makeJsonFile(string $file)
 	{
-	$s = "<?php\n";
-	$s .= '$type = \'' . $type . "';\n";
-	$s .= '$name = \'' . $info['FontName'] . "';\n";
-	$s .= '$desc = ' . \MakeFontDescriptor($info) . ";\n";
-	$s .= '$up = ' . $info['UnderlinePosition'] . ";\n";
-	$s .= '$ut = ' . $info['UnderlineThickness'] . ";\n";
-	$s .= '$cw = ' . \MakeWidthArray($info['Widths']) . ";\n";
-	$s .= '$enc = \'' . $enc . "';\n";
-	$diff = \MakeFontEncoding($map);
-
-	if ($diff)
-		{
-		$s .= '$diff = \'' . $diff . "';\n";
-		}
-
-	$s .= '$uv = ' . \MakeUnicodeArray($map) . ";\n";
-
-	if ($embed)
-		{
-		$s .= '$file = \'' . $info['File'] . "';\n";
-
-		if ('Type1' == $type)
-			{
-			$s .= '$size1 = ' . $info['Size1'] . ";\n";
-			$s .= '$size2 = ' . $info['Size2'] . ";\n";
-			}
-		else
-			{
-			$s .= '$originalsize = ' . $info['OriginalSize'] . ";\n";
-
-			if ($subset)
-				{
-				$s .= "\$subsetted = true;\n";
-				}
-			}
-		}
-
-	$s .= "?>\n";
-	\SaveToFile($file, $s, 't');
+	include $file;
+	$json = json_encode(get_defined_vars(),  JSON_PRETTY_PRINT);
+	$file = str_replace('.php', '.json', $file);
+	\SaveToFile($file, $json, 't');
 	}
 
 function MakeFont($fontfile, $enc = 'cp1252', $embed = true, $subset = true) : void
@@ -613,44 +621,47 @@ function MakeFont($fontfile, $enc = 'cp1252', $embed = true, $subset = true) : v
 	\Message('Font definition file generated: ' . $basename . '.php');
 	}
 
-if (PHP_SAPI == 'cli')
+function MakeDefinitionFile($file, $type, $enc, $embed, $subset, $map, $info) : void
 	{
-	// Command-line interface
-	\ini_set('log_errors', '0');
+	$s = "<?php\n";
+	$s .= '$type = \'' . $type . "';\n";
+	$s .= '$name = \'' . $info['FontName'] . "';\n";
+	$s .= '$desc = ' . \MakeFontDescriptor($info) . ";\n";
+	$s .= '$up = ' . $info['UnderlinePosition'] . ";\n";
+	$s .= '$ut = ' . $info['UnderlineThickness'] . ";\n";
+	$s .= '$cw = ' . \MakeWidthArray($info['Widths']) . ";\n";
+	$s .= '$enc = \'' . $enc . "';\n";
+	$diff = \MakeFontEncoding($map);
 
-	if (1 == $argc)
+	if ($diff)
 		{
-		exit("Usage: php makefont.php fontfile [encoding] [embed] [subset]\n");
-		}
-
-	$fontfile = $argv[1];
-
-	if ($argc >= 3)
-		{
-		$enc = $argv[2];
-		}
-	else
-		{
-		$enc = 'cp1252';
+		$s .= '$diff = \'' . $diff . "';\n";
 		}
 
-	if ($argc >= 4)
+	$s .= '$uv = ' . \MakeUnicodeArray($map) . ";\n";
+
+	if ($embed)
 		{
-		$embed = ('true' == $argv[3] || '1' == $argv[3]);
-		}
-	else
-		{
-		$embed = true;
+		$s .= '$file = \'' . $info['File'] . "';\n";
+
+		if ('Type1' == $type)
+			{
+			$s .= '$size1 = ' . $info['Size1'] . ";\n";
+			$s .= '$size2 = ' . $info['Size2'] . ";\n";
+			}
+		else
+			{
+			$s .= '$originalsize = ' . $info['OriginalSize'] . ";\n";
+
+			if ($subset)
+				{
+				$s .= "\$subsetted = true;\n";
+				}
+			}
 		}
 
-	if ($argc >= 5)
-		{
-		$subset = ('true' == $argv[4] || '1' == $argv[4]);
-		}
-	else
-		{
-		$subset = true;
-		}
-
-	\MakeFont($fontfile, $enc, $embed, $subset);
+	$s .= "?>\n";
+	\SaveToFile($file, $s, 't');
+	makeJsonFile($file);
 	}
+

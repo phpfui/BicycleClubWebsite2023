@@ -33,8 +33,8 @@ class GASignInSheets
 			$pdf = new \PDF_MC_Table();
 			$pdf->SetMargins(5, 5, 5);
 			$pdf->SetDisplayMode('fullpage');
-			$pdf->AddFont('Futura', '', 'futura.php');
-			$pdf->AddFont('Futura', 'B', 'futura.php');
+			$pdf->AddFont('Futura', '', 'futura.json');
+			$pdf->AddFont('Futura', 'B', 'futura.json');
 			$pdf->SetFont('Futura', '', 12);
 			$pdf->SetFillLines(1);
 			$pdf->SetFillColor(225);

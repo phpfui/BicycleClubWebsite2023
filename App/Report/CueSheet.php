@@ -41,8 +41,8 @@ class CueSheet extends \FPDF
 		$settingTable = new \App\Table\Setting();
 		$this->fontSize = (int)$settingTable->value('CueSheetFontSize');
 		$this->font = $settingTable->value('CueSheetFont');
-		$this->AddFont($this->font, '', $this->font . '.php');
-		$this->AddFont($this->font, 'B', $this->font . '.php');
+		$this->AddFont($this->font, '', $this->font . '.json');
+		$this->AddFont($this->font, 'B', $this->font . '.json');
 
 		$this->units = $settingTable->value('RWGPSUnits');
 		$this->SetAutoPageBreak(false);

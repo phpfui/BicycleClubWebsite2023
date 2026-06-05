@@ -10,6 +10,7 @@ class Settings
 		'restStopOption' => 'Rest Stop',
 		'maxRidersOption' => 'Rider Limit',
 		'targetPaceOption' => 'Target Pace',
+		'elevation' => 'Elevation Gain',
 	];
 
 	/** @var array<string> */
@@ -93,6 +94,13 @@ class Settings
 				$select = new \App\UI\RegroupPolicy($this->page, $ride->regrouping);
 
 				return $select->getControl();
+
+			case 'elevation':
+				$elevation = new \PHPFUI\Input\Number('elevation', 'Elevation Gain (' . \App\Record\RWGPS::getSmallUnits() . ')', $ride->elevation);
+				$elevation->setToolTip('Just how hilly was this ride?');
+				$elevation->addAttribute('min', (string)0)->addAttribute('max', (string)99999)->addAttribute('step', (string)10);
+
+				return $elevation;
 			}
 
 		return null;

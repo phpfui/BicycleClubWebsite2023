@@ -28,7 +28,7 @@ function makeJsonFile(string $includeFile) : void
 		$newCW[] = $value;
 		}
 	$cw = $newCW;
-	unset($value, $newCW, $newCW);
+	unset($value, $newCW);
 	$array = \get_defined_vars();
 	unset($array['includeFile']);
 	$json = \json_encode($array, JSON_PRETTY_PRINT | JSON_PARTIAL_OUTPUT_ON_ERROR);

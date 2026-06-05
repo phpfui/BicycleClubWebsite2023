@@ -557,12 +557,22 @@ function SaveToFile($file, $s, $mode) : void
 	\fclose($f);
 	}
 
-function makeJsonFile(string $file) : void
+function makeJsonFile(string $includeFile) : void
 	{
-	include $file;
-	$json = \json_encode(\get_defined_vars(), JSON_PRETTY_PRINT);
-	$file = \str_replace('.php', '.json', $file);
-	\SaveToFile($file, $json, 't');
+	include $includeFile;
+	$newCW = [];
+
+	foreach ($cw as $value)
+		{
+		$newCW[] = $value;
+		}
+	$cw = $newCW;
+	unset($value, $newCW);
+	$array = \get_defined_vars();
+	unset($array['includeFile']);
+	$json = \json_encode($array, JSON_PRETTY_PRINT | JSON_PARTIAL_OUTPUT_ON_ERROR);
+	$jsonFileName = \str_replace('.php', '.json', $includeFile);
+	\file_put_contents($jsonFileName, $json);
 	}
 
 function MakeFont($fontfile, $enc = 'cp1252', $embed = true, $subset = true) : void

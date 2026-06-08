@@ -65,40 +65,15 @@ class Newsletter extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 			else
 				{
 				$uploadName = $_FILES[$field]['name'] ?? \App\Tools\Date::todayString();
-				$time = \strtotime($uploadName);
-
-				if ($time < \strtotime('1970-01-01'))
-					{
-					// look for text month
-					for ($i = 1; $i <= 12; ++$i)
+				$date = \App\Model\Newsletter::getDate($uploadName);
+				if (empty($date))
 						{
-						$monthName = \date('M', \strtotime('2000-' . $i . '-01'));
-						$pos = \stripos($uploadName, $monthName);
-
-						if (false !== $pos)
-							{
-							$uploadName = \substr($uploadName, $pos);
-
-							break;
-							}
-						}
-					$pos = \strrpos($uploadName, '.');
-
-					if ($pos)
-						{
-						$uploadName = \substr($uploadName, 0, $pos);
-						}
-					$time = \strtotime($uploadName);
-
-					if ($time < \strtotime('1970-01-01'))
-						{
-						\App\Model\Session::setFlash('alert', 'File name ' . $_FILES[$field]['name'] . ' could not be parsed to a valid date, please specify a date.');
+						\App\Model\Session::setFlash('alert', "The file name {$uploadName} could not be parsed to a valid date, please specify a date.");
 						$this->page->redirect();
 
 						return;
 						}
 					}
-				$date = \date('Y-m-d', $time);
 				}
 
 			$newsletter = new \App\Record\Newsletter(['date' => $date]);

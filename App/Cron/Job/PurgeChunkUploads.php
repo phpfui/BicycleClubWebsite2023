@@ -12,11 +12,16 @@ class PurgeChunkUploads extends \App\Cron\BaseJob
 	/** @param array<string, string> $parameters */
 	public function run(array $parameters = []) : void
 		{
+		$now = \time();
+
 		foreach (\glob(PROJECT_ROOT . '/files/chunkUploader/*') as $file)
 			{
 			if (! \str_contains((string)$file, '.gitignore'))
 				{
-				\App\Tools\File::unlink($file);
+				if (\filemtime($file) + (3600 * 24 * 7) < $now)
+					{
+					\App\Tools\File::unlink($file);
+					}
 				}
 			}
 		}

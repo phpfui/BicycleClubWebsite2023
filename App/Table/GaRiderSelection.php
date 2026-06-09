@@ -7,7 +7,7 @@ class GaRiderSelection extends \PHPFUI\ORM\Table
 	protected static string $className = \App\Record\GaRiderSelection::class;
 
 	/**
-	 * @param array<string,string|array<string>> $post
+	 * @param array<string,mixed> $post
 	 */
 	public function updateFromPost(array $post) : static
 		{

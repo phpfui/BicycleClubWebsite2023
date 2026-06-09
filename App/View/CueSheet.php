@@ -735,7 +735,6 @@ class CueSheet
 			}
 		$file->setAllowedExtensions($extensions);
 		$fieldSet->add($file);
-		$this->fileModel->getMimeTypes();
 		$fieldSet->add(new \App\UI\Display('Allowed Types', \implode(' ', \array_keys($this->fileModel->getMimeTypes()))));
 		$form->add($fieldSet);
 		$form->add($this->getLinkInput());

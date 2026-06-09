@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Intervention\Image\Drivers\Gd\Modifiers;
 
+use GdImage;
 use Intervention\Image\Exceptions\ColorDecoderException;
 use Intervention\Image\Exceptions\ModifierException;
 use Intervention\Image\Exceptions\StateException;
-use Intervention\Image\Interfaces\FrameInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 use Intervention\Image\Interfaces\SpecializedInterface;
 use Intervention\Image\Modifiers\DrawLineModifier as GenericDrawLineModifier;
@@ -25,34 +25,32 @@ class DrawLineModifier extends GenericDrawLineModifier implements SpecializedInt
             return $image;
         }
 
-        $color = $this->driver()->colorProcessor($image)->export(
-            $this->backgroundColor()
-        );
+        $color = $this->driver()->colorProcessor($image)->export($this->backgroundColor());
 
         foreach ($image as $frame) {
-            $this->modifyFrame($frame, $color);
+            $this->drawLine($frame->native(), $color);
         }
 
         return $image;
     }
 
     /**
-     * Draw current line on given frame
+     * Draw current line on given canvas.
      *
      * @throws ModifierException
      */
-    private function modifyFrame(FrameInterface $frame, int $color): void
+    private function drawLine(GdImage $canvas, int $color): void
     {
-        imagealphablending($frame->native(), true);
-        imageantialias($frame->native(), true);
-        imagesetthickness($frame->native(), $this->drawable->width());
+        imagealphablending($canvas, true);
+        imageantialias($canvas, true);
+        imagesetthickness($canvas, $this->drawable->width());
         imageline(
-            $frame->native(),
+            $canvas,
             $this->drawable->start()->x(),
             $this->drawable->start()->y(),
             $this->drawable->end()->x(),
             $this->drawable->end()->y(),
-            $color
+            $color,
         );
     }
 }

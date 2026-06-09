@@ -373,7 +373,7 @@ class Rides
 		$fieldSet->add($row);
 
 		$isLeader = ($ride->memberId ?? 0) == \App\Model\Session::getSignedInMemberId();
-		$this->page->addJavaScript('function selectRiderContactMethod(v){if(v>"")if(v[0]=="/"||v.startsWith("tel:")){window.location=v}else{window.open(v)}}');
+		$this->page->addJavaScript('function selectRiderContactMethod(v){if(v>"")if(v[0]=="/"||v.startsWith("tel:")||v.startsWith("sms:")){window.location=v}else{window.open(v)}}');
 
 		foreach ($riders as $rider)
 			{
@@ -428,13 +428,9 @@ class Rides
 				$select->addAttribute('onchange', 'selectRiderContactMethod(this.value)');
 				$select->addOption('Choose ...');
 
-				if ($textMember && $rider->allowTexting && ! $private)
-					{
-					$select->addOption('Text Member', "/Membership/text/{$rider->memberId}");
-					}
-
 				if ($editSignups || ! $rider->showNoPhone)
 					{
+					$select->addOption('Text Member', 'sms:1-' . $rider->cellPhone);
 					$select->addOption('Call Cell', 'tel:1-' . $rider->cellPhone);
 					}
 

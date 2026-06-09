@@ -578,9 +578,9 @@ class Editor
 		}
 
 	/**
-	 * @param array<string,string> $parameters
+	 * @param array<string,mixed> $parameters
 	 *
-	 * @return array<string,string>
+	 * @return array<string,mixed>
 	 */
 	private function cleanParameters(array $parameters) : array
 		{

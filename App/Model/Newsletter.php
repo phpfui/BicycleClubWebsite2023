@@ -4,13 +4,13 @@ namespace App\Model;
 
 class Newsletter
 	{
-
-	public static function getDate(string $fileName, $monthType = 'F') : string
+	public static function getDate(string $fileName, string $monthType = 'F') : string
 		{
 		$originalFileName = $fileName;
 
 		// strip extension
 		$pos = \strrpos($fileName, '.');
+
 		if ($pos)
 			{
 			$fileName = \substr($fileName, 0, $pos);
@@ -18,6 +18,7 @@ class Newsletter
 
 		// strip before last _
 		$pos = \strrpos($fileName, '_');
+
 		if ($pos)
 			{
 			$fileName = \substr($fileName, $pos + 1);
@@ -48,11 +49,11 @@ class Newsletter
 					return \date('Y-m-d', $time);
 					}
 
-				$fileName = \substr($fileName, strlen($monthName));
+				$fileName = \substr($fileName, \strlen($monthName));
 
-				$year = \substr($fileName, strlen($fileName) - 4);
+				$year = \substr($fileName, \strlen($fileName) - 4);
 
-				$day = \substr($fileName, 0, strlen($fileName) - 4);
+				$day = \substr($fileName, 0, \strlen($fileName) - 4);
 
 				$fileName = $monthName . ' ' . $day . ' ' . $year;
 
@@ -66,7 +67,7 @@ class Newsletter
 			return \date('Y-m-d', $time);
 			}
 
-		if ($monthType === 'F')
+		if ('F' === $monthType)
 			{
 			return self::getDate($originalFileName, 'M');
 			}

@@ -116,6 +116,7 @@ class Test extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$buttonGroup->addButton($backButon);
 			$form->add($buttonGroup);
 			$form->add(\PHPFUI\Link::phone('1-914-361-9059', 'Call Web Master'));
+			$form->add(\PHPFUI\Link::sms('1-914-361-9059', 'Text Web Master'));
 			$this->page->addPageContent("{$form}");
 			}
 		}
@@ -166,6 +167,7 @@ class Test extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$form->add(new \PHPFUI\Button('Back', '/System'));
 			$form->add('<br>');
 			$form->add(\PHPFUI\Link::phone('914-361-9059', 'Call Web Master'));
+			$form->add(\PHPFUI\Link::sms('914-361-9059', 'Text Web Master'));
 			$page->add($form);
 
 			echo $page;

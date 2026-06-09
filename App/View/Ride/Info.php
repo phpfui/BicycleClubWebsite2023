@@ -109,7 +109,8 @@ class Info
 
 			if (! empty($member->cellPhone))
 				{
-				$fieldSet->add(new \App\UI\Display('Leader Cell', \PHPFUI\Link::phone($member->cellPhone)));
+				$fieldSet->add(new \App\UI\Display('Call Leader', \PHPFUI\Link::phone($member->cellPhone)));
+				$fieldSet->add(new \App\UI\Display('Text Leader', \PHPFUI\Link::sms($member->cellPhone)));
 				}
 			}
 
@@ -239,7 +240,8 @@ class Info
 
 			if (! empty($member->cellPhone))
 				{
-				$table->addRow(['Leader Cell', \PHPFUI\Link::phone($member->cellPhone)]);
+				$table->addRow(['Call Leader', \PHPFUI\Link::phone($member->cellPhone)]);
+				$table->addRow(['Text Leader', \PHPFUI\Link::sms($member->cellPhone)]);
 				}
 			}
 

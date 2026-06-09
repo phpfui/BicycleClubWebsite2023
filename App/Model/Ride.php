@@ -135,8 +135,8 @@ class Ride
 		$email->setSubject($topic);
 		$email->setFromMember($leader);
 		$email->setHtml();
-		$phoneLink = $leader->phone ? 'Phone: ' . \PHPFUI\Link::phone($leader->phone) : '';
-		$cellLink = $leader->cellPhone ? 'Cell: ' . \PHPFUI\Link::phone($leader->cellPhone) : '';
+		$phoneLink = $leader->cellPhone ? 'Text: ' . \PHPFUI\Link::sms($leader->cellPhone) : '';
+		$callLink = $leader->cellPhone ? 'Call: ' . \PHPFUI\Link::phone($leader->cellPhone) : '';
 		$emailLink = $leader->email ? \PHPFUI\Link::email($leader->email, $leader->email, $topic) : '';
 		$location = $ride->startLocation;
 		$locationLink = ! $location->empty() ? new \PHPFUI\Link($location->link, \App\Tools\TextHelper::unhtmlentities($location->name)) : '';
@@ -144,7 +144,7 @@ class Ride
 			\App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '<br>' .
 			"{$ride->mileage} miles at a " . $this->getPace($ride->paceId) .
 			" pace.<br>Starting from {$locationLink}<p>{$leaderMessage}<p>Your leader {$leader->fullName()}<br>" .
-			"{$phoneLink} {$cellLink}<br>{$emailLink}<br>has decided not to lead the ride.  " .
+			"{$phoneLink} {$callLink}<br>{$emailLink}<br>has decided not to lead the ride.  " .
 			'Reply to this email to contact the former leader.';
 		$footer = '<p>There may be other riders interested in doing this ride.<br>You can email all the other signed up riders on this ride by ' .
 			"<a href='{$this->homePage}/Rides/emailRide/{$ride->rideId}'>clicking here.</a><br>";
@@ -559,14 +559,14 @@ class Ride
 			{
 			$message .= "Led by <b>{$leader->fullName()}</b> " . \PHPFUI\Link::email($leader->email);
 
-			if (\strlen($leader->phone ?? '') >= 7)
+			if (\strlen($leader->cellPhone ?? '') >= 7)
 				{
-				$message .= ' Phone: ' . \PHPFUI\Link::phone($leader->phone);
+				$message .= ' Text: ' . \PHPFUI\Link::sms($leader->cellPhone);
 				}
 
 			if (\strlen($leader->cellPhone) >= 7)
 				{
-				$message .= ' Cell: ' . \PHPFUI\Link::phone($leader->cellPhone);
+				$message .= ' Call: ' . \PHPFUI\Link::phone($leader->cellPhone);
 				}
 			}
 		$message .= '<br><br>';
@@ -622,7 +622,7 @@ class Ride
 		}
 
 	/**
-	 * @param array<string,string> $parameters
+	 * @param array<string,mixed> $parameters
 	 *
 	 * @return array<string, string> errors found during save, empty if no errors
 	 */
@@ -718,8 +718,8 @@ class Ride
 		$email->setSubject($topic);
 		$email->setFromMember($leader);
 		$email->setHtml();
-		$phoneLink = $leader->phone ? 'Phone: ' . \PHPFUI\Link::phone($leader->phone) : '';
-		$cellLink = $leader->cellPhone ? 'Cell: ' . \PHPFUI\Link::phone($leader->cellPhone) : '';
+		$phoneLink = $leader->cellPhone ? 'Call: ' . \PHPFUI\Link::phone($leader->cellPhone) : '';
+		$cellLink = $leader->cellPhone ? 'Text: ' . \PHPFUI\Link::sms($leader->cellPhone) : '';
 		$emailLink = $leader->email ? \PHPFUI\Link::email($leader->email, $leader->email, $topic) : '';
 		$location = $ride->startLocation;
 		$locationLink = ! $location->empty() ? new \PHPFUI\Link($location->link, \App\Tools\TextHelper::unhtmlentities($location->name)) : '';

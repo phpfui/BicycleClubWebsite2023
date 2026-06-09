@@ -46,7 +46,7 @@ class Poll
 		}
 
 	/**
-	 * @param array<string,string> $get
+	 * @param array<string,mixed> $get
 	 */
 	public function saveVote(\App\Record\Poll $poll, array $get) : void
 		{

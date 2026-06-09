@@ -42,7 +42,7 @@ class Member implements \Stringable
 						$member = new \App\Record\Member($this->signedInMemberId);
 						$name = $member->fullName();
 						$emailAddress = $member->email;
-						$phone = $member->phone;
+						$phone = $member->cellPhone;
 						$email->setFromMember($member);
 						}
 					else

@@ -45,7 +45,7 @@ class AccidentReport
 				\App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '<br>' .
 				$ride->mileage . ' miles at a ' . $paceTable->getPace($ride->paceId) . ' pace<br>' .
 				'Starting from ' . $location->name . ',<p>' . $ride->description . '<p>' .
-				'Leader: ' . $leader->fullName() . ' ' . $leader->phone . ' ' . $leader->email . '<p>';
+				'Leader: ' . $leader->fullName() . ' Cell: ' . $leader->cellPhone . ' ' . $leader->email . '<p>';
 		$body = $settings->value(\App\View\AccidentReport::MAIL);
 		$email->setBody($body . $leaderLine . $detail);
 		$email->setHtml();

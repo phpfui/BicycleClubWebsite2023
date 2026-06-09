@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Intervention\Image\Drivers\Gd\Modifiers;
 
 use Intervention\Image\Exceptions\ColorDecoderException;
-use Intervention\Image\Exceptions\ModifierException;
 use Intervention\Image\Exceptions\StateException;
 use Intervention\Image\Interfaces\ImageInterface;
 use Intervention\Image\Interfaces\SpecializedInterface;
@@ -18,7 +17,6 @@ class DrawPixelModifier extends GenericDrawPixelModifier implements SpecializedI
      *
      * @see ModifierInterface::apply()
      *
-     * @throws ModifierException
      * @throws StateException
      * @throws ColorDecoderException
      */
@@ -32,7 +30,7 @@ class DrawPixelModifier extends GenericDrawPixelModifier implements SpecializedI
                 $frame->native(),
                 $this->position->x(),
                 $this->position->y(),
-                $color
+                $color,
             );
         }
 

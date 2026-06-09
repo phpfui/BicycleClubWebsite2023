@@ -18,6 +18,6 @@ class Calendar extends \App\Model\EmailData
 		$sha = \sha1($calendar->privateEmail . $calendar->privateContact);
 		$settingTable = new \App\Table\Setting();
 		$this->fields['message'] = $message;
-		$this->fields['editLink'] = new \PHPFUI\Link($settingTable->value('homePage') . "/Calendar/edit/{$calendar->calendarId}/{$sha}", 'Edit your submission');
+		$this->fields['editLink'] = new \PHPFUI\Link($settingTable->value('homePage') . "/Calendar/edit/{$calendar->calendarId}/{$sha}", 'Edit your submission')->__toString();
 		}
 	}

@@ -570,19 +570,14 @@ class Member
 				$detail[] = new \PHPFUI\FAIcon('far', 'envelope', "/Membership/email/{$id}");
 				}
 
-			// phone
-			if (! empty($member->phone) && ($canEdit || $showAll || ! $member->showNoPhone))
-				{
-				$icon = new \PHPFUI\FAIcon('fas', 'phone', 'tel:' . $member->phone);
-				$icon->setToolTip($member->phone);
-				$detail[] = $icon;
-				}
-
 			// cell
 			if (! empty($member->cellPhone) && ($canEdit || $showAll || ! $member->showNoPhone))
 				{
-				$icon = new \PHPFUI\FAIcon('fas', 'mobile-alt', 'tel:' . $member->cellPhone);
-				$icon->setToolTip($member->cellPhone);
+				$icon = new \PHPFUI\FAIcon('fas', 'phone', 'tel:' . $member->cellPhone);
+				$icon->setToolTip('Call Cell');
+				$detail[] = $icon;
+				$icon = new \PHPFUI\FAIcon('fas', 'mobile-alt', 'sms:' . $member->cellPhone);
+				$icon->setToolTip('Text Cell');
 				$detail[] = $icon;
 				}
 

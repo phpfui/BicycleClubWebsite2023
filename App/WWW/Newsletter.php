@@ -66,13 +66,13 @@ class Newsletter extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 				{
 				$uploadName = $_FILES[$field]['name'] ?? \App\Tools\Date::todayString();
 				$date = \App\Model\Newsletter::getDate($uploadName);
-				if (empty($date))
-						{
-						\App\Model\Session::setFlash('alert', "The file name {$uploadName} could not be parsed to a valid date, please specify a date.");
-						$this->page->redirect();
 
-						return;
-						}
+				if (empty($date))
+					{
+					\App\Model\Session::setFlash('alert', "The file name {$uploadName} could not be parsed to a valid date, please specify a date.");
+					$this->page->redirect();
+
+					return;
 					}
 				}
 

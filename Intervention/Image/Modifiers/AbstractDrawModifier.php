@@ -7,7 +7,7 @@ namespace Intervention\Image\Modifiers;
 use Intervention\Image\Color;
 use Intervention\Image\Drivers\SpecializableModifier;
 use Intervention\Image\Exceptions\ColorDecoderException;
-use Intervention\Image\Exceptions\InvalidArgumentException;
+use Intervention\Image\Exceptions\ModifierException;
 use Intervention\Image\Exceptions\StateException;
 use Intervention\Image\Interfaces\ColorInterface;
 use Intervention\Image\Interfaces\DrawableInterface;
@@ -27,11 +27,13 @@ abstract class AbstractDrawModifier extends SpecializableModifier
      */
     protected function backgroundColor(): ColorInterface
     {
-        try {
-            return $this->driver()->decodeColor($this->drawable()->backgroundColor());
-        } catch (InvalidArgumentException) {
+        $backgroundColor = $this->drawable()->backgroundColor();
+
+        if ($backgroundColor === null) {
             return Color::transparent();
         }
+
+        return $this->driver()->decodeColor($backgroundColor);
     }
 
     /**
@@ -42,10 +44,26 @@ abstract class AbstractDrawModifier extends SpecializableModifier
      */
     protected function borderColor(): ColorInterface
     {
-        try {
-            return $this->driver()->decodeColor($this->drawable()->borderColor());
-        } catch (InvalidArgumentException) {
+        $borderColor = $this->drawable()->borderColor();
+
+        if ($borderColor === null || $this->drawable()->hasBorder() === false) {
             return Color::transparent();
+        }
+
+        return $this->driver()->decodeColor($borderColor);
+    }
+
+    /**
+     * Throw ModifierException with given message if result is false.
+     *
+     * @throws ModifierException
+     */
+    protected function abortUnless(mixed $result, string $message): void
+    {
+        if ($result === false) {
+            throw new ModifierException(
+                'Failed to apply ' . self::class . ', ' . $message,
+            );
         }
     }
 }

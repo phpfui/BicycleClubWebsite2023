@@ -295,7 +295,7 @@ class GeneralAdmission
 		$this->email->addToMember($rider);
 		$this->message .= "<p>Rider: <strong>{$rider->firstName} {$rider->lastName}</strong><br>";
 		$this->message .= "Address: {$rider->address} {$rider->town}, {$rider->state} {$rider->zip}<br>";
-		$this->message .= "Phone:: {$rider->phone}<br>";
+		$this->message .= "Phone: {$rider->phone}<br>";
 		$this->message .= "Emergency Contact: {$rider->contact} Number: {$rider->contactPhone}<br></p>";
 		$options = $rider->optionsSelected;
 

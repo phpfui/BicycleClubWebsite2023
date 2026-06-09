@@ -234,7 +234,6 @@ class ImportMembers extends \PHPFUI\Container
 			}
 		$file->setAllowedExtensions($extensions);
 		$fieldSet->add($file);
-		$this->importModel->getMimeTypes();
 		$fieldSet->add(new \App\UI\Display('Allowed Types', \implode(' ', \array_keys($this->importModel->getMimeTypes()))));
 		$separator = new \PHPFUI\Input\Select('separator', 'Field Delimiter');
 		$separator->addOption(',');

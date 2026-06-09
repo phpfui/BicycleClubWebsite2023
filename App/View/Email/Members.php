@@ -55,7 +55,7 @@ class Members implements \Stringable
 			$email->setSubject($_POST['subject']);
 			$name = $sender['firstName'] . ' ' . $sender['lastName'];
 			$emailAddress = $sender['email'];
-			$phone = $sender['phone'];
+			$phone = $sender['cellPhone'];
 			$email->setFromMember($sender);
 			$email->setHtml();
 			$settings = new \App\Table\Setting();

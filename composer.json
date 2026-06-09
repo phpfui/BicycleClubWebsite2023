@@ -59,7 +59,7 @@
         "roave/security-advisories": "dev-latest",
         "phpfui/phpunit-syntax-coverage": "^1.0",
         "friendsofphp/php-cs-fixer": "*",
-        "phpstan/phpstan": "*",
+        "phpstan/phpstan": "^2.2",
         "carthage-software/mago": "^1.1.0"
     },
     "config": {

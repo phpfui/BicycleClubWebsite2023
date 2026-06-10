@@ -36,6 +36,7 @@ namespace App\Record\Definition;
  * @property ?float $targetPace MySQL type decimal(3,1)
  * @property ?string $title MySQL type varchar(100)
  * @property ?int $unaffiliated MySQL type int
+ * @property ?int $useStartLocation MySQL type int
  */
 abstract class Ride extends \PHPFUI\ORM\Record
 	{
@@ -80,6 +81,7 @@ abstract class Ride extends \PHPFUI\ORM\Record
 				'targetPace' => new \PHPFUI\ORM\FieldDefinition('decimal(3,1)', 'float', 4, true, ),
 				'title' => new \PHPFUI\ORM\FieldDefinition('varchar(100)', 'string', 100, true, ),
 				'unaffiliated' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
+				'useStartLocation' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
 			];
 			}
 

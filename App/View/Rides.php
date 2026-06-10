@@ -266,7 +266,16 @@ class Rides
 			$menu->addSubMenu(new \PHPFUI\MenuItem('RWGPS', '#'), $rwgpsMenu);
 			}
 
-		$link = $route->directionsUrl();
+		$link = '';
+
+		if ($ride->useStartLocation && $ride->startLocationId)
+			{
+			$link = $ride->startLocation->directionsUrl();
+			}
+		else
+			{
+			$link = $route->directionsUrl();
+			}
 
 		if ($link)
 			{

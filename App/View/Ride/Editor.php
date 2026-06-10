@@ -787,6 +787,10 @@ class Editor
 		$signupNotifications->setToolTip('You will be sent an email every time a rider changes their ride signup status.');
 		$multiColumn = new \PHPFUI\MultiColumn($signupNotifications);
 
+		$useStartLocationLocation = new \PHPFUI\Input\CheckBoxBoolean('useStartLocation', 'Use Start Location, not RWGPS start', (bool)($ride->useStartLocation ?? 0));
+		$useStartLocationLocation->setToolTip('Use the start location coordinates instead of the RWGPS coordinates. Useful if you are not starting the ride where the RWGPS route starts.');
+		$multiColumn->add($useStartLocationLocation);
+
 		if ($this->page->isAuthorized('Unaffiliated Rides Leader'))
 			{
 			$unaffiliated = new \PHPFUI\Input\CheckBoxBoolean('unaffiliated', 'List as an unaffiliated ride', (bool)($ride->unaffiliated ?? 0));

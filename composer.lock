@@ -3440,16 +3440,16 @@
         },
         {
             "name": "phpfui/constantcontact",
-            "version": "V26.6.0",
+            "version": "V26.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpfui/ConstantContact.git",
-                "reference": "7564a41aec269c57a60079ab34069018305a407c"
+                "reference": "0ed394e5557db961360be5d8d68c3b5d689e5380"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpfui/ConstantContact/zipball/7564a41aec269c57a60079ab34069018305a407c",
-                "reference": "7564a41aec269c57a60079ab34069018305a407c",
+                "url": "https://api.github.com/repos/phpfui/ConstantContact/zipball/0ed394e5557db961360be5d8d68c3b5d689e5380",
+                "reference": "0ed394e5557db961360be5d8d68c3b5d689e5380",
                 "shasum": ""
             },
             "require": {
@@ -3495,9 +3495,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phpfui/ConstantContact/issues",
-                "source": "https://github.com/phpfui/ConstantContact/tree/V26.6.0"
+                "source": "https://github.com/phpfui/ConstantContact/tree/V26.6.1"
             },
-            "time": "2026-06-05T05:11:23+00:00"
+            "time": "2026-06-10T05:11:33+00:00"
         },
         {
             "name": "phpfui/icalendar",
@@ -7870,12 +7870,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "2f3bb19d3f2665d75f6bd3277835897094b86f77"
+                "reference": "21becf5973eb93d86cf68e3e724af0aa412e8129"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/2f3bb19d3f2665d75f6bd3277835897094b86f77",
-                "reference": "2f3bb19d3f2665d75f6bd3277835897094b86f77",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/21becf5973eb93d86cf68e3e724af0aa412e8129",
+                "reference": "21becf5973eb93d86cf68e3e724af0aa412e8129",
                 "shasum": ""
             },
             "conflict": {
@@ -8493,6 +8493,7 @@
                 "personnummer/personnummer": "<3.0.2",
                 "ph7software/ph7builder": "<=17.9.1",
                 "phanan/koel": "<=9.3.4",
+                "pheditor/pheditor": ">=2.0.1,<=2.0.3",
                 "phenx/php-svg-lib": "<0.5.2",
                 "php-censor/php-censor": "<2.0.13|>=2.1,<2.1.5",
                 "php-mod/curl": "<2.3.2",
@@ -8955,7 +8956,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-09T11:06:21+00:00"
+            "time": "2026-06-09T22:34:42+00:00"
         },
         {
             "name": "sebastian/cli-parser",

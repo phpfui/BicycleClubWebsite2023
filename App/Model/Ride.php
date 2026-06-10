@@ -340,17 +340,16 @@ class Ride
 			}
 		$week .= ' at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime);
 
-		$leader = $ride->member;
 		$title = $this->clubAbbrev . ' Reminder: ' . $this->getPace($ride->paceId) . ' ride ' . $week;
 
-		$message = $this->getRideNoticeBody($ride, $leader);
+		$message = $this->getRideNoticeBody($ride);
 
 		$message .= '<p>Reply to this email to ask the leader any specific questions.' .
 			"<br><a href='{$this->homePage}/Membership/myNotifications'>Change your notification settings</a>." .
 			'<br>Enter 0 under Ride Reminder Settings to turn this feature off.</p>';
 		$email = new \App\Tools\EMail();
 		$email->setSubject($title);
-		$email->setFromMember($leader);
+		$email->setFromMember($ride->member);
 		$email->setBody($message);
 		$email->setHtml();
 		$calendar = $this->getCalendarObject($ride);
@@ -501,7 +500,7 @@ class Ride
 		return $icalobj;
 		}
 
-	public function getRideNoticeBody(\App\Record\Ride $ride, \App\Record\Member $leader = new \App\Record\Member()) : string
+	public function getRideNoticeBody(\App\Record\Ride $ride) : string
 		{
 		$signedUpRiders = $this->rideSignupTable->getSignedUpRiders($ride->rideId);
 		$signup = '';
@@ -540,10 +539,7 @@ class Ride
 			}
 		$message .= "<br>{$locationText}";
 
-		if ($leader->empty())
-			{
-			$leader = $ride->member;
-			}
+		$leader = $ride->member;
 
 		if ($leader->empty())
 			{

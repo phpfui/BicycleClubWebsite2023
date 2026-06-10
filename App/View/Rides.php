@@ -674,16 +674,16 @@ class Rides
 					$bg->addButton($button);
 					}
 
+				if ($this->canEdit($ride))
+					{
+					$edit = 'Edit';
+					}
+
 				$canAddRide = \App\Model\Ride::canAddRide($this->page->getPermissions());
 
 				if (! $ride->memberId && $canAddRide && $ride->rideDate >= $today)
 					{
 					$edit = 'Lead It!';
-					}
-
-				if ($this->canEdit($ride))
-					{
-					$edit = 'Edit';
 					}
 
 				if ($edit)

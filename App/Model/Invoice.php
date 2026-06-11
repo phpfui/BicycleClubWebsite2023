@@ -183,7 +183,7 @@ class Invoice
 			// copy the affected chairs
 
 			$address = \array_key_first($emails);
-			$name = $emails[$address];
+			$name = \array_first($emails);
 			$email->setFrom($address, $name);
 			$email->setReplyTo($address, $name);
 

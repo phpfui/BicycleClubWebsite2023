@@ -61,10 +61,6 @@ class Ride
 			\App\Model\Session::setFlash('alert', $errors);
 			}
 
-		if (empty($parameters['memberId']))
-			{
-			$parameters['memberId'] = \App\Model\Session::getSignedInMemberId();
-			}
 		$ride = new \App\Record\Ride();
 		$ride->setFrom($parameters);
 		$ride->dateAdded = \date('Y-m-d H:i:s');
@@ -74,6 +70,11 @@ class Ride
 			{
 			return $errors;
 			}
+		if (! $ride->memberId)
+			{
+			$ride->rideStatus = \App\Enum\Ride\Status::LEADER_OPTED_OUT;
+			}
+
 		$id = $ride->insert();
 
 		$this->updateRide($ride, $parameters);

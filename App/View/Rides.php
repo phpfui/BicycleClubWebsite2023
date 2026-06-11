@@ -1181,7 +1181,11 @@ class Rides
 			$cloning->averagePace = null;
 			$cloning->rideStatus = \App\Enum\Ride\Status::NOT_YET;
 			$cloning->releasePrinted = '';
-			$cloning->memberId = \App\Model\Session::getSignedInMemberId();
+
+			if (! empty($_POST['newLeader']))
+				{
+				$cloning->memberId = \App\Model\Session::getSignedInMemberId();
+				}
 
 			if ($cloning->unaffiliated && ! $this->page->isAuthorized('Unaffiliated Rides Leader'))
 				{
@@ -1236,6 +1240,8 @@ class Rides
 		$div->addAttribute('style', 'display:none;');
 		$form->add($div);
 		$form->add($status);
+		$newLeader = new \PHPFUI\Input\CheckBoxBoolean('newLeader', 'Assign yourself as leader', true)->setToolTip('Uncheck to keep the same leader the ride has currently');
+		$form->add($newLeader);
 		$form->add($modal->getButtonAndCancel($submit));
 		$modal->add($form);
 		}

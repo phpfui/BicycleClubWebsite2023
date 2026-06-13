@@ -1207,7 +1207,6 @@ class Rides
 			for ($i = 0; $i < (int)($_POST['cloneCount']); ++$i)
 				{
 				$cloning->rideDate = $startDate;
-				$cloning->memberId = 0;
 				$id = $rideModel->add(\array_merge($cloning->toArray(), ['RWGPSId' => $RWGPSIds]), true);
 				$date = \App\Tools\Date::formatString('D M j, Y', $startDate);
 				$returnValue .= "<p><a href='/Rides/edit/{$id}' target=_blank>{$date}</a>";

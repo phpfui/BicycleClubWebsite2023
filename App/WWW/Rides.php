@@ -444,7 +444,8 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$buttonGroup = new \PHPFUI\ButtonGroup();
 			$signup = null;
 
-			if ($ride->rideDate >= \App\Tools\Date::todayString() && $this->page->isAuthorized('Ride Sign Up') && \App\Enum\Ride\Status::NOT_YET == $ride->rideStatus)
+			if ($ride->rideDate >= \App\Tools\Date::todayString() && $this->page->isAuthorized('Ride Sign Up') &&
+					(\App\Enum\Ride\Status::NOT_YET == $ride->rideStatus || \App\Enum\Ride\Status::LEADER_OPTED_OUT == $ride->rideStatus))
 				{
 				$signup = new \PHPFUI\Button('Sign Up For This Ride');
 				$signup->addClass('success');

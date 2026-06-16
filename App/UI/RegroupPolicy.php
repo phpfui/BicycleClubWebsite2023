@@ -8,10 +8,10 @@ class RegroupPolicy
 
 	private \App\Model\SettingsSaver $settingsSaver;
 
-	public function __construct(private \PHPFUI\Page $page, private ?string $policy = null)
+	public function __construct(private \PHPFUI\Page $page, private ?string $policy = '')
 		{
 		$this->settingsSaver = new \App\Model\SettingsSaver();
-		$this->policy = \trim($policy);
+		$this->policy = \trim($policy ?? '');
 		}
 
 	public function edit() : \PHPFUI\Form

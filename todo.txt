@@ -1,3 +1,9 @@
+Publicly viewable folders
+
+Remove Add / Update RWGPS
+
+UTF8 Encoding
+
 Default category
 
 New member log out and log in fix

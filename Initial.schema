@@ -30,7 +30,7 @@ CREATE TABLE `additionalEmail` (
   PRIMARY KEY (`additionalEmailId`),
   UNIQUE KEY `email` (`email`),
   KEY `memberNumber` (`memberId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -55,7 +55,7 @@ CREATE TABLE `assistantLeader` (
   `assistantLeaderTypeId` int DEFAULT NULL,
   PRIMARY KEY (`rideId`,`memberId`),
   KEY `memberId` (`memberId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -79,7 +79,7 @@ CREATE TABLE `assistantLeadertype` (
   `name` varchar(100) NOT NULL,
   `volunteerPoints` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`assistantLeaderTypeId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,7 +106,7 @@ CREATE TABLE `auditTrail` (
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `additional` text,
   PRIMARY KEY (`auditTrailId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -137,7 +137,7 @@ CREATE TABLE `banner` (
   `startDate` date DEFAULT NULL,
   `endDate` date DEFAULT NULL,
   PRIMARY KEY (`bannerId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -170,7 +170,7 @@ CREATE TABLE `bikeShop` (
   `state` char(2) COLLATE utf8mb4_general_ci DEFAULT '',
   `zip` varchar(10) COLLATE utf8mb4_general_ci DEFAULT '',
   PRIMARY KEY (`bikeShopId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -194,7 +194,7 @@ CREATE TABLE `bikeShopArea` (
   `area` varchar(255) DEFAULT NULL,
   `state` char(2) DEFAULT NULL,
   PRIMARY KEY (`bikeShopAreaId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -219,7 +219,7 @@ CREATE TABLE `blog` (
   `count` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`blogId`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -247,7 +247,7 @@ CREATE TABLE `blogItem` (
   `onTop` int DEFAULT NULL,
   `showFull` int DEFAULT NULL,
   PRIMARY KEY (`blogId`,`storyId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -274,7 +274,7 @@ CREATE TABLE `boardMember` (
   `extension` char(10) NOT NULL DEFAULT '',
   PRIMARY KEY (`memberId`),
   KEY `memberNumber` (`memberId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -312,7 +312,7 @@ CREATE TABLE `calendar` (
   `eventDate` date NOT NULL,
   `startTime` time DEFAULT NULL,
   PRIMARY KEY (`calendarId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -342,7 +342,7 @@ CREATE TABLE `cartItem` (
   `cartItemId` int NOT NULL AUTO_INCREMENT,
   `optionsSelected` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`cartItemId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -371,7 +371,7 @@ CREATE TABLE `category` (
   `memberDefault` tinyint NOT NULL DEFAULT '0',
   `ordering` int NOT NULL DEFAULT '999999',
   PRIMARY KEY (`categoryId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -406,7 +406,7 @@ CREATE TABLE `cueSheet` (
   `dateAdded` date NOT NULL,
   `revisionDate` date DEFAULT NULL,
   PRIMARY KEY (`cueSheetId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -433,7 +433,7 @@ CREATE TABLE `cueSheetversion` (
   `link` varchar(200) DEFAULT NULL,
   `dateAdded` date NOT NULL,
   PRIMARY KEY (`cueSheetVersionId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -464,7 +464,7 @@ CREATE TABLE `customer` (
   `zip` varchar(10) DEFAULT NULL,
   `cellPhone` varchar(20) DEFAULT '',
   PRIMARY KEY (`customerId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -496,7 +496,7 @@ CREATE TABLE `discountCode` (
   `type` int NOT NULL DEFAULT '0',
   `cashOnly` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`discountCodeId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -544,7 +544,7 @@ CREATE TABLE `event` (
   `showComments` tinyint NOT NULL DEFAULT '0',
   `requireComment` int DEFAULT '0',
   PRIMARY KEY (`eventId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -575,7 +575,7 @@ CREATE TABLE `file` (
   PRIMARY KEY (`fileId`),
   KEY `memberId` (`memberId`),
   KEY `fileFolderId` (`folderId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -603,7 +603,7 @@ CREATE TABLE `folder` (
   PRIMARY KEY (`folderId`),
   KEY `parentId` (`parentFolderId`),
   KEY `parentFolderId` (`parentFolderId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -632,7 +632,7 @@ CREATE TABLE `forum` (
   `whiteList` text,
   `formerMembers` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`forumId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -660,7 +660,7 @@ CREATE TABLE `forumAttachment` (
   KEY `forumMessage` (`forumId`,`forumMessageId`),
   KEY `forumIdforumAttachmentIndex` (`forumId`),
   KEY `forumMessageIdforumAttachmentIndex` (`forumMessageId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -684,7 +684,7 @@ CREATE TABLE `forumMember` (
   `memberId` int NOT NULL,
   `emailType` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`forumId`,`memberId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -716,7 +716,7 @@ CREATE TABLE `forumMessage` (
   PRIMARY KEY (`forumMessageId`),
   KEY `forumId` (`forumId`,`posted`),
   KEY `forumIdforumMessageIndex` (`forumId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -761,7 +761,7 @@ CREATE TABLE `gaEvent` (
   `registrationOpens` date NOT NULL,
   `memberDiscount` decimal(7,2) DEFAULT '0.00',
   PRIMARY KEY (`gaEventId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -791,7 +791,7 @@ CREATE TABLE `gaOption` (
   `csvField` varchar(20) DEFAULT NULL,
   `active` int DEFAULT '1',
   PRIMARY KEY (`gaOptionId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -817,7 +817,7 @@ CREATE TABLE `gaPriceDate` (
   `date` date NOT NULL,
   PRIMARY KEY (`gaPriceDateId`),
   KEY `gaEventIdgaPriceDateIndex` (`gaEventId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -860,7 +860,7 @@ CREATE TABLE `gaRider` (
   `agreedToWaiver` tinyint DEFAULT NULL,
   PRIMARY KEY (`gaRiderId`),
   KEY `gaEventIdgaRiderIndex` (`gaEventId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -884,7 +884,7 @@ CREATE TABLE `gaRiderselection` (
   `gaOptionId` int NOT NULL,
   `gaSelectionId` int NOT NULL,
   PRIMARY KEY (`gaRiderId`,`gaOptionId`,`gaSelectionId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -913,7 +913,7 @@ CREATE TABLE `gaSelection` (
   `csvValue` varchar(20) DEFAULT NULL,
   `selectionActive` int DEFAULT '1',
   PRIMARY KEY (`gaSelectionId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -945,7 +945,7 @@ CREATE TABLE `headerContent` (
   `showDay` int DEFAULT NULL,
   `name` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`headerContentId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -982,7 +982,7 @@ CREATE TABLE `invoice` (
   `orderDate` date NOT NULL,
   `paymentDate` date DEFAULT NULL,
   PRIMARY KEY (`invoiceId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1015,7 +1015,7 @@ CREATE TABLE `invoiceItem` (
   `tax` decimal(7,2) DEFAULT NULL,
   PRIMARY KEY (`invoiceId`,`storeItemId`,`storeItemDetailId`),
   KEY `invoiceId` (`invoiceId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1043,7 +1043,7 @@ CREATE TABLE `job` (
   `jobEventId` int DEFAULT NULL,
   `date` date NOT NULL,
   PRIMARY KEY (`jobId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1069,7 +1069,7 @@ CREATE TABLE `jobEvent` (
   `cutoffDate` date DEFAULT NULL,
   `date` date NOT NULL,
   PRIMARY KEY (`jobEventId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1095,7 +1095,7 @@ CREATE TABLE `jobShift` (
   `startTime` time NOT NULL,
   `endTime` time NOT NULL,
   PRIMARY KEY (`jobShiftId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1121,7 +1121,7 @@ CREATE TABLE `journalItem` (
   `title` char(100) DEFAULT NULL,
   `timeSent` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`journalItemId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1146,7 +1146,7 @@ CREATE TABLE `mailAttachment` (
   `prettyName` varchar(255) DEFAULT '',
   `fileName` mediumblob,
   PRIMARY KEY (`mailAttachmentId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1178,7 +1178,7 @@ CREATE TABLE `mailItem` (
   `fromName` varchar(255) DEFAULT '',
   `fromEmail` varchar(255) DEFAULT '',
   PRIMARY KEY (`mailItemId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1205,7 +1205,7 @@ CREATE TABLE `mailPiece` (
   `memberId` int DEFAULT NULL,
   PRIMARY KEY (`mailPieceId`),
   KEY `mailId` (`mailItemId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1271,7 +1271,7 @@ CREATE TABLE `member` (
   KEY `lastName` (`lastName`),
   KEY `email` (`email`),
   KEY `membershipIdmemberIndex` (`membershipId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1294,7 +1294,7 @@ CREATE TABLE `memberCategory` (
   `memberId` int NOT NULL,
   `categoryId` int NOT NULL,
   PRIMARY KEY (`memberId`,`categoryId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1323,7 +1323,7 @@ CREATE TABLE `memberNotice` (
   `dayOffsets` varchar(255) NOT NULL,
   `summary` int NOT NULL DEFAULT '1',
   PRIMARY KEY (`memberNoticeId`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1350,7 +1350,7 @@ CREATE TABLE `memberOfMonth` (
   `fileNameExt` varchar(10) DEFAULT NULL,
   `month` date NOT NULL,
   PRIMARY KEY (`memberOfMonthId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1385,7 +1385,7 @@ CREATE TABLE `membership` (
   `renews` date DEFAULT NULL,
   PRIMARY KEY (`membershipId`),
   KEY `town` (`town`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1408,7 +1408,7 @@ CREATE TABLE `migration` (
   `migrationId` int NOT NULL,
   `ran` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`migrationId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1435,7 +1435,7 @@ CREATE TABLE `newsletter` (
   `dateAdded` date NOT NULL,
   `date` date NOT NULL,
   PRIMARY KEY (`newsletterId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1462,7 +1462,7 @@ CREATE TABLE `oauthToken` (
   `token` varchar(255) DEFAULT NULL,
   `expires` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`oauthTokenId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+) ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1489,7 +1489,7 @@ CREATE TABLE `oauthUser` (
   `lastLogin` datetime DEFAULT NULL,
   `permissions` text,
   PRIMARY KEY (`oauthUserId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+) ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1517,7 +1517,7 @@ CREATE TABLE `pace` (
   `maxRiders` int NOT NULL DEFAULT '0',
   `ordering` int NOT NULL DEFAULT '999999',
   PRIMARY KEY (`paceId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1547,7 +1547,7 @@ CREATE TABLE `payment` (
   `dateReceived` date NOT NULL,
   `paymentDated` date DEFAULT NULL,
   PRIMARY KEY (`paymentId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1577,7 +1577,7 @@ CREATE TABLE `paypalRefund` (
   `refundOnDate` date DEFAULT NULL,
   `refundedDate` date DEFAULT NULL,
   PRIMARY KEY (`paypalRefundId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1603,7 +1603,7 @@ CREATE TABLE `permission` (
   `system` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`permissionId`),
   KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1628,7 +1628,7 @@ CREATE TABLE `permissionGroup` (
   `permissionId` int NOT NULL,
   `revoked` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`groupId`,`permissionId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1661,7 +1661,7 @@ CREATE TABLE `photo` (
   PRIMARY KEY (`photoId`),
   KEY `memberId` (`memberId`),
   KEY `photoFolderId` (`folderId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1688,7 +1688,7 @@ CREATE TABLE `photoComment` (
   `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`photoCommentId`),
   KEY `photoId` (`photoId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1718,7 +1718,7 @@ CREATE TABLE `photoTag` (
   PRIMARY KEY (`photoTagId`),
   KEY `memberId` (`memberId`),
   KEY `photoId` (`photoId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1743,7 +1743,7 @@ CREATE TABLE `pointHistory` (
   `editorId` int DEFAULT NULL,
   `oldLeaderPoints` int DEFAULT '0',
   `volunteerPoints` int NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1773,7 +1773,7 @@ CREATE TABLE `poll` (
   `startDate` date NOT NULL,
   `storyId` int DEFAULT NULL,
   PRIMARY KEY (`pollId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1797,7 +1797,7 @@ CREATE TABLE `pollAnswer` (
   `pollId` int NOT NULL,
   `answer` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`pollId`,`pollAnswerId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1822,7 +1822,7 @@ CREATE TABLE `pollResponse` (
   `membershipId` int NOT NULL,
   `answer` int DEFAULT NULL,
   PRIMARY KEY (`pollId`,`membershipId`,`memberId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1858,7 +1858,7 @@ CREATE TABLE `publicPage` (
   `startDate` date DEFAULT NULL,
   `endDate` date DEFAULT NULL,
   PRIMARY KEY (`publicPageId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1882,7 +1882,7 @@ CREATE TABLE `redirect` (
   `originalUrl` varchar(255) NOT NULL,
   `redirectUrl` varchar(255) NOT NULL,
   PRIMARY KEY (`redirectId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1919,7 +1919,7 @@ CREATE TABLE `reservation` (
   `signedUpAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`reservationId`),
   KEY `eventIdreservationIndex` (`eventId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1948,7 +1948,7 @@ CREATE TABLE `reservationPerson` (
   `comments` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`reservationPersonId`),
   KEY `reservationIdreservationPersonIndex` (`reservationId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1997,7 +1997,7 @@ CREATE TABLE `ride` (
   PRIMARY KEY (`rideId`),
   KEY `memberNumber` (`memberId`),
   KEY `cueSheetNumber` (`cueSheetId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2026,7 +2026,7 @@ CREATE TABLE `rideComment` (
   `longitude` decimal(18,15) DEFAULT NULL,
   PRIMARY KEY (`rideCommentId`),
   KEY `rideTime` (`rideId`,`time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2050,7 +2050,7 @@ CREATE TABLE `rideRWGPS` (
   `RWGPSId` int NOT NULL,
   PRIMARY KEY (`rideId`,`RWGPSId`),
   KEY `RWGPSId` (`RWGPSId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2079,7 +2079,7 @@ CREATE TABLE `rideSignup` (
   `signedUpTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`rideId`,`memberId`),
   KEY `memberId` (`memberId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2122,7 +2122,7 @@ CREATE TABLE `RWGPS` (
   `elevationMeters` decimal(8,0) DEFAULT NULL,
   `lastSynced` datetime DEFAULT NULL,
   PRIMARY KEY (`RWGPSId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2147,7 +2147,7 @@ CREATE TABLE `RWGPSalternate` (
   `memberId` int NOT NULL,
   PRIMARY KEY (`RWGPSId`,`RWGPSAlternateId`),
   KEY `RWGPSAlternateId` (`RWGPSAlternateId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2173,7 +2173,7 @@ CREATE TABLE `RWGPScomment` (
   `lastEdited` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `comment` text,
   PRIMARY KEY (`RWGPSId`,`memberId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2197,7 +2197,7 @@ CREATE TABLE `RWGPSrating` (
   `memberId` int NOT NULL,
   `rating` int NOT NULL,
   PRIMARY KEY (`RWGPSId`,`memberId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2220,7 +2220,7 @@ CREATE TABLE `setting` (
   `name` varchar(30) NOT NULL DEFAULT '',
   `value` text,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2248,7 +2248,7 @@ CREATE TABLE `signinSheet` (
   `pointsAwarded` int NOT NULL DEFAULT '0',
   `dateAdded` date NOT NULL,
   PRIMARY KEY (`signinSheetId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2272,7 +2272,7 @@ CREATE TABLE `signinSheetride` (
   `rideId` int NOT NULL,
   PRIMARY KEY (`signinSheetId`,`rideId`),
   KEY `signinSheetId` (`signinSheetId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2305,7 +2305,7 @@ CREATE TABLE `slide` (
   `url` varchar(255) DEFAULT '',
   PRIMARY KEY (`slideId`),
   KEY `slideShowId` (`slideShowId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2337,7 +2337,7 @@ CREATE TABLE `slideShow` (
   `settings` text,
   `alignment` varchar(20) NOT NULL DEFAULT '',
   PRIMARY KEY (`slideShowId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2370,7 +2370,7 @@ CREATE TABLE `startLocation` (
   `nearestExit` varchar(255) DEFAULT NULL,
   `zip` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`startLocationId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2404,7 +2404,7 @@ CREATE TABLE `storeItem` (
   `pointsOnly` int NOT NULL DEFAULT '0',
   `active` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`storeItemId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2429,7 +2429,7 @@ CREATE TABLE `storeItemdetail` (
   `detailLine` char(100) DEFAULT NULL,
   `quantity` int DEFAULT NULL,
   PRIMARY KEY (`storeItemId`,`storeItemDetailId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2453,7 +2453,7 @@ CREATE TABLE `storeItemoption` (
   `storeOptionId` int NOT NULL,
   `sequence` int NOT NULL,
   PRIMARY KEY (`storeItemId`,`storeOptionId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2477,7 +2477,7 @@ CREATE TABLE `storeOption` (
   `optionName` char(100) NOT NULL DEFAULT '',
   `optionValues` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`storeOptionId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2506,7 +2506,7 @@ CREATE TABLE `storeOrder` (
   `updated` datetime DEFAULT NULL,
   `added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`storeOrderId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2533,7 +2533,7 @@ CREATE TABLE `storePhoto` (
   `extension` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`storePhotoId`),
   KEY `storeItemId` (`storeItemId`)
-) ENGINE=InnoDB AUTO_INCREMENT=221 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2569,7 +2569,7 @@ CREATE TABLE `story` (
   `lastEdited` date DEFAULT NULL,
   `startDate` date DEFAULT NULL,
   PRIMARY KEY (`storyId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2594,7 +2594,7 @@ CREATE TABLE `systemEmail` (
   `email` varchar(100) DEFAULT NULL,
   `name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`systemEmailId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2617,7 +2617,7 @@ CREATE TABLE `terrain` (
   `terrainId` int NOT NULL AUTO_INCREMENT,
   `name` varchar(70) DEFAULT '',
   PRIMARY KEY (`terrainId`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2642,7 +2642,7 @@ CREATE TABLE `userPermission` (
   `permissionGroup` int NOT NULL,
   `revoked` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`memberId`,`permissionGroup`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2673,7 +2673,7 @@ CREATE TABLE `video` (
   `videoDate` date NOT NULL,
   `lastEdited` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`videoId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2703,7 +2703,7 @@ CREATE TABLE `volunteerjobShift` (
   `notes` varchar(255) NOT NULL DEFAULT '',
   `signedUpDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`volunteerJobShiftId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2728,7 +2728,7 @@ CREATE TABLE `volunteerPoint` (
   `pointsAwarded` int NOT NULL DEFAULT '0',
   `date` date NOT NULL,
   PRIMARY KEY (`jobEventId`,`date`,`memberId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2754,7 +2754,7 @@ CREATE TABLE `volunteerPoll` (
   `ordering` int NOT NULL DEFAULT '0',
   `required` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`volunteerPollId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2779,7 +2779,7 @@ CREATE TABLE `volunteerPollAnswer` (
   `answer` varchar(100) DEFAULT '',
   `ordering` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`volunteerPollAnswerId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2803,7 +2803,7 @@ CREATE TABLE `volunteerPollResponse` (
   `memberId` int NOT NULL,
   `answer` int DEFAULT NULL,
   PRIMARY KEY (`volunteerPollId`,`memberId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2829,7 +2829,7 @@ CREATE TABLE `ziptax` (
   `zipcounty` varchar(32) DEFAULT NULL,
   `zipstate` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`zip_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

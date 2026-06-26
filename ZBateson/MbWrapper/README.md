@@ -2,9 +2,7 @@
 
 Charset conversion and string manipulation wrapper with a large defined set of aliases.
 
-[![Tests](https://github.com/zbateson/mb-wrapper.svg/actions/workflows/tests.yml/badge.svg)](https://github.com/zbateson/mb-wrapper.svg/actions/workflows/tests.yml)
-[![Code Coverage](https://scrutinizer-ci.com/g/zbateson/mb-wrapper/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/zbateson/mb-wrapper/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/zbateson/mb-wrapper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/zbateson/mb-wrapper/?branch=master)
+[![Build Status](https://github.com/zbateson/mb-wrapper/actions/workflows/tests.yml/badge.svg)](https://github.com/zbateson/mb-wrapper/actions/workflows/tests.yml)
 [![Total Downloads](https://poser.pugx.org/zbateson/mb-wrapper/downloads)](https://packagist.org/packages/zbateson/mb-wrapper)
 [![Latest Stable Version](https://poser.pugx.org/zbateson/mb-wrapper/version)](https://packagist.org/packages/zbateson/mb-wrapper)
 
@@ -22,7 +20,7 @@ If this project's helped you, please consider [sponsoring me](https://github.com
 
 ## Requirements
 
-PHP 8.1 or newer. Tested on PHP 8.1, 8.2, 8.3, and 8.4.
+PHP 8.1 or newer. Tested on PHP 8.1, 8.2, 8.3, 8.4, and 8.5.
 
 ## Description
 

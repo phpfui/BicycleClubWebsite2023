@@ -70,6 +70,7 @@ class Ride
 			{
 			return $errors;
 			}
+
 		if (! $ride->memberId)
 			{
 			$ride->rideStatus = \App\Enum\Ride\Status::LEADER_OPTED_OUT;

@@ -18,7 +18,7 @@ class Migration_37 extends \PHPFUI\ORM\Migration
 		{
 		$rideTable = new \App\Table\Ride();
 		$rideTable->setDistinct();
-		$rideTable->setSelectFields('startTime');
+		$rideTable->setSelect('startTime');
 
 		foreach ($rideTable->getDataObjectCursor() as $ride)
 			{

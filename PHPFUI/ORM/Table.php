@@ -8,6 +8,8 @@ abstract class Table implements \Countable
 
 	protected string $distinct = '';
 
+	protected bool $extendedFields;
+
 	/** @var array<string,bool> */
 	protected array $groupBys = [];
 
@@ -48,6 +50,7 @@ abstract class Table implements \Countable
 	public function __construct()
 		{
 		$this->instance = new static::$className();
+		$this->extendedFields = \PHPFUI\ORM::$extendedFields;
 		}
 
 	/**
@@ -457,6 +460,14 @@ abstract class Table implements \Countable
 		}
 
 	/**
+	 * @param array<mixed> &$input
+	 */
+	public function getCountSQL(array &$input, string $alias = 'countAlias') : string
+		{
+		return 'SELECT COUNT(*) from (' . $this->getSelectSQL($input) . ') ' . $alias;
+		}
+
+	/**
 	 * Return a object collection matching the requested parameters
 	 */
 	public function getDataObjectCursor() : \PHPFUI\ORM\DataObjectCursor
@@ -717,7 +728,10 @@ abstract class Table implements \Countable
 					{
 					if (isset($columns[$field]))
 						{
-						$sql .= ",\n`{$tableName}`.`{$field}` as `{$tableName}_{$field}`";
+						if ($this->extendedFields)
+							{
+							$sql .= ",\n`{$tableName}`.`{$field}` as `{$tableName}_{$field}`";
+							}
 						}
 					else
 						{
@@ -907,6 +921,16 @@ abstract class Table implements \Countable
 		$this->distinct = $distinct;
 
 		return $this;
+		}
+
+	/**
+	 * Duplicated fields from joins are represented with the table name and underscore prepended to the duplicated field name by default.
+	 *
+	 * You can turn on or off this behavior with setExtendedFields(false) on a specific Table object, or globally with \PHPFUI\ORM::$extendedFields
+	 */
+	public function setExtendedFields(bool $extended = true) : static
+		{
+		$this->extendedFields = $extended;
 		}
 
 	public function setFullJoinSelects(bool $fullSelects = true) : static
@@ -1187,14 +1211,6 @@ abstract class Table implements \Countable
 			}
 
 		return self::capitalSplit(\implode('', $parts));
-		}
-
-	/**
-	 * @param array<mixed> &$input
-	 */
-	private function getCountSQL(array &$input) : string
-		{
-		return 'SELECT COUNT(*) from (' . $this->getSelectSQL($input) . ') countAlias';
 		}
 
 	/**

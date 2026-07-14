@@ -378,7 +378,7 @@ class Leader
 						$userPermission->insertOrIgnore();
 
 						$member = new \App\Record\Member((int)$_POST['memberId']);
-						$member->pendingLeader = 0;
+						$member->pendingLeader = '';
 						$member->update();
 						$settingModel = new \App\Model\Settings();
 						$settingModel->sendSettingEmail('newLeader', $member->toArray(), 'You are now a ~clubName~ Ride Leader');
@@ -391,7 +391,7 @@ class Leader
 				case 'deleteLeader':
 
 					$member = new \App\Record\Member((int)$_POST['memberId']);
-					$member->pendingLeader = 0;
+					$member->pendingLeader = '';
 					$member->update();
 					$this->page->setResponse($_POST['memberId']);
 
@@ -401,7 +401,7 @@ class Leader
 			}
 		else
 			{
-			$this->memberTable->setWhere(new \PHPFUI\ORM\Condition('pendingLeader', 1));
+			$this->memberTable->setWhere(new \PHPFUI\ORM\Condition('pendingLeader', '', new \PHPFUI\ORM\Operator\GreaterThan()));
 
 			$table = new \App\UI\ContinuousScrollTable($this->page, $this->memberTable);
 			$table->setRecordId('memberId');

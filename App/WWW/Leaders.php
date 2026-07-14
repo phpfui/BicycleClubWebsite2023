@@ -62,7 +62,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			if (isset($_POST['submit']) && \App\Model\Session::checkCSRF())
 				{
-				$member->pendingLeader = 1;
+				$member->pendingLeader = \App\Tools\Date::todayString();
 				$member->update();
 				$email = new \App\Tools\EMail();
 				$email->setFromMember($member);

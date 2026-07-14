@@ -33,7 +33,6 @@ class Member extends \PHPFUI\ORM\Validator
 		'password' => ['maxlength'],
 		'passwordReset' => ['maxlength'],
 		'passwordResetExpires' => ['maxlength', 'datetime'],
-		'pendingLeader' => ['required', 'integer'],
 		'phone' => ['maxlength'],
 		'profileHeight' => ['required', 'integer'],
 		'profileWidth' => ['required', 'integer'],

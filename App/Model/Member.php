@@ -67,7 +67,7 @@ class Member
 	 */
 	public function add(array $member) : int
 		{
-		$member['pendingLeader'] = '';
+		$member['pendingLeader'] = null;
 		$member['pending'] = 1;
 		unset($member['memberId'], $member['membershipId']);
 
@@ -127,7 +127,7 @@ class Member
 			$member['verifiedEmail'] = 9;
 			unset($member['volunteerPoints'], $member['acceptedWaiver']);
 
-			$member['pendingLeader'] = '';
+			$member['pendingLeader'] = null;
 			$member['deceased'] = 0;
 
 			$memberRecord = new \App\Record\Member();

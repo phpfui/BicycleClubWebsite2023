@@ -31,7 +31,7 @@ namespace App\Record\Definition;
  * @property ?string $password MySQL type varchar(255)
  * @property ?string $passwordReset MySQL type varchar(20)
  * @property ?string $passwordResetExpires MySQL type datetime
- * @property int $pendingLeader MySQL type int
+ * @property ?string $pendingLeader MySQL type date
  * @property ?string $phone MySQL type varchar(20)
  * @property int $profileHeight MySQL type int
  * @property int $profileWidth MySQL type int
@@ -90,7 +90,7 @@ abstract class Member extends \PHPFUI\ORM\Record
 				'password' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
 				'passwordReset' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, ),
 				'passwordResetExpires' => new \PHPFUI\ORM\FieldDefinition('datetime', 'string', 20, true, ),
-				'pendingLeader' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
+				'pendingLeader' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
 				'phone' => new \PHPFUI\ORM\FieldDefinition('varchar(20)', 'string', 20, true, '', ),
 				'profileHeight' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
 				'profileWidth' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),

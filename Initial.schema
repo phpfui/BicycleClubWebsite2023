@@ -159,16 +159,16 @@ DROP TABLE IF EXISTS `bikeShop`;
 CREATE TABLE `bikeShop` (
   `bikeShopId` int NOT NULL AUTO_INCREMENT,
   `bikeShopAreaId` int DEFAULT '0',
-  `name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '',
-  `contact` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '',
-  `email` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '',
-  `url` varchar(255) COLLATE utf8mb4_general_ci DEFAULT '',
-  `phone` varchar(20) COLLATE utf8mb4_general_ci DEFAULT '',
-  `notes` text COLLATE utf8mb4_general_ci,
-  `address` varchar(100) COLLATE utf8mb4_general_ci DEFAULT '',
-  `town` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '',
-  `state` char(2) COLLATE utf8mb4_general_ci DEFAULT '',
-  `zip` varchar(10) COLLATE utf8mb4_general_ci DEFAULT '',
+  `name` varchar(255) DEFAULT '',
+  `contact` varchar(255) DEFAULT '',
+  `email` varchar(100) DEFAULT '',
+  `url` varchar(255) DEFAULT '',
+  `phone` varchar(20) DEFAULT '',
+  `notes` text,
+  `address` varchar(100) DEFAULT '',
+  `town` varchar(50) DEFAULT '',
+  `state` char(2) DEFAULT '',
+  `zip` varchar(10) DEFAULT '',
   PRIMARY KEY (`bikeShopId`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -745,14 +745,12 @@ CREATE TABLE `gaEvent` (
   `dayOfRegistration` int DEFAULT NULL,
   `maxRegistrants` int DEFAULT NULL,
   `description` text,
-  `includeMembership` int NOT NULL DEFAULT '0',
   `showPreregistration` int DEFAULT NULL,
   `volunteerDiscount` decimal(7,2) DEFAULT '0.00',
   `volunteerEvent` int DEFAULT NULL,
   `signupMessage` mediumtext,
   `eventDate` date NOT NULL,
   `lastRegistrationDate` date NOT NULL,
-  `membershipExpires` date DEFAULT NULL,
   `allowShopping` int DEFAULT NULL,
   `waiver` mediumtext,
   `incompleteMessage` mediumtext,
@@ -760,6 +758,10 @@ CREATE TABLE `gaEvent` (
   `deleteIncomplete` int NOT NULL DEFAULT '0',
   `registrationOpens` date NOT NULL,
   `memberDiscount` decimal(7,2) DEFAULT '0.00',
+  `extendMembershipDate` date DEFAULT NULL,
+  `newMembersOnlyDate` date DEFAULT NULL,
+  `renewMembershipDate` date DEFAULT NULL,
+  `lastRegistrationTime` time DEFAULT NULL,
   PRIMARY KEY (`gaEventId`)
 );
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1242,7 +1244,7 @@ CREATE TABLE `member` (
   `emergencyPhone` varchar(20) DEFAULT '',
   `cellPhone` varchar(20) DEFAULT '',
   `journal` tinyint NOT NULL DEFAULT '0',
-  `pendingLeader` int NOT NULL DEFAULT '0',
+  `pendingLeader` date DEFAULT NULL,
   `verifiedEmail` int NOT NULL DEFAULT '0',
   `deceased` int NOT NULL DEFAULT '0',
   `emailNewsletter` int NOT NULL DEFAULT '1',
@@ -1994,6 +1996,7 @@ CREATE TABLE `ride` (
   `releasePrinted` datetime DEFAULT NULL,
   `pending` int NOT NULL DEFAULT '0',
   `restStop` varchar(70) DEFAULT NULL,
+  `useStartLocation` int DEFAULT '0',
   PRIMARY KEY (`rideId`),
   KEY `memberNumber` (`memberId`),
   KEY `cueSheetNumber` (`cueSheetId`)
@@ -2048,6 +2051,7 @@ DROP TABLE IF EXISTS `rideRWGPS`;
 CREATE TABLE `rideRWGPS` (
   `rideId` int NOT NULL,
   `RWGPSId` int NOT NULL,
+  `memberId` int NOT NULL,
   PRIMARY KEY (`rideId`,`RWGPSId`),
   KEY `RWGPSId` (`RWGPSId`)
 );

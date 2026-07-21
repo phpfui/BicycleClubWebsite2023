@@ -1,0 +1,69 @@
+<?php
+
+namespace Tests\Table;
+
+class Blog extends \PHPFUI\ORM\Table
+	{
+	protected static string $className = '\\' . \App\Record\Blog::class;
+
+	public static function getBlogsByNameForStory(int $storyId) : \PHPFUI\ORM\DataObjectCursor
+		{
+		$sql = 'select b.*,bi.storyId from blog b left outer join blogItem bi on bi.blogId=b.blogId and bi.storyId=? order by name';
+
+		return \PHPFUI\ORM::getDataObjectCursor($sql, [$storyId]);
+		}
+
+	/**
+	 * @return array<string,string>
+	 */
+	public static function getNewestStory(string $blogname) : array
+		{
+		$sql = 'select s.* from story s
+			inner join blog b on b.name=?
+			inner join blogItem bi on b.blogId=bi.blogId
+			where s.storyId=bi.storyId and s.date>0 order by s.date desc limit 1';
+
+		return \PHPFUI\ORM::getRow($sql, [$blogname]);
+		}
+
+	public static function getOldest(string $blogname) : string
+		{
+		$sql = 'select s.date from story s
+			inner join blog b on b.name=?
+			inner join blogItem bi on b.blogId=bi.blogId
+			where s.storyId=bi.storyId and s.date>0 order by s.date limit 1';
+
+		return \PHPFUI\ORM::getValue($sql, [$blogname]);
+		}
+
+	public static function getStoriesForBlog(\App\Record\Blog $blog, bool $signedIn = false, int $year = 0) : \PHPFUI\ORM\DataObjectCursor
+		{
+		$today = \App\Tools\Date::todayString();
+		$sql = 'select s.*,b.blogId,bi.*
+			from story s
+			inner join blogItem bi on s.storyId=bi.storyId
+			inner join blog b on b.blogId=bi.blogId
+			where b.blogId=? and (s.startDate<=? or s.startDate is null) and (s.endDate>=? or s.endDate is null)';
+
+		if (! $signedIn)
+			{
+			$sql .= ' and (bi.membersOnly=0)';
+			}
+		$input = [$blog->blogId, $today, $today, ];
+
+		if ($year)
+			{
+			$sql .= ' and s.date>=? and s.date<=?';
+			$input[] = "{$year}-01-01";
+			$input[] = "{$year}-12-31";
+			}
+		$sql .= ' order by bi.onTop desc, bi.ranking';
+
+		if ($year)
+			{
+			$sql .= ',s.date desc';
+			}
+
+		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
+		}
+	}

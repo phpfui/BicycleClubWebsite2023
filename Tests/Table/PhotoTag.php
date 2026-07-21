@@ -1,0 +1,45 @@
+<?php
+
+namespace Tests\Table;
+
+class PhotoTag extends \PHPFUI\ORM\Table
+	{
+	protected static string $className = '\\' . \App\Record\PhotoTag::class;
+
+	public function getHighestRight(int $photoId, int $row) : int
+		{
+		$sql = 'select leftToRight from photoTag where photoId=? and frontToBack=? order by leftToRight desc limit 1';
+		$input = [$photoId, $row];
+
+		$value = (int)\PHPFUI\ORM::getValue($sql, $input);
+
+		return $value + 1;
+		}
+
+	public function getTagsForPhoto(int $photoId) : \PHPFUI\ORM\ArrayCursor
+		{
+		$sql = 'select * from photoTag where photoId=? order by frontToBack, leftToRight';
+		$input = [$photoId];
+
+		return \PHPFUI\ORM::getArrayCursor($sql, $input);
+		}
+
+	public function mostTagged() : \PHPFUI\ORM\ArrayCursor
+		{
+		$sql = 'select pt.memberId,count(pt.memberId) count,m.* from photoTag pt left join member m on m.memberId=pt.memberId group by pt.memberId order by count desc,m.lastName,m.firstName limit 50';
+
+		return \PHPFUI\ORM::getArrayCursor($sql);
+		}
+
+	public function topTaggers() : \PHPFUI\ORM\ArrayCursor
+		{
+		$sql = 'select taggerId,count(taggerId) count,m.*
+			from photoTag pt
+			left join member m on m.memberId=pt.taggerId
+			group by pt.taggerId
+			order by count desc,m.memberId
+			limit 50';
+
+		return \PHPFUI\ORM::getArrayCursor($sql);
+		}
+	}

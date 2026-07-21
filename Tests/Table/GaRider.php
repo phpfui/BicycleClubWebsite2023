@@ -1,0 +1,132 @@
+<?php
+
+namespace Tests\Table;
+
+class GaRider extends \PHPFUI\ORM\Table
+	{
+	protected static string $className = '\\' . \App\Record\GaRider::class;
+
+	/**
+	 * @param array<int> $events
+	 *
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\GaRider>
+	 */
+	public function getEmailsForEvents(array $events, int $pending = 0) : \PHPFUI\ORM\RecordCursor
+		{
+		$ids = [];
+
+		foreach ($events as $gaEventId => $value)
+			{
+			if ($value)
+				{
+				$ids[] = (int)$gaEventId;
+				}
+			}
+
+		if (! $ids)
+			{
+			$ids[] = 0;
+			}
+		$condition = new \PHPFUI\ORM\Condition('gaEventId', $ids, new \PHPFUI\ORM\Operator\In());
+
+		if ($pending)
+			{
+			$condition->and('pending', $pending);
+			}
+		$this->setWhere($condition);
+		$this->setGroupBy('email');
+		$this->addOrderBy('email');
+		$this->addOrderBy('pending', 'desc');
+		$this->addOrderBy('gaEventId');
+
+		return $this->getRecordCursor();
+		}
+
+	/**
+	 * @param array<int> $events
+	 *
+	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\GaRider>
+	 */
+	public function getForEvents(array $events) : \PHPFUI\ORM\RecordCursor
+		{
+		$this->setOrderBy('lastName')->addOrderBy('firstName');
+
+		if (empty($events))
+			{
+			$events = [0];
+			}
+		$this->setWhere(new \PHPFUI\ORM\Condition('gaEventId', $events, new \PHPFUI\ORM\Operator\In()));
+
+		return $this->getRecordCursor();
+		}
+
+	public function getRiderCursor(\App\Record\GaEvent $event, int $paid = 1) : \PHPFUI\ORM\DataObjectCursor
+		{
+		$gaOptionTable = new \App\Table\GaOption();
+		$whereCondition = new \PHPFUI\ORM\Condition('gaEventId', $event->gaEventId);
+		$whereCondition->and(new \PHPFUI\ORM\Condition('csvField', '', new \PHPFUI\ORM\Operator\GreaterThan()));
+		$gaOptionTable->setWhere($whereCondition);
+		$gaOptionTable->addOrderBy('ordering');
+		$options = $gaOptionTable->getRecordCursor();
+
+		$this->setSelect('gaRider.*');
+		$joinNumber = 1;
+
+		foreach ($options as $option)
+			{
+			$this->addSelect(new \PHPFUI\ORM\Literal("COALESCE(s{$joinNumber}.csvValue,s{$joinNumber}.selectionName)"), $option->csvField);
+
+			$riderSelectionJoinAlias = 'rs' . $joinNumber;
+			$onCondition = new \PHPFUI\ORM\Condition('gaRider.gaRiderId', new \PHPFUI\ORM\Literal("{$riderSelectionJoinAlias}.gaRiderId"));
+			$onCondition->and("{$riderSelectionJoinAlias}.gaOptionId", $option->gaOptionId);
+			$this->addJoin('gaRiderSelection', $onCondition, 'left', $riderSelectionJoinAlias);
+
+			$selectionJoinAlias = 's' . $joinNumber;
+			$selectionOnCondition = new \PHPFUI\ORM\Condition("{$selectionJoinAlias}.gaSelectionId", new \PHPFUI\ORM\Literal("{$riderSelectionJoinAlias}.gaSelectionId"));
+			$this->addJoin('gaSelection', $selectionOnCondition, 'left', $selectionJoinAlias);
+			++$joinNumber;
+			}
+
+		$this->addSelect('invoice.discount');
+		$this->addSelect('invoice.discountCodeId');
+		$this->addSelect('invoice.errors');
+		$this->addSelect('invoice.fullfillmentDate');
+		$this->addSelect('invoice.instructions');
+		$this->addSelect('invoice.invoiceId');
+		$this->addSelect('invoice.orderDate');
+		$this->addSelect('invoice.paidByCheck');
+		$this->addSelect('invoice.paymentDate');
+		$this->addSelect('invoice.paypalPaid');
+		$this->addSelect('invoice.paypaltx');
+		$this->addSelect('invoice.pointsUsed');
+		$this->addSelect('invoice.totalPrice');
+		$this->addSelect('invoice.totalShipping');
+		$this->addSelect('invoice.totalTax');
+		$this->addSelect('discountCode.discountCode');
+		$invoiceItemJoinCondition = new \PHPFUI\ORM\Condition('invoiceItem.storeItemId', new \PHPFUI\ORM\Literal('gaRider.gaEventId'));
+		$invoiceItemJoinCondition->and('invoiceItem.storeItemDetailId', new \PHPFUI\ORM\Literal('gaRider.gaRiderId'));
+		$this->addJoin('invoiceItem', $invoiceItemJoinCondition);
+		$this->addJoin('invoice', new \PHPFUI\ORM\Condition('invoiceItem.invoiceId', new \PHPFUI\ORM\Literal('invoice.invoiceId')));
+		$this->addJoin('discountCode', new \PHPFUI\ORM\Condition('discountCode.discountCodeId', new \PHPFUI\ORM\Literal('invoice.discountCodeId')));
+
+		$condition = new \PHPFUI\ORM\Condition('gaRider.gaEventId', $event->gaEventId);
+
+		if (0 === $paid)
+			{
+			$condition->and(new \PHPFUI\ORM\Condition('pending', 1));
+			}
+		elseif (1 === $paid)
+			{
+			$condition->and(new \PHPFUI\ORM\Condition('pending', 0));
+			}
+		$this->setWhere($condition);
+		$this->addOrderBy('lastName')->addOrderBy('firstName');
+
+		return $this->getDataObjectCursor();
+		}
+
+	public function totalRegistrants(\App\Record\GaEvent $event) : int
+		{
+		return (int)\PHPFUI\ORM::getValue('select count(*) from gaRider where gaEventId=? and pending=0', [$event->gaEventId]);
+		}
+	}

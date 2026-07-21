@@ -10,6 +10,7 @@ class SyntaxTest extends \PHPFUI\PHPUnitSyntaxCoverage\Extensions
 		$this->assertValidPHPDirectory(__DIR__ . '/../App', 'App directory has an error');
 		$this->assertValidPHPDirectory(__DIR__ . '/../PHPFUI', 'PHPFUI directory has an error');
 		$this->assertValidPHPDirectory(__DIR__ . '/../NoNameSpace', 'NoNameSpace directory has an error');
+		$this->assertValidPHPDirectory(__DIR__ . '/../Tests', 'Tests directory has an error');
 		}
 
 	/** @group SyntaxTest */

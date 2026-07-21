@@ -1,0 +1,101 @@
+<?php
+
+namespace Tests\Table;
+
+class JobEvent extends \PHPFUI\ORM\Table
+	{
+	protected static string $className = '\\' . \App\Record\JobEvent::class;
+
+	public function copy(\App\Record\JobEvent $fromJobEvent, string $title, string $toDate) : void
+		{
+		$dateDiff = \App\Tools\Date::diff($fromJobEvent->date, $toDate);
+
+		$newJobEvent = clone $fromJobEvent;
+		$newJobEvent->cutoffDate = \App\Tools\Date::increment($fromJobEvent->cutoffDate, $dateDiff);
+		$newJobEvent->name = $title;
+		$newJobEvent->date = $toDate;
+		$newJobEvent->organizer = \App\Model\Session::getSignedInMemberId();
+		$newJobEvent->jobEventId = 0;
+		$newJobEvent->insert();
+
+		$jobShiftTable = new \App\Table\JobShift();
+		$jobTable = new \App\Table\Job();
+		$jobs = $jobTable->getJobs($fromJobEvent);
+
+		foreach ($jobs as $jobObject)
+			{
+			$newJob = new \App\Record\Job($jobObject->toArray());
+			$newJob->jobEvent = $newJobEvent;
+			$newJob->date = \App\Tools\Date::increment($jobObject->date, $dateDiff);
+			$newJob->jobId = 0;
+			$jobShifts = $jobShiftTable->getJobShifts($jobObject->jobId);
+
+			foreach ($jobShifts as $jobShiftObject)
+				{
+				$newJobShift = new \App\Record\JobShift();
+				$newJobShift->setFrom($jobShiftObject->toArray());
+				$newJobShift->job = $newJob;
+				$newJobShift->jobShiftId = 0;
+				$newJobShift->insert();
+				}
+			}
+		$volunteerPollTable = new \App\Table\VolunteerPoll();
+		$volunteerPollAnswerTable = new \App\Table\VolunteerPollAnswer();
+		$polls = $volunteerPollTable->getPolls($fromJobEvent);
+
+		foreach ($polls as $pollObject)
+			{
+			$newVolunteerPoll = new \App\Record\VolunteerPoll($pollObject->toArray());
+			$newVolunteerPoll->jobEventId = $newJobEvent->jobEventId;
+			$newVolunteerPoll->volunteerPollId = 0;
+			$volunteerPoll = new \App\Record\VolunteerPoll($pollObject);
+
+			foreach ($volunteerPoll->VolunteerPollAnswerChildren as $answerObject)
+				{
+				$newVolunteerPollAnswer = new \App\Record\VolunteerPollAnswer();
+				$newVolunteerPollAnswer->setFrom($answerObject->toArray());
+				$newVolunteerPollAnswer->volunteerPollAnswerId = 0;
+				$newVolunteerPollAnswer->volunteerPoll = $newVolunteerPoll;
+				$newVolunteerPollAnswer->insert();
+				}
+			}
+		}
+
+	public function getJobEvents(string $date = '1000-01-01') : \PHPFUI\ORM\RecordCursor
+		{
+		$sql = 'select * from jobEvent where cutoffDate>=? order by cutoffDate';
+
+		return \PHPFUI\ORM::getRecordCursor(new \App\Record\JobEvent(), $sql, [$date]);
+		}
+
+	public function getJobEventsBetween(string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
+		{
+		$sql = 'select * from jobEvent where cutoffDate>=? and cutoffDate<=? order by cutoffDate';
+
+		return \PHPFUI\ORM::getRecordCursor(new \App\Record\JobEvent(), $sql, [$startDate, $endDate]);
+		}
+
+	/**
+	 * @return (null|scalar)[]
+	 *
+	 * @psalm-return array<string, null|scalar>
+	 */
+	public function getLatest() : array
+		{
+		$sql = 'select * from jobEvent order by date desc limit 1';
+
+		return \PHPFUI\ORM::getRow($sql);
+		}
+
+	/**
+	 * @return (null|scalar)[]
+	 *
+	 * @psalm-return array<string, null|scalar>
+	 */
+	public function getOldest() : array
+		{
+		$sql = 'select * from jobEvent order by date asc limit 1';
+
+		return \PHPFUI\ORM::getRow($sql);
+		}
+	}

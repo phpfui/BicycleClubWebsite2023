@@ -13,11 +13,16 @@ class SessionManager
 		{
 		$endTime = \time() - $secondsBack;
 
-		foreach (\glob(self::getDirectory() . '/sess*') as $file)
+		$dir = self::getDirectory();
+
+		for($i = 0; $i < 256; ++$i)
 			{
-			if (\filemtime($file) < $endTime)
+			foreach (\glob($dir . '/sess_' . \dechex($i) . '*') as $file)
 				{
-				\App\Tools\File::unlink($file);
+				if (\filemtime($file) < $endTime)
+					{
+					\unlink($file);
+					}
 				}
 			}
 		}

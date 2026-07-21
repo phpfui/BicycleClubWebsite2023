@@ -59,7 +59,7 @@ class Migration_83 extends \PHPFUI\ORM\Migration
 
 	private function cleanTable(\PHPFUI\ORM\Table $table) : void
 		{
-		foreach ($table as $record)
+		foreach ($table->getRecordCursor() as $record)
 			{
 			$record->update();
 			}

@@ -47,7 +47,7 @@ class ErrorLogging
 		{
 		$errorText = $e->getMessage();
 
-		$link = ($_SERVER['SERVER_NAME'] ?? '') . ($_SERVER['REQUEST_URI'] ?? '');
+		$link = ($_SERVER['SERVER_NAME'] ?? 'localhost') . ($_SERVER['REQUEST_URI'] ?? '');
 
 		$file = \str_replace('/', '\\', $e->getFile());
 		$dir = \str_replace('/', '\\', PROJECT_ROOT . '\\');

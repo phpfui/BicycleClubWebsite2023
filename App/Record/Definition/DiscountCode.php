@@ -7,7 +7,7 @@ namespace App\Record\Definition;
  *
  * @property int $cashOnly MySQL type int
  * @property ?string $description MySQL type varchar(60)
- * @property float $discount MySQL type float(10,2)
+ * @property float $discount MySQL type decimal(10,2)
  * @property ?string $discountCode MySQL type char(15)
  * @property int $discountCodeId MySQL type int
  * @property string $expirationDate MySQL type date
@@ -36,7 +36,7 @@ abstract class DiscountCode extends \PHPFUI\ORM\Record
 			static::$fields = [
 				'cashOnly' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
 				'description' => new \PHPFUI\ORM\FieldDefinition('varchar(60)', 'string', 60, true, ),
-				'discount' => new \PHPFUI\ORM\FieldDefinition('float(10,2)', 'float', 11, false, 0.00, ),
+				'discount' => new \PHPFUI\ORM\FieldDefinition('decimal(10,2)', 'float', 11, false, 0.00, ),
 				'discountCode' => new \PHPFUI\ORM\FieldDefinition('char(15)', 'string', 15, true, ),
 				'discountCodeId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, ),
 				'expirationDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),

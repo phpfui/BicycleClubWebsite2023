@@ -11,11 +11,16 @@ class Newsletter extends \PHPFUI\ORM\Table
 	 */
 	public function getAllByYear(int $year) : \PHPFUI\ORM\RecordCursor
 		{
+		$this->setLimit(0);
+		$this->setOrderBy('date');
 		$start = \App\Tools\Date::toString(\gregoriantojd(1, 1, $year));
 		$end = \App\Tools\Date::toString(\gregoriantojd(12, 31, $year));
-		$sql = 'select * from newsletter where date >= ? and date <= ? order by date';
 
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$start, $end, ]);
+		$condition = new \PHPFUI\ORM\Condition('date', $start, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('date', $end, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$this->setWhere($condition);
+
+		return $this->getRecordCursor();
 		}
 
 	public function getFirst(string $ascending = '') : \App\Record\Newsletter

@@ -33,7 +33,7 @@ class EmailNewsletter extends \App\Cron\BaseJob
 				$fileModel = new \App\Model\NewsletterFiles($newsletter);
 				$emailAttached = clone $email;
 				$emailAttached->addAttachment($fileModel->get($newsletter->newsletterId . '.pdf'), $fileModel->getPrettyFileName());
-				$members = \App\Table\Member::getNewsletterMembers($today);
+				$members = new \App\Table\Member()->getNewsletterMembers($today);
 
 				foreach ($members as $member)
 					{

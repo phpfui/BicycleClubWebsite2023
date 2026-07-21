@@ -19,8 +19,10 @@ class MemberCategory extends \PHPFUI\ORM\Table
 	 */
 	public static function getRideCategoriesForMember(?int $memberId) : array
 		{
-		$sql = 'select categoryId from memberCategory where memberId=?';
-		$cats = \PHPFUI\ORM::getDataObjectCursor($sql, [(int)$memberId]);
+		$sql = 'select categoryId
+			from memberCategory
+			where memberId=?';
+		$cats = \PHPFUI\ORM::getDataObjectCursor($sql, [(int)$memberId]); // OK
 		$returnValue = [];
 
 		foreach ($cats as $row)

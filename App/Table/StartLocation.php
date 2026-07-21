@@ -11,38 +11,23 @@ class StartLocation extends \PHPFUI\ORM\Table
 	 */
 	public function getAll(array $where = []) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from startLocation ';
-		$data = [];
+		$condition = new \PHPFUI\ORM\Condition();
 
-		if ($where)
+		foreach ($where as $field => $value)
 			{
-			$sql .= 'where ';
-			$and = '';
-
-			foreach ($where as $field => $value)
-				{
-				$sql .= $and . $field . '=?';
-				$data[] = $value;
-				$and = ' and ';
-				}
+			$condition->and($field, $value);
 			}
-		$sql .= ' order by name';
+		$this->setWhere($condition);
+		$this->setOrderBy('name');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, $data);
+		return $this->getDataObjectCursor();
 		}
 
 	public function getByName(string $name) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from startLocation where name like ?';
+		$this->setWhere(new \PHPFUI\ORM\Condition('name', "%{$name}%", new \PHPFUI\ORM\Operator\Like()));
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, ["%{$name}%"]);
-		}
-
-	public function getStartsWith(string $char) : \PHPFUI\ORM\DataObjectCursor
-		{
-		$sql = 'select * from startLocation where name regexp ? group by startLocationId order by name';
-
-		return \PHPFUI\ORM::getDataObjectCursor($sql, ["^[{$char}]"]);
+		return $this->getDataObjectCursor();
 		}
 
 	public function merge(int $from, int $to) : void

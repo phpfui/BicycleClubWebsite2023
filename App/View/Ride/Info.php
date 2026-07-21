@@ -114,7 +114,9 @@ class Info
 				}
 			}
 
-		foreach (\App\Table\AssistantLeader::getForRide($ride) as $assistant)
+		$assistantLeaderTable = new \App\Table\AssistantLeader();
+
+		foreach ($assistantLeaderTable->getForRide($ride) as $assistant)
 			{
 			$fieldSet->add(new \App\UI\Display('Assistant Leader', $this->leader->getStatsLink($assistant)));
 			}
@@ -245,7 +247,9 @@ class Info
 				}
 			}
 
-		foreach (\App\Table\AssistantLeader::getForRide($ride) as $assistant)
+		$assistantLeaderTable = new \App\Table\AssistantLeader();
+
+		foreach ($assistantLeaderTable->getForRide($ride) as $assistant)
 			{
 			$table->addRow(['Assistant Leader', $assistant->member->fullName()]);
 			}

@@ -12,7 +12,8 @@ class PurgeCart extends \App\Cron\BaseJob
 	/** @param array<string, string> $parameters */
 	public function run(array $parameters = []) : void
 		{
-		$invoices = \App\Table\Invoice::getUnpaidBefore(\App\Tools\Date::toString($this->controller->runningAtJD() - 5));
+		$invoiceTable = new \App\Table\Invoice();
+		$invoices = $invoiceTable->getUnpaidBefore(\App\Tools\Date::toString($this->controller->runningAtJD() - 5));
 		$invoiceModel = new \App\Model\Invoice();
 
 		foreach ($invoices as $invoice)

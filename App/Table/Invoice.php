@@ -11,14 +11,21 @@ class Invoice extends \PHPFUI\ORM\Table
 	 */
 	public function find(array $parameters) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select distinct i.*,COALESCE(m.email,c.email) as email,COALESCE(m.firstName, c.firstName) as firstName, COALESCE(m.lastName, c.lastName) as lastName ' .
-			'from invoice i left join invoiceItem ii on i.invoiceId=ii.invoiceId ' .
-			'left outer join member m on i.memberId=m.memberId ' .
-			'left outer join customer c on (0-i.memberId)=c.customerId ';
+		$this->setDistinct();
+		$this->setSelect('invoice.*');
+		$this->addSelect(new \PHPFUI\ORM\Literal('COALESCE(member.email, customer.email)'), 'email');
+		$this->addSelect(new \PHPFUI\ORM\Literal('COALESCE(member.firstName, customer.firstName)'), 'firstName');
+		$this->addSelect(new \PHPFUI\ORM\Literal('COALESCE(member.lastName, customer.lastName)'), 'lastName');
+
+		$this->setJoin('invoiceItem');
+		$this->addJoin('member', type:'left outer');
+		$this->addJoin('customer', new \PHPFUI\ORM\Condition('customer.customerId', new \PHPFUI\ORM\Literal('(0-invoice.memberId)')), type:'left outer');
+
+
 		$fields = $this->getFields();
 		$fields['text'] = '';
 		$input = [];
-		$and = 'where ';
+		$condition = new \PHPFUI\ORM\Condition();
 
 		foreach ($parameters as $fieldName => $value)
 			{
@@ -32,45 +39,43 @@ class Invoice extends \PHPFUI\ORM\Table
 
 			if ('text' == $field)
 				{
-				$itemFields = ['title', 'description', 'detailLine'];
+				$titleCondition = new \PHPFUI\ORM\Condition();
 
-				$sql .= $and . '(ii.title like ? or ii.description like ?  or ii.detailLine like ?)';
-				$input[] = "%{$value}%";
-				$input[] = "%{$value}%";
-				$input[] = "%{$value}%";
-				$and = ' and ';
+				foreach (['title', 'description', 'detailLine'] as $recordField)
+					{
+					$titleCondition->or($recordField, "%{$value}%", new \PHPFUI\ORM\Operator\Like());
+					}
+				$condition->and($titleCondition);
 				}
 			elseif ('status' == $field)
 				{
 				switch ($value)
 					{
 					case 'S':
-						$sql .= $and . 'i.fullfillmentDate>"1000-01-01"';
-						$and = ' and ';
+						$condition->and('fullfillmentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
 
 						break;
 
 					case 'N':
-						$sql .= $and . 'i.fullfillmentDate is null';
-						$and = ' and ';
+						$condition->and('fullfillmentDate', null);
 
 						break;
 
 					case 'U':
-						$sql .= $and . 'i.paymentDate is null';
-						$and = ' and ';
+						$condition->and('paymentDate', null);
 
 						break;
 					}
 				}
 			elseif ('name' == $field)
 				{
-				$sql .= $and . '(m.firstName like ? or m.lastname like ? or c.firstName like ? or c.lastname like ?)';
-				$input[] = "%{$value}%";
-				$input[] = "%{$value}%";
-				$input[] = "%{$value}%";
-				$input[] = "%{$value}%";
-				$and = ' and ';
+				$nameCondition = new \PHPFUI\ORM\Condition();
+
+				foreach (['member.firstName', 'member.lastname', 'customer.firstname', 'customer.lastname'] as $recordField)
+					{
+					$nameCondition->or($recordField, "%{$value}%", new \PHPFUI\ORM\Operator\Like());
+					}
+				$condition->and($nameCondition);
 				}
 			elseif (isset($fields[$field]))
 				{
@@ -82,8 +87,7 @@ class Invoice extends \PHPFUI\ORM\Table
 							{
 							$int = (int)$int;
 							}
-						$sql .= $and . 'i.' . $field . ' in (' . \implode(',', $value) . ')';
-						$and = ' and ';
+						$condition->and('invoice.' . $field, $value, new \PHPFUI\ORM\Operator\In());
 						}
 					}
 				elseif (! empty($value))
@@ -99,10 +103,8 @@ class Invoice extends \PHPFUI\ORM\Table
 
 								if ($value)
 									{
-									$operator = \strpos($fieldName, 'from') ? '>=?' : '<=?';
-									$sql .= $and . 'i.' . $field . $operator;
-									$input[] = $value;
-									$and = ' and ';
+									$operator = \strpos($fieldName, 'from') ? new \PHPFUI\ORM\Operator\GreaterThanEqual() : new \PHPFUI\ORM\Operator\LessThanEqual();
+									$condition->and('invoice.' . $field, $value, $operator);
 									}
 								}
 							else
@@ -111,9 +113,7 @@ class Invoice extends \PHPFUI\ORM\Table
 
 								if ($value)
 									{
-									$sql .= $and . 'i.' . $field . '=?';
-									$input[] = $value;
-									$and = ' and ';
+									$condition->and('invoice.' . $field, $value);
 									}
 								}
 
@@ -127,9 +127,7 @@ class Invoice extends \PHPFUI\ORM\Table
 
 							foreach ($itemFields as $field)
 								{
-								$sql .= $and . $table . $field . ' like ?';
-								$input[] = "%{$value}%";
-								$and = ' and ';
+								$condition->and('invoice.' . $field, "%{$value}%", new \PHPFUI\ORM\Operator\Like());
 								}
 
 							break;
@@ -140,93 +138,128 @@ class Invoice extends \PHPFUI\ORM\Table
 
 		if (! empty($parameters['sort']))
 			{
+			$desc = ('D' == $parameters['orderby']) ? 'desc' : 'asc';
+
 			if (isset($fields[$parameters['sort']]))
 				{
-				$sql .= ' order by i.' . $parameters['sort'];
+				$this->setOrderBy('invoice.' . $parameters['sort'], $desc);
 				}
 			elseif ('lastName' == $parameters['sort'])
 				{
-				$sql .= ' order by m.lastName';
-				}
-
-			if ('D' == $parameters['orderby'])
-				{
-				$sql .= ' desc';
+				$this->setOrderBy('member.' . $parameters['sort'], $desc);
 				}
 			}
-		$sql .= ' limit 50';
+		$this->setLimit(50);
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
+		return $this->getDataObjectCursor();
 		}
 
 	/**
 	 * @param array<int> $types
 	 */
-	public static function getByDateType(string $startDate, string $endDate, array $types = []) : \PHPFUI\ORM\DataObjectCursor
+	public function getByDateType(string $startDate, string $endDate, array $types = []) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from invoice where orderDate>=? and orderDate<=? and paymentDate>"1000-01-01"';
-		$input = [$startDate, $endDate, ];
+		if ($types)
+			{
+			$sql = ' and invoiceId in (select invoiceId from invoiceItem where invoiceItem.invoiceId=invoice.invoiceId and type in (' . \implode(',', $types) . '))';
+			}
+
+		$condition = new \PHPFUI\ORM\Condition('orderDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('orderDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$condition->and('paymentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
 
 		if ($types)
 			{
-			$sql .= ' and invoiceId in (select invoiceId from invoiceItem where invoiceItem.invoiceId=invoice.invoiceId and type in (' . \implode(',', $types) . '))';
-			}
+			$invoiceItemTable = new \App\Table\InvoiceItem();
+			$invoiceItemTable->setSelect('invoiceId');
+			$iiCondition = new \PHPFUI\ORM\Condition('invoiceItem.invoiceId', new \PHPFUI\ORM\Literal('invoice.invoiceId'));
+			$iiCondition->and('type', $types, new \PHPFUI\ORM\Operator\In());
+			$invoiceItemTable->setWhere($iiCondition);
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
+			$condition->and('invoiceId', $invoiceItemTable, new \PHPFUI\ORM\Operator\In());
+			}
+		$this->setWhere($condition);
+
+		return $this->getDataObjectCursor();
 		}
 
-	public static function getPaidByDate(int $shipped, string $startDate = '', string $endDate = '', int $points = 0) : \PHPFUI\ORM\ArrayCursor
+	public function getPaidByDate(int $shipped, string $startDate = '', string $endDate = '', int $points = 0) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = self::getSelectedFields() ;
-		$sql .= 'where i.paymentDate>"1000-01-01"';
+		$this->setSelect('invoice.*');
+		$this->addSelect('member.firstName');
+		$this->addSelect('member.lastName');
+		$this->addSelect('member.email');
+		$this->addSelect(new \PHPFUI\ORM\Literal('concat(member.firstName," ",member.lastName)'), 'name');
+		$this->setJoin('member');
 
-		if ($shipped)
+		$condition = new \PHPFUI\ORM\Condition('paymentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
+
+		// $shipped == 0 'All Invoices';
+		// $shipped == 1 'Shipped Invoices';
+		// $shipped == 2 'Unshipped Invoices';
+
+		if (1 == $shipped)
 			{
-			$sql .= ' and i.fullfillmentDate';
-			$sql .= 1 == $shipped ? '>"1000-01-01"' : ' is null';
+			$condition->and('fullfillmentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
+			}
+		elseif (2 == $shipped)
+			{
+			$condition->and('fullfillmentDate', null);
 			}
 
-		if ($points)
+		// $points == 0 'Both'
+		// $points == 1 'Paid Only'
+		// $points == 2 'Volunteer'
+
+		if (1 == $points)
 			{
-			$sql .= ' and i.pointsUsed';
-			$sql .= 2 == $points ? '>"1000-01-01"' : ' is null';
+			$condition->and('pointsUsed', null);
 			}
-		$input = [];
+		elseif (2 == $points)
+			{
+			$condition->and('pointsUsed', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+			}
 
 		if ($startDate)
 			{
-			$input[] = $startDate;
-			$sql .= ' and i.orderDate>=?';
+			$condition->and('orderDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
 			}
 
 		if ($endDate)
 			{
-			$input[] = $endDate;
-			$sql .= ' and i.orderDate<=?';
+			$condition->and('orderDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
 			}
-		$sql .= ' order by i.invoiceId';
 
-		return \PHPFUI\ORM::getArrayCursor($sql, $input);
+		$this->setWhere($condition);
+		$this->setOrderBy('invoiceId');
+
+		return $this->getArrayCursor();
 		}
 
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Invoice>
 	 */
-	public static function getTaxes(string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
+	public function getTaxes(string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'SELECT * FROM invoice where orderDate >= ? and orderDate <= ? and totalTax>0 and paymentDate>"1000-01-01"';
+		$condition = new \PHPFUI\ORM\Condition('orderDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('orderDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$condition->and('totalTax', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition->and('paymentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Invoice(), $sql, [$startDate, $endDate, ]);
+		return $this->getRecordCursor();
 		}
 
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Invoice>
 	 */
-	public static function getUnpaidBefore(string $date) : \PHPFUI\ORM\RecordCursor
+	public function getUnpaidBefore(string $date) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from invoice where orderDate < ? and paymentDate is null';
+		$condition = new \PHPFUI\ORM\Condition('orderDate', $date, new \PHPFUI\ORM\Operator\LessThan());
+		$condition->and('paymentDate', null);
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Invoice(), $sql, [$date]);
+		return $this->getRecordCursor();
 		}
 
 	/**
@@ -243,25 +276,27 @@ class Invoice extends \PHPFUI\ORM\Table
 		return $this->getRecordCursor();
 		}
 
-	public static function pointsUsed(string $start, string $end, string $sort) : \PHPFUI\ORM\ArrayCursor
+	public function pointsUsed(string $start, string $end) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select m.*,i.* from invoice i left join member m on m.memberId=i.memberId where i.pointsUsed > 0';
-		$input = [];
+		$this->setSelect('member.*');
+		$this->addSelect('invoice.*');
+		$this->setJoin('member');
+		$condition = new \PHPFUI\ORM\Condition('pointsUsed', 0, new \PHPFUI\ORM\Operator\GreaterThan());
 
 		if ($start)
 			{
-			$sql .= ' and i.orderDate>=?';
-			$input[] = $start;
+			$condition->and('orderDate', $start, new \PHPFUI\ORM\Operator\GreaterThanEqual());
 			}
 
 		if ($end)
 			{
-			$sql .= ' and i.orderDate<=?';
-			$input[] = $end;
+			$condition->and('orderDate', $end, new \PHPFUI\ORM\Operator\LessThanEqual());
 			}
-		$sql .= ' order by ' . $sort;
+		$this->setWhere($condition);
+		$this->setOrderBy('member.lastName');
+		$this->addOrderBy('member.firstName');
 
-		return \PHPFUI\ORM::getArrayCursor($sql, $input);
+		return $this->getArrayCursor();
 		}
 
 	public function setCompletedForMember(int $memberId) : static
@@ -304,10 +339,5 @@ class Invoice extends \PHPFUI\ORM\Table
 		$this->setOrderBy('orderDate', 'desc');
 
 		return $this;
-		}
-
-	private static function getSelectedFields() : string
-		{
-		return 'select i.*,m.firstName,m.lastName,m.email,concat(m.firstName," ",m.lastName) name from invoice i left join member m on i.memberId=m.memberId ';
 		}
 	}

@@ -32,23 +32,41 @@ class PhotoTag extends \PHPFUI\ORM\Table
 
 	public function getTagsForPhoto(int $photoId) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select * from photoTag where photoId=? order by frontToBack, leftToRight';
-		$input = [$photoId];
+		$this->setOrderBy('frontToBack');
+		$this->addOrderBy('leftToRight');
+		$this->setWhere(new \PHPFUI\ORM\Condition('photoId', $photoId));
 
-		return \PHPFUI\ORM::getArrayCursor($sql, $input);
+		return $this->getArrayCursor();
 		}
 
 	public function mostTagged() : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select pt.memberId,count(pt.memberId) count,m.* from photoTag pt left join member m on m.memberId=pt.memberId group by pt.memberId order by count desc,m.lastName,m.firstName limit 50';
+		$this->setJoin('member');
+		$this->setSelect('photoTag.memberId');
+		$this->addSelect(new \PHPFUI\ORM\Literal('count(photoTag.memberId)'), 'count');
+		$this->addSelect('member.*');
 
-		return \PHPFUI\ORM::getArrayCursor($sql);
+		$this->setGroupBy('photoTag.memberId');
+		$this->setOrderBy('count', 'desc');
+		$this->addOrderBy('lastName');
+		$this->addOrderBy('firstName');
+
+		$this->setLimit(50);
+
+		return $this->getArrayCursor();
 		}
 
 	public function topTaggers() : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select taggerId,count(taggerId) count,m.* from photoTag pt left join member m on m.memberId=pt.taggerId group by pt.taggerId order by count desc limit 50';
+		$this->setSelect('taggerId');
+		$this->addSelect(new \PHPFUI\ORM\Literal('count(taggerId)'), 'count');
+		$this->addSelect('member.*');
+		$this->setJoin('member', new \PHPFUI\ORM\Condition('member.memberId', new \PHPFUI\ORM\Literal('taggerId')));
+		$this->setGroupBy('taggerId');
+		$this->setOrderBy('count', 'desc');
+		$this->addOrderBy('member.memberId');
+		$this->setLimit(50);
 
-		return \PHPFUI\ORM::getArrayCursor($sql);
+		return $this->getArrayCursor();
 		}
 	}

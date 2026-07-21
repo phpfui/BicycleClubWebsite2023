@@ -20,6 +20,7 @@ class RideSignup extends \PHPFUI\ORM\Table
 	 */
 	public function find(array $parameters) : \PHPFUI\ORM\DataObjectCursor
 		{
+		$this->setJoin('ride');
 		$paceJoin = new \PHPFUI\ORM\Condition('pace.paceId', new \PHPFUI\ORM\Literal('ride.paceId'));
 		$this->addJoin('pace', $paceJoin);
 
@@ -77,10 +78,25 @@ class RideSignup extends \PHPFUI\ORM\Table
 
 	public function getAllSignedUpRiders(\App\Record\Ride $ride, bool $sortByStatus = true) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sortByStatus = $sortByStatus ? 'r.status asc,' : '';
-		$sql = "select * from member m left join rideSignup r on r.memberId=m.memberId where r.rideId=? and r.status!=? order by {$sortByStatus} m.lastName, m.firstName";
+		$memberTable = new \App\Table\Member();
+		$memberTable->setSelect('*');
+		$memberTable->addSelect('rideSignup.rideComments');
+		$memberTable->addJoin('rideSignup');
+		$condition = new \PHPFUI\ORM\Condition('rideId', $ride->rideId);
+		$condition->and('status', \App\Enum\RideSignup\Status::CANCELLED->value, new \PHPFUI\ORM\Operator\NotEqual());
+		$memberTable->setWhere($condition);
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$ride->rideId, \App\Enum\RideSignup\Status::CANCELLED->value]);
+		if ($sortByStatus)
+			{
+			$memberTable->setOrderBy('status');
+			}
+		else
+			{
+			$memberTable->setOrderBy('lastName');
+			}
+		$memberTable->addOrderBy('firstName');
+
+		return $memberTable->getDataObjectCursor();
 		}
 
 	/**
@@ -97,14 +113,35 @@ class RideSignup extends \PHPFUI\ORM\Table
 
 	public function getCommittedRiders(\App\Record\Ride $ride) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select m.*,r.memberId as leaderId,r.title,rs.* from member m left join rideSignup rs on rs.memberId=m.memberId left join ride r on r.rideId=rs.rideId where r.rideId=? and rs.status in (1,2,3,4)';
+		$memberTable = new \App\Table\Member();
+		$memberTable->setSelect('member.*');
+		$memberTable->addSelect('ride.memberId', 'leaderId');
+		$memberTable->addSelect('ride.title');
+		$memberTable->addSelect('rideSignup.*');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$ride->rideId]);
+		$memberTable->addJoin('rideSignup');
+		$memberTable->addJoin('ride', new \PHPFUI\ORM\Condition('ride.rideId', new \PHPFUI\ORM\Literal('rideSignup.rideId')));
+
+		$condition = new \PHPFUI\ORM\Condition('ride.rideId', $ride->rideId);
+		$statuses = [
+			\App\Enum\RideSignup\Status::DEFINITELY_RIDING->value,
+			\App\Enum\RideSignup\Status::PROBABLY_RIDING->value,
+			\App\Enum\RideSignup\Status::WAIT_LIST->value,
+			\App\Enum\RideSignup\Status::DEFINITELY_NOT_RIDING->value,
+		];
+		$condition->and('rideSignup.status', $statuses, new \PHPFUI\ORM\Operator\In());
+		$memberTable->setWhere($condition);
+
+		return $memberTable->getDataObjectCursor();
 		}
 
 	public function getEarliestRiderSignupTime(\App\Record\Member $rider, string $date) : string
 		{
-		$sql = 'select signedUpTime from rideSignup where memberId=? and rideId in (select rideId from ride where rideDate=?) order by signedUpTime asc limit 1';
+		$sql = 'select signedUpTime
+			from rideSignup
+			where memberId=? and rideId in (select rideId from ride where rideDate=?)
+		order by signedUpTime asc
+			limit 1';
 		$input = [$rider->memberId, $date];
 
 		return \PHPFUI\ORM::getValue($sql, $input);
@@ -112,9 +149,15 @@ class RideSignup extends \PHPFUI\ORM\Table
 
 	public function getMemberRidesForDate(\App\Record\Member $member, string $date) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from rideSignup rs left join ride r on r.rideId=rs.rideId where rs.memberId=? and r.rideDate=? order by rs.status desc, r.startTime desc';
+		$this->setJoin('ride');
+		$this->setGroupBy('rideSignup.memberId');
+		$condition = new \PHPFUI\ORM\Condition('rideSignup.memberId', $member->memberId);
+		$condition->and('rideDate', $date);
+		$this->setWhere($condition);
+		$this->setOrderBy('rideSignup.status', 'desc');
+		$this->setOrderBy('startTime', 'desc');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$member->memberId, $date]);
+		return $this->getDataObjectCursor();
 		}
 
 	/**
@@ -122,7 +165,11 @@ class RideSignup extends \PHPFUI\ORM\Table
 	 */
 	public static function getNewest(\App\Record\Member $member) : array
 		{
-		$sql = 'select * from rideSignup rs left join ride r on r.rideId=rs.rideId where rs.memberId=? and r.rideId is not null and r.rideDate > 0 order by r.rideDate desc limit 1';
+		$sql = 'select *
+			from rideSignup rs
+			left join ride r on r.rideId=rs.rideId
+			where rs.memberId=? and r.rideId is not null and r.rideDate > 0
+			order by r.rideDate desc limit 1';
 
 		return \PHPFUI\ORM::getRow($sql, [$member->memberId]);
 		}
@@ -132,16 +179,13 @@ class RideSignup extends \PHPFUI\ORM\Table
 	 */
 	public static function getOldest(\App\Record\Member $member) : array
 		{
-		$sql = 'select * from rideSignup rs left join ride r on r.rideId=rs.rideId where rs.memberId=? and r.rideId is not null and r.rideDate > 0 order by r.rideDate limit 1';
+		$sql = 'select *
+			from rideSignup rs
+			left join ride r on r.rideId=rs.rideId
+			where rs.memberId=? and r.rideId is not null and r.rideDate > 0
+			order by r.rideDate limit 1';
 
 		return \PHPFUI\ORM::getRow($sql, [$member->memberId]);
-		}
-
-	public function getRiderFrequency(int $status, int $startDate, int $endDate) : \PHPFUI\ORM\ArrayCursor
-		{
-		$sql = 'select count(*) count,rs.memberId from ridesignup rs left join ride r on r.rideId=rs.rideId where rs.attended=? and r.rideDate>=? and r.rideDate<=? group by r.memberid order by count desc';
-
-		return \PHPFUI\ORM::getArrayCursor($sql, [$status, $startDate, $endDate]);
 		}
 
 	/**
@@ -149,9 +193,12 @@ class RideSignup extends \PHPFUI\ORM\Table
 	 */
 	public function getRidersForAttended(\App\Record\Ride $ride, \App\Enum\RideSignup\Attended $attended = \App\Enum\RideSignup\Attended::CONFIRMED) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from rideSignup where rideId=? and attended=? order by signedUpTime';
+		$this->setOrderBy('signedUpTime');
+		$condition = new \PHPFUI\ORM\Condition('rideId', $ride->rideId);
+		$condition->and('attended', $attended->value);
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, [$ride->rideId, $attended->value]);
+		return $this->getRecordCursor();
 		}
 
 	/**
@@ -159,9 +206,12 @@ class RideSignup extends \PHPFUI\ORM\Table
 	 */
 	public function getRidersForStatus(\App\Record\Ride $ride, \App\Enum\RideSignup\Status $status) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from rideSignup where rideId=? and status=? order by signedUpTime';
+		$this->setOrderBy('signedUpTime');
+		$condition = new \PHPFUI\ORM\Condition('rideId', $ride->rideId);
+		$condition->and('status', $status->value);
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, [$ride->rideId, $status->value]);
+		return $this->getRecordCursor();
 		}
 
 	/**
@@ -181,33 +231,57 @@ class RideSignup extends \PHPFUI\ORM\Table
 
 	public function getRidesForMember(\App\Record\Member $member, string $startDate = '2000-01-01', string $endDate = '2999-12-31') : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from rideSignup rs left join ride r on r.rideId=rs.rideId where rs.memberId=? and r.rideDate>=? and r.rideDate<=? order by r.rideDate desc';
+		$sql = 'select *
+			from rideSignup rs
+			left join ride r on r.rideId=rs.rideId
+			where rs.memberId=? and r.rideDate>=? and r.rideDate<=?
+			order by r.rideDate desc, rs.memberId';
+		$this->setSelect('rideSignup.*');
+		$this->addSelect('ride.*');
+		$this->setJoin('ride');
+		$condition = new \PHPFUI\ORM\Condition('rideSignup.memberId', $member->memberId);
+		$condition->and('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$condition->and('rideDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$this->setWhere($condition);
+		$this->setOrderBy('rideDate', 'desc');
+		$this->setOrderBy('ride.rideId');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$member->memberId, $startDate, $endDate]);
+		return $this->getDataObjectCursor();
 		}
 
 	public static function getSignedUpByPermmission(\App\Record\Ride $ride, \App\Record\Permission $permission) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'SELECT * FROM member m left join userPermission u on u.memberId = m.memberId left join rideSignup r on r.memberId=m.memberId WHERE u.permissionGroup = ? and r.rideId = ?';
+		$memberTable = new \App\Table\Member();
+		$memberTable->setSelect('member.*');
+		$memberTable->addSelect('userPermission.*');
+		$memberTable->addSelect('rideSignup.*');
+		$memberTable->setJoin('userPermission');
+		$memberTable->addJoin('rideSignup');
+		$condition = new \PHPFUI\ORM\Condition('rideId', $ride->rideId);
+		$condition->and('permissionGroup', $permission->permissionId);
+		$memberTable->setWhere($condition);
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$permission->permissionId, $ride->rideId]);
+		return $memberTable->getDataObjectCursor();
 		}
 
-	public function getSignedUpRiders(int $rideId, string $order = 'r.signedUpTime') : \PHPFUI\ORM\DataObjectCursor
+	public function getSignedUpRiders(int $rideId, string $order = 'signedUpTime') : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from member m left join rideSignup r on r.memberId=m.memberId where r.rideId=? and r.status<=? order by ' . $order;
+		$this->setJoin('member');
+		$this->setOrderBy($order);
+		$condition = new \PHPFUI\ORM\Condition('status', \App\Enum\RideSignup\Status::WAIT_LIST->value, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$condition->and('rideId', $rideId);
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$rideId, \App\Enum\RideSignup\Status::WAIT_LIST->value]);
+		return $this->getDataObjectCursor();
 		}
 
 	public function moveWaitListToRideFromRide(\App\Record\Ride $ride, \App\Record\Ride $clonedRide) : void
 		{
-		$sql = 'select * from rideSignup where rideId=? and status=?';
-		$input = [$clonedRide->rideId, \App\Enum\RideSignup\Status::WAIT_LIST->value];
+		$condition = new \PHPFUI\ORM\Condition('rideId', $clonedRide->rideId);
+		$condition->and('status', \App\Enum\RideSignup\Status::WAIT_LIST->value);
+		$this->setWhere($condition);
 
-		$waitlist = \PHPFUI\ORM::getRecordCursor(new \App\Record\RideSignup(), $sql, $input);
-
-		foreach ($waitlist as $rideSignup)
+		foreach ($this->getRecordCursor() as $rideSignup)
 			{
 			$rideSignup->delete();
 			$rideSignup->ride = $ride;

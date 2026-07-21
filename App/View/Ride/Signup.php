@@ -13,7 +13,7 @@ class Signup
 		$this->settingTable = new \App\Table\Setting();
 
 		$membershipId = $member->membershipId ?: \App\Model\Session::signedInMembershipId();
-		$this->members = \App\Table\Member::membersInMembership($membershipId);
+		$this->members = new \App\Table\Member()->membersInMembership($membershipId);
 
 		if (! $this->member->loaded())
 			{

@@ -30,16 +30,14 @@ class UserPermission extends \PHPFUI\ORM\Table
 		\PHPFUI\ORM::execute($sql, [$membershipId]);
 		}
 
-	public static function forMember(int $memberId) : \PHPFUI\ORM\DataObjectCursor
+	public function getPermissionsForUser(int $memberId) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from userPermission u,permission p where u.memberId=? and u.permissionGroup=p.permissionId order by p.menu,p.name';
+		$this->setJoin('permission', new \PHPFUI\ORM\Condition('permissionId', new \PHPFUI\ORM\Literal('userPermission.permissionGroup')));
+		$this->setWhere(new \PHPFUI\ORM\Condition('memberId', $memberId));
+		$this->setOrderBy('menu');
+		$this->addOrderBy('name');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId]);
-		}
-
-	public static function getPermissionsForUser(int $memberId) : \PHPFUI\ORM\DataObjectCursor
-		{
-		return \PHPFUI\ORM::getDataObjectCursor('select * from userPermission u left join permission p on p.permissionId=u.permissionGroup where u.memberId=?', [$memberId]);
+		return $this->getDataObjectCursor();
 		}
 
 	public static function removePermissionFromUser(int $memberId, int $permission) : bool

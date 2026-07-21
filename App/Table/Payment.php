@@ -11,25 +11,25 @@ class Payment extends \PHPFUI\ORM\Table
 	 *
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Payment>
 	 */
-	public static function getByDate(string $startDate, string $endDate, array $paymentTypes = [], bool $userOnly = false) : \PHPFUI\ORM\RecordCursor
+	public function getByDate(string $startDate, string $endDate, array $paymentTypes = [], bool $userOnly = false) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'SELECT * FROM payment where dateReceived>=? and dateReceived<=?';
-		$input = [$startDate,
-			$endDate, ];
+		$condition = new \PHPFUI\ORM\Condition('dateReceived', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('dateReceived', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
 
 		if ($paymentTypes)
 			{
-			$sql .= ' and paymentType in (' . \implode(',', $paymentTypes) . ')';
+			$condition->and('paymentType', $paymentTypes, new \PHPFUI\ORM\Operator\In());
 			}
 
 		if ($userOnly)
 			{
-			$sql .= ' and enteringMemberNumber=?';
-			$input[] = \App\Model\Session::getSignedInMemberId();
+			$condition->and('enteringMemberNumber', \App\Model\Session::getSignedInMemberId());
 			}
-		$sql .= ' order by dateReceived,paymentDated';
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Payment(), $sql, $input);
+		$this->setWhere($condition);
+		$this->setOrderBy('dateReceived')->addOrderBy('paymentDated');
+
+		return $this->getRecordCursor();
 		}
 
 	/**

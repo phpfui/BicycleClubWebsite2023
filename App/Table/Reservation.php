@@ -6,23 +6,28 @@ class Reservation extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Reservation::class;
 
-	public static function getEmails(int $eventId, int $unpaidOnly) : \PHPFUI\ORM\ArrayCursor
+	public function getEmails(int $eventId, int $unpaidOnly) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select coalesce(p.email,r.reservationemail) email,coalesce(p.firstName,r.reservationFirstName) firstName,coalesce(p.lastName,r.reservationLastName) lastName
-			from reservation r
-			left outer join reservationPerson p on p.reservationId=r.reservationId
-			where r.eventId=?';
+		$this->setSelect(new \PHPFUI\ORM\Literal('coalesce(reservationPerson.email,reservation.reservationemail)'), 'email');
+		$this->addSelect(new \PHPFUI\ORM\Literal('coalesce(reservationPerson.firstName,reservation.reservationFirstName)'), 'firstName');
+		$this->addSelect(new \PHPFUI\ORM\Literal('coalesce(reservationPerson.lastName,reservation.reservationLastName)'), 'lastName');
+
+		$this->setJoin('reservationPerson', type:'left outer');
+		$condition = new \PHPFUI\ORM\Condition('reservation.eventId', $eventId);
 
 		if (1 == $unpaidOnly)
 			{
-			$sql .= ' and r.paymentId>0';
+			$condition->and('paymentId', 0, new \PHPFUI\ORM\Operator\GreaterThan());
 			}
 		elseif (2 == $unpaidOnly)
 			{
-			$sql .= ' and (r.paymentId is null or r.paymentId=0)';
+			$orCondition = new \PHPFUI\ORM\Condition('paymentId', null);
+			$orCondition->or('paymentId', 0);
+			$condition->and($orCondition);
 			}
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getArrayCursor($sql, [$eventId]);
+		return $this->getArrayCursor();
 		}
 
 	public function getLatestReservation() : \App\Record\Reservation

@@ -211,7 +211,7 @@ class Store extends \App\View\Folder
 			}
 		else
 			{
-			$choices = \App\Table\StoreItemDetail::getInStock($storeItem->storeItemId, 'detailLine');
+			$choices = new \App\Table\StoreItemDetail()->getInStock($storeItem->storeItemId, 'detailLine');
 
 			if (\count($choices) > 1)
 				{

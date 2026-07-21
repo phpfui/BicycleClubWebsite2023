@@ -561,7 +561,7 @@ class CueSheet
 
 	public function stats(int | string $year) : string
 		{
-		$stats = \App\Table\Ride::getCuesheetStats($year);
+		$stats = new \App\Table\Ride()->getCuesheetStats($year);
 		$count = \count($stats) ? $stats->current()->count : 0;
 		$total = 0;
 

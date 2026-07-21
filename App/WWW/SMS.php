@@ -56,9 +56,8 @@ class SMS extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		// if member is a ride leader today, then we send out the text to the ride.
 		$smsModel->setFromMember($member);
 
-		$rideTable = new \App\Table\Ride();
 		$today = \App\Tools\Date::today();
-		$rides = $rideTable->getDateRange($today, $today);
+		$rides = new \App\Table\Ride()->getDateRange($today, $today);
 
 		foreach ($rides as $ride)
 			{

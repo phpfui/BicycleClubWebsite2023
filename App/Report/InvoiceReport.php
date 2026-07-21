@@ -77,7 +77,7 @@ class InvoiceReport
 			$pdf->SetDocumentTitle($settings->value('clubAbbrev') . $title . ' Report Printed On ' . \App\Tools\Date::todayString());
 			$pdf->PrintHeader();
 			}
-		$invoices = \App\Table\Invoice::getPaidByDate($shipped, $parameters['startDate'], $parameters['endDate'], (int)$parameters['points']);
+		$invoices = new \App\Table\Invoice()->getPaidByDate($shipped, $parameters['startDate'], $parameters['endDate'], (int)$parameters['points']);
 		$customerModel = new \App\Model\Customer();
 
 		foreach ($invoices as $invoice)
@@ -89,7 +89,7 @@ class InvoiceReport
 				{
 				$shipped = $invoice['fullfillmentDate'];
 				}
-			$itemDetails = \App\Table\InvoiceItem::findItems((int)$invoice['invoiceId'], $parameters['restrict'], $parameters['exclude'], $parameters['text']);
+			$itemDetails = new \App\Table\InvoiceItem()->findItems((int)$invoice['invoiceId'], $parameters['restrict'], $parameters['exclude'], $parameters['text']);
 
 			if (\count($itemDetails))
 				{

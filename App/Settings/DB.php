@@ -31,6 +31,11 @@ class DB extends \App\Settings\Settings
 
 	public function getConnectionString() : string
 		{
+		if ('sqlite' === $this->driver)
+			{
+			return 'sqlite:' . $this->dbname;
+			}
+
 		$connectionString = $this->driver . ':';
 
 		foreach ($this->getFields() as $field => $value)
@@ -63,6 +68,16 @@ class DB extends \App\Settings\Settings
 		try
 			{
 			$pdo = new \PHPFUI\ORM\PDOInstance($this->getConnectionString(), $user, $pw);
+
+			if ('sqlite' === $this->driver)
+				{
+				$pdo->sqliteCreateFunction('acos', 'acos', 1);
+				$pdo->sqliteCreateFunction('cos', 'cos', 1);
+				$pdo->sqliteCreateFunction('sin', 'sin', 1);
+				$pdo->sqliteCreateFunction('radians', 'deg2rad', 1);
+
+				return $pdo;
+				}
 
 			$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT);
 			// set up session to our specifications

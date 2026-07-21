@@ -16,7 +16,7 @@ class My extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('Rides In My Category'))
 			{
-			$this->page->addPageContent($this->view->schedule(\App\Table\Ride::getMyCategoryRides(\App\Model\Session::signedInMemberRecord())));
+			$this->page->addPageContent($this->view->schedule(new \App\Table\Ride()->getMyCategoryRides(\App\Model\Session::signedInMemberRecord())));
 			}
 		}
 

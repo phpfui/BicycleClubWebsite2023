@@ -61,18 +61,22 @@ class JobEvent extends \PHPFUI\ORM\Table
 			}
 		}
 
-	public function getJobEvents(string $date = '1000-01-01') : \PHPFUI\ORM\DataObjectCursor
+	public function getJobEvents(string $date = '1000-01-01') : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from jobEvent where cutoffDate>=? order by cutoffDate';
+		$this->setWhere(new \PHPFUI\ORM\Condition('cutoffDate', $date, new \PHPFUI\ORM\Operator\GreaterThanEqual()));
+		$this->setOrderBy('cutoffDate');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$date]);
+		return $this->getRecordCursor();
 		}
 
-	public function getJobEventsBetween(string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
+	public function getJobEventsBetween(string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from jobEvent where cutoffDate>=? and cutoffDate<=? order by cutoffDate';
+		$condition = new \PHPFUI\ORM\Condition('cutoffDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('cutoffDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$this->setWhere($condition);
+		$this->setOrderBy('cutoffDate');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$startDate, $endDate]);
+		return $this->getRecordCursor();
 		}
 
 	/**

@@ -6,10 +6,10 @@ class InvoiceItem extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\InvoiceItem::class;
 
-	public static function findItems(int $invoiceId, string $restrict, string $exclude, string $text) : \PHPFUI\ORM\DataObjectCursor
+	public function findItems(int $invoiceId, string $restrict, string $exclude, string $text) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from invoiceItem where type=0 and invoiceId=?';
-		$input = [$invoiceId];
+		$condition = new \PHPFUI\ORM\Condition('type', 0);
+		$condition->and('invoiceId', $invoiceId);
 
 		if (! empty($restrict))
 			{
@@ -19,7 +19,7 @@ class InvoiceItem extends \PHPFUI\ORM\Table
 				{
 				$i = (int)$i;
 				}
-			$sql .= ' and storeItemId in (' . \implode(',', $in) . ')';
+			$condition->and('storeItemId', $in, new \PHPFUI\ORM\Operator\In());
 			}
 
 		if (! empty($exclude))
@@ -30,41 +30,48 @@ class InvoiceItem extends \PHPFUI\ORM\Table
 				{
 				$i = (int)$i;
 				}
-			$sql .= ' and storeItemId not in (' . \implode(',', $out) . ')';
+			$condition->and('storeItemId', $out, new \PHPFUI\ORM\Operator\NotIn());
 			}
 
 		if (! empty($text))
 			{
-			$sql .= ' and (title like ? or description like ? or detailLine like ?)';
 			$search = "%{$text}%";
-			$input[] = $search;
-			$input[] = $search;
-			$input[] = $search;
+			$orCondition = new \PHPFUI\ORM\Condition('title', $search, new \PHPFUI\ORM\Operator\Like());
+			$orCondition->or('description', $search, new \PHPFUI\ORM\Operator\Like());
+			$orCondition->or('detailLine', $search, new \PHPFUI\ORM\Operator\Like());
+			$condition->and($orCondition);
 			}
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
+		return $this->getDataObjectCursor();
 		}
 
 	/**
 	 * @param array<int> $types
 	 */
-	public static function getByDateType(string $startDate, string $endDate, array $types = []) : \PHPFUI\ORM\DataObjectCursor
+	public function getByDateType(string $startDate, string $endDate, array $types = []) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from invoiceItem ii left join invoice i on i.invoiceId=ii.invoiceId where i.orderDate>=? and i.orderDate<=? and i.paymentDate>"1000-01-01"';
-		$input = [$startDate, $endDate, ];
+		$this->setJoin('invoice');
+		$condition = new \PHPFUI\ORM\Condition('orderDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('orderDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$condition->and('paymentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
 
 		if ($types)
 			{
-			$sql .= ' and ii.type in (' . \implode(',', $types) . ')';
+			$condition->and('type', $types, new \PHPFUI\ORM\Operator\In());
 			}
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
+		return $this->getDataObjectCursor();
 		}
 
-	public static function getUnshippedItems() : \PHPFUI\ORM\ArrayCursor
+	public function getUnshippedItems() : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select * from invoice i,invoiceItem ii where i.fullfillmentDate is null and i.paymentDate > "1000-01-01" and i.invoiceId = ii.invoiceId';
+		$this->setJoin('invoice');
+		$condition = new \PHPFUI\ORM\Condition('paymentDate', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition->and('fullfillmentDate', null);
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getArrayCursor($sql);
+		return $this->getArrayCursor();
 		}
 	}

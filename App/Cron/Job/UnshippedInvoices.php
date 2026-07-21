@@ -12,7 +12,7 @@ class UnshippedInvoices extends \App\Cron\BaseJob
 	/** @param array<string, string> $parameters */
 	public function run(array $parameters = []) : void
 		{
-		$itemResult = \App\Table\InvoiceItem::getUnshippedItems();
+		$itemResult = new \App\Table\InvoiceItem()->getUnshippedItems();
 
 		if (\count($itemResult))
 			{

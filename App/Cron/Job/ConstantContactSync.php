@@ -31,7 +31,7 @@ class ConstantContactSync extends \App\Cron\BaseJob
 		$settingTable = new \App\Table\Setting();
 
 		// Get all members who wish to be subscribed from database
-		$newsletterMembers = \App\Table\Member::getNewsletterMembers(\App\Tools\Date::todayString());
+		$newsletterMembers = new \App\Table\Member()->getNewsletterMembers(\App\Tools\Date::todayString());
 
 		$subscribed = [];
 

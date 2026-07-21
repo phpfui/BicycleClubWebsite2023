@@ -24,7 +24,7 @@ class Subscription
 		$duesModel = new \App\Model\MembershipDues();
 		$this->subscriptionDues = (float)$duesModel->SubscriptionDues;
 		$this->clubName = $settingTable->value('clubName');
-		$members = \App\Table\Member::membersInMembership((int)$this->member['membershipId']);
+		$members = new \App\Table\Member()->membersInMembership((int)$this->member['membershipId']);
 		$this->subscriptionDues += (\count($members) - 1) * (float)$duesModel->AdditionalMemberDues[0];
 		}
 

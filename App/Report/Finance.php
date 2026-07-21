@@ -9,7 +9,8 @@ class Finance
 	 */
 	public function downloadChecksReceived(array $request) : void
 		{
-		$payments = \App\Table\Payment::getByDate($start = $request['start'], $end = $request['end'], \App\View\Finance::getPaymentRequest($request), (bool)$request['myChecks']);
+		$paymentTable = new \App\Table\Payment();
+		$payments = $paymentTable->getByDate($start = $request['start'], $end = $request['end'], \App\View\Finance::getPaymentRequest($request), (bool)$request['myChecks']);
 		$paymentTypes = \App\Table\Payment::getPaymentTypes();
 
 		if (\count($payments))
@@ -101,7 +102,7 @@ class Finance
 	public function downloadInvoiceSummary(array $request) : void
 		{
 		$typeArray = $this->getTypes($request);
-		$items = \App\Table\Invoice::getByDateType($start = $request['start'], $end = $request['end'], $typeArray);
+		$items = new \App\Table\Invoice()->getByDateType($start = $request['start'], $end = $request['end'], $typeArray);
 
 		if (\count($items))
 			{
@@ -123,7 +124,7 @@ class Finance
 	public function downloadPaymentSummary(array $request) : void
 		{
 		$typeArray = $this->getTypes($request);
-		$items = \App\Table\InvoiceItem::getByDateType($start = $request['start'], $end = $request['end'], $typeArray);
+		$items = new \App\Table\InvoiceItem()->getByDateType($start = $request['start'], $end = $request['end'], $typeArray);
 
 		if (\count($items))
 			{
@@ -195,13 +196,16 @@ class Finance
 			$reportName = 'Outstanding Volunteer Points as of ' . \date('F j, Y');
 			$widths = [40, 40, 70, 60];
 			$fields = ['firstName' => 'First Name', 'lastName' => 'Last Name', 'email' => 'email', $totalColumn => 'Outstanding Points'];
-			$sort = 'lastName,firstName';
+
+			$memberTable = new \App\Table\Member();
 
 			if (empty($request['sort']))
 				{
-				$sort = $totalColumn . ' desc,' . $sort;
+				$memberTable->setOrderBy($totalColumn, 'desc');
 				}
-			$result = \App\Table\Member::outstandingPoints($sort);
+			$memberTable->addOrderBy('lastName');
+			$memberTable->addOrderBy('firstName');
+			$result = $memberTable->outstandingPoints('memberId');
 			}
 		else
 			{
@@ -226,13 +230,16 @@ class Finance
 			$widths = [40, 40, 70, 30, 60];
 			$fields = ['firstName' => 'First Name', 'lastName' => 'Last Name', 'email' => 'email',
 				'invoiceId' => 'Invoice Id', $totalColumn => 'Points Redeemed', ];
-			$sort = 'lastName,firstName';
+
+			$invoiceTable = new \App\Table\Invoice();
 
 			if (empty($request['sort']))
 				{
-				$sort = $totalColumn . ' desc,' . $sort;
+				$invoiceTable->setOrderBy($totalColumn, 'desc');
 				}
-			$result = \App\Table\Invoice::pointsUsed($start, $end, $sort);
+			$invoiceTable->addOrderBy('lastName');
+			$invoiceTable->addOrderBy('firstName');
+			$result = $invoiceTable->pointsUsed($start, $end);
 			}
 
 		if ('CSV' == $request['downloadType'])
@@ -305,7 +312,8 @@ class Finance
 	 */
 	public function downloadTaxesCollected(array $request) : void
 		{
-		$taxes = \App\Table\Invoice::getTaxes($start = $request['start'], $end = $request['end']);
+		$invoiceTable = new \App\Table\Invoice();
+		$taxes = $invoiceTable->getTaxes($start = $request['start'], $end = $request['end']);
 
 		if (\count($taxes))
 			{

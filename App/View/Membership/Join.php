@@ -501,7 +501,7 @@ class Join
 			return $container;
 			}
 
-		$members = \App\Table\Member::membersInMembership($member->membershipId);
+		$members = new \App\Table\Member()->membersInMembership($member->membershipId);
 		$renewView = new \App\View\Membership\Renew($this->page, $member->membership, $this->memberView, \App\Model\Member::MEMBERSHIP_JOIN);
 		$container = $renewView->renew($discountCode);
 		$allowedMembers = (int)$this->duesModel->MaxMembersOnMembership;

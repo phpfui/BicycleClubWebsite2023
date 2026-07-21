@@ -8,13 +8,19 @@ class Job extends \PHPFUI\ORM\Table
 
 	public function getJobs(\App\Record\JobEvent $jobEvent) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select j.*,sum(js.needed) needed,(SELECT COUNT(*) FROM volunteerJobShift vjs WHERE vjs.jobId=j.jobId) taken
-						from job j
-						left join jobShift js on j.jobId=js.jobId
-						where j.jobEventId=?
-						group by j.jobId
-						ORDER BY j.title';
+		$this->setSelect('job.*');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$jobEvent->jobEventId]);
+		$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
+		$volunteerJobShiftTable->setWhere(new \PHPFUI\ORM\Condition('volunteerJobShift.jobId', new \PHPFUI\ORM\Literal('job.jobId')));
+		$input = [];
+		$this->addSelect(new \PHPFUI\ORM\Literal('(' . $volunteerJobShiftTable->getCountSQL($input, '') . ')'), 'taken');
+		$this->addSelect(new \PHPFUI\ORM\Literal('sum(jobShift.needed)'), 'needed');
+
+		$this->setWhere(new \PHPFUI\ORM\Condition('job.jobEventId', $jobEvent->jobEventId));
+		$this->setJoin('jobShift');
+		$this->setGroupBy('job.jobId');
+		$this->setOrderBy('job.title');
+
+		return $this->getDataObjectCursor();
 		}
 	}

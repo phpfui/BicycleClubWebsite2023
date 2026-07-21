@@ -70,15 +70,15 @@ class Inventory
 				{
 				if ('S' == $type)
 					{
-					$sid = \App\Table\StoreItemDetail::getInStock((int)$item['storeItemId']);
+					$sid = new \App\Table\StoreItemDetail()->getInStock((int)$item['storeItemId']);
 					}
 				elseif ('O' == $type)
 					{
-					$sid = \App\Table\StoreItemDetail::getOutOfStock((int)$item['storeItemId']);
+					$sid = new \App\Table\StoreItemDetail()->getOutOfStock((int)$item['storeItemId']);
 					}
 				else
 					{
-					$sid = \App\Table\StoreItemDetail::getAllStock((int)$item['storeItemId']);
+					$sid = new \App\Table\StoreItemDetail()->getAllStock((int)$item['storeItemId']);
 					}
 
 				if ($rows = \count($sid))

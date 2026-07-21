@@ -16,7 +16,7 @@ class HomePage implements \Stringable
 
 		$today = \App\Tools\Date::today();
 		// upcoming rides in my category
-		$rides = \App\Table\Ride::getMyCategoryRides($this->member);
+		$rides = new \App\Table\Ride()->getMyCategoryRides($this->member);
 
 		$ride = $rides->current();
 
@@ -238,7 +238,8 @@ class HomePage implements \Stringable
 			{
 			$rideView = new \App\View\Rides($this->page);
 			$limit = (int)$this->page->value('publicRideListLimit');
-			$output->add($rideView->schedule(\App\Table\Ride::upcomingRides($limit)));
+			$rideTable = new \App\Table\Ride();
+			$output->add($rideView->schedule($rideTable->upcomingRides($limit)));
 			}
 
 		return (string)$output;

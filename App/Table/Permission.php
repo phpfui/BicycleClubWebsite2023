@@ -20,16 +20,25 @@ class Permission extends \PHPFUI\ORM\Table
 	public function getAllPermissions(string $column = 'name', string $sort = 'a', int $page = 0, int $limit = 0) : \PHPFUI\ORM\ArrayCursor
 		{
 		$sort = 'd' == $sort ? 'desc' : '';
-		$column .= 'menu' == $column ? " {$sort},name {$sort}" : " {$sort}";
-		$sql = "select * from permission where permissionId > 100000 order by {$column}";
+
+		$this->setWhere(new \PHPFUI\ORM\Condition('permissionId', 100000, new \PHPFUI\ORM\Operator\GreaterThan()));
+
+		if ('menu' === $column)
+			{
+			$this->setOrderBy('menu', $sort);
+			$this->addOrderBy('name', $sort);
+			}
+		else
+			{
+			$this->setOrderBy($column, $sort);
+			}
 
 		if ($limit)
 			{
-			$start = $page * $limit;
-			$sql .= " limit {$start},{$limit}";
+			$this->setLimit($limit, $page);
 			}
 
-		return \PHPFUI\ORM::getArrayCursor($sql);
+		return $this->getArrayCursor();
 		}
 
 	public function getAllPermissionsCount() : int
@@ -39,20 +48,26 @@ class Permission extends \PHPFUI\ORM\Table
 		return (int)\PHPFUI\ORM::getValue($sql);
 		}
 
+	/**
+	 * @return ?\PHPFUI\ORM\RecordCursor<\App\Record\Member>
+	 */
 	public function getMembersWithPermissionGroup(string $name) : ?\PHPFUI\ORM\RecordCursor
 		{
 		$settingTable = new \App\Table\Setting();
 		$permission = $settingTable->getStandardPermissionGroup($name);
 
-		if (! $permission->name)
+		if (! $permission?->name)
 			{
 			return null;
 			}
 
-		$id = $permission->permissionId;
-		$sql = 'select * from member left join userPermission on member.memberId=userPermission.memberId where permissionGroup=? and revoked=0';
+		$memberTable = new \App\Table\Member();
+		$memberTable->addJoin('userPermission');
+		$condition = new \PHPFUI\ORM\Condition('permissionGroup', $permission->permissionId);
+		$condition->and('revoked', 0);
+		$memberTable->setWhere($condition);
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Member(), $sql, [$id]);
+		return $memberTable->getRecordCursor();
 		}
 
 	public function getNextGroupId() : int

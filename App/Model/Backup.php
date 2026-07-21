@@ -30,36 +30,47 @@ class Backup
 
 			\App\Tools\File::mkdir($dir, 0o777, true);
 			}
-		$backupFilename = $this->basePath . $baseFileName . '.gz';
-		\App\Tools\File::unlink($backupFilename);
 
 		$dbSettings = new \App\Settings\DB();
-		$settings = [];
-		$settings['add-drop-table'] = true;
-		$settings['default-character-set'] = 'utf8mb4';
-		$settings['compress'] = \Druidfi\Mysqldump\Compress\CompressManagerFactory::GZIP;
 
-		if ($schemaOnly)
+		if ('sqlite' === $dbSettings->driver)
 			{
-			$settings['no-data'] = true;
-			$settings['reset-auto-increment'] = true;
+			$backupFilename = $dbSettings->dbname;
+			$extension = '.sqlite';
 			}
 		else
 			{
-			$settings['disable-keys'] = true;
-			$settings['extended-insert'] = true;
-			$settings['no-autocommit'] = true;
-			$settings['single-transaction'] = true;
-			}
+			$backupFilename = $this->basePath . $baseFileName . '.gz';
+			\App\Tools\File::unlink($backupFilename);
+			$extension = '.zip';
 
-		$dump = new \Druidfi\Mysqldump\Mysqldump($dbSettings->getConnectionString(), $dbSettings->getUser(), $dbSettings->getPassword(), $settings);
-		$dump->start($backupFilename);
+			$settings = [];
+			$settings['add-drop-table'] = true;
+			$settings['default-character-set'] = 'utf8mb4';
+			$settings['compress'] = \Druidfi\Mysqldump\Compress\CompressManagerFactory::GZIP;
+
+			if ($schemaOnly)
+				{
+				$settings['no-data'] = true;
+				$settings['reset-auto-increment'] = true;
+				}
+			else
+				{
+				$settings['disable-keys'] = true;
+				$settings['extended-insert'] = true;
+				$settings['no-autocommit'] = true;
+				$settings['single-transaction'] = true;
+				}
+
+			$dump = new \Druidfi\Mysqldump\Mysqldump($dbSettings->getConnectionString(), $dbSettings->getUser(), $dbSettings->getPassword(), $settings);
+			$dump->start($backupFilename);
+			}
 
 		if (! $schemaOnly)
 			{
 			foreach ($this->directories as $directory)
 				{
-				$destFilename = "{$this->basePath}{$directory}/{$baseFileName}.zip";
+				$destFilename = "{$this->basePath}{$directory}/{$baseFileName}.{$extension}";
 
 				if (! \copy($backupFilename, $destFilename))
 					{

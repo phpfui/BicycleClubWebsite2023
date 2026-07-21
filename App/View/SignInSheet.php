@@ -206,8 +206,7 @@ JAVASCRIPT;
 		{
 		$rideSelect = new \PHPFUI\Input\Select('rideId', 'Select the ride');
 		$rideSelect->setToolTip('Enter the date of the ride first, then select the ride.');
-		$rideTable = new \App\Table\Ride();
-		$rides = $rideTable->getDateRange(\App\Tools\Date::fromString($date), \App\Tools\Date::fromString($date));
+		$rides = new \App\Table\Ride()->getDateRange(\App\Tools\Date::fromString($date), \App\Tools\Date::fromString($date));
 
 		foreach ($rides as $ride)
 			{

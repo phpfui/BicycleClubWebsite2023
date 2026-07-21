@@ -92,7 +92,8 @@ class Ride
 		{
 		// add leader for sure
 		$this->addSignup($ride, $ride->member, \App\Enum\RideSignup\Status::DEFINITELY_RIDING);
-		$assistants = \App\Table\AssistantLeader::getForRide($ride);
+		$assistantLeaderTable = new \App\Table\AssistantLeader();
+		$assistants = $assistantLeaderTable->getForRide($ride);
 
 		foreach ($assistants as $assistant)
 			{
@@ -168,7 +169,9 @@ class Ride
 		$email->bulkSend();
 		$this->deleteSignup($ride, $leader);
 
-		foreach (\App\Table\AssistantLeader::getForRide($ride) as $assistant)
+		$assistantLeaderTable = new \App\Table\AssistantLeader();
+
+		foreach ($assistantLeaderTable->getForRide($ride) as $assistant)
 			{
 			$this->deleteSignup($ride, $assistant);
 			}
@@ -606,7 +609,7 @@ class Ride
 			{
 			return true;
 			}
-		$assistants = \App\Table\AssistantLeader::getForRide($ride);
+		$assistants = new \App\Table\AssistantLeader()->getForRide($ride);
 
 		foreach ($assistants as $assistant)
 			{

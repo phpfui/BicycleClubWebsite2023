@@ -184,7 +184,7 @@ class Leader extends \PDF_MC_Table
 		// volunteer
 		if (! empty($parameters[$prefix . 'EventX']))
 			{
-			$volunteers = \App\Table\Member::getVolunteersForEvents($parameters[$prefix . 'EventX']);
+			$volunteers = new \App\Table\Member()->getVolunteersForEvents($parameters[$prefix . 'EventX']);
 
 			foreach ($volunteers as $volunteer)
 				{
@@ -196,7 +196,7 @@ class Leader extends \PDF_MC_Table
 			}
 
 		// cue sheets
-		$cueSheets = \App\Table\CueSheet::getForDateRange($startDate, $endDate);
+		$cueSheets = new \App\Table\CueSheet()->getForDateRange($startDate, $endDate);
 
 		foreach ($cueSheets as $cueSheet)
 			{
@@ -207,7 +207,7 @@ class Leader extends \PDF_MC_Table
 			}
 
 		// signin sheets or online attendance
-		$signinSheets = \App\Table\SigninSheet::getForDateRange($startDate, $endDate);
+		$signinSheets = new \App\Table\SigninSheet()->getForDateRange($startDate, $endDate);
 
 		foreach ($signinSheets as $signinSheet)
 			{
@@ -218,9 +218,7 @@ class Leader extends \PDF_MC_Table
 			}
 
 		// ride status reported
-		$rideStatusId = \App\Table\Ride::getRideStatus($startDate, $endDate);
-
-		foreach ($rideStatusId as $status)
+		foreach (new \App\Table\Ride()->getRideStatus($startDate, $endDate) as $status)
 			{
 			if ($id = $this->addLeader((int)$status['memberId']))
 				{
@@ -229,7 +227,8 @@ class Leader extends \PDF_MC_Table
 			}
 
 		// assistant leads
-		$assistantLeaders = \App\Table\AssistantLeader::getForDateRange($startDate, $endDate);
+		$assistantLeaderTable = new \App\Table\AssistantLeader();
+		$assistantLeaders = $assistantLeaderTable->getForDateRange($startDate, $endDate);
 
 		foreach ($assistantLeaders as $leader)
 			{
@@ -242,7 +241,7 @@ class Leader extends \PDF_MC_Table
 		$categoryTable = new \App\Table\Category();
 		$paceTable = new \App\Table\Pace();
 		// rides lead by category
-		$rides = \App\Table\Ride::getDateRange(\App\Tools\Date::fromString($startDate), \App\Tools\Date::fromString($endDate));
+		$rides = new \App\Table\Ride()->getDateRange(\App\Tools\Date::fromString($startDate), \App\Tools\Date::fromString($endDate));
 
 		foreach ($rides as $ride)
 			{

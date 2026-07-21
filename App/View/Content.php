@@ -240,8 +240,7 @@ class Content extends \App\UI\ContentEditor
 		$count = $blog->count;
 
 		$container = new \PHPFUI\Container();
-		$blogTable = new \App\Table\Blog();
-		$stories = $blogTable->getStoriesForBlog($blog, \App\Model\Session::isSignedIn(), $year);
+		$stories = new \App\Table\Blog()->getStoriesForBlog($blog, \App\Model\Session::isSignedIn(), $year);
 
 		if (isset($_GET['order']) && $this->addContent)
 			{
@@ -533,7 +532,7 @@ class Content extends \App\UI\ContentEditor
 		$fieldSet->add($column);
 		$tabs->addTab('Special Handling', $fieldSet);
 
-		$blogs = \App\Table\Blog::getBlogsByNameForStory((int)$storyId);
+		$blogs = new \App\Table\Blog()->getBlogsByNameForStory((int)$storyId);
 		$multiSelect = new \PHPFUI\Input\MultiSelect('blog', 'Assign to Pages');
 		$multiSelect->setColumns(3);
 
@@ -816,7 +815,7 @@ class Content extends \App\UI\ContentEditor
 					$story->setFrom($_POST);
 					$story->editorId = \App\Model\Session::getSignedInMemberId();
 					$story->update();
-					$blogs = \App\Table\Blog::getBlogsByNameForStory($storyId = (int)$_POST['storyId']);
+					$blogs = new \App\Table\Blog()->getBlogsByNameForStory($storyId = (int)$_POST['storyId']);
 					$activeBlogs = \array_flip($_POST['blog'] ?? []);
 
 					foreach ($blogs as $blog)

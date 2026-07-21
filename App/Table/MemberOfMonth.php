@@ -35,8 +35,17 @@ class MemberOfMonth extends \PHPFUI\ORM\Table
 
 	public function getRange(string $first, string $last) : \PHPFUI\ORM\ArrayCursor
 		{
+
 		$sql = 'select mom.*,m.* from memberOfMonth mom left join member m on m.memberId=mom.memberId where mom.month>=? and mom.month<=? order by mom.month';
 
-		return \PHPFUI\ORM::getArrayCursor($sql, [$first, $last]);
+		$this->setSelect('memberOfMonth.*');
+		$this->addSelect('member.*');
+		$this->setJoin('member');
+		$this->setOrderBy('month');
+		$condition = new \PHPFUI\ORM\Condition('month', $first, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('month', $last, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$this->setWhere($condition);
+
+		return $this->getArrayCursor();
 		}
 	}

@@ -32,9 +32,10 @@ class Pace extends \PHPFUI\ORM\Table
 
 	public function getPaceOrder(int $categoryId) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from pace where categoryId=? order by ordering';
+		$this->setOrderBy('ordering');
+		$this->setWhere(new \PHPFUI\ORM\Condition('categoryId', $categoryId));
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$categoryId]);
+		return $this->getDataObjectCursor();
 		}
 
 	/** @return array<int, array<string,string>> */

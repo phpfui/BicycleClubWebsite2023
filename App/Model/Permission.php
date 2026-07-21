@@ -231,7 +231,8 @@ class Permission extends \App\Model\PermissionBase
 
 		if ($id < 100000)
 			{
-			$result = \App\Table\PermissionGroup::getPermissionsForGroup($id);
+			$permissionGroupTable = new \App\Table\PermissionGroup();
+			$result = $permissionGroupTable->getPermissionsForGroup($id);
 
 			foreach ($result as $permission)
 				{
@@ -262,7 +263,7 @@ class Permission extends \App\Model\PermissionBase
 
 		if ($memberId)
 			{
-			$result = \App\Table\UserPermission::getPermissionsForUser($memberId);
+			$result = new \App\Table\UserPermission()->getPermissionsForUser($memberId);
 
 			foreach ($result as $permission)
 				{

@@ -8,37 +8,62 @@ class VolunteerJobShift extends \PHPFUI\ORM\Table
 
 	public function getJobsForEventDateMember(int $jobEventId, string $date, int $memberId) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select vjs.* from volunteerJobShift vjs left join job j on vjs.jobId=j.jobId where j.jobEventId=? and vjs.memberId=? and j.date=?';
+		$this->setSelect('volunteerJobShift.*');
+		$this->setJoin('job');
+		$condition = new \PHPFUI\ORM\Condition('job.jobEventId', $jobEventId);
+		$condition->and('volunteerJobShift.memberId', $memberId);
+		$condition->and('job.date', $date);
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$jobEventId, $memberId, $date]);
+		return $this->getDataObjectCursor();
 		}
 
-	public function getJobsForMember(int $memberId, int $event = 0) : \PHPFUI\ORM\DataObjectCursor
+	public function getJobsForMember(int $memberId, int $jobEventId = 0) : \PHPFUI\ORM\DataObjectCursor
 		{
-		if (! $event)
+		$this->setDistinct();
+		$this->setSelect('volunteerJobShift.jobId');
+		$this->addJoin('job');
+		$condition = new \PHPFUI\ORM\Condition('volunteerJobShift.memberId', $memberId);
+
+		if (! $jobEventId)
 			{
-			$sql = 'select distinct vjs.jobId from volunteerJobShift vjs left join job j on vjs.jobId=j.jobId where vjs.memberId=? and j.date>=? order by j.date';
-
-			return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId,
-				\App\Tools\Date::todayString(), ]);
+			$condition->and('job.date', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
 			}
-		$sql = 'select distinct vjs.jobId from volunteerJobShift vjs left join job j on vjs.jobId=j.jobId where vjs.memberId=? and j.jobEventId=? order by j.date';
+		else
+			{
+			$condition->and('job.jobEventId', $jobEventId);
+			}
+		$this->setWhere($condition);
+		$this->setOrderBy('job.date');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId, $event, ]);
+		return $this->getDataObjectCursor();
 		}
 
 	public function getJobVolunteersSince(string $date) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select distinct j.jobEventId,j.date,vjs.memberId,vjs.worked from volunteerJobShift vjs left join job j on vjs.jobId=j.jobId where j.date>=? order by j.jobEventId,j.date,vjs.memberId';
+		$this->setDistinct();
+		$this->setSelect('jobEventId');
+		$this->addSelect('date');
+		$this->addSelect('volunteerJobShift.memberId');
+		$this->addSelect('worked');
+		$this->setJoin('job');
+		$this->setWhere(new \PHPFUI\ORM\Condition('date', $date, new \PHPFUI\ORM\Operator\GreaterThanEqual()));
+		$this->setOrderBy('jobEventId');
+		$this->addOrderBy('date');
+		$this->addOrderBy('volunteerJobShift.memberId');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$date]);
+		return $this->getDataObjectCursor();
 		}
 
 	public function getShiftsForMember(\App\Record\Job $job, \App\Record\Member $member) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from volunteerJobShift vjs left join jobShift js on js.jobShiftId=vjs.jobShiftId where vjs.memberId=? and vjs.jobId=? order by js.startTime';
+		$condition = new \PHPFUI\ORM\Condition('volunteerJobShift.memberId', $member->memberId);
+		$condition->and('volunteerJobShift.jobId', $job->jobId);
+		$this->setWhere($condition);
+		$this->setJoin('jobShift');
+		$this->setOrderBy('startTime');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$member->memberId, $job->jobId, ]);
+		return $this->getDataObjectCursor();
 		}
 
 	public function getUniqueVolunteers(\App\Record\JobEvent $jobEvent) : \PHPFUI\ORM\DataObjectCursor
@@ -59,39 +84,82 @@ class VolunteerJobShift extends \PHPFUI\ORM\Table
 
 	public function getVolunteers(int $jobId) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from volunteerJobShift vjs left join member m on vjs.memberId=m.memberId where vjs.jobId=? order by vjs.shiftLeader desc,m.lastName,m.firstName';
+		$this->setSelect('volunteerJobShift.*');
+		$this->addSelect('member.*');
+		$this->setJoin('member');
+		$this->setWhere(new \PHPFUI\ORM\Condition('jobId', $jobId));
+		$this->setOrderBy('shiftLeader', 'desc');
+		$this->addOrderBy('lastName');
+		$this->addOrderBy('firstName');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$jobId]);
+		return $this->getDataObjectCursor();
 		}
 
 	public function getVolunteersByShift(\App\Record\Job $job) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from jobShift js left join volunteerJobShift vjs on vjs.jobId=js.jobId and vjs.jobShiftId=js.jobShiftId left join member m on vjs.memberId=m.memberId where js.jobId=? order by vjs.shiftLeader desc,js.startTime,js.jobShiftId,m.lastName,m.firstName';
+		$jobShiftTable = new \App\Table\JobShift();
+		$jobShiftTable->setSelect('jobShift.*');
+		$jobShiftTable->addSelect('volunteerJobShift.*');
+		$jobShiftTable->addSelect('member.*');
+		$vjsJoin = new \PHPFUI\ORM\Condition('volunteerJobShift.jobId', new \PHPFUI\ORM\Literal('jobShift.jobId'));
+		$vjsJoin->and('volunteerJobShift.jobShiftId', new \PHPFUI\ORM\Literal('jobShift.jobShiftId'));
+		$jobShiftTable->setJoin('volunteerJobShift', $vjsJoin);
+		$jobShiftTable->addJoin('member', new \PHPFUI\ORM\Condition('volunteerJobShift.memberId', new \PHPFUI\ORM\Literal('member.memberId')));
+		$jobShiftTable->setWhere(new \PHPFUI\ORM\Condition('jobShift.jobId', $job->jobId));
+		$jobShiftTable->setOrderBy('volunteerJobShift.shiftLeader', 'desc');
+		$jobShiftTable->addOrderBy('jobShift.startTime');
+		$jobShiftTable->addOrderBy('jobShift.jobShiftId');
+		$jobShiftTable->addOrderBy('member.lastName');
+		$jobShiftTable->addOrderBy('member.firstName');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$job->jobId]);
+		return $jobShiftTable->getDataObjectCursor();
 		}
 
 	public function getVolunteerSchedule(\App\Record\JobEvent $jobEvent) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select m.memberId,vjs.*,m.lastName,m.firstName,m.email,m.cellPhone,js.startTime,js.endTime,j.title,j.date from volunteerJobShift vjs left join member m on vjs.memberId=m.memberId left join jobShift js on vjs.jobShiftId=js.jobShiftId left join job j on j.jobId=js.jobId where j.jobEventId=? order by j.date,js.startTime,m.lastName,m.firstName';
+		$this->setSelect('member.memberId');
+		$this->addSelect('volunteerJobShift.*');
+		$this->addSelect('member.lastName');
+		$this->addSelect('member.firstName');
+		$this->addSelect('member.email');
+		$this->addSelect('member.cellPhone');
+		$this->addSelect('jobShift.startTime');
+		$this->addSelect('jobShift.endTime');
+		$this->addSelect('job.title');
+		$this->addSelect('job.date');
 
-		return \PHPFUI\ORM::getArrayCursor($sql, [$jobEvent->jobEventId]);
+		$this->setJoin('member');
+		$this->addJoin('jobShift');
+		$this->addJoin('job', new \PHPFUI\ORM\Condition('job.jobId', new \PHPFUI\ORM\Literal('jobShift.jobId')));
+		$this->setWhere(new \PHPFUI\ORM\Condition('job.jobEventId', $jobEvent->jobEventId));
+		$this->setOrderBy('job.date')->addOrderBy('jobShift.startTime')->addOrderBy('member.lastName')->addOrderBy('member.firstName');
+
+		return $this->getArrayCursor();
 		}
 
 	public function getVolunteersForDates(string $startDate, string $endDate) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = "select concat(m.firstName,' ',m.lastName) as name,j.date,je.name as event,j.title as job from volunteerJobShift vjs " .
-			'left join member m on m.memberId=vjs.memberId left join job j on j.jobId=vjs.jobId ' .
-			'left join jobEvent je on je.jobEventId=j.jobEventId ' .
-			'where vjs.worked=1 and je.date>=? and je.date<=? order by m.lastName,m.firstName,j.date,j.title';
+		$this->setSelect(new \PHPFUI\ORM\Literal("concat(member.firstName,' ',member.lastName)"), 'name');
+		$this->addSelect('job.date');
+		$this->addSelect('jobEvent.name', 'event');
+		$this->addSelect('job.title', 'job');
+		$this->setJoin('member');
+		$this->addJoin('job');
+		$this->addJoin('jobEvent', new \PHPFUI\ORM\Condition('jobEvent.jobEventId', new \PHPFUI\ORM\Literal('job.jobEventId')));
+		$condition = new \PHPFUI\ORM\Condition('worked', 1);
+		$condition->and('jobEvent.date', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('jobEvent.date', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getArrayCursor($sql, [$startDate, $endDate]);
+		$this->setOrderBy('member.lastName')->addOrderBy('member.firstName')->addOrderBy('job.date')->addOrderBy('job.title');
+
+		return $this->getArrayCursor();
 		}
 
 	public function isShiftLeader(\App\Record\Job $job, \App\Record\Member $member) : bool
 		{
 		$sql = 'select count(*) from volunteerJobShift where shiftLeader>0 and memberId=? and jobId=?';
 
-		return (int)\PHPFUI\ORM::getValue($sql, [$member->memberId, $job->jobId]) > 0;
+		return \PHPFUI\ORM::getValue($sql, [$member->memberId, $job->jobId]) > 0;
 		}
 	}

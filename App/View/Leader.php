@@ -283,8 +283,7 @@ class Leader
 			'Average Pace',
 			'Average Riders',
 			'Leader Opted Out', ]);
-		$rideTable = new \App\Table\Ride();
-		$rides = $rideTable->pastRidesForMember($leader, 0);
+		$rides = new \App\Table\Ride()->pastRidesForMember($leader, 0);
 		$lastYear = 0;
 		$count = 0;
 		$row = [];

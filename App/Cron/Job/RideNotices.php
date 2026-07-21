@@ -16,7 +16,7 @@ class RideNotices extends \App\Cron\BaseJob
 		$model = new \App\Model\Ride();
 		$todayString = \App\Tools\Date::toString($today);
 		$nowString = \date('h:i:00');
-		$advanceRides = \App\Table\Ride::getDateRange($today, $today + 6);
+		$advanceRides = new \App\Table\Ride()->getDateRange($today, $today + 6);
 
 		$rideDescriptions = [];
 

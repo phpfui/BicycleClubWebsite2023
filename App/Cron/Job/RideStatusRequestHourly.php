@@ -15,7 +15,7 @@ class RideStatusRequestHourly extends \App\Cron\BaseJob
 		$model = new \App\Model\RideStatusRequest();
 		$hour = $this->controller->runningAtHour() - $model->getHourOffset();
 
-		foreach (\App\Table\Ride::unreportedRidesOn([\App\Tools\Date::toString($this->controller->runningAtJD())]) as $ride)
+		foreach (new \App\Table\Ride()->unreportedRidesOn([\App\Tools\Date::toString($this->controller->runningAtJD())]) as $ride)
 			{
 			$time = \App\Tools\TimeHelper::fromString($ride->startTime);
 			$rideHour = (int)($time / 60);

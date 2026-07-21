@@ -19,7 +19,7 @@ class Event implements \Stringable
 			$email->setHtml();
 			$message = 'Unknown command';
 			$status = 'error';
-			$persons = \App\Table\Reservation::getEmails($this->event->eventId, $_POST['status']);
+			$persons = new \App\Table\Reservation()->getEmails($this->event->eventId, $_POST['status']);
 			\App\Model\Session::setFlash('post', $_POST);
 
 			if ($_POST['submit'] == $this->testMessage)

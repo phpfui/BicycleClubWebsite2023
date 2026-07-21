@@ -210,7 +210,8 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			{
 			$ride->memberId = \App\Model\Session::getSignedInMemberId();
 			}
-		$myride = $ride->memberId == \App\Model\Session::getSignedInMemberId();
+		$rideModel = new \App\Model\Ride();
+		$myRide = $rideModel->isLeaderOrAssistant($ride);
 
 		if (! $ride->loaded())
 			{
@@ -218,11 +219,11 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		elseif ($afterRide)
 			{
-			$this->page->addHeader('Update Ride Status', override:$myride);
+			$this->page->addHeader('Update Ride Status', override:$myRide);
 			}
 		else
 			{
-			$this->page->addHeader('Edit Ride', override:$myride);
+			$this->page->addHeader('Edit Ride', override:$myRide);
 			}
 		$view = new \App\View\Ride\Editor($this->page);
 		$RWGPSId = (int)($_GET['RWGPSId'] ?? 0);
@@ -277,7 +278,8 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$categories = \App\Table\MemberCategory::getRideCategoriesForMember(\App\Model\Session::getSignedInMemberId());
 				$this->page->addPageContent($this->view->categorySelector($categories));
 				}
-			$this->page->addPageContent($this->view->schedule(\App\Table\Ride::upcomingRides()));
+			$rideTable = new \App\Table\Ride();
+			$this->page->addPageContent($this->view->schedule($rideTable->upcomingRides()));
 			}
 		}
 
@@ -335,7 +337,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 						$month = 1;
 						}
 					$end = \App\Tools\Date::make($year, $month, 1) - 1;
-					$this->page->addPageContent($this->view->schedule(\App\Table\Ride::getDateRange($start, $end)));
+					$this->page->addPageContent($this->view->schedule(new \App\Table\Ride()->getDateRange($start, $end)));
 					}
 				}
 			else
@@ -410,7 +412,8 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$limit = (int)$this->page->value('publicRideListLimit');
 		$showNoLeader = (int)$this->page->value('NoLeadersOnPublicSchedule');
 
-		$this->page->addPageContent($this->view->schedule(\App\Table\Ride::upcomingRides($limit), showNoLeader:$showNoLeader));
+		$rideTable = new \App\Table\Ride();
+		$this->page->addPageContent($this->view->schedule($rideTable->upcomingRides($limit), showNoLeader:$showNoLeader));
 		}
 
 	public function search() : void

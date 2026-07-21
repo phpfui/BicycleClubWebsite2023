@@ -22,11 +22,11 @@ class Points
 		$container->add(new \App\UI\Display('Available Volunteer Points', $member->volunteerPoints ?? 0));
 
 		$categories = [];
-		$categories['Ride Leads'] = ['table' => \App\Table\Ride::class, 'date' => 'rideDate', 'name' => 'title'];
-		$categories['Assistant Leads'] = ['table' => \App\Table\AssistantLeader::class, 'date' => 'rideDate', 'name' => 'title'];
-		$categories['Volunteering'] = ['table' => \App\Table\VolunteerPoint::class, 'date' => 'date', 'name' => 'name'];
-		$categories['Cue Sheets'] = ['table' => \App\Table\CueSheet::class, 'date' => 'dateAdded', 'name' => 'name'];
-		$categories['Sign In Sheets'] = ['table' => \App\Table\SigninSheet::class, 'date' => 'dateAdded', 'name' => ''];
+		$categories['Ride Leads'] = ['table' => new \App\Table\Ride(), 'date' => 'rideDate', 'name' => 'title'];
+		$categories['Assistant Leads'] = ['table' => new \App\Table\AssistantLeader(), 'date' => 'rideDate', 'name' => 'title'];
+		$categories['Volunteering'] = ['table' => new \App\Table\VolunteerPoint(), 'date' => 'date', 'name' => 'name'];
+		$categories['Cue Sheets'] = ['table' => new \App\Table\CueSheet(), 'date' => 'dateAdded', 'name' => 'name'];
+		$categories['Sign In Sheets'] = ['table' => new \App\Table\SigninSheet(), 'date' => 'dateAdded', 'name' => ''];
 
 		$tabs = new \PHPFUI\Tabs();
 		$volunteerPointStartDate = \App\Tools\Date::make(2019, 6, 17);
@@ -46,7 +46,7 @@ class Points
 		foreach ($categories as $name => $category)
 			{
 			$class = $category['table'];
-			$items = $class::getForMemberDate($member->memberId, $startDate, $endDate);
+			$items = $class->getForMemberDate($member->memberId, $startDate, $endDate);
 
 			if (\count($items))
 				{
@@ -202,7 +202,7 @@ return $member->fullName();});
 		}
 
 	/**
-	 * @param array<string,string> $category
+	 * @param array<string, \PHPFUI\ORM\Table|string> $category
 	 */
 	private function listDates(\PHPFUI\ORM\DataObjectCursor $items, array $category) : \PHPFUI\Table
 		{

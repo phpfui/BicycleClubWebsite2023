@@ -6,24 +6,31 @@ class StoreItemDetail extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\StoreItemDetail::class;
 
-	public static function getAllStock(int $storeItemId, string $order = 'storeItemDetailId') : \PHPFUI\ORM\ArrayCursor
+	public function getAllStock(int $storeItemId, string $order = 'storeItemDetailId') : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select * from storeItemDetail where storeItemId=? order by ' . $order;
+		$this->setWhere(new \PHPFUI\ORM\Condition('storeItemId', $storeItemId));
+		$this->setOrderBy($order);
 
-		return \PHPFUI\ORM::getArrayCursor($sql, [$storeItemId]);
+		return $this->getArrayCursor();
 		}
 
-	public static function getInStock(int $storeItemId, string $order = 'storeItemDetailId') : \PHPFUI\ORM\ArrayCursor
+	public function getInStock(int $storeItemId, string $order = 'storeItemDetailId') : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select * from storeItemDetail where storeItemId=? and quantity > 0 order by ' . $order;
+		$condition = new \PHPFUI\ORM\Condition('storeItemId', $storeItemId);
+		$condition->and('quantity', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+		$this->setWhere($condition);
+		$this->setOrderBy($order);
 
-		return \PHPFUI\ORM::getArrayCursor($sql, [$storeItemId]);
+		return $this->getArrayCursor();
 		}
 
-	public static function getOutOfStock(int $storeItemId, string $order = 'storeItemDetailId') : \PHPFUI\ORM\ArrayCursor
+	public function getOutOfStock(int $storeItemId, string $order = 'storeItemDetailId') : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select * from storeItemDetail where storeItemId=? and quantity <= 0 order by ' . $order;
+		$condition = new \PHPFUI\ORM\Condition('storeItemId', $storeItemId);
+		$condition->and('quantity', 0, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$this->setWhere($condition);
+		$this->setOrderBy($order);
 
-		return \PHPFUI\ORM::getArrayCursor($sql, [$storeItemId]);
+		return $this->getArrayCursor();
 		}
 	}

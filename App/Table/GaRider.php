@@ -34,9 +34,10 @@ class GaRider extends \PHPFUI\ORM\Table
 			$condition->and('pending', $pending);
 			}
 		$this->setWhere($condition);
-		$this->addGroupBy('email');
+		$this->setGroupBy('email');
 		$this->addOrderBy('email');
 		$this->addOrderBy('pending', 'desc');
+		$this->addOrderBy('gaEventId');
 
 		return $this->getRecordCursor();
 		}
@@ -48,7 +49,7 @@ class GaRider extends \PHPFUI\ORM\Table
 	 */
 	public function getForEvents(array $events) : \PHPFUI\ORM\RecordCursor
 		{
-		$this->addOrderBy('lastName')->addOrderBy('firstName');
+		$this->setOrderBy('lastName')->addOrderBy('firstName');
 
 		if (empty($events))
 			{
@@ -68,7 +69,7 @@ class GaRider extends \PHPFUI\ORM\Table
 		$gaOptionTable->addOrderBy('ordering');
 		$options = $gaOptionTable->getRecordCursor();
 
-		$this->addSelect('gaRider.*');
+		$this->setSelect('gaRider.*');
 		$joinNumber = 1;
 
 		foreach ($options as $option)
@@ -85,6 +86,22 @@ class GaRider extends \PHPFUI\ORM\Table
 			$this->addJoin('gaSelection', $selectionOnCondition, 'left', $selectionJoinAlias);
 			++$joinNumber;
 			}
+
+		$this->addSelect('invoice.discount');
+		$this->addSelect('invoice.discountCodeId');
+		$this->addSelect('invoice.errors');
+		$this->addSelect('invoice.fullfillmentDate');
+		$this->addSelect('invoice.instructions');
+		$this->addSelect('invoice.invoiceId');
+		$this->addSelect('invoice.orderDate');
+		$this->addSelect('invoice.paidByCheck');
+		$this->addSelect('invoice.paymentDate');
+		$this->addSelect('invoice.paypalPaid');
+		$this->addSelect('invoice.paypaltx');
+		$this->addSelect('invoice.pointsUsed');
+		$this->addSelect('invoice.totalPrice');
+		$this->addSelect('invoice.totalShipping');
+		$this->addSelect('invoice.totalTax');
 
 		$this->addSelect('invoice.*');
 		$this->addSelect('discountCode.discountCode');

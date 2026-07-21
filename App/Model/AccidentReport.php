@@ -81,7 +81,9 @@ class AccidentReport
 
 			$email->addToMember($leader);
 
-			foreach (\App\Table\AssistantLeader::getForRide($ride) as $assistant)
+			$assistantLeaderTable = new \App\Table\AssistantLeader();
+
+			foreach ($assistantLeaderTable->getForRide($ride) as $assistant)
 				{
 				$email->addToMember($assistant);
 				}

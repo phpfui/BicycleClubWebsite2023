@@ -76,8 +76,15 @@ class Member extends \PHPFUI\ORM\Table
 	 */
 	public function findByName(array $names, bool $currentMembers = true) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select m.firstName,m.lastName,m.memberId,m.email,m.showNothing,s.* from member m left join membership s on m.membershipId=s.membershipId where ';
-		$input = [];
+		$this->setSelect('firstName');
+		$this->addSelect('lastName');
+		$this->addSelect('memberId');
+		$this->addSelect('email');
+		$this->addSelect('showNothing');
+		$this->addSelect('membership.*');
+		$this->setJoin('membership');
+
+		$condition = new \PHPFUI\ORM\Condition();
 
 		foreach ($names as $key => $name)
 			{
@@ -86,116 +93,108 @@ class Member extends \PHPFUI\ORM\Table
 
 		if (1 == ($count = \count($names)))
 			{
-			$input = ["%{$names[0]}%",
-				"%{$names[0]}%", ];
-			$sql .= '(firstName like ? or lastName like ?)';
+			$orCondition = new \PHPFUI\ORM\Condition('firstName', "%{$names[0]}%", new \PHPFUI\ORM\Operator\Like());
+			$orCondition->or('lastName', "%{$names[0]}%", new \PHPFUI\ORM\Operator\Like());
+			$condition->and($orCondition);
 			}
 		elseif ($count)
 			{
-			$input = ["%{$names[0]}%",
-				"%{$names[1]}%", ];
-			$sql .= '(firstName like ? and lastName like ?)';
+			$condition->and('firstName', "%{$names[0]}%", new \PHPFUI\ORM\Operator\Like());
+			$condition->and('lastName', "%{$names[1]}%", new \PHPFUI\ORM\Operator\Like());
 			}
 
 		if ($currentMembers)
 			{
-			$sql .= ' and s.expires>=?';
-			$input[] = \App\Tools\Date::todayString();
+			$condition->and('expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
 			}
-		$sql .= ' order by firstName,lastName';
+		$this->setWhere($condition);
+		$this->setOrderBy('firstName');
+		$this->addOrderBy('lastName');
 
-		return \PHPFUI\ORM::getArrayCursor($sql, $input);
+		return $this->getArrayCursor();
 		}
 
 	public function getAllMembers(string $expirationStart = '', string $expirationEnd = '') : \PHPFUI\ORM\ArrayCursor
-	 {
-	 $sql = 'select * from member m left join membership s on m.membershipId=s.membershipId where s.expires>=?';
+		{
+		$this->setSelect('member.*');
+		$this->addSelect('membership.*');
+		$this->setJoin('membership');
+		$condition = new \PHPFUI\ORM\Condition('expires', $expirationStart, new \PHPFUI\ORM\Operator\GreaterThanEqual());
 
-	 if (! $expirationStart)
-		 {
-		 $expirationStart = \App\Tools\Date::todayString();
-		 }
-	 $input = [$expirationStart];
+		if ($expirationEnd)
+			{
+			$condition->and('expires', $expirationEnd, new \PHPFUI\ORM\Operator\LessThanEqual());
+			}
+		$this->setWhere($condition);
+		$this->setOrderBy('memberId');
 
-	 if ($expirationEnd)
-		 {
-		 $input[] = $expirationEnd;
-		 $sql .= ' and s.expires<=?';
-		 }
-
-	 return \PHPFUI\ORM::getArrayCursor($sql, $input);
-	 }
+		return $this->getArrayCursor();
+		}
 
 	/**
 	 * @param array<int> $categories
 	 */
-	public static function getEmailableMembers(bool $all, bool $current, int $monthsPast = 0, int $monthsNew = 0, array $categories = [], string $extra = '') : \PHPFUI\ORM\RecordCursor
+	public function getEmailableMembers(bool $all, bool $current, int $monthsPast = 0, int $monthsNew = 0, array $categories = [], string $extra = '') : static
 		{
 		if (1 == \count($categories) && 0 == $categories[0])
 			{
 			$categories = []; // all categories requested
 			}
-		$sql = 'select distinct * from member m left join membership s on m.membershipId=s.membershipId ';
+		$this->setDistinct();
+		$this->addJoin('membership');
 
-		if ($categories)
+		$condition = new \PHPFUI\ORM\Condition('email', '%@%', new \PHPFUI\ORM\Operator\Like());
+
+		if (! $all)
 			{
-			$sql .= 'left join memberCategory c on c.memberId=m.memberId ';
+			$condition->and('emailAnnouncements', 1);
 			}
-		$sql .= 'where m.email LIKE "%@%"';
-		$condition = ' and (';
-		$input = [];
+
+		$dateRestriction = new \PHPFUI\ORM\Condition();
 
 		if ($current)
 			{
-			$condition .= 's.expires>=?';
-			$input[] = \App\Tools\Date::todayString();
+			$dateRestriction->or('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
 			}
 
 		if ($monthsPast)
 			{
-			if (\strlen($condition) > 10)
-				{
-				$condition .= ' or ';
-				}
-			$condition .= '(s.expires>? and s.expires<?)';
-			$input[] = \App\Tools\Date::todayString(-$monthsPast * 31);
-			$input[] = \App\Tools\Date::todayString();
+			$and = new \PHPFUI\ORM\Condition('membership.expires', \App\Tools\Date::todayString(-$monthsPast * 31), new \PHPFUI\ORM\Operator\GreaterThan());
+			$and->and('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\LessThan());
+			$dateRestriction->or($and);
 			}
 
 		if ($monthsNew)
 			{
-			if (\strlen($condition) > 10)
-				{
-				$condition .= ' or ';
-				}
-			$condition .= 's.joined>?';
-			$input[] = \App\Tools\Date::todayString(-$monthsNew * 31);
+			$dateRestriction->or(new \PHPFUI\ORM\Condition('membership.joined', \App\Tools\Date::todayString(-$monthsNew * 31), new \PHPFUI\ORM\Operator\GreaterThan()));
 			}
-
-		if (\strlen($condition) > 10)
-			{
-			$sql .= $condition . ')';
-			}
+		$condition->and($dateRestriction);
 
 		if ($categories)
 			{
-			$sql .= ' and c.categoryId in (' . \implode(',', $categories) . ')';
+			$this->addJoin('memberCategory');
+			$condition->and('categoryId', $categories, new \PHPFUI\ORM\Operator\In());
 			}
 
-		if (! $all)
-			{
-			$sql .= ' and m.emailAnnouncements=1';
-			}
-		$sql .= $extra;
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Member(), $sql, $input);
+		return $this;
 		}
 
-	public static function getJournalMembers(string $expires) : \PHPFUI\ORM\ArrayCursor
+	public function getJournalMembers(string $expires) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select m.firstName,m.lastName,m.email,m.memberId from member m left join membership s on m.membershipId=s.membershipId where m.email LIKE "%@%" and s.expires>=? and m.journal=1';
+		$this->setJoin('membership');
+		$this->setSelect('firstName');
+		$this->addSelect('lastName');
+		$this->addSelect('email');
+		$this->addSelect('memberId');
 
-		return \PHPFUI\ORM::getArrayCursor($sql, [$expires]);
+		$condition = new \PHPFUI\ORM\Condition('email', '%@%', new \PHPFUI\ORM\Operator\Like());
+		$condition->and('expires', $expires, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('journal', 1);
+		$this->setWhere($condition);
+
+		return $this->getArrayCursor();
 		}
 
 	/**
@@ -203,12 +202,33 @@ class Member extends \PHPFUI\ORM\Table
 	 */
 	public function getJournalRideInterests() : \PHPFUI\ORM\DataObjectCursor
 		{
+
 		$sql = 'SELECT m.firstName,m.lastName,m.email,m.memberId,c.categoryId,m.rideJournal from memberCategory c ' .
 			'left join member m on m.memberId=c.memberId ' .
 			'left join membership s on s.membershipId=m.membershipId ' .
 			'where m.rideJournal>0 and m.email like "%@%" and s.expires>=? order by memberId,c.categoryId';
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString()]);
+		$memberCategoryTable = new \App\Table\MemberCategory();
+
+		$memberCategoryTable->setSelect('firstName');
+		$memberCategoryTable->addSelect('lastName');
+		$memberCategoryTable->addSelect('email');
+		$memberCategoryTable->addSelect('member.memberId');
+		$memberCategoryTable->addSelect('categoryId');
+		$memberCategoryTable->addSelect('rideJournal');
+
+		$memberCategoryTable->setJoin('member');
+		$memberCategoryTable->addJoin('membership', new \PHPFUI\ORM\Condition('member.membershipId', new \PHPFUI\ORM\Literal('membership.membershipId')));
+
+		$condition = new \PHPFUI\ORM\Condition('rideJournal', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition->and('email', '%@%', new \PHPFUI\ORM\Operator\Like());
+		$condition->and('expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+
+		$memberCategoryTable->setWhere($condition);
+		$memberCategoryTable->setOrderBy('member.memberId');
+		$memberCategoryTable->addOrderBy('categoryId');
+
+		return $memberCategoryTable->getDataObjectCursor();
 		}
 
 	/**
@@ -216,7 +236,7 @@ class Member extends \PHPFUI\ORM\Table
 	 *
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Member>
 	 */
-	public static function getLeaders(array $categories = [], string $type = 'Ride Leader', ?string $fromDate = null, ?string $toDate = null, ?string $minLed = null, ?string $maxLed = null) : \PHPFUI\ORM\RecordCursor
+	public function getLeaders(array $categories = [], string $type = 'Ride Leader', ?string $fromDate = null, ?string $toDate = null, ?string $minLed = null, ?string $maxLed = null) : \PHPFUI\ORM\RecordCursor
 		{
 		$type = new \App\Table\Setting()->getStandardPermissionGroup($type)->name ?? 'Ride Leader';
 
@@ -224,20 +244,19 @@ class Member extends \PHPFUI\ORM\Table
 			{
 			$categories = []; // all categories requested
 			}
-		$table = new \App\Table\Member();
-		$table->addSelect('member.*');
-		$table->addGroupBy('member.memberId');
-		$table->addOrderBy('member.lastName');
-		$table->addOrderBy('member.firstName');
-		$table->addJoin('userPermission');
-		$table->addJoin('membership');
-		$table->addJoin('permission', new \PHPFUI\ORM\Condition('permission.name', $type));
+		$this->addSelect('member.*');
+		$this->addGroupBy('member.memberId');
+		$this->addOrderBy('member.lastName');
+		$this->addOrderBy('member.firstName');
+		$this->setJoin('userPermission');
+		$this->addJoin('membership');
+		$this->addJoin('permission', new \PHPFUI\ORM\Condition('permission.name', $type));
 		$where = new \PHPFUI\ORM\Condition('userPermission.permissionGroup', new \PHPFUI\ORM\Field('permission.permissionId'));
 		$where->and('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
 
 		if ($categories)
 			{
-			$table->addJoin('memberCategory');
+			$this->addJoin('memberCategory');
 			$where->and('memberCategory.categoryId', $categories, new \PHPFUI\ORM\Operator\In());
 			}
 
@@ -277,9 +296,9 @@ class Member extends \PHPFUI\ORM\Table
 				}
 			$where->and('member.memberId', $rideTable, new \PHPFUI\ORM\Operator\In());
 			}
-		$table->setWhere($where);
+		$this->setWhere($where);
 
-		return $table->getRecordCursor();
+		return $this->getRecordCursor();
 		}
 
 	/**
@@ -294,9 +313,10 @@ class Member extends \PHPFUI\ORM\Table
 
 	public function getMembershipCursor(int $memberId) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from member m left join membership s on m.membershipId=s.membershipId where m.memberId=?';
+		$this->setJoin('membership');
+		$this->setWhere(new \PHPFUI\ORM\Condition('memberId', $memberId));
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId]);
+		return $this->getDataObjectCursor();
 		}
 
 	public function getMembershipObject(int $memberId) : \PHPFUI\ORM\DataObject
@@ -341,9 +361,9 @@ class Member extends \PHPFUI\ORM\Table
 
 	public function getNewMembers(string $start, string $end) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$this->addJoin('membership');
+		$this->setJoin('membership');
 		$this->addJoin('rideSignup');
-		$this->addSelect('member.*');
+		$this->setSelect('member.*');
 		$this->addSelect('membership.*');
 		$this->addSelect(new \PHPFUI\ORM\Literal('count(rideSignup.memberId)'), 'rides');
 		$this->addGroupBy('member.memberId');
@@ -361,63 +381,106 @@ class Member extends \PHPFUI\ORM\Table
 	 */
 	public function getNewRideInterests(int $categoryId) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'SELECT distinct m.firstName,m.lastName,m.email,m.memberId from member m left join memberCategory c on m.memberId=c.memberId ' .
+		$sql = 'SELECT distinct m.firstName,m.lastName,m.email,m.memberId
+			from member m
+			left join memberCategory c on m.memberId=c.memberId ' .
 			'left join membership s on s.membershipId=m.membershipId ' .
-			'where m.newRideEmail and c.categoryId=? and m.email like "%@%" and s.expires>=?';
+			'where m.newRideEmail and c.categoryId=? and m.email like "%@%" and s.expires>=?
+			order by m.memberId';
 
-		return \PHPFUI\ORM::getArrayCursor($sql, [$categoryId, \App\Tools\Date::todayString()]);
+		$this->setDistinct();
+		$this->setSelect('firstName');
+		$this->addSelect('lastName');
+		$this->addSelect('email');
+		$this->addSelect('member.memberId');
+
+		$condition = new \PHPFUI\ORM\Condition('newRideEmail', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition->and('categoryId', $categoryId);
+		$condition->and('email', '%@%', new \PHPFUI\ORM\Operator\Like());
+		$condition->and('expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$this->setWhere($condition);
+
+		$this->setJoin('memberCategory');
+		$this->addJoin('membership');
+		$this->setOrderBy('member.memberId');
+
+		return $this->getArrayCursor();
 		}
 
-	public static function getNewsletterMembers(string $expires) : \PHPFUI\ORM\ArrayCursor
+	public function getNewsletterMembers(string $expires) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select * from member m left join membership s on m.membershipId=s.membershipId where m.email LIKE "%@%" and s.expires>=? and m.emailNewsletter>=1';
+		$this->setJoin('membership');
+		$condition = new \PHPFUI\ORM\Condition('email', '%@%', new \PHPFUI\ORM\Operator\Like());
+		$condition->and('expires', $expires, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('emailNewsletter', 1, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getArrayCursor($sql, [$expires]);
+		return $this->getArrayCursor();
 		}
 
 	public function getPendingMembers(string $date) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectedFields() . ' where s.pending>0 and s.joined<=?';
+		$this->setJoin('membership');
+		$condition = new \PHPFUI\ORM\Condition('pending', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition->and('joined', $date, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$date]);
+		return $this->getDataObjectCursor();
 		}
 
 	/**
 	 * @param array<int> $events
 	 */
-	public static function getVolunteersForEvents(array $events) : \PHPFUI\ORM\ArrayCursor
+	public function getVolunteersForEvents(array $events) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select m.memberId,m.firstName,m.lastName,m.email from member m
-			left join volunteerJobShift vjs on vjs.memberId=m.memberId
-			left join job j on j.jobId=vjs.jobId
-			left join jobEvent je on je.jobEventId=j.jobEventId
-			where je.jobEventId in (' . \implode(',', \array_fill(0, \count($events), '?')) . ') group by m.memberId';
+		$this->setSelect('member.memberId');
+		$this->addSelect('member.firstName');
+		$this->addSelect('member.lastName');
+		$this->addSelect('member.email');
+		$this->setJoin('volunteerJobShift');
+		$this->addJoin('job', new \PHPFUI\ORM\Condition('job.jobId', new \PHPFUI\ORM\Literal('volunteerJobShift.jobId')));
+		$this->addJoin('jobEvent', new \PHPFUI\ORM\Condition('jobEvent.jobEventId', new \PHPFUI\ORM\Literal('job.jobEventId')));
+		$this->setWhere(new \PHPFUI\ORM\Condition('jobEvent.jobEventId', $events, new \PHPFUI\ORM\Operator\In()));
+		$this->setGroupBy('member.memberId');
+		$this->setOrderBy('member.memberId');
 
-		return \PHPFUI\ORM::getArrayCursor($sql, $events);
+		return $this->getArrayCursor();
 		}
 
 	public function getVolunteersForJob(\App\Record\Job $job) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select m.memberId,m.firstName,m.lastName,m.email from member m left join volunteerJobShift vjs on vjs.memberId=m.memberId left join job j on j.jobId=vjs.jobId left join jobEvent je on je.jobEventId=j.jobEventId where j.jobId=? group by m.memberId';
+		$this->setSelect('member.memberId');
+		$this->addSelect('member.firstName');
+		$this->addSelect('member.lastName');
+		$this->addSelect('member.email');
+		$this->setJoin('volunteerJobShift');
+		$this->addJoin('job', new \PHPFUI\ORM\Condition('job.jobId', new \PHPFUI\ORM\Literal('volunteerJobShift.jobId')));
+		$this->addJoin('jobEvent', new \PHPFUI\ORM\Condition('jobEvent.jobEventId', new \PHPFUI\ORM\Literal('job.jobEventId')));
+		$this->setWhere(new \PHPFUI\ORM\Condition('job.jobId', $job->jobId));
+		$this->setGroupBy('member.memberId');
+		$this->setOrderBy('member.memberId');
 
-		return \PHPFUI\ORM::getArrayCursor($sql, [$job->jobId]);
+		return $this->getArrayCursor();
 		}
 
-	public static function lastSignIns(int $days) : \PHPFUI\ORM\DataObjectCursor
+	public function lastSignIns(int $days) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'SELECT memberId,lastLogin FROM member where lastLogin > ?';
+		$this->setSelect('memberId');
+		$this->addSelect('lastLogin');
+		$this->setWhere(new \PHPFUI\ORM\Condition('lastLogin', \date('Y-m-d H:i:s', \time() - (86400 * $days)), new \PHPFUI\ORM\Operator\GreaterThan()));
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [\date('Y-m-d H:i:s', \time() - (86400 * $days))]);
+		return $this->getDataObjectCursor();
 		}
 
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Member>
 	 */
-	public static function membersInMembership(int $membershipId) : \PHPFUI\ORM\RecordCursor
+	public function membersInMembership(int $membershipId) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'SELECT * FROM member m,membership s where s.membershipId=m.membershipId and s.membershipId=?';
+		$this->setLimit(0);
+		$this->setWhere(new \PHPFUI\ORM\Condition('membershipId', $membershipId));
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Member(), $sql, [$membershipId]);
+		return $this->getRecordCursor();
 		}
 
 	public function missingNames() : static
@@ -445,18 +508,12 @@ class Member extends \PHPFUI\ORM\Table
 		return $this;
 		}
 
-	public static function outstandingPoints(string $sort) : \PHPFUI\ORM\ArrayCursor
+	public function outstandingPoints(string $sort) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select * from member where volunteerPoints>0 order by ' . $sort;
+		$this->setWhere(new \PHPFUI\ORM\Condition('volunteerPoints', 0, new \PHPFUI\ORM\Operator\GreaterThan()));
+		$this->addOrderBy($sort);
 
-		return \PHPFUI\ORM::getArrayCursor($sql);
-		}
-
-	public static function recentSignIns() : \PHPFUI\ORM\DataObjectCursor
-		{
-		$sql = self::getSelectedFields() . ' where acceptedWaiver is not null order by lastLogin desc limit 25';
-
-		return \PHPFUI\ORM::getDataObjectCursor($sql);
+		return $this->getArrayCursor();
 		}
 
 	public function updatePointDifference(int $memberId, int $difference) : bool
@@ -464,11 +521,6 @@ class Member extends \PHPFUI\ORM\Table
 		$sql = 'update member set volunteerPoints=volunteerPoints+? where memberId=?';
 
 		return \PHPFUI\ORM::execute($sql, [$difference, $memberId]);
-		}
-
-	private static function getSelectedFields() : string
-		{
-		return 'select m.*,s.* from member m left join membership s on s.membershipId=m.membershipId ';
 		}
 
 	private function setSelectedFields() : static

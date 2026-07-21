@@ -104,7 +104,7 @@ class Member
 
 		if ($membership->loaded())
 			{
-			$members = \App\Table\Member::membersInMembership($membership->membershipId);
+			$members = new \App\Table\Member()->membersInMembership($membership->membershipId);
 
 			foreach ($members as $mem)
 				{

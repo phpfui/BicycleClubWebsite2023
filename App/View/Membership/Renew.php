@@ -33,7 +33,7 @@ class Renew
 		$this->duesModel = new \App\Model\MembershipDues();
 		$this->memberModel = new \App\Model\Member();
 		$this->settingTable = new \App\Table\Setting();
-		$this->members = \App\Table\Member::membersInMembership($membership->membershipId);
+		$this->members = new \App\Table\Member()->membersInMembership($membership->membershipId);
 		$this->additionalMemberDues = \array_sum($this->duesModel->AdditionalMemberDues);
 		$this->query = \http_build_query(\array_intersect_key($_POST, $this->requiredParameters));
 		$this->adjustURLs('');

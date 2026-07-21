@@ -8,9 +8,16 @@ class PollResponse extends \PHPFUI\ORM\Table
 
 	public function getVotes(int $pollId) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select count(r.answer) count,a.answer from pollResponse r left join pollAnswer a on a.pollId=r.pollId and a.pollAnswerId=r.answer where r.pollId=? group by r.answer order by count desc';
+		$this->setSelect(new \PHPFUI\ORM\Literal('count(pollResponse.answer)'), 'count');
+		$this->addSelect('pollAnswer.answer');
+		$condition = new \PHPFUI\ORM\Condition('pollAnswerId', new \PHPFUI\ORM\Literal('pollResponse.answer'));
+	  $condition->and('pollResponse.pollId', $pollId);
+		$this->setWhere($condition);
+		$this->setJoin('pollAnswer');
+		$this->setGroupBy('pollResponse.answer');
+		$this->setOrderBy('count', 'desc');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$pollId]);
+		return $this->getDataObjectCursor();
 		}
 
 	public function setMyMembershipVotesQuery() : static

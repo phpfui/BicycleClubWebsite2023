@@ -333,7 +333,7 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		if ($this->page->isAuthorized('Unshipped Invoices'))
 			{
 			$report = new \App\Report\PullList();
-			$report->download(\App\Table\InvoiceItem::getUnshippedItems());
+			$report->download(new \App\Table\InvoiceItem()->getUnshippedItems());
 			$this->page->done();
 			}
 		}

@@ -46,16 +46,15 @@ class Members implements \Stringable
 			$message = $_POST['message'];
 			$smsModel->setBody($message);
 
-			$extra = '';
-
-			$members = \App\Table\Member::getEmailableMembers(
+			$memberTable = new \App\Table\Member()->getEmailableMembers(
 				true,
 				$_POST['currentMembers'],
 				($this->page->isAuthorized('Text Past Members') && $_POST['pastMembers']) ? (int)($_POST['months']) : 0,
 				$_POST['newMembers'] ? (int)($_POST['newMonths']) : 0,
-				$_POST['categories'] ?? $defaultFields['categories'],
-				$extra
+				$_POST['categories'] ?? $defaultFields['categories']
 			);
+
+			$members = $memberTable->getRecordCursor();
 
 			if ($_POST['submit'] == $this->testMessage)
 				{

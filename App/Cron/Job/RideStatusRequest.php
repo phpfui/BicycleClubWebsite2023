@@ -26,7 +26,7 @@ class RideStatusRequest extends \App\Cron\BaseJob
 		{
 		$model = new \App\Model\RideStatusRequest();
 
-		foreach (\App\Table\Ride::unreportedRidesOn($days) as $ride)
+		foreach (new \App\Table\Ride()->unreportedRidesOn($days) as $ride)
 			{
 			$model->send($ride);
 			}

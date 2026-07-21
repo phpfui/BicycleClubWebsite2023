@@ -149,7 +149,8 @@ class Finance
 			$format = 'l, F j, Y';
 			$row->add($start . ' - ' . $end);
 			$view = new \App\View\Payments($this->page);
-			$payments = \App\Table\Payment::getByDate($start, $end, self::getPaymentRequest($_GET), $_GET['myChecks']);
+			$paymentTable = new \App\Table\Payment();
+			$payments = $paymentTable->getByDate($start, $end, self::getPaymentRequest($_GET), $_GET['myChecks']);
 			$output = $view->show($payments);
 
 			if (\count($payments))

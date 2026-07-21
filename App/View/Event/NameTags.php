@@ -71,7 +71,7 @@ class NameTags implements \Stringable
 			}
 		$pdf->Set_Alignment('C');
 		$maxFont = 999;
-		$members = \App\Table\ReservationPerson::getNamesAlpha($this->event);
+		$members = new \App\Table\ReservationPerson()->getNamesAlpha($this->event);
 
 		foreach ($members as $member)
 			{

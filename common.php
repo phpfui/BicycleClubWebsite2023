@@ -22,6 +22,7 @@ else
 	{
 	\PHPFUI\ORM::addConnection($pdo);
 	}
+\PHPFUI\ORM::$extendedFields = false;
 \PHPFUI\ORM::setTranslationCallback([\PHPFUI\Translation\Translator::class, 'trans']);
 \PHPFUI\Translation\Translator::setTranslationDirectory(PROJECT_ROOT . '/languages');
 \PHPFUI\Translation\Translator::setLocale('en_US');

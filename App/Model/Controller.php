@@ -33,7 +33,7 @@ class Controller extends \PHPFUI\NanoController implements \PHPFUI\Interfaces\Na
 
 		if ('api' == $subdomain)
 			{
-			$this->setMissingClass('App\\View\API\\Missing');
+			$this->setMissingClass('App\\View\\API\\Missing');
 			$this->setHomePageClass('');
 			$this->setMissingMethod('landingPage');
 			$this->setRootNamespace('App\\API');

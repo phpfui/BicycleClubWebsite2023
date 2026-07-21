@@ -8,15 +8,18 @@ class VolunteerPoll extends \PHPFUI\ORM\Table
 
 	public function getAllPolls() : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from volunteerPoll p left join jobEvent j on p.jobEventId=j.jobEventId order by ordering';
+		$this->setJoin('jobEvent');
+		$this->setOrderBy('ordering');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql);
+		return $this->getDataObjectCursor();
 		}
 
 	public function getPolls(\App\Record\JobEvent $jobEvent) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from volunteerPoll p left join jobEvent j on p.jobEventId=j.jobEventId where p.jobEventId=? order by ordering';
+		$this->setJoin('jobEvent');
+		$this->setOrderBy('ordering');
+		$this->setWhere(new \PHPFUI\ORM\Condition('volunteerPoll.jobEventId', $jobEvent->jobEventId));
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$jobEvent->jobEventId]);
+		return $this->getDataObjectCursor();
 		}
 }

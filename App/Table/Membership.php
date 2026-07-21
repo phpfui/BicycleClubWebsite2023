@@ -30,42 +30,37 @@ class Membership extends \PHPFUI\ORM\Table
 
 	public function getExpiringMemberships(string $start, string $end) : \PHPFUI\ORM\DataObjectCursor
 		{
+
 		$sql = 'select * from membership s left join member m on m.membershipId=s.membershipId
 				where s.expires>=? and s.expires<=? and s.joined>"1000-01-01"';
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$start, $end]);
-		}
 
-	/**
-	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Membership>
-	 */
-	public function getMemberlessMemberships(string $date) : \PHPFUI\ORM\RecordCursor
-		{
-		$sql = 'select * from membership where joined<? and membershipId not in (select membershipId from member)';
+		$this->setJoin('member');
+		$condition = new \PHPFUI\ORM\Condition('joined', '1000-01-01', new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition->and('expires', $start, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('expires', $end, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$this->setWhere($condition);
+		$this->setOrderBy('member.memberId');
 
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, [$date]);
+		return $this->getDataObjectCursor();
 		}
 
 	public static function getMembershipsLastNames(int $membershipId) : string
 		{
-		$lastNames = [];
-
-		$sql = 'select distinct member.lastName from member where member.membershipId=?';
+		$sql = 'select distinct member.lastName
+			from member
+			where member.membershipId=?';
 
 		return \implode('/', \PHPFUI\ORM::getValueArray($sql, [$membershipId]));
 		}
 
-	public function getNewMemberships(int $daysBack = 1) : \PHPFUI\ORM\DataObjectCursor
-		{
-		$sql = 'select * from membership s left join member m on m.membershipId=s.membershipId
-				where s.joined=? and s.expires>?';
-
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString(-$daysBack), \App\Tools\Date::todayString()]);
-		}
-
 	public function getOldestMembership() : \App\Record\Membership
 		{
-		$sql = 'select * from membership where expires>=? and joined>"1000-01-01" order by joined limit 1';
+		$sql = 'select *
+			from membership
+			where expires>=? and joined>"1000-01-01"
+			order by joined
+			limit 1';
 
 		$membership = new \App\Record\Membership();
 		$membership->loadFromSQL($sql, [\App\Tools\Date::todayString()]);
@@ -75,18 +70,18 @@ class Membership extends \PHPFUI\ORM\Table
 
 	public function getRenewedMemberships(int $daysBack) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from membership s left join member m on m.membershipId=s.membershipId
-				where s.lastRenewed=?';
+		$this->setJoin('member');
+		$this->setWhere(new \PHPFUI\ORM\Condition('lastRenewed', \App\Tools\Date::todayString(-$daysBack)));
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString(-$daysBack)]);
+		return $this->getDataObjectCursor();
 		}
 
 	public function getRenewingMemberships(string $date) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from membership s left join member m on m.membershipId=s.membershipId
-				where s.renews=?';
+		$this->setJoin('member');
+		$this->setWhere(new \PHPFUI\ORM\Condition('renews', $date));
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$date]);
+		return $this->getDataObjectCursor();
 		}
 
 	public function noMembers() : static

@@ -81,10 +81,18 @@ class Members implements \Stringable
 					}
 				}
 			$email->setHtml();
-			$extra = '';
+
+			$memberTable = new \App\Table\Member()->getEmailableMembers(
+				! empty($_POST['allMembers']),
+				$_POST['currentMembers'],
+				($this->page->isAuthorized('Email Past Members') && $_POST['pastMembers']) ? (int)($_POST['months']) : 0,
+				$_POST['newMembers'] ? (int)($_POST['newMonths']) : 0,
+				$_POST['categories'] ?? $defaultFields['categories']
+			);
 
 			if ($this->page->isAuthorized('Email All Members Criteria'))
 				{
+				$condition = $memberTable->getWhereCondition();
 				$zips = [];
 				$codes = \explode(',', $_POST['zipCodes'] ?? '');
 
@@ -100,23 +108,18 @@ class Members implements \Stringable
 
 				if (\count($zips))
 					{
-					$extra = ' and s.zip in (' . \implode(',', $zips) . ')';
+					$condition->and('membership.zip', $zips, new \PHPFUI\ORM\Operator\In());
 					}
 
 				if (! empty($_POST['town']))
 					{
 					$town = \preg_replace('/[^A-Za-z\ ]/', '', (string)$_POST['town']);
-					$extra .= " and s.town='{$town}'";
+					$condition->and('membership.town', $town);
 					}
+				$memberTable->setWhere($condition);
 				}
-			$members = \App\Table\Member::getEmailableMembers(
-				! empty($_POST['allMembers']),
-				$_POST['currentMembers'],
-				($this->page->isAuthorized('Email Past Members') && $_POST['pastMembers']) ? (int)($_POST['months']) : 0,
-				$_POST['newMembers'] ? (int)($_POST['newMonths']) : 0,
-				$_POST['categories'] ?? $defaultFields['categories'],
-				$extra
-			);
+
+			$members = $memberTable->getRecordCursor();
 
 			if ($_POST['submit'] == $this->testMessage)
 				{

@@ -6,11 +6,20 @@ class Event extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Event::class;
 
-	public static function getAvailableForMember(\App\Record\Member $member) : \PHPFUI\ORM\DataObjectCursor
+	public function getAvailableForMember(\App\Record\Member $member) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from event e where eventDate>=? and publicDate<=? and ? not in (select memberId from reservation where eventId=e.eventId) group by eventDate order by eventDate';
+		$today = \App\Tools\Date::todayString();
+		$condition = new \PHPFUI\ORM\Condition('eventDate', $today, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('publicDate', $today, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$reservationTable = new \App\Table\Reservation();
+		$reservationTable->setSelect('memberId');
+		$reservationTable->setWhere(new \PHPFUI\ORM\Condition('eventId', new \PHPFUI\ORM\Literal('event.eventId')));
+		$condition->and(new \PHPFUI\ORM\Literal("{$member->memberId}"), $reservationTable, new \PHPFUI\ORM\Operator\NotIn());
+		$this->setWhere($condition);
+		$this->setGroupBy('eventDate');
+		$this->setOrderBy('eventDate');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString(), \App\Tools\Date::todayString(), $member->memberId, ]);
+		return $this->getDataObjectCursor();
 		}
 
 	public static function getFirst(int $memberId = 0) : string
@@ -50,22 +59,25 @@ class Event extends \PHPFUI\ORM\Table
 	 */
 	public function getMostRecentRegistered(int $limit = 10) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select distinct e.* from reservation r left join event e on e.eventId=r.eventId order by e.eventDate desc';
+		$this->setLimit($limit);
+		$this->setDistinct();
+		$this->addSelect('event.*');
+		$this->addJoin('reservation');
+		$this->setOrderBy('eventDate', 'desc');
 
-		if ($limit)
-			{
-			$sql .= ' limit ' . (int)$limit;
-			}
-
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql);
+		return $this->getRecordCursor();
 		}
 
-	public static function getSignedUpForMember(\App\Record\Member $member) : \PHPFUI\ORM\DataObjectCursor
+	public function getSignedUpForMember(\App\Record\Member $member) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select *,e.eventId from event e left join reservation r on r.eventId=e.eventId left join member m on m.memberId=r.memberId
-			where e.eventDate>=? and r.memberId=? order by eventDate';
+		$this->setJoin('reservation');
+		$this->addJoin('member', new \PHPFUI\ORM\Condition('reservation.memberId', new \PHPFUI\ORM\Literal('member.memberId')));
+		$condition = new \PHPFUI\ORM\Condition('eventDate', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('reservation.memberId', $member->memberId);
+		$this->setWhere($condition);
+		$this->setOrderBy('eventDate');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString(), $member->memberId]);
+		return $this->getDataObjectCursor();
 		}
 
 	public function setEventAttendeeCountCursor() : static

@@ -6,10 +6,12 @@ class SigninSheetRide extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\SigninSheetRide::class;
 
-	public static function rides(int $signinSheetId) : \PHPFUI\ORM\DataObjectCursor
+	public function rides(int $signinSheetId) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from signinSheetRide sr left join ride r on sr.rideId=r.rideId where sr.signinSheetId=? order by r.rideDate desc';
+		$this->setJoin('ride');
+		$this->setWhere(new \PHPFUI\ORM\Condition('signinSheetId', $signinSheetId));
+		$this->setOrderBy('rideDate', 'desc');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$signinSheetId]);
+		return $this->getDataObjectCursor();
 		}
 	}

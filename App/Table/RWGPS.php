@@ -8,15 +8,22 @@ class RWGPS extends \PHPFUI\ORM\Table
 
 	public function closest(float $lat, float $long, int $limit = 1, float $distance = 0.5) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'SELECT *,(3959*acos(cos(radians(:lat))*cos(radians(latitude))*cos(radians(longitude)-radians(:lon))+sin(radians(:lat))*sin(radians(latitude)))) AS distance FROM RWGPS HAVING distance < :distance ORDER BY distance LIMIT :limit;';
+		$this->setSelect('*');
+		$formula = "(3959*ACOS(COS(RADIANS({$lat}))*COS(RADIANS(latitude))*COS(RADIANS(longitude)-RADIANS({$long}))+SIN(RADIANS({$lat}))*SIN(RADIANS(latitude))))";
+		$this->addSelect(new \PHPFUI\ORM\Literal($formula), 'distance');
+		$this->setGroupBy('RWGPSId');
+		$this->setHaving(new \PHPFUI\ORM\Condition('distance', $distance, new \PHPFUI\ORM\Operator\LessThan()));
+		$this->setOrderBy('distance');
+		$this->setLimit($limit);
 
-		return \PHPFUI\ORM::getArrayCursor($sql, ['lat' => $lat, 'long' => $long, 'distance' => $distance, 'limit' => $limit]);
+		return $this->getArrayCursor();
 		}
 
 	public function distanceFrom(float $latitude, float $longitude) : static
 		{
 		$this->addSelect('*');
-		$this->addSelect(new \PHPFUI\ORM\Literal("ST_Distance_Sphere(POINT(latitude,longitude),POINT({$latitude},{$longitude}))"), 'meters');
+		$formula = "(6371000 * ACOS(COS(RADIANS({$latitude})) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS({$longitude})) + SIN(RADIANS({$latitude})) * SIN(RADIANS(latitude))))";
+		$this->addSelect(new \PHPFUI\ORM\Literal($formula), 'meters');
 
 		return $this;
 		}
@@ -26,10 +33,16 @@ class RWGPS extends \PHPFUI\ORM\Table
 	 */
 	public function getOldest(int $limit = 10) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from RWGPS where (lastSynced < ? or lastSynced is null) or (csv = "" and RWGPSId>0) order by lastUpdated limit ' . $limit;
-		$input = [\App\Tools\Date::todayString(-60)];
+		$this->setLimit($limit);
+		$and = new \PHPFUI\ORM\Condition('csv', '');
+		$and->and('RWGPSId', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition = new \PHPFUI\ORM\Condition('lastSynced', \App\Tools\Date::todayString(-60), new \PHPFUI\ORM\Operator\LessThan());
+		$condition->or('lastSynced', null);
+		$condition->or($and);
+		$this->setWhere($condition);
+		$this->setOrderBy('lastUpdated');
 
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, $input);
+		return $this->getRecordCursor();
 		}
 
 	/**
@@ -37,13 +50,24 @@ class RWGPS extends \PHPFUI\ORM\Table
 	 */
 	public function getUpcomingRWGPS() : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select distinct RWGPS.*
-			from ride
-			left join rideRWGPS on rideRWGPS.rideId=ride.rideId
-			left join RWGPS on RWGPS.RWGPSId=rideRWGPS.RWGPSId
-			where rideDate>=:date and rideRWGPS.RWGPSId is not null';
+//		$sql = 'select distinct RWGPS.*
+//			from ride
+//			left join rideRWGPS on rideRWGPS.rideId=ride.rideId
+//			left join RWGPS on RWGPS.RWGPSId=rideRWGPS.RWGPSId
+//			where rideDate>=:date and rideRWGPS.RWGPSId is not null';
 
-		return \PHPFUI\ORM::getRecordCursor($this->instance, $sql, ['date' => \App\Tools\Date::todayString()]);
+
+		$rideTable = new \App\Table\Ride();
+		$rideTable->setDistinct();
+		$rideTable->setSelect('RWGPS.*');
+		$rideTable->addJoin('rideRWGPS');
+		$rideTable->addJoin('RWGPS', new \PHPFUI\ORM\Condition('RWGPS.RWGPSId', new \PHPFUI\ORM\Field('rideRWGPS.RWGPSId')));
+
+		$condition = new \PHPFUI\ORM\Condition('rideDate', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('rideRWGPS.RWGPSId', null, new \PHPFUI\ORM\Operator\IsNotNull());
+		$rideTable->setWhere($condition);
+
+		return $rideTable->getRecordCursor($this->instance);
 		}
 
 	public function setNonClubBetween(string $startDate = '', string $endDate = '') : static

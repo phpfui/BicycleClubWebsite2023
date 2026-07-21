@@ -84,12 +84,16 @@ class Category extends \PHPFUI\ORM\Table
 
 	public function getDistributions() : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select c.category,count(*) as count from category c ' .
-			'left join memberCategory mc on mc.categoryId=c.categoryId ' .
-			'left join member m on m.memberId=mc.memberId ' .
-			'left join membership s on m.membershipId=s.membershipId ' .
-			'where s.expires>=? group by c.category order by c.ordering';
+		$this->setSelect('category');
+		$this->addSelect(new \PHPFUI\ORM\Literal('count(*)'), 'count');
+		$this->setJoin('memberCategory');
+		$this->addJoin('member', new \PHPFUI\ORM\Condition('member.memberId', new \PHPFUI\ORM\Field('memberCategory.memberId')));
+		$this->addJoin('membership', new \PHPFUI\ORM\Condition('member.membershipId', new \PHPFUI\ORM\Field('membership.membershipId')));
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [\App\Tools\Date::todayString()]);
+		$this->setWhere(new \PHPFUI\ORM\Condition('expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual()));
+		$this->setGroupBy('category');
+		$this->setOrderBy('ordering');
+
+		return $this->getDataObjectCursor();
 		}
 	}

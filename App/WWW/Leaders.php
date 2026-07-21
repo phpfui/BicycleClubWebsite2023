@@ -48,7 +48,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('All Unreported Leads'))
 			{
-			$rides = \App\Table\Ride::unreportedRides();
+			$rides = new \App\Table\Ride()->unreportedRides();
 			$view = new \App\View\Rides($this->page);
 			$this->page->addPageContent($view->schedule($rides, 'There are no unreported leads (REALLY?)'));
 			}
@@ -115,7 +115,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			if ($member->loaded())
 				{
 				$this->page->addPageContent(new \PHPFUI\SubHeader($member->fullName()));
-				$rides = \App\Table\Ride::pastRidesForAssistant($member, 0);
+				$rides = new \App\Table\Ride()->pastRidesForAssistant($member, 0);
 				$view = new \App\View\Rides($this->page);
 				$this->page->addPageContent($view->schedule($rides, 'No leader assists for ' . $member->fullName()));
 				}
@@ -281,7 +281,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('My Upcoming Leads'))
 			{
-			$rides = \App\Table\Ride::futureRidesForMember(\App\Model\Session::signedInMemberRecord());
+			$rides = new \App\Table\Ride()->futureRidesForMember(\App\Model\Session::signedInMemberRecord());
 			$view = new \App\View\Rides($this->page);
 			$this->page->addPageContent($view->schedule($rides, 'You have no upcoming leads'));
 			}
@@ -453,7 +453,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		if ($this->page->addHeader('My Unreported Leads'))
 			{
-			$rides = \App\Table\Ride::unreportedRidesForMember(\App\Model\Session::getSignedInMemberId());
+			$rides = new \App\Table\Ride()->unreportedRidesForMember(\App\Model\Session::getSignedInMemberId());
 			$view = new \App\View\Rides($this->page);
 			$this->page->addPageContent($view->schedule($rides, 'You have no unreported leads!'));
 			}
@@ -497,7 +497,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		$this->page->addPageContent($assistantLeaderTypeView->stats($leader, $year));
 
-		$rides = \App\Table\Ride::pastRidesForAssistant($leader, 0, $year);
+		$rides = new \App\Table\Ride()->pastRidesForAssistant($leader, 0, $year);
 		$view = new \App\View\Rides($this->page);
 		$this->page->addPageContent($view->schedule($rides, 'No leader assists in ' . $year));
 		}
@@ -525,7 +525,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		);
 		$this->page->addPageContent($yearSubNav);
 
-		$rides = \App\Table\Ride::pastRidesForMember($leader, 0, $year);
+		$rides = new \App\Table\Ride()->pastRidesForMember($leader, 0, $year);
 		$view = new \App\View\Rides($this->page);
 		$this->page->addPageContent($view->schedule($rides, 'No rides led in ' . $year));
 		}

@@ -41,7 +41,7 @@ class Permission extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 		{
 		if ($this->page->addHeader('My Permissions'))
 			{
-			$permissions = \App\Table\UserPermission::forMember(\App\Model\Session::getSignedInMemberId());
+			$permissions = new \App\Table\UserPermission()->getPermissionsForUser(\App\Model\Session::getSignedInMemberId());
 			$misc = [];
 			$accordion = new \App\UI\Accordion();
 
@@ -51,7 +51,7 @@ class Permission extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoCla
 
 				if ($permission['permissionGroup'] < 100000)
 					{
-					$groupPermissions = \App\Table\PermissionGroup::getGroupPermissions($permission['permissionGroup']);
+					$groupPermissions = new \App\Table\PermissionGroup()->getGroupPermissions($permission['permissionGroup']);
 					$list = '';
 
 					foreach ($groupPermissions as $name)

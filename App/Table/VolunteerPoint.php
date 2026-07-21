@@ -6,12 +6,17 @@ class VolunteerPoint extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\VolunteerPoint::class;
 
-	public static function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
+	public function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select vp.*,je.name from volunteerPoint vp
-			left join jobEvent je on je.jobEventId=vp.jobEventId
-			where vp.memberId=? and vp.date>=? and vp.date<=? order by vp.date';
+		$this->setSelect('volunteerPoint.*');
+		$this->addSelect('jobEvent.name');
+		$condition = new \PHPFUI\ORM\Condition('volunteerPoint.memberId', $memberId);
+		$condition->and('volunteerPoint.date', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('volunteerPoint.date', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$this->setWhere($condition);
+		$this->setJoin('jobEvent');
+		$this->setOrderBy('volunteerPoint.date');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId, $startDate, $endDate]);
+		return $this->getDataObjectCursor();
 		}
 	}

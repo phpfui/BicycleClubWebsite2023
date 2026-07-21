@@ -381,7 +381,6 @@ class Rides
 		$row->add($editColumn);
 		$fieldSet->add($row);
 
-		$isLeader = ($ride->memberId ?? 0) == \App\Model\Session::getSignedInMemberId();
 		$this->page->addJavaScript('function selectRiderContactMethod(v){if(v>"")if(v[0]=="/"||v.startsWith("tel:")||v.startsWith("sms:")){window.location=v}else{window.open(v)}}');
 
 		foreach ($riders as $rider)
@@ -501,6 +500,7 @@ class Rides
 		$dateAccordion = new \App\UI\Accordion();
 		$dayAccordion = 0;
 		$targetPaceColumn = $this->page->value('targetPaceOption');
+		$rideModel = new \App\Model\Ride();
 
 		$leaderless = $this->page->value('LeaderlessName') ?: 'Cancelled';
 
@@ -674,7 +674,7 @@ class Rides
 					$bg->addButton($button);
 					}
 
-				if ($this->canEdit($ride))
+				if ($this->page->isAuthorized('Edit Ride') || $rideModel->isLeaderOrAssistant($ride))
 					{
 					$edit = 'Edit';
 					}
@@ -745,7 +745,7 @@ class Rides
 
 	public function stats(int $year) : string
 		{
-		$rides = \App\Table\Ride::getDateRange(\gregoriantojd(1, 1, $year), \gregoriantojd(12, 31, $year));
+		$rides = new \App\Table\Ride()->getDateRange(\gregoriantojd(1, 1, $year), \gregoriantojd(12, 31, $year));
 		$rideTotals = [];
 		$ridesWithRiders = [];
 		$riderCounts = [];
@@ -1088,13 +1088,6 @@ class Rides
 		$output .= $table;
 
 		return $output;
-		}
-
-	private function canEdit(\PHPFUI\ORM\DataObject $ride) : bool
-		{
-		$member = \App\Model\Session::signedInMemberRecord();
-
-		return $ride->memberId == $member->memberId || $this->page->isAuthorized('Edit Ride');
 		}
 
 	/**

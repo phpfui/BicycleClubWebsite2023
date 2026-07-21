@@ -6,18 +6,24 @@ class PermissionGroup extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\PermissionGroup::class;
 
-	public static function getGroupPermissions(int $groupId) : \PHPFUI\ORM\DataObjectCursor
+	public function getGroupPermissions(int $groupId) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select * from permissionGroup g,permission n where g.groupId=? and g.permissionId=n.permissionId order by n.menu,n.name';
+		$this->setJoin('permission');
+		$this->setWhere(new \PHPFUI\ORM\Condition('groupId', $groupId));
+		$this->setOrderBy('menu');
+		$this->addOrderBy('name');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$groupId]);
+		return $this->getDataObjectCursor();
 		}
 
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\PermissionGroup>
 	 */
-	public static function getPermissionsForGroup(int $groupId) : \PHPFUI\ORM\RecordCursor
+	public function getPermissionsForGroup(int $groupId) : \PHPFUI\ORM\RecordCursor
 		{
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\PermissionGroup(), 'select * from permissionGroup where groupId=? order by permissionId desc', [$groupId]);
+		$this->setOrderBy('permissionId', 'desc');
+		$this->setWhere(new \PHPFUI\ORM\Condition('groupId', $groupId));
+
+		return $this->getRecordCursor();
 		}
 	}

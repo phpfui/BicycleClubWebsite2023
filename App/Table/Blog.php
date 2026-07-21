@@ -6,11 +6,16 @@ class Blog extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\Blog::class;
 
-	public static function getBlogsByNameForStory(int $storyId) : \PHPFUI\ORM\DataObjectCursor
+	public function getBlogsByNameForStory(int $storyId) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select b.*,bi.storyId from blog b left outer join blogItem bi on bi.blogId=b.blogId and bi.storyId=? order by name';
+		$joinCondition = new \PHPFUI\ORM\Condition('blogItem.blogId', new \PHPFUI\ORM\Literal('blog.blogId'));
+		$joinCondition->and('blogItem.storyId', $storyId);
+		$this->setJoin('blogItem', $joinCondition, 'left outer');
+		$this->setSelect('blog.*');
+		$this->addSelect('blogItem.storyId');
+		$this->setOrderBy('name');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$storyId]);
+		return $this->getDataObjectCursor();
 		}
 
 	/**
@@ -21,7 +26,8 @@ class Blog extends \PHPFUI\ORM\Table
 		$sql = 'select s.* from story s
 			inner join blog b on b.name=?
 			inner join blogItem bi on b.blogId=bi.blogId
-			where s.storyId=bi.storyId and s.date>0 order by s.date desc limit 1';
+			where s.storyId=bi.storyId and s.date>0
+			order by s.date desc limit 1';
 
 		return \PHPFUI\ORM::getRow($sql, [$blogname]);
 		}
@@ -31,40 +37,52 @@ class Blog extends \PHPFUI\ORM\Table
 		$sql = 'select s.date from story s
 			inner join blog b on b.name=?
 			inner join blogItem bi on b.blogId=bi.blogId
-			where s.storyId=bi.storyId and s.date>0 order by s.date limit 1';
+			where s.storyId=bi.storyId and s.date>0
+			order by s.date limit 1';
 
 		return \PHPFUI\ORM::getValue($sql, [$blogname]);
 		}
 
-	public static function getStoriesForBlog(\App\Record\Blog $blog, bool $signedIn = false, int $year = 0) : \PHPFUI\ORM\DataObjectCursor
+	public function getStoriesForBlog(\App\Record\Blog $blog, bool $signedIn = false, int $year = 0) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$today = \App\Tools\Date::todayString();
-		$sql = 'select s.*,b.blogId,bi.*
-			from story s
-			inner join blogItem bi on s.storyId=bi.storyId
-			inner join blog b on b.blogId=bi.blogId
-			where b.blogId=? and (s.startDate<=? or s.startDate is null) and (s.endDate>=? or s.endDate is null)';
+		$storyTable = new \App\Table\Story();
+		$storyTable->setSelect('story.*');
+		$storyTable->addSelect('blog.blogId');
+		$storyTable->addSelect('blogItem.*');
+
+		$storyTable->setJoin('blogItem');
+		$storyTable->addJoin('blog', new \PHPFUI\ORM\Condition('blogItem.blogId', new \PHPFUI\ORM\Literal('blog.blogId')));
+		$condition = new \PHPFUI\ORM\Condition('blog.blogId', $blog->blogId);
+
+		$orCondition = new \PHPFUI\ORM\Condition('startDate', $today, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$orCondition->or('startDate', null);
+		$condition->and($orCondition);
+
+		$orCondition = new \PHPFUI\ORM\Condition('endDate', $today, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$orCondition->or('endDate', null);
+		$condition->and($orCondition);
 
 		if (! $signedIn)
 			{
-			$sql .= ' and (bi.membersOnly=0)';
+			$condition->and('blogItem.membersOnly', 0);
 			}
-		$input = [$blog->blogId, $today, $today, ];
 
 		if ($year)
 			{
-			$sql .= ' and s.date>=? and s.date<=?';
-			$input[] = "{$year}-01-01";
-			$input[] = "{$year}-12-31";
+			$condition->and('story.date', "{$year}-01-01", new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			$condition->and('story.date', "{$year}-12-31", new \PHPFUI\ORM\Operator\LessThanEqual());
 			}
-		$sql .= ' order by bi.onTop desc, bi.ranking';
+		$storyTable->setWhere($condition);
+		$storyTable->setOrderBy('blogItem.onTop', 'desc');
+		$storyTable->addOrderBy('blogItem.ranking');
 
 		if ($year)
 			{
-			$sql .= ',s.date desc';
+			$storyTable->addOrderBy('story.date', 'desc');
 			}
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, $input);
+		return $storyTable->getDataObjectCursor();
 		}
 
 	public static function renumberBlog(int $blogId) : bool

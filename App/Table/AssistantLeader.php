@@ -6,27 +6,37 @@ class AssistantLeader extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\AssistantLeader::class;
 
-	public static function getForDateRange(string $startDate, string $endDate) : \PHPFUI\ORM\ArrayCursor
+	public function getForDateRange(string $startDate, string $endDate) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'select al.* from assistantLeader al left join ride r on r.rideId=al.rideId where r.rideDate>=? and r.rideDate<=?';
+		$this->addSelect('assistantLeader.*');
+		$this->addJoin('ride');
+		$condition = new \PHPFUI\ORM\Condition('rideDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getArrayCursor($sql, [$startDate, $endDate]);
+		return $this->getArrayCursor();
 		}
 
-	public static function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
+	public function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select r.* from ride r left join assistantLeader a on a.rideId=r.rideId where a.memberId=? and r.rideDate>=? and r.rideDate<=? order by r.rideDate';
+		$rideTable = new \App\Table\Ride();
+		$rideTable->addSelect('ride.*');
+		$rideTable->addJoin('assistantLeader');
+		$condition = new \PHPFUI\ORM\Condition('assistantLeader.memberId', $memberId);
+		$condition->and('rideDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$rideTable->setWhere($condition);
+		$rideTable->setOrderBy('rideDate');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId, $startDate, $endDate]);
+		return $rideTable->getDataObjectCursor();
 		}
 
-	/**
-	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Member>
-	 */
-	public static function getForRide(\App\Record\Ride $ride) : \PHPFUI\ORM\RecordCursor
+	public function getForRide(\App\Record\Ride $ride) : \PHPFUI\ORM\RecordCursor
 		{
-		$sql = 'select * from assistantLeader al left join member m on m.memberId=al.memberId where al.rideId=?';
+		$memberTable = new \App\Table\Member();
+		$memberTable->setJoin('assistantLeader');
+		$memberTable->setWhere(new \PHPFUI\ORM\Condition('rideId', $ride->rideId));
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\Member(), $sql, [$ride->rideId]);
+		return $memberTable->getRecordCursor();
 		}
 	}

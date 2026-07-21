@@ -6,39 +6,29 @@ class SigninSheet extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\SigninSheet::class;
 
-	public static function fromMember(int $memberId) : \PHPFUI\ORM\DataObjectCursor
+	public function getForDateRange(string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = self::getSelectedFields() . ' where s.memberId=? order by s.dateAdded desc';
+		$this->setSelect('signinSheet.memberId');
+		$this->addSelect('signinSheetRide.rideId');
+		$this->setDistinct();
+		$this->setJoin('signinSheetRide');
+		$condition = new \PHPFUI\ORM\Condition('dateAdded', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('dateAdded', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$this->setWhere($condition);
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId]);
+		return $this->getDataObjectCursor();
 		}
 
-	/**
-	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\SigninSheet>
-	 */
-	public static function getApprovedUnawarded(string $startDate, string $endDate = '') : \PHPFUI\ORM\RecordCursor
+	public function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
 		{
-		if (! $endDate)
-			{
-			$endDate = \App\Tools\Date::todayString();
-			}
-		$sql = 'select * from signinSheet where dateAdded>=? and dateAdded<=? and pending=0 and pointsAwarded=0';
+		$condition = new \PHPFUI\ORM\Condition('pending', 0, new \PHPFUI\ORM\Operator\NotEqual());
+		$condition->and('memberId', $memberId);
+		$condition->and('dateAdded', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+		$condition->and('dateAdded', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+		$this->setWhere($condition);
+		$this->setOrderBy('dateAdded', 'desc');
 
-		return \PHPFUI\ORM::getRecordCursor(new \App\Record\SigninSheet(), $sql, [$startDate, $endDate]);
-		}
-
-	public static function getForDateRange(string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
-		{
-		$sql = 'select distinct s.memberId,r.rideId from signinSheet s left join signinSheetRide r on r.signinSheetId=s.signinSheetId where s.dateAdded>=? and s.dateAdded<=?';
-
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$startDate, $endDate]);
-		}
-
-	public static function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
-		{
-		$sql = 'select * from signinSheet where pending!=0 and memberId=? and dateAdded>=? and dateAdded<=? order by dateAdded desc';
-
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$memberId, $startDate, $endDate]);
+		return $this->getDataObjectCursor();
 		}
 
 	/**
@@ -88,12 +78,5 @@ class SigninSheet extends \PHPFUI\ORM\Table
 			}
 
 		return $returnValue;
-		}
-
-	private static function getSelectedFields() : string
-		{
-		return 'select s.*,r.* from signinSheet s
-				left outer join signinSheetRide sr on sr.signinSheetId=s.signinSheetId
-				left outer join ride r on r.rideId=sr.rideId ';
 		}
 	}

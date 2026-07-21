@@ -18,12 +18,11 @@ class DBInit extends \PHPFUI\Container
 			$officialTables[\strtolower($table->getTableName())] = false;
 			}
 
-		$tableCursor = \PHPFUI\ORM::getArrayCursor('show tables');
+		$tables = \PHPFUI\ORM::getTables();
 		$currentTables = [];
 
-		foreach ($tableCursor as $tableArray)
+		foreach ($tables as $table)
 			{
-			$table = \strtolower((string)\array_pop($tableArray));
 			$currentTables[$table] = false;
 			}
 
@@ -55,13 +54,11 @@ class DBInit extends \PHPFUI\Container
 
 		if (isset($_GET['extra']))
 			{
-			foreach ($tableCursor as $tableArray)
+			foreach ($tables as $table)
 				{
-				$table = \array_pop($tableArray);
-
-				if (\in_array(\strtolower((string)$table), $extraTables))
+				if (\in_array(\strtolower($table), $extraTables))
 					{
-					\PHPFUI\ORM::execute('drop table ' . $table);
+					\PHPFUI\ORM::execute('drop table if exists ' . $table);
 					}
 				}
 			$this->page->redirect('/Config/wizard/' . $settings->stage);

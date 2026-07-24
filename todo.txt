@@ -1,10 +1,8 @@
-SQLite port
+UTF8 Encoding
 
 Roll starter DB
 
 Publicly viewable folders
-
-UTF8 Encoding
 
 Default category
 

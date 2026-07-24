@@ -62,7 +62,12 @@ class Migration_83 extends \PHPFUI\ORM\Migration
 		$transaction = new \PHPFUI\ORM\Transaction();
 		foreach ($table->getRecordCursor() as $record)
 			{
-			$record->update();
+			$data = $record->toArray();
+			$record->clean();
+			if ($data != $record->toArray())
+				{
+				$record->update();
+				}
 			}
 		$transaction->commit();
 		}

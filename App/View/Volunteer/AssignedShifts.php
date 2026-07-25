@@ -154,7 +154,7 @@ class AssignedShifts implements \Stringable
 				}
 			else
 				{
-				if ($jobShiftId != $volunteer['jobShiftId'])
+				if ($jobShiftId && $jobShiftId != $volunteer['jobShiftId'])
 					{
 					if ($people)
 						{

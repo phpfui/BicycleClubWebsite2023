@@ -6,8 +6,11 @@ class JobShift extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\JobShift::class;
 
-	public function getAvailableJobShifts(int $jobId) : \PHPFUI\ORM\RecordCursor
+	public function getAvailableJobShifts(int $jobId) : \PHPFUI\ORM\DataObjectCursor
 		{
+		$sql = 'SELECT js.* FROM jobShift js WHERE js.jobId=? and COALESCE((SELECT count(*) FROM volunteerJobShift v where v.jobId=? and v.jobShiftId=js.jobShiftId group by v.jobShiftId),0) < js.needed group by js.jobShiftId order by js.startTime';
+		return \PHPFUI\ORM::getDataObjectCursor($sql, [$jobId, $jobId, ]);
+
 		$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
 		$vjsCondition = new \PHPFUI\ORM\Condition('volunteerJobShift.jobId', $jobId);
 		$vjsCondition->and('volunteerJobShift.jobShiftId', new \PHPFUI\ORM\Literal('jobShift.jobShiftId'));
@@ -16,13 +19,18 @@ class JobShift extends \PHPFUI\ORM\Table
 
 		$condition = new \PHPFUI\ORM\Condition('jobId', $jobId);
 		$input = [];
-		$coalesce = 'COALESCE((' . $volunteerJobShiftTable->getCountSQL($input, '') . '),0)';
+		$countSql = str_replace(' = ? ', ' = ' . $jobId . ' ',  $volunteerJobShiftTable->getCountSQL($input, ''));
+		$coalesce = 'COALESCE((' . $countSql . '),0)';
 		$coalesce = \str_replace(['/'], $input, $coalesce);
 		$condition->and(new \PHPFUI\ORM\Literal($coalesce), new \PHPFUI\ORM\Literal('needed'), new \PHPFUI\ORM\Operator\LessThan());
 		$this->setWhere($condition);
 		$this->setOrderBy('jobShiftId');
 		$this->setOrderBy('startTime');
 
+//		$input = [];
+//		echo $this->getCountSQL($input).'<br>';
+//		print_r($input);
+//
 		return $this->getRecordCursor();
 		}
 

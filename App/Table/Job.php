@@ -11,9 +11,11 @@ class Job extends \PHPFUI\ORM\Table
 		$this->setSelect('job.*');
 
 		$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
+		$volunteerJobShiftTable->setSelect(new \PHPFUI\ORM\Literal('count(*)'));
 		$volunteerJobShiftTable->setWhere(new \PHPFUI\ORM\Condition('volunteerJobShift.jobId', new \PHPFUI\ORM\Literal('job.jobId')));
+
 		$input = [];
-		$this->addSelect(new \PHPFUI\ORM\Literal('(' . $volunteerJobShiftTable->getCountSQL($input, '') . ')'), 'taken');
+		$this->addSelect(new \PHPFUI\ORM\Literal('(' . $volunteerJobShiftTable->getSelectSQL($input, '') . ')'), 'taken');
 		$this->addSelect(new \PHPFUI\ORM\Literal('sum(jobShift.needed)'), 'needed');
 
 		$this->setWhere(new \PHPFUI\ORM\Condition('job.jobEventId', $jobEvent->jobEventId));

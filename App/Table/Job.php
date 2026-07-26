@@ -15,7 +15,7 @@ class Job extends \PHPFUI\ORM\Table
 		$volunteerJobShiftTable->setWhere(new \PHPFUI\ORM\Condition('volunteerJobShift.jobId', new \PHPFUI\ORM\Literal('job.jobId')));
 
 		$input = [];
-		$this->addSelect(new \PHPFUI\ORM\Literal('(' . $volunteerJobShiftTable->getSelectSQL($input, '') . ')'), 'taken');
+		$this->addSelect(new \PHPFUI\ORM\Literal('(' . $volunteerJobShiftTable->getSelectSQL($input) . ')'), 'taken');
 		$this->addSelect(new \PHPFUI\ORM\Literal('sum(jobShift.needed)'), 'needed');
 
 		$this->setWhere(new \PHPFUI\ORM\Condition('job.jobEventId', $jobEvent->jobEventId));

@@ -1,3 +1,5 @@
+Combine members and memberships via continious scroll table
+
 UTF8 Encoding
 
 Roll starter DB

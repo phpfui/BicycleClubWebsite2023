@@ -4,26 +4,24 @@ namespace App\View\Membership;
 
 class Combine
 	{
-	private readonly \App\Model\Member $memberModel;
-
-	private readonly \App\Table\Member $memberTable;
-
 	public function __construct(private readonly \App\View\Page $page)
 		{
-		$this->memberTable = new \App\Table\Member();
-		$this->memberModel = new \App\Model\Member();
 		}
 
 	public function combine() : string | \PHPFUI\Container | \PHPFUI\Form
 		{
-		if (isset($_POST['membershipId']))
+		if (isset($_POST['submit']) && $_POST['submit'] == 'Combine Memberships')
 			{
-			$membershipId = $this->memberModel->combineMembership($_POST);
-			$this->page->redirect('', 'combined=' . $membershipId);
-			}
-		elseif (isset($_GET['submit']))
-			{
-			return $this->getSelectPage($_GET);
+			$memberModel = new \App\Model\Member();
+			$membershipId = $memberModel->combineMembership($_POST);
+			if ($membershipId)
+				{
+				$this->page->redirect('', 'combined=' . $membershipId);
+				}
+			else
+				{
+				$this->page->redirect();
+				}
 			}
 		elseif (isset($_GET['combined']))
 			{
@@ -31,7 +29,19 @@ class Combine
 			}
 		else
 			{
-			return $this->getSearchPage();
+			$form = new \PHPFUI\Form($this->page);
+			$form->setAreYouSure(false);
+
+			$fieldSet = new \PHPFUI\FieldSet('Instructions');
+			$fieldSet->add('Search for duplicate memberships by address and / or name. You can filter and sort by different columns to help identify duplicates.<br><br>');
+			$fieldSet->add('Then select the membership under the <b>Master</b> column you want to combine members into. Then check each membership you want to move into that membership by checking
+									 the <b>Combine</b> column.');
+			$form->add($fieldSet);
+			$combine = new \PHPFUI\Submit('Combine Memberships');
+			$form->add($combine);
+			$form->add($this->show());
+
+			return $form;
 			}
 
 		return '';
@@ -39,72 +49,38 @@ class Combine
 
 	private function getCombinedPage(int $membershipId) : \PHPFUI\Container
 		{
-		$container = new \PHPFUI\Container();
-		$container->add(new \PHPFUI\SubHeader('Combined Members'));
-		$members = $this->memberTable->membersInMembership($membershipId);
+		$form = new \PHPFUI\Container();
+		$form->add(new \PHPFUI\SubHeader('Combined Members'));
+		$members = new \App\Table\Member()->membersInMembership($membershipId);
 
 		if (\count($members))
 			{
 			$view = new \App\View\Member($this->page);
-			$container->add($view->show($members));
+			$form->add($view->show($members));
 			}
-
-		return $container;
-		}
-
-	private function getSearchPage(string $search = '') : \PHPFUI\Form
-		{
-		$form = new \PHPFUI\Form($this->page);
-		$form->setAttribute('method', 'GET');
-		$form->setAreYouSure(false);
-		$fieldSet = new \PHPFUI\FieldSet('Enter Address To Find');
-		$fieldSet->add(new \PHPFUI\Input\Text('membership_address', 'Can be partial address', $search));
-		$form->add($fieldSet);
-		$form->add(new \PHPFUI\Submit('Search'));
 
 		return $form;
 		}
 
-	/**
-	 * @param array<string,string> $get
-	 */
-	private function getSelectPage(array $get) : \PHPFUI\Container | \PHPFUI\Form
+	public function show() : \App\UI\ContinuousScrollTable
 		{
-		$get['all'] = true;
-		$members = $this->memberTable->find($get);
+		$memberTable = new \App\Table\Member();
+		$memberTable->setJoin('membership');
+		$memberTable->setGroupBy('membershipId');
 
-		if (! \count($members))
-			{
-			$container = new \PHPFUI\Container();
-			$alert = new \App\UI\Alert('No match, please try again');
-			$alert->addClass('warning');
-			$container->add($alert);
-			$container->add($this->getSearchPage($get['membership_address']));
+		$view = new \App\UI\ContinuousScrollTable($this->page, $memberTable);
+		$sortableHeaders = ['address' => 'Address', 'firstName' => 'First Name', 'lastName' => 'LastName', 'joined' => 'Member Since', 'expires' => 'Expires'];
 
-			return $container;
-			}
-		$form = new \PHPFUI\Form($this->page);
-		$form->setAreYouSure(false);
-		$fieldSet = new \PHPFUI\FieldSet('Instructions');
-		$fieldSet->add('Select the membership under the <b>Master</b> column you want to combine members into. Then check each member you want to move into that membership by checking
-									 the <b>Combine</b> column.');
-		$form->add($fieldSet);
-		$table = new \PHPFUI\Table();
-		$table->setHeaders(['Master', 'Combine', 'Name', 'address' => 'Address', 'Member Since', 'Expires', 'email']);
+		$otherHeaders = ['master' => 'Master', 'combine' => 'Combine', ];
 
-		foreach ($members as $member)
-			{
-			$row = $member->toArray();
-			$row['Master'] = new \PHPFUI\Input\Radio('membershipId', '', $member->membershipId);
-			$row['Combine'] = new \PHPFUI\Input\CheckBox('memberId-' . $member->memberId, '', 1);
-			$row['Name'] = $member->firstName . ' ' . $member->lastName;
-			$row['Member Since'] = $member->joined;
-			$row['Expires'] = $member->expires;
-			$table->addRow($row);
-			}
-		$form->add($table);
-		$form->add(new \PHPFUI\Submit('Merge'));
+		$view->addCustomColumn('master', static fn (array $member) : \PHPFUI\Input\Radio => new \PHPFUI\Input\Radio('master', '', (string)$member['membershipId'])->setId('radio' . $member['membershipId']));
 
-		return $form;
+		$view->addCustomColumn('combine', static fn (array $member) : \PHPFUI\Input\CheckBox => new \PHPFUI\Input\CheckBox('combine-' . $member['memberId'], ''));
+
+		$view->setHeaders(\array_merge($otherHeaders, $sortableHeaders))->setSortableColumns(\array_keys($sortableHeaders));
+		$view->setSearchColumns(\array_keys($sortableHeaders));
+
+		return $view;
 		}
+
 	}

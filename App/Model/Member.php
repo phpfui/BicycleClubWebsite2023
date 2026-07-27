@@ -202,7 +202,7 @@ class Member
 
 			foreach ($post as $key => $value)
 				{
-				if ($value && \str_contains($key, 'combine'))
+				if (! empty($value) && false !== \strpos($key, 'combine'))
 					{
 					[$junk, $combinedMemberId] = \explode('-', $key);
 
@@ -290,7 +290,7 @@ class Member
 		{
 		$members = [];
 		$membershipsCombined = [];
-		$membershipId = (int)($post['membershipId'] ?? 0);
+		$membershipId = (int)($post['master'] ?? 0);
 
 		if (! $membershipId)
 			{
@@ -299,7 +299,7 @@ class Member
 
 		foreach ($post as $key => $value)
 			{
-			if ($post[$key] && \str_contains($key, 'memberId'))
+			if ($post[$key] && \str_contains($key, 'combine'))
 				{
 				[$junk, $memberId] = \explode('-', $key);
 				$member = new \App\Record\Member($memberId);

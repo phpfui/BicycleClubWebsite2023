@@ -184,7 +184,7 @@ return $member->fullName();});
 		$reveal->addClass('large');
 		$div = new \PHPFUI\FieldSet('Details');
 		$reveal->add($div);
-		$reveal->add($reveal->getCloseButton());
+		$reveal->add($reveal->getCloseButton('Close'));
 
 		$parameters = ['table' => get_debug_type($category['table']), 'pointsAwarded' => $item['pointsAwarded'] ?? 0];
 

@@ -72,7 +72,7 @@ class Test extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				}
 			$fieldSet->add($flashType);
 
-			$fieldSet->add(new \PHPFUI\Input\Text('flashText', 'What do you want to flash', $_POST['flashText'] ?? '')->setRequired()); // @phpstan-ignore-line
+			$fieldSet->add(new \PHPFUI\Input\Text('flashText', 'What do you want to flash', $_POST['flashText'] ?? '')->setRequired());
 			$form->add($fieldSet);
 
 			$buttonGroup = new \PHPFUI\ButtonGroup();

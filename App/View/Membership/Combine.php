@@ -10,10 +10,11 @@ class Combine
 
 	public function combine() : string | \PHPFUI\Container | \PHPFUI\Form
 		{
-		if (isset($_POST['submit']) && $_POST['submit'] == 'Combine Memberships')
+		if (isset($_POST['submit']) && 'Combine Memberships' == $_POST['submit'])
 			{
 			$memberModel = new \App\Model\Member();
 			$membershipId = $memberModel->combineMembership($_POST);
+
 			if ($membershipId)
 				{
 				$this->page->redirect('', 'combined=' . $membershipId);
@@ -47,21 +48,6 @@ class Combine
 		return '';
 		}
 
-	private function getCombinedPage(int $membershipId) : \PHPFUI\Container
-		{
-		$form = new \PHPFUI\Container();
-		$form->add(new \PHPFUI\SubHeader('Combined Members'));
-		$members = new \App\Table\Member()->membersInMembership($membershipId);
-
-		if (\count($members))
-			{
-			$view = new \App\View\Member($this->page);
-			$form->add($view->show($members));
-			}
-
-		return $form;
-		}
-
 	public function show() : \App\UI\ContinuousScrollTable
 		{
 		$memberTable = new \App\Table\Member();
@@ -83,4 +69,18 @@ class Combine
 		return $view;
 		}
 
+	private function getCombinedPage(int $membershipId) : \PHPFUI\Container
+		{
+		$form = new \PHPFUI\Container();
+		$form->add(new \PHPFUI\SubHeader('Combined Members'));
+		$members = new \App\Table\Member()->membersInMembership($membershipId);
+
+		if (\count($members))
+			{
+			$view = new \App\View\Member($this->page);
+			$form->add($view->show($members));
+			}
+
+		return $form;
+		}
 	}

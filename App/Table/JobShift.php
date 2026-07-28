@@ -9,6 +9,7 @@ class JobShift extends \PHPFUI\ORM\Table
 	public function getAvailableJobShifts(int $jobId) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$sql = 'SELECT js.* FROM jobShift js WHERE js.jobId=? and COALESCE((SELECT count(*) FROM volunteerJobShift v where v.jobId=? and v.jobShiftId=js.jobShiftId group by v.jobShiftId),0) < js.needed group by js.jobShiftId order by js.startTime';
+
 		return \PHPFUI\ORM::getDataObjectCursor($sql, [$jobId, $jobId, ]);
 
 //		$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();

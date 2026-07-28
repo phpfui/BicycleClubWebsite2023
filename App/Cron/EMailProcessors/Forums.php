@@ -18,9 +18,9 @@ class Forums
 
 	public function process(\ZBateson\MailMimeParser\Message $message) : bool
 		{
-		$to = $message->getHeader('to');
-		$cc = $message->getHeader('cc');
-		$bcc = $message->getHeader('bcc');
+		$to = $message->getHeader('To');
+		$cc = $message->getHeader('Cc');
+		$bcc = $message->getHeader('Bcc');
 		$validEmail = false;
 
 		$forumTable = new \App\Table\Forum();

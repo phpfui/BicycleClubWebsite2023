@@ -67,6 +67,7 @@ foreach ($tables as $tableObject)
 
 		// Compute default value
 		$fieldDefault = '';
+
 		if (null !== $col['Default'])
 			{
 			$value = $col['Default'];
@@ -112,13 +113,14 @@ foreach ($tables as $tableObject)
 
 	$indexes = $mysql->getIndexes($table);
 	$compoundIndexes = [];
+
 	if ($indexes)
 		{
 		foreach ($indexes as $index)
 			{
 			if (! $index->primaryKey)
 				{
-				if (! array_key_exists($index->keyName, $compoundIndexes))
+				if (! \array_key_exists($index->keyName, $compoundIndexes))
 					{
 					$compoundIndexes[$index->keyName] = [];
 					}
@@ -126,11 +128,13 @@ foreach ($tables as $tableObject)
 				}
 			}
 		}
+
 	foreach ($compoundIndexes as $indexName => $fields)
 		{
-		$createTableSql .= "\nCREATE INDEX `{$table}_{$indexName}` ON `{$table}` (`" . implode('`,`', $fields) . '`);';
+		$createTableSql .= "\nCREATE INDEX `{$table}_{$indexName}` ON `{$table}` (`" . \implode('`,`', $fields) . '`);';
 		}
-	if (str_contains($createTableSql, 'DECIMAL'))
+
+	if (\str_contains($createTableSql, 'DECIMAL'))
 		{
 		echo $createTableSql . "\n\n";
 		}

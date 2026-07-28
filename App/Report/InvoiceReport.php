@@ -111,9 +111,9 @@ class InvoiceReport
 							}
 						unset($value);
 
-						foreach ($detail as $field => $value)
+						foreach ($detail->toArray() as $value)
 							{
-							$output[$field] = $value;
+							$output[] = $value;
 							}
 						$csvWriter->outputRow($output);
 						}

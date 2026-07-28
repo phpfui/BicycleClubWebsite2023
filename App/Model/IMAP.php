@@ -17,7 +17,12 @@ class IMAP implements \Countable
 
 		if ($server)
 			{
-			$this->mbox = @\imap_open($server, $this->settingTable->value('IMAPMailBox'), $this->settingTable->value('IMAPPassword'));
+			$imap = @\imap_open($server, $this->settingTable->value('IMAPMailBox'), $this->settingTable->value('IMAPPassword'));
+
+			if (false !== $imap)
+				{
+				$this->mbox = $imap;
+				}
 			}
 		}
 

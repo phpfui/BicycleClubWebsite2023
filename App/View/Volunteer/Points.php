@@ -186,7 +186,7 @@ return $member->fullName();});
 		$reveal->add($div);
 		$reveal->add($reveal->getCloseButton('Close'));
 
-		$parameters = ['table' => get_debug_type($category['table']), 'pointsAwarded' => $item['pointsAwarded'] ?? 0];
+		$parameters = ['table' => \get_debug_type($category['table']), 'pointsAwarded' => $item['pointsAwarded'] ?? 0];
 
 		foreach ($item->toArray() as $field => $value)
 			{

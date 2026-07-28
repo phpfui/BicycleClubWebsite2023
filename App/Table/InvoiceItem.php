@@ -6,7 +6,7 @@ class InvoiceItem extends \PHPFUI\ORM\Table
 	{
 	protected static string $className = '\\' . \App\Record\InvoiceItem::class;
 
-	public function findItems(int $invoiceId, string $restrict, string $exclude, string $text) : \PHPFUI\ORM\DataObjectCursor
+	public function findItems(int $invoiceId, string $restrict, string $exclude, string $text) : \PHPFUI\ORM\RecordCursor
 		{
 		$condition = new \PHPFUI\ORM\Condition('type', 0);
 		$condition->and('invoiceId', $invoiceId);
@@ -43,7 +43,7 @@ class InvoiceItem extends \PHPFUI\ORM\Table
 			}
 		$this->setWhere($condition);
 
-		return $this->getDataObjectCursor();
+		return $this->getRecordCursor();
 		}
 
 	/**

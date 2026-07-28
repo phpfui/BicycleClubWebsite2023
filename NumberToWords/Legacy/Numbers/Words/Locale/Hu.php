@@ -56,6 +56,7 @@ class Hu extends Words
     private $thousandSeparator = '-';
 
     private static $currencyNames = [
+        'AED' => [['emírségi dirham'], ['fils']],
         'ALL' => [['lek'], ['qindarke']],
         'AUD' => [['ausztrál dollár'], ['cent']],
         'BAM' => [['konvertibilis márka'], ['pfening']],
@@ -65,32 +66,52 @@ class Hu extends Words
         'BYN' => [['belarusz rubel'], ['kopejka']],
         'CAD' => [['kanadai dollár'], ['cent']],
         'CHF' => [['svájci frank'], ['rappen']],
+        'CNY' => [['kínai jüan'], ['fen']],
         'CYP' => [['ciprusi font'], ['cent']],
         'CZK' => [['cseh korona'], ['halér']],
         'DKK' => [['dán korona'], ['őre']],
+        'DZD' => [['algériai dínár'], ['szantim']],
         'EEK' => [['észt korona'], ['sent']],
+        'EGP' => [['egyiptomi font'], ['piaszter']],
         'EUR' => [['euró'], ['cent']],
         'GBP' => [['font'], ['penny']],
         'HKD' => [['hongkongi dollár'], ['cent']],
         'HRK' => [['kuna'], ['lipa']],
         'HUF' => [['forint'], ['fillér']],
+        'IDR' => [['indonéz rúpia'], ['szén']],
         'ILS' => [['sékel'], ['agora']],
         'ISK' => [['izlandi korona'], ['aurar']],
         'JPY' => [['jen'], ['szen']],
         'LTL' => [['litas'], ['cent']],
         'LVL' => [['lat'], ['santim']],
+        'LYD' => [['líbiai dínár'], ['dirham']],
+        'MAD' => [['marokkói dirham'], ['szantim']],
         'MKD' => [['macedón dénár'], ['deni']],
+        'MXN' => [['mexikói peso'], ['centavo']],
+        'MRO' => [['mauritániai ugija'], ['kum']],
         'MTL' => [['máltai líra'], ['cent']],
+        'MYR' => [['malajziai ringgit'], ['szén']],
+        'NGN' => [['nigériai naira'], ['kobo']],
         'NOK' => [['norvég korona'], ['őre']],
+        'PHP' => [['fülöp-szigeteki peso'], ['szentavo']],
         'PLN' => [['zloty'], ['grosz']],
-        'ROL' => [['lej'], ['bani']],
+        'RON' => [['lej'], ['bani']],
         'RUB' => [['orosz rubel'], ['kopejka']],
+        'SAR' => [['szaúd-arábiai rijál'], ['halala']],
         'SEK' => [['svéd korona'], ['őre']],
         'SIT' => [['tolár'], ['sztotin']],
+        'SKK' => [['szlovák korona'], ['halér']],
+        'TMT' => [['türkmén manat'], ['tenge']],
+        'TND' => [['tunéziai dínár'], ['millim']],
         'TRL' => [['lira'], ['kuruþ']],
         'TRY' => [['lira'], ['kuruþ']],
         'UAH' => [['hrivnya'], ['kopejka']],
         'USD' => [['dollár'], ['cent']],
+        'UZS' => [['üzbég szom'], ['tijn']],
+        'XAF' => [['CFA frank'], ['szantim']],
+        'XOF' => [['CFA frank'], ['szantim']],
+        'XPF' => [['CFP frank'], ['szantim']],
+        'YUM' => [['jugoszláv dínár'], ['para']],
         'ZAR' => [['rand'], ['cent']]
     ];
 
@@ -148,7 +169,11 @@ class Hu extends Words
         $h = (int) ($number / 100) % 10;
 
         if ($h) {
-            $return .= $this->wordSeparator . self::$digits[$h] . $this->wordSeparator . 'száz';
+            if ($h > 1) {
+                $return .= $this->wordSeparator . self::$digits[$h] . $this->wordSeparator;
+            }
+
+            $return .= 'száz';
         }
 
         // ten, twenty etc.
@@ -208,7 +233,7 @@ class Hu extends Words
                 break;
         }
 
-        if ($d > 0) {
+        if ($d > 0 && !($power === 3 && $h === 0 && $t === 0 && $d === 1)) {
             $return .= $this->wordSeparator . self::$digits[$d];
         }
 

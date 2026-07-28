@@ -60,10 +60,12 @@ class Migration_83 extends \PHPFUI\ORM\Migration
 	private function cleanTable(\PHPFUI\ORM\Table $table) : void
 		{
 		$transaction = new \PHPFUI\ORM\Transaction();
+
 		foreach ($table->getRecordCursor() as $record)
 			{
 			$data = $record->toArray();
 			$record->clean();
+
 			if ($data != $record->toArray())
 				{
 				$record->update();

@@ -108,13 +108,14 @@ class Yo extends Words
         'LYD' => [['dinar'], ['cent']],
         'MAD' => [['dirham'], ['cent']],
         'MKD' => [['Macedonian dinar'], ['deni']],
+        'MXN' => [['peso Mexico', 'peso Mexico'], ['sentavo']],
         'MRO' => [['ouguiya'], ['khoums']],
         'MTL' => [['Maltese lira'], ['centym']],
         'NGN' => [['Naira'], ['kobo']],
         'NOK' => [['Norwegian krone'], ['oere']],
         'PHP' => [['peso'], ['centavo']],
         'PLN' => [['zloty', 'zlotys'], ['grosz']],
-        'ROL' => [['Romanian leu'], ['bani']],
+        'RON' => [['Romanian leu'], ['bani']],
         'RUB' => [['Russian Federation rouble'], ['kopiejka']],
         'SEK' => [['Swedish krona'], ['oere']],
         'SIT' => [['Tolar'], ['stotinia']],
@@ -141,6 +142,11 @@ class Yo extends Words
     {
         $word = "";
         $num = preg_replace('/[\W]/', '', $num);
+
+        if ((int) $num === 0) {
+            return $this->zero;
+        }
+
         $formatted = number_format((int) $num, 2);
 
         $leftNumber = explode(".", $formatted);

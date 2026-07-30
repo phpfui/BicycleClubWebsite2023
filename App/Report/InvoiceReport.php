@@ -111,6 +111,8 @@ class InvoiceReport
 							}
 						unset($value);
 
+						$detail->description = \Soundasleep\Html2Text::convert($detail->description, ['drop_links' => 'href', 'ignore_errors' => true]);
+
 						foreach ($detail->toArray() as $value)
 							{
 							$output[] = $value;

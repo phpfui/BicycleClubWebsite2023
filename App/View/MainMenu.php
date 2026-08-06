@@ -278,12 +278,12 @@ class MainMenu extends \App\UI\MainMenu
 
 		if ($menu = $this->addTopMenu('Store', 'Store'))
 			{
-			$this->addSub($menu, '/Store/addItem', 'Add Store Item');
 			$this->addSub($menu, '/Store/cart', 'My Cart');
 			$this->addSub($menu, '/Store/checkout', 'Check Out');
 
 			if ($configurationMenu = $this->addMenu($menu, '/Store/Configuration', 'Store Configuration'))
 				{
+				$this->addSub($configurationMenu, '/Store/addItem', 'Add Store Item');
 				$this->addSub($configurationMenu, '/Store/Configuration/settings', 'Store Settings');
 				$this->addSub($configurationMenu, '/Store/Configuration/abandonEmail', 'Abandoned Cart Email');
 				$this->addSub($configurationMenu, '/Store/Options/list', 'Store Options');

@@ -27,12 +27,14 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$this->customer = $this->customerModel->read($this->customerId);
 		}
 
-	public function addItem() : void
+	public function addItem(\App\Record\Folder $folder = new \App\Record\Folder()) : void
 		{
 		if ($this->page->addHeader('Add Store Item'))
 			{
 			$storeEdit = new \App\View\Store\Edit($this->page);
-			$this->page->addPageContent($storeEdit->edit(new \App\Record\StoreItem()));
+			$item = new \App\Record\StoreItem();
+			$item->folder = $folder;
+			$this->page->addPageContent($storeEdit->edit($item));
 			}
 		}
 

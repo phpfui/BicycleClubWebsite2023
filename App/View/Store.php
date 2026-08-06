@@ -390,6 +390,8 @@ class Store extends \App\View\Folder
 
 		$view->setSearchColumns($headers);
 
+		$container->add(new \PHPFUI\Button('Add Store Item To This Folder', '/Store/addItem/' . $folder->folderId));
+
 		$container->add($view);
 
 		return $container;

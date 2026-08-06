@@ -204,6 +204,7 @@ class Edit
 			$infoSet->add(new \PHPFUI\MultiColumn($taxable, $clothing, $active));
 			$form->add($infoSet);
 			$buttonGroup = new \App\UI\CancelButtonGroup();
+			$buttonGroup->setCancelButtonURL('/Store/Inventory/manage');
 			$buttonGroup->addButton($submit);
 
 			if ($storeItem->storeItemId)

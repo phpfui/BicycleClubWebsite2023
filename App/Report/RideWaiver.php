@@ -91,7 +91,7 @@ class RideWaiver extends \Mpdf\Mpdf
 		$ride->releasePrinted = \date('Y-m-d H:i:s');
 		$ride->update();
 		$rideSignupTable = new \App\Table\RideSignup();
-		$this->riders = $rideSignupTable->getSignedUpRiders($ride->rideId, 'member.lastName,member.firstName');
+		$this->riders = $rideSignupTable->getSignedUpRiders($ride->rideId, 'member.lastName');
 		$this->AddPage();
 		$this->SetMargins(12, 12, 5);
 		$this->printHeader($ride);

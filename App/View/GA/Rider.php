@@ -171,7 +171,11 @@ class Rider
 
 		if ($rider->loaded() && '1000-01-01' < $rider->signedUpOn)
 			{
-			$fieldSet->add(new \App\UI\Display('Signed Up On', \date('F j, Y, g:i a', \strtotime($rider->signedUpOn))));
+			$multiColumn = new \PHPFUI\MultiColumn('<label><b>Signed Up On</b></label>');
+			$multiColumn->add(\date('F j, Y, g:i a', \strtotime($rider->signedUpOn)));
+			$link = new \PHPFUI\Link('/GA/downloadWaiver/' . $rider->gaRiderId, 'Download Waiver', false);
+			$multiColumn->add($link);
+			$fieldSet->add($multiColumn);
 			}
 		$editIcon = new \PHPFUI\FAIcon('far', 'edit', "/Membership/edit/{$rider->memberId}");
 		$thumbsUp = new \PHPFUI\FAIcon('far', 'thumbs-up');

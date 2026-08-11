@@ -50,6 +50,16 @@ class GAWaiver extends \Mpdf\Mpdf
 		return true;
 		}
 
+	public function getFileName(\App\Record\GaRider $rider) : string
+		{
+		return "Rider-{$rider->fullName()}-{$rider->gaEventId}-{$rider->gaRiderId}-Waiver.pdf";
+		}
+
+	public function getFullFileName(\App\Record\GaRider $rider) : string
+		{
+		return PROJECT_ROOT . '/files/GAWaivers/' . \str_replace(' ', '_', $this->getFileName($rider));
+		}
+
 	/**
 	 * @return array<string>
 	 */

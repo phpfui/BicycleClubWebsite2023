@@ -71,6 +71,32 @@ class GA extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function downloadWaiver(\App\Record\GaRider $rider) : void
+		{
+		if ($this->page->isAuthorized('Edit Rider'))
+			{
+			$gaWaiver = new \App\Report\GAWaiver();
+
+			if ($gaWaiver->generate($rider))
+				{
+				$fileName = "Rider-{$rider->fullName()}-{$rider->gaEventId}-{$rider->gaRiderId}-Waiver.pdf";
+				$fullFileName = PROJECT_ROOT . '/files/GAWaivers/' . \str_replace(' ', '_', $fileName);
+
+				$stats = \stat($fullFileName);
+				\http_response_code(200);
+				\header('Pragma: public');
+				\header('Last-Modified: ' . \date('D, d M Y H:i:s') . ' GMT');
+				\header('Cache-Control: no-store, no-cache, must-revalidate'); // HTTP/1.1
+				\header('Cache-Control: pre-check=0, post-check=0, max-age=0'); // HTTP/1.1
+				\header('Content-Transfer-Encoding: none');
+				\header("Content-length: {$stats['size']}");
+				\header('Content-Type: application/pdf');
+				\header('Content-Disposition: attachment; filename="' . $fileName . '"');
+				\readfile($fullFileName);
+				}
+			}
+		}
+
 	public function edit(\App\Record\GaEvent $event = new \App\Record\GaEvent()) : void
 		{
 		$header = $event->loaded() ? 'Edit GA Event' : 'Add GA Event';

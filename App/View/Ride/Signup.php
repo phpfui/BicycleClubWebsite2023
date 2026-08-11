@@ -70,7 +70,8 @@ class Signup
 		$rideSignupTable = new \App\Table\RideSignup();
 		$status = $rideSignupTable->getRiderStatus();
 		// remove statuses that don't make sense for user selection
-		unset($status[\App\Enum\RideSignup\Status::CANCELLED->value]);
+		unset($status[\App\Enum\RideSignup\Status::CANCELLED->value], $status[\App\Enum\RideSignup\Status::WAIT_LIST->value]);
+
 
 		$model = new \App\Model\RideSignup($this->ride, \App\Model\Session::signedInMemberRecord());
 		$signupLimit = $model->getRiderSignupLimit();
@@ -78,10 +79,6 @@ class Signup
 		if ($signupLimit)
 			{
 			unset($status[\App\Enum\RideSignup\Status::PROBABLY_RIDING->value]);
-			}
-		else
-			{
-			unset($status[\App\Enum\RideSignup\Status::WAIT_LIST->value]);
 			}
 
 		$select = new \PHPFUI\Input\Select('status', 'Status');

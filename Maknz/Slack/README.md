@@ -1,6 +1,6 @@
 # Slack for PHP
 
-[![Build Status](https://travis-ci.org/php-slack/slack.svg?branch=master)](https://travis-ci.org/php-slack/slack)
+[![Php Unit Tests](https://github.com/php-slack/slack/actions/workflows/ci.yaml/badge.svg)](https://github.com/php-slack/slack/actions/workflows/ci.yaml)
 [![Code Coverage](https://scrutinizer-ci.com/g/php-slack/slack/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/php-slack/slack/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/php-slack/slack/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/php-slack/slack/?branch=master)
 [![StyleCI](https://styleci.io/repos/116497800/shield)](https://styleci.io/repos/116497800) |
@@ -11,7 +11,7 @@ with [incoming webhooks](https://my.slack.com/services/new/incoming-webhook),
 focused on ease-of-use and elegant syntax.
 
 **supports:** PHP `7.1`, `7.2`, `7.3`, `7.4` or `8.0`, `8.1`, `8.2`, `8.3`, `8.4`  
-**require:** `guzzlehttp/guzzle` any of versions `~7.0|~6.0|~5.0|~4.0`
+**require:** `guzzlehttp/guzzle` any of versions `^8.0|^7.0|^6.0|^5.0|^4.0`
 
 > This is the fork of popular, great, but abandoned package [`maknz/slack`](https://github.com/maknz/slack)
 

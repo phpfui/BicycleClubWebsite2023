@@ -64,6 +64,11 @@ class Info
 			$fieldSet->add(new \App\UI\Display('Distance', $ride->mileage));
 			}
 
+		if ($ride->maxRiders)
+			{
+			$fieldSet->add(new \App\UI\Display('Rider Limit', $ride->maxRiders));
+			}
+
 		if ($ride->regrouping)
 			{
 			$fieldSet->add(new \App\UI\Display('Regrouping Policy', $ride->regrouping));

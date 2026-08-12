@@ -453,6 +453,40 @@ class TextHelper extends \PHPFUI\TextHelper
 		return $subject;
 		}
 
+	public static function toASCII(?string $string) : string
+		{
+		if (! $string)
+			{
+			return '';
+			}
+
+		$encoding = \mb_detect_encoding(
+			$string,
+			['ASCII', 'UTF-8', 'Windows-1252', 'ISO-8859-1'],
+			true
+		);
+
+		// First normalize input into UTF-8
+		if ($encoding && ! \in_array($encoding, ['ASCII', 'UTF-8']))
+			{
+			$string = \mb_convert_encoding($string, 'UTF-8', $encoding);
+			}
+		elseif (! $encoding)
+			{
+			$string = \mb_convert_encoding($string, 'UTF-8', 'Windows-1252');
+			}
+		$string = parent::unhtmlentities($string);
+		// Then intentionally downgrade to ASCII
+		$string = @\iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
+
+		if (false === $string)
+			{
+			return '';
+			}
+
+		return \preg_replace('/[^[:ascii:]]/', '', $string);
+		}
+
 	/**
 	 * Decode hmtl entities
 	 *
@@ -465,21 +499,22 @@ class TextHelper extends \PHPFUI\TextHelper
 			return '';
 			}
 
-		try
-			{
-			\ini_set('mbstring.substitute_character', 'none');
-			$string = \mb_convert_encoding($string, 'UTF-8', 'ASCII');
-			}
-		catch (\Exception $e)
-			{
-			echo new \PHPFUI\Debug('error from mb_convert_encoding');
-			echo new \PHPFUI\Debug($e);
-			}
-		// Transliterate non-ASCII characters to closest ASCII equivalents.
-		$string = @\iconv('UTF-8', 'ASCII//TRANSLIT', $string);
+		$encoding = \mb_detect_encoding(
+			$string,
+			['ASCII', 'UTF-8', 'Windows-1252', 'ISO-8859-1'],
+			true
+		);
 
-		// Remove any remaining non-ASCII characters.
-		$string = \preg_replace('/[^[:ascii:]]/', '', $string);
+	// Normalize everything to UTF-8
+		if ($encoding && ! \in_array($encoding, ['ASCII', 'UTF-8']))
+			{
+			$string = \mb_convert_encoding($string, 'UTF-8', $encoding);
+			}
+		elseif (! $encoding)
+			{
+			// fallback for pasted Word/email content
+			$string = \mb_convert_encoding($string, 'UTF-8', 'Windows-1252');
+			}
 
 		return parent::unhtmlentities($string);
 		}

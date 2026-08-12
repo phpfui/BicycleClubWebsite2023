@@ -1,6 +1,3 @@
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/support-ukraine.svg?t=1" />](https://supportukrainenow.org)
-
 # A rate limiter middleware for Guzzle
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/guzzle-rate-limiter-middleware.svg?style=flat-square)](https://packagist.org/packages/spatie/guzzle-rate-limiter-middleware)
@@ -24,6 +21,8 @@ We invest a lot of resources into creating [best in class open source packages](
 We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
 
 ## Installation
+
+This package requires PHP 8.3 or higher, and Guzzle 6.3, 7 or 8.
 
 You can install the package via composer:
 

@@ -59,7 +59,8 @@ class Video extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			if ($folder->loaded())
 				{
 				$condition = new \PHPFUI\ORM\Condition('folderId', $folder->folderId);
-				if ($folder->folderId == 0)
+
+				if (0 == $folder->folderId)
 					{
 					$condition->or('folderId', null);
 					}

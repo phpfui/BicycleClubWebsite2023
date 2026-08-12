@@ -366,7 +366,7 @@ class Store extends \App\View\Folder
 			{
 			$condition->or('folderId', null);
 			}
-		$storeItemTable->setWhere($condition);
+		$storeItemTable->setWhere(new \PHPFUI\ORM\Condition()->and($condition));
 
 		$condition = new \PHPFUI\ORM\Condition('folderType', \App\Enum\FolderType::STORE->value);
 		$condition->and('parentFolderId', (int)$folder->folderId);

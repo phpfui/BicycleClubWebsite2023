@@ -46,7 +46,12 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			if ($folder->loaded())
 				{
-				$this->table->setWhere(new \PHPFUI\ORM\Condition('folderId', $folder->folderId));
+				$condition = new \PHPFUI\ORM\Condition('folderId', $folder->folderId);
+				if ($folder->folderId == 0)
+					{
+					$condition->or('folderId', null);
+					}
+				$this->table->setWhere(new \PHPFUI\ORM\Condition()->and($condition));
 				\App\Model\Session::clearPhotoAlbum();
 
 				if ($this->table->count())

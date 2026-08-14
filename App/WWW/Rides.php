@@ -452,20 +452,37 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				{
 				$signup = new \PHPFUI\Button('Sign Up For This Ride');
 				$signup->addClass('success');
+				$buttonGroup->addButton($signup);
+
 				$modal = new \PHPFUI\Reveal($this->page, $signup);
 				$modal->addClass('large');
-				$modal->add('<h2>Ride Sign Up</h2>');
-				$view = new \App\View\Ride\Signup($this->page, $ride);
-				$form = $view->getForm();
-				$submit = new \PHPFUI\Submit();
 				$bg = new \PHPFUI\ButtonGroup();
-				$bg->addButton($submit);
+
+				$waitListedRide = new \App\Table\RideSignup()->getWaitlistedRide($ride, \App\Model\Session::signedInMemberRecord());
+
+				// if not signed up for a waitlisted ride
+				if (! $waitListedRide)
+					{
+					$modal->add('<h2>Ride Sign Up</h2>');
+					$view = new \App\View\Ride\Signup($this->page, $ride);
+					$form = $view->getForm();
+					$submit = new \PHPFUI\Submit();
+					$bg->addButton($submit);
+					}
+				else
+					{
+					$form = new \PHPFUI\FieldSet('Test');
+					$callout = new \PHPFUI\Callout('alert');
+					$callout->add('You are a confirmed rider on a rider the below rider limited ride.<br><br>');
+					$callout->add(new \PHPFUI\Link('/Rides/signedUp/' . $waitListedRide->rideId, $waitListedRide->title, false));
+					$callout->add('<br><br>You need to remove your signup on the above ride before you can signup for this ride');
+					$form->add($callout);
+					}
 				$close = new \PHPFUI\Cancel('Cancel');
 				$close->addClass('hollow')->addClass('alert');
 				$bg->addButton($close);
 				$form->add($bg);
 				$modal->add($form);
-				$buttonGroup->addButton($signup);
 				}
 			$this->page->addPageContent($this->view->getSignedUpRidersView($ride, $editSignups, $this->canSeeRiderComments($ride), $signup));
 

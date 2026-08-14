@@ -10,7 +10,7 @@ class JobShiftTest extends \Tests\SQLAsserts
 		// test type: \PHPFUI\ORM\DataObjectCursor
 		// variables: $jobId
 
-		$jobId = 413;
+		$jobId = 403;
 
 		$newTable = new \App\Table\JobShift();
 		$oldTable = new \Tests\Table\JobShift();

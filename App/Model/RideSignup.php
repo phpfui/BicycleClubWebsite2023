@@ -23,7 +23,7 @@ class RideSignup
 			$this->signupLimit = $pace->maxRiders;
 			}
 
-		if (! $signupLimit && ! $this->ride->empty() && $this->ride->maxRiders > 0)
+		if (! $this->ride->empty() && $this->ride->maxRiders > 0)
 			{
 			$this->signupLimit = $this->ride->maxRiders;
 			}
@@ -184,7 +184,7 @@ class RideSignup
 			}
 		unset($fields['rideComments']);
 
-		if (\App\Enum\RideSignup\Status::DEFINITELY_RIDING == ($fields['status'] ?? -1) && $this->signupLimit)
+		if (\App\Enum\RideSignup\Status::DEFINITELY_RIDING->value == ($fields['status'] ?? -1) && $this->signupLimit)
 			{
 			$this->rideSignupTable->deleteOtherSignedUpRides($this->ride, $this->member);
 			}

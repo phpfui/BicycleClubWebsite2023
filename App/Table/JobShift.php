@@ -8,27 +8,23 @@ class JobShift extends \PHPFUI\ORM\Table
 
 	public function getAvailableJobShifts(int $jobId) : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'SELECT js.* FROM jobShift js WHERE js.jobId=? and COALESCE((SELECT count(*) FROM volunteerJobShift v where v.jobId=? and v.jobShiftId=js.jobShiftId group by v.jobShiftId),0) < js.needed group by js.jobShiftId order by js.startTime';
+		$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
+		$volunteerJobShiftTable->setSelect(new \PHPFUI\ORM\Literal('count(*)'));
+		$vjsCondition = new \PHPFUI\ORM\Condition('volunteerJobShift.jobId', $jobId);
+		$vjsCondition->and('volunteerJobShift.jobShiftId', new \PHPFUI\ORM\Literal('jobShift.jobShiftId'));
+		$volunteerJobShiftTable->setWhere($vjsCondition);
+		$volunteerJobShiftTable->setGroupBy('volunteerJobShift.jobShiftId');
 
-		return \PHPFUI\ORM::getDataObjectCursor($sql, [$jobId, $jobId, ]);
+		$condition = new \PHPFUI\ORM\Condition('jobId', $jobId);
+		$input = [];
+		$countSql = \str_replace(' = ? ', ' = ' . $jobId . ' ', $volunteerJobShiftTable->getSelectSQL($input));
+		$coalesce = 'COALESCE((' . $countSql . '),0)';
+		$condition->and(new \PHPFUI\ORM\Literal($coalesce), new \PHPFUI\ORM\Literal('jobShift.needed'), new \PHPFUI\ORM\Operator\LessThan());
+		$this->setWhere($condition);
+		$this->setOrderBy('jobShiftId');
+		$this->setOrderBy('startTime');
 
-//		$volunteerJobShiftTable = new \App\Table\VolunteerJobShift();
-//		$vjsCondition = new \PHPFUI\ORM\Condition('volunteerJobShift.jobId', $jobId);
-//		$vjsCondition->and('volunteerJobShift.jobShiftId', new \PHPFUI\ORM\Literal('jobShift.jobShiftId'));
-//		$volunteerJobShiftTable->setWhere($vjsCondition);
-//		$volunteerJobShiftTable->setGroupBy('volunteerJobShift.jobShiftId');
-//
-//		$condition = new \PHPFUI\ORM\Condition('jobId', $jobId);
-//		$input = [];
-//		$countSql = str_replace(' = ? ', ' = ' . $jobId . ' ',  $volunteerJobShiftTable->getCountSQL($input, ''));
-//		$coalesce = 'COALESCE((' . $countSql . ' as shifts),0)';
-//		$coalesce = \str_replace(['/'], $input, $coalesce);
-//		$condition->and(new \PHPFUI\ORM\Literal($coalesce), new \PHPFUI\ORM\Literal('needed'), new \PHPFUI\ORM\Operator\LessThan());
-//		$this->setWhere($condition);
-//		$this->setOrderBy('jobShiftId');
-//		$this->setOrderBy('startTime');
-//
-//		return $this->getDataObjectCursor();
+		return $this->getDataObjectCursor();
 		}
 
 	/**

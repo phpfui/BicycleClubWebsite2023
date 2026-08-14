@@ -8,8 +8,14 @@ class RideSignup extends \PHPFUI\ORM\Table
 
 	public function deleteOtherSignedUpRides(\App\Record\Ride $ride, \App\Record\Member $member) : static
 		{
-		$sql = 'delete from rideSignup where rideId in (select rideId from ride where rideDate=(select rideDate from ride where rideId=:rideId) and rideId!=:rideId) and memberId=:memberId and status<:status';
-		$input = ['rideId' => $ride->rideId, 'memberId' => $member->memberId, 'status' => \App\Enum\RideSignup\Status::DEFINITELY_NOT_RIDING->value];
+		$sql = 'delete from rideSignup
+			where rideId in (
+				select rideId from ride where rideDate=(
+					select rideDate from ride where rideId=:rideId)
+				and rideId!=:rideId)
+			and memberId=:memberId and status<=:status';
+		$input = ['rideId' => $ride->rideId, 'memberId' => $member->memberId, 'status' => \App\Enum\RideSignup\Status::WAIT_LIST->value];
+		\App\Tools\Logger::get()->debug($input, __METHOD__);
 		\PHPFUI\ORM::execute($sql, $input);
 
 		return $this;
@@ -140,7 +146,7 @@ class RideSignup extends \PHPFUI\ORM\Table
 		$sql = 'select signedUpTime
 			from rideSignup
 			where memberId=? and rideId in (select rideId from ride where rideDate=?)
-		order by signedUpTime asc
+			order by signedUpTime asc
 			limit 1';
 		$input = [$rider->memberId, $date];
 
@@ -231,11 +237,6 @@ class RideSignup extends \PHPFUI\ORM\Table
 
 	public function getRidesForMember(\App\Record\Member $member, string $startDate = '2000-01-01', string $endDate = '2999-12-31') : \PHPFUI\ORM\DataObjectCursor
 		{
-		$sql = 'select *
-			from rideSignup rs
-			left join ride r on r.rideId=rs.rideId
-			where rs.memberId=? and r.rideDate>=? and r.rideDate<=?
-			order by r.rideDate desc, rs.memberId';
 		$this->setSelect('rideSignup.*');
 		$this->addSelect('ride.*');
 		$this->setJoin('ride');
@@ -273,6 +274,28 @@ class RideSignup extends \PHPFUI\ORM\Table
 		$this->setWhere($condition);
 
 		return $this->getDataObjectCursor();
+		}
+
+	public function getWaitlistedRide(\App\Record\Ride $ride, \App\Record\Member $member) : ?\App\Record\Ride
+		{
+		$this->setSelect('ride.*');
+		$this->addJoin('ride');
+
+		$condition = new \PHPFUI\ORM\Condition('ride.rideDate', $ride->rideDate);
+		$condition->and('ride.maxRiders', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+		$condition->and('rideSignup.rideId', $ride->rideId, new \PHPFUI\ORM\Operator\NotEqual());
+		$condition->and('rideSignup.memberId', $member->memberId);
+		$condition->and('rideSignup.status', \App\Enum\RideSignup\Status::DEFINITELY_RIDING);
+		$this->setWhere($condition);
+
+		$cursor = $this->getDataObjectCursor();
+
+		if (! \count($cursor))
+			{
+			return null;
+			}
+
+		return new \App\Record\Ride($cursor->current());
 		}
 
 	public function moveWaitListToRideFromRide(\App\Record\Ride $ride, \App\Record\Ride $clonedRide) : void

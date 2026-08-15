@@ -471,7 +471,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 					}
 				else
 					{
-					$form = new \PHPFUI\FieldSet('Test');
+					$form = new \PHPFUI\FieldSet('Ride Signup Conflict');
 					$callout = new \PHPFUI\Callout('alert');
 					$callout->add('You are a confirmed rider on a rider the below rider limited ride.<br><br>');
 					$callout->add(new \PHPFUI\Link('/Rides/signedUp/' . $waitListedRide->rideId, $waitListedRide->title, false));

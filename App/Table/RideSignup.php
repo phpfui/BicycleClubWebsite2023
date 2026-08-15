@@ -15,7 +15,6 @@ class RideSignup extends \PHPFUI\ORM\Table
 				and rideId!=:rideId)
 			and memberId=:memberId and status<=:status';
 		$input = ['rideId' => $ride->rideId, 'memberId' => $member->memberId, 'status' => \App\Enum\RideSignup\Status::WAIT_LIST->value];
-		\App\Tools\Logger::get()->debug($input, __METHOD__);
 		\PHPFUI\ORM::execute($sql, $input);
 
 		return $this;

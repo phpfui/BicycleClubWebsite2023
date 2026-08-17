@@ -59,7 +59,7 @@ class DB extends \App\Settings\Settings
 		return $this->error;
 		}
 
-	public function getPDO() : ?\PHPFUI\ORM\PDOInstance
+	public function getPDO() : ?\PHPFUI\ORM\Interface\PDOInstance
 		{
 		$this->error = '';
 		$user = $this->getUser();
@@ -67,14 +67,14 @@ class DB extends \App\Settings\Settings
 
 		try
 			{
-			$pdo = new \PHPFUI\ORM\PDOInstance($this->getConnectionString(), $user, $pw);
+			$pdo = \PHPFUI\ORM\PDO\Factory::get($this->getConnectionString(), $user, $pw);
 
-			if ('sqlite' === $this->driver)
+			if ($pdo->getSqlite())
 				{
-				$pdo->sqliteCreateFunction('acos', 'acos', 1);
-				$pdo->sqliteCreateFunction('cos', 'cos', 1);
-				$pdo->sqliteCreateFunction('sin', 'sin', 1);
-				$pdo->sqliteCreateFunction('radians', 'deg2rad', 1);
+				$pdo->createFunction('acos', 'acos', 1);	     // @phpstan-ignore-line
+				$pdo->createFunction('cos', 'cos', 1);         // @phpstan-ignore-line
+				$pdo->createFunction('sin', 'sin', 1);         // @phpstan-ignore-line
+				$pdo->createFunction('radians', 'deg2rad', 1); // @phpstan-ignore-line
 
 				return $pdo;
 				}

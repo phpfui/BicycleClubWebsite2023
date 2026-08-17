@@ -888,7 +888,7 @@ abstract class Record extends DataObject
 		$updateSql = '';
 		$command = 'insert';
 
-		if (\PHPFUI\ORM::pdo()->sqlite)
+		if (\PHPFUI\ORM::pdo()->getSqlite())
 			{
 			if ($update)
 				{
@@ -897,7 +897,7 @@ abstract class Record extends DataObject
 			}
 		elseif ($update)
 			{
-			if (\PHPFUI\ORM::pdo()->postGre)
+			if (\PHPFUI\ORM::pdo()->getPostGre())
 				{
 				$updateSql = " ON CONFLICT ({$primaryKey}) DO UPDATE SET ";
 				}
@@ -932,8 +932,6 @@ abstract class Record extends DataObject
 		$sql = \str_replace('~INSERT~', $command, $sql) . $updateSql;
 
 		$returnValue = \PHPFUI\ORM::execute($sql, $input);
-//		echo "returnValue " . (int)$returnValue . " from $sql\n\n";
-//		print_r($input);
 
 		if ($returnValue)
 			{

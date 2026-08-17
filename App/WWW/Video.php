@@ -37,6 +37,8 @@ class Video extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$this->page->turnOffBanner();
 
+		$this->page->setPublic((bool)$folder->public);
+
 		if (! $this->view->hasPermission($folder) || ($folder->loaded() && \App\Enum\FolderType::VIDEO != $folder->folderType))
 			{
 			$this->page->addPageContent(new \PHPFUI\SubHeader('Folder Not Found'));
@@ -278,7 +280,7 @@ class Video extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 		if ($this->page->addHeader('View Video'))
 			{
-			if (! $video->empty() && ($video->public || \App\Model\Session::isSignedIn()))
+			if (! $video->empty() && ($video->public || $video->folder->public || \App\Model\Session::isSignedIn()))
 				{
 				$videoView = new \App\View\Video($this->page);
 				$this->page->addPageContent($videoView->view($video));

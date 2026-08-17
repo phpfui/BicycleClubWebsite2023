@@ -25,11 +25,13 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$this->page->turnOffBanner();
 
+		$this->page->setPublic((bool)$folder->public);
+
 		if (! $this->view->hasPermission($folder))
 			{
 			$this->page->addPageContent(new \PHPFUI\SubHeader('Folder Not Found'));
 			}
-		elseif ($this->page->addHeader('Browse Photos'))
+		elseif ($this->page->addHeader('Browse Photos', override:(bool)$folder->public))
 			{
 			$folder->folderId ??= 0;
 
@@ -139,7 +141,7 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		$parts = \explode('-', $id);
 		$photo = new \App\Record\Photo((int)$parts[0]);
 
-		if (! $photo->empty() && ($photo->public || $this->page->isAuthorized('View Album Photo')))
+		if (! $photo->empty() && ($photo->public || $photo->folder->public || $this->page->isAuthorized('View Album Photo')))
 			{
 			$fileModel = new \App\Model\PhotoFiles();
 			$fileModel->download($photo->photoId, $photo->extension);
@@ -379,6 +381,8 @@ class Photo extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			return;
 			}
+
+		$this->page->setPublic((bool)$photo->folder->public);
 
 		if ($this->page->addHeader('View Photo'))
 			{

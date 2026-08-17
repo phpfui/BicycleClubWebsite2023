@@ -22,6 +22,8 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 		{
 		$this->page->turnOffBanner();
 
+		$this->page->setPublic((bool)$folder->public);
+
 		if (! $this->view->hasPermission($folder) || ($folder->loaded() && \App\Enum\FolderType::FILE != $folder->folderType))
 			{
 			$this->page->addPageContent(new \PHPFUI\SubHeader('Folder Not Found'));
@@ -124,7 +126,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			return;
 			}
 
-		if (! $this->view->hasPermission($file))
+		if (! $file->folder->public || ! $this->view->hasPermission($file))
 			{
 			$this->page->addPageContent(new \PHPFUI\SubHeader('File Restricted'));
 			\http_response_code(401);

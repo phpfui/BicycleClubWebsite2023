@@ -1,8 +1,4 @@
-UTF8 Encoding
-
 Roll starter DB
-
-Publicly viewable folders
 
 Default category
 

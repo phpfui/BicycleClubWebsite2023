@@ -262,6 +262,11 @@ abstract class Folder
 			$parentFolder = $file;
 			}
 
+		if ($parentFolder->public)
+			{
+			return true;
+			}
+
 		while ($parentFolder->loaded())
 			{
 			if ($parentFolder->permissionId)
@@ -418,7 +423,8 @@ abstract class Folder
 		$fieldSet->add($folderName);
 
 		$permissionGroupPicker = new \App\UI\PermissionGroupPicker($this->page, 'permissionId', 'Optional Permission Group Restriction', $folder->permission);
-		$fieldSet->add($permissionGroupPicker->getEditControl());
+		$publicFolder = new \PHPFUI\Input\CheckBoxBoolean('public', 'Publicly Viewable', (bool)$folder->public);
+		$fieldSet->add(new \PHPFUI\MultiColumn($permissionGroupPicker->getEditControl(), $publicFolder));
 
 		$form->add($fieldSet);
 		$form->add($modal->getButtonAndCancel($submit));
@@ -451,7 +457,8 @@ abstract class Folder
 		$fieldSet->add($folderName);
 
 		$permissionGroupPicker = new \App\UI\PermissionGroupPicker($this->page, 'permissionId', 'Optional Permission Group Restriction');
-		$fieldSet->add($permissionGroupPicker->getEditControl());
+		$publicFolder = new \PHPFUI\Input\CheckBoxBoolean('public', 'Publically Viewable', (bool)$parentFolder->public);
+		$fieldSet->add(new \PHPFUI\MultiColumn($permissionGroupPicker->getEditControl(), $publicFolder));
 
 		$form->add($fieldSet);
 		$form->add($modal->getButtonAndCancel($submit));

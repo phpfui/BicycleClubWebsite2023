@@ -12,6 +12,7 @@ namespace App\Record\Definition;
  * @property ?int $parentFolderId MySQL type int
  * @property ?int $permissionId MySQL type int
  * @property \App\Record\Permission $permission related record
+ * @property int $public MySQL type int
  */
 abstract class Folder extends \PHPFUI\ORM\Record
 	{
@@ -35,6 +36,7 @@ abstract class Folder extends \PHPFUI\ORM\Record
 				'name' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, false, '', ),
 				'parentFolderId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 0, ),
 				'permissionId' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'public' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
 			];
 			}
 

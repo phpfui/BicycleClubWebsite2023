@@ -325,6 +325,11 @@ class Store extends \App\View\Folder
 			$storePhotoTable->setLimit(1);
 			$storePhotoTable->setOrderBy('sequence');
 
+			if (! \count($items))
+				{
+				$container->add(new \PHPFUI\Callout('info')->add('Select from one of the above categories'));
+				}
+
 			foreach ($items as $item)
 				{
 				$storePhotoTable->setWhere(new \PHPFUI\ORM\Condition('storeItemId', $item['storeItemId']));

@@ -12,29 +12,38 @@ class StoreItem extends \PHPFUI\ORM\Table
 		$storeItemDetailTable->addSelect('storeItemDetail.storeItemId');
 		$storeItemDetailTable->addJoin('storeItem');
 
-		$condition = new \PHPFUI\ORM\Condition();
+		$stockCondition = new \PHPFUI\ORM\Condition();
 
 		if (true === $inStock)
 			{
-			$condition = new \PHPFUI\ORM\Condition('quantity', 0, new \PHPFUI\ORM\Operator\GreaterThan());
+			$stockCondition = new \PHPFUI\ORM\Condition('quantity', 0, new \PHPFUI\ORM\Operator\GreaterThan());
 			}
 
 		if (false === $inStock)
 			{
-			$condition = new \PHPFUI\ORM\Condition('quantity', 0);
+			$stockCondition = new \PHPFUI\ORM\Condition('quantity', 0);
 			}
 
 		if (null !== $folder && $folder->folderId)
 			{
-			$condition->and('storeItem.folderId', $folder->folderId);
+			$stockCondition->and('storeItem.folderId', $folder->folderId);
 			}
-		$storeItemDetailTable->setWhere($condition);
+		else
+			{
+			$noFolder = new \PHPFUI\ORM\Condition('storeItem.folderId', 0);
+			$noFolder->or('stormItem.folderId', null);
+			$stockCondition->and($noFolder);
+			}
+		$storeItemDetailTable->setWhere($stockCondition);
 
 		$storeItemOptionTable = new \App\Table\StoreItemOption();
 		$storeItemOptionTable->addSelect('storeItemId');
 
-		$condition = new \PHPFUI\ORM\Condition('storeItemId', $storeItemDetailTable, new \PHPFUI\ORM\Operator\In());
-		$condition->or('storeItemId', $storeItemOptionTable, new \PHPFUI\ORM\Operator\In());
+		$orderCondition = new \PHPFUI\ORM\Condition('storeItemId', $storeItemDetailTable, new \PHPFUI\ORM\Operator\In());
+		$orderCondition->or('storeItemId', $storeItemOptionTable, new \PHPFUI\ORM\Operator\In());
+
+		$condition = new \PHPFUI\ORM\Condition();
+		$condition->and($orderCondition);
 
 		if (null !== $activeOnly)
 			{

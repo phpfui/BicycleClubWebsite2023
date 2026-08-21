@@ -22,6 +22,13 @@ class Store extends \App\View\Folder
 			{
 			switch ($_POST['action'])
 				{
+				case 'Copy':
+
+					$storeModel = new \App\Model\Store();
+					$this->page->redirect('/Store/edit/' . $storeModel->copy(new \App\Record\StoreItem((int)$_POST['copy']), $_POST)->storeItemId);
+
+					break;
+
 				case 'deleteStoreItem':
 
 					$storeItem = new \App\Record\StoreItem((int)$_POST['storeItemId']);
@@ -375,16 +382,24 @@ class Store extends \App\View\Folder
 		$container->add($this->listFolders($folderTable, $folder, null));
 
 		$headers = ['title' => 'Item', 'price' => 'Price', 'storeItemId' => 'Item Id',
-			'active' => 'Active', 'del' => 'Delete', ];
+			'active' => 'Active', 'copy' => 'Copy', 'del' => 'Delete', ];
 
 		$view = new \App\UI\ContinuousScrollTable($this->page, $storeItemTable);
 		$deleter = new \App\Model\DeleteRecord($this->page, $view, $storeItemTable, 'Are you sure you want to permanently delete this item and all its sizes?');
 		$view->addCustomColumn('del', $deleter->columnCallback(...));
 		$view->addCustomColumn('title', static fn (array $storeItem) : \PHPFUI\Link => new \PHPFUI\Link('/Store/edit/' . $storeItem['storeItemId'], $storeItem['title'], false));
 		$view->addCustomColumn('active', static fn (array $storeItem) : string => $storeItem['active'] ? '<b>&check;</b>' : '');
+		$that = $this;
+		$view->addCustomColumn('copy', static function(array $storeItem) use ($that) : \PHPFUI\FAIcon
+			{
+			$copyIcon = new \PHPFUI\FAIcon('far', 'clone', '#');
+			$that->addCopyItemModal($copyIcon, $storeItem);
+
+			return $copyIcon;
+			});
 
 		$view->setHeaders($headers);
-		unset($headers['del']);
+		unset($headers['del'], $headers['copy']);
 		$view->setSortableColumns(\array_keys($headers));
 		unset($headers['active']);
 
@@ -399,5 +414,29 @@ class Store extends \App\View\Folder
 
 	protected function addModal(\PHPFUI\HTML5Element $modalLink, \App\Record\Folder $folder) : void
 		{
+		}
+
+	/**
+	 * @param array<string,mixed> $storeItem
+	 */
+	private function addCopyItemModal(\PHPFUI\HTML5Element $modalLink, array $storeItem) : void
+		{
+		$modal = new \PHPFUI\Reveal($this->page, $modalLink);
+		$modal->addClass('large');
+		$form = new \PHPFUI\Form($this->page);
+		$form->setAreYouSure(false);
+		$fieldSet = new \PHPFUI\FieldSet('Copy Store Item');
+
+		$fieldSet->add(new \PHPFUI\Input\Hidden('copy', $storeItem['storeItemId']));
+		$title = new \PHPFUI\Input\Text('title', 'Item Title', $storeItem['title']);
+		$title->setRequired()->setToolTip('The title should not be ambigious and suscinct. You can describe and specify sizes later, so this should not include any details');
+		$fieldSet->add($title);
+
+		$folderPicker = new \App\UI\FolderPicker(new \App\Record\Folder($storeItem['folderId']));
+		$fieldSet->add($folderPicker);
+		$form->add($fieldSet);
+		$submit = new \PHPFUI\Submit('Copy', 'action');
+		$form->add($modal->getButtonAndCancel($submit));
+		$modal->add($form);
 		}
 	}

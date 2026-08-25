@@ -23,20 +23,10 @@ class StoreItem extends \PHPFUI\ORM\Table
 			{
 			$stockCondition = new \PHPFUI\ORM\Condition('quantity', 0);
 			}
-
-		if (null !== $folder && $folder->folderId)
-			{
-			$stockCondition->and('storeItem.folderId', $folder->folderId);
-			}
-		else
-			{
-			$noFolder = new \PHPFUI\ORM\Condition('storeItem.folderId', 0);
-			$noFolder->or('stormItem.folderId', null);
-			$stockCondition->and($noFolder);
-			}
 		$storeItemDetailTable->setWhere($stockCondition);
 
 		$storeItemOptionTable = new \App\Table\StoreItemOption();
+		$storeItemOptionTable->setDistinct();
 		$storeItemOptionTable->addSelect('storeItemId');
 
 		$orderCondition = new \PHPFUI\ORM\Condition('storeItemId', $storeItemDetailTable, new \PHPFUI\ORM\Operator\In());
@@ -55,9 +45,16 @@ class StoreItem extends \PHPFUI\ORM\Table
 			$condition->and('pointsOnly', 0);
 			}
 
+
 		if (null !== $folder && $folder->folderId)
 			{
 			$condition->and('folderId', $folder->folderId);
+			}
+		else
+			{
+			$noFolder = new \PHPFUI\ORM\Condition('folderId', 0);
+			$noFolder->or('folderId', null);
+			$condition->and($noFolder);
 			}
 
 		$this->setWhere($condition);

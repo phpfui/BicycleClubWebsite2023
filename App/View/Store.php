@@ -294,7 +294,10 @@ class Store extends \App\View\Folder
 			$items = $storeItemTable->byTitle((\App\Model\Session::getSignedInMember()['volunteerPoints'] ?? 0) > 0, activeOnly:true, folder:$folder);
 			$cartView = new \App\View\Store\Cart($this->page, $cart);
 			$container->add($cartView->status());
-			$container->add(new \PHPFUI\Header('Shop'));
+			$title = 'Shop';
+			$container->add(new \PHPFUI\Header($title));
+			$content = new \App\View\Content($this->page);
+			$container->add($content->getDisplayCategoryHTML($title));
 			$container->add(\App\View\Folder::getBreadCrumbs('/Store/shop', $folder));
 
 			$folderTable = new \App\Table\Folder();

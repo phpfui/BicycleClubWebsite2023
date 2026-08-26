@@ -44,7 +44,7 @@ class Volunteer
 				continue;
 				}
 
-			if ($ride->rideStatus->value > 0 && \App\Enum\Ride\Status::LEADER_OPTED_OUT != $ride->rideStatus && ! $ride->pointsAwarded)
+			if ($ride->rideStatus->value > \App\Enum\Ride\Status::CANCELLED_FOR_WEATHER->value && \App\Enum\Ride\Status::LEADER_OPTED_OUT != $ride->rideStatus && ! $ride->pointsAwarded)
 				{
 				$points = $statusPoints + $categoryPoints[$ride->pace->categoryId];
 				$this->addPoints($ride, $points);
@@ -292,13 +292,29 @@ class Volunteer
 			{
 			return "The ride was not added {$this->advanceHours} before the posted start time";
 			}
-		$rideSignupTable = new \App\Table\RideSignup();
-		$confirmedSignups = $rideSignupTable->getRidersForAttended($ride);
+
+		if (\App\Enum\Ride\Status::CANCELLED_FOR_WEATHER == $ride->rideStatus)
+			{
+			return 'The ride was cancelled for weather';
+			}
+
+		if (\App\Enum\Ride\Status::LEADER_OPTED_OUT == $ride->rideStatus)
+			{
+			return 'No leader';
+			}
+
+		if (\App\Enum\Ride\Status::NOT_YET == $ride->rideStatus)
+			{
+			return 'No reported status';
+			}
 
 		if ($ride->unaffiliated)
 			{
 			return 'Unaffiliated ride.';
 			}
+
+		$rideSignupTable = new \App\Table\RideSignup();
+		$confirmedSignups = $rideSignupTable->getRidersForAttended($ride);
 
 		if (\count($confirmedSignups) <= \count($assistantLeaders) + 1)
 			{

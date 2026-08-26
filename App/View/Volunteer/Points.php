@@ -214,7 +214,15 @@ return $member->fullName();});
 			{
 			$row = [];
 			$row['date'] = $item[$category['date']];
-			$row['name'] = $item[$category['name']];
+
+			if (! empty($item['rideDate']))
+				{
+				$row['name'] = new \PHPFUI\Link('/Rides/signedup/' . $item->rideId, $item->title, false);
+				}
+			else
+				{
+				$row['name'] = $item[$category['name']];
+				}
 			$row['credited'] = $item['pointsAwarded'] ? 'Yes' : 'No';
 			$row['info'] = $this->getInfoReveal($item, $category);
 			$table->addRow($row);

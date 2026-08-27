@@ -26,14 +26,13 @@ class Store
 			$storeItemDetail->insert();
 			}
 
-		$storeItemOptionTable = new \App\Table\StoreItemDetail();
+		$storeItemOptionTable = new \App\Table\StoreItemOption();
 		$storeItemOptionTable->setWhere(new \PHPFUI\ORM\Condition('storeItemId', $original->storeItemId));
 
 		foreach ($storeItemOptionTable->getRecordCursor() as $storeItemOptionOriginal)
 			{
 			$storeItemOption = clone $storeItemOptionOriginal;
-			$storeItemOption->storeItemOptionId = 0;
-			$storeItemOption->storeItem = $storeItem;
+			$storeItemOption->storeItem = $ bstoreItem;
 			$storeItemOption->insert();
 			}
 

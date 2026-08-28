@@ -263,8 +263,11 @@ class StartLocation
 				$table = new \PHPFUI\Table();
 				$table->setHeaders(['master' => 'Master',
 					'delete' => 'Delete',
-					'name' => 'Start Location', ]);
+					'name' => 'Start Location',
+					'uses' => 'Uses']);
 				$count = 0;
+
+				$rideTable = new \App\Table\Ride();
 
 				foreach ($locations as $startLocation)
 					{
@@ -273,6 +276,8 @@ class StartLocation
 					$hidden = new \PHPFUI\Input\Hidden('number' . $count, $number);
 					$row['master'] = "<input type='radio' name='keep' value='{$number}'>" . $hidden;
 					$row['delete'] = new \PHPFUI\Input\CheckBoxBoolean('delete' . $count);
+					$rideTable->setWhere(new \PHPFUI\ORM\Condition('startLocationId', $startLocation->startLocationId));
+					$row['uses'] = $rideTable->getRecordCursor()->count();
 
 					if ($row['link'])
 						{
@@ -371,7 +376,9 @@ class StartLocation
 				return '';
 				}
 
-			return new \PHPFUI\Link($uri->toString());
+			$link = $uri->toString();
+			$name = str_replace(['/', '&', '=', '+'], ['/<wbr>', '<wbr>&', '=<wbr>', '<wbr>+'], $link);
+			return new \PHPFUI\Link($uri->toString(), $name);
 			});
 
 		$view->addCustomColumn('map', static function(array $location) : string

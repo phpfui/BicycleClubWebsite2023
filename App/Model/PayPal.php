@@ -153,9 +153,14 @@ class PayPal
 
 		$value = $itemTotal + $invoice->totalTax + $invoice->totalShipping - $discount;
 
-		if ($value != $unpaidBalance || ! $itemTotal)
+		if ((string)$value != (string)$unpaidBalance || ! $itemTotal)
 			{
+			$this->logger->debug($value);
 			$this->logger->debug($itemTotal);
+			$this->logger->debug($invoice->totalTax);
+			$this->logger->debug($invoice->totalShipping);
+			$this->logger->debug($discount);
+			$this->logger->debug($unpaidBalance);
 			$this->logger->debug($invoice);
 
 			return null;

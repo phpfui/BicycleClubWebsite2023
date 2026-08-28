@@ -32,7 +32,7 @@ class Store
 		foreach ($storeItemOptionTable->getRecordCursor() as $storeItemOptionOriginal)
 			{
 			$storeItemOption = clone $storeItemOptionOriginal;
-			$storeItemOption->storeItem = $ bstoreItem;
+			$storeItemOption->storeItem = $storeItem;
 			$storeItemOption->insert();
 			}
 

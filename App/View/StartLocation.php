@@ -377,7 +377,8 @@ class StartLocation
 				}
 
 			$link = $uri->toString();
-			$name = str_replace(['/', '&', '=', '+'], ['/<wbr>', '<wbr>&', '=<wbr>', '<wbr>+'], $link);
+			$name = \str_replace(['/', '&', '=', '+'], ['/<wbr>', '<wbr>&', '=<wbr>', '<wbr>+'], $link);
+
 			return new \PHPFUI\Link($uri->toString(), $name);
 			});
 

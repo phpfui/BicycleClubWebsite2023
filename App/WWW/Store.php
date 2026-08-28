@@ -266,6 +266,10 @@ class Store extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			$container->add($view->getCheckoutForm($invoice, $container->getId(), $paypalType));
 			$this->page->addPageContent($container);
 			}
+		else
+			{
+			$this->page->addPageContent(new \PHPFUI\SubHeader('Not Your Invoice'));
+			}
 		}
 
 	public function payCheck(\App\Record\Invoice $invoice = new \App\Record\Invoice()) : void

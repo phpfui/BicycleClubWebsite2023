@@ -68,8 +68,7 @@ class PayPal
 		}
 
 	/**
-	 * 	 * return a PayPal checkout form for the given invoice
-	 * 	 *
+	 * return a PayPal checkout form for the given invoice
 	 *
 	 * @param string $id id of the html element that will be replaced with success or failure status
 	 * @param string $description English description where the transaction came from

@@ -236,6 +236,28 @@ class Invoice extends \PHPFUI\ORM\Table
 		return $this->getArrayCursor();
 		}
 
+	public function getPointsRedeemed(\App\Record\Member $member, string $startDate = '', string $endDate = '') : int
+		{
+		$this->setSelect(new \PHPFUI\ORM\Literal('sum(pointsUsed)'));
+		$condition = new \PHPFUI\ORM\Condition('memberId', $member->memberId);
+
+		if ($startDate)
+			{
+			$condition->and('orderDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			}
+
+		if ($endDate)
+			{
+			$condition->and('orderDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+			}
+		$this->setWhere($condition);
+
+		$input = [];
+		$sql = $this->getSelectSQL($input);
+
+		return (int)\PHPFUI\ORM::getValue($sql, $input);
+		}
+
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Invoice>
 	 */

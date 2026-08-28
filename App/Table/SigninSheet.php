@@ -19,12 +19,20 @@ class SigninSheet extends \PHPFUI\ORM\Table
 		return $this->getDataObjectCursor();
 		}
 
-	public function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
+	public function getForMemberDate(int $memberId, string $startDate = '', string $endDate = '') : \PHPFUI\ORM\DataObjectCursor
 		{
 		$condition = new \PHPFUI\ORM\Condition('pending', 0, new \PHPFUI\ORM\Operator\NotEqual());
 		$condition->and('memberId', $memberId);
-		$condition->and('dateAdded', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
-		$condition->and('dateAdded', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+
+		if ($startDate)
+			{
+			$condition->and('dateAdded', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			}
+
+		if ($endDate)
+			{
+			$condition->and('dateAdded', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+			}
 		$this->setWhere($condition);
 		$this->setOrderBy('dateAdded', 'desc');
 

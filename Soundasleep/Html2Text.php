@@ -477,7 +477,9 @@ class Html2Text {
 					} else {
 						// replace it
 						if ($output) {
-							if ($options['drop_links'] == 'href') {
+							if ($options['drop_links'] == 'nuke') {
+								$output = '';
+							} else if ($options['drop_links'] == 'href') {
 								$output = str_replace(' ', '+', $href);
 							} else if ($options['drop_links']) {
 								$output = "$output";

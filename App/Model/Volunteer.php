@@ -248,6 +248,55 @@ class Volunteer
 		return $icalobj;
 		}
 
+	/**
+	 * @param array<string, string> $parameters
+	 */
+	public function getPointsDetail(array $parameters) : string
+		{
+		if ($parameters['pointsAwarded'] > 0)
+			{
+			return "Points {$parameters['pointsAwarded']} credited";
+			}
+
+		switch($parameters['table'] ?? '')
+			{
+			case \App\Table\SigninSheet::class:
+
+				return 'The Sign In Sheet has not been approved yet';
+
+			case \App\Table\CueSheet::class:
+
+				return 'The Cue Sheet has not been approved yet';
+
+			case \App\Table\VolunteerPoint::class:
+
+				return 'Shift was not marked as worked';
+
+			case \App\Table\AssistantLeader::class:
+			case \App\Table\Ride::class:
+
+				$ride = new \App\Record\Ride($parameters['rideId'] ?? 0);
+
+				if ($ride->loaded())
+					{
+					$assistantLeaders = $ride->assistantLeaders;
+					$error = $this->validateRide($ride, $assistantLeaders);
+
+					if ($error)
+						{
+						return $error;
+						}
+
+					return 'Ride not credited yet';
+					}
+
+				return 'Ride not found';
+
+			}
+
+		return "Table {$parameters['table']} not found";
+		}
+
 	public function saveMemberPoints() : static
 		{
 		$memberTable = new \App\Table\Member();

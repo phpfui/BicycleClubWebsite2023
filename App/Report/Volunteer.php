@@ -11,7 +11,7 @@ class Volunteer extends \PDF_MC_Table
 	/**
 	 * @param array<string,string> $parameters
 	 */
-	public function __construct(private array $parameters)
+	public function __construct(private array $parameters = [])
 		{
 		$this->memberTable = new \App\Table\Member();
 		$this->parameters = $parameters;
@@ -34,6 +34,87 @@ class Volunteer extends \PDF_MC_Table
 		$this->Output($this->reportName, 'I');
 		}
 
+	public function details(\App\Record\Member $member) : void
+		{
+		$categories = [];
+		$categories['Ride Leads'] = ['table' => new \App\Table\Ride(), 'date' => 'rideDate', 'name' => 'title'];
+		$categories['Assistant Leads'] = ['table' => new \App\Table\AssistantLeader(), 'date' => 'rideDate', 'name' => 'title'];
+		$categories['Volunteering'] = ['table' => new \App\Table\VolunteerPoint(), 'date' => 'date', 'name' => 'name'];
+		$categories['Cue Sheets'] = ['table' => new \App\Table\CueSheet(), 'date' => 'dateAdded', 'name' => 'name'];
+		$categories['Sign In Sheets'] = ['table' => new \App\Table\SigninSheet(), 'date' => 'dateAdded', 'name' => ''];
+
+		$now = \App\Tools\Date::todayString();
+		$this->reportName = "VolunteerDetail-{$now}.pdf";
+
+		$this->SetDocumentTitle("Volunteer Detail for {$member->fullName()} - Printed On {$now}");
+
+		$this->SetWidths([22, 80, 15, 60]);
+		$this->SetAligns(['L', 'L', 'C', 'L', ]);
+
+		$totalPointsEarned = 0;
+		$model = new \App\Model\Volunteer();
+
+		foreach ($categories as $name => $category)
+			{
+			$class = $category['table'];
+			$dates = $class->getForMemberDate($member->memberId);
+
+			if (! \count($dates))
+				{
+				continue;
+				}
+			$classPoints = $categoryCount = 0;
+
+			$date = $category['date'];
+			$nameField = $category['name'];
+			$table = \get_debug_type($class);
+
+			$this->AddPage('P', 'Letter');
+			$this->SetHeader(['Date', $name, 'Points', 'Reason']);
+			$this->PrintHeader();
+
+			foreach ($dates as $record)
+				{
+				$row = $record->toArray();
+				$row['table'] = $table;
+				$points = (int)$row['pointsAwarded'];
+				$reason = \Soundasleep\Html2Text::convert($model->getPointsDetail($row), ['drop_links' => 'nuke', 'ignore_errors' => true]);
+				$this->Row([$row[$date], $row[$nameField], $points, $reason]);
+				++$categoryCount;
+				$classPoints += $points;
+				$totalPointsEarned += $points;
+				}
+
+			if ($classPoints)
+				{
+				$this->Row(['', '', '', '']);
+				$this->SetHeader(['Total', $name, 'Points', ]);
+				$this->PrintColumnHeaders();
+				$this->Row(['', $categoryCount, $classPoints]);
+				$this->Row(['', '', '', '']);
+				}
+			}
+
+		if ($totalPointsEarned)
+			{
+			$this->Row(['', '', '', '']);
+			$this->SetHeader(['Total', 'Points Earned', 'Points', ]);
+			$this->PrintColumnHeaders();
+			$this->Row(['', '', $totalPointsEarned]);
+			$this->Row(['', '', '', '']);
+			}
+
+		$pointsRedeemed = new \App\Table\Invoice()->getPointsRedeemed($member);
+		$this->SetHeader(['Total', 'Points Redeemed', 'Points', ]);
+		$this->PrintColumnHeaders();
+		$this->Row(['', '', $pointsRedeemed]);
+		$this->Row(['', '', '', '']);
+
+		$this->SetHeader(['Total', 'Points Available', 'Points', ]);
+		$this->PrintColumnHeaders();
+		$this->Row(['', '', $totalPointsEarned - $pointsRedeemed]);
+		}
+
 	public function generate(\App\Record\JobEvent $jobEvent) : void
 		{
 		$this->uniqueVolunteers($jobEvent);
@@ -43,11 +124,10 @@ class Volunteer extends \PDF_MC_Table
 
 	public function generateVolunteerHistory() : void
 		{
-		$now = \App\Tools\Date::todayString();
-		$this->reportName = "VolunteerHistoryReport-{$now}.pdf";
+		$printed = \App\Tools\Date::todayString();
+		$this->reportName = "VolunteerHistoryReport-{$printed}.pdf";
 
 		$this->AddPage('P', 'Letter');
-		$printed = \App\Tools\Date::todayString();
 
 		$from = $this->parameters['start'];
 		$to = $this->parameters['end'];

@@ -214,13 +214,21 @@ class Ride extends \PHPFUI\ORM\Table
 	/**
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Ride>
 	 */
-	public function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\RecordCursor
+	public function getForMemberDate(int $memberId, string $startDate = '', string $endDate = '') : \PHPFUI\ORM\RecordCursor
 		{
 		$this->setLimit(0);
 		$this->setOrderBy('rideDate');
-		$condition = new \PHPFUI\ORM\Condition('rideDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
-		$condition->and('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
-		$condition->and('memberId', $memberId);
+		$condition = new \PHPFUI\ORM\Condition('memberId', $memberId);
+
+		if ($startDate)
+			{
+			$condition->and('rideDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			}
+
+		if ($endDate)
+			{
+			$condition->and('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+			}
 		$condition->and('pending', 0);
 		$this->setWhere($condition);
 

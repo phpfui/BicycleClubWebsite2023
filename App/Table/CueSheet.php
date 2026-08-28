@@ -47,13 +47,21 @@ class CueSheet extends \PHPFUI\ORM\Table
 		return $this->getDataObjectCursor();
 		}
 
-	public function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
+	public function getForMemberDate(int $memberId, string $startDate = '', string $endDate = '') : \PHPFUI\ORM\DataObjectCursor
 		{
 		$this->getSelectedFields();
 		$condition = new \PHPFUI\ORM\Condition('pending', 0);
 		$condition->and('cueSheet.memberId', $memberId);
-		$condition->and('dateAdded', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
-		$condition->and('dateAdded', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+
+		if ($startDate)
+			{
+			$condition->and('dateAdded', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			}
+
+		if ($endDate)
+			{
+			$condition->and('dateAdded', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+			}
 		$this->setWhere($condition);
 		$this->setOrderBy('dateAdded', 'desc');
 

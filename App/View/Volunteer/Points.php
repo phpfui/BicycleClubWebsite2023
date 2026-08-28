@@ -19,7 +19,9 @@ class Points
 
 		$container->add(new \PHPFUI\SubHeader($member->firstName . ' ' . $member->lastName));
 
-		$container->add(new \App\UI\Display('Available Volunteer Points', $member->volunteerPoints ?? 0));
+		$multiColunn = new \PHPFUI\MultiColumn(new \App\UI\Display('Available Volunteer Points', $member->volunteerPoints ?? 0));
+		$multiColunn->add(new \PHPFUI\Button('Download Details', '/Volunteer/myDetails'));
+		$container->add($multiColunn);
 
 		$categories = [];
 		$categories['Ride Leads'] = ['table' => new \App\Table\Ride(), 'date' => 'rideDate', 'name' => 'title'];

@@ -17,14 +17,22 @@ class AssistantLeader extends \PHPFUI\ORM\Table
 		return $this->getArrayCursor();
 		}
 
-	public function getForMemberDate(int $memberId, string $startDate, string $endDate) : \PHPFUI\ORM\DataObjectCursor
+	public function getForMemberDate(int $memberId, string $startDate = '', string $endDate = '') : \PHPFUI\ORM\DataObjectCursor
 		{
 		$rideTable = new \App\Table\Ride();
 		$rideTable->addSelect('ride.*');
 		$rideTable->addJoin('assistantLeader');
 		$condition = new \PHPFUI\ORM\Condition('assistantLeader.memberId', $memberId);
-		$condition->and('rideDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
-		$condition->and('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+
+		if ($startDate)
+			{
+			$condition->and('rideDate', $startDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			}
+
+		if ($endDate)
+			{
+			$condition->and('rideDate', $endDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+			}
 		$rideTable->setWhere($condition);
 		$rideTable->setOrderBy('rideDate');
 

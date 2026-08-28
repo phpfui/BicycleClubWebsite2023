@@ -4,6 +4,14 @@ namespace App\WWW;
 
 class Volunteer extends \App\Common\WWW\Volunteer
 	{
+	public function myDetails() : void
+		{
+		$member = \App\Model\Session::signedInMemberRecord();
+		$detailReport = new \App\Report\Volunteer();
+		$detailReport->details($member);
+		$this->page->done();
+		}
+
 	public function myPoints(\App\Record\Member $member = new \App\Record\Member(), int $year = 0) : void
 		{
 		if ($member->empty() || ! $this->page->isAuthorized('Outstanding Volunteer Points'))
@@ -57,59 +65,13 @@ class Volunteer extends \App\Common\WWW\Volunteer
 		if ((int)($_GET['pointsAwarded'] ?? 0) > 0)
 			{
 			$callout = new \PHPFUI\Callout('success');
-			$callout->add("Points {$_GET['pointsAwarded']} credited");
 			}
 		else
 			{
 			$callout = new \PHPFUI\Callout('warning');
-
-			switch($_GET['table'] ?? '')
-				{
-				case \App\Table\SigninSheet::class:
-
-					$callout->add('The Sign In Sheet has not been approved yet');
-
-					break;
-
-				case \App\Table\CueSheet::class:
-
-					$callout->add('The Cue Sheet has not been approved yet');
-
-					break;
-
-				case \App\Table\VolunteerPoint::class:
-
-					$callout->add('Shift was not marked as worked');
-
-					break;
-
-				case \App\Table\AssistantLeader::class:
-				case \App\Table\Ride::class:
-
-					$ride = new \App\Record\Ride($_GET['rideId'] ?? 0);
-
-					if ($ride->loaded())
-						{
-						$model = new \App\Model\Volunteer();
-						$assistantLeaders = $ride->assistantLeaders;
-						$error = $model->validateRide($ride, $assistantLeaders);
-
-						if ($error)
-							{
-							$callout->add($error);
-							}
-						}
-					else
-						{
-						$callout->add('Ride not found');
-						}
-
-					break;
-
-				default:
-					$callout->add("Table {$_GET['table']} not found");
-				}
 			}
+		$callout->add(new \App\Model\Volunteer()->getPointsDetail($_GET));
+
 		$this->page->setRawResponse($callout, false);
 		}
 

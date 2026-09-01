@@ -126,7 +126,7 @@ class File extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			return;
 			}
 
-		if (! $file->folder->public || ! $this->view->hasPermission($file))
+		if (! $file->folder->public && ! $this->view->hasPermission($file))
 			{
 			$this->page->addPageContent(new \PHPFUI\SubHeader('File Restricted'));
 			\http_response_code(401);

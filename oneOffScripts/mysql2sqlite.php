@@ -17,7 +17,7 @@ if (\file_exists($sqliteFile))
 	}
 
 $sqlite = new PDO('sqlite:' . $sqliteFile);
-$sqlite->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$sqlite->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
 // 3. Fetch all tables from MySQL
 $tables = \PHPFUI\ORM\Table::getAllTables();
@@ -132,11 +132,6 @@ foreach ($tables as $tableObject)
 	foreach ($compoundIndexes as $indexName => $fields)
 		{
 		$createTableSql .= "\nCREATE INDEX `{$table}_{$indexName}` ON `{$table}` (`" . \implode('`,`', $fields) . '`);';
-		}
-
-	if (\str_contains($createTableSql, 'DECIMAL'))
-		{
-		echo $createTableSql . "\n\n";
 		}
 
 	$sqlite->exec($createTableSql);

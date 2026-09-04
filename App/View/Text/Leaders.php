@@ -21,7 +21,7 @@ class Leaders implements \Stringable
 			\App\Model\Session::setFlash('post', $post);
 
 			$type = empty($post['coordinatorsOnly']) ? 'Ride Leader' : 'Ride Coordinator';
-			$leaders = new \App\Table\Member()->getLeaders($post['categories'], $type, $post['fromDate'], $post['toDate'], $post['minLed'], $post['maxLed']);
+			$leaders = new \App\Table\Member()->getLeaders($post['categories'], $type, $post['fromDate'], $post['toDate'], $post['minLed'], $post['maxLed'], (bool)$post['assistantLeaders']);
 			$smsModel = new \App\Model\SMS();
 			$member = \App\Model\Session::signedInMemberRecord();
 			$smsModel->setFromMember($member);

@@ -25,14 +25,15 @@ class SelectionCriteria
 		$accordion->addTab('Category Restriction', $picker);
 
 		$coordinatorsOnly = new \PHPFUI\Input\CheckBoxBoolean('coordinatorsOnly', 'Ride Coordinators Only', $post['coordinatorsOnly'] ?? false);
+		$assistantLeaders = new \PHPFUI\Input\CheckBoxBoolean('assistantLeaders', 'Include Assistant Leaders', $post['assistantLeaders'] ?? false);
 		$minLed = new \PHPFUI\Input\Number('minLed', 'Minimum Number of Leads in Date Range', $post['minLed'] ?? '');
 		$minLed->addAttribute('min', '0');
 		$minLed->addAttribute('step', '1');
 		$maxLed = new \PHPFUI\Input\Number('maxLed', 'Maximum Number of Leads in Date Range', $post['maxLed'] ?? '');
 		$maxLed->addAttribute('min', '0');
 		$maxLed->addAttribute('step', '1');
-		$coordinators = new \PHPFUI\MultiColumn($coordinatorsOnly, $minLed, $maxLed);
-		$accordion->addTab('Coordinators and Times Led', $coordinators);
+		$coordinators = new \PHPFUI\MultiColumn($coordinatorsOnly, $assistantLeaders, $minLed, $maxLed);
+		$accordion->addTab('Coordinators, Assistant Leaders and Times Led', $coordinators);
 
 		$dates = new \PHPFUI\MultiColumn();
 		$from = new \PHPFUI\Input\Date($this->page, 'fromDate', 'Leading Rides From', $post['fromDate'] ?? '');

@@ -202,12 +202,6 @@ class Member extends \PHPFUI\ORM\Table
 	 */
 	public function getJournalRideInterests() : \PHPFUI\ORM\DataObjectCursor
 		{
-
-		$sql = 'SELECT m.firstName,m.lastName,m.email,m.memberId,c.categoryId,m.rideJournal from memberCategory c ' .
-			'left join member m on m.memberId=c.memberId ' .
-			'left join membership s on s.membershipId=m.membershipId ' .
-			'where m.rideJournal>0 and m.email like "%@%" and s.expires>=? order by memberId,c.categoryId';
-
 		$memberCategoryTable = new \App\Table\MemberCategory();
 
 		$memberCategoryTable->setSelect('firstName');
@@ -236,7 +230,7 @@ class Member extends \PHPFUI\ORM\Table
 	 *
 	 * @return \PHPFUI\ORM\RecordCursor<\App\Record\Member>
 	 */
-	public function getLeaders(array $categories = [], string $type = 'Ride Leader', ?string $fromDate = null, ?string $toDate = null, ?string $minLed = null, ?string $maxLed = null) : \PHPFUI\ORM\RecordCursor
+	public function getLeaders(array $categories = [], string $type = 'Ride Leader', ?string $fromDate = null, ?string $toDate = null, ?string $minLed = null, ?string $maxLed = null, bool $assistantLeaders = false) : \PHPFUI\ORM\RecordCursor
 		{
 		$type = new \App\Table\Setting()->getStandardPermissionGroup($type)->name ?? 'Ride Leader';
 
@@ -245,12 +239,13 @@ class Member extends \PHPFUI\ORM\Table
 			$categories = []; // all categories requested
 			}
 		$this->addSelect('member.*');
-		$this->addGroupBy('member.memberId');
-		$this->addOrderBy('member.lastName');
-		$this->addOrderBy('member.firstName');
+		$this->addGroupBy('memberId');
+		$this->addOrderBy('lastName');
+		$this->addOrderBy('firstName');
 		$this->setJoin('userPermission');
 		$this->addJoin('membership');
 		$this->addJoin('permission', new \PHPFUI\ORM\Condition('permission.name', $type));
+
 		$where = new \PHPFUI\ORM\Condition('userPermission.permissionGroup', new \PHPFUI\ORM\Field('permission.permissionId'));
 		$where->and('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
 
@@ -263,8 +258,8 @@ class Member extends \PHPFUI\ORM\Table
 		if (null !== $minLed || null !== $maxLed || null !== $fromDate || null !== $toDate)
 			{
 			$rideTable = new \App\Table\Ride();
-			$rideTable->addSelect('memberId');
-			$rideTable->addGroupBy('memberId');
+			$rideTable->addSelect('ride.memberId');
+			$rideTable->addGroupBy('ride.memberId');
 			$rideWhere = new \PHPFUI\ORM\Condition();
 			$rideTable->setWhere($rideWhere);
 
@@ -297,6 +292,33 @@ class Member extends \PHPFUI\ORM\Table
 			$where->and('member.memberId', $rideTable, new \PHPFUI\ORM\Operator\In());
 			}
 		$this->setWhere($where);
+
+		if ($assistantLeaders)
+			{
+			$assistantLeaderTable = new \App\Table\AssistantLeader();
+			$assistantLeaderTable->addSelect('member.*');
+			$assistantLeaderTable->addJoin('member');
+			$assistantRideTable = new \App\Table\Ride();
+			$assistantRideTable->addSelect('rideId');
+			$assistantRideCondition = new \PHPFUI\ORM\Condition();
+
+			if (! empty($fromDate))
+				{
+				$assistantRideCondition->and('rideDate', $fromDate, new \PHPFUI\ORM\Operator\GreaterThanEqual());
+				}
+
+			if (! empty($toDate))
+				{
+				$assistantRideCondition->and('rideDate', $toDate, new \PHPFUI\ORM\Operator\LessThanEqual());
+				}
+
+			if ($assistantRideCondition->count())
+				{
+				$assistantRideTable->setWhere($assistantRideCondition);
+				}
+			$assistantLeaderTable->setWhere(new \PHPFUI\ORM\Condition('rideId', $assistantRideTable, new \PHPFUI\ORM\Operator\In()));
+			$this->addUnion($assistantLeaderTable);
+			}
 
 		return $this->getRecordCursor();
 		}
@@ -381,13 +403,6 @@ class Member extends \PHPFUI\ORM\Table
 	 */
 	public function getNewRideInterests(int $categoryId) : \PHPFUI\ORM\ArrayCursor
 		{
-		$sql = 'SELECT distinct m.firstName,m.lastName,m.email,m.memberId
-			from member m
-			left join memberCategory c on m.memberId=c.memberId ' .
-			'left join membership s on s.membershipId=m.membershipId ' .
-			'where m.newRideEmail and c.categoryId=? and m.email like "%@%" and s.expires>=?
-			order by m.memberId';
-
 		$this->setDistinct();
 		$this->setSelect('firstName');
 		$this->addSelect('lastName');

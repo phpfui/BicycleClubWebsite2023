@@ -239,6 +239,7 @@ class Member extends \PHPFUI\ORM\Table
 			$categories = []; // all categories requested
 			}
 		$this->addSelect('member.*');
+		$this->addSelect('membership.expires');
 		$this->addGroupBy('memberId');
 		$this->addOrderBy('lastName');
 		$this->addOrderBy('firstName');
@@ -247,7 +248,6 @@ class Member extends \PHPFUI\ORM\Table
 		$this->addJoin('permission', new \PHPFUI\ORM\Condition('permission.name', $type));
 
 		$where = new \PHPFUI\ORM\Condition('userPermission.permissionGroup', new \PHPFUI\ORM\Field('permission.permissionId'));
-		$where->and('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
 
 		if ($categories)
 			{
@@ -297,7 +297,12 @@ class Member extends \PHPFUI\ORM\Table
 			{
 			$assistantLeaderTable = new \App\Table\AssistantLeader();
 			$assistantLeaderTable->addSelect('member.*');
+			$assistantLeaderTable->addSelect('membership.expires');
+			$assistantLeaderTable->addJoin('ride');
 			$assistantLeaderTable->addJoin('member');
+			$expiresCondition = new \PHPFUI\ORM\Condition('member.membershipId', new \PHPFUI\ORM\Literal('membership.membershipId'));
+			$assistantLeaderTable->addJoin('membership', $expiresCondition);
+
 			$assistantRideTable = new \App\Table\Ride();
 			$assistantRideTable->addSelect('rideId');
 			$assistantRideCondition = new \PHPFUI\ORM\Condition();
@@ -311,14 +316,13 @@ class Member extends \PHPFUI\ORM\Table
 				{
 				$assistantRideCondition->and('rideDate', $toDate, new \PHPFUI\ORM\Operator\LessThanEqual());
 				}
+			$assistantRideTable->setWhere($assistantRideCondition);
 
-			if ($assistantRideCondition->count())
-				{
-				$assistantRideTable->setWhere($assistantRideCondition);
-				}
-			$assistantLeaderTable->setWhere(new \PHPFUI\ORM\Condition('rideId', $assistantRideTable, new \PHPFUI\ORM\Operator\In()));
+			$assistantLeaderTable->setWhere(new \PHPFUI\ORM\Condition('ride.rideId', $assistantRideTable, new \PHPFUI\ORM\Operator\In()));
+			$assistantLeaderTable->setHaving(new \PHPFUI\ORM\Condition('expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual()));
 			$this->addUnion($assistantLeaderTable);
 			}
+		$this->setHaving(new \PHPFUI\ORM\Condition('expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual()));
 
 		return $this->getRecordCursor();
 		}

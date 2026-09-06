@@ -239,7 +239,6 @@ class Member extends \PHPFUI\ORM\Table
 			$categories = []; // all categories requested
 			}
 		$this->addSelect('member.*');
-		$this->addSelect('membership.expires');
 		$this->addGroupBy('memberId');
 		$this->addOrderBy('lastName');
 		$this->addOrderBy('firstName');
@@ -291,13 +290,13 @@ class Member extends \PHPFUI\ORM\Table
 				}
 			$where->and('member.memberId', $rideTable, new \PHPFUI\ORM\Operator\In());
 			}
+		$where->and('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
 		$this->setWhere($where);
 
 		if ($assistantLeaders)
 			{
 			$assistantLeaderTable = new \App\Table\AssistantLeader();
 			$assistantLeaderTable->addSelect('member.*');
-			$assistantLeaderTable->addSelect('membership.expires');
 			$assistantLeaderTable->addJoin('ride');
 			$assistantLeaderTable->addJoin('member');
 			$expiresCondition = new \PHPFUI\ORM\Condition('member.membershipId', new \PHPFUI\ORM\Literal('membership.membershipId'));
@@ -318,11 +317,11 @@ class Member extends \PHPFUI\ORM\Table
 				}
 			$assistantRideTable->setWhere($assistantRideCondition);
 
-			$assistantLeaderTable->setWhere(new \PHPFUI\ORM\Condition('ride.rideId', $assistantRideTable, new \PHPFUI\ORM\Operator\In()));
-			$assistantLeaderTable->setHaving(new \PHPFUI\ORM\Condition('expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual()));
+			$whereCondition = new \PHPFUI\ORM\Condition('ride.rideId', $assistantRideTable, new \PHPFUI\ORM\Operator\In());
+			$whereCondition->and('membership.expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual());
+			$assistantLeaderTable->setWhere($whereCondition);
 			$this->addUnion($assistantLeaderTable);
 			}
-		$this->setHaving(new \PHPFUI\ORM\Condition('expires', \App\Tools\Date::todayString(), new \PHPFUI\ORM\Operator\GreaterThanEqual()));
 
 		return $this->getRecordCursor();
 		}

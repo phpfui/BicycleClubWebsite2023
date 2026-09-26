@@ -855,7 +855,7 @@ class Member
 		$cellPhone = new \App\UI\TelUSA($this->page, 'cellPhone', 'Cell Phone', $member->cellPhone);
 		$fieldSet->add($cellPhone);
 		$allowTexting = new \PHPFUI\Input\CheckBoxBoolean('allowTexting', 'Enable club texts', (bool)$member->allowTexting);
-		$allowTexting->setToolTip('Members can send texts to other members via the website, or a ride.  Uncheck to opt out of club texts.');
+		$allowTexting->setToolTip('Receive text messages about club announcements, ride updates, cancellations, schedule/location changes, and other club-related information. Message frequency varies. Msg & data rates may apply. See our Privacy Policy and Terms & Conditions.  Uncheck to opt out of club texts.');
 		$fieldSet->add($allowTexting);
 		$fieldSet->add($this->getGeoLocationSelect($member));
 

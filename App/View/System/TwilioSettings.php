@@ -30,6 +30,10 @@ class TwilioSettings
 		$defaultArea->setRequired(false);
 		$fieldSet->add($defaultArea);
 
+		$consentMessage = $settingsSaver->generateField('TwilioConsentMessage', 'SMS Texting Consent Message');
+		$consentMessage->setRequired(false);
+		$fieldSet->add($consentMessage);
+
 		$form->add($fieldSet);
 
 		if ($form->isMyCallback())

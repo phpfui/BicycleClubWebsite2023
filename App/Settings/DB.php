@@ -33,7 +33,7 @@ class DB extends \App\Settings\Settings
 		{
 		if ('sqlite' === $this->driver)
 			{
-			return 'sqlite:' . PROJECT_ROOT . '/' . $this->dbname;
+			return 'sqlite:' . PROJECT_ROOT . '/data/sqlite/' . $this->dbname;
 			}
 
 		$connectionString = $this->driver . ':';

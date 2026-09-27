@@ -105,7 +105,8 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
         ) {
             $attributes = [];
             foreach ($node->attributes ?? [] as $attr) {
-                $attributes[$attr->name] = HtmlDomParser::putReplacedBackToPreserveHtmlEntities($attr->value);
+                $name = $this->mapDomAttributeNameToPublic($attr->name);
+                $attributes[$name] = HtmlDomParser::putReplacedBackToPreserveHtmlEntities($attr->value);
             }
 
             return $attributes;
@@ -133,7 +134,7 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
     {
         if ($this->node instanceof \DOMElement) {
             return HtmlDomParser::putReplacedBackToPreserveHtmlEntities(
-                $this->node->getAttribute($name)
+                $this->node->getAttribute($this->mapPublicAttributeNameToDom($name))
             );
         }
 
@@ -153,7 +154,63 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
             return false;
         }
 
-        return $this->node->hasAttribute($name);
+        return $this->node->hasAttribute($this->mapPublicAttributeNameToDom($name));
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    private function mapPublicAttributeNameToDom(string $name): string
+    {
+        if ($this->queryHtmlDomParser !== null) {
+            return $this->queryHtmlDomParser->mapPublicAttributeNameToDom($name);
+        }
+
+        return $name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    private function mapPublicAttributeNameToDomForWrite(string $name): string
+    {
+        if ($this->queryHtmlDomParser !== null) {
+            return $this->queryHtmlDomParser->mapPublicAttributeNameToDomForWrite($name);
+        }
+
+        return $name;
+    }
+
+    private function mapDomAttributeNameToPublic(string $name): string
+    {
+        if ($this->queryHtmlDomParser !== null) {
+            return $this->queryHtmlDomParser->mapDomAttributeNameToPublic($name);
+        }
+
+        return $name;
+    }
+
+    /**
+     * @param string $html
+     *
+     * @return string
+     */
+    private function restorePublicAttributeNamesInHtml(string $html): string
+    {
+        if ($this->queryHtmlDomParser !== null) {
+            return $this->queryHtmlDomParser->restorePublicAttributeNamesInHtml($html);
+        }
+
+        return $html;
     }
 
     /**
@@ -165,7 +222,9 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
      */
     public function html(bool $multiDecodeNewHtmlEntity = false): string
     {
-        return $this->getHtmlDomParser()->html($multiDecodeNewHtmlEntity);
+        return $this->restorePublicAttributeNamesInHtml(
+            $this->getHtmlDomParser()->html($multiDecodeNewHtmlEntity)
+        );
     }
 
     /**
@@ -178,7 +237,9 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
      */
     public function innerHtml(bool $multiDecodeNewHtmlEntity = false, bool $putBrokenReplacedBack = true): string
     {
-        return $this->getHtmlDomParser()->innerHtml($multiDecodeNewHtmlEntity, $putBrokenReplacedBack);
+        return $this->restorePublicAttributeNamesInHtml(
+            $this->getHtmlDomParser()->innerHtml($multiDecodeNewHtmlEntity, $putBrokenReplacedBack)
+        );
     }
 
     /**
@@ -192,7 +253,7 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
     {
         $node = $this->node();
         if ($node instanceof \DOMElement) {
-            $node->removeAttribute($name);
+            $node->removeAttribute($this->mapPublicAttributeNameToDom($name));
         }
 
         return $this;
@@ -224,19 +285,14 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
     protected function replaceChildWithString(string $string, bool $putBrokenReplacedBack = true): SimpleHtmlDomInterface
     {
         $node = $this->node();
+        $contextFragment = null;
+        $newDocument = null;
 
         if (!empty($string)) {
-            $newDocument = new HtmlDomParser($string);
+            $contextFragment = $this->createMutationFragment($node, $string);
 
-            $tmpDomString = $this->normalizeStringForComparison($newDocument);
-            $tmpStr = $this->normalizeStringForComparison($string);
-
-            if ($tmpDomString !== $tmpStr) {
-                throw new \RuntimeException(
-                    'Not valid HTML fragment!' . "\n" .
-                    $tmpDomString . "\n" .
-                    $tmpStr
-                );
+            if ($contextFragment === null) {
+                $newDocument = $this->createLegacyMutationDocument($string);
             }
         }
 
@@ -253,7 +309,13 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
             $node->removeChild($remove_node);
         }
 
-        if (!empty($newDocument)) {
+        if ($contextFragment instanceof \DOMDocumentFragment) {
+            $node->appendChild($contextFragment);
+
+            return $this;
+        }
+
+        if ($newDocument instanceof HtmlDomParser) {
             $newDocument = $this->cleanHtmlWrapper($newDocument);
             $ownerDocument = $node->ownerDocument;
             if (
@@ -289,19 +351,12 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
             return $this;
         }
 
-        $newDocument = new HtmlDomParser($string);
-
-        $tmpDomOuterTextString = $this->normalizeStringForComparison($newDocument);
-        $tmpStr = $this->normalizeStringForComparison($string);
-
-        if ($tmpDomOuterTextString !== $tmpStr) {
-            throw new \RuntimeException(
-                'Not valid HTML fragment!' . "\n"
-                . $tmpDomOuterTextString . "\n" .
-                $tmpStr
-            );
+        $contextFragment = $this->createMutationFragment($node->parentNode, $string);
+        if ($contextFragment instanceof \DOMDocumentFragment) {
+            return $this->replaceNodeWithFragment($node, $contextFragment);
         }
 
+        $newDocument = $this->createLegacyMutationDocument($string);
         $newDocument = $this->cleanHtmlWrapper($newDocument, true);
         $ownerDocument = $node->ownerDocument;
         if (
@@ -348,6 +403,88 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
                 }
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Parse and validate a mutation string with the legacy fragment semantics.
+     *
+     * @param string $html
+     *
+     * @throws \RuntimeException
+     *
+     * @return HtmlDomParser
+     */
+    private function createLegacyMutationDocument(string $html): HtmlDomParser
+    {
+        $document = new HtmlDomParser($html);
+        $normalizedDocument = $this->normalizeStringForComparison($document);
+        $normalizedHtml = $this->normalizeStringForComparison($html);
+
+        if ($normalizedDocument !== $normalizedHtml) {
+            throw new \RuntimeException(
+                'Not valid HTML fragment!' . "\n"
+                . $normalizedDocument . "\n"
+                . $normalizedHtml
+            );
+        }
+
+        return $document;
+    }
+
+    /**
+     * Ask the originating parser for a context-aware mutation fragment.
+     *
+     * @param \DOMNode|null $contextNode
+     * @param string        $html
+     *
+     * @return \DOMDocumentFragment|null
+     */
+    private function createMutationFragment(?\DOMNode $contextNode, string $html): ?\DOMDocumentFragment
+    {
+        if (
+            !$contextNode instanceof \DOMElement
+            ||
+            !$contextNode->ownerDocument instanceof \DOMDocument
+            ||
+            $this->queryHtmlDomParser === null
+        ) {
+            return null;
+        }
+
+        return $this->queryHtmlDomParser->createHtmlFragmentForContext(
+            $contextNode,
+            $html,
+            $contextNode->ownerDocument
+        );
+    }
+
+    /**
+     * Replace the wrapped node with an already parsed fragment and keep this wrapper usable.
+     *
+     * @param \DOMNode             $node
+     * @param \DOMDocumentFragment $fragment
+     *
+     * @return SimpleHtmlDomInterface
+     */
+    private function replaceNodeWithFragment(
+        \DOMNode $node,
+        \DOMDocumentFragment $fragment
+    ): SimpleHtmlDomInterface {
+        $parentNode = $node->parentNode;
+        if ($parentNode === null) {
+            return $this;
+        }
+
+        $firstReplacementNode = $fragment->firstChild;
+
+        $parentNode->insertBefore($fragment, $node);
+        $parentNode->removeChild($node);
+
+        $this->node = $firstReplacementNode instanceof \DOMNode
+            ? $firstReplacementNode
+            : new \DOMText();
 
         return $this;
     }
@@ -410,7 +547,10 @@ class SimpleHtmlDom extends AbstractSimpleHtmlDom implements \IteratorAggregate,
             $this->removeAttribute($name);
         } elseif ($node instanceof \DOMElement) {
             /** @noinspection UnusedFunctionResultInspection */
-            $node->setAttribute($name, HtmlDomParser::replaceToPreserveHtmlEntities((string) $value));
+            $node->setAttribute(
+                $this->mapPublicAttributeNameToDomForWrite($name),
+                HtmlDomParser::replaceToPreserveHtmlEntities((string) $value)
+            );
         }
 
         return $this;

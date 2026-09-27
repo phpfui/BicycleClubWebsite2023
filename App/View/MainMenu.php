@@ -434,6 +434,7 @@ class MainMenu extends \App\UI\MainMenu
 			if ($settingsMenu = $this->addMenu($menu, '/System/Settings', 'System Settings'))
 				{
 				$this->addSub($settingsMenu, '/System/Settings/analytics', 'Google Analytics Settings');
+				$this->addSub($settingsMenu, '/System/Settings/db', 'DB Settings');
 				$this->addSub($settingsMenu, '/System/Settings/captcha', 'Google ReCAPTCHA');
 				$this->addSub($settingsMenu, '/System/Settings/tinify', 'Tinify API Settings');
 				$this->addSub($settingsMenu, '/System/Settings/constantContact', 'Constant Contact Settings');

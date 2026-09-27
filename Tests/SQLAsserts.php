@@ -17,8 +17,6 @@ class SQLAsserts extends \PHPUnit\Framework\TestCase
 		\PHPFUI\ORM::$extendedFields = false;
 		$this->mysqlPDO = new \PHPFUI\ORM\PDOInstance('mysql:host=localhost;user=root;dbname=wcc;port=3306');
 		$this->mySQLConnection = \PHPFUI\ORM::addConnection($this->mysqlPDO, 'mysql');
-//		$this->sqlitePDO = new \PHPFUI\ORM\PDOInstance('mysql:host=localhost;user=root;dbname=wcc;port=3306');
-//		$this->sqLiteConnection = \PHPFUI\ORM::addConnection($this->mysqlPDO, 'mysql');
 		$this->sqlitePDO = new \PHPFUI\ORM\PDOInstance('sqlite:Tests\data\db.sqlite');
 		$this->sqlitePDO->sqliteCreateFunction('acos', 'acos', 1);
 		$this->sqlitePDO->sqliteCreateFunction('cos', 'cos', 1);

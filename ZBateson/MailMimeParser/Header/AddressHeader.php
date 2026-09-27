@@ -41,13 +41,15 @@ class AddressHeader extends AbstractHeader
         string $name,
         string $value,
         ?LoggerInterface $logger = null,
-        ?AddressBaseConsumerService $consumerService = null
+        ?AddressBaseConsumerService $consumerService = null,
+        ?int $maxTokenCount = null
     ) {
         parent::__construct(
             self::resolveService($logger, LoggerInterface::class),
             self::resolveService($consumerService, AddressBaseConsumerService::class),
             $name,
-            $value
+            $value,
+            $maxTokenCount
         );
     }
 
@@ -64,7 +66,7 @@ class AddressHeader extends AbstractHeader
             if ($part instanceof AddressPart) {
                 $this->addresses[] = $part;
             } elseif ($part instanceof AddressGroupPart) {
-                $this->addresses = \array_merge($this->addresses, $part->getAddresses());
+                \array_push($this->addresses, ...$part->getAddresses());
                 $this->groups[] = $part;
             }
         }

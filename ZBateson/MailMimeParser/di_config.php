@@ -22,6 +22,7 @@ use ZBateson\MailMimeParser\Header\Consumer\SubjectConsumerService;
 use ZBateson\MailMimeParser\Message\Factory\IMessagePartFactory;
 use ZBateson\MailMimeParser\Message\Factory\IMimePartFactory;
 use ZBateson\MailMimeParser\Message\Factory\IUUEncodedPartFactory;
+use ZBateson\MailMimeParser\Message\Factory\PartHeaderContainerFactory;
 use ZBateson\MailMimeParser\Message\Factory\PartStreamContainerFactory;
 use ZBateson\MailMimeParser\Message\PartStreamContainer;
 use ZBateson\MailMimeParser\Parser\HeaderParserService;
@@ -55,7 +56,12 @@ return [
 
     // Maximum number of parts (mime and uu-encoded) in a single message before
     // parsing stops with a recorded error.
-    'maxMessagePartCount' => 10000,
+    'maxMessagePartCount' => 1000,
+
+    // Maximum number of headers, and total header bytes, read across all parts
+    // of a single message before parsing stops with a recorded error.
+    'maxMessageHeaderCount' => 50000,
+    'maxMessageHeaderSizeBytes' => 8388608,
 
     // Maximum nesting depth of parenthesized comments in a header value.
     // Comments deeper than this are still parsed over but not kept.
@@ -64,6 +70,11 @@ return [
     // Maximum number of tokens parsed out of a single header's value.  Past
     // this the remainder is kept as one unparsed token and an error recorded.
     'maxHeaderTokenCount' => 20000,
+
+    // Maximum number of header tokens parsed across all headers of a single
+    // message.  Headers parsed past this are kept as one unparsed token each
+    // and an error recorded.
+    'maxMessageHeaderTokenCount' => 250000,
 
     'fromDomainConsumerService' => (new AutowireDefinitionHelper(DomainConsumerService::class))
         ->constructorParameter('partName', 'from'),
@@ -158,6 +169,12 @@ return [
     ParserNonMimeMessageProxyFactory::class => (new AutowireDefinitionHelper())
         ->constructor(
             defaultFallbackCharset: new Reference('defaultFallbackCharset')
+        ),
+    PartHeaderContainerFactory::class => (new AutowireDefinitionHelper())
+        ->constructor(
+            maxMessageHeaderTokenCount: new Reference('maxMessageHeaderTokenCount'),
+            maxMessageHeaderCount: new Reference('maxMessageHeaderCount'),
+            maxMessageHeaderSizeBytes: new Reference('maxMessageHeaderSizeBytes')
         ),
     HeaderParserService::class => (new AutowireDefinitionHelper())
         ->constructor(

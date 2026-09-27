@@ -35,7 +35,7 @@
         "phpfui/constantcontact": ">24.12",
         "phpfui/icalendar": "^1.0",
         "phpfui/instadoc": "^1.0",
-        "phpfui/orm": "^3.0",
+        "phpfui/orm": "^4.0",
         "phpfui/php-imap": "dev-main",
         "phpfui/phpfui": "*",
         "phpfui/recaptcha": "^2.0",

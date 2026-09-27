@@ -10,10 +10,13 @@ namespace ZBateson\MailMimeParser\Message;
 use ArrayIterator;
 use IteratorAggregate;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Traversable;
 use ZBateson\MailMimeParser\ErrorBag;
 use ZBateson\MailMimeParser\Header\HeaderFactory;
 use ZBateson\MailMimeParser\Header\IHeader;
+use ZBateson\MailMimeParser\Header\IHeaderPart;
+use ZBateson\MailMimeParser\Header\Part\ContainerPart;
 
 /**
  * Maintains a collection of headers for a part.
@@ -59,6 +62,13 @@ class PartHeaderContainer extends ErrorBag implements IteratorAggregate
     private int $nextIndex = 0;
 
     /**
+     * @var ?HeaderBudget shared by every container of the same message,
+     *      limiting the headers read and header tokens parsed across all of
+     *      them.
+     */
+    private ?HeaderBudget $budget;
+
+    /**
      * Pass a PartHeaderContainer as the second parameter.  This is useful when
      * creating a new MimePart with this PartHeaderContainer and the original
      * container is needed for parsing and changes to the header in the part
@@ -66,14 +76,18 @@ class PartHeaderContainer extends ErrorBag implements IteratorAggregate
      *
      * @param PartHeaderContainer $cloneSource the original container to clone
      *        from
+     * @param HeaderBudget $budget the budget to use, defaulting to
+     *        $cloneSource's if not passed
      */
     public function __construct(
         LoggerInterface $logger,
         HeaderFactory $headerFactory,
-        ?PartHeaderContainer $cloneSource = null
+        ?PartHeaderContainer $cloneSource = null,
+        ?HeaderBudget $budget = null
     ) {
         parent::__construct($logger);
         $this->headerFactory = $headerFactory;
+        $this->budget = $budget ?? $cloneSource?->budget;
         if ($cloneSource !== null) {
             $this->headers = $cloneSource->headers;
             $this->headerObjects = $cloneSource->headerObjects;
@@ -81,6 +95,11 @@ class PartHeaderContainer extends ErrorBag implements IteratorAggregate
             $this->nextIndex = $cloneSource->nextIndex;
             $this->copyErrorsFrom($cloneSource);
         }
+    }
+
+    public function getBudget() : ?HeaderBudget
+    {
+        return $this->budget;
     }
 
     /**
@@ -171,12 +190,41 @@ class PartHeaderContainer extends ErrorBag implements IteratorAggregate
             return null;
         }
         if ($this->headerObjects[$index] === null) {
-            $this->headerObjects[$index] = $this->headerFactory->newInstance(
+            $header = $this->headerFactory->newInstance(
                 $this->headers[$index][0],
-                $this->headers[$index][1]
+                $this->headers[$index][1],
+                $this->budget?->getRemainingTokens()
             );
+            if ($this->budget !== null) {
+                $this->budget->consumeTokens(self::countParts($header->getAllParts()));
+                if ($this->budget->getRemainingTokens() === 0) {
+                    $header->addError(
+                        'Message header token limit of ' . $this->budget->getMaxTokenCount()
+                            . ' reached, further headers are not parsed',
+                        LogLevel::ERROR
+                    );
+                }
+            }
+            $this->headerObjects[$index] = $header;
         }
         return $this->headerObjects[$index];
+    }
+
+    /**
+     * Counts the passed parts and, recursively, their children.
+     *
+     * @param IHeaderPart[] $parts
+     */
+    private static function countParts(array $parts) : int
+    {
+        $count = 0;
+        foreach ($parts as $part) {
+            ++$count;
+            if ($part instanceof ContainerPart) {
+                $count += self::countParts($part->getChildParts());
+            }
+        }
+        return $count;
     }
 
     /**
@@ -192,10 +240,12 @@ class PartHeaderContainer extends ErrorBag implements IteratorAggregate
         if ($this->headerObjects[$index] !== null && \get_class($this->headerObjects[$index]) === $iHeaderClass) {
             return $this->headerObjects[$index];
         }
+        // not cached, so the budget caps the header but isn't consumed by it
         return $this->headerFactory->newInstanceOf(
             $this->headers[$index][0],
             $this->headers[$index][1],
-            $iHeaderClass
+            $iHeaderClass,
+            $this->budget?->getRemainingTokens()
         );
     }
 

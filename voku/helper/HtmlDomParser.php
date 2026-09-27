@@ -431,6 +431,18 @@ class HtmlDomParser extends AbstractDomParser
             }
         }
 
+        // INFO: a subclass may parse the prepared HTML with a different backend, see
+        //          "Html5DomParser". Everything above this point - the input repairs and the
+        //          flags that shape the output - is shared, everything below is the libxml
+        //          parser of this class.
+        $documentFromOtherBackend = $this->createDOMDocumentFromPreparedHtml($html);
+
+        if ($documentFromOtherBackend !== null) {
+            $this->document = $documentFromOtherBackend;
+
+            return $this->document;
+        }
+
         if (\strpos($html, '<script') !== false) {
             // keepSpecialScriptTags must run before html5FallbackForScriptTags so
             // that special-type scripts (type="text/html", etc.) are converted to
@@ -604,6 +616,65 @@ class HtmlDomParser extends AbstractDomParser
             $this->callbackXPathBeforeQuery,
             $this
         );
+    }
+
+    /**
+     * Map a public HTML attribute name to the name stored in the legacy DOM.
+     *
+     * HtmlDomParser stores attribute names unchanged. Html5DomParser overrides this for
+     * HTML-valid names that the XML-backed legacy DOM cannot represent directly.
+     *
+     * @param string $name
+     *
+     * @return string
+     *
+     * @internal Used by SimpleHtmlDom wrappers that retain their originating parser context.
+     */
+    public function mapPublicAttributeNameToDom(string $name): string
+    {
+        return $name;
+    }
+
+    /**
+     * Map a public HTML attribute name for a write into the legacy DOM.
+     *
+     * @param string $name
+     *
+     * @return string
+     *
+     * @internal Used by SimpleHtmlDom wrappers that retain their originating parser context.
+     */
+    public function mapPublicAttributeNameToDomForWrite(string $name): string
+    {
+        return $this->mapPublicAttributeNameToDom($name);
+    }
+
+    /**
+     * Map a legacy DOM attribute name back to the public HTML attribute name.
+     *
+     * @param string $name
+     *
+     * @return string
+     *
+     * @internal Used by SimpleHtmlDom wrappers that retain their originating parser context.
+     */
+    public function mapDomAttributeNameToPublic(string $name): string
+    {
+        return $name;
+    }
+
+    /**
+     * Restore parser-specific internal attribute names in serialized HTML.
+     *
+     * @param string $html
+     *
+     * @return string
+     *
+     * @internal Used when SimpleHtmlDom deliberately serializes through a fresh legacy parser.
+     */
+    public function restorePublicAttributeNamesInHtml(string $html): string
+    {
+        return $html;
     }
 
     /**
@@ -1089,7 +1160,7 @@ class HtmlDomParser extends AbstractDomParser
                 $content = $this->serializeChildNodes($this->document);
             }
         } elseif ($this->getIsDOMDocumentCreatedWithoutHtmlWrapper()) {
-            $content = $this->document->saveHTML($this->document->documentElement);
+            $content = $this->serializeDocumentWithoutHtmlWrapper();
         } else {
             $content = $this->document->saveHTML();
         }
@@ -1174,54 +1245,72 @@ class HtmlDomParser extends AbstractDomParser
      * formatting newlines into the wrapper's children when saving the full
      * document).
      *
-     * On PHP < 8.0, older libxml injects a trailing "\n" after raw-text
-     * elements (script, style) when they are the root of a fresh document.
-     * For those elements we fall back to serializing from the original
-     * document and strip only the single trailing "\n".  For all other
-     * element types the fresh-document approach is used to avoid libxml
-     * injecting formatting newlines inside block-level content.  Text and
-     * other non-element nodes are always serialized from the owner document
-     * without any trailing-newline stripping (they carry no injected newline).
+     * On PHP < 8.0, DOMElement instances are serialized through
+     * serializeElementNodeForPhpLt8() so older libxml cannot inject formatting
+     * newlines when saveHTML($node) is used on detached block-level elements.
+     * Text and other non-element nodes still use the fresh-document approach
+     * directly because they do not need the extra wrapper stripping.
      *
      * @param \DOMNode $node
      */
-    private function serializeNode(\DOMNode $node): string
+    protected function serializeNode(\DOMNode $node): string
     {
-        // For script/style on PHP < 8.0 use ownerDocument to avoid fresh-doc
-        // libxml injecting "\n" inside raw-text content.
-        $useOwnerDoc = \PHP_VERSION_ID < 80000
-            && $node instanceof \DOMElement
-            && \in_array(\strtolower($node->tagName), ['script', 'style'], true);
-
-        if (!$useOwnerDoc) {
-            $document = new \DOMDocument('1.0', $this->getEncoding());
-            $document->preserveWhiteSpace = true;
-            $document->formatOutput = false;
-
-            $importedNode = $document->importNode($node, true);
-            // @phpstan-ignore instanceof.alwaysTrue (importNode() returns DOMNode here)
-            if (!$importedNode instanceof \DOMNode) {
-                return '';
-            }
-
-            $document->appendChild($importedNode);
-
-            $content = $document->saveHTML($importedNode);
-        } else {
-            // PHP < 8.0 script/style: serialize from original document and
-            // strip only the trailing "\n" that older libxml appends after
-            // raw-text elements.
-            $ownerDoc = $node->ownerDocument;
-            $content = $ownerDoc !== null ? $ownerDoc->saveHTML($node) : false;
-            // Older libxml appends exactly one synthetic trailing "\n" here;
-            // preserve any real user-provided trailing newlines in the content.
-            if ($content !== false && \substr($content, -1) === "\n") {
-                $content = \substr($content, 0, -1);
-            }
+        if (\PHP_VERSION_ID < 80000 && $node instanceof \DOMElement) {
+            return $this->serializeElementNodeForPhpLt8($node);
         }
+
+        $document = new \DOMDocument('1.0', $this->getEncoding());
+        $document->preserveWhiteSpace = true;
+        $document->formatOutput = false;
+
+        $importedNode = $document->importNode($node, true);
+        // @phpstan-ignore instanceof.alwaysTrue (importNode() returns DOMNode here)
+        if (!$importedNode instanceof \DOMNode) {
+            return '';
+        }
+
+        $document->appendChild($importedNode);
+
+        $content = $document->saveHTML($importedNode);
 
         if ($content === false) {
             return '';
+        }
+
+        return $content;
+    }
+
+    /**
+     * On PHP < 8.0, saveHTML($node) injects formatting newlines for detached
+     * block-level elements, so serialize a temporary whole document instead.
+     *
+     * @param \DOMElement $node
+     *
+     * @return string
+     */
+    private function serializeElementNodeForPhpLt8(\DOMElement $node): string
+    {
+        $document = new \DOMDocument('1.0', $this->getEncoding());
+        $document->preserveWhiteSpace = true;
+        $document->formatOutput = false;
+
+        $importedNode = $document->importNode($node, true);
+        // @phpstan-ignore instanceof.alwaysTrue (importNode() returns DOMNode here)
+        if (!$importedNode instanceof \DOMElement) {
+            return '';
+        }
+
+        $document->appendChild($importedNode);
+
+        $content = $document->saveHTML();
+        if ($content === false) {
+            return '';
+        }
+
+        $content = $this->stripLibxmlDocumentWrappers($content, \strtolower($importedNode->tagName));
+
+        if (\substr($content, -1) === "\n") {
+            $content = \substr($content, 0, -1);
         }
 
         return $content;
@@ -1251,34 +1340,102 @@ class HtmlDomParser extends AbstractDomParser
             return '';
         }
 
-        // Strip the DOCTYPE declaration that libxml always prepends.
-        $full = (string) \preg_replace('/<!DOCTYPE[^>]+>/i', '', $full);
-        $full = \trim($full);
-
         $documentElement = $this->document->documentElement;
         $tagName = $documentElement instanceof \DOMElement
             ? \strtolower($documentElement->tagName)
             : '';
 
-        // Strip the <html>...</html> wrapper added by libxml when the root
-        // element is not the HTML element itself.
-        if ($tagName !== 'html') {
-            $full = (string) \preg_replace('/^<html[^>]*>/i', '', $full);
-            $full = (string) \preg_replace('/<\/html>$/i', '', $full);
-            $full = \trim($full);
-
-            // Strip the <body>...</body> wrapper added for non-body elements.
-            if ($tagName !== 'body') {
-                $full = (string) \preg_replace('/^<body[^>]*>/i', '', $full);
-                $full = (string) \preg_replace('/<\/body>$/i', '', $full);
-                // Remove a trailing empty <body> libxml may add for <head> roots.
-                $full = \str_replace('<body></body>', '', $full);
-                $full = \trim($full);
-            }
-        }
+        $full = $this->stripLibxmlDocumentWrappers($full, $tagName, true);
 
         return $full;
     }
+
+    /**
+     * Strip the synthetic wrappers libxml adds when serializing a whole
+     * document around a non-root HTML element on PHP < 8.
+     */
+    private function stripLibxmlDocumentWrappers(string $content, string $tagName, bool $trim = false): string
+    {
+        $content = (string) \preg_replace('/^<!DOCTYPE[^>]+>\s*/i', '', $content);
+        if ($trim) {
+            $content = \trim($content);
+        }
+
+        if ($tagName !== 'html') {
+            $content = (string) \preg_replace('/^<html[^>]*>/i', '', $content);
+            $content = (string) \preg_replace('/<\/html>\s*$/i', '', $content);
+            if ($trim) {
+                $content = \trim($content);
+            }
+
+            if ($tagName !== 'body') {
+                $content = (string) \preg_replace('/^<body[^>]*>/i', '', $content);
+                $content = (string) \preg_replace('/<\/body>\s*$/i', '', $content);
+                $content = \str_replace('<body></body>', '', $content);
+                if ($trim) {
+                    $content = \trim($content);
+                }
+            }
+        }
+
+        return $content;
+    }
+
+    /**
+     * Build a context-aware fragment for a node mutation when this parser owns such semantics.
+     *
+     * The legacy parser keeps returning NULL so existing HtmlDomParser mutation behavior stays
+     * untouched. Html5DomParser overrides this extension point with the HTML fragment parser.
+     *
+     * @param \DOMElement  $contextNode
+     * @param string       $html
+     * @param \DOMDocument $targetDocument
+     *
+     * @return \DOMDocumentFragment|null
+     *
+     * @internal
+     */
+    public function createHtmlFragmentForContext(
+        \DOMElement $contextNode,
+        string $html,
+        \DOMDocument $targetDocument
+    ): ?\DOMDocumentFragment {
+        return null;
+    }
+
+    /**
+     * Parse the already prepared HTML with a backend other than the libxml parser of this
+     * class.
+     *
+     * This is the extension point that "Html5DomParser" uses. It is called after the input
+     * repairs and after the flags that shape the output have been determined, so an
+     * alternative backend inherits all of that and only replaces the parsing itself.
+     *
+     * @param string $html <p>The prepared HTML, not the input of the caller.</p>
+     *
+     * @return \DOMDocument|null <p>NULL to use the libxml parser of this class, which is what
+     *                           this implementation always does.</p>
+     *
+     * @noinspection PhpUnusedParameterInspection
+     */
+    protected function createDOMDocumentFromPreparedHtml(string $html)
+    {
+        return null;
+    }
+
+    /**
+     * Serialize a document whose input had no <html> wrapper.
+     *
+     * A subclass whose parser builds a complete document even for a fragment needs a
+     * different rule here, see "Html5DomParser".
+     *
+     * @return string
+     */
+    protected function serializeDocumentWithoutHtmlWrapper(): string
+    {
+        return (string) $this->document->saveHTML($this->document->documentElement);
+    }
+
 
     /**
      * @param \DOMNode $parentNode

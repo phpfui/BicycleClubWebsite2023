@@ -842,10 +842,11 @@ abstract class Table implements \Countable
 	 * Mass insertion.  Does not use a transaction, so surround by a transaction if needed
 	 *
 	 * @param iterable<\PHPFUI\ORM\Record> $records
-	 * @param string $ignore Pass "ignore" to not error on duplicate records
+	 * @param string $ignore Pass "ignore" to not error on duplicate records or database specific command
+	 * @param bool $insertAutoIncrementKey set to true to add the auto increment primary key and not automatically generate it
 	 * @param int $chuckSize use 0 for no chunking
 	 */
-	public function insert(iterable $records, string $ignore = '', int $chunkSize = 100) : bool
+	public function insert(iterable $records, string $ignore = '', bool $insertAutoIncrementKey = false, int $chunkSize = 100) : bool
 		{
 		$totalRecords = count($records);
 		if (! $totalRecords)
@@ -856,6 +857,13 @@ abstract class Table implements \Countable
 		if (! $chunkSize)
 			{
 			$chunkSize = $totalRecords;
+			}
+
+		$postGre = '';
+		if (strlen($ignore) && \PHPFUI\ORM::getInstance()->getPostGre())
+			{
+			$postGre = $ignore;
+			$ignore = '';
 			}
 
 		$tableName = $this->getTableName();
@@ -869,7 +877,7 @@ abstract class Table implements \Countable
 
 		foreach ($fields as $fieldName => $definition)
 			{
-			if (\in_array($fieldName, $primaryKeys) && $this->instance->getAutoIncrement())
+			if (! $insertAutoIncrementKey && \in_array($fieldName, $primaryKeys) && $this->instance->getAutoIncrement())
 				{
 				$primaryKey = $fieldName;
 
@@ -879,7 +887,7 @@ abstract class Table implements \Countable
 			$comma = ",\n";
 			}
 
-		$insertsql .= ') values ';
+		$insertsql .= ") {$postGre} values ";
 
 		$inserted = 0;
 		$sql = $insertsql;
@@ -892,13 +900,12 @@ abstract class Table implements \Countable
 				if ($fieldName !== $primaryKey)
 					{
 					$sql .= $comma . '?';
-					$comma = ",\n";
+					$comma = ',';
 					$input[] = $record[$fieldName];
 					}
 				}
 			if (++$inserted >= $chunkSize)
 				{
-				$sql .= ')';
 				$this->lastSql = $sql;
 				$this->lastInput = $input;
 				\PHPFUI\ORM::execute($this->lastSql, $this->lastInput);
@@ -909,7 +916,7 @@ abstract class Table implements \Countable
 				}
 			else
 				{
-				$comma = '),(';
+				$comma = "),\n(";
 				}
 			}
 		if ($sql != $insertsql)

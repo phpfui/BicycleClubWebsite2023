@@ -153,7 +153,7 @@ class Ride
 			"<a href='{$this->homePage}/Rides/emailRide/{$ride->rideId}'>clicking here.</a><br>";
 		$footer .= "<p>You can change your <a href='{$this->homePage}/Rides/signedUp/{$ride->rideId}'>signup information here.</a>";
 		$message .= $footer;
-		\str_replace('//', '/', $message);
+		$message = \str_replace('//', '/', $message);
 		$email->setBody($message);
 		$riders = $this->rideSignupTable->getAllSignedUpRiders($ride);
 
@@ -732,7 +732,7 @@ class Ride
 			'Reply to this email to contact the leader.';
 		$footer = "<p>You can change your <a href='{$this->homePage}/Rides/signedUp/{$ride->rideId}'>signup information here.</a>";
 		$message .= $footer;
-		\str_replace('//', '/', $message);
+		$message = \str_replace('//', '/', $message);
 		$email->setBody($message);
 		$riders = $this->rideSignupTable->getAllSignedUpRiders($ride);
 

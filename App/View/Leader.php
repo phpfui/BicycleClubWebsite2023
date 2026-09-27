@@ -400,7 +400,7 @@ class Leader
 			}
 		else
 			{
-			$this->memberTable->setWhere(new \PHPFUI\ORM\Condition('pendingLeader', null, new \PHPFUI\ORM\Operator\IsNotNull()));
+			$this->memberTable->setWhere(new \PHPFUI\ORM\Condition('pendingLeader', '2000-01-01', new \PHPFUI\ORM\Operator\GreaterThan()));
 
 			$table = new \App\UI\ContinuousScrollTable($this->page, $this->memberTable);
 			$table->setRecordId('memberId');

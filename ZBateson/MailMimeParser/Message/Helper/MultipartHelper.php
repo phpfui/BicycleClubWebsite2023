@@ -51,6 +51,7 @@ class MultipartHelper extends AbstractHelper
      */
     public function setMimeHeaderBoundaryOnPart(IMimePart $part, string $mimeType) : static
     {
+        $mimeType = $this->stripControlChars($mimeType);
         $part->setRawHeader(
             HeaderConsts::CONTENT_TYPE,
             "$mimeType;\r\n\tboundary=\""
@@ -268,6 +269,8 @@ class MultipartHelper extends AbstractHelper
      */
     public function createContentPartForMimeType(IMessage $message, string $mimeType, string $charset) : IMimePart
     {
+        $mimeType = $this->stripControlChars($mimeType);
+        $charset = $this->stripControlChars($charset);
         $mimePart = $this->mimePartFactory->newInstance();
         $mimePart->setRawHeader(HeaderConsts::CONTENT_TYPE, "$mimeType;\r\n\tcharset=\"$charset\"");
         $mimePart->setRawHeader(HeaderConsts::CONTENT_TRANSFER_ENCODING, 'quoted-printable');
@@ -307,7 +310,10 @@ class MultipartHelper extends AbstractHelper
         }
 
         $converted = \iconv('UTF-8', 'US-ASCII//translit//ignore', $filename);
-        $safe = \preg_replace('/[\x00-\x1F\x7F]+/', ' ', ($converted !== false) ? $converted : '') ?? '';
+        $safe = $this->stripControlChars(($converted !== false) ? $converted : '');
+        $mimeType = $this->stripControlChars($mimeType);
+        $encoding = $this->stripControlChars($encoding);
+        $disposition = $this->stripControlChars($disposition);
         if ($message->isMime()) {
             $part = $this->mimePartFactory->newInstance();
             $part->setRawHeader(HeaderConsts::CONTENT_TRANSFER_ENCODING, $encoding);
@@ -383,6 +389,7 @@ class MultipartHelper extends AbstractHelper
             $part = $this->createContentPartForMimeType($message, $mimeType, $charset);
         } else {
             $contentType = $part->getContentType();
+            $charset = $this->stripControlChars($charset);
             if ($part instanceof IMimePart) {
                 $part->setRawHeader(HeaderConsts::CONTENT_TYPE, "$contentType;\r\n\tcharset=\"$charset\"");
             }

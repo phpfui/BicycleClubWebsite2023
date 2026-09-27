@@ -79,8 +79,9 @@ class System
 				$extIndex = (int)\strrpos($fileName, '.');
 				$ext = '';
 
-				if ($extIndex++)
+				if ($extIndex)
 					{
+					++$extIndex;
 					$length = \strlen($fileName);
 
 					for ($index = $extIndex; $index < $length; ++$index)

@@ -43,7 +43,7 @@ class Forum
 				$permission->name = $forum->name . $suffix;
 				$permission->menu = 'Forums';
 				$permission->system = 0;
-				$permission->insert();
+				$permission->insertOrUpdate();
 				}
 			}
 		elseif ($forum->name != $originalForum->name)
@@ -876,7 +876,7 @@ class Forum
 							}
 						else
 							{
-							$forumMember->save();
+							$forumMember->insertOrUpdate();
 							$this->page->redirect();
 							}
 

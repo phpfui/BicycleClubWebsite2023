@@ -64,8 +64,8 @@ class Orders
 		$headers = ['title' => 'Item', 'optionsSelected' => 'Selected Options', 'quantity' => 'Quantity', 'invoiceId' => 'Invoice', 'firstName' => 'First Name', 'lastName' => 'Last Name', 'added' => 'Date Added'];
 
 		$view->addCustomColumn('invoiceId', static fn (array $storeOrder) : \PHPFUI\Link => new \PHPFUI\Link('/Store/Invoice/download/' . $storeOrder['invoiceId'], $storeOrder['invoiceId'], false)->addAttribute('target', '_blank'));
-		$view->addCustomColumn('firstName', static fn (array $storeOrder) : string => $storeOrder['firstName'] ?? $storeOrder['customer_firstName']);
-		$view->addCustomColumn('lastName', static fn (array $storeOrder) : string => $storeOrder['lastName'] ?? $storeOrder['customer_lastName']);
+		$view->addCustomColumn('firstName', static fn (array $storeOrder) : string => $storeOrder['firstName'] ?? $storeOrder['customer_firstName'] ?? 'unknown');
+		$view->addCustomColumn('lastName', static fn (array $storeOrder) : string => $storeOrder['lastName'] ?? $storeOrder['customer_lastName'] ?? 'unknown');
 		$view->setSearchColumns($headers)->setSortableColumns(\array_keys($headers))->setHeaders($headers);
 		$labelButton = new \PHPFUI\Button('Labels');
 		$labelButton->addClass('secondary');

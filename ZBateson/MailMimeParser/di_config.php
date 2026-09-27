@@ -9,9 +9,16 @@ use DI\Definition\Helper\AutowireDefinitionHelper;
 use DI\Definition\Reference;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use ZBateson\MailMimeParser\Header\Consumer\AddressBaseConsumerService;
+use ZBateson\MailMimeParser\Header\Consumer\CommentConsumerService;
+use ZBateson\MailMimeParser\Header\Consumer\DateConsumerService;
+use ZBateson\MailMimeParser\Header\Consumer\GenericConsumerMimeLiteralPartService;
+use ZBateson\MailMimeParser\Header\Consumer\IdBaseConsumerService;
+use ZBateson\MailMimeParser\Header\Consumer\ParameterConsumerService;
 use ZBateson\MailMimeParser\Header\Consumer\Received\DomainConsumerService;
 use ZBateson\MailMimeParser\Header\Consumer\Received\GenericReceivedConsumerService;
 use ZBateson\MailMimeParser\Header\Consumer\ReceivedConsumerService;
+use ZBateson\MailMimeParser\Header\Consumer\SubjectConsumerService;
 use ZBateson\MailMimeParser\Message\Factory\IMessagePartFactory;
 use ZBateson\MailMimeParser\Message\Factory\IMimePartFactory;
 use ZBateson\MailMimeParser\Message\Factory\IUUEncodedPartFactory;
@@ -19,6 +26,7 @@ use ZBateson\MailMimeParser\Message\Factory\PartStreamContainerFactory;
 use ZBateson\MailMimeParser\Message\PartStreamContainer;
 use ZBateson\MailMimeParser\Parser\HeaderParserService;
 use ZBateson\MailMimeParser\Parser\MimeParserService;
+use ZBateson\MailMimeParser\Parser\NonMimeParserService;
 use ZBateson\MailMimeParser\Parser\Part\ParserPartStreamContainerFactory;
 use ZBateson\MailMimeParser\Parser\Proxy\ParserMessageProxyFactory;
 use ZBateson\MailMimeParser\Parser\Proxy\ParserMimePartProxyFactory;
@@ -45,6 +53,18 @@ return [
     'maxHeaderCount' => 1000,
     'maxHeaderSizeBytes' => 1048576,
 
+    // Maximum number of parts (mime and uu-encoded) in a single message before
+    // parsing stops with a recorded error.
+    'maxMessagePartCount' => 10000,
+
+    // Maximum nesting depth of parenthesized comments in a header value.
+    // Comments deeper than this are still parsed over but not kept.
+    'maxCommentDepth' => 32,
+
+    // Maximum number of tokens parsed out of a single header's value.  Past
+    // this the remainder is kept as one unparsed token and an error recorded.
+    'maxHeaderTokenCount' => 20000,
+
     'fromDomainConsumerService' => (new AutowireDefinitionHelper(DomainConsumerService::class))
         ->constructorParameter('partName', 'from'),
     'byDomainConsumerService' => (new AutowireDefinitionHelper(DomainConsumerService::class))
@@ -57,6 +77,34 @@ return [
         ->constructorParameter('partName', 'id'),
     'forGenericReceivedConsumerService' => (new AutowireDefinitionHelper(GenericReceivedConsumerService::class))
         ->constructorParameter('partName', 'for'),
+    CommentConsumerService::class => (new AutowireDefinitionHelper())
+        ->constructor(
+            maxCommentDepth: new Reference('maxCommentDepth')
+        ),
+    AddressBaseConsumerService::class => (new AutowireDefinitionHelper())
+        ->constructor(
+            maxHeaderTokenCount: new Reference('maxHeaderTokenCount')
+        ),
+    DateConsumerService::class => (new AutowireDefinitionHelper())
+        ->constructor(
+            maxHeaderTokenCount: new Reference('maxHeaderTokenCount')
+        ),
+    GenericConsumerMimeLiteralPartService::class => (new AutowireDefinitionHelper())
+        ->constructor(
+            maxHeaderTokenCount: new Reference('maxHeaderTokenCount')
+        ),
+    IdBaseConsumerService::class => (new AutowireDefinitionHelper())
+        ->constructor(
+            maxHeaderTokenCount: new Reference('maxHeaderTokenCount')
+        ),
+    ParameterConsumerService::class => (new AutowireDefinitionHelper())
+        ->constructor(
+            maxHeaderTokenCount: new Reference('maxHeaderTokenCount')
+        ),
+    SubjectConsumerService::class => (new AutowireDefinitionHelper())
+        ->constructor(
+            maxHeaderTokenCount: new Reference('maxHeaderTokenCount')
+        ),
     ReceivedConsumerService::class => (new AutowireDefinitionHelper())
         ->constructor(
             fromDomainConsumerService: new Reference('fromDomainConsumerService'),
@@ -64,7 +112,8 @@ return [
             viaGenericReceivedConsumerService: new Reference('viaGenericReceivedConsumerService'),
             withGenericReceivedConsumerService: new Reference('withGenericReceivedConsumerService'),
             idGenericReceivedConsumerService: new Reference('idGenericReceivedConsumerService'),
-            forGenericReceivedConsumerService: new Reference('forGenericReceivedConsumerService')
+            forGenericReceivedConsumerService: new Reference('forGenericReceivedConsumerService'),
+            maxHeaderTokenCount: new Reference('maxHeaderTokenCount')
         ),
     PartStreamContainer::class => (new AutowireDefinitionHelper())
         ->constructor(
@@ -117,6 +166,11 @@ return [
         ),
     MimeParserService::class => (new AutowireDefinitionHelper())
         ->constructor(
-            maxMimePartDepth: new Reference('maxMimePartDepth')
+            maxMimePartDepth: new Reference('maxMimePartDepth'),
+            maxMessagePartCount: new Reference('maxMessagePartCount')
+        ),
+    NonMimeParserService::class => (new AutowireDefinitionHelper())
+        ->constructor(
+            maxMessagePartCount: new Reference('maxMessagePartCount')
         ),
 ];

@@ -841,17 +841,25 @@ abstract class Table implements \Countable
 	/**
 	 * Mass insertion.  Does not use a transaction, so surround by a transaction if needed
 	 *
-	 * @param array<\PHPFUI\ORM\Record> $records
+	 * @param iterable<\PHPFUI\ORM\Record> $records
 	 * @param string $ignore Pass "ignore" to not error on duplicate records
+	 * @param int $chuckSize use 0 for no chunking
 	 */
-	public function insert(array $records, string $ignore = '') : bool
+	public function insert(iterable $records, string $ignore = '', int $chunkSize = 100) : bool
 		{
-		if (empty($records))
+		$totalRecords = count($records);
+		if (! $totalRecords)
 			{
 			return false;
 			}
+
+		if (! $chunkSize)
+			{
+			$chunkSize = $totalRecords;
+			}
+
 		$tableName = $this->getTableName();
-		$sql = "insert {$ignore} into `{$tableName}` (";
+		$insertsql = "insert {$ignore} into `{$tableName}` (";
 
 		$fields = $this->getFields();
 		$comma = '';
@@ -867,25 +875,18 @@ abstract class Table implements \Countable
 
 				continue;
 				}
-			$sql .= "{$comma}`{$fieldName}`";
+			$insertsql .= "{$comma}`{$fieldName}`";
 			$comma = ",\n";
 			}
 
-		$sql .= ') values ';
+		$insertsql .= ') values ';
 
+		$inserted = 0;
+		$sql = $insertsql;
 		$input = [];
 		$comma = '(';
-
 		foreach ($records as $record)
 			{
-			if ($record->getTableName() != $tableName)
-				{
-				$myType = \get_debug_type($this->instance);
-				$haveType = \get_debug_type($record);
-
-				throw new \PHPFUI\ORM\Exception(__METHOD__ . ": record should be of type {$myType} but is of type {$haveType}");
-				}
-
 			foreach ($fields as $fieldName => $definition)
 				{
 				if ($fieldName !== $primaryKey)
@@ -895,13 +896,29 @@ abstract class Table implements \Countable
 					$input[] = $record[$fieldName];
 					}
 				}
-			$comma = '),(';
+			if (++$inserted >= $chunkSize)
+				{
+				$sql .= ')';
+				$this->lastSql = $sql;
+				$this->lastInput = $input;
+				\PHPFUI\ORM::execute($this->lastSql, $this->lastInput);
+				$inserted = 0;
+				$sql = $insertsql;
+				$input = [];
+				$comma = '(';
+				}
+			else
+				{
+				$comma = '),(';
+				}
 			}
-		$sql .= ')';
-
-		$this->lastSql = $sql;
-		$this->lastInput = $input;
-		\PHPFUI\ORM::execute($this->lastSql, $this->lastInput);
+		if ($sql != $insertsql)
+			{
+			$sql .= ')';
+			$this->lastSql = $sql;
+			$this->lastInput = $input;
+			\PHPFUI\ORM::execute($this->lastSql, $this->lastInput);
+			}
 
 		return 0 == \PHPFUI\ORM::getLastErrorCode();
 		}

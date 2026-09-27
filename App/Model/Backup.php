@@ -35,14 +35,14 @@ class Backup
 
 		if ('sqlite' === $dbSettings->driver)
 			{
-			$backupFilename = $dbSettings->dbname;
-			$extension = '.sqlite';
+			$backupFileName = $dbSettings->dbname;
+			$extension = 'sqlite';
 			}
 		else
 			{
-			$backupFilename = $this->basePath . $baseFileName . '.gz';
-			\App\Tools\File::unlink($backupFilename);
-			$extension = '.zip';
+			$backupFileName = $this->basePath . $baseFileName . '.gz';
+			\App\Tools\File::unlink($backupFileName);
+			$extension = 'zip';
 
 			$settings = [];
 			$settings['add-drop-table'] = true;
@@ -63,22 +63,22 @@ class Backup
 				}
 
 			$dump = new \Druidfi\Mysqldump\Mysqldump($dbSettings->getConnectionString(), $dbSettings->getUser(), $dbSettings->getPassword(), $settings);
-			$dump->start($backupFilename);
+			$dump->start($backupFileName);
 			}
 
 		if (! $schemaOnly)
 			{
 			foreach ($this->directories as $directory)
 				{
-				$destFilename = "{$this->basePath}{$directory}/{$baseFileName}.{$extension}";
+				$destFileName = "{$this->basePath}{$directory}/{$baseFileName}.{$extension}";
 
-				if (! \copy($backupFilename, $destFilename))
+				if (! \copy($backupFileName, $destFileName))
 					{
-					throw new \Exception("Can't copy {$backupFilename} to {$destFilename}");
+					throw new \Exception("Can't copy {$backupFileName} to {$destFileName}");
 					}
 				}
 			}
 
-		return $backupFilename;
+		return $backupFileName;
 		}
 	}

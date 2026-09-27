@@ -38,11 +38,11 @@ class TranscriptionPage extends TokenPaginationPage
 
     /**
      * @param array $payload Payload response from the API
-     * @return VoiceV3TranscriptionLongRunningOperationResponseInstance \Twilio\Rest\Voice\V3\VoiceV3TranscriptionLongRunningOperationResponseInstance
+     * @return VoiceV3TranscriptionTranscriptionInstance \Twilio\Rest\Voice\V3\VoiceV3TranscriptionTranscriptionInstance
      */
-    public function buildInstance(array $payload): VoiceV3TranscriptionLongRunningOperationResponseInstance
+    public function buildInstance(array $payload): VoiceV3TranscriptionTranscriptionInstance
     {
-        return new VoiceV3TranscriptionLongRunningOperationResponseInstance($this->version, $payload);
+        return new VoiceV3TranscriptionTranscriptionInstance($this->version, $payload);
     }
 
 

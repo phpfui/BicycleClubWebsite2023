@@ -305,7 +305,7 @@ class Member
 		$toolTip = new \PHPFUI\ToolTip('Don’t show the following in the Membership Directory', 'Your personal information may still be shown to ride leaders if you sign up for a ride.');
 		$fieldSet = new \PHPFUI\FieldSet($toolTip);
 		$recentLink = new \PHPFUI\Link('/Membership/recent', 'Recent Sign Ins', false);
-		$fields = ['showNothing' => 'My info',
+		$fields = ['showNothing' => ['My info', 'You will not be listed or searchable in the Membership Directory'],
 			'showNoStreet' => 'Street',
 			'showNoTown' => 'Town, zip',
 			'showNoPhone' => 'Phone',

@@ -1381,18 +1381,20 @@ protected function _httpencode($param, $value, $isUTF8)
 }
 
 protected function _isascii($s)
-{
+	{
 	// Test if string is ASCII
 	$nb = \strlen($s);
 
-	for($i = 0;$i < $nb;$i++)
-	{
-		if(\ord($s[$i]) > 127)
+	for ($i = 0; $i < $nb; $i++)
+		{
+		if (\ord($s[$i]) > 127)
+			{
 			return false;
-	}
+			}
+		}
 
 	return true;
-}
+	}
 
 protected function _loadfont($path)
 {

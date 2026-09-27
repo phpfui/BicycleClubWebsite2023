@@ -60,7 +60,7 @@ class Search implements \Stringable
 			$memberTable->setLimit(50);
 			$memberTable->addOrderBy('firstName');
 
-			if (! $this->page->isAuthorized('Membership Chair'))
+			if (! $this->page->isAuthorized('Show All Members'))
 				{
 				$condition = $memberTable->getWhereCondition();
 				$condition->and('showNothing', 0);

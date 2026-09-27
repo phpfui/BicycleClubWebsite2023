@@ -24,11 +24,6 @@ use Twilio\Version;
 
 
 /**
- * @property string $accountSid
- * @property string $reportId
- * @property string $status
- * @property string $requestMeta
- * @property string|null $url
  * @property string $handle
  * @property int $totalCalls
  * @property string $callAnswerScore
@@ -50,11 +45,6 @@ class InboundInstance extends InstanceResource
 
         // Marshaled Properties
         $this->properties = [
-            'accountSid' => Values::array_get($payload, 'account_sid'),
-            'reportId' => Values::array_get($payload, 'report_id'),
-            'status' => Values::array_get($payload, 'status'),
-            'requestMeta' => Values::array_get($payload, 'request_meta'),
-            'url' => Values::array_get($payload, 'url'),
             'handle' => Values::array_get($payload, 'handle'),
             'totalCalls' => Values::array_get($payload, 'total_calls'),
             'callAnswerScore' => Values::array_get($payload, 'call_answer_score'),
@@ -63,36 +53,6 @@ class InboundInstance extends InstanceResource
         ];
 
         $this->solution = ['reportId' => $reportId ?: $this->properties['reportId'], ];
-    }
-
-    /**
-     * Generate an instance context for the instance, the context is capable of
-     * performing various actions.  All instance actions are proxied to the context
-     *
-     * @return InboundContext Context for this InboundInstance
-     */
-    protected function proxy(): InboundContext
-    {
-        if (!$this->context) {
-            $this->context = new InboundContext(
-                $this->version,
-                $this->solution['reportId']
-            );
-        }
-
-        return $this->context;
-    }
-
-    /**
-     * Create the InboundInstance
-     *
-     * @return InboundInstance Created InboundInstance
-     * @throws TwilioException When an HTTP error occurs.
-     */
-    public function create(): InboundInstance
-    {
-
-        return $this->proxy()->create();
     }
 
     /**
@@ -123,11 +83,7 @@ class InboundInstance extends InstanceResource
      */
     public function __toString(): string
     {
-        $context = [];
-        foreach ($this->solution as $key => $value) {
-            $context[] = "$key=$value";
-        }
-        return '[Twilio.Insights.V2.InboundInstance ' . \implode(' ', $context) . ']';
+        return '[Twilio.Insights.V2.InboundInstance]';
     }
 }
 

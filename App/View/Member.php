@@ -857,6 +857,16 @@ class Member
 		$allowTexting = new \PHPFUI\Input\CheckBoxBoolean('allowTexting', 'Enable club texts', (bool)$member->allowTexting);
 		$allowTexting->setToolTip('Receive text messages about club announcements, ride updates, cancellations, schedule/location changes, and other club-related information. Message frequency varies. Msg & data rates may apply. See our Privacy Policy and Terms & Conditions.  Uncheck to opt out of club texts.');
 		$fieldSet->add($allowTexting);
+
+		$privacyLink = new \PHPFUI\Link('/privacy', 'Privacy Policy', false);
+		$termsLink = new \PHPFUI\Link('/terms', 'Terms & Conditions', false);
+
+		$disclosure = new \App\UI\Display(
+			'SMS Consent',
+			"By enabling club texts, you consent to receive St. Petersburg Bicycle Club text messages about club announcements, ride updates, cancellations, schedule/location changes, and other club-related information. Message frequency varies. Msg & data rates may apply. See our {$privacyLink} and {$termsLink}."
+		);
+		$fieldSet->add($disclosure);
+			
 		$fieldSet->add($this->getGeoLocationSelect($member));
 
 		return $fieldSet;

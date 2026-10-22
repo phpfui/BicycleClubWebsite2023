@@ -48,3 +48,12 @@ function emailServerName() : string
 	return strtolower(implode('.', $parts));
 	}
 
+if (!array_key_exists('chunk', stream_get_filters()))
+	{
+	stream_filter_register('chunk', 'Http\Message\Encoding\Filter\Chunk');
+	}
+
+function trigger_deprecation(string $package, string $version, string $message, mixed ...$args): void
+	{
+	@trigger_error(($package || $version ? "Since $package $version: " : '').($args ? vsprintf($message, $args) : $message), \E_USER_DEPRECATED);
+	}

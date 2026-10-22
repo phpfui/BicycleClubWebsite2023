@@ -43,11 +43,11 @@ class Versions
 
 		$log = $this->model->getLog([$branch]);
 
-		$count = \count($log);
+		$count = $log->countCommits();
 		$lastPage = (int)(($count - 1) / $limit) + 1;
 
-		$log->setOffset($page * $limit);
-		$log->setLimit($limit);
+		$log->withOffset($page * $limit);
+		$log->withLimit($limit);
 
 		$localTZ = new \DateTimeZone(\date_default_timezone_get());
 		$sortedTags = new \App\Tools\SortedTags($this->model);
@@ -56,7 +56,8 @@ class Versions
 			{
 			$hash = $commit->getHash();
 			$row = [];
-			$row['Title'] = $commit->getShortMessage();
+			$row['Title'] =  new \Symfony\Component\String\UnicodeString($commit->getSubjectMessage())
+				->truncate(50, '...', \Symfony\Component\String\TruncateMode::WordBefore);
 			$row['Date'] = $commit->getCommitterDate()->setTimezone($localTZ)->format('Y-m-d g:i a');
 			$row['Release'] = ($tag = $sortedTags->getTag($hash)) ? $tag->getName() : '';
 
@@ -76,7 +77,7 @@ class Versions
 			$table->addRow($row);
 			}
 
-		if (! \count($log))
+		if (! $log->countCommits())
 			{
 			$container->add(new \PHPFUI\SubHeader('No versions found'));
 			}

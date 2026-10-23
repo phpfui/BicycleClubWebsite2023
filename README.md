@@ -30,8 +30,9 @@ A mobile friendly website to manage a bicycle club.
 * SparkPost and SMTP integration for mass mailing support
 * Texting support via Twillo
 * Automatic release versioning and updates
+* Completely free to use and open source
 
-### Much More!
+### And Much More!
 
 ## Documentation
 * [Requirements](https://github.com/phpfui/BicycleClubWebsite2023/blob/master/docs/01.%20Requirements.md)

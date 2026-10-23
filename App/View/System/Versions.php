@@ -56,7 +56,7 @@ class Versions
 			{
 			$hash = $commit->getHash();
 			$row = [];
-			$row['Title'] =  new \Symfony\Component\String\UnicodeString($commit->getSubjectMessage())
+			$row['Title'] = new \Symfony\Component\String\UnicodeString($commit->getSubjectMessage())
 				->truncate(50, '...', \Symfony\Component\String\TruncateMode::WordBefore);
 			$row['Date'] = $commit->getCommitterDate()->setTimezone($localTZ)->format('Y-m-d g:i a');
 			$row['Release'] = ($tag = $sortedTags->getTag($hash)) ? $tag->getName() : '';

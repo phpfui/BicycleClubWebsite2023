@@ -734,8 +734,9 @@ class Invoice
 	public function getInvoiceTable(array $parameters) : \App\Table\Invoice
 		{
 		$invoiceTable = new \App\Table\Invoice();
-		$invoiceTable->setSelect('invoice.*');
 		$invoiceTable->addJoin('member');
+		$invoiceTable->addJoin('customer', new \PHPFUI\ORM\Condition('customer.customerId', new \PHPFUI\ORM\Literal('-invoice.memberId')), 'LEFT OUTER');
+		$invoiceTable->setExtendedFields(true);
 		$condition = new \PHPFUI\ORM\Condition();
 
 		if (! empty($parameters['invoiceId']))

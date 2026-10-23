@@ -29,12 +29,16 @@ class Buyers implements \Stringable
 
 				$invoiceModel = new \App\Model\Invoice();
 				$invoiceTable = $invoiceModel->getInvoiceTable($_POST);
-				$cursor = $invoiceTable->getDataObjectCursor();
+				$cursor = $invoiceTable->getArrayCursor();
 
 				if ($_POST['submit'] == $this->emailText)
 					{
 					foreach ($cursor as $buyer)
 						{
+						$buyer['firstName'] ??= $buyer['customer_firstName'];
+						$buyer['lastName'] ??= $buyer['customer_lastName'];
+						$buyer['email'] ??= $buyer['customer_email'];
+
 						if (empty($buyer['email']))
 							{
 							continue;
@@ -49,7 +53,7 @@ class Buyers implements \Stringable
 
 						if (! empty($_POST['attach']))
 							{
-							$invoice = new \App\Record\Invoice($buyer->toArray());
+							$invoice = new \App\Record\Invoice($buyer);
 							$pdf = $invoiceModel->generatePDF($invoice);
 							$email->addAttachment($pdf->Output('', 'S'), $invoiceModel->getFileName($invoice));
 							}

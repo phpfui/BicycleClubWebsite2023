@@ -18,6 +18,9 @@ class Orders
 				{
 				$row['firstName'] ??= $row['customer_firstName'];
 				$row['lastName'] ??= $row['customer_lastName'];
+				$row['address'] ??= $row['customer_address'];
+				$row['town'] ??= $row['customer_town'];
+				$row['zip'] ??= $row['customer_zip'];
 
 				if ('Stock' == $_POST['labelType'])
 					{
@@ -96,6 +99,7 @@ class Orders
 		$storeOrderTable->addJoin('member');
 		$storeOrderTable->addJoin('membership', new \PHPFUI\ORM\Condition('member.membershipId', new \PHPFUI\ORM\Field('membership.membershipId')));
 		$storeOrderTable->addJoin('customer', new \PHPFUI\ORM\Condition('customer.customerId', new \PHPFUI\ORM\Literal('-storeOrder.memberId')), 'LEFT OUTER');
+		$storeOrderTable->setExtendedFields(true);
 
 		return $storeOrderTable;
 		}

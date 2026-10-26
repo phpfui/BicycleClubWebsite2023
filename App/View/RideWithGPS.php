@@ -220,7 +220,7 @@ class RideWithGPS
 		$clubUrl = $settingsSaver->generateField('RideWithGPSURL', 'Club Library URL', 'url', false);
 		$fieldSet->add($clubUrl);
 
-		$units = new \PHPFUI\Input\RadioGroup('RWGPSUnits', 'Measurement Units');
+		$units = new \PHPFUI\Input\RadioGroup('RWGPSUnits', 'Measurement System');
 		$units->addButton('Imperial', 'Miles');
 		$units->addButton('Metric', 'km');
 		$fieldSet->add($settingsSaver->generateField('RWGPSUnits', 'Measurement Units', $units));

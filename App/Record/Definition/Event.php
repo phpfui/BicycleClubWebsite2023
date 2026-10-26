@@ -18,11 +18,11 @@ namespace App\Record\Definition;
  * @property string $lastRegistrationDate MySQL type date
  * @property ?string $location MySQL type varchar(255)
  * @property int $maxDiscounts MySQL type int
- * @property ?int $maxReservations MySQL type int
+ * @property int $maxReservations MySQL type int
  * @property ?int $membersOnly MySQL type int
  * @property ?string $newMemberDate MySQL type date
  * @property float $newMemberDiscount MySQL type decimal(6,2)
- * @property ?int $numberReservations MySQL type int
+ * @property int $numberReservations MySQL type int
  * @property ?int $organizer MySQL type int
  * @property ?int $paypal MySQL type int
  * @property float $price MySQL type decimal(6,2)
@@ -63,11 +63,11 @@ abstract class Event extends \PHPFUI\ORM\Record
 				'lastRegistrationDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, false, ),
 				'location' => new \PHPFUI\ORM\FieldDefinition('varchar(255)', 'string', 255, true, ),
 				'maxDiscounts' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 0, ),
-				'maxReservations' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 4, ),
+				'maxReservations' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 100, ),
 				'membersOnly' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 1, ),
 				'newMemberDate' => new \PHPFUI\ORM\FieldDefinition('date', 'string', 10, true, ),
 				'newMemberDiscount' => new \PHPFUI\ORM\FieldDefinition('decimal(6,2)', 'float', 7, false, 0.00, ),
-				'numberReservations' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
+				'numberReservations' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, false, 2, ),
 				'organizer' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, ),
 				'paypal' => new \PHPFUI\ORM\FieldDefinition('int', 'int', 0, true, 1, ),
 				'price' => new \PHPFUI\ORM\FieldDefinition('decimal(6,2)', 'float', 7, false, 0.00, ),

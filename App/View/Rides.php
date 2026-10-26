@@ -12,8 +12,6 @@ class Rides
 
 	private int $deletePastDays = 0;
 
-	private string $targetPaceColumn = '';
-
 	private readonly \App\View\Leader $leader;
 
 	private readonly \App\View\Member $memberView;
@@ -23,6 +21,8 @@ class Rides
 	private readonly \App\Model\SMS $smsModel;
 
 	private readonly \App\View\StartLocation $startLocationView;
+
+	private string $targetPaceColumn = '';
 
 	public function __construct(private readonly \App\View\Page $page)
 		{
@@ -491,30 +491,6 @@ class Rides
 		return $fieldSet;
 		}
 
-	public function scheduleContinuous(\App\Table\Ride $rideTable, string $noRidesMessage) : \App\UI\ContinuousScrollTable
-		{
-		$view = new \App\UI\ContinuousScrollTable($this->page, $rideTable);
-		$view->addCustomColumn('startTime', static fn (array $ride) : string => \App\Tools\TimeHelper::toSmallTime($ride['startTime'] ?? ''));
-		$that = $this;
-		$view->addCustomColumn('paceId', static function(array $ride) use ($that) : string
-			{
-			$categoryLetter = $that->paceTable->getPace($ride['paceId'] ?? 0);
-			if ($that->targetPaceColumn && $ride['targetPace'] > 0.0)
-				{
-				$categoryLetter .= '/' . \str_replace('.0', '', \number_format($ride['targetPace'], 1));
-				}
-			return $categoryLetter;
-			});
-		$view->addCustomColumn('title', static fn (array $ride) : \PHPFUI\Link => new \PHPFUI\Link('/Rides/signedUp/' . $ride['rideId'], $ride['title'], false)->addAttribute('target', 'blank'));
-		$view->addCustomColumn('leader', static fn (array $ride) : string => new \App\Record\Member($ride['memberId'])->fullName());
-
-		$view->setHeaders(['rideDate' => 'Date', 'startTime' => 'Start Time', 'paceId' => 'Cat', 'mileage' => 'Distance', 'title' => 'Title', 'leader' => 'Leader', ]);
-		$view->setSearchColumns($searchSortColumns = ['rideDate', 'startTime', 'paceId', 'mileage', 'title', ]);
-		$view->setSortableColumns($searchSortColumns);
-
-		return $view;
-		}
-
 	public function schedule(\PHPFUI\ORM\DataObjectCursor $rides, string $noRidesMessage = 'No rides are currently scheduled', int $showNoLeader = 0) : \App\UI\Accordion | \PHPFUI\Header
 		{
 		if (! \count($rides))
@@ -769,6 +745,32 @@ class Rides
 		return $dateAccordion;
 		}
 
+	public function scheduleContinuous(\App\Table\Ride $rideTable, string $noRidesMessage) : \App\UI\ContinuousScrollTable
+		{
+		$view = new \App\UI\ContinuousScrollTable($this->page, $rideTable);
+		$view->addCustomColumn('startTime', static fn (array $ride) : string => \App\Tools\TimeHelper::toSmallTime($ride['startTime'] ?? ''));
+		$that = $this;
+		$view->addCustomColumn('paceId', static function(array $ride) use ($that) : string
+			{
+			$categoryLetter = $that->paceTable->getPace($ride['paceId'] ?? 0);
+
+			if ($that->targetPaceColumn && $ride['targetPace'] > 0.0)
+				{
+				$categoryLetter .= '/' . \str_replace('.0', '', \number_format($ride['targetPace'], 1));
+				}
+
+			return $categoryLetter;
+			});
+		$view->addCustomColumn('title', static fn (array $ride) : \PHPFUI\Link => new \PHPFUI\Link('/Rides/signedUp/' . $ride['rideId'], $ride['title'], false)->addAttribute('target', 'blank'));
+		$view->addCustomColumn('leader', static fn (array $ride) : string => new \App\Record\Member($ride['memberId'])->fullName());
+
+		$view->setHeaders(['rideDate' => 'Date', 'startTime' => 'Start Time', 'paceId' => 'Cat', 'mileage' => 'Distance', 'title' => 'Title', 'leader' => 'Leader', ]);
+		$view->setSearchColumns($searchSortColumns = ['rideDate', 'startTime', 'paceId', 'mileage', 'title', ]);
+		$view->setSortableColumns($searchSortColumns);
+
+		return $view;
+		}
+
 	public function stats(int $year) : string
 		{
 		$rides = new \App\Table\Ride()->getDateRange(\gregoriantojd(1, 1, $year), \gregoriantojd(12, 31, $year));
@@ -932,7 +934,7 @@ class Rides
 		\uksort($mainCategoryCounts, static fn (int $a, int $b) : int => $a <=> $b);
 		\uksort($rideTotals, static fn (int $a, int $b) : int => $a <=> $b);
 		\uksort($ridesWithRiders, static fn (int $a, int $b) : int => $a <=> $b);
-		$output = '<h3>There were ' . \number_format(\count($rides)) . ' rides led in ' . $year . ' for a total of ' . \number_format($totalLedMiles) . ' miles led.</h3>';
+		$output = '<h3>There were ' . \number_format(\count($rides)) . ' rides led in ' . $year . ' for a total of ' . \number_format($totalLedMiles) . ' ' . $this->page->value('RWGPSUnits') . ' led.</h3>';
 		$table = new \PHPFUI\Table();
 		$table->addHeader((string)0, 'Main Category');
 		$table->addHeader((string)1, 'Total Rides');
@@ -940,7 +942,7 @@ class Rides
 		$table->addHeader((string)3, '% Reported');
 		$table->addHeader((string)4, 'Total Riders');
 		$table->addHeader((string)5, 'Average Riders / Ride');
-		$table->addHeader((string)6, 'Average Mileage');
+		$table->addHeader((string)6, 'Average Distance');
 		$table->addHeader((string)7, 'Average Speed');
 		$table->addHeader((string)8, 'Minimum Average Speed');
 		$table->addHeader((string)9, 'Maximum Average Speed');
@@ -1020,7 +1022,7 @@ class Rides
 		$table->addHeader((string)3, '% Reported');
 		$table->addHeader((string)4, 'Total Riders');
 		$table->addHeader((string)5, 'Average Riders / Ride');
-		$table->addHeader((string)6, 'Average Mileage');
+		$table->addHeader((string)6, 'Average Distance');
 		$table->addHeader((string)7, 'Average Speed');
 		$table->addHeader((string)8, 'Minimum Average Speed');
 		$table->addHeader((string)9, 'Maximum Average Speed');
@@ -1094,7 +1096,7 @@ class Rides
 			{
 			$output .= '<h3>The average ride had ' . \number_format($totalRiders / $riderRides, 1) . ' riders.</h3>';
 			}
-		$output .= '<h3>' . \number_format($riderMiles) . ' miles ridden by club members on club rides.</h3>';
+		$output .= '<h3>' . \number_format($riderMiles) . ' ' . $this->page->value('RWGPSUnits') . ' ridden by club members on club rides.</h3>';
 		\arsort($startingLocation);
 		$table = new \PHPFUI\Table();
 		$table->addHeader((string)0, 'Starting Location');

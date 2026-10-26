@@ -108,7 +108,7 @@ class RWGPS extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			{
 			$div = new \PHPFUI\FieldSet('Ride Details');
 			$table = new \PHPFUI\Table();
-			$headers = ['rideDate' => 'Date', 'mileage' => 'Mileage', 'elevation' => 'Elev', 'averagePace' => 'Average', 'pace' => 'Pace'];
+			$headers = ['rideDate' => 'Date', 'mileage' => 'Distance', 'elevation' => 'Elev', 'averagePace' => 'Average', 'pace' => 'Pace'];
 			$table->setHeaders($headers);
 			$paceTable = new \App\Table\Pace();
 			$rideTable = new \App\Table\Ride();
@@ -135,7 +135,7 @@ class RWGPS extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 			if ($count)
 				{
-				$div->add(new \App\UI\Display('Average Mileage', \number_format($mileage / $count, 1)));
+				$div->add(new \App\UI\Display('Average Distance', \number_format($mileage / $count, 1)));
 				$div->add(new \App\UI\Display('Average Elevation', (int)($elevation / $count)));
 				}
 			$this->page->setRawResponse($div, false);

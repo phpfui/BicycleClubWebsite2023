@@ -43,7 +43,7 @@ class Search implements \Stringable
 	public function setCursor(array $parameters) : \App\Table\CueSheet
 		{
 		$this->cueSheetTable->setLimit(50);
-		$this->cueSheetTable->addOrderBy($parameters['sort'] ?? 'Mileage', $parameters['order'] ?? 'A');
+		$this->cueSheetTable->addOrderBy($parameters['sort'] ?? 'mileage', $parameters['order'] ?? 'A');
 		$condition = new \PHPFUI\ORM\Condition('pending', 0);
 
 		foreach (['destination', 'description', 'name'] as $field)
@@ -95,10 +95,10 @@ class Search implements \Stringable
 		$field = new \PHPFUI\Input\Number('cueSheetId', 'Number', $parameters['cueSheetId']);
 		$field->addAttribute('max', (string)999999)->addAttribute('min', (string)0);
 		$col->add($field);
-		$field = new \PHPFUI\Input\Number('mileageFrom', 'Mileage at least', $parameters['mileageFrom']);
+		$field = new \PHPFUI\Input\Number('mileageFrom', 'Distance at least', $parameters['mileageFrom']);
 		$field->addAttribute('max', (string)999)->addAttribute('min', (string)0);
 		$col->add($field);
-		$field = new \PHPFUI\Input\Number('mileageTo', 'Mileage up to', $parameters['mileageTo']);
+		$field = new \PHPFUI\Input\Number('mileageTo', 'Distance up to', $parameters['mileageTo']);
 		$field->addAttribute('max', (string)999)->addAttribute('min', (string)0);
 		$col->add($field);
 		$row->add($col);
@@ -118,7 +118,7 @@ class Search implements \Stringable
 		$col = new \PHPFUI\Cell(12, 6);
 		$field = new \PHPFUI\Input\Select('sort', 'Sort By');
 		$sortOptions = [];
-		$sortOptions['mileage'] = 'Mileage';
+		$sortOptions['mileage'] = 'Distance';
 		$sortOptions['memberId'] = 'Author';
 		$sortOptions['cueSheetId'] = 'Cue Sheet Number';
 		$sortOptions['dateAdded'] = 'Date Added';

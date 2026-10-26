@@ -14,6 +14,8 @@ class CueSheet
 
 	private readonly \App\Model\CueSheet $model;
 
+	private readonly \App\Table\Setting $settingTable;
+
 	private readonly \App\View\StartLocation $startLocationView;
 
 	public function __construct(private readonly \PHPFUI\Page $page)
@@ -23,6 +25,8 @@ class CueSheet
 		$this->startLocationView = new \App\View\StartLocation($page);
 		$this->fileModel = new \App\Model\CueSheetFiles();
 		$this->model = new \App\Model\CueSheet();
+		$this->settingTable = new \App\Table\Setting();
+
 		$this->processRequest();
 		}
 
@@ -156,7 +160,7 @@ class CueSheet
 			{
 			$cuesheet->mileage = 0.0;
 			}
-		$mileage = new \PHPFUI\Input\Number('mileage', 'Mileage', $cuesheet->mileage);
+		$mileage = new \PHPFUI\Input\Number('mileage', 'Distance', $cuesheet->mileage);
 		$mileage->addAttribute('max', (string)999)->addAttribute('min', (string)0);
 		$mileage->setRequired();
 		$terrain = $this->getTerrainEditControl($cuesheet->terrainId ?? 0);
@@ -166,7 +170,16 @@ class CueSheet
 			{
 			$cuesheet->elevation = 0;
 			}
-		$elevation = new \PHPFUI\Input\Number('elevation', 'Elevation Gain (feet)', $cuesheet->elevation);
+
+		if ('Miles' === $this->settingTable->value('RWGPSUnits'))
+			{
+			$units = 'feet';
+			}
+		else
+			{
+			$units = 'meters';
+			}
+		$elevation = new \PHPFUI\Input\Number('elevation', 'Elevation Gain ' . $units, $cuesheet->elevation);
 		$fieldSet->add(new \PHPFUI\MultiColumn($mileage, $terrain, $elevation));
 		$form->add($fieldSet);
 		$this->cueSheetVersionTable->setDateDescCursor($cuesheet);
@@ -220,7 +233,7 @@ class CueSheet
 				{
 				if (empty($cuesheet->pending))
 					{
-					$select->addOption('#' . $cuesheet->cueSheetId . ', ' . $cuesheet->mileage . ' miles, ' . $cuesheet->name, $cuesheet->cueSheetId, $cueSheetId == $cuesheet->cueSheetId);
+					$select->addOption('#' . $cuesheet->cueSheetId . ', ' . $cuesheet->mileage . ' ' . $this->settingTable->value('RWGPSUnits') . ', ' . $cuesheet->name, $cuesheet->cueSheetId, $cueSheetId == $cuesheet->cueSheetId);
 					}
 				}
 			}
@@ -349,7 +362,7 @@ class CueSheet
 				$table->setHeaders(['master' => 'Master',
 					'delete' => 'Delete',
 					'cueSheetId' => 'Cue Sheet Number',
-					'mileage' => 'Mileage',
+					'mileage' => 'Distance',
 					'name' => 'Cue Sheet',
 					'view' => 'View', ]);
 				$count = 0;
@@ -444,7 +457,7 @@ class CueSheet
 		$row->add($name);
 		$mileage = new \PHPFUI\Cell(\current($columnWidths));
 		\next($columnWidths);
-		$mileage->add('Mile<wbr>age');
+		$mileage->add('Dist<wbr>ance');
 		$row->add($mileage);
 		$start = new \PHPFUI\Cell(\current($columnWidths));
 		\next($columnWidths);
@@ -503,7 +516,7 @@ class CueSheet
 
 			if ($cuesheet->elevation)
 				{
-				$detail->add(new \App\UI\Display('Elevation:', $cuesheet->elevation . ' feet'));
+				$detail->add(new \App\UI\Display('Elevation:', $cuesheet->elevation));
 				}
 
 			if ($cuesheet->startLocationId)

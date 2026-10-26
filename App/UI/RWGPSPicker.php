@@ -6,10 +6,13 @@ class RWGPSPicker
 	{
 	private readonly \App\Table\RWGPS $RWGPSTable;
 
+	private readonly \App\Table\Setting $settingTable;
+
 	public function __construct(private readonly \PHPFUI\Page $page, private readonly string $fieldName, private readonly string $label = '', private readonly \App\Record\RWGPS $initial = new \App\Record\RWGPS())
 		{
 		$this->RWGPSTable = new \App\Table\RWGPS();
 		$this->RWGPSTable->addOrderBy('title');
+		$this->settingTable = new \App\Table\Setting();
 		}
 
 	/**
@@ -65,6 +68,6 @@ class RWGPSPicker
 			return '';
 			}
 
-		return ($RWGPS->title ?? 'No Name') . ($RWGPS->club ? '*' : '') . ' - ' . \number_format($RWGPS->miles ?? 0, 1) . ' Miles';
+		return ($RWGPS->title ?? 'No Name') . ($RWGPS->club ? '*' : '') . ' - ' . \number_format($RWGPS->miles ?? 0, 1) . ' ' . $this->settingTable->value('RWGPSUnits');
 		}
 	}

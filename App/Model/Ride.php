@@ -145,7 +145,7 @@ class Ride
 		$locationLink = ! $location->empty() ? new \PHPFUI\Link($location->link, \App\Tools\TextHelper::unhtmlentities($location->name)) : '';
 		$message = "You are receiving this email since you signed up for the following ride:<p><b>{$ride->title}</b><br>" .
 			\App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '<br>' .
-			"{$ride->mileage} miles at a " . $this->getPace($ride->paceId) .
+			"{$ride->mileage} {$this->settingTable->value('RWGPSUnits')} at a " . $this->getPace($ride->paceId) .
 			" pace.<br>Starting from {$locationLink}<p>{$leaderMessage}<p>Your leader {$leader->fullName()}<br>" .
 			"{$phoneLink} {$callLink}<br>{$emailLink}<br>has decided not to lead the ride.  " .
 			'Reply to this email to contact the former leader.';
@@ -536,7 +536,7 @@ class Ride
 
 		$message = '<a href="' . $this->homePage . '">' . $this->clubName . '</a> would like to remind you of an upcoming ride:<br><br>'
 			. 'On <b>' . \App\Tools\Date::formatString('l, F j', $ride->rideDate) . '</b> at <b>' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '</b><br>'
-			. "{$ride->mileage} miles at a " . $this->getPace($ride->paceId) . ' pace.';
+			. "{$ride->mileage} {$this->settingTable->value('RWGPSUnits')} at a " . $this->getPace($ride->paceId) . ' pace.';
 
 		if ($ride->targetPace > 0.0)
 			{
@@ -726,7 +726,7 @@ class Ride
 		$locationLink = ! $location->empty() ? new \PHPFUI\Link($location->link, \App\Tools\TextHelper::unhtmlentities($location->name)) : '';
 		$message = "You are receiving this email since you signed up for the following ride:<p><b>{$ride->title}</b><br>" .
 			\App\Tools\Date::formatString('l, F j', $ride->rideDate) . ' at ' . \App\Tools\TimeHelper::toSmallTime($ride->startTime) . '<br>' .
-			"{$ride->mileage} miles at a " . $this->getPace($ride->paceId) .
+			"{$ride->mileage} {$this->settingTable->value('RWGPSUnits')} at a " . $this->getPace($ride->paceId) .
 			" pace.<br>Starting from {$locationLink}<p>Your leader {$leader->fullName()}<br>" .
 			"{$phoneLink} {$cellLink}<br>{$emailLink}<br>has decided to cancel the ride for weather reasons.  " .
 			'Reply to this email to contact the leader.';

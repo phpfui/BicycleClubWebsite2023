@@ -6,10 +6,13 @@ class CueSheetPicker
 	{
 	private readonly \App\Table\CueSheet $cueSheetTable;
 
+	private readonly \App\Table\Setting $settingTable;
+
 	public function __construct(private readonly \PHPFUI\Page $page, private readonly string $fieldName, private readonly string $label = '', private readonly \App\Record\CueSheet $initial = new \App\Record\CueSheet())
 		{
 		$this->cueSheetTable = new \App\Table\CueSheet();
 		$this->cueSheetTable->addOrderBy('name');
+		$this->settingTable = new \App\Table\Setting();
 		}
 
 	/**
@@ -59,6 +62,6 @@ class CueSheetPicker
 			return '';
 			}
 
-		return $cueSheet->name . ' - ' . \number_format($cueSheet->mileage, 1) . ' Miles';
+		return $cueSheet->name . ' - ' . \number_format($cueSheet->mileage, 1) . ' ' . $this->settingTable->value('RWGPSUnits');
 		}
 	}

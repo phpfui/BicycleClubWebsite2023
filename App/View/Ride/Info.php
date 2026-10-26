@@ -81,11 +81,22 @@ class Info
 
 		if ($ride->elevation)
 			{
-			$fieldSet->add(new \App\UI\Display('Elevation Gain', $ride->elevation . ' feet'));
+			$system = $this->settingTable->value('RWGPSUnits');
+
+			if ('Miles' === $system)
+				{
+				$units = 'Feet';
+				}
+			else
+				{
+				$units = 'Meters';
+				}
+
+			$fieldSet->add(new \App\UI\Display('Elevation Gain (' . $units . ')', $ride->elevation));
 
 			if ($ride->mileage)
 				{
-				$fieldSet->add(new \App\UI\Display('Feet Per Mile', \number_format($ride->elevation / (float)$ride->mileage, 1)));
+				$fieldSet->add(new \App\UI\Display("{$units} Per {$system}", \number_format($ride->elevation / (float)$ride->mileage, 1)));
 				}
 			}
 
@@ -222,11 +233,21 @@ class Info
 
 		if ($ride->elevation)
 			{
-			$table->addRow(['Elevation Gain', $ride->elevation . ' feet']);
+			$system = $this->settingTable->value('RWGPSUnits');
+
+			if ('Miles' === $system)
+				{
+				$units = 'Feet';
+				}
+			else
+				{
+				$units = 'Meters';
+				}
+			$table->addRow(['Elevation Gain (' . $units . ')', $ride->elevation]);
 
 			if ($ride->mileage)
 				{
-				$table->addRow(['Feet Per Mile', \number_format($ride->elevation / (float)$ride->mileage, 1)]);
+				$table->addRow(["{$units} Per {$system}", \number_format($ride->elevation / (float)$ride->mileage, 1)]);
 				}
 			}
 

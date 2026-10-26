@@ -69,7 +69,7 @@ class Invoice extends \FPDF
 		$x = 10;
 		$width = $this->w - ($x * 2);
 		$y = 100;
-		$height = $this->h - 5 - $y;
+		$height = $this->h - 41 - $y;
 		$this->SetXY($x, $y);
 		$this->Rect($x, $y, $width, $height, 'D');
 		$this->Line($x, $y + 6, $x + $width, $y + 6);
@@ -173,9 +173,9 @@ class Invoice extends \FPDF
 	// add a line to the invoice/estimate
 	public function addTotals(\App\Record\Invoice $invoice) : void
 		{
-		$x = (int)($this->w - 80);
+		$x = (int)($this->w - 79);
 		$width = $x + 70;
-		$y = (int)($this->h - 47);
+		$y = (int)($this->h - 39);
 		$height = $y + 35;
 		$this->RoundedRect($x, $y, $width - $x, $height - $y, 2.5, 'D');
 		$y++;

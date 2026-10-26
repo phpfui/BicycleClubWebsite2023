@@ -9,10 +9,12 @@ class Statistics
 	public function __construct(private readonly \App\View\Page $page, private readonly string $title)
 		{
 		$this->rideSignupTable = new \App\Table\RideSignup();
-		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('count(ride.rideId)'), '# Number Of Club Rides');
-		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(sum(ride.mileage))'), '# Club Miles');
-		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('sum(ride.elevation)'), 'Elevation Gained');
-		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(avg(ride.averagePace),1)'), 'AVS');
+		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('count(distinct ride.rideId)'), 'Total Rides');
+		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('count(ride.rideId)'), 'Number Of Riders');
+		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(sum(ride.mileage))'), 'Total Distance Ridden');
+		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(avg(ride.mileage))'), 'Average Distance');
+		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('sum(avg(ride.elevation))'), 'Averaged Elevation Gained');
+		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(avg(ride.averagePace),1)'), 'Average Speed');
 		$memberJoin = new \PHPFUI\ORM\Condition('member.memberId', new \PHPFUI\ORM\Literal('rideSignup.memberId'));
 		$this->rideSignupTable->addJoin('member', $memberJoin);
 		$rideSignupJoin = new \PHPFUI\ORM\Condition('rideSignup.rideId', new \PHPFUI\ORM\Literal('ride.rideId'));
@@ -35,7 +37,6 @@ class Statistics
 			$this->rideSignupTable->find($_GET);
 
 			$rides = $this->rideSignupTable->getArrayCursor();
-			$input = [];
 
 			if (\count($rides))
 				{

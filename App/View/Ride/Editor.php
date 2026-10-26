@@ -248,10 +248,10 @@ class Editor
 				$category = new \App\View\PacePicker('paceId', 'Category', 'Pace', $ride->paceId);
 				$multiColumn->add($category);
 				}
-			$mileage = new \PHPFUI\Input\Number('mileage', 'Mileage', $ride->mileage);
+			$mileage = new \PHPFUI\Input\Number('mileage', 'Distance', $ride->mileage);
 			$mileage->addAttribute('max', (string)999)->addAttribute('min', (string)0);
 			$this->mileageSelectorId = $mileage->getId();
-			$mileage->setToolTip('Actual mileage for the ride');
+			$mileage->setToolTip('Actual distance ridden for the ride');
 			$mileage->setRequired($afterRide);
 			$multiColumn->add($mileage);
 			$status = new \PHPFUI\Input\SelectEnum('rideStatus', 'Ride Status', $ride->rideStatus);
@@ -299,10 +299,10 @@ class Editor
 			$time->setRequired();
 			$fieldSet->add(new \PHPFUI\MultiColumn($date, $time));
 			$category = new \App\View\PacePicker('paceId', 'Category', 'Pace', $ride->paceId);
-			$mileage = new \PHPFUI\Input\Number('mileage', 'Mileage', $ride->mileage);
+			$mileage = new \PHPFUI\Input\Number('mileage', 'Distance', $ride->mileage);
 			$mileage->addAttribute('max', (string)999)->addAttribute('min', (string)0);
 			$this->mileageSelectorId = $mileage->getId();
-			$mileage->setToolTip('Expected mileage for the ride');
+			$mileage->setToolTip('Expected distance for the ride');
 			$mileage->setRequired();
 			$multiColumn = new \PHPFUI\MultiColumn($category, $mileage);
 			$settingTable = new \App\Table\Setting();

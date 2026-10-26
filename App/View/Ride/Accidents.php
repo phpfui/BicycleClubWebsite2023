@@ -28,7 +28,7 @@ class Accidents
 		$rideTable->addGroupBy('ride.rideId');
 		$rideTable->getWhereCondition()->and('rideSignup.attended', \App\Enum\RideSignup\Attended::CONFIRMED);
 
-		$headers = ['rideDate' => 'Ride Date', 'pace' => 'Category', 'mileage' => 'Mileage',
+		$headers = ['rideDate' => 'Ride Date', 'pace' => 'Category', 'mileage' => 'Distance',
 			'elevation' => 'Elevation', 'numRiders' => '# Riders', 'lastName' => 'Leader'];
 
 		$view = new \App\UI\ContinuousScrollTable($this->page, $rideTable);

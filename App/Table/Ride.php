@@ -670,16 +670,10 @@ class Ride extends \PHPFUI\ORM\Table
 		return $this;
 		}
 
-	public function setRidesForLocationCursor(\App\Record\StartLocation $startLocation, string $date = '') : static
+	public function setRidesForLocationCursor(\App\Record\StartLocation $startLocation) : static
 		{
 		$condition = new \PHPFUI\ORM\Condition('startLocationId', $startLocation->startLocationId);
-
-		if ($date)
-			{
-			$condition->and('rideDate', $date);
-			}
 		$this->setWhere($condition);
-		$this->addOrderBy('rideDate', 'desc');
 
 		return $this;
 		}

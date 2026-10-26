@@ -12,6 +12,8 @@ class Rides
 
 	private int $deletePastDays = 0;
 
+	private string $targetPaceColumn = '';
+
 	private readonly \App\View\Leader $leader;
 
 	private readonly \App\View\Member $memberView;
@@ -33,6 +35,7 @@ class Rides
 		$this->smsModel = new \App\Model\SMS();
 
 		$this->deletePastDays = (int)$this->page->value('DeleteRidesPastDays');
+		$this->targetPaceColumn = $this->page->value('targetPaceOption');
 		}
 
 	public function approvingRides() : self
@@ -488,6 +491,30 @@ class Rides
 		return $fieldSet;
 		}
 
+	public function scheduleContinuous(\App\Table\Ride $rideTable, string $noRidesMessage) : \App\UI\ContinuousScrollTable
+		{
+		$view = new \App\UI\ContinuousScrollTable($this->page, $rideTable);
+		$view->addCustomColumn('startTime', static fn (array $ride) : string => \App\Tools\TimeHelper::toSmallTime($ride['startTime'] ?? ''));
+		$that = $this;
+		$view->addCustomColumn('paceId', static function(array $ride) use ($that) : string
+			{
+			$categoryLetter = $that->paceTable->getPace($ride['paceId'] ?? 0);
+			if ($that->targetPaceColumn && $ride['targetPace'] > 0.0)
+				{
+				$categoryLetter .= '/' . \str_replace('.0', '', \number_format($ride['targetPace'], 1));
+				}
+			return $categoryLetter;
+			});
+		$view->addCustomColumn('title', static fn (array $ride) : \PHPFUI\Link => new \PHPFUI\Link('/Rides/signedUp/' . $ride['rideId'], $ride['title'], false)->addAttribute('target', 'blank'));
+		$view->addCustomColumn('leader', static fn (array $ride) : string => new \App\Record\Member($ride['memberId'])->fullName());
+
+		$view->setHeaders(['rideDate' => 'Date', 'startTime' => 'Start Time', 'paceId' => 'Cat', 'mileage' => 'Distance', 'title' => 'Title', 'leader' => 'Leader', ]);
+		$view->setSearchColumns($searchSortColumns = ['rideDate', 'startTime', 'paceId', 'mileage', 'title', ]);
+		$view->setSortableColumns($searchSortColumns);
+
+		return $view;
+		}
+
 	public function schedule(\PHPFUI\ORM\DataObjectCursor $rides, string $noRidesMessage = 'No rides are currently scheduled', int $showNoLeader = 0) : \App\UI\Accordion | \PHPFUI\Header
 		{
 		if (! \count($rides))
@@ -499,7 +526,6 @@ class Rides
 		$lastDate = $rides->current()->rideDate;
 		$dateAccordion = new \App\UI\Accordion();
 		$dayAccordion = 0;
-		$targetPaceColumn = $this->page->value('targetPaceOption');
 		$rideModel = new \App\Model\Ride();
 
 		$leaderless = $this->page->value('LeaderlessName') ?: 'Cancelled';
@@ -530,7 +556,7 @@ class Rides
 			$cat = new \PHPFUI\Cell(2);
 			$categoryLetter = $this->paceTable->getPace($ride->paceId ?? 0);
 
-			if ($targetPaceColumn && $ride->targetPace > 0.0)
+			if ($this->targetPaceColumn && $ride->targetPace > 0.0)
 				{
 				$categoryLetter .= '/' . \str_replace('.0', '', \number_format($ride->targetPace, 1));
 				}

@@ -256,7 +256,7 @@ class Rides extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$this->page->addPageContent(new \PHPFUI\SubHeader($startLocation->name));
 				$rideTable = new \App\Table\Ride();
 				$rideTable->setRidesForLocationCursor($startLocation);
-				$this->page->addPageContent($this->view->schedule($rideTable->getRecordCursor(), 'No rides have been lead from this location'));
+				$this->page->addPageContent($this->view->scheduleContinuous($rideTable, 'No rides have been lead from this location'));
 				}
 			else
 				{

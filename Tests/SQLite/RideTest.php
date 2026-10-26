@@ -732,17 +732,16 @@ class RideTest extends \Tests\SQLAsserts
 		// variables: $startLocation, $date
 
 		$startLocation = new \App\Record\StartLocation(65);
-		$date = '2026-06-17';
 
 		$newTable = new \App\Table\Ride();
 		$oldTable = new \Tests\Table\Ride();
 
 		$this->setToMySQL();
-		$expected = $oldTable->setRidesForLocationCursor($startLocation, $date);
+		$expected = $oldTable->setRidesForLocationCursor($startLocation);
 		$this->assertNoSQLErrors(__METHOD__);
 
 		$this->setToSQLite();
-		$actual = $newTable->setRidesForLocationCursor($startLocation, $date);
+		$actual = $newTable->setRidesForLocationCursor($startLocation);
 		$this->assertNoSQLErrors(__METHOD__);
 
 		$this->assertDataObjectCursorEquals($expected->getDataObjectCursor(), $actual->getDataObjectCursor(), __METHOD__);

@@ -13,7 +13,7 @@ class Statistics
 		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('count(ride.rideId)'), 'Number Of Riders');
 		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(sum(ride.mileage))'), 'Total Distance Ridden');
 		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(avg(ride.mileage))'), 'Average Distance');
-		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('sum(avg(ride.elevation))'), 'Averaged Elevation Gained');
+		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('avg(ride.elevation)'), 'Averaged Elevation Gained');
 		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(avg(ride.averagePace),1)'), 'Average Speed');
 		$memberJoin = new \PHPFUI\ORM\Condition('member.memberId', new \PHPFUI\ORM\Literal('rideSignup.memberId'));
 		$this->rideSignupTable->addJoin('member', $memberJoin);

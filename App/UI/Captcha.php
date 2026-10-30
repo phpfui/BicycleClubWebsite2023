@@ -20,20 +20,18 @@ class Captcha extends \PHPFUI\Container
 
 			$_SERVER['SERVER_ADDR'] ??= '::1';
 
-			$multiColumn = new \PHPFUI\MultiColumn();
-
 			if ('127.0.0.1' != $_SERVER['SERVER_ADDR'] && '::1' != $_SERVER['SERVER_ADDR'])
 				{
 				$settingTable = new \App\Table\Setting();
 				$this->captcha = new \PHPFUI\ReCAPTCHA($this->page, $settingTable->value('ReCAPTCHAPublicKey'), $settingTable->value('ReCAPTCHAPrivateKey'));
-				$multiColumn->add($this->captcha);
+				$fieldSet->add($this->captcha);
+				$fieldSet->add('<hr>');
 				}
 			else
 				{
 				$this->local = true;
 				}
-			$multiColumn->add($this->mathCaptcha);
-			$fieldSet->add($multiColumn);
+			$fieldSet->add($this->mathCaptcha);
 			$this->add($fieldSet);
 			}
 		}

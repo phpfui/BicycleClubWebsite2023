@@ -58,6 +58,7 @@ use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IntersectionTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\InvalidTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\NameNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ObjectShapeItemNode;
 use PHPStan\PhpDocParser\Ast\Type\ObjectShapeNode;
@@ -457,7 +458,7 @@ final class Printer
 				? '<' . implode(', ', array_map(fn (TemplateTagValueNode $templateNode): string => $this->print($templateNode), $node->templateTypes)) . '>'
 				: '';
 			$parameters = implode(', ', array_map(fn (CallableTypeParameterNode $parameterNode): string => $this->print($parameterNode), $node->parameters));
-			return "{$node->identifier}{$template}({$parameters}): {$returnType}";
+			return $this->printType($node->identifier) . "{$template}({$parameters}): {$returnType}";
 		}
 		if ($node instanceof ConditionalTypeForParameterNode) {
 			return sprintf(
@@ -496,10 +497,13 @@ final class Printer
 				}
 			}
 
-			return $node->type . '<' . implode(', ', $genericTypes) . '>';
+			return $this->printType($node->type) . '<' . implode(', ', $genericTypes) . '>';
 		}
 		if ($node instanceof IdentifierTypeNode) {
 			return $node->name;
+		}
+		if ($node instanceof NameNode) {
+			return $node->toCodeString();
 		}
 		if ($node instanceof IntersectionTypeNode || $node instanceof UnionTypeNode) {
 			$items = [];
@@ -973,6 +977,22 @@ final class Printer
 					continue;
 				}
 
+				if ($this->isRenamedTag($node, $subNodeName, $originalTokens, $startPos)) {
+					// the tag name is the first token of the tag; keep the format of the value
+					$result .= $subNode;
+					$pos = $startPos + 1;
+					continue;
+				}
+
+				if (
+					$node instanceof DoctrineAnnotation
+					&& $subNodeName === 'name'
+					&& $node->getAttribute(Attribute::ORIGINAL_NODE)->name !== $originalTokens->getContentBetween($startPos, $startPos + 1)
+				) {
+					// the tokens of the annotation of a Doctrine tag do not contain the name, the tag prints it
+					continue;
+				}
+
 				if (is_array($subNode) && is_array($origSubNode)) {
 					// Array subnode changed, we might be able to reconstruct it
 					$listResult = $this->printArrayFormatPreserving(
@@ -1047,6 +1067,20 @@ final class Printer
 		}
 
 		return $result . $originalTokens->getContentBetween($pos, $endPos + 1);
+	}
+
+	private function isRenamedTag(Node $node, string $subNodeName, TokenIterator $originalTokens, int $startPos): bool
+	{
+		if (!$node instanceof PhpDocTagNode || $subNodeName !== 'name') {
+			return false;
+		}
+
+		$originalNode = $node->getAttribute(Attribute::ORIGINAL_NODE);
+		if (!$originalNode instanceof PhpDocTagNode) {
+			return false;
+		}
+
+		return $originalTokens->getContentBetween($startPos, $startPos + 1) === $originalNode->name;
 	}
 
 	/**

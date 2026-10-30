@@ -24,10 +24,7 @@ class Join
 		$this->settingTable = new \App\Table\Setting();
 		$this->duesModel = new \App\Model\MembershipDues();
 
-		if ('127.0.0.1' != $_SERVER['SERVER_ADDR'] && '::1' != $_SERVER['SERVER_ADDR'])
-			{
-			$this->captcha = new \App\UI\Captcha($this->page);
-			}
+		$this->captcha = new \App\UI\Captcha($this->page, ('127.0.0.1' != $_SERVER['SERVER_ADDR'] && '::1' != $_SERVER['SERVER_ADDR']));
 		}
 
 	public function getEmail() : \PHPFUI\HTML5Element

@@ -47,7 +47,7 @@
         "scrivo/highlight.php": "^9.0",
         "setasign/fpdf": "^1.8",
         "symfony/string": "^8.1",
-        "tinify/tinify": "*",
+        "tinify/tinify": "^1.6",
         "tinymce/tinymce": "^8.0",
         "twilio/sdk": "^8.6.2",
         "zbateson/mail-mime-parser": "^4.0",

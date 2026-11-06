@@ -27,7 +27,6 @@ class RideSignup extends \PHPFUI\ORM\Table
 		{
 		$this->addJoin('ride');
 		$paceJoin = new \PHPFUI\ORM\Condition('pace.paceId', new \PHPFUI\ORM\Literal('ride.paceId'));
-		$this->addJoin('pace', $paceJoin);
 
 		$condition = $this->getWhereCondition();
 

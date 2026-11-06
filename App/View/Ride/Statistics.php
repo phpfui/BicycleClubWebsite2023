@@ -10,7 +10,7 @@ class Statistics
 		{
 		$this->rideSignupTable = new \App\Table\RideSignup();
 		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('count(distinct ride.rideId)'), 'Total Rides');
-		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('count(ride.rideId)'), 'Number Of Riders');
+		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('count(rideSignup.rideId)'), 'Number Of Riders');
 		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(sum(ride.mileage))'), 'Total Distance Ridden');
 		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(avg(ride.mileage))'), 'Average Distance');
 		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('avg(ride.elevation)'), 'Averaged Elevation Gained');

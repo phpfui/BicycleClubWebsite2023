@@ -68,7 +68,7 @@ class Line
      */
     public function getLine()
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getOriginalNumber()" instead.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getOriginalNumber()" instead.', __METHOD__);
 
         return $this->sourceLine;
     }

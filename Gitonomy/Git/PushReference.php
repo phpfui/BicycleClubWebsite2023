@@ -83,7 +83,7 @@ class PushReference
      */
     public function getReference()
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getFullname()" instead.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getFullname()" instead.', __METHOD__);
 
         return $this->reference;
     }
@@ -143,7 +143,7 @@ class PushReference
      */
     public function getRevision()
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getRange()" instead.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getRange()" instead.', __METHOD__);
 
         return $this->getRange();
     }
@@ -163,7 +163,7 @@ class PushReference
      */
     public function isCreate()
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "isCreation()" instead.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "isCreation()" instead.', __METHOD__);
 
         return $this->isCreation();
     }
@@ -183,7 +183,7 @@ class PushReference
      */
     public function isDelete()
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "isDeletion()" instead.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "isDeletion()" instead.', __METHOD__);
 
         return $this->isDeletion();
     }

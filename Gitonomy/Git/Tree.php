@@ -124,7 +124,7 @@ class Tree implements \IteratorAggregate
      */
     public function getEntries(): array
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, iterate the tree instead.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, iterate the tree instead.', __METHOD__);
 
         $this->initialize();
 
@@ -138,7 +138,7 @@ class Tree implements \IteratorAggregate
      */
     public function getCommitReferenceEntries(): array
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getSubmodules()" instead.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getSubmodules()" instead.', __METHOD__);
 
         $this->initialize();
 
@@ -152,7 +152,7 @@ class Tree implements \IteratorAggregate
      */
     public function getTreeEntries(): array
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getTrees()" instead.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getTrees()" instead.', __METHOD__);
 
         $this->initialize();
 
@@ -166,7 +166,7 @@ class Tree implements \IteratorAggregate
      */
     public function getBlobEntries(): array
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getBlobs()" instead.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getBlobs()" instead.', __METHOD__);
 
         $this->initialize();
 

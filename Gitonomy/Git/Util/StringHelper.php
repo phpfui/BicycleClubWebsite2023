@@ -12,7 +12,7 @@
 
 namespace Gitonomy\Git\Util;
 
-\trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s" class is deprecated, use symfony/string instead: gitlib 2.0 reads the logs in UTF-8 only.', StringHelper::class);
+trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s" class is deprecated, use symfony/string instead: gitlib 2.0 reads the logs in UTF-8 only.', StringHelper::class);
 
 /**
  * Helper class to support language particularity.

@@ -82,7 +82,7 @@ class Branch extends Reference
      */
     public function isMergedTo($destinationBranchName = 'master', $compareOnlyWithRemote = false)
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "%s::isMergedInto()" instead.', __METHOD__, self::class);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "%s::isMergedInto()" instead.', __METHOD__, self::class);
 
         $arguments = ['-a'];
 

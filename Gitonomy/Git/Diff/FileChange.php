@@ -53,7 +53,7 @@ class FileChange
     {
         foreach ($lines as $line) {
             if (!$line instanceof DiffLine) {
-                \trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing the lines to "%s()" as arrays is deprecated, pass "%s" objects instead.', __METHOD__, DiffLine::class);
+                trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing the lines to "%s()" as arrays is deprecated, pass "%s" objects instead.', __METHOD__, DiffLine::class);
 
                 break;
             }
@@ -74,7 +74,7 @@ class FileChange
      */
     public function getCount($type)
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getAdditions()" or "getDeletions()" instead.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getAdditions()" or "getDeletions()" instead.', __METHOD__);
 
         return $this->countLines($type);
     }
@@ -136,7 +136,7 @@ class FileChange
      */
     public function getLines()
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getDiffLines()" instead.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getDiffLines()" instead.', __METHOD__);
 
         return $this->lines;
     }

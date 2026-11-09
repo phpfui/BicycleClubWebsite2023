@@ -16,6 +16,7 @@ use Gitonomy\Git\Blame\Hunk;
 use Gitonomy\Git\Blame\Line;
 use Gitonomy\Git\Exception\InvalidArgumentException;
 use Gitonomy\Git\Parser\BlameParser;
+use Gitonomy\Git\Util\LeadingDash;
 
 /**
  * @author Alexandre Salomé <alexandre.salome@gmail.com>
@@ -65,7 +66,7 @@ class Blame implements \Countable
     public function __construct(Repository $repository, Revision $revision, $file, $lineRange = null, ?int $lastLine = null)
     {
         if (is_string($lineRange)) {
-            \trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing a range of lines as a string to "%s::getBlame()" or "%s()" is deprecated, pass the first and the last lines instead.', Repository::class, __METHOD__);
+            trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing a range of lines as a string to "%s::getBlame()" or "%s()" is deprecated, pass the first and the last lines instead.', Repository::class, __METHOD__);
         } elseif (null !== $lastLine) {
             if ((null !== $lineRange && $lineRange < 1) || $lastLine < 1) {
                 throw new InvalidArgumentException(sprintf('Invalid range of lines "%s,%s": the lines are numbered from 1.', $lineRange, $lastLine));
@@ -133,7 +134,7 @@ class Blame implements \Countable
      */
     public function getGroupedLines()
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getHunks()" instead.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getHunks()" instead.', __METHOD__);
 
         $result = [];
         $commit = null;
@@ -166,6 +167,8 @@ class Blame implements \Countable
         if (null !== $this->lines) {
             return $this->lines;
         }
+
+        LeadingDash::assertNoBlameFileOption($this->revision->getRevision());
 
         $args = ['-p'];
 

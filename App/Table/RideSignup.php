@@ -26,7 +26,6 @@ class RideSignup extends \PHPFUI\ORM\Table
 	public function find(array $parameters) : \PHPFUI\ORM\DataObjectCursor
 		{
 		$this->addJoin('ride');
-		$paceJoin = new \PHPFUI\ORM\Condition('pace.paceId', new \PHPFUI\ORM\Literal('ride.paceId'));
 
 		$condition = $this->getWhereCondition();
 

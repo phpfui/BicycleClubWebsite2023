@@ -18,6 +18,8 @@ use Gitonomy\Git\Exception\InvalidArgumentException;
 use Gitonomy\Git\Exception\ProcessException;
 use Gitonomy\Git\Exception\ReferenceNotFoundException;
 use Gitonomy\Git\Exception\RuntimeException;
+use Gitonomy\Git\Util\Credentials;
+use Gitonomy\Git\Util\LeadingDash;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Process;
 
@@ -130,14 +132,14 @@ class Repository
         if (!is_array($options)) {
             $options = ['working_dir' => $options];
         } elseif ([] !== $options) {
-            \trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing an array of options to "%s()" is deprecated, pass the working directory as second argument, and configure the logger and git through the "driver" argument.', __METHOD__);
+            trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing an array of options to "%s()" is deprecated, pass the working directory as second argument, and configure the logger and git through the "driver" argument.', __METHOD__);
 
             if (null !== $driver && [] !== array_intersect(array_keys($options), ['command', 'environment_variables', 'inherit_environment_variables', 'logger', 'process_timeout'])) {
                 throw new InvalidArgumentException('The driver argument can\'t be combined with the "logger" or git options: configure the driver instead.');
             }
 
             if (array_key_exists('debug', $options) && !$options['debug']) {
-                \trigger_deprecation('gitonomy/gitlib', '1.7', 'Setting the "debug" option of "%s()" to false is deprecated, a failing git operation always throws in 2.0: catch its exception instead.', __METHOD__);
+                trigger_deprecation('gitonomy/gitlib', '1.7', 'Setting the "debug" option of "%s()" to false is deprecated, a failing git operation always throws in 2.0: catch its exception instead.', __METHOD__);
             }
         }
 
@@ -217,7 +219,7 @@ class Repository
      *
      * @throws RuntimeException
      */
-    public static function cloneFrom(string $url, string $path, ?string $branch = null, ?CliDriver $driver = null): self
+    public static function cloneFrom(#[\SensitiveParameter] string $url, string $path, ?string $branch = null, ?CliDriver $driver = null): self
     {
         $driver = $driver ?? new CliDriver();
         $driver->cloneFrom($url, $path, $branch);
@@ -233,7 +235,7 @@ class Repository
      *
      * @throws RuntimeException
      */
-    public static function cloneBareFrom(string $url, string $path, ?string $branch = null, ?CliDriver $driver = null): self
+    public static function cloneBareFrom(#[\SensitiveParameter] string $url, string $path, ?string $branch = null, ?CliDriver $driver = null): self
     {
         $driver = $driver ?? new CliDriver();
         $driver->cloneBareFrom($url, $path, $branch);
@@ -249,7 +251,7 @@ class Repository
      *
      * @throws RuntimeException
      */
-    public static function mirrorFrom(string $url, string $path, ?CliDriver $driver = null): self
+    public static function mirrorFrom(#[\SensitiveParameter] string $url, string $path, ?CliDriver $driver = null): self
     {
         $driver = $driver ?? new CliDriver();
         $driver->mirrorFrom($url, $path);
@@ -263,7 +265,7 @@ class Repository
      *
      * @param CliDriver|null $driver Configures git, a CliDriver with its default arguments when null
      */
-    public static function isValidRepository(string $url, ?CliDriver $driver = null): bool
+    public static function isValidRepository(#[\SensitiveParameter] string $url, ?CliDriver $driver = null): bool
     {
         return ($driver ?? new CliDriver())->isValidRepository($url);
     }
@@ -274,7 +276,7 @@ class Repository
      *
      * @param CliDriver|null $driver Configures git, a CliDriver with its default arguments when null
      */
-    public static function isValidRepositoryAndBranch(string $url, string $branch, ?CliDriver $driver = null): bool
+    public static function isValidRepositoryAndBranch(#[\SensitiveParameter] string $url, string $branch, ?CliDriver $driver = null): bool
     {
         return ($driver ?? new CliDriver())->isValidRepositoryAndBranch($url, $branch);
     }
@@ -449,7 +451,7 @@ class Repository
     public function getReferences($reload = false)
     {
         if (\func_num_args() > 0) {
-            \trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing an argument to "%s()" is deprecated, open a new Repository to read the references again.', __METHOD__);
+            trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing an argument to "%s()" is deprecated, open a new Repository to read the references again.', __METHOD__);
         }
 
         if (null === $this->referenceBag || $reload) {
@@ -487,7 +489,7 @@ class Repository
     public function getTree($hash)
     {
         if (!preg_match('/^[0-9a-f]{4,40}$/', $hash)) {
-            \trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing "%s", which is not a hash, to "%s()" is deprecated, it throws in 2.0: use "getRevision($name)->getCommit()->getTree()" instead.', $hash, __METHOD__);
+            trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing "%s", which is not a hash, to "%s()" is deprecated, it throws in 2.0: use "getRevision($name)->getCommit()->getTree()" instead.', $hash, __METHOD__);
         }
 
         if (!isset($this->objects[$hash])) {
@@ -509,7 +511,7 @@ class Repository
     public function getBlob($hash)
     {
         if (!preg_match('/^[0-9a-f]{4,40}$/', $hash)) {
-            \trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing "%s", which is not a hash, to "%s()" is deprecated, it throws in 2.0: use "Tree::resolvePath()" instead.', $hash, __METHOD__);
+            trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing "%s", which is not a hash, to "%s()" is deprecated, it throws in 2.0: use "Tree::resolvePath()" instead.', $hash, __METHOD__);
         }
 
         if (!isset($this->objects[$hash])) {
@@ -612,7 +614,7 @@ class Repository
         $to = 1 < \func_num_args() ? func_get_arg(1) : null;
 
         if (null === $to) {
-            \trigger_deprecation('gitonomy/gitlib', '1.7', 'Calling "%s()" with one argument is deprecated, pass the revisions to compare as first and second arguments, or use "%s::getDiff()" to compare a revision with the working tree.', __METHOD__, WorkingCopy::class);
+            trigger_deprecation('gitonomy/gitlib', '1.7', 'Calling "%s()" with one argument is deprecated, pass the revisions to compare as first and second arguments, or use "%s::getDiff()" to compare a revision with the working tree.', __METHOD__, WorkingCopy::class);
 
             return $this->getLegacyDiff($revisions);
         }
@@ -636,6 +638,8 @@ class Repository
         if (null !== $revisions && !$revisions instanceof RevisionList) {
             $revisions = new RevisionList($this, $revisions);
         }
+
+        LeadingDash::assertNoLogFileOption(...$revisions->getAsTextArray());
 
         return $this->runDiff($revisions->getAsTextArray());
     }
@@ -661,7 +665,7 @@ class Repository
      */
     public function getSize()
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getSizeInBytes()" instead.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getSizeInBytes()" instead.', __METHOD__);
 
         $totalBytes = 0;
         $path = realpath($this->gitDir);
@@ -683,7 +687,7 @@ class Repository
      */
     public function shell($command, array $env = [])
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, run "git shell" with Symfony Process instead: it ignores the driver.', __METHOD__);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, run "git shell" with Symfony Process instead: it ignores the driver.', __METHOD__);
 
         $argument = sprintf('%s \'%s\'', $command, $this->gitDir);
 
@@ -768,7 +772,7 @@ class Repository
      *
      * @return string Output of a successful process or null if execution failed and debug-mode is disabled.
      */
-    public function run($command, $args = [])
+    public function run($command, #[\SensitiveParameter] $args = [])
     {
         $process = $this->execute($command, $args);
 
@@ -792,7 +796,7 @@ class Repository
      */
     public function setLogger(LoggerInterface $logger)
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, pass a "%s" configured with the logger as driver argument instead.', __METHOD__, CliDriver::class);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, pass a "%s" configured with the logger as driver argument instead.', __METHOD__, CliDriver::class);
 
         $this->logger = $logger;
 
@@ -808,7 +812,7 @@ class Repository
      */
     public function getLogger()
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, the logger is an argument of "%s".', __METHOD__, CliDriver::class);
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, the logger is an argument of "%s".', __METHOD__, CliDriver::class);
 
         return $this->logger;
     }
@@ -825,7 +829,7 @@ class Repository
      */
     public function cloneTo($path, $bare = true, array $options = [])
     {
-        \trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "%s::%s()" with "getGitDir()" as URL instead.', __METHOD__, self::class, $bare ? 'cloneBareFrom' : 'cloneFrom');
+        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "%s::%s()" with "getGitDir()" as URL instead.', __METHOD__, self::class, $bare ? 'cloneBareFrom' : 'cloneFrom');
 
         CliDriver::fromOptions($options)->cloneRepository($this->gitDir, $path, $bare ? ['--bare'] : []);
 
@@ -853,22 +857,22 @@ class Repository
     /**
      * Runs a git command, and logs it.
      */
-    private function execute($command, $args = []): Process
+    private function execute($command, #[\SensitiveParameter] $args = []): Process
     {
         $process = $this->getProcess($command, $args);
 
         if ($this->logger) {
-            $this->logger->info(sprintf('run command: %s "%s" ', $command, implode(' ', $args)));
+            $this->logger->info(Credentials::redact(sprintf('run command: %s "%s" ', $command, implode(' ', $args))));
             $before = microtime(true);
         }
 
-        $process->run();
+        Credentials::runProcess($process);
 
         if ($this->logger && $this->debug) {
             $duration = microtime(true) - $before;
             $this->logger->debug(sprintf('last command (%s) duration: %sms', $command, sprintf('%.2f', $duration * 1000)));
             $this->logger->debug(sprintf('last command (%s) return code: %s', $command, $process->getExitCode()));
-            $this->logger->debug(sprintf('last command (%s) output: %s', $command, $process->getOutput()));
+            $this->logger->debug(Credentials::redact(sprintf('last command (%s) output: %s', $command, $process->getOutput())));
         }
 
         return $process;
@@ -882,7 +886,7 @@ class Repository
     private function fail($command, Process $process): void
     {
         if ($this->logger) {
-            $this->logger->error(sprintf("error while running %s\n output: \"%s\"", $command, $process->getErrorOutput()));
+            $this->logger->error(Credentials::redact(sprintf("error while running %s\n output: \"%s\"", $command, $process->getErrorOutput())));
         }
 
         if ($this->debug) {
@@ -910,11 +914,16 @@ class Repository
 
         $process = new Process(array_merge($base, $args));
 
-        if ($this->inheritEnvironmentVariables) {
-            $process->setEnv(array_replace($_SERVER, $this->environmentVariables));
-        } else {
-            $process->setEnv($this->environmentVariables);
-        }
+        $environmentVariables = $this->inheritEnvironmentVariables ? array_replace($_SERVER, $this->environmentVariables) : $this->environmentVariables;
+
+        // git runs the command core.fsmonitor names, which the configuration of a
+        // repository may set, to read the working tree, and even to diff a commit.
+        // What "git -c" sets, in its old format, the only one git before 2.31 reads:
+        // git before 1.7.2 has no -c. After the values of git's parent, to win over them.
+        $configParameters = (string) ($environmentVariables['GIT_CONFIG_PARAMETERS'] ?? getenv('GIT_CONFIG_PARAMETERS'));
+        $environmentVariables['GIT_CONFIG_PARAMETERS'] = ltrim($configParameters." 'core.fsmonitor=false'");
+
+        $process->setEnv($environmentVariables);
 
         $process->setTimeout($this->processTimeout);
         $process->setIdleTimeout($this->processTimeout);

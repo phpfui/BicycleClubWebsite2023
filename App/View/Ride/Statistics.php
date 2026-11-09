@@ -10,7 +10,6 @@ class Statistics
 		{
 		$this->rideSignupTable = new \App\Table\RideSignup();
 		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('count(distinct ride.rideId)'), 'Total Rides');
-		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('(select count(*) from rideSignup where rideSignup.rideId = ride.rideId)'), 'Number Of Riders');
 		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(sum(ride.mileage))'), 'Total Distance Ridden');
 		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('round(avg(ride.mileage))'), 'Average Distance');
 		$this->rideSignupTable->addSelect(new \PHPFUI\ORM\Literal('avg(ride.elevation)'), 'Averaged Elevation Gained');
@@ -20,8 +19,6 @@ class Statistics
 		$rideSignupJoin = new \PHPFUI\ORM\Condition('rideSignup.rideId', new \PHPFUI\ORM\Literal('ride.rideId'));
 		$rideSignupJoin->and('ride.rideId', new \PHPFUI\ORM\Literal('rideSignup.rideId'));
 		$this->rideSignupTable->addJoin('ride', $rideSignupJoin);
-		$where = $this->rideSignupTable->getWhereCondition();
-		$where->and('ride.averagePace', 0, new \PHPFUI\ORM\Operator\GreaterThan());
 		}
 
 	public function download() : \PHPFUI\Container
@@ -35,6 +32,12 @@ class Statistics
 		if (! empty($_GET))
 			{
 			$this->rideSignupTable->find($_GET);
+			$riderCount = new \App\Table\RideSignup();
+			$riderCount->find($_GET);
+			$riderCount->setSelect(new \PHPFUI\ORM\Literal('count(*)'));
+			$riderCount->getWhereCondition()->and(new \PHPFUI\ORM\Condition('member.memberId', new \PHPFUI\ORM\Literal('ride.memberId')));
+
+			$this->rideSignupTable->addSelect($riderCount, 'Number Of Riders');
 
 			$rides = $this->rideSignupTable->getArrayCursor();
 

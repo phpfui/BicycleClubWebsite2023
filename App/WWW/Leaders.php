@@ -92,16 +92,25 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 			}
 		}
 
+	public function assistantLeads(int $year = 0) : void
+		{
+		if ($this->page->addHeader('My Assistant Leads'))
+			{
+			$this->showRidesForAssistant(\App\Model\Session::signedInMemberRecord(), $year);
+			}
+		}
+
 	public function assistantLeadsFor(\App\Record\Member $member = new \App\Record\Member(), int $year = 0) : void
 		{
 		if ($this->page->addHeader('Assistant Leads'))
 			{
 			$buttonText = 'Display Assistant Leads';
+
 			if (($_POST['submit'] ?? '') === $buttonText)
 				{
 				$this->page->redirect('/Leaders/assistantLeadsFor/' . $_POST['memberId'] . '/' . \App\Tools\Date::year());
 				}
-			else if (!$member->loaded())
+			elseif (! $member->loaded())
 				{
 				$form = new \PHPFUI\Form($this->page);
 				$memberPicker = new \App\UI\MemberPicker($this->page, new \App\Model\MemberPickerNoSave('Leader'), 'memberId', $member->toArray());
@@ -114,14 +123,6 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 				$this->page->addPageContent(new \PHPFUI\Button('Find Another Leader', '/Leaders/assistantLeadsFor'));
 				$this->showRidesForAssistant($member, $year);
 				}
-			}
-		}
-
-	public function assistantLeads(int $year = 0) : void
-		{
-		if ($this->page->addHeader('My Assistant Leads'))
-			{
-			$this->showRidesForAssistant(\App\Model\Session::signedInMemberRecord(), $year);
 			}
 		}
 

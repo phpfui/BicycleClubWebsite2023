@@ -44,14 +44,4 @@ class ForumMember extends \App\Record\Definition\ForumMember
 
 		return parent::insertOrIgnore();
 		}
-
-	public function insertOrUpdate() : int | bool
-		{
-		return $this->insertOrIgnore();
-		}
-
-	public function save() : int | bool
-		{
-		return $this->insertOrIgnore();
-		}
 	}

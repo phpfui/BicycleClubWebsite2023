@@ -148,6 +148,7 @@ class MainMenu extends \App\UI\MainMenu
 			$this->addSub($menu, '/Leaders/show', 'Show Ride Leaders');
 			$this->addSub($menu, '/Leaders/unreported', 'My Unreported Leads');
 			$this->addSub($menu, '/Leaders/allUnreported', 'All Unreported Leads');
+			$this->addSub($menu, '/Leaders/assistantLeadsFor', 'Assistant Leads');
 			$this->addSub($menu, '/Leaders/assistantLeads', 'My Assistant Leads');
 			$this->addSub($menu, '/Leaders/minorWaiver', 'Minor Waiver');
 			$this->addSub($menu, '/Leaders/nonMemberWaiver', 'Non Member Waiver');

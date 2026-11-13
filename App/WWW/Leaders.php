@@ -102,7 +102,7 @@ class Leaders extends \App\View\WWWBase implements \PHPFUI\Interfaces\NanoClass
 
 	public function assistantLeadsFor(\App\Record\Member $member = new \App\Record\Member(), int $year = 0) : void
 		{
-		if ($this->page->addHeader('Assistant Leads'))
+		if ($this->page->addHeader('Assistant Leaders'))
 			{
 			$buttonText = 'Display Assistant Leads';
 

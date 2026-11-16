@@ -354,7 +354,7 @@ class RideWithGPS extends \App\Model\GPS
 		if (200 != $status)
 			{
 			// 404 = not found, 403 = not public, so just delete it
-			if ($status >= 400 && $status < 500)
+			if ($status >= 400 && $status < 500 && $status != 404)
 				{
 				\App\Tools\Logger::get()->debug("RWGPS returned {$status} for {$url}");
 				new \App\Table\RideRWGPS()->changeRWGPSId($rwgps, null);

@@ -24,7 +24,7 @@ interface LoggerInterface
      *
      * @param mixed[] $context
      */
-    public function emergency(string|\Stringable $message, array $context = []): void;
+    public function emergency(string|\Stringable $message, array $context = []);
 
     /**
      * Action must be taken immediately.
@@ -34,7 +34,7 @@ interface LoggerInterface
      *
      * @param mixed[] $context
      */
-    public function alert(string|\Stringable $message, array $context = []): void;
+    public function alert(string|\Stringable $message, array $context = []);
 
     /**
      * Critical conditions.
@@ -43,7 +43,7 @@ interface LoggerInterface
      *
      * @param mixed[] $context
      */
-    public function critical(string|\Stringable $message, array $context = []): void;
+    public function critical(string|\Stringable $message, array $context = []);
 
     /**
      * Runtime errors that do not require immediate action but should typically
@@ -51,7 +51,7 @@ interface LoggerInterface
      *
      * @param mixed[] $context
      */
-    public function error(string|\Stringable $message, array $context = []): void;
+    public function error(string|\Stringable $message, array $context = []);
 
     /**
      * Exceptional occurrences that are not errors.
@@ -61,14 +61,14 @@ interface LoggerInterface
      *
      * @param mixed[] $context
      */
-    public function warning(string|\Stringable $message, array $context = []): void;
+    public function warning(string|\Stringable $message, array $context = []);
 
     /**
      * Normal but significant events.
      *
      * @param mixed[] $context
      */
-    public function notice(string|\Stringable $message, array $context = []): void;
+    public function notice(string|\Stringable $message, array $context = []);
 
     /**
      * Interesting events.
@@ -77,14 +77,14 @@ interface LoggerInterface
      *
      * @param mixed[] $context
      */
-    public function info(string|\Stringable $message, array $context = []): void;
+    public function info(string|\Stringable $message, array $context = []);
 
     /**
      * Detailed debug information.
      *
      * @param mixed[] $context
      */
-    public function debug(string|\Stringable $message, array $context = []): void;
+    public function debug(string|\Stringable $message, array $context = []);
 
     /**
      * Logs with an arbitrary level.
@@ -94,5 +94,5 @@ interface LoggerInterface
      *
      * @throws \Psr\Log\InvalidArgumentException
      */
-    public function log($level, string|\Stringable $message, array $context = []): void;
+    public function log($level, string|\Stringable $message, array $context = []);
 }

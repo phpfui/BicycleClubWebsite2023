@@ -52,6 +52,10 @@ class DatePart extends ContainerPart
             $dateToken = $dateToken . 'C';
         }
 
+        // The weekday is redundant: a non-English one (e.g. "Fr,") makes
+        // DateTime throw, and a wrong English one shifts the date forward.
+        $dateToken = \preg_replace('#^\p{L}+,\s*#u', '', $dateToken) ?? $dateToken;
+
         try {
             $this->date = new DateTime($dateToken);
         } catch (Exception $e) {

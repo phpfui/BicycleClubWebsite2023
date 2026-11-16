@@ -6,6 +6,14 @@ namespace Brick\VarExporter;
 
 use Brick\VarExporter\Internal\GenericExporter;
 
+use function array_map;
+use function array_shift;
+use function count;
+use function implode;
+use function str_repeat;
+
+use const PHP_EOL;
+
 final class VarExporter
 {
     /**
@@ -50,7 +58,7 @@ final class VarExporter
     /**
      * Formats lists (0-based numeric arrays) containing only scalar values on a single line.
      * Types considered scalar here are int, bool, float, string and null.
-     * This option is a subset of INLINE_ARRAY, and has no effect when INLINE_ARRAY is used.
+     * This option is a subset of INLINE_ARRAY and INLINE_LITERAL_LIST and has no effect when either is used.
      */
     public const INLINE_SCALAR_LIST = 1 << 7;
 
@@ -75,14 +83,21 @@ final class VarExporter
     public const INLINE_ARRAY = 1 << 11;
 
     /**
-     * @param mixed $var       The variable to export.
-     * @param int   $options   A bitmask of options. Possible values are `VarExporter::*` constants.
-     *                         Combine multiple options with a bitwise OR `|` operator.
-     * @param int $indentLevel The base output indentation level.
+     * Formats lists (0-based numeric arrays) containing only literal values on a single line.
+     * Values considered literal are: int, float, string, bool, null, and enum values.
+     * This option is a subset of INLINE_ARRAY and has no effect when INLINE_ARRAY is used.
+     */
+    public const INLINE_LITERAL_LIST = 1 << 12;
+
+    /**
+     * @param mixed $var         The variable to export.
+     * @param int   $options     A bitmask of options. Possible values are `VarExporter::*` constants.
+     *                           Combine multiple options with a bitwise OR `|` operator.
+     * @param int   $indentLevel The base output indentation level.
      *
      * @throws ExportException
      */
-    public static function export(mixed $var, int $options = 0, int $indentLevel = 0) : string
+    public static function export(mixed $var, int $options = 0, int $indentLevel = 0): string
     {
         $exporter = new GenericExporter($options, $indentLevel);
         $lines = $exporter->export($var, [], []);
@@ -92,7 +107,7 @@ final class VarExporter
         } else {
             $firstLine = array_shift($lines);
             $lines = array_map(
-                fn($line) => str_repeat('    ', $indentLevel) . $line,
+                fn ($line) => str_repeat('    ', $indentLevel) . $line,
                 $lines,
             );
 

@@ -29,29 +29,21 @@ class Missing extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 			}
 		$message = $_SERVER['REQUEST_URI'] . ' is MISSING!';
 
-		$email = new \App\Tools\EMail();
-		$email->setHtml();
-		$email->setSubject('Missing errror on ' . $_SERVER['SERVER_NAME']);
-		$webMaster = $this->settingTable->value('webMaster') ?: 'webmaster@' . \emailServerName();
-		$email->setFrom($webMaster, 'Web Master');
-		$email->setTo($webMaster, 'Web Master');
-
+		\App\Tools\Logger::get()->debug($_POST);
 		if (isset($_POST['message']))
 			{
 			$this->addPageContent(new \PHPFUI\Header('Web Master Notified'));
 			$this->addPageContent('Thanks for your feedback.');
-			$message . '<p>' . \str_replace("\n", '<br>', (string)$_POST['message']) . "<br><br>{$output}";
-			$email->setBody($message);
-			$email->send();
+			$message .= "\n{$_POST['message']}\n{$output}";
+			\App\Tools\Logger::get()->debug($message);
 			$this->redirect('/', '', 2);
 			}
 		else
 			{
 			if (\strpos($output, 'Exception:'))
 				{
-				$body = $message . '<p>' . $output;
-				$email->setBody($body);
-				$email->send();
+				$message .= "\n" . $output;
+				\App\Tools\Logger::get()->debug($message);
 				}
 			\http_response_code(404);
 			$this->addPageContent(new \PHPFUI\Header($message));
@@ -60,7 +52,7 @@ class Missing extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 			$this->addPageContent("<p>Anyway, look around and see if you can find it.  If not, contact the web master with your question.  And we'll lock it up better next time.<p>");
 			$webmasterButton = new \PHPFUI\Button('Report this missing link to the web master');
 			$modal = new \PHPFUI\Reveal($this, $webmasterButton);
-			$emailButton = new \PHPFUI\Submit('Email Web Master');
+			$emailButton = new \PHPFUI\Submit('Notify Web Master');
 			$form = new \PHPFUI\Form($this);
 			$form->setAreYouSure(false);
 			$fieldSet = new \PHPFUI\FieldSet($_SERVER['REQUEST_URI'] . ' was not found');

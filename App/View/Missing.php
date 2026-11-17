@@ -29,7 +29,6 @@ class Missing extends \App\View\Page implements \PHPFUI\Interfaces\NanoClass
 			}
 		$message = $_SERVER['REQUEST_URI'] . ' is MISSING!';
 
-		\App\Tools\Logger::get()->debug($_POST);
 		if (isset($_POST['message']))
 			{
 			$this->addPageContent(new \PHPFUI\Header('Web Master Notified'));

@@ -6,6 +6,10 @@ class Git extends \PHPFUI\InstaDoc\Section
 	{
 	public function generate(\PHPFUI\InstaDoc\PageInterface $page, string $fullClassPath) : \PHPFUI\Container
 		{
+		if (str_starts_with($fullClassPath, '../'))
+			{
+			$fullClassPath = str_replace('../', '', $fullClassPath);
+			}
 		$container = new \PHPFUI\Container();
 
 		$gitPage = (int)$this->controller->getParameter(\PHPFUI\InstaDoc\Controller::GIT_ONPAGE, '0');

@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -17,12 +17,12 @@ namespace Gitonomy\Git;
  *
  * @author Grégoire Pineau <lyrixx@lyrixx.info>
  */
-final class TreeEntry
+final readonly class TreeEntry
 {
     public function __construct(
-        private readonly string $name,
-        private readonly string $mode,
-        private readonly Blob|Tree|Submodule $object,
+        private string $name,
+        private string $mode,
+        private Blob|Tree|Submodule $object,
     ) {
     }
 

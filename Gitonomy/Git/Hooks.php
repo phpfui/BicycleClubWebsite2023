@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -12,30 +12,20 @@
 
 namespace Gitonomy\Git;
 
+use Gitonomy\Git\Driver\RepositoryPaths;
 use Gitonomy\Git\Exception\InvalidArgumentException;
-use Gitonomy\Git\Exception\LogicException;
 use Gitonomy\Git\Exception\RuntimeException;
 
 /**
  * Hooks collection, aggregated by repository.
  *
  * @author Alexandre Salomé <alexandre.salome@gmail.com>
- *
- * @final since gitonomy/gitlib 1.7
  */
-class Hooks
+final readonly class Hooks
 {
-    /**
-     * @var \Gitonomy\Git\Repository
-     */
-    protected $repository;
-
-    /**
-     * @var Repository
-     */
-    public function __construct(Repository $repository)
-    {
-        $this->repository = $repository;
+    public function __construct(
+        private Repository $repository,
+    ) {
     }
 
     /**
@@ -43,11 +33,9 @@ class Hooks
      *
      * @param string $name Name of the hook
      *
-     * @throws InvalidArgumentException The name leads out of the hooks directory
-     *
-     * @return bool
+     * @throws InvalidArgumentException The name isn't the one of a file of the hooks directory
      */
-    public function has($name)
+    public function has(string $name): bool
     {
         $path = $this->getPath($name);
 
@@ -61,17 +49,23 @@ class Hooks
      *
      * @param string $name Name of the hook
      *
-     * @throws InvalidArgumentException Hook does not exist, or the name leads out of the hooks directory
-     *
      * @return string Content of the hook
+     *
+     * @throws InvalidArgumentException The hook does not exist, or the name isn't valid
+     * @throws RuntimeException         The hook can't be read
      */
-    public function get($name)
+    public function get(string $name): string
     {
-        if (!$this->has($name) || !file_exists($this->getPath($name))) {
-            throw new InvalidArgumentException(sprintf('Hook named "%s" is not present', $name));
+        if (!$this->has($name)) {
+            throw new InvalidArgumentException(\sprintf('The hook "%s" does not exist.', $name));
         }
 
-        return file_get_contents($this->getPath($name));
+        $content = @file_get_contents($this->getPath($name));
+        if (false === $content) {
+            throw new RuntimeException(\sprintf('Unable to read the hook "%s".', $name));
+        }
+
+        return $content;
     }
 
     /**
@@ -80,19 +74,15 @@ class Hooks
      * @param string $name Name of the hook to insert
      * @param string $file Target of symlink
      *
-     * @throws InvalidArgumentException The name leads out of the hooks directory
-     * @throws LogicException           Hook is already present
-     * @throws RuntimeException         Error on symlink creation
+     * @throws InvalidArgumentException The name isn't the one of a file of the hooks directory
+     * @throws RuntimeException         The hook exists already, or can't be created
      */
-    public function setSymlink($name, $file)
+    public function setSymlink(string $name, string $file): void
     {
-        if ($this->has($name)) {
-            throw new LogicException(sprintf('A hook "%s" is already defined', $name));
-        }
+        $path = $this->createPath($name);
 
-        $path = $this->getPath($name);
-        if (false === symlink($file, $path)) {
-            throw new RuntimeException(sprintf('Unable to create hook "%s" (%s)', $name, $path));
+        if (false === @symlink($file, $path)) {
+            throw new RuntimeException(\sprintf('Unable to create the hook "%s" (%s).', $name, $path));
         }
     }
 
@@ -102,18 +92,16 @@ class Hooks
      * @param string $name    Name of the hook
      * @param string $content Content of the hook
      *
-     * @throws InvalidArgumentException The name leads out of the hooks directory
-     * @throws LogicException           The hook is already defined
+     * @throws InvalidArgumentException The name isn't the one of a file of the hooks directory
+     * @throws RuntimeException         The hook exists already, or can't be created
      */
-    public function set($name, $content)
+    public function set(string $name, string $content): void
     {
-        if ($this->has($name)) {
-            throw new LogicException(sprintf('A hook "%s" is already defined', $name));
-        }
+        $path = $this->createPath($name);
 
-        $path = $this->getPath($name);
-        file_put_contents($path, $content);
-        chmod($path, 0777);
+        if (false === @file_put_contents($path, $content) || false === @chmod($path, 0o700)) {
+            throw new RuntimeException(\sprintf('Unable to create the hook "%s" (%s).', $name, $path));
+        }
     }
 
     /**
@@ -121,32 +109,59 @@ class Hooks
      *
      * @param string $name Name of the hook
      *
-     * @throws InvalidArgumentException The name leads out of the hooks directory
-     * @throws LogicException           The hook is not present
+     * @throws InvalidArgumentException The hook doesn't exist, or the name isn't the one of a file of the hooks directory
+     * @throws RuntimeException         The hook can't be removed
      */
-    public function remove($name)
+    public function remove(string $name): void
     {
+        // Like get().
         if (!$this->has($name)) {
-            throw new LogicException(sprintf('The hook "%s" was not found', $name));
+            throw new InvalidArgumentException(\sprintf('The hook "%s" does not exist.', $name));
         }
 
-        unlink($this->getPath($name));
+        if (false === @unlink($this->getPath($name))) {
+            throw new RuntimeException(\sprintf('Unable to remove the hook "%s".', $name));
+        }
     }
 
     /**
-     * Unlike 2.0, 1.x accepts a name in a subdirectory, like "post-receive.d/notify",
-     * or starting with a dot.
-     *
-     * @throws InvalidArgumentException The name leads out of the hooks directory
-     *
-     * @return string
+     * @throws RuntimeException The hook exists already, or the repository has no hooks directory
      */
-    protected function getPath($name)
+    private function createPath(string $name): string
     {
-        if (1 === preg_match('#(?:^|[/\\\\])\.\.(?:[/\\\\]|$)#', (string) $name)) {
-            throw new InvalidArgumentException(sprintf('The name of the hook "%s" leads out of the hooks directory.', $name));
+        if ($this->has($name)) {
+            throw new RuntimeException(\sprintf('The hook "%s" exists already.', $name));
         }
 
-        return $this->repository->getGitDir().'/hooks/'.$name;
+        // A repository created with an empty template has none.
+        $directory = $this->getDirectory();
+        if (!is_dir($directory) && !@mkdir($directory) && !is_dir($directory)) {
+            throw new RuntimeException(\sprintf('Unable to create the hooks directory "%s".', $directory));
+        }
+
+        return $this->getPath($name);
+    }
+
+    /**
+     * @throws InvalidArgumentException The name isn't the one of a file of the hooks directory
+     */
+    private function getPath(string $name): string
+    {
+        // "../config" would be the configuration of the repository. A name may
+        // hold a dot, but not start with one: git for Windows runs "pre-commit.exe".
+        if (1 !== preg_match('/^[a-zA-Z0-9_-][a-zA-Z0-9._-]*$/D', $name)) {
+            throw new InvalidArgumentException(\sprintf('"%s" is not a valid hook name: it must be the name of a file of the hooks directory, like "pre-commit".', addcslashes($name, "\0")));
+        }
+
+        return $this->getDirectory().'/'.$name;
+    }
+
+    /**
+     * @throws RuntimeException The "commondir" file of a linked worktree can't be read
+     */
+    private function getDirectory(): string
+    {
+        // Like git, a linked worktree runs the hooks of the repository it belongs to.
+        return RepositoryPaths::commonDir($this->repository->getGitDir()).'/hooks';
     }
 }

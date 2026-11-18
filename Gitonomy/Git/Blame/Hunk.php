@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -19,7 +19,7 @@ use Gitonomy\Git\Commit;
  *
  * @author Grégoire Pineau <lyrixx@lyrixx.info>
  */
-final class Hunk
+final readonly class Hunk
 {
     /**
      * @param array<int, Line> $lines By number

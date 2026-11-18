@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -16,19 +16,11 @@ namespace Gitonomy\Git;
  * A submodule in a tree: the commit of another repository it points to.
  *
  * @author Grégoire Pineau <lyrixx@lyrixx.info>
- *
- * @final
  */
-class Submodule
+final readonly class Submodule
 {
-    /**
-     * @var string
-     */
-    private $hash;
-
-    public function __construct(string $hash)
+    public function __construct(private string $hash)
     {
-        $this->hash = $hash;
     }
 
     /**

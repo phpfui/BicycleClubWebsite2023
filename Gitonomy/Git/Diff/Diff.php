@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -12,74 +12,53 @@
 
 namespace Gitonomy\Git\Diff;
 
+use Gitonomy\Git\Driver\Data\DiffData;
+use Gitonomy\Git\Driver\Data\DiffFileData;
+use Gitonomy\Git\Exception\InvalidArgumentException;
+use Gitonomy\Git\Exception\RuntimeException;
 use Gitonomy\Git\Parser\DiffParser;
 use Gitonomy\Git\Repository;
-use Gitonomy\Git\Util\LegacyOverride;
 
 /**
  * Representation of a diff.
  *
  * @author Alexandre Salomé <alexandre.salome@gmail.com>
  *
- * @final since gitonomy/gitlib 1.7
+ * @phpstan-import-type FileArray from File
  */
-class Diff
+final readonly class Diff
 {
     /**
-     * @var File[]
+     * @param File[] $files
      */
-    protected $files;
-
-    /**
-     * @var string
-     */
-    protected $rawDiff;
-
-    /**
-     * Constructs a new diff for a given revision.
-     *
-     * @param array  $files   The files
-     * @param string $rawDiff The raw diff
-     */
-    public function __construct(array $files, $rawDiff)
-    {
-        $this->files = $files;
-        $this->rawDiff = $rawDiff;
+    public function __construct(
+        private array $files,
+        private string $rawDiff,
+    ) {
     }
 
     /**
-     * Parses the output of ``git diff --raw --patch``.
+     * Parses the output of ``git diff --raw --patch``, ``-z`` or not.
      *
      * @param Repository|null $repository The repository to read the blobs of the files from
      *
-     * @return Diff
-     *
-     * @psalm-variadic The arguments this method gets with func_get_arg(), commented out in its signature
+     * @throws InvalidArgumentException The diff has no raw information
+     * @throws RuntimeException         The diff holds what the parser doesn't know, like the log of a submodule
      */
-    public static function parse($rawDiff /* , ?Repository $repository = null */)
+    public static function parse(string $rawDiff, ?Repository $repository = null): self
     {
-        // A second argument, without breaking the classes overriding this method.
-        $repository = 1 < \func_num_args() ? func_get_arg(1) : null;
-
         $parser = new DiffParser();
         $parser->parse($rawDiff);
 
-        $diff = new self($parser->files, $rawDiff);
-        if (null !== $repository) {
-            $diff->attachRepository($repository);
-        }
-
-        return $diff;
+        return new self(array_map(static fn (DiffFileData $file): File => File::fromData($file, $repository), $parser->files), $rawDiff);
     }
 
     /**
-     * @deprecated since gitonomy/gitlib 1.7, the diffs gitlib returns have their repository already
+     * @internal
      */
-    public function setRepository(Repository $repository)
+    public static function fromData(DiffData $data, Repository $repository): self
     {
-        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, the diffs gitlib returns have their repository already.', __METHOD__);
-
-        $this->attachRepository($repository);
+        return new self(array_map(static fn (DiffFileData $file): File => File::fromData($file, $repository), $data->files), $data->rawDiff);
     }
 
     /**
@@ -87,17 +66,15 @@ class Diff
      *
      * @return File[] An array of Diff\File objects
      */
-    public function getFiles()
+    public function getFiles(): array
     {
         return $this->files;
     }
 
     /**
      * Returns the raw diff.
-     *
-     * @return string The raw diff
      */
-    public function getRawDiff()
+    public function getRawDiff(): string
     {
         return $this->rawDiff;
     }
@@ -105,61 +82,23 @@ class Diff
     /**
      * Export a diff as array.
      *
-     * @return array The array
+     * @return array{rawDiff: string, files: list<FileArray>}
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'rawDiff' => $this->rawDiff,
-            'files'   => array_map(
-                function (File $file) {
-                    return $file->toArray();
-                },
-                $this->files
-            ),
+            'files' => array_map(static fn (File $file): array => $file->toArray(), array_values($this->files)),
         ];
     }
 
     /**
      * Create a new instance of Diff from an array.
      *
-     * @param array           $array      The array
-     * @param Repository|null $repository The repository to read the blobs of the files from
-     *
-     * @return Diff The new instance
-     *
-     * @psalm-variadic The arguments this method gets with func_get_arg(), commented out in its signature
+     * @param array{rawDiff: string, files: list<FileArray>} $array
      */
-    public static function fromArray(array $array /* , ?Repository $repository = null */)
+    public static function fromArray(array $array, ?Repository $repository = null): self
     {
-        // A second argument, without breaking the classes overriding this method.
-        $repository = 1 < \func_num_args() ? func_get_arg(1) : null;
-
-        return new static(
-            array_map(
-                function ($array) use ($repository) {
-                    return File::fromArray($array, $repository);
-                },
-                $array['files']
-            ),
-            $array['rawDiff']
-        );
-    }
-
-    private function attachRepository(Repository $repository): void
-    {
-        foreach ($this->files as $file) {
-            // Like in 1.6, a subclass overriding File::setRepository() gets the repository.
-            if (LegacyOverride::isOverridden($file, File::class, 'setRepository')) {
-                $file->setRepository($repository);
-
-                continue;
-            }
-
-            // Without the deprecation of File::setRepository().
-            \Closure::bind(static function () use ($file, $repository) {
-                $file->repository = $repository;
-            }, null, File::class)();
-        }
+        return new self(array_map(static fn (array $file): File => File::fromArray($file, $repository), $array['files']), $array['rawDiff']);
     }
 }

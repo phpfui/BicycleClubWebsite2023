@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -12,29 +12,44 @@
 
 namespace Gitonomy\Git\Reference;
 
-use Gitonomy\Git\Commit;
-use Gitonomy\Git\Exception\ProcessException;
+use Gitonomy\Git\Driver\Data\TagData;
 use Gitonomy\Git\Exception\RuntimeException;
-use Gitonomy\Git\Parser\ReferenceParser;
-use Gitonomy\Git\Parser\TagParser;
 use Gitonomy\Git\Reference;
+use Gitonomy\Git\Repository;
+use Gitonomy\Git\Util\Message;
 
 /**
  * Representation of a tag reference.
  *
  * @author Alexandre Salomé <alexandre.salome@gmail.com>
  * @author Bruce Wells <brucekwells@gmail.com>
- *
- * @final since gitonomy/gitlib 1.7
  */
-class Tag extends Reference
+final class Tag extends Reference
 {
-    protected $data;
+    /**
+     * The annotated tag object, read through the driver when needed.
+     */
+    private ?TagData $data = null;
 
-    public function getName()
+    /**
+     * @param string      $commitHash What the tag points to, through its annotated tag object
+     * @param string|null $tagHash    The annotated tag object, null for a lightweight tag
+     *
+     * @internal Get it from Repository::getReferences(), which gitlib reads again after its writes
+     */
+    public function __construct(
+        Repository $repository,
+        string $fullname,
+        string $commitHash,
+        private readonly ?string $tagHash = null,
+    ) {
+        parent::__construct($repository, $fullname, $commitHash);
+    }
+
+    public function getName(): string
     {
         if (!preg_match('#^refs/tags/(.*)$#', $this->revision, $vars)) {
-            throw new RuntimeException(sprintf('Cannot extract tag name from "%s"', $this->revision));
+            throw new RuntimeException(\sprintf('Cannot extract tag name from "%s".', $this->revision));
         }
 
         return $vars[1];
@@ -42,177 +57,83 @@ class Tag extends Reference
 
     /**
      * Check if tag is annotated.
-     *
-     * @return bool
      */
-    public function isAnnotated()
+    public function isAnnotated(): bool
     {
-        try {
-            $this->repository->run('cat-file', ['tag', $this->revision]);
-        } catch (ProcessException $e) {
-            return false; // Is not an annotated tag
+        return null !== $this->tagHash;
+    }
+
+    /**
+     * @return string|null The name of the tagger, null for a lightweight tag or a tag without tagger
+     */
+    public function getTaggerName(): ?string
+    {
+        return $this->data()?->taggerName;
+    }
+
+    /**
+     * @return string|null The email of the tagger, null for a lightweight tag or a tag without tagger
+     */
+    public function getTaggerEmail(): ?string
+    {
+        return $this->data()?->taggerEmail;
+    }
+
+    /**
+     * @return \DateTimeImmutable|null The tagging date, at the UTC offset of the tagger, like git log shows it; null for a lightweight tag or a tag without tagger
+     */
+    public function getTaggerDate(): ?\DateTimeImmutable
+    {
+        return $this->data()?->taggerDate;
+    }
+
+    /**
+     * @return string|null The message of the annotated tag, without its signature; null for a lightweight tag
+     */
+    public function getMessage(): ?string
+    {
+        return $this->data()?->message;
+    }
+
+    /**
+     * @return string|null The first paragraph of the message, on one line, null for a lightweight tag
+     */
+    public function getSubjectMessage(): ?string
+    {
+        $message = $this->getMessage();
+
+        return null === $message ? null : Message::subject($message);
+    }
+
+    /**
+     * @return string|null What follows the subject and its empty lines, null for a lightweight tag
+     */
+    public function getBodyMessage(): ?string
+    {
+        $message = $this->getMessage();
+
+        return null === $message ? null : Message::body($message);
+    }
+
+    /**
+     * @return string|null The signature (GPG, X.509 or SSH) between its armor lines, null for an unsigned or lightweight tag
+     */
+    public function getGpgSignature(): ?string
+    {
+        return $this->data()?->gpgSignature;
+    }
+
+    public function isSigned(): bool
+    {
+        return null !== $this->getGpgSignature();
+    }
+
+    private function data(): ?TagData
+    {
+        if (null === $this->tagHash) {
+            return null;
         }
 
-        return true;
-    }
-
-    /**
-     * Returns the actual commit associated with the tag, and not the hash of the tag if annotated.
-     *
-     * @return Commit
-     */
-    public function getCommit()
-    {
-        if ($this->isAnnotated()) {
-            try {
-                $output = $this->repository->run('show-ref', ['-d', '--tag', $this->revision]);
-                $parser = new ReferenceParser();
-                $parser->parse($output);
-
-                foreach ($parser->references as list($row)) {
-                    $commitHash = $row;
-                }
-
-                return $this->repository->getCommit($commitHash);
-            } catch (ProcessException $e) {
-                // ignore the exception
-            }
-        }
-
-        return parent::getCommit();
-    }
-
-    /**
-     * Returns the tagger name.
-     *
-     * @return string A name
-     */
-    public function getTaggerName()
-    {
-        return $this->getData('taggerName');
-    }
-
-    /**
-     * Returns the comitter email.
-     *
-     * @return string An email
-     */
-    public function getTaggerEmail()
-    {
-        return $this->getData('taggerEmail');
-    }
-
-    /**
-     * Returns the authoring date.
-     *
-     * @return \DateTime A time object
-     */
-    public function getTaggerDate()
-    {
-        return $this->getData('taggerDate');
-    }
-
-    /**
-     * Returns the message of the commit.
-     *
-     * @return string A tag message
-     */
-    public function getMessage()
-    {
-        return $this->getData('message');
-    }
-
-    /**
-     * Returns the subject message (the first line).
-     *
-     * @return string The subject message
-     */
-    public function getSubjectMessage()
-    {
-        return $this->getData('subjectMessage');
-    }
-
-    /**
-     * Return the body message.
-     *
-     * @return string The body message
-     */
-    public function getBodyMessage()
-    {
-        return $this->getData('bodyMessage');
-    }
-
-    /**
-     * Return the GPG signature.
-     *
-     * @return string The GPG signature
-     */
-    public function getGPGSignature()
-    {
-        return $this->getData('gpgSignature');
-    }
-
-    /**
-     * Check whether tag is signed.
-     *
-     * @return bool
-     */
-    public function isSigned()
-    {
-        try {
-            $this->getGPGSignature();
-
-            return true;
-        } catch (\InvalidArgumentException $e) {
-            return false;
-        }
-    }
-
-    private function getData($name)
-    {
-        if (!$this->isAnnotated()) {
-            return false;
-        }
-
-        if (isset($this->data[$name])) {
-            return $this->data[$name];
-        }
-
-        if ($name === 'subjectMessage') {
-            $lines = explode("\n", $this->getData('message'));
-            $this->data['subjectMessage'] = reset($lines);
-
-            return $this->data['subjectMessage'];
-        }
-
-        if ($name === 'bodyMessage') {
-            $message = $this->getData('message');
-
-            $lines = explode("\n", $message);
-
-            array_shift($lines);
-            array_pop($lines);
-
-            $this->data['bodyMessage'] = implode("\n", $lines);
-
-            return $this->data['bodyMessage'];
-        }
-
-        $parser = new TagParser();
-        $result = $this->repository->run('cat-file', ['tag', $this->revision]);
-
-        $parser->parse($result);
-
-        $this->data['taggerName'] = $parser->taggerName;
-        $this->data['taggerEmail'] = $parser->taggerEmail;
-        $this->data['taggerDate'] = $parser->taggerDate;
-        $this->data['message'] = $parser->message;
-        $this->data['gpgSignature'] = $parser->gpgSignature;
-
-        if (!isset($this->data[$name])) {
-            throw new \InvalidArgumentException(sprintf('No data named "%s" in Tag.', $name));
-        }
-
-        return $this->data[$name];
+        return $this->data ??= $this->repository->getRepositoryDriver()->getTagData($this->tagHash);
     }
 }

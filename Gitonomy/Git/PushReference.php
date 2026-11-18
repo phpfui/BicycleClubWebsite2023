@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -13,57 +13,33 @@
 namespace Gitonomy\Git;
 
 use Gitonomy\Git\Exception\LogicException;
-use Gitonomy\Git\Util\LegacyOverride;
 
 /**
  * Push reference contains a commit interval. This object aggregates methods
  * for this interval.
  *
  * @author Julien DIDIER <genzo.wm@gmail.com>
- *
- * @final since gitonomy/gitlib 1.7
  */
-class PushReference
+final class PushReference
 {
-    const ZERO = '0000000000000000000000000000000000000000';
+    public const string ZERO = '0000000000000000000000000000000000000000';
+
+    private ?bool $isForce = null;
 
     /**
-     * @var Repository
+     * @param string $fullname The full name of the pushed reference
+     * @param string $before   Its commit before the push, ZERO for a creation
+     * @param string $after    Its commit after the push, ZERO for a deletion
      */
-    protected $repository;
-    /**
-     * @var string
-     */
-    protected $reference;
-
-    /**
-     * @var string
-     */
-    protected $before;
-
-    /**
-     * @var string
-     */
-    protected $after;
-
-    /**
-     * @var bool
-     */
-    protected $isForce;
-
-    public function __construct(Repository $repository, $reference, $before, $after)
-    {
-        $this->repository = $repository;
-        $this->reference = $reference;
-        $this->before = $before;
-        $this->after = $after;
-        $this->isForce = $this->getForce();
+    public function __construct(
+        private readonly Repository $repository,
+        private readonly string $fullname,
+        private readonly string $before,
+        private readonly string $after,
+    ) {
     }
 
-    /**
-     * @return Repository
-     */
-    public function getRepository()
+    public function getRepository(): Repository
     {
         return $this->repository;
     }
@@ -73,49 +49,25 @@ class PushReference
      */
     public function getFullname(): string
     {
-        return $this->reference;
+        return $this->fullname;
     }
 
-    /**
-     * @return string
-     *
-     * @deprecated since gitonomy/gitlib 1.7, use getFullname() instead
-     */
-    public function getReference()
-    {
-        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getFullname()" instead.', __METHOD__);
-
-        return $this->reference;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBefore()
+    public function getBefore(): string
     {
         return $this->before;
     }
 
-    /**
-     * @return string
-     */
-    public function getAfter()
+    public function getAfter(): string
     {
         return $this->after;
     }
 
     /**
-     * @return Log
+     * @param string[] $excludes
      */
-    public function getLog($excludes = [])
+    public function getLog(array $excludes = []): Log
     {
-        return $this->repository->getLog(array_merge(
-            // Like in 1.6, a subclass overriding getRevision() gives the range.
-            [LegacyOverride::isOverridden($this, self::class, 'getRevision') ? $this->getRevision() : $this->getRange()],
-            array_map(function ($e) {
-                return '^'.$e;
-            }, $excludes)
-        ));
+        return $this->repository->getLog([$this->getRange(), ...array_map(static fn (string $exclude): string => '^'.$exclude, $excludes)]);
     }
 
     /**
@@ -125,27 +77,15 @@ class PushReference
      */
     public function getRange(): string
     {
-        if ($this->deletes()) {
-            throw new LogicException('No revision for deletion');
+        if ($this->isDeletion()) {
+            throw new LogicException('A deletion pushes no commit.');
         }
 
-        if ($this->creates()) {
+        if ($this->isCreation()) {
             return $this->getAfter();
         }
 
         return $this->getBefore().'..'.$this->getAfter();
-    }
-
-    /**
-     * @return string
-     *
-     * @deprecated since gitonomy/gitlib 1.7, use getRange() instead
-     */
-    public function getRevision()
-    {
-        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getRange()" instead.', __METHOD__);
-
-        return $this->getRange();
     }
 
     /**
@@ -157,18 +97,6 @@ class PushReference
     }
 
     /**
-     * @return bool
-     *
-     * @deprecated since gitonomy/gitlib 1.7, use isCreation() instead
-     */
-    public function isCreate()
-    {
-        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "isCreation()" instead.', __METHOD__);
-
-        return $this->isCreation();
-    }
-
-    /**
      * @return bool Whether the push deletes the reference, like File::isDeletion() for a file
      */
     public function isDeletion(): bool
@@ -176,72 +104,28 @@ class PushReference
         return $this->isZero($this->after);
     }
 
-    /**
-     * @return bool
-     *
-     * @deprecated since gitonomy/gitlib 1.7, use isDeletion() instead
-     */
-    public function isDelete()
+    public function isForce(): bool
     {
-        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "isDeletion()" instead.', __METHOD__);
-
-        return $this->isDeletion();
+        return $this->isForce ??= $this->getForce();
     }
 
-    /**
-     * @return bool
-     */
-    public function isForce()
+    public function isFastForward(): bool
     {
-        return $this->isForce;
+        return !$this->isDeletion() && !$this->isCreation() && !$this->isForce();
     }
 
-    /**
-     * @return bool
-     */
-    public function isFastForward()
+    private function isZero(string $hash): bool
     {
-        return !$this->deletes() && !$this->creates() && !$this->isForce();
+        return self::ZERO === $hash;
     }
 
-    /**
-     * @return bool
-     */
-    protected function isZero($reference)
+    private function getForce(): bool
     {
-        return self::ZERO === $reference;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function getForce()
-    {
-        if ($this->deletes() || $this->creates()) {
+        if ($this->isDeletion() || $this->isCreation()) {
             return false;
         }
 
-        $result = $this->repository->run('merge-base', [
-            $this->before,
-            $this->after,
-        ]);
-
-        return $this->before !== trim($result);
-    }
-
-    /**
-     * Like in 1.6, a subclass overriding isCreate() tells whether the push creates the reference.
-     */
-    private function creates(): bool
-    {
-        return LegacyOverride::isOverridden($this, self::class, 'isCreate') ? $this->isCreate() : $this->isCreation();
-    }
-
-    /**
-     * Like in 1.6, a subclass overriding isDelete() tells whether the push deletes the reference.
-     */
-    private function deletes(): bool
-    {
-        return LegacyOverride::isOverridden($this, self::class, 'isDelete') ? $this->isDelete() : $this->isDeletion();
+        // Without a common history either, it is a force update.
+        return !\in_array($this->before, $this->repository->getRepositoryDriver()->getMergeBases($this->before, $this->after), true);
     }
 }

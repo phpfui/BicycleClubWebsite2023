@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -16,33 +16,22 @@ use Gitonomy\Git\Commit;
 
 /**
  * @author Alexandre Salomé <alexandre.salome@gmail.com>
- *
- * @final since gitonomy/gitlib 1.7
  */
-class Line
+final readonly class Line
 {
     /**
-     * @var Commit
+     * @param int $number         The number of the line in the blamed file
+     * @param int $originalNumber The number of the line in the file of $commit
      */
-    protected $commit;
-    protected $sourceLine;
-    protected $targetLine;
-    protected $blockLine;
-    protected $content;
-
-    /**
-     * Instanciates a new Line object.
-     */
-    public function __construct(Commit $commit, $sourceLine, $targetLine, $blockLine, $content)
-    {
-        $this->commit = $commit;
-        $this->sourceLine = $sourceLine;
-        $this->targetLine = $targetLine;
-        $this->blockLine = $blockLine;
-        $this->content = $content;
+    public function __construct(
+        private Commit $commit,
+        private int $number,
+        private int $originalNumber,
+        private string $content,
+    ) {
     }
 
-    public function getContent()
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -52,7 +41,7 @@ class Line
      */
     public function getNumber(): int
     {
-        return (int) $this->targetLine;
+        return $this->number;
     }
 
     /**
@@ -60,20 +49,13 @@ class Line
      */
     public function getOriginalNumber(): int
     {
-        return (int) $this->sourceLine;
+        return $this->originalNumber;
     }
 
     /**
-     * @deprecated since gitonomy/gitlib 1.7, use getOriginalNumber() instead
+     * @return Commit The commit that last changed the line
      */
-    public function getLine()
-    {
-        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "getOriginalNumber()" instead.', __METHOD__);
-
-        return $this->sourceLine;
-    }
-
-    public function getCommit()
+    public function getCommit(): Commit
     {
         return $this->commit;
     }

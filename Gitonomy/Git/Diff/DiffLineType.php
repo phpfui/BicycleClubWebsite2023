@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -13,8 +13,8 @@
 namespace Gitonomy\Git\Diff;
 
 /**
- * The kind of a line of a hunk, its values those of the deprecated
- * FileChange::LINE_* constants.
+ * The kind of a line of a hunk, its values the types of the lines of
+ * FileChange::toArray().
  *
  * @author Grégoire Pineau <lyrixx@lyrixx.info>
  */

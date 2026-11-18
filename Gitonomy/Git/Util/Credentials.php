@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -11,9 +11,6 @@
  */
 
 namespace Gitonomy\Git\Util;
-
-use Symfony\Component\Process\Exception\ExceptionInterface;
-use Symfony\Component\Process\Process;
 
 /**
  * A URL like "https://user:token@host/repository.git" carries credentials:
@@ -28,11 +25,7 @@ final class Credentials
     /**
      * What ends the "user:password@host" of a URL: a slash or a whitespace.
      */
-    private const DELIMITERS = "/ \t\n\r\v\f";
-
-    private const LETTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-    private const SCHEME_CHARACTERS = self::LETTERS.'0123456789+.-';
+    private const string DELIMITERS = "/ \t\n\r\v\f";
 
     /**
      * Replaces the user information of the URLs of $text, a token or a user
@@ -45,63 +38,49 @@ final class Credentials
     {
         $redacted = '';
         $offset = 0;
-        // Where a scheme may start: after the last "@" read.
-        $afterAt = 0;
         while (false !== $at = strpos($text, '@', $offset)) {
             // The characters around the "@", from $offset at most: one pass over $text.
             $start = $at - strcspn(strrev(substr($text, $offset, $at - $offset)), self::DELIMITERS);
             $end = $at + strcspn($text, self::DELIMITERS, $at);
-            // Up to the last "@" before the host, as a password may hold one,
-            // or a "#" or a "?", which git accepts unencoded there.
-            $host = $end - strcspn(strrev(substr($text, $at, $end - $at)), '@');
+            $authority = substr($text, $start, $end - $start);
+            // After the last "@", as a password may hold one, or a "#" or a
+            // "?", which git and libgit2 accept unencoded there.
+            $host = substr($authority, \strlen($authority) - strcspn(strrev($authority), '@'));
 
             $redacted .= substr($text, $offset, $start - $offset);
-            $redacted .= self::isAfterScheme($text, $afterAt, $start) ? '***@' : substr($text, $start, $host - $start);
-            $redacted .= substr($text, $host, $end - $host);
+            $redacted .= self::isAfterScheme($text, $start) || self::hasPassword($text, $start, $authority, $host) ? '***@'.$host : $authority;
             $offset = $end;
-            $afterAt = $host;
         }
 
         return $redacted.substr($text, $offset);
     }
 
-    /**
-     * Runs $process. The messages of the exceptions of Symfony Process hold
-     * the command line, with its URLs: unlike in 2.0, they keep their class,
-     * which code written for 1.6 catches.
-     */
-    public static function runProcess(Process $process): void
+    private static function isAfterScheme(#[\SensitiveParameter] string $text, int $start): bool
     {
-        try {
-            $process->run();
-        } catch (ExceptionInterface $e) {
-            (new \ReflectionProperty(\Exception::class, 'message'))->setValue($e, self::redact($e->getMessage()));
-
-            throw $e;
-        }
+        return $start >= 3 && '://' === substr($text, $start - 3, 3);
     }
 
     /**
-     * @param int $afterAt Where the scheme may start in $text
-     * @param int $start   Where the "user:password@host" starts
+     * Without a scheme: git prints "user:token@host" when it can't resolve
+     * the host of a git:// URL, and ssh "user:token@host: Permission denied".
+     * A token alone stays, as nothing tells it from the "git@host" of the
+     * errors of ssh, and so does what git quotes, a revision like
+     * 'HEAD:logo@2x.png', which ends with a quote instead of a host.
      */
-    private static function isAfterScheme(#[\SensitiveParameter] string $text, int $afterAt, int $start): bool
+    private static function hasPassword(#[\SensitiveParameter] string $text, int $start, #[\SensitiveParameter] string $authority, string $host): bool
     {
-        if ($start - 3 <= $afterAt || '://' !== substr($text, $start - 3, 3)) {
+        // After a slash, the "@" is in the path of a URL.
+        if ($start > 0 && '/' === $text[$start - 1]) {
             return false;
         }
 
-        $end = $start - 3;
-        $length = strspn(strrev(substr($text, $afterAt, $end - $afterAt)), self::SCHEME_CHARACTERS);
-
-        // A scheme starts with a letter, which starts a word: the one of
-        // "git+ssh" or its "ssh", but not the "https" of "_https".
-        for ($i = $end - $length; $i < $end; ++$i) {
-            if (str_contains(self::LETTERS, $text[$i]) && (0 === $i || !str_contains(self::LETTERS.'0123456789_', $text[$i - 1]))) {
-                return true;
-            }
+        $user = strstr($authority, ':', true);
+        if (false === $user || '' === $user || str_contains($user, '@')) {
+            return false;
         }
 
-        return false;
+        // A host, its port, and the colon of "host: Permission denied".
+        // Anything but 0: an error of PCRE hides the text too.
+        return 0 !== preg_match('/^(?:[a-z0-9.-]++|\[[0-9a-f:.]++\])(?::\d++)?:?$/Di', $host);
     }
 }

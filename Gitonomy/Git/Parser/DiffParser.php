@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -14,150 +14,268 @@ namespace Gitonomy\Git\Parser;
 
 use Gitonomy\Git\Diff\DiffLine;
 use Gitonomy\Git\Diff\DiffLineType;
-use Gitonomy\Git\Diff\File;
 use Gitonomy\Git\Diff\FileChange;
+use Gitonomy\Git\Driver\Data\DiffFileData;
+use Gitonomy\Git\Exception\InvalidArgumentException;
+use Gitonomy\Git\Exception\RuntimeException;
 
 /**
- * @final since gitonomy/gitlib 1.7
+ * Parses the output of ``git diff --raw --patch``, with ``-z`` or not: the
+ * names, modes, hashes and status of the files come from the raw
+ * information, and the hunks from the patches.
  *
- * @deprecated since gitonomy/gitlib 1.7.2, gitlib 2.0 makes it internal: parse a diff with Diff::parse()
+ * Unmerged paths, during a conflict, are left out.
+ *
+ * @internal Parse a diff with Diff::parse()
  */
-class DiffParser extends ParserBase
+final class DiffParser extends ParserBase
 {
-    public $files;
+    private const string HASH = '([0-9a-f]{7,64})(?:\.\.\.)?';
 
-    protected function doParse()
+    /**
+     * The extended header lines of a patch, but the "index" one.
+     */
+    private const array HEADERS = ['copy from ', 'copy to ', 'deleted file mode ', 'dissimilarity index ', 'new file mode ', 'new mode ', 'old mode ', 'rename from ', 'rename to ', 'similarity index '];
+
+    /**
+     * @var list<DiffFileData>
+     */
+    public array $files = [];
+
+    protected function doParse(): void
     {
         $this->files = [];
-        $indexes = [];
-        // Diff contains raw information
-        if (str_starts_with($this->content, ':')) {
+
+        if ($this->isFinished()) {
+            return;
+        }
+
+        if (!str_starts_with($this->content, ':')) {
+            throw new InvalidArgumentException('The diff has no raw information: Diff::parse() parses the output of "git diff --raw --patch".');
+        }
+
+        foreach ($this->consumeRawEntries() as $entry) {
+            // A type change (a file replaced by a symbolic link...) has the patch of a deletion, then of a creation.
+            if ('T' === $entry['status']) {
+                $this->files[] = $this->consumePatch($entry['oldName'], null, $entry['oldMode'], null, $entry['oldHash'], null, false);
+                $this->files[] = $this->consumePatch(null, $entry['newName'], null, $entry['newMode'], null, $entry['newHash'], false);
+
+                continue;
+            }
+
+            $this->files[] = $this->consumePatch(
+                'A' === $entry['status'] ? null : $entry['oldName'],
+                'D' === $entry['status'] ? null : $entry['newName'],
+                $entry['oldMode'],
+                $entry['newMode'],
+                $entry['oldHash'],
+                $entry['newHash'],
+                'C' === $entry['status'],
+            );
+        }
+
+        $this->consumeUnmergedPaths();
+
+        // What the parser doesn't know would be lost: the patches of the next
+        // files, after the log of a submodule of "git diff --submodule=log"...
+        // The message has the start of its line only: the lines of a diff come
+        // from the files of the repository.
+        if (!$this->isFinished()) {
+            throw new RuntimeException(\sprintf('Unable to parse the diff from "%s".', explode("\n", substr($this->content, $this->cursor, 100), 2)[0]));
+        }
+    }
+
+    /**
+     * @return list<array{status: string, oldName: string, newName: string, oldMode: string|null, newMode: string|null, oldHash: string|null, newHash: string|null}> The entries of merged paths
+     */
+    private function consumeRawEntries(): array
+    {
+        $entries = [];
+        $nul = null;
+        while ($this->expects(':')) {
+            // A combined entry, "::" and more, is an unmerged path.
+            $parents = 1;
             while ($this->expects(':')) {
-                $this->consumeRegexp('/\d{6} \d{6} /');
-                $oldIndex = $this->consumeShortHash();
-                $this->consume(' ');
-                $newIndex = $this->consumeShortHash();
-                $this->consumeTo("\n");
-                $this->consumeNewLine();
-                $indexes[] = [$oldIndex, $newIndex];
+                ++$parents;
             }
-            $this->consumeNewLine();
-        } elseif (!$this->isFinished()) {
-            trigger_error('Using Diff::parse without raw information is deprecated. See https://github.com/gitonomy/gitlib/issues/227.', E_USER_DEPRECATED);
+
+            $modes = [];
+            for ($i = 0; $i <= $parents; ++$i) {
+                $modes[] = $this->consumeRegexp('/(\d{6}) /')[1];
+            }
+            $hashes = [];
+            for ($i = 0; $i <= $parents; ++$i) {
+                $hashes[] = $this->consumeRegexp('/'.self::HASH.' /')[1];
+            }
+            $status = $this->consumeRegexp('/([A-Z]+)\d*/')[1];
+
+            // -z ends the fields with NUL characters, and doesn't quote names.
+            $nul ??= "\0" === ($this->content[$this->cursor] ?? '');
+            $this->consume($nul ? "\0" : "\t");
+            $oldName = $this->consumeName($nul);
+            $newName = $oldName;
+            if (\in_array($status, ['C', 'R'], true)) {
+                if (!$nul) {
+                    $this->consume("\t");
+                }
+                $newName = $this->consumeName($nul);
+            }
+            if (!$nul) {
+                $this->consumeNewLine();
+            }
+
+            if (1 === $parents && 'U' !== $status) {
+                $entries[] = [
+                    'status' => $status,
+                    'oldName' => $oldName,
+                    'newName' => $newName,
+                    'oldMode' => self::nullIfZeros($modes[0]),
+                    'newMode' => self::nullIfZeros($modes[1]),
+                    'oldHash' => self::nullIfZeros($hashes[0]),
+                    'newHash' => self::nullIfZeros($hashes[1]),
+                ];
+            }
         }
 
-        $fileIndex = 0;
-        while (!$this->isFinished()) {
-            // 1. title
-            $vars = $this->consumeRegexp("/diff --git \"?(a\/.*?)\"? \"?(b\/.*?)\"?\n/");
-            $oldName = $vars[1];
-            $newName = $vars[2];
-            // Get indexes from raw if it exists
-            $oldIndex = isset($indexes[$fileIndex]) ? $indexes[$fileIndex][0] : null;
-            $newIndex = isset($indexes[$fileIndex]) ? $indexes[$fileIndex][1] : null;
-            $fileIndex++;
-            $oldMode = null;
-            $newMode = null;
+        // The raw information ends with an empty field, or line, when the patches follow.
+        if (!$this->isFinished()) {
+            $this->consume($nul ? "\0" : "\n");
+        }
 
-            // 2. mode
-            if ($this->expects('new file mode ')) {
-                $newMode = $this->consumeTo("\n");
-                $this->consumeNewLine();
-                $oldMode = null;
-                $oldName = '/dev/null';
-            }
-            if ($this->expects('old mode ')) {
-                $oldMode = $this->consumeTo("\n");
-                $this->consumeNewLine();
-                $this->consume('new mode ');
-                $newMode = $this->consumeTo("\n");
-                $this->consumeNewLine();
-            }
-            if ($this->expects('deleted file mode ')) {
-                $oldMode = $this->consumeTo("\n");
-                $newMode = null;
-                $newName = '/dev/null';
-                $this->consumeNewLine();
-            }
+        return $entries;
+    }
 
-            if ($this->expects('similarity index ')) {
-                $this->consumeRegexp('/\d{1,3}%\n/');
-                $this->consume('rename from ');
-                $this->consumeTo("\n");
-                $this->consumeNewLine();
-                $this->consume('rename to ');
-                $this->consumeTo("\n");
-                $this->consumeNewLine();
-            }
+    private function consumeName(bool $nul): string
+    {
+        if ($nul) {
+            $name = $this->consumeTo("\0");
+            $this->consume("\0");
 
-            // 4. File informations
-            $isBinary = false;
+            return $name;
+        }
+
+        return self::unquote($this->consumeRegexp('/("(?:[^"\\\]|\\\.)*"|[^\t\n]*)/')[1]);
+    }
+
+    private function consumePatch(?string $oldName, ?string $newName, ?string $oldMode, ?string $newMode, ?string $oldHash, ?string $newHash, bool $isCopy): DiffFileData
+    {
+        $this->consumeUnmergedPaths();
+
+        // Without --patch.
+        if (!$this->expects('diff --git ')) {
+            return new DiffFileData($oldName, $newName, $oldMode, $newMode, $oldHash, $newHash, false, $isCopy, []);
+        }
+        // The names of the header are ambiguous with spaces: the raw information gives them.
+        $this->consumeTo("\n");
+        $this->consumeNewLine();
+
+        $hasIndex = false;
+        while (true) {
+            // The hashes of the files of the working tree, which the raw information leaves out.
             if ($this->expects('index ')) {
-                $oldIndex = $this->consumeShortHash();
-                $this->consume('..');
-                $newIndex = $this->consumeShortHash();
-                if ($this->expects(' ')) {
-                    $vars = $this->consumeRegexp('/\d{6}/');
-                    $newMode = $oldMode = $vars[0];
-                }
-                $this->consumeNewLine();
-
-                //verifying if the file was deleted or created
-                if ($this->expects('--- ')) {
-                    $oldName = $this->consumeTo("\n") === '/dev/null' ? '/dev/null' : $oldName;
-                    $this->consumeNewLine();
-                    $this->consume('+++ ');
-                    $newName = $this->consumeTo("\n") === '/dev/null' ? '/dev/null' : $newName;
-                    $this->consumeNewLine();
-                } elseif ($this->expects('Binary files ')) {
-                    $vars = $this->consumeRegexp('/"?(.*?)"? and "?(.*?)"? differ\n/');
-                    $isBinary = true;
-                    $oldName = $vars[1];
-                    $newName = $vars[2];
-                }
+                $vars = $this->consumeRegexp('/'.self::HASH.'\.\.'.self::HASH.'/');
+                $oldHash = self::nullIfZeros($vars[1]);
+                $newHash = self::nullIfZeros($vars[2]);
+                $hasIndex = true;
+            } elseif (!$this->expectsOneOf(self::HEADERS)) {
+                break;
             }
 
-            $oldName = $oldName === '/dev/null' ? null : substr($oldName, 2);
-            $newName = $newName === '/dev/null' ? null : substr($newName, 2);
-
-            $oldIndex = $oldIndex === null ? '' : $oldIndex;
-            $newIndex = $newIndex === null ? '' : $newIndex;
-            $oldIndex = preg_match('/^0+$/', $oldIndex) ? null : $oldIndex;
-            $newIndex = preg_match('/^0+$/', $newIndex) ? null : $newIndex;
-            // 5. Diff
-            $changes = [];
-            while ($this->expects('@@ ')) {
-                $vars = $this->consumeRegexp('/-(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))?/');
-                $rangeOldStart = (int) $vars[1];
-                $rangeOldCount = (int) ($vars[2] ?? 1);
-                $rangeNewStart = (int) $vars[3];
-                $rangeNewCount = (int) ($vars[4] ?? 1);
-                $this->consume(' @@');
-                $this->consumeTo("\n");
-                $this->consumeNewLine();
-
-                // 6. Lines
-                $lines = [];
-                while (true) {
-                    if ($this->expects(' ')) {
-                        $lines[] = new DiffLine(DiffLineType::Context, $this->consumeTo("\n"));
-                    } elseif ($this->expects('+')) {
-                        $lines[] = new DiffLine(DiffLineType::Addition, $this->consumeTo("\n"));
-                    } elseif ($this->expects('-')) {
-                        $lines[] = new DiffLine(DiffLineType::Deletion, $this->consumeTo("\n"));
-                    } elseif ($this->expects("\ No newline at end of file")) {
-                        // Ignore this case...
-                    } else {
-                        break;
-                    }
-
-                    $this->consumeNewLine();
-                }
-
-                $changes[] = new FileChange($rangeOldStart, $rangeOldCount, $rangeNewStart, $rangeNewCount, $lines);
-            }
-
-            $this->files[] = new File($oldName, $newName, $oldMode, $newMode, $oldIndex, $newIndex, $isBinary, false, $changes);
+            $this->consumeTo("\n");
+            $this->consumeNewLine();
         }
+
+        // git writes no "index" line for a content that didn't change, when
+        // the mode alone did: the file of the working tree has the same hash.
+        if (!$hasIndex && null !== $newName) {
+            $newHash ??= $oldHash;
+        }
+
+        $isBinary = false;
+        if ($this->expects('--- ')) {
+            $this->consumeTo("\n");
+            $this->consumeNewLine();
+            $this->consume('+++ ');
+            $this->consumeTo("\n");
+            $this->consumeNewLine();
+        } elseif ($this->expects('Binary files ')) {
+            $isBinary = true;
+            $this->consumeTo("\n");
+            $this->consumeNewLine();
+        }
+
+        $changes = [];
+        while ($this->expects('@@ ')) {
+            $changes[] = $this->consumeHunk();
+        }
+
+        return new DiffFileData($oldName, $newName, $oldMode, $newMode, $oldHash, $newHash, $isBinary, $isCopy, $changes);
+    }
+
+    /**
+     * During a conflict, an unmerged path has this line instead of its patch.
+     */
+    private function consumeUnmergedPaths(): void
+    {
+        while ($this->expects('* Unmerged path ')) {
+            $this->consumeTo("\n");
+            $this->consumeNewLine();
+        }
+    }
+
+    private function consumeHunk(): FileChange
+    {
+        if (!preg_match('/-(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@[^\n]*\n/A', $this->content, $vars, \PREG_UNMATCHED_AS_NULL, $this->cursor)) {
+            throw new RuntimeException(\sprintf('Unable to parse the hunk header "%s".', substr($this->content, $this->cursor - 3, 50)));
+        }
+        $this->cursor += \strlen($vars[0]);
+
+        $lines = [];
+        while (true) {
+            if ($this->expects(' ')) {
+                $lines[] = new DiffLine(DiffLineType::Context, $this->consumeTo("\n"));
+            } elseif ($this->expects('+')) {
+                $lines[] = new DiffLine(DiffLineType::Addition, $this->consumeTo("\n"));
+            } elseif ($this->expects('-')) {
+                $lines[] = new DiffLine(DiffLineType::Deletion, $this->consumeTo("\n"));
+            } elseif ($this->expects('\ No newline at end of file')) {
+                // The previous line has no line break.
+            } else {
+                break;
+            }
+
+            $this->consumeNewLine();
+        }
+
+        // A count is left out when it is 1.
+        return new FileChange((int) $vars[1], (int) ($vars[2] ?? 1), (int) $vars[3], (int) ($vars[4] ?? 1), $lines);
+    }
+
+    /**
+     * @param string[] $prefixes
+     */
+    private function expectsOneOf(array $prefixes): bool
+    {
+        foreach ($prefixes as $prefix) {
+            if ($this->expects($prefix)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static function nullIfZeros(string $value): ?string
+    {
+        return '' === trim($value, '0') ? null : $value;
+    }
+
+    private static function unquote(string $name): string
+    {
+        if (!str_starts_with($name, '"')) {
+            return $name;
+        }
+
+        return stripcslashes(substr($name, 1, -1));
     }
 }

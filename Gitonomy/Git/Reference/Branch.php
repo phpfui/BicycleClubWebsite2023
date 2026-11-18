@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -12,7 +12,6 @@
 
 namespace Gitonomy\Git\Reference;
 
-use Gitonomy\Git\Exception\ProcessException;
 use Gitonomy\Git\Exception\RuntimeException;
 use Gitonomy\Git\Reference;
 use Gitonomy\Git\Revision;
@@ -21,14 +20,10 @@ use Gitonomy\Git\Revision;
  * Representation of a branch reference.
  *
  * @author Alexandre Salomé <alexandre.salome@gmail.com>
- *
- * @final since gitonomy/gitlib 1.7
  */
-class Branch extends Reference
+final class Branch extends Reference
 {
-    private $local = null;
-
-    public function getName()
+    public function getName(): string
     {
         $fullname = $this->getFullname();
 
@@ -40,21 +35,17 @@ class Branch extends Reference
             return $vars['remote'].'/'.$vars['name'];
         }
 
-        throw new RuntimeException(sprintf('Cannot extract branch name from "%s"', $fullname));
+        throw new RuntimeException(\sprintf('Cannot extract branch name from "%s".', $fullname));
     }
 
-    public function isRemote()
+    public function isRemote(): bool
     {
-        $this->detectBranchType();
-
-        return !$this->local;
+        return str_starts_with($this->getFullname(), 'refs/remotes/');
     }
 
-    public function isLocal()
+    public function isLocal(): bool
     {
-        $this->detectBranchType();
-
-        return $this->local;
+        return !$this->isRemote();
     }
 
     /**
@@ -62,58 +53,9 @@ class Branch extends Reference
      */
     public function isMergedInto(Revision|string $revision): bool
     {
-        // ReferenceBag::createBranch() keeps the name it got instead of a hash, like in 1.6.
-        $commit = $this->repository->getRevision($this->getCommitHash())->getCommit();
-        $mergeBase = $this->repository->getMergeBase($commit, $revision);
+        $destination = ($revision instanceof Revision ? $revision : $this->repository->getRevision($revision))->getCommit()->getHash();
 
-        return null !== $mergeBase && $mergeBase->getHash() === $commit->getHash();
-    }
-
-    /**
-     * Check if this branch is merged to a destination branch
-     * Optionally, check only with remote branches.
-     *
-     * @param string $destinationBranchName
-     * @param bool   $compareOnlyWithRemote
-     *
-     * @return null|bool
-     *
-     * @deprecated since gitonomy/gitlib 1.7, use isMergedInto() instead
-     */
-    public function isMergedTo($destinationBranchName = 'master', $compareOnlyWithRemote = false)
-    {
-        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "%s::isMergedInto()" instead.', __METHOD__, self::class);
-
-        $arguments = ['-a'];
-
-        if ($compareOnlyWithRemote) {
-            $arguments = ['-r'];
-        }
-
-        $arguments[] = '--merged';
-        $arguments[] = $destinationBranchName;
-
-        try {
-            $result = $this->repository->run('branch', $arguments);
-        } catch (ProcessException $e) {
-            throw new RuntimeException(
-                sprintf('Cannot determine if merged to the branch "%s"', $destinationBranchName),
-                $e->getCode(),
-                $e
-            );
-        }
-
-        if (!$result) {
-            return false;
-        }
-
-        $output = explode("\n", trim(str_replace(['*', 'remotes/'], '', $result)));
-        $filtered_output = array_filter($output, static function ($v) {
-            return false === strpos($v, '->');
-        });
-        $trimmed_output = array_map('trim', $filtered_output);
-
-        return in_array($this->getName(), $trimmed_output, true);
+        return \in_array($this->commitHash, $this->repository->getRepositoryDriver()->getMergeBases($this->commitHash, $destination), true);
     }
 
     /**
@@ -124,18 +66,11 @@ class Branch extends Reference
     public function moveTo(Revision|string $revision): self
     {
         $hash = ($revision instanceof Revision ? $revision : $this->repository->getRevision($revision))->getCommit()->getHash();
-        $this->repository->run('update-ref', [$this->getFullname(), $hash]);
+        $this->repository->getRepositoryDriver()->updateReference($this->getFullname(), $hash);
 
         $references = $this->repository->getReferences();
         $references->invalidate();
 
         return $this->isLocal() ? $references->getBranch($this->getName()) : $references->getRemoteBranch($this->getName());
-    }
-
-    private function detectBranchType()
-    {
-        if (null === $this->local) {
-            $this->local = !preg_match('#^refs/remotes/(?<remote>[^/]*)/(?<name>.*)$#', $this->getFullname());
-        }
     }
 }

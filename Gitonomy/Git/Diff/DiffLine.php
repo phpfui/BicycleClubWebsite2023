@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -17,11 +17,11 @@ namespace Gitonomy\Git\Diff;
  *
  * @author Grégoire Pineau <lyrixx@lyrixx.info>
  */
-final class DiffLine
+final readonly class DiffLine
 {
     public function __construct(
-        private readonly DiffLineType $type,
-        private readonly string $content,
+        private DiffLineType $type,
+        private string $content,
     ) {
     }
 

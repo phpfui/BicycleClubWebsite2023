@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -12,92 +12,72 @@
 
 namespace Gitonomy\Git;
 
+use Gitonomy\Git\Exception\DriverException;
+use Gitonomy\Git\Exception\ReferenceNotFoundException;
+use Gitonomy\Git\Exception\RuntimeException;
+
 /**
- * Representation of a Blob commit.
+ * Representation of a blob, the content of a file.
  *
  * @author Alexandre Salomé <alexandre.salome@gmail.com>
- *
- * @final since gitonomy/gitlib 1.7
  */
-class Blob
+final class Blob
 {
     /**
-     * @var int Size that git uses to look for NULL byte: https://git.kernel.org/pub/scm/git/git.git/tree/xdiff-interface.c?h=v2.44.0#n193
+     * Size that git uses to look for NULL byte: https://git.kernel.org/pub/scm/git/git.git/tree/xdiff-interface.c?h=v2.44.0#n193.
      */
-    private const FIRST_FEW_BYTES = 8000;
+    private const int FIRST_FEW_BYTES = 8000;
 
-    /**
-     * @var Repository
-     */
-    protected $repository;
+    private ?string $content = null;
 
-    /**
-     * @var string
-     */
-    protected $hash;
+    private ?string $mimetype = null;
 
-    /**
-     * @var string
-     */
-    protected $content;
-
-    /**
-     * @var string
-     */
-    protected $mimetype;
-
-    /**
-     * @var bool
-     */
-    protected $text;
+    private ?bool $text = null;
 
     /**
      * @param Repository $repository Repository where the blob is located
      * @param string     $hash       Hash of the blob
      *
-     * In gitlib 2.0, the constructor is internal: get it from Repository::getBlob().
+     * @internal Get it from Repository::getBlob(), which returns the same object while the application uses it
      */
-    public function __construct(Repository $repository, $hash)
-    {
-        $this->repository = $repository;
-        $this->hash = $hash;
+    public function __construct(
+        private readonly Repository $repository,
+        private readonly string $hash,
+    ) {
     }
 
-    /**
-     * @return string
-     */
-    public function getHash()
+    public function getHash(): string
     {
         return $this->hash;
     }
 
     /**
-     * @throws ProcessException Error occurred while getting content of blob
+     * @return string content of the blob
      *
-     * @return string Content of the blob.
+     * @throws ReferenceNotFoundException The blob doesn't exist, or the object of its hash isn't a blob
+     * @throws DriverException            git fails to read it
      */
-    public function getContent()
+    public function getContent(): string
     {
         if (null === $this->content) {
-            $this->content = $this->repository->run('cat-file', ['-p', $this->hash]);
+            $this->content = $this->repository->getRepositoryDriver()->getBlobContent($this->hash);
         }
 
         return $this->content;
     }
 
     /**
-     * Determine the mimetype of the blob.
+     * @return string The mimetype of the content, like "text/plain"
      *
-     * @return string A mimetype
+     * @throws RuntimeException The fileinfo extension is missing, or can't read the content
      */
-    public function getMimetype()
+    public function getMimetype(): string
     {
-        if (null === $this->mimetype) {
-            $finfo = new \finfo(FILEINFO_MIME);
-            $this->mimetype = $finfo->buffer($this->getContent());
+        if (!\extension_loaded('fileinfo')) {
+            throw new RuntimeException('The fileinfo extension of PHP is required to read the mimetype of a blob.');
         }
 
-        return $this->mimetype;
+        return $this->mimetype ??= new \finfo(\FILEINFO_MIME_TYPE)->buffer($this->getContent()) ?: throw new RuntimeException(\sprintf('Unable to read the mimetype of the blob "%s".', $this->hash));
     }
 
     /**
@@ -105,10 +85,8 @@ class Blob
      *
      * Uses the same check that git uses to determine if a file is binary or not
      * https://git.kernel.org/pub/scm/git/git.git/tree/xdiff-interface.c?h=v2.44.0#n193
-     *
-     * @return bool
      */
-    public function isBinary()
+    public function isBinary(): bool
     {
         return !$this->isText();
     }
@@ -118,13 +96,11 @@ class Blob
      *
      * Uses the same check that git uses to determine if a file is binary or not
      * https://git.kernel.org/pub/scm/git/git.git/tree/xdiff-interface.c?h=v2.44.0#n193
-     *
-     * @return bool
      */
-    public function isText()
+    public function isText(): bool
     {
         if (null === $this->text) {
-            $this->text = !str_contains(substr($this->getContent(), 0, self::FIRST_FEW_BYTES), chr(0));
+            $this->text = !str_contains(substr($this->getContent(), 0, self::FIRST_FEW_BYTES), \chr(0));
         }
 
         return $this->text;

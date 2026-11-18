@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -13,12 +13,8 @@
 namespace Gitonomy\Git\Exception;
 
 /**
- * @final since gitonomy/gitlib 1.7
+ * A revision, a reference or an object doesn't exist.
  */
-class ReferenceNotFoundException extends \InvalidArgumentException implements GitExceptionInterface
+final class ReferenceNotFoundException extends InvalidArgumentException
 {
-    public function __construct($reference)
-    {
-        parent::__construct(sprintf('Reference not found: "%s"', $reference));
-    }
 }

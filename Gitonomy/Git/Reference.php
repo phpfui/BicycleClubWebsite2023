@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -12,75 +12,62 @@
 
 namespace Gitonomy\Git;
 
-use Gitonomy\Git\Exception\ProcessException;
-use Gitonomy\Git\Exception\ReferenceNotFoundException;
-
 /**
  * Reference in a Git repository.
+ *
+ * Branch, Tag and Stash extend it: extending it outside gitlib isn't
+ * supported, and won't be possible in 3.0.
  *
  * @author Alexandre Salomé <alexandre.salome@gmail.com>
  * @author Julien DIDIER <genzo.wm@gmail.com>
  */
 abstract class Reference extends Revision
 {
-    protected $commitHash;
-
     /**
-     * In gitlib 2.0, the constructor is internal, and requires the commit hash: get it from Repository::getReferences().
+     * @param string $commitHash What the reference points to, through an annotated tag
+     *
+     * @internal Get it from Repository::getReferences(), which gitlib reads again after its writes
      */
-    public function __construct(Repository $repository, $revision, $commitHash = null)
-    {
-        $this->repository = $repository;
-        $this->revision = $revision;
-        $this->commitHash = $commitHash;
+    public function __construct(
+        Repository $repository,
+        string $fullname,
+        protected readonly string $commitHash,
+    ) {
+        parent::__construct($repository, $fullname);
     }
 
     /**
-     * @return string
+     * @return string The name, without its prefix: "master", "origin/master" for a remote branch, "0.1" for a tag
      */
-    public function getFullname()
+    abstract public function getName(): string;
+
+    public function getFullname(): string
     {
         return $this->revision;
     }
 
-    /**
-     * @return void
-     */
-    public function delete()
+    public function delete(): void
     {
         $this->repository->getReferences()->delete($this->getFullname());
     }
 
     /**
-     * @return string
+     * @return string The object the reference points to, when it was read, through an annotated tag: a commit, unless a tag points to a tree or a blob
      */
-    public function getCommitHash()
+    public function getCommitHash(): string
     {
-        if (null !== $this->commitHash) {
-            return $this->commitHash;
-        }
-
-        try {
-            $result = $this->repository->run('rev-parse', ['--verify', $this->revision]);
-        } catch (ProcessException $e) {
-            throw new ReferenceNotFoundException(sprintf('Can not find revision "%s"', $this->revision));
-        }
-
-        return $this->commitHash = trim($result);
+        return $this->commitHash;
     }
 
     /**
-     * @return Commit Commit associated to the reference.
+     * Returns the commit associated to the reference.
      */
-    public function getCommit()
+    public function getCommit(): Commit
     {
-        return $this->repository->getCommit($this->getCommitHash());
+        return $this->repository->getCommit($this->commitHash);
     }
 
-    /**
-     * @return Commit
-     */
-    public function getLastModification($path = null)
+    public function getLastModification(?string $path = null): Commit
     {
         return $this->getCommit()->getLastModification($path);
     }

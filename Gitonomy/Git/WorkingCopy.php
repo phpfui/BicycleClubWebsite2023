@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -13,132 +13,143 @@
 namespace Gitonomy\Git;
 
 use Gitonomy\Git\Diff\Diff;
-use Gitonomy\Git\Exception\InvalidArgumentException;
+use Gitonomy\Git\Exception\DriverException;
 use Gitonomy\Git\Exception\LogicException;
 use Gitonomy\Git\Exception\ReferenceNotFoundException;
 use Gitonomy\Git\Reference\Branch;
-use Gitonomy\Git\Util\LeadingDash;
 
 /**
  * @author Alexandre Salomé <alexandre.salome@gmail.com>
- *
- * @final since gitonomy/gitlib 1.7
  */
-class WorkingCopy
+final readonly class WorkingCopy
 {
-    /**
-     * @var Repository
-     */
-    protected $repository;
-
-    public function __construct(Repository $repository)
-    {
-        $this->repository = $repository;
-
+    public function __construct(
+        private Repository $repository,
+    ) {
         if ($this->repository->isBare()) {
-            throw new LogicException('Can\'t create a working copy on a bare repository');
+            throw new LogicException('A bare repository has no working copy.');
         }
     }
 
-    public function getUntrackedFiles()
+    /**
+     * @return string[]
+     */
+    public function getUntrackedFiles(): array
     {
-        $lines = explode("\0", $this->run('status', ['--porcelain', '--untracked-files=all', '-z']));
-        $files = [];
-        for ($i = 0; $i < count($lines); ++$i) {
-            // "XY <path>": the path a renamed or copied file had before comes
-            // next, alone, and may start with "?? " itself.
-            if (false !== strpbrk(substr($lines[$i], 0, 2), 'CR')) {
-                ++$i;
-            } elseif (substr($lines[$i], 0, 3) === '?? ') {
-                $files[$i] = substr($lines[$i], 3);
-            }
-        }
-
-        return $files;
+        return $this->repository->getRepositoryDriver()->getUntrackedFiles();
     }
 
     /**
      * Returns the changes of the working tree, staged or not, since $revision.
-     *
-     * @throws ReferenceNotFoundException $revision names no commit
      */
     public function getDiff(Revision|string $revision = 'HEAD'): Diff
     {
         $hash = ($revision instanceof Revision ? $revision : $this->repository->getRevision($revision))->getCommit()->getHash();
 
-        return Diff::parse($this->run('diff', ['-r', '-p', '--raw', '-m', '-M', '--full-index', $hash]), $this->repository);
-    }
-
-    public function getDiffPending()
-    {
-        return Diff::parse($this->run('diff', ['-r', '-p', '--raw', '-m', '-M', '--full-index']), $this->repository);
-    }
-
-    public function getDiffStaged()
-    {
-        return Diff::parse($this->run('diff', ['-r', '-p', '--raw', '-m', '-M', '--full-index', '--staged']), $this->repository);
+        return Diff::fromData($this->repository->getRepositoryDriver()->getWorkingTreeDiff($hash), $this->repository);
     }
 
     /**
-     * Passing a branch to create as second argument is deprecated, as a local
-     * Branch object, which detaches HEAD, where 2.0 attaches HEAD to it.
-     *
-     * @return WorkingCopy
+     * Returns the changes of the working tree not staged yet.
      */
-    public function checkout($revision, $branch = null)
+    public function getDiffPending(): Diff
     {
-        if (null !== $branch) {
-            trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing a branch to create to "%s()" is deprecated, use "checkoutNewBranch()" instead.', __METHOD__);
-        } elseif ($revision instanceof Branch && $revision->isLocal()) {
-            trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing a local "%s" to "%s()", which detaches HEAD, is deprecated, 2.0 attaches HEAD to the branch: pass its name, or its commit to detach HEAD.', Branch::class, __METHOD__);
-        }
+        return Diff::fromData($this->repository->getRepositoryDriver()->getDiffPending(), $this->repository);
+    }
 
-        $args = [];
-        if ($revision instanceof Commit) {
-            $args[] = $revision->getHash();
-        } elseif ($revision instanceof Reference) {
-            $args[] = $revision->getFullname();
-        } elseif ($revision instanceof Revision) {
-            $args[] = $revision->getRevision();
-        } elseif (is_string($revision)) {
-            $args[] = $revision;
-        } else {
-            throw new InvalidArgumentException(sprintf('Unknown type "%s"', gettype($revision)));
-        }
+    /**
+     * Returns the changes staged in the index.
+     */
+    public function getDiffStaged(): Diff
+    {
+        return Diff::fromData($this->repository->getRepositoryDriver()->getDiffStaged(), $this->repository);
+    }
 
-        if (null !== $branch) {
-            $args = array_merge($args, ['-b', $branch]);
-        }
+    /**
+     * Checks $revision out, like `git checkout`: HEAD points to it when it is
+     * a local branch, or @{-<n>}, the nth branch checked out before, stays
+     * as it is for "HEAD", and points to the commit otherwise: a tag, a hash,
+     * a remote branch...
+     *
+     * Unlike `git checkout`, a name that no revision has throws, the name of
+     * a remote branch alone included, like "feature" for "origin/feature":
+     * create its local branch with checkoutNewBranch().
+     *
+     * @throws ReferenceNotFoundException $revision names no commit
+     * @throws DriverException            The checkout would overwrite local changes
+     */
+    public function checkout(Revision|string $revision): static
+    {
+        // A name that no revision has throws, where "git checkout" would create
+        // the branch of a remote one, or discard the changes of a file.
+        ($revision instanceof Revision ? $revision : $this->repository->getRevision($revision))->getCommit();
 
-        $this->run('checkout', $args);
+        try {
+            $this->repository->getRepositoryDriver()->checkout(self::name($revision));
+        } finally {
+            $this->repository->getReferences()->invalidate();
+        }
 
         return $this;
     }
 
     /**
      * Creates the branch $branch at $startPoint, and checks it out, like
-     * `git checkout -b`.
+     * `git checkout -b`. The branch tracks $startPoint when it is a remote
+     * branch, like "origin/feature", as with branch.autoSetupMerge=true,
+     * git's default, whatever the configuration. A failure leaves the
+     * branches and the files as they were: like `git checkout -b`, no
+     * branch is created when the checkout fails. Like it too, the failure of
+     * the post-checkout hook, which CliDriver runs, leaves the branch created
+     * and checked out.
      *
-     * @return $this
-     *
-     * @throws InvalidArgumentException   $branch or $startPoint starts with a dash
      * @throws ReferenceNotFoundException $startPoint names no commit
+     * @throws DriverException            $branch exists already or isn't a valid name, $startPoint is the short name of several references, which git refuses, the checkout would overwrite local changes, or the post-checkout hook fails
      */
-    public function checkoutNewBranch(string $branch, Revision|string $startPoint = 'HEAD'): self
+    public function checkoutNewBranch(string $branch, Revision|string $startPoint = 'HEAD'): static
     {
-        $startPointName = $startPoint instanceof Revision ? $startPoint->getRevision() : $startPoint;
-        LeadingDash::assertNone($branch, $startPointName);
-
-        // Like in 2.0. git gets the name, which tells a remote branch, to track it.
+        // Like checkout(). The driver gets the name, which tells a remote branch.
         ($startPoint instanceof Revision ? $startPoint : $this->repository->getRevision($startPoint))->getCommit();
 
-        $this->run('checkout', ['-b', $branch, $startPointName]);
+        try {
+            $this->repository->getRepositoryDriver()->checkoutNewBranch($branch, $startPoint instanceof Revision ? $startPoint->getRevision() : $startPoint);
+        } finally {
+            $this->repository->getReferences()->invalidate();
+        }
 
         return $this;
     }
 
-    protected function run($command, array $args = [])
+    /**
+     * Merges a revision into the current branch.
+     *
+     * @throws ReferenceNotFoundException $revision names no commit
+     * @throws DriverException            The merge fails: a conflict, staged changes, an unrelated history...
+     */
+    public function merge(Revision|string $revision, FastForward $fastForward = FastForward::Allow): static
     {
-        return $this->repository->run($command, $args);
+        // Like checkout(). The driver gets the name, which the message of the merge commit has.
+        ($revision instanceof Revision ? $revision : $this->repository->getRevision($revision))->getCommit();
+
+        try {
+            $this->repository->getRepositoryDriver()->merge(self::name($revision), $fastForward);
+        } finally {
+            $this->repository->getReferences()->invalidate();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string The name git checks out or merges: a local branch by its name, to attach HEAD to it
+     */
+    private static function name(Revision|string $revision): string
+    {
+        return match (true) {
+            $revision instanceof Branch && $revision->isLocal() => $revision->getName(),
+            $revision instanceof Reference => $revision->getFullname(),
+            $revision instanceof Revision => $revision->getRevision(),
+            default => $revision,
+        };
     }
 }

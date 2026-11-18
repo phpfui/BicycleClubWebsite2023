@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -13,105 +13,75 @@
 namespace Gitonomy\Git;
 
 use Gitonomy\Git\Diff\Diff;
-use Gitonomy\Git\Exception\InvalidArgumentException;
-use Gitonomy\Git\Exception\ProcessException;
+use Gitonomy\Git\Driver\Data\CommitData;
 use Gitonomy\Git\Exception\ReferenceNotFoundException;
 use Gitonomy\Git\Reference\Branch;
-use Gitonomy\Git\Util\StringHelper;
+use Gitonomy\Git\Util\Message;
 
 /**
  * Representation of a Git commit.
  *
  * @author Alexandre Salomé <alexandre.salome@gmail.com>
- *
- * @final since gitonomy/gitlib 1.7
  */
-class Commit extends Revision
+final class Commit extends Revision
 {
     /**
-     * Associative array of commit data.
-     *
-     * @var array
+     * Raw commit data, as returned by the Driver. Lazily loaded.
      */
-    private $data = [];
+    private ?CommitData $data;
+
+    // Values derived from the fields above, computed and cached independently.
+    private ?string $shortHash = null;
+    private ?Tree $tree = null;
 
     /**
-     * Constructor.
-     *
      * @param Repository $repository Repository of the commit
      * @param string     $hash       Hash of the commit
      *
-     * In gitlib 2.0, the constructor is internal, and takes a CommitData
-     * instead of an array: get it from Repository::getCommit(). Passing data
-     * is deprecated.
+     * @internal Get it from Repository::getCommit(), which returns the same object while the application uses it
      */
-    public function __construct(Repository $repository, $hash, array $data = [])
+    public function __construct(Repository $repository, string $hash, ?CommitData $data = null)
     {
-        if ([] !== $data) {
-            trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing data to "%s()" is deprecated, the constructor is internal in 2.0, and takes a "CommitData" instead of an array: get the commit from "%s::getCommit()".', __METHOD__, Repository::class);
-        }
-
         if (!preg_match('/^[a-f0-9]{40}$/D', $hash)) {
-            throw new ReferenceNotFoundException($hash);
+            throw new ReferenceNotFoundException(\sprintf('"%s" is not the hash of a commit: get a commit by its name with getRevision(...)->getCommit().', $hash));
         }
 
         parent::__construct($repository, $hash);
 
-        $this->setData($data);
+        $this->data = $data;
     }
 
     /**
-     * In gitlib 2.0, it is internal, and takes a CommitData instead of an array.
+     * @internal
      */
-    public function setData(array $data)
+    public function setData(CommitData $data): void
     {
-        foreach ($data as $name => $value) {
-            $this->data[$name] = $value;
-        }
+        $this->data = $data;
     }
 
     /**
-     * @return Diff
+     * Returns the changes of the commit: against its first parent, like GitHub
+     * shows a merge commit, or against nothing for a root commit.
      */
-    public function getDiff()
+    public function getDiff(): Diff
     {
-        $args = ['-r', '-p', '--raw', '-m', '-M', '--no-commit-id', '--full-index', $this->revision];
-
-        return Diff::parse($this->repository->run('diff-tree', $args), $this->repository);
+        return Diff::fromData($this->repository->getRepositoryDriver()->getDiff($this->getParentHashes()[0] ?? null, $this->revision), $this->repository);
     }
 
     /**
      * Returns the commit hash.
-     *
-     * @return string A SHA1 hash
      */
-    public function getHash()
+    public function getHash(): string
     {
         return $this->revision;
     }
 
     /**
      * Returns the short commit hash.
-     *
-     * @return string A SHA1 hash
      */
-    public function getShortHash()
+    public function getShortHash(): string
     {
-        return $this->getData('shortHash');
-    }
-
-    /**
-     * Returns a fixed-with short hash.
-     *
-     * @return string Short hash
-     *
-     * @deprecated since gitonomy/gitlib 1.7, use substr($commit->getHash(), 0, $length) instead
-     */
-    public function getFixedShortHash($length = 6)
-    {
-        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "substr($commit->getHash(), 0, $length)" instead.', __METHOD__);
-
-        return substr($this->revision, 0, $length);
+        return $this->shortHash ??= $this->repository->getRepositoryDriver()->getShortHash($this->revision);
     }
 
     /**
@@ -119,9 +89,9 @@ class Commit extends Revision
      *
      * @return string[] An array of SHA1 hashes
      */
-    public function getParentHashes()
+    public function getParentHashes(): array
     {
-        return $this->getData('parentHashes');
+        return $this->data()->parentHashes;
     }
 
     /**
@@ -129,10 +99,10 @@ class Commit extends Revision
      *
      * @return Commit[] An array of Commit objects
      */
-    public function getParents()
+    public function getParents(): array
     {
         $result = [];
-        foreach ($this->getData('parentHashes') as $parentHash) {
+        foreach ($this->data()->parentHashes as $parentHash) {
             $result[] = $this->repository->getCommit($parentHash);
         }
 
@@ -141,134 +111,68 @@ class Commit extends Revision
 
     /**
      * Returns the tree hash.
-     *
-     * @return string A SHA1 hash
      */
-    public function getTreeHash()
+    public function getTreeHash(): string
     {
-        return $this->getData('treeHash');
+        return $this->data()->treeHash;
+    }
+
+    public function getTree(): Tree
+    {
+        return $this->tree ??= $this->repository->getTree($this->getTreeHash());
     }
 
     /**
-     * @return Tree
+     * @throws ReferenceNotFoundException No commit up to this one changes $path
      */
-    public function getTree()
+    public function getLastModification(?string $path = null): self
     {
-        return $this->getData('tree');
-    }
-
-    /**
-     * @return Commit
-     */
-    public function getLastModification($path = null)
-    {
-        if (0 === strpos($path, '/')) {
+        if (null !== $path && str_starts_with($path, '/')) {
             $path = substr($path, 1);
         }
 
-        if ($getWorkingDir = $this->repository->getWorkingDir()) {
-            $path = $getWorkingDir.'/'.$path;
+        try {
+            return $this->getLog($path, null, 1)->getSingleCommit();
+        } catch (ReferenceNotFoundException $e) {
+            throw new ReferenceNotFoundException(\sprintf('No commit up to "%s" changes "%s".', $this->revision, $path), 0, $e);
         }
-
-        $result = $this->repository->run('log', ['--format=%H', '-n', 1, $this->revision, '--', $path]);
-
-        return $this->repository->getCommit(trim($result));
-    }
-
-    /**
-     * Returns the first line of the commit, and the first 50 characters.
-     *
-     * Ported from https://github.com/fabpot/Twig-extensions/blob/d67bc7e69788795d7905b52d31188bbc1d390e01/lib/Twig/Extensions/Extension/Text.php#L52-L109
-     *
-     * @param int    $length
-     * @param bool   $preserve
-     * @param string $separator
-     *
-     * @return string
-     *
-     * @deprecated since gitonomy/gitlib 1.7, use symfony/string instead: u($commit->getSubjectMessage())->truncate($length, $separator, !$preserve)
-     */
-    public function getShortMessage($length = 50, $preserve = false, $separator = '...')
-    {
-        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use symfony/string instead: "u($commit->getSubjectMessage())->truncate($length, $separator, !$preserve)".', __METHOD__);
-
-        $message = $this->getData('subjectMessage');
-        // The encoding StringHelper::setEncoding() set, without loading this deprecated class.
-        $encoding = class_exists(StringHelper::class, false) ? StringHelper::getEncoding() : 'utf-8';
-
-        if (mb_strlen($message, $encoding) > $length) {
-            if ($preserve && false !== ($breakpoint = mb_strpos($message, ' ', $length, $encoding))) {
-                $length = $breakpoint;
-            }
-
-            return rtrim(mb_substr($message, 0, $length, $encoding)).$separator;
-        }
-
-        return $message;
     }
 
     /**
      * Resolves all references associated to this commit.
      *
-     * @return Reference[] An array of references (Branch, Tag, Squash)
+     * @return Reference[] An array of references (Branch, Tag, Stash)
      */
-    public function resolveReferences()
+    public function resolveReferences(): array
     {
         return $this->repository->getReferences()->resolve($this);
     }
 
     /**
-     * Find branch containing the commit.
+     * Returns the local and remote branches whose history contains the commit.
      *
-     * Passing arguments, to keep local or remote branches only, is deprecated.
-     *
-     * @param bool $local  set true to try to locate a commit on local repository
-     * @param bool $remote set true to try to locate a commit on remote repository
-     *
-     * @return Reference[]|Branch[] An array of Reference\Branch
+     * @return Branch[]
      */
-    public function getIncludingBranches($local = true, $remote = true)
+    public function getIncludingBranches(): array
     {
-        if (func_num_args() > 0) {
-            trigger_deprecation('gitonomy/gitlib', '1.7', 'Passing arguments to "%s()" is deprecated, filter the branches it returns with "%s::isLocal()" or "isRemote()" instead.', __METHOD__, Branch::class);
-        }
-
-        $arguments = ['--contains', $this->revision];
-
-        if ($local && $remote) {
-            $arguments[] = '-a';
-        } elseif (!$local && $remote) {
-            $arguments[] = '-r';
-        } elseif (!$local && !$remote) {
-            throw new InvalidArgumentException('You should a least set one argument to true');
-        }
-
-        try {
-            $result = $this->repository->run('branch', $arguments);
-        } catch (ProcessException $e) {
-            return [];
-        }
-
-        if (!$result) {
-            return [];
-        }
-
-        $branchesName = explode("\n", trim(str_replace('*', '', $result)));
-        $branchesName = array_filter($branchesName, function ($v) {
-            return false === strpos($v, '->');
-        });
-        $branchesName = array_map('trim', $branchesName);
-
+        $fullnames = $this->repository->getRepositoryDriver()->getIncludingBranches($this->revision);
         $references = $this->repository->getReferences();
+        // A branch another process created since gitlib read the references.
+        if ([] !== array_filter($fullnames, static fn (string $fullname): bool => !$references->has($fullname))) {
+            $references->invalidate();
+        }
 
         $branches = [];
-        foreach ($branchesName as $branchName) {
-            if (false === $local) {
-                $branches[] = $references->getRemoteBranch($branchName);
-            } elseif (0 === strrpos($branchName, 'remotes/')) {
-                $branches[] = $references->getRemoteBranch(str_replace('remotes/', '', $branchName));
-            } else {
-                $branches[] = $references->getBranch($branchName);
+        foreach ($fullnames as $fullname) {
+            // Unknown still: the default branch of a remote, which the references leave out, even
+            // when a mirror leaves it as a regular reference, or a branch deleted meanwhile.
+            if (!$references->has($fullname)) {
+                continue;
+            }
+
+            $branch = $references->get($fullname);
+            if ($branch instanceof Branch) {
+                $branches[] = $branch;
             }
         }
 
@@ -277,164 +181,85 @@ class Commit extends Revision
 
     /**
      * Returns the author name.
-     *
-     * @return string A name
      */
-    public function getAuthorName()
+    public function getAuthorName(): string
     {
-        return $this->getData('authorName');
+        return $this->data()->authorName;
     }
 
     /**
      * Returns the author email.
-     *
-     * @return string An email
      */
-    public function getAuthorEmail()
+    public function getAuthorEmail(): string
     {
-        return $this->getData('authorEmail');
+        return $this->data()->authorEmail;
     }
 
     /**
-     * Returns the authoring date.
-     *
-     * @return \DateTime A time object
+     * Returns the authoring date, at the UTC offset of the author, like git
+     * log shows it.
      */
-    public function getAuthorDate()
+    public function getAuthorDate(): \DateTimeImmutable
     {
-        return $this->getData('authorDate');
+        return $this->data()->authorDate;
     }
 
     /**
      * Returns the committer name.
-     *
-     * @return string A name
      */
-    public function getCommitterName()
+    public function getCommitterName(): string
     {
-        return $this->getData('committerName');
+        return $this->data()->committerName;
     }
 
     /**
-     * Returns the comitter email.
-     *
-     * @return string An email
+     * Returns the committer email.
      */
-    public function getCommitterEmail()
+    public function getCommitterEmail(): string
     {
-        return $this->getData('committerEmail');
+        return $this->data()->committerEmail;
     }
 
     /**
-     * Returns the authoring date.
-     *
-     * @return \DateTime A time object
+     * Returns the committing date, at the UTC offset of the committer, like
+     * git log shows it.
      */
-    public function getCommitterDate()
+    public function getCommitterDate(): \DateTimeImmutable
     {
-        return $this->getData('committerDate');
+        return $this->data()->committerDate;
     }
 
     /**
      * Returns the message of the commit.
-     *
-     * @return string A commit message
      */
-    public function getMessage()
+    public function getMessage(): string
     {
-        return $this->getData('message');
+        return $this->data()->message;
     }
 
     /**
-     * Returns the subject message (the first line).
-     *
-     * @return string The subject message
+     * @return string The first paragraph of the message, on one line, like "git log --format=%s"
      */
-    public function getSubjectMessage()
+    public function getSubjectMessage(): string
     {
-        return $this->getData('subjectMessage');
+        return Message::subject($this->getMessage());
     }
 
     /**
-     * Return the body message.
-     *
-     * @return string The body message
+     * @return string What follows the subject and its empty lines, like "git log --format=%b"
      */
-    public function getBodyMessage()
+    public function getBodyMessage(): string
     {
-        return $this->getData('bodyMessage');
+        return Message::body($this->getMessage());
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCommit()
+    public function getCommit(): self
     {
         return $this;
     }
 
-    private function getData($name)
+    private function data(): CommitData
     {
-        if (isset($this->data[$name])) {
-            return $this->data[$name];
-        }
-
-        if ($name === 'shortHash') {
-            $this->data['shortHash'] = trim($this->repository->run('log', ['--abbrev-commit', '--format=%h', '-n', 1, $this->revision]));
-
-            return $this->data['shortHash'];
-        }
-
-        if ($name === 'tree') {
-            $this->data['tree'] = $this->repository->getTree($this->getData('treeHash'));
-
-            return $this->data['tree'];
-        }
-
-        if ($name === 'subjectMessage') {
-            $lines = explode("\n", $this->getData('message'));
-            $this->data['subjectMessage'] = reset($lines);
-
-            return $this->data['subjectMessage'];
-        }
-
-        if ($name === 'bodyMessage') {
-            $message = $this->getData('message');
-
-            $lines = explode("\n", $message);
-
-            array_shift($lines);
-            array_shift($lines);
-
-            $this->data['bodyMessage'] = implode("\n", $lines);
-
-            return $this->data['bodyMessage'];
-        }
-
-        $parser = new Parser\CommitParser();
-
-        try {
-            $result = $this->repository->run('cat-file', ['commit', $this->revision]);
-        } catch (ProcessException $e) {
-            throw new ReferenceNotFoundException(sprintf('Can not find reference "%s"', $this->revision));
-        }
-
-        $parser->parse($result);
-
-        $this->data['treeHash'] = $parser->tree;
-        $this->data['parentHashes'] = $parser->parents;
-        $this->data['authorName'] = $parser->authorName;
-        $this->data['authorEmail'] = $parser->authorEmail;
-        $this->data['authorDate'] = $parser->authorDate;
-        $this->data['committerName'] = $parser->committerName;
-        $this->data['committerEmail'] = $parser->committerEmail;
-        $this->data['committerDate'] = $parser->committerDate;
-        $this->data['message'] = $parser->message;
-
-        if (!isset($this->data[$name])) {
-            throw new \InvalidArgumentException(sprintf('No data named "%s" in Commit.', $name));
-        }
-
-        return $this->data[$name];
+        return $this->data ??= $this->repository->getRepositoryDriver()->getCommitData($this->revision);
     }
 }

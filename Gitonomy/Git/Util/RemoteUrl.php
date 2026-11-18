@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -12,12 +12,11 @@
 
 namespace Gitonomy\Git\Util;
 
+use Gitonomy\Git\Exception\InvalidArgumentException;
+
 /**
- * Tells the URLs of a repository that make git run a command, or use a file
- * descriptor of PHP, as an application may get them from its users.
- *
- * Unlike 2.0, 1.x accepts "ext::" URLs: an application may use this transport
- * on purpose, through git's protocol.ext.allow setting or GIT_ALLOW_PROTOCOL.
+ * Refuses the URLs of a repository that make git run a command, or use a
+ * file descriptor of PHP, as an application may get them from its users.
  *
  * @author Grégoire Pineau <lyrixx@lyrixx.info>
  *
@@ -26,21 +25,28 @@ namespace Gitonomy\Git\Util;
 final class RemoteUrl
 {
     /**
-     * @return string|null Why git must not get $url, null when it can
+     * @throws InvalidArgumentException $url is empty, starts with a dash, uses the "ext::" or "fd::" transport, or has a host, a user or a port starting with a dash, encoded or not
      */
-    public static function unsafeReason(#[\SensitiveParameter] string $url): ?string
+    public static function assertSafe(#[\SensitiveParameter] string $url): void
     {
-        // Before the URL, git would read it as an option: "--upload-pack=..."
-        // runs the command. ls-remote only takes "--" since git 2.8.
-        if (str_starts_with($url, '-')) {
-            return sprintf('"%s" starts with a dash, which git would read as an option.', Credentials::redact($url));
+        // git would run in the working directory of PHP, which may be a repository.
+        if ('' === $url) {
+            throw new InvalidArgumentException('The URL of a repository can\'t be empty.');
+        }
+
+        LeadingDash::assertNone($url);
+
+        // "ext::sh -c ..." runs the command, to talk to it: git refuses it by
+        // default since 2.12 only, through its protocol.allow setting.
+        if (str_starts_with($url, 'ext::')) {
+            throw new InvalidArgumentException(\sprintf('"%s" uses the "ext::" transport, which runs a command.', Credentials::redact($url)));
         }
 
         // "fd::7" talks through the file descriptors git inherits from PHP:
         // an open file, the socket of a database... git waits on it until it
         // times out, an hour by default.
         if (str_starts_with($url, 'fd::')) {
-            return sprintf('"%s" uses the "fd::" transport, which talks through a file descriptor of PHP.', Credentials::redact($url));
+            throw new InvalidArgumentException(\sprintf('"%s" uses the "fd::" transport, which talks through a file descriptor of PHP.', Credentials::redact($url)));
         }
 
         // Before 2.14.1 (CVE-2017-1000117), git passes the "user@host" of an ssh
@@ -50,10 +56,8 @@ final class RemoteUrl
         // the port. A valid host or port never starts with a dash.
         $authority = self::authority($url);
         if (null !== $authority && 1 === preg_match('/(?:^|[@:])\[?-/', $authority)) {
-            return sprintf('"%s" has a host, a user or a port starting with a dash, which ssh, or the command of core.gitProxy, would read as an option.', Credentials::redact($url));
+            throw new InvalidArgumentException(\sprintf('"%s" has a host, a user or a port starting with a dash, which ssh, or the command of core.gitProxy, would read as an option.', Credentials::redact($url)));
         }
-
-        return null;
     }
 
     /**

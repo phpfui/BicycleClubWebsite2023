@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -14,12 +14,9 @@ namespace Gitonomy\Git;
 
 use Gitonomy\Git\Exception\InvalidArgumentException;
 use Gitonomy\Git\Exception\ReferenceNotFoundException;
-use Gitonomy\Git\Exception\RuntimeException;
 use Gitonomy\Git\Reference\Branch;
 use Gitonomy\Git\Reference\Stash;
 use Gitonomy\Git\Reference\Tag;
-use Gitonomy\Git\Util\LeadingDash;
-use Gitonomy\Git\Util\LegacyOverride;
 
 /**
  * Reference set associated to a repository.
@@ -27,468 +24,272 @@ use Gitonomy\Git\Util\LegacyOverride;
  * @author Alexandre Salomé <alexandre.salome@gmail.com>
  * @author Julien DIDIER <genzo.wm@gmail.com>
  *
- * @final since gitonomy/gitlib 1.7
+ * @implements \IteratorAggregate<string, Reference>
  */
-class ReferenceBag implements \Countable, \IteratorAggregate
+final class ReferenceBag implements \Countable, \IteratorAggregate
 {
     /**
-     * Repository object.
+     * The references, by full name: null until read, and after every write.
      *
-     * @var Repository
+     * @var array<string, Reference>|null
      */
-    protected $repository;
+    private ?array $references = null;
 
     /**
-     * Associative array of fullname references.
-     *
-     * @var array
+     * @internal Get it from Repository::getReferences(), which gitlib reads again after its writes
      */
-    protected $references;
-
-    /**
-     * List with all tags.
-     *
-     * @var Tag[]
-     */
-    protected $tags;
-
-    /**
-     * List with all branches.
-     *
-     * @var Branch[]
-     */
-    protected $branches;
-
-    /**
-     * A boolean indicating if the bag is already initialized.
-     *
-     * @var bool
-     */
-    protected $initialized = false;
-
-    /**
-     * Constructor.
-     *
-     * @param Repository $repository The repository
-     *
-     * In gitlib 2.0, the constructor is internal: get it from Repository::getReferences().
-     */
-    public function __construct($repository)
-    {
-        $this->repository = $repository;
-        $this->references = [];
-        $this->tags = [];
-        $this->branches = [];
+    public function __construct(
+        private readonly Repository $repository,
+    ) {
     }
 
     /**
      * Returns a reference, by name.
      *
-     * @param string $fullname Fullname of the reference (refs/heads/master, for example).
-     *
-     * @return Reference A reference object.
+     * @param string $fullname fullname of the reference (refs/heads/master, for example)
      */
-    public function get($fullname)
+    public function get(string $fullname): Reference
     {
-        $this->initialize();
+        return $this->references()[$fullname] ?? throw new ReferenceNotFoundException(\sprintf('The reference "%s" does not exist.', $fullname));
+    }
 
-        if (!isset($this->references[$fullname])) {
-            throw new ReferenceNotFoundException($fullname);
-        }
-
-        return $this->references[$fullname];
+    public function has(string $fullname): bool
+    {
+        return isset($this->references()[$fullname]);
     }
 
     /**
-     * @return bool
+     * @throws InvalidArgumentException The branch exists already
      */
-    public function has($fullname)
+    public function createBranch(string $name, Revision|string $revision): Branch
     {
-        $this->initialize();
+        $this->create('refs/heads/'.$name, $revision);
 
-        return isset($this->references[$fullname]);
+        return $this->getBranch($name);
     }
 
     /**
-     * @return Reference
+     * Creates a lightweight tag.
      *
-     * @deprecated since gitonomy/gitlib 1.7, use Branch::moveTo() instead
+     * @throws InvalidArgumentException The tag exists already
      */
-    public function update(Reference $reference)
+    public function createTag(string $name, Revision|string $revision): Tag
     {
-        trigger_deprecation('gitonomy/gitlib', '1.7', 'The "%s()" method is deprecated, use "%s::moveTo()" instead.', __METHOD__, Branch::class);
+        $this->create('refs/tags/'.$name, $revision);
 
-        return $this->updateReference($reference);
+        return $this->getTag($name);
     }
 
     /**
-     * Creating a branch that exists already, which moves it, is deprecated.
+     * Like `git update-ref -d`, deleting a missing reference does nothing.
      *
-     * @param Revision|string $commitHash The hash of a commit, or a Revision
+     * @param string $fullname fullname of the reference (refs/heads/master, for example)
      *
-     * @return Branch
+     * @throws InvalidArgumentException $fullname isn't the full name of a reference under "refs/", like "HEAD" or "master"
      */
-    public function createBranch($name, $commitHash)
+    public function delete(string $fullname): void
     {
-        if ($this->has('refs/heads/'.$name)) {
-            trigger_deprecation('gitonomy/gitlib', '1.7', 'Creating the branch "%s", which exists already, is deprecated, it throws in 2.0: use "%s::moveTo()" instead.', $name, Branch::class);
-        }
-
-        $branch = new Branch($this->repository, 'refs/heads/'.$name, self::commitHash($commitHash));
-
-        return $this->write($branch);
+        $this->repository->getRepositoryDriver()->deleteReference($fullname);
+        $this->invalidate();
     }
 
-    /**
-     * Creating a tag that exists already, which moves it, is deprecated.
-     *
-     * @param Revision|string $commitHash The hash of a commit, or a Revision
-     *
-     * @return Tag
-     */
-    public function createTag($name, $commitHash)
+    public function hasBranches(): bool
     {
-        if ($this->has('refs/tags/'.$name)) {
-            trigger_deprecation('gitonomy/gitlib', '1.7', 'Creating the tag "%s", which exists already, is deprecated, it throws in 2.0: delete it first.', $name);
-        }
-
-        $tag = new Tag($this->repository, 'refs/tags/'.$name, self::commitHash($commitHash));
-
-        return $this->write($tag);
+        return [] !== $this->getBranches();
     }
 
-    /**
-     * Deleting a reference by another name than its full name under "refs/", like "HEAD" or "master", is deprecated.
-     *
-     * @throws InvalidArgumentException HEAD is detached: deleting it would leave no repository
-     *
-     * @return void
-     */
-    public function delete($fullname)
-    {
-        // --no-deref: a symbolic reference, like refs/remotes/origin/HEAD, is
-        // deleted, not the branch it points to.
-        $args = ['--no-deref', '-d', $fullname];
-
-        if (!str_starts_with($fullname, 'refs/')) {
-            trigger_deprecation('gitonomy/gitlib', '1.7', 'Deleting "%s", which is not the full name of a reference under "refs/", is deprecated, it throws in 2.0.', $fullname);
-
-            if ('HEAD' === $fullname && $this->repository->isHeadDetached()) {
-                throw new InvalidArgumentException('A detached HEAD can\'t be deleted, which would leave no repository.');
-            }
-
-            // Like in 1.6: deleting an attached HEAD deletes its branch.
-            $args = ['-d', $fullname];
-        }
-
-        $this->repository->run('update-ref', $args);
-
-        unset($this->references[$fullname]);
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasBranches()
-    {
-        $this->initialize();
-
-        return count($this->branches) > 0;
-    }
-
-    public function hasBranch($name)
+    public function hasBranch(string $name): bool
     {
         return $this->has('refs/heads/'.$name);
     }
 
-    public function hasRemoteBranch($name)
+    public function hasRemoteBranch(string $name): bool
     {
         return $this->has('refs/remotes/'.$name);
     }
 
-    public function hasTag($name)
+    public function hasTag(string $name): bool
     {
         return $this->has('refs/tags/'.$name);
     }
 
+    public function getFirstBranch(): ?Branch
+    {
+        return $this->getBranches()[0] ?? null;
+    }
+
     /**
-     * @return Branch
+     * @return Tag[] The tags pointing to $commit, annotated or not
      */
-    public function getFirstBranch()
+    public function resolveTags(Revision|string $commit): array
     {
-        $this->initialize();
-        reset($this->branches);
-
-        return current($this->references);
+        return array_values(array_filter($this->resolve($commit), static fn (Reference $reference): bool => $reference instanceof Tag));
     }
 
     /**
-     * @return Tag[] An array of Tag objects
+     * @return Branch[] The branches pointing to $commit
      */
-    public function resolveTags($hash)
+    public function resolveBranches(Revision|string $commit): array
     {
-        $this->initialize();
-
-        if ($hash instanceof Commit) {
-            $hash = $hash->getHash();
-        }
-
-        $tags = [];
-        foreach ($this->references as $reference) {
-            if ($reference instanceof Reference\Tag && $reference->getCommitHash() === $hash) {
-                $tags[] = $reference;
-            }
-        }
-
-        return $tags;
+        return array_values(array_filter($this->resolve($commit), static fn (Reference $reference): bool => $reference instanceof Branch));
     }
 
     /**
-     * @return Branch[] An array of Branch objects
+     * @return Reference[] The references pointing to $commit, through annotated tags
      */
-    public function resolveBranches($hash)
+    public function resolve(Revision|string $commit): array
     {
-        $this->initialize();
+        $hash = match (true) {
+            $commit instanceof Revision => $commit->getCommit()->getHash(),
+            1 === preg_match('/^[0-9a-f]{40}$/D', $commit) => $commit,
+            default => $this->repository->getRevision($commit)->getCommit()->getHash(),
+        };
 
-        if ($hash instanceof Commit) {
-            $hash = $hash->getHash();
-        }
-
-        $branches = [];
-        foreach ($this->references as $reference) {
-            if ($reference instanceof Reference\Branch && $reference->getCommitHash() === $hash) {
-                $branches[] = $reference;
-            }
-        }
-
-        return $branches;
+        return array_values(array_filter($this->references(), static fn (Reference $reference): bool => $reference->getCommitHash() === $hash));
     }
 
     /**
-     * @return Reference[] An array of references
+     * @return Tag[] all tags
      */
-    public function resolve($hash)
+    public function getTags(): array
     {
-        $this->initialize();
-
-        if ($hash instanceof Commit) {
-            $hash = $hash->getHash();
-        }
-
-        $result = [];
-        foreach ($this->references as $k => $reference) {
-            if ($reference->getCommitHash() === $hash) {
-                $result[] = $reference;
-            }
-        }
-
-        return $result;
+        return array_values(array_filter($this->references(), static fn (Reference $reference): bool => $reference instanceof Tag));
     }
 
     /**
-     * @return Tag[] All tags.
+     * @return Branch[] all branches
      */
-    public function getTags()
+    public function getBranches(): array
     {
-        $this->initialize();
-
-        return $this->tags;
+        return array_values(array_filter($this->references(), static fn (Reference $reference): bool => $reference instanceof Branch));
     }
 
     /**
-     * @return Branch[] All branches.
+     * @return Branch[] all local branches
      */
-    public function getBranches()
+    public function getLocalBranches(): array
     {
-        $this->initialize();
-
-        $result = [];
-        foreach ($this->references as $reference) {
-            if ($reference instanceof Reference\Branch) {
-                $result[] = $reference;
-            }
-        }
-
-        return $result;
+        return array_values(array_filter($this->getBranches(), static fn (Branch $branch): bool => $branch->isLocal()));
     }
 
     /**
-     * @return Branch[] All local branches.
+     * @return Branch[] all remote branches
      */
-    public function getLocalBranches()
+    public function getRemoteBranches(): array
     {
-        $result = [];
-        foreach ($this->getBranches() as $branch) {
-            if ($branch->isLocal()) {
-                $result[] = $branch;
-            }
-        }
-
-        return $result;
+        return array_values(array_filter($this->getBranches(), static fn (Branch $branch): bool => $branch->isRemote()));
     }
 
     /**
-     * @return Branch[] All remote branches.
+     * @return array<string, Reference> An associative array with fullname as key (refs/heads/master, refs/tags/0.1)
      */
-    public function getRemoteBranches()
+    public function getAll(): array
     {
-        $result = [];
-        foreach ($this->getBranches() as $branch) {
-            if ($branch->isRemote()) {
-                $result[] = $branch;
-            }
-        }
+        return $this->references();
+    }
 
-        return $result;
+    public function getTag(string $name): Tag
+    {
+        return $this->getAs('refs/tags/'.$name, Tag::class);
+    }
+
+    public function getBranch(string $name): Branch
+    {
+        return $this->getAs('refs/heads/'.$name, Branch::class);
+    }
+
+    public function getRemoteBranch(string $name): Branch
+    {
+        return $this->getAs('refs/remotes/'.$name, Branch::class);
     }
 
     /**
-     * @return array An associative array with fullname as key (refs/heads/master, refs/tags/0.1)
+     * @see Countable
      */
-    public function getAll()
+    public function count(): int
     {
-        $this->initialize();
-
-        return $this->references;
+        return \count($this->references());
     }
 
     /**
-     * @return Tag
+     * @see IteratorAggregate
+     *
+     * @return \ArrayIterator<string, Reference>
      */
-    public function getTag($name)
+    public function getIterator(): \ArrayIterator
     {
-        $this->initialize();
-
-        return $this->get('refs/tags/'.$name);
+        return new \ArrayIterator($this->references());
     }
 
     /**
-     * @return Branch
-     */
-    public function getBranch($name)
-    {
-        $this->initialize();
-
-        return $this->get('refs/heads/'.$name);
-    }
-
-    /**
-     * @return Branch
-     */
-    public function getRemoteBranch($name)
-    {
-        $this->initialize();
-
-        return $this->get('refs/remotes/'.$name);
-    }
-
-    protected function initialize()
-    {
-        if (true === $this->initialized) {
-            return;
-        }
-        $this->initialized = true;
-
-        try {
-            $parser = new Parser\ReferenceParser();
-            $output = $this->repository->run('show-ref');
-        } catch (RuntimeException $e) {
-            return;
-        }
-        $parser->parse($output);
-
-        foreach ($parser->references as $row) {
-            list($commitHash, $fullname) = $row;
-
-            if (preg_match('#^refs/(heads|remotes)/(.*)$#', $fullname)) {
-                if (preg_match('#.*HEAD$#', $fullname)) {
-                    continue;
-                }
-                $reference = new Branch($this->repository, $fullname, $commitHash);
-                $this->references[$fullname] = $reference;
-                $this->branches[] = $reference;
-            } elseif (preg_match('#^refs/tags/(.*)$#', $fullname)) {
-                $reference = new Tag($this->repository, $fullname, $commitHash);
-                $this->references[$fullname] = $reference;
-                $this->tags[] = $reference;
-            } elseif ($fullname === 'refs/stash') {
-                $reference = new Stash($this->repository, $fullname, $commitHash);
-                $this->references[$fullname] = $reference;
-            }
-        }
-    }
-
-    /**
-     * Reads the references again when next needed.
+     * Reads the references again when next needed: gitlib calls it after
+     * every write, through this bag or not (checkout, merge, run()...).
      *
      * @internal
      */
     public function invalidate(): void
     {
-        $this->initialized = false;
-        $this->references = [];
-        $this->tags = [];
-        $this->branches = [];
+        $this->references = null;
     }
 
     /**
-     * @return int
+     * @throws InvalidArgumentException $fullname exists already
+     */
+    private function create(string $fullname, Revision|string $revision): void
+    {
+        if ($this->has($fullname)) {
+            throw new InvalidArgumentException(\sprintf('The reference "%s" exists already.', $fullname));
+        }
+
+        $hash = ($revision instanceof Revision ? $revision : $this->repository->getRevision($revision))->getCommit()->getHash();
+        $this->repository->getRepositoryDriver()->createReference($fullname, $hash);
+        $this->invalidate();
+    }
+
+    /**
+     * @template T of Reference
      *
-     * @see Countable
+     * @param class-string<T> $class
+     *
+     * @return T
      */
-    #[\ReturnTypeWillChange]
-    public function count()
+    private function getAs(string $fullname, string $class): Reference
     {
-        $this->initialize();
+        $reference = $this->get($fullname);
 
-        return count($this->references);
-    }
-
-    /**
-     * @see IteratorAggregate
-     */
-    #[\ReturnTypeWillChange]
-    public function getIterator()
-    {
-        $this->initialize();
-
-        return new \ArrayIterator($this->references);
-    }
-
-    /**
-     * @return Reference
-     */
-    private function updateReference(Reference $reference)
-    {
-        $fullname = $reference->getFullname();
-
-        $hash = $reference->getCommitHash();
-        // "git update-ref refs/heads/foo -d" deletes the branch.
-        LeadingDash::assertNone($hash);
-
-        $this->initialize();
-        $this->repository->run('update-ref', [$fullname, $hash]);
-
-        $this->references[$fullname] = $reference;
+        if (!$reference instanceof $class) {
+            throw new ReferenceNotFoundException(\sprintf('The reference "%s" does not exist.', $fullname));
+        }
 
         return $reference;
     }
 
     /**
-     * @return Reference
+     * @return array<string, Reference>
      */
-    private function write(Reference $reference)
+    private function references(): array
     {
-        // Like in 1.6, a subclass overriding update() writes the reference.
-        return LegacyOverride::isOverridden($this, self::class, 'update') ? $this->update($reference) : $this->updateReference($reference);
-    }
+        if (null !== $this->references) {
+            return $this->references;
+        }
 
-    /**
-     * @param Revision|string $commitHash
-     */
-    private static function commitHash($commitHash)
-    {
-        // A string as it is, like in 1.6: git resolves a name when writing the reference.
-        return $commitHash instanceof Revision ? $commitHash->getCommit()->getHash() : $commitHash;
+        $references = [];
+        foreach ($this->repository->getRepositoryDriver()->getReferences() as $data) {
+            $fullname = $data->fullname;
+
+            if (str_starts_with($fullname, 'refs/heads/') || str_starts_with($fullname, 'refs/remotes/')) {
+                // The default branch of a remote, a symbolic reference to one of its branches; a remote may be named "foo/bar".
+                if (str_ends_with($fullname, '/HEAD') && str_starts_with($fullname, 'refs/remotes/')) {
+                    continue;
+                }
+                $references[$fullname] = new Branch($this->repository, $fullname, $data->commitHash);
+            } elseif (str_starts_with($fullname, 'refs/tags/')) {
+                $references[$fullname] = new Tag($this->repository, $fullname, $data->commitHash, $data->tagHash);
+            } elseif ('refs/stash' === $fullname) {
+                $references[$fullname] = new Stash($this->repository, $fullname, $data->commitHash);
+            }
+        }
+
+        return $this->references = $references;
     }
 }

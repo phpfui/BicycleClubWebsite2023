@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of Gitonomy.
  *
  * (c) Alexandre Salomé <alexandre.salome@gmail.com>
@@ -16,12 +16,10 @@ use Gitonomy\Git\Reference;
 
 /**
  * @author Alexandre Salomé <alexandre.salome@gmail.com>
- *
- * @final since gitonomy/gitlib 1.7
  */
-class Stash extends Reference
+final class Stash extends Reference
 {
-    public function getName()
+    public function getName(): string
     {
         return 'stash';
     }

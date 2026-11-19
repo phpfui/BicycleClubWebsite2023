@@ -41,13 +41,10 @@ class Versions
 			}
 		$container->add($subnav);
 
-		$log = $this->model->getLog([$branch]);
+		$log = $this->model->getLog([$branch], offset:($page * $limit), limit:$limit);
 
 		$count = $log->countCommits();
 		$lastPage = (int)(($count - 1) / $limit) + 1;
-
-		$log->withOffset($page * $limit);
-		$log->withLimit($limit);
 
 		$localTZ = new \DateTimeZone(\date_default_timezone_get());
 		$sortedTags = new \App\Tools\SortedTags($this->model);
